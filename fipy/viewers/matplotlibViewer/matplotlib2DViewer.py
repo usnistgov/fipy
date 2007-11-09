@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlib2DViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/6/07 {7:58:36 PM} { 2:45:36 PM}
+ #                                last update: 11/8/07 {6:50:53 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -97,8 +97,8 @@ class Matplotlib2DViewer(MatplotlibViewer):
 
         vertexCoords = self.mesh.getVertexCoords()
 
-        xCoords = numerix.take(vertexCoords[0], vertexIDs)
-        yCoords = numerix.take(vertexCoords[1], vertexIDs)
+        xCoords = numerix.take(vertexCoords[0], vertexIDs, axis=-1)
+        yCoords = numerix.take(vertexCoords[1], vertexIDs, axis=-1)
         
         polys = []
         for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):

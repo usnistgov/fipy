@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/29/07 {10:10:41 PM} 
+ #                                last update: 11/8/07 {9:55:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -308,7 +308,7 @@ class Mesh:
         return self.numberOfCells
     
     def _getNumberOfVertices(self):
-        return self.vertexCoords.shape[-1]
+        return self.getVertexCoords().shape[-1]
         
     def _getAdjacentCellIDs(self):
         return self.adjacentCellIDs
@@ -412,7 +412,7 @@ class Mesh:
 
     def _calcCellAreas(self):
         from fipy.tools.numerix import take
-        self.cellAreas =  take(self._getFaceAreas(), self.cellFaceIDs)
+        self.cellAreas =  take(self._getFaceAreas(), self.cellFaceIDs, axis=-1)
     
     """get geometry methods"""
         

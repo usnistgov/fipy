@@ -6,7 +6,7 @@
  # 
  # FILE: "uniformGrid3D.py"
  #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 11/7/07 {12:57:35 PM}
+ #                                 last update: 11/8/07 {6:06:06 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -174,7 +174,7 @@ class UniformGrid3D(Grid3D):
                                                      numerix.ravel(YZids[1:-1,      ...].swapaxes(0,1)))))
 
     def _getCellFaceOrientations(self):
-        tmp = numerix.take(self.getFaceCellIDs()[0], self._getCellFaceIDs())
+        tmp = numerix.take(self.getFaceCellIDs()[0], self._getCellFaceIDs(), axis=-1)
         return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
 
     def _getAdjacentCellIDs(self):
@@ -665,7 +665,7 @@ class UniformGrid3D(Grid3D):
              [0 1 2 3 4 5]
              [0 1 2 3 4 5]]
               
-            >>> cellToCellDistances = numerix.take(cellDistances, cells)
+            >>> cellToCellDistances = numerix.take(cellDistances, cells, axis=-1)
             >>> print numerix.allclose(cellToCellDistances, 
             ...                        mesh._getCellToCellDistances(), 
             ...                        atol = 1e-10, rtol = 1e-10)

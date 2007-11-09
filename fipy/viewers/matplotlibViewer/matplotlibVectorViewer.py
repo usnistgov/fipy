@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/6/07 {8:08:02 PM} { 2:45:36 PM}
+ #                                last update: 11/8/07 {6:51:16 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -127,8 +127,8 @@ class MatplotlibVectorViewer(MatplotlibViewer):
         else:
             self.indices = numerix.arange(N)
 
-        X = numerix.take(X, self.indices)
-        Y = numerix.take(Y, self.indices)
+        X = numerix.take(X, self.indices, axis=-1)
+        Y = numerix.take(Y, self.indices, axis=-1)
         
         U = V = numerix.ones(X.shape)
         
@@ -159,8 +159,8 @@ class MatplotlibVectorViewer(MatplotlibViewer):
 
         U, V = var.getNumericValue()
 
-        U = numerix.take(U, self.indices)
-        V = numerix.take(V, self.indices)
+        U = numerix.take(U, self.indices, axis=-1)
+        V = numerix.take(V, self.indices, axis=-1)
 
         self.quiver.set_UVC(U, V)
         

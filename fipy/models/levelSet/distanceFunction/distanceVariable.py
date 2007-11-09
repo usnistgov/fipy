@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 11/7/07 {3:48:21 PM}
+ #                                last update: 11/8/07 {6:59:13 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -261,13 +261,13 @@ class DistanceVariable(CellVariable):
         cellToCellIDs = self.mesh._getCellToCellIDs()
 
         if deleteIslands:
-            adjVals = numerix.take(self.value, cellToCellIDs)
+            adjVals = numerix.take(self.value, cellToCellIDs, axis=-1)
             adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value) > 0)
             masksum = numerix.sum(numerix.logical_not(MA.getmask(adjInterfaceValues)), 0)
             tmp = MA.logical_and(masksum == 4, self.value > 0)
             self.value = MA.where(tmp, -1, self.value)
 
-        adjVals = numerix.take(self.value, cellToCellIDs).getValue()
+        adjVals = numerix.take(self.value, cellToCellIDs, axis=-1).getValue()
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value) > 0)
         dAP = self.mesh._getCellToCellDistances()
         distances = abs(self.value * dAP / (self.value - adjInterfaceValues))
@@ -331,7 +331,7 @@ class DistanceVariable(CellVariable):
             self.value = self.tmpValue.copy()
 
         ## evaluate the trialIDs
-        adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs).getValue()
+        adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs, axis=-1).getValue()
         hasAdjInterface = (numerix.sum(adjInterfaceFlag.filled(0), 0) > 0).astype('l')
 
         trialFlag = numerix.logical_and(numerix.logical_not(interfaceFlag), hasAdjInterface).astype('l')
@@ -345,7 +345,7 @@ class DistanceVariable(CellVariable):
 
         while len(trialIDs):
 
-            id = trialIDs[numerix.argmin(abs(numerix.take(self.value, trialIDs)))]
+            id = trialIDs[numerix.argmin(abs(numerix.take(self.value, trialIDs, axis=-1)))]
 
             if abs(self.value[...,id]) > narrowBandWidth / 2:
                 break
@@ -365,8 +365,8 @@ class DistanceVariable(CellVariable):
 
     def _calcTrialValue(self, id, evaluatedFlag, extensionVariable):
         adjIDs = self.cellToCellIDs[...,id]
-        adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs)
-        adjValues = numerix.take(self.value, adjIDs)
+        adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs, axis=-1)
+        adjValues = numerix.take(self.value, adjIDs, axis=-1)
         adjValues = numerix.where(adjEvaluatedFlag, adjValues, 1e+10)
         indices = numerix.argsort(abs(adjValues))
         sign = (self.value[id] > 0) * 2 - 1
@@ -557,8 +557,8 @@ class DistanceVariable(CellVariable):
            
         """
         adjacentCellIDs = self.adjacentCellIDs
-        val0 = numerix.take(numerix.array(self.value), adjacentCellIDs[0])
-        val1 = numerix.take(numerix.array(self.value), adjacentCellIDs[1])
+        val0 = numerix.take(self.value, adjacentCellIDs[0], axis=-1)
+        val1 = numerix.take(self.value, adjacentCellIDs[1], axis=-1)
         
         return numerix.where(val1 * val0 < 0, 1, 0)
 
@@ -576,7 +576,10 @@ class DistanceVariable(CellVariable):
         1
 
         """
-        flag = MA.filled(numerix.take(self._getInterfaceFlag(), self.cellFaceIDs), value = 0)
+        flag = MA.filled(numerix.take(self._getInterfaceFlag(), 
+                                      self.cellFaceIDs, 
+                                      axis=-1), 
+                         value=0)
 
         flag = numerix.sum(flag, axis=0)
         

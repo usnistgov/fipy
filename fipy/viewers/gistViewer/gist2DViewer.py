@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/5/07 {9:43:48 AM} 
+ #                                last update: 11/8/07 {6:50:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -145,8 +145,8 @@ class Gist2DViewer(GistViewer):
 
         vertexCoords = self.mesh.getVertexCoords()
 
-        xCoords = numerix.take(vertexCoords[0], vertexIDs).flatten("FORTRAN")
-        yCoords = numerix.take(vertexCoords[1], vertexIDs).flatten("FORTRAN")
+        xCoords = numerix.take(vertexCoords[0], vertexIDs, axis=-1).flatten("FORTRAN")
+        yCoords = numerix.take(vertexCoords[1], vertexIDs, axis=-1).flatten("FORTRAN")
 
         import gist
 
@@ -168,10 +168,10 @@ class Gist2DViewer(GistViewer):
         faceVertexIDs = self.mesh._getFaceVertexIDs()
         vertexCoords = self.mesh.getVertexCoords()
         
-        x0 = numerix.take(vertexCoords[0], faceVertexIDs[0])
-        y0 = numerix.take(vertexCoords[1], faceVertexIDs[0])
-        x1 = numerix.take(vertexCoords[0], faceVertexIDs[1])
-        y1 = numerix.take(vertexCoords[1], faceVertexIDs[1])
+        x0 = numerix.take(vertexCoords[0], faceVertexIDs[0], axis=-1)
+        y0 = numerix.take(vertexCoords[1], faceVertexIDs[0], axis=-1)
+        x1 = numerix.take(vertexCoords[0], faceVertexIDs[1], axis=-1)
+        y1 = numerix.take(vertexCoords[1], faceVertexIDs[1], axis=-1)
         
         import gist
         

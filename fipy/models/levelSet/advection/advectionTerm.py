@@ -6,7 +6,7 @@
  # 
  #  FILE: "advectionEquation.py"
  #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 11/7/07 {4:13:04 PM} 
+ #                                last update: 11/8/07 {6:06:21 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -140,7 +140,7 @@ class _AdvectionTerm(Term):
         mask = cellToCellIDs.getMask()
         cellToCellIDs = mask * cellIDs + ~mask * cellToCellIDs.filled()
 
-        adjacentValues = numerix.take(oldArray, cellToCellIDs)
+        adjacentValues = numerix.take(oldArray, cellToCellIDs, axis=-1)
 
         differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
         differences = differences.filled(0)

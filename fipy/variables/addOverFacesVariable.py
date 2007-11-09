@@ -6,7 +6,7 @@
  # 
  #  FILE: "addOverFacesVariable.py"
  #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 1/3/07 {3:26:40 PM}
+ #                                last update: 11/8/07 {6:48:05 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,7 +58,7 @@ class _AddOverFacesVariable(CellVariable):
     def _calcValuePy(self):
         ids = self.mesh._getCellFaceIDs()
         
-        contributions = numerix.take(self.faceVariable, ids)
+        contributions = numerix.take(self.faceVariable, ids, axis=-1)
 
         return numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0) / self.mesh.getCellVolumes()
         

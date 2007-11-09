@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/5/07 {5:03:50 PM}
+ #                                last update: 11/8/07 {6:51:51 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -132,9 +132,9 @@ class MayaviSurfactantViewer(Viewer):
         ##minX = self.distanceVar.getMesh().getFaceCenters()[0].min()
 
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
-        coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
+        coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs, axis=-1)
         
-        coordinates -= numerix.take(self.distanceVar.getGrad() * self.distanceVar, IDs)
+        coordinates -= numerix.take(self.distanceVar.getGrad() * self.distanceVar, IDs, axis=-1)
         coordinates *= self.zoomFactor
 
         shiftedCoords = coordinates.copy()
@@ -145,13 +145,13 @@ class MayaviSurfactantViewer(Viewer):
         from lines import _getOrderedLines
         lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.getMesh()._getCellDistances().min() * 10)
 
-        data = numerix.take(self.surfactantVar, IDs)
+        data = numerix.take(self.surfactantVar, IDs, axis=-1)
 
         data = numerix.concatenate((data, data))
 
         tmpIDs = numerix.nonzero(data > 0.0001)
         if len(tmpIDs) > 0:
-            val = numerix.take(data, tmpIDs).min()
+            val = numerix.take(data, tmpIDs, axis=-1).min()
         else:
             val = 0.0001
             
@@ -164,7 +164,7 @@ class MayaviSurfactantViewer(Viewer):
             if len(line) > 2: 
                 for smooth in range(self.smooth):
                     for arr in (coordinates, data):
-                        tmp = numerix.take(arr, line)
+                        tmp = numerix.take(arr, line, axis=-1)
                         tmp[1:-1] = tmp[2:] * 0.25 + tmp[:-2] * 0.25 + tmp[1:-1] * 0.5
                         if len(arr.shape) > 1:
                             for i in range(len(arr[0])):                            

@@ -4,7 +4,7 @@
  # 
  # FILE: "meshIterator.py"
  #                                     created: 3/3/06 {9:00:00 PM}
- #                                 last update: 10/27/07 {10:19:55 AM}
+ #                                 last update: 11/8/07 {6:00:29 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,7 +87,7 @@ class FaceIterator(MeshIterator):
         return numerix.take(self.mesh.getFaceCenters(), self.getIDs(), axis=1)
         
     def getAreas(self):
-        return numerix.take(self.mesh._getFaceAreas(), self.getIDs())
+        return numerix.take(self.mesh._getFaceAreas(), self.getIDs(), axis=-1)
 
     def _getAdjacentCellIDs(self):
-        return numerix.take(self.getMesh()._getAdjacentCellIDs()[0], self.getIDs())
+        return numerix.take(self.getMesh()._getAdjacentCellIDs()[0], self.getIDs(), axis=-1)

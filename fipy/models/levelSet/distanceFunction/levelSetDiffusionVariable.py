@@ -6,7 +6,7 @@
  # 
  #  FILE: "levelSetDiffusionVariable.py"
  #                                    created: 9/8/04 {10:39:23 AM} 
- #                                last update: 11/7/07 {4:44:18 PM} 
+ #                                last update: 11/8/07 {6:43:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,8 +83,8 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
         self.diffusionCoeff = diffusionCoeff
     
     def _calcValuePy(self, alpha, id1, id2):
-        cell1 = numerix.take(self.var, id1).getValue()
-        cell2 = numerix.take(self.var, id2).getValue()
+        cell1 = numerix.take(self.var, id1, axis=-1).getValue()
+        cell2 = numerix.take(self.var, id2, axis=-1).getValue()
 
         return numerix.where(numerix.logical_or(cell1 < 0, cell2 < 0),
                              0,

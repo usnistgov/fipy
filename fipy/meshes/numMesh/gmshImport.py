@@ -7,7 +7,7 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 3/19/07 {6:03:58 PM}
+ #                                last update: 11/8/07 {6:01:15 PM}
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -336,7 +336,8 @@ class _DataGetter:
                 raise TypeError, "Can't understand element type %d. Only triangle (2) or tetrahedron (4) are allowed" % elementInfo[1]
                 
         self.cellVertexIDs = numerix.take(self.nodeToVertexIDs, 
-                                          numerix.array(cellNodeIDs)).swapaxes(0,1)       
+                                          numerix.array(cellNodeIDs),
+                                          axis=-1).swapaxes(0,1)       
         self.numCells = self.cellVertexIDs.shape[-1]
 
     def _calcBaseFaceVertexIDs(self):

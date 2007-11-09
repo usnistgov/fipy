@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 11/7/07 {9:31:59 AM} 
+ #                                last update: 11/8/07 {6:44:03 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -157,7 +157,7 @@ class DiffusionTerm(Term):
         
         numerix.put(interiorCoeff, mesh.getExteriorFaces(), 0)
         
-        interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
+        interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs(), axis=-1)
 
         coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))

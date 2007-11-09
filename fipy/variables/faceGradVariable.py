@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceGradVariable.py"
  #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 1/3/07 {3:26:15 PM}
+ #                                last update: 11/8/07 {5:57:26 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,7 +51,7 @@ class _FaceGradVariable(FaceVariable):
         dAP = self.mesh._getCellDistances()
         id1, id2 = self.mesh._getAdjacentCellIDs()
 ##      N = self.mod(numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
-        N = (numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
+        N = (numerix.take(self.var,id2,axis=-1) - numerix.take(self.var,id1,axis=-1)) / dAP
         normals = self.mesh._getOrientedFaceNormals()
         
         tangents1 = self.mesh._getFaceTangents1()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "harmonicCellToFaceVariable.py"
  #                                    created: 2/20/04 {11:15:10 AM} 
- #                                last update: 5/18/06 {8:38:53 PM} 
+ #                                last update: 11/8/07 {6:48:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,8 +43,8 @@ from fipy.tools.inline import inline
 
 class _HarmonicCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
-        cell1 = numerix.take(self.var,id1)
-        cell2 = numerix.take(self.var,id2)
+        cell1 = numerix.take(self.var, id1, axis=-1)
+        cell2 = numerix.take(self.var, id2, axis=-1)
         value = ((cell2 - cell1) * alpha + cell1)
         eps = 1e-20
         value = numerix.where(value == 0., eps, value)

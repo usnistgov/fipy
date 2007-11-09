@@ -6,7 +6,7 @@
  # 
  #  FILE: "leastSquaresCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 11/2/07 {5:19:29 PM} 
+ #                                last update: 11/8/07 {6:50:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,11 +43,14 @@ class _LeastSquaresCellGradVariable(CellVariable):
     Look at CellVariable.getLeastSquarseGrad() for documentation
      """
     def __init__(self, var, name = ''):
-        CellVariable.__init__(self, mesh=var.getMesh(), name=name, rank=var.getRank() + 1)
+        CellVariable.__init__(self, mesh=var.getMesh(), name=name, 
+                              rank=var.getRank() + 1)
         self.var = self._requires(var)
 
     def _getNeighborValue(self, ):
-        return numerix.take(numerix.array(self.var), self.mesh._getCellToCellIDs())
+        return numerix.take(numerix.array(self.var), 
+                            self.mesh._getCellToCellIDs(), 
+                            axis=-1)
 
     def _calcValue(self):
         cellToCellDistances = self.mesh._getCellToCellDistances()

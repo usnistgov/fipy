@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/1/07 {10:36:03 PM} 
+ #                                last update: 11/8/07 {6:01:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -511,7 +511,7 @@ class Grid3D(Mesh):
              [0 1 2 3 4 5]
              [0 1 2 3 4 5]]
 
-            >>> cellToCellDistances = numerix.take(cellDistances, cells)
+            >>> cellToCellDistances = numerix.take(cellDistances, cells, axis=-1)
             >>> print numerix.allclose(cellToCellDistances, 
             ...                        mesh._getCellToCellDistances(), 
             ...                        atol = 1e-10, rtol = 1e-10)

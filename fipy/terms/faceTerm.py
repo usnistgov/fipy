@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/2/07 {4:54:21 PM} 
+ #                                last update: 11/8/07 {6:46:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,10 +69,10 @@ class FaceTerm(Term):
     def _implicitBuildMatrix(self, SparseMatrix, L, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
         coeffMatrix = self._getCoeffMatrix(mesh, weight)
 
-        L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces),    id1, id1)
-        L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces), id1, id2)
-        L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces), id2, id1)
-        L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces),    id2, id2)
+        L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces, axis=-1),    id1, id1)
+        L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1), id1, id2)
+        L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces, axis=-1), id2, id1)
+        L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces, axis=-1),    id2, id2)
 
         N = mesh.getNumberOfCells()
         M = mesh._getMaxFacesPerCell()
@@ -137,16 +137,17 @@ class FaceTerm(Term):
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt=dt)
 
-        cell1diag = coeffMatrix['cell 1 diag'].take(interiorFaces).getValue()
-        cell1offdiag = coeffMatrix['cell 1 offdiag'].take(interiorFaces).getValue()
-        cell2diag = coeffMatrix['cell 2 diag'].take(interiorFaces).getValue()
-        cell2offdiag = coeffMatrix['cell 2 offdiag'].take(interiorFaces).getValue()
+        cell1diag = coeffMatrix['cell 1 diag'].take(interiorFaces, axis=-1).getValue()
+        cell1offdiag = coeffMatrix['cell 1 offdiag'].take(interiorFaces, axis=-1).getValue()
+        cell2diag = coeffMatrix['cell 2 diag'].take(interiorFaces, axis=-1).getValue()
+        cell2offdiag = coeffMatrix['cell 2 offdiag'].take(interiorFaces, axis=-1).getValue()
 
         fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1 + cell1offdiag * oldArrayId2))
         fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2 + cell2offdiag * oldArrayId1))
 
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
-        return oldArray.take(id1).getValue(), oldArray.take(id2).getValue()
+        return (oldArray.take(id1, axis=-1).getValue(), 
+                oldArray.take(id2, axis=-1).getValue())
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
         """Implicit portion considers
@@ -156,8 +157,8 @@ class FaceTerm(Term):
         id1, id2 = mesh._getAdjacentCellIDs()
         interiorFaces = mesh.getInteriorFaces()
         
-        id1 = numerix.take(id1, interiorFaces)
-        id2 = numerix.take(id2, interiorFaces)
+        id1 = numerix.take(id1, interiorFaces, axis=-1)
+        id2 = numerix.take(id2, interiorFaces, axis=-1)
         
         N = len(var)
         b = numerix.zeros((N),'d')
