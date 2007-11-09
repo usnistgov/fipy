@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 11/6/07 {11:48:11 AM}
+ #                                 last update: 11/8/07 {8:33:08 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -96,7 +96,6 @@ class _MeshVariable(Variable):
                 value = value._copyValue()
             elif isinstance(value, numerix.ndarray) or numerix.MA.isMaskedArray(value):
                 if value.shape[-1] == self._getShapeFromMesh(mesh)[-1]:
-                    array = value
                     if elementshape is not None and elementshape != value.shape[:-1]:
                         raise ValueError, "'elementshape' != shape of elements of 'value'"
 
@@ -274,16 +273,21 @@ class _MeshVariable(Variable):
             and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.getMesh().getDim())):
                 newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other[..., numerix.newaxis])
 
+        if (issubclass(baseClass, _MeshVariable) 
+            and (len(newOpShape) == 0
+                 or newOpShape[-1] != baseClass._getShapeFromMesh(self.getMesh())[-1])):
+            baseClass = None
+            
         return (newOpShape, baseClass, newOther)
 
     def _OperatorVariableClass(self, baseClass=None):
         baseClass = Variable._OperatorVariableClass(self, baseClass=baseClass)
                                      
         class _MeshOperatorVariable(baseClass):
-            def __init__(self, op, var, opShape=None, canInline=True,
+            def __init__(self, op, var, opShape=None, canInline=True, mesh=None,
                          *args, **kwargs):
-                mesh = reduce(lambda a, b: a or b, 
-                              [getattr(v, "mesh", None) for v in var])
+                mesh = mesh or reduce(lambda a, b: a or b, 
+                                      [getattr(v, "mesh", None) for v in var])
                 for shape in [opShape] + [getattr(v, "opShape", None) for v in var]:
                     if shape is not None:
                         opShape = shape
