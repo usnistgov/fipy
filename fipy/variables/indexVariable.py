@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 11/8/07 {8:35:56 PM}
+ #                                 last update: 11/9/07 {2:45:33 PM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -45,9 +45,9 @@ def _IndexVariable(index):
     if isinstance(index, tuple) or isinstance(index, list):
         return _ListIndexVariable(index)
     else:
-        return __IndexVariable(index)
+        return _IndexVariable_(index)
                                   
-class __IndexVariable(Variable):
+class _IndexVariable_(Variable):
     def __init__(self, index):
         Variable.__init__(self, value=index, cached=1)
         
@@ -227,7 +227,7 @@ class __IndexVariable(Variable):
     def __repr__(self):
         return self._repr(self.index)
         
-class _ListIndexVariable(__IndexVariable):
+class _ListIndexVariable(_IndexVariable_):
     def _requireIndex(self, index):
         return [self._requires(self._checkIfSlice(i)) for i in index]
 
