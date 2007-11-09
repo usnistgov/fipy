@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 11/5/07 {1:35:43 PM} 
+ #                                last update: 11/8/07 {9:46:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -235,7 +235,7 @@ def rank(a):
     else:
         return NUMERIX.rank(a)
         
-def sum(arr, axis=0):
+def sum(arr, axis=None):
     """
     The sum of all the elements of `arr` along the specified axis.
     """
@@ -1111,8 +1111,25 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     else:
         return MA.allclose(first, second, atol=atol, rtol=rtol)
 
+def minimum(a, b, c=None):
+    from fipy.variables.variable import Variable
+    if _isPhysical(a):
+        return a.minimum(b)
+    elif _isPhysical(b):
+        return b.minimum(a)
+    else:
+        return NUMERIX.minimum(a, b, c)
 
-def take(a, indices, axis=0, fill_value=None):
+def maximum(a, b, c=None):
+    from fipy.variables.variable import Variable
+    if isinstance(a, Variable):
+        return a.maximum(b)
+    elif isinstance(b, Variable):
+        return b.maximum(a)
+    else:
+        return NUMERIX.maximum(a, b, c)
+
+def take(a, indices, axis=None, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
     """
@@ -1695,7 +1712,7 @@ def obj2sctype(rep, default=None):
     sctype = NUMERIX.obj2sctype(rep, default)
     if sctype is None:
         if _isPhysical(rep):
-            rep = rep.getValue()
+            rep = rep.getNumericValue()
             
         if MA.isMaskedArray(rep):
             sctype = NUMERIX.obj2sctype(rep.raw_data(), default)

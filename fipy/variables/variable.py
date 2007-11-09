@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/6/07 {11:40:45 AM} 
+ #                                last update: 11/8/07 {8:45:30 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1202,6 +1202,12 @@ class Variable(object):
     def arctan2(self, other):
         return self._BinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
         
+    def minimum(self, other):
+        return self._BinaryOperatorVariable(lambda a,b: numerix.minimum(a,b), other)
+
+    def maximum(self, other):
+        return self._BinaryOperatorVariable(lambda a,b: numerix.maximum(a,b), other)
+
     def __invert__(self):
         return self._UnaryOperatorVariable(lambda a: numerix.logical_not(a))
                 
@@ -1365,7 +1371,10 @@ class Variable(object):
             a = _Constant(a)
             
         if axis is None:
-            return a.flatten()[(indices,)]
+            # Guide to NumPy Dec 7, 2006 indicates that
+            # a.flatten()[(indices,)] should work, but I find
+            # that we need:
+            return a.flatten()[(Ellipsis, indices)]
         else:
             indxobj = [slice(None)]*len(a.shape)
             indxobj[axis] = indices

@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 11/8/07 {8:21:40 AM} 
+ #                                last update: 11/8/07 {10:13:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1135,6 +1135,16 @@ class PhysicalField(object):
         else:
             return self.__class__(value = value, unit = unit)
             
+    def minimum(self, other):
+        other = self._inMyUnits(other)
+        return self.__class__(value=numerix.minimum(self.value, other.value),
+                              unit=self.unit)
+
+    def maximum(self, other):
+        other = self._inMyUnits(other)
+        return self.__class__(value=numerix.maximum(self.value, other.value),
+                              unit=self.unit)
+
     def take(self, indices, axis = 0):
         """
         Return the elements of `self` specified by the elements of `indices`.  
