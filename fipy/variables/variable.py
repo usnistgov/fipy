@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/8/07 {8:45:30 AM} 
+ #                                last update: 11/9/07 {1:48:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -790,22 +790,15 @@ class Variable(object):
         return argDict['result']
 
     def _broadcastShape(self, other):
-        ignore, ignore, broadcastshape = numerix._broadcastShapes(self.shape, numerix.getShape(other))
+        from fipy.variables.indexVariable import _IndexVariable_
+        if isinstance(self, _IndexVariable_):
+            broadcastshape = numerix._indexShape(index=self.getValue(), arrayShape=numerix.getShape(other))
+        elif isinstance(other, _IndexVariable_):
+            broadcastshape = None
+        else:
+            ignore, ignore, broadcastshape = numerix._broadcastShapes(self.shape, numerix.getShape(other))
         
         return broadcastshape
-        
-##         selfshape = self.shape
-##         othershape = other.shape
-##         
-##         if len(selfshape) > len(othershape):
-##             othershape = (1,) * (len(selfshape) - len(othershape)) + othershape
-##         elif len(selfshape) < len(othershape):
-##             selfshape = (1,) * (len(othershape) - len(selfshape)) + selfshape
-##         
-##         if numerix.logical_and.reduce([(s == o or s == 1 or o == 1) for s,o in zip(selfshape, othershape)]):
-##             return tuple([max(s,o) for s,o in zip(selfshape, othershape)])
-##         else:
-##             return None
             
     def _getArithmeticBaseClass(self, other=None):
         """

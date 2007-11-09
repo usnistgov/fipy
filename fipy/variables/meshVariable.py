@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 11/8/07 {8:33:08 PM}
+ #                                 last update: 11/9/07 {10:52:31 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -269,11 +269,15 @@ class _MeshVariable(Variable):
         """
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
         
+        from fipy.variables.indexVariable import _IndexVariable_
+        
         if ((newOpShape is None or baseClass is None)
+            and not isinstance(other, _IndexVariable_)
             and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.getMesh().getDim())):
                 newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other[..., numerix.newaxis])
 
-        if (issubclass(baseClass, _MeshVariable) 
+        if (baseClass is not None
+            and issubclass(baseClass, _MeshVariable) 
             and (len(newOpShape) == 0
                  or newOpShape[-1] != baseClass._getShapeFromMesh(self.getMesh())[-1])):
             baseClass = None
