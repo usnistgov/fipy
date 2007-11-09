@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 11/6/07 {10:37:42 AM}
+ #                                 last update: 11/8/07 {8:35:56 PM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -150,7 +150,7 @@ class __IndexVariable(Variable):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
 
-        opShape, operatorClass, other = self._shapeClassAndOther(None, None, other)
+        opShape, operatorClass, mesh = self._shapeClassAndMesh(None, None, other)
         
         if opShape is None or operatorClass is None:
             return NotImplemented
@@ -158,37 +158,52 @@ class __IndexVariable(Variable):
         from fipy.variables import binaryOperatorVariable
         binOp = binaryOperatorVariable._BinaryOperatorVariable(operatorClass)
         
-        return binOp(op=op, 
-                     var=[self, other], 
-                     opShape=opShape, 
-                     canInline=other.getUnit().isDimensionless(), 
-                     unit=other.getUnit())
+        from fipy.variables.meshVariable import _MeshVariable
+
+        if issubclass(binOp, _MeshVariable):
+            return binOp(op=op, 
+                         var=[self, other], 
+                         mesh=mesh,
+                         opShape=opShape, 
+                         canInline=other.getUnit().isDimensionless(), 
+                         unit=other.getUnit())
+        else:
+            return binOp(op=op, 
+                         var=[self, other], 
+                         opShape=opShape, 
+                         canInline=other.getUnit().isDimensionless(), 
+                         unit=other.getUnit())
 
 
     def _meshOperatorClass(self, opShape):
         from fipy.variables.meshVariable import _MeshVariable
         
         if isinstance(self.index, _MeshVariable) and opShape[-1] == self.index.shape[-1]:
-            return self.index._OperatorVariableClass()
+            return self.index._OperatorVariableClass(), self.index.getMesh()
         else:
-            return None
+            return None, None
 
-    def _shapeClassAndOther(self, opShape, operatorClass, other):
+    def _shapeClassAndMesh(self, opShape, operatorClass, other):
         """
         Determine the shape of the result, the base class of the result, and (if
         necessary) a modified form of `other` that is suitable for the
         operation.
         """
+        mesh = None
+        
         if opShape is None:
             opShape = numerix._indexShape(index=self.getValue(), arrayShape=other.shape)
             
         if operatorClass is None:
-            operatorClass = self._meshOperatorClass(opShape)
+            operatorClass, mesh = self._meshOperatorClass(opShape)
             if operatorClass is not None:
-                return (opShape, operatorClass, other)
+                return (opShape, operatorClass, mesh)
 
-        opShape, baseClass, other = other._shapeClassAndOther(opShape, operatorClass, other)
-        return (opShape, other._OperatorVariableClass(baseClass), other)
+        opShape, baseClass, ignore = other._shapeClassAndOther(opShape, operatorClass, None)
+        if baseClass is None:
+            return (opShape, Variable._OperatorVariableClass(other, Variable), mesh)
+        else:
+            return (opShape, other._OperatorVariableClass(baseClass), mesh)
         
     def _repr(self, index):
         if isinstance(index, _SliceVariable):
@@ -227,9 +242,9 @@ class _ListIndexVariable(__IndexVariable):
         
         for item in self.index:
             if isinstance(item, _MeshVariable) and opShape[-1] == item.shape[-1]:
-                return item._OperatorVariableClass()
+                return item._OperatorVariableClass(), item.getMesh()
                 
-        return None
+        return None, None
         
     def __repr__(self):
         return ",".join([self._repr(i) for i in self.index])
