@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/3/07 {3:04:23 PM} 
+ #                                last update: 11/8/07 {1:57:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,19 +48,23 @@ from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.mesh import Mesh
 
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.vertexVariable import _VertexVariable
+
 class Mesh1D(Mesh):
     def _calcFaceAreas(self):
-        self.faceAreas = numerix.ones(self.numberOfFaces, 'd')
+        self.faceAreas = FaceVariable(mesh=self, value=1.)
 
     def _calcFaceNormals(self):
-        self.faceNormals = numerix.array((numerix.ones(self.numberOfFaces, 'd'),))
+        self.faceNormals = FaceVariable(mesh=self, value=1., rank=1)
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
-        self.faceNormals[...,0] = -self.faceNormals[...,0]
+        self.faceNormals[...,0] *= -1
 
     def _calcFaceTangents(self):
-        self.faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-        self.faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        self.faceTangents1 = FaceVariable(mesh=self, value=0., rank=1)
+        self.faceTangents2 = FaceVariable(mesh=self, value=0., rank=1)
 
     def _calcHigherOrderScalings(self):
         self.scale['area'] = 1.
