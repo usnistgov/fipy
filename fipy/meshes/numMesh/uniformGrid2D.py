@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 11/7/07 {12:57:21 PM} 
+ #                                last update: 11/14/07 {10:55:48 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -511,10 +511,11 @@ class UniformGrid2D(Grid2D):
         Vids[0] = indices[0] + indices[1] * (self.nx + 1)
         Vids[1] = Vids[0] + self.nx + 1
         
+        values = numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
+                                                                                Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")),
+                                                                               axis=1)
         return FaceVariable(mesh=self,
-                            value=numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
-                                                       Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")),
-                                                      axis=1),
+                            value=MA.masked_values((values[1], values[0]), -1),
                             elementshape=(2,))
                                     
     def _getOrderedCellVertexIDs(self):
@@ -712,8 +713,8 @@ class UniformGrid2D(Grid2D):
             1
             
             >>> print mesh._getFaceVertexIDs()
-            [[ 0  1  2  4  5  6  8  9 10  0  1  2  3  4  5  6  7]
-             [ 1  2  3  5  6  7  9 10 11  4  5  6  7  8  9 10 11]]
+            [[1 2 3 5 6 7 9 10 11 4 5 6 7 8 9 10 11]
+             [0 1 2 4 5 6 8 9 10 0 1 2 3 4 5 6 7]]
 
             >>> mesh = UniformGrid2D(nx=3)
             >>> print mesh._getAdjacentCellIDs()[0], mesh._getAdjacentCellIDs()[1]
