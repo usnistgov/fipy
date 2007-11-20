@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellToFaceVariable.py"
  #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 1/3/07 {3:24:25 PM} 
+ #                                last update: 11/17/07 {9:56:36 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -34,8 +34,6 @@
  #  
  # ###################################################################
  ##
-
-from fipy.tools import numerix
 
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.inline import inline
