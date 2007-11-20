@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/8/07 {6:02:46 PM} 
+ #                                last update: 11/14/07 {3:26:59 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -351,6 +351,30 @@ class Mesh(_CommonMesh):
                                
         self.faceCellIDs = _FaceCellIDsVariable(mesh=self)
 
+    def _calcVertexFaceIDs(self):
+        from fipy.variables.vertexVariable import _VertexVariable
+        class _VertexFaceIDsVariable(_VertexVariable):
+            def __init__(self, mesh):
+                _VertexVariable.__init__(self, mesh=mesh,
+                                         elementshape=(2,))
+                self._requires(mesh.vertexFaceIDs)
+##                 self._requires(mesh.numberOfFaces)
+                
+            def _calcValue(self):
+                array = MA.array(MA.indices(self.mesh.faceVertexIDs.shape, 'l')[1], 
+                                 mask=self.mesh.faceVertexIDs.getMask())
+                vertexFaceIDs = MA.zeros((2, self.mesh.numberOfVertices), 'l')
+
+                numerix.put(vertexFaceIDs[0], self.mesh.cellFaceIDs[::-1,::-1], array[::-1,::-1])
+                numerix.put(faceCellIDs[1], self.mesh.cellFaceIDs, array)
+                return MA.sort(MA.array(faceCellIDs,
+                                        mask = ((False,) * self.mesh.numberOfFaces, 
+                                                (faceCellIDs[0] == faceCellIDs[1]))),
+                               axis=0)
+                               
+        self.vertexFaceIDs = _VertexFaceIDsVariable(mesh=self)
+
+
     def _calcInteriorAndExteriorFaceIDs(self):
         self.exteriorFaces = FaceIterator(mesh=self, 
                                           ids=self.faceCellIDs[1].getMask().nonzero())
@@ -499,15 +523,18 @@ class Mesh(_CommonMesh):
         tmp = self.faceCenters[0] * self.faceAreas * self.faceNormals[0]
         tmp = numerix.take(tmp, self.cellFaceIDs, axis=-1) * self.cellToFaceOrientations
         self.cellVolumes = tmp.sum(0).filled()
+        self.cellVolumes.name = self.__class__.__name__ + ".cellVolumes"
 
     def _calcCellCenters(self):
         tmp = numerix.take(self.faceCenters, self.cellFaceIDs, axis=1)
         self.cellCenters = tmp.mean(axis=1).filled()
+        self.cellCenters.name = self.__class__.__name__ + ".cellCenters"
         
     def _calcFaceToCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         tmp -= self.faceCenters[...,numerix.newaxis,:]
         self.faceToCellDistances = (tmp * tmp).sum(axis=0).sqrt()
+        self.faceToCellDistances.name = self.__class__.__name__ + ".faceToCellDistances"
 
     def _calcCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
@@ -517,15 +544,18 @@ class Mesh(_CommonMesh):
         
         self.cellDistances = (tmp.getMask() * self.faceToCellDistances[0].filled() 
                               + ~tmp.getMask() * tmp.filled())
+        self.cellDistances.name = self.__class__.__name__ + ".cellDistances"
 
     def _calcFaceToCellDistanceRatio(self):
         dAP = self._getCellDistances()
         dFP = self._getFaceToCellDistances()[0]
         
         self.faceToCellDistanceRatio = (dFP / dAP).filled()
+        self.faceToCellDistanceRatio.name = self.__class__.__name__ + ".faceToCellDistanceRatio"
 
     def _calcAreaProjections(self):
         self.areaProjections = self._getFaceNormals() * self._getFaceAreas()
+        self.areaProjections.name = self.__class__.__name__ + ".areaProjections"
         
     def _calcOrientedAreaProjections(self):
         self.orientedAreaProjections = self.areaProjections
@@ -538,9 +568,12 @@ class Mesh(_CommonMesh):
         self.faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
         tmp = numerix.crossProd(self.faceTangents1, self.faceNormals)
         self.faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
+        self.faceTangents1.name = self.__class__.__name__ + ".faceTangents1"
+        self.faceTangents2.name = self.__class__.__name__ + ".faceTangents2"
         
     def _calcCellToCellDistances(self):
         self.cellToCellDistances = numerix.take(self.cellDistances, self._getCellFaceIDs(), axis=-1)
+        self.cellToCellDistances.name = self.__class__.__name__ + ".cellToCellDistances"
 
     def _calcCellNormals(self):
         cellNormals = numerix.take(self._getFaceNormals(), self._getCellFaceIDs(), axis=1)
@@ -550,6 +583,7 @@ class Mesh(_CommonMesh):
                                  axis=0)
         direction = (cellFaceCellIDs == cellIDs) * 2 - 1
         self.cellNormals =  direction[numerix.newaxis, ...] * cellNormals
+        self.cellNormals.name = self.__class__.__name__ + ".cellNormals"
                          
     """get geometry methods"""
 
