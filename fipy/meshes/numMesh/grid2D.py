@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/1/07 {10:35:53 PM} 
+ #                                last update: 11/14/07 {12:19:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -144,7 +144,7 @@ class Grid2D(Mesh2D):
         cellFaceIDs[2,:] = cellFaceIDs[0,:] + self.nx
         cellFaceIDs[1,:] = vector.prune(faceIDs[self.numberOfHorizontalFaces:], self.nx + 1)
         cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
-        return cellFaceIDs
+        return numerix.MA.masked_values(cellFaceIDs, -1)
 
     def _createCellsIn(self):
         cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
@@ -428,6 +428,32 @@ class Grid2D(Mesh2D):
             >>> print numerix.allequal(mesh.getCellCenters(), 
             ...                        unpickledMesh.getCellCenters())
             1
+            
+            >>> print mesh.getVertexCoords()
+            >>> print mesh.getCellCenters()
+            >>> print mesh.getCellVolumes()
+            
+            >>> mesh2 = Mesh2D(vertexCoords=mesh.getVertexCoords(), 
+            ...                faceVertexIDs=mesh._getFaceVertexIDs(), 
+            ...                cellFaceIDs=mesh._getCellFaceIDs())
+
+            >>> print mesh2.getVertexCoords()
+            >>> print mesh2.getCellCenters()
+            >>> print mesh2.getCellVolumes()
+            
+            >>> mesh.vertexCoords[0, 6] = 1.25
+            >>> mesh.vertexCoords[1, 6] = 3.5
+            
+            >>> print mesh.getVertexCoords()
+            >>> print mesh.getCellCenters()
+            >>> print mesh.getCellVolumes()
+            
+            >>> mesh2.vertexCoords[0, 6] = 1.25
+            >>> mesh2.vertexCoords[1, 6] = 3.5
+            
+            >>> print mesh2.getVertexCoords()
+            >>> print mesh2.getCellCenters()
+            >>> print mesh2.getCellVolumes()
         """
 
 def _test():
