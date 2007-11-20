@@ -214,21 +214,18 @@ class _DataGetter:
 
         if (dimensions != 2 and dimensions != 3):
             raise MeshImportError, "Number of dimensions must be 2 or 3"
-            
         self.dimensions = dimensions
-        
         self.filename = filename
-
+        
     def getData(self):
         self.inFile = open(self.filename)
-        
-        self.fileType = self.getFileType()
-        
+        self.fileType = self.getFileType() #gets version of gmsh, I think
+        #vertexCoords are x,y coords of nodes/vertices from gmsh file 
         vertexCoords = self._calcVertexCoords(self.coordDimensions)
-        self._calcCellVertexIDs()
 
+        self._calcCellVertexIDs()
         self._calcBaseFaceVertexIDs()
-        faceVertexIDs = self._calcFaceVertexIDs()
+        faceVertexIDs = self._calcFaceVertexIDs()#reads nodes/vertices from gmsh file 
         cellFaceIDs = self._calcCellFaceIDs()
 
         self.inFile.close()
@@ -300,7 +297,7 @@ class _DataGetter:
             elementLines = self.getTagData("$ELM", "$ENDELM")
         else:
             elementLines = self.getTagData("$Elements", "$EndElements")
-        
+
         numElements = int(elementLines[0])
         if numElements != len(elementLines[1:]):
             raise IndexError, "Number of elements (%d) does not match number promised (%d)" % (numElements, len(elementLines[1:]))
@@ -315,8 +312,7 @@ class _DataGetter:
                 if ((self.dimensions == 2 and elementType == 4) 
                     or (self.dimensions == 3 and elementType == 2)):
                     continue
-                    
-                    
+                                  
                 if self.fileType == 1:
                     numNodes = elementInfo[4]
                     skip = 5
@@ -325,12 +321,19 @@ class _DataGetter:
                         numNodes = 3
                     else:
                         numNodes = 4
-                    skip = 3 + elementInfo[2]
-
+                    skip = 3 + elementInfo[2] 
                     
                 if len(elementInfo) != skip + numNodes:
                     raise IndexError, "Number of nodes (%d) not as expected (%d) for element type %d" % (len(elementInfo) - skip, numNodes, elementType)
 
+                cellNodeIDs.append(elementInfo[skip:])
+            elif elementType in (3,):
+                if self.fileType == 2:
+                    numNodes = 4
+                    #skip is the number of columns to pass over to get to vertex info.
+                    skip = 3 + elementInfo[2]
+                else:
+                    raise TypeError, "don't know how to handle quadralaterals in version 1. files"
                 cellNodeIDs.append(elementInfo[skip:])
             else:
                 raise TypeError, "Can't understand element type %d. Only triangle (2) or tetrahedron (4) are allowed" % elementInfo[1]
@@ -343,7 +346,9 @@ class _DataGetter:
         
         cellVertexIDs = self.cellVertexIDs
     ## compute the face vertex IDs.
-        cellFaceVertexIDs = numerix.ones((self.dimensions, self.dimensions + 1, self.numCells))
+        ### this assumes triangular grid
+        #cellFaceVertexIDs = numerix.ones((self.dimensions, self.dimensions + 1, self.numCells))
+        cellFaceVertexIDs = numerix.ones((self.dimensions,len(cellVertexIDs), self.numCells))
         cellFaceVertexIDs = -1 * cellFaceVertexIDs
 
         if (self.dimensions == 3):
@@ -351,20 +356,32 @@ class _DataGetter:
             cellFaceVertexIDs[:, 1, :] = numerix.concatenate((cellVertexIDs[:2], cellVertexIDs[3:]), axis = 0)
             cellFaceVertexIDs[:, 2, :] = numerix.concatenate((cellVertexIDs[:1], cellVertexIDs[2:]), axis = 0)
             cellFaceVertexIDs[:, 3, :] = cellVertexIDs[1:]
-        if (self.dimensions == 2):
-            cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:2]
-            cellFaceVertexIDs[:, 1, :] = numerix.concatenate((cellVertexIDs[2:], cellVertexIDs[:1]), axis = 0)
-            cellFaceVertexIDs[:, 2, :] = cellVertexIDs[1:]
+        elif (self.dimensions == 2):#define face with vertex pairs
+            ###This isn't very general.
+            ###Would be nice to allow cells with different number of faces. 
+            if len(cellVertexIDs)==3:
+                cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:2]
+                cellFaceVertexIDs[:, 1, :] = numerix.concatenate((cellVertexIDs[2:], cellVertexIDs[:1]), axis = 0)
+                cellFaceVertexIDs[:, 2, :] = cellVertexIDs[1:]
+            elif len(cellVertexIDs)==4:
+                cellFaceVertexIDs[:, 0, :] = cellVertexIDs[0:2]
+                cellFaceVertexIDs[:, 1, :] = cellVertexIDs[1:3]
+                cellFaceVertexIDs[:, 2, :] = cellVertexIDs[2:4]
+                cellFaceVertexIDs[:, 3, :] = numerix.concatenate((cellVertexIDs[3:], cellVertexIDs[:1]), axis = 0)
 
-        cellFaceVertexIDs = cellFaceVertexIDs[::-1]
+        cellFaceVertexIDs = cellFaceVertexIDs[::-1]#reverses order of vertex pair
+
+        #self.unsortedBaseIDs = numerix.reshape(cellFaceVertexIDs.swapaxes(1,2), 
+        #                                       (self.dimensions, 
+        #                                        self.numCells * (self.dimensions + 1)))
+        
         self.unsortedBaseIDs = numerix.reshape(cellFaceVertexIDs.swapaxes(1,2), 
                                                (self.dimensions, 
-                                                self.numCells * (self.dimensions + 1)))
-
+                                                self.numCells * (len(cellVertexIDs))))
         cellFaceVertexIDs = numerix.sort(cellFaceVertexIDs, axis=0)
         baseFaceVertexIDs = numerix.reshape(cellFaceVertexIDs.swapaxes(1,2), 
                                             (self.dimensions, 
-                                             self.numCells * (self.dimensions + 1)))
+                                             self.numCells * (len(cellVertexIDs))))
 
         self.baseFaceVertexIDs = baseFaceVertexIDs       
         self.cellFaceVertexIDs = cellFaceVertexIDs
@@ -401,7 +418,7 @@ class _DataGetter:
             for i in range(cell.shape[-1]):
                 cellFaceIDs[i, j] = self.faceStrToFaceIDs[' '.join([str(k) for k in self.cellFaceVertexIDs[:,i, j]])]
         return cellFaceIDs
-    
+
 class GmshImporter2D(mesh2D.Mesh2D):
 
     def __init__(self, filename, coordDimensions=2):
