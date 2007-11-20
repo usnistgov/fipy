@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceVariable.py"
  #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 1/3/07 {3:18:21 PM} 
+ #                                last update: 11/17/07 {10:50:40 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,6 +75,14 @@ class FaceVariable(_MeshVariable):
             
         return self.divergence
         
+    def _getArithmeticVertexValue(self):
+        if not hasattr(self, 'arithmeticVertexValue'):
+            from faceToVertexVariable import _FaceToVertexVariable
+            self.arithmeticVertexValue = _FaceToVertexVariable(self)
+
+        return self.arithmeticVertexValue
+
+    
 def _test(): 
     import doctest
     return doctest.testmod()
