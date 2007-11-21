@@ -45,7 +45,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionVariable import _LevelSetDiffusionVariable
 from fipy.terms.transientTerm import TransientTerm
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy.terms.diffusionTerm import DiffusionTermNoCorrection
 
 def _buildLevelSetDiffusionEquation(ionVar = None,
                                    distanceVar = None,
@@ -80,7 +80,7 @@ def _buildLevelSetDiffusionEquation(ionVar = None,
     diffusionCoeff = _LevelSetDiffusionVariable(distanceVar,
                                                diffusionCoeff)
         
-    return TransientTerm(transientCoeff) - ImplicitDiffusionTerm(diffusionCoeff)
+    return TransientTerm(transientCoeff) - DiffusionTermNoCorrection(diffusionCoeff)
         
 def _test(): 
     import doctest
