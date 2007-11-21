@@ -46,70 +46,76 @@ def MovingMesh(mesh):
                                      FixedValue(faces=mesh.getFacesBack(),
                                                 value=mesh.getFacesBack().getCenters()[2])))
             
-        def move(self, monitorVariables=(), beta=0.8, dt=1e60):
+        def move(self, monitorVariables=(), beta=0.8, dt=None, sweeps=100):
             
             lmesh = self.lagrangianMesh
-            
-            self.xi.updateOld()
 
-            monitor = 0.
-            lagrangianVar = CellVariable(mesh=lmesh, value=0.)
-            magGradSqrt = lagrangianVar.getGrad().getMag().sqrt()
-            for var in monitorVariables:
-                lagrangianVar.setValue(var.getValue())
-                monitor += ((1.-beta) * (magGradSqrt.getCellVolumeAverage() 
-                                         * lmesh.getNumberOfCells())
-                            + beta * magGradSqrt)
-            
-            
-            from fipy.terms.transientTerm import TransientTerm
-            from fipy.terms.diffusionTerm import DiffusionTerm
-##             eq = TransientTerm(coeff=dt) == DiffusionTerm(coeff=monitor)
-            eq = DiffusionTerm(coeff=monitor)
-            
-            for i in range(self.getDim()):
-                val = self.xi[i].copy()
-                eq.solve(var=val, boundaryConditions=self.bcs[i])
-                self.xi[i] = val
+            for sweep in range(sweeps):
+                self.xi.updateOld()
 
-            oldVolumes = self.getCellVolumes().getValue().copy()
-            oldVertexCoords = self.vertexCoords.getValue().copy()
-            
-            maxVertexRadii = 0.1 * mesh._getFaceToCellDistances().sum(0)._getArithmeticVertexValue()
-            
-            newVertexCoords = self.xi.getArithmeticFaceValue()._getArithmeticVertexValue().getValue()
+                monitor = 0.
+                lagrangianVar = CellVariable(mesh=lmesh, value=0.)
+                magGradSqrt = lagrangianVar.getGrad().getMag().sqrt()
+                for var in monitorVariables:
+                    lagrangianVar.setValue(var.getValue())
+                    monitor += ((1.-beta) * (magGradSqrt.getCellVolumeAverage() 
+                                             * lmesh.getNumberOfCells())
+                                + beta * magGradSqrt)
+                
+                
+                from fipy.terms.transientTerm import TransientTerm
+                from fipy.terms.diffusionTerm import DiffusionTerm
+                if dt is None:
+                    eq = DiffusionTerm(coeff=monitor) 
+                else:
+                    eq = TransientTerm(coeff=dt) == DiffusionTerm(coeff=monitor)
+                
+                for i in range(self.getDim()):
+                    val = self.xi[i].copy()
+                    eq.solve(var=val, boundaryConditions=self.bcs[i])
+                    self.xi[i] = val
 
-            M, F = self._getFaceVertexIDs().shape
-            for i in range(self.getDim()):
-                for bc in self.bcs[i]:
-                    for j in range(M):
-                        ids = numerix.take(self._getFaceVertexIDs()[j], bc.faces)
-                        newVertexCoords[i,ids] = bc.value
+                oldVolumes = self.getCellVolumes().getValue().copy()
+                oldVertexCoords = self.vertexCoords.copy()
+                
+                newVertexCoords = self.xi.getArithmeticFaceValue()._getArithmeticVertexValue().copy()
 
-##             print "old:", oldVertexCoords
-##             print "new:", newVertexCoords
+                M, F = self._getFaceVertexIDs().shape
+                for i in range(self.getDim()):
+                    for bc in self.bcs[i]:
+                        for j in range(M):
+                            ids = numerix.take(self._getFaceVertexIDs()[j], bc.faces)
+                            newVertexCoords[i,ids] = bc.value
 
-            displacement = newVertexCoords - oldVertexCoords
-            displacmentLInfNorm = max(numerix.sqrtDot(displacement, displacement))
-            
-            print "displacement:", displacmentLInfNorm # displacement.getMag().sum(-1) / self._getNumberOfVertices()
+                displacement = newVertexCoords - oldVertexCoords # self.vertexCoords
+                displacementMag = numerix.sqrtDot(displacement, displacement)
+                
+                maxVertexRadii = 0.1 * (mesh._getFaceToCellDistances().sum(0) / 2)._getArithmeticVertexValue()
+                factor = displacementMag / maxVertexRadii
 
-##             factor = displacement.getMag().getValue()
-##             factor = numerix.where(factor > maxVertexRadii, maxVertexRadii / (factor + (factor == 0)), 1.)
-## ##             self.vertexCoords[:] = oldVertexCoords + factor * displacement
+                factor = max(factor)
 
-            if displacmentLInfNorm > 1e-6:
+                if factor > 1.:
+                    displacement /= factor
+                    displacementMag = numerix.sqrtDot(displacement, displacement)
+                    newVertexCoords = self.vertexCoords + displacement
+
+                displacmentLInfNorm = max(displacementMag)
+
+                if displacmentLInfNorm < 1e-8:
+                    break
+                    
                 self.vertexCoords[:] = newVertexCoords
                 
                 for var in monitorVariables:
                     oldVar = var.copy()
                     updateEq = (ImplicitSourceTerm(coeff=-1.) + (oldVolumes / self.getCellVolumes()) * oldVar
-                                - UpwindConvectionTerm(coeff=(self.xi.getOld() - self.xi)) == 0)
+                                + UpwindConvectionTerm(coeff=displacement._getArithmeticFaceValue()) == 0)
 
                     res = 1e100
                     while res > 1e-12:
-##                         res = updateEq.sweep(var=var, solver=LinearLUSolver(tolerance=1.e-15, iterations=2000))
-                        res = updateEq.sweep(var=var, solver=LinearCGSSolver())
+                        res = updateEq.sweep(var=var, solver=LinearLUSolver(tolerance=1.e-15, iterations=2000))
+##                         res = updateEq.sweep(var=var, solver=LinearCGSSolver())
                         print "move residual:", res
 
     return _MovingMesh(mesh)
@@ -182,14 +188,13 @@ print "0-0", phase.getCellVolumeAverage()
 timeStep = 1e-6
 for step in range(10):
     
-    TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-%d.txt" % (step, 0))
+    TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-before.txt" % step)
 
-    for sweep in range(3):
-        mesh.move(monitorVariables=(phase,), beta=0.999, dt=timeStep)
+    mesh.move(monitorVariables=(phase,), beta=0.99)
 
-        TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-%d.txt" % (step, sweep + 1))
+    TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-after.txt" % step)
 
-        print "%d-%d" % (step, sweep+1), phase.getCellVolumeAverage()
+    print step, phase.getCellVolumeAverage()
         
     phase.updateOld()
     res = 1e+10
@@ -206,14 +211,13 @@ elapsed = 0
 while elapsed < 0.1 * L / velocity:
     step += 1
     
-    TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-%d.txt" % (step, 0))
+    TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-before.txt" % step)
 
-    for sweep in range(3):
-        mesh.move(monitorVariables=(phase,), beta=0.999, dt=timeStep)
+    mesh.move(monitorVariables=(phase,), beta=0.99)
 
-        TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-%d.txt" % (step, sweep + 1))
+    TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-after.txt" % step)
 
-        print "%d-%d" % (step, sweep+1), phase.getCellVolumeAverage()
+    print step, phase.getCellVolumeAverage()
 
     
     phase.updateOld()
