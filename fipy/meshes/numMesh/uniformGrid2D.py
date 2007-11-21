@@ -327,6 +327,9 @@ class UniformGrid2D(Grid2D):
         normals[0, self.numberOfHorizontalFaces::(self.nx + 1)] = -1
 
         return normals
+
+    def _getFaceCellToCellNormals(self):
+        return self._getFaceNormals()
         
     def getCellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy

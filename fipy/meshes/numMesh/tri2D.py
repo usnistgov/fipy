@@ -174,6 +174,9 @@ class Tri2D(Mesh2D):
         leftOfBoxCells = numerix.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces])
         return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells), axis=1)
 
+##    def _getFaceCellToCellNormals(self):
+##        return self._getFaceNormals()
+
     def getFacesLeft(self):
         """Return list of faces on left boundary of Grid2D.
         """

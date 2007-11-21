@@ -266,6 +266,9 @@ class UniformGrid3D(Grid3D):
         return numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
                                     numerix.reshape(XZnor[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
                                     numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+
+    def _getFaceCellToCellNormals(self):
+        return self._getFaceNormals()
         
     def getCellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy * self.dz

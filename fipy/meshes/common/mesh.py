@@ -363,6 +363,7 @@ class Mesh:
         self._calcOrientedFaceNormals()
         self._calcCellVolumes()
         self._calcCellCenters()
+        self._calcFaceCellToCellNormals()
         self._calcFaceToCellDistances()
         self._calcCellDistances()        
         self._calcFaceTangents()
@@ -422,6 +423,9 @@ class Mesh:
 
     def _getFaceNormals(self):
         return self.faceNormals
+
+    def _getFaceCellToCellNormals(self):
+        return self.faceCellToCellNormals
         
     def getCellVolumes(self):
         return self.scaledCellVolumes
