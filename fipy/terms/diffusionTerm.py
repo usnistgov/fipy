@@ -47,7 +47,7 @@ from fipy.tools import numerix
 from fipy.terms.term import Term
 from fipy.tools import numerix
 
-class DiffusionTerm(Term):
+class _DiffusionTerm(Term):
 
     r"""
     This term represents a higher order diffusion term. The order of the term is determined
@@ -87,6 +87,7 @@ class DiffusionTerm(Term):
             coeff = (coeff,)
 
         self.order = len(coeff) * 2
+
 
         if len(coeff) > 0:
             self.nthCoeff = coeff[0]
@@ -135,15 +136,36 @@ class DiffusionTerm(Term):
                 
         return higherOrderBCs, lowerOrderBCs
 
+    def _getNormals(self, mesh):
+        pass
+
     def _getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
+
             from fipy.variables.faceVariable import FaceVariable
             rotationTensor = FaceVariable(mesh=mesh, rank=2)
-            rotationTensor[:,0] = mesh._getFaceNormals()
-            if mesh.getDim() > 1:
-                rotationTensor[:,1] = mesh._getFaceTangents1()
-                if mesh.getDim() > 2:
-                    rotationTensor[:,2] = mesh._getFaceTangents2()
+            
+            rotationTensor[:, 0] = self._getNormals(mesh)
+
+            if mesh.getDim() == 2:
+                rotationTensor[:,1] = rotationTensor[:,0].dot((((0, 1), (-1, 0))))
+            elif mesh.getDim() ==3:
+                epsilon = 1e-20
+
+                div = numerix.sqrt(1 - rotationTensor[2,0]**2)
+                flag = numerix.resize(div > epsilon, (mesh.getDim(), mesh._getNumberOfFaces()))
+
+                rotationTensor[0, 1] = 1
+                rotationTensor[:, 1] = numerix.where(flag,
+                                                     rotationTensor[:,0].dot((((0, 1, 0), (-1, 0, 0), (0, 0, 0)))) / div,
+                                                     rotationTensor[:, 1])
+
+                rotationTensor[1, 2] = 1
+                rotationTensor[:, 2] = numerix.where(flag,
+                                                     rotationTensor[:,0] * rotationTensor[2,0] / div,
+                                                     rotationTensor[:, 2])
+                rotationTensor[2, 2] = -div
+                
             self.rotationTensor = rotationTensor
 
         return self.rotationTensor
@@ -166,7 +188,7 @@ class DiffusionTerm(Term):
             if rank > 0:
                 shape = numerix.getShape(coeff)
                 if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
-                    raise IndexError, 'diffusion coefficent tensor index error'                
+                    raise IndexError, 'diffusion coefficent tensor index error'          
 
             faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
             rotationTensor = self._getRotationTensor(mesh)
@@ -177,6 +199,7 @@ class DiffusionTerm(Term):
             return coeff
 
         else:
+
             return None
 
     def _getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
@@ -527,8 +550,8 @@ class DiffusionTerm(Term):
            [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
            >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
            >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
-           >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
-           >>> val = (60., 60., 0.3, 0.3, 1.49257426, 1.49257426, 1.49257426, 1.49257426)
+           >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1), orthoganalityCorrection=True)
+           >>> val = (60., 60., 0.3, 0.3, 0.22277228, 0.22277228, 0.22277228, 0.22277228)
            >>> print numerix.allclose(term._getGeomCoeff(mesh)[0], val)
            1
            >>> term = DiffusionTerm(((0.5, 1),))
@@ -551,6 +574,14 @@ class DiffusionTerm(Term):
 
         """
         pass
+
+class DiffusionTermNoCorrection(_DiffusionTerm):
+    def _getNormals(self, mesh):
+        return mesh._getFaceNormals()
+
+class DiffusionTerm(_DiffusionTerm):
+    def _getNormals(self, mesh):
+        return mesh._getFaceCellToCellNormals()
 
 def _test(): 
     import doctest
