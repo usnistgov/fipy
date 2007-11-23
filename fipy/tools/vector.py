@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 10/23/07 {10:02:26 PM} 
+ #                                last update: 11/23/07 {2:08:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,28 +45,30 @@
 
 from fipy.tools import numerix
 
-def _putAddPy(vector, ids, additionVector, mask = False):
+def _putAddPy(vector, ids, additionVector, mask=False):
+    ids = numerix.array(ids)
     additionVector = numerix.array(additionVector)
 
     if numerix.sometrue(mask):
         if len(vector.shape) < len(additionVector.shape):
             for j in range(vector.shape[0]):
-                for id, value, masked in zip(numerix.ravel(ids), numerix.ravel(additionVector[j]), numerix.ravel(mask)):
+                for id, value, masked in [(ids[i], additionVector[j,...,i], masked[i]) for i in range(len(ids))]:
                     if not masked:
-                        numerix.ravel(vector[j])[id] += value
+                        vector[j,...,id] += value
         else:
-            for id, value, masked in zip(numerix.ravel(ids), numerix.ravel(additionVector), numerix.ravel(mask)):
+            for id, value, masked in [(ids[i], additionVector[i], mask[i]) for i in range(len(ids))]:
                 if not masked:
-                    numerix.ravel(vector)[id] += value
+                    vector[...,id] += value
 
     else:
         if len(vector.shape) < len(additionVector.shape):
             for j in range(vector.shape[0]):
-                for id, value in zip(numerix.ravel(ids), numerix.ravel(additionVector[j])):
-                    numerix.ravel(vector[j])[id] += value
+                for id, value in [(ids[i], additionVector[j,...,i]) for i in range(len(ids))]:
+                    vector[j,...,id] += value
         else:
-            for id, value in zip(numerix.ravel(ids), numerix.ravel(additionVector)):
-                numerix.ravel(vector)[id] += value
+            for id, value in [(ids[i], additionVector[...,i]) for i in range(len(ids))]:
+                vector[...,id] += value
+
 
 ### !!! THIS NEEDS WORK !!! ###
 def _putAddIn(vector, ids, additionVector):

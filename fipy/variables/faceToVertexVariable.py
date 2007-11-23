@@ -4,7 +4,7 @@
  # 
  # FILE: "faceToVertexVariable.py"
  #                                     created: 11/17/07 {9:54:32 AM}
- #                                 last update: 11/17/07 {11:04:21 AM}
+ #                                 last update: 11/23/07 {8:22:30 AM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -55,7 +55,7 @@ class _FaceToVertexVariable(_VertexVariable):
         for j in range(M):
             ids = self.mesh._getFaceVertexIDs()[j]
             mask[:] = ids.getMask()
-            vector.putAdd(value, ids, self.var)
+            vector._putAddPy(value, ids, self.var, mask)
             vector.putAdd(weight, ids, mask == False)
                 
         return value / weight
