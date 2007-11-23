@@ -4,7 +4,7 @@
  # 
  # FILE: "vertexVariable.py"
  #                                     created: 5/2/07 {10:05:56 PM}
- #                                 last update: 10/22/07 {4:22:46 PM}
+ #                                 last update: 11/20/07 {6:15:48 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,5 +53,13 @@ class _VertexVariable(_MeshVariable):
             return _VertexVariable
             
         return _MeshVariable._getArithmeticBaseClass(self, other)
+
+    def _getArithmeticFaceValue(self):
+        if not hasattr(self, 'arithmeticFaceValue'):
+            from fipy.tools import numerix
+            faceValue = numerix.take(self, self.mesh.faceVertexIDs, axis=1)
+            self.arithmeticFaceValue = faceValue.mean(axis=1).filled()
+
+        return self.arithmeticFaceValue
 
 
