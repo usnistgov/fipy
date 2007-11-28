@@ -65,7 +65,7 @@ else:
     import tempfile
     (f, meshName) = tempfile.mkstemp('.msh')
 
-os.system("gmsh sphere.gmsh -2 -v 0 -format msh -o " + meshName)
+os.system("gmsh " + os.path.splitext(__file__)[0] + ".gmsh -2 -v 0 -format msh -o " + meshName)
 
 if sys.platform != 'win32':
     os.close(f)
