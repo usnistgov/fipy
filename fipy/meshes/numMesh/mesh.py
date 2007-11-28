@@ -360,7 +360,7 @@ class Mesh(_CommonMesh):
 
     def _calcAdjacentCellIDs(self):
         self.adjacentCellIDs = (MA.filled(self.faceCellIDs[0]), 
-                                MA.filled(MA.where(MA.getmask(self.faceCellIDs[1]), 
+                                MA.filled(MA.where(MA.getmaskarray(self.faceCellIDs[1]), 
                                                    self.faceCellIDs[0], 
                                                    self.faceCellIDs[1])))
 
