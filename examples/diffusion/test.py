@@ -57,7 +57,8 @@ def _suite():
                                        'mesh20x20',
                                        'circle',
                                        'electrostatics',
-                                       'variable'
+                                       'variable',
+                                       'anisotropy',
                                    ), 
                                    base = __name__)
     
