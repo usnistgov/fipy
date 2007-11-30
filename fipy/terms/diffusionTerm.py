@@ -170,6 +170,19 @@ class _DiffusionTerm(Term):
 
         return self.rotationTensor
     
+    def _treatMeshAsOrthogonal(self, mesh):
+        pass
+
+    def _calcAnisotropySource(self, coeff, mesh, var):
+
+        if not hasattr(self, 'anisotropySource'):
+            if len(coeff) > 1:
+                gradients = var.getGrad().getHarmonicFaceValue().dot(self._getRotationTensor(mesh))
+                from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
+                self.anisotropySource = _AddOverFacesVariable(gradients[1] * coeff[1]) * mesh.getCellVolumes()
+                if len(coeff) > 2:
+                    self.anisotropySource += _AddOverFacesVariable(gradients[2] * coeff[2]) * mesh.getCellVolumes()
+
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
           
@@ -182,21 +195,26 @@ class _DiffusionTerm(Term):
             else:
                 rank = len(shape)
 
-            if rank == 1:
-                coeff = coeff * numerix.identity(mesh.getDim())
+            if rank == 0 and self._treatMeshAsOrthogonal(mesh):
+                tmpBop = (coeff * mesh._getFaceAreas() / mesh._getCellDistances())[numerix.newaxis, :]
 
-            if rank > 0:
-                shape = numerix.getShape(coeff)
-                if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
-                    raise IndexError, 'diffusion coefficent tensor index error'          
+            else:
 
-            faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
-            rotationTensor = self._getRotationTensor(mesh)
-            rotationTensor[:,0] = rotationTensor[:,0] / mesh._getCellDistances()
+                if rank == 1:
+                    coeff = coeff * numerix.identity(mesh.getDim())
 
-            coeff = faceNormals.dot(coeff).dot(rotationTensor) * mesh._getFaceAreas()
+                if rank > 0:
+                    shape = numerix.getShape(coeff)
+                    if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
+                        raise IndexError, 'diffusion coefficent tensor index error'          
 
-            return coeff
+                faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
+                rotationTensor = self._getRotationTensor(mesh)
+                rotationTensor[:,0] = rotationTensor[:,0] / mesh._getCellDistances()
+
+                tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._getFaceAreas()
+
+            return tmpBop
 
         else:
 
@@ -324,12 +342,7 @@ class _DiffusionTerm(Term):
                 self.coeffDict['cell 2 offdiag'] = self.coeffDict['cell 1 offdiag']
                 self.coeffDict['cell 2 diag'] = self.coeffDict['cell 1 diag']
 
-                if mesh.getDim() > 1:
-                    gradients = var.getGrad().getHarmonicFaceValue().dot(self._getRotationTensor(mesh))
-                    from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
-                    self.anisotropySource = _AddOverFacesVariable(gradients[1] * coeff[1]) * mesh.getCellVolumes()
-                    if mesh.getDim() > 2:
-                        self.anisotropySource += _AddOverFacesVariable(gradients[2] * coeff[2]) * mesh.getCellVolumes()
+                self._calcAnisotropySource(coeff, mesh, var)
 
                 del coeff
                 del minusCoeff
@@ -341,7 +354,7 @@ class _DiffusionTerm(Term):
                                self._getCoefficientMatrix(SparseMatrix, mesh, self.coeffDict['cell 1 diag']), numerix.zeros(N,'d'))
 
             if hasattr(self, 'anisotropySource'):
-                b -= numerix.array(self.anisotropySource)
+                b -= self.anisotropySource
                                
             del higherOrderBCs
 
@@ -550,7 +563,7 @@ class _DiffusionTerm(Term):
            [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
            >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
            >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
-           >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1), orthoganalityCorrection=True)
+           >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
            >>> val = (60., 60., 0.3, 0.3, 0.22277228, 0.22277228, 0.22277228, 0.22277228)
            >>> print numerix.allclose(term._getGeomCoeff(mesh)[0], val)
            1
@@ -579,10 +592,16 @@ class DiffusionTermNoCorrection(_DiffusionTerm):
     def _getNormals(self, mesh):
         return mesh._getFaceNormals()
 
+    def _treatMeshAsOrthogonal(self, mesh):
+        return True
+        
 class DiffusionTerm(_DiffusionTerm):
     def _getNormals(self, mesh):
         return mesh._getFaceCellToCellNormals()
 
+    def _treatMeshAsOrthogonal(self, mesh):
+        return mesh._isOrthogonal()
+        
 def _test(): 
     import doctest
     return doctest.testmod()

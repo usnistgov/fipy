@@ -307,6 +307,9 @@ class Mesh:
 
     def getNumberOfCells(self):
         return self.numberOfCells
+
+    def _isOrthogonal(self):
+        return False
     
     def _getNumberOfVertices(self):
         return len(self.vertexCoords[:,0])
