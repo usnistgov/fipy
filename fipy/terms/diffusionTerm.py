@@ -185,8 +185,8 @@ class DiffusionTerm(Term):
 
     def __add__(self, other):
         if isinstance(other, DiffusionTerm):
-            from fipy.terms.collectedDiffusionTerm import CollectedDiffusionTerm
-            if isinstance(other, CollectedDiffusionTerm):
+            from fipy.terms.collectedDiffusionTerm import _CollectedDiffusionTerm
+            if isinstance(other, _CollectedDiffusionTerm):
                 return other + self
             elif other.order == self.order and self.order <= 2:
                 if self.order == 0:
@@ -194,7 +194,7 @@ class DiffusionTerm(Term):
                 elif self.order == 2:
                     return self.__class__(coeff=self.coeff[0] + other.coeff[0])
             else:
-                term = CollectedDiffusionTerm()
+                term = _CollectedDiffusionTerm()
                 term += self
                 term += other
                 return term
