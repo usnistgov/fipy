@@ -179,9 +179,7 @@ class _DiffusionTerm(Term):
             if len(coeff) > 1:
                 gradients = var.getGrad().getHarmonicFaceValue().dot(self._getRotationTensor(mesh))
                 from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
-                self.anisotropySource = _AddOverFacesVariable(gradients[1] * coeff[1]) * mesh.getCellVolumes()
-                if len(coeff) > 2:
-                    self.anisotropySource += _AddOverFacesVariable(gradients[2] * coeff[2]) * mesh.getCellVolumes()
+                self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.getCellVolumes()
 
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
@@ -200,7 +198,7 @@ class _DiffusionTerm(Term):
 
             else:
 
-                if rank == 1:
+                if rank == 1 or rank == 0:
                     coeff = coeff * numerix.identity(mesh.getDim())
 
                 if rank > 0:
@@ -211,7 +209,7 @@ class _DiffusionTerm(Term):
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
                 rotationTensor = self._getRotationTensor(mesh)
                 rotationTensor[:,0] = rotationTensor[:,0] / mesh._getCellDistances()
-
+                
                 tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._getFaceAreas()
 
             return tmpBop
