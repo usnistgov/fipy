@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/14/07 {3:26:59 PM} 
+ #                                last update: 12/5/07 {11:07:07 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -424,12 +424,14 @@ class Mesh(_CommonMesh):
         
         Used by the `Grid` meshes.
         """
-        if type(d) in [type(1), type(1.)]:
-            n = int(n or 1)
-        else:
-            n = int(n or len(d))
-            if n != len(d) and len(d) != 1:
-                raise IndexError, "n%s != len(d%s)" % (axis, axis)
+        try:
+            lend = len(d)
+        except TypeError, e:
+            return int(n or 1)
+            
+        n = int(n or lend)
+        if n != lend and lend != 1:
+            raise IndexError, "n%s != len(d%s)" % (axis, axis)
                 
         return n
 
@@ -561,9 +563,9 @@ class Mesh(_CommonMesh):
         self.orientedAreaProjections = self.areaProjections
 
     def _calcFaceTangents(self):
-        faceVertexCoord = numerix.array(numerix.take(self.vertexCoords, 
-                                                     self.faceVertexIDs[0], 
-                                                     axis=1))
+        faceVertexCoord = numerix.take(self.vertexCoords, 
+                                       self.faceVertexIDs[0], 
+                                       axis=1)
         tmp = self.faceCenters - faceVertexCoord
         self.faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
         tmp = numerix.crossProd(self.faceTangents1, self.faceNormals)

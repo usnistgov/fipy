@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/8/07 {6:52:33 PM} 
+ #                                last update: 12/5/07 {11:05:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,18 +71,14 @@ class Mesh2D(Mesh):
                                         self.faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         mag = t1.dot(t1).sqrt()
-        dim = faceVertexCoords.getMesh().getDim()
-        rot = numerix.zeros((dim, dim))
-        rot[0,1,...] =  1
-        rot[1,0,...] = -1
-        for i in range(2,dim):
-            rot[i,i,...] = 1
+        rot = numerix.array((( 0, 1),
+                             (-1, 0)))
         self.faceNormals = t1.dot(rot) / mag
 
     def _calcFaceTangents(self):
-        tmp = numerix.array((-self.faceNormals[1], self.faceNormals[0]))
-        ## copy required to get internal memory ordering correct for inlining.
-        tmp = tmp.copy()
+        rot = numerix.array((( 0, 1),
+                             (-1, 0)))
+        tmp = self.faceNormals.dot(rot)
         mag = numerix.sqrtDot(tmp, tmp)
         self.faceTangents1 = tmp / mag
         self.faceTangents2 = numerix.zeros(self.faceTangents1.shape, 'd')
@@ -374,14 +370,14 @@ class Mesh2D(Mesh):
             ...                             dy / numerix.sqrt(dx**2 +dy**2), 
             ...                             0., 
             ...                             dy / numerix.sqrt(dx**2 +dy**2))))
-            >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents2 = numerix.array(((0., 0., 0., 0., -0., -0., -0., -0., -0., 
             ...                             -0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.),
             ...                            (0., 0., 0., 0., 0., 0., 0., 0., 0., 
             ...                             -0., 0., 0., 0., -0., 0., 0., 0., 0., 0., 0.)))
-            >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToCellIDs = MA.masked_values(((-1, -1, -1,  0,  1,  2, -1,  6),
