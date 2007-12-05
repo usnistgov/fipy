@@ -340,6 +340,9 @@ class Grid3D(Mesh):
     def _calcHigherOrderScalings(self):
         self.scale['area'] = self.scale['length']**2
         self.scale['volume'] = self.scale['length']**3
+
+    def _isOrthogonal(self):
+        return True
         
 ## pickling
 

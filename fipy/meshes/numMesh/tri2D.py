@@ -222,6 +222,9 @@ class Tri2D(Mesh2D):
     
     def getShape(self):
         return (self.nx, self.ny)
+
+    def _isOrthogonal(self):
+        return True
     
 ## pickling
 

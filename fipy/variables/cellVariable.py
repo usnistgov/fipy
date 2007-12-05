@@ -273,6 +273,37 @@ class CellVariable(_MeshVariable):
 
         return self.arithmeticFaceValue
 
+    def getMinmodFaceValue(self):
+        r"""
+        Returns a `FaceVariable` with a value that is the minimum of
+        the absolute values of the adjacent cells. If the values are
+        of opposite sign then the result is zero:
+            
+        .. raw:: latex
+        
+           \[ \phi_f = \begin{cases}
+                             \phi_1& \text{when $|\phi_1| \le |\phi_2|$},\\
+                             \phi_2& \text{when $|\phi_2| < |\phi_1|$},\\
+                             0 & \text{when $\phi1 \phi2 < 0$}
+                       \end{cases} \]
+                       
+        ..
+
+           >>> from fipy import *
+           >>> print CellVariable(mesh=Grid1D(nx=2), value=(1, 2)).getMinmodFaceValue()
+           [1 1 2]
+           >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, -2)).getMinmodFaceValue()
+           [-1 -1 -2]
+           >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, 2)).getMinmodFaceValue()
+           [-1  0  2]
+        
+        """
+        if not hasattr(self, 'minmodFaceValue'):
+            from minmodCellToFaceVariable import _MinmodCellToFaceVariable
+            self.minmodFaceValue = _MinmodCellToFaceVariable(self)
+
+        return self.minmodFaceValue
+
     def getHarmonicFaceValue(self):
         r"""
         Returns a `FaceVariable` whose value corresponds to the harmonic interpolation

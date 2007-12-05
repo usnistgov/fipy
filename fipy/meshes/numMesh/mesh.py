@@ -475,7 +475,23 @@ class Mesh(_CommonMesh):
         norm = norm / numerix.sqrtDot(norm, norm)
         
         self.faceNormals = -norm
+
+    def _calcFaceCellToCellNormals(self):
+        faceCellCentersUp = numerix.take(self.cellCenters, self.getFaceCellIDs()[1], axis=1)
+        faceCellCentersDown = numerix.take(self.cellCenters, self.getFaceCellIDs()[0], axis=1)
+        faceCellCentersUp = numerix.where(MA.getmaskarray(faceCellCentersUp),
+                                          self.getFaceCenters(),
+                                          faceCellCentersUp)
+
+        diff = faceCellCentersDown - faceCellCentersUp
+        mag = numerix.sqrt(numerix.sum(diff**2))
+        self.faceCellToCellNormals = diff / numerix.resize(mag, (self.dim, len(mag)))
+
+        if min(numerix.dot(self.faceNormals, self.faceCellToCellNormals)) < 0:
+            self.faceCellToCellNormals = -self.faceCellToCellNormals
         
+
+
     def _calcOrientedFaceNormals(self):
         self.orientedFaceNormals = self.faceNormals
         

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "test.py"
- #                                    created: 11/26/03 {3:23:47 PM}
- #                                last update: 5/4/06 {2:14:41 PM}
+ #  FILE: "minmodCellToFaceVariable.py"
+ #                                    created: 2/20/04 {11:15:10 AM} 
+ #                                last update: 5/18/06 {8:38:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,39 +29,27 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
-"""Run all the test cases in examples/diffusion/
-"""
+from fipy.tools import numerix
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+from fipy.variables.cellToFaceVariable import _CellToFaceVariable
+from fipy.tools import numerix
+from fipy.tools.inline import inline
 
-def _suite():
-    return _LateImportDocTestSuite(testModuleNames = (
-                                       'steadyState.test',
-                                       'explicit.test',
-                                       'nthOrder.test'
-                                   ), 
-                                   docTestModuleNames = (
-                                       'mesh1D',
-                                       'mesh20x20',
-                                       'circle',
-                                       'electrostatics',
-                                       'variable',
-                                       'anisotropy',
-                                   ), 
-                                   base = __name__)
+class _MinmodCellToFaceVariable(_CellToFaceVariable):
+    def _calcValuePy(self, alpha, id1, id2):
+        cell1 = numerix.take(self.var,id1, axis=-1)
+        cell2 = numerix.take(self.var,id2, axis=-1)
+        return numerix.where((cell1 > 0) & (cell2 > 0),
+                             numerix.minimum(cell1, cell2),
+                             numerix.where((cell1 < 0) & (cell2 < 0),
+                                           numerix.maximum(cell1, cell2),
+                                           0))
     
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
-
+    def _calcValueIn(self, alpha, id1, id2):
+        return self._calcValuePy(alpha, id1, id2)

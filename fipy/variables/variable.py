@@ -340,17 +340,18 @@ class Variable(object):
             if shape[-1] == 1:
                 return '[j]'
             else:
-                return '[j * ni + i]'
+                return '[i + j * ni]'
         elif dimensions == 3:
             if shape[-1] == 1:
                 if shape[-2] == 1:
                     return '[k]'
                 else:
-                    return '[k + j * nk]'
+                    return '[j + k * nj]'
             elif shape[-2] == 1:
-                return '[k + i * nj * nk]'
+                return '[i + k * ni * nj]'
             else:
-                return '[k + j * nk + i * nj * nk]'
+                return '[i + j * ni + k * ni * nj]'
+            
 
     def _getCstring(self, argDict={}, id="", freshen=None):
          """
@@ -362,10 +363,10 @@ class Variable(object):
              'var[i]'
        
              >>> (Variable(((1,2),(3,4))))._getCstring(argDict={})
-             'var[j * ni + i]'
+             'var[i + j * ni]'
 
              >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict={})
-             'var[k + j * nk + i * nj * nk]'
+             'var[i + j * ni + k * ni * nj]'
 
              >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict={})
              '(var0 * var1[i])'
@@ -683,7 +684,7 @@ class Variable(object):
             >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
             '(var0[i] * var1[i])'
             >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
-            '(var0[j * ni + i] * var1[j * ni + i])'
+            '(var0[i + j * ni] * var1[i + j * ni])'
             >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
             '((var00[i] * var01[i]) * var1[i])'
 

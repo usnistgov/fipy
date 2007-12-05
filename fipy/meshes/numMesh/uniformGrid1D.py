@@ -182,6 +182,9 @@ class UniformGrid1D(Grid1D):
         # We must reverse the normal to make fluxes work correctly.
         faceNormals[...,0] *= -1
         return faceNormals
+
+    def _getFaceCellToCellNormals(self):
+        return self._getFaceNormals()
         
     def getCellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx
