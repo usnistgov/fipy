@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 11/8/07 {9:55:15 PM} 
+ #                                last update: 11/23/07 {9:06:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -510,7 +510,27 @@ class Mesh:
         except TypeError:
             tmp = self.getCellCenters() - PhysicalField(point)
         i = numerix.argmin(numerix.add.reduce((tmp * tmp), axis = 0))
-        return i    
+        return i   
+        
+    def _subscribe(self, var):
+        if not hasattr(self, 'subscribedVariables'):
+            self.subscribedVariables = []
+
+        # we retain a weak reference to avoid a memory leak 
+        # due to circular references between the subscriber
+        # and the subscribee
+        import weakref
+        self.subscribedVariables.append(weakref.ref(var))
+
+    def getSubscribedVariables(self):
+        if not hasattr(self, 'subscribedVariables'):
+            self.subscribedVariables = []
+            
+        self.subscribedVariables = [sub for sub in self.subscribedVariables if sub() is not None]
+        
+        return self.subscribedVariables
+        
+
 
 ## pickling
 
