@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 11/9/07 {10:52:31 AM}
+ #                                 last update: 11/23/07 {9:04:48 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -134,10 +134,17 @@ class _MeshVariable(Variable):
     ##             mesh = mesh or value.mesh
             
         self.mesh = mesh
+        self.mesh._subscribe(self)
 
         Variable.__init__(self, name=name, value=value, unit=unit, 
                           array=array, cached=cached)
-              
+
+    def _isSolvable(self):
+        """
+        Is this `Variable` suitable for passing to `solve()` or `sweep()`?
+        """
+        return False
+        
     def copy(self):
         return self._getVariableClass()(mesh=self.mesh, 
                                         name=self.name, 
@@ -307,6 +314,12 @@ class _MeshVariable(Variable):
                                    elementshape=elementshape,
                                    *args, **kwargs)
                                  
+            def _isSolvable(self):
+                """
+                Is this `Variable` suitable for passing to `solve()` or `sweep()`?
+                """
+                return False
+                
             def getRank(self):
                 return len(self.opShape) - 1
                 

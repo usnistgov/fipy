@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 11/2/07 {9:37:58 AM} 
+ #                                last update: 11/23/07 {9:04:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,6 +74,12 @@ class CellVariable(_MeshVariable):
         else:
             self.old = None
             
+    def _isSolvable(self):
+        """
+        Is this `Variable` suitable for passing to `solve()` or `sweep()`?
+        """
+        return True
+        
     def _getVariableClass(self):
         return CellVariable
         
