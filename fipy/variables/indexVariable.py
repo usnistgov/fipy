@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 11/9/07 {2:45:33 PM}
+ #                                 last update: 12/7/07 {3:06:25 PM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -160,19 +160,20 @@ class _IndexVariable_(Variable):
         
         from fipy.variables.meshVariable import _MeshVariable
 
+        unit = other.getUnit()
         if issubclass(binOp, _MeshVariable):
             return binOp(op=op, 
                          var=[self, other], 
                          mesh=mesh,
                          opShape=opShape, 
-                         canInline=other.getUnit().isDimensionless(), 
-                         unit=other.getUnit())
+                         canInline=unit.isDimensionless(), 
+                         unit=unit)
         else:
             return binOp(op=op, 
                          var=[self, other], 
                          opShape=opShape, 
-                         canInline=other.getUnit().isDimensionless(), 
-                         unit=other.getUnit())
+                         canInline=unit.isDimensionless(), 
+                         unit=unit)
 
 
     def _meshOperatorClass(self, opShape):
