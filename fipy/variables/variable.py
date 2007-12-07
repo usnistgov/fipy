@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 11/9/07 {1:48:36 PM} 
+ #                                last update: 12/6/07 {10:44:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -246,10 +246,11 @@ class Variable(object):
         return value
         
     def _getUnitAsOne(self):
-        if self.getUnit() is physicalField._unity:
+        unit = self.getUnit()
+        if unit is physicalField._unity:
             return 1.
         else:
-            return physicalField.PhysicalField(value=1, unit=self.getUnit())
+            return physicalField.PhysicalField(value=1, unit=unit)
 
     def _extractUnit(self, value):
         if isinstance(value, physicalField.PhysicalField):
@@ -1114,9 +1115,31 @@ class Variable(object):
 
     def __iter__(self):
         return iter(self.getValue())
+
+##     def __iter__(self):
+##         self._len = len(self)
+##         self._index = -1
+##         return self
+##         
+##     def next(self):
+##         self._index += 1
+##         if self._index >= self._len:
+##             self._index = -1
+##             raise StopIteration
+##         return self[self._index]
+        
+##     def __len__(self):
+##         return self.getShape()[0]
         
     def __len__(self):
         return len(self.getValue())
+
+    def __list__(self):
+        l = []
+        for i in range(len(self)):
+            l += [self[i]]
+            
+        return l
 
     def __int__(self):
         return int(self.getValue())
