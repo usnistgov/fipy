@@ -46,8 +46,11 @@ def MovingMesh(mesh):
                                      FixedValue(faces=mesh.getFacesBack(),
                                                 value=mesh.getFacesBack().getCenters()[2])))
             
-        def move(self, monitorVariables=(), beta=0.8, dt=None, sweeps=100):
+        def move(self, monitorVariables=(), interpolants=None, beta=0.8, dt=None, sweeps=100):
             
+            if interpolants is None:
+                interpolants = monitorVariables
+                
             lmesh = self.lagrangianMesh
 
             for sweep in range(sweeps):
@@ -56,12 +59,18 @@ def MovingMesh(mesh):
                 monitor = 0.
                 lagrangianVar = CellVariable(mesh=lmesh, value=0.)
                 magGradSqrt = lagrangianVar.getGrad().getMag().sqrt()
+##                 magGrad = lagrangianVar.getGrad().getMag()
                 for var in monitorVariables:
                     lagrangianVar.setValue(var.getValue())
-                    monitor += ((1.-beta) * (magGradSqrt.getCellVolumeAverage() 
-                                             * lmesh.getNumberOfCells())
+##                     monitor += ((1.-beta) * (magGradSqrt.getCellVolumeAverage() 
+##                                              * lmesh.getNumberOfCells())
+##                                 + beta * magGradSqrt)
+##                     monitor += ((1.-beta) * (magGrad.getCellVolumeAverage() 
+##                                              * lmesh.getNumberOfCells())
+##                                 + beta * magGrad)
+                    monitor += ((1.-beta) * magGradSqrt.getCellVolumeAverage() 
                                 + beta * magGradSqrt)
-                
+
                 
                 from fipy.terms.transientTerm import TransientTerm
                 from fipy.terms.diffusionTerm import DiffusionTerm
@@ -90,7 +99,7 @@ def MovingMesh(mesh):
                 displacement = newVertexCoords - oldVertexCoords # self.vertexCoords
                 displacementMag = numerix.sqrtDot(displacement, displacement)
                 
-                maxVertexRadii = 0.1 * (mesh._getFaceToCellDistances().sum(0) / 2)._getArithmeticVertexValue()
+                maxVertexRadii = 1. * (mesh._getFaceToCellDistances().sum(0) / 2)._getArithmeticVertexValue()
                 factor = displacementMag / maxVertexRadii
 
                 factor = max(factor)
@@ -102,21 +111,27 @@ def MovingMesh(mesh):
 
                 displacmentLInfNorm = max(displacementMag)
 
+                print sweep, "max displacement:", displacmentLInfNorm
+                
                 if displacmentLInfNorm < 1e-8:
                     break
                     
                 self.vertexCoords[:] = newVertexCoords
                 
-                for var in monitorVariables:
-                    oldVar = var.copy()
-                    updateEq = (ImplicitSourceTerm(coeff=-1.) + (oldVolumes / self.getCellVolumes()) * oldVar
-                                + UpwindConvectionTerm(coeff=displacement._getArithmeticFaceValue()) == 0)
+                for var in interpolants: #self.getSubscribedVariables():
+##                     var = var()
+                    if var._isSolvable():
+                        oldVar = var.copy()
+                        updateEq = (ImplicitSourceTerm(coeff=-1.) + (oldVolumes / self.getCellVolumes()) * oldVar
+                                    + UpwindConvectionTerm(coeff=displacement._getArithmeticFaceValue()) == 0)
 
-                    res = 1e100
-                    while res > 1e-12:
-                        res = updateEq.sweep(var=var, solver=LinearLUSolver(tolerance=1.e-15, iterations=2000))
-##                         res = updateEq.sweep(var=var, solver=LinearCGSSolver())
-                        print "move residual:", res
+                        res = 1e100
+                        while res > 1e-12:
+                            res = updateEq.sweep(var=var, solver=LinearLUSolver(tolerance=1.e-15, iterations=2000))
+    ##                         res = updateEq.sweep(var=var, solver=LinearCGSSolver())
+                            print "%d: %s move residual: %g" % (sweep, var.name, res)
+
+                TSVViewer(vars=interpolants + (self.getCellVolumes(),)).plot("interim%d.txt" % sweep)
 
     return _MovingMesh(mesh)
     
@@ -126,27 +141,27 @@ from fipy import *
 from fipy.meshes.numMesh.grid2D import Grid2D as NonUniformGrid2D
 from fipy.meshes.numMesh.grid1D import Grid1D as NonUniformGrid1D
 
-## dx = 5e-5 # cm
+dx = 5e-5 # cm
 ## nx = 40
-dx = 2e-5 # cm
-nx = 100
+## dx = 2e-5 # cm
+nx = 40
 L = nx * dx
-ny = 4
-dy = 0.025
+ny = 40
+dy = dx
 
 mesh1 = Grid2D(nx=nx, ny=ny, dx=dx, dy=dy)
 mesh2 = NonUniformGrid2D(nx=nx, ny=ny, dx=dx, dy=dy)
 mesh3 = MovingMesh(mesh1)
 mesh4 = NonUniformGrid1D(nx=nx, dx=dx)
-mesh = MovingMesh(mesh4)
+mesh = MovingMesh(mesh2)
 
 
-## x, y = mesh.getCellCenters()
-x,  = mesh.getCellCenters()
+x, y = mesh.getCellCenters()
+## x,  = mesh.getCellCenters()
 
 phase = CellVariable(name="phase", mesh=mesh, hasOld=1)
 phase.setValue(1.)
-phase.setValue(0., where=x > L/2)
+phase.setValue(0., where=(x > L/2) & (y > L/2))
 
 Lv = 2350 # J / cm**3
 Tm = 1728. # K
@@ -185,12 +200,20 @@ eq = TransientTerm(coeff=1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
 
 print "0-0", phase.getCellVolumeAverage()
 
+TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-before.txt" % 0)
+
+mesh.move(monitorVariables=(phase,), interpolants=(phase,), beta=0.99, sweeps=1)
+
+TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-after.txt" % 0)
+
+print 0, phase.getCellVolumeAverage()
+
 timeStep = 1e-6
-for step in range(10):
+for step in range(1,10):
     
     TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-before.txt" % step)
 
-    mesh.move(monitorVariables=(phase,), beta=0.99)
+    mesh.move(monitorVariables=(phase,), interpolants=(phase,), beta=0.99, sweeps=1)
 
     TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-after.txt" % step)
 
@@ -208,12 +231,12 @@ T.setValue(T() - 1)
 velocity = beta * abs(Tm - T()) # cm / s
 timeStep = .1 * dx / velocity # s
 elapsed = 0
-while elapsed < 0.1 * L / velocity:
+while elapsed < 0.5 * L / velocity:
     step += 1
     
     TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-before.txt" % step)
 
-    mesh.move(monitorVariables=(phase,), beta=0.99)
+    mesh.move(monitorVariables=(phase,), interpolants=(phase,), beta=0.99, sweeps=1)
 
     TSVViewer(vars=(phase, mesh.getCellVolumes())).plot("test%d-after.txt" % step)
 
