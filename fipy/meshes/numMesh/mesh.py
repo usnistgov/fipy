@@ -217,8 +217,15 @@ class Mesh(_CommonMesh):
         faceCorrelates = {}
         for i in range(otherNumFaces):
 ##          Seems to be overwriting other.faceVertexIDs with new numpy
-##            currFace = other.faceVertexIDs[i] 
-            currFace = other.faceVertexIDs[...,i].copy()
+##            currFace = other.faceVertexIDs[i]
+##            currFace = other.faceVertexIDs[...,i].copy()
+##          Changed this again as numpy 1.0.4 seems to have no copy method for
+##          masked arrays.
+            try:
+                currFace = other.faceVertexIDs[...,i].copy()
+            except:
+                currFace = MA.array(other.faceVertexIDs[...,i], mask=MA.getmask(other.faceVertexIDs[...,i]))
+
             keepGoing = 1
             currIndex = 0 
             for item in currFace:

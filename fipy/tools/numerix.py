@@ -282,15 +282,15 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
                                     suppress_small=suppress_small,
                                     separator=separator)
     elif isFloat(arr):
-        from numpy.core.arrayprint import _floatFormat, _formatFloat
-##      _floatFormat seems to be broken
-##         if isinstance(arr, NUMERIX.ndarray):
-##             format, length = _floatFormat(arr, precision=precision, 
-##                                           suppress_small=suppress_small)
-##         else:
-##             format, length = _floatFormat(NUMERIX.array(arr), 
-##                                           precision=precision, suppress_small=suppress_small)
-        return _formatFloat(arr, format='%%1.%df' % precision)
+        try:
+            ## this is for numpy 1.0.4 and above
+            ## why has the interface changed again?
+            from numpy.core.arrayprint import FloatFormat
+            return FloatFormat(NUMERIX.array((arr,)), precision, suppress_small)(arr).strip()       
+        except:
+            from numpy.core.arrayprint import _floatFormat, _formatFloat
+            return _formatFloat(arr, format='%%1.%df' % precision)
+
     elif isInt(arr):
         from numpy.core.arrayprint import _formatInteger
         return _formatInteger(arr, format='%d')
@@ -567,7 +567,7 @@ def cos(arr):
     ..
 
         >>> print tostring(cos(2*pi/6), precision=3)
-        0.5  
+        0.5
         >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision=3, suppress_small=1)
         [ 1.   0.5  0. ]
         >>> from fipy.variables.variable import Variable
