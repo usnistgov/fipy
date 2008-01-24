@@ -413,13 +413,19 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---     3.000000      ---    
                 ---        ---     3.141593  
         """
+        
+        
         if type(vector) in [type(1), type(1.)]:
             ids = numerix.arange(self._getMatrix().NumGlobalRows())
             tmp = numerix.zeros((self._getMatrix().NumGlobalRows), 'd')
             tmp[:] = vector
+            if ids.dtype.name == 'int64':
+                ids = ids.astype('int32')
             self.put(tmp, ids, ids)
         else:
             ids = numerix.arange(len(vector))
+            if ids.dtype.name == 'int64':
+                ids = ids.astype('int32')
             self.put(vector, ids, ids)
 
     def take(self, id1, id2):
@@ -453,6 +459,11 @@ class _TrilinosMatrix(_SparseMatrix):
         if(self.comm.MyPID() > 0):
             return
 
+        ## This was added as it seems that trilinos does not like int64 arrays
+        if hasattr(id1, 'astype') and id1.dtype.name == 'int64':
+            id1 = id1.astype('int32')
+        if hasattr(id2, 'astype') and id2.dtype.name == 'int64':
+            id2 = id2.astype('int32')
 
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)
