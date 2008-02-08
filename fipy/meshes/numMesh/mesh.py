@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/7/08 {11:01:57 AM} 
+ #                                last update: 2/8/08 {11:08:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -489,8 +489,8 @@ class Mesh(_CommonMesh):
         self.cellCenters = MA.filled(MA.average(tmp, 1))
         
     def _calcFaceToCellDistances(self):
-        tmp = numerix.take(self.cellCenters, self.faceCellIDs)
-        tmp -= MA.repeat(self.faceCenters[:,numerix.NewAxis,...], 2, 1)
+        tmp = MA.repeat(self.faceCenters[:,numerix.NewAxis,...], 2, 1)
+        tmp -= numerix.take(self.cellCenters, self.faceCellIDs)
         self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,2))
 
