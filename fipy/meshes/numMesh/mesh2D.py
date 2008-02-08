@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/3/07 {3:09:49 PM} 
+ #                                last update: 2/7/08 {11:31:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,6 +73,10 @@ class Mesh2D(Mesh):
         self.faceNormals = t1.copy()
         self.faceNormals[:,0] = -t1[:,1] / numerix.sqrt(t1[:,1]**2 + t1[:,0]**2)
         self.faceNormals[:,1] = t1[:,0] / numerix.sqrt(t1[:,1]**2 + t1[:,0]**2)
+        
+        orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.cellDistanceVectors) < 0)
+        self.faceNormals = self.faceNormals * orientation[..., numerix.NewAxis]
+
 
     def _calcFaceTangents(self):
         tmp = numerix.transpose(numerix.array((-self.faceNormals[:,1], self.faceNormals[:,0])))

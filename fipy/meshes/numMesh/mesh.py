@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/3/07 {3:05:19 PM} 
+ #                                last update: 2/7/08 {11:01:57 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -472,7 +472,10 @@ class Mesh(_CommonMesh):
         norm[:,2] = norm[:,2] / sqrtDot
         
         self.faceNormals = -norm
-        
+
+        orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.cellDistanceVectors) < 0)
+        self.faceNormals *= orientation[..., numerix.NewAxis]
+
     def _calcOrientedFaceNormals(self):
         self.orientedFaceNormals = self.faceNormals
         
@@ -488,14 +491,16 @@ class Mesh(_CommonMesh):
     def _calcFaceToCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs)
         tmp -= MA.repeat(self.faceCenters[:,numerix.NewAxis,...], 2, 1)
+        self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,2))
 
     def _calcCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs)
         tmp = tmp[:,1] - tmp[:,0]
+        tmp = MA.filled(MA.where(MA.getmask(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
         self.cellDistanceVectors = tmp
-        tmp = MA.sqrt(MA.sum(tmp * tmp,1))
-        self.cellDistances = MA.filled(MA.where(MA.getmask(tmp), self.faceToCellDistances[:,0], tmp))
+        self.cellDistances = MA.sqrt(MA.sum(tmp * tmp,1))
+##         self.cellDistances = MA.filled(MA.where(MA.getmask(tmp), self.faceToCellDistances[:,0], tmp))
 
     def _calcFaceToCellDistanceRatio(self):
         dAP = self._getCellDistances()

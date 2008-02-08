@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/3/07 {3:07:59 PM} 
+ #                                last update: 2/7/08 {11:01:14 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -357,12 +357,12 @@ class Mesh:
     
     def _calcGeometry(self):
         self._calcFaceAreas()
-        self._calcFaceNormals()
-        self._calcOrientedFaceNormals()
-        self._calcCellVolumes()
         self._calcCellCenters()
         self._calcFaceToCellDistances()
         self._calcCellDistances()        
+        self._calcFaceNormals()
+        self._calcOrientedFaceNormals()
+        self._calcCellVolumes()
         self._calcFaceTangents()
         self._calcCellToCellDistances()
         self._calcScaledGeometry()

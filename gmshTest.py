@@ -39,12 +39,8 @@ from fipy.meshes.gmshImport import GmshImporter2D
 mesh3 = GmshImporter2D(meshName)
 os.remove(meshName)
 
-## x, y = mesh3.getCellCenters()
-## var3 = CellVariable(mesh=mesh3, value=x)
-## ## print var3.getFaceGrad()
-## print mesh3._getOrientedFaceNormals()
-
 var3 = VectorFaceVariable(mesh=mesh3, value=mesh3._getOrientedFaceNormals())
 x = mesh3.getCellCenters()[...,0]
 var4 = CellVariable(mesh=mesh3, value=x)
 
+TSVViewer(vars=(var4.getFaceGrad(), var3)).plot("Gmsh.txt")
