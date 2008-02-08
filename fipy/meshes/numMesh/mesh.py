@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/5/07 {11:07:07 AM} 
+ #                                last update: 2/8/08 {2:10:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -518,6 +518,23 @@ class Mesh(_CommonMesh):
         
         self.faceNormals = -norm
         
+        orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.cellDistanceVectors) < 0)
+        self.faceNormals *= orientation
+
+    def _calcFaceCellToCellNormals(self):
+        faceCellCentersUp = numerix.take(self.cellCenters, self.getFaceCellIDs()[1], axis=1)
+        faceCellCentersDown = numerix.take(self.cellCenters, self.getFaceCellIDs()[0], axis=1)
+        faceCellCentersUp = numerix.where(MA.getmaskarray(faceCellCentersUp),
+                                          self.getFaceCenters(),
+                                          faceCellCentersUp)
+
+        diff = faceCellCentersDown - faceCellCentersUp
+        mag = numerix.sqrtDot(diff, diff)
+        self.faceCellToCellNormals = diff / mag[numerix.NewAxis, ...]
+
+        orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.faceCellToCellNormals) < 0)
+        self.faceCellToCellNormals *= orientation
+
     def _calcOrientedFaceNormals(self):
         self.orientedFaceNormals = self.faceNormals
         
@@ -533,14 +550,16 @@ class Mesh(_CommonMesh):
         self.cellCenters.name = self.__class__.__name__ + ".cellCenters"
         
     def _calcFaceToCellDistances(self):
-        tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
-        tmp -= self.faceCenters[...,numerix.newaxis,:]
+        tmp = MA.repeat(self.faceCenters[...,numerix.NewAxis,:], 2, 1)
+        tmp -= numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
+        self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = (tmp * tmp).sum(axis=0).sqrt()
         self.faceToCellDistances.name = self.__class__.__name__ + ".faceToCellDistances"
 
     def _calcCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         tmp = tmp[...,1,:] - tmp[...,0,:]
+        tmp = MA.filled(MA.where(MA.getmask(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
         self.cellDistanceVectors = tmp
         tmp = tmp.getMag()
         

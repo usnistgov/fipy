@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 12/5/07 {11:05:47 AM} 
+ #                                last update: 2/8/08 {2:05:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,6 +74,10 @@ class Mesh2D(Mesh):
         rot = numerix.array((( 0, 1),
                              (-1, 0)))
         self.faceNormals = t1.dot(rot) / mag
+        
+        orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.cellDistanceVectors) < 0)
+        self.faceNormals = self.faceNormals * orientation
+
 
     def _calcFaceTangents(self):
         rot = numerix.array((( 0, 1),
