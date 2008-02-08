@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/8/08 {11:08:34 AM} 
+ #                                last update: 2/8/08 {11:39:33 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -499,8 +499,7 @@ class Mesh(_CommonMesh):
         tmp = tmp[:,1] - tmp[:,0]
         tmp = MA.filled(MA.where(MA.getmask(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
         self.cellDistanceVectors = tmp
-        self.cellDistances = MA.sqrt(MA.sum(tmp * tmp,1))
-##         self.cellDistances = MA.filled(MA.where(MA.getmask(tmp), self.faceToCellDistances[:,0], tmp))
+        self.cellDistances = MA.filled(MA.sqrt(MA.sum(tmp * tmp,1)))
 
     def _calcFaceToCellDistanceRatio(self):
         dAP = self._getCellDistances()
