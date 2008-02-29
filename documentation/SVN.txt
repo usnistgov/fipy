@@ -85,11 +85,11 @@ In addition:
     version of FiPy will be designated with a fixed tag: The current
     version of FiPy is |VERSION|.
 
-``branches/branch-version-x_y``
+``branches/version-x_y``
     designates a line of development based on a previously released version
     (i.e., if current development work is being spent on version 0.2, but a
     bug is found and fixed in version 0.1, that fix will be tagged as
-    ``version-0_1_1``, and can be obtained from ``branch-version-0_1``).
+    ``tags/version-0_1_1``, and can be obtained from ``branches/version-0_1``).
 
 Any other tags will not generally be of interest to most users.
 

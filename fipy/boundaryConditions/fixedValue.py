@@ -52,7 +52,6 @@ from fipy.tools import numerix
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import numerix
 from fipy.tools import vector
-from fipy.tools.sparseMatrix import _SparseMatrix
 
 class FixedValue(BoundaryCondition):
     r"""
@@ -73,20 +72,21 @@ class FixedValue(BoundaryCondition):
     """
 
     
-    def _buildMatrix(self, Ncells, MaxFaces, coeff):
+    def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Set boundary equal to value.
         
         A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
         Term's (**L**, **b**) matrices.
         
         :Parameters:
-          - `Ncells`:   Size of matrices
-          - `MaxFaces`: bandwidth of **L**
-          - `coeff`:    contribution to adjacent cell diagonal and **b**-vector by 
-            this exterior face
+          - `SparseMatrix`: Sparse matrix class to use
+          - `Ncells`:       Size of matrices
+          - `MaxFaces`:     bandwidth of **L**
+          - `coeff`:        contribution to adjacent cell diagonal and 
+            **b**-vector by this exterior face
         """
         
-        LL = _SparseMatrix(size = Ncells, sizeHint = len(self.faces))
+        LL = SparseMatrix(size = Ncells, sizeHint = len(self.faces))
         LL.addAt(numerix.take(coeff['cell 1 diag'],self.faces), self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because

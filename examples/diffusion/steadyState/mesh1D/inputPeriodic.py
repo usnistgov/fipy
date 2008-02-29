@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/13/05 {3:25:16 PM} 
+ #                                last update: 7/5/07 {9:09:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,26 +47,25 @@ One can then solve the same problem as in
 mesh and no boundary conditions. The periodic mesh is used to simulate
 periodic boundary conditions.
 
+    >>> from fipy import *
+
     >>> nx = 50
     >>> dx = 1.
-    >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
     >>> mesh = PeriodicGrid1D(nx = nx, dx = dx)
 
 The variable is initially a line varying form `valueLeft` to `valueRight`.
 
     >>> valueLeft = 0
     >>> valueRight = 1
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> Lx = nx * dx
     >>> initialArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(name = "solution variable", mesh = mesh,
     ...                                                value = initialArray)
 
     >>> if __name__ == '__main__':
-    ...     import fipy.viewers
-    ...     viewer = fipy.viewers.make(vars = var,
-    ...                                limits = {'datamin': 0., 'datamax': 1.})
+    ...     viewer = viewers.make(vars = var,
+    ...                           limits = {'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
     ...     raw_input("press key to continue")
     
@@ -74,8 +73,6 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
 A `TransientTerm` is used to provide some fixed point, otherwise the
 solver has no fixed value and can become unstable.
     
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> eq = TransientTerm(coeff = 1e-7) - ImplicitDiffusionTerm()
     >>> eq.solve(var = var)
 

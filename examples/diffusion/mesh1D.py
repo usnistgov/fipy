@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 6/2/06 {12:35:18 PM} 
+ #                                last update: 7/5/07 {9:08:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,9 +70,10 @@ parameter `dx` refers to the grid spacing (set to unity here).
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 50
     >>> dx = 1.
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(nx = nx, dx = dx)
 
 .. raw:: latex
@@ -83,10 +84,9 @@ parameter `dx` refers to the grid spacing (set to unity here).
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name="solution variable", 
     ...                    mesh=mesh,
-    ...                    value=0)
+    ...                    value=0.)
 
 We'll let
 
@@ -128,7 +128,6 @@ created with these faces and a value (`valueLeft`).
    
 ..
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
     ...        FixedValue(faces=mesh.getFacesLeft(), value=valueLeft))
 
@@ -165,8 +164,6 @@ plus additional code for the boundary conditions. In |FiPy|, you would write
 
 ..
 
-    >>> from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-    >>> from fipy.terms.transientTerm import TransientTerm
     >>> eqX = TransientTerm() == ExplicitDiffusionTerm(coeff=D)
 
 The largest stable timestep that can be taken for this explicit 1D
@@ -188,14 +185,12 @@ diffusion problem is given by
 
    $\phi = 1 - \erf(x/2\sqrt{D t})$. If the \SciPy{} library is available,
    the result is tested against the expected profile: 
-   \IndexModule{numerix}
    \IndexFunction{sqrt}
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
-    >>> from fipy.tools.numerix import sqrt
 
     >>> phiAnalytical = CellVariable(name="analytical value",
     ...                              mesh=mesh)
@@ -212,7 +207,7 @@ this example is being run automatically as a test. We accomplish this by
 having Python check if this script is the "`__main__`" script, which will
 only be true if we explicitly launched it and not if it has been imported
 by another script such as the automatic tester. The function
-``fipy.viewers.make()`` returns a suitable viewer depending on available
+``viewers.make()`` returns a suitable viewer depending on available
 viewers and the dimension of the mesh.
 
 .. raw:: latex
@@ -222,7 +217,6 @@ viewers and the dimension of the mesh.
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars=(phi, phiAnalytical),
     ...                           limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
@@ -273,7 +267,6 @@ difficult to program than the "explicit" form that we just used, but in
 
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> eqI = TransientTerm() == ImplicitDiffusionTerm(coeff=D)
 
 reset the problem
@@ -405,17 +398,14 @@ system or of time.
        \end{cases}
    \]
    we will need to declare time \( t \) as a \Class{Variable}
-   \IndexModule{numerix}
    \IndexFunction{sin}
    
 ..
 
-    >>> from fipy.variables.variable import Variable
     >>> time = Variable()
 
 and then declare our boundary condition as a function of this `Variable`
 
-    >>> from fipy.tools.numerix import sin
     >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=0.5 * (1 + sin(time))),
     ...        FixedValue(faces=mesh.getFacesRight(), value=0.))
 
@@ -477,9 +467,8 @@ coefficient on the mesh faces
 
 ..
 
-    >>> from fipy.variables.faceVariable import FaceVariable
     >>> D = FaceVariable(mesh=mesh, value=1.0)
-    >>> x = mesh.getFaceCenters()[...,0]
+    >>> x = mesh.getFaceCenters()[0]
     >>> D.setValue(0.1, where=(L / 4. <= x) & (x < 3. * L / 4.))
 
 The boundary conditions are a fixed value of 
@@ -498,7 +487,6 @@ to the right:
 
 ..
 
-    >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
     >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
     ...        FixedFlux(faces=mesh.getFacesRight(), value=fluxRight))
 
@@ -508,7 +496,7 @@ We re-initialize the solution variable
     
 and obtain the steady-state solution with one implicit solution step
 
-    >>> ImplicitDiffusionTerm(coeff = D).solve(var=phi,
+    >>> ImplicitDiffusionTerm(coeff = D).solve(var=phi, 
     ...                                        boundaryConditions = BCs)
 
 The analytical solution is simply
@@ -521,13 +509,10 @@ The analytical solution is simply
    x + 18 L / 4 & \text{for \( 3 L / 4 \le x < L \),}
    \end{cases} \]
    or
-   \IndexModule{numerix}
-   \IndexFunction{where}
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
-    >>> from fipy.tools.numerix import where
+    >>> x = mesh.getCellCenters()[0]
     >>> phiAnalytical.setValue(x)
     >>> phiAnalytical.setValue(10 * x - 9. * L / 4. , 
     ...                        where=(L / 4. <= x) & (x < 3. * L / 4.))
@@ -572,8 +557,8 @@ solved and `phi[1]` through `phi[4]` will display the result of taking the
 corresponding number of sweeps (`phi[1]` being equivalent to not sweeping
 at all).
 
-    >>> valueLeft = 1
-    >>> valueRight = 0
+    >>> valueLeft = 1.
+    >>> valueRight = 0.
     >>> phi = [
     ...     CellVariable(name="solution variable",
     ...                  mesh=mesh,
@@ -603,7 +588,7 @@ we would simply write
    
 as
 
-    >>> D0 = 1
+    >>> D0 = 1.
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
 
 .. note::
@@ -627,7 +612,7 @@ diffusivity cases
    
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phiAnalytical.setValue(1. - sqrt(x/L))
 
 We create a viewer to compare the different numbers of sweeps with the
@@ -727,9 +712,7 @@ remaining lines, leaving::
 
     nx = 50
     dx = 1.
-    from fipy.meshes.grid1D import Grid1D
     mesh = Grid1D(nx = nx, dx = dx)
-    from fipy.variables.cellVariable import CellVariable
     phi = CellVariable(name="solution variable", 
                        mesh=mesh,
                        value=0)

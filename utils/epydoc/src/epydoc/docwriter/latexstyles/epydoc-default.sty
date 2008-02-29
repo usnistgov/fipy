@@ -1,4 +1,4 @@
-% epydoc.sty  ver 3.0beta1    06-Apr-2007   Jonathan Guyer   guyer@nist.gov
+% epydoc-default.sty  ver 3.0beta1    18-Apr-2007   Jonathan Guyer   guyer@nist.gov
 
 % This software was developed at the National Institute of Standards
 % and Technology by employees of the Federal Government in the course
@@ -17,7 +17,7 @@
 
 
 \NeedsTeXFormat{LaTeX2e}%
-\ProvidesClass{epydoc}[2007/04/06 v3.0beta1 Epydoc Python Documentation]
+\ProvidesClass{epydoc-default}[2007/04/18 v3.0beta1 Epydoc Python Documentation]
 
 \newif\if@doIndex
 \@doIndexfalse
@@ -133,16 +133,16 @@
         \textit{##2}%
         \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
     \vspace{0.5ex}
-    \def\@EpydocFunctionLine{%
+    \def\Epydoc@FunctionLine{%
         \vspace{-1.5ex}
             \rule{\textwidth}{0.5\fboxrule}
-        \aftergroup\def\aftergroup\@EpydocFunctionLine\aftergroup{\aftergroup}}%
+        \aftergroup\def\aftergroup\Epydoc@FunctionLine\aftergroup{\aftergroup}}%
     \begin{boxedminipage}{\textwidth}
         \raggedright \textbf{#1}(#2)}
     {\end{boxedminipage}}
 
 \newenvironment{EpydocDocstring}{%
-    \@EpydocFunctionLine}
+    \Epydoc@FunctionLine}
     {\vspace{1ex}}
 
 \newenvironment{EpydocFunctionSignature}[1]{%
@@ -157,7 +157,7 @@
     {)}
     
 \newenvironment{EpydocFunctionParameters}[1]{%
-    \@EpydocFunctionLine
+    \Epydoc@FunctionLine
     \textbf{Parameters}%
     \begin{quote}
     \begin{Ventry}{#1}}
@@ -166,18 +166,18 @@
     }
     
 \newcommand{\EpydocFunctionReturns}[2][]{%
-    \@EpydocFunctionLine
+    \Epydoc@FunctionLine
     \textbf{Return Value}%
     \begin{quote}
-        \gdef\@EpydocReturnType{#1}
-        \gdef\@EpydocReturnDescription{#2}
-        \ifx\@EpydocReturnType\empty
-            \@EpydocReturnDescription
+        \gdef\Epydoc@ReturnType{#1}
+        \gdef\Epydoc@ReturnDescription{#2}
+        \ifx\Epydoc@ReturnType\empty
+            \Epydoc@ReturnDescription
         \else
-            \ifx\@EpydocReturnDescription\empty
-                \textit{\@EpydocReturnType}
+            \ifx\Epydoc@ReturnDescription\empty
+                \textit{\Epydoc@ReturnType}
             \else
-                \@EpydocReturnDescription \textit{(type=\@EpydocReturnType)}
+                \Epydoc@ReturnDescription \textit{(type=\Epydoc@ReturnType)}
             \fi
         \fi
     \end{quote}
@@ -186,7 +186,7 @@
 \newenvironment{EpydocFunctionRaises}{%
     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
        \normalfont\itshape ##1}
-    \@EpydocFunctionLine
+    \Epydoc@FunctionLine
     \textbf{Raises}
     \begin{quote}
         \begin{description}
@@ -196,7 +196,7 @@
     }
 
 \newcommand{\EpydocFunctionOverrides}[2][0]{%
-    \@EpydocFunctionLine
+    \Epydoc@FunctionLine
     Overrides: #2 %
     \ifthenelse{#1=1}{\textit{(inherited documentation)}{}}}
     
@@ -254,7 +254,7 @@
     }
     {\end{itemize}}
 
-\newenvironment{@EpydocGeneralList}{%
+\newenvironment{Epydoc@GeneralList}{%
     \newcommand{\EpydocInternalHeader}[1]{%
         \multicolumn{2}{|l|}{\textbf{##1}} \\
          \hline}%
@@ -278,32 +278,32 @@
         {\end{alltt}}%
     \newcommand{\EpydocShortValue}[1]{\texttt{##1}}
     \newcommand{\EpydocVariable}[4]{%
-        \gdef\@EpydocVariableName{##1}%
-        \gdef\@EpydocVariableDescription{##2}%
-        \gdef\@EpydocVariableValue{##3}%
-        \gdef\@EpydocVariableType{##4}%
-        \raggedright \@EpydocVariableName & %
-        \raggedright \@EpydocVariableDescription %
-        \ifx\@EpydocVariableValue\empty\relax%
-            \ifx\@EpydocVariableType\empty\else%
-            \ifx\@EpydocVariableDescription\empty\else
+        \gdef\Epydoc@VariableName{##1}%
+        \gdef\Epydoc@VariableDescription{##2}%
+        \gdef\Epydoc@VariableValue{##3}%
+        \gdef\Epydoc@VariableType{##4}%
+        \raggedright \Epydoc@VariableName & %
+        \raggedright \Epydoc@VariableDescription %
+        \ifx\Epydoc@VariableValue\empty\relax%
+            \ifx\Epydoc@VariableType\empty\else%
+            \ifx\Epydoc@VariableDescription\empty\else
 
             \fi%
-            \textit{(type=\texttt{\@EpydocVariableType})}%
+            \textit{(type=\texttt{\Epydoc@VariableType})}%
             \fi%
         \else\relax%
-            \ifx\@EpydocVariableDescription\empty\else
+            \ifx\Epydoc@VariableDescription\empty\else
 
             \fi%
-            \textbf{Value:} \texttt{\@EpydocVariableValue}%
-            \ifx\@EpydocVariableType\empty\else%
-            \textit{(type=\texttt{\@EpydocVariableType})}%
+            \textbf{Value:} \texttt{\Epydoc@VariableValue}%
+            \ifx\Epydoc@VariableType\empty\else%
+            \textit{(type=\texttt{\Epydoc@VariableType})}%
             \fi%
         \fi%
         \tabularnewline
         \hline}
-    \begin{@EpydocGeneralList}}
-    {\end{@EpydocGeneralList}}
+    \begin{Epydoc@GeneralList}}
+    {\end{Epydoc@GeneralList}}
 
 \newenvironment{EpydocClassVariablesList}{%
     \begin{EpydocVariablesList}}

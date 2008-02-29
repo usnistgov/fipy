@@ -45,11 +45,9 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'mesh1D.input',
-            'circle.input',
-            'trench.input',
-##            'circle.adaptiveMeshInput',
-##            'circle.altTestInput',
+            'mesh1D',
+            'circle',
+            'trench',
         ), base = __name__)
     
 if __name__ == '__main__':

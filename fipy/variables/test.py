@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 8/29/05 {1:51:00 PM} 
+ #                                last update: 10/19/07 {10:13:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,16 +48,17 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportDocTestSuite(
         docTestModuleNames = (
-            'fipy.variables.vectorCellVariable',
-            'fipy.variables.vectorFaceVariable',
-            'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.variable',
+            'fipy.variables.meshVariable',
             'fipy.variables.cellVariable',
+            'fipy.variables.faceVariable',
+            'fipy.variables.operatorVariable',
             'fipy.variables.betaNoiseVariable',
             'fipy.variables.exponentialNoiseVariable',
             'fipy.variables.gammaNoiseVariable',
             'fipy.variables.gaussianNoiseVariable',
             'fipy.variables.uniformNoiseVariable',
+            'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.modularVariable',
         ))
     

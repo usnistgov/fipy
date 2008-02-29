@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/16/06 {12:02:32 PM}
+ #                                last update: 10/5/07 {10:08:26 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,7 +58,7 @@ class MatplotlibViewer(Viewer):
 
     """
         
-    def __init__(self, vars, limits=None, title=None):
+    def __init__(self, vars, limits=None, title=None, figaspect=1.0):
         """
         Create a `MatplotlibViewer`.
         
@@ -72,34 +72,38 @@ class MatplotlibViewer(Viewer):
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
-
+          - `figaspect`: Desired aspect ration of figure. If arg is a number, 
+            use that aspect ratio. If arg is an array, figaspect will 
+            determine the width and height for a figure that would fit array 
+            preserving aspect ratio.
         """
-        Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        Viewer.__init__(self, vars = vars, limits = limits, title=title)
 
         import pylab
 
         pylab.ion()
 
-        fig = pylab.figure()
+        w, h = pylab.figaspect(figaspect)
+        fig = pylab.figure(figsize=(w, h))
         self.id = fig.number
         
         pylab.title(self.title)
         
-    def _autoscale(self, vars, datamin=None, datamax=None):
-        from fipy.tools import numerix
+##    def _autoscale(self, vars, datamin=None, datamax=None):
+##        from fipy.tools import numerix
 
-        if datamin is None:
-            datamin = 1e300
-            for var in vars:
-                datamin = min(datamin, numerix.min(var))
+##        if datamin is None:
+##            datamin = 1e300
+##            for var in vars:
+##                datamin = min(datamin, var.min())
 
-        if datamax is None:
-            from fipy.tools import numerix
-            datamax = -1e300
-            for var in vars:
-                datamax = max(datamax, numerix.max(var))
+##        if datamax is None:
+##            from fipy.tools import numerix
+##            datamax = -1e300
+##            for var in vars:
+##                datamax = max(datamax, var.max())
                 
-        return datamin, datamax
+##        return datamin, datamax
 
 
     def plot(self, filename = None):
@@ -115,9 +119,16 @@ class MatplotlibViewer(Viewer):
 
         pylab.figure(self.id)
 
+        pylab.ioff()
+        
         self._plot()
         pylab.draw()
+        
+        pylab.ion()
 
         if filename is not None:
             pylab.savefig(filename)
 
+    def _validFileExtensions(self):
+        return [".eps", ".jpg", ".png"]
+        

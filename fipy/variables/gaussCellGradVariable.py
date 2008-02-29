@@ -37,32 +37,31 @@
  
 from fipy.tools.numerix import MA
 
-from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.tools.inline import inline
 from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 
-class _GaussCellGradVariable(VectorCellVariable):
-    def __init__(self, var, name = ''):
-        VectorCellVariable.__init__(self, mesh = var.getMesh(), name = name)
+class _GaussCellGradVariable(CellVariable):
+    def __init__(self, var, name=''):
+        CellVariable.__init__(self, mesh=var.getMesh(), name=name, rank=var.getRank() + 1)
         self.var = self._requires(var)
         self.faceGradientContributions = _FaceGradContributions(self.var)
         
     def _calcValueIn(self, N, M, ids, orientations, volumes):
         val = self._getArray().copy()
 
-        inline._runInline("""
-            val(i,j) = 0.;
-            
+        inline._runIterateElementInline("""
+            ITEM(val, i, vec) = 0.;
+
             int k;
-            
             for (k = 0; k < M; k++) {
-                int id = ids(i, k);
-                val(i, j) += orientations(i, k) * areaProj(id, j) * faceValues(id);
+                int id = ITEM(ids, i, &k);
+                ITEM(val, i, vec) += ITEM(orientations, i, &k) * ITEM(areaProj, id, vec) * ITEM(faceValues, id, NULL);
             }
                 
-            val(i, j) /= volumes(i);
+            ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
         """,val = val,
             ids = numerix.array(MA.filled(ids, 0)),
             orientations = numerix.array(MA.filled(orientations, 0)),
@@ -70,37 +69,17 @@ class _GaussCellGradVariable(VectorCellVariable):
             areaProj = numerix.array(self.mesh._getAreaProjections()),
             faceValues = numerix.array(self.var.getArithmeticFaceValue()),
             M = M,
-            ni = N, nj = self.mesh.getDim())
+            ni = N, 
+            shape=numerix.array(numerix.shape(val)))
 
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
-        
-##    def _calcValueIn(self, N, M, ids, orientations, volumes):
-##      inline.runInline("""
-##          val(i,j) = 0.;
-            
-##          int k;
-##          for (k = 0; k < nk; k++) {
-##              val(i,j) += orientations(i,k) * faceGradientContributions(ids(i,k), j);
-##          }
-                
-##          val(i,j) /= volumes(i);
-##      """,
-##      val = self._getArray(), ids = ids, orientations = orientations, volumes = volumes,
-##      faceGradientContributions = self.faceGradientContributions.getNumericValue(),
-##      ni = N, nj = self.mesh.getDim(), nk = M
-##      )
             
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-        contributions = numerix.take(self.faceGradientContributions[:],ids.flat)
+        contributions = numerix.take(self.faceGradientContributions, ids, axis=1)
 
-        contributions = numerix.reshape(contributions, (N, M, self.mesh.getDim()))
-        orientations = numerix.reshape(orientations, (N, M, 1))
         grad = numerix.array(numerix.sum(orientations * contributions, 1))
 
-        grad = grad / volumes[:,numerix.NewAxis]
-
-        return grad
+        return grad / volumes
 
     def _calcValue(self):
         N = self.mesh.getNumberOfCells()

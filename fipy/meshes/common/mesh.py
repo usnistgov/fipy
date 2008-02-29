@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/3/07 {3:07:59 PM} 
+ #                                last update: 2/8/08 {1:44:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -267,7 +267,7 @@ class Mesh:
     def _calcCellToCellIDsFilled(self):
         N = self.getNumberOfCells()
         M = self._getMaxFacesPerCell()
-        cellIDs = numerix.reshape(numerix.repeat(numerix.arange(N), M), (N, M))
+        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self._getCellToCellIDs()
         self.cellToCellIDsFilled = MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
@@ -284,9 +284,9 @@ class Mesh:
         cellFaceIDs = self._getCellFaceIDs()
         if type(cellFaceIDs) is type(MA.array(0)):
             ## bug in count returns float values when there is no mask
-            return numerix.array(cellFaceIDs.count(axis=1), 'l')
+            return numerix.array(cellFaceIDs.count(axis=0), 'l')
         else:
-            return self._getMaxFacesPerCell() * numerix.ones(len(cellFaceIDs), 'l')
+            return self._getMaxFacesPerCell() * numerix.ones(cellFaceIDs.shape[-1], 'l')
 
     def getExteriorFaces(self):
         pass
@@ -307,6 +307,9 @@ class Mesh:
 
     def getNumberOfCells(self):
         return self.numberOfCells
+
+    def _isOrthogonal(self):
+        return False
     
     def _getNumberOfVertices(self):
         return len(self.vertexCoords[:,0])
@@ -337,7 +340,9 @@ class Mesh:
         faces = self._getFaces()
         
         if filter is not None:
-            return [face for face in faces if filter(face, **args)]
+            from fipy.meshes.meshIterator import FaceIterator            
+            return FaceIterator(mesh=self, ids=[face for face in faces if filter(face, **args)])
+##            return [face for face in faces if filter(face, **args)]
 
         return faces
 
@@ -357,10 +362,14 @@ class Mesh:
     
     def _calcGeometry(self):
         self._calcFaceAreas()
+        self._calcCellCenters()
+        self._calcFaceToCellDistances()
+        self._calcCellDistances()        
         self._calcFaceNormals()
         self._calcOrientedFaceNormals()
         self._calcCellVolumes()
         self._calcCellCenters()
+        self._calcFaceCellToCellNormals()
         self._calcFaceToCellDistances()
         self._calcCellDistances()        
         self._calcFaceTangents()
@@ -420,6 +429,9 @@ class Mesh:
 
     def _getFaceNormals(self):
         return self.faceNormals
+
+    def _getFaceCellToCellNormals(self):
+        return self.faceCellToCellNormals
         
     def getCellVolumes(self):
         return self.scaledCellVolumes
@@ -464,7 +476,7 @@ class Mesh:
         return self.cellAreas
 
     def _getCellAreaProjections(self):
-        return self.cellNormals * self._getCellAreas()[..., numerix.NewAxis]
+        return self.cellNormals * self._getCellAreas()
 
     """scaling"""
 
@@ -508,7 +520,7 @@ class Mesh:
             tmp = self.getCellCenters() - point
         except TypeError:
             tmp = self.getCellCenters() - PhysicalField(point)
-        i = numerix.argmin(numerix.add.reduce((tmp * tmp), axis = 1))
+        i = numerix.argmin(numerix.add.reduce((tmp * tmp), axis = 0))
         return i    
 
 ## pickling

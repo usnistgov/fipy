@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/15/06 {3:52:46 PM} 
+ #                                last update: 3/27/07 {2:38:22 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,15 +55,11 @@ class Grid1D(Mesh1D):
     
         >>> mesh = Grid1D(nx = 3)
         >>> print mesh.getCellCenters()
-        [[ 0.5]
-         [ 1.5]
-         [ 2.5]]
+        [[ 0.5  1.5  2.5]]
          
         >>> mesh = Grid1D(dx = (1, 2, 3))
         >>> print mesh.getCellCenters()
-        [[ 0.5]
-         [ 2. ]
-         [ 4.5]]
+        [[ 0.5  2.   4.5]]
          
         >>> mesh = Grid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):
@@ -77,7 +73,7 @@ class Grid1D(Mesh1D):
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
         
-        self.nx = self._calcNumPts(d = self.dx, n = nx)
+        self.nx = self._calcNumPts(d=self.dx, n = nx)
         
         self.numberOfVertices = self.nx + 1
         
@@ -89,15 +85,15 @@ class Grid1D(Mesh1D):
         self.setScale(value = scale)
         
     def __repr__(self):
-        return "%s(dx = %s, nx = %d)" % (self.__class__.__name__, `self.dx`, self.nx)
+        return "%s(dx=%s, nx=%d)" % (self.__class__.__name__, `self.dx`, self.nx)
 
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
         
-        return numerix.transpose(numerix.array((x,)))
+        return x[numerix.newaxis,...]
     
     def _createFaces(self):
-        return numerix.arange(self.numberOfVertices)
+        return numerix.arange(self.numberOfVertices)[numerix.newaxis, ...]
 
     def _createCells(self):
         """
@@ -107,7 +103,7 @@ class Grid1D(Mesh1D):
         self.numberOfFaces = self.nx + 1
         f1 = numerix.arange(self.nx)
         f2 = f1 + 1
-        return numerix.transpose(numerix.array((f1, f2)))
+        return numerix.array((f1, f2))
 
     def getDim(self):
         return 1
@@ -134,7 +130,7 @@ class Grid1D(Mesh1D):
         return PhysicalField(value = (self.nx * self.dx * self.getScale(),))
 
     def _getMeshSpacing(self):
-        return numerix.array((self.dx,))
+        return numerix.array((self.dx,))[...,numerix.newaxis]
     
     def getShape(self):
         return (self.nx,)
@@ -149,6 +145,19 @@ class Grid1D(Mesh1D):
         
     def __setstate__(self, dict):
         self.__init__(dx = dict['dx'], nx = dict['nx'])
+
+    def _test(self):
+        """
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected. Fixed a bug where the following throws
+        an error on solve() when nx is a float.
+
+            >>> from fipy import *
+            >>> mesh = Grid1D(nx=3., dx=(1., 2., 3.))
+            >>> var = CellVariable(mesh=mesh)
+            >>> DiffusionTerm().solve(var)
+
+        """
 
 def _test():
     import doctest

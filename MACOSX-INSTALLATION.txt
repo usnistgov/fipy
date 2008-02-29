@@ -67,7 +67,12 @@ installation will not be harmed.
 .. note::
 
    Another option is ActivePython_, which probably is the most heavily 
-   supported installation on the Mac, but seems to lack `readline` support.
+   supported installation on the Mac, but seems to lack `readline` support, 
+   but these instructions
+
+       http://www.friday.com/bbum/2006/03/06/python-mac-os-x-and-readline/
+
+   worked for us.
 
 .. _ActivePython: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.activestate.com/Products/ActivePython/
 

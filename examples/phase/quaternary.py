@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/15/06 {3:11:15 PM} 
+ #                                last update: 7/5/07 {8:21:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,10 +51,11 @@ system of multiple components. Once again, we'll focus on 1D.
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 400
     >>> dx = 0.01
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
 .. raw:: latex
@@ -65,8 +66,7 @@ system of multiple components. Once again, we'll focus on 1D.
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
-    >>> phase = CellVariable(mesh=mesh, name='phase', value=1, hasOld=1)
+    >>> phase = CellVariable(mesh=mesh, name='phase', value=1., hasOld=1)
 
 .. raw:: latex
 
@@ -222,12 +222,10 @@ and a liquid phase rich in the two substitutional species.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{log}
 
 ..
 
-    >>> from fipy.tools.numerix import log
     >>> for Cj in interstitials + substitutionals + [solvent]:
     ...     Cj.standardPotential = R * T * (log(Cj.L/rhoL) - log(Cj.S/rhoS))
 
@@ -266,7 +264,7 @@ with a semi-implicit source just as in ``examples.phase.simple.input`` and
     >>> mPhi = -((1 - 2 * phase) * barrier + 30 * phase * (1 - phase) * enthalpy)
     >>> dmPhidPhi = 2 * barrier - 30 * (1 - 2 * phase) * enthalpy
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
-    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
 
 .. raw:: latex
 
@@ -276,15 +274,11 @@ with a semi-implicit source just as in ``examples.phase.simple.input`` and
 
 ..
     
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-
     >>> phase.mobility = 1.
     >>> phase.gradientEnergy = 25
     >>> phase.equation = TransientTerm(coeff=1/phase.mobility) \
     ...   == ImplicitDiffusionTerm(coeff=phase.gradientEnergy) \
-    ...      + S0 + ImplicitSourceTerm(coeff = S1 * (S1 < 0))
+    ...      + S0 + ImplicitSourceTerm(coeff = S1)
 
 -----
 
@@ -339,8 +333,6 @@ interstitial diffusion equations, we arrange in canonical form as before:
 
 ..
 
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-
     >>> for Cj in interstitials:
     ...     phaseTransformation = (rho.getHarmonicFaceValue() / (R * T)) \
     ...       * (Cj.standardPotential * p(phase).getFaceGrad() 
@@ -356,11 +348,9 @@ interstitial diffusion equations, we arrange in canonical form as before:
     ...     convectionCoeff *= (Cj.diffusivity
     ...                         / (1. + CkSum.getHarmonicFaceValue()))
     ...                         
-    ...     diffusionTerm = ImplicitDiffusionTerm(coeff=Cj.diffusivity)
-    ...     convectionTerm = PowerLawConvectionTerm(coeff=convectionCoeff, 
-    ...                                             diffusionTerm=diffusionTerm)
-    ...                                             
-    ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
+    ...     Cj.equation = (TransientTerm()
+    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 -----
 
@@ -413,11 +403,9 @@ The canonical form of the substitutional diffusion equations is
     ...     convectionCoeff *= (Cj.diffusivity
     ...                         / (1. - CkSum.getHarmonicFaceValue()))
     ...                         
-    ...     diffusionTerm = ImplicitDiffusionTerm(coeff=Cj.diffusivity)
-    ...     convectionTerm = PowerLawConvectionTerm(coeff=convectionCoeff, 
-    ...                                             diffusionTerm=diffusionTerm)
-    ...                                             
-    ...     Cj.equation = TransientTerm() == diffusionTerm + convectionTerm
+    ...     Cj.equation = (TransientTerm() 
+    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 -----
 
@@ -433,7 +421,7 @@ We start with a sharp phase boundary
 
 ..
 
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> phase.setValue(1.)
     >>> phase.setValue(0., where=x > L / 2)
 
@@ -452,7 +440,6 @@ If we're running interactively, we create a viewer
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars = [phase] \
     ...                                  + interstitials + substitutionals \
     ...                                  + [solvent],
@@ -467,7 +454,6 @@ and again iterate to equilibrium
 
 ..
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> solver = LinearLUSolver(tolerance=1e-3)
 
     >>> dt = 10000
@@ -492,13 +478,11 @@ We can confirm that the far-field phases have remained separated
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{take}
    \IndexFunction{allclose}
 
 ..
 
-    >>> from fipy.tools.numerix import take, allclose
     >>> ends = take(phase, (0,-1))
     >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1

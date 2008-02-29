@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 3/16/07 {1:14:16 PM}
+ #                                last update: 7/5/07 {9:33:50 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,6 +51,38 @@ class MayaviViewer(Viewer):
     """
     The `MayaviViewer` creates viewers with the Mayavi_ python
     plotting package.
+
+        >>> from fipy import *
+        >>> mesh = Grid1D(nx=100)
+        >>> x = mesh.getCellCenters()[0]
+        >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
+        >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
+        >>> viewer = MayaviViewer(vars=(var1, var2), 
+        ...                       limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
+        ...                       title="MayaviViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
+        
+        >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+        >>> x, y = mesh.getCellCenters()
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
+        >>> viewer = MayaviViewer(vars=var, 
+        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+        ...                       title="MayaviViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
+
+        >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
+        >>> x, y, z = mesh.getCellCenters()
+        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y z)$", value=numerix.sin(x * y * z))
+        >>> viewer = MayaviViewer(vars=var, 
+        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+        ...                       title="MayaviViewer test")
+        >>> viewer.plot()
+        >>> viewer._promptForOpinion()
+        >>> del viewer
 
     .. _Mayavi: http://mayavi.sourceforge.net/
 
@@ -102,14 +134,14 @@ class MayaviViewer(Viewer):
                                        
     def _getStructure(self, mesh):
 
-        cellVertexIDs = [[int(ID) for ID in IDs] for IDs in mesh._getOrderedCellVertexIDs()]
+        cellVertexIDs = mesh._getOrderedCellVertexIDs()
 
         from fipy.tools import numerix
-        lengths = len(cellVertexIDs[0]) - numerix.sum(numerix.MA.getmaskarray(cellVertexIDs), axis=1)
+        lengths = cellVertexIDs.shape[0] - numerix.sum(numerix.MA.getmaskarray(cellVertexIDs), axis=0)
         
         cellDict = {2 : [], 4: [], 6: [], 8: [], 'polygon' : []}
 
-        cellVertexListIDs = [list(cellVertexIDs[i][:lengths[i]]) for i in range(mesh.getNumberOfCells())]
+        cellVertexListIDs = [[int(ID) for ID in cellVertexIDs[...,i][:lengths[i]]] for i in range(mesh.getNumberOfCells())]
 
         if mesh.getDim() == 2:
             cellDict['polygon'] = cellVertexListIDs
@@ -131,9 +163,9 @@ class MayaviViewer(Viewer):
 
 
                 
-        coords = numerix.zeros((mesh.getVertexCoords().shape[0], 3), 'd')
-        coords[:,:mesh.getDim()] = mesh.getVertexCoords()
-        coords = [[float(axis) for axis in coord] for coord in coords]
+        coords = numerix.zeros((3, mesh.getVertexCoords().shape[1]), 'd')
+        coords[:mesh.getDim(),:] = mesh.getVertexCoords()
+	coords = coords.swapaxes(0,1).tolist()
 
         import pyvtk
 
@@ -192,16 +224,16 @@ class MayaviViewer(Viewer):
             
             xmax = self._getLimit('datamax')
             if xmax is None:
-                xmax = numerix.max(var)
+                xmax = var.max()
 
             xmin = self._getLimit('datamin')
             if xmin is None:
-                xmin = numerix.min(var)
+                xmin = var.min()
             
             slh.range_var.set((xmin, xmax))
             slh.set_range_var()
 
-            slh.v_range_var.set((numerix.min(var), numerix.max(var)))
+            slh.v_range_var.set((var.min().getValue(), var.max().getValue()))
             slh.set_v_range_var()
 
             self._viewer.Render()
@@ -212,11 +244,9 @@ class MayaviViewer(Viewer):
         if filename is not None:
             self._viewer.renwin.save_png(filename)
 
+        def _validFileExtensions(self):
+            return [".png"]
 
-if __name__ == '__main__':
-##     from fipy.meshes.grid1D import Grid1D
-    from fipy.variables.cellVariable import CellVariable
-##     vars = [CellVariable(value = range(3), mesh = Grid1D(nx = 3, dx = 1.))]
 
 ##     from fipy.meshes.tri2D import Tri2D
 ##     triMesh = Tri2D()
@@ -228,14 +258,6 @@ if __name__ == '__main__':
 ##     compositeMesh += (0, 2)
 ##     vars += [CellVariable(value = range(7), mesh = compositeMesh)]
     
-    vars = []
-    from fipy.meshes.grid3D import Grid3D
-    mesh3D = Grid3D(nx = 3)
-    mesh3D += (0, 0, 2)
-    vars += [CellVariable(value = range(3), mesh = mesh3D)]
-
-    viewer = MayaviViewer(vars)
-    viewer.plot()
-    raw_input("finished")
-    
-    
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

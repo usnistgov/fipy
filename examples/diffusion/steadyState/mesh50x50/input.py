@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/13/05 {2:02:32 PM} 
+ #                                last update: 7/5/07 {6:33:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,7 +52,7 @@ The result is again tested in the same way:
 
     >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     >>> Lx = nx * dx
-    >>> x = mesh.getCellCenters()[:,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> print var.allclose(analyticalArray, rtol = 1e-9)
     1
@@ -61,10 +61,7 @@ The result is again tested in the same way:
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.variables.cellVariable import CellVariable
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
+from fipy import *
 
 nx = 50
 ny = 50
@@ -86,7 +83,6 @@ boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     
-    import fipy.viewers
-    viewer = fipy.viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.})
+    viewer = viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.})
     viewer.plot()
     raw_input("finished")

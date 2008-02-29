@@ -69,7 +69,7 @@ class GammaNoiseVariable(NoiseVariable):
     
            >>> from fipy.variables.cellVariable import CellVariable
            >>> gammadist = CellVariable(mesh = histogram.getMesh())
-           >>> x = histogram.getMesh().getCellCenters()[...,0]
+           >>> x = histogram.getMesh().getCellCenters()[0]
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
@@ -120,11 +120,11 @@ class GammaNoiseVariable(NoiseVariable):
                  
         """
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
-        self.shape = self._requires(shape)
+        self.shapeParam = self._requires(shape)
         self.rate = self._requires(rate)
     
     def _calcValue(self):
-        return random.gamma(shape=self.shape, scale=self.rate, 
+        return random.gamma(shape=self.shapeParam, scale=self.rate, 
                             size=[self.getMesh().getNumberOfCells()])
 
 def _test(): 

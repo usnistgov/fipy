@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:47:09 PM} 
+ #                                last update: 7/11/07 {2:30:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,7 +39,8 @@
  # ###################################################################
  ##
 
-"""Test numeric implementation of the mesh
+"""
+Test implementation of the viewers
 """
 
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
@@ -48,6 +49,7 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
         'mayaviViewer.lines',
+        'tsvViewer'
         ), base = __name__)
     
 if __name__ == '__main__':

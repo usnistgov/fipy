@@ -40,9 +40,6 @@
  # ###################################################################
  ##
 
-from fipy.tools import numerix
-import fipy.tools.vector as vector
-
 class Cell:
     def __init__(self, mesh, id):
         self.id = id
@@ -52,13 +49,13 @@ class Cell:
         return self.id
 
     def getCenter(self):
-        return self.mesh.getCellCenters()[self.id]
+        return self.mesh.getCellCenters()[...,self.id]
 
     def _getCellToCellDistances(self):
-        return self.mesh._getCellToCellDistances()[self.id]
+        return self.mesh._getCellToCellDistances()[...,self.id]
 
     def _getCellToCellIDs(self):
-        return self.mesh._getCellToCellIDs()[self.id]
+        return self.mesh._getCellToCellIDs()[...,self.id]
 
     def __cmp__(self, cell):
         return cmp(self.id, cell.getID())
@@ -67,9 +64,9 @@ class Cell:
         return self.mesh
 
     def getNormal(self, index):
-        dis = self._getCellToCellDistances()[index]
-        adjCellID = self._getCellToCellIDs()[index]
-        vec = self.getCenter() - self.mesh.getCellCenters()[adjCellID]
+        dis = self._getCellToCellDistances()[...,index]
+        adjCellID = self._getCellToCellIDs()[...,index]
+        vec = self.getCenter() - self.mesh.getCellCenters()[...,adjCellID]
         return vec / dis
     
 

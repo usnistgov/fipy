@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 5/16/06 {1:31:28 PM}
+ #                                 last update: 7/5/07 {8:21:38 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,10 +49,11 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
 
 ..
 
+    >>> from fipy import *
+
     >>> nx = 400
     >>> dx = 5e-6 # cm
     >>> L = nx * dx
-    >>> from fipy.meshes.grid1D import Grid1D
     >>> mesh = Grid1D(dx=dx, nx=nx)
 
 .. raw:: latex
@@ -76,7 +77,6 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
    
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phase = CellVariable(name="phase", mesh=mesh, hasOld=1)
 
 .. raw:: latex
@@ -96,7 +96,6 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
    
 ..
 
-    >>> from fipy.variables.variable import Variable
     >>> T = Variable(name="temperature")
 
 .. raw:: latex
@@ -272,7 +271,7 @@ We can now linearize the source exactly as before
     >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
     >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
     >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
-    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase * (S1 < 0)
+    >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
 
 Using the same gradient energy coefficient and phase field mobility
 
@@ -289,12 +288,8 @@ we define the phase field equation
 
 ..
 
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-
     >>> phaseEq = TransientTerm(1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
-    ...   + S0 + ImplicitSourceTerm(coeff=S1 * (S1 < 0))
+    ...   + S0 + ImplicitSourceTerm(coeff=S1)
 
 -----
 
@@ -408,7 +403,6 @@ or
     >>> Dl = Variable(value=1e-5) # cm**2 / s
     >>> Ds = Variable(value=1e-9) # cm**2 / s
     >>> D = (Dl - Ds) * phase.getArithmeticFaceValue() + Dl
-    >>> diffusion = ImplicitDiffusionTerm(coeff=D)
 
     >>> phaseTransformationVelocity = \
     ...  ((enthalpyB - enthalpyA) * p(phase).getFaceGrad()
@@ -421,17 +415,16 @@ or
 
 ..
     
-    >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm
-    >>> diffusionEq = TransientTerm() == diffusion \
-    ...   + PowerLawConvectionTerm(coeff=phaseTransformationVelocity,
-    ...                            diffusionTerm=diffusion)
+    >>> diffusionEq = (TransientTerm() 
+    ...                == ImplicitDiffusionTerm(coeff=D)
+    ...                + PowerLawConvectionTerm(coeff=phaseTransformationVelocity))
 
 -----
 
 We initialize the phase field to a step function in the middle of the domain
 
     >>> phase.setValue(1.)
-    >>> phase.setValue(0., where=mesh.getCellCenters()[...,0] > L/2.)
+    >>> phase.setValue(0., where=mesh.getCellCenters()[0] > L/2.)
 
 .. raw:: latex
 
@@ -453,12 +446,10 @@ We initialize the phase field to a step function in the middle of the domain
        - \exp\left(-\frac{L_A\left(T - T_M^A\right)}{T_M^A}\frac{V_m}{R T}\right)} \\
        C_S &= \exp\left(-\frac{L_B\left(T - T_M^B\right)}{T_M^B}\frac{V_m}{R T}\right) C_L
    \end{align*}
-   \IndexModule{numerix}
    \IndexFunction{exp}
    
 ..
 
-    >>> from fipy.tools.numerix import exp
     >>> Cl = (1. - exp(-enthalpyA * Vm / (R * T))) \
     ...   / (exp(-enthalpyB * Vm / (R * T)) - exp(-enthalpyA * Vm / (R * T)))
     >>> Cs = exp(-enthalpyB * Vm / (R * T)) * Cl
@@ -491,14 +482,11 @@ SciPy can be used.
        \frac{L_B\left(T - T_M^B\right)}{T_M^B} V_m
        + R T \ln C_S - R T \ln C_L
    \end{align*}
-   \IndexModule{numerix}
    \IndexFunction{log}
    \IndexFunction{array}
 
 ..
 
-    >>> from fipy.tools.numerix import log
-    >>> from fipy.tools.numerix import array
     >>> def equilibrium(C):
     ...     return [array(enthalpyA * Vm + R * T * log(1 - C[0]) - R * T * log(1 - C[1])),
     ...             array(enthalpyB * Vm + R * T * log(C[0]) - R * T * log(C[1]))]
@@ -547,7 +535,7 @@ SciPy can be used.
 We plot the result against the sharp interface solution
 
     >>> sharp = CellVariable(name="sharp", mesh=mesh)
-    >>> x = mesh.getCellCenters()[...,0]
+    >>> x = mesh.getCellCenters()[0]
     >>> sharp.setValue(Cs, where=x < L * fraction)
     >>> sharp.setValue(Cl, where=x >= L * fraction)
 
@@ -558,7 +546,6 @@ We plot the result against the sharp interface solution
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
     ...     viewer = viewers.make(vars=(phase, C, sharp), 
     ...                           limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
@@ -590,7 +577,6 @@ and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use a
 We now use the "`sweep()`" method instead of "`solve()`" because we
 require the residual.
 
-    >>> from fipy.solvers.linearLUSolver import LinearLUSolver
     >>> solver = LinearLUSolver(tolerance=1e-10)
 
     >>> phase.updateOld()

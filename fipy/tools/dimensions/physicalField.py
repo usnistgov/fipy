@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 1/3/07 {2:25:47 PM} 
+ #                                last update: 4/30/07 {11:37:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -111,7 +111,7 @@ from NumberDict import _NumberDict
 # Class definitions
 
 
-class PhysicalField:
+class PhysicalField(object):
     """
     Physical field or quantity with units
     """
@@ -196,8 +196,13 @@ class PhysicalField:
             value = [PhysicalField(item,unit) for item in value]
             if unit is None:
                 unit = value[0].unit
-            value = [item.inUnitsOf(unit) / PhysicalField(1,unit) for item in value]
-            value = numerix.array(value)
+            normalized = []
+            for item in value:
+                if item.unit == unit:
+                    normalized += [item.value]
+                else:
+                    normalized += [item.inUnitsOf(unit).value]
+            value = numerix.array(normalized)
             
         if unit is None:
             unit = _unity
@@ -264,7 +269,7 @@ class PhysicalField:
             return (self.__class__.__name__ + '(' + `self.value` + ',' + 
                     `self.unit.name()` + ')')
 
-    def tostring(self, max_line_width = None, precision = None, suppress_small = None, separator = ' '):
+    def tostring(self, max_line_width=75, precision=8, suppress_small=False, separator=' '):
         """
         Return human-readable form of a physical quantity
         
@@ -1118,7 +1123,7 @@ class PhysicalField:
         
             >>> v = PhysicalField(((5.,6.),(7.,8.)), "m")
             >>> print PhysicalField(((1.,2.),(3.,4.)), "m").dot(v)
-            [ 17.  53.] m**2
+            [ 26.  44.] m**2
              
         """
         if not isinstance(other,PhysicalField):
@@ -1175,6 +1180,8 @@ class PhysicalField:
         from fipy.tools import numerix
         return numerix.getShape(self.value)
         
+    shape = property(fget=getShape, doc="Tuple of array dimensions.")
+
     def reshape(self, shape):
         """
         Changes the shape of `self` to that specified in `shape`

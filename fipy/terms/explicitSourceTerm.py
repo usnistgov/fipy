@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitSourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 7/6/05 {4:24:37 PM} 
+ #                                last update: 3/23/07 {7:50:22 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -66,4 +66,6 @@ class _ExplicitSourceTerm(SourceTerm):
 	    'diagonal' : 0
 	}
 	
+    def __repr__(self):
+        return repr(self.coeff)
 

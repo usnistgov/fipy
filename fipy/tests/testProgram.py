@@ -44,7 +44,7 @@ class _TestProgram(unittest.TestProgram):
 ##        numMesh = 0
         try:
             options, args = getopt.getopt(argv[1:], 'hHvq',
-                                          ['help','verbose','quiet','inline'])
+                                          ['help','verbose','quiet','inline', 'Trilinos', 'Pysparse'])
             for opt, value in options:
                 if opt in ('-h','-H','--help'):
                     self.usageExit()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 5/18/06 {8:40:45 PM}
+ #                                last update: 10/5/07 {10:49:43 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -110,7 +110,7 @@ The mesh created by gmsh_ is then imported into |FiPy| using the
 
 ..
 
-    >>> from fipy.meshes.gmshImport import GmshImporter2D
+    >>> from fipy import *
     >>> mesh = GmshImporter2D(meshName)
     >>> os.remove(meshName)
     
@@ -122,10 +122,9 @@ Using this mesh, we can construct a solution variable
 
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> phi = CellVariable(name = "solution variable",
     ...                    mesh = mesh,
-    ...                    value = 0)
+    ...                    value = 0.)
 
 We can now create a viewer to see the mesh (only the `Gist2DViewer` is
 capable of displaying variables on this sort of irregular mesh)
@@ -142,13 +141,12 @@ capable of displaying variables on this sort of irregular mesh)
     >>> viewer = None
     >>> if __name__ == '__main__':
     ...     try:
-    ...         from fipy.viewers.gistViewer.gist2DViewer import Gist2DViewer
-    ...         viewer = Gist2DViewer(vars=phi,
+    ...         viewer = viewers.make(vars=phi,
     ...                               limits={'datamin': -1, 'datamax': 1.})
     ...         viewer.plotMesh()
     ...         raw_input("Irregular circular mesh. Press <return> to proceed...")
     ...     except:
-    ...         print "Unable to create a Gist2DViewer"
+    ...         print "Unable to create a viewer for an irregular mesh (try Gist2DViewer or Matplotlib2DViewer)"
 
 .. image:: examples/diffusion/circleMesh.pdf
    :scale: 50
@@ -164,8 +162,6 @@ We set up a transient diffusion equation
 ..
 
     >>> D = 1.
-    >>> from fipy.terms.transientTerm import TransientTerm
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D)
 
 The following line extracts the `x` coordinate values on the exterior
@@ -173,14 +169,12 @@ faces. These are used as the boundary condition fixed values.
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexFunction{take}
 
 ..
 
-    >>> from fipy.tools import numerix
-    >>> exteriorXcoords = numerix.take(mesh.getFaceCenters()[...,0],
-    ...                                mesh.getExteriorFaces())
+    >>> exteriorXcoords = take(mesh.getFaceCenters()[0],
+    ...                        mesh.getExteriorFaces())
 
 .. raw:: latex
 
@@ -188,7 +182,6 @@ faces. These are used as the boundary condition fixed values.
 
 ..
     
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> BCs = (FixedValue(faces=mesh.getExteriorFaces(), value=exteriorXcoords),)
 
 We first step through the transient problem
@@ -216,7 +209,6 @@ We first step through the transient problem
 
 ::
     
-   from fipy.viewers.tsvViewer import TSVViewer
    TSVViewer(vars=(phi, phi.getGrad())).plot(filename="myTSV.tsv")
 
 .. raw:: latex
@@ -234,7 +226,7 @@ function, but it's a bit more complicated due to the varying boundary
 conditions and the different horizontal diffusion length at different
 vertical positions
 
-    >>> x, y = mesh.getCellCenters()[...,0], mesh.getCellCenters()[...,1]
+    >>> x, y = mesh.getCellCenters()
     >>> t = timeStepDuration * steps
 
     >>> phiAnalytical = CellVariable(name="analytical value",
@@ -242,7 +234,6 @@ vertical positions
 
 .. raw:: latex
 
-   \IndexModule{numerix}
    \IndexSoftware{SciPy}
    \IndexFunction{sqrt}
    \IndexFunction{arcsin}
@@ -250,16 +241,16 @@ vertical positions
 
 ..
 
-    >>> from fipy.tools.numerix import sqrt, arcsin, cos
     >>> x0 = radius * cos(arcsin(y))
     >>> try:
-    ...     from scipy.special import erf
+    ...     from scipy.special import erf ## This function can sometimes throw nans on OS X
+    ...                                   ## see http://projects.scipy.org/scipy/scipy/ticket/325
     ...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * sqrt(D * t))) 
     ...                                  - erf((x0-x) / (2 * sqrt(D * t)))))
     ... except ImportError:
     ...     print "The SciPy library is not available to test the solution to \
     ... the transient diffusion equation"
-
+    
     >>> print phi.allclose(phiAnalytical, atol = 7e-2)
     1
 
@@ -276,7 +267,7 @@ diffusion problem.
                                                     
 The values at the elements should be equal to their `x` coordinate
 
-    >>> print phi.allclose(mesh.getCellCenters()[...,0], atol = 0.02)
+    >>> print phi.allclose(x, atol = 0.02)
     1
 
 Display the results if run as a script.

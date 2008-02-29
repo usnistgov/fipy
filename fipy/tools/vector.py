@@ -43,46 +43,40 @@
 """Vector utility functions that are inexplicably absent from Numeric
 """
 
-from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
-
-def crossProd(v1,v2):
-    """Return vector cross-product of v1 and v2.
-    """
-    return PhysicalField(value = [v1[1] * v2[2] - v1[2] * v2[1],
-			    v1[2] * v2[0] - v1[0] * v2[2],
-			    v1[0] * v2[1] - v1[1] * v2[0]])
-	
-def sqrtDot(v1,v2):
-    """Return square root of vector dot-product of v1 and v2.
-    
-	Usually used with v1==v2 to return magnitude of v1.
-    """
-#     return Numeric.sqrt(Numeric.dot(v2,v1))
-##     return Numeric.sqrt(v1.dot(v2))
-    ## We can't use Numeric.dot on quantities with units
-##     return Numeric.sqrt(Numeric.sum(v1*v2))
-    return numerix.sqrt(abs(numerix.sum(v1 * v2)))
 
 def _putAddPy(vector, ids, additionVector, mask = False):
     additionVector = numerix.array(additionVector)
 
     if numerix.sometrue(mask):
-        for i in range(len(ids)):
-            if not mask[i]:
-                vector[ids[i]] += additionVector[i]
-    else:
-        for i in range(len(ids)):
-            vector[ids[i]] += additionVector[i]
+        if len(vector.shape) < len(additionVector.shape):
+            for j in range(vector.shape[0]):
+                for id, value, masked in zip(ids.flat, additionVector[j].flat, mask.flat):
+                    if not masked:
+                        vector[j].flat[id] += value
+        else:
+            for id, value, masked in zip(ids.flat, additionVector.flat, mask.flat):
+                if not masked:
+                    vector.flat[id] += value
 
+    else:
+        if len(vector.shape) < len(additionVector.shape):
+            for j in range(vector.shape[0]):
+                for id, value in zip(ids.flat, additionVector[j].flat):
+                    vector[j].flat[id] += value
+        else:
+            for id, value in zip(ids.flat, additionVector.flat):
+                vector.flat[id] += value
+
+### !!! THIS NEEDS WORK !!! ###
 def _putAddIn(vector, ids, additionVector):
     from fipy.tools.inline import inline
     inline._runInline("""
-        int ID = ids(i);
-	vector(ID) += additionVector(i);
+        int ID = ids[i];
+	vector[ID] += additionVector[i];
     """,
-    vector = vector, ids = ids, additionVector = numerix.array(additionVector),
-    ni = len(ids))
+    vector=vector, ids=ids, additionVector=numerix.array(additionVector),
+    ni = len(ids.flat))
 
 def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
@@ -91,7 +85,7 @@ def putAdd(vector, ids, additionVector):
     from fipy.tools.inline import inline
     inline._optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
-def prune(array, shift, start = 0):
+def prune(array, shift, start=0, axis=0):
     """
     removes elements with indices i = start + shift * n
     where n = 0, 1, 2, ...
@@ -107,8 +101,8 @@ def prune(array, shift, start = 0):
 
     """
 
-    takeArray = numerix.nonzero(numerix.arange(len(array)) % shift != start)
-    return numerix.take(array, takeArray)
+    takeArray = numerix.nonzero(numerix.arange(array.shape[-1]) % shift != start)
+    return numerix.take(array, takeArray, axis=axis)
 
 def _test(): 
     import doctest

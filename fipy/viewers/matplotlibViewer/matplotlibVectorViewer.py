@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 2/26/07 {12:29:15 PM} { 2:45:36 PM}
+ #                                last update: 10/6/07 {8:08:02 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,44 +46,109 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from matplotlibViewer import MatplotlibViewer
-from fipy.variables.vectorFaceVariable import VectorFaceVariable
-from fipy.variables.vectorCellVariable import VectorCellVariable
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.cellVariable import CellVariable
 
 class MatplotlibVectorViewer(MatplotlibViewer):
     """
-    Displays a vector plot of a 2D `VectorCellVariable` or
-    `VectorFaceVariable` object using Matplotlib_
+    Displays a vector plot of a 2D rank-1 `CellVariable` or
+    `FaceVariable` object using Matplotlib_
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
 
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, limits=None, title=None, scale=None, sparsity=None):
         """
         Creates a `Matplotlib2DViewer`.
         
+            >>> from fipy import *
+            >>> from fipy.tools.numerix import *
+            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+            >>> x, y = mesh.getCellCenters()
+            >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
+            >>> k = Variable(name="k")
+            >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getGrad(), 
+            ...                                 # limits={'ymin':0.1, 'ymax':0.9},
+            ...                                 title="MatplotlibVectorViewer test")
+            >>> for kval in numerix.arange(0,10,1):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getFaceGrad(), 
+            ...                                 # limits={'ymin':0.1, 'ymax':0.9},
+            ...                                 title="MatplotlibVectorViewer test")
+            >>> for kval in numerix.arange(0,10,1):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
+            >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getFaceGrad(), 
+            ...                                 # limits={'ymin':0.1, 'ymax':0.9},
+            ...                                 title="MatplotlibVectorViewer test",
+            ...                                 sparsity=1000)
+            >>> for kval in numerix.arange(0,10,1):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+            >>> del viewer
+
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
             a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the Viewer window
+          - `scale`: if not `None`, scale all arrow lengths by this value
+          - `sparsity`: if not `None`, then this number of arrows will be
+            randomly chosen (weighted by the cell volume or face area)
 
         """
         MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
 
+        var = self.vars[0]
+        mesh = var.getMesh()
+
+        if isinstance(var, FaceVariable):
+            N = mesh._getNumberOfFaces() 
+            V = mesh._getFaceAreas()
+            X, Y = mesh.getFaceCenters()
+        elif isinstance(var, CellVariable):
+            N = mesh.getNumberOfCells() 
+            V = mesh.getCellVolumes()
+            X, Y = mesh.getCellCenters()
+
+        if sparsity is not None and N > sparsity:
+            self.indices = numerix.random.rand(N) * V
+            self.indices = self.indices.argsort()[-sparsity:]
+        else:
+            self.indices = numerix.arange(N)
+
+        X = numerix.take(X, self.indices)
+        Y = numerix.take(Y, self.indices)
+        
+        U = V = numerix.ones(X.shape)
+        
+        import pylab
+        
+        self.quiver = pylab.quiver(X, Y, U, V, scale=scale)
         self.colorbar = False
         
+        self._plot()
+        
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.grid2D import Grid2D
+        from fipy.meshes.numMesh.mesh2D import Mesh2D
 
         vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
-                if (isinstance(var.getMesh(), Grid2D) \
-                    and (isinstance(var, VectorFaceVariable) \
-                         or isinstance(var, VectorCellVariable)))]
+                if (isinstance(var.getMesh(), Mesh2D) \
+                    and (isinstance(var, FaceVariable) \
+                         or isinstance(var, CellVariable)) and var.getRank() == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "The mesh must be a Grid2D instance"
+            raise MeshDimensionError, "The mesh must be a Mesh2D instance"
         # this viewer can only display one variable
         return [vars[0]]
                 
@@ -92,26 +157,20 @@ class MatplotlibVectorViewer(MatplotlibViewer):
         var = self.vars[0]
         mesh = var.getMesh()
 
-        if isinstance(var, VectorFaceVariable):
-            ## only displays horizontel faces since quiver() takes a grid
-            shape = (mesh.getShape()[1] + 1, mesh.getShape()[0])
-            N = shape[0] * shape[1]
-            X = numerix.reshape(mesh.getFaceCenters()[:N,0], shape)
-            Y = numerix.reshape(mesh.getFaceCenters()[:N,1], shape)
-            U = numerix.reshape(var[:N,0], shape)
-            V = numerix.reshape(var[:N,1], shape)
-        elif isinstance(var, VectorCellVariable):
-            shape = (mesh.getShape()[1], mesh.getShape()[0])
-            X = numerix.reshape(mesh.getCellCenters()[:,0], shape)
-            Y = numerix.reshape(mesh.getCellCenters()[:,1], shape)
-            U = numerix.reshape(var[:,0], shape)
-            V = numerix.reshape(var[:,1], shape)
+        U, V = var.getNumericValue()
+
+        U = numerix.take(U, self.indices)
+        V = numerix.take(V, self.indices)
+
+        self.quiver.set_UVC(U, V)
         
         import pylab
-        pylab.quiver2(X, Y, U, V, 0.15)
                             
+        pylab.xlim(xmin = self._getLimit('xmin'))
+        pylab.xlim(xmax = self._getLimit('xmax'))
         pylab.ylim(ymin = self._getLimit('ymin'))
         pylab.ylim(ymax = self._getLimit('ymax'))
 
-
-        
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()

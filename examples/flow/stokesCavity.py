@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/06 {1:59:35 PM}
+ #                                last update: 7/5/07 {6:43:03 PM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -95,6 +95,8 @@ the results of Dolfyn_
 
 some parameters are declared.
 
+    >>> from fipy import *
+
     >>> L = 1.0
     >>> N = 50
     >>> dL = L / N
@@ -114,7 +116,6 @@ Build the mesh.
    
 ..
 
-    >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(nx=N, ny=N, dx=dL, dy=dL)
 
 Declare the variables.
@@ -125,7 +126,6 @@ Declare the variables.
    
 ..
 
-    >>> from fipy.variables.cellVariable import CellVariable
     >>> pressure = CellVariable(mesh=mesh, name='pressure')
     >>> pressureCorrection = CellVariable(mesh=mesh)
     >>> xVelocity = CellVariable(mesh=mesh, name='X velocity')
@@ -133,14 +133,13 @@ Declare the variables.
 
 .. raw:: latex
 
-   The velocity is required as a \Class{VectorFaceVariable} for calculating
+   The velocity is required as a rank-1 \Class{FaceVariable} for calculating
    the mass flux. This is a somewhat clumsy aspect of the \FiPy{}
    interface that needs improvement.
 
 ..
 
-    >>> from fipy.variables.vectorFaceVariable import VectorFaceVariable
-    >>> velocity = VectorFaceVariable(mesh=mesh)
+    >>> velocity = FaceVariable(mesh=mesh, rank=1)
 
 Build the Stokes equations.
 
@@ -150,7 +149,6 @@ Build the Stokes equations.
    
 ..
 
-    >>> from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
     >>> xVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1,0])
     >>> yVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0,1])
     
@@ -196,7 +194,6 @@ Set up the no-slip boundary conditions
    
 ..
 
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
     >>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),
     ...        FixedValue(faces=mesh.getFacesRight(), value=0),
     ...        FixedValue(faces=mesh.getFacesBottom(), value=0),)
@@ -212,8 +209,7 @@ Set up the viewers,
 ..
 
     >>> if __name__ == '__main__':
-    ...     from fipy.viewers import make
-    ...     viewer = make(vars=(pressure, xVelocity, yVelocity, velocity))
+    ...     viewer = viewers.make(vars=(pressure, xVelocity, yVelocity, velocity))
 
 Below, we iterate for a set number of sweeps. We use the `sweep()`
 method instead of `solve()` because we require the residual for
@@ -250,10 +246,10 @@ solution. This argument cannot be passed to `solve()`.
     ...     ap[:] = -xmat.takeDiagonal()
     ...
     ...     ## update the face velocities based on starred values
-    ...     velocity[:,0] = xVelocity.getArithmeticFaceValue()
-    ...     velocity[:,1] = yVelocity.getArithmeticFaceValue()
+    ...     velocity[0] = xVelocity.getArithmeticFaceValue()
+    ...     velocity[1] = yVelocity.getArithmeticFaceValue()
     ...     for id in mesh.getExteriorFaces():
-    ...         velocity[id,:] = 0.
+    ...         velocity[...,id] = 0.
     ...
     ...     ## solve the pressure correction equation
     ...     pressureCorrectionEq.cacheRHSvector()
@@ -264,9 +260,9 @@ solution. This argument cannot be passed to `solve()`.
     ...     pressure.setValue(pressure + pressureRelaxation * \
     ...                                            (pressureCorrection - pressureCorrection[0]))
     ...     ## update the velocity using the corrected pressure
-    ...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[:,0] / \
+    ...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
     ...                                                ap * mesh.getCellVolumes())
-    ...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[:,1] / \
+    ...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[1] / \
     ...                                                ap * mesh.getCellVolumes())
     ...
     ...     if __name__ == '__main__':
@@ -284,19 +280,13 @@ solution. This argument cannot be passed to `solve()`.
 
 Test values in the last cell.
 
-.. raw:: latex
-
-   \IndexModule{numerix}
-   \IndexFunction{allclose}
-
 ..
 
-    >>> from fipy.tools import numerix
-    >>> numerix.allclose(pressure[-1], 145.233883763)
+    >>> print pressure[...,-1].allclose(145.233883763)
     1
-    >>> numerix.allclose(xVelocity[-1], 0.24964673696)
+    >>> print xVelocity[...,-1].allclose(0.24964673696)
     1
-    >>> numerix.allclose(yVelocity[-1], -0.164498041783)
+    >>> print yVelocity[...,-1].allclose(-0.164498041783)
     1
 
 """

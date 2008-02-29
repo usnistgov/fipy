@@ -46,8 +46,8 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from convectionCoeff import _ConvectionCoeff
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
 from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.solvers import *
 
 class SurfactantEquation:
     """

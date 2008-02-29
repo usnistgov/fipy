@@ -46,7 +46,6 @@
 from fipy.tools import numerix
 
 from fipy.meshes.pyMesh.face import Face
-import fipy.tools.vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class Face2D(Face):
@@ -59,7 +58,7 @@ class Face2D(Face):
 	"""Area is length of vector between vertices.
 	"""
         tangent=self.vertices[0].getCoordinates()-self.vertices[1].getCoordinates()
-        return fipy.tools.vector.sqrtDot(tangent,tangent)
+        return numerix.sqrtDot(tangent,tangent)
 	
     def _calcNormal(self):
 	"""Normal is perpendicular to vector between vertices.
@@ -67,7 +66,7 @@ class Face2D(Face):
 	tangent = self.vertices[1].getCoordinates() - self.vertices[0].getCoordinates()
  	norm = numerix.array([-tangent[1],tangent[0]])
 ## 	norm = PhysicalField(value = [-tangent[1],tangent[0]])
-	norm /= fipy.tools.vector.sqrtDot(norm,norm)
+	norm /= numerix.sqrtDot(norm,norm)
 ## we calculate the orientation after we know the normal
 ##	norm *= self.orientation
 
@@ -75,7 +74,7 @@ class Face2D(Face):
 
     def _calcTangent1(self):
 	norm = self.normal
-	mag = fipy.tools.vector.sqrtDot(norm,norm)
+	mag = numerix.sqrtDot(norm,norm)
 ## 	mag = numerix.sqrt(norm[0]**2 + norm[1]**2)
 	tan1 = numerix.array((-norm[1],norm[0]))
 ## 	tan1 = PhysicalField(value = (-norm[1],norm[0]))

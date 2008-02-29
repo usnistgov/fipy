@@ -6,7 +6,7 @@
  # 
  #  FILE: "adsorption.py"
  #                                    created: 9/10/04 {3:23:47 PM}
- #                                last update: 8/2/05 {4:58:59 PM} 
+ #                                last update: 7/5/07 {9:13:00 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -107,21 +107,16 @@ Compare the analaytical and numerical results:
 
    >>> theta = surfactantVar.getInterfaceVar()[1]
 
-   >>> numerix.allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)
+   >>> allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
    1
-   >>> numerix.allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)
+   >>> allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
    1
 
 
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.surfactant.surfactantVariable import SurfactantVariable
-from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
-from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from fipy import *
 
 # parameter values
 
@@ -136,15 +131,14 @@ dt = 0.001
 
 ## build the mesh
 
-from fipy.meshes.grid1D import Grid1D
 dx = L / (nx - 1.5)
 mesh = Grid1D(nx = nx, dx = dx)
 
 ## build the distance variable
 
 
-value = mesh.getCellCenters()[:,0] - 1.499 * dx
-##distanceVar = DistanceVariable(mesh = mesh, value = dx * (numerix.arange(nx) - 0.999))
+value = mesh.getCellCenters()[0] - 1.499 * dx
+##distanceVar = DistanceVariable(mesh = mesh, value = dx * (arange(nx) - 0.999))
 distanceVar = DistanceVariable(mesh = mesh, value = value, hasOld = 1)
 
 ## Build the bulk diffusion equation
@@ -170,16 +164,14 @@ surfEqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
 
 ## Build the analytical solutions,
 
-x = mesh.getCellCenters()[1:,0] - dx
+x = mesh.getCellCenters()[0,1:] - dx
 
 def concentrationFunc(theta):
     tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)
     return cinf * (1 + rateConstant * siteDensity * (1 - theta) * x / diffusion) / tmp
 
-import fipy.tools.numerix as numerix
-
 def currentTimeFunc(theta):
-    tmp = -diffusion * numerix.log(1 - theta) + rateConstant * siteDensity * L * theta
+    tmp = -diffusion * log(1 - theta) + rateConstant * siteDensity * L * theta
     return tmp / rateConstant / diffusion/ cinf
 
 ## set up the comparison arrays
@@ -188,10 +180,6 @@ theta = surfactantVar.getInterfaceVar()[1]
     
 
 if __name__ == "__main__":
-
-    ## set up the viewers
-
-    import fipy.viewers
 
     ## start time stepping
 

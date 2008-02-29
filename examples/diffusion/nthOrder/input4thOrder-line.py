@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/15/06 {2:27:14 PM} 
+ #                                last update: 7/5/07 {6:03:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,17 +45,18 @@
    ...          boundaryConditions = BCs,
    ...          solver = solver)
 
-   The answer is totally inaccurate. This is due to the 4th order term
-   having a high matrix condition number. Better solvers such as
-   multigrid solvers are required.
+   Using the Pysparse solvers, the answer is totally inaccurate. This is due to
+   the 4th order term having a high matrix condition number. In this particular
+   example, multigrid preconditioners such as those provided by Trilinos allow
+   a more accurate solution.
 
-   >>> print var.allclose(mesh.getCellCenters()[:,0], atol = 10.)
+   >>> print var.allclose(mesh.getCellCenters()[0], atol = 10)
    1
 
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid1D import Grid1D
+from fipy import *
 
 Lx = 1.
 nx = 100000
@@ -63,15 +64,8 @@ dx = Lx / nx
 
 mesh = Grid1D(dx = dx, nx = nx)
 
-from fipy.tools import numerix
-from fipy.variables.cellVariable import CellVariable
 var = CellVariable(mesh = mesh)
 
-from fipy.solvers.linearLUSolver import LinearLUSolver
-from fipy.boundaryConditions.nthOrderBoundaryCondition import NthOrderBoundaryCondition
-from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
-from fipy.terms.transientTerm import TransientTerm
-     
 eq = ImplicitDiffusionTerm((1.0, 1.0))
 
 BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
@@ -79,15 +73,18 @@ BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
        NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2),
        NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2))
 
-solver = LinearLUSolver(iterations=10)
+if solverSuite() == 'Trilinos':
+    solver = LinearGMRESSolver(tolerance=1e-30, precon=MultilevelDDPreconditioner())
+else:
+    solver = LinearLUSolver(iterations=10)
 
 if __name__ == '__main__':
     eq.solve(var,
              boundaryConditions = BCs,
              solver = solver)
     
-    from fipy.viewers import make
-    viewer = make(var)
+    viewer = viewers.make(var)
     viewer.plot()
 
+    print var.allclose(mesh.getCellCenters()[0], atol = 10)
     raw_input("finished")

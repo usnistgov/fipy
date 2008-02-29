@@ -48,9 +48,7 @@ from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.solvers.linearPCGSolver import LinearPCGSolver
-from fipy.solvers.linearCGSSolver import LinearCGSSolver
-from fipy.solvers.linearLUSolver import LinearLUSolver
+from fipy.solvers import *
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
