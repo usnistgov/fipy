@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/8/08 {2:10:54 PM} 
+ #                                last update: 3/6/08 {9:28:54 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -550,7 +550,7 @@ class Mesh(_CommonMesh):
         self.cellCenters.name = self.__class__.__name__ + ".cellCenters"
         
     def _calcFaceToCellDistances(self):
-        tmp = MA.repeat(self.faceCenters[...,numerix.NewAxis,:], 2, 1)
+        tmp = self.faceCenters[...,numerix.newaxis,:]
         tmp -= numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = (tmp * tmp).sum(axis=0).sqrt()
@@ -559,12 +559,9 @@ class Mesh(_CommonMesh):
     def _calcCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         tmp = tmp[...,1,:] - tmp[...,0,:]
-        tmp = MA.filled(MA.where(MA.getmask(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
-        self.cellDistanceVectors = tmp
-        tmp = tmp.getMag()
-        
-        self.cellDistances = (tmp.getMask() * self.faceToCellDistances[0].filled() 
-                              + ~tmp.getMask() * tmp.filled())
+        self.cellDistanceVectors = (tmp.getMask() * self.cellToFaceDistanceVectors[:,0].filled() 
+                                    + ~tmp.getMask() * tmp.filled())
+        self.cellDistances = self.cellDistanceVectors.getMag()
         self.cellDistances.name = self.__class__.__name__ + ".cellDistances"
 
     def _calcFaceToCellDistanceRatio(self):
