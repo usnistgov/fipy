@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 4/9/08 {10:31:59 AM} 
+ #                                last update: 4/9/08 {2:58:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,7 +39,7 @@ import glob
 import os
 import string
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 from distutils.core import Command
 
 class build_docs (Command):
@@ -687,38 +687,11 @@ dist = setup(	name = "FiPy",
         long_description = long_description,
         cmdclass = {
             'build_docs':build_docs,
-            'test':test,
             'copy_script': copy_script,
             'efficiency_test': efficiency_test
         },
-        packages = ['fipy',
-                        'fipy.boundaryConditions',
-                        'fipy.meshes',
-                            'fipy.meshes.common',
-                            'fipy.meshes.numMesh',
-                            'fipy.meshes.pyMesh',
-                        'fipy.models',
-                            'fipy.models.levelSet',
-                                'fipy.models.levelSet.advection',
-                                'fipy.models.levelSet.distanceFunction',
-                                'fipy.models.levelSet.electroChem',
-                                'fipy.models.levelSet.surfactant',
-                        'fipy.solvers',
-                            'fipy.solvers.pysparse',
-                            'fipy.solvers.trilinos',
-                            'fipy.solvers.scipy',
-                        'fipy.steppers',
-                        'fipy.terms',
-                        'fipy.tests',
-                        'fipy.tools',
-                            'fipy.tools.dimensions',
-                            'fipy.tools.inline',
-                        'fipy.variables',
-                        'fipy.viewers',
-                            'fipy.viewers.gistViewer',
-                            'fipy.viewers.gnuplotViewer',
-                            'fipy.viewers.matplotlibViewer',
-                            'fipy.viewers.mayaviViewer'],
+        test_suite="fipy.test._suite",
+        packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         classifiers = [
             'Development Status :: 5 - Production/Stable',
             'Environment :: Console',
