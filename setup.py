@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 2/12/07 {3:03:34 PM} 
+ #                                last update: 4/9/08 {10:31:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -658,21 +658,30 @@ class efficiency_test(Command):
 
             f.close()
 
-f = open('README.txt', 'r')
-long_description = '\n' + f.read() + '\n'
-f.close()
+try:            
+    f = open('README.txt', 'r')
+    long_description = '\n' + f.read() + '\n'
+    f.close()
+except IOError, e:
+    long_description = ''
         
-f = open('LICENSE.txt', 'r') 
-license = '\n' + f.read() + '\n'
-f.close()
-
-execfile(os.path.join('fipy', '__version__.py'))
+try:
+    f = open('LICENSE.txt', 'r') 
+    license = '\n' + f.read() + '\n'
+    f.close()
+except IOError, e:
+    license = ''
+    
+try:
+    execfile(os.path.join('fipy', '__version__.py'))
+except IOError, e:
+    __version__ = ''
 
 dist = setup(	name = "FiPy",
         version = __version__,
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
-        author_email = "guyer@nist.gov",
-        url = "http://ctcms.nist.gov/fipy/",
+        author_email = "fipy@nist.gov",
+        url = "http://www.ctcms.nist.gov/fipy/",
         license = license,
         description = "A finite volume PDE solver in Python",
         long_description = long_description,
