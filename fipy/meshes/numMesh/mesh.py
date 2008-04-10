@@ -521,7 +521,7 @@ class Mesh(_CommonMesh):
     def _calcCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         tmp = tmp[...,1,:] - tmp[...,0,:]
-        tmp = MA.filled(MA.where(MA.getmask(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
+        tmp = MA.filled(MA.where(MA.getmaskarray(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
         self.cellDistanceVectors = tmp
         self.cellDistances = MA.filled(MA.sqrt(MA.sum(tmp * tmp, 0)))
 
