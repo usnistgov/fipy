@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from setuptools.command.test import test as _test
-from bitten.util.testrunner import unittest as _unittest
 
 def _TestClass(base):
     class _test(base):
@@ -10,17 +9,17 @@ def _TestClass(base):
         # List of option tuples: long name, short name (None if no short
         # name), and help string.
         user_options = base.user_options + [
-                        ('inline', None, "run FiPy with inline compilation enabled"),
-                        ('Trilinos', None, "run FiPy using Trilinos solvers"),
-                        ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
-                        ('all', None, "run all non-interactive FiPy tests (default)"),
-                        ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
-                        ('examples', None, "test FiPy examples"),
-                        ('modules', None, "test FiPy code modules"),
-                        ('viewers', None, "test FiPy viewer modules (requires user input)"),
-                        ('cache', None, "run FiPy with Variable caching"),
-                        ('no-cache', None, "run FiPy without Variable caching"),
-                       ]
+            ('inline', None, "run FiPy with inline compilation enabled"),
+            ('Trilinos', None, "run FiPy using Trilinos solvers"),
+            ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
+            ('all', None, "run all non-interactive FiPy tests (default)"),
+            ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
+            ('examples', None, "test FiPy examples"),
+            ('modules', None, "test FiPy code modules"),
+            ('viewers', None, "test FiPy viewer modules (requires user input)"),
+            ('cache', None, "run FiPy with Variable caching"),
+            ('no-cache', None, "run FiPy without Variable caching"),
+           ]
 
 
         def initialize_options(self):
@@ -79,4 +78,11 @@ def _TestClass(base):
     return _test                    
             
 test = _TestClass(_test)
-unittest = _TestClass(_unittest)
+
+try:
+    # we only need "unittest" if bitten is installed 
+    # (and we're running as a bitten.slave)
+    from bitten.util.testrunner import unittest as _unittest
+    unittest = _TestClass(_unittest)
+except ImportError, e:
+    unittest = test

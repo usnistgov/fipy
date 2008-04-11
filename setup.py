@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 4/10/08 {9:07:35 PM} 
+ #                                last update: 4/11/08 {8:15:15 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,6 @@ import string
 from distutils.core import Command
 
 from setuptools import setup, find_packages
-from setuptools.command.test import test as _test
 
 from fipy.tests.testRunner import test, unittest
 
