@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 4/9/08 {2:58:06 PM} 
+ #                                last update: 4/10/08 {9:07:35 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -39,8 +39,12 @@ import glob
 import os
 import string
 
-from setuptools import setup, find_packages
 from distutils.core import Command
+
+from setuptools import setup, find_packages
+from setuptools.command.test import test as _test
+
+from fipy.tests.testRunner import test, unittest
 
 class build_docs (Command):
 
@@ -260,14 +264,6 @@ class build_docs (Command):
                 dir = os.path.join('documentation', 'manual', 'examples')
                 self._initializeDirectory(dir = dir, type = 'latex')
                 dir = os.path.join(dir, 'latex')
-##                 modules = ['examples/update0_1to1_0.py',
-##                                'examples/diffusion/',
-##                             'examples/convection/',
-##                             'examples/phase/',
-##                             'examples/levelSet/',
-##                             'examples/elphf/',
-##                             'examples/cahnHilliard/'
-##                             ]
                                
                 from utils.epydoc import driver
                 driver.epylatex(module_names = ['examples/'], options = {'target':dir})
@@ -432,82 +428,6 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
                 
     # run()
 
-class test(Command):
-    description = "test FiPy and its examples"
-
-    # List of option tuples: long name, short name (None if no short
-    # name), and help string.
-    user_options = [('inline', None, "run FiPy with inline compilation enabled"),
-                    ('Trilinos', None, "run FiPy using Trilinos solvers"),
-                    ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
-                    ('all', None, "run all non-interactive FiPy tests (default)"),
-                    ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
-                    ('examples', None, "test FiPy examples"),
-                    ('modules', None, "test FiPy code modules"),
-                    ('viewers', None, "test FiPy viewer modules (requires user input)"),
-                    ('terse', None, "give limited output during tests"),
-                    ('verbose', None, "give considerable output during tests"),
-                    ('cache', None, "run FiPy with Variable caching"),
-                    ('no-cache', None, "run FiPy without Variable caching"),
-                   ]
-
-
-    def initialize_options (self):
-        self.inline = False
-        self.verbosity = 0
-        self.terse = False
-        self.all = False
-        self.really_all = False
-        self.examples = False
-        self.modules = False
-        self.viewers = False
-        self.cache = False
-        self.no_cache = True
-        self.Trilinos = False
-        self.Pysparse = False
-
-    def finalize_options (self):
-        if self.verbose:
-            self.verbosity = 2
-        if self.terse:
-            self.verbosity = 1
-        if not (self.examples or self.modules or self.viewers):
-            self.all = True
-        if self.all or self.really_all:
-            self.examples = True
-            self.modules = True
-        if self.really_all:
-            self.viewers = True
-        
-    def run (self):
-        import unittest
-        theSuite = unittest.TestSuite()
-
-        if self.viewers:
-            import fipy.viewers.testinteractive
-            print "*" * 60
-            print "*" + "".center(58) + "*"
-            print "*" + "ATTENTION".center(58) + "*"
-            print "*" + "".center(58) + "*"
-            print "*" + "Some of the following tests require user interaction".center(58) + "*"
-            print "*" + "".center(58) + "*"
-            print "*" * 60
-            theSuite.addTest(fipy.viewers.testinteractive._suite())
-
-        if self.modules:
-            import fipy.test
-            theSuite.addTest(fipy.test._suite())
-        
-        if self.examples:
-            import examples.test
-            theSuite.addTest(examples.test._suite())
-        
-        testRunner = unittest.TextTestRunner(verbosity=self.verbosity)
-        result = testRunner.run(theSuite)
-        
-        import sys
-        sys.exit(not result.wasSuccessful())
-        
 class copy_script(Command):
     description = "copy an example script into a new editable file"
 
@@ -677,6 +597,17 @@ try:
 except IOError, e:
     __version__ = ''
 
+# The following doesn't work reliably, because it requires fipy
+# to already be installed (or at least egged), which is kind of 
+# obnoxious. We use cmdclass instead.
+# 
+#         entry_points = {
+#             'distutils.commands': [
+#                 'test = fipy.tests.testRunner:test',
+#                 'unittest = fipy.tests.testRunner:unittest', 
+#             ],
+#         },
+
 dist = setup(	name = "FiPy",
         version = __version__,
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
@@ -687,6 +618,8 @@ dist = setup(	name = "FiPy",
         long_description = long_description,
         cmdclass = {
             'build_docs':build_docs,
+            'test':test,
+            'unittest':unittest,
             'copy_script': copy_script,
             'efficiency_test': efficiency_test
         },
