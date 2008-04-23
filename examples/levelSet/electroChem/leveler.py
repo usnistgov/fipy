@@ -416,8 +416,11 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
             var.updateOld()
 
         for eqn, var, BCs in eqnTuple:
-            eqn.solve(var, boundaryConditions = BCs, dt = dt)
-            
+            if solverSuite() == 'Trilinos':
+                eqn.solve(var, boundaryConditions = BCs, dt = dt, solver=LinearCGSSolver())
+            else:
+                eqn.solve(var, boundaryConditions = BCs, dt = dt)
+                
         totalTime += dt
 
     try:
