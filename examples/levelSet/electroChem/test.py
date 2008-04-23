@@ -48,7 +48,7 @@ def _suite():
             'howToWriteAScript',
             'simpleTrenchSystem',
             'gold',
-            'leveler'
+            'leveler',
         ), base = __name__)
     
 if __name__ == '__main__':

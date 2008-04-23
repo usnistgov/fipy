@@ -176,17 +176,14 @@ class Variable(object):
         Convert a list of 1 element Variables to an array
 
             >>> numerix.array([Variable(0), Variable(0)])
-            [[0,]
-             [0,]]
-            >>> print Variable(0) + Variable(0)
-            0
-            >>> numerix.array([Variable(0) + Variable(0), Variable(0)])
-
-            >>> numerix.array([Variable(0), Variable(0) + Variable(0)])
-            [[0,]
-             [0,]]
+            Traceback (most recent call last):
+               ...
+            ValueError: setting an array element with a sequence.
+            >>> print numerix.array([numerix.array(Variable(0)), numerix.array(Variable(0))])
+            [0 0]
              
         """
+
         return numerix.array(self.getValue(), t)
 
 ##    def _get_array_interface(self):

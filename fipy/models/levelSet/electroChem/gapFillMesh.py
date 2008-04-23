@@ -55,9 +55,9 @@ class GapFillMesh(Mesh2D):
         >>> localErrors = (centers - var)**2 / centers**2
         >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
         >>> argmax = numerix.argmax(localErrors)
-        >>> print numerix.sqrt(localErrors[argmax]) < 0.05
+        >>> print numerix.sqrt(localErrors[argmax]) < 0.1
         1
-        >>> print globalError < 0.02
+        >>> print globalError < 0.05
         1
     """
     
