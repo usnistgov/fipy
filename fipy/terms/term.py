@@ -121,14 +121,8 @@ class Term:
         var[:] = array
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        if solverSuite() == 'Trilinos':
-            defaultSolver = LinearLUSolver()
-##            defaultSolver = LinearCGSSolver()
-            # This makes the largest number of test cases pass without needing
-            # to special-case anything
-        else:
-            defaultSolver = LinearPCGSolver()
-        solver = self._getDefaultSolver(solver) or solver or defaultSolver
+
+        solver = self._getDefaultSolver(solver) or solver or DefaultSolver()
 
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         return (solver, matrix, RHSvector)
