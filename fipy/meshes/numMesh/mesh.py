@@ -406,7 +406,10 @@ class Mesh(_CommonMesh):
     """get Topology methods"""
 
     def getVertexCoords(self):
-        return self.vertexCoords
+        if hasattr(self, 'vertexCoords'):
+            return self.vertexCoords
+        else:
+            return self._createVertices()
 
     def getExteriorFaces(self):
         return self.exteriorFaces

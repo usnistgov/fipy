@@ -312,7 +312,10 @@ class Mesh:
         return False
     
     def _getNumberOfVertices(self):
-        return len(self.vertexCoords[:,0])
+        if hasattr(self, 'numberOfVertices'):
+            return self.numberOfVertices
+        else:
+            return len(self.vertexCoords[:,0])
         
     def _getAdjacentCellIDs(self):
         return self.adjacentCellIDs

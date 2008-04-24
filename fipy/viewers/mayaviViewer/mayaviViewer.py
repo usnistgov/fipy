@@ -130,7 +130,10 @@ class MayaviViewer(Viewer):
         self.structures = []
             
         for var in self.vars:
+            if var.getRank() > 0:
+                raise IndexError, "Mayavi can only plot scalar values"
             self.structures.append(self._getStructure(var.getMesh()))
+
                                        
     def _getStructure(self, mesh):
 
