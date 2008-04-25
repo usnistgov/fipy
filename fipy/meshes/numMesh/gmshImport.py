@@ -155,30 +155,9 @@ gmsh to form a circular mesh.
    ...           'Line Loop(10) = {6, 7, 8, 9} ;\n',
    ...           'Plane Surface(11) = {10};\n']
 
-   >>> def buildMesh(lines):
-   ...     import tempfile
-   ...     (f, geomName) = tempfile.mkstemp('.geo')
-   ...     file = open(geomName, 'w')
-   ...     file.writelines(lines)
-   ...     file.close()
-   ...     import os
-   ...     os.close(f)
-   ...     import sys
-   ...     if sys.platform == 'win32':
-   ...         meshName = 'tmp.msh'
-   ...     else:
-   ...         (f, meshName) = tempfile.mkstemp('.msh')
-   ...     os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
-   ...     if sys.platform != 'win32':
-   ...         os.close(f)
-   ...     os.remove(geomName)
-   ...     mesh = GmshImporter2D(meshName)
-   ...     os.remove(meshName)
-   ...     return mesh
-
 Check that the sign of the mesh volumes is correct
 
-   >>> mesh = buildMesh(lines)
+   >>> mesh = GmshImporter2D(lines)
    >>> print mesh.getCellVolumes()[0] > 0
    1
       
@@ -190,7 +169,7 @@ Reverse the handedness of the mesh and check the sign
    ...                'Circle(9) = {2, 1, 5};\n',
    ...                'Line Loop(10) = {9, 8, 7, 6};\n',]
 
-   >>> mesh = buildMesh(lines)
+   >>> mesh = GmshImporter2D(lines)
    >>> print mesh.getCellVolumes()[0] > 0
    1
    
@@ -204,6 +183,7 @@ import mesh
 import mesh2D
 ## from fipy.tools.profiler.profiler import Profiler
 ## from fipy.tools.profiler.profiler import calibrate_profiler
+import os
 
 class MeshImportError(Exception):
     pass
@@ -419,25 +399,73 @@ class _DataGetter:
                 cellFaceIDs[i, j] = self.faceStrToFaceIDs[' '.join([str(k) for k in self.cellFaceVertexIDs[:,i, j]])]
         return cellFaceIDs
 
+class MshFile:
+    def __init__(self, arg):
+
+        if '.msh' in arg:
+            self.mshfile = arg
+            self.deletemshfile = False
+        else:
+
+            import tempfile
+                   
+            if not ('.geo' in arg or '.gmsh' in arg):
+                (f, geofile) = tempfile.mkstemp('.geo')
+                file = open(geofile, 'w')
+                file.writelines(arg)
+                file.close()
+                os.close(f)
+                self.deletegeofile = True
+            else:
+                self.deletegeofile = False
+                geofile = arg
+                
+            import sys
+            if sys.platform == 'win32':
+                self.mshfile = 'tmp.msh'
+            else:
+                (f, self.mshfile) = tempfile.mkstemp('.msh')
+
+            os.system('gmsh ' + geofile + ' -2 -v 0 -format msh -o ' + self.mshfile)
+
+            if sys.platform != 'win32':
+                os.close(f)
+
+            if self.deletegeofile:
+                os.remove(geofile)
+
+            self.deletemshfile = True
+
+    def getFilename(self):
+        return self.mshfile
+
+    def remove(self):
+        if self.deletemshfile:
+            os.remove(self.mshfile)
+                 
 class GmshImporter2D(mesh2D.Mesh2D):
 
-    def __init__(self, filename, coordDimensions=2):
-        mesh2D.Mesh2D.__init__(self, **_DataGetter(filename, dimensions=2, coordDimensions=coordDimensions).getData())
+    def __init__(self, arg, coordDimensions=2):
+        mshfile = MshFile(arg)
+        mesh2D.Mesh2D.__init__(self, **_DataGetter(mshfile.getFilename(), dimensions=2, coordDimensions=coordDimensions).getData())
+        mshfile.remove()
         
     def getCellVolumes(self):
         return abs(mesh2D.Mesh2D.getCellVolumes(self))
 
 class GmshImporter2DIn3DSpace(GmshImporter2D):
-    def __init__(self, filename):
-        GmshImporter2D.__init__(self, filename, coordDimensions=3)
+    def __init__(self, arg):
+        GmshImporter2D.__init__(self, arg, coordDimensions=3)
 
 class GmshImporter3D(mesh.Mesh):
     """
         >>> mesh = GmshImporter3D('fipy/meshes/numMesh/testgmsh.msh')
     """
 
-    def __init__(self, filename):
-        mesh.Mesh.__init__(self, **_DataGetter(filename, dimensions=3).getData())
+    def __init__(self, arg):
+        mshfile = MshFile(arg)
+        mesh.Mesh.__init__(self, **_DataGetter(mshfile.getFilename(), dimensions=3).getData())
+        mshfile.remove()
 
     def getCellVolumes(self):
         return abs(mesh.Mesh.getCellVolumes(self))

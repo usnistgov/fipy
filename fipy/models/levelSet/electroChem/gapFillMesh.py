@@ -144,7 +144,7 @@ class GapFillMesh(Mesh2D):
         ## including extra point with height extraPointHeight due to new gmsh 2.0 issue, see thread
         ## http://www.geuz.org/pipermail/gmsh/2007/002465.html
 
-        file.write('cellsize = ' + str(fakeCellSize) + """ ;
+        return GmshImporter2D('cellsize = ' + str(fakeCellSize) + """ ;
         height = """ + str(height) + """ ;
         spacing = """ + str(nx * cellSize) + """ ;
         extraPointHeight = """ + str(100. * height) + """ ;
@@ -159,25 +159,7 @@ class GapFillMesh(Mesh2D):
         Line(8) = {3, 1} ;
         Line Loop(9) = {5, 6, 7, 8} ;
         Plane Surface(10) = {9} ; """)
-        
-        file.close()
-        import os
-        os.close(f)
-
-        import sys
-        if sys.platform == 'win32':
-            meshName = 'tmp.msh'
-        else:
-            (f, meshName) = tempfile.mkstemp('.msh')
-        
-        os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
-        os.remove(geomName)
-        if sys.platform != 'win32':
-            os.close(f)
-        mesh = GmshImporter2D(meshName)
-        os.remove(meshName)
-        return mesh
-
+    
     def getTopFaces(self):
         faces = self.getFaces()
         return faces.where(faces.getCenters()[1] > self.actualDomainHeight - self.epsilon)

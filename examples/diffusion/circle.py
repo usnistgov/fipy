@@ -79,28 +79,6 @@ for gmsh_, see the `gmsh manual`_.
     ...           'Line Loop(10) = {6, 7, 8, 9} ;\n',
     ...           'Plane Surface(11) = {10};\n']
 
-    >>> import tempfile
-    >>> (f, geomName) = tempfile.mkstemp('.geo')
-    >>> file = open(geomName, 'w')
-    >>> file.writelines(lines)
-    >>> file.close()
-    >>> import os
-    >>> os.close(f)
-
-The temporary file created above is used by gmsh_ to mesh the
-geometrically defined region.
-
-    >>> import sys
-    >>> if sys.platform == 'win32':
-    ...     meshName = 'tmp.msh'
-    ... else:
-    ...     (f, meshName) = tempfile.mkstemp('.msh')
-    >>> os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
-    0
-    >>> if sys.platform != 'win32':
-    ...     os.close(f)
-    >>> os.remove(geomName)
-
 The mesh created by gmsh_ is then imported into |FiPy| using the
 `GmshImporter2D` object.
    
@@ -111,8 +89,7 @@ The mesh created by gmsh_ is then imported into |FiPy| using the
 ..
 
     >>> from fipy import *
-    >>> mesh = GmshImporter2D(meshName)
-    >>> os.remove(meshName)
+    >>> mesh = GmshImporter2D(lines)
     
 Using this mesh, we can construct a solution variable
 
