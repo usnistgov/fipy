@@ -71,83 +71,60 @@ class Mesh:
             >>> from fipy.meshes.grid2D import Grid2D
             >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
             >>> print baseMesh.getCellCenters()
-            [[ 0.5, 0.5,]
-             [ 1.5, 0.5,]
-             [ 0.5, 1.5,]
-             [ 1.5, 1.5,]] 1
+            [[ 0.5  1.5  0.5  1.5]
+             [ 0.5  0.5  1.5  1.5]]
              
         If a vector is added to a `Mesh`, a translated `Mesh` is returned
         
-            >>> translatedMesh = baseMesh + (5, 10)
-            >>> translatedMesh.getCellCenters()
-            [[  5.5, 10.5,]
-             [  6.5, 10.5,]
-             [  5.5, 11.5,]
-             [  6.5, 11.5,]]
+            >>> translatedMesh = baseMesh + ((5,), (10,))
+            >>> print translatedMesh.getCellCenters()
+            [[  5.5   6.5   5.5   6.5]
+             [ 10.5  10.5  11.5  11.5]]
+
              
         If a `Mesh` is added to a `Mesh`, a concatenation of the two 
         `Mesh` objects is returned
         
-            >>> addedMesh = baseMesh + (baseMesh + (2, 0))
-            >>> addedMesh.getCellCenters()
-            [[ 0.5, 0.5,]
-             [ 1.5, 0.5,]
-             [ 0.5, 1.5,]
-             [ 1.5, 1.5,]
-             [ 2.5, 0.5,]
-             [ 3.5, 0.5,]
-             [ 2.5, 1.5,]
-             [ 3.5, 1.5,]]
+            >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
+            >>> print addedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
         
         The two `Mesh` objects must be properly aligned in order to concatenate them
         
-            >>> addedMesh = baseMesh + (baseMesh + (3, 0))
+            >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,)))
             Traceback (most recent call last):
             ...
             MeshAdditionError: Vertices are not aligned
 
-            >>> addedMesh = baseMesh + (baseMesh + (2, 2))
+            >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
             Traceback (most recent call last):
             ...
             MeshAdditionError: Faces are not aligned
 
         No provision is made to avoid or consolidate overlapping `Mesh` objects
         
-            >>> addedMesh = baseMesh + (baseMesh + (1, 0))
-            >>> addedMesh.getCellCenters()
-            [[ 0.5, 0.5,]
-             [ 1.5, 0.5,]
-             [ 0.5, 1.5,]
-             [ 1.5, 1.5,]
-             [ 1.5, 0.5,]
-             [ 2.5, 0.5,]
-             [ 1.5, 1.5,]
-             [ 2.5, 1.5,]]
-             
+            >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
+            >>> print addedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+            
         Different `Mesh` classes can be concatenated
          
             >>> from fipy.meshes.tri2D import Tri2D
             >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
-            >>> triMesh = triMesh + (2, 0)
+            >>> triMesh = triMesh + ((2,), (0,))
             >>> triAddedMesh = baseMesh + triMesh
-            >>> triAddedMesh.getCellCenters()
-            [[ 0.5       , 0.5       ,]
-             [ 1.5       , 0.5       ,]
-             [ 0.5       , 1.5       ,]
-             [ 1.5       , 1.5       ,]
-             [ 2.83333333, 0.5       ,]
-             [ 3.83333333, 0.5       ,]
-             [ 2.5       , 0.83333333,]
-             [ 3.5       , 0.83333333,]
-             [ 2.16666667, 0.5       ,]
-             [ 3.16666667, 0.5       ,]
-             [ 2.5       , 0.16666667,]
-             [ 3.5       , 0.16666667,]]
+            >>> print triAddedMesh.getCellCenters()
+            [[ 0.5         1.5         0.5         1.5         2.83333333  3.83333333
+               2.5         3.5         2.16666667  3.16666667  2.5         3.5       ]
+             [ 0.5         0.5         1.5         1.5         0.5         0.5
+               0.83333333  0.83333333  0.5         0.5         0.16666667  0.16666667]]
 
         but their faces must still align properly
         
             >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
-            >>> triMesh = triMesh + (2, 0)
+            >>> triMesh = triMesh + ((2,), (0,))
             >>> triAddedMesh = baseMesh + triMesh
             Traceback (most recent call last):
             ...
@@ -160,17 +137,11 @@ class Mesh:
             ...                         nx = 2, ny = 2, nz = 2)
             >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
             ...                           nx = 1, ny = 1, nz = 1)
-            >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + (2, 0, 0))
-            >>> threeDAddedMesh.getCellCenters()
-            [[ 0.5, 0.5, 0.5,]
-             [ 1.5, 0.5, 0.5,]
-             [ 0.5, 1.5, 0.5,]
-             [ 1.5, 1.5, 0.5,]
-             [ 0.5, 0.5, 1.5,]
-             [ 1.5, 0.5, 1.5,]
-             [ 0.5, 1.5, 1.5,]
-             [ 1.5, 1.5, 1.5,]
-             [ 2.5, 0.5, 0.5,]]
+            >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
+            >>> print threeDAddedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
+             [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
 
         but the different `Mesh` objects must, of course, have the same 
         dimensionality.
@@ -189,36 +160,31 @@ class Mesh:
             >>> from fipy.meshes.grid2D import Grid2D
             >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
             >>> print baseMesh.getCellCenters()
-            [[ 0.5, 0.5,]
-             [ 1.5, 0.5,]
-             [ 0.5, 1.5,]
-             [ 1.5, 1.5,]] 1
-             
+            [[ 0.5  1.5  0.5  1.5]
+             [ 0.5  0.5  1.5  1.5]]
+
         The `factor` can be a scalar
         
             >>> dilatedMesh = baseMesh * 3
-            >>> dilatedMesh.getCellCenters()
-            [[ 1.5, 1.5,]
-             [ 4.5, 1.5,]
-             [ 1.5, 4.5,]
-             [ 4.5, 4.5,]]
-             
+            >>> print dilatedMesh.getCellCenters()
+            [[ 1.5  4.5  1.5  4.5]
+             [ 1.5  1.5  4.5  4.5]]
+
         or a vector
         
-            >>> dilatedMesh = baseMesh * (3, 2)
-            >>> dilatedMesh.getCellCenters()
-            [[ 1.5, 1. ,]
-             [ 4.5, 1. ,]
-             [ 1.5, 3. ,]
-             [ 4.5, 3. ,]]
+            >>> dilatedMesh = baseMesh * ((3,), (2,))
+            >>> print dilatedMesh.getCellCenters()
+            [[ 1.5  4.5  1.5  4.5]
+             [ 1.   1.   3.   3. ]]
+
         
         but the vector must have the same dimensionality as the `Mesh`
         
-            >>> dilatedMesh = baseMesh * (3, 2, 1)
+            >>> dilatedMesh = baseMesh * ((3,), (2,), (1,))
             Traceback (most recent call last):
             ...
-            ValueError: frames are not aligned
-
+            ValueError: shape mismatch: objects cannot be broadcast to a single shape
+            
         """
         pass
         
@@ -338,16 +304,39 @@ class Mesh:
     def _getFaces(self):
         pass
     
-    def getFaces(self, filter = None, **args):
-        """Return `Face` objects of `Mesh`."""
-        faces = self._getFaces()
+##     def getFaces(self, filter = None, **args):
+##         """Return `Face` objects of `Mesh`."""
+##         faces = self._getFaces()
         
-        if filter is not None:
-            from fipy.meshes.meshIterator import FaceIterator            
-            return FaceIterator(mesh=self, ids=[face for face in faces if filter(face, **args)])
-##            return [face for face in faces if filter(face, **args)]
+##         if filter is not None:
+##             from fipy.meshes.meshIterator import FaceIterator            
+##             return FaceIterator(mesh=self, ids=[face for face in faces if filter(face, **args)])
+## ##            return [face for face in faces if filter(face, **args)]
 
-        return faces
+##         return faces
+
+    def getFaces(self, where=None, filter=None, **args):
+        """
+        Return `Face` objects of `Mesh`.
+
+           >>> from fipy import Grid2D
+           >>> m = Grid2D(nx=2, ny=2)
+           >>> print m.getFaces(m.getFaceCenters()[0] < 1)
+           [0 2 4 6 9]
+           >>> print m.getFaces(filter=lambda face: m.getFaceCenters()[0, face] < 1)
+           [0 2 4 6 9]
+
+        """
+        faces = self._getFaces()
+
+        from fipy.meshes.meshIterator import FaceIterator
+
+        if where is not None:
+            return FaceIterator(mesh=self, ids=[face for face in faces if where[face]])
+        elif filter is not None:
+            return FaceIterator(mesh=self, ids=[face for face in faces if filter(face, **args)])
+        else:
+            return faces
 
     def _getMaxFacesPerCell(self):
         pass

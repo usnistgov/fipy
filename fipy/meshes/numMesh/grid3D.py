@@ -196,7 +196,8 @@ class Grid3D(Mesh):
 
     def getFacesBottom(self):
         """
-        Return list of faces on bottom boundary of Grid3D.
+        Return list of faces on bottom boundary of Grid3D with the
+        y-axis running from bottom to top.
 
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((12, 13, 14), mesh.getFacesBottom())
@@ -211,7 +212,8 @@ class Grid3D(Mesh):
         
     def getFacesTop(self):
         """
-        Return list of faces on top boundary of Grid3D.
+        Return list of faces on top boundary of Grid3D with the
+        y-axis running from bottom to top.
         
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((18, 19, 20), mesh.getFacesTop())
@@ -226,7 +228,8 @@ class Grid3D(Mesh):
     
     def getFacesBack(self):
         """
-        Return list of faces on back boundary of Grid3D.
+        Return list of faces on back boundary of Grid3D with the
+        z-axis running from back to front. 
         
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((6, 7, 8, 9, 10, 11), mesh.getFacesBack())
@@ -238,7 +241,8 @@ class Grid3D(Mesh):
         
     def getFacesFront(self):
         """
-        Return list of faces on front boundary of Grid3D.
+        Return list of faces on front boundary of Grid3D with the
+        z-axis running from back to front. 
         
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((0, 1, 2, 3, 4, 5), mesh.getFacesFront())
@@ -249,7 +253,8 @@ class Grid3D(Mesh):
 
     def getFacesLeft(self):
         """
-        Return list of faces on left boundary of Grid3D.
+        Return list of faces on left boundary of Grid3D with the
+        x-axis running from left to right.
         
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((21, 25), mesh.getFacesLeft())
@@ -262,7 +267,8 @@ class Grid3D(Mesh):
 
     def getFacesRight(self):
         """
-        Return list of faces on right boundary of Grid3D.
+        Return list of faces on right boundary of Grid3D with the
+        x-axis running from left to right. 
         
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> numerix.allequal((24, 28), mesh.getFacesRight())

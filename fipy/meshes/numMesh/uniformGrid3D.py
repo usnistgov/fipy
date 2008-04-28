@@ -121,10 +121,10 @@ class UniformGrid3D(Grid3D):
                              origin = self.origin * factor)
 
     def _getConcatenableMesh(self):
-        from fipy.meshes.numMesh.mesh3D import Mesh3D
-        return Mesh3D(vertexCoords = self.getVertexCoords(), 
-                      faceVertexIDs = self._createFaces(), 
-                      cellFaceIDs = self._createCells())
+        from fipy.meshes.numMesh.mesh import Mesh
+        return Mesh(vertexCoords = self.getVertexCoords(), 
+                    faceVertexIDs = self._createFaces(), 
+                    cellFaceIDs = self._createCells())
                       
     def _concatenate(self, other, smallNumber):
         return self._getConcatenableMesh()._concatenate(other = other, smallNumber = smallNumber)
@@ -149,6 +149,9 @@ class UniformGrid3D(Grid3D):
         return ids.reshape((self.nz, self.ny, self.nx + 1)).swapaxes(0,2)
 
     def getExteriorFaces(self):
+        """
+        Return only the faces that have one neighboring cell.
+        """
         XYids = self._getXYFaceIDs()
         XZids = self._getXZFaceIDs()
         YZids = self._getYZFaceIDs()
@@ -161,6 +164,9 @@ class UniformGrid3D(Grid3D):
                                                      numerix.ravel(YZids[-1,     ...]))))
         
     def getInteriorFaces(self):
+        """
+        Return only the faces that have two neighboring cells
+        """
         XYids = self._getXYFaceIDs()
         XZids = self._getXZFaceIDs()
         YZids = self._getYZFaceIDs()

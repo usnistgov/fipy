@@ -133,11 +133,15 @@ class Mesh(fipy.meshes.common.mesh.Mesh):
         return self.faces
 
     def _getInteriorFaces(self):
-	"""Return Faces of Mesh that are not on a Mesh boundary."""
+        """
+        Return only the faces that have two neighboring cells.
+        """
         return self.interiorFaces
 
     def getExteriorFaces(self):
-        """Return all Faces of Mesh that are on a Mesh boundary"""
+        """
+        Return only the faces that have one neighboring cell.
+        """
         return self.faces[len(self._getInteriorFaces()):]
     
 ##    def removeCell(self,cell):

@@ -166,7 +166,8 @@ class Grid2D(Mesh2D):
 
     def getFacesLeft(self):
         """
-        Return list of faces on left boundary of Grid2D.
+        Return list of faces on left boundary of Grid2D with the
+        x-axis running from left to right.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> numerix.allequal((9, 13), mesh.getFacesLeft())
@@ -176,7 +177,8 @@ class Grid2D(Mesh2D):
         
     def getFacesRight(self):
         """
-        Return list of faces on right boundary of Grid2D.
+        Return list of faces on right boundary of Grid2D with the
+        x-axis runnning from left to right.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> numerix.allequal((12, 16), mesh.getFacesRight())
@@ -186,7 +188,8 @@ class Grid2D(Mesh2D):
         
     def getFacesTop(self):
         """
-        Return list of faces on top boundary of Grid2D.
+        Return list of faces on top boundary of Grid2D with the
+        y-axis running from bottom to top.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
@@ -198,7 +201,8 @@ class Grid2D(Mesh2D):
         
     def getFacesBottom(self):
         """
-        Return list of faces on bottom boundary of Grid2D.
+        Return list of faces on bottom boundary of Grid2D with the
+        y-axis running from bottom to top.
         
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> numerix.allequal((0, 1, 2), mesh.getFacesBottom())

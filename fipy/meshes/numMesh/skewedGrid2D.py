@@ -147,19 +147,25 @@ class SkewedGrid2D(Mesh2D):
 
     
     def getFacesLeft(self):
-        """Return list of faces on left boundary of Grid2D.
+        """
+        Return list of faces on left boundary of SkewedGrid2D with the
+        x-axis running from left to right.
         """
         return self.grid.getFacesLeft()
  ##        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
   
     def getFacesRight(self):
-        """Return list of faces on right boundary of Grid2D.
+        """
+        Return list of faces on right boundary of SkewedGrid2D with the
+        x-axis running from left to right.
         """
         return self.grid.getFacesRight()
  ##        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
       
     def getFacesTop(self):
-        """Return list of faces on top boundary of Grid2D.
+        """
+        Return list of faces on top boundary of SkewedGrid2D with the
+        y-axis running from bottom to top.
         """
         return self.grid.getFacesTop()
  ##        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
@@ -167,7 +173,9 @@ class SkewedGrid2D(Mesh2D):
     getFacesUp = getFacesTop
       
     def getFacesBottom(self):
-        """Return list of faces on bottom boundary of Grid2D.
+        """
+        Return list of faces on bottom boundary of SkewedGrid2D with the
+        y-axis running from bottom to top.
         """
         return self.grid.getFacesBottom()
 ##         return FaceIterator(mesh = self, ids = numerix.arange(self.nx))
