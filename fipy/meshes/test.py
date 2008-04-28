@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "cell.py"
- #                                    created: 11/10/03 {3:23:11 PM} 
- #                                last update: 9/3/04 {10:40:05 PM} 
+ #  FILE: "test.py"
+ #                                    created: 11/10/03 {3:23:47 PM}
+ #                                last update: 3/6/06 {8:57:23 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -28,7 +28,6 @@
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
- # ========================================================================
  #  
  #  Description: 
  # 
@@ -40,37 +39,17 @@
  # ###################################################################
  ##
 
-class Cell:
-    def __init__(self, mesh, id):
-        self.id = id
-        self.mesh = mesh
+"""Test implementation of the mesh
+"""
 
-    def getID(self):
-        return self.id
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
+import fipy.tests.testProgram
 
-    def getCenter(self):
-        return self.mesh.getCellCenters()[...,self.id]
-
-    def _getCellToCellDistances(self):
-        return self.mesh._getCellToCellDistances()[...,self.id]
-
-    def _getCellToCellIDs(self):
-        return self.mesh._getCellToCellIDs()[...,self.id]
-
-    def __cmp__(self, cell):
-        return cmp(self.id, cell.getID())
-
-    def getMesh(self):
-        return self.mesh
-
-    def getNormal(self, index):
-        dis = self._getCellToCellDistances()[...,index]
-        adjCellID = self._getCellToCellIDs()[...,index]
-        vec = self.getCenter() - self.mesh.getCellCenters()[...,adjCellID]
-        return vec / dis
-
-    def __repr__(self):
-        return "%s(mesh=%s, id=%s)" % (self.__class__.__name__,`self.getMesh()`, `self.getID()`)
-
-                
-                
+def _suite():
+    return _LateImportDocTestSuite(testModuleNames = (
+        'fipy.meshes.numMesh.test',),
+                                   docTestModuleNames = (
+        'fipy.meshes.common.mesh',))
+    
+if __name__ == '__main__':
+    fipy.tests.testProgram.main(defaultTest='_suite')

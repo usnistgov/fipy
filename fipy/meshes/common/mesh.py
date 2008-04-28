@@ -292,10 +292,35 @@ class Mesh:
     def _getCellsByID(self, ids = None):
         pass
             
-    def getCells(self, filter = None, ids = None, **args):
-        """Return `Cell` objects of `Mesh`."""
-        cells = self._getCellsByID(ids)
+##     def getCells(self, filter = None, ids = None, **args):
+##         """Return `Cell` objects of `Mesh`."""
+##         cells = self._getCellsByID(ids)
         
+##         if filter is not None:
+##             cells = [cell for cell in cells if filter(cell, **args)]
+
+##         return cells
+
+    def getCells(self, where=None, ids=None, filter = None, **args):
+        """
+        Return `Cell` objects of `Mesh`.
+
+           >>> from fipy import Grid2D
+           >>> m = Grid2D(nx=2, ny=2)
+           >>> print m.getCells(m.getCellCenters()[0] < 1)
+           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0), Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
+           >>> print m.getCells(filter=lambda cell: m.getCellCenters()[0, cell.getID()] < 1)
+           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0), Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
+           >>> print m.getCells(ids=(0, 2))
+           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0), Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
+
+        """
+        
+        cells = self._getCellsByID(ids)
+
+        if where is not None:
+            cells = [cell for cell in cells if where[cell.getID()]]
+
         if filter is not None:
             cells = [cell for cell in cells if filter(cell, **args)]
 
