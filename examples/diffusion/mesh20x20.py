@@ -130,7 +130,7 @@ and solve the equation by repeatedly looping in time:
     ...              boundaryConditions=BCs,
     ...              dt=timeStepDuration)
     ...     if __name__ == '__main__':
-    ...         viewer.plot('mesh20x20transient.pdf')
+    ...         viewer.plot()
 
 .. image:: examples/diffusion/mesh20x20transient.pdf
    :scale: 50
@@ -153,7 +153,7 @@ We can also solve the steady-state problem directly
     >>> ImplicitDiffusionTerm().solve(var=phi, 
     ...                               boundaryConditions = BCs)
     >>> if __name__ == '__main__':
-    ...     viewer.plot('mesh20x20steadyState.pdf')
+    ...     viewer.plot()
 
 .. image:: examples/diffusion/mesh20x20steadyState.pdf
    :scale: 50
