@@ -108,22 +108,6 @@ class Grid1D(Mesh1D):
     def getDim(self):
         return 1
         
-    def getFacesLeft(self):
-        """
-        Return face on left boundary of Grid1D as list with the
-        x-axis running from left to right.
-        """
-        from fipy.meshes.meshIterator import FaceIterator
-        return FaceIterator(mesh = self, ids = (0,))
-        
-    def getFacesRight(self):
-        """
-        Return face on right boundary of Grid1D as list with the
-        x-axis running from left to right.
-        """
-        from fipy.meshes.meshIterator import FaceIterator
-        return FaceIterator(mesh = self, ids = (self.numberOfFaces - 1,))
-        
     def getScale(self):
         return self.scale['length']
         

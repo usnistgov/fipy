@@ -173,47 +173,6 @@ class Tri2D(Mesh2D):
         topOfBoxCells = numerix.array([topFaces, upperLeftDiagonalFaces, upperRightDiagonalFaces])
         leftOfBoxCells = numerix.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces])
         return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells), axis=1)
-
-    def getFacesLeft(self):
-        """
-        Return list of faces on left boundary of Tri2D with the
-        x-axis running from left to right.
-        """
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfHorizontalFaces, 
-                                               self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
-                                               self.nx + 1))
-        
-    def getFacesRight(self):
-        """
-        Return list of faces on right boundary of Tri2D with the
-        x-axis running from left to right.
-        """
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfHorizontalFaces + self.nx, 
-                                               self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
-                                               self.nx + 1))
-        
-    def getFacesTop(self):
-        """
-        Return list of faces on top boundary of Tri2D with the
-        y-axis running from bottom to top.
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.numberOfHorizontalFaces - self.nx, 
-                                               self.numberOfHorizontalFaces))
-
-    getFacesUp = getFacesTop
-        
-    def getFacesBottom(self):
-        """
-        Return list of faces on top boundary of Tri2D with the
-        y-axis running from bottom to top.
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.nx))
-
-    getFacesDown = getFacesBottom
         
     def getScale(self):
         return self.scale['length']

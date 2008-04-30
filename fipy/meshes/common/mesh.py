@@ -329,17 +329,6 @@ class Mesh:
     def _getFaces(self):
         pass
     
-##     def getFaces(self, filter = None, **args):
-##         """Return `Face` objects of `Mesh`."""
-##         faces = self._getFaces()
-        
-##         if filter is not None:
-##             from fipy.meshes.meshIterator import FaceIterator            
-##             return FaceIterator(mesh=self, ids=[face for face in faces if filter(face, **args)])
-## ##            return [face for face in faces if filter(face, **args)]
-
-##         return faces
-
     def getFaces(self, where=None, filter=None, **args):
         """
         Return `Face` objects of `Mesh`.
@@ -363,6 +352,100 @@ class Mesh:
         else:
             return faces
 
+    def getFacesLeft(self, where=True):
+        """
+        Return face on left boundary of Grid1D as list with the
+        x-axis running from left to right.
+
+            >>> from fipy import Grid2D, Grid3D
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> numerix.allequal((21, 25), mesh.getFacesLeft())
+            1
+            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
+            >>> numerix.allequal((9, 13), mesh.getFacesLeft())
+            1
+
+        """
+        return self.getFaces((self.getFaceCenters()[0] == min(self.getFaceCenters()[0])) & where)
+
+    def getFacesRight(self, where=True):
+        """
+        Return list of faces on right boundary of Grid3D with the
+        x-axis running from left to right. 
+
+            >>> from fipy import Grid2D, Grid3D
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> numerix.allequal((24, 28), mesh.getFacesRight())
+            1
+            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
+            >>> numerix.allequal((12, 16), mesh.getFacesRight())
+            1
+            
+        """
+        return self.getFaces((self.getFaceCenters()[0] == max(self.getFaceCenters()[0])) & where)
+
+    def getFacesBottom(self, where=True):
+        """
+        Return list of faces on bottom boundary of Grid3D with the
+        y-axis running from bottom to top.
+
+            >>> from fipy import Grid2D, Grid3D
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> numerix.allequal((12, 13, 14), mesh.getFacesBottom())
+            1
+            >>> x, y, z = mesh.getFaceCenters()
+            >>> numerix.allequal((12, 13), mesh.getFacesBottom(x < 1))
+            1
+            
+        """
+        return self.getFaces((self.getFaceCenters()[1] == min(self.getFaceCenters()[1])) & where)
+
+    getFacesDown = getFacesBottom
+
+    def getFacesTop(self, where=True):
+        """
+        Return list of faces on top boundary of Grid3D with the
+        y-axis running from bottom to top.
+
+            >>> from fipy import Grid2D, Grid3D
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> numerix.allequal((18, 19, 20), mesh.getFacesTop())
+            1
+            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
+            >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
+            1
+            
+        """
+        return self.getFaces((self.getFaceCenters()[1] == max(self.getFaceCenters()[1])) & where)
+
+    getFacesUp = getFacesTop
+
+    def getFacesBack(self, where=True):
+        """
+        Return list of faces on back boundary of Grid3D with the
+        z-axis running from front to back. 
+
+            >>> from fipy import Grid3D
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> numerix.allequal((6, 7, 8, 9, 10, 11), mesh.getFacesBack())
+            1
+
+        """
+        return self.getFaces((self.getFaceCenters()[2] == max(self.getFaceCenters()[2])) & where)
+
+    def getFacesFront(self, where=True):
+        """
+        Return list of faces on front boundary of Grid3D with the
+        z-axis running from front to back. 
+
+            >>> from fipy import Grid3D        
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> numerix.allequal((0, 1, 2, 3, 4, 5), mesh.getFacesFront())
+            1
+
+        """
+        return self.getFaces((self.getFaceCenters()[2] == min(self.getFaceCenters()[2])) & where)
+    
     def _getMaxFacesPerCell(self):
         pass
 

@@ -163,54 +163,6 @@ class Grid2D(Mesh2D):
         nj=self.ny)
 
         return cellFaceIDs
-
-    def getFacesLeft(self):
-        """
-        Return list of faces on left boundary of Grid2D with the
-        x-axis running from left to right.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((9, 13), mesh.getFacesLeft())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
-        
-    def getFacesRight(self):
-        """
-        Return list of faces on right boundary of Grid2D with the
-        x-axis runnning from left to right.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((12, 16), mesh.getFacesRight())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
-        
-    def getFacesTop(self):
-        """
-        Return list of faces on top boundary of Grid2D with the
-        y-axis running from bottom to top.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
-
-    getFacesUp = getFacesTop
-        
-    def getFacesBottom(self):
-        """
-        Return list of faces on bottom boundary of Grid2D with the
-        y-axis running from bottom to top.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((0, 1, 2), mesh.getFacesBottom())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.nx))
-
-    getFacesDown = getFacesBottom
     
     def getScale(self):
         return self.scale['length']
