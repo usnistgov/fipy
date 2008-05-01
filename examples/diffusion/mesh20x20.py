@@ -42,8 +42,8 @@
 
 r"""
 
-This example again solves diffusion problem demonstrating the use of
-varied boundary conditions.
+This example solves a diffusion problem and demonstrates the use of
+applying boundary condition patches.
 
 .. raw:: latex
 
@@ -90,8 +90,8 @@ We apply Dirichlet boundary conditions
     >>> valueTopLeft = 0
     >>> valueBottomRight = 1
 
-to the top left and bottom right corners.  Neumann boundary conditions
-are automatically applied to the top right and bottom left corners.
+to the top-left and bottom-right corners.  Neumann boundary conditions
+are automatically applied to the top-right and bottom-left corners.
 
 .. raw:: latex
 
@@ -138,7 +138,7 @@ and solve the equation by repeatedly looping in time:
 
 ..
 
-We can test the value of the bottom right corner cell.
+We can test the value of the bottom-right corner cell.
 
     >>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
     1
@@ -159,7 +159,7 @@ We can also solve the steady-state problem directly
    :scale: 50
    :align: center
 
-and test the value of the bottom right corner cell.
+and test the value of the bottom-right corner cell.
 
     >>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
     1
