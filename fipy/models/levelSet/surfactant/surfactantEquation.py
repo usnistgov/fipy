@@ -76,7 +76,7 @@ class SurfactantEquation:
         self.bc = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
         self.eq = transientTerm - convectionTerm
 
-    def solve(self, var, boundaryConditions = (), solver = LinearCGSSolver(), dt = 1.):
+    def solve(self, var, boundaryConditions = (), solver=None, dt = 1.):
         """
         Builds and solves the `SurfactantEquation`'s linear system once.
                 
@@ -87,6 +87,9 @@ class SurfactantEquation:
            - `dt`: The time step size.
 
         """
+
+        if solver is None:
+            solver= LinearCGSSolver()
 
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)

@@ -57,24 +57,12 @@ Test case.
 """
 
 from fipy import *
-import os, sys
+import os
 
-if sys.platform == 'win32':
-    meshName = 'tmp.msh'
-else:
-    import tempfile
-    (f, meshName) = tempfile.mkstemp('.msh')
-
-os.system("gmsh " + os.path.splitext(__file__)[0] + ".gmsh -2 -v 0 -format msh -o " + meshName)
-
-if sys.platform != 'win32':
-    os.close(f)
-    
 def dilate(x):
     return x * 1.1
 
-mesh = GmshImporter2DIn3DSpace(meshName).extrude(extrudeFunc=dilate)
-os.remove(meshName)
+mesh = GmshImporter2DIn3DSpace(os.path.splitext(__file__)[0] + '.gmsh').extrude(extrudeFunc=dilate)
 
 x, y, z = mesh.getCellCenters()
 

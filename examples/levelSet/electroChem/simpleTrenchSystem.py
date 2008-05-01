@@ -337,12 +337,12 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         distanceVar.extendVariable(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
-        advectionEquation.solve(distanceVar, dt = dt) 
+        advectionEquation.solve(distanceVar, dt = dt, solver=LinearCGSSolver()) 
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt, 
-                            boundaryConditions = metalEquationBCs)
+                            boundaryConditions = metalEquationBCs, solver=LinearCGSSolver())
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                                   boundaryConditions = catalystBCs)
+                                   boundaryConditions = catalystBCs, solver=LinearCGSSolver())
 
     try:
         import os

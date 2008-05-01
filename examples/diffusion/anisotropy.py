@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 10/5/07 {10:49:43 AM}
+ #                                last update: 5/1/08 {3:25:37 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -91,28 +91,9 @@ Create the mesh with Gmsh.
     ...       'Line Loop(10) = {6, 7, 8, 9} ;\n',
     ...       'Plane Surface(11) = {10};\n']
 
-    >>> import tempfile
-    >>> (f, geomName) = tempfile.mkstemp('.geo')
-    >>> file = open(geomName, 'w')
-    >>> file.writelines(lines)
-    >>> file.close()
-    >>> import os
-    >>> os.close(f)
 
-    >>> import sys
-    >>> if sys.platform == 'win32':
-    ...     meshName = 'tmp.msh'
-    ... else:
-    ...     (f, meshName) = tempfile.mkstemp('.msh')
-    >>> os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
-    0
 
-    >>> if sys.platform != 'win32':
-    ...     os.close(f)
-    >>> os.remove(geomName)
-
-    >>> mesh = GmshImporter2D(meshName)
-    >>> os.remove(meshName)
+    >>> mesh = GmshImporter2D(lines)
 
 Set the center most cell to have a value.
 
@@ -134,7 +115,8 @@ Make the equation, viewer and solve.
 
     >>> eqn = TransientTerm() == DiffusionTerm((gamma,))
 
-    >>> viewer = make(var, limits={'datamin' : 0.0, 'datamax' : 0.001})
+    >>> if __name__ == '__main__':
+    ...     viewer = make(var, limits={'datamin' : 0.0, 'datamax' : 0.001})
 
     >>> mass = float(numerix.sum(mesh.getCellVolumes() * var))
     >>> time = 0

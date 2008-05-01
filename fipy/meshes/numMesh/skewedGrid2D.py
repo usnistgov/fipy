@@ -69,95 +69,33 @@ class SkewedGrid2D(Mesh2D):
             self.dy = dy
         else:
             self.dy /= scale
+
+        from fipy import Grid2D
+        self.grid = Grid2D(nx=nx, ny=ny, dx=dx, dy=dy)
+
+        self.numberOfVertices = self.grid._getNumberOfVertices()
         
-        self.numberOfVertices = (self.nx + 1) * (self.ny + 1)
-        
-        vertices = self._createVertices()
+        vertices = self.grid.getVertexCoords()
+
         changedVertices = numerix.zeros(vertices.shape, 'd')
-##        changedVertices = changedVertices.astype(numerix.Float)
-        for i in range(len(vertices)):
+
+        for i in range(len(vertices[0])):
             if((i % (nx+1)) != 0 and (i % (nx+1)) != nx and (i / nx+1) != 0 and (i / nx+1) != ny):
-                changedVertices[i, 0] = vertices[i, 0] + (rand * ((random.random() * 2) - 1))
-                changedVertices[i, 1] = vertices[i, 1] + (rand * ((random.random() * 2) - 1))
+                changedVertices[0, i] = vertices[0, i] + (rand * ((random.random() * 2) - 1))
+                changedVertices[1, i] = vertices[1, i] + (rand * ((random.random() * 2) - 1))
             else:
-                changedVertices[i, 0] = vertices[i, 0]
-                changedVertices[i, 1] = vertices[i, 1]
-        faces = self._createFaces()
-        cells = self._createCells()
+                changedVertices[0, i] = vertices[0, i]
+                changedVertices[1, i] = vertices[1, i]
+
+
+        faces = self.grid._getFaceVertexIDs()
+        
+        cells = self.grid._getCellFaceIDs()
+
         Mesh2D.__init__(self, changedVertices, faces, cells)
         
         self.setScale(value = scale)
-        
-    def _createVertices(self):
-        x = numerix.arange(self.nx + 1) * self.dx
-        y = numerix.arange(self.ny + 1) * self.dy
-        x = numerix.resize(x, (self.numberOfVertices,))
-        y = numerix.repeat(y, self.nx + 1)
-        return numerix.transpose(numerix.array((x, y)))
-    
-    def _createFaces(self):
-        """
-        v1, v2 refer to the cells.
-        Horizontel faces are first
-        """
-        v1 = numerix.arange(self.numberOfVertices)
-        v2 = v1 + 1
-        horizontalFaces = vector.prune(numerix.transpose(numerix.array((v1, v2))), self.nx + 1, self.nx)
-        v1 = numerix.arange(self.numberOfVertices - (self.nx + 1))
-        v2 = v1 + self.nx + 1
-        verticalFaces =  numerix.transpose(numerix.array((v1, v2)))
-
-        ## reverse some of the face orientations to obtain the correct normals
-
-        tmp = horizontalFaces.copy()
-        horizontalFaces[:self.nx, 0] = tmp[:self.nx, 1]
-        horizontalFaces[:self.nx, 1] = tmp[:self.nx, 0]
-
-        tmp = verticalFaces.copy()
-        verticalFaces[:, 0] = tmp[:, 1]
-        verticalFaces[:, 1] = tmp[:, 0]
-        verticalFaces[::(self.nx + 1), 0] = tmp[::(self.nx + 1), 0]
-        verticalFaces[::(self.nx + 1), 1] = tmp[::(self.nx + 1), 1]
-
-        return numerix.concatenate((horizontalFaces, verticalFaces))
-
-    def _createCells(self):
-        """
-        cells = (f1, f2, f3, f4) going anticlock wise.
-        f1 etx refer to the faces
-        """
-        self.numberOfHorizontalFaces = self.nx * (self.ny + 1)
-        self.numberOfFaces = self.numberOfHorizontalFaces + self.ny * (self.nx + 1)
-        f1 = numerix.arange(self.numberOfHorizontalFaces - self.nx)
-        f3 = f1 + self.nx
-        f2 = vector.prune(numerix.arange(self.numberOfHorizontalFaces,  self.numberOfFaces), self.nx + 1)
-        f4 = f2 - 1
-        return numerix.transpose(numerix.array((f1, f2, f3, f4)))
-
-    def getFacesLeft(self):
-        """Return list of faces on left boundary of Grid2D.
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
-    
-    def getFacesRight(self):
-        """Return list of faces on right boundary of Grid2D.
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
-        
-    def getFacesTop(self):
-        """Return list of faces on top boundary of Grid2D.
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
-
-    getFacesUp = getFacesTop
-        
-    def getFacesBottom(self):
-        """Return list of faces on bottom boundary of Grid2D.
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.nx))
-
-    getFacesDown = getFacesBottom
-    
+            
     def getScale(self):
         return self.scale['length']
         

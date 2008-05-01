@@ -406,12 +406,21 @@ class Mesh(_CommonMesh):
     """get Topology methods"""
 
     def getVertexCoords(self):
-        return self.vertexCoords
+        if hasattr(self, 'vertexCoords'):
+            return self.vertexCoords
+        else:
+            return self._createVertices()
 
     def getExteriorFaces(self):
+        """
+        Return only the faces that have one neighboring cell.
+        """
         return self.exteriorFaces
             
     def getInteriorFaces(self):
+        """
+        Return only the faces that have two neighboring cells.
+        """
         return self.interiorFaces
         
     def getFaceCellIDs(self):
@@ -521,7 +530,7 @@ class Mesh(_CommonMesh):
     def _calcCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         tmp = tmp[...,1,:] - tmp[...,0,:]
-        tmp = MA.filled(MA.where(MA.getmask(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
+        tmp = MA.filled(MA.where(MA.getmaskarray(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
         self.cellDistanceVectors = tmp
         self.cellDistances = MA.filled(MA.sqrt(MA.sum(tmp * tmp, 0)))
 

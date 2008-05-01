@@ -258,6 +258,11 @@ It works on all common platforms and produces publication quality hard
 copies. Version 0.72.1 or higher is required. `Matplotlib installers
 for specific platforms`_ are available |citeMatplotlibDownload|.
 
+.. note::
+
+   Matplotlib_ is noticeably slower than Pygist_ or Gnuplot.py_, but
+   has superior image rendering and plotting functionality.
+
 .. _Matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
 .. _Matplotlib installers for specific platforms: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
 .. |citeMatplotlibDownload| raw:: latex
@@ -308,11 +313,6 @@ Matplotlib_.
    The facility to produce hard copies in Pygist_ does not work very well and
    may crash the |FiPy| run. "``.eps``" and "``.cgm``" export seem to work.
 
-.. attention::
-
-   Pygist_ seems to be unable to make contour plots on x86_64
-   architectures running Linux.
-
 .. note::
 
    If you experience difficulty building the native Pygist_ viewer on
@@ -321,11 +321,10 @@ Matplotlib_.
 
 .. note::
 
-   Pygist_ can have problems finding color pallets, such as "``heat.gp``" and
-   "``work.gs``", when installed locally. You may need to set the
-   ``GISTPATH`` environment variable to point to the directory containing
-   these files (you may find it as "``g/``" within the directory you
-   specified for ``--home``).
+   Pygist_ can have problems finding color pallets such as
+   "``heat.gp``" and "``work.gs``" when installed locally. To avoid
+   this, copy the files in the "``INSTALLPATH/g``" directory into
+   "``INSTALLPATH/lib/python/gist/``" after installation.
 
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
 

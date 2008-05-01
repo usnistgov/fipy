@@ -100,8 +100,11 @@ class UniformGrid2D(Grid2D):
                              origin = self.origin + vector)
 
     def __mul__(self, factor):
-        return UniformGrid2D(dx = self.dx * factor, nx = self.nx, 
-                             dy = self.dy * factor, ny = self.ny, 
+        if numerix.shape(factor) is ():
+            factor = numerix.resize(factor, (2,1))
+        
+        return UniformGrid2D(dx = self.dx * numerix.array(factor[0]), nx = self.nx, 
+                             dy = self.dy * numerix.array(factor[1]), ny = self.ny, 
                              origin = self.origin * factor)
 
     def _getConcatenableMesh(self):
@@ -121,6 +124,9 @@ class UniformGrid2D(Grid2D):
         return self._createCells()
         
     def getExteriorFaces(self):
+        """
+        Return only the faces that have one neighboring cell.
+        """
         return FaceIterator(mesh=self,
                             ids=numerix.concatenate((numerix.arange(0, self.nx),
                                                      numerix.arange(0, self.nx) + self.nx * self.ny,
@@ -128,6 +134,9 @@ class UniformGrid2D(Grid2D):
                                                      numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces + self.nx)))
         
     def getInteriorFaces(self):
+        """
+        Return only the faces that have two neighboring cells.
+        """
         Hids = numerix.arange(0, self.numberOfHorizontalFaces)
         Hids = numerix.reshape(Hids, (self.ny + 1, self.nx))
         Hids = Hids[1:-1,...]

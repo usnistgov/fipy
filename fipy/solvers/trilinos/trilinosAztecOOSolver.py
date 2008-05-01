@@ -65,7 +65,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         """
         TrilinosSolver.__init__(self, tolerance=tolerance,
-                                      iterations=iterations, steps=steps, precon=None)
+                                iterations=iterations, steps=steps, precon=None)
         self.preconditioner = precon
 
     def _applyTrilinosSolver(self, A, LHS, RHS):

@@ -96,7 +96,7 @@ if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer = viewers.make(vars = var)
     viewer.plot()
-    x = mesh.getCellCenters()[:,0]
+    x = mesh.getCellCenters()[0]
     Lx = nx * dx
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     print var.allclose(analyticalArray)

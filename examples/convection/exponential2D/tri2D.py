@@ -69,14 +69,9 @@ This example solves the steady-state convection-diffusion equation as described 
     
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
-    >>> if solverSuite() == 'Trilinos':
-    ...     solver = LinearGMRESSolver(tolerance = 1.e-15, iterations = 2000)
-    ... else:
-    ...     solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000)
 
     >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = solver )
+    ...          boundaryConditions = boundaryConditions)
     
 The analytical solution test for this problem is given by:
 

@@ -132,17 +132,18 @@ class MayaviSurfactantViewer(Viewer):
         ##minX = self.distanceVar.getMesh().getFaceCenters()[0].min()
 
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
-        coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
-        
-        coordinates -= numerix.take(self.distanceVar.getGrad() * self.distanceVar, IDs)
+        coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()).swapaxes(0,1), IDs)
+
+        coordinates -= numerix.take(numerix.array(self.distanceVar.getGrad() * self.distanceVar).swapaxes(0,1), IDs)
+
         coordinates *= self.zoomFactor
 
         shiftedCoords = coordinates.copy()
         shiftedCoords[:,0] = -coordinates[:,0] ##+ (maxX - minX)
         coordinates = numerix.concatenate((coordinates, shiftedCoords))
 
-
         from lines import _getOrderedLines
+
         lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.getMesh()._getCellDistances().min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
@@ -158,7 +159,6 @@ class MayaviSurfactantViewer(Viewer):
         data = numerix.where(data < 0.0001,
                              val,
                              data)
-
         
         for line in lines:
             if len(line) > 2: 
@@ -254,13 +254,13 @@ class MayaviSurfactantViewer(Viewer):
         xmin = self._getLimit('datamin')
         if xmin is None:
             xmin = self.surfactantVar.min()
-            
+
         slh.range_var.set((xmin, xmax))
         slh.set_range_var()
         
-        slh.v_range_var.set((self.surfactantVar.min(), self.surfactantVar.max()))
+        slh.v_range_var.set((float(self.surfactantVar.min()), float(self.surfactantVar.max())))
         slh.set_v_range_var()
-        
+
         self._viewer.Render()
         
         if filename is not None:

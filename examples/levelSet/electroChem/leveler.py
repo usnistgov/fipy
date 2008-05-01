@@ -371,12 +371,12 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         mesh.getTopFaces(),
         bulkLevelerConcentration),)
 
-    eqnTuple = ( (advectionEquation, distanceVar, ()),
-                 (levelerSurfactantEquation, levelerVar, ()),
-                 (acceleratorSurfactantEquation, acceleratorVar, ()),
-                 (metalEquation, metalVar,  metalEquationBCs),
-                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs),
-                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs))
+    eqnTuple = ( (advectionEquation, distanceVar, (), None),
+                 (levelerSurfactantEquation, levelerVar, (), None),
+                 (acceleratorSurfactantEquation, acceleratorVar, (), None),
+                 (metalEquation, metalVar,  metalEquationBCs, LinearPCGSolver()),
+                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs, LinearPCGSolver()),
+                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs, LinearPCGSolver()))
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 
@@ -412,12 +412,12 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
         extensionVelocityVariable[mesh.getFineMesh().getNumberOfCells():] = 0.
 
-        for eqn, var, BCs in eqnTuple:
+        for eqn, var, BCs, solver in eqnTuple:
             var.updateOld()
 
-        for eqn, var, BCs in eqnTuple:
-            eqn.solve(var, boundaryConditions = BCs, dt = dt)
-            
+        for eqn, var, BCs, solver in eqnTuple:
+            eqn.solve(var, boundaryConditions = BCs, dt = dt, solver=solver)
+
         totalTime += dt
 
     try:

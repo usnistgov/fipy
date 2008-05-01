@@ -60,6 +60,7 @@ def _suite():
             'fipy.variables.uniformNoiseVariable',
             'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.modularVariable',
+            'fipy.variables.binaryOperatorVariable'
         ))
     
 if __name__ == '__main__':

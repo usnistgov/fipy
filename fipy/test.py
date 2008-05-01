@@ -49,7 +49,7 @@ def _suite():
         'models.test',
         'terms.test',
         'tools.test',
-        'meshes.numMesh.test',
+        'meshes.test',
         'variables.test',
         'viewers.test',
 	'boundaryConditions.test',
