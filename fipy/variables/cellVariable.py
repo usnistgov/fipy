@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 1/3/07 {3:16:57 PM} 
+ #                                last update: 12/17/07 {6:03:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -140,7 +140,7 @@ class CellVariable(_MeshVariable):
             
     def __call__(self, point=None):
         if point is not None:
-            return self[self.getMesh()._getNearestCellID(point)]
+            return self[...,self.getMesh()._getNearestCellID(point)]
         else:
             return _MeshVariable.__call__(self)
 
