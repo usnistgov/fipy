@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 10/5/07 {10:49:43 AM}
+ #                                last update: 5/1/08 {3:25:37 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -115,7 +115,8 @@ Make the equation, viewer and solve.
 
     >>> eqn = TransientTerm() == DiffusionTerm((gamma,))
 
-    >>> viewer = make(var, limits={'datamin' : 0.0, 'datamax' : 0.001})
+    >>> if __name__ == '__main__':
+    ...     viewer = make(var, limits={'datamin' : 0.0, 'datamax' : 0.001})
 
     >>> mass = float(numerix.sum(mesh.getCellVolumes() * var))
     >>> time = 0
