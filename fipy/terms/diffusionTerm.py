@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/29/07 {10:40:47 AM} 
+ #                                last update: 5/14/08 {1:23:37 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -204,7 +204,7 @@ class _DiffusionTerm(Term):
                 if rank > 0:
                     shape = numerix.getShape(coeff)
                     if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
-                        raise IndexError, 'diffusion coefficent tensor index error'          
+                        raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'          
 
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
                 rotationTensor = self._getRotationTensor(mesh)
@@ -570,7 +570,7 @@ class _DiffusionTerm(Term):
            >>> print numerix.allclose(term._getGeomCoeff(mesh)[0], val)
            Traceback (most recent call last):
                ...
-           IndexError: diffusion coefficent tensor index error
+           IndexError: diffusion coefficent tensor is not an appropriate shape for this mesh
 
         Anisotropy test
 
