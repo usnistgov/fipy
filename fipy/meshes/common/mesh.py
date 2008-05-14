@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/14/08 {1:21:18 PM} 
+ #                                last update: 5/14/08 {5:20:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -380,7 +380,7 @@ class Mesh:
         """
         return self.getFaces().where(self.getFaceCenters()[0] == max(self.getFaceCenters()[0]))
 
-    def getFacesBottom(self, where=True):
+    def getFacesBottom(self):
         """
         Return list of faces on bottom boundary of Grid3D with the
         y-axis running from bottom to top.
@@ -390,7 +390,7 @@ class Mesh:
             >>> numerix.allequal((12, 13, 14), mesh.getFacesBottom())
             1
             >>> x, y, z = mesh.getFaceCenters()
-            >>> numerix.allequal((12, 13), mesh.getFacesBottom.where(x < 1))
+            >>> numerix.allequal((12, 13), mesh.getFacesBottom().where(x < 1))
             1
             
         """
@@ -398,7 +398,7 @@ class Mesh:
 
     getFacesDown = getFacesBottom
 
-    def getFacesTop(self, where=True):
+    def getFacesTop(self):
         """
         Return list of faces on top boundary of Grid3D with the
         y-axis running from bottom to top.
@@ -416,7 +416,7 @@ class Mesh:
 
     getFacesUp = getFacesTop
 
-    def getFacesBack(self, where=True):
+    def getFacesBack(self):
         """
         Return list of faces on back boundary of Grid3D with the
         z-axis running from front to back. 
@@ -429,7 +429,7 @@ class Mesh:
         """
         return self.getFaces().where(self.getFaceCenters()[2] == max(self.getFaceCenters()[2]))
 
-    def getFacesFront(self, where=True):
+    def getFacesFront(self):
         """
         Return list of faces on front boundary of Grid3D with the
         z-axis running from front to back. 

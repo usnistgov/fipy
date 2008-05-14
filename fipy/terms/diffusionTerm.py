@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 11/8/07 {6:44:03 PM} 
+ #                                last update: 3/29/07 {10:40:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -223,7 +223,7 @@ class _DiffusionTerm(Term):
         
         numerix.put(interiorCoeff, mesh.getExteriorFaces(), 0)
         
-        interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs(), axis=-1)
+        interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
         coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
@@ -283,7 +283,7 @@ class _DiffusionTerm(Term):
                                                                                  equation=equation)
             del lowerOrderBCs
             
-            lowerOrderb = numerix.array(lowerOrderb / mesh.getCellVolumes())
+            lowerOrderb = lowerOrderb / mesh.getCellVolumes()
             volMatrix = SparseMatrix(size = N, bandwidth = 1)
             
             volMatrix.addAtDiagonal(1. / mesh.getCellVolumes() )
@@ -363,7 +363,7 @@ class _DiffusionTerm(Term):
             L.addAtDiagonal(mesh.getCellVolumes())
             b = numerix.zeros((N),'d')
             
-        return (L, numerix.array(b))
+        return (L, b)
         
     def _test(self):
         r"""

@@ -4,7 +4,7 @@
  # 
  # FILE: "meshIterator.py"
  #                                     created: 3/3/06 {9:00:00 PM}
- #                                 last update: 11/8/07 {6:00:29 PM}
+ #                                 last update: 5/14/08 {5:19:38 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,19 +42,24 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 class MeshIterator(list):
-    def __init__(self, mesh, ids=(), checkIDs=False):
+    def __init__(self, mesh, ids=(), checkIDs=False, _where=True):
         if type(ids) is type(1) or numerix.shape(ids) is ():
             ids = (ids,)
         list.__init__(self, ids)
         self.mesh = mesh
         if checkIDs and not self._canContain(ids):
             raise IndexError, 'Invalid IDs: %s' % str(other)
+        self._where = _where
         
     def getMesh(self):
         return self.mesh
         
     def getIDs(self):
-        return self[:]
+        ids = self[:]
+        if self._where is True:
+            return ids
+        else:
+            return numerix.compress(self._where, ids)
         
     def __repr__(self):
         return "%s(mesh=%s, ids=%s)" % (self.__class__.__name__,`self.getMesh()`, `self.getIDs()`)
@@ -63,8 +68,14 @@ class MeshIterator(list):
         return str(self.getIDs())
         
     def where(self, condition):
-        return self.__class__(mesh=self.mesh, 
-                              ids=numerix.compress(condition, self.getIDs()))
+        if len(condition) == len(self):
+            return self.__class__(mesh=self.mesh, 
+                                  ids=self.getIDs(),
+                                  _where=condition)
+        else:
+            return self.__class__(mesh=self.mesh, 
+                                  ids=self.ids,
+                                  _where=self._where & condition)
               
                               ##     def __getitem__(self, index):
                               ##         return self.__class__(mesh=self.getMesh(), ids=self.getIDs()[index])
