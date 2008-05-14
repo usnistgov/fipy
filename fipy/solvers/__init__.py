@@ -58,7 +58,9 @@ else:
 
 # Define functions to say whether this is processor 0 - it's proc 0 if we're
 # not running in parallel, or if we are and Epetra says this is proc 0
-if(solverSuite() != 'Trilinos'):
+
+if not '--Trilinos' in sys.argv[1:]:
+
     def mainProcessor():
         """
         Returns true if and only if the current processor is processor 0.

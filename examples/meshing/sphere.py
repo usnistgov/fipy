@@ -4,14 +4,14 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "test.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/3/07 {5:17:28 PM} 
+ #  FILE: "sphere.py"
+ #                                    created: 4/6/06 {11:26:11 AM}
+ #                                last update: 10/5/07 {10:49:43 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
+ #     www: http://ctcms.nist.gov
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards
@@ -36,23 +36,42 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
+ #  2006- 4- 6 JEG 1.0 original
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+"""
 
-def _suite():
-    return _LateImportDocTestSuite(docTestModuleNames = (
-            'howToWriteAScript',
-            'simpleTrenchSystem',
-            'gold',
-            'leveler',
-        ), base = __name__)
-    
+An interesting problem is to solve an equation on a 2D geometry that
+is embedded in 3D space, such as diffusion on the surface of a sphere
+(with nothing either inside or outside the sphere). This example
+demonstrates how to create the required mesh.
+
+Test case.
+
+   >>> max(numerix.sqrt(x**2 + y**2 + z**2)) < 5.3
+   True
+   >>> min(numerix.sqrt(x**2 + y**2 + z**2)) > 5.2
+   True
+   
+"""
+
+from fipy import *
+import os
+
+def dilate(x):
+    return x * 1.1
+
+mesh = GmshImporter2DIn3DSpace(os.path.splitext(__file__)[0] + '.gmsh').extrude(extrudeFunc=dilate)
+
+x, y, z = mesh.getCellCenters()
+
+var = CellVariable(mesh=mesh, value=x * y * z)
+
 if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
 
-            
-            
+    viewer = MayaviViewer(vars = var, limits= {'datamin' : min(x * y * z), 'datamax' : max(x * y * z)})
+    
+    viewer.plot()
+
+    raw_input('finished')

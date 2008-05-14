@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 7/11/07 {2:47:43 PM} 
+ #                                last update: 3/7/08 {1:21:36 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -165,10 +165,6 @@ class TSVViewer(Viewer):
         else:
             f = sys.stdout
         
-        if self.title:
-            f.write(self.title)
-            f.write("\n")
-            
         mesh = self.vars[0].getMesh()
         dim = mesh.getDim()
         

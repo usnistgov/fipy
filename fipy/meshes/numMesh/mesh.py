@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 3/6/08 {9:28:54 AM} 
+ #                                last update: 5/14/08 {11:42:26 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -449,12 +449,21 @@ class Mesh(_CommonMesh):
     """get Topology methods"""
 
     def getVertexCoords(self):
-        return self.vertexCoords
+        if hasattr(self, 'vertexCoords'):
+            return self.vertexCoords
+        else:
+            return self._createVertices()
 
     def getExteriorFaces(self):
+        """
+        Return only the faces that have one neighboring cell.
+        """
         return self.exteriorFaces
             
     def getInteriorFaces(self):
+        """
+        Return only the faces that have two neighboring cells.
+        """
         return self.interiorFaces
         
     def getFaceCellIDs(self):

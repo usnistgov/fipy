@@ -6,7 +6,7 @@
  # 
  # FILE: "movingMesh.py"
  #                                     created: 11/25/07 {6:52:31 PM}
- #                                 last update: 12/6/07 {5:55:29 PM}
+ #                                 last update: 3/6/08 {3:57:14 PM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -143,10 +143,13 @@ def MovingMesh(mesh):
 
                 factor = max(factor)
 
+#                 print displacement
                 if factor > 1.:
                     displacement /= factor
                     displacementMag = numerix.sqrtDot(displacement, displacement)
                     newVertexCoords = self.vertexCoords + displacement
+
+#                 print displacement
 
                 displacmentLInfNorm = max(displacementMag)
 

@@ -5,8 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/3/07 {5:17:28 PM} 
+ #                                    created: 11/26/03 {3:23:47 PM}
+ #                                last update: 5/4/06 {2:14:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,19 +40,19 @@
  # ###################################################################
  ##
 
+"""Run all the test cases in examples/meshing/
+"""
+
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportDocTestSuite(docTestModuleNames = (
-            'howToWriteAScript',
-            'simpleTrenchSystem',
-            'gold',
-            'leveler',
-        ), base = __name__)
+    return _LateImportDocTestSuite(testModuleNames = (),
+                                   docTestModuleNames = (
+                                       'sphere',
+                                   ), 
+                                   base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
 
-            
-            

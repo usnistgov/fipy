@@ -40,14 +40,14 @@
 
 from fipy.terms.diffusionTerm import DiffusionTerm
 
-class CollectedDiffusionTerm(DiffusionTerm):
+class _CollectedDiffusionTerm(DiffusionTerm):
     def __init__(self):
         self.orders = [None, None]
 
     def __iadd__(self, other):
         if not isinstance(other, DiffusionTerm):
-            return DiffusionTerm.__iadd__(self, other)
-        elif isinstance(other, CollectedDiffusionTerm):
+            return DiffusionTerm.__add__(self, other)
+        elif isinstance(other, _CollectedDiffusionTerm):
             for term in other.orders:
                 self += term
         elif other.order == 0:
@@ -90,7 +90,7 @@ class CollectedDiffusionTerm(DiffusionTerm):
         return (matrix, RHSvector)
 
     def copy(self):
-        dup = CollectedDiffusionTerm()
+        dup = _CollectedDiffusionTerm()
         dup.orders = self.orders
         return dup
         
@@ -116,10 +116,10 @@ class CollectedDiffusionTerm(DiffusionTerm):
          Negate a `Term`.
 
            >>> -(DiffusionTerm(coeff=1.) - DiffusionTerm(coeff=(2., -3.)))
-           DiffusionTerm(coeff=-1.0) + DiffusionTerm(coeff=(2.0, -3.0))
+           DiffusionTerm(coeff=[-1.0]) + DiffusionTerm(coeff=[2.0, -3.0])
 
         """
-        dup = CollectedDiffusionTerm()
+        dup = _CollectedDiffusionTerm()
         
         dup.orders = []
         for term in self.orders:
@@ -138,3 +138,22 @@ class CollectedDiffusionTerm(DiffusionTerm):
             return None
 
 
+    def _test(self):
+        """
+        Introduced for __iadd__ bug.
+
+           >>> from fipy import *
+           >>> TransientTerm() == DiffusionTerm((0, 0)) + DiffusionTerm() + ImplicitSourceTerm()
+           TransientTerm(coeff=1.0) + DiffusionTerm(coeff=[-1.0]) + DiffusionTerm(coeff=[0, 0]) + ImplicitSourceTerm(coeff=-(0.0)) == 0
+           
+        """
+        pass
+    
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
+
+        

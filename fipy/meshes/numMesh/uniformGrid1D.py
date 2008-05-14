@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/22/06 {11:32:04 AM}
- #                                last update: 11/6/07 {11:16:35 AM} 
+ #                                last update: 5/14/08 {11:30:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -190,6 +190,9 @@ class UniformGrid1D(Grid1D):
         faceNormals[...,0] *= -1
         return faceNormals
 
+    def _getFaceCellToCellNormals(self):
+        return self._getFaceNormals()
+        
     def getCellVolumes(self):
         return CellVariable(mesh=self, value=self.dx)
 

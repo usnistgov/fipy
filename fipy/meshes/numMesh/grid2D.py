@@ -163,47 +163,7 @@ class Grid2D(Mesh2D):
         nj=self.ny)
 
         return cellFaceIDs
-
-    def getFacesLeft(self):
-        """
-        Return list of faces on left boundary of Grid2D.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((9, 13), mesh.getFacesLeft())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
-        
-    def getFacesRight(self):
-        """
-        Return list of faces on right boundary of Grid2D.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((12, 16), mesh.getFacesRight())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
-        
-    def getFacesTop(self):
-        """
-        Return list of faces on top boundary of Grid2D.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
-        
-    def getFacesBottom(self):
-        """
-        Return list of faces on bottom boundary of Grid2D.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((0, 1, 2), mesh.getFacesBottom())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.nx))
-        
+    
     def getScale(self):
         return self.scale['length']
         
@@ -218,6 +178,8 @@ class Grid2D(Mesh2D):
     def getShape(self):
         return (self.nx, self.ny)
 
+    def _isOrthogonal(self):
+        return True
     
 ## pickling
 

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "ttri2Dinput.py"
+ #  FILE: "grid3Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
  #                                last update: 7/5/07 {8:11:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>

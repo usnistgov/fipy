@@ -88,7 +88,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
 
         """
         MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title, figaspect=1. / 1.3)
-        
+
         self.colorbar = None
         
         self.mesh = self.vars[0].getMesh()
@@ -101,21 +101,57 @@ class Matplotlib2DViewer(MatplotlibViewer):
         yCoords = numerix.take(vertexCoords[1], vertexIDs, axis=-1)
         
         polys = []
+##         for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):
+##             if hasattr(x, 'mask'):
+##                 x = x.compressed()
+##             if hasattr(y, 'mask'):
+##                 y = y.compressed()
+##             polys.append(x)
+##             polys.append(y)
+##             polys.append('b')
+
         for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):
             if hasattr(x, 'mask'):
                 x = x.compressed()
             if hasattr(y, 'mask'):
                 y = y.compressed()
-            polys.append(x)
-            polys.append(y)
-            polys.append('b')
+            polys.append(zip(x,y))
 
         import pylab
         import matplotlib
 
         fig = pylab.figure(self.id)
+
         ax = fig.get_axes()[0]
-        self.polygons = ax.fill(linewidth=0., *polys)
+
+        from matplotlib.collections import PolyCollection
+        self.collection = PolyCollection(polys)
+        self.collection.set_linewidth(0)
+        ax.add_patch(self.collection)
+
+        if self._getLimit('xmin') is None:
+            xmin = min(numerix.array(self.collection._verts)[:,:,0].flat)
+        else:
+            xmin = self._getLimit('xmin')
+
+        if self._getLimit('xmax') is None:
+            xmax = max(numerix.array(self.collection._verts)[:,:,0].flat)
+        else:
+            xmax = self._getLimit('xmax')
+
+        if self._getLimit('ymin') is None:
+            ymin = min(numerix.array(self.collection._verts)[:,:,1].flat)
+        else:
+            ymin = self._getLimit('ymin')
+
+        if self._getLimit('ymax') is None:
+            ymax = max(numerix.array(self.collection._verts)[:,:,1].flat)
+        else:
+            ymax = self._getLimit('ymax')
+
+        pylab.axis((xmin, xmax, ymin, ymax))
+
+##        self.polygons = ax.fill(linewidth=0., *polys)
         
         cbax, kw = matplotlib.colorbar.make_axes(ax, orientation='vertical')
         
@@ -166,23 +202,36 @@ class Matplotlib2DViewer(MatplotlibViewer):
         
         import pylab
         import matplotlib
-        
-        for poly, value in zip(self.polygons, Z):
+
+        faceColors = []
+
+        for value in Z:
             if diff == 0:
                 rgba = pylab.cm.jet(0.5)
             else:
                 rgba = pylab.cm.jet((value - zmin) / diff)
 
-            poly.set_facecolor(rgba)
+            faceColors.append(rgba)
+
+        self.collection.set_facecolors(faceColors)
+##        self.collection.set_edgecolors(faceColors)
+            
+##         for poly, value in zip(self.polygons, Z):
+##             if diff == 0:
+##                 rgba = pylab.cm.jet(0.5)
+##             else:
+##                 rgba = pylab.cm.jet((value - zmin) / diff)
+
+##             poly.set_facecolor(rgba)
             
         self.cb.norm = matplotlib.colors.normalize(vmin=zmin, vmax=zmax)
         self.cb.draw_all()
         
-        pylab.xlim(xmin=self._getLimit('xmin'),
-                   xmax=self._getLimit('xmax'))
+##        pylab.xlim(xmin=self._getLimit('xmin'),
+##                   xmax=self._getLimit('xmax'))
 
-        pylab.ylim(ymin=self._getLimit('ymin'),
-                   ymax=self._getLimit('ymax'))
+##        pylab.ylim(ymin=self._getLimit('ymin'),
+##                   ymax=self._getLimit('ymax'))
 
     def plotMesh(self, filename = None):
         pass

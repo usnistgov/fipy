@@ -99,15 +99,19 @@ def MovingMesh(mesh):
                 displacement = newVertexCoords - oldVertexCoords # self.vertexCoords
                 displacementMag = numerix.sqrtDot(displacement, displacement)
                 
-                maxVertexRadii = 1. * (mesh._getFaceToCellDistances().sum(0) / 2)._getArithmeticVertexValue()
+                maxVertexRadii = 0.25 * (mesh._getFaceToCellDistances().sum(0) / 2)._getArithmeticVertexValue()
                 factor = displacementMag / maxVertexRadii
 
-                factor = max(factor)
+##                 displacement = numerix.where(factor > 1, displacement / factor, displacement)
+                displacement = (displacement / (factor + (factor == 0))) * (factor > 1) + displacement * (factor <= 1)
+                displacementMag = numerix.sqrtDot(displacement, displacement)
+                newVertexCoords = self.vertexCoords + displacement
 
-                if factor > 1.:
-                    displacement /= factor
-                    displacementMag = numerix.sqrtDot(displacement, displacement)
-                    newVertexCoords = self.vertexCoords + displacement
+##                 factor = max(factor)
+##                 if factor > 1.:
+##                     displacement /= factor
+##                     displacementMag = numerix.sqrtDot(displacement, displacement)
+##                     newVertexCoords = self.vertexCoords + displacement
 
                 displacmentLInfNorm = max(displacementMag)
 

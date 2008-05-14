@@ -173,35 +173,6 @@ class Tri2D(Mesh2D):
         topOfBoxCells = numerix.array([topFaces, upperLeftDiagonalFaces, upperRightDiagonalFaces])
         leftOfBoxCells = numerix.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces])
         return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells), axis=1)
-
-    def getFacesLeft(self):
-        """Return list of faces on left boundary of Grid2D.
-        """
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfHorizontalFaces, 
-                                               self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
-                                               self.nx + 1))
-        
-    def getFacesRight(self):
-        """Return list of faces on right boundary of Grid2D.
-        """
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfHorizontalFaces + self.nx, 
-                                               self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
-                                               self.nx + 1))
-        
-    def getFacesTop(self):
-        """Return list of faces on top boundary of Grid2D.
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.numberOfHorizontalFaces - self.nx, 
-                                               self.numberOfHorizontalFaces))
-        
-    def getFacesBottom(self):
-        """Return list of faces on bottom boundary of Grid2D.
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.nx))
         
     def getScale(self):
         return self.scale['length']
@@ -218,6 +189,9 @@ class Tri2D(Mesh2D):
     
     def getShape(self):
         return (self.nx, self.ny)
+
+    def _isOrthogonal(self):
+        return True
     
 ## pickling
 

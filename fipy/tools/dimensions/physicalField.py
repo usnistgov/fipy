@@ -640,22 +640,21 @@ class PhysicalField(object):
         corresponding to the test against each element.
         
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
-            >>> print a > PhysicalField("13 ft")
+            >>> print a > PhysicalField("13 ft") #doctest: +NORMALIZE_WHITESPACE
             [[False True]
-             [True True]]
+             [ True True]]
 
-         
         Appropriately formatted dimensional quantity strings can also be
         compared.
         
-            >>> print a > "13 ft"
+            >>> print a > "13 ft" #doctest: +NORMALIZE_WHITESPACE
             [[False True]
-             [True True]]
+             [ True True]]
                     
         Arrays are compared element to element
         
-            >>> print a > PhysicalField(((3.,13.),(17.,6.)),"ft")
-            [[True True]
+            >>> print a > PhysicalField(((3.,13.),(17.,6.)),"ft") #doctest: +NORMALIZE_WHITESPACE
+            [[ True True]
              [False True]]
          
         Units must be compatible
@@ -1576,10 +1575,10 @@ class PhysicalUnit:
             
             >>> a = PhysicalField("1. mm")
             >>> b = PhysicalField("1. inch")
-            >>> print a.getUnit().isCompatible(b.getUnit())
-            [True True True True True True True True True]
+            >>> print a.getUnit().isCompatible(b.getUnit()) #doctest: +NORMALIZE_WHITESPACE
+            [ True True True True True True True True True]
             >>> c = PhysicalField("1. K")
-            >>> print a.getUnit().isCompatible(c.getUnit())
+            >>> print a.getUnit().isCompatible(c.getUnit()) #doctest: +NORMALIZE_WHITESPACE
             [False True True True False True True True True]
             
         """

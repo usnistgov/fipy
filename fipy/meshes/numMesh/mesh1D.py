@@ -82,3 +82,6 @@ class Mesh1D(Mesh):
 
     def _concatenate(self, other, smallNumber):
         return Mesh1D(**self._getAddedMeshValues(other, smallNumber))
+
+    def _isOrthogonal(self):
+        return True

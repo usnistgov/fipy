@@ -85,9 +85,11 @@ class CellTerm(Term):
         }
 
     def _getCoeffVectors(self, var):
-        if self.coeffVectors is None or var != self._var:
+        if self.coeffVectors is None or var is not self._var:
+##        if self.coeffVectors is None or var != self._var:
             self._var = var
             self._calcCoeffVectors(var=var)
+
         return self.coeffVectors
         
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):

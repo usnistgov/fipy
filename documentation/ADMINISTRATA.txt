@@ -101,8 +101,8 @@ Possibly::
 
     $ svn delete $FIPYROOT/tags/CURRENT -m "moving CURRENT to new version"
     $ svn delete $FIPYROOT/tags/STABLE -m "moving STABLE to new version"
-    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/CURRENT -m "tagging CURRENT"
-    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/STABLE -m "tagging STABLE"
+    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/CURRENT -m "version n.m.q is CURRENT"
+    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/STABLE -m "version n.m.q is STABLE"
 
 Find the initial revision number for the branch (IRN) and the latest revision number (LRN)::
 

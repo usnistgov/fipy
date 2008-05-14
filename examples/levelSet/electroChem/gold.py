@@ -6,7 +6,7 @@
  # 
  #  FILE: "gold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:56:32 PM} 
+ #                                last update: 11/9/07 {6:59:37 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -208,8 +208,15 @@ def runGold(faradaysConstant=9.6e4,
 
         try:
             
-            viewers = (
-                MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage', animate=True),)
+            viewer = MayaviSurfactantViewer(distanceVar, 
+                                            catalystVar.getInterfaceVar(), 
+                                            zoomFactor = 1e6, 
+                                            limits = { 
+                                              'datamax' : 1.0, 
+                                              'datamin' : 0.0 
+                                            }, smooth = 1, 
+                                            title = 'catalyst coverage', 
+                                            animate=True)
             
         except:
             
@@ -221,19 +228,22 @@ def runGold(faradaysConstant=9.6e4,
                 def _calcValue(self):
                     return array(self.var[:self.mesh.getNumberOfCells()])
 
-            viewers = (
-                viewers.make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
-                viewers.make(PlotVariable(var = catalystVar.getInterfaceVar())))
+            viewer = MultiViewer(viewers.make(PlotVariable(var=distanceVar), 
+                                              limits = {
+                                                'datamax' : 1e-9, 
+                                                'datamin' : -1e-9
+                                              }),
+                                 viewers.make(PlotVariable(var=catalystVar.getInterfaceVar())))
 
     else:
-        viewers = ()
+        viewer = None
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
     step = 0
     
     while step < numberOfSteps:
 
         if step % 10 == 0:
-            for viewer in viewers:
+            if viewer is not None:
                 viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
@@ -251,8 +261,9 @@ def runGold(faradaysConstant=9.6e4,
 
         advectionEquation.solve(distanceVar, dt = dt)
         catalystSurfactantEquation.solve(catalystVar, dt = dt)
-        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
 
+        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt, solver=LinearPCGSolver())
+                    
         step += 1
 
     try:
@@ -264,6 +275,7 @@ def runGold(faradaysConstant=9.6e4,
         return 0
     
 if __name__ == '__main__':
+##     runGold(numberOfSteps = 10, cellSize = 1e-7, displayViewers=False)
     runGold(numberOfSteps = 300, cellSize = 0.05e-7)
     raw_input("finished")
     

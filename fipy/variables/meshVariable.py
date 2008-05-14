@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 11/23/07 {9:04:48 PM}
+ #                                 last update: 5/14/08 {11:22:11 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -203,6 +203,17 @@ class _MeshVariable(Variable):
                 or ())
 
     def _dot(a, b, index, omit=()):
+        """
+        Workhorse method to calculate the scalar product
+        
+        .. raw:: latex
+        
+           \[ \mathsf{a} \cdot \mathsf{b} \]
+
+        for all but the last index of `a` and `b`. Both `a` and `b` can be of
+        arbitrary rank, but at this point, both must be appropriately broadcast
+        `array` objects.
+        """
         Ashape = a.shape
         Bshape = b.shape
         for axis in omit:
@@ -211,6 +222,7 @@ class _MeshVariable(Variable):
         rankA = len(Ashape) - 1
         rankB = len(Bshape) - 1
         if rankA <= 0 or rankB <= 0:
+            # if either a or b is scalar, then just do multiplication
             return a[index] * b
         else:
             return numerix.sum(a[index] * b, axis=rankA - 1)
@@ -218,7 +230,16 @@ class _MeshVariable(Variable):
 
     def __dot(A, B, operatorClass, omit=()):
         """
-        A . B
+        Workhorse method to return a `_BinaryOperatorVariable` that will
+        dynamically perform the mesh-element--by--mesh-element (cell-by-cell,
+        face-by-face, etc.) scalar product
+        
+        .. raw:: latex
+        
+           \[ \mathsf{A} \cdot \mathsf{B} \]
+           
+        Both `A` and `B` can be of arbitrary rank, but at this point, both must
+        be appropriately broadcast `_MeshVariable` objects.
         """
         Ashape = A.shape
         Bshape = B.shape
@@ -243,7 +264,15 @@ class _MeshVariable(Variable):
 
     def dot(self, other, omit=()):
         """
-        self . other
+        Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
+        etc.) scalar product
+        
+        .. raw:: latex
+        
+           \[ \text{self} \cdot \text{other} \]
+           
+        Both `self` and `other` can be of arbitrary rank, and `other` does not
+        need to be a `_MeshVariable`.
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
@@ -254,7 +283,15 @@ class _MeshVariable(Variable):
 
     def rdot(self, other, omit=()):
         """
-        other . self
+        Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
+        etc.) scalar product
+        
+        .. raw:: latex
+        
+           \[ \text{other} \cdot \text{self} \]
+           
+        Both `self` and `other` can be of arbitrary rank, and `other` does not
+        need to be a `_MeshVariable`.
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
@@ -375,22 +412,28 @@ def _testDot(self):
         >>> s1 = CellVariable(mesh=mesh, value=2)
         >>> s2 = CellVariable(mesh=mesh, value=3)
 
-        >>> v1 = CellVariable(mesh=mesh, rank=1, value=array([2,3])[..., newaxis])
-        >>> v2 = CellVariable(mesh=mesh, rank=1, value=array([3,4])[..., newaxis])
+        >>> v1 = CellVariable(mesh=mesh, rank=1, 
+        ...                   value=array([2,3])[..., newaxis])
+        >>> v2 = CellVariable(mesh=mesh, rank=1, 
+        ...                   value=array([3,4])[..., newaxis])
         
-        >>> t21 = CellVariable(mesh=mesh, rank=2, value=array([[2, 3],
-        ...                                                    [4, 5]])[..., newaxis])
-        >>> t22 = CellVariable(mesh=mesh, rank=2, value=array([[3, 4],
-        ...                                                    [5, 6]])[..., newaxis])
+        >>> t21 = CellVariable(mesh=mesh, rank=2, 
+        ...                    value=array([[2, 3],
+        ...                                 [4, 5]])[..., newaxis])
+        >>> t22 = CellVariable(mesh=mesh, rank=2, 
+        ...                    value=array([[3, 4],
+        ...                                 [5, 6]])[..., newaxis])
 
-        >>> t31 = CellVariable(mesh=mesh, rank=3, value=array([[[3, 4],
-        ...                                                     [5, 6]],
-        ...                                                    [[5, 6],
-        ...                                                     [7, 8]]])[..., newaxis])
-        >>> t32 = CellVariable(mesh=mesh, rank=3, value=array([[[2, 3],
-        ...                                                     [4, 5]],
-        ...                                                    [[4, 5],
-        ...                                                     [6, 7]]])[..., newaxis])
+        >>> t31 = CellVariable(mesh=mesh, rank=3, 
+        ...                    value=array([[[3, 4],
+        ...                                  [5, 6]],
+        ...                                 [[5, 6],
+        ...                                  [7, 8]]])[..., newaxis])
+        >>> t32 = CellVariable(mesh=mesh, rank=3, 
+        ...                    value=array([[[2, 3],
+        ...                                  [4, 5]],
+        ...                                 [[4, 5],
+        ...                                  [6, 7]]])[..., newaxis])
 
         >>> def P(a):
         ...     print a[...,0], a.shape

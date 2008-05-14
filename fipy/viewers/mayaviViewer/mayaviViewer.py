@@ -130,7 +130,10 @@ class MayaviViewer(Viewer):
         self.structures = []
             
         for var in self.vars:
+            if var.getRank() > 0:
+                raise IndexError, "Mayavi can only plot scalar values"
             self.structures.append(self._getStructure(var.getMesh()))
+
                                        
     def _getStructure(self, mesh):
 
@@ -224,12 +227,12 @@ class MayaviViewer(Viewer):
             
             xmax = self._getLimit('datamax')
             if xmax is None:
-                xmax = var.max()
+                xmax = float(var.max())
 
             xmin = self._getLimit('datamin')
             if xmin is None:
-                xmin = var.min()
-            
+                xmin = float(var.min())
+
             slh.range_var.set((xmin, xmax))
             slh.set_range_var()
 

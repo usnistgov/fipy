@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 11/8/07 {6:59:13 PM}
+ #                                last update: 11/10/07 {12:25:08 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -203,16 +203,17 @@ class DistanceVariable(CellVariable):
         self._markStale()
         self.narrowBandWidth = narrowBandWidth
 
-        self.cellToCellDistances = MA.filled(self.mesh._getCellToCellDistances(), 0)
-        self.cellNormals = MA.filled(self.mesh._getCellNormals(), 0)      
-        self.cellAreas = MA.filled(self.mesh._getCellAreas(), 0)
+##         self.cellToCellDistances = MA.filled(self.mesh._getCellToCellDistances(), 0)
+        self.cellToCellDistances = self.mesh._getCellToCellDistances().filled(0).getValue()
+        self.cellNormals = self.mesh._getCellNormals().filled(0).getValue()
+        self.cellAreas = self.mesh._getCellAreas().filled(0).getValue()
 ##         self.cellToCellDistances = numerix.array(MA.array(self.mesh._getCellToCellDistances()).filled(0))
 ##         self.cellNormals = numerix.array(MA.array(self.mesh._getCellNormals()).filled(0))       
 ##         self.cellAreas = numerix.array(MA.array(self.mesh._getCellAreas()).filled(0))
         self.cellToCellIDs = numerix.array(self.mesh._getCellToCellIDsFilled())
         self.adjacentCellIDs = self.mesh._getAdjacentCellIDs()
         self.exteriorFaces = self.mesh.getExteriorFaces()
-        self.cellFaceIDs = self.mesh._getCellFaceIDs()
+        self.cellFaceIDs = self.mesh._getCellFaceIDs().getValue()
         
     def _calcValue(self):
         return self.value
@@ -269,9 +270,9 @@ class DistanceVariable(CellVariable):
 
         adjVals = numerix.take(self.value, cellToCellIDs, axis=-1).getValue()
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value) > 0)
-        dAP = self.mesh._getCellToCellDistances()
+        dAP = self.mesh._getCellToCellDistances().getValue()
         distances = abs(self.value * dAP / (self.value - adjInterfaceValues))
-        indices = MA.argsort(distances.getValue(), 0)
+        indices = MA.argsort(distances, 0)
         sign = (self.value > 0) * 2 - 1
 
         s = distances[indices[0], numerix.arange(indices.shape[1])]
@@ -284,33 +285,29 @@ class DistanceVariable(CellVariable):
             ns = self.cellNormals[..., indices[0], numerix.arange(indices.shape[1])]
             nt = self.cellNormals[..., indices[1], numerix.arange(indices.shape[1])]
 
-            smask = s.getMask()
-            s = s.filled()
-            tmask = t.getMask()
-            t = t.filled()
-            near = abs(numerix.dot(ns,nt)) < 0.9
-            umask = u.getMask()
-            u = u.filled()
-            stmag = (s**2 + t**2).sqrt()
-            stmag = stmag + (stmag == 0)
-            sumag = (s**2 + u**2).sqrt()
-            sumag = sumag + (sumag == 0)
-            
-            signedDistance =  (smask * self.value 
-                               + ~smask * sign * s * (tmask 
-                                                      + ~tmask * (near * t / stmag
-                                                                  + ~near * (umask 
-                                                                             + ~umask * u / sumag))))
+            signedDistance = MA.where(MA.getmask(s),
+                                      self.value,
+                                      MA.where(MA.getmask(t),
+                                               sign * s,
+                                               MA.where(abs(numerix.dot(ns,nt)) < 0.9,
+                                                        sign * s * t / MA.sqrt(s**2 + t**2),
+                                                        MA.where(MA.getmask(u),
+                                                                 sign * s,
+                                                                 sign * s * u / MA.sqrt(s**2 + u**2)
+                                                                 )
+                                                        )
+                                               )
+                                      )
         else:
-            mask = s.getMask()
-            signedDistance = mask * self.value + ~mask * sign * s.filled()
-
+            signedDistance = MA.where(MA.getmask(s),
+                                      self.value,
+                                      sign * s)
             
 
-        self.value = signedDistance.getValue()
+        self.value = signedDistance
 
         ## calculate interface flag
-        masksum = numerix.sum(~distances.getMask(), 0).getValue()
+        masksum = numerix.sum(numerix.logical_not(MA.getmask(distances)), 0)
         interfaceFlag = (masksum > 0).astype('l')
 
         ## spread the extensionVariable to the whole interface
@@ -354,7 +351,7 @@ class DistanceVariable(CellVariable):
             evaluatedFlag[...,id] = 1
 
 
-            for adjID in cellToCellIDs[...,id].filled(-1):
+            for adjID in MA.filled(cellToCellIDs[...,id].getValue(), value = -1):
                 if adjID != -1:
                     if not evaluatedFlag[...,adjID]:
                         self.value[...,adjID], extensionVariable[...,adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
@@ -365,8 +362,8 @@ class DistanceVariable(CellVariable):
 
     def _calcTrialValue(self, id, evaluatedFlag, extensionVariable):
         adjIDs = self.cellToCellIDs[...,id]
-        adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs, axis=-1)
-        adjValues = numerix.take(self.value, adjIDs, axis=-1)
+        adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs)
+        adjValues = numerix.take(self.value, adjIDs)
         adjValues = numerix.where(adjEvaluatedFlag, adjValues, 1e+10)
         indices = numerix.argsort(abs(adjValues))
         sign = (self.value[id] > 0) * 2 - 1
@@ -486,8 +483,11 @@ class DistanceVariable(CellVariable):
            
         """        
         normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), value=0))
-        areas = numerix.array(MA.filled(self.mesh._getCellAreaProjections(), value=0))
+        areas = self.mesh._getCellAreaProjections().filled(0).getValue()
         return numerix.sum(abs(numerix.dot(normals, areas)), axis=0)
+##         normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), value=0))
+##         areas = numerix.array(MA.filled(self.mesh._getCellAreaProjections(), value=0))
+##         return numerix.sum(abs(numerix.dot(normals, areas)), axis=0)
 
     def _getCellInterfaceNormals(self):
         """

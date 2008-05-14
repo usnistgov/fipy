@@ -58,6 +58,9 @@ The result is again tested in the same way:
     >>> print var.allclose(analyticalArray, atol = 0.025)
     1
 
+    >>> max(mesh._getNonOrthogonality()) < 0.51
+    True
+
 Note that this test case will only work if you run it by running the
 main FiPy test suite. If you run it directly from the directory it is
 in it will not be able to find the mesh file.
@@ -99,9 +102,12 @@ if __name__ == '__main__':
                    value = abs(errorArray))
     errorViewer = viewers.make(vars = errorVar)
     errorViewer.plot()
+
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = viewers.make(vars = NonOrthoVar)    
+    NOViewer = viewers.make(vars = NonOrthoVar)
+
+
     NOViewer.plot()
     raw_input("finished")
