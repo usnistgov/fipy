@@ -4,7 +4,7 @@
  # 
  # FILE: "meshIterator.py"
  #                                     created: 3/3/06 {9:00:00 PM}
- #                                 last update: 5/14/08 {5:19:38 PM}
+ #                                 last update: 5/14/08 {5:59:54 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,6 +50,9 @@ class MeshIterator(list):
         if checkIDs and not self._canContain(ids):
             raise IndexError, 'Invalid IDs: %s' % str(other)
         self._where = _where
+        
+    def __iter__(self):
+        return iter(self.getIDs())
         
     def getMesh(self):
         return self.mesh
