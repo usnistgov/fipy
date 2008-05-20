@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 5/20/08 {1:35:27 PM} 
+ #                                last update: 5/20/08 {2:52:31 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1278,7 +1278,7 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
     # c.f. http://projects.scipy.org/scipy/numpy/changeset/3722
     
     # Adapted from matplotlib 
-     
+    
     def _getconv(dtype): 
         typ = dtype.type 
         if issubclass(typ, bool_): 
@@ -1363,8 +1363,8 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
         else: 
             raise ValueError('fname must be a string or file handle') 
         X = [] 
-     
-        dtype = multiarray.dtype(dtype) 
+
+        dtype = NUMERIX.dtype(dtype) 
         defconv = _getconv(dtype) 
         converterseq = None     
         if converters is None: 
