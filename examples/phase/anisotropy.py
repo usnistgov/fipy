@@ -267,13 +267,13 @@ the data and compares it with the `phase` variable.
 
 .. raw:: latex
 
-   \IndexModule{dump}
+   \IndexFunction{loadtxt}
    \IndexFunction{allclose}
 
 ..
 
    >>> import os
-   >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
+   >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
    >>> print phase.allclose(testData)
    1
    

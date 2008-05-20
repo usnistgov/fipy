@@ -496,14 +496,14 @@ to tell if something has changed or been broken.
 
 .. raw:: latex
 
-   \IndexModule{dump}
+   \IndexFunction{loadtxt}
    
 ..
  
    >>> import os
    >>> filepath = os.path.join(os.path.split(__file__)[0], 
    ...                         "simpleTrenchSystem.gz")
-   >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-4)
+   >>> print catalystVar.allclose(loadtxt(filepath), rtol=1e-4)
    1
 
    >>> if __name__ == '__main__':
