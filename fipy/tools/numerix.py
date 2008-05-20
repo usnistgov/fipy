@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 5/20/08 {1:27:33 PM} 
+ #                                last update: 5/20/08 {1:35:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1270,7 +1270,10 @@ while (return_val.refcount() > 1) {
                      """,
                      extra_compile_args =['-O3'])
 
-if not has_attr(NUMERIX, 'savetxt') or not has_attr(NUMERIX, 'loadtxt'):
+if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
+    # if one is present, but not the other, something is wrong and
+    # we shouldn't try to patch.
+    
     # The following routines were introduced in NumPy 1.0.3
     # c.f. http://projects.scipy.org/scipy/numpy/changeset/3722
     
@@ -1367,7 +1370,7 @@ if not has_attr(NUMERIX, 'savetxt') or not has_attr(NUMERIX, 'loadtxt'):
         if converters is None: 
             converters = {} 
             if dtype.names is not None: 
-                converterseq = [_getconv(dtype.fields[name][0]) \ 
+                converterseq = [_getconv(dtype.fields[name][0]) \
                                 for name in dtype.names] 
                  
         for i,line in enumerate(fh): 
@@ -1376,7 +1379,7 @@ if not has_attr(NUMERIX, 'savetxt') or not has_attr(NUMERIX, 'loadtxt'):
             if not len(line): continue 
             vals = line.split(delimiter) 
             if converterseq is None: 
-               converterseq = [converters.get(j,defconv) \ 
+               converterseq = [converters.get(j,defconv) \
                                for j in xrange(len(vals))] 
             if usecols is not None: 
                 row = [converterseq[j](vals[j]) for j in usecols] 
