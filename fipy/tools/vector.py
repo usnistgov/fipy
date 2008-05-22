@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 11/23/07 {2:08:56 PM} 
+ #                                last update: 5/22/08 {7:48:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,7 +52,7 @@ def _putAddPy(vector, ids, additionVector, mask=False):
     if numerix.sometrue(mask):
         if len(vector.shape) < len(additionVector.shape):
             for j in range(vector.shape[0]):
-                for id, value, masked in [(ids[i], additionVector[j,...,i], masked[i]) for i in range(len(ids))]:
+                for id, value, masked in [(ids[i], additionVector[j,i,...], masked[i]) for i in range(len(ids))]:
                     if not masked:
                         vector[j,...,id] += value
         else:
@@ -63,8 +63,8 @@ def _putAddPy(vector, ids, additionVector, mask=False):
     else:
         if len(vector.shape) < len(additionVector.shape):
             for j in range(vector.shape[0]):
-                for id, value in [(ids[i], additionVector[j,...,i]) for i in range(len(ids))]:
-                    vector[j,...,id] += value
+                for id, value in [(ids[i], additionVector[j,i,...]) for i in range(len(ids))]:
+                    vector[j,..., id] += value
         else:
             for id, value in [(ids[i], additionVector[...,i]) for i in range(len(ids))]:
                 vector[...,id] += value
