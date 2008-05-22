@@ -7,7 +7,7 @@
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
  #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 12/22/05 {12:00:28 PM} 
+ #                                last update: 5/22/08 {3:04:56 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -46,60 +46,25 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.variables.cellVariable import CellVariable
-from surfactantEquation import SurfactantEquation
+from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers import *
 
-class _AdsorptionCoeff(CellVariable):
-    def __init__(self, distanceVar, bulkVar, rateConstant):
-        CellVariable.__init__(self, mesh = distanceVar.getMesh())
-
+class _CellInterfaceFlagVariable(CellVariable):
+    def __init__(self, distanceVar):
+        CellVariable.__init__(self, mesh=distanceVar.getMesh())
         self.distanceVar = self._requires(distanceVar)
-        self.bulkVar = self._requires(bulkVar)
-        self.rateConstant = rateConstant
-        self.dt = 0
-
+        
     def _calcValue(self):
-        return self.dt * numerix.array(self.bulkVar) \
-                     * self.rateConstant * self._multiplier()
-
-    def _updateDt(self, dt):
-        self.dt = dt
-        self._markStale()
-
-class _AdsorptionCoeffInterfaceFlag(_AdsorptionCoeff):
-    def _multiplier(self):
         return self.distanceVar._getCellInterfaceFlag()
-    
-class _AdsorptionCoeffAreaOverVolume(_AdsorptionCoeff):
-    def _multiplier(self):
-        return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
 
-class _MaxCoeff(CellVariable):
-    def __init__(self, distanceVar, vars = ()):
-        CellVariable.__init__(self, mesh = distanceVar.getMesh())
-        self.vars = vars
-        for var in self.vars:
-            self._requires(var)
+class _CellInterfaceAreasVariable(CellVariable):
+    def __init__(self, distanceVar):
+        CellVariable.__init__(self, mesh=distanceVar.getMesh())
         self.distanceVar = self._requires(distanceVar)
-
-    def _calcMax(self):
-        total = 0
-        for var in self.vars:
-            total += numerix.array(var.getInterfaceVar())
-        return numerix.array(total > 1) * self.distanceVar._getCellInterfaceFlag()
-
-class _SpMaxCoeff(_MaxCoeff):
+        
     def _calcValue(self):
-        return 1e20 * self._calcMax()
-
-class _ScMaxCoeff(_MaxCoeff):
-    def _calcValue(self):
-        val = self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
-        for var in self.vars[1:]:
-            val -= self.distanceVar._getCellInterfaceFlag() * numerix.array(var)
-
-        return 1e20 * self._calcMax() * numerix.where(val < 0, 0, val)
+        return self.distanceVar.getCellInterfaceAreas()
 
 class AdsorbingSurfactantEquation(SurfactantEquation):
     r"""
@@ -147,19 +112,19 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> c = 0.2
        
        >>> from fipy.meshes.grid2D import Grid2D
-       >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
-       >>> distanceVar = DistanceVariable(mesh = mesh, 
-       ...                                value = (-dx*3/2, -dx/2, dx/2, 
-       ...                                          3*dx/2,  5*dx/2),
-       ...                                hasOld = 1)
-       >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
-       ...                                    distanceVar = distanceVar)
-       >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
-       >>> eqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
-       ...                                   distanceVar = distanceVar,
-       ...                                   bulkVar = bulkVar,
-       ...                                   rateConstant = k)
-       >>> eqn.solve(surfactantVar, dt = dt)
+       >>> mesh = Grid2D(dx=dx, dy=dy, nx=5, ny=1)
+       >>> distanceVar = DistanceVariable(mesh=mesh, 
+       ...                                value=(-dx*3/2, -dx/2, dx/2, 
+       ...                                       3*dx/2,  5*dx/2),
+       ...                                hasOld=1)
+       >>> surfactantVar = SurfactantVariable(value=(0, 0, initialValue, 0 ,0), 
+       ...                                    distanceVar=distanceVar)
+       >>> bulkVar = CellVariable(mesh=mesh, value=(c , c, c, c, c))
+       >>> eqn = AdsorbingSurfactantEquation(surfactantVar=surfactantVar,
+       ...                                   distanceVar=distanceVar,
+       ...                                   bulkVar=bulkVar,
+       ...                                   rateConstant=k)
+       >>> eqn.solve(surfactantVar, dt=dt)
        >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
        >>> print numerix.allclose(surfactantVar.getInterfaceVar(), 
        ...                  numerix.array((0, 0, answer, 0, 0)))
@@ -183,45 +148,45 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> c0 = 1.
        >>> c1 = 1.
        >>> totalSteps = 100
-       >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
-       >>> distanceVar = DistanceVariable(mesh = mesh, 
-       ...                                value = dx * (numerix.arange(5) - 1.5),
-       ...                                hasOld = 1)
-       >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), 
-       ...                           distanceVar = distanceVar)
-       >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0), 
-       ...                           distanceVar = distanceVar)
-       >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
-       >>> bulkVar1 = CellVariable(mesh = mesh, value = (c1, c1, c1, c1, c1))
+       >>> mesh = Grid2D(dx=dx, dy=dy, nx=5, ny=1)
+       >>> distanceVar = DistanceVariable(mesh=mesh, 
+       ...                                value=dx * (numerix.arange(5) - 1.5),
+       ...                                hasOld=1)
+       >>> var0 = SurfactantVariable(value=(0, 0, theta0, 0 ,0), 
+       ...                           distanceVar=distanceVar)
+       >>> var1 = SurfactantVariable(value=(0, 0, theta1, 0 ,0), 
+       ...                           distanceVar=distanceVar)
+       >>> bulkVar0 = CellVariable(mesh=mesh, value=(c0, c0, c0, c0, c0))
+       >>> bulkVar1 = CellVariable(mesh=mesh, value=(c1, c1, c1, c1, c1))
 
-       >>> eqn0 = AdsorbingSurfactantEquation(surfactantVar = var0,
-       ...                                    distanceVar = distanceVar,
-       ...                                    bulkVar = bulkVar0,
-       ...                                    rateConstant = k0)
+       >>> eqn0 = AdsorbingSurfactantEquation(surfactantVar=var0,
+       ...                                    distanceVar=distanceVar,
+       ...                                    bulkVar=bulkVar0,
+       ...                                    rateConstant=k0)
 
-       >>> eqn1 = AdsorbingSurfactantEquation(surfactantVar = var1,
-       ...                                    distanceVar = distanceVar,
-       ...                                    bulkVar = bulkVar1,
-       ...                                    rateConstant = k1,
-       ...                                    otherVar = var0,
-       ...                                    otherBulkVar = bulkVar0,
-       ...                                    otherRateConstant = k0)
+       >>> eqn1 = AdsorbingSurfactantEquation(surfactantVar=var1,
+       ...                                    distanceVar=distanceVar,
+       ...                                    bulkVar=bulkVar1,
+       ...                                    rateConstant=k1,
+       ...                                    otherVar=var0,
+       ...                                    otherBulkVar=bulkVar0,
+       ...                                    otherRateConstant=k0)
 
        >>> for step in range(totalSteps):
-       ...     eqn0.solve(var0, dt = dt)
-       ...     eqn1.solve(var1, dt = dt)
+       ...     eqn0.solve(var0, dt=dt)
+       ...     eqn1.solve(var1, dt=dt)
        >>> answer0 = 1 - numerix.exp(-k0 * c0 * dt * totalSteps)
        >>> answer1 = (1 - numerix.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
        >>> print numerix.allclose(var0.getInterfaceVar(), 
-       ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
+       ...                  numerix.array((0, 0, answer0, 0, 0)), rtol=1e-2)
        1
        >>> print numerix.allclose(var1.getInterfaceVar(), 
-       ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
+       ...                  numerix.array((0, 0, answer1, 0, 0)), rtol=1e-2)
        1
        >>> dt = 0.1
        >>> for step in range(10):
-       ...     eqn0.solve(var0, dt = dt)
-       ...     eqn1.solve(var1, dt = dt)
+       ...     eqn0.solve(var0, dt=dt)
+       ...     eqn1.solve(var1, dt=dt)
        >>> print var0.getInterfaceVar()[2] + var1.getInterfaceVar()[2]
        1.0
 
@@ -229,17 +194,17 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     coefficient to zero leads to the solver not converging and an eventual
     failure.
 
-       >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), 
-       ...                           distanceVar = distanceVar)
-       >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
+       >>> var0 = SurfactantVariable(value=(0, 0, theta0, 0 ,0), 
+       ...                           distanceVar=distanceVar)
+       >>> bulkVar0 = CellVariable(mesh=mesh, value=(c0, c0, c0, c0, c0))
 
-       >>> eqn0 = AdsorbingSurfactantEquation(surfactantVar = var0,
-       ...                                    distanceVar = distanceVar,
-       ...                                    bulkVar = bulkVar0,
-       ...                                    rateConstant = 0)
+       >>> eqn0 = AdsorbingSurfactantEquation(surfactantVar=var0,
+       ...                                    distanceVar=distanceVar,
+       ...                                    bulkVar=bulkVar0,
+       ...                                    rateConstant=0)
 
-       >>> eqn0.solve(var0, dt = dt)
-       >>> eqn0.solve(var0, dt = dt)
+       >>> eqn0.solve(var0, dt=dt)
+       >>> eqn0.solve(var0, dt=dt)
        >>> print numerix.allclose(var0.getInterfaceVar()[2], 0)
        1
 
@@ -248,36 +213,36 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
        >>> nx = 5
        >>> ny = 5
-       >>> mesh = Grid2D(dx = 1., dy = 1., nx = nx, ny = ny)
+       >>> mesh = Grid2D(dx=1., dy=1., nx=nx, ny=ny)
        >>> values = numerix.ones(mesh.getNumberOfCells(), 'd')
        >>> values[0:nx] = -1
        >>> for i in range(ny):
        ...     values[i * nx] = -1
 
-       >>> disVar = DistanceVariable(mesh = mesh, value = values, hasOld = 1)
+       >>> disVar = DistanceVariable(mesh=mesh, value=values, hasOld=1)
        >>> disVar.calcDistanceFunction()
 
-       >>> levVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
-       >>> accVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
+       >>> levVar = SurfactantVariable(value=0.5, distanceVar=disVar)
+       >>> accVar = SurfactantVariable(value=0.5, distanceVar=disVar)
 
        >>> levEq = AdsorbingSurfactantEquation(levVar,
-       ...                                     distanceVar = disVar,
-       ...                                     bulkVar = 0,
-       ...                                     rateConstant = 0)
+       ...                                     distanceVar=disVar,
+       ...                                     bulkVar=0,
+       ...                                     rateConstant=0)
 
        >>> accEq = AdsorbingSurfactantEquation(accVar,
-       ...                                     distanceVar = disVar,
-       ...                                     bulkVar = 0,
-       ...                                     rateConstant = 0,
-       ...                                     otherVar = levVar,
-       ...                                     otherBulkVar = 0,
-       ...                                     otherRateConstant = 0)
+       ...                                     distanceVar=disVar,
+       ...                                     bulkVar=0,
+       ...                                     rateConstant=0,
+       ...                                     otherVar=levVar,
+       ...                                     otherBulkVar=0,
+       ...                                     otherRateConstant=0)
 
-       >>> extVar = CellVariable(mesh = mesh, value = accVar.getInterfaceVar())
+       >>> extVar = CellVariable(mesh=mesh, value=accVar.getInterfaceVar())
 
        >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
        ...     import buildHigherOrderAdvectionEquation
-       >>> advEq = buildHigherOrderAdvectionEquation(advectionCoeff = extVar)
+       >>> advEq = buildHigherOrderAdvectionEquation(advectionCoeff=extVar)
 
        >>> dt = 0.1
 
@@ -286,23 +251,25 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        ...     extVar.setValue(numerix.array(accVar.getInterfaceVar()))
        ...     disVar.extendVariable(extVar)
        ...     disVar.updateOld()
-       ...     advEq.solve(disVar, dt = dt)
-       ...     levEq.solve(levVar, dt = dt)
-       ...     accEq.solve(accVar, dt = dt)
+       ...     advEq.solve(disVar, dt=dt)
+       ...     levEq.solve(levVar, dt=dt)
+       ...     accEq.solve(accVar, dt=dt)
 
        >>> print numerix.sum(accVar < -1e-10) == 0
        1
-   
+       
    """
-    def __init__(self,
-                 surfactantVar = None,
-                 distanceVar = None,
-                 bulkVar = None,
-                 rateConstant = None,
-                 otherVar = None,
-                 otherBulkVar = None,
-                 otherRateConstant = None,
-                 consumptionCoeff = None):
+    def __init__(self, 
+                 surfactantVar=None, 
+                 distanceVar=None, 
+                 bulkVar=None, 
+                 rateConstant=None, 
+                 otherVar=None, 
+                 otherBulkVar=None, 
+                 otherRateConstant=None, 
+                 consumptionCoeff=None):
+                     
+                     
         """
         Create a `AdsorbingSurfactantEquation` object.
 
@@ -318,54 +285,68 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
         """
 
-          
+        SurfactantEquation.__init__(self, distanceVar=distanceVar)
+        
+        from fipy.variables.variable import Variable
+        
+        self.dt = Variable(name="dt")
+        
+        mesh = distanceVar.getMesh()
 
-        SurfactantEquation.__init__(self, distanceVar = distanceVar)
-
-        spCoeff = _AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
-        scCoeff = _AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
-
+        interfaceFlag = _CellInterfaceFlagVariable(distanceVar)
+        interfaceAreaToVolume = _CellInterfaceAreasVariable(distanceVar) / mesh.getCellVolumes()
+        
+        spCoeff = self.dt * bulkVar * rateConstant * interfaceFlag
+        scCoeff = self.dt * bulkVar * rateConstant * interfaceAreaToVolume
+        
         self.eq += ImplicitSourceTerm(spCoeff) - scCoeff
-
+        
         self.coeffs = (scCoeff, spCoeff)
-
+        
         if otherVar is not None:
-            otherSpCoeff = _AdsorptionCoeffInterfaceFlag(distanceVar, otherBulkVar, otherRateConstant)
-            otherScCoeff = _AdsorptionCoeffAreaOverVolume(distanceVar, -bulkVar * otherVar.getInterfaceVar(), rateConstant)
-
+            otherSpCoeff = self.dt * otherBulkVar * otherRateConstant * interfaceFlag
+            otherScCoeff = self.dt * -bulkVar * otherVar.getInterfaceVar() * rateConstant * interfaceAreaToVolume
+            
             self.eq += ImplicitSourceTerm(otherSpCoeff) - otherScCoeff
-
+            
             self.coeffs += (otherScCoeff,)
             self.coeffs += (otherSpCoeff,)
-
+            
             vars = (surfactantVar, otherVar)
         else:
             vars = (surfactantVar,)
-
-        spMaxCoeff = _SpMaxCoeff(distanceVar, vars)
-        scMaxCoeff = _ScMaxCoeff(distanceVar, vars)
-
+            
+        total = 0
+        for var in vars:
+            total += var.getInterfaceVar()
+        interface = (total > 1) * interfaceFlag
+        
+        spMaxCoeff = 1e20 * interface
+        
+        val = interfaceAreaToVolume
+        for var in vars[1:]:
+            val -= interfaceFlag * var
+        scMaxCoeff = 1e20 * interface * (val > 0) * val
+        
         self.eq += ImplicitSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
-
+        
         if consumptionCoeff is not None:
             self.eq += ImplicitSourceTerm(consumptionCoeff)
-
-    def solve(self, var, boundaryConditions = (), solver = LinearPCGSolver(), dt = 1.):
+            
+    def solve(self, var, boundaryConditions=(), solver=LinearPCGSolver(), dt=1.):
         """
         Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
-        	
+                
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
            - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            
-	"""
-                
-        for coeff in self.coeffs:
-            coeff._updateDt(dt)
-        SurfactantEquation.solve(self, var, boundaryConditions = boundaryConditions, solver = solver, dt = dt)
-
+        """
+        self.dt.setValue(dt)
+        SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
+        
     def sweep(self, var, solver=LinearLUSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `AdsorbingSurfactantEquation`'s linear
@@ -380,9 +361,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
-	"""
-        for coeff in self.coeffs:
-            coeff._updateDt(dt)
+        """
+        self.dt.setValue(dt)
         return SurfactantEquation.sweep(self, var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, underRelaxation=underRelaxation, residualFn=residualFn)
 
 def _test(): 
