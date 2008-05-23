@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/14/08 {1:21:02 PM} 
+ #                                last update: 5/22/08 {9:34:06 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -349,6 +349,10 @@ class Mesh:
         else:
             return faces
 
+    def getFacesLeftFilter(self):
+        x = self.getFaceCenters()[0]
+        return (x == min(x))
+        
     def getFacesLeft(self):
         """
         Return face on left boundary of Grid1D as list with the
@@ -363,7 +367,11 @@ class Mesh:
             1
 
         """
-        return self.getFaces().where(self.getFaceCenters()[0] == min(self.getFaceCenters()[0]))
+        return self.getFaces().where(self.getFacesLeftFilter())
+
+    def getFacesRightFilter(self):
+        x = self.getFaceCenters()[0]
+        return (x == max(x))
 
     def getFacesRight(self):
         """
@@ -379,7 +387,13 @@ class Mesh:
             1
             
         """
-        return self.getFaces().where(self.getFaceCenters()[0] == max(self.getFaceCenters()[0]))
+        return self.getFaces().where(self.getFacesRightFilter())
+
+    def getFacesBottomFilter(self):
+        y = self.getFaceCenters()[1]
+        return (y == min(y))
+
+    getFacesDownFilter = getFacesBottomFilter
 
     def getFacesBottom(self):
         """
@@ -395,9 +409,15 @@ class Mesh:
             1
             
         """
-        return self.getFaces().where(self.getFaceCenters()[1] == min(self.getFaceCenters()[1]))
+        return self.getFaces().where(self.getFacesBottomFilter())
 
     getFacesDown = getFacesBottom
+
+    def getFacesTopFilter(self):
+        y = self.getFaceCenters()[1]
+        return (y == max(y))
+
+    getFacesUpFilter = getFacesTopFilter
 
     def getFacesTop(self):
         """
@@ -413,9 +433,13 @@ class Mesh:
             1
             
         """
-        return self.getFaces().where(self.getFaceCenters()[1] == max(self.getFaceCenters()[1]))
+        return self.getFaces().where(self.getFacesTopFilter())
 
     getFacesUp = getFacesTop
+
+    def getFacesBackFilter(self):
+        z = self.getFaceCenters()[2]
+        return (z == max(z))
 
     def getFacesBack(self):
         """
@@ -428,7 +452,11 @@ class Mesh:
             1
 
         """
-        return self.getFaces().where(self.getFaceCenters()[2] == max(self.getFaceCenters()[2]))
+        return self.getFaces().where(self.getFacesBackFilter())
+
+    def getFacesFrontFilter(self):
+        z = self.getFaceCenters()[2]
+        return (z == min(z))
 
     def getFacesFront(self):
         """
@@ -441,7 +469,7 @@ class Mesh:
             1
 
         """
-        return self.getFaces().where(self.getFaceCenters()[2] == min(self.getFaceCenters()[2]))
+        return self.getFaces().where(self.getFacesFrontFilter())
     
     def _getMaxFacesPerCell(self):
         pass
