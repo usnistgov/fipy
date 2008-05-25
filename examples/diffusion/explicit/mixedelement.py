@@ -6,7 +6,7 @@
  # 
  #  FILE: "mixedelement.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:11:36 PM} 
+ #                                last update: 5/14/08 {5:09:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -90,36 +90,6 @@ gridMesh = Grid2D(dx, dy, nx, ny)
 ## triMesh = Tri2D(dx, dy, nx, 1) + (dx*nx, 0)
 triMesh = Tri2D(dx, dy, nx, 1) + ((dx*nx,), (0,))
 bigMesh = gridMesh + triMesh
-
-## filter functions
-
-def leftSide(face):
-    a = face.getCenter()[0]
-    if(((a ** 2) < 0.000000000000001) and (face.getID() in bigMesh.getExteriorFaces())):
-        return 1
-    else:
-        return 0
-
-def inMiddle(face):
-    a = face.getCenter()[0]
-    if(( ((a - (dx * nx)) ** 2) < 0.000000000000001) and (face.getID() in bigMesh.getExteriorFaces())):
-        return 1
-    else:
-        return 0
-
-def rightSide(face):
-    a = face.getCenter()[0]
-    if(( ((a - (2 * dx * nx)) ** 2) < 0.000000000000001) and (face.getID() in bigMesh.getExteriorFaces())):
-        return 1
-    else:
-        return 0
-
-def allOthers(face):
-    
-    if((leftSide(face) or inMiddle(face) or rightSide(face)) or not (face.getID() in bigMesh.getExteriorFaces())):
-        return 0
-    else:
-        return 1   
 
 var = CellVariable(
     name = "concentration",
