@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/27/08 {5:38:20 PM} 
+ #                                last update: 5/28/08 {4:52:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -110,7 +110,7 @@ class Mesh(_CommonMesh):
             [2 3 4 5]
             [6 7 9 10]]
             
-           >>> mesh._connectFaces(mesh.getFacesLeft(), mesh.getFacesRight())
+           >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
            >>> print mesh._getCellFaceIDs()
            [[0 1 2 3]
@@ -123,8 +123,11 @@ class Mesh(_CommonMesh):
         ## check for errors
 
         ## check that faces are members of exterior faces
-        from sets import Set
-        assert Set(faces0).union(Set(faces1)).issubset(Set(self.getExteriorFaces()))
+        from fipy.variables.faceVariable import FaceVariable
+        faces = FaceVariable(mesh=self, value=False)
+        faces[faces0] = True
+        faces[faces1] = True
+        assert faces | self.getExteriorFaces() == self.getExteriorFaces()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
         assert numerix.alltrue(numerix.take(self.areaProjections, faces0, axis=1) 
