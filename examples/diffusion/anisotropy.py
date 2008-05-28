@@ -42,32 +42,26 @@
 
 r"""
 
-This example demonstrates how to solve anisotropic diffusion.
-We wish to solve the following problem.
+This example demonstrates how to solve diffusion with an anisotropic
+coefficient.  We wish to solve the following problem.
 
 .. raw:: latex
 
     $$ \frac{\partial \phi}{\partial t} = \partial_j \Gamma_{ij}
-    \partial_i \phi $$ where $\Gamma_{ij}$ is an anisotropic diffusion
-    coefficient. We can choose an anisotropy of 80\% such that
-    $$\Gamma' = \begin{pmatrix} 0.2 & 0 \\ 0 & 1 \end{pmatrix}$$ We
-    can then create a rotation matrix to rotate $\Gamma'$ such that
-    $$R = \begin{pmatrix} \cos\theta & \sin\theta \\ -\sin\theta &
-    \cos\theta \end{pmatrix}$$ We can then choose $Gamma$ such that $$
-    \Gamma = R \Gamma' R^T $$
+    \partial_i \phi $$ on a circular domain centred at $(0, 0)$. We
+    can choose an anisotropy of 80\% such that $$\Gamma' =
+    \begin{pmatrix} 0.2 & 0 \\ 0 & 1 \end{pmatrix}$$ A new matrix is
+    formed by rotating $\Gamma'$ such that $$R = \begin{pmatrix}
+    \cos\theta & \sin\theta \\ -\sin\theta & \cos\theta
+    \end{pmatrix}$$ and $$ \Gamma = R \Gamma'
+    R^T $$
 
-    The example chosen here is for a circular domain using an
-    unstructured mesh. In the case of a point source at $(0, 0)$
-    a reference solution is given by,
-    $$ \phi \left( X, Y, t \right) = Q \frac{
-       \exp \left( -\frac{1}{4 t}
-       \left( \frac{ X^2 }{ \Gamma'_{00}} + \frac{ Y^2 }{ \Gamma'_{11}} \right) \right)
-    }{
-       4 \pi t \sqrt{\Gamma'_{00} \Gamma'_{11}}
-    }
-    $$
-    where $ \left(X, Y \right)^T = R \left(x, y \right)^T $ and $Q$ is
-    the initial mass.
+    In the case of a point source at $(0, 0)$ a reference
+    solution is given by, $$ \phi \left( X, Y, t \right) = Q \frac{
+    \exp \left( -\frac{1}{4 t} \left( \frac{ X^2 }{ \Gamma'_{00}} +
+    \frac{ Y^2 }{ \Gamma'_{11}} \right) \right) }{ 4 \pi t
+    \sqrt{\Gamma'_{00} \Gamma'_{11}} } $$ where $ \left(X, Y \right)^T
+    = R \left(x, y \right)^T $ and $Q$ is the initial mass.
 
 ..
 
