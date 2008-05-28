@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/28/08 {7:50:53 AM} 
+ #                                last update: 5/28/08 {2:14:02 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -370,7 +370,7 @@ class Mesh:
             >>> numerix.allequal((12, 13, 14), mesh.getFacesBottom())
             1
             >>> x, y, z = mesh.getFaceCenters()
-            >>> numerix.allequal((12, 13), mesh.getFacesBottom().where(x < 1))
+            >>> numerix.allequal((12, 13), mesh.getFacesBottom()[x < 1])
             1
             
         """
