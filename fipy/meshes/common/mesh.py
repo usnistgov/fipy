@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/28/08 {2:14:02 PM} 
+ #                                last update: 5/28/08 {5:04:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,7 +40,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools import numerix
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -317,7 +316,7 @@ class Mesh:
            >>> from fipy import Grid2D
            >>> m = Grid2D(nx=2, ny=2)
            >>> x, y = m.getFaceCenters()
-           >>> print m.getFaces()[x < 1]
+           >>> print numerix.nonzero(m.getFaces()[x < 1])
            [0 2 4 6 9]
 
         """
@@ -331,10 +330,12 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((21, 25), mesh.getFacesLeft())
+            >>> numerix.allequal((21, 25), 
+            ...                  numerix.nonzero(mesh.getFacesLeft()))
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((9, 13), mesh.getFacesLeft())
+            >>> numerix.allequal((9, 13), 
+            ...                  numerix.nonzero(mesh.getFacesLeft()))
             1
 
         """
@@ -347,12 +348,14 @@ class Mesh:
         Return list of faces on right boundary of Grid3D with the
         x-axis running from left to right. 
 
-            >>> from fipy import Grid2D, Grid3D
+            >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((24, 28), mesh.getFacesRight())
+            >>> numerix.allequal((24, 28), 
+            ...                  numerix.nonzero(mesh.getFacesRight()))
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((12, 16), mesh.getFacesRight())
+            >>> numerix.allequal((12, 16), 
+            ...                  numerix.nonzero(mesh.getFacesRight()))
             1
             
         """
@@ -365,12 +368,14 @@ class Mesh:
         Return list of faces on bottom boundary of Grid3D with the
         y-axis running from bottom to top.
 
-            >>> from fipy import Grid2D, Grid3D
+            >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((12, 13, 14), mesh.getFacesBottom())
+            >>> numerix.allequal((12, 13, 14), 
+            ...                  numerix.nonzero(mesh.getFacesBottom()))
             1
             >>> x, y, z = mesh.getFaceCenters()
-            >>> numerix.allequal((12, 13), mesh.getFacesBottom()[x < 1])
+            >>> numerix.allequal((12, 13), 
+            ...                  numerix.nonzero(mesh.getFacesBottom()[x < 1]))
             1
             
         """
@@ -385,12 +390,14 @@ class Mesh:
         Return list of faces on top boundary of Grid3D with the
         y-axis running from bottom to top.
 
-            >>> from fipy import Grid2D, Grid3D
+            >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((18, 19, 20), mesh.getFacesTop())
+            >>> numerix.allequal((18, 19, 20), 
+            ...                  numerix.nonzero(mesh.getFacesTop()))
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
+            >>> numerix.allequal((6, 7, 8), 
+            ...                  numerix.nonzero(mesh.getFacesTop()))
             1
             
         """
@@ -405,9 +412,10 @@ class Mesh:
         Return list of faces on back boundary of Grid3D with the
         z-axis running from front to back. 
 
-            >>> from fipy import Grid3D
+            >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((6, 7, 8, 9, 10, 11), mesh.getFacesBack())
+            >>> numerix.allequal((6, 7, 8, 9, 10, 11), 
+            ...                  numerix.nonzero(mesh.getFacesBack()))
             1
 
         """
@@ -420,9 +428,10 @@ class Mesh:
         Return list of faces on front boundary of Grid3D with the
         z-axis running from front to back. 
 
-            >>> from fipy import Grid3D        
+            >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((0, 1, 2, 3, 4, 5), mesh.getFacesFront())
+            >>> numerix.allequal((0, 1, 2, 3, 4, 5), 
+            ...                  numerix.nonzero(mesh.getFacesFront()))
             1
 
         """

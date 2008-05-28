@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicGrid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/28/08 {4:55:50 PM} 
+ #                                last update: 5/28/08 {5:06:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,11 +50,13 @@ from grid1D import Grid1D
 class PeriodicGrid1D(Grid1D):
     """
     
+        >>> from fipy import numerix
+
     Creates a Periodic grid mesh.
         
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
         
-        >>> print mesh.getExteriorFaces()
+        >>> print numerix.nonzero(mesh.getExteriorFaces())
         [3]
 
         >>> print mesh.getFaceCellIDs()
