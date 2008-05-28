@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/8/08 {1:51:23 PM} 
+ #                                last update: 5/27/08 {5:38:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,6 @@ from fipy.tools.numerix import MA
 
 from fipy.meshes.common.mesh import Mesh as _CommonMesh
 
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.meshes.numMesh.cell import Cell
 
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -343,10 +342,11 @@ class Mesh(_CommonMesh):
                                    axis=0)
 
     def _calcInteriorAndExteriorFaceIDs(self):
-        self.exteriorFaces = FaceIterator(mesh=self, 
-                                          ids=numerix.nonzero(MA.getmask(self.faceCellIDs[1])))
-        self.interiorFaces = FaceIterator(mesh=self, 
-                                          ids=numerix.nonzero(numerix.logical_not(MA.getmask(self.faceCellIDs[1]))))
+        from fipy.variables.faceVariable import FaceVariable
+        self.exteriorFaces = FaceVariable(mesh=self, 
+                                          value=MA.getmask(self.faceCellIDs[1]))
+        self.interiorFaces = FaceVariable(mesh=self, 
+                                          value=numerix.logical_not(MA.getmask(self.faceCellIDs[1])))
 
     def _calcInteriorAndExteriorCellIDs(self):
         try:
@@ -427,9 +427,7 @@ class Mesh(_CommonMesh):
         return self.faceCellIDs
 
     def _getFaces(self):
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfFaces),
-                            checkIDs=False)
+        return numerix.arange(self.numberOfFaces)
 
     def _getCellsByID(self, ids = None):
         if ids is None:

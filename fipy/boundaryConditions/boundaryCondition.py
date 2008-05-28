@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/3/07 {3:01:47 PM} 
+ #                                last update: 5/27/08 {3:05:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -81,16 +81,11 @@ class BoundaryCondition:
         self.faces = faces
         self.value = PhysicalField(value)
         
-        import sets
-        if len(sets.Set(self.faces)) < len(self.faces):
-            raise IndexError, 'Face list has repeated entries'
-        
-        if not (sets.Set(self.faces).issubset(sets.Set(self.faces.getMesh().getExteriorFaces()))):
+        if not (self.faces | self.faces.getMesh().getExteriorFaces() 
+                == self.faces.getMesh().getExteriorFaces()):
             raise IndexError, 'Face list has interior faces'
-
-##      self.adjacentCellIDs = numerix.array([face.getCellID() for face in self.faces])
-##      self.adjacentCellIDs = numerix.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
-        self.adjacentCellIDs = self.faces._getAdjacentCellIDs()
+        
+        self.adjacentCellIDs = numerix.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
 
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Return the effect of this boundary condition on the equation

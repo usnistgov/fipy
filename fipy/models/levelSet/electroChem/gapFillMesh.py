@@ -161,12 +161,12 @@ class GapFillMesh(Mesh2D):
         Plane Surface(10) = {9} ; """)
     
     def getTopFaces(self):
-        faces = self.getFaces()
-        return faces.where(faces.getCenters()[1] > self.actualDomainHeight - self.epsilon)
+        y = self.getFaceCenters()[1]
+        return y > self.actualDomainHeight - self.epsilon
 
     def getBottomFaces(self):
-        faces = self.getFaces()
-        return faces.where(faces.getCenters()[1] < self.epsilon)
+        y = self.getFaceCenters()[1]
+        return y < self.epsilon
 
     def getCellIDsAboveFineRegion(self):
         return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)

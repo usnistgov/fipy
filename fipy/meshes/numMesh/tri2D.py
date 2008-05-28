@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 07/07/04 {4:28:00 PM} 
- #                                last update: 1/3/07 {3:11:20 PM} 
+ #                                last update: 5/27/08 {5:38:13 PM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -46,7 +46,6 @@ __docformat__ = "restructuredtext"
 from fipy.tools import numerix
 
 from fipy.meshes.numMesh.mesh2D import Mesh2D
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 

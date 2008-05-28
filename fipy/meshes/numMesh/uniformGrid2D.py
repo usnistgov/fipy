@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 5/18/06 {8:35:35 PM} 
+ #                                last update: 5/27/08 {5:40:27 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -145,6 +145,11 @@ class UniformGrid2D(Grid2D):
         Vids = numerix.reshape(Vids, (self.ny, self.nx + 1))
         Vids = Vids[...,1:-1]
         
+        from fipy.variables.faceVariable import FaceVariable
+        interiorFaces = FaceVariable(mesh=self, value=False)
+        interiorFaces[numerix.arange(self.numberOfFaces-2) + 1)] = True
+        return interiorFaces
+
         return FaceIterator(mesh=self,
                             ids=numerix.concatenate((numerix.reshape(Hids, (self.nx * (self.ny - 1),)), 
                                                      numerix.reshape(Vids, ((self.nx - 1) * self.ny,)))))

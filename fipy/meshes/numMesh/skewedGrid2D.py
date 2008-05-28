@@ -6,7 +6,7 @@
  # 
  #  FILE: "SkewedGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 1/3/07 {3:10:37 PM} 
+ #                                last update: 5/27/08 {5:38:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,6 @@ from fipy.meshes.numMesh.mesh2D import Mesh2D
 from fipy.meshes.numMesh.face import Face
 import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.meshes.meshIterator import FaceIterator
 
 class SkewedGrid2D(Mesh2D):
     """
