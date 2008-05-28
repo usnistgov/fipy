@@ -162,11 +162,13 @@ class GapFillMesh(Mesh2D):
     
     def getTopFaces(self):
         y = self.getFaceCenters()[1]
-        return y > self.actualDomainHeight - self.epsilon
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=y > self.actualDomainHeight - self.epsilon)
 
     def getBottomFaces(self):
         y = self.getFaceCenters()[1]
-        return y < self.epsilon
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=y < self.epsilon)
 
     def getCellIDsAboveFineRegion(self):
         return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)
