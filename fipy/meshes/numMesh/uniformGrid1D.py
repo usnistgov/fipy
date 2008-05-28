@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/22/06 {11:32:04 AM}
- #                                last update: 5/27/08 {5:40:09 PM} 
+ #                                last update: 5/28/08 {11:31:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -125,7 +125,7 @@ class UniformGrid1D(Grid1D):
     def getInteriorFaces(self):
         from fipy.variables.faceVariable import FaceVariable
         interiorFaces = FaceVariable(mesh=self, value=False)
-        interiorFaces[numerix.arange(self.numberOfFaces-2) + 1)] = True
+        interiorFaces[numerix.arange(self.numberOfFaces-2) + 1] = True
         return interiorFaces
             
     def _getCellFaceOrientations(self):
