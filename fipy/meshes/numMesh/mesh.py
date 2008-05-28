@@ -382,8 +382,17 @@ class Mesh(_CommonMesh):
         cell  `d` spacings.
         
         Used by the `Grid` meshes.
+
+        This tests a bug that was occuring with PeriodicGrid1D when
+        using a numpy float as the argument for the grid spacing.
+
+           >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
+           >>> PeriodicGrid1D(nx=2, dx=numerix.float32(1.))
+           PeriodicGrid1D(dx=1.0, nx=2)
+
         """
-        if type(d) in [type(1), type(1.)]:
+
+        if type(d) in [type(1), type(1.)] or not hasattr(d, '__len__'):
             n = int(n or 1)
         else:
             n = int(n or len(d))
