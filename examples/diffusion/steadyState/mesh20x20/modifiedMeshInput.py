@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:09:34 PM} 
+ #                                last update: 5/28/08 {11:35:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,9 +84,9 @@ var = CellVariable(name = "solution variable",
                    value = valueLeft)
 
 exteriorFaces = mesh.getExteriorFaces()
-xFace = exteriorFaces.getCenters()[0]
-boundaryConditions = (FixedValue(exteriorFaces.where(xFace ** 2 < 0.000000000000001), valueLeft),
-                      FixedValue(exteriorFaces.where((xFace - 20) ** 2 < 0.000000000000001), valueRight))
+xFace = mesh.getFaceCenters()[0]
+boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001), valueLeft),
+                      FixedValue(exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001), valueRight))
                       
 
 if __name__ == '__main__':
