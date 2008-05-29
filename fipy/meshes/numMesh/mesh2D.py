@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/8/08 {1:51:32 PM} 
+ #                                last update: 5/29/08 {8:53:44 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -254,11 +254,13 @@ class Mesh2D(Mesh):
             >>> mesh = Mesh2D(vertexCoords = vertices, faceVertexIDs = faces, cellFaceIDs = cells)
             
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 13, 17, 19))
-            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 12, 14, 15, 16, 18))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> faceCellIds = MA.masked_values((( 0,  1,  2, 0,  1, 2,  3,  4,  5,  

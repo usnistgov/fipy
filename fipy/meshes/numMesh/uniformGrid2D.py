@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 5/28/08 {11:31:59 AM} 
+ #                                last update: 5/29/08 {9:07:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -567,7 +567,8 @@ class UniformGrid2D(Grid2D):
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA

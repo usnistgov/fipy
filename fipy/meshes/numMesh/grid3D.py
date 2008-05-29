@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/27/08 {5:38:23 PM} 
+ #                                last update: 5/29/08 {8:55:09 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -334,7 +334,8 @@ class Grid3D(Mesh):
             1
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA
