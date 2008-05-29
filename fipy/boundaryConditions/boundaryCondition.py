@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 5/27/08 {3:05:26 PM} 
+ #                                last update: 5/29/08 {4:56:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,21 +68,17 @@ class BoundaryCondition:
 
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 2)
-            >>> bc = BoundaryCondition(mesh.getFaces(), 0)
+            >>> bc = BoundaryCondition(mesh.getInteriorFaces(), 0)
             Traceback (most recent call last):
                 ...
             IndexError: Face list has interior faces
-            >>> bc = BoundaryCondition(mesh.getFaces()[0] + mesh.getFaces()[0], 0)
-            Traceback (most recent call last):
-                ...
-            IndexError: Face list has repeated entries
 
         """
         self.faces = faces
         self.value = PhysicalField(value)
         
         if not (self.faces | self.faces.getMesh().getExteriorFaces() 
-                == self.faces.getMesh().getExteriorFaces()):
+                == self.faces.getMesh().getExteriorFaces()).getValue().all():
             raise IndexError, 'Face list has interior faces'
         
         self.adjacentCellIDs = numerix.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
