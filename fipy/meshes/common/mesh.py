@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/28/08 {5:04:13 PM} 
+ #                                last update: 5/28/08 {10:51:47 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -316,7 +316,7 @@ class Mesh:
            >>> from fipy import Grid2D
            >>> m = Grid2D(nx=2, ny=2)
            >>> x, y = m.getFaceCenters()
-           >>> print numerix.nonzero(m.getFaces()[x < 1])
+           >>> print m.getFaces()[x < 1]
            [0 2 4 6 9]
 
         """
@@ -375,7 +375,7 @@ class Mesh:
             1
             >>> x, y, z = mesh.getFaceCenters()
             >>> numerix.allequal((12, 13), 
-            ...                  numerix.nonzero(mesh.getFacesBottom()[x < 1]))
+            ...                  numerix.nonzero(mesh.getFacesBottom() & (x < 1)))
             1
             
         """
