@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/5/06 {6:36:26 PM} 
+ #                                last update: 5/30/08 {8:52:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,16 +59,12 @@ class Face:
 	  - `id`:   a unique identifier
 	"""
         import warnings
-        warnings.warn("'FaceIterator' and ID numbers should be used instead of 'Face'", DeprecationWarning, stacklevel=2)
+        warnings.warn("Face masks (e.g., `(x < 0.5) & (y > 1.3)`) or ID numbers should be used instead of 'Face'", DeprecationWarning, stacklevel=2)
         self.mesh = mesh
 	self.id = id
     
     def getMesh(self):
 	return self.mesh
-##     def getCells(self):
-## 	"""Return the Cells which lie on either side of this Face.
-## 	"""
-##         return self.cells
 		
     def getID(self):
 	return self.id

@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 10/20/07 {10:26:33 AM}
+ #                                 last update: 5/30/08 {8:48:36 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -97,23 +97,6 @@ class _MeshVariable(Variable):
             s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
         return s
 
-    def __getitem__(self, index):
-        """    
-        "Evaluate" the `_MeshVariable` and return the specified element
-        """
-        if isinstance(index, MeshIterator):
-            assert index.getMesh() == self.getMesh()
-            return self.take(index)
-        else:
-            return Variable.__getitem__(self, index)
-
-    def __setitem__(self, index, value):
-        if isinstance(index, MeshIterator):
-            assert index.getMesh() == self.getMesh()
-            self.put(indices=index, value=value)
-        else:
-            Variable.__setitem__(self, index, value)
-        
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this `MeshVariable` type, given a particular mesh.
