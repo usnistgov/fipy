@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/29/08 {8:54:19 AM} 
+ #                                last update: 5/30/08 {8:04:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -232,9 +232,8 @@ class Grid2D(Mesh2D):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> tmp = list(mesh.getExteriorFaces())
-            >>> tmp.sort()
-            >>> numerix.allequal(externalFaces, tmp)
+            >>> numerix.allequal(externalFaces, 
+            ...                  numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))

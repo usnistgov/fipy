@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/29/08 {8:50:59 AM} 
+ #                                last update: 5/30/08 {8:01:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -354,11 +354,11 @@ class Mesh(_CommonMesh):
     def _calcInteriorAndExteriorCellIDs(self):
         try:
             import sets
-            self.exteriorCellIDs = sets.Set(MA.take(self.faceCellIDs[0], self.getExteriorFaces()))
+            self.exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.getExteriorFaces().getValue()])
             self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
             self.exteriorCellIDs = list(self.exteriorCellIDs)
         except:
-            self.exteriorCellIDs = numerix.take(self.faceCellIDs[0], self.getExteriorFaces())
+            self.exteriorCellIDs = self.faceCellIDs[0, self.getExteriorFaces().getValue()]
             tmp = numerix.zeros(self.numberOfCells)
             numerix.put(tmp, self.exteriorCellIDs, numerix.ones(len(self.exteriorCellIDs)))
             self.exteriorCellIDs = numerix.nonzero(tmp)            
