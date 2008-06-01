@@ -335,18 +335,21 @@ class Mesh(_CommonMesh):
 
 ##         MA.put(firstRow, cellFaceIDsFlat[::-1], array[::-1])
 ##         MA.put(secondRow, cellFaceIDsFlat, array)
-        numerix.put(self.faceCellIDs[0], self.cellFaceIDs[::-1,::-1], array[::-1,::-1])
-        numerix.put(self.faceCellIDs[1], self.cellFaceIDs, array)
-        self.faceCellIDs = MA.sort(MA.array(self.faceCellIDs,
-                                            mask = ((False,) * self.numberOfFaces, 
-                                                    (self.faceCellIDs[0] == self.faceCellIDs[1]))),
+        firstRow = self.faceCellIDs[0]
+        secondRow = self.faceCellIDs[1]
+        numerix.put(firstRow, self.cellFaceIDs[::-1,::-1], array[::-1,::-1])
+        numerix.put(secondRow, self.cellFaceIDs, array)
+        
+        mask = ((False,) * self.numberOfFaces, (firstRow == secondRow))
+        self.faceCellIDs = MA.sort(MA.array(self.faceCellIDs, mask = mask),
                                    axis=0)
 
     def _calcInteriorAndExteriorFaceIDs(self):
-        self.exteriorFaces = FaceIterator(mesh=self, 
-                                          ids=numerix.nonzero(MA.getmask(self.faceCellIDs[1])))
+        mask = MA.getmask(self.faceCellIDs[1])
+        self.exteriorFaces = FaceIterator(mesh=self,                        
+            ids=numerix.nonzero(mask))
         self.interiorFaces = FaceIterator(mesh=self, 
-                                          ids=numerix.nonzero(numerix.logical_not(MA.getmask(self.faceCellIDs[1]))))
+            ids=numerix.nonzero(numerix.logical_not(mask)))
 
     def _calcInteriorAndExteriorCellIDs(self):
         try:
@@ -532,7 +535,8 @@ class Mesh(_CommonMesh):
         
     def _calcFaceToCellDistances(self):
         tmp = MA.repeat(self.faceCenters[...,numerix.NewAxis,:], 2, 1)
-        tmp -= numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
+        # array -= masked_array screws up masking for on numpy 1.1
+        tmp = tmp - numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,0))
 

@@ -71,10 +71,16 @@ __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
 from numpy.core import umath
-from numpy.core import ma as MA
 from numpy import newaxis as NewAxis
 from numpy import *
 from numpy import oldnumeric
+try:
+    from numpy.core import ma as MA
+    numpy_version = 'old'
+except ImportError:
+    # masked arrays have been moved in numpy 1.1
+    from numpy import ma as MA
+    numpy_version = 'new'
 
 def nonzero(a):
     nz = NUMERIX.nonzero(a)
@@ -135,7 +141,11 @@ def put(arr, ids, values):
         arr.put(ids, values)
     elif MA.isMaskedArray(arr):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
-            MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+            if numpy_version == 'old':
+                pvalues = MA.array(values, mask=MA.getmaskarray(ids))
+            else:
+                pvalues = MA.array(values.filled(), mask=MA.getmaskarray(ids))
+            MA.put(arr, ids.compressed(), pvalues.compressed())
         else:
             MA.put(arr, ids, values)
     elif MA.isMaskedArray(ids):
@@ -1104,7 +1114,8 @@ def take(a, indices, axis=0, fill_value=None):
         if mask is not MA.nomask:
             taken = MA.array(data=taken, mask=mask)
         else:
-            if MA.getmask(taken) is MA.nomask:
+            if MA.getmask(taken) is MA.nomask and numpy_version == 'old':
+                # numpy 1.1 returns normal array when masked array is filled
                 taken = taken.filled()
 
     elif type(a) in (type(array((0))), type(()), type([])):

@@ -107,11 +107,12 @@ class Mesh2D(Mesh):
     def _getOrderedCellVertexIDs(self):
         from fipy.tools.numerix import take
         NFac = self._getMaxFacesPerCell()
-        cellVertexIDs0 = take(self._getFaceVertexIDs()[0], self._getCellFaceIDs().flat)
-        cellVertexIDs1 = take(self._getFaceVertexIDs()[1], self._getCellFaceIDs().flat)
-        cellVertexIDs = MA.where(self.cellToFaceOrientations.flat > 0,
-                                 cellVertexIDs0,
-                                 cellVertexIDs1)
+
+        # numpy 1.1's MA.take doesn't like FlatIter. Call ravel() instead.
+        cellVertexIDs0 = take(self._getFaceVertexIDs()[0], self._getCellFaceIDs().ravel())
+        cellVertexIDs1 = take(self._getFaceVertexIDs()[1], self._getCellFaceIDs().ravel())
+        cellVertexIDs = MA.where(self.cellToFaceOrientations.ravel() > 0,
+                             cellVertexIDs0, cellVertexIDs1)
 
         cellVertexIDs = MA.reshape(cellVertexIDs, (NFac, -1))
         return cellVertexIDs
@@ -177,7 +178,8 @@ class Mesh2D(Mesh):
         NFacPerCell =  mesh._getMaxFacesPerCell()
 
         ## set up the initial data arrays
-        faces = numerix.MA.masked_values(-numerix.ones((max(NFacPerCell, 4), (1 + layers) * NCells + layers * NFac)), value = -1)
+        new_shape = (max(NFacPerCell, 4), (1 + layers)*NCells + layers*NFac)
+        faces = numerix.MA.masked_values(-numerix.ones(new_shape), value = -1)
         orderedVertices = mesh._getOrderedCellVertexIDs()
         faces[:NFacPerCell, :NCells] = orderedVertices
         vertices = oldVertices
@@ -195,7 +197,12 @@ class Mesh2D(Mesh):
 
             ## build the faces along the layers
             faces[:NFacPerCell, faceCount: faceCount + NCells] = orderedVertices + len(oldVertices[0]) * (layer + 1)
-            faces[:NFacPerCell, faceCount: faceCount + NCells] = faces[:NFacPerCell, faceCount: faceCount + NCells][::-1,:]
+            try:
+                # numpy 1.1 doesn't copy right side before assigning slice
+                # See: http://www.mail-archive.com/numpy-discussion@scipy.org/msg09843.html
+                faces[:NFacPerCell, faceCount: faceCount + NCells] = faces[:NFacPerCell, faceCount: faceCount + NCells][::-1,:].copy()
+            except:
+                faces[:NFacPerCell, faceCount: faceCount + NCells] = faces[:NFacPerCell, faceCount: faceCount + NCells][::-1,:]
 
             faceCount = faceCount + NCells
 
