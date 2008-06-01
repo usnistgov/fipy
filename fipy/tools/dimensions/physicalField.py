@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 4/30/07 {11:37:23 AM} 
+ #                                last update: 6/1/08 {12:39:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,7 +29,7 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  Copyright 1997-2006 by Konrad Hinsen, except as noted below.
+ #  Copyright 1997-2008 by Konrad Hinsen, except as noted below.
  # 
  #  Permission to use, copy, modify, and distribute this software and its
  #  documentation for any purpose and without fee is hereby granted,
@@ -993,8 +993,8 @@ class PhysicalField(object):
         """
         Return the hyperbolic tangent of the `PhysicalField`
         
-            >>> PhysicalField(1.).tanh()
-            0.761594155956
+            >>> print numerix.allclose(PhysicalField(1.).tanh(), 0.761594155956)
+            True
         
         The units of the `PhysicalField` must be dimensionless
         
@@ -1110,8 +1110,8 @@ class PhysicalField(object):
         """
         Return the complex conjugate of the `PhysicalField`. 
         
-            >>> print PhysicalField(2.2 - 3j,"ohm").conjugate()
-            (2.2+3j) ohm
+            >>> print PhysicalField(2.2 - 3j,"ohm").conjugate() == PhysicalField(2.2 + 3j,"ohm")
+            True
         """
         return self.__class__(value = umath.conjugate(self.value), unit = self.unit)
 

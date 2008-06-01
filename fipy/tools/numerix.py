@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 5/20/08 {2:52:31 PM} 
+ #                                last update: 6/1/08 {12:40:19 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -885,8 +885,8 @@ def conjugate(arr):
        
     ..
 
-        >>> print conjugate(3 + 4j)
-        (3-4j)
+        >>> print conjugate(3 + 4j) == 3 - 4j
+        True
         >>> print allclose(conjugate(array((3 + 4j, -2j, 10))), (3 - 4j, 2j, 10))
         1
         >>> from fipy.variables.variable import Variable
