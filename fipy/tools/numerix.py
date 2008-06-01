@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 6/1/08 {12:40:19 AM} 
+ #                                last update: 6/1/08 {1:36:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -566,8 +566,8 @@ def cos(arr):
        
     ..
 
-        >>> print tostring(cos(2*pi/6), precision=3)
-        0.5
+        >>> print allclose(cos(2*pi/6), 0.5)
+        True
         >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision=3, suppress_small=1)
         [ 1.   0.5  0. ]
         >>> from fipy.variables.variable import Variable
