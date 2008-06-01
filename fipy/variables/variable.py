@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 7/16/07 {10:03:05 PM} 
+ #                                last update: 6/1/08 {10:55:59 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1357,7 +1357,6 @@ class Variable(object):
             'unit': self.getUnit(),
             'array': None,
             'name': self.name,
-            'cached': self._cached
         }
         
     def __setstate__(self, dict):
