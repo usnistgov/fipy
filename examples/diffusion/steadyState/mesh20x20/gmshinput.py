@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:09:36 PM} 
+ #                                last update: 6/2/08 {8:53:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,34 +68,6 @@ if __name__ == '__main__':
                        value = valueLeft)
 
     viewer = viewers.make(vars = var)
-
-    def leftSide(face):
-        a = face.getCenter()[0]
-        if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
-            return 1
-        else:
-            return 0
-
-    def rightSide(face):
-        a = face.getCenter()[0]
-        if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
-            return 1
-        else:
-            return 0
-
-    def bottomSide(face):
-        a = face.getCenter()[1]
-        if(((a ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
-            return 1
-        else:
-            return 0
-
-    def topSide(face):
-        a = face.getCenter()[1]
-        if(( ((a - 20) ** 2) < 0.000000000000001) and (face.getID() in mesh.getExteriorFaces())):
-            return 1
-        else:
-            return 0
 
     ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                              FixedValue(mesh.getFacesRight(), valueRight)))

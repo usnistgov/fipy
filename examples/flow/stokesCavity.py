@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:43:03 PM}
+ #                                last update: 6/2/08 {8:58:07 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -248,8 +248,7 @@ solution. This argument cannot be passed to `solve()`.
     ...     ## update the face velocities based on starred values
     ...     velocity[0] = xVelocity.getArithmeticFaceValue()
     ...     velocity[1] = yVelocity.getArithmeticFaceValue()
-    ...     for id in mesh.getExteriorFaces():
-    ...         velocity[...,id] = 0.
+    ...     velocity[..., mesh.getExteriorFaces().getValue()] = 0.
     ...
     ...     ## solve the pressure correction equation
     ...     pressureCorrectionEq.cacheRHSvector()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 10/5/07 {10:49:43 AM}
+ #                                last update: 6/2/08 {8:58:29 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -150,8 +150,7 @@ faces. These are used as the boundary condition fixed values.
 
 ..
 
-    >>> exteriorXcoords = take(mesh.getFaceCenters()[0],
-    ...                        mesh.getExteriorFaces())
+    >>> exteriorXcoords = mesh.getFaceCenters()[0, mesh.getExteriorFaces().getValue()]
 
 .. raw:: latex
 

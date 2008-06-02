@@ -6,7 +6,7 @@
  # 
  #  FILE: "vanLeerConvectionTerm.py"
  #                                    created: 7/14/04 {4:42:01 PM} 
- #                                last update: 1/3/07 {3:22:57 PM} 
+ #                                last update: 6/2/08 {8:45:37 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +72,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         
         mesh = oldArray.getMesh()
 
-        interiorIDs = mesh.getInteriorFaces()
+        interiorIDs = numerix.nonzero(mesh.getInteriorFaces())
         interiorFaceAreas = numerix.take(mesh._getFaceAreas(), interiorIDs)
         interiorFaceNormals = numerix.take(mesh._getOrientedFaceNormals(), interiorIDs, axis=-1)
         

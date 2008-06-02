@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 5/30/08 {8:48:36 AM}
+ #                                 last update: 6/2/08 {9:25:27 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -35,7 +35,6 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.meshIterator import MeshIterator
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix

@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/29/08 {8:53:44 AM} 
+ #                                last update: 6/2/08 {8:55:27 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -119,7 +119,7 @@ class Mesh2D(Mesh):
     def _getNonOrthogonality(self):
         
         exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],))
-        numerix.put(exteriorFaceArray, self.getExteriorFaces(), 1)
+        numerix.put(exteriorFaceArray, numerix.nonzero(self.getExteriorFaces()), 1)
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) ## what we put in for the "fill" doesn't matter because only exterior faces have anything masked, and exterior faces have their displacement vectors set to zero.
         ## if it's an exterior face, make the "displacement vector" equal to zero so the cross product will be zero.
     
