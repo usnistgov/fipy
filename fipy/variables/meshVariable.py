@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 6/2/08 {9:25:27 AM}
+ #                                 last update: 6/2/08 {5:06:30 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -302,7 +302,6 @@ class _MeshVariable(Variable):
             'name': self.name,
             'value': self.getValue(),
             'unit': self.getUnit(),
-            'cached': self._cached
         }
 
 

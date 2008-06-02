@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 7/16/07 {10:03:05 PM} 
+ #                                last update: 6/2/08 {4:56:49 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1052,8 +1052,8 @@ class Variable(object):
 
             >>> a = Variable(value=(0, 0, 1, 1))
             >>> b = Variable(value=(0, 1, 0, 1))
-            >>> print (a == 0) & (b == 1)
-            [0 1 0 0]
+            >>> numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            1
             >>> print a & b
             [0 0 0 1]
             >>> from fipy.meshes.grid1D import Grid1D
@@ -1061,13 +1061,13 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print (a == 0) & (b == 1)
-            [0 1 0 0]
+            >>> numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            1
             >>> print a & b
             [0 0 0 1]
 
         """
-        return self._BinaryOperatorVariable(lambda a,b: a.astype('h') & b.astype('h'), other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a,b: a & b, other, canInline=False)
 
     def __or__(self, other):
         """
@@ -1075,8 +1075,8 @@ class Variable(object):
 
             >>> a = Variable(value=(0, 0, 1, 1))
             >>> b = Variable(value=(0, 1, 0, 1))
-            >>> print (a == 0) | (b == 1)
-            [1 1 0 1]
+            >>> numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            1
             >>> print a | b
             [0 1 1 1]
             >>> from fipy.meshes.grid1D import Grid1D
@@ -1084,14 +1084,13 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print (a == 0) | (b == 1)
-            [1 1 0 1]
+            >>> numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            1
             >>> print a | b
             [0 1 1 1]
             
         """
-        
-        return self._BinaryOperatorVariable(lambda a,b: a.astype('h') | b.astype('h'), other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a,b: a | b, other, canInline=False)
 
     def __iter__(self):
         return iter(self.getValue())
@@ -1357,7 +1356,6 @@ class Variable(object):
             'unit': self.getUnit(),
             'array': None,
             'name': self.name,
-            'cached': self._cached
         }
         
     def __setstate__(self, dict):

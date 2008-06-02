@@ -364,7 +364,11 @@ class DistanceVariable(CellVariable):
         adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs)
         adjValues = numerix.take(self.value, adjIDs)
         adjValues = numerix.where(adjEvaluatedFlag, adjValues, 1e+10)
-        indices = numerix.argsort(abs(adjValues))
+        try:
+            indices = numerix.argsort(abs(adjValues))
+        except TypeError:
+            # numpy 1.1 raises a TypeError when using argsort function
+            indices = abs(adjValues).argsort()
         sign = (self.value[id] > 0) * 2 - 1
         d0 = self.cellToCellDistances[indices[0], id]
         v0 = self.value[..., adjIDs[indices[0]]]

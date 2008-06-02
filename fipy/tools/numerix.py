@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 5/20/08 {2:52:31 PM} 
+ #                                last update: 6/1/08 {1:36:47 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,10 +71,16 @@ __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
 from numpy.core import umath
-from numpy.core import ma as MA
 from numpy import newaxis as NewAxis
 from numpy import *
 from numpy import oldnumeric
+try:
+    from numpy.core import ma as MA
+    numpy_version = 'old'
+except ImportError:
+    # masked arrays have been moved in numpy 1.1
+    from numpy import ma as MA
+    numpy_version = 'new'
 
 def nonzero(a):
     nz = NUMERIX.nonzero(a)
@@ -135,7 +141,11 @@ def put(arr, ids, values):
         arr.put(ids, values)
     elif MA.isMaskedArray(arr):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
-            MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+            if numpy_version == 'old':
+                pvalues = MA.array(values, mask=MA.getmaskarray(ids))
+            else:
+                pvalues = MA.array(values.filled(), mask=MA.getmaskarray(ids))
+            MA.put(arr, ids.compressed(), pvalues.compressed())
         else:
             MA.put(arr, ids, values)
     elif MA.isMaskedArray(ids):
@@ -566,8 +576,8 @@ def cos(arr):
        
     ..
 
-        >>> print tostring(cos(2*pi/6), precision=3)
-        0.5
+        >>> print allclose(cos(2*pi/6), 0.5)
+        True
         >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision=3, suppress_small=1)
         [ 1.   0.5  0. ]
         >>> from fipy.variables.variable import Variable
@@ -885,8 +895,8 @@ def conjugate(arr):
        
     ..
 
-        >>> print conjugate(3 + 4j)
-        (3-4j)
+        >>> print conjugate(3 + 4j) == 3 - 4j
+        True
         >>> print allclose(conjugate(array((3 + 4j, -2j, 10))), (3 - 4j, 2j, 10))
         1
         >>> from fipy.variables.variable import Variable
@@ -1104,7 +1114,8 @@ def take(a, indices, axis=0, fill_value=None):
         if mask is not MA.nomask:
             taken = MA.array(data=taken, mask=mask)
         else:
-            if MA.getmask(taken) is MA.nomask:
+            if MA.getmask(taken) is MA.nomask and numpy_version == 'old':
+                # numpy 1.1 returns normal array when masked array is filled
                 taken = taken.filled()
 
     elif type(a) in (type(array((0))), type(()), type([])):
