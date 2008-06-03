@@ -6,7 +6,7 @@
  # 
  #  FILE: "mixedelement.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/08 {8:51:44 AM} 
+ #                                last update: 6/3/08 {8:19:26 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -99,7 +99,7 @@ var = CellVariable(
 eqn = TransientTerm() == ExplicitDiffusionTerm()
 
 exteriorFaces = bigMesh.getExteriorFaces()
-xFace = exteriorFaces.getCenters()[0]
+xFace = bigMesh.getFaceCenters()[0]
 
 boundaryConditions=(FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001), valueLeft),
                     FixedValue(exteriorFaces & ((xFace - (dx * nx)) ** 2 < 0.000000000000001), (valueLeft + valueRight) * 0.5),
