@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedFlux.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 5/27/08 {3:07:40 PM} 
+ #                                last update: 6/2/08 {10:40:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,7 +82,6 @@ class FixedFlux(BoundaryCondition):
         """
 
         bb = numerix.zeros((Ncells,),'d')
-## 	vector.putAdd(bb, self.adjacentCellIDs, -numerix.array(self.contribution))
         vector.putAdd(bb, self.adjacentCellIDs, -self.contribution)
         
         return (0, bb)

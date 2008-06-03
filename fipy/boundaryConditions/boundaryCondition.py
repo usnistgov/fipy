@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 5/29/08 {4:56:40 PM} 
+ #                                last update: 6/2/08 {10:41:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -81,7 +81,7 @@ class BoundaryCondition:
                 == self.faces.getMesh().getExteriorFaces()).getValue().all():
             raise IndexError, 'Face list has interior faces'
         
-        self.adjacentCellIDs = numerix.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
+        self.adjacentCellIDs = self.faces.getMesh()._getAdjacentCellIDs()[0][self.faces.getValue()]
 
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Return the effect of this boundary condition on the equation

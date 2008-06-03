@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/3/07 {3:02:27 PM}
+ #                                last update: 6/2/08 {10:40:56 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,7 +87,7 @@ class FixedValue(BoundaryCondition):
         """
         
         LL = SparseMatrix(size = Ncells, sizeHint = len(self.faces))
-        LL.addAt(numerix.take(coeff['cell 1 diag'],self.faces), self.adjacentCellIDs, self.adjacentCellIDs)
+        LL.addAt(coeff['cell 1 diag'][self.faces.getValue()], self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because
         ## FixedValue's _buildMatrix() method is called for
@@ -99,7 +99,7 @@ class FixedValue(BoundaryCondition):
         
         bb = numerix.zeros((Ncells,),'d')
 
-        vector.putAdd(bb, self.adjacentCellIDs, numerix.take(-coeff['cell 1 offdiag'],self.faces) * self._getValue())
+        vector.putAdd(bb, self.adjacentCellIDs, -coeff['cell 1 offdiag'][self.faces.getValue()] * self._getValue())
         
         return (LL, bb)
         
