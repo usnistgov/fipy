@@ -6,7 +6,7 @@
  # 
  #  FILE: "fixedValue.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 6/2/08 {10:40:56 PM}
+ #                                last update: 6/4/08 {5:08:23 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -85,9 +85,10 @@ class FixedValue(BoundaryCondition):
           - `coeff`:        contribution to adjacent cell diagonal and 
             **b**-vector by this exterior face
         """
+        faces = self.faces.getValue()
         
         LL = SparseMatrix(size = Ncells, sizeHint = len(self.faces))
-        LL.addAt(coeff['cell 1 diag'][self.faces.getValue()], self.adjacentCellIDs, self.adjacentCellIDs)
+        LL.addAt(coeff['cell 1 diag'][faces], self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because
         ## FixedValue's _buildMatrix() method is called for
@@ -99,7 +100,11 @@ class FixedValue(BoundaryCondition):
         
         bb = numerix.zeros((Ncells,),'d')
 
-        vector.putAdd(bb, self.adjacentCellIDs, -coeff['cell 1 offdiag'][self.faces.getValue()] * self._getValue())
+        value = self._getValue()
+        if value.shape == faces.shape:
+            value = value[faces]
+            
+        vector.putAdd(bb, self.adjacentCellIDs, -coeff['cell 1 offdiag'].getValue()[faces] * value)
         
         return (LL, bb)
         

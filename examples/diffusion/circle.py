@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 6/2/08 {8:58:29 AM}
+ #                                last update: 6/4/08 {5:20:39 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -150,7 +150,7 @@ faces. These are used as the boundary condition fixed values.
 
 ..
 
-    >>> exteriorXcoords = mesh.getFaceCenters()[0, mesh.getExteriorFaces().getValue()]
+    >>> X, Y = mesh.getFaceCenters()
 
 .. raw:: latex
 
@@ -158,7 +158,7 @@ faces. These are used as the boundary condition fixed values.
 
 ..
     
-    >>> BCs = (FixedValue(faces=mesh.getExteriorFaces(), value=exteriorXcoords),)
+    >>> BCs = (FixedValue(faces=mesh.getExteriorFaces(), value=X),)
 
 We first step through the transient problem
 
