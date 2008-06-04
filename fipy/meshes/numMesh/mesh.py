@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/2/08 {5:07:41 PM} 
+ #                                last update: 6/4/08 {6:02:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -447,7 +447,7 @@ class Mesh(_CommonMesh):
     def _getCellsByID(self, ids = None):
         if ids is None:
             ids = range(self.numberOfCells) 
-        return [Cell(self, ID) for ID in ids]
+        return numerix.array([Cell(self, ID) for ID in ids])
     
     def _getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[...,0])

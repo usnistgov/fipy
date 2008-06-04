@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/28/08 {10:51:47 PM} 
+ #                                last update: 6/4/08 {6:08:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -299,9 +299,11 @@ class Mesh:
            >>> m = Grid2D(nx=2, ny=2)
            >>> x, y = m.getCellCenters()
            >>> print m.getCells()[x < 1]
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0), Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
+           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0)
+            Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
            >>> print m.getCells(ids=(0, 2))
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0), Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
+           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0)
+            Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
 
         """
         return self._getCellsByID(ids)
