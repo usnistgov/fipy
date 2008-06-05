@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/2/08 {8:45:22 AM} 
+ #                                last update: 6/5/08 {12:31:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -131,7 +131,7 @@ class FaceTerm(Term):
             cell2Diag = cell2Diag,
             cell2OffDiag = cell2OffDiag,
             coeff = coeff,
-            faceIDs = numerix.nonzero(interiorFaces),
+            faceIDs = interiorFaces,
             ni = len(interiorFaces))
 
     def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
