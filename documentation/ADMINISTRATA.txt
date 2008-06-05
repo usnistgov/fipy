@@ -56,7 +56,7 @@ Merge updated state of trunk to the branch::
 Resolve any conflicts
 
     $ python setup.py test
-    $ svn ci -m "merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}"
+    $ svn ci -m "merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}@${LRN}"
     
 Refactoring complete: merge branch to the trunk
 -----------------------------------------------
@@ -79,9 +79,12 @@ Merge the branch `HEAD` to trunk::
 Resolve any conflicts
 
     $ python setup.py test
-    $ svn ci -m "merged sources:branches/${BRANCH}@${HRN} to sources:trunk"
+    $ svn ci -m "merged sources:branches/${BRANCH}@${HRN} to sources:trunk@${HRN}"
 
+When completely done with the branch
 
+    $ svn delete -m "Refactoring complete. Merged sources:branches/${BRANCH} to sources:trunk"\ 
+        ${FIPYROOT}/branches/${BRANCH}
     
 --------
 Versions
