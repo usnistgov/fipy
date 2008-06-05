@@ -41,7 +41,7 @@ Set `$LRN` based on the updated revision of trunk
     $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
     
 Look for "`merged trunk changes r${IRN}:${LRN} to ${BRANCH}`" or 
-"`merged log:trunk@${IRN}:${LRN} to sources:branches/${BRANCH}`" and set `IRN` 
+"`merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}`" and set `IRN` 
 to `${LRN}` from log message, otherwise to the revision at which the branch 
 was created.
 
@@ -79,11 +79,11 @@ Merge the branch `HEAD` to trunk::
 Resolve any conflicts
 
     $ python setup.py test
-    $ svn ci -m "merged sources:branches/${BRANCH}@${HRN} to sources:trunk@${HRN}"
+    $ svn ci -m "merged source:branches/${BRANCH}@${HRN} to source:trunk@${HRN}"
 
 When completely done with the branch
 
-    $ svn delete -m "Refactoring complete. Merged sources:branches/${BRANCH} to sources:trunk"\ 
+    $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk"\ 
         ${FIPYROOT}/branches/${BRANCH}
     
 --------
