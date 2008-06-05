@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/22/08 {9:34:06 PM} 
+ #                                last update: 6/4/08 {6:08:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,7 +40,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools import numerix
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -292,67 +291,40 @@ class Mesh:
     def _getCellsByID(self, ids = None):
         pass
             
-##     def getCells(self, filter = None, ids = None, **args):
-##         """Return `Cell` objects of `Mesh`."""
-##         cells = self._getCellsByID(ids)
-        
-##         if filter is not None:
-##             cells = [cell for cell in cells if filter(cell, **args)]
-
-##         return cells
-
-    def getCells(self, where=None, ids=None, filter = None, **args):
+    def getCells(self, ids=None):
         """
         Return `Cell` objects of `Mesh`.
 
            >>> from fipy import Grid2D
            >>> m = Grid2D(nx=2, ny=2)
-           >>> print m.getCells(m.getCellCenters()[0] < 1)
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0), Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
-           >>> print m.getCells(filter=lambda cell: m.getCellCenters()[0, cell.getID()] < 1)
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0), Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
+           >>> x, y = m.getCellCenters()
+           >>> print m.getCells()[x < 1]
+           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0)
+            Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
            >>> print m.getCells(ids=(0, 2))
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0), Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
+           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0)
+            Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
 
         """
-        
-        cells = self._getCellsByID(ids)
-
-        if where is not None:
-            cells = [cell for cell in cells if where[cell.getID()]]
-
-        if filter is not None:
-            cells = [cell for cell in cells if filter(cell, **args)]
-
-        return cells
+        return self._getCellsByID(ids)
         
     def _getFaces(self):
         pass
     
-    def getFaces(self, filter=None, **args):
+    def getFaces(self):
         """
         Return `Face` objects of `Mesh`.
 
            >>> from fipy import Grid2D
            >>> m = Grid2D(nx=2, ny=2)
-           >>> print m.getFaces().where(m.getFaceCenters()[0] < 1)
-           [0 2 4 6 9]
-           >>> print m.getFaces(filter=lambda face: m.getFaceCenters()[0, face] < 1)
+           >>> x, y = m.getFaceCenters()
+           >>> print m.getFaces()[x < 1]
            [0 2 4 6 9]
 
         """
-        faces = self._getFaces()
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=self._getFaces())
 
-        if filter is not None:
-            from fipy.meshes.meshIterator import FaceIterator
-            return FaceIterator(mesh=self, ids=[face for face in faces if filter(face, **args)])
-        else:
-            return faces
-
-    def getFacesLeftFilter(self):
-        x = self.getFaceCenters()[0]
-        return (x == min(x))
-        
     def getFacesLeft(self):
         """
         Return face on left boundary of Grid1D as list with the
@@ -360,116 +332,114 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((21, 25), mesh.getFacesLeft())
+            >>> numerix.allequal((21, 25), 
+            ...                  numerix.nonzero(mesh.getFacesLeft()))
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((9, 13), mesh.getFacesLeft())
+            >>> numerix.allequal((9, 13), 
+            ...                  numerix.nonzero(mesh.getFacesLeft()))
             1
 
         """
-        return self.getFaces().where(self.getFacesLeftFilter())
-
-    def getFacesRightFilter(self):
         x = self.getFaceCenters()[0]
-        return (x == max(x))
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=x == min(x))
 
     def getFacesRight(self):
         """
         Return list of faces on right boundary of Grid3D with the
         x-axis running from left to right. 
 
-            >>> from fipy import Grid2D, Grid3D
+            >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((24, 28), mesh.getFacesRight())
+            >>> numerix.allequal((24, 28), 
+            ...                  numerix.nonzero(mesh.getFacesRight()))
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((12, 16), mesh.getFacesRight())
+            >>> numerix.allequal((12, 16), 
+            ...                  numerix.nonzero(mesh.getFacesRight()))
             1
             
         """
-        return self.getFaces().where(self.getFacesRightFilter())
-
-    def getFacesBottomFilter(self):
-        y = self.getFaceCenters()[1]
-        return (y == min(y))
-
-    getFacesDownFilter = getFacesBottomFilter
+        x = self.getFaceCenters()[0]        
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=x == max(x))
 
     def getFacesBottom(self):
         """
         Return list of faces on bottom boundary of Grid3D with the
         y-axis running from bottom to top.
 
-            >>> from fipy import Grid2D, Grid3D
+            >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((12, 13, 14), mesh.getFacesBottom())
+            >>> numerix.allequal((12, 13, 14), 
+            ...                  numerix.nonzero(mesh.getFacesBottom()))
             1
             >>> x, y, z = mesh.getFaceCenters()
-            >>> numerix.allequal((12, 13), mesh.getFacesBottom().where(x < 1))
+            >>> numerix.allequal((12, 13), 
+            ...                  numerix.nonzero(mesh.getFacesBottom() & (x < 1)))
             1
             
         """
-        return self.getFaces().where(self.getFacesBottomFilter())
+        y = self.getFaceCenters()[1]        
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=y == min(y))
 
     getFacesDown = getFacesBottom
-
-    def getFacesTopFilter(self):
-        y = self.getFaceCenters()[1]
-        return (y == max(y))
-
-    getFacesUpFilter = getFacesTopFilter
 
     def getFacesTop(self):
         """
         Return list of faces on top boundary of Grid3D with the
         y-axis running from bottom to top.
 
-            >>> from fipy import Grid2D, Grid3D
+            >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((18, 19, 20), mesh.getFacesTop())
+            >>> numerix.allequal((18, 19, 20), 
+            ...                  numerix.nonzero(mesh.getFacesTop()))
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
+            >>> numerix.allequal((6, 7, 8), 
+            ...                  numerix.nonzero(mesh.getFacesTop()))
             1
             
         """
-        return self.getFaces().where(self.getFacesTopFilter())
+        y = self.getFaceCenters()[1]        
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=y == max(y))
 
     getFacesUp = getFacesTop
-
-    def getFacesBackFilter(self):
-        z = self.getFaceCenters()[2]
-        return (z == max(z))
 
     def getFacesBack(self):
         """
         Return list of faces on back boundary of Grid3D with the
         z-axis running from front to back. 
 
-            >>> from fipy import Grid3D
+            >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((6, 7, 8, 9, 10, 11), mesh.getFacesBack())
+            >>> numerix.allequal((6, 7, 8, 9, 10, 11), 
+            ...                  numerix.nonzero(mesh.getFacesBack()))
             1
 
         """
-        return self.getFaces().where(self.getFacesBackFilter())
-
-    def getFacesFrontFilter(self):
-        z = self.getFaceCenters()[2]
-        return (z == min(z))
+        z = self.getFaceCenters()[2]        
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=z == max(z))
 
     def getFacesFront(self):
         """
         Return list of faces on front boundary of Grid3D with the
         z-axis running from front to back. 
 
-            >>> from fipy import Grid3D        
+            >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((0, 1, 2, 3, 4, 5), mesh.getFacesFront())
+            >>> numerix.allequal((0, 1, 2, 3, 4, 5), 
+            ...                  numerix.nonzero(mesh.getFacesFront()))
             1
 
         """
-        return self.getFaces().where(self.getFacesFrontFilter())
+        z = self.getFaceCenters()[2]        
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=z == min(z))
     
     def _getMaxFacesPerCell(self):
         pass

@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 5/18/06 {8:35:35 PM} 
+ #                                last update: 5/30/08 {8:38:01 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,7 +49,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid2D import Grid2D
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools.inline import inline
@@ -127,11 +126,15 @@ class UniformGrid2D(Grid2D):
         """
         Return only the faces that have one neighboring cell.
         """
-        return FaceIterator(mesh=self,
-                            ids=numerix.concatenate((numerix.arange(0, self.nx),
-                                                     numerix.arange(0, self.nx) + self.nx * self.ny,
-                                                     numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces,
-                                                     numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces + self.nx)))
+        exteriorIDs = numerix.concatenate((numerix.arange(0, self.nx),
+                                           numerix.arange(0, self.nx) + self.nx * self.ny,
+                                           numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces,
+                                           numerix.arange(0, self.ny) * (self.nx + 1) + self.numberOfHorizontalFaces + self.nx))
+                       
+        from fipy.variables.faceVariable import FaceVariable
+        exteriorFaces = FaceVariable(mesh=self, value=False)
+        exteriorFaces[exteriorIDs] = True
+        return exteriorFaces
         
     def getInteriorFaces(self):
         """
@@ -145,9 +148,13 @@ class UniformGrid2D(Grid2D):
         Vids = numerix.reshape(Vids, (self.ny, self.nx + 1))
         Vids = Vids[...,1:-1]
         
-        return FaceIterator(mesh=self,
-                            ids=numerix.concatenate((numerix.reshape(Hids, (self.nx * (self.ny - 1),)), 
-                                                     numerix.reshape(Vids, ((self.nx - 1) * self.ny,)))))
+        interiorIDs = numerix.concatenate((numerix.reshape(Hids, (self.nx * (self.ny - 1),)), 
+                                           numerix.reshape(Vids, ((self.nx - 1) * self.ny,))))
+                                           
+        from fipy.variables.faceVariable import FaceVariable
+        interiorFaces = FaceVariable(mesh=self, value=False)
+        interiorFaces[interiorIDs] = True
+        return interiorFaces
 
     def _getCellFaceOrientations(self):
         cellFaceOrientations = numerix.ones((4, self.numberOfCells))
@@ -557,12 +564,14 @@ class UniformGrid2D(Grid2D):
             >>> numerix.allequal(cells, mesh._createCells())
             1
 
-            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 13, 12, 16))
-            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
+            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA

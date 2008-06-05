@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 10/17/07 {12:58:43 PM}
+ #                                last update: 6/2/08 {8:56:36 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -628,7 +628,7 @@ class DistanceVariable(CellVariable):
         faceGrad = numerix.array(faceGrad)
 
         ## set faceGrad zero on exteriorFaces
-        faceGrad[:,self.exteriorFaces.getIDs()] = 0.
+        faceGrad[..., self.exteriorFaces.getValue()] = 0.
         
         return faceGrad / faceGradMag 
 

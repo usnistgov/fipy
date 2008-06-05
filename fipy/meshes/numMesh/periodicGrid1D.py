@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicGrid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/15/06 {3:42:03 PM} 
+ #                                last update: 5/28/08 {5:06:53 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,11 +50,13 @@ from grid1D import Grid1D
 class PeriodicGrid1D(Grid1D):
     """
     
+        >>> from fipy import numerix
+
     Creates a Periodic grid mesh.
         
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
         
-        >>> print mesh.getExteriorFaces()
+        >>> print numerix.nonzero(mesh.getExteriorFaces())
         [3]
 
         >>> print mesh.getFaceCellIDs()
@@ -77,7 +79,9 @@ class PeriodicGrid1D(Grid1D):
     """
     def __init__(self, dx = 1., nx = None):
         Grid1D.__init__(self, dx = dx, nx = nx)
-        self._connectFaces(self.getFacesLeft(), self.getFacesRight())
+        from fipy.tools import numerix
+        self._connectFaces(numerix.nonzero(self.getFacesLeft()), 
+                           numerix.nonzero(self.getFacesRight()))
 
 def _test():
     import doctest

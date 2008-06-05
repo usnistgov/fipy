@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/8/08 {1:51:23 PM} 
+ #                                last update: 6/4/08 {6:02:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,6 @@ from fipy.tools.numerix import MA
 
 from fipy.meshes.common.mesh import Mesh as _CommonMesh
 
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.meshes.numMesh.cell import Cell
 
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -111,7 +110,7 @@ class Mesh(_CommonMesh):
             [2 3 4 5]
             [6 7 9 10]]
             
-           >>> mesh._connectFaces(mesh.getFacesLeft(), mesh.getFacesRight())
+           >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
            >>> print mesh._getCellFaceIDs()
            [[0 1 2 3]
@@ -124,8 +123,11 @@ class Mesh(_CommonMesh):
         ## check for errors
 
         ## check that faces are members of exterior faces
-        from sets import Set
-        assert Set(faces0).union(Set(faces1)).issubset(Set(self.getExteriorFaces()))
+        from fipy.variables.faceVariable import FaceVariable
+        faces = FaceVariable(mesh=self, value=False)
+        faces[faces0] = True
+        faces[faces1] = True
+        assert faces | self.getExteriorFaces() == self.getExteriorFaces()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
         assert numerix.alltrue(numerix.take(self.areaProjections, faces0, axis=1) 
@@ -345,20 +347,21 @@ class Mesh(_CommonMesh):
                                    axis=0)
 
     def _calcInteriorAndExteriorFaceIDs(self):
+        from fipy.variables.faceVariable import FaceVariable
         mask = MA.getmask(self.faceCellIDs[1])
-        self.exteriorFaces = FaceIterator(mesh=self,                        
-            ids=numerix.nonzero(mask))
-        self.interiorFaces = FaceIterator(mesh=self, 
-            ids=numerix.nonzero(numerix.logical_not(mask)))
+        self.exteriorFaces = FaceVariable(mesh=self, 
+                                          value=mask)
+        self.interiorFaces = FaceVariable(mesh=self, 
+                                          value=numerix.logical_not(mask))
 
     def _calcInteriorAndExteriorCellIDs(self):
         try:
             import sets
-            self.exteriorCellIDs = sets.Set(MA.take(self.faceCellIDs[0], self.getExteriorFaces()))
+            self.exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.getExteriorFaces().getValue()])
             self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
             self.exteriorCellIDs = list(self.exteriorCellIDs)
         except:
-            self.exteriorCellIDs = numerix.take(self.faceCellIDs[0], self.getExteriorFaces())
+            self.exteriorCellIDs = self.faceCellIDs[0, self.getExteriorFaces().getValue()]
             tmp = numerix.zeros(self.numberOfCells)
             numerix.put(tmp, self.exteriorCellIDs, numerix.ones(len(self.exteriorCellIDs)))
             self.exteriorCellIDs = numerix.nonzero(tmp)            
@@ -439,14 +442,12 @@ class Mesh(_CommonMesh):
         return self.faceCellIDs
 
     def _getFaces(self):
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfFaces),
-                            checkIDs=False)
+        return numerix.arange(self.numberOfFaces)
 
     def _getCellsByID(self, ids = None):
         if ids is None:
             ids = range(self.numberOfCells) 
-        return [Cell(self, ID) for ID in ids]
+        return numerix.array([Cell(self, ID) for ID in ids])
     
     def _getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[...,0])
@@ -721,11 +722,13 @@ class Mesh(_CommonMesh):
             >>> mesh = Mesh(vertexCoords=vertices, faceVertexIDs=faces, cellFaceIDs=cells)
 
             >>> externalFaces = numerix.array((0, 1, 2, 4, 5, 6, 7, 8, 9))
-            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3,))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA
