@@ -1,3 +1,13 @@
+## The import scipy statement is added to allow PyTrilinos to run
+## without throwing a segmentation fault. This is caused by weird
+## behavior in scipy and PyTrilinos depending on the order in which
+## modules are imported
+
+try:
+    import scipy
+except:
+    pass
+
 # The fact that I have to do the following manipulation with the current
 # directory is really, really bad. 
 import os

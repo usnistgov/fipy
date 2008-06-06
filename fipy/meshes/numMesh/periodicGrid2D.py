@@ -6,7 +6,7 @@
  #
  #  FILE: "periodicGrid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/2/07 {2:52:17 PM} 
+ #                                last update: 6/5/08 {8:12:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,9 +53,11 @@ class PeriodicGrid2D(Grid2D):
     first and then vertical faces. Vertices and cells are numbered 
     in the usual way.
 
+        >>> from fipy import numerix
+
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
         
-        >>> print mesh.getExteriorFaces()
+        >>> print numerix.nonzero(mesh.getExteriorFaces())
         [4, 5, 8, 11]
 
         >>> print mesh.getFaceCellIDs()
@@ -95,8 +97,11 @@ class PeriodicGrid2D(Grid2D):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
         self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
         self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs(self)
-        self._connectFaces(self.getFacesLeft(), self.getFacesRight())
-        self._connectFaces(self.getFacesBottom(), self.getFacesTop())
+        from fipy.tools import numerix
+        self._connectFaces(numerix.nonzero(self.getFacesLeft()), 
+                           numerix.nonzero(self.getFacesRight()))
+        self._connectFaces(numerix.nonzero(self.getFacesBottom()), 
+                           numerix.nonzero(self.getFacesTop()))
 
     def _getCellVertexIDs(self):
         return self.nonPeriodicCellVertexIDs

@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 5/14/08 {11:29:53 AM} 
+ #                                last update: 6/5/08 {8:34:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -115,14 +115,12 @@ class Mesh2D(Mesh):
         cellVertexIDs = MA.where(numerix.ravel(self.cellToFaceOrientations) > 0,
                                  cellVertexIDs0,
                                  cellVertexIDs1)
-
-        cellVertexIDs = MA.reshape(cellVertexIDs, (NFac, -1))
         return cellVertexIDs
     
     def _getNonOrthogonality(self):
         
         exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],))
-        numerix.put(exteriorFaceArray, self.getExteriorFaces(), 1)
+        numerix.put(exteriorFaceArray, numerix.nonzero(self.getExteriorFaces()), 1)
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) ## what we put in for the "fill" doesn't matter because only exterior faces have anything masked, and exterior faces have their displacement vectors set to zero.
         ## if it's an exterior face, make the "displacement vector" equal to zero so the cross product will be zero.
         faceDisplacementVectors = numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)), 
@@ -186,7 +184,8 @@ class Mesh2D(Mesh):
         NFacPerCell =  mesh._getMaxFacesPerCell()
 
         ## set up the initial data arrays
-        faces = numerix.MA.masked_values(-numerix.ones((max(NFacPerCell, 4), (1 + layers) * NCells + layers * NFac)), value = -1)
+        new_shape = (max(NFacPerCell, 4), (1 + layers)*NCells + layers*NFac)
+        faces = numerix.MA.masked_values(-numerix.ones(new_shape), value = -1)
         orderedVertices = mesh._getOrderedCellVertexIDs()
         faces[:NFacPerCell, :NCells] = orderedVertices
         vertices = oldVertices
@@ -204,7 +203,12 @@ class Mesh2D(Mesh):
 
             ## build the faces along the layers
             faces[:NFacPerCell, faceCount: faceCount + NCells] = orderedVertices + len(oldVertices[0]) * (layer + 1)
-            faces[:NFacPerCell, faceCount: faceCount + NCells] = faces[:NFacPerCell, faceCount: faceCount + NCells][::-1,:]
+            try:
+                # numpy 1.1 doesn't copy right side before assigning slice
+                # See: http://www.mail-archive.com/numpy-discussion@scipy.org/msg09843.html
+                faces[:NFacPerCell, faceCount: faceCount + NCells] = faces[:NFacPerCell, faceCount: faceCount + NCells][::-1,:].copy()
+            except:
+                faces[:NFacPerCell, faceCount: faceCount + NCells] = faces[:NFacPerCell, faceCount: faceCount + NCells][::-1,:]
 
             faceCount = faceCount + NCells
 
@@ -263,11 +267,13 @@ class Mesh2D(Mesh):
             >>> mesh = Mesh2D(vertexCoords = vertices, faceVertexIDs = faces, cellFaceIDs = cells)
             
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 13, 17, 19))
-            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 12, 14, 15, 16, 18))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> faceCellIds = MA.masked_values((( 0,  1,  2, 0,  1, 2,  3,  4,  5,  

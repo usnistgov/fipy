@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/22/06 {11:32:04 AM}
- #                                last update: 5/14/08 {11:30:46 AM} 
+ #                                last update: 6/5/08 {8:24:58 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid1D import Grid1D
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 
@@ -81,7 +80,7 @@ class UniformGrid1D(Grid1D):
         self.numberOfFaces = self.nx + 1
         self.numberOfCells = self.nx
         
-        self.exteriorFaces = self.getFacesLeft() + self.getFacesRight()
+        self.exteriorFaces = self.getFacesLeft() | self.getFacesRight()
         
         self.scale = {
             'length': 1.,
@@ -130,8 +129,10 @@ class UniformGrid1D(Grid1D):
                             elementshape=(2,))
      
     def getInteriorFaces(self):
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.numberOfFaces-2) + 1)
+        from fipy.variables.faceVariable import FaceVariable
+        interiorFaces = FaceVariable(mesh=self, value=False)
+        interiorFaces[numerix.arange(self.numberOfFaces-2) + 1] = True
+        return interiorFaces
             
     def _getCellFaceOrientations(self):
         orientations = CellVariable(mesh=self, value=1., elementshape=(2,))

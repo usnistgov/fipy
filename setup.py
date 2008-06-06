@@ -124,6 +124,15 @@ def _TestClass(base):
             import sys
             if '--Trilinos' in sys.argv[1:]:
                 try:
+                    ## The import scipy statement is added to allow
+                    ## the --Trilinos tests to run without throwing a
+                    ## segmentation fault. This is caused by weird
+                    ## behavior in scipy and PyTrilinos depending on
+                    ## the order in which modules are imported
+                    try:
+                        import scipy
+                    except:
+                        pass
                     import PyTrilinos
                 except ImportError, a:
                     print >>sys.stderr, "!!! Trilinos library is not installed"

@@ -6,7 +6,7 @@
  # 
  # FILE: "binaryOperatorVariable.py"
  #                                     created: 5/16/07 {9:55:54 AM}
- #                                 last update: 5/16/07 {9:55:54 AM}
+ #                                 last update: 6/1/08 {11:02:52 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,7 @@ def _BinaryOperatorVariable(operatorClass=None):
         >>> from fipy import Grid1D, FaceVariable, CellVariable, dump, Variable
         >>> import os, sys
         >>> m = Grid1D()
-        >>> vs = (CellVariable(mesh=m, value=1), FaceVariable(mesh=m, value=1), Variable(1))
+        >>> vs = (CellVariable(mesh=m, value=2.), FaceVariable(mesh=m, value=3.), Variable(4))
         >>> tmp = []
         >>> for v in vs:
         ...     (f, n) = dump.write(v * v)
@@ -52,8 +52,17 @@ def _BinaryOperatorVariable(operatorClass=None):
         ...     os.remove(n)
         ...     if sys.platform != 'win32':
         ...         os.close(f)
-        >>> print tmp
-        [CellVariable(value=array([1]), mesh=UniformGrid1D(dx=1.0, nx=1)), FaceVariable(value=array([1, 1]), mesh=UniformGrid1D(dx=1.0, nx=1)), Variable(value=1)]
+        >>> for v in tmp:
+        ...     print v.__class__
+        <class 'fipy.variables.cellVariable.CellVariable'>
+        <class 'fipy.variables.faceVariable.FaceVariable'>
+        <class 'fipy.variables.variable.Variable'>
+        >>> print tmp[0].allclose(4.)
+        True
+        >>> print numerix.allclose(tmp[1], [9., 9.])
+        True
+        >>> print tmp[2].allclose(16)
+        True
 
     """
     # declare a binary operator class with the desired base class

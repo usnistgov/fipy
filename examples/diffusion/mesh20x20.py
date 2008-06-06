@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh20x20.py"
  #                                    created: 4/6/06 {10:50:18 AM}
- #                                last update: 5/14/08 {3:56:12 PM} 
+ #                                last update: 5/25/08 {9:29:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,10 +100,10 @@ are automatically applied to the top-right and bottom-left corners.
 ..
 
     >>> x, y = mesh.getFaceCenters()
-    >>> facesTopLeft = mesh.getFacesLeft().where(y > L / 2) + \
-    ...                mesh.getFacesTop().where(x < L / 2)
-    >>> facesBottomRight = mesh.getFacesRight().where(y < L / 2) + \
-    ...                    mesh.getFacesBottom().where(x > L / 2)
+    >>> facesTopLeft = ((mesh.getFacesLeft() & (y > L / 2))
+    ...                 | (mesh.getFacesTop() & (x < L / 2)))
+    >>> facesBottomRight = ((mesh.getFacesRight() & (y < L / 2))
+    ...                     | (mesh.getFacesBottom() & (x > L / 2)))
 
     >>> BCs = (FixedValue(faces=facesTopLeft, value=valueTopLeft),
     ...        FixedValue(faces=facesBottomRight, value=valueBottomRight))

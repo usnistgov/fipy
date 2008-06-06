@@ -6,7 +6,7 @@
  # 
  # FILE: "uniformGrid3D.py"
  #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 11/8/07 {6:06:06 PM}
+ #                                 last update: 6/5/08 {8:32:22 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,6 @@
 from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid3D import Grid3D
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -159,13 +158,18 @@ class UniformGrid3D(Grid3D):
         XYids = self._getXYFaceIDs()
         XZids = self._getXZFaceIDs()
         YZids = self._getYZFaceIDs()
-        return FaceIterator(mesh=self,
-                            ids=numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0,1)), 
-                                                     numerix.ravel(XYids[...,     -1].swapaxes(0,1)),
-                                                     numerix.ravel(XZids[...,  0,...]), 
-                                                     numerix.ravel(XZids[..., -1,...]),
-                                                     numerix.ravel(YZids[ 0,     ...]), 
-                                                     numerix.ravel(YZids[-1,     ...]))))
+        
+        exteriorIDs = numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0,1)), 
+                                           numerix.ravel(XYids[...,     -1].swapaxes(0,1)),
+                                           numerix.ravel(XZids[...,  0,...]), 
+                                           numerix.ravel(XZids[..., -1,...]),
+                                           numerix.ravel(YZids[ 0,     ...]), 
+                                           numerix.ravel(YZids[-1,     ...])))
+                                                     
+        from fipy.variables.faceVariable import FaceVariable
+        exteriorFaces = FaceVariable(mesh=self, value=False)
+        exteriorFaces[exteriorIDs] = True
+        return exteriorFaces
         
     def getInteriorFaces(self):
         """
@@ -174,10 +178,15 @@ class UniformGrid3D(Grid3D):
         XYids = self._getXYFaceIDs()
         XZids = self._getXZFaceIDs()
         YZids = self._getYZFaceIDs()
-        return FaceIterator(mesh=self,
-                            ids=numerix.concatenate((numerix.ravel(XYids[ ...     ,1:-1]),
-                                                     numerix.ravel(XZids[ ...,1:-1, ...]),
-                                                     numerix.ravel(YZids[1:-1,      ...].swapaxes(0,1)))))
+        
+        interiorIDs = numerix.concatenate((numerix.ravel(XYids[ ...     ,1:-1]),
+                                           numerix.ravel(XZids[ ...,1:-1, ...]),
+                                           numerix.ravel(YZids[1:-1,      ...].swapaxes(0,1))))
+                                                     
+        from fipy.variables.faceVariable import FaceVariable
+        interiorFaces = FaceVariable(mesh=self, value=False)
+        interiorFaces[interiorIDs] = True
+        return interiorFaces
 
     def _getCellFaceOrientations(self):
         tmp = numerix.take(self.getFaceCellIDs()[0], self._getCellFaceIDs(), axis=-1)
@@ -564,12 +573,14 @@ class UniformGrid3D(Grid3D):
             >>> numerix.allequal(cells, mesh._createCells())
             1
 
-            >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 25, 24, 28))
-            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
+            >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA

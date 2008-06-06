@@ -25,20 +25,6 @@ Edit and add to branch::
     $ emacs ...
     $ svn ci -m "refactoring_stage_B"
 
-Refactoring complete, find the initial (IRN) and latest (LRN) revision numbers::
-
-    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
-    $ IRN=...
-    $ LRN=...
-
-Refactoring complete, merge to trunk::
-
-    $ cd ../trunk
-    $ svn diff -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
-    $ svn merge -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
-    $ python setup.py test
-    $ svn ci -m "merged ${BRANCH} changes r${IRN}:${LRN} to trunk"
-
 Merging changes from trunk to the branch
 ----------------------------------------
 
@@ -54,7 +40,8 @@ Set `$LRN` based on the updated revision of trunk
 
     $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
     
-Look for "merged trunk changes r${IRN}:${LRN} to ${BRANCH}" and set `IRN` 
+Look for "`merged trunk changes r${IRN}:${LRN} to ${BRANCH}`" or 
+"`merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}`" and set `IRN` 
 to `${LRN}` from log message, otherwise to the revision at which the branch 
 was created.
 
@@ -62,12 +49,42 @@ was created.
 
 Merge updated state of trunk to the branch::
 
-    $ cd $BRANCH
-    $ svn diff -r${IRN}:${LRN} $FIPYROOT/trunk
+    $ cd ../$BRANCH
     $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
+    $ svn diff
+
+Resolve any conflicts
+
     $ python setup.py test
-    $ svn ci -m "merged trunk changes r${IRN}:${LRN} to ${BRANCH}"
+    $ svn ci -m "merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}@${LRN}"
     
+Refactoring complete: merge branch to the trunk
+-----------------------------------------------
+
+First, follow the instructions for 
+`Merging changes from trunk to the branch`_.
+
+Find the `HEAD` revision number::
+
+    $ cd trunk
+    $ svn update
+    $ HRN=...
+
+Merge the branch `HEAD` to trunk::
+
+    $ svn merge ${FIPYROOT}/trunk@${HRN} \
+                ${FIPYROOT}/branches/${BRANCH}@${HRN}
+    $ svn diff
+
+Resolve any conflicts
+
+    $ python setup.py test
+    $ svn ci -m "merged source:branches/${BRANCH}@${HRN} to source:trunk@${HRN}"
+
+When completely done with the branch
+
+    $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk"\ 
+        ${FIPYROOT}/branches/${BRANCH}
     
 --------
 Versions

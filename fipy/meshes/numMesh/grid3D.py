@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 11/8/07 {6:01:33 PM} 
+ #                                last update: 6/5/08 {8:31:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.numMesh.mesh import Mesh
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -329,13 +328,13 @@ class Grid3D(Mesh):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
-            >>> tmp = list(mesh.getExteriorFaces())
-            >>> tmp.sort()
-            >>> numerix.allequal(externalFaces, tmp)
+            >>> numerix.allequal(externalFaces, 
+            ...                  numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA

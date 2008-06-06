@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 11/10/07 {12:25:08 PM}
+ #                                last update: 6/5/08 {8:11:52 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -365,7 +365,11 @@ class DistanceVariable(CellVariable):
         adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs)
         adjValues = numerix.take(self.value, adjIDs)
         adjValues = numerix.where(adjEvaluatedFlag, adjValues, 1e+10)
-        indices = numerix.argsort(abs(adjValues))
+        try:
+            indices = numerix.argsort(abs(adjValues))
+        except TypeError:
+            # numpy 1.1 raises a TypeError when using argsort function
+            indices = abs(adjValues).argsort()
         sign = (self.value[id] > 0) * 2 - 1
         d0 = self.cellToCellDistances[indices[0], id]
         v0 = self.value[..., adjIDs[indices[0]]]
@@ -631,7 +635,7 @@ class DistanceVariable(CellVariable):
         faceGrad = numerix.array(faceGrad)
 
         ## set faceGrad zero on exteriorFaces
-        faceGrad[:,self.exteriorFaces.getIDs()] = 0.
+        faceGrad[..., self.exteriorFaces.getValue()] = 0.
         
         return faceGrad / faceGradMag 
 

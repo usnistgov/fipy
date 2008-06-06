@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/29/07 {10:40:47 AM} 
+ #                                last update: 6/5/08 {8:38:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -221,7 +221,7 @@ class _DiffusionTerm(Term):
     def _getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
         interiorCoeff = numerix.array(coeff)
         
-        numerix.put(interiorCoeff, mesh.getExteriorFaces(), 0)
+        interiorCoeff[mesh.getExteriorFaces().getValue()] = 0
         
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
@@ -229,7 +229,7 @@ class _DiffusionTerm(Term):
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
-        interiorFaces = mesh.getInteriorFaces()
+        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())
         
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
 

@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 5/14/08 {11:22:11 AM}
+ #                                 last update: 6/5/08 {8:43:23 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -35,7 +35,6 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.meshIterator import MeshIterator
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
@@ -159,22 +158,6 @@ class _MeshVariable(Variable):
             s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
         return s
 
-    def __getitem__(self, index):
-        """    
-        "Evaluate" the `_MeshVariable` and return the specified element
-        """
-        if isinstance(index, MeshIterator):
-            assert index.getMesh() == self.getMesh()
-
-        return Variable.__getitem__(self, index)
-
-    def __setitem__(self, index, value):
-        if isinstance(index, MeshIterator):
-            assert index.getMesh() == self.getMesh()
-            self.put(indices=index, value=value)
-        else:
-            Variable.__setitem__(self, index, value)
-        
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this `MeshVariable` type, given a particular mesh.
@@ -400,7 +383,6 @@ class _MeshVariable(Variable):
             'name': self.name,
             'value': self.getValue(),
             'unit': self.getUnit(),
-            'cached': self._cached
         }
 
 

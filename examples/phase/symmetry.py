@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 11/8/07 {9:15:06 AM} 
+ #                                last update: 6/5/08 {8:40:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -88,10 +88,7 @@ First set the values as given in the above equation:
 
 then extract the bottom left quadrant of cells:
 
-    >>> def func(cell, Length = None):
-    ...     center = cell.getCenter().getValue() 
-    ...     return (center[0] < Length / 2. and center[1] < Length / 2.)
-    >>> bottomLeftCells = mesh.getCells(filter = func,  Length = L)
+    >>> bottomLeftCells = mesh.getCells()[(x < L / 2.) & (y < L / 2.)]
     >>> bottomRightCells = ()
     >>> topLeftCells = ()
     >>> topRightCells = ()
