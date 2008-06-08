@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/5/08 {12:31:40 PM} 
+ #                                last update: 6/7/08 {11:11:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -154,7 +154,7 @@ class FaceTerm(Term):
 
         mesh = var.getMesh()
         id1, id2 = mesh._getAdjacentCellIDs()
-        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())
+        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
         
         id1 = numerix.take(id1, interiorFaces)
         id2 = numerix.take(id2, interiorFaces)

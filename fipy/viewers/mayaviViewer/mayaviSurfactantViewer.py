@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/5/07 {5:03:50 PM}
+ #                                last update: 6/7/08 {11:04:24 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -131,7 +131,7 @@ class MayaviSurfactantViewer(Viewer):
         ##maxX = self.distanceVar.getMesh().getFaceCenters()[0].max()
         ##minX = self.distanceVar.getMesh().getFaceCenters()[0].min()
 
-        IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
+        IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())[0]
         coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()).swapaxes(0,1), IDs)
 
         coordinates -= numerix.take(numerix.array(self.distanceVar.getGrad() * self.distanceVar).swapaxes(0,1), IDs)
@@ -150,7 +150,7 @@ class MayaviSurfactantViewer(Viewer):
 
         data = numerix.concatenate((data, data))
 
-        tmpIDs = numerix.nonzero(data > 0.0001)
+        tmpIDs = numerix.nonzero(data > 0.0001)[0]
         if len(tmpIDs) > 0:
             val = numerix.take(data, tmpIDs).min()
         else:

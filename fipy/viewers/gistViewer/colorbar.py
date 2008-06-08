@@ -33,7 +33,7 @@ def _nice_levels (z, n = 8) :
       cmax = cmax - unit
    n = int ( ( (cmax - cmin) / unit + 0.5) + 1)
    levs = span (cmin, cmax, n)
-   list = nonzero (less (abs (levs), 0.1 * unit))
+   list = nonzero(less (abs (levs), 0.1 * unit))[0]
    if len (list) > 0 :
       array_set (levs, list, 0.0)
    return levs

@@ -6,7 +6,7 @@
  # 
  #  FILE: "tools.py"
  #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 5/15/06 {3:57:58 PM} 
+ #                                last update: 6/7/08 {11:02:01 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -101,7 +101,7 @@ def prune(array, shift, start=0, axis=0):
 
     """
 
-    takeArray = numerix.nonzero(numerix.arange(array.shape[-1]) % shift != start)
+    takeArray = numerix.nonzero(numerix.arange(array.shape[-1]) % shift != start)[0]
     return numerix.take(array, takeArray, axis=axis)
 
 def _test(): 
