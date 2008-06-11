@@ -274,6 +274,8 @@ class CellVariable(_MeshVariable):
 
         return self.arithmeticFaceValue
 
+    getFaceValue = getArithmeticFaceValue
+
     def getMinmodFaceValue(self):
         r"""
         Returns a `FaceVariable` with a value that is the minimum of
