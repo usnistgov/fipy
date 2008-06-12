@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/4/08 {6:02:19 PM} 
+ #                                last update: 6/12/08 {2:12:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -127,7 +127,7 @@ class Mesh(_CommonMesh):
         faces = FaceVariable(mesh=self, value=False)
         faces[faces0] = True
         faces[faces1] = True
-        assert faces | self.getExteriorFaces() == self.getExteriorFaces()
+        assert (faces | self.getExteriorFaces() == self.getExteriorFaces()).all()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
         assert numerix.alltrue(numerix.take(self.areaProjections, faces0, axis=1) 
