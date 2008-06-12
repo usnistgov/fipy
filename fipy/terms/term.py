@@ -95,6 +95,9 @@ class Term:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
+        for bc in boundaryConditions:
+            bc._resetBoundaryConditionApplied()
+
         if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
             if not hasattr(self, "_viewer"):
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer

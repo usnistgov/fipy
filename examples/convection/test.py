@@ -55,7 +55,8 @@ def _suite():
             'exponential1DSource.tri2D',
             'powerLaw1D.tri2D',
             'advection.vanLeerUpwind',
-            'peclet'
+            'peclet',
+            'robin',
         ), base = __name__)
     
 if __name__ == '__main__':

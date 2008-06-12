@@ -80,10 +80,13 @@ class FixedFlux(BoundaryCondition):
           - `MaxFaces`:     *unused*
           - `coeff`:        *unused*
         """
-
-        bb = numerix.zeros((Ncells,),'d')
-        vector.putAdd(bb, self.adjacentCellIDs, -self.contribution)
         
+        bb = numerix.zeros((Ncells,),'d')
+
+        if not self.boundaryConditionApplied:
+            vector.putAdd(bb, self.adjacentCellIDs, -self.contribution)
+            self.boundaryConditionApplied = True
+         
         return (0, bb)
 
     def _getDerivative(self, order):

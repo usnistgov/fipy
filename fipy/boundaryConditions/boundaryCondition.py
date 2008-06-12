@@ -82,7 +82,8 @@ class BoundaryCondition:
             raise IndexError, 'Face list has interior faces'
         
         self.adjacentCellIDs = self.faces.getMesh()._getAdjacentCellIDs()[0][self.faces.getValue()]
-
+        self.boundaryConditionApplied = False
+        
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Return the effect of this boundary condition on the equation
         solution matrices.
@@ -109,9 +110,11 @@ class BoundaryCondition:
         else:
             return None
 
-
     def __repr__(self):
         return "%s(faces = %s, value = %s)" % (self.__class__.__name__, `self.faces`, `self.value`)
+
+    def _resetBoundaryConditionApplied(self):
+        self.boundaryConditionApplied = False
 
 def _test(): 
     import doctest
