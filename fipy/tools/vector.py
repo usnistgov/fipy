@@ -4,9 +4,8 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "tools.py"
- #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 5/22/08 {7:48:07 PM} 
+ #  FILE: "vector.py"
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,7 +102,7 @@ def prune(array, shift, start=0, axis=0):
 
     """
 
-    takeArray = numerix.nonzero(numerix.arange(array.shape[-1]) % shift != start)
+    takeArray = numerix.nonzero(numerix.arange(array.shape[-1]) % shift != start)[0]
     return numerix.take(array, takeArray, axis=axis)
 
 def _test(): 

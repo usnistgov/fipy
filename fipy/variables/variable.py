@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "variable.py"
- #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/5/08 {8:37:06 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1147,6 +1146,35 @@ class Variable(object):
 
     def __float__(self):
         return float(self.getValue())
+        
+    def __nonzero__(self):
+        """
+            >>> print bool(Variable(value=0))
+            0
+            >>> print bool(Variable(value=(0, 0, 1, 1)))
+            Traceback (most recent call last):
+                ...
+            ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+        """
+        return bool(self.getValue())
+    
+    def any(self):
+        """
+            >>> print Variable(value=0).any()
+            0
+            >>> print Variable(value=(0, 0, 1, 1)).any()
+            1
+        """
+        return self._UnaryOperatorVariable(lambda a: a.any())
+
+    def all(self):
+        """
+            >>> print Variable(value=(0, 0, 1, 1)).all()
+            0
+            >>> print Variable(value=(1, 1, 1, 1)).all()
+            1
+        """
+        return self._UnaryOperatorVariable(lambda a: a.all())
 
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))

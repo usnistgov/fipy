@@ -83,7 +83,7 @@ Resolve any conflicts
 
 When completely done with the branch
 
-    $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk"\ 
+    $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk" \
         ${FIPYROOT}/branches/${BRANCH}
     
 --------

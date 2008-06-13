@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "numerix.py"
- #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 6/5/08 {8:11:22 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,12 +81,6 @@ except ImportError:
     from numpy import ma as MA
     numpy_version = 'new'
 
-def nonzero(a):
-    nz = NUMERIX.nonzero(a)
-    if len(nz) == 1:
-        return nz[0]
-    else:
-        return nz
 def zeros(a, t='l'):
     return NUMERIX.zeros(a, t)
 def ones(a, t='l'):

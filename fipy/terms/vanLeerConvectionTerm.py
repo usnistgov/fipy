@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "vanLeerConvectionTerm.py"
- #                                    created: 7/14/04 {4:42:01 PM} 
- #                                last update: 6/5/08 {8:37:46 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,7 +71,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         
         mesh = oldArray.getMesh()
 
-        interiorIDs = numerix.nonzero(mesh.getInteriorFaces())
+        interiorIDs = numerix.nonzero(mesh.getInteriorFaces())[0]
         interiorFaceAreas = numerix.take(mesh._getFaceAreas(), interiorIDs, axis=-1).getValue()
         interiorFaceNormals = numerix.take(mesh._getOrientedFaceNormals(), interiorIDs, axis=-1).getValue()
         

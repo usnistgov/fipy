@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "diffusionTerm.py"
- #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 6/5/08 {8:38:09 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -229,7 +228,7 @@ class _DiffusionTerm(Term):
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
-        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())
+        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
         
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
 

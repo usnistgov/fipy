@@ -171,7 +171,7 @@ class GapFillMesh(Mesh2D):
         return FaceVariable(mesh=self, value=y < self.epsilon)
 
     def getCellIDsAboveFineRegion(self):
-        return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)
+        return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)[0]
 
     def getFineMesh(self):
         return self.fineMesh
@@ -202,7 +202,7 @@ class TrenchMesh(GapFillMesh):
         >>> import fipy.tools.dump as dump
         >>> (f, filename) = dump.write(mesh)
         >>> mesh = dump.read(filename, f)
-        >>> mesh.getNumberOfCells() - len(numerix.nonzero(mesh.getElectrolyteMask()))        
+        >>> mesh.getNumberOfCells() - len(numerix.nonzero(mesh.getElectrolyteMask())[0])        
         150
 
         >>> from fipy.variables.cellVariable import CellVariable

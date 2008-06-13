@@ -6,7 +6,7 @@
  # 
  #  FILE: "periodicGrid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 5/28/08 {5:06:53 PM} 
+ #                                last update: 6/7/08 {11:10:04 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -56,7 +56,7 @@ class PeriodicGrid1D(Grid1D):
         
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
         
-        >>> print numerix.nonzero(mesh.getExteriorFaces())
+        >>> print numerix.nonzero(mesh.getExteriorFaces())[0]
         [3]
 
         >>> print mesh.getFaceCellIDs()

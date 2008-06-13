@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "cellVariable.py"
- #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 6/5/08 {8:35:47 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -255,21 +254,21 @@ class CellVariable(_MeshVariable):
             >>> from fipy import numerix
             >>> mesh = Grid1D(dx = (1., 1.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[numerix.nonzero(mesh.getInteriorFaces())[0]]
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
             >>> answer = (var[0] - var[1]) * (0.5 / 1.) + var[1]
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[numerix.nonzero(mesh.getInteriorFaces())[0]]
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
             >>> answer = (var[0] - var[1]) * (1.0 / 3.0) + var[1]
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[numerix.nonzero(mesh.getInteriorFaces())[0]]
+            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
             >>> answer = (var[0] - var[1]) * (5.0 / 55.0) + var[1]
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
@@ -279,6 +278,8 @@ class CellVariable(_MeshVariable):
             self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
         return self.arithmeticFaceValue
+
+    getFaceValue = getArithmeticFaceValue
 
     def getMinmodFaceValue(self):
         r"""
@@ -326,21 +327,21 @@ class CellVariable(_MeshVariable):
             >>> from fipy import numerix
             >>> mesh = Grid1D(dx = (1., 1.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[numerix.nonzero(mesh.getInteriorFaces())]
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (0.5 / 1.) + var[0])
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[numerix.nonzero(mesh.getInteriorFaces())[0]]
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()][0]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (1.0 / 3.0) + var[0])
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[numerix.nonzero(mesh.getInteriorFaces())[0]]
+            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()][0]
             >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (5.0 / 55.0) + var[0])
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
