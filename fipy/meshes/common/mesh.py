@@ -330,12 +330,12 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((21, 25), 
-            ...                  numerix.nonzero(mesh.getFacesLeft())[0])
+            >>> print ((21, 25)
+            ...        == numerix.nonzero(mesh.getFacesLeft())[0]).all()
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((9, 13), 
-            ...                  numerix.nonzero(mesh.getFacesLeft())[0])
+            >>> print ((9, 13)
+            ...        == numerix.nonzero(mesh.getFacesLeft())[0]).all()
             1
 
         """
@@ -350,12 +350,12 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((24, 28), 
-            ...                  numerix.nonzero(mesh.getFacesRight())[0])
+            >>> print ((24, 28)
+            ...        == numerix.nonzero(mesh.getFacesRight())[0]).all()
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((12, 16), 
-            ...                  numerix.nonzero(mesh.getFacesRight())[0])
+            >>> print ((12, 16)
+            ...        == numerix.nonzero(mesh.getFacesRight())[0]).all()
             1
             
         """
@@ -370,12 +370,12 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((12, 13, 14), 
-            ...                  numerix.nonzero(mesh.getFacesBottom())[0])
+            >>> print ((12, 13, 14)
+            ...        == numerix.nonzero(mesh.getFacesBottom())[0]).all()
             1
             >>> x, y, z = mesh.getFaceCenters()
-            >>> numerix.allequal((12, 13), 
-            ...                  numerix.nonzero(mesh.getFacesBottom() & (x < 1))[0])
+            >>> print ((12, 13)
+            ...        == numerix.nonzero(mesh.getFacesBottom() & (x < 1))[0]).all()
             1
             
         """
@@ -392,12 +392,12 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((18, 19, 20), 
-            ...                  numerix.nonzero(mesh.getFacesTop())[0])
+            >>> print ((18, 19, 20)
+            ...        == numerix.nonzero(mesh.getFacesTop())[0]).all()
             1
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((6, 7, 8), 
-            ...                  numerix.nonzero(mesh.getFacesTop())[0])
+            >>> print ((6, 7, 8)
+            ...        == numerix.nonzero(mesh.getFacesTop())[0]).all()
             1
             
         """
@@ -414,8 +414,8 @@ class Mesh:
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((6, 7, 8, 9, 10, 11), 
-            ...                  numerix.nonzero(mesh.getFacesBack())[0])
+            >>> print ((6, 7, 8, 9, 10, 11)
+            ...        == numerix.nonzero(mesh.getFacesBack())[0]).all()
             1
 
         """
@@ -430,8 +430,8 @@ class Mesh:
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((0, 1, 2, 3, 4, 5), 
-            ...                  numerix.nonzero(mesh.getFacesFront())[0])
+            >>> print ((0, 1, 2, 3, 4, 5)
+            ...        == numerix.nonzero(mesh.getFacesFront())[0]).all()
             1
 
         """
