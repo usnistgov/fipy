@@ -155,7 +155,7 @@ def put(arr, ids, values):
                 pvalues = MA.array(values, mask=MA.getmaskarray(ids))
             else:
                 pvalues = MA.array(values.filled(), mask=MA.getmaskarray(ids))
-            _MA.put(arr, ids.compressed(), pvalues.compressed())
+            MA.put(arr, ids.compressed(), pvalues.compressed())
         else:
             _MAput(arr, ids, values)
     elif MA.isMaskedArray(ids):
