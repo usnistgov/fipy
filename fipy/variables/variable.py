@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "variable.py"
- #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 6/12/08 {2:24:02 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1112,23 +1111,23 @@ class Variable(object):
         """
         return bool(self.getValue())
     
-    def any(self):
+    def any(self, axis=None, out=None):
         """
             >>> print Variable(value=0).any()
             0
             >>> print Variable(value=(0, 0, 1, 1)).any()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.any())
+        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis, out=out))
 
-    def all(self):
+    def all(self, axis=None, out=None):
         """
             >>> print Variable(value=(0, 0, 1, 1)).all()
             0
             >>> print Variable(value=(1, 1, 1, 1)).all()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.all())
+        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis, out=out))
 
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))
