@@ -543,7 +543,7 @@ class Mesh(_CommonMesh):
 
         diff = faceCellCentersDown - faceCellCentersUp
         mag = numerix.sqrtDot(diff, diff)
-        self.faceCellToCellNormals = diff / mag[numerix.NewAxis, ...]
+        self.faceCellToCellNormals = diff / mag
 
         orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.faceCellToCellNormals) < 0)
         self.faceCellToCellNormals *= orientation
