@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 6/5/08 {8:25:35 PM} 
+ #                                last update: 6/13/08 {1:40:10 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -232,8 +232,8 @@ class Grid2D(Mesh2D):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> numerix.allequal(externalFaces, 
-            ...                  numerix.nonzero(mesh.getExteriorFaces()))
+            >>> print numerix.allequal(externalFaces,
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
@@ -390,31 +390,6 @@ class Grid2D(Mesh2D):
             ...                        unpickledMesh.getCellCenters())
             1
             
-            >>> print mesh.getVertexCoords()
-            >>> print mesh.getCellCenters()
-            >>> print mesh.getCellVolumes()
-            
-            >>> mesh2 = Mesh2D(vertexCoords=mesh.getVertexCoords(), 
-            ...                faceVertexIDs=mesh._getFaceVertexIDs(), 
-            ...                cellFaceIDs=mesh._getCellFaceIDs())
-
-            >>> print mesh2.getVertexCoords()
-            >>> print mesh2.getCellCenters()
-            >>> print mesh2.getCellVolumes()
-            
-            >>> mesh.vertexCoords[0, 6] = 1.25
-            >>> mesh.vertexCoords[1, 6] = 3.5
-            
-            >>> print mesh.getVertexCoords()
-            >>> print mesh.getCellCenters()
-            >>> print mesh.getCellVolumes()
-            
-            >>> mesh2.vertexCoords[0, 6] = 1.25
-            >>> mesh2.vertexCoords[1, 6] = 3.5
-            
-            >>> print mesh2.getVertexCoords()
-            >>> print mesh2.getCellCenters()
-            >>> print mesh2.getCellVolumes()
         """
 
 def _test():

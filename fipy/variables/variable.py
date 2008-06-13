@@ -1295,7 +1295,10 @@ class Variable(object):
                                             canInline=False)
         
     def nonzero(self):
+        operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
         return self._UnaryOperatorVariable(lambda a: numerix.nonzero(a), 
+                                           operatorClass=operatorClass,
+                                           opShape=numerix.array(numerix.nonzero(self.getValue())).shape,
                                            canInline=False)
 
     def sorted(self, axis=-1, kind='quick', order=None, fill_value=None):
