@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/5/08 {8:42:08 PM} 
+ #                                last update: 6/13/08 {9:27:57 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -379,10 +379,8 @@ class Mesh(_CommonMesh):
 
 
     def _calcInteriorAndExteriorFaceIDs(self):
-        from fipy.variables.faceVariable import FaceVariable
-        mask = MA.getmask(self.faceCellIDs[1])
-        self.exteriorFaces = FaceVariable(mesh=self, value=mask)
-        self.interiorFaces = FaceVariable(mesh=self, value=~mask)
+        self.exteriorFaces = self.faceCellIDs[1].getMask()
+        self.interiorFaces = ~self.exteriorFaces
 
     def _calcInteriorAndExteriorCellIDs(self):
         ids = numerix.take(self.faceCellIDs[0], self.getExteriorFaces(), axis=-1).filled().sorted()
@@ -393,11 +391,11 @@ class Mesh(_CommonMesh):
     
 #         try:
 #             import sets
-#             self.exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.getExteriorFaces().getValue()])
+#             self.exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.getExteriorFaces()])
 #             self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
 #             self.exteriorCellIDs = list(self.exteriorCellIDs)
 #         except:
-#             self.exteriorCellIDs = self.faceCellIDs[0, self.getExteriorFaces().getValue()]
+#             self.exteriorCellIDs = self.faceCellIDs[0, self.getExteriorFaces()]
 #             tmp = numerix.zeros(self.numberOfCells)
 #             numerix.put(tmp, self.exteriorCellIDs, numerix.ones(len(self.exteriorCellIDs)))
 #             self.exteriorCellIDs = numerix.nonzero(tmp)            
