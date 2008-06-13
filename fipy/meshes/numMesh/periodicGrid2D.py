@@ -57,7 +57,7 @@ class PeriodicGrid2D(Grid2D):
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
         
         >>> print numerix.nonzero(mesh.getExteriorFaces())[0]
-        [4, 5, 8, 11]
+        [ 4  5  8 11]
 
         >>> print mesh.getFaceCellIDs()
         [[2 3 0 1 2 3 1 0 1 3 2 3]
