@@ -6,7 +6,7 @@
  # 
  #  FILE: "pysparseMatrix.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/3/07 {3:03:32 PM} 
+ #                                last update: 6/13/08 {1:30:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -181,6 +181,7 @@ class _PysparseMatrix(_SparseMatrix):
                 L.put(other * numerix.ones(N))
                 return _PysparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
+                other = numerix.array(other)
                 y = other.copy()
                 self.matrix.matvec(other, y)
                 return y
