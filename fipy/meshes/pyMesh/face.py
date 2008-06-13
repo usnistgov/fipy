@@ -6,7 +6,7 @@
  # 
  #  FILE: "face.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/2/05 {11:45:41 PM} 
+ #                                last update: 6/13/08 {6:39:12 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -147,7 +147,7 @@ class Face:
 	p1 = self.vertices[0].getCoordinates().copy()
 	for vertex in self.vertices[2:-1]:
 	    p2=vertex.getCoordinates().copy()
-	    a += numerix.crossProd(p1,p2)
+	    a += numerix.cross(p1,p2)
 	    p1 = p2
 	return abs(a/2.)
         

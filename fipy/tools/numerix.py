@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 6/7/08 {11:45:26 PM} 
+ #                                last update: 6/13/08 {6:38:52 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -915,24 +915,6 @@ def conjugate(arr):
 #   Vector operations   #
 #                       #
 #########################
-
-def crossProd(v1,v2):
-    r"""
-    Vector cross-product of
-    
-    .. raw:: latex
-    
-       $\vec{v}_1$ and $\vec{v}_2$, $\vec{v}_1 \times \vec{v}_2$
-       
-    ..
-
-    """
-    v1n = array(v1)
-    v2n = array(v2)
-
-    return array((v1n[1] * v2n[2] - v1n[2] * v2n[1],
-                  v1n[2] * v2n[0] - v1n[0] * v2n[2],
-                  v1n[0] * v2n[1] - v1n[1] * v2n[0]))
 
 def dot(a1, a2, axis=0):
     """

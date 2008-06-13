@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/12/08 {2:12:34 PM} 
+ #                                last update: 6/13/08 {6:31:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -472,7 +472,7 @@ class Mesh(_CommonMesh):
         faceVertexCoords = faceVertexCoords - faceOrigins
         left = range(faceVertexIDs.shape[0])
         right = left[1:] + [left[0]]
-        cross = numerix.sum(numerix.crossProd(faceVertexCoords, numerix.take(faceVertexCoords, right, 1)), 1)
+        cross = numerix.sum(numerix.cross(faceVertexCoords, numerix.take(faceVertexCoords, right, 1), axis=0), 1)
         self.faceAreas = numerix.sqrtDot(cross, cross) / 2.
 
     def _calcFaceCenters(self):
@@ -498,7 +498,7 @@ class Mesh(_CommonMesh):
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
-        norm = numerix.crossProd(t1, t2)
+        norm = numerix.cross(t1, t2, axis=0)
         ## reordering norm's internal memory for inlining
         norm = norm.copy()
         norm = norm / numerix.sqrtDot(norm, norm)
@@ -566,7 +566,7 @@ class Mesh(_CommonMesh):
                                                      axis=1))
         tmp = self.faceCenters - faceVertexCoord
         self.faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
-        tmp = numerix.crossProd(self.faceTangents1, self.faceNormals)
+        tmp = numerix.cross(self.faceTangents1, self.faceNormals, axis=0)
         self.faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
         
     def _calcCellToCellDistances(self):
@@ -808,7 +808,7 @@ class Mesh(_CommonMesh):
             >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tmp = numerix.crossProd(tangents1, faceNormals)
+            >>> tmp = numerix.cross(tangents1, faceNormals, axis=0)
             >>> tangents2 = tmp / numerix.sqrtDot(tmp, tmp)
             >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
             1
