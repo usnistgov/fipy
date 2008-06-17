@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 6/5/08 {8:31:39 PM} 
+ #                                last update: 6/17/08 {2:26:25 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -328,8 +328,8 @@ class Grid3D(Mesh):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
-            >>> numerix.allequal(externalFaces, 
-            ...                  numerix.nonzero(mesh.getExteriorFaces()))
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
@@ -349,7 +349,7 @@ class Grid3D(Mesh):
             >>> faceAreas = numerix.array((xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy,
             ...                            xz, xz, xz, xz, xz, xz, xz, xz, xz,
             ...                            yz, yz, yz, yz, yz, yz, yz, yz))
-            >>> numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
@@ -407,7 +407,7 @@ class Grid3D(Mesh):
             1
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents1 = numerix.array(((1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),

@@ -1255,7 +1255,103 @@ class Variable(object):
 
     def __invert__(self):
         return self._UnaryOperatorVariable(lambda a: numerix.logical_not(a))
-                
+
+    def __cross(A, B, operatorClass, axisa=-1, axisb=-1, axisc=-1, axis=None):
+        """
+        Workhorse method to return a `_BinaryOperatorVariable` that will
+        dynamically perform the element-by-element vector product
+        
+        .. raw:: latex
+        
+           \[ \mathsf{A} \times \mathsf{B} \]
+           
+        Both `A` and `B` can be of arbitrary rank.
+        """
+        if axis is not None:
+            axisa,axisb,axisc=(axis,)*3
+            
+        Ashape = A.shape
+        Bshape = B.shape
+
+        if axisa < 0:
+            axisa = len(Ashape) + axisa
+        if axisb < 0:
+            axisb = len(Bshape) + axisb
+            
+        if axisa != 0:
+            Ashape = (Ashape[axisa],) + Ashape[1:axisa] + (Ashape[0],) + Ashape[axisa+1:]
+        if axisb != 0:
+            Bshape = (Bshape[axisb],) + Bshape[1:axisb] + (Bshape[0],) + Bshape[axisb+1:]
+        
+        if (Ashape[0] not in [2,3]) or (Bshape[0] not in [2,3]):
+            raise ValueError, "incompatible dimensions for cross product\n"\
+              "(dimension must be 2 or 3)"
+              
+        opShape = numerix._broadcastShape(Ashape[1:], Bshape[1:])
+              
+        if Ashape[0] == 2:
+            if Bshape[0] == 3:
+                opShape = (3,) + opShape
+        elif Ashape[0] == 3:
+            opShape = (3,) + opShape
+        
+        if len(opShape) > 1:
+            if axisc < 0:
+                axisc = len(opShape) + axisc
+
+            if axisc != 0:
+                opShape = (opShape[axisc],) + opShape[1:axisc] + (opShape[0],) + opShape[axisc+1:]
+
+        return A._BinaryOperatorVariable(lambda a,b: numerix.cross(a, b, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis), 
+                                         B, 
+                                         opShape=opShape,
+                                         operatorClass=operatorClass,
+                                         canInline=False)
+    __cross = staticmethod(__cross)
+
+    def cross(self, other, axisa=-1, axisb=-1, axisc=-1, axis=None):
+        """
+            >>> a = Variable(value=(1., 2.))
+            >>> b = Variable(value=(2., 3.))
+            >>> print a.cross(b).shape
+            ()
+            >>> print a.cross(b)
+            -1.0
+            >>> print b.cross(a).shape
+            ()
+            >>> print b.cross(a)
+            1.0
+            >>> a = Variable(array=numerix.zeros((2, 3), 'd'))
+            >>> a[0] = 1.
+            >>> a[1] = 2.
+            >>> print a.cross(b).shape
+            (2, 3)
+            >>> print a.cross(b)
+            [[-3.  2.  1.]
+             [-6.  4.  2.]]
+            >>> print a.cross(b[..., numerix.newaxis])
+            Traceback (most recent call last):
+                ...
+            ValueError: incompatible dimensions for cross product
+            (dimension must be 2 or 3)
+            >>> print a.cross(b, axis=0)
+            [-1. -1. -1.]
+        """
+        if not isinstance(other, Variable):
+            from fipy.variables.constant import _Constant
+            other = _Constant(value=other)
+        opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
+        return self.__cross(self, other, operatorClass=self._OperatorVariableClass(baseClass),
+                            axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
+
+    def rcross(self, other, axisa=-1, axisb=-1, axisc=-1, axis=None):
+        if not isinstance(other, Variable):
+            from fipy.variables.constant import _Constant
+            other = _Constant(value=other)
+        opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
+        return self.__cross(other, self, operatorClass=self._OperatorVariableClass(baseClass),
+                            axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
+
     def dot(self, other, axis=0, omit=()):
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant

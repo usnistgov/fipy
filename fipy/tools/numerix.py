@@ -948,23 +948,20 @@ def conjugate(arr):
 #                       #
 #########################
 
-def crossProd(v1,v2):
-    r"""
-    Vector cross-product of
-    
-    .. raw:: latex
-    
-       $\vec{v}_1$ and $\vec{v}_2$, $\vec{v}_1 \times \vec{v}_2$
-       
-    ..
+def cross(a, b, axisa=-1, axisb=-1, axisc=-1, axis=None):
+    """Return the cross product of two (arrays of) vectors.
 
+    The cross product is performed over the last axis of a and b by default,
+    and can handle axes with dimensions 2 and 3. For a dimension of 2,
+    the z-component of the equivalent three-dimensional cross product is
+    returned.
     """
-    v1n = array(v1)
-    v2n = array(v2)
-
-    return array((v1n[1] * v2n[2] - v1n[2] * v2n[1],
-                  v1n[2] * v2n[0] - v1n[0] * v2n[2],
-                  v1n[0] * v2n[1] - v1n[1] * v2n[0]))
+    if hasattr(a, 'cross'):
+        return a.cross(b, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis) 
+    elif hasattr(b, 'rcross'):
+        return b.rcross(a, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
+    else:
+        return NUMERIX.cross(a, b, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 def dot(a1, a2, axis=0, omit=()):
     """

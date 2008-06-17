@@ -6,7 +6,7 @@
  # 
  # FILE: "meshVariable.py"
  #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 6/5/08 {8:43:23 PM}
+ #                                 last update: 6/17/08 {2:31:16 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -262,7 +262,7 @@ class _MeshVariable(Variable):
             other = _Constant(value=other)
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
         
-        return _MeshVariable.__dot(self, other, operatorClass=self._OperatorVariableClass(baseClass), omit=omit)
+        return self.__dot(self, other, operatorClass=self._OperatorVariableClass(baseClass), omit=omit)
 
     def rdot(self, other, omit=()):
         """
@@ -281,8 +281,49 @@ class _MeshVariable(Variable):
             other = _Constant(value=other)
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
         
-        return self.__dot(other, self, self._OperatorVariableClass(baseClass), omit=omit)
+        return self.__dot(other, self, operatorClass=self._OperatorVariableClass(baseClass), omit=omit)
 
+    def cross(self, other, axisa=-1, axisb=-1, axisc=-1, axis=None):
+        """
+        Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
+        etc.) vector product
+        
+        .. raw:: latex
+        
+           \[ \text{self} \times \text{other} \]
+           
+        Both `self` and `other` can be of arbitrary rank, and `other` does not
+        need to be a `_MeshVariable`.
+        
+        :Parameters:
+          - `axisa`: *unused*
+          - `axisa`: *unused*
+          - `axisa`: *unused*
+          - `axis`: *unused*
+
+        """
+        return Variable.cross(self, other, axis=0)
+
+    def rcross(self, other, axisa=-1, axisb=-1, axisc=-1, axis=None):
+        """
+        Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
+        etc.) vector product
+        
+        .. raw:: latex
+        
+           \[ \text{other} \times \text{self} \]
+           
+        Both `self` and `other` can be of arbitrary rank, and `other` does not
+        need to be a `_MeshVariable`.
+        
+        :Parameters:
+          - `axisa`: *unused*
+          - `axisa`: *unused*
+          - `axisa`: *unused*
+          - `axis`: *unused*
+        """
+        return Variable.rcross(other, self, axis=0)
+        
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
         Determine the shape of the result, the base class of the result, and (if

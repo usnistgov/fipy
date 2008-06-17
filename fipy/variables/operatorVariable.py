@@ -4,7 +4,7 @@
  # 
  # FILE: "operatorVariable.py"
  #                                     created: 5/6/07 {10:53:26 AM}
- #                                 last update: 11/2/07 {3:44:31 PM}
+ #                                 last update: 6/16/08 {4:55:45 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -109,11 +109,11 @@ def _OperatorVariableClass(baseClass=None):
             while len(bytecodes) > 0:
                 bytecode = bytecodes.pop(0)
                 if opcode.opname[bytecode] == 'UNARY_CONVERT':
-                    stack.append("`" + stack.pop() + "`")
+                    stack.append("`" + str(stack.pop()) + "`")
                 elif opcode.opname[bytecode] == 'BINARY_SUBSCR':
-                    stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
+                    stack.append(str(stack.pop(-2)) + "[" + str(stack.pop()) + "]")
                 elif opcode.opname[bytecode] == 'RETURN_VALUE':
-                    s = stack.pop()
+                    s = str(stack.pop())
                     if style == 'C':
                         return s.replace('numerix.', '').replace('arc', 'a')
                     else:
@@ -121,9 +121,9 @@ def _OperatorVariableClass(baseClass=None):
                 elif opcode.opname[bytecode] == 'LOAD_CONST':
                     stack.append(self.op.func_code.co_consts[_popIndex()])
                 elif opcode.opname[bytecode] == 'LOAD_ATTR':
-                    stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
+                    stack.append(str(stack.pop()) + "." + self.op.func_code.co_names[_popIndex()])
                 elif opcode.opname[bytecode] == 'COMPARE_OP':
-                    stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
+                    stack.append(str(stack.pop(-2)) + " " + opcode.cmp_op[_popIndex()] + " " + str(stack.pop()))
                 elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
                     counter = _popIndex()
                     stack.append(self.op.func_code.co_names[counter])
@@ -165,18 +165,18 @@ def _OperatorVariableClass(baseClass=None):
                     args = []
                     for j in range(bytecodes.pop(1)):
                         # keyword parameters
-                        args.insert(0, stack.pop(-2) + " = " + stack.pop())
+                        args.insert(0, str(stack.pop(-2)) + "=" + str(stack.pop()))
                     for j in range(bytecodes.pop(0)):
                         # positional parameters
-                        args.insert(0, stack.pop())
-                    stack.append(stack.pop() + "(" + ", ".join(args) + ")")
+                        args.insert(0, str(stack.pop()))
+                    stack.append(str(stack.pop()) + "(" + ", ".join(args) + ")")
                 elif opcode.opname[bytecode] == 'LOAD_DEREF':
                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                     stack.append(free[_popIndex()])
                 elif unop.has_key(bytecode):
-                    stack.append(unop[bytecode] + '(' + stack.pop() + ')')
+                    stack.append(unop[bytecode] + '(' + str(stack.pop()) + ')')
                 elif binop.has_key(bytecode):
-                    stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
+                    stack.append(str(stack.pop(-2)) + " " + binop[bytecode] + " " + str(stack.pop()))
                 else:
                     raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`,`"FIXME"`)
                 
