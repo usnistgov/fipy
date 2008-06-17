@@ -499,7 +499,8 @@ class Mesh(_CommonMesh):
         faceVertexIDs = self.faceVertexIDs.filled(-1)
         substitute = numerix.repeat(faceVertexIDs[numerix.newaxis, 0], 
                                     faceVertexIDs.shape[0], axis=0)
-        faceVertexIDs = numerix.where(self.faceVertexIDs.getMaskArray(), substitute, faceVertexIDs)
+        mask = self.faceVertexIDs.getMaskArray()
+        faceVertexIDs = mask * substitute + ~mask * faceVertexIDs
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
         faceOrigins = numerix.repeat(faceVertexCoords[:,0], faceVertexIDs.shape[0], axis=0)
         faceOrigins = numerix.reshape(faceOrigins, MA.shape(faceVertexCoords))
@@ -597,7 +598,7 @@ class Mesh(_CommonMesh):
         faceVertexCoord = numerix.take(self.vertexCoords, 
                                        self.faceVertexIDs[0], 
                                        axis=1)
-        tmp = self.faceCenters - faceVertexCoord
+        tmp = (self.faceCenters - faceVertexCoord).filled()
         self.faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
         tmp = numerix.cross(self.faceTangents1, self.faceNormals, axis=0)
         self.faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
@@ -843,8 +844,8 @@ class Mesh(_CommonMesh):
             1
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), 
-            ...                  atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(areaProjections, mesh._getAreaProjections(), 
+            ...                        atol = 1e-10, rtol = 1e-10)
             1
 
             >>> v1 = numerix.take(vertices, numerix.array(faces[0]), axis=1)
