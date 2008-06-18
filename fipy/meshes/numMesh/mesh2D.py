@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/18/08 {8:46:36 AM} 
+ #                                last update: 6/18/08 {2:52:28 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,8 +71,9 @@ class Mesh2D(Mesh):
                                         self.faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         mag = t1.dot(t1).sqrt()
-        rot = numerix.array((( 0, 1),
-                             (-1, 0)))
+        rot = numerix.eye(N=self.getDim())
+        rot[0:2,0:2] = numerix.array((( 0, 1),
+                                      (-1, 0)))
         self.faceNormals = t1.dot(rot) / mag
         
         orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.cellDistanceVectors) < 0)
@@ -83,8 +84,9 @@ class Mesh2D(Mesh):
 
 
     def _calcFaceTangents(self):
-        rot = numerix.array((( 0, 1),
-                             (-1, 0)))
+        rot = numerix.eye(N=self.getDim())
+        rot[0:2,0:2] = numerix.array((( 0, 1),
+                                      (-1, 0)))
         tmp = self.faceNormals.dot(rot)
         mag = numerix.sqrtDot(tmp, tmp)
         self.faceTangents1 = tmp / mag
