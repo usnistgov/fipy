@@ -205,11 +205,10 @@ class _DiffusionTerm(Term):
                     if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
                         raise IndexError, 'diffusion coefficent tensor index error'          
 
-                faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
                 rotationTensor = self._getRotationTensor(mesh)
                 rotationTensor[:,0] = rotationTensor[:,0] / mesh._getCellDistances()
                 
-                tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._getFaceAreas()
+                tmpBop = mesh._getFaceNormals().dot(coeff).dot(rotationTensor) * mesh._getFaceAreas()
 
             return tmpBop
 

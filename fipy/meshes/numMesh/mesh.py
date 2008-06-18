@@ -540,9 +540,8 @@ class Mesh(_CommonMesh):
     def _calcFaceCellToCellNormals(self):
         faceCellCentersUp = numerix.take(self.cellCenters, self.getFaceCellIDs()[1], axis=1)
         faceCellCentersDown = numerix.take(self.cellCenters, self.getFaceCellIDs()[0], axis=1)
-        faceCellCentersUp = numerix.where(MA.getmaskarray(faceCellCentersUp),
-                                          self.getFaceCenters(),
-                                          faceCellCentersUp)
+        mask = faceCellCentersUp.getMaskArray()
+        faceCellCentersUp = mask * self.getFaceCenters() + ~mask * faceCellCentersUp.filled()
 
         diff = faceCellCentersDown - faceCellCentersUp
         mag = numerix.sqrtDot(diff, diff)
