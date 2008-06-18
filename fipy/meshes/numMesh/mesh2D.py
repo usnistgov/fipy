@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/5/08 {8:34:20 PM} 
+ #                                last update: 6/18/08 {8:46:36 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -115,7 +115,7 @@ class Mesh2D(Mesh):
         cellVertexIDs = MA.where(numerix.ravel(self.cellToFaceOrientations) > 0,
                                  cellVertexIDs0,
                                  cellVertexIDs1)
-        return cellVertexIDs
+        return cellVertexIDs.reshape((-1, self.getNumberOfCells()))
     
     def _getNonOrthogonality(self):
         
@@ -141,7 +141,7 @@ class Mesh2D(Mesh):
   
         return (cellTotalWeightedValues / cellTotalFaceAreas)
 
-    def extrude(self, extrudeFunc=lambda x: x + numerix.array((0, 0, 1))[:,numerix.newaxis] , layers=1):
+    def extrude(self, extrudeFunc=lambda x: x + numerix.array((0, 0, 1))[...,numerix.newaxis] , layers=1):
         """
         This function returns a new 3D mesh. The 2D mesh is extruded
         using the extrudeFunc and the number of layers.
