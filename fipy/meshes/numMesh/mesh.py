@@ -378,12 +378,13 @@ class Mesh(_CommonMesh):
 
 
     def _calcInteriorAndExteriorFaceIDs(self):
-        self.exteriorFaces = self.faceCellIDs[1].getMask()
+        self.exteriorFaces = self.faceCellIDs[1].getMaskArray()
         self.interiorFaces = ~self.exteriorFaces
 
     def _calcInteriorAndExteriorCellIDs(self):
         ids = numerix.take(self.faceCellIDs[0], self.getExteriorFaces(), axis=-1).filled().sorted()
-        self.exteriorCellIDs = ids[(ids[:-1] != ids[1:]).append([True] * (len(ids) - len(ids[:-1])))]
+        extras = numerix.array([True] * (len(ids) - len(ids[:-1])), dtype=bool)
+        self.exteriorCellIDs = ids[(ids[:-1] != ids[1:]).append(extras)]
         
         from fipy.variables.cellVariable import CellVariable
         self.interiorCellIDs = CellVariable(mesh=self, value=numerix.arange(self.numberOfCells)).delete(self.exteriorCellIDs)
