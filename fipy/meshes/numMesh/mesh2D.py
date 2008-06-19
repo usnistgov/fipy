@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/18/08 {2:52:28 PM} 
+ #                                last update: 6/19/08 {8:51:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -120,21 +120,15 @@ class Mesh2D(Mesh):
         return cellVertexIDs.reshape((-1, self.getNumberOfCells()))
     
     def _getNonOrthogonality(self):
-        
-        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],))
-        numerix.put(exteriorFaceArray, numerix.nonzero(self.getExteriorFaces()), 1)
-        unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) ## what we put in for the "fill" doesn't matter because only exterior faces have anything masked, and exterior faces have their displacement vectors set to zero.
+        from fipy.variables.faceVariable import FaceVariable
+        exteriorFaceArray = FaceVariable(mesh=self, rank=1, value=0)
+        exteriorFaceArray[:, self.getExteriorFaces()] = 1
+        unmaskedFaceCellIDs = self.faceCellIDs.filled(0) ## what we put in for the "fill" doesn't matter because only exterior faces have anything masked, and exterior faces have their displacement vectors set to zero.
         ## if it's an exterior face, make the "displacement vector" equal to zero so the cross product will be zero.
-        faceDisplacementVectors = numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)), 
-                                                0.0, 
-                                                (numerix.take(self.getCellCenters(), 
-                                                              unmaskedFaceCellIDs[:, 1], 
-                                                              axis=-1) 
-                                                 - numerix.take(self.getCellCenters(), 
-                                                                unmaskedFaceCellIDs[:, 0],
-                                                                axis=-1)))
-        faceCrossProducts = (faceDisplacementVectors[:, 0] * self.faceNormals[:, 1]) - (faceDisplacementVectors[:, 1] * self.faceNormals[:, 0])
-        faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[:, 0] ** 2) + (faceDisplacementVectors[:, 1] ** 2)) ** 0.5, 1.e-100)
+        faceDisplacementVectors = ~self.getExteriorFaces() * (self.getCellCenters()[:,unmaskedFaceCellIDs[1]]
+                                                              - self.getCellCenters()[:,unmaskedFaceCellIDs[0]])
+        faceCrossProducts = faceDisplacementVectors.cross(self.faceNormals)
+        faceDisplacementVectorLengths = numerix.maximum(faceDisplacementVectors.getMag(), 1.e-100)
         faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self.faceAreas
         cellFaceWeightedNonOrthogonalities = numerix.take(faceWeightedNonOrthogonalities, self.cellFaceIDs, axis=-1)
         cellFaceAreas = numerix.take(self.faceAreas, self.cellFaceIDs)
