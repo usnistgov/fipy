@@ -123,7 +123,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
 
         if sparsity is not None and N > sparsity:
             self.indices = numerix.random.rand(N) * V
-            self.indices = self.indices.argsort()[-sparsity:]
+            self.indices = self.indices.getValue().argsort()[-sparsity:]
         else:
             self.indices = numerix.arange(N)
 
