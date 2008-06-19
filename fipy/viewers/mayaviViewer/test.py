@@ -48,7 +48,6 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportDocTestSuite(interactiveDocTestModuleNames=(
         'mayaviViewer',
-        'mayaviDistanceViewer',
         'mayaviSurfactantViewer',
         ), base = __name__)
     
