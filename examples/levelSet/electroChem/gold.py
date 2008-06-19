@@ -268,7 +268,7 @@ def runGold(faradaysConstant=9.6e4,
 
     try:
         import os
-        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
+        data = loadtxt(os.path.splitext(__file__)[0] + '.gz')
         n = mesh.getFineMesh().getNumberOfCells()
         print allclose(catalystVar[:n], data[:n], atol=1.0)
     except:

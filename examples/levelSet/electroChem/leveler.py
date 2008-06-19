@@ -422,7 +422,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
     try:
         import os
-        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
+        data = loadtxt(os.path.splitext(__file__)[0] + '.gz')
         N = mesh.getFineMesh().getNumberOfCells()
         return allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
     except:
