@@ -121,7 +121,7 @@ The analytical solution for this equation is given by,
     ...     viewer=make(vars=(C, CAnalytical))
 
     >>> res = 1e+10
-    >>> while res > 1e-3:
+    >>> while res > 1e-5:
     ...     res = eq.sweep(var=C, boundaryConditions=BCs)
     ...     if __name__ == '__main__':
     ...         viewer.plot()
