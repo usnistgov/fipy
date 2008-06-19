@@ -66,34 +66,15 @@ coefficient.  We wish to solve the following problem.
 ..
 
     >>> from fipy import *
-    >>> cellSize = 0.03
-    >>> radius = 1.
 
-Create the mesh with Gmsh.
+Import a mesh previously created using Gmsh.
 
-    >>> lines = [ 'cellSize = ' + str(cellSize) + ';\n',
-    ...             'radius = ' + str(radius) + ';\n',
-    ...       'Point(1) = {0, 0, 0, cellSize};\n',
-    ...       'Point(2) = {-radius, 0, 0, cellSize};\n',
-    ...       'Point(3) = {0, radius, 0, cellSize};\n',
-    ...       'Point(4) = {radius, 0, 0, cellSize};\n',
-    ...       'Point(5) = {0, -radius, 0, cellSize};\n',
-    ...       'Circle(6) = {2, 1, 3};\n',
-    ...       'Circle(7) = {3, 1, 4};\n',
-    ...       'Circle(8) = {4, 1, 5};\n',
-    ...       'Circle(9) = {5, 1, 2};\n',
-    ...       'Line Loop(10) = {6, 7, 8, 9} ;\n',
-    ...       'Plane Surface(11) = {10};\n']
-
-
-
-    >>> mesh = GmshImporter2D(lines)
+    >>> mesh = GmshImporter2D(os.path.splitext(__file__)[0] + '.msh')
 
 Set the center most cell to have a value.
 
     >>> var = CellVariable(mesh=mesh, hasOld=1)
     >>> x, y = mesh.getCellCenters()
-    >>> circleRadius = radius / 10.0
     >>> var[numerix.argmin(x**2 + y**2)] = 1.
 
 Choose an orientation for the anisotropy.
@@ -131,11 +112,7 @@ Compare with the analytical solution (within 5% accuracy).
 
     >>> X, Y = numerix.dot(mesh.getCellCenters(), CellVariable(mesh=mesh, rank=2, value=rotationMatrix))
     >>> solution = mass * numerix.exp(-(X**2 / gamma_prime[0][0] + Y**2 / gamma_prime[1][1]) / (4 * time)) / (4 * numerix.pi * time * numerix.sqrt(gamma_prime[0][0] * gamma_prime[1][1]))
-    >>> if int(os.popen4('gmsh --version')[1].read().split('.')[0]) < 2:
-    ...     tolerance = 0.14
-    ... else:
-    ...     tolerance = 0.06
-    >>> print max(abs((var - solution) / max(solution))) < tolerance
+    >>> print max(abs((var - solution) / max(solution))) < 0.05
     True
 
 """
