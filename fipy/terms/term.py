@@ -82,7 +82,15 @@ class Term:
 
     def _calcResidual(self, var, matrix, RHSvector):
 
-        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
+        L2norm = numerix.sqrt(numerix.sum(self._calcResidualVector(var, matrix, RHSvector)**2))
+        RHSL2norm = numerix.sqrt(numerix.sum(RHSvector**2))
+        
+        if RHSL2norm == 0:
+            return L2norm
+        else:
+            return L2norm / RHSL2norm 
+
+##        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
 
     def __buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
 

@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh2D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/19/08 {8:51:56 AM} 
+ #                                last update: 6/20/08 {8:51:19 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -110,14 +110,9 @@ class Mesh2D(Mesh):
         return Mesh2D(**self._getAddedMeshValues(other, smallNumber))
 
     def _getOrderedCellVertexIDs(self):
-        from fipy.tools.numerix import take
-        NFac = self._getMaxFacesPerCell()
-        cellVertexIDs0 = take(self._getFaceVertexIDs()[0], numerix.ravel(self._getCellFaceIDs()), axis=-1)
-        cellVertexIDs1 = take(self._getFaceVertexIDs()[1], numerix.ravel(self._getCellFaceIDs()), axis=-1)
-        cellVertexIDs = MA.where(numerix.ravel(self.cellToFaceOrientations) > 0,
-                                 cellVertexIDs0,
-                                 cellVertexIDs1)
-        return cellVertexIDs.reshape((-1, self.getNumberOfCells()))
+        cellVertexIDs = self._getFaceVertexIDs()[..., self._getCellFaceIDs()]
+        pos = (self.cellToFaceOrientations > 0)
+        return (pos * cellVertexIDs[0] + ~pos * cellVertexIDs[1])
     
     def _getNonOrthogonality(self):
         from fipy.variables.faceVariable import FaceVariable

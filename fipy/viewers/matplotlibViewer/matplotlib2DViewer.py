@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "matplotlib2DViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 11/8/07 {6:50:53 PM} { 2:45:36 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -94,28 +93,14 @@ class Matplotlib2DViewer(MatplotlibViewer):
         self.mesh = self.vars[0].getMesh()
         
         vertexIDs = self.mesh._getOrderedCellVertexIDs()
+        coords = self.mesh.getVertexCoords()[..., vertexIDs]
 
-        vertexCoords = self.mesh.getVertexCoords()
-
-        xCoords = numerix.take(vertexCoords[0], vertexIDs, axis=-1)
-        yCoords = numerix.take(vertexCoords[1], vertexIDs, axis=-1)
-        
         polys = []
-##         for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):
-##             if hasattr(x, 'mask'):
-##                 x = x.compressed()
-##             if hasattr(y, 'mask'):
-##                 y = y.compressed()
-##             polys.append(x)
-##             polys.append(y)
-##             polys.append('b')
 
-        for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):
-            if hasattr(x, 'mask'):
-                x = x.compressed()
-            if hasattr(y, 'mask'):
-                y = y.compressed()
-            polys.append(zip(x,y))
+        for vertices in coords.getValue().swapaxes(0,2):
+            if hasattr(vertices, 'mask'):
+                vertices = vertices.compress(~vertices.mask[...,0], axis=0)
+            polys.append(vertices)
 
         import pylab
         import matplotlib
@@ -130,29 +115,27 @@ class Matplotlib2DViewer(MatplotlibViewer):
         ax.add_patch(self.collection)
 
         if self._getLimit('xmin') is None:
-            xmin = min(numerix.array(self.collection._verts)[:,:,0].flat)
+            xmin = coords[0].min()
         else:
             xmin = self._getLimit('xmin')
 
         if self._getLimit('xmax') is None:
-            xmax = max(numerix.array(self.collection._verts)[:,:,0].flat)
+            xmax = coords[0].max()
         else:
             xmax = self._getLimit('xmax')
 
         if self._getLimit('ymin') is None:
-            ymin = min(numerix.array(self.collection._verts)[:,:,1].flat)
+            ymin = coords[1].min()
         else:
             ymin = self._getLimit('ymin')
 
         if self._getLimit('ymax') is None:
-            ymax = max(numerix.array(self.collection._verts)[:,:,1].flat)
+            ymax = coords[1].max()
         else:
             ymax = self._getLimit('ymax')
 
         pylab.axis((xmin, xmax, ymin, ymax))
 
-##        self.polygons = ax.fill(linewidth=0., *polys)
-        
         cbax, kw = matplotlib.colorbar.make_axes(ax, orientation='vertical')
         
         # Set the colormap and norm to correspond to the data for which
