@@ -168,7 +168,7 @@ class Viewer:
             >>> mesh = Grid1D(nx=100)
             >>> x, = mesh.getCellCenters()
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
-            >>> k = Variable(name="k")
+            >>> k = Variable(name="k", value=0)
             >>> viewer = %(viewer)s(vars=(sin(k * xVar), cos(k * xVar / pi)), 
             ...                 limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
             ...                 title="%(viewer)s test")
@@ -176,7 +176,6 @@ class Viewer:
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-            >>> del viewer
         """ % kwargs
     _test1D = staticmethod(_test1D)
 
@@ -186,7 +185,7 @@ class Viewer:
             >>> mesh = %(mesh)s
             >>> x, y = mesh.getCellCenters()
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k")
+            >>> k = Variable(name="k", value=0)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar), 
             ...                 limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
             ...                 title="%(viewer)s test")
@@ -194,7 +193,6 @@ class Viewer:
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-            >>> del viewer
         """ % kwargs
     _test2Dbase = staticmethod(_test2Dbase)
 
@@ -210,6 +208,41 @@ class Viewer:
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2Dirregular = staticmethod(_test2Dirregular)
 
+    def _test2DvectorBase(**kwargs):
+        return """
+            >>> from fipy import *
+            >>> mesh = %(mesh)s
+            >>> x, y = mesh.getCellCenters()
+            >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
+            >>> k = Variable(name="k", value=0)
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar).getGrad(), 
+            ...                 title="%(viewer)s test")
+            >>> for kval in range(10):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar).getFaceGrad(), 
+            ...                 title="%(viewer)s test")
+            >>> for kval in range(10):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+        """ % kwargs
+    _test2DvectorBase = staticmethod(_test2DvectorBase)
+
+    def _test2Dvector(**kwargs):
+        return Viewer._test2DvectorBase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+                                        **kwargs)
+    _test2Dvector = staticmethod(_test2Dvector)
+
+    def _test2DvectorIrregular(**kwargs):
+        """"""
+        return Viewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+            ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
+            ...          + ((0.5,), (0.2,))))""", **kwargs)
+    _test2DvectorIrregular = staticmethod(_test2DvectorIrregular)
+
     
     def _test3D(**kwargs):
         return """
@@ -217,7 +250,7 @@ class Viewer:
             >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
             >>> x, y, z = mesh.getCellCenters()
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
-            >>> k = Variable(name="k")
+            >>> k = Variable(name="k", value=0)
             >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 
             ...                     limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
             ...                     title="%(viewer)s test")
@@ -225,7 +258,6 @@ class Viewer:
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-            >>> del viewer
         """ % kwargs
     _test3D = staticmethod(_test3D)
 

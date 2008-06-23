@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/6/07 {8:08:02 PM} { 2:45:36 PM}
+ #                                last update: 6/23/08 {4:22:12 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,51 +50,26 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
 class MatplotlibVectorViewer(MatplotlibViewer):
-    """
-    Displays a vector plot of a 2D rank-1 `CellVariable` or
+    """Displays a vector plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using Matplotlib_
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
+    
+    __doc__ += MatplotlibViewer._test2Dvector(viewer="MatplotlibVectorViewer")
+    __doc__ += """
+    
+            >>> for sparsity in arange(5000, 0, -500):
+            ...     viewer.quiver(sparsity=sparsity)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+        
+    """
+    __doc__ += MatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
 
     def __init__(self, vars, limits=None, title=None, scale=None, sparsity=None):
-        """
-        Creates a `Matplotlib2DViewer`.
-        
-            >>> from fipy import *
-            >>> from fipy.tools.numerix import *
-            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()
-            >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k")
-            >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getGrad(), 
-            ...                                 # limits={'ymin':0.1, 'ymax':0.9},
-            ...                                 title="MatplotlibVectorViewer test")
-            >>> for kval in numerix.arange(0,10,1):
-            ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
-
-            >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getFaceGrad(), 
-            ...                                 # limits={'ymin':0.1, 'ymax':0.9},
-            ...                                 title="MatplotlibVectorViewer test")
-            >>> for kval in numerix.arange(0,10,1):
-            ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
-
-            >>> viewer = MatplotlibVectorViewer(vars=sin(k * xyVar).getFaceGrad(), 
-            ...                                 # limits={'ymin':0.1, 'ymax':0.9},
-            ...                                 title="MatplotlibVectorViewer test",
-            ...                                 sparsity=1000)
-            >>> for kval in numerix.arange(0,10,1):
-            ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
+        """Creates a `Matplotlib2DViewer`.
 
         :Parameters:
           - `vars`: A `CellVariable` object.
@@ -109,6 +84,12 @@ class MatplotlibVectorViewer(MatplotlibViewer):
         """
         MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
 
+        self.quiver(sparsity=sparsity, scale=scale)
+        self.colorbar = False
+        
+        self._plot()
+        
+    def quiver(self, sparsity=None, scale=None):
         var = self.vars[0]
         mesh = var.getMesh()
 
@@ -134,11 +115,11 @@ class MatplotlibVectorViewer(MatplotlibViewer):
         
         import pylab
         
-        self.quiver = pylab.quiver(X, Y, U, V, scale=scale)
-        self.colorbar = False
-        
-        self._plot()
-        
+        pylab.ion()
+        pylab.cla()
+        self._quiver = pylab.quiver(X, Y, U, V, scale=scale)
+        pylab.ioff()
+
     def _getSuitableVars(self, vars):
         from fipy.meshes.numMesh.mesh2D import Mesh2D
 
@@ -162,7 +143,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
         U = numerix.take(U, self.indices)
         V = numerix.take(V, self.indices)
 
-        self.quiver.set_UVC(U, V)
+        self._quiver.set_UVC(U, V)
         
         import pylab
                             
