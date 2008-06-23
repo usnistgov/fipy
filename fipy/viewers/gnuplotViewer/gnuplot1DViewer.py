@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gnuplot1DViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/5/07 {9:32:26 AM} { 2:45:36 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,26 +48,17 @@ from fipy.tools import numerix
 from gnuplotViewer import GnuplotViewer
 
 class Gnuplot1DViewer(GnuplotViewer):
-    """
-    Displays a y vs. x plot of one or more 1D `CellVariable` objects.
+    """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
 
     The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python
     wrapper available to download (Gnuplot.py_).
     
-        >>> from fipy import *
-        >>> mesh = Grid1D(nx=100)
-        >>> x = mesh.getCellCenters()[0]
-        >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
-        >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
-        >>> viewer = Gnuplot1DViewer(vars=(var1, var2), 
-        ...                          limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
-        ...                          title="Gnuplot1DViewer test")
-        >>> viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
-
     .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
+    """
+    
+    __doc__ += GnuplotViewer._test1D(viewer="Gnuplot1DViewer")
 
+    __doc__ += """
     Different style script demos_ are available at the Gnuplot_ site.
 
     .. _Gnuplot: http://gnuplot.sourceforge.net/

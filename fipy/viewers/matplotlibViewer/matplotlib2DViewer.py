@@ -53,30 +53,13 @@ class Matplotlib2DViewer(MatplotlibViewer):
     The `Matplotlib2DViewer` plots a 2D `CellVariable` using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
-
-
-    """
-
+    """ 
+    
+    __doc__ += MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
     def __init__(self, vars, limits = None, title = None):
-        """
-        Creates a `Matplotlib2DViewer`.
+        """Creates a `Matplotlib2DViewer`.
         
-        >>> from fipy import *
-        >>> from fipy.tools.numerix import *
-        >>> ## mesh = Grid2D(nx=25, ny=10, dx=0.1, dy=0.1) + (Tri2D(nx=25, ny=5, dx=0.1, dy=0.1) + ((25*0.1,), (2*0.1,)))
-        >>> mesh = Grid2D(nx=5, ny=10, dx=0.1, dy=0.1) + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) + ((5*0.1,), (2*0.1,)))
-        >>> x, y = mesh.getCellCenters()
-        >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-        >>> k = Variable(name="k")
-        >>> viewer = Matplotlib2DViewer(vars=sin(k * xyVar), 
-        ...                             limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-        ...                             title="Matplotlib2DViewer test")
-        >>> for kval in range(10):
-        ...     k.setValue(kval)
-        ...     viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
 
         :Parameters:
           - `vars`: A `CellVariable` object.

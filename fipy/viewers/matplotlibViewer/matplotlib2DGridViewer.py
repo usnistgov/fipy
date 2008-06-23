@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "matplotlib2DViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/4/07 {8:24:29 PM} { 2:45:36 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,27 +51,13 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
-
+    
+    __doc__ += MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
 
     def __init__(self, vars, limits = None, title = None):
         """
         Creates a `Matplotlib2DGridViewer`.
         
-            >>> from fipy import *
-            >>> from fipy.tools.numerix import *
-            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()
-            >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k")
-            >>> viewer = Matplotlib2DGridViewer(vars=sin(k * xyVar),
-            ...                             limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-            ...                             title="Matplotlib2DGridViewer test")
-            >>> for kval in range(10):
-            ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
-
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
@@ -140,7 +125,10 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
 
         self.image.set_data(self._getData())
 
-        
+def _test():
+    from fipy.viewers.viewer import _test2D
+    _test2D(Matplotlib2DGridViewer)
+
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus
     fipy.tests.doctestPlus.execButNoTest()
