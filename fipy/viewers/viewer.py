@@ -218,7 +218,7 @@ class Viewer:
             >>> x, y, z = mesh.getCellCenters()
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
             >>> k = Variable(name="k")
-            >>> viewer = %(viewer)s(vars=sin(k * xyzVar, 
+            >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 
             ...                     limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
             ...                     title="%(viewer)s test")
             >>> for kval in range(10):
