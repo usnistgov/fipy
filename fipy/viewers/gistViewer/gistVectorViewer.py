@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/5/07 {9:30:57 AM} { 2:45:36 PM}
+ #                                last update: 6/23/08 {4:24:31 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,45 +50,14 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 
 class GistVectorViewer(GistViewer):
+    """Displays a vector plot of a 2D rank-1 `CellVariable` or
+    `FaceVariable` object using gist.
+    """
+
+    __doc__ += GistViewer._test2Dvector(viewer="GistVectorViewer")
+    __doc__ += GistViewer._test2DvectorIrregular(viewer="GistVectorViewer")
     
     def __init__(self, vars, limits=None, title = ''):
-        """
-            >>> from fipy import *
-            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()
-            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-            >>> viewer = GistVectorViewer(vars=var.getGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9},
-            ...                           title="GistVectorViewer test")
-            >>> viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
-
-            >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9},
-            ...                           title="GistVectorViewer test")
-            >>> viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
-            
-            >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()
-            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-            >>> viewer = GistVectorViewer(vars=var.getGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9},
-            ...                           title="GistVectorViewer test")
-            >>> viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
-
-            >>> viewer = GistVectorViewer(vars=var.getFaceGrad(), 
-            ...                           limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-            ...                           title="GistVectorViewer test")
-            >>> viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
-
-        """
 	GistViewer.__init__(self, vars=vars, limits=limits, title=title)
         
     def _getSuitableVars(self, vars):

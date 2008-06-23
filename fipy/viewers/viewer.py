@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "viewer.py"
- #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/17/07 {8:26:13 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -145,7 +144,7 @@ class Viewer:
         
     def _validFileExtensions(self):
         return []
-        
+    
     def _promptForOpinion(self, prompt="Describe any problems with this figure or hit Return: "):
         # This method is usually invoked from a test, which can have a weird
         # state; In particular, it may have a special `raw_input` to allow user
@@ -153,7 +152,7 @@ class Viewer:
         import inspect
         raw_input = inspect.currentframe().f_back.f_globals.get('raw_input', __builtins__['raw_input'])
         
-        opinion = raw_input(prompt)
+        opinion = raw_input(self.__class__.__name__ + ": " + prompt)
         if len(opinion.strip()) > 0:
             extensions = ", ".join(self._validFileExtensions())
             if len(extensions) > 0:
@@ -161,4 +160,107 @@ class Viewer:
             snapshot = raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions)
             self.plot(snapshot)
             print opinion
+              
+        
+    def _test1D(**kwargs):
+        return """
+            >>> from fipy import *
+            >>> mesh = Grid1D(nx=100)
+            >>> x, = mesh.getCellCenters()
+            >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
+            >>> k = Variable(name="k", value=0)
+            >>> viewer = %(viewer)s(vars=(sin(k * xVar), cos(k * xVar / pi)), 
+            ...                 limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
+            ...                 title="%(viewer)s test")
+            >>> for kval in numerix.arange(0,0.3,0.03):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+        """ % kwargs
+    _test1D = staticmethod(_test1D)
 
+    def _test2Dbase(**kwargs):
+        return """
+            >>> from fipy import *
+            >>> mesh = %(mesh)s
+            >>> x, y = mesh.getCellCenters()
+            >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
+            >>> k = Variable(name="k", value=0)
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar), 
+            ...                 limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                 title="%(viewer)s test")
+            >>> for kval in range(10):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+        """ % kwargs
+    _test2Dbase = staticmethod(_test2Dbase)
+
+    def _test2D(**kwargs):
+        return Viewer._test2Dbase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+                                  **kwargs)
+    _test2D = staticmethod(_test2D)
+
+    def _test2Dirregular(**kwargs):
+        """"""
+        return Viewer._test2Dbase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+            ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
+            ...          + ((0.5,), (0.2,))))""", **kwargs)
+    _test2Dirregular = staticmethod(_test2Dirregular)
+
+    def _test2DvectorBase(**kwargs):
+        return """
+            >>> from fipy import *
+            >>> mesh = %(mesh)s
+            >>> x, y = mesh.getCellCenters()
+            >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
+            >>> k = Variable(name="k", value=0)
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar).getGrad(), 
+            ...                 title="%(viewer)s test")
+            >>> for kval in range(10):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar).getFaceGrad(), 
+            ...                 title="%(viewer)s test")
+            >>> for kval in range(10):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+        """ % kwargs
+    _test2DvectorBase = staticmethod(_test2DvectorBase)
+
+    def _test2Dvector(**kwargs):
+        return Viewer._test2DvectorBase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+                                        **kwargs)
+    _test2Dvector = staticmethod(_test2Dvector)
+
+    def _test2DvectorIrregular(**kwargs):
+        """"""
+        return Viewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+            ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
+            ...          + ((0.5,), (0.2,))))""", **kwargs)
+    _test2DvectorIrregular = staticmethod(_test2DvectorIrregular)
+
+    
+    def _test3D(**kwargs):
+        return """
+            >>> from fipy import *
+            >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
+            >>> x, y, z = mesh.getCellCenters()
+            >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
+            >>> k = Variable(name="k", value=0)
+            >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 
+            ...                     limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                     title="%(viewer)s test")
+            >>> for kval in range(10):
+            ...     k.setValue(kval)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+        """ % kwargs
+    _test3D = staticmethod(_test3D)
+
+def make(vars, title=None, limits=None):
+    return Viewer(vars=vars, title=title, limits=limits)
+        

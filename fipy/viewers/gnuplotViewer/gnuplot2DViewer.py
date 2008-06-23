@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gnuplot1DViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/5/07 {9:32:17 AM} { 2:45:36 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,7 +56,12 @@ class Gnuplot2DViewer(GnuplotViewer):
     python wrapper available to download (Gnuplot.py_).
 
     .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
-
+    """
+    
+    __doc__ += GnuplotViewer._test2D(viewer="Gnuplot2DViewer")
+    __doc__ += GnuplotViewer._test2Dirregular(viewer="Gnuplot2DViewer")
+    
+    __doc__ += """
     Different style script demos_ are available at the Gnuplot_ site.
 
     .. _Gnuplot: http://gnuplot.sourceforge.net/
@@ -69,29 +73,7 @@ class Gnuplot2DViewer(GnuplotViewer):
 
     """
     def __init__(self, vars, limits = None, title = None):
-        """
-        Creates a `Gnuplot2DViewer`.
-        
-            >>> from fipy import *
-            >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()
-            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-            >>> viewer = Gnuplot2DViewer(vars=var, 
-            ...                          limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-            ...                          title="Gnuplot2DViewer test")
-            >>> viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
-
-            >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
-            >>> x, y = mesh.getCellCenters()
-            >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-            >>> viewer = Gnuplot2DViewer(vars=var, 
-            ...                          limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-            ...                          title="Gnuplot2DViewer test")
-            >>> viewer.plot()
-            >>> viewer._promptForOpinion()
-            >>> del viewer
+        """Creates a `Gnuplot2DViewer`.
 
         :Parameters:
           - `vars`: A `CellVariable` object.
