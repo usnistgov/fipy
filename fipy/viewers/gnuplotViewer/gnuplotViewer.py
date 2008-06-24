@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplotViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/24/08 {7:53:03 AM} { 2:45:36 PM}
+ #                                last update: 6/24/08 {3:15:20 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,11 +47,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import _Viewer
 
-class GnuplotViewer(_Viewer):
+class _GnuplotViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
 
-    The `GnuplotViewer` is the base class for `Gnuplot1DViewer` and
+    The `_GnuplotViewer` is the base class for `Gnuplot1DViewer` and
     `Gnuplot2DViewer` It uses a front end python wrapper available to
     download (Gnuplot.py_).
 
@@ -64,12 +64,12 @@ class GnuplotViewer(_Viewer):
 
     .. note::
     
-        `GnuplotViewer` requires Gnuplot_ version 4.0.
+        `_GnuplotViewer` requires Gnuplot_ version 4.0.
 
    """    
     def __init__(self, vars, limits = None, title = None):
         """
-        The `GnuplotViewer` should not be called directly only `Gnuplot1DViewer`
+        The `_GnuplotViewer` should not be called directly only `Gnuplot1DViewer`
         and `Gnuplot2DViewer` should be called.
         
         :Parameters:

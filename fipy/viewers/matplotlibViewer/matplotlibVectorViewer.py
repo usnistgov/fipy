@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/24/08 {7:53:17 AM} { 2:45:36 PM}
+ #                                last update: 6/24/08 {3:17:42 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,11 +45,11 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
-class MatplotlibVectorViewer(MatplotlibViewer):
+class MatplotlibVectorViewer(_MatplotlibViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using Matplotlib_
 
@@ -57,7 +57,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
 
     """
     
-    __doc__ += MatplotlibViewer._test2Dvector(viewer="MatplotlibVectorViewer")
+    __doc__ += _MatplotlibViewer._test2Dvector(viewer="MatplotlibVectorViewer")
     __doc__ += """
     
             >>> for sparsity in arange(5000, 0, -500):
@@ -66,7 +66,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
             >>> viewer._promptForOpinion()
         
     """
-    __doc__ += MatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
+    __doc__ += _MatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
 
     def __init__(self, vars, limits=None, title=None, scale=None, sparsity=None):
         """Creates a `Matplotlib2DViewer`.
@@ -82,7 +82,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
             randomly chosen (weighted by the cell volume or face area)
 
         """
-        MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
 
         self.quiver(sparsity=sparsity, scale=scale)
         self.colorbar = False
@@ -123,7 +123,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
     def _getSuitableVars(self, vars):
         from fipy.meshes.numMesh.mesh2D import Mesh2D
 
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
                 if (isinstance(var.getMesh(), Mesh2D) \
                     and (isinstance(var, FaceVariable) \
                          or isinstance(var, CellVariable)) and var.getRank() == 1)]

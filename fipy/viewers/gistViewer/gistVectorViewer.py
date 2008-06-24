@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 6/23/08 {4:24:31 PM} { 2:45:36 PM}
+ #                                last update: 6/24/08 {3:13:32 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,26 +42,26 @@
  # ###################################################################
  ##
 
-from fipy.viewers.gistViewer.gistViewer import GistViewer
+from fipy.viewers.gistViewer.gistViewer import _GistViewer
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
 from fipy.tools import numerix
 
-class GistVectorViewer(GistViewer):
+class GistVectorViewer(_GistViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using gist.
     """
 
-    __doc__ += GistViewer._test2Dvector(viewer="GistVectorViewer")
-    __doc__ += GistViewer._test2DvectorIrregular(viewer="GistVectorViewer")
+    __doc__ += _GistViewer._test2Dvector(viewer="GistVectorViewer")
+    __doc__ += _GistViewer._test2DvectorIrregular(viewer="GistVectorViewer")
     
     def __init__(self, vars, limits=None, title = ''):
-	GistViewer.__init__(self, vars=vars, limits=limits, title=title)
+	_GistViewer.__init__(self, vars=vars, limits=limits, title=title)
         
     def _getSuitableVars(self, vars):
-        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
           if (var.getMesh().getDim() == 2 \
               and (isinstance(var, FaceVariable) \
                    or isinstance(var, CellVariable)) and var.getRank() == 1)]

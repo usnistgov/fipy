@@ -71,41 +71,41 @@ def Viewer(vars, title = None, limits = None):
     vars = list(vars)
     
     if os.environ.has_key('FIPY_VIEWER'):
-        viewerClassNames = [os.environ['FIPY_VIEWER'] + 'Viewer']
+        FIPY_VIEWER = os.environ['FIPY_VIEWER']
     else:
-        viewerPaths = []
-    
-        for suffix, mode, moduleType in [("", "", imp.PKG_DIRECTORY)] + imp.get_suffixes():
-            if moduleType is not imp.PY_COMPILED:
-                for path in __path__:
-                    viewerPaths += glob.glob(os.path.join(path, "*Viewer%s" % suffix))
-                
-        viewerClassNames = []
-        for viewerPath in viewerPaths:
-            path, f = os.path.split(viewerPath)
-            className, ext = os.path.splitext(f)
-            viewerClassNames.append(className)
-
+        FIPY_VIEWER = None
 
     errors = []
 
+    attempts = []
     viewers = []
-    for className in viewerClassNames:
+    
+    import pkg_resources
+    for ep in pkg_resources.iter_entry_points(group='fipy.viewers', 
+                                              name=FIPY_VIEWER):
+                                                  
+        attempts.append(ep.name)
+        
         try:
-            className = string.lower(className[0]) + className[1:]
-            viewerModule = imp.load_module(className, *imp.find_module(className, __path__))
+            ViewerClass = ep.load()
             
             while len(vars) > 0:
-                viewer = viewerModule.make(vars = vars, title = title, limits = limits)
+                viewer = ViewerClass(vars=vars, title=title, limits=limits)
                 
                 for var in viewer.getVars():
                     vars.remove(var)
                 
                 viewers.append(viewer)
-            
+                
             break
         except Exception, s:
-            errors.append("%s: %s" % (className, s))
+            errors.append("%s: %s" % (ep.name, s))
+
+    if len(attempts) == 0:
+        if FIPY_VIEWER is not None:
+            raise ImportError, "`%s` viewer not found" % FIPY_VIEWER
+        else:
+            raise ImportError, "No viewers found"
         
     if len(vars) > 0:
         raise ImportError, "Failed to import a viewer: %s" % str(errors)        
@@ -115,4 +115,7 @@ def Viewer(vars, title = None, limits = None):
     else:
         return viewers[0]
         
-
+def make(*args, **kwargs):
+    import warnings
+    warnings.warn("'Viewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
+    return Viewer(*args, **kwargs)

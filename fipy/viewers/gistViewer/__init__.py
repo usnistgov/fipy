@@ -6,7 +6,7 @@ from gistVectorViewer import GistVectorViewer
 
 __all__ = ["Gist1DViewer", "Gist2DViewer", "GistVectorViewer"]
 
-def make(vars, title = None, limits = None):
+def GistViewer(vars, title = None, limits = None):
     r"""
     Generic function for creating a `GistViewer`. The `make` function
     will search the module tree and return an instance of the first
@@ -36,3 +36,7 @@ def make(vars, title = None, limits = None):
         except MeshDimensionError:
             return GistVectorViewer(vars = vars, title = title)
             
+def make(*args, **kwargs):
+    import warnings
+    warnings.warn("'GistViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
+    return GistViewer(*args, **kwargs)

@@ -44,9 +44,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer
 
-class Matplotlib2DViewer(MatplotlibViewer):
+class Matplotlib2DViewer(_MatplotlibViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
 
@@ -55,7 +55,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """ 
     
-    __doc__ += MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
+    __doc__ += _MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
     def __init__(self, vars, limits = None, title = None):
         """Creates a `Matplotlib2DViewer`.
@@ -69,7 +69,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
           - `title`: displayed at the top of the `Viewer` window
 
         """
-        MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title, figaspect=1. / 1.3)
+        _MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title, figaspect=1. / 1.3)
 
         self.colorbar = None
         
@@ -157,7 +157,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
     def _getSuitableVars(self, vars):
         from fipy.meshes.numMesh.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if ((isinstance(var.getMesh(), Mesh2D) and isinstance(var, CellVariable))
               and var.getRank() == 0)]
         if len(vars) == 0:

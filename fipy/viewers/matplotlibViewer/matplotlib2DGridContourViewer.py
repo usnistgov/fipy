@@ -44,9 +44,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer
 
-class Matplotlib2DGridContourViewer(MatplotlibViewer):
+class Matplotlib2DGridContourViewer(_MatplotlibViewer):
     """Displays a contour plot of a 2D `CellVariable` object.    
 
     The `Matplotlib2DGridContourViewer` plots a 2D `CellVariable` using Matplotlib_.
@@ -54,7 +54,7 @@ class Matplotlib2DGridContourViewer(MatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += MatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
+    __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
 
 
     def __init__(self, vars, limits = None, title = None):
@@ -68,7 +68,7 @@ class Matplotlib2DGridContourViewer(MatplotlibViewer):
           - `title`: displayed at the top of the `Viewer` window
 
         """
-        MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
         
         self.colorbar = None
         self._plot()
@@ -83,7 +83,7 @@ class Matplotlib2DGridContourViewer(MatplotlibViewer):
     def _getSuitableVars(self, vars):
         from fipy.meshes.numMesh.grid2D import Grid2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.getMesh(), Grid2D) and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError

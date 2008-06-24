@@ -8,11 +8,11 @@ from matplotlibVectorViewer import MatplotlibVectorViewer
 
 __all__ = ["Matplotlib1DViewer", "Matplotlib2DGridViewer", "Matplotlib2DGridContourViewer", "Matplotlib2DViewer", "MatplotlibVectorViewer"]
 
-def make(vars, title = None, limits = None):
-    """
-    Generic function for creating a `MatplotlibViewer`. The `make` function
-    will search the module tree and return an instance of the first
-    `MatplotlibViewer` it finds of the correct dimension.
+def MatplotlibViewer(vars, title = None, limits = None):
+    """Generic function for creating a `MatplotlibViewer`. 
+    
+    The `MatplotlibViewer` factory will search the module tree and return an
+    instance of the first `MatplotlibViewer` it finds of the correct dimension.
     
     :Parameters:
 
@@ -45,3 +45,8 @@ def make(vars, title = None, limits = None):
         except MeshDimensionError:
             from matplotlibVectorViewer import MatplotlibVectorViewer
             return MatplotlibVectorViewer(vars = vars, title = title)
+
+def make(*args, **kwargs):
+    import warnings
+    warnings.warn("'MatplotlibViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
+    return MatplotlibViewer(*args, **kwargs)

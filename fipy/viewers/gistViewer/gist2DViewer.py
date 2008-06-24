@@ -44,14 +44,14 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.viewers.gistViewer.gistViewer import GistViewer
+from fipy.viewers.gistViewer.gistViewer import _GistViewer
 
-class Gist2DViewer(GistViewer):
+class Gist2DViewer(_GistViewer):
     """Displays a contour plot of a 2D `CellVariable` object.
     """
     
-    __doc__ += GistViewer._test2D(viewer="Gist2DViewer")
-    __doc__ += GistViewer._test2Dirregular(viewer="Gist2DViewer")
+    __doc__ += _GistViewer._test2D(viewer="Gist2DViewer")
+    __doc__ += _GistViewer._test2Dirregular(viewer="Gist2DViewer")
     
     def __init__(self, vars, limits = None, title = None, palette = 'heat.gp', grid = 1, dpi = 75):
         """Creates a `Gist2DViewer`.
@@ -69,7 +69,7 @@ class Gist2DViewer(GistViewer):
             Use 0 to switch them off.
             
         """
-        GistViewer.__init__(self, vars = vars, limits = limits, 
+        _GistViewer.__init__(self, vars = vars, limits = limits, 
                             title = " ", dpi = dpi)
                             
         self.palette = palette
@@ -77,7 +77,7 @@ class Gist2DViewer(GistViewer):
         
     def _getSuitableVars(self, vars):
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
           if (var.getMesh().getDim() == 2 and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
@@ -135,7 +135,7 @@ class Gist2DViewer(GistViewer):
 
         colorbar._color_bar(minz=datamin, maxz=datamax, ncol=240, zlabel=self.vars[0].getName())
 
-        GistViewer.plot(self, filename = filename)
+        _GistViewer.plot(self, filename = filename)
 
     def plotMesh(self, filename = None):
         """

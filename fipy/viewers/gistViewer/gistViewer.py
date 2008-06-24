@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 6/24/08 {7:52:56 AM}
+ #                                last update: 6/24/08 {3:13:25 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,7 +50,7 @@ from fipy.tools import numerix
 
 from fipy.viewers.viewer import _Viewer
 
-class GistViewer(_Viewer):
+class _GistViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
@@ -59,7 +59,7 @@ class GistViewer(_Viewer):
     
     def __init__(self, vars, limits = None, title = None, dpi = 75):
         """
-        Create a `GistViewer` object.
+        Create a `_GistViewer` object.
         
         :Parameters:
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
@@ -76,8 +76,8 @@ class GistViewer(_Viewer):
         
         self.mesh = self.vars[0].getMesh()
 
-        self.id = GistViewer._id 
-        GistViewer._id += 1
+        self.id = _GistViewer._id 
+        _GistViewer._id += 1
         
         import gist
         

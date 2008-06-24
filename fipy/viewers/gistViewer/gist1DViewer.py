@@ -45,13 +45,13 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
  
-from fipy.viewers.gistViewer.gistViewer import GistViewer
+from fipy.viewers.gistViewer.gistViewer import _GistViewer
 
-class Gist1DViewer(GistViewer):
+class Gist1DViewer(_GistViewer):
     """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
     """
     
-    __doc__ += GistViewer._test1D(viewer="Gist1DViewer")
+    __doc__ += _GistViewer._test1D(viewer="Gist1DViewer")
 
     def __init__(self, vars, title = None, limits = None, xlog = 0, ylog = 0, style = "work.gs"):
         """
@@ -68,7 +68,7 @@ class Gist1DViewer(GistViewer):
           - `style`: the Gist style file to use
 
         """
-        GistViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _GistViewer.__init__(self, vars = vars, limits = limits, title = title)
         
         self.xlog = xlog
         self.ylog = ylog
@@ -76,7 +76,7 @@ class Gist1DViewer(GistViewer):
         
     def _getSuitableVars(self, vars):
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
           if (var.getMesh().getDim() == 1 and isinstance(var, CellVariable))]
         if len(vars) > 1:
             vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
@@ -119,7 +119,7 @@ class Gist1DViewer(GistViewer):
             
         self._plotArrays()
             
-        GistViewer.plot(self, filename = filename)
+        _GistViewer.plot(self, filename = filename)
 
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus

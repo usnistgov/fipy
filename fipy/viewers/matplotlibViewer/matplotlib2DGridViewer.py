@@ -43,16 +43,16 @@
  
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer
 
-class Matplotlib2DGridViewer(MatplotlibViewer):
+class Matplotlib2DGridViewer(_MatplotlibViewer):
     """
     Displays an image plot of a 2D `CellVariable` object using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
+    __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
 
     def __init__(self, vars, limits = None, title = None):
         """
@@ -66,7 +66,7 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
           - `title`: displayed at the top of the `Viewer` window
 
         """
-        MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
 
         import pylab
 
@@ -83,7 +83,7 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
         pylab.colorbar()
 
     def _getLimit(self, key):
-        limit = MatplotlibViewer._getLimit(self, key)
+        limit = _MatplotlibViewer._getLimit(self, key)
         if limit is None:
             if 'xmin' in key or 'ymin' in key:
                 limit = 0
@@ -98,7 +98,7 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
 ##         raise MeshDimensionError, "I'm just being pissy"
         from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError

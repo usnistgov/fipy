@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/24/08 {7:53:22 AM}
+ #                                last update: 6/24/08 {3:17:39 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,11 +47,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import _Viewer
 
-class MatplotlibViewer(_Viewer):
+class _MatplotlibViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
 
-    The `MatplotlibViewer` is the base class for the viewers that use the
+    The `_MatplotlibViewer` is the base class for the viewers that use the
     Matplotlib_ python plotting package.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
@@ -60,7 +60,7 @@ class MatplotlibViewer(_Viewer):
         
     def __init__(self, vars, limits=None, title=None, figaspect=1.0):
         """
-        Create a `MatplotlibViewer`.
+        Create a `_MatplotlibViewer`.
         
         :Parameters:
 

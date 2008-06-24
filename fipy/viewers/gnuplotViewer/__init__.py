@@ -5,7 +5,7 @@ from gnuplot2DViewer import Gnuplot2DViewer
 
 __all__ = ["Gnuplot1DViewer", "Gnuplot2DViewer"]
 
-def make(vars, title = None, limits = None):
+def GnuplotViewer(vars, title = None, limits = None):
     """
     Generic function for creating a `GnuplotViewer`. The `make` function
     will search the module tree and return an instance of the first
@@ -39,3 +39,8 @@ def make(vars, title = None, limits = None):
         return Gnuplot2DViewer(vars = vars, title = title, limits = limits)
     else:
         raise IndexError, "Gnuplot can only plot 1D and 2D data"
+
+def make(*args, **kwargs):
+    import warnings
+    warnings.warn("'GnuplotViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
+    return GnuplotViewer(*args, **kwargs)

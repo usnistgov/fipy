@@ -43,9 +43,9 @@
  
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer
 
-class Matplotlib1DViewer(MatplotlibViewer):
+class Matplotlib1DViewer(_MatplotlibViewer):
     """
     Displays a y vs.  x plot of one or more 1D `CellVariable` objects using
     Matplotlib_.
@@ -53,10 +53,10 @@ class Matplotlib1DViewer(MatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
+    __doc__ += _MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
     
     def __init__(self, vars, limits = None, title = None, xlog=False, ylog=False):
-        MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title)
+        _MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title)
     
         import pylab
         
@@ -87,7 +87,7 @@ class Matplotlib1DViewer(MatplotlibViewer):
         return [[array(var.getMesh().getCellCenters()[0]), array(var)] for var in self.vars]
             
     def _getSuitableVars(self, vars):
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
         if len(vars) > 1:
             vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
         if len(vars) == 0:
