@@ -43,23 +43,22 @@
 
 __docformat__ = 'restructuredtext'
 
-class Viewer:
+class _Viewer:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, vars, limits = None, title = None):
-        """
-        Create a `Viewer` object.
+        """Create a `_Viewer` object.
         
         :Parameters:
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            A 1D `Viewer` will only use `xmin` and `xmax`, a 2D viewer 
             will also use `ymin` and `ymax`, and so on. 
             All viewers will use `datamin` and `datamax`. 
             Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
+          - `title`: displayed at the top of the `Viewer` window
 
         """
         self.vars = self._getSuitableVars(vars)
@@ -89,7 +88,7 @@ class Viewer:
         :Parameters:
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            A 1D `Viewer` will only use `xmin` and `xmax`, a 2D viewer 
             will also use `ymin` and `ymax`, and so on. 
             All viewers will use `datamin` and `datamax`. 
             Any limit set to a (default) value of `None` will autoscale.
@@ -197,13 +196,13 @@ class Viewer:
     _test2Dbase = staticmethod(_test2Dbase)
 
     def _test2D(**kwargs):
-        return Viewer._test2Dbase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
-                                  **kwargs)
+        return _Viewer._test2Dbase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+                                   **kwargs)
     _test2D = staticmethod(_test2D)
 
     def _test2Dirregular(**kwargs):
         """"""
-        return Viewer._test2Dbase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+        return _Viewer._test2Dbase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
             ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2Dirregular = staticmethod(_test2Dirregular)
@@ -232,13 +231,13 @@ class Viewer:
     _test2DvectorBase = staticmethod(_test2DvectorBase)
 
     def _test2Dvector(**kwargs):
-        return Viewer._test2DvectorBase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+        return _Viewer._test2DvectorBase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
                                         **kwargs)
     _test2Dvector = staticmethod(_test2Dvector)
 
     def _test2DvectorIrregular(**kwargs):
         """"""
-        return Viewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+        return _Viewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
             ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2DvectorIrregular = staticmethod(_test2DvectorIrregular)
@@ -262,5 +261,5 @@ class Viewer:
     _test3D = staticmethod(_test3D)
 
 def make(vars, title=None, limits=None):
-    return Viewer(vars=vars, title=title, limits=limits)
+    return _Viewer(vars=vars, title=title, limits=limits)
         

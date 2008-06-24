@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 6/7/08 {11:04:24 PM}
+ #                                last update: 6/24/08 {7:53:25 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,10 +42,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 from fipy.tools import numerix
 
-class MayaviSurfactantViewer(Viewer):
+class MayaviSurfactantViewer(_Viewer):
     
     """
     The `MayaviSurfactantViewer` creates a viewer with the Mayavi_ python
@@ -99,16 +99,16 @@ class MayaviSurfactantViewer(Viewer):
           - `levelSetValue`: the value of the contour to be displayed
           - `limits`: a dictionary with possible keys `xmin`, `xmax`,
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            Viewer will only use `xmin` and `xmax`, a 2D viewer will also
+            `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
             use `ymin` and `ymax`, and so on.  All viewers will use
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
+          - `title`: displayed at the top of the `Viewer` window
           - `animate`: whether to show only the initial condition and the 
             moving top boundary or to show all contours (Default)
         """
 
-        Viewer.__init__(self, vars = [], limits = limits, title = title)
+        _Viewer.__init__(self, vars = [], limits = limits, title = title)
         import mayavi
         self._viewer = mayavi.mayavi()
         self.distanceVar = distanceVar

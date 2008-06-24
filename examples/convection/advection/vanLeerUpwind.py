@@ -6,7 +6,7 @@
  # 
  #  FILE: "vanLeerUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:07:24 PM} 
+ #                                last update: 6/24/08 {7:57:41 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -110,8 +110,8 @@ eq2 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))
 
 if __name__ == '__main__':
 
-    viewer1 = viewers.make(vars=var1)
-    viewer2 = viewers.make(vars=var2)
+    viewer1 = Viewer(vars=var1)
+    viewer2 = Viewer(vars=var2)
     viewer1.plot()
     viewer2.plot()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "quaternary.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:35 PM} 
+ #                                last update: 6/24/08 {8:20:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -440,10 +440,10 @@ If we're running interactively, we create a viewer
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase] \
-    ...                                  + interstitials + substitutionals \
-    ...                                  + [solvent],
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase]
+    ...                           + interstitials + substitutionals
+    ...                           + [solvent]),
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 and again iterate to equilibrium

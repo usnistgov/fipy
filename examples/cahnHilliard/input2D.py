@@ -6,7 +6,7 @@
  # 
  #  FILE: "input2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:06:21 PM}
+ #                                last update: 6/24/08 {7:57:04 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -126,7 +126,7 @@ BCs = (FixedFlux(mesh.getFacesRight(), 0),
 
 if __name__ == '__main__':
 
-    viewer = viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
+    viewer = Viewer(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
     viewer.plot()
     
 dexp=-5

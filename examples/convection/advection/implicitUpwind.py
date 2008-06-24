@@ -6,7 +6,7 @@
  # 
  #  FILE: "impicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:09:25 PM} 
+ #                                last update: 6/24/08 {7:57:36 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -76,7 +76,7 @@ eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
-    viewer = viewers.make(vars=(var,))
+    viewer = Viewer(vars=(var,))
     viewer.plot()
     raw_input("press key to continue")
     for step in range(steps):

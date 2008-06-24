@@ -6,7 +6,7 @@
  # 
  #  FILE: "gaussianNoiseVariable.py"
  #                                    created: 7/26/05 {8:35:17 AM} 
- #                                last update: 12/22/05 {11:58:26 AM} 
+ #                                last update: 6/24/08 {8:21:43 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -124,8 +124,9 @@ class GaussianNoiseVariable(NoiseVariable):
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin':-5, 'datamax':5})
-           ...     histoplot = viewers.make(vars = (histogram, gauss))
+           ...     viewer = Viewer(vars = noise, 
+           ...                     limits = {'datamin':-5, 'datamax':5})
+           ...     histoplot = Viewer(vars = (histogram, gauss))
            
            >>> for i in range(10):
            ...     noise.scramble()

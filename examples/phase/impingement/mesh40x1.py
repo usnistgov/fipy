@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh40x1.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:36 PM}
+ #                                last update: 6/24/08 {8:19:10 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -258,11 +258,11 @@ and orientation variables.
 ..
 
     >>> if __name__ == '__main__':
-    ...     phaseViewer = viewers.make(vars=phase, 
-    ...                                limits={'datamin': 0., 'datamax': 1.})
-    ...     thetaProductViewer = viewers.make(vars=theta,
-    ...                                       limits={'datamin': -pi, 
-    ...                                               'datamax': pi})
+    ...     phaseViewer = Viewer(vars=phase, 
+    ...                          limits={'datamin': 0., 'datamax': 1.})
+    ...     thetaProductViewer = Viewer(vars=theta,
+    ...                                 limits={'datamin': -pi, 
+    ...                                         'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 5/25/08 {9:19:29 AM} 
+ #                                last update: 6/24/08 {8:20:25 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -83,7 +83,8 @@ First set the values as given in the above equation:
     >>> var.setValue(x * y)
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var, limits = {'datamin': 0, 'datamax': L * L / 4.})
+    ...     viewer = Viewer(vars = var, 
+    ...                     limits = {'datamin': 0, 'datamax': L * L / 4.})
     ...     viewer.plot()
 
 then extract the bottom left quadrant of cells:

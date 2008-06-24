@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 7/5/07 {9:08:40 PM} 
+ #                                last update: 6/24/08 {7:59:55 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -206,8 +206,8 @@ If we're running interactively, we'll want to view the result, but not if
 this example is being run automatically as a test. We accomplish this by
 having Python check if this script is the "`__main__`" script, which will
 only be true if we explicitly launched it and not if it has been imported
-by another script such as the automatic tester. The function
-``viewers.make()`` returns a suitable viewer depending on available
+by another script such as the automatic tester. The factory function
+``Viewer()`` returns a suitable viewer depending on available
 viewers and the dimension of the mesh.
 
 .. raw:: latex
@@ -217,8 +217,8 @@ viewers and the dimension of the mesh.
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(phi, phiAnalytical),
-    ...                           limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=(phi, phiAnalytical),
+    ...                     limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
 
 We then solve the equation by repeatedly looping in time:
@@ -524,7 +524,7 @@ The analytical solution is simply
 And finally, we can plot the result
 
     >>> if __name__ == '__main__':
-    ...     viewers.make(vars=(phi, phiAnalytical)).plot()
+    ...     Viewer(vars=(phi, phiAnalytical)).plot()
     ...     raw_input("Non-uniform steady-state diffusion. Press <return> to proceed...")
 
 
@@ -619,8 +619,8 @@ We create a viewer to compare the different numbers of sweeps with the
 analytical solution from before.
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=phi + [phiAnalytical],
-    ...                           limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=phi + [phiAnalytical],
+    ...                     limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
 
 .. raw:: latex

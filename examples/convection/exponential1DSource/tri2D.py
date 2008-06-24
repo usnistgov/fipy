@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:07:16 PM} 
+ #                                last update: 6/24/08 {7:58:13 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -101,7 +101,7 @@ The analytical solution test for this problem is given by:
     1
     
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var)
+    ...     viewer = Viewer(vars = var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

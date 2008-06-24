@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:04:03 PM} 
+ #                                last update: 6/24/08 {8:00:07 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -156,7 +156,7 @@ If the problem is run interactively, we can view the result:
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(var, analytical))
+    ...     viewer = Viewer(vars=(var, analytical))
     ...     viewer.plot()
 
 .. image:: examples/diffusion/nthOrder/input4thOrder1D.pdf

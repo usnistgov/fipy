@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:11:27 PM} 
+ #                                last update: 6/24/08 {8:01:09 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -103,6 +103,6 @@ eqn = ImplicitDiffusionTerm()
 
 if __name__ == '__main__':
     eqn.solve(var2, boundaryConditions = boundaryConditions2)
-    viewer = viewers.make(var2)
+    viewer = Viewer(var2)
     viewer.plot()
     raw_input("finished")

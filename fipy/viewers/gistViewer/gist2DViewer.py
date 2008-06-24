@@ -62,7 +62,7 @@ class Gist2DViewer(GistViewer):
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `title`: Displayed at the top of the Viewer window.
+          - `title`: Displayed at the top of the `Viewer` window.
           - `palette`: The color scheme to use for the image plot. Default is 
             `heat.gp`. Another choice would be `rainbow.gp`.
           - `grid`: Whether to show the grid lines in the plot. Default is 1. 

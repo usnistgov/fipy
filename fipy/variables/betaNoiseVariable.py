@@ -6,7 +6,7 @@
  # 
  #  FILE: "betaNoiseVariable.py"
  #                                    created: 8/26/05 {11:37:57 PM} 
- #                                last update: 12/22/05 {11:57:09 AM} 
+ #                                last update: 6/24/08 {8:21:14 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -75,8 +75,10 @@ class BetaNoiseVariable(NoiseVariable):
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin': 0, 'datamax': 1})
-           ...     histoplot = viewers.make(vars = (histogram, betadist), limits = {'datamin': 0, 'datamax': 10})
+           ...     viewer = Viewer(vars = noise, 
+           ...                     limits = {'datamin': 0, 'datamax': 1})
+           ...     histoplot = Viewer(vars = (histogram, betadist), 
+           ...                        limits = {'datamin': 0, 'datamax': 10})
            
            >>> from fipy.tools.numerix import arange, exp
            >>> from scipy.special import gamma as Gamma

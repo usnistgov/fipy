@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {9:11:13 PM} 
+ #                                last update: 6/24/08 {8:02:24 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -253,10 +253,10 @@ And Poisson's equation
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     phaseViewer = viewers.make(vars = phase,
-    ...                                limits = {'datamin': 0, 'datamax': 1})
+    ...     phaseViewer = Viewer(vars = phase,
+    ...                          limits = {'datamin': 0, 'datamax': 1})
     ...     concViewer = Gist1DViewer(vars = [solvent] + substitutionals + interstitials, ylog = 1)
-    ...     potentialViewer = viewers.make(vars = potential)
+    ...     potentialViewer = Viewer(vars = potential)
     ...     phaseViewer.plot()
     ...     concViewer.plot()
     ...     potentialViewer.plot()
@@ -273,7 +273,7 @@ iterating to equilibrium
     >>> potential.residual = CellVariable(mesh = mesh)
     >>> for Cj in substitutionals + interstitials:
     ...     Cj.residual = CellVariable(mesh = mesh)
-    >>> residualViewer = viewers.make(vars = [phase.residual, potential.residual] + [Cj.residual for Cj in substitutionals + interstitials])
+    >>> residualViewer = Viewer(vars = [phase.residual, potential.residual] + [Cj.residual for Cj in substitutionals + interstitials])
     
     >>> tsv = TSVViewer(vars = [phase, potential] + substitutionals + interstitials)
     

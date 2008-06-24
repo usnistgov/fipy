@@ -4,7 +4,7 @@
  # 
  #  FILE: "exponentialNoiseVariable.py"
  #                                    created: 8/27/05 {9:26:58 AM} 
- #                                last update: 12/22/05 {11:55:58 AM} 
+ #                                last update: 6/24/08 {8:21:26 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -70,8 +70,10 @@ class ExponentialNoiseVariable(NoiseVariable):
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin': 0, 'datamax': 5})
-           ...     histoplot = viewers.make(vars = (histogram, expdist), limits = {'datamin': 0, 'datamax': 1.5})
+           ...     viewer = Viewer(vars = noise, 
+           ...                     limits = {'datamin': 0, 'datamax': 5})
+           ...     histoplot = Viewer(vars = (histogram, expdist), 
+           ...                        limits = {'datamin': 0, 'datamax': 1.5})
            
            >>> from fipy.tools.numerix import arange, exp
            

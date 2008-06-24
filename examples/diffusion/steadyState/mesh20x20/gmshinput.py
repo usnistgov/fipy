@@ -6,7 +6,7 @@
  # 
  #  FILE: "gmshinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/08 {8:53:34 AM} 
+ #                                last update: 6/24/08 {8:00:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -67,7 +67,7 @@ if __name__ == '__main__':
                        mesh = mesh,
                        value = valueLeft)
 
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars = var)
 
     ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                              FixedValue(mesh.getFacesRight(), valueRight)))
@@ -79,12 +79,12 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = 'absolute error',
                             mesh = mesh,
                             value = abs(errorArray))
-    errorViewer = viewers.make(vars = errorVar)
+    errorViewer = Viewer(vars = errorVar)
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = viewers.make(vars = NonOrthoVar)
+    NOViewer = Viewer(vars = NonOrthoVar)
     viewer.plot()
     NOViewer.plot()
 

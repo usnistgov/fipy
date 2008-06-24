@@ -35,19 +35,18 @@ from tsvViewer import TSVViewer
 class MeshDimensionError(IndexError):
     pass
 
-def make(vars, title = None, limits = None):
-    r"""
+def Viewer(vars, title = None, limits = None):
+    r"""Generic function for creating a `Viewer`. 
     
-    Generic function for creating a `Viewer`. The `make` function will
-    search the module tree and return an instance of the first
-    `Viewer` it finds that supports the dimensions of `vars`. Setting the
-    '`FIPY_VIEWER`' environment variable to either '`gist`',
-    '`gnuplot`', '`matplotlib`', or '`tsv`' will specify the viewer.
+    The `Viewer` factory will search the module tree and return an instance of
+    the first `Viewer` it finds that supports the dimensions of `vars`. Setting
+    the '`FIPY_VIEWER`' environment variable to either '`gist`', '`gnuplot`',
+    '`matplotlib`', or '`tsv`' will specify the viewer.
        
     The `limits` parameter can be used to constrain the view. For example::
             
-        fipy.viewers.make(vars = some1Dvar, 
-                          limits = {'xmin': 0.5, 'xmax': None, 'datamax': 3})
+        Viewer(vars = some1Dvar, 
+               limits = {'xmin': 0.5, 'xmax': None, 'datamax': 3})
         
     will return a viewer that displays a line plot from an `x` value
     of 0.5 up to the largest `x` value in the dataset. The data values

@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/3/07 {3:23:40 PM}
+ #                                last update: 6/24/08 {7:52:56 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,9 +48,9 @@ import os
 
 from fipy.tools import numerix
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 
-class GistViewer(Viewer):
+class GistViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
@@ -65,14 +65,14 @@ class GistViewer(Viewer):
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
+            A 1D `Viewer` will only use `xmin` and `xmax`, a 2D viewer 
             will also use `ymin` and `ymax`, and so on. 
             All viewers will use `datamin` and `datamax`. 
             Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
+          - `title`: displayed at the top of the `Viewer` window
           - `dpi`: the dot-per-inch resolution of the display
         """
-        Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
         
         self.mesh = self.vars[0].getMesh()
 
@@ -84,7 +84,7 @@ class GistViewer(Viewer):
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
 
     def _getLimit(self, keys):
-        limit = Viewer._getLimit(self, keys=keys)
+        limit = _Viewer._getLimit(self, keys=keys)
         if limit is None:
             limit = 'e'
             

@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:33:02 PM} 
+ #                                last update: 6/24/08 {8:00:54 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,6 +77,6 @@ boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars = var)
     viewer.plot()
     raw_input("finished")

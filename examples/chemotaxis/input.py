@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {9:07:26 PM} { 5:14:21 PM}
+ #                                last update: 6/24/08 {7:57:17 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -129,7 +129,7 @@ if __name__ == '__main__':
     v2.setName('PN')
     v3.setName('TM')
 
-    KMViewer = viewers.make((v1, v2, v3), title = 'Gradient Stimulus: Profile')
+    KMViewer = Viewer((v1, v2, v3), title = 'Gradient Stimulus: Profile')
 
     KMViewer.plot()
 

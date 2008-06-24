@@ -4,7 +4,7 @@
  # 
  #  FILE: "gammaNoiseVariable.py"
  #                                    created: 8/26/05 {10:09:50 PM} 
- #                                last update: 12/22/05 {11:56:25 AM} 
+ #                                last update: 6/24/08 {8:21:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -73,8 +73,10 @@ class GammaNoiseVariable(NoiseVariable):
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin': 0, 'datamax': 30})
-           ...     histoplot = viewers.make(vars = (histogram, gammadist), limits = {'datamin': 0, 'datamax': 1})
+           ...     viewer = Viewer(vars = noise, 
+           ...                     limits = {'datamin': 0, 'datamax': 30})
+           ...     histoplot = Viewer(vars = (histogram, gammadist), 
+           ...                        limits = {'datamin': 0, 'datamax': 1})
            
            >>> from fipy.tools.numerix import arange, exp
            >>> from scipy.special import gamma as Gamma

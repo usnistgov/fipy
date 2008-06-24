@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:08:33 PM} { 5:14:21 PM}
+ #                                last update: 6/24/08 {7:57:25 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -124,15 +124,15 @@ if __name__ == '__main__':
 
     PNView = PN / PN.getCellVolumeAverage()
     PNView.setName('PN')
-    PNViewer = viewers.make(PNView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    PNViewer = Viewer(PNView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
     
     KMView = KMVar / KMVar.getCellVolumeAverage()
     KMView.setName('KM')
-    KMViewer = viewers.make(KMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    KMViewer = Viewer(KMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
     
     TMView = TMVar / TMVar.getCellVolumeAverage()
     TMView.setName('TM')
-    TMViewer = viewers.make(TMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    TMViewer = Viewer(TMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
 
     for i in range(100):
         for var, eqn in eqs:

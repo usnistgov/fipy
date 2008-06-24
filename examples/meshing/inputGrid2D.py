@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputGrid2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:18:40 PM} 
+ #                                last update: 6/24/08 {8:18:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,7 +87,7 @@ Obtain all the left exterior faces, this is equal to `ny`.
 One can view the mesh with the following code,
 
    >>> if __name__ == '__main__':
-   ...     viewer = viewers.make(CellVariable(value = 0, mesh = mesh))
+   ...     viewer = Viewer(CellVariable(value = 0, mesh = mesh))
    ...     viewer.plot()
    
 """

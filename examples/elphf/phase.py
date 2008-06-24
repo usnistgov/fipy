@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:13:39 PM} 
+ #                                last update: 6/24/08 {8:02:52 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -212,7 +212,7 @@ We verify that the correct equilibrium solution is attained
 If we are running interactively, we plot the error
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = (phase - \
+    ...     viewer = Viewer(vars = (phase - \
     ...         CellVariable(name = "analytical", mesh = mesh, 
     ...                      value = analyticalArray),))
     ...     viewer.plot()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/23/08 {4:22:12 PM} { 2:45:36 PM}
+ #                                last update: 6/24/08 {7:53:17 AM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -76,7 +76,7 @@ class MatplotlibVectorViewer(MatplotlibViewer):
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
+          - `title`: displayed at the top of the `Viewer` window
           - `scale`: if not `None`, scale all arrow lengths by this value
           - `sparsity`: if not `None`, then this number of arrows will be
             randomly chosen (weighted by the cell volume or face area)

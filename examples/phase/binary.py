@@ -6,7 +6,7 @@
  # 
  # FILE: "binary.py"
  #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 7/5/07 {8:21:38 PM}
+ #                                 last update: 6/24/08 {8:18:36 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -546,8 +546,8 @@ We plot the result against the sharp interface solution
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(phase, C, sharp), 
-    ...                           limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=(phase, C, sharp), 
+    ...                     limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
 
 Because the phase field interface will not move, and because we've seen in

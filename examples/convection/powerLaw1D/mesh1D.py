@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:11:40 PM} 
+ #                                last update: 6/24/08 {7:58:30 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -88,7 +88,7 @@ We test the solution against the analytical result:
 If the problem is run interactively, we can view the result:
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var)
+    ...     viewer = Viewer(vars = var)
     ...     viewer.plot()
 """
      

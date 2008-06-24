@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputTanh1D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:21:50 PM}
+ #                                last update: 6/24/08 {7:57:10 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -187,8 +187,8 @@ If we are running interactively, we create a viewer to see the results
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=var,
-    ...                           limits={'datamin': 0., 'datamax': 1.0})
+    ...     viewer = Viewer(vars=var,
+    ...                     limits={'datamin': 0., 'datamax': 1.0})
     ...     viewer.plot()
 
 We iterate the solution to equilibrium and, if we are running interactively, 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:39 PM} { 5:14:21 PM}
+ #                                last update: 6/24/08 {8:18:26 AM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -242,9 +242,9 @@ the phase and temperature fields
 ..
 
     >>> if __name__ == '__main__':
-    ...     phaseViewer = viewers.make(vars=phase)
-    ...     temperatureViewer = viewers.make(vars=temperature,
-    ...                                      limits={'datamin': -0.5, 'datamax': 0.5})
+    ...     phaseViewer = Viewer(vars=phase)
+    ...     temperatureViewer = Viewer(vars=temperature,
+    ...                                limits={'datamin': -0.5, 'datamax': 0.5})
     ...     phaseViewer.plot()
     ...     temperatureViewer.plot()
 

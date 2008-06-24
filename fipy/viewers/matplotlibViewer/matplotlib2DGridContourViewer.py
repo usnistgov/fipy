@@ -65,7 +65,7 @@ class Matplotlib2DGridContourViewer(MatplotlibViewer):
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
+          - `title`: displayed at the top of the `Viewer` window
 
         """
         MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)

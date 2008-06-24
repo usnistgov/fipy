@@ -6,7 +6,7 @@
  # 
  #  FILE: "howToWriteAScript.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:40 PM} { 1:23:41 PM}
+ #                                last update: 6/24/08 {8:05:53 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -444,8 +444,8 @@ If running interactively, create viewers.
    ...                                    smooth=1),)
    ...     except:
    ...         viewers = (
-   ...             viewers.make(distanceVar, limits={ 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-   ...             viewers.make(catalystVar.getInterfaceVar()))
+   ...             Viewer(distanceVar, limits={ 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+   ...             Viewer(catalystVar.getInterfaceVar()))
    ... else:
    ...     viewers = ()
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "explicitUpwind.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:09:27 PM} 
+ #                                last update: 6/24/08 {7:57:31 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -76,7 +76,7 @@ eq = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
-    viewer = viewers.make(vars=(var,))
+    viewer = Viewer(vars=(var,))
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,

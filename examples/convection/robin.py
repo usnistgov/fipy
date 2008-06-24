@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 5/1/08 {3:25:37 PM}
+ #                                last update: 6/24/08 {7:58:42 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,7 +118,7 @@ The analytical solution for this equation is given by,
     ...             ((P + A)**2*exp(A / 2)- (P - A)**2 * exp(-A / 2)))
 
     >>> if __name__ == '__main__':
-    ...     viewer=make(vars=(C, CAnalytical))
+    ...     viewer = Viewer(vars=(C, CAnalytical))
 
     >>> res = 1e+10
     >>> while res > 1e-5:

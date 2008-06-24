@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 7/11/07 {2:47:43 PM} 
+ #                                last update: 6/24/08 {7:53:36 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,11 +48,11 @@ import sys
 
 from fipy.tools import numerix
  
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
-class TSVViewer(Viewer):
+class TSVViewer(_Viewer):
     """
     "Views" one or more variables in tab-separated-value format.
         
@@ -87,13 +87,13 @@ class TSVViewer(Viewer):
             `FaceVariable`, objects.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
-            A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer 
+            A 1D `Viewer` will only use `'xmin'` and `'xmax'`, a 2D viewer 
             will also use `'ymin'` and `'ymax'`, and so on. 
             All viewers will use `'datamin'` and `'datamax'`. 
             Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer output
+          - `title`: displayed at the top of the `Viewer` output
         """
-        Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
         mesh = self.vars[0].getMesh()
         
         for var in self.vars:

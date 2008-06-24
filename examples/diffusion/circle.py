@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 6/4/08 {5:20:39 PM}
+ #                                last update: 6/24/08 {7:58:56 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,8 +118,8 @@ capable of displaying variables on this sort of irregular mesh)
     >>> viewer = None
     >>> if __name__ == '__main__':
     ...     try:
-    ...         viewer = viewers.make(vars=phi,
-    ...                               limits={'datamin': -1, 'datamax': 1.})
+    ...         viewer = Viewer(vars=phi,
+    ...                         limits={'datamin': -1, 'datamax': 1.})
     ...         viewer.plotMesh()
     ...         raw_input("Irregular circular mesh. Press <return> to proceed...")
     ...     except:

@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/5/07 {10:08:26 AM}
+ #                                last update: 6/24/08 {7:53:22 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,9 +45,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 
-class MatplotlibViewer(Viewer):
+class MatplotlibViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
 
@@ -67,17 +67,17 @@ class MatplotlibViewer(Viewer):
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
           - `limits`: a dictionary with possible keys `xmin`, `xmax`,
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            Viewer will only use `xmin` and `xmax`, a 2D viewer will also
+            `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
             use `ymin` and `ymax`, and so on.  All viewers will use
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
+          - `title`: displayed at the top of the `Viewer` window
           - `figaspect`: Desired aspect ration of figure. If arg is a number, 
             use that aspect ratio. If arg is an array, figaspect will 
             determine the width and height for a figure that would fit array 
             preserving aspect ratio.
         """
-        Viewer.__init__(self, vars = vars, limits = limits, title=title)
+        _Viewer.__init__(self, vars = vars, limits = limits, title=title)
 
         import pylab
 

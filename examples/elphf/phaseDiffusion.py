@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:13:37 PM} 
+ #                                last update: 6/24/08 {8:04:19 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -215,9 +215,9 @@ or
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 This problem does not have an analytical solution, so after
@@ -285,9 +285,9 @@ the remaining two substitutional species.
 Again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary
@@ -382,9 +382,9 @@ and the solvent and a liquid phase rich in the two substitutional species.
 Once again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary

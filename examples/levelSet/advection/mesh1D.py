@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:43 PM} { 1:23:41 PM}
+ #                                last update: 6/24/08 {8:04:54 AM} { 1:23:41 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -118,8 +118,8 @@ The problem can then be solved by executing a serious of time steps.
 ..
 
    >>> if __name__ == '__main__':
-   ...     viewer = viewers.make(vars=var,
-   ...                           limits={'datamin': -10., 'datamax': 10.})
+   ...     viewer = Viewer(vars=var,
+   ...                     limits={'datamin': -10., 'datamax': 10.})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()

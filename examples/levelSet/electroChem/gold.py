@@ -6,7 +6,7 @@
  # 
  #  FILE: "gold.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:56:32 PM} 
+ #                                last update: 6/24/08 {8:05:43 AM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -222,8 +222,8 @@ def runGold(faradaysConstant=9.6e4,
                     return array(self.var[:self.mesh.getNumberOfCells()])
 
             viewers = (
-                viewers.make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
-                viewers.make(PlotVariable(var = catalystVar.getInterfaceVar())))
+                Viewer(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
+                Viewer(PlotVariable(var = catalystVar.getInterfaceVar())))
 
     else:
         viewers = ()

@@ -6,7 +6,7 @@
  # 
  #  FILE: "peclet.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:18:42 PM} 
+ #                                last update: 6/24/08 {7:58:26 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -64,7 +64,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     ...                       FixedValue(faces=mesh.getFacesRight(), value=valueRight))
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var)
+    ...     viewer = Viewer(vars = var)
 
     >>> convCoeff = 1.0
     >>> peclet = 1e-3

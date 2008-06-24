@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:15:28 PM} 
+ #                                last update: 6/24/08 {8:19:14 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -139,7 +139,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
 
 if __name__ == '__main__':
 
-    phaseViewer = viewers.make(vars = phase) 
+    phaseViewer = Viewer(vars = phase) 
     phaseViewer.plot()
     for step in range(steps):
         phase.updateOld()

@@ -62,7 +62,7 @@ class Gist1DViewer(GistViewer):
           - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'datamin'`, `'datamax'`. Any limit set to a (default) value of
             `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
+          - `title`: displayed at the top of the `Viewer` window
           - `xlog`: set `True` to give logarithmic scaling of the x axis
           - `ylog`: set `True` to give logarithmic scaling of the y axis
           - `style`: the Gist style file to use

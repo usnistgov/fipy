@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:37:43 PM} 
+ #                                last update: 6/24/08 {8:01:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -74,7 +74,7 @@ var = CellVariable(name = "variable",
 ##viewer7 = Grid3DPyxViewer(var, zvalue = 7.0)
 ##viewer9 = Grid3DPyxViewer(var, zvalue = 9.0)
 
-## viewer = viewers.make(vars = var)
+## viewer = Viewer(vars = var)
 
 ## viewer.plot()
 

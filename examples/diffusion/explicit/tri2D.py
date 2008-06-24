@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:11:34 PM} 
+ #                                last update: 6/24/08 {7:59:10 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     for step in range(steps):
         eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     print var
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars = var)
     viewer.plot()
     raw_input('finished')
 

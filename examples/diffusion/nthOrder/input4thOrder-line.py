@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:03:30 PM} 
+ #                                last update: 6/24/08 {8:00:03 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -80,7 +80,7 @@ if __name__ == '__main__':
              boundaryConditions = BCs,
              solver = solver)
     
-    viewer = viewers.make(var)
+    viewer = Viewer(var)
     viewer.plot()
 
     print var.allclose(mesh.getCellCenters()[0], atol = 10)

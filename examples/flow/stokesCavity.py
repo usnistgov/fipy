@@ -6,7 +6,7 @@
  # 
  #  FILE: "stokesCavity.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/08 {8:58:07 AM}
+ #                                last update: 6/24/08 {8:04:43 AM}
  # Stolen from:
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
@@ -209,7 +209,7 @@ Set up the viewers,
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(pressure, xVelocity, yVelocity, velocity))
+    ...     viewer = Viewer(vars=(pressure, xVelocity, yVelocity, velocity))
 
 Below, we iterate for a set number of sweeps. We use the `sweep()`
 method instead of `solve()` because we require the residual for
