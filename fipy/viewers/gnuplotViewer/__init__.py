@@ -6,10 +6,10 @@ from gnuplot2DViewer import Gnuplot2DViewer
 __all__ = ["Gnuplot1DViewer", "Gnuplot2DViewer"]
 
 def GnuplotViewer(vars, title = None, limits = None):
-    """
-    Generic function for creating a `GnuplotViewer`. The `make` function
-    will search the module tree and return an instance of the first
-    `GnuplotViewer` it finds of the correct dimension.
+    """Generic function for creating a `GnuplotViewer`. 
+    
+    The `GnuplotViewer` factory will search the module tree and return an
+    instance of the first `GnuplotViewer` it finds of the correct dimension.
     
     :Parameters:
 

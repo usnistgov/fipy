@@ -7,10 +7,10 @@ from gistVectorViewer import GistVectorViewer
 __all__ = ["Gist1DViewer", "Gist2DViewer", "GistVectorViewer"]
 
 def GistViewer(vars, title = None, limits = None):
-    r"""
-    Generic function for creating a `GistViewer`. The `make` function
-    will search the module tree and return an instance of the first
-    `GistViewer` it finds of the correct dimension.
+    r"""Generic function for creating a `GistViewer`. 
+    
+    The `GistViewer` factory will search the module tree and return an instance
+    of the first `GistViewer` it finds of the correct dimension.
         
     :Parameters:
 

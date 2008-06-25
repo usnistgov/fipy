@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/24/08 {3:17:39 PM}
+ #                                last update: 6/24/08 {10:53:22 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -81,8 +81,6 @@ class _MatplotlibViewer(_Viewer):
 
         import pylab
 
-        pylab.ion()
-
         w, h = pylab.figaspect(figaspect)
         fig = pylab.figure(figsize=(w, h))
         self.id = fig.number
@@ -117,18 +115,21 @@ class _MatplotlibViewer(_Viewer):
         
         import pylab
 
+        if filename is None:
+            pylab.ion()
+        
         pylab.figure(self.id)
 
         pylab.ioff()
         
         self._plot()
-        pylab.draw()
-        
-        pylab.ion()
 
         if filename is not None:
             pylab.savefig(filename)
-
+        else:
+            pylab.ion()
+            pylab.draw()
+        
     def _validFileExtensions(self):
         return [".eps", ".jpg", ".png"]
         
