@@ -125,6 +125,12 @@ class _Viewer:
         """
         pass
 
+    def plotMesh(self, filename = None):
+        """
+        Display a representation of the mesh
+        """
+        pass
+
     def _autoscale(self, vars, datamin=None, datamax=None):
         from fipy.tools import numerix
 

@@ -215,9 +215,6 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 ##        pylab.ylim(ymin=self._getLimit('ymin'),
 ##                   ymax=self._getLimit('ymax'))
 
-    def plotMesh(self, filename = None):
-        pass
-
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus
     fipy.tests.doctestPlus.execButNoTest()
