@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 6/4/08 {5:20:39 PM}
+ #                                last update: 6/30/08 {5:19:08 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,20 +65,6 @@ for gmsh_, see the `gmsh manual`_.
 
 .. _gmsh manual: http://www.geuz.org/gmsh/doc/texinfo/gmsh.html
 
-    >>> lines = [ 'cellSize = ' + str(cellSize) + ';\n',
-    ...           'radius = ' + str(radius) + ';\n',
-    ...           'Point(1) = {0, 0, 0, cellSize};\n',
-    ...           'Point(2) = {-radius, 0, 0, cellSize};\n',
-    ...           'Point(3) = {0, radius, 0, cellSize};\n',
-    ...           'Point(4) = {radius, 0, 0, cellSize};\n',
-    ...           'Point(5) = {0, -radius, 0, cellSize};\n',
-    ...           'Circle(6) = {2, 1, 3};\n',
-    ...           'Circle(7) = {3, 1, 4};\n',
-    ...           'Circle(8) = {4, 1, 5};\n',
-    ...           'Circle(9) = {5, 1, 2};\n',
-    ...           'Line Loop(10) = {6, 7, 8, 9} ;\n',
-    ...           'Plane Surface(11) = {10};\n']
-
 The mesh created by gmsh_ is then imported into |FiPy| using the
 `GmshImporter2D` object.
    
@@ -89,7 +75,21 @@ The mesh created by gmsh_ is then imported into |FiPy| using the
 ..
 
     >>> from fipy import *
-    >>> mesh = GmshImporter2D(lines)
+    >>> mesh = GmshImporter2D('''
+    ...                       cellSize = %(cellSize)g;
+    ...                       radius = %(radius)g;
+    ...                       Point(1) = {0, 0, 0, cellSize};
+    ...                       Point(2) = {-radius, 0, 0, cellSize};
+    ...                       Point(3) = {0, radius, 0, cellSize};
+    ...                       Point(4) = {radius, 0, 0, cellSize};
+    ...                       Point(5) = {0, -radius, 0, cellSize};
+    ...                       Circle(6) = {2, 1, 3};
+    ...                       Circle(7) = {3, 1, 4};
+    ...                       Circle(8) = {4, 1, 5};
+    ...                       Circle(9) = {5, 1, 2};
+    ...                       Line Loop(10) = {6, 7, 8, 9};
+    ...                       Plane Surface(11) = {10};
+    ...                       ''' % locals())
     
 Using this mesh, we can construct a solution variable
 
@@ -103,14 +103,10 @@ Using this mesh, we can construct a solution variable
     ...                    mesh = mesh,
     ...                    value = 0.)
 
-We can now create a viewer to see the mesh (only the `Gist2DViewer` is
-capable of displaying variables on this sort of irregular mesh)
+We can now create a viewer to see the mesh
 
 .. raw:: latex
 
-   \IndexSoftware{Pygist}
-   \IndexSoftware{gist}
-   \IndexClass{Gist2DViewer}
    \IndexModule{viewers}
 
 ..
