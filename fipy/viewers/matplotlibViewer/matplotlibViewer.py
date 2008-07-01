@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/24/08 {10:53:22 PM}
+ #                                last update: 7/1/08 {1:58:03 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,23 +87,6 @@ class _MatplotlibViewer(_Viewer):
         
         pylab.title(self.title)
         
-##    def _autoscale(self, vars, datamin=None, datamax=None):
-##        from fipy.tools import numerix
-
-##        if datamin is None:
-##            datamin = 1e300
-##            for var in vars:
-##                datamin = min(datamin, var.min())
-
-##        if datamax is None:
-##            from fipy.tools import numerix
-##            datamax = -1e300
-##            for var in vars:
-##                datamax = max(datamax, var.max())
-                
-##        return datamin, datamax
-
-
     def plot(self, filename = None):
         """
         Plot the `CellVariable` as a contour plot.
@@ -123,12 +106,12 @@ class _MatplotlibViewer(_Viewer):
         pylab.ioff()
         
         self._plot()
+        pylab.draw()
 
         if filename is not None:
             pylab.savefig(filename)
         else:
             pylab.ion()
-            pylab.draw()
         
     def _validFileExtensions(self):
         return [".eps", ".jpg", ".png"]
