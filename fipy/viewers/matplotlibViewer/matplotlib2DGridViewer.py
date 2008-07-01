@@ -114,6 +114,10 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         import pylab
         pylab.jet()
 
+        # per http://sourceforge.net/tracker/index.php?func=detail&aid=1656374&group_id=80706&atid=560720
+        # although seems to no longer be needed with matplotlib >= 0.91.1
+        pylab.sci(self.image)
+        
         datamin = self._getLimit(('datamin', 'zmin')) 
         datamax = self._getLimit(('datamax', 'zmax')) 
         if datamin is None or datamax is None:
