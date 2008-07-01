@@ -742,7 +742,6 @@ dist = setup(	name = "FiPy",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         entry_points="""
             [fipy.viewers]
-            dummy = fipy.viewers.viewer:_Viewer
             gist = fipy.viewers.gistViewer:GistViewer
             gnuplot = fipy.viewers.gnuplotViewer:GnuplotViewer
             matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer

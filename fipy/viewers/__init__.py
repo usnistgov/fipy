@@ -75,6 +75,9 @@ def Viewer(vars, title = None, limits = None):
     else:
         FIPY_VIEWER = None
 
+    if FIPY_VIEWER == "dummy":
+        return _Viewer(vars=vars)
+
     errors = []
 
     attempts = []
