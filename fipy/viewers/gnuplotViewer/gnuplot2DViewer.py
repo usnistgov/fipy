@@ -83,7 +83,7 @@ class Gnuplot2DViewer(_GnuplotViewer):
             a (default) value of `None` will autoscale.
 
         """
-        _GnuplotViewer.__init__(self, vars=vars, title=title, limits=limits)
+        _GnuplotViewer.__init__(self, vars=vars, title=title, limits=**limits)
         
         if len(self.vars) != 1:
             raise IndexError, "A 2D Gnuplot viewer can only display one Variable"

@@ -92,7 +92,7 @@ class MayaviViewer(_Viewer):
 
         """
 
-        _Viewer.__init__(self, vars=vars, title=title, limits=limits)
+        _Viewer.__init__(self, vars=vars, title=title, limits=**limits)
 
         import mayavi
         

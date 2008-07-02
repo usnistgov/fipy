@@ -69,8 +69,7 @@ class Gist2DViewer(_GistViewer):
             a (default) value of `None` will autoscale.
             
         """
-        _GistViewer.__init__(self, vars=vars, title=" ", dpi=dpi, 
-                             limits=limits)
+        _GistViewer.__init__(self, vars=vars, title=" ", dpi=dpi, limits=**limits)
                             
         self.palette = palette
         self.grid = grid

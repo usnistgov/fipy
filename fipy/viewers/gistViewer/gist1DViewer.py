@@ -68,7 +68,7 @@ class Gist1DViewer(_GistViewer):
             `None` will autoscale.
 
         """
-        _GistViewer.__init__(self, vars=vars, title=title, limits=limits)
+        _GistViewer.__init__(self, vars=vars, title=title, limits=**limits)
         
         self.xlog = xlog
         self.ylog = ylog

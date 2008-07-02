@@ -66,7 +66,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
             a (default) value of `None` will autoscale.
 
         """
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=**limits)
 
         import pylab
 

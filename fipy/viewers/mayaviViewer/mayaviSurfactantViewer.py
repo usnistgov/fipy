@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/2/08 {4:35:41 PM}
+ #                                last update: 7/2/08 {4:46:58 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -108,7 +108,7 @@ class MayaviSurfactantViewer(_Viewer):
             moving top boundary or to show all contours (Default)
         """
 
-        _Viewer.__init__(self, vars=[], title=title, limits=limits)
+        _Viewer.__init__(self, vars=[], title=title, limits=**limits)
         import mayavi
         self._viewer = mayavi.mayavi()
         self.distanceVar = distanceVar

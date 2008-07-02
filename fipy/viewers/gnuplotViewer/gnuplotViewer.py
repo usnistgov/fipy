@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplotViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/2/08 {4:28:13 PM} { 2:45:36 PM}
+ #                                last update: 7/2/08 {4:45:36 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,7 +84,7 @@ class _GnuplotViewer(_Viewer):
             `None` will autoscale.
 
         """
-        _Viewer.__init__(self, vars=vars, title=title, limits=limits)
+        _Viewer.__init__(self, vars=vars, title=title, limits=**limits)
         import Gnuplot
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')

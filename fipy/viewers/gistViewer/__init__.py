@@ -29,7 +29,7 @@ def GistViewer(vars, title=None, **limits):
     from fipy.viewers import MeshDimensionError
     
     try:
-        return Gist1DViewer(vars=vars, title=title, limits=limits)
+        return Gist1DViewer(vars=vars, title=title, limits=**limits)
     except MeshDimensionError:
         try:
             return Gist2DViewer(vars=vars, title=title, limits=limits)

@@ -69,7 +69,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
             a (default) value of `None` will autoscale.
 
         """
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, figaspect=1. / 1.3, limits=limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, figaspect=1. / 1.3, limits=**limits)
 
         self.colorbar = None
         

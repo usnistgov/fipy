@@ -56,7 +56,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
     __doc__ += _MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
     
     def __init__(self, vars, title=None, xlog=False, ylog=False, **limits):
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=**limits)
     
         import pylab
         

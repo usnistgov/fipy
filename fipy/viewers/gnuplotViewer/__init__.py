@@ -34,9 +34,9 @@ def GnuplotViewer(vars, title=None, **limits):
     dim = mesh.getDim()
     
     if dim == 1:
-        return Gnuplot1DViewer(vars=vars, title=title, limits=limits)
+        return Gnuplot1DViewer(vars=vars, title=title, limits=**limits)
     elif dim == 2:
-        return Gnuplot2DViewer(vars=vars, title=title, limits=limits)
+        return Gnuplot2DViewer(vars=vars, title=title, limits=**limits)
     else:
         raise IndexError, "Gnuplot can only plot 1D and 2D data"
 

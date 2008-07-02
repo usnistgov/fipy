@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/2/08 {4:34:12 PM} { 2:45:36 PM}
+ #                                last update: 7/2/08 {4:46:39 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,7 +82,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
             a (default) value of `None` will autoscale.
 
         """
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=**limits)
 
         self.quiver(sparsity=sparsity, scale=scale)
         self.colorbar = False

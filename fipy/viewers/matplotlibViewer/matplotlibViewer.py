@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/2/08 {4:34:53 PM}
+ #                                last update: 7/2/08 {4:46:48 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,7 +77,7 @@ class _MatplotlibViewer(_Viewer):
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
         """
-        _Viewer.__init__(self, vars=vars, title=title, limits=limits)
+        _Viewer.__init__(self, vars=vars, title=title, limits=**limits)
 
         import pylab
 
