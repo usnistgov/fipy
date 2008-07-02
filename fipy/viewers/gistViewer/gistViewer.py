@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 6/24/08 {3:13:25 PM}
+ #                                last update: 7/2/08 {4:25:16 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,22 +57,22 @@ class _GistViewer(_Viewer):
     
     _id=0
     
-    def __init__(self, vars, limits = None, title = None, dpi = 75):
+    def __init__(self, vars, title = None, dpi = 75, **limits):
         """
         Create a `_GistViewer` object.
         
         :Parameters:
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
+          - `title`: displayed at the top of the `Viewer` window
+          - `dpi`: the dot-per-inch resolution of the display
           - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
             A 1D `Viewer` will only use `xmin` and `xmax`, a 2D viewer 
             will also use `ymin` and `ymax`, and so on. 
             All viewers will use `datamin` and `datamax`. 
             Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the `Viewer` window
-          - `dpi`: the dot-per-inch resolution of the display
         """
-        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        _Viewer.__init__(self, vars=vars, title=title, limits=limits)
         
         self.mesh = self.vars[0].getMesh()
 

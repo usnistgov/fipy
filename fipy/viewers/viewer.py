@@ -47,7 +47,7 @@ class _Viewer:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title=None, **limits):
         """Create a `_Viewer` object.
         
         :Parameters:
@@ -81,7 +81,7 @@ class _Viewer:
             vars = [vars]
         return [var for var in vars]
         
-    def setLimits(self, limits):
+    def setLimits(self, **limits):
         """
         Update the limits.
 
@@ -94,8 +94,7 @@ class _Viewer:
             Any limit set to a (default) value of `None` will autoscale.
             
         """           
-        for key in limits.keys():
-            self.limits[key] = limits[key]
+        self.limits.update(limits)
         
     def _getLimit(self, keys):
         """
@@ -112,8 +111,7 @@ class _Viewer:
             keys = (keys,)
         limit = None
         for key in keys:
-            if self.limits and self.limits.has_key(key):
-                limit = self.limits[key]
+            limit = self.limits.get(key, limit)
             if limit is not None:
                 break
             

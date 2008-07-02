@@ -57,18 +57,18 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
     __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
 
 
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title=None, **limits):
         """Creates a `Matplotlib2DViewer`.
         
         :Parameters:
           - `vars`: A `CellVariable` object.
+          - `title`: displayed at the top of the `Viewer` window
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the `Viewer` window
 
         """
-        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=limits)
         
         self.colorbar = None
         self._plot()

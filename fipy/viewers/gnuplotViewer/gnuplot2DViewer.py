@@ -72,18 +72,18 @@ class Gnuplot2DViewer(_GnuplotViewer):
         `Gnuplot2DViewer` requires Gnuplot_ version 4.0.
 
     """
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title = None, **limits):
         """Creates a `Gnuplot2DViewer`.
 
         :Parameters:
           - `vars`: A `CellVariable` object.
+          - `title`: displayed at the top of the `Viewer` window
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the `Viewer` window
 
         """
-        _GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _GnuplotViewer.__init__(self, vars=vars, title=title, limits=limits)
         
         if len(self.vars) != 1:
             raise IndexError, "A 2D Gnuplot viewer can only display one Variable"

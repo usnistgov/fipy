@@ -53,24 +53,24 @@ class Gist2DViewer(_GistViewer):
     __doc__ += _GistViewer._test2D(viewer="Gist2DViewer")
     __doc__ += _GistViewer._test2Dirregular(viewer="Gist2DViewer")
     
-    def __init__(self, vars, limits = None, title = None, palette = 'heat.gp', grid = 1, dpi = 75):
+    def __init__(self, vars, title=None, palette='heat.gp', grid=1, dpi=75, **limits):
         """Creates a `Gist2DViewer`.
         
         :Parameters:
           - `vars`: A `CellVariable` or tuple of `CellVariable` objects to plot.
             Only the first 2D `CellVariable` will be plotted.
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
-            a (default) value of `None` will autoscale.
           - `title`: Displayed at the top of the `Viewer` window.
           - `palette`: The color scheme to use for the image plot. Default is 
             `heat.gp`. Another choice would be `rainbow.gp`.
           - `grid`: Whether to show the grid lines in the plot. Default is 1. 
             Use 0 to switch them off.
+          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
+            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+            a (default) value of `None` will autoscale.
             
         """
-        _GistViewer.__init__(self, vars = vars, limits = limits, 
-                            title = " ", dpi = dpi)
+        _GistViewer.__init__(self, vars=vars, title=" ", dpi=dpi, 
+                             limits=limits)
                             
         self.palette = palette
         self.grid = grid

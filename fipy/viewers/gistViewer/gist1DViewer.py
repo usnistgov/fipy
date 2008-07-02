@@ -53,22 +53,22 @@ class Gist1DViewer(_GistViewer):
     
     __doc__ += _GistViewer._test1D(viewer="Gist1DViewer")
 
-    def __init__(self, vars, title = None, limits = None, xlog = 0, ylog = 0, style = "work.gs"):
+    def __init__(self, vars, title=None, xlog=0, ylog=0, style="work.gs", **limits):
         """
         Creates a `Gist1DViewer`.
         
         :Parameters:
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'datamin'`, `'datamax'`. Any limit set to a (default) value of
-            `None` will autoscale.
           - `title`: displayed at the top of the `Viewer` window
           - `xlog`: set `True` to give logarithmic scaling of the x axis
           - `ylog`: set `True` to give logarithmic scaling of the y axis
           - `style`: the Gist style file to use
+          - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`, 
+            `'datamin'`, `'datamax'`. Any limit set to a (default) value of
+            `None` will autoscale.
 
         """
-        _GistViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _GistViewer.__init__(self, vars=vars, title=title, limits=limits)
         
         self.xlog = xlog
         self.ylog = ylog

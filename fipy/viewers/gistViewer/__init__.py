@@ -6,7 +6,7 @@ from gistVectorViewer import GistVectorViewer
 
 __all__ = ["GistViewer", "Gist1DViewer", "Gist2DViewer", "GistVectorViewer"]
 
-def GistViewer(vars, title = None, limits = None):
+def GistViewer(vars, title=None, **limits):
     r"""Generic function for creating a `GistViewer`. 
     
     The `GistViewer` factory will search the module tree and return an instance
@@ -29,12 +29,12 @@ def GistViewer(vars, title = None, limits = None):
     from fipy.viewers import MeshDimensionError
     
     try:
-        return Gist1DViewer(vars = vars, title = title, limits = limits)
+        return Gist1DViewer(vars=vars, title=title, limits=limits)
     except MeshDimensionError:
         try:
-            return Gist2DViewer(vars = vars, title = title, limits = limits)
+            return Gist2DViewer(vars=vars, title=title, limits=limits)
         except MeshDimensionError:
-            return GistVectorViewer(vars = vars, title = title)
+            return GistVectorViewer(vars=vars, title=title, limits=limits)
             
 def make(*args, **kwargs):
     import warnings

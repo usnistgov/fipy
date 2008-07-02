@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 6/24/08 {7:53:36 AM} 
+ #                                last update: 7/2/08 {4:37:09 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,22 +78,22 @@ class TSVViewer(_Viewer):
     """
     _axis = ["x", "y", "z"]
     
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title = None, **limits):
         """
         Creates a `TSVViewer`.
         
         :Parameters:
           - `vars`: A `tuple` ot `list` of `CellVariable`,
             `FaceVariable`, objects.
+          - `title`: displayed at the top of the `Viewer` output
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
             A 1D `Viewer` will only use `'xmin'` and `'xmax'`, a 2D viewer 
             will also use `'ymin'` and `'ymax'`, and so on. 
             All viewers will use `'datamin'` and `'datamax'`. 
             Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the `Viewer` output
         """
-        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        _Viewer.__init__(self, vars=vars, title=title, limits=limits)
         mesh = self.vars[0].getMesh()
         
         for var in self.vars:

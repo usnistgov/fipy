@@ -8,7 +8,7 @@ from matplotlibVectorViewer import MatplotlibVectorViewer
 
 __all__ = ["MatplotlibViewer", "Matplotlib1DViewer", "Matplotlib2DGridViewer", "Matplotlib2DGridContourViewer", "Matplotlib2DViewer", "MatplotlibVectorViewer"]
 
-def MatplotlibViewer(vars, title = None, limits = None):
+def MatplotlibViewer(vars, title=None, **limits):
     """Generic function for creating a `MatplotlibViewer`. 
     
     The `MatplotlibViewer` factory will search the module tree and return an
@@ -18,13 +18,13 @@ def MatplotlibViewer(vars, title = None, limits = None):
 
       - `vars`: a `CellVariable`, or `FaceVariable` object 
         or sequence to plot
+      - `title`: displayed at the top of the `Viewer` window
       - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`,
         `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
         A 1D `Viewer` will only use `'xmin'` and `'xmax'`, a 2D viewer
         will also use `'ymin'` and `'ymax'`, and so on.
         All viewers will use `'datamin'` and `'datamax'`.
         Any limit set to a (default) value of `None` will autoscale.
-      - `title`: displayed at the top of the `Viewer` window
 
     """
     if type(vars) not in [type([]), type(())]:
@@ -33,7 +33,7 @@ def MatplotlibViewer(vars, title = None, limits = None):
     from fipy.viewers import MeshDimensionError
     
     try:
-        return Matplotlib1DViewer(vars = vars, title = title, limits = limits)
+        return Matplotlib1DViewer(vars=vars, title=title, limits=limits)
     except MeshDimensionError:
         try:
             from matplotlib2DGridViewer import Matplotlib2DGridViewer
@@ -41,10 +41,10 @@ def MatplotlibViewer(vars, title = None, limits = None):
         except MeshDimensionError:
             try:
                 from matplotlib2DViewer import Matplotlib2DViewer
-                return Matplotlib2DViewer(vars = vars, title = title, limits = limits)
+                return Matplotlib2DViewer(vars=vars, title=title, limits=limits)
             except MeshDimensionError:
                 from matplotlibVectorViewer import MatplotlibVectorViewer
-                return MatplotlibVectorViewer(vars = vars, title = title)
+                return MatplotlibVectorViewer(vars=vars, title=title, limits=limits)
 
 def make(*args, **kwargs):
     import warnings

@@ -76,23 +76,23 @@ class MayaviViewer(_Viewer):
 
     """
         
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title=None, **limits):
         """Create a `MayaviViewer`.
         
         :Parameters:
 
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
+          - `title`: displayed at the top of the `Viewer` window
           - `limits`: a dictionary with possible keys `xmin`, `xmax`,
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
             `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
             use `ymin` and `ymax`, and so on.  All viewers will use
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
-          - `title`: displayed at the top of the `Viewer` window
 
         """
 
-        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        _Viewer.__init__(self, vars=vars, title=title, limits=limits)
 
         import mayavi
         

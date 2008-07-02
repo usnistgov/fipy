@@ -5,7 +5,7 @@ from gnuplot2DViewer import Gnuplot2DViewer
 
 __all__ = ["GnuplotViewer", "Gnuplot1DViewer", "Gnuplot2DViewer"]
 
-def GnuplotViewer(vars, title = None, limits = None):
+def GnuplotViewer(vars, title=None, **limits):
     """Generic function for creating a `GnuplotViewer`. 
     
     The `GnuplotViewer` factory will search the module tree and return an
@@ -14,13 +14,13 @@ def GnuplotViewer(vars, title = None, limits = None):
     :Parameters:
 
       - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
+      - `title`: displayed at the top of the `Viewer` window
       - `limits`: a dictionary with possible keys `xmin`, `xmax`,
         `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
         A 1D `Viewer` will only use `xmin` and `xmax`, a 2D viewer
         will also use `ymin` and `ymax`, and so on.
         All viewers will use `datamin` and `datamax`.
         Any limit set to a (default) value of `None` will autoscale.
-      - `title`: displayed at the top of the `Viewer` window
 
     """
     if type(vars) not in [type([]), type(())]:
@@ -34,9 +34,9 @@ def GnuplotViewer(vars, title = None, limits = None):
     dim = mesh.getDim()
     
     if dim == 1:
-        return Gnuplot1DViewer(vars = vars, title = title, limits = limits)
+        return Gnuplot1DViewer(vars=vars, title=title, limits=limits)
     elif dim == 2:
-        return Gnuplot2DViewer(vars = vars, title = title, limits = limits)
+        return Gnuplot2DViewer(vars=vars, title=title, limits=limits)
     else:
         raise IndexError, "Gnuplot can only plot 1D and 2D data"
 

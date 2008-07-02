@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibVectorViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/24/08 {3:17:42 PM} { 2:45:36 PM}
+ #                                last update: 7/2/08 {4:34:12 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,21 +68,21 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
     """
     __doc__ += _MatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
 
-    def __init__(self, vars, limits=None, title=None, scale=None, sparsity=None):
+    def __init__(self, vars, title=None, scale=None, sparsity=None, **limits):
         """Creates a `Matplotlib2DViewer`.
 
         :Parameters:
           - `vars`: A `CellVariable` object.
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
-            a (default) value of `None` will autoscale.
           - `title`: displayed at the top of the `Viewer` window
           - `scale`: if not `None`, scale all arrow lengths by this value
           - `sparsity`: if not `None`, then this number of arrows will be
             randomly chosen (weighted by the cell volume or face area)
+          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
+            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+            a (default) value of `None` will autoscale.
 
         """
-        _MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=limits)
 
         self.quiver(sparsity=sparsity, scale=scale)
         self.colorbar = False

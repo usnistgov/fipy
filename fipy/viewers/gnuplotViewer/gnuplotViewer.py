@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplotViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 6/24/08 {3:15:20 PM} { 2:45:36 PM}
+ #                                last update: 7/2/08 {4:28:13 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -67,7 +67,7 @@ class _GnuplotViewer(_Viewer):
         `_GnuplotViewer` requires Gnuplot_ version 4.0.
 
    """    
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title=None, **limits):
         """
         The `_GnuplotViewer` should not be called directly only `Gnuplot1DViewer`
         and `Gnuplot2DViewer` should be called.
@@ -75,16 +75,16 @@ class _GnuplotViewer(_Viewer):
         :Parameters:
 
           - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
+          - `title`: displayed at the top of the `Viewer` window
           - `limits`: a dictionary with possible keys `xmin`, `xmax`,
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
             `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
             use `ymin` and `ymax`, and so on.  All viewers will use
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
-          - `title`: displayed at the top of the `Viewer` window
 
         """
-        _Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        _Viewer.__init__(self, vars=vars, title=title, limits=limits)
         import Gnuplot
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
