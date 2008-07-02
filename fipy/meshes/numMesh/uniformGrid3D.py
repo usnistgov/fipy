@@ -6,7 +6,7 @@
  # 
  # FILE: "uniformGrid3D.py"
  #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 5/30/08 {8:37:58 AM}
+ #                                 last update: 7/2/08 {9:54:05 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -450,9 +450,9 @@ class UniformGrid3D(Grid3D):
         ids[0] = ids[1] + 1
         ids[3] = indices[0] + (indices[1] + (indices[2] + 1) * (self.ny + 1)) * (self.nx + 1)
         ids[2] = ids[3] + 1
-        ids[5] = indices[0] + (indices[1] + indices[2] * self.ny + 1) * (self.nx + 1)
+        ids[5] = indices[0] + (indices[1] + indices[2] * (self.ny + 1) + 1) * (self.nx + 1)
         ids[4] = ids[5] + 1
-        ids[7] = indices[0] + (indices[1] + indices[2] * self.ny) * (self.nx + 1)
+        ids[7] = indices[0] + (indices[1] + indices[2] * (self.ny + 1)) * (self.nx + 1)
         ids[6] = ids[7] + 1
         
         return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
@@ -707,6 +707,35 @@ class UniformGrid3D(Grid3D):
 
             >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             1
+            
+            # Bug #130 & #135 are because we only checked a mesh with nz of 1
+            
+            >>> nx = 1
+            >>> ny = 2
+            >>> nz = 3
+            
+            >>> mesh = UniformGrid3D(nx=nx, ny=ny, nz=nz, dx=dx, dy=dy, dz=dz)
+
+            >>> cellVertexIDs = numerix.array((9, 8, 7, 6, 3, 2, 1, 0))
+            >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 2, cellVertexIDs + 6,
+            ...                                cellVertexIDs + 8, cellVertexIDs + 12, cellVertexIDs + 14))
+            >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
+            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            1
+            
+            >>> nx = 3
+            >>> ny = 1
+            >>> nz = 2
+            
+            >>> mesh = UniformGrid3D(nx=nx, ny=ny, nz=nz, dx=dx, dy=dy, dz=dz)
+
+            >>> cellVertexIDs = numerix.array((13, 12, 9, 8, 5, 4, 1, 0))
+            >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
+            ...                                cellVertexIDs + 8, cellVertexIDs + 9, cellVertexIDs + 10))
+            >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
+            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            1
+
         """
 
 def _test():
