@@ -4,7 +4,7 @@ from gist1DViewer import Gist1DViewer
 from gist2DViewer import Gist2DViewer
 from gistVectorViewer import GistVectorViewer
 
-__all__ = ["Gist1DViewer", "Gist2DViewer", "GistVectorViewer"]
+__all__ = ["GistViewer", "Gist1DViewer", "Gist2DViewer", "GistVectorViewer"]
 
 def GistViewer(vars, title = None, limits = None):
     r"""Generic function for creating a `GistViewer`. 
