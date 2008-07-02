@@ -113,3 +113,6 @@ class _GnuplotViewer(_Viewer):
         if filename is not None:
             self.g.hardcopy(filename)
 
+
+    def _validFileExtensions(self):
+        return [".eps"]
