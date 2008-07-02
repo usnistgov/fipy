@@ -47,7 +47,7 @@ class _Viewer:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, vars, title=None, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
         """Create a `_Viewer` object.
         
         :Parameters:
@@ -63,7 +63,8 @@ class _Viewer:
         """
         self.vars = self._getSuitableVars(vars)
 
-        self.limits = limits
+        kwlimits.update(limits)
+        self.limits = kwlimits
 
         if title is None:
             if len(self.vars) == 1:
