@@ -57,7 +57,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
     __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
 
 
-    def __init__(self, vars, title=None, **limits):
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
         
         :Parameters:
@@ -68,7 +68,8 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
             a (default) value of `None` will autoscale.
 
         """
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=**limits)
+        kwlimits.update(limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         self.colorbar = None
         self._plot()

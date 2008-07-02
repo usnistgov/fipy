@@ -4,7 +4,7 @@
  # 
  #  FILE: "multiViewer.py"
  #                                    created: 12/17/05 {6:28:03 PM} 
- #                                last update: 7/2/08 {4:47:18 PM} 
+ #                                last update: 7/2/08 {5:10:41 PM} 
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #    mail: NIST
@@ -52,9 +52,10 @@ class MultiViewer(_Viewer):
             viewers = [viewers]
         self.viewers = viewers
 
-    def setLimits(self, **limits):
+    def setLimits(self, limits={}, **kwlimits):
+        kwlimits.update(limits)
         for viewer in self.getViewers():
-            viewer.setLimits(limits=**limits)
+            viewer.setLimits(**kwlimits)
             
     def plot(self):
         for viewer in self.getViewers():

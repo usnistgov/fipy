@@ -72,7 +72,7 @@ class Gnuplot2DViewer(_GnuplotViewer):
         `Gnuplot2DViewer` requires Gnuplot_ version 4.0.
 
     """
-    def __init__(self, vars, title = None, **limits):
+    def __init__(self, vars, title = None, limits={}, **kwlimits):
         """Creates a `Gnuplot2DViewer`.
 
         :Parameters:
@@ -83,7 +83,8 @@ class Gnuplot2DViewer(_GnuplotViewer):
             a (default) value of `None` will autoscale.
 
         """
-        _GnuplotViewer.__init__(self, vars=vars, title=title, limits=**limits)
+        kwlimits.update(limits)
+        _GnuplotViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         if len(self.vars) != 1:
             raise IndexError, "A 2D Gnuplot viewer can only display one Variable"

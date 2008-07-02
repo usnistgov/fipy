@@ -5,7 +5,7 @@ from gnuplot2DViewer import Gnuplot2DViewer
 
 __all__ = ["GnuplotViewer", "Gnuplot1DViewer", "Gnuplot2DViewer"]
 
-def GnuplotViewer(vars, title=None, **limits):
+def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
     """Generic function for creating a `GnuplotViewer`. 
     
     The `GnuplotViewer` factory will search the module tree and return an
@@ -26,6 +26,8 @@ def GnuplotViewer(vars, title=None, **limits):
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
         
+    kwlimits.update(limits)
+
     mesh = vars[0].getMesh()
     
     for var in vars:
@@ -34,9 +36,9 @@ def GnuplotViewer(vars, title=None, **limits):
     dim = mesh.getDim()
     
     if dim == 1:
-        return Gnuplot1DViewer(vars=vars, title=title, limits=**limits)
+        return Gnuplot1DViewer(vars=vars, title=title, **kwlimits)
     elif dim == 2:
-        return Gnuplot2DViewer(vars=vars, title=title, limits=**limits)
+        return Gnuplot2DViewer(vars=vars, title=title, **kwlimits)
     else:
         raise IndexError, "Gnuplot can only plot 1D and 2D data"
 

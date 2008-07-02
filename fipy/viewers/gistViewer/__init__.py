@@ -6,7 +6,7 @@ from gistVectorViewer import GistVectorViewer
 
 __all__ = ["GistViewer", "Gist1DViewer", "Gist2DViewer", "GistVectorViewer"]
 
-def GistViewer(vars, title=None, **limits):
+def GistViewer(vars, title=None, limits={}, **kwlimits):
     r"""Generic function for creating a `GistViewer`. 
     
     The `GistViewer` factory will search the module tree and return an instance
@@ -15,26 +15,28 @@ def GistViewer(vars, title=None, **limits):
     :Parameters:
 
       - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
+      - `title`: displayed at the top of the `Viewer` window
       - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`,
         `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
         A 1D `Viewer` will only use `'xmin'` and `'xmax'`, a 2D viewer
         will also use `'ymin'` and `'ymax'`, and so on.
         All viewers will use `'datamin'` and `'datamax'`.
         Any limit set to a (default) value of `None` will autoscale.
-      - `title`: displayed at the top of the `Viewer` window
     """
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
-        
+    
+    kwlimits.update(limits)
+    
     from fipy.viewers import MeshDimensionError
     
     try:
-        return Gist1DViewer(vars=vars, title=title, limits=**limits)
+        return Gist1DViewer(vars=vars, title=title, **kwlimits)
     except MeshDimensionError:
         try:
-            return Gist2DViewer(vars=vars, title=title, limits=limits)
+            return Gist2DViewer(vars=vars, title=title, **kwlimits)
         except MeshDimensionError:
-            return GistVectorViewer(vars=vars, title=title, limits=limits)
+            return GistVectorViewer(vars=vars, title=title, **kwlimits)
             
 def make(*args, **kwargs):
     import warnings

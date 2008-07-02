@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/2/08 {4:45:08 PM}
+ #                                last update: 7/2/08 {5:10:49 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,7 +57,7 @@ class _GistViewer(_Viewer):
     
     _id=0
     
-    def __init__(self, vars, title = None, dpi = 75, **limits):
+    def __init__(self, vars, title = None, dpi = 75, limits={}, **kwlimits):
         """
         Create a `_GistViewer` object.
         
@@ -72,7 +72,8 @@ class _GistViewer(_Viewer):
             All viewers will use `datamin` and `datamax`. 
             Any limit set to a (default) value of `None` will autoscale.
         """
-        _Viewer.__init__(self, vars=vars, title=title, limits=**limits)
+        kwlimits.update(limits)
+        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         self.mesh = self.vars[0].getMesh()
 

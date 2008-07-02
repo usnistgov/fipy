@@ -57,7 +57,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
     
     __doc__ += _MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
-    def __init__(self, vars, title=None, **limits):
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
         
 
@@ -69,7 +69,8 @@ class Matplotlib2DViewer(_MatplotlibViewer):
             a (default) value of `None` will autoscale.
 
         """
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, figaspect=1. / 1.3, limits=**limits)
+        kwlimits.update(limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, figaspect=1. / 1.3, **kwlimits)
 
         self.colorbar = None
         

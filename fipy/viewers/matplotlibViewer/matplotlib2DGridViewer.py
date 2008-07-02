@@ -54,7 +54,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
     
     __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
 
-    def __init__(self, vars, title=None, **limits):
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
         """
         Creates a `Matplotlib2DGridViewer`.
         
@@ -66,7 +66,8 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
             a (default) value of `None` will autoscale.
 
         """
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=**limits)
+        kwlimits.update(limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=**kwlimits)
 
         import pylab
 

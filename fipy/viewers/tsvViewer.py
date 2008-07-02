@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 7/2/08 {4:47:26 PM} 
+ #                                last update: 7/2/08 {5:10:40 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,7 +78,7 @@ class TSVViewer(_Viewer):
     """
     _axis = ["x", "y", "z"]
     
-    def __init__(self, vars, title = None, **limits):
+    def __init__(self, vars, title = None, limits={}, **kwlimits):
         """
         Creates a `TSVViewer`.
         
@@ -93,7 +93,8 @@ class TSVViewer(_Viewer):
             All viewers will use `'datamin'` and `'datamax'`. 
             Any limit set to a (default) value of `None` will autoscale.
         """
-        _Viewer.__init__(self, vars=vars, title=title, limits=**limits)
+        kwlimits.update(limits)
+        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         mesh = self.vars[0].getMesh()
         
         for var in self.vars:

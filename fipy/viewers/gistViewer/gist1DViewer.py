@@ -53,7 +53,7 @@ class Gist1DViewer(_GistViewer):
     
     __doc__ += _GistViewer._test1D(viewer="Gist1DViewer")
 
-    def __init__(self, vars, title=None, xlog=0, ylog=0, style="work.gs", **limits):
+    def __init__(self, vars, title=None, xlog=0, ylog=0, style="work.gs", limits={}, **kwlimits):
         """
         Creates a `Gist1DViewer`.
         
@@ -68,7 +68,8 @@ class Gist1DViewer(_GistViewer):
             `None` will autoscale.
 
         """
-        _GistViewer.__init__(self, vars=vars, title=title, limits=**limits)
+        kwlimits.update(limits)
+        _GistViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         self.xlog = xlog
         self.ylog = ylog

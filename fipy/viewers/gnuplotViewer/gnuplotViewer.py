@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplotViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/2/08 {4:45:36 PM} { 2:45:36 PM}
+ #                                last update: 7/2/08 {5:10:47 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -67,7 +67,7 @@ class _GnuplotViewer(_Viewer):
         `_GnuplotViewer` requires Gnuplot_ version 4.0.
 
    """    
-    def __init__(self, vars, title=None, **limits):
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
         """
         The `_GnuplotViewer` should not be called directly only `Gnuplot1DViewer`
         and `Gnuplot2DViewer` should be called.
@@ -84,7 +84,8 @@ class _GnuplotViewer(_Viewer):
             `None` will autoscale.
 
         """
-        _Viewer.__init__(self, vars=vars, title=title, limits=**limits)
+        kwlimits.update(limits)
+        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         import Gnuplot
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')

@@ -53,7 +53,7 @@ class Gist2DViewer(_GistViewer):
     __doc__ += _GistViewer._test2D(viewer="Gist2DViewer")
     __doc__ += _GistViewer._test2Dirregular(viewer="Gist2DViewer")
     
-    def __init__(self, vars, title=None, palette='heat.gp', grid=1, dpi=75, **limits):
+    def __init__(self, vars, title=None, palette='heat.gp', grid=1, dpi=75, limits={}, **kwlimits):
         """Creates a `Gist2DViewer`.
         
         :Parameters:
@@ -69,7 +69,8 @@ class Gist2DViewer(_GistViewer):
             a (default) value of `None` will autoscale.
             
         """
-        _GistViewer.__init__(self, vars=vars, title=" ", dpi=dpi, limits=**limits)
+        kwlimits.update(limits)
+        _GistViewer.__init__(self, vars=vars, title=" ", dpi=dpi, **kwlimits)
                             
         self.palette = palette
         self.grid = grid

@@ -8,7 +8,7 @@ from matplotlibVectorViewer import MatplotlibVectorViewer
 
 __all__ = ["MatplotlibViewer", "Matplotlib1DViewer", "Matplotlib2DGridViewer", "Matplotlib2DGridContourViewer", "Matplotlib2DViewer", "MatplotlibVectorViewer"]
 
-def MatplotlibViewer(vars, title=None, **limits):
+def MatplotlibViewer(vars, title=None, limits={}, **kwlimits):
     """Generic function for creating a `MatplotlibViewer`. 
     
     The `MatplotlibViewer` factory will search the module tree and return an
@@ -30,21 +30,23 @@ def MatplotlibViewer(vars, title=None, **limits):
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
         
+    kwlimits.update(limits)
+    
     from fipy.viewers import MeshDimensionError
     
     try:
-        return Matplotlib1DViewer(vars=vars, title=title, limits=**limits)
+        return Matplotlib1DViewer(vars=vars, title=title, **kwlimits)
     except MeshDimensionError:
         try:
             from matplotlib2DGridViewer import Matplotlib2DGridViewer
-            return Matplotlib2DGridViewer(vars=vars, title=title, limits=**limits)
+            return Matplotlib2DGridViewer(vars=vars, title=title, **kwlimits)
         except MeshDimensionError:
             try:
                 from matplotlib2DViewer import Matplotlib2DViewer
-                return Matplotlib2DViewer(vars=vars, title=title, limits=**limits)
+                return Matplotlib2DViewer(vars=vars, title=title, **kwlimits)
             except MeshDimensionError:
                 from matplotlibVectorViewer import MatplotlibVectorViewer
-                return MatplotlibVectorViewer(vars=vars, title=title, limits=**limits)
+                return MatplotlibVectorViewer(vars=vars, title=title, **kwlimits)
 
 def make(*args, **kwargs):
     import warnings

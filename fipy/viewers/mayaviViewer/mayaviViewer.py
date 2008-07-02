@@ -76,7 +76,7 @@ class MayaviViewer(_Viewer):
 
     """
         
-    def __init__(self, vars, title=None, **limits):
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
         """Create a `MayaviViewer`.
         
         :Parameters:
@@ -91,8 +91,8 @@ class MayaviViewer(_Viewer):
             `None` will autoscale.
 
         """
-
-        _Viewer.__init__(self, vars=vars, title=title, limits=**limits)
+        kwlimits.update(limits)
+        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
 
         import mayavi
         

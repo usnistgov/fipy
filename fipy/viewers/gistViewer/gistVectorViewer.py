@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/2/08 {4:45:00 PM} { 2:45:36 PM}
+ #                                last update: 7/2/08 {5:10:49 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -57,8 +57,9 @@ class GistVectorViewer(_GistViewer):
     __doc__ += _GistViewer._test2Dvector(viewer="GistVectorViewer")
     __doc__ += _GistViewer._test2DvectorIrregular(viewer="GistVectorViewer")
     
-    def __init__(self, vars, title = '', **limits):
-	_GistViewer.__init__(self, vars=vars, title=title, limits=**limits)
+    def __init__(self, vars, title = '', limits={}, **kwlimits):
+        kwlimits.update(limits)
+	_GistViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
     def _getSuitableVars(self, vars):
         vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
