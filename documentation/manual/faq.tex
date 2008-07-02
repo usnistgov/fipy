@@ -315,15 +315,49 @@
     which will save a file named \verb+myimage.ext+ in your current
     working directory. The type of image is determined by the file
     extension ``\verb+.ext+''. Different viewers have different
-    capabilities: \Pygist{} accepts ``\verb+.eps+''
-    (\href{http://en.wikipedia.org/wiki/Encapsulated_PostScript}{Encapsulated
-    PostScript}) and ``\verb+.cgm+''
-    (\href{http://xml.coverpages.org/cgm.html}{Computer Graphics
-    Metafile}). \Matplotlib{} accepts ``\verb+.eps+'', ``\verb+.jpg+''
+    capabilities: 
+    
+        \begin{description}
+            \item[\Pygist{}] accepts ``\verb+.eps+''
+            (\href{http://en.wikipedia.org/wiki/Encapsulated_PostScript}{Encapsulated
+            PostScript}) and ``\verb+.cgm+''
+            (\href{http://xml.coverpages.org/cgm.html}{Computer
+            Graphics Metafile}).
+        
+            \item[\gnuplot{}] accepts ``\verb+.eps+''.
+        
+            \item[\Matplotlib{}] accepts ``\verb+.eps+'',
+            ``\verb+.jpg+'' (\href{http://www.jpeg.org/}{Joint
+            Photographic Experts Group}), and ``\verb+.png+''
+            (\href{http://www.w3.org/Graphics/PNG/}{Portable Network
+            Graphics}).
+            
+            \begin{reSTadmonition}[Attention]
+                Actually, \Matplotlib{} supports different 
+                extensions, depending on the chosen 
+                \href{http://matplotlib.sourceforge.net/backends.html}{backend}, but our 
+                \Class{MatplotlibViewer} classes don't properly 
+                support this yet.
+            \end{reSTadmonition}
+            
+        \end{description}
+        
+    \Pygist{}  \Matplotlib{} accepts ``\verb+.eps+'', ``\verb+.jpg+''
     (\href{http://www.jpeg.org/}{Joint Photographic Experts Group}),
     and ``\verb+.png+''
     (\href{http://www.w3.org/Graphics/PNG/}{Portable Network
-    Graphics}). \MayaVi{} only accepts ``\verb+.png+''.
+    Graphics}). \MayaVi{} only accepts ``\verb+.png+''. \gnuplot{} 
+    only accepts ``\verb+.eps+''.
+    
+        \subsection{What if I only want the saved file, with no
+        display on screen?} To our knowledge, this is only supported
+        by \Matplotlib{}, as is explained in the
+        \href{http://matplotlib.sourceforge.net/faq.html#BATCHMODE}{\Matplotlib{}
+        FAQ}. Basically, you need to tell \Matplotlib{} to use an
+        ``image backend'', such as ``Agg'' or ``Cairo''. Backends are
+        discussed at
+        \url{http://matplotlib.sourceforge.net/backends.html}.
+        
 
     \section{How do I make a movie?} \FiPy{} has no facilities for 
     making movies. You will need to save individual frames (see the 
