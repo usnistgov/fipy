@@ -35,7 +35,7 @@ from tsvViewer import TSVViewer
 class MeshDimensionError(IndexError):
     pass
 
-def Viewer(vars, title = None, limits = None):
+def Viewer(vars, title = None, limits={}, **kwlimits):
     r"""Generic function for creating a `Viewer`. 
     
     The `Viewer` factory will search the module tree and return an instance of
@@ -56,13 +56,13 @@ def Viewer(vars, title = None, limits = None):
     :Parameters:
 
       - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
+      - `title`: displayed at the top of the Viewer window
       - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`,
         `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
         A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer
         will also use `'ymin'` and `'ymax'`, and so on.
         All viewers will use `'datamin'` and `'datamax'`.
         Any limit set to a (default) value of `None` will autoscale.
-      - `title`: displayed at the top of the Viewer window
       
     """
     
