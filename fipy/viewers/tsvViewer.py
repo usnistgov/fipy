@@ -6,7 +6,7 @@
  # 
  #  FILE: "tsvViewer.py"
  #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 7/2/08 {5:10:40 PM} 
+ #                                last update: 7/3/08 {8:44:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -78,7 +78,7 @@ class TSVViewer(_Viewer):
     """
     _axis = ["x", "y", "z"]
     
-    def __init__(self, vars, title = None, limits={}, **kwlimits):
+    def __init__(self, vars, title='', limits={}, **kwlimits):
         """
         Creates a `TSVViewer`.
         
@@ -95,6 +95,7 @@ class TSVViewer(_Viewer):
         """
         kwlimits.update(limits)
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
+        
         mesh = self.vars[0].getMesh()
         
         for var in self.vars:
@@ -166,7 +167,7 @@ class TSVViewer(_Viewer):
         else:
             f = sys.stdout
         
-        if self.title:
+        if self.title and len(self.title) > 0:
             f.write(self.title)
             f.write("\n")
             
