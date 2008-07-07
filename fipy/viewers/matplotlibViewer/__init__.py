@@ -5,8 +5,9 @@ from matplotlib2DGridViewer import Matplotlib2DGridViewer
 from matplotlib2DGridContourViewer import Matplotlib2DGridContourViewer
 from matplotlib2DViewer import Matplotlib2DViewer
 from matplotlibVectorViewer import MatplotlibVectorViewer
+from matplotlibSurfactantViewer import MatplotlibSurfactantViewer
 
-__all__ = ["MatplotlibViewer", "Matplotlib1DViewer", "Matplotlib2DGridViewer", "Matplotlib2DGridContourViewer", "Matplotlib2DViewer", "MatplotlibVectorViewer"]
+__all__ = ["MatplotlibViewer", "Matplotlib1DViewer", "Matplotlib2DGridViewer", "Matplotlib2DGridContourViewer", "Matplotlib2DViewer", "MatplotlibVectorViewer", "MatplotlibSurfactantViewer"]
 
 def MatplotlibViewer(vars, title=None, limits={}, **kwlimits):
     """Generic function for creating a `MatplotlibViewer`. 

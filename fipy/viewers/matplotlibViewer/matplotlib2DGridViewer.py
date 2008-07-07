@@ -67,7 +67,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
 
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, limits=**kwlimits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
 
         import pylab
 
