@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/2/08 {5:10:43 PM}
+ #                                last update: 7/7/08 {1:18:06 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -114,5 +114,7 @@ class _MatplotlibViewer(_Viewer):
             pylab.savefig(filename)
 
     def _validFileExtensions(self):
-        return [".eps", ".jpg", ".png"]
+        import pylab
+        filetypes = pylab.figure(self.id).canvas.filetypes
+        return [".%s" for key in filetypes.keys()]
         
