@@ -6,7 +6,7 @@
  # 
  #  FILE: "howToWriteAScript.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 6/24/08 {8:05:53 AM} { 1:23:41 PM}
+ #                                last update: 7/7/08 {2:55:29 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -429,23 +429,22 @@ If running interactively, create viewers.
 
 .. raw:: latex
 
-   \IndexModule{viewers}
    \IndexClass{MayaviSurfactantViewer}
    
 ..
 
    >>> if __name__ == '__main__':
    ...     try:
-   ...         viewers = (
-   ...             MayaviSurfactantViewer(distanceVar,
-   ...                                    catalystVar.getInterfaceVar(),
-   ...                                    zoomFactor=1e6,
-   ...                                    limits={ 'datamax' : 1.0, 'datamin' : 0.0 },
-   ...                                    smooth=1),)
+   ...         viewer = MayaviSurfactantViewer(distanceVar,
+   ...                                         catalystVar.getInterfaceVar(),
+   ...                                         zoomFactor=1e6,
+   ...                                         datamax=1.0, 
+   ...                                         datamin=0.0,
+   ...                                         smooth=1)
    ...     except:
-   ...         viewers = (
-   ...             Viewer(distanceVar, limits={ 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-   ...             Viewer(catalystVar.getInterfaceVar()))
+   ...         viewer = MultiViewer(viewers=(
+   ...             Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
+   ...             Viewer(catalystVar.getInterfaceVar())))
    ... else:
    ...     viewers = ()
 
@@ -469,8 +468,7 @@ is calculated with the CFL number and the maximum extension velocity.
    
    >>> for step in range(numberOfSteps):
    ...
-   ...     for viewer in viewers:
-   ...         viewer.plot()
+   ...     viewer.plot()
    ...
    ...     if step % levelSetUpdateFrequency == 0:
    ...         distanceVar.calcDistanceFunction()

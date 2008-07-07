@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 6/24/08 {8:06:04 AM} { 1:23:41 PM}
+ #                                last update: 7/7/08 {2:56:10 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -307,13 +307,11 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage')
         except:
-            viewers = (
+            viewer = MultiViewer(viewers=(
                 Viewer(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-                Viewer(catalystVar.getInterfaceVar()))
-    else:
-        viewers = ()
+                Viewer(catalystVar.getInterfaceVar())))
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
@@ -321,8 +319,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     for step in range(numberOfSteps):
 
         if step % 5 == 0:
-            for viewer in viewers:
-                viewer.plot()
+            viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction()
