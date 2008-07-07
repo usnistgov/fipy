@@ -1,9 +1,8 @@
 __docformat__ = 'restructuredtext'
 
 from mayaviViewer import MayaviViewer
-from mayaviSurfactantViewer import MayaviSurfactantViewer
 
-__all__ = ["MayaviViewer", "MayaviSurfactantViewer"]
+__all__ = ["MayaviViewer"]
 
 def make(*args, **kwargs):
     import warnings

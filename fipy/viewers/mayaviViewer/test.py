@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:47:09 PM} 
+ #                                last update: 7/7/08 {2:44:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,8 +48,7 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportDocTestSuite(interactiveDocTestModuleNames=(
         'mayaviViewer',
-        'mayaviSurfactantViewer',
-        ), base = __name__)
+    ), base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
