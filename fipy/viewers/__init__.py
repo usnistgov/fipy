@@ -76,6 +76,7 @@ def Viewer(vars, title = None, limits = None):
         FIPY_VIEWER = None
 
     if FIPY_VIEWER == "dummy":
+        from viewer import _Viewer
         return _Viewer(vars=vars)
 
     errors = []
