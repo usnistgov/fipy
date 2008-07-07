@@ -336,6 +336,8 @@ fipy/models/levelSet/electroChem/test.py
 fipy/models/levelSet/surfactant/__init__.py
 fipy/models/levelSet/surfactant/adsorbingSurfactantEquation.py
 fipy/models/levelSet/surfactant/convectionCoeff.py
+fipy/models/levelSet/surfactant/matplotlibSurfactantViewer.py
+fipy/models/levelSet/surfactant/mayaviSurfactantViewer.py
 fipy/models/levelSet/surfactant/surfactantBulkDiffusionEquation.py
 fipy/models/levelSet/surfactant/surfactantEquation.py
 fipy/models/levelSet/surfactant/surfactantVariable.py
@@ -484,7 +486,6 @@ fipy/viewers/matplotlibViewer/matplotlibViewer.py
 fipy/viewers/matplotlibViewer/test.py
 fipy/viewers/mayaviViewer/__init__.py
 fipy/viewers/mayaviViewer/lines.py
-fipy/viewers/mayaviViewer/mayaviSurfactantViewer.py
 fipy/viewers/mayaviViewer/mayaviViewer.py
 fipy/viewers/mayaviViewer/test.py
 utils/__init__.py

@@ -43,7 +43,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import _MatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
 
 class MatplotlibSurfactantViewer(_MatplotlibViewer):
     
