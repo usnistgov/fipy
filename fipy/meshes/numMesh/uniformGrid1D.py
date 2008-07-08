@@ -258,6 +258,33 @@ class UniformGrid1D(Grid1D):
     def _calcScaledGeometry(self):
         pass
 
+    def _getNearestCellID(self, points):
+        """
+        Test cases
+
+           >>> from fipy import *
+           >>> m = Grid1D(nx=3)
+           >>> print m._getNearestCellID(([0., .9, 3.],))
+           [0 0 2]
+           >>> print m._getNearestCellID(([1.1],))
+           [1]
+           >>> m0 = Grid1D(nx=2, dx=1.)
+           >>> m1 = Grid1D(nx=4, dx=.5)
+           >>> print m0._getNearestCellID(m1.getCellCenters())
+           [0 0 1 1]
+           
+        """
+        x0, = self.getCellCenters()[...,0]        
+        xi, = points
+        nx, = self.getShape()
+        dx = self.dx
+        
+        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i[i < 0] = 0
+        i[i > nx - 1] = nx - 1
+
+        return i
+
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

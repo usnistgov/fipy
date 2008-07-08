@@ -468,6 +468,26 @@ class UniformGrid3D(Grid3D):
     
     def _calcScaledGeometry(self):
         pass
+    
+    def _getNearestCellID(self, points):
+        x0, y0, z0 = self.getCellCenters()[...,0]        
+        xi, yi, zi = points
+        nx, ny, nz = self.getShape()
+        dx, dy, dz = self.dx, self.dy, self.dz
+        
+        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i[i < 0] = 0
+        i[i > nx - 1] = nx - 1
+
+        j = numerix.array(numerix.rint(((yi - y0) / dy)), 'l')
+        j[j < 0] = 0
+        j[j > ny - 1]  = ny - 1
+
+        k = numerix.array(numerix.rint(((zi - z0) / dz)), 'l')
+        k[k < 0] = 0
+        k[k > nz - 1]  = nz - 1
+        
+        return k * ny * nx + j * nx + i
         
     def _test(self):
         """
