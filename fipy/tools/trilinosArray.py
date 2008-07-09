@@ -9,16 +9,18 @@ V = 1
 class trilArr:
 
     def __init__(self, shp=None, eMap=None, dType='l', \
-                 parallel=True, vector=None):
+                 parallel=True, array=None):
 
         import operator
-        if not operator.xor(shp is None, vector is None):
+        if not operator.xor(shp is None, array is None):
             print "FAIL: Must specify either shape or vector."
 
         if shp is not None:
             self.shape = trilShape(shp)
+        elif array is not None:
+            self.shape  = trilShape(numpy.array(array).shape)
 
-        if vector is None:
+        if array is None or str(type(array)).count("Epetra") == 0:
             
             if eMap is not None:
                 
@@ -31,58 +33,76 @@ class trilArr:
                 self.comm = Epetra.PyComm()
 
                 if not parallel:
-
-                    self.eMap = None
-
-                    if dType=='l':
-
-                        self.vector = Epetra.IntVector(NUMERIX.zeros(shp,dType))
-                        self.vtype = IV
-
-                    if dType=='f':
-
-                        self.vector = Epetra.Vector(NUMERIX.zeros(shp,dType))
-                        self.vtype = V
-
+                    if array is None:
+                        self.eMap = None
+    
+                        if dType=='l':
+                            self.vector = Epetra.IntVector(NUMERIX.zeros(shp,dType))
+                            self.vtype = IV
+    
+                        elif dType=='f':
+    
+                            self.vector = Epetra.Vector(NUMERIX.zeros(shp,dType))
+                            self.vtype = V
+                    else:
+                        tmpArray = numpy.array(array).reshape([-1])
+                        if dType=='l':
+                            self.vector = Epetra.IntVector(tmpArray)
+                            self.vtype = IV
+                        elif dType=='f':
+                            self.vector = Epetra.Vector(tmpArray)
+                            self.vtype = V
+                             
                 elif parallel:
 
                     self.eMap = Epetra.Map(self.shape.getSize(),0,self.comm)
                     self.shape.setMap(self.eMap)
 
             if not hasattr(self, "vector"):
-                if dType == 'l':
-
-                    self.vector = Epetra.IntVector(self.eMap)
-                    self.vtype = IV
-
-                if dType == 'f':
-
-                    self.vector = Epetra.Vector(self.eMap)
-                    self.vtype = V
-
+                if array is None:
+                    if dType == 'l':
+    
+                        self.vector = Epetra.IntVector(self.eMap)
+                        self.vtype = IV
+    
+                    if dType == 'f':
+    
+                        self.vector = Epetra.Vector(self.eMap)
+                        self.vtype = V
+                else:
+                    tmpArray = numpy.array(array).reshape([-1])
+                    if dType == 'l':
+                        self.vector = Epetra.IntVector(self.eMap,tmpArray)
+                        self.vtype = IV
+                    if dType == 'f':
+                        self.vector = Epetra.Vector(self.eMap,tmpArray)
+                        self.vtype = V
+                        
             self.dtype = dType
 
-        elif vector is not None:
-
-            self.vector = vector.copy()
-            self.comm = vector.Comm()
-            self.eMap = vector.Map()
+        elif array is not None:
+            self.vector = array.copy()
+            self.comm = array.Comm()
+            self.eMap = array.Map()
             if self.eMap.NumMyElements() != self.eMap.NumGlobalElements():
-                self.shape = trilShape(vector.size)
+                self.shape = trilShape(array.size)
+                if shape is not None:
+                    self.shp.reshape(shp)
             else:
                 self.shape = trilShape(self.eMap.NumGlobalElements())
-
-            if isinstance(vector, Epetra.IntVector):
+                if shp is not None:
+                   self.shape.reshape(shp)
+            if isinstance(array, Epetra.IntVector):
 
                 self.vtype = IV
                 self.dtype = 'l'
                 
-            elif isinstance(vector, Epetra.Vector):
+            elif isinstance(array, Epetra.Vector):
 
                 self.vtype = V
                 self.dtype = 'f'
-
         self.array = self.vector.array
+                
 
     def fillWith(self, value):
         
@@ -251,7 +271,7 @@ class trilArr:
     def __str__(self):
         # this should operate in accordance with the new shapemap method
         if self.comm.NumProc() == 1:
-            return self._makeArray().__str__()+")"
+            return self._makeArray().__str__()
         else:
             return self.vector.__str__()
 
@@ -272,7 +292,7 @@ class trilShape:
         if eMap is not None:
             self.map = eMap
 
-    def setMap(eMap):
+    def setMap(self,eMap):
         if isinstance(eMap,Epetra.Map) or isinstance(eMap,Epetra.BlockMap):
             self.map = eMap
         else:
@@ -348,5 +368,6 @@ class trilShape:
 
         return 1
     
+
 def isTrilArray(obj):
     return isinstance(obj, trilArr)
