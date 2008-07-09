@@ -6,31 +6,25 @@ import numpy
 IV = 0
 V = 1
 
-# imposed shape needs:
-# translate functions: imposed --> actual, local --> global (inc. axis?)
-# string translate function
-# reshaping
-# _indexShape
-
-# the shape attribute of a trilArr is a global imposed shape.  it does
-# NOT reflect the actual shape of the array.
-
 class trilArr:
 
     def __init__(self, shp=None, eMap=None, dType='l', \
                  parallel=True, vector=None):
-        # should deal with imposed shape if len(shape)>2
 
-        self.shape = trilShape(shp)
+        import operator
+        if not operator.xor(shp is None, vector is None):
+            print "FAIL: Must specify either shape or vector."
+
+        if shp is not None:
+            self.shape = trilShape(shp)
 
         if vector is None:
-        
-            self.shape = shape
             
             if eMap is not None:
                 
                 self.comm = eMap.Comm()
                 self.eMap = eMap
+                self.shape.setMap(self.eMap)
 
             if eMap is None:
 
@@ -42,26 +36,18 @@ class trilArr:
 
                     if dType=='l':
 
-                        self.vector = Epetra.IntVector(NUMERIX.zeros(shape,dType))
+                        self.vector = Epetra.IntVector(NUMERIX.zeros(shp,dType))
                         self.vtype = IV
 
                     if dType=='f':
 
-                        self.vector = Epetra.Vector(NUMERIX.zeros(shape,dType))
+                        self.vector = Epetra.Vector(NUMERIX.zeros(shp,dType))
                         self.vtype = V
 
                 elif parallel:
 
-                    if type(shape)==int:
-
-                        self.eMap = Epetra.Map(shape,0,self.comm)
-                        
-                    elif type(shape)==tuple or type(shape)==list:
-
-                        totSize = 1
-                        for i in range(len(shape)):
-                            totSize *= shape[i]
-                        self.eMap = Epetra.Map(totSize,0,self.comm)
+                    self.eMap = Epetra.Map(self.shape.getSize(),0,self.comm)
+                    self.shape.setMap(self.eMap)
 
             if not hasattr(self, "vector"):
                 if dType == 'l':
@@ -82,6 +68,7 @@ class trilArr:
             self.comm = vector.Comm()
             self.eMap = vector.Map()
             self.shape = vector.shape
+            
             # may need to be updated on account of shapemap
 
             if isinstance(vector, Epetra.IntVector):
@@ -118,7 +105,7 @@ class trilArr:
             elms = list(self.eMap.MyGlobalElements())
             rowlen = self.eMap.NumGlobalElements()
             mylen = self.eMap.NumMyElements()
-            values = [v for (i,v) in zip(ids,values) if elms.count(i%rowlen)>0]
+            values = [v for (i,v) in zip(ids,values) if elms.count(i)>0]
             ids = [i/rowlen*mylen+self.eMap.LID(i%rowlen) for i in ids if elms.count(i%rowlen)>0]
         numpy.put(self.array, ids, values)
 
@@ -224,9 +211,6 @@ class trilArr:
         return allEls
 
     def localTake(self, ids):
-
-        # this should operate in accordance with the new shapemap method
-
         pid = self.comm.MyPID()
         glob = self.eMap.MyGlobalElements()
         indices = numpy.array(indices)
@@ -235,17 +219,14 @@ class trilArr:
         myIDs = [m.LID(el) for el in indices if list(glob).count(el)>=1]
         return self[myIDs]
 
-
-
     def reshape(self, shape):
-        
-        self.shape = shape
+        return self.shape.reshape(shape)
 
     def getShape(self):
-        return self.shape
+        return self.shape.getShape()
 
     def getRank(self):
-        return len(self.shape)
+        return self.shape.getRank()
     
     def __setitem__(self, i, y):
         # should operate in accordance with shapemap
@@ -288,6 +269,9 @@ class trilShape:
     def getRank(self):
         return self.dimensions
 
+    def getSize(self):
+        return self.actualShape
+
     def getGlobalIndex(self, index):
         return shape._globalTranslateShape(index)
 
@@ -321,7 +305,7 @@ class trilShape:
             size = shape[0]
             for i in range(self.dimensions)[1:]:
                 size*=shape[i]
-        elif type(shape)==int:
+        else:
             size = shape
         return size
 
