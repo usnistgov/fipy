@@ -300,11 +300,8 @@ class trilShape:
         if eMap is not None:
             self.map = eMap
 
-<<<<<<< .mine
     def setMap(self, eMap):
-=======
-    def setMap(self,eMap):
->>>>>>> .r2652
+        
         if isinstance(eMap,Epetra.Map) or isinstance(eMap,Epetra.BlockMap):
             self.map = eMap
         else:
