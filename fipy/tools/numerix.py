@@ -10,6 +10,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Olivia Buzek   <olivia.buzek@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -69,6 +70,8 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 
 __docformat__ = 'restructuredtext'
 
+useTril = False
+
 import numpy as NUMERIX
 from numpy.core import umath
 from numpy import newaxis as NewAxis
@@ -82,12 +85,21 @@ except ImportError:
     from numpy import ma as MA
     numpy_version = 'new'
 
-def zeros(a, t='l'):
-    return NUMERIX.zeros(a, t)
-def ones(a, t='l'):
-    return NUMERIX.ones(a, t)
+if useTril:
+    import trilinosArray as TRIL
 
-    
+def zeros(a, t='l'):
+    if useTril:
+        return TRIL.trilArr(shape=a, dType=t)
+    else:
+        return NUMERIX.zeros(a, t)
+def ones(a, t='l'):
+    if useTril:
+        arr = TRIL.trilArr(shape=a, dType=t)
+        arr.fillWith(1)
+        return arr
+    else:
+        return NUMERIX.ones(a, t)
 
 def _isPhysical(arr):
     """
@@ -144,6 +156,8 @@ def put(arr, ids, values):
             MA.put(arr, ids, values)
     elif MA.isMaskedArray(ids):
         NUMERIX.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+    elif TRIL.isTrilArray(arr):
+        arr.put(ids, values)
     else:
         NUMERIX.put(arr, ids, values)
         
@@ -995,7 +1009,6 @@ def sqrtDot(a1, a2):
     return inline._optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
 
 def _sqrtDotPy(a1, a2):
-
     return sqrt(dot(a1, a2))
 
 ##def _sqrtDotIn(a1, a2):
