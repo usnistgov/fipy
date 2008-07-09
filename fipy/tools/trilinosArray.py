@@ -67,9 +67,10 @@ class trilArr:
             self.vector = vector.copy()
             self.comm = vector.Comm()
             self.eMap = vector.Map()
-            self.shape = vector.shape
-            
-            # may need to be updated on account of shapemap
+            if self.eMap.NumMyElements() != self.eMap.NumGlobalElements():
+                self.shape = trilShape(vector.size)
+            else:
+                self.shape = trilShape(self.eMap.NumGlobalElements())
 
             if isinstance(vector, Epetra.IntVector):
 
@@ -240,17 +241,20 @@ class trilArr:
 
     def __repr__(self):
         # this should operate in accordance with the new shapemap method
-        if self.comm.NumProc() == 0:
-            return "trilArr("+self.shape._makeArray(self.array,self.dType).__str__()+")"
+        if self.comm.NumProc() == 1:
+            return "trilArr("+self._makeArray().__str__()+")"
         else:
             return "trilArr("+self.vector.array.__repr__()+")"
 
     def __str__(self):
         # this should operate in accordance with the new shapemap method
         if self.comm.NumProc() == 0:
-            return self.shape._makeArray(self.array,self.dType).__str__()+")"
+            return self._makeArray().__str__()+")"
         else:
             return self.vector.__str__()
+
+    def _makeArray(self):
+	return self.array.reshape(self.shape.getGlobalShape())
 
     def __or__(self, other):
 
@@ -259,6 +263,7 @@ class trilArr:
 class trilShape:
 
     def __init__(self, shape, eMap=None):
+        shape = self._shapeCheck(shape)
         self.globalShape = shape
         self.dimensions = self._dimensions(shape)
         self.actualShape = self._size(shape)
@@ -266,7 +271,10 @@ class trilShape:
             self.map = eMap
 
     def setMap(eMap):
-        self.map = eMap
+        if isinstance(eMap,Epetra.Map) or isinstance(eMap,Epetra.BlockMap):
+            self.map = eMap
+        else:
+            print "FAIL: Must be an Epetra Map."
 
     def getGlobalShape(self):
         return self.globalShape
@@ -317,11 +325,17 @@ class trilShape:
     def _dimensions(self, shape):
         return len(shape)
 
-    def _makeArray(self,vec,dType):
-        n = numpy.zeros(self.shape,dType)
-        n.put(vec.take(range(self.actualShape)),range(self.actualShape))
+    def _shapeCheck(self, shape):
+        if type(shape)==int:
+            return (shape,)
+        if type(shape)==list:
+            return tuple(shape)
+        if type(shape)!=tuple:
+            print "FAIL: Shapes must be ints, lists, or tuples."
+        return shape
 
     def reshape(self, shape):
+        shape = self._shapeCheck(shape)
         if self.actualShape != self._size(shape):
             return -1
 
