@@ -87,9 +87,11 @@ class trilArr:
     def fillWith(self, value):
         
         if self.vtype==IV:
+            
             self.vector.PutValue(value)
             
         else:
+            
             self.vector.PutScalar(value)
 
     def put(self, ids, values):
@@ -316,7 +318,7 @@ class trilShape:
     def _size(self, shape):
         if type(shape)==tuple or type(shape)==list:
             size = shape[0]
-            for i in range(self.dimensions)[1:]:
+            for i in range(self._dimensions(shape))[1:]:
                 size*=shape[i]
         else:
             size = shape
@@ -337,6 +339,7 @@ class trilShape:
     def reshape(self, shape):
         shape = self._shapeCheck(shape)
         if self.actualShape != self._size(shape):
+            print "FAIL: New shape is differently sized from old shape."
             return -1
 
         self.globalShape = shape
