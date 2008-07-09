@@ -121,14 +121,10 @@ class trilArr:
 
         # this should operate in accordance with the new shapemap method
 
-        if type(values)==int:
-            values = [values]*len(ids)
-
         if self.eMap is not None:
             elms = list(self.eMap.MyGlobalElements())
-            rowlen = self.eMap.NumGlobalElements()
-            mylen = self.eMap.NumMyElements()
-            values = [v for (i,v) in zip(ids,values) if elms.count(i)>0]
+            if type(values) != int:
+                values = [v for (i,v) in zip(ids,values) if elms.count(i)>0]
             ids = [self.eMap.LID(i) for i in ids if elms.count(i)>0]
         numpy.put(self.array, ids, values)
 
@@ -144,64 +140,64 @@ class trilArr:
         else:
             res = f(self.array, optarg.array)    
         v = Epetra.Vector(self.eMap, res)
-        return trilArr(vector=v)
+        return trilArr(array=v)
 
     def arccos(self):
-        return _applyFloatFunction(self, numpy.arccos)
+        return self._applyFloatFunction(numpy.arccos)
 
     def arccosh(self):
-        return _applyFloatFunction(self, numpy.arccosh)
+        return self._applyFloatFunction(numpy.arccosh)
 
     def arcsin(self):
-        return _applyFloatFunction(self, numpy.arcsin)
+        return self._applyFloatFunction(numpy.arcsin)
 
     def arcsinh(self):
-        return _applyFloatFunction(self, numpy.arcsinh)
+        return self._applyFloatFunction(numpy.arcsinh)
 
     def arctan(self):
-        return _applyFloatFunction(self, numpy.arctan)
+        return self._applyFloatFunction(numpy.arctan)
 
     def arctanh(self):
-        return _applyFloatFunction(self, numpy.arctanh)
+        return self._applyFloatFunction(numpy.arctanh)
 
     def arctan2(self, other):
-        return _applyFloatFunction(self, numpy.arctan2, other)
+        return self._applyFloatFunction(numpy.arctan2, other)
 
     def cos(self):
-        return _applyFloatFunction(self, numpy.cos)
+        return self._applyFloatFunction(numpy.cos)
 
     def cosh(self):
-        return _applyFloatFunction(self, numpy.cosh)
+        return self._applyFloatFunction(numpy.cosh)
 
     def tan(self):
-        return _applyFloatFunction(self, numpy.tan)
+        return self._applyFloatFunction(numpy.tan)
 
     def tanh(self):
-        return _applyFloatFunction(self, numpy.tanh)
+        return self._applyFloatFunction(numpy.tanh)
 
     def log10(self):
-        return _applyFloatFunction(self, numpy.log10)
+        return self._applyFloatFunction(numpy.log10)
 
     def sin(self):
-        return _applyFloatFunction(self, numpy.sin)
+        return self._applyFloatFunction(numpy.sin)
 
     def sinh(self):
-        return _applyFloatFunction(self, numpy.sinh)
+        return self._applyFloatFunction(numpy.sinh)
 
     def floor(self):
-        return _applyFloatFunction(self, numpy.floor)
+        return self._applyFloatFunction(numpy.floor)
 
     def ceil(self):
-        return _applyFloatFunction(self, numpy.ceil)
+        return self._applyFloatFunction(numpy.ceil)
 
     def exp(self):
-        return _applyFloatFunction(self, numpy.exp)
+        return self._applyFloatFunction(numpy.exp)
         
     def log(self):
-        return _applyFloatFunction(self, numpy.log)
+        return self._applyFloatFunction(numpy.log)
         
     def conjugate(self):
-        return _applyFloatFunction(self, numpy.conjugate)
+        return self._applyFloatFunction(numpy.conjugate)
 
     def dot(self, other):
         return self.vector.Dot(other.vector)
@@ -209,10 +205,10 @@ class trilArr:
     def allequal(self, other):
         return numpy.sum(self.array == other.array) == numpy.size(self.array)
 
-    def allclose(self, other, rtol, atol):
+    def allclose(self, other, rtol=1.e-5, atol=1.e-8):
         if self.array.shape != other.array.shape:
             return False
-        return numpy.abs(self.array-other.array) < atol+rtol*numpy.abs(other.array)
+        return sum(1 - (numpy.abs(self.array-other.array) < atol+rtol*numpy.abs(other.array))) == 0
 
     def globalSum(self):
         return self.comm.SumAll(localSum(self))
