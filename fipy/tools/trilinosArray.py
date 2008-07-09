@@ -109,7 +109,7 @@ class trilArr:
             rowlen = self.eMap.NumGlobalElements()
             mylen = self.eMap.NumMyElements()
             values = [v for (i,v) in zip(ids,values) if elms.count(i)>0]
-            ids = [i/rowlen*mylen+self.eMap.LID(i%rowlen) for i in ids if elms.count(i%rowlen)>0]
+            ids = [self.eMap.LID(i) for i in ids if elms.count(i)>0]
         numpy.put(self.array, ids, values)
 
     def getValues(self, ids):
@@ -250,7 +250,7 @@ class trilArr:
 
     def __str__(self):
         # this should operate in accordance with the new shapemap method
-        if self.comm.NumProc() == 0:
+        if self.comm.NumProc() == 1:
             return self._makeArray().__str__()+")"
         else:
             return self.vector.__str__()
@@ -348,6 +348,5 @@ class trilShape:
 
         return 1
     
-
 def isTrilArray(obj):
     return isinstance(obj, trilArr)
