@@ -240,12 +240,17 @@ class trilArr:
 
     def __repr__(self):
         # this should operate in accordance with the new shapemap method
-
-        return self.vector.__repr__()
+        if self.comm.NumProc() == 0:
+            return "trilArr("+self.shape._makeArray(self.array,self.dType).__str__()+")"
+        else:
+            return "trilArr("+self.vector.array.__repr__()+")"
 
     def __str__(self):
         # this should operate in accordance with the new shapemap method
-        return self.vector.__str__()
+        if self.comm.NumProc() == 0:
+            return self.shape._makeArray(self.array,self.dType).__str__()+")"
+        else:
+            return self.vector.__str__()
 
     def __or__(self, other):
 
@@ -311,6 +316,10 @@ class trilShape:
 
     def _dimensions(self, shape):
         return len(shape)
+
+    def _makeArray(self,vec,dType):
+        n = numpy.zeros(self.shape,dType)
+        n.put(vec.take(range(self.actualShape)),range(self.actualShape))
 
     def reshape(self, shape):
         if self.actualShape != self._size(shape):
