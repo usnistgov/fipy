@@ -247,11 +247,11 @@ class trilArr:
     def getRank(self):
         return self.shape.getRank()
 
-    def __setslice__(self, i, j):
-        pass
+    def __setslice__(self, i, j, y):
+        self.__setitem__(slice(i,j,None),y)
 
     def __getslice__(self, i, j):
-        pass
+        self.__getitem__(slice(i,j,None))
     
     def __setitem__(self, i, y):
         # should operate in accordance with shapemap
@@ -313,7 +313,7 @@ class trilShape:
         return self.actualShape
 
     def getGlobalIndex(self, index):
-        return self._globalTranslateIndex(index)
+        return self._globalTranslateIndices(index)
 
     def getLocalIndex(self, index):
         ind = self.getGlobalIndex(index)
@@ -323,8 +323,24 @@ class trilShape:
         if self.map is None:
             return -1
         return self.map.LID(i)
+
+    def _intToSlice(self, i):
+        return slice(i,i+1,None)
     
-    def _globalTranslateIndex(self, index):
+    def _globalTranslateIndices(self, index):
+
+##  ******vaguely borked code, will be fixed ******
+##         if type(index)==int:
+##             index=[self._intToSlice(index)]
+##         elif type(index)==tuple or type(index)==list:
+##             while type(index)!=int and len(index)==1:
+##                 index=index[0]
+##             if type(index)==int:
+##                 index=[_intToSlice(index)]
+##             else:
+                
+
+#        if self._dimensions(index)
 
         if self._dimensions(index) != self.dimensions:
             return -1
