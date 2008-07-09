@@ -250,26 +250,34 @@ class trilArr:
 
     def getRank(self):
         return self.shape.getRank()
+
+    def __setslice__(self, i, j):
+        pass
+
+    def __getslice__(self, i, j):
+        pass
     
     def __setitem__(self, i, y):
         # should operate in accordance with shapemap
+        print i,"!",y
+        i = self.shape.getLocalIndex(i)
         self.vector.__setitem__(i, y)
 
     def __getitem__(self, y):
         # should operate in accordance with shapemap
+        print y
+        y = self.shape.getLocalIndex(y)
         return self.vector.__getitem__(y)
 
     # needs proper iterator
 
     def __repr__(self):
-        # this should operate in accordance with the new shapemap method
         if self.comm.NumProc() == 1:
-            return "trilArr("+self._makeArray().__str__()+")"
+            return "trilArr("+self._makeArray().__repr__()[6:-1]+")"
         else:
             return "trilArr("+self.vector.array.__repr__()+")"
 
     def __str__(self):
-        # this should operate in accordance with the new shapemap method
         if self.comm.NumProc() == 1:
             return self._makeArray().__str__()
         else:
@@ -292,7 +300,11 @@ class trilShape:
         if eMap is not None:
             self.map = eMap
 
+<<<<<<< .mine
+    def setMap(self, eMap):
+=======
     def setMap(self,eMap):
+>>>>>>> .r2652
         if isinstance(eMap,Epetra.Map) or isinstance(eMap,Epetra.BlockMap):
             self.map = eMap
         else:
@@ -308,7 +320,7 @@ class trilShape:
         return self.actualShape
 
     def getGlobalIndex(self, index):
-        return shape._globalTranslateShape(index)
+        return self._globalTranslateIndex(index)
 
     def getLocalIndex(self, index):
         ind = self.getGlobalIndex(index)
@@ -319,11 +331,11 @@ class trilShape:
             return -1
         return self.map.LID(i)
     
-    def _globalTranslateShape(self, index):
+    def _globalTranslateIndex(self, index):
 
         if self._dimensions(index) != self.dimensions:
             return -1
-        elif sum([i<j for (i,j) in zip(index,self.globalShape)]):
+        elif not sum([i<j for (i,j) in zip(index,self.globalShape)]):
             return -2
         
         mult = 1
@@ -334,6 +346,10 @@ class trilShape:
             mult *= self.globalShape[-i]
 
         return lineIndex
+
+    def _globalTranslateSlice(self, sl):
+        
+        pass
 
     def _size(self, shape):
         if type(shape)==tuple or type(shape)==list:
@@ -367,6 +383,12 @@ class trilShape:
         self.dimensions = self._dimensions(shape)
 
         return 1
+
+    def __str__(self):
+        return self.globalShape.__str__()
+
+    def __repr__(self):
+        return self.globalShape.__repr__()
     
 
 def isTrilArray(obj):
