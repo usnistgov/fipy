@@ -17,9 +17,11 @@ V = 1
 
 class trilArr:
 
-    def __init__(self, shape=None, eMap=None, dType='l', \
+    def __init__(self, shp=None, eMap=None, dType='l', \
                  parallel=True, vector=None):
         # should deal with imposed shape if len(shape)>2
+
+        self.shape = trilShape(shp)
 
         if vector is None:
         
@@ -233,13 +235,7 @@ class trilArr:
         myIDs = [m.LID(el) for el in indices if list(glob).count(el)>=1]
         return self[myIDs]
 
-    def _nDshapeTo1Dshape(shape):
-        mult = 1
-        linInd = 0
 
-        for i in range(len(shape)+1)[1:]:
-            linInd += mult*ind[-i]
-            mult *= shape[-i]
 
     def reshape(self, shape):
         
@@ -273,6 +269,75 @@ class trilArr:
     def __or__(self, other):
 
         return self.array | other.array
+
+class trilShape:
+
+    def __init__(self, shape, eMap=None):
+        self.globalShape = shape
+        self.dimensions = self._dimensions(shape)
+        self.actualShape = self._size(shape)
+        if eMap is not None:
+            self.map = eMap
+
+    def setMap(eMap):
+        self.map = eMap
+
+    def getGlobalShape(self):
+        return self.globalShape
+
+    def getRank(self):
+        return self.dimensions
+
+    def getGlobalIndex(self, index):
+        return shape._globalTranslateShape(index)
+
+    def getLocalIndex(self, index):
+        ind = self.getGlobalIndex(index)
+        return self._globalToLocal(ind)
+
+    def _globalToLocal(self, i):
+        if self.map is None:
+            return -1
+        return self.map.LID(i)
+    
+    def _globalTranslateShape(self, index):
+
+        if self._dimensions(index) != self.dimensions:
+            return -1
+        elif sum([i<j for (i,j) in zip(index,self.globalShape)]):
+            return -2
+        
+        mult = 1
+        lineIndex = 0
+
+        for i in range(len(self.globalShape)+1)[1:]:
+            lineIndex += mult*index[-i]
+            mult *= self.globalShape[-i]
+
+        return lineIndex
+
+    def _size(self, shape):
+        if type(shape)==tuple or type(shape)==list:
+            size = shape[0]
+            for i in range(self.dimensions)[1:]:
+                size*=shape[i]
+        elif type(shape)==int:
+            size = shape
+        return size
+
+    def _dimensions(self, shape):
+        return len(shape)
+
+    def reshape(self, shape):
+        if self.actualShape != self._size(shape):
+            return -1
+
+        self.globalShape = shape
+        self.actualShape = self._size(shape)
+        self.dimensions = self._dimensions(shape)
+
+        return 1
+    
 
 def isTrilArray(obj):
     return isinstance(obj, trilArr)
