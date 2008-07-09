@@ -4,8 +4,7 @@ from PyTrilinos import Epetra
 import numpy
 
 IV = 0
-MV = 1
-V = 2
+V = 1
 
 # imposed shape needs:
 # translate functions: imposed --> actual, local --> global (inc. axis?)
@@ -57,14 +56,10 @@ class trilArr:
                         
                     elif type(shape)==tuple or type(shape)==list:
 
-                        if len(shape)>1:
-
-                            self.eMap = Epetra.BlockMap(shape[1],1, 0, self.comm)
-                            self.vector = Epetra.MultiVector(self.eMap,shape[0])
-                            self.vtype = MV
-
-                        else:
-                            self.eMap = Epetra.Map(shape[0],0,self.comm)
+                        totSize = 1
+                        for i in range(len(shape)):
+                            totSize *= shape[i]
+                        self.eMap = Epetra.Map(totSize,0,self.comm)
 
             if not hasattr(self, "vector"):
                 if dType == 'l':
@@ -95,11 +90,6 @@ class trilArr:
             elif isinstance(vector, Epetra.Vector):
 
                 self.vtype = V
-                self.dtype = 'f'
-
-            elif isinstance(vector, Epetra.MultiVector):
-
-                self.vtype = MV
                 self.dtype = 'f'
 
         self.array = self.vector.array
@@ -140,16 +130,8 @@ class trilArr:
         if optarg is None:
             res = f(self.array)
         else:
-            res = f(self.array, optarg.array)
-
-        if self.vtype==IV or self.vtype==V:
-            
-            v = Epetra.Vector(self.eMap, res)
-
-        elif self.vtype==MV:
-
-            v = Epetra.MultiVector(self.eMap, res)
-
+            res = f(self.array, optarg.array)    
+        v = Epetra.Vector(self.eMap, res)
         return trilArr(vector=v)
 
     def arccos(self):
