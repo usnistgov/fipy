@@ -176,12 +176,7 @@ class trilArr:
         numpy.put(self.array, ids, values)
 
     def take(self,ids):
-        self.getValues(ids)
-
-    def getValues(self, ids):
-
-        idee = [self.eMap.LID(i) for i in ids if list(self.eMap.MyGlobalElements()).count(i)>0]
-        return self.vector[idee]
+        self.globalTake(ids)
 
     def _applyFloatFunction(self, f, optarg=None):
 
@@ -294,8 +289,18 @@ class trilArr:
         print "My IDs",self[myIDs]
         return self[myIDs]
 
-    def reshape(self, shape):
-        return self.shp.reshape(shape)
+    def reshape(self, shape, copy=False):
+        ## reshape checks need to be done
+        ## before a copy is made
+        if self.shp._shapeCheck(shape) is None:
+            return
+        if copy:
+            newArr = self.__copy__()
+            shp = newArr.shp
+        else:
+            shp = self.shp
+
+        shp.reshape(shape)
 
     def getShape(self):
         return self.shp.getShape()
@@ -344,6 +349,9 @@ class trilArr:
         # should operate in accordance with shapemap
         y = self.shp.getLocalIndex(y)
         return self.vector.__getitem__(y)
+
+    def __copy__(self):
+        
 
     # needs proper iterator
 
@@ -414,35 +422,57 @@ class trilShape:
         return self.map.LID(i)
 
     def _intToSlice(self, i):
-        return slice(i,i+1,None)
+        if type(i)==slice:
+            return i
+        else:
+            return slice(i,i+1,None)
+
+    def _fillToDim(self, i):
+        i = list[i]
+        while len(i)<self.dimensions:
+            i.append(slice(None,None,None))
+        return tuple(i)
     
     def _globalTranslateIndices(self, index):
 
-##  ******vaguely borked code, will be fixed ******
-##         if type(index)==int:
-##             index=[self._intToSlice(index)]
-##         elif type(index)==tuple or type(index)==list:
-##             while type(index)!=int and len(index)==1:
-##                 index=index[0]
-##             if type(index)==int:
-##                 index=[_intToSlice(index)]
-##             else:
-                   
+        if type(index)==int:
+            index=[self._intToSlice(index)]
+        elif type(index)==tuple or type(index)==list:
+            if type(index[0])!=int and type(index[0])!=slice:
+                while type(index)!=int and len(index)==1:
+                    index=index[0]
+                if type(index)==int:
+                    index=[self._intToSlice(index)]
+                elif len(index)<=self.dimensions:
+                    index = [[i[el] for i in index] for el in range(len(i))]
+            else:
+                index = [tuple(index)]
+        index = [self._fillToDim(i) for i in index]
 
-#        if self._dimensions(index)
+        index = [el for el in self._globalTranslateSlices(i) for i in index]
 
-        if not sum([i<j for (i,j) in zip(index,self.globalShape)]):
-            return -1
+        indices = []
+        for ind in index:
+            if self._dimensions(ind)!=self.dimensions:
+                return -1
+            if not sum([i<j for (i,j) in zip(ind,self.globalShape)]):
+                return -2
         
-        lineIndex = 0
-        for mult in self.steps:
-            lineIndex += mult*index[-i]
+            lineIndex = 0
+            for mult in self.steps:
+                lineIndex += mult*index[-i]
 
-        return lineIndex
+            indices.append(lineIndex)
 
-    def _globalTranslateSlice(self, sl):
-        
-        pass
+        return indices
+
+    def _globalTranslateSlices(self, sls):
+        for (el,i) in zip(sls,range(len(sls))):
+            if type(el)==int:
+                sls[i]=self._intToSlice(el)
+        dims = [range(i) for i in self.globalShape]
+        res = [tuple(dim[sl]) for (sl,dim) in zip(sls,dims)]
+        ## bork bork bork ##
 
     def _size(self, shape):
         if type(shape)==tuple or type(shape)==list:
@@ -458,17 +488,20 @@ class trilShape:
 
     def _shapeCheck(self, shape):
         if type(shape)==int:
-            return (shape,)
+            shape = (shape,)
         if type(shape)==list:
-            return tuple(shape)
+            shape = tuple(shape)
         if type(shape)!=tuple:
             print "FAIL: Shapes must be ints, lists, or tuples."
+            return None
+        if self.actualShape != self._size(shape):
+            print "FAIL: New shape is differently sized from old shape."
+            return None
         return shape
 
     def reshape(self, shape):
         shape = self._shapeCheck(shape)
-        if self.actualShape != self._size(shape):
-            print "FAIL: New shape is differently sized from old shape."
+        if shape is None:
             return -1
 
         self.globalShape = shape
