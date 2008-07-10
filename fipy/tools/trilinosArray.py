@@ -1,5 +1,42 @@
 #!/usr/bin/env python
 
+## -*-Pyth-*-
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
+ # 
+ #  FILE: "trilinosArray.py"
+ #                                    created: 7/3/08 {10:23:17 AM} 
+ #                                last update: 7/10/08 {11:45:26 PM} 
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Olivia Buzek   <olivia.buzek@nist.gov>
+ #  Author: Daniel Stiles  <dastiles@nist.gov>
+ #    mail: NIST
+ #     www: http://www.ctcms.nist.gov/fipy/
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  FiPy is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ #  
+ # ###################################################################
+ ##
+ 
 __docformat__ = 'restructuredtext'
 
 import PyTrilinos
@@ -101,7 +138,7 @@ class trilArr:
             self.dtype = dType
 
         elif array is not None:
-            self.vector = array.copy()
+            self.vector = array
             self.comm = array.Comm()
             self.eMap = array.Map()
             self.shp.setMap(self.eMap)
@@ -168,8 +205,8 @@ class trilArr:
         Puts values into the array
 
         :Parameters:
-          - `ids`: Where to put in the values
-          - `values`: The values to put in.  If there are less than there are ids, loops through the list multiple times
+          - `ids`: Where to place the values
+          - `values`: The values to insert.  If there are less than there are ids, loops through the list multiple times
 
             >>> t = trilArr(shape=(4,))
             >>> t.put([0],[5])
@@ -179,10 +216,17 @@ class trilArr:
             >>> t.allElems()
             trilArr([5, 7, 8, 7])
         """
+
+        ## docstring is wrong
+        ## it shouldn't use a value in values more than once unless
+        ## it's just an int / float
+        ## floats aren't taken into account
         if self.eMap is not None:
             elms = list(self.eMap.MyGlobalElements())
             if type(values) != int:
                 values = [v for (i,v) in zip(ids,values) if elms.count(i)>0]
+                if len(values) != len(ids):
+                    return # this is fail
             ids = [self.eMap.LID(i) for i in ids if list(elms).count(i)>0]
         numpy.put(self.array, ids, values)
 
@@ -197,7 +241,39 @@ class trilArr:
             >>> t.take([1,2])
             [2,3]
          """
-        self.globalTake(ids)
+        return self.globalTake(ids)
+
+    def globalTake(self, ids):
+        els = self.localTake(ids)
+        shape = numpy.array(ids).shape
+        if els is None:
+            els == []
+        els = type(els) == numpy.int32 and [els] or list(els)
+        locsize = len(els)
+        maxsize = self.comm.MaxAll(locsize)
+        sizes = self.comm.GatherAll(locsize)
+        procs = self.comm.NumProc()
+        while locsize<maxsize:
+            els.append(-1)
+            locsize=len(els)
+        allEls = self.comm.GatherAll(els)
+        allEls = [l for (el,proc) in zip(allEls,range(procs)) \
+                  for (l,pos) in zip(el,range(sizes[proc]))]
+        allEls = numpy.array(allEls).reshape(shape)
+        return allEls
+
+    def localTake(self, ids):
+        indices = numpy.array(ids)
+        indices = indices.reshape(-1)
+        glob = self.eMap.MyGlobalElements()
+        num = self.eMap.NumGlobalElements()
+        for (ind,i) in zip(indices,range(len(indices))):
+            if ind<0:
+                indices[i] = ind+num
+        myIDs = [self.eMap.LID(el) for el in indices \
+                 if list(glob).count(el)>=1]
+        if myIDs == []: return []
+        return self.vector[myIDs]
 
     def _applyFloatFunction(self, f, optarg=None):
         """
@@ -344,34 +420,6 @@ class trilArr:
     def localSum(self):
         return numpy.sum(self.array)
 
-    def globalTake(self, ids):
-        els = self.localTake(ids)
-        shape = numpy.array(ids).shape
-        if els is None:
-            els == []
-        els = type(els) == numpy.int32 and [els] or list(els)
-        locsize = len(els)
-        maxsize = self.comm.MaxAll(locsize)
-        sizes = self.comm.GatherAll(locsize)
-        procs = self.comm.NumProc()
-        while locsize<maxsize:
-            els.append(-1)
-            locsize=len(els)
-        allEls = self.comm.GatherAll(els)
-        allEls = [l for (el,proc) in zip(allEls,range(procs)) for (l,pos) in zip(el,range(sizes[proc]))]
-        allEls = numpy.array(allEls).reshape(shape)
-        return allEls
-
-    def localTake(self, ids):
-        pid = self.comm.MyPID()
-        glob = self.eMap.MyGlobalElements()
-        indices = numpy.array(ids)
-        indices = indices.reshape(-1)
-        myIDs = [el for el in indices if list(glob).count(el)>=1]
-        if myIDs == []: return []
-        print "My IDs",self[myIDs]
-        return self[myIDs]
-
     def reshape(self, shape, copy=False):
         ## reshape checks need to be done
         ## before a copy is made
@@ -421,7 +469,7 @@ class trilArr:
         self.__setitem__(slice(i,j,None),y)
 
     def __getslice__(self, i, j):
-        self.__getitem__(slice(i,j,None))
+        return self.__getitem__(slice(i,j,None))
     
     def __setitem__(self, i, y):
         # should operate in accordance with shapemap
@@ -431,7 +479,10 @@ class trilArr:
     def __getitem__(self, y):
         # should operate in accordance with shapemap
         y = self.shp.getLocalIndex(y)
-        return self.vector.__getitem__(y)
+        a = self.vector.__getitem__(y)
+        if len(a)==1:
+            return a[0]
+        return trilArr(array = a)
 
     def __copy__(self):
         pass
@@ -449,6 +500,9 @@ class trilArr:
             return self._makeArray().__str__()
         else:
             return self.vector.__str__()
+
+    def __len__(self):
+        return self.shp.globalShape[0]
 
     def _makeArray(self):
 	return self.array.reshape(self.shp.getGlobalShape())
@@ -472,6 +526,7 @@ class trilShape:
         for i in range(len(self.globalShape)+1)[1:]:
             tmp.append(mult)
             mult *= self.globalShape[-i]
+        tmp.reverse()
         self.steps = tuple(tmp)
 
     def setMap(self, eMap):
@@ -503,7 +558,10 @@ class trilShape:
     def _globalToLocal(self, i):
         if self.map is None:
             return -1
-        return self.map.LID(i)
+        if type(i)==int:
+            return self.map.LID(i)
+        else:
+            return [self.map.LID(j) for j in i]
 
     def _intToSlice(self, i):
         if type(i)==slice:
@@ -512,46 +570,50 @@ class trilShape:
             return slice(i,i+1,None)
 
     def _fillToDim(self, i):
-        i = list[i]
+        i = list(i)
         while len(i)<self.dimensions:
             i.append(slice(None,None,None))
         return tuple(i)
     
     def _globalTranslateIndices(self, index):
-
         if type(index)==int:
-            index=[self._intToSlice(index)]
+            index=[(self._intToSlice(index),)]
+        elif type(index)==slice:
+            index=[(index,)]
         elif type(index)==tuple or type(index)==list:
             if type(index[0])!=int and type(index[0])!=slice:
                 while type(index)!=int and len(index)==1:
                     index=index[0]
+                print index
                 if type(index)==int:
-                    index=[self._intToSlice(index)]
+                    index=[(self._intToSlice(index),)]
                 elif len(index)<=self.dimensions:
                     index = [[i[el] for i in index] for el in range(len(i))]
             else:
                 index = [tuple(index)]
+
         index = [self._fillToDim(i) for i in index]
 
-        index = [el for el in self._globalTranslateSlices(i) for i in index]
+        index = [el for i in index for el in self._globalTranslateSlices(i)]
 
         indices = []
+
         for ind in index:
-            if self._dimensions(ind)!=self.dimensions:
+            if self._dimensions(ind)>self.dimensions:
                 return -1
             if not sum([i<j for (i,j) in zip(ind,self.globalShape)]):
                 return -2
-        
+
             lineIndex = 0
-            for mult in self.steps:
-                lineIndex += mult*index[-i]
+            for (mult,i) in zip(self.steps,range(len(ind))):
+                lineIndex += mult*ind[i]
 
             indices.append(lineIndex)
 
         return indices
 
     def _globalTranslateSlices(self, sls):
-        
+        sls = list(sls)
         for (el,i) in zip(sls,range(len(sls))):
             if type(el)==int:
                 sls[i]=self._intToSlice(el)
@@ -562,6 +624,8 @@ class trilShape:
         k2 = [len(i) for i in res]
         for i in range(len(k2))[1:]:
             k2[i]*=k2[i-1]
+
+        m = k2[-1]
 
         ans = [tuple([p for el in \
                       [(tup[i],)*(m/l) for i in range(j)]\
@@ -574,7 +638,7 @@ class trilShape:
                       for p in el]) \
                for (tup,z) in zip(ans,k2[:-1])]
 
-        inds = [[i[j] for i in fin] for j in range(m)]
+        inds = [tuple([i[j] for i in fin]) for j in range(m)]
 
         return inds
 
@@ -619,6 +683,7 @@ class trilShape:
         for i in range(len(self.globalShape)+1)[1:]:
             tmp.append(mult)
             mult *= self.globalShape[-i]
+        tmp.reverse()
         self.steps = tuple(tmp)
 
         return 1
