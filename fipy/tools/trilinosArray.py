@@ -551,12 +551,32 @@ class trilShape:
         return indices
 
     def _globalTranslateSlices(self, sls):
+        
         for (el,i) in zip(sls,range(len(sls))):
             if type(el)==int:
                 sls[i]=self._intToSlice(el)
         dims = [range(i) for i in self.globalShape]
         res = [tuple(dim[sl]) for (sl,dim) in zip(sls,dims)]
-        ## bork bork bork ##
+
+        k = [len(i) for i in res]
+        k2 = [len(i) for i in res]
+        for i in range(len(k2))[1:]:
+            k2[i]*=k2[i-1]
+
+        ans = [tuple([p for el in \
+                      [(tup[i],)*(m/l) for i in range(j)]\
+                      for p in el]) \
+               for (tup,l,j) in zip(res,k2,k)]
+
+        k2 = [1] + k2
+
+        fin = [tuple([p for el in (tup,)*z \
+                      for p in el]) \
+               for (tup,z) in zip(ans,k2[:-1])]
+
+        inds = [[i[j] for i in fin] for j in range(m)]
+
+        return inds
 
     def _size(self, shape):
         if type(shape)==tuple or type(shape)==list:
