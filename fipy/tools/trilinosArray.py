@@ -72,7 +72,6 @@ class trilArr:
                             self.vtype = V
                              
                 elif parallel:
-
                     self.eMap = Epetra.Map(self.shp.getSize(),0,self.comm)
                     self.shp.setMap(self.eMap)
 
@@ -112,7 +111,7 @@ class trilArr:
                     self.shp.reshape(shape)
             else:
                 self.shape = trilShape(self.eMap.NumGlobalElements())
-                if shp is not None:
+                if shape is not None:
                    self.shp.reshape(shape)
             if isinstance(array, Epetra.IntVector):
 
@@ -165,9 +164,21 @@ class trilArr:
         self.insertValues(ids, values)
 
     def insertValues(self, ids, values):
+        """
+        Puts values into the array
 
-        # this should operate in accordance with the new shapemap method
+        :Parameters:
+          - `ids`: Where to put in the values
+          - `values`: The values to put in.  If there are less than there are ids, loops through the list multiple times
 
+            >>> t = trilArr(shape=(4,))
+            >>> t.put([0],[5])
+            >>> t.allElems()
+            trilArr([5, 0, 0, 0])
+            >>> t.put([1,2,3],[7,8])
+            >>> t.allElems()
+            trilArr([5, 7, 8, 7])
+        """
         if self.eMap is not None:
             elms = list(self.eMap.MyGlobalElements())
             if type(values) != int:
@@ -176,36 +187,108 @@ class trilArr:
         numpy.put(self.array, ids, values)
 
     def take(self,ids):
+        """
+        Takes values out of the array
+        
+        :Parameters:
+          - `ids`: What values to take
+        
+            >>> t = trilArr([1,2,3,4])
+            >>> t.take([1,2])
+            [2,3]
+         """
         self.globalTake(ids)
 
     def _applyFloatFunction(self, f, optarg=None):
+        """
+        Applys a fuunction (with at most one additional argument) to this array and returns it.
+        
+        :Parameters:
+          - `f`: the function to apply
+          - `optarg`: an additional argument to the function
+        """
 
         if optarg is None:
             res = f(self.array)
         else:
             res = f(self.array, optarg.array)    
         v = Epetra.Vector(self.eMap, res)
-        return trilArr(array=v)
+        return trilArr(array=v,shape=self.shp.getGlobalShape())
 
     def arccos(self):
+        """
+        arccos of this array
+
+            >>> t = trilArr(array=[1, 1, 1, 1])
+            >>> t.arccos()
+            trilArr([ 0.,  0.,  0.,  0.])
+        """
         return self._applyFloatFunction(numpy.arccos)
 
     def arccosh(self):
+        """
+        arccosh of this array
+
+            >>> t = trilArr(array=[1, 1, 1, 1])
+            >>> t.arccosh()
+            trilArr([ 0.,  0.,  0.,  0.])
+        """
         return self._applyFloatFunction(numpy.arccosh)
 
     def arcsin(self):
+        """
+        arccos of this array
+
+            >>> t = trilArr(array=[1, 1, 1, 1])
+            >>> t.arcsin()
+            trilArr([ 1.57079633,  1.57079633,  1.57079633,  1.57079633])
+        """
         return self._applyFloatFunction(numpy.arcsin)
 
     def arcsinh(self):
+        """
+        arcsinh of this array
+
+            >>> t = trilArr(array=[1, 1, 1, 1])
+            >>> t.arcsinh()
+            trilArr([ 0.88137359,  0.88137359,  0.88137359,  0.88137359])
+        """
         return self._applyFloatFunction(numpy.arcsinh)
 
     def arctan(self):
+        """
+        arctan of this array
+
+            >>> t = trilArr(array=[1, 1, 1, 1])
+            >>> t.arctan()
+            trilArr([ 0.78539816,  0.78539816,  0.78539816,  0.78539816])
+        """
         return self._applyFloatFunction(numpy.arctan)
 
     def arctanh(self):
+        """
+        arctanh of this array
+
+            >>> t = trilArr(array=[1, 1, 1, 1])
+            >>> t.arctanh()
+            trilArr([ Inf,  Inf,  Inf,  Inf])
+        """
         return self._applyFloatFunction(numpy.arctanh)
 
     def arctan2(self, other):
+        """
+        arctan of this array/other
+
+        :Parameters:
+          - `other`: The array in the denominator
+
+            >>> n = trilArr(array=[0, 0, 0, 0])
+            >>> d = trilArr(array=[1, 1, 1, 1])
+            >>> n.arctan2(d)
+            trilArr([ 0.,  0.,  0.,  0.])
+            >>> d.arctan2(n)
+            trilArr([ 1.57079633,  1.57079633,  1.57079633,  1.57079633])
+        """
         return self._applyFloatFunction(numpy.arctan2, other)
 
     def cos(self):
@@ -351,7 +434,7 @@ class trilArr:
         return self.vector.__getitem__(y)
 
     def __copy__(self):
-        
+        pass
 
     # needs proper iterator
 
@@ -377,10 +460,11 @@ class trilArr:
 class trilShape:
 
     def __init__(self, shape, eMap=None):
-        shape = self._shapeCheck(shape)
+        if str(type(shape)).count("int") != 0: shape = (shape,)
         self.globalShape = shape
         self.dimensions = self._dimensions(shape)
         self.actualShape = self._size(shape)
+        shape = self._shapeCheck(shape)
         if eMap is not None:
             self.map = eMap
         mult = 1
@@ -484,6 +568,8 @@ class trilShape:
         return size
 
     def _dimensions(self, shape):
+        if str(type(shape)).count("int") == 1:
+            return 1
         return len(shape)
 
     def _shapeCheck(self, shape):
