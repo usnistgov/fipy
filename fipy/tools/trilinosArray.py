@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+__docformat__ = 'restructuredtext'
+
 import PyTrilinos
 from PyTrilinos import Epetra
 
@@ -7,10 +11,24 @@ IV = 0
 V = 1
 
 class trilArr:
-
+    """
+    trilArr is a wrapper for a Trilinos vector
+    allows most of the functionality of a numpy array
+    works in parallel
+    printing multidimensional arrays doesn't work in parallel
+    """
     def __init__(self, shape=None, map=None, dType='l', \
                  parallel=True, array=None):
+        """
+        Creates a trilArr
 
+        :Parameters:
+          - `shape`:the shape of the array.  If passed with an array, it overrides the shape of the array.
+          - `map`:an Epetra.Map or Epetra.BlockMap describing how to split the job between processors
+          - `dType`:the type of data in the array.  However, due to Trilinos limitations, double will be converted to float, and anything besides float or double will become long
+          - `parallel`:whether or not this array should be parallelized
+          - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros
+        """
         import operator
         if shape is None and array is None:
             print "FAIL: Must specify either shape or vector."
@@ -109,7 +127,17 @@ class trilArr:
                 
 
     def fillWith(self, value):
+        """
+        Fills the matrix with a single value
+
+        :Parameters:
+          - `value`:what to fill the array with
         
+            >>> t = trilArr(shape=(4,))
+            >>> t.fillWith(9)
+            >>> t.allElems()
+            trilArr([9, 9, 9, 9])
+        """
         if self.vtype==IV:
             
             self.vector.PutValue(value)
@@ -119,6 +147,21 @@ class trilArr:
             self.vector.PutScalar(value)
 
     def put(self, ids, values):
+        """
+        Puts values into the array
+
+        :Parameters:
+          - `ids`: Where to put in the values
+          - `values`: The values to put in.  If there are less than there are ids, loops through the list multiple times
+
+            >>> t = trilArr(shape=(4,))
+            >>> t.put([0],[5])
+            >>> t.allElems()
+            trilArr([5, 0, 0, 0])
+            >>> t.put([1,2,3],[7,8])
+            >>> t.allElems()
+            trilArr([5, 7, 8, 7])
+        """
         self.insertValues(ids, values)
 
     def insertValues(self, ids, values):
@@ -248,7 +291,7 @@ class trilArr:
         indices = indices.reshape(-1)
         myIDs = [el for el in indices if list(glob).count(el)>=1]
         if myIDs == []: return []
-        print self[myIDs]
+        print "My IDs",self[myIDs]
         return self[myIDs]
 
     def reshape(self, shape):
@@ -260,23 +303,45 @@ class trilArr:
     def getRank(self):
         return self.shp.getRank()
 
+    def allElems(self):
+        """
+        Returns the full array
+        
+            >>> t = trilArr(shape=(4,))
+            >>> t.allElems()
+            trilArr([0, 0, 0, 0])
+        """
+        comm = self.vector.Comm()
+        pid = comm.MyPID()
+        procs = comm.NumProc()
+        m = self.vector.Map()
+        sz = m.NumGlobalElements()
+        locsize = self.vector.MyLength()
+        maxsize = comm.MaxAll(locsize)
+        els = list(self.vector)
+        while locsize<maxsize:
+            els.append(-1)
+            locsize+=1
+        allEls = comm.GatherAll(els)
+        allEls = numpy.array(allEls).reshape(-1)
+        if sz%procs:
+            allEls = [i for (i,j) in zip(allEls,range(1,len(allEls)+1)) \
+                      if j<=maxsize*(sz%procs) or j%maxsize]
+        return trilArr(array=numpy.array(allEls),shape=self.shp.getGlobalShape(),parallel=False)
+
     def __setslice__(self, i, j, y):
-        print "Setting Slice",i,j,y
         self.__setitem__(slice(i,j,None),y)
 
     def __getslice__(self, i, j):
-        print "Getting Slice",i,j
         self.__getitem__(slice(i,j,None))
     
     def __setitem__(self, i, y):
         # should operate in accordance with shapemap
-        print "Setting",i,y
         i = self.shp.getLocalIndex(i)
         self.vector.__setitem__(i, y)
 
     def __getitem__(self, y):
         # should operate in accordance with shapemap
-        print "Getting",y
         y = self.shp.getLocalIndex(y)
         return self.vector.__getitem__(y)
 
@@ -286,7 +351,7 @@ class trilArr:
         if self.comm.NumProc() == 1:
             return "trilArr("+self._makeArray().__repr__()[6:-1]+")"
         else:
-            return "trilArr("+self.vector.array.__repr__()+")"
+            return "trilArr("+self.vector.array.__repr__()[6:-1]+")"
 
     def __str__(self):
         if self.comm.NumProc() == 1:
@@ -428,3 +493,7 @@ class trilShape:
 
 def isTrilArray(obj):
     return isinstance(obj, trilArr)
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
