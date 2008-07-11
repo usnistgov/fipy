@@ -64,7 +64,7 @@ class trilArr:
           - `map`:an Epetra.Map or Epetra.BlockMap describing how to split the job between processors
           - `dType`:the type of data in the array.  However, due to Trilinos limitations, double will be converted to float, and anything besides float or double will become long
           - `parallel`:whether or not this array should be parallelized
-          - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros
+          - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.  The data type of the array overrides dType if it is passed in.
         """
         import operator
         if shape is None and array is None:
@@ -74,7 +74,8 @@ class trilArr:
             self.shp = trilShape(shape)
         elif array is not None:
             self.shp  = trilShape(numpy.array(array).shape)
-
+            if str(numpy.array(array).dtype).count("float") != 0:
+                dType = 'f'
         if array is None or str(type(array)).count("Epetra") == 0:
             
             if map is not None:
@@ -209,27 +210,21 @@ class trilArr:
           - `values`: The values to insert.  If there are less than there are ids, loops through the list multiple times
 
             >>> t = trilArr(shape=(4,))
-            >>> t.put([0],[5])
+            >>> t.insertValues([0],[5])
             >>> t.allElems()
             trilArr([5, 0, 0, 0])
-            >>> t.put([1,2,3],[7,8])
+            >>> t.insertValues([1,2,3],[7,8])
             >>> t.allElems()
             trilArr([5, 7, 8, 7])
         """
 
-        ## docstring is wrong
-        ## it shouldn't use a value in values more than once unless
-        ## it's just an int / float
-        ## floats aren't taken into account
         if self.eMap is not None:
             elms = list(self.eMap.MyGlobalElements())
             if type(values) != int:
-                values = [v for (i,v) in zip(ids,values) if elms.count(i)>0]
-                if len(values) != len(ids):
-                    return # this is fail
+                values = [v for (i,v) in zip(ids,values*((len(ids)+1)/len(values))) if elms.count(i)>0]
             ids = [self.eMap.LID(i) for i in ids if list(elms).count(i)>0]
         numpy.put(self.array, ids, values)
-
+    
     def take(self,ids):
         """
         Takes values out of the array
@@ -345,9 +340,9 @@ class trilArr:
         """
         arctanh of this array
 
-            >>> t = trilArr(array=[1, 1, 1, 1])
+            >>> t = trilArr(array=[.5, .5, .5, .5])
             >>> t.arctanh()
-            trilArr([ Inf,  Inf,  Inf,  Inf])
+            trilArr([ 0.54930614,  0.54930614,  0.54930614,  0.54930614])
         """
         return self._applyFloatFunction(numpy.arctanh)
 
