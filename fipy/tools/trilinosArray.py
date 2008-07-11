@@ -54,8 +54,8 @@ class trilArr:
     works in parallel
     printing multidimensional arrays doesn't work in parallel
     """
-    def __init__(self, shape=None, map=None, dType='l', \
-                 parallel=True, array=None):
+    def __init__(self, array=None, shape=None, map=None, dType='l', \
+                 parallel=True):
         """
         Creates a trilArr
 
@@ -70,14 +70,15 @@ class trilArr:
         if shape is None and array is None:
             print "FAIL: Must specify either shape or vector."
 
-        if shape is not None:
-            self.shp = trilShape(shape)
-        elif array is not None:
-            self.shp  = trilShape(numpy.array(array).shape)
-            if str(numpy.array(array).dtype).count("float") != 0:
-                dType = 'f'
         if array is None or str(type(array)).count("Epetra") == 0:
             
+            if array is not None:
+                self.shp  = trilShape(numpy.array(array).shape)
+                if str(numpy.array(array).dtype).count("float") != 0:
+                    dType = 'f'
+            if shape is not None:
+                self.shp = trilShape(shape)
+
             if map is not None:
                 
                 self.comm = map.Comm()
@@ -101,7 +102,7 @@ class trilArr:
                             self.vector = Epetra.Vector(NUMERIX.zeros(shp,dType))
                             self.vtype = V
                     else:
-                        tmpArray = numpy.array(array).reshape([-1])
+                        tmpArray = numpy.array(array).reshape(-1)
                         if dType=='l':
                             self.vector = Epetra.IntVector(tmpArray)
                             self.vtype = IV
@@ -125,7 +126,7 @@ class trilArr:
                         self.vector = Epetra.Vector(self.eMap)
                         self.vtype = V
                 else:
-                    tmpArray = numpy.array(array).reshape([-1])
+                    tmpArray = numpy.array(array).reshape(-1)
                     mine = self.eMap.MyGlobalElements()
                     mini = min(mine)
                     maxi = max(mine)+1
@@ -139,18 +140,15 @@ class trilArr:
             self.dtype = dType
 
         elif array is not None:
+            if str(numpy.array(array).dtype).count("float") != 0:
+                dType = 'f'
             self.vector = array
             self.comm = array.Comm()
             self.eMap = array.Map()
+            self.shp = trilShape(self.eMap.NumGlobalElements())
             self.shp.setMap(self.eMap)
-            if self.eMap.NumMyElements() != self.eMap.NumGlobalElements():
-                self.shp = trilShape(array.size)
-                if shape is not None:
-                    self.shp.reshape(shape)
-            else:
-                self.shape = trilShape(self.eMap.NumGlobalElements())
-                if shape is not None:
-                   self.shp.reshape(shape)
+            if shape is not None:
+                self.shp.reshape(shape)
             if isinstance(array, Epetra.IntVector):
 
                 self.vtype = IV
@@ -291,7 +289,7 @@ class trilArr:
         arccos of this array
 
             >>> t = trilArr(array=[1, 1, 1, 1])
-            >>> t.arccos()
+            >>> t.arccos().allElems()
             trilArr([ 0.,  0.,  0.,  0.])
         """
         return self._applyFloatFunction(numpy.arccos)
@@ -301,7 +299,7 @@ class trilArr:
         arccosh of this array
 
             >>> t = trilArr(array=[1, 1, 1, 1])
-            >>> t.arccosh()
+            >>> t.arccosh().allElems()
             trilArr([ 0.,  0.,  0.,  0.])
         """
         return self._applyFloatFunction(numpy.arccosh)
@@ -311,7 +309,7 @@ class trilArr:
         arccos of this array
 
             >>> t = trilArr(array=[1, 1, 1, 1])
-            >>> t.arcsin()
+            >>> t.arcsin().allElems()
             trilArr([ 1.57079633,  1.57079633,  1.57079633,  1.57079633])
         """
         return self._applyFloatFunction(numpy.arcsin)
@@ -321,7 +319,7 @@ class trilArr:
         arcsinh of this array
 
             >>> t = trilArr(array=[1, 1, 1, 1])
-            >>> t.arcsinh()
+            >>> t.arcsinh().allElems()
             trilArr([ 0.88137359,  0.88137359,  0.88137359,  0.88137359])
         """
         return self._applyFloatFunction(numpy.arcsinh)
@@ -331,7 +329,7 @@ class trilArr:
         arctan of this array
 
             >>> t = trilArr(array=[1, 1, 1, 1])
-            >>> t.arctan()
+            >>> t.arctan().allElems()
             trilArr([ 0.78539816,  0.78539816,  0.78539816,  0.78539816])
         """
         return self._applyFloatFunction(numpy.arctan)
@@ -341,7 +339,7 @@ class trilArr:
         arctanh of this array
 
             >>> t = trilArr(array=[.5, .5, .5, .5])
-            >>> t.arctanh()
+            >>> t.arctanh().allElems()
             trilArr([ 0.54930614,  0.54930614,  0.54930614,  0.54930614])
         """
         return self._applyFloatFunction(numpy.arctanh)
@@ -355,9 +353,9 @@ class trilArr:
 
             >>> n = trilArr(array=[0, 0, 0, 0])
             >>> d = trilArr(array=[1, 1, 1, 1])
-            >>> n.arctan2(d)
+            >>> n.arctan2(d).allElems()
             trilArr([ 0.,  0.,  0.,  0.])
-            >>> d.arctan2(n)
+            >>> d.arctan2(n).allElems()
             trilArr([ 1.57079633,  1.57079633,  1.57079633,  1.57079633])
         """
         return self._applyFloatFunction(numpy.arctan2, other)
@@ -483,12 +481,10 @@ class trilArr:
         return self.__getitem__(slice(i,j,None))
     
     def __setitem__(self, i, y):
-        # should operate in accordance with shapemap
         i = self.shp.getLocalIndex(i)
-        self.vector.__setitem__(i, y)
+        self.vector.__setitem__(i[0], y)
 
     def __getitem__(self, y):
-        # should operate in accordance with shapemap
         y = self.shp.getLocalIndex(y)
         a = self.vector.__getitem__(y[0])
         s = y[1]
@@ -682,16 +678,36 @@ class trilShape:
         if type(shape)!=tuple:
             print "FAIL: Shapes must be ints, lists, or tuples."
             return None
-        if self.actualShape != self._size(shape):
-            print "FAIL: New shape is differently sized from old shape."
-            return None
         return shape
 
     def reshape(self, shape):
         shape = self._shapeCheck(shape)
-        if shape is None:
-            return -1
+        if self._size(shape) < 0:
+            un = -1
+            tot = 1
+            for i in shape:
+                if i == -1:
+                    if un < 0:
+                        un = i
+                    else:
+                        print "ERROR: Only one unspecified dimension is allowed."
+                        return -1
+                elif i > 0:
+                    tot *= i
+                else:
+                    print "ERROR: Negative sizes are not allowed."
+                    return -1
+            p = self.actualShape*1./tot
+            if numpy.ceil(p) != numpy.floor(p):
+                print "ERROR: New shape doesn't fit"
+                return -1
+            shape = list(shape)
+            shape[un] = int(p)
+            shape = tuple(shape)
 
+        if self.actualShape != self._size(shape):
+            print "ERROR: New shape is differently sized from old shape."
+            return -1
         self.globalShape = shape
         self.actualShape = self._size(shape)
         self.dimensions = self._dimensions(shape)
