@@ -10,7 +10,8 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
- #  Author: Olivia Buzek   <olivia.buzek@nist.gov>
+ #  Author: Olivia Buzek   <olivia.buzek@gmail.com>
+ #  Author: Daniel Stiles  <dastiles@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -70,7 +71,7 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 
 __docformat__ = 'restructuredtext'
 
-useTril = False
+useTril = True
 
 import numpy as NUMERIX
 from numpy.core import umath
@@ -156,7 +157,7 @@ def put(arr, ids, values):
             MA.put(arr, ids, values)
     elif MA.isMaskedArray(ids):
         NUMERIX.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
-    elif TRIL.isTrilArray(arr):
+    elif useTril and TRIL.isTrilArray(arr):
         arr.put(ids, values)
     else:
         NUMERIX.put(arr, ids, values)
@@ -173,6 +174,8 @@ def reshape(arr, shape):
         return NUMERIX.reshape(arr, tuple(shape))
     elif type(arr) is type(MA.array((0))):
         return MA.reshape(arr, shape)
+    elif useTril and TRIL.isTrilArray(arr):
+        arr.reshape(shape)
     else:
         raise TypeError, 'cannot reshape object ' + str(arr)
 
@@ -196,6 +199,8 @@ def getShape(arr):
     """
     if hasattr(arr, "shape"):
         return arr.shape
+    elif useTril and TRIL.isTrilArray(arr):
+        retrun arr.getShape()
     elif type(arr) in (type(()), type([])):
         return (len(arr),)
     elif type(arr) in (type(1), type(1.)):
@@ -226,6 +231,8 @@ def sum(arr, axis=0):
     """
     if _isPhysical(arr):
         return arr.sum(axis)
+    elif useTril and TRIL.isTrilArray(arr):
+        return arr.globalSum()
     elif type(arr) is type(MA.array((0))):
         return MA.sum(arr, axis)
     else:  
@@ -234,12 +241,16 @@ def sum(arr, axis=0):
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
         return NUMERIX.issubclass_(arr.dtype.type, float)
+    elif useTril and TRIL.isTrilArray(arr):
+        return arr.isFloat()
     else:
         return NUMERIX.issubclass_(arr.__class__, float)
 
 def isInt(arr):
     if isinstance(arr, NUMERIX.ndarray):
         return NUMERIX.issubclass_(arr.dtype.type, int)
+    elif useTril and TRIL.isTrilArray(arr):
+        return arr.isInt()
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
     
@@ -361,7 +372,7 @@ def arccos(arr):
     """
     if _isPhysical(arr):
         return arr.arccos()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.arccos(arr)
     else:
         return umath.arccos(arr)
@@ -398,7 +409,7 @@ def arccosh(arr):
     """
     if _isPhysical(arr):
         return arr.arccosh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.arccosh(arr)
     else:
         return umath.arccosh(arr)
@@ -442,7 +453,7 @@ def arcsin(arr):
     """
     if _isPhysical(arr):
         return arr.arcsin()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.arcsin(arr)
     else:
         return umath.arcsin(arr)
@@ -469,7 +480,7 @@ def arcsinh(arr):
     """
     if _isPhysical(arr):
         return arr.arcsinh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.arcsinh(arr)
     else:
         return umath.arcsinh(arr)
@@ -503,7 +514,7 @@ def arctan(arr):
     """
     if _isPhysical(arr):
         return arr.arctan()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.arctan(arr)
     else:
         return umath.arctan(arr)
@@ -541,7 +552,7 @@ def arctan2(arr, other):
         from fipy.tools.dimensions import physicalField
 
         return physicalField.PhysicalField(value=arr, unit="rad").arctan2(other)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.arctan2(arr,other)
     else:
         return umath.arctan2(arr,other)
@@ -569,7 +580,7 @@ def arctanh(arr):
     """
     if _isPhysical(arr):
         return arr.arctanh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.arctanh(arr)
     else:
         return umath.arctanh(arr)
@@ -596,7 +607,7 @@ def cos(arr):
     """
     if _isPhysical(arr):
         return arr.cos()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.cos(arr)
     else:
         return umath.cos(arr)
@@ -623,7 +634,7 @@ def cosh(arr):
     """
     if _isPhysical(arr):
         return arr.cosh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.cosh(arr)
     else:
         return umath.cosh(arr)
@@ -650,7 +661,7 @@ def tan(arr):
     """
     if _isPhysical(arr):
         return arr.tan()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.tan(arr)
     else:
         return umath.tan(arr)
@@ -677,7 +688,7 @@ def tanh(arr):
     """
     if _isPhysical(arr):
         return arr.tanh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.tanh(arr)
     else:
         return umath.tanh(arr)
@@ -704,7 +715,7 @@ def log10(arr):
     """
     if _isPhysical(arr):
         return arr.log10()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.log10(arr)
     else:
         return umath.log10(arr)
@@ -731,7 +742,7 @@ def sin(arr):
     """
     if _isPhysical(arr):
         return arr.sin()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.sin(arr)
     else:
         return umath.sin(arr)
@@ -758,7 +769,7 @@ def sinh(arr):
     """
     if _isPhysical(arr):
         return arr.sinh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.sinh(arr)
     else:
         return umath.sinh(arr)
@@ -786,7 +797,7 @@ def sqrt(arr):
     """
     if _isPhysical(arr):
         return arr.sqrt()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.sqrt(arr)
     else:
         return umath.sqrt(arr)
@@ -814,7 +825,7 @@ def floor(arr):
     """
     if _isPhysical(arr):
         return arr.floor()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.floor(arr)
     else:
         return umath.floor(arr)
@@ -842,7 +853,7 @@ def ceil(arr):
     """
     if _isPhysical(arr):
         return arr.ceil()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.ceil(arr)
     else:
         return umath.ceil(arr)
@@ -860,7 +871,7 @@ def exp(arr):
     """
     if _isPhysical(arr):
         return arr.exp()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.exp(arr)
     else:
         return umath.exp(arr)
@@ -888,7 +899,7 @@ def log(arr):
     """
     if _isPhysical(arr):
         return arr.log()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.log(arr)
     else:
         return umath.log(arr)
@@ -917,7 +928,7 @@ def conjugate(arr):
     """
     if _isPhysical(arr):
         return arr.conjugate()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is type(array((0))) or (useTril and TRIL.isTrilArray(arr)):
         return NUMERIX.conjugate(arr)
     else:
         return umath.conjugate(arr)
@@ -1127,6 +1138,8 @@ def take(a, indices, axis=0, fill_value=None):
 
     elif type(a) in (type(array((0))), type(()), type([])):
         taken = NUMERIX.take(a, indices, axis=axis)
+    elif useTril and TRIL.isTrilArray(a):
+        taken = a.take(indices)
     elif type(a) is type(MA.array((0))):
         taken = MA.take(a, indices, axis=axis)
     else:
@@ -1162,7 +1175,6 @@ def indices(dimensions, typecode=None):
                NUMERIX.resize(NUMERIX.arange(dimensions[1]), dimensions).copy()]
     else:
         tmp = NUMERIX.ones(dimensions, typecode)
-        lst = []
         for i in range(len(dimensions)):
             lst.append(NUMERIX.add.accumulate(tmp, i,) - 1)
 
