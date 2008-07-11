@@ -496,7 +496,12 @@ class trilArr:
         return trilArr(array = a,shape = s)
 
     def __copy__(self):
-        pass
+        if self.eMap.NumMyElements() == self.eMap.NumGlobalElements():
+            plell = false
+        else:
+            plell = true
+        return trilArr(array = self.vector.copy(), shape = self.shp.copy(), \
+                       dType = self.dType, parallel = plell)
 
     # needs proper iterator
 
@@ -706,6 +711,9 @@ class trilShape:
 
     def __repr__(self):
         return "trilShape("+self.globalShape.__repr__()+")"
+
+    def __copy__(self):
+        return trilShape(self.globalShape, self.eMap)
     
 
 def isTrilArray(obj):
