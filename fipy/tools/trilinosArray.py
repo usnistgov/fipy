@@ -237,9 +237,9 @@ class trilArr:
         :Parameters:
           - `ids`: What values to take
         
-            >>> t = trilArr([1,2,3,4])
+            >>> t = trilArr(array=[1,2,3,4])
             >>> t.take([1,2])
-            [2,3]
+            array([2, 3])
          """
         return self.globalTake(ids)
 
@@ -420,9 +420,25 @@ class trilArr:
     def localSum(self):
         return numpy.sum(self.array)
 
-    def reshape(self, shape, copy=False):
+    def reshape(self, *args, **kwargs):
         ## reshape checks need to be done
         ## before a copy is made
+        if kwargs.has_key("copy"):
+            copy = kwars["copy"]
+        else:
+            if len(args) > 0 and type(args[-1]) == bool:
+                copy = args[-1]
+                args = args[:-1]
+            else:
+                copy = False
+        if kwargs.has_key("shape"):
+            copy = kwars["shape"]
+        else:
+            if len(args) > 0:
+                if len(args) == 1 and type(args[0]) == tuple:
+                    shape = args[0]
+                else:
+                    shape = args
         if self.shp._shapeCheck(shape) is None:
             return
         if copy:
@@ -479,10 +495,10 @@ class trilArr:
     def __getitem__(self, y):
         # should operate in accordance with shapemap
         y = self.shp.getLocalIndex(y)
-        a = self.vector.__getitem__(y)
-        if len(a)==1:
-            return a[0]
-        return trilArr(array = a)
+        a = self.vector.__getitem__(y[0])
+        s = y[1]
+        if s == (): return a[0]
+        return trilArr(array = a,shape = s)
 
     def __copy__(self):
         pass
@@ -553,7 +569,7 @@ class trilShape:
     
     def getLocalIndex(self, index):
         ind = self.getGlobalIndex(index)
-        return self._globalToLocal(ind)
+        return (self._globalToLocal(ind[0]),ind[1])
 
     def _globalToLocal(self, i):
         if self.map is None:
@@ -566,6 +582,8 @@ class trilShape:
     def _intToSlice(self, i):
         if type(i)==slice:
             return i
+        elif i == -1:
+            return slice(i,None,None)
         else:
             return slice(i,i+1,None)
 
@@ -576,26 +594,24 @@ class trilShape:
         return tuple(i)
     
     def _globalTranslateIndices(self, index):
-        if type(index)==int:
-            index=[(self._intToSlice(index),)]
+        if type(index)==int or type(index)==list:
+            index=[(index,)]
         elif type(index)==slice:
             index=[(index,)]
-        elif type(index)==tuple or type(index)==list:
-            if type(index[0])!=int and type(index[0])!=slice:
+        elif type(index)==tuple:
+            if type(index[0])!=int and type(index[0])!=slice and type(index[0])!=list:
                 while type(index)!=int and len(index)==1:
                     index=index[0]
-                print index
                 if type(index)==int:
-                    index=[(self._intToSlice(index),)]
+                    index=[(index,)]
                 elif len(index)<=self.dimensions:
                     index = [[i[el] for i in index] for el in range(len(i))]
             else:
                 index = [tuple(index)]
-
         index = [self._fillToDim(i) for i in index]
-
         index = [el for i in index for el in self._globalTranslateSlices(i)]
-
+        s = index[1]
+        index = index[0]
         indices = []
 
         for ind in index:
@@ -610,20 +626,23 @@ class trilShape:
 
             indices.append(lineIndex)
 
-        return indices
+        return (indices,s)
 
     def _globalTranslateSlices(self, sls):
         sls = list(sls)
+        o = list(sls)
         for (el,i) in zip(sls,range(len(sls))):
             if type(el)==int:
                 sls[i]=self._intToSlice(el)
-        dims = [range(i) for i in self.globalShape]
-        res = [tuple(dim[sl]) for (sl,dim) in zip(sls,dims)]
-
+        dims = [numpy.arange(i) for i in self.globalShape]
+        res = [tuple(list(dim[sl])) for (sl,dim) in zip(sls,dims)]
+        s = tuple([len(d) for (d,n) in zip(res,o) if str(type(n)).count("int")==0])
         k = [len(i) for i in res]
         k2 = [len(i) for i in res]
         for i in range(len(k2))[1:]:
             k2[i]*=k2[i-1]
+            if k2[i] == 0:
+                return [()]
 
         m = k2[-1]
 
@@ -639,8 +658,7 @@ class trilShape:
                for (tup,z) in zip(ans,k2[:-1])]
 
         inds = [tuple([i[j] for i in fin]) for j in range(m)]
-
-        return inds
+        return (inds,s)
 
     def _size(self, shape):
         if type(shape)==tuple or type(shape)==list:
