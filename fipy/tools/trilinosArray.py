@@ -10,7 +10,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
- #  Author: Olivia Buzek   <olivia.buzek@nist.gov>
+ #  Author: Olivia Buzek   <olivia.buzek@gmail.com>
  #  Author: Daniel Stiles  <dastiles@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
@@ -159,7 +159,6 @@ class trilArr:
                 self.vtype = V
                 self.dtype = 'f'
         self.array = self.vector.array
-                
 
     def fillWith(self, value):
         """
@@ -395,11 +394,16 @@ class trilArr:
         
     def conjugate(self):
         return self._applyFloatFunction(numpy.conjugate)
+        
+    def sqrt(self):
+        return self._applyFloatFunction(numpy.sqrt)
 
     def dot(self, other):
-        return self.vector.Dot(other.vector)
+        return Epetra.Vector(self.vector).Dot(Epetra.Vector(other.vector))
 
     def allequal(self, other):
+        if self.array.shape != other.array.shape:
+            return False
         return numpy.sum(self.array == other.array) == numpy.size(self.array)
 
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
@@ -473,6 +477,21 @@ class trilArr:
             allEls = [i for (i,j) in zip(allEls,range(1,len(allEls)+1)) \
                       if j<=maxsize*(sz%procs) or j%maxsize]
         return trilArr(array=numpy.array(allEls),shape=self.shp.getGlobalShape(),parallel=False)
+
+    def isFloat(self):
+        return self.dType=='f'
+
+    def isInt(self):
+        return self.dType=='l'
+
+    def getTypecode(self):
+        if self.dType=='f':
+            return 'd'
+        else:
+            return self.dType
+
+    def __iter__(self):
+        return self.vector.__iter__()
 
     def __setslice__(self, i, j, y):
         self.__setitem__(slice(i,j,None),y)
@@ -624,15 +643,19 @@ class trilShape:
 
         return (indices,s)
 
-    def _globalTranslateSlices(self, sls):
-        sls = list(sls)
-        o = list(sls)
-        for (el,i) in zip(sls,range(len(sls))):
-            if type(el)==int:
-                sls[i]=self._intToSlice(el)
+    def _globalTranslateSlices(self, sls = None):
         dims = [numpy.arange(i) for i in self.globalShape]
-        res = [tuple(list(dim[sl])) for (sl,dim) in zip(sls,dims)]
-        s = tuple([len(d) for (d,n) in zip(res,o) if str(type(n)).count("int")==0])
+        if sls is not None:
+            sls = list(sls)
+            o = list(sls)
+            for (el,i) in zip(sls,range(len(sls))):
+                if type(el)==int:
+                    sls[i]=self._intToSlice(el)
+            res = [tuple(list(dim[sl])) for (sl,dim) in zip(sls,dims)]
+            s = tuple([len(d) for (d,n) in zip(res,o) if str(type(n)).count("int")==0])
+        else:
+            res = dims
+            s = None
         k = [len(i) for i in res]
         k2 = [len(i) for i in res]
         for i in range(len(k2))[1:]:
