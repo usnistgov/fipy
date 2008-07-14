@@ -94,6 +94,7 @@ def zeros(a, t='l'):
         return TRIL.trilArr(shape=a, dType=t)
     else:
         return NUMERIX.zeros(a, t)
+
 def ones(a, t='l'):
     if useTril:
         arr = TRIL.trilArr(shape=a, dType=t)
@@ -200,7 +201,7 @@ def getShape(arr):
     if hasattr(arr, "shape"):
         return arr.shape
     elif useTril and TRIL.isTrilArray(arr):
-        retrun arr.getShape()
+        return arr.getShape()
     elif type(arr) in (type(()), type([])):
         return (len(arr),)
     elif type(arr) in (type(1), type(1.)):
@@ -995,7 +996,7 @@ def dot(a1, a2, axis=0):
 
     ## have to check MA since MA's have dot() method!!!
     if hasattr(a1, 'dot') and not (type(a1) is type(MA.array(0))):
-        return a1.dot(a2)
+        return a1.dot(a2,axis)
     elif hasattr(a2, 'rdot') and not (type(a2) is type(MA.array(0))):
         return a2.rdot(a1)
     elif hasattr(a2, 'dot') and not (type(a2) is type(MA.array(0))):
@@ -1760,6 +1761,6 @@ def _broadcastShape(shape1, shape2):
 def _test(): 
     import doctest
     return doctest.testmod()
-    
+
 if __name__ == "__main__":
     _test() 
