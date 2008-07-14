@@ -11,7 +11,7 @@
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #  Author: Olivia Buzek   <olivia.buzek@gmail.com>
- #  Author: Daniel Stiles  <dastiles@nist.gov>
+ #  Author: Daniel Stiles  <dastiles@mbhs.edu>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -176,7 +176,7 @@ def reshape(arr, shape):
     elif type(arr) is type(MA.array((0))):
         return MA.reshape(arr, shape)
     elif useTril and TRIL.isTrilArray(arr):
-        arr.reshape(shape)
+        arr.reshape(shape,copy=False)
     else:
         raise TypeError, 'cannot reshape object ' + str(arr)
 

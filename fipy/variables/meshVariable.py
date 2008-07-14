@@ -83,7 +83,7 @@ class _MeshVariable(Variable):
             mesh = mesh or value.mesh
             
         self.mesh = mesh
-
+        print array,"ARRAY"
         Variable.__init__(self, name=name, value=value, unit=unit, 
                           array=array, cached=cached)
                   

@@ -478,20 +478,19 @@ class Variable(object):
 
     def _setValue(self, value, unit=None, array=None):
         self.value = self._makeValue(value=value, unit=unit, array=array)
+        print "v",value,"v+",self.value
      
     def _makeValue(self, value, unit=None, array=None):
 
         ## --inline code often returns spurious results with noncontiguous
         ## arrays. A test case was put in _execInline(). The best fix turned out to
         ## be here.
-        
         if hasattr(value, 'iscontiguous') and not value.iscontiguous():
             value = value.copy()
             
         PF = physicalField.PhysicalField
 
         if not isinstance(value, PF):
-            
             if getattr(self, 'value', None) is not None:
                 v = self.value
                 if isinstance(v, PF):
@@ -501,7 +500,6 @@ class Variable(object):
                         if v.shape is not ():
 ##                        if len(v) > 1:
                             value = numerix.resize(value, v.shape).astype(v.dtype)
-                    
             if unit is not None or type(value) in [type(''), type(()), type([])]:
                 value = PF(value=value, unit=unit, array=array)
             elif array is not None:
@@ -514,10 +512,10 @@ class Variable(object):
 ##                 # Numeric converts them to 'O' objects that it then doesn't understand.
 ##                 if value.typecode() == 'O':
 ##                     value = numerix.array(float(value))
-
+        print value,"12222222333333"
         if isinstance(value, PF) and value.getUnit().isDimensionless():
             value = value.getNumericValue()
-            
+        print value,"444444445555556"
         return value
 
     def setValue(self, value, unit=None, array=None, where=None):

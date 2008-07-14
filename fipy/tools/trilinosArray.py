@@ -411,8 +411,14 @@ class trilArr:
     def sqrt(self):
         return self._applyFloatFunction(numpy.sqrt)
 
-    def dot(self, other,axis):
-        return Epetra.Vector(self.vector).Dot(Epetra.Vector(other.vector),axis)
+    def dot(self, other, axis=None):
+        if axis is None:
+            print "HUH???"
+            return Epetra.Vector(self.vector).Dot(Epetra.Vector(other.vector),axis)
+        else:
+            ##THIS SHOULD BE CHANGED WHEN TAKE WORKS WITH AXES
+            print "self:",self.allElems().array.reshape(self.shape.getGlobalShape()),"other:",other.allElems().array.reshape(other.shape.getGlobalShape())
+            return self.allElems().array.reshape(self.shape.getGlobalShape()).dot(other.allElems().array.reshape(other.shape.getGlobalShape()),axis=axis)
 
     def allequal(self, other):
         if self.array.shape != other.array.shape:
@@ -434,7 +440,7 @@ class trilArr:
         ## reshape checks need to be done
         ## before a copy is made
         if kwargs.has_key("copy"):
-            copy = kwars["copy"]
+            copy = kwargs["copy"]
         else:
             if len(args) > 0 and type(args[-1]) == bool:
                 copy = args[-1]
@@ -549,16 +555,20 @@ class trilArr:
         return self.shape.globalShape[0]
 
     def _makeArray(self):
-	return self.array.reshape(self.shape.getGlobalShape())
+	return self.allElems().array.reshape(self.shape.getGlobalShape())
 
     def __or__(self, other):
 
         return self.array | other.array
 
     def __mul__(self,other):
-        if isTrilArray(other):
-            return self.vector.__mul__(other.vector)
-        return self.array.__mul__(other)
+ #       if Epetra.PyComm().MyPID() == 0:
+ #           print "1"+repr(self),repr(other)
+        if not isTrilArray(other):
+            return self.__mul__(trilArr(array=other,map=self.eMap))
+ #       if Epetra.PyComm().MyPID() == 0:
+ #           print "2"+repr(self),repr(other)
+        return numpy.array(self.vector.__mul__(other.vector)).reshape(self.shape.getGlobalShape())
 
     def __add__(self,other):
         print repr(other),type(other)
