@@ -1671,7 +1671,6 @@ def _findUnit(unit):
             ...
         TypeError: 2.0 is not a unit
     """
-##     print unit, type(unit)
     
     if type(unit) == type(''):
         name = string.strip(unit)

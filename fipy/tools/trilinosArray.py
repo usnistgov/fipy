@@ -246,7 +246,8 @@ class trilArr:
         if axis is not None:
             sls = [slice(None,None,None)]*axis
             if sls:
-                ids = (sls,ids)
+                sls.append(ids)
+                ids = tuple(sls)
             return self.__getitem__(ids)
         els = self.localTake(ids,axis)
         shape = numpy.array(els).shape
@@ -455,8 +456,12 @@ class trilArr:
             if axis >= self.getRank() or axis < 0:
                 print "ERROR: Axis out of range."
                 return -1
-            sigma = [self.take(i,axis).globalSum() for i in range(self.shape[axis])]
-            return sigma
+            res = self.take([0],axis=axis)
+            for i in range(self.shape[axis])[1:]:
+                res += self.take([i],axis)
+##            sigma = [self.take([i],axis).globalSum() for i in range(self.shape[axis])]
+            newshp = self.shape.globalShape[:axis]+self.shape.globalShape[axis+1:]
+            return res.reshape(newshp,False)
         return self.globalSum()
 
     def globalSum(self):
@@ -550,8 +555,8 @@ class trilArr:
             trilArr([0, 0, 0, 0])
             >>> t = trilArr(array=range(4),shape=(2,2))
             >>> t.allElems()
-            trilArr([[0,1]
-                    [2,2]])
+            trilArr([[0, 1],
+                   [2, 3]])
         """
         comm = self.vector.Comm()
         pid = comm.MyPID()
@@ -646,6 +651,8 @@ class trilArr:
         return self.array | other.array
 
     def __mul__(self,other):
+        if not isTrilArray(other):
+            return self.__mul__(trilArr(map = self.eMap,array=other))
         res = self.copy()
         res.vector[:]*=other.vector[:]
         return res
