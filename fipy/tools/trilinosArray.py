@@ -466,7 +466,6 @@ class trilArr:
         return self.globalSum()
 
     def globalSum(self):
-<<<<<<< .mine
         """
         Sums all the elements of this array
         
@@ -475,9 +474,6 @@ class trilArr:
             45
         """
         return self.comm.SumAll(self.localSum())
-=======
-        return self.comm.SumAll(self.localSum())
->>>>>>> .r2673
 
     def localSum(self):
         """
