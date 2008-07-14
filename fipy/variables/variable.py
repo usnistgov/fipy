@@ -478,7 +478,6 @@ class Variable(object):
 
     def _setValue(self, value, unit=None, array=None):
         self.value = self._makeValue(value=value, unit=unit, array=array)
-        print "v",value,"v+",self.value
      
     def _makeValue(self, value, unit=None, array=None):
 
