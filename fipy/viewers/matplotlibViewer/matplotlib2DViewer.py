@@ -109,7 +109,11 @@ class Matplotlib2DViewer(MatplotlibViewer):
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
         self.collection.set_linewidth(0)
-        ax.add_patch(self.collection)
+        try:
+            ax.add_patch(self.collection)
+        except:
+            # PolyCollection not child of PatchCollection in matplotlib 0.98
+            ax.add_collection(self.collection)
 
         if self._getLimit('xmin') is None:
             xmin = xCoords.min()
