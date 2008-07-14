@@ -421,13 +421,7 @@ class trilArr:
         return self._applyFloatFunction(numpy.sqrt)
 
     def dot(self, other, axis=None):
-        if axis is None:
-            print "HUH???"
-            return Epetra.Vector(self.vector).Dot(Epetra.Vector(other.vector),axis)
-        else:
-            ##THIS SHOULD BE CHANGED WHEN TAKE WORKS WITH AXES
-            print "self:",self.allElems().array.reshape(self.shape.getGlobalShape()),"other:",other.allElems().array.reshape(other.shape.getGlobalShape())
-            return self.allElems().array.reshape(self.shape.getGlobalShape()).dot(other.allElems().array.reshape(other.shape.getGlobalShape()),axis=axis)
+        return (self*other).sum(axis)
 
     def allequal(self, other):
         """
@@ -575,7 +569,9 @@ class trilArr:
         if sz%procs:
             allEls = [i for (i,j) in zip(allEls,range(1,len(allEls)+1)) \
                       if j<=maxsize*(sz%procs) or j%maxsize]
-        return trilArr(array=numpy.array(allEls),shape=self.shape.getGlobalShape(),parallel=False)
+        return trilArr(array=numpy.array(allEls), \
+                       shape=self.shape.getGlobalShape(), \
+                       parallel=False)
 
     def isFloat(self):
         return self.dType=='f'
@@ -588,6 +584,9 @@ class trilArr:
             return 'd'
         else:
             return self.dType
+
+    def copy(self):
+        return self.__copy__()
 
     def __iter__(self):
         return self.vector.__iter__()
@@ -617,10 +616,12 @@ class trilArr:
             plell = False
         else:
             plell = True
-        return trilArr(array = self.vector.copy(), shape = self.shape.getGlobalShape(), \
+        return trilArr(array = self.vector.copy(), \
+                       shape = self.shape.getGlobalShape(), \
                        dType = self.dtype, parallel = plell)
 
-    # needs proper iterator
+    def __iter__(self):
+        return self.vector.__iter__()
 
     def __repr__(self):
         if self.comm.NumProc() == 1:
@@ -638,24 +639,21 @@ class trilArr:
         return self.shape.globalShape[0]
 
     def _makeArray(self):
-	return self.allElems().array.reshape(self.shape.getGlobalShape)
+	return self.allElems().array.reshape(self.shape.getGlobalShape())
 
     def __or__(self, other):
 
         return self.array | other.array
 
     def __mul__(self,other):
-        print "s?:",self
-        print "o?:",other
-        if not isTrilArray(other):
-            return self.__mul__(trilArr(array=other,map=self.eMap))
-        return numpy.array(self.vector.__mul__(other.vector)).reshape(self.shape.getGlobalShape())
+        res = self.copy()
+        res.vector[:]*=other.vector[:]
+        return res
 
     def __add__(self,other):
-        print repr(other),type(other)
-        if isTrilArray(other):
-            return self.array.__add__(other.vector)
-        return self.array.__add__(other)
+        res = self.copy()
+        res.vector[:]+=other.vector[:]
+        return res
 
 class trilShape:
 
@@ -679,7 +677,7 @@ class trilShape:
         if isinstance(eMap,Epetra.Map) or isinstance(eMap,Epetra.BlockMap):
             self.map = eMap
         else:
-            print "FAIL: Must be an Epetra Map."
+            print "ERROR: Must be an Epetra Map."
 
     def getGlobalShape(self):
         return self.globalShape
@@ -697,25 +695,19 @@ class trilShape:
         return self._globalTranslateIndices(index)
     
     def getLocalIndex(self, index):
-        # takes a list of indices, formatted appropriately 
         ind = self.getGlobalIndex(index)
         return (self._globalToLocal(ind[0]),ind[1])
 
     def _globalToLocal(self, i):
-        # takes a global ID (or list of global IDs) and turns them
-        # into local IDs.
         if self.map is None:
             return -1
         if type(i)==int:
             return self.map.LID(i)
         else:
             arr = [self.map.LID(j) for j in i if self.map.LID(j)>=0]
-            ## print arr
             return arr
 
     def _intToSlice(self, i):
-        # takes an int (or list of ints) and turns them into
-        # slices.
         if type(i)==slice:
             return i
         elif i == -1:
