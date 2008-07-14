@@ -520,7 +520,10 @@ class trilArr:
     
     def __setitem__(self, i, y):
         i = self.shape.getLocalIndex(i)
-        self.vector.__setitem__(i[0], y)
+        szProcEls = len(i[0])
+        res = self.comm.ScanSum(szProcEls)-szProcEls
+        y = numpy.array(y).reshape(-1)
+        self.vector.__setitem__(i[0], y[res:])
 
     def __getitem__(self, y):
         y = self.shape.getLocalIndex(y)
@@ -562,12 +565,10 @@ class trilArr:
         return self.array | other.array
 
     def __mul__(self,other):
- #       if Epetra.PyComm().MyPID() == 0:
- #           print "1"+repr(self),repr(other)
+        print "s?:",self
+        print "o?:",other
         if not isTrilArray(other):
             return self.__mul__(trilArr(array=other,map=self.eMap))
- #       if Epetra.PyComm().MyPID() == 0:
- #           print "2"+repr(self),repr(other)
         return numpy.array(self.vector.__mul__(other.vector)).reshape(self.shape.getGlobalShape())
 
     def __add__(self,other):
@@ -625,7 +626,9 @@ class trilShape:
         if type(i)==int:
             return self.map.LID(i)
         else:
-            return [self.map.LID(j) for j in i]
+            arr = [self.map.LID(j) for j in i if self.map.LID(j)>=0]
+            ## print arr
+            return arr
 
     def _intToSlice(self, i):
         if type(i)==slice:
@@ -645,7 +648,6 @@ class trilShape:
         while len(i)<self.dimensions:
             i.insert(start,slice(None,None,None))
         return i
-        
 
     def _globalTranslateIndices(self, index):
         tup = False
