@@ -225,7 +225,7 @@ class trilArr:
             ids = [self.eMap.LID(i) for i in ids if list(elms).count(i)>0]
         numpy.put(self.array, ids, values)
     
-    def take(self,ids):
+    def take(self,ids,axis=None):
         """
         Takes values out of the array
         
@@ -236,11 +236,16 @@ class trilArr:
             >>> t.take([1,2])
             array([2, 3])
          """
-        return self.globalTake(ids)
+        return self.globalTake(ids, axis)
 
-    def globalTake(self, ids):
-        els = self.localTake(ids)
-        shape = numpy.array(ids).shape
+    def globalTake(self, ids, axis):
+        if axis is not None:
+            sls = [slice(None,None,None)]*axis
+            if sls:
+                ids = (sls,ids)
+            return self.__getitem__(ids)
+        els = self.localTake(ids,axis)
+        shape = numpy.array(els).shape
         if els is None:
             els == []
         els = type(els) == numpy.int32 and [els] or list(els)
@@ -257,7 +262,7 @@ class trilArr:
         allEls = numpy.array(allEls).reshape(shape)
         return allEls
 
-    def localTake(self, ids):
+    def localTake(self,ids,axis):
         indices = numpy.array(ids)
         indices = indices.reshape(-1)
         glob = self.eMap.MyGlobalElements()
@@ -430,8 +435,17 @@ class trilArr:
             return False
         return sum(1 - (numpy.abs(self.array-other.array) < atol+rtol*numpy.abs(other.array))) == 0
 
+    def sum(self,axis=None):
+        if axis is not None:
+            if axis >= self.getRank() or axis < 0:
+                print "ERROR: Axis out of range."
+                return -1
+            sigma = [self.take(i,axis).globalSum() for i in range(self.shape[axis])]
+            return sigma
+        return self.globalSum()
+
     def globalSum(self):
-        return self.comm.SumAll(localSum(self))
+        return self.comm.SumAll(self.localSum())
 
     def localSum(self):
         return numpy.sum(self.array)
@@ -468,6 +482,9 @@ class trilArr:
     def getShape(self):
         return self.shape.getGlobalShape()
 
+    def rank(self):
+        return self.getRank()
+    
     def getRank(self):
         return self.shape.getRank()
 
@@ -617,10 +634,13 @@ class trilShape:
         return self._globalTranslateIndices(index)
     
     def getLocalIndex(self, index):
+        # takes a list of indices, formatted appropriately 
         ind = self.getGlobalIndex(index)
         return (self._globalToLocal(ind[0]),ind[1])
 
     def _globalToLocal(self, i):
+        # takes a global ID (or list of global IDs) and turns them
+        # into local IDs.
         if self.map is None:
             return -1
         if type(i)==int:
@@ -631,6 +651,8 @@ class trilShape:
             return arr
 
     def _intToSlice(self, i):
+        # takes an int (or list of ints) and turns them into
+        # slices.
         if type(i)==slice:
             return i
         elif i == -1:
@@ -753,7 +775,7 @@ class trilShape:
         if type(shape)==list:
             shape = tuple(shape)
         if type(shape)!=tuple:
-            print "FAIL: Shapes must be ints, lists, or tuples."
+            print "ERROR: Shapes must be ints, lists, or tuples."
             return None
         return shape
 
