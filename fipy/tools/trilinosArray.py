@@ -131,8 +131,12 @@ class trilArr:
                 else:
                     tmpArray = numpy.array(array).reshape(-1)
                     mine = self.eMap.MyGlobalElements()
-                    mini = min(mine)
-                    maxi = max(mine)+1
+                    if len(mine) > 0:
+                        mini = min(mine)
+                        maxi = max(mine)+1
+                    else:
+                        mini = -1
+                        maxi = -1
                     if dType == 'l':
                         self.vector = Epetra.IntVector(self.eMap,tmpArray[mini:maxi])
                         self.vtype = IV
@@ -426,6 +430,23 @@ class trilArr:
             return self.allElems().array.reshape(self.shape.getGlobalShape()).dot(other.allElems().array.reshape(other.shape.getGlobalShape()),axis=axis)
 
     def allequal(self, other):
+        """
+        Returns `True` if all elemnts of other are equal to those in this matrix, otherwise returns `False`
+        
+        :Parameters:
+          - `other`: the matrix to be compared to this one
+        
+            >>> array1 = trilArr([[0,1],[2,3]])
+            >>> array2 = trilArr([[0,1],[2,3]])
+            >>> print array1.allequal(array2)
+            True
+        
+        allequal will return false if the arrays are differently sized
+
+            >>> array3 = trilArr([[0,1],[2,3],[4,5]])
+            >>> print array1.allequal(array3)
+            False
+        """
         if self.array.shape != other.array.shape:
             return False
         return numpy.sum(self.array == other.array) == numpy.size(self.array)
@@ -445,12 +466,54 @@ class trilArr:
         return self.globalSum()
 
     def globalSum(self):
+<<<<<<< .mine
+        """
+        Sums all the elements of this array
+        
+            >>> a = trilArr([[0,1,2,3,4],[5,6,7,8,9]])
+            >>> print a.globalSum()
+            45
+        """
         return self.comm.SumAll(self.localSum())
+=======
+        return self.comm.SumAll(self.localSum())
+>>>>>>> .r2673
 
     def localSum(self):
+        """
+        Sums all the elements of this array on each processor
+        """
         return numpy.sum(self.array)
 
     def reshape(self, *args, **kwargs):
+        """
+        Reshapes the current array.  If the shape doesn't fit, prints an error, but doesn't cause an exception and returns -1
+        :Parameters:
+          - `shape`: passed in as a tuple, or as part of the *args.  Describes the new shape of the array
+          - `copy`: If `True`, returns a new reshaped array, if `False`, changes the current array and returns it.  Default is `True`
+            >>> a = trilArr(range(8))
+            >>> print a.reshape((2,2,2)).allElems()
+            [[[0 1]
+              [2 3]]
+            <BLANKLINE>
+             [[4 5]
+              [6 7]]]
+            >>> print a.allElems()
+            [0 1 2 3 4 5 6 7]
+            >>> print a.reshape(2,2,2,copy = False).allElems()
+            [[[0 1]
+              [2 3]]
+            <BLANKLINE>
+             [[4 5]
+              [6 7]]]
+            >>> print a.allElems()
+            [[[0 1]
+              [2 3]]
+            <BLANKLINE>
+             [[4 5]
+              [6 7]]]
+        """
+            
         ## reshape checks need to be done
         ## before a copy is made
         if kwargs.has_key("copy"):
@@ -495,6 +558,10 @@ class trilArr:
             >>> t = trilArr(shape=(4,))
             >>> t.allElems()
             trilArr([0, 0, 0, 0])
+            >>> t = trilArr(array=range(4),shape=(2,2))
+            >>> t.allElems()
+            trilArr([[0,1]
+                    [2,2]])
         """
         comm = self.vector.Comm()
         pid = comm.MyPID()
@@ -575,7 +642,7 @@ class trilArr:
         return self.shape.globalShape[0]
 
     def _makeArray(self):
-	return self.allElems().array.reshape(self.shape.getGlobalShape())
+	return self.allElems().array.reshape(self.shape.getGlobalShape)
 
     def __or__(self, other):
 

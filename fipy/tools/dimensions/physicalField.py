@@ -191,7 +191,6 @@ class PhysicalField(object):
             else:
                 value = float(match.group(0))
                 unit = _findUnit(s[len(match.group(0)):])
-            
         if type(value) in [type([]),type(())]:
             value = [PhysicalField(item,unit) for item in value]
             if unit is None:
@@ -203,17 +202,16 @@ class PhysicalField(object):
                 else:
                     normalized += [item.inUnitsOf(unit).value]
             value = numerix.array(normalized)
-            
         if unit is None:
             unit = _unity
 ##             unit = _findUnit("")
 
         self.value = value
         self.unit = unit
+        print array,value,"fffffffffff"
         if array is not None:
             array[:] = self.value
             self.value = array
-
     _number = re.compile('[+-]?[0-9]+(\\.[0-9]*)?([eE][+-]?[0-9]+)?')
 
     def copy(self):
