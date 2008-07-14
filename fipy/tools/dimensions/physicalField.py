@@ -208,7 +208,6 @@ class PhysicalField(object):
 
         self.value = value
         self.unit = unit
-        print array,value,"fffffffffff"
         if array is not None:
             array[:] = self.value
             self.value = array
