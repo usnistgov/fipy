@@ -38,7 +38,7 @@ def _runInline(code_in, converters=None, verbose=0, **args):
     for key in args.keys():
         if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
             args[key] = args[key].astype('B')
-            
+
     weave.inline(code,
                  args.keys(),
                  local_dict=args,

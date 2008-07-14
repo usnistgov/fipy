@@ -1,6 +1,6 @@
 import dump
-import numerix
 import vector
 from dimensions.physicalField import PhysicalField
-from numerix import *
 
+import numerix
+from numerix import *

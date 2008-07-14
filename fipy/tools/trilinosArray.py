@@ -151,7 +151,15 @@ class trilArr:
                 dType = 'f'
             self.vector = array
             self.comm = array.Comm()
-            self.eMap = array.Map()
+            if map is not None:
+                self.eMap = map
+                if isinstance(array, Epetra.Vector):
+                    self.vector.ReplaceMap(map)
+                elif isinstance(array, Epetra.IntVector):
+                    self.vector = Epetra.IntVector(map, array)
+##                    self.vector[:]=array[:]
+            else:
+                self.eMap = array.Map()
             self.shape = trilShape(self.eMap.NumGlobalElements())
             self.shape.setMap(self.eMap)
             if shape is not None:
@@ -459,7 +467,6 @@ class trilArr:
             res = self.take([0],axis=axis)
             for i in range(self.shape[axis])[1:]:
                 res += self.take([i],axis)
-##            sigma = [self.take([i],axis).globalSum() for i in range(self.shape[axis])]
             newshp = self.shape.globalShape[:axis]+self.shape.globalShape[axis+1:]
             return res.reshape(newshp,False)
         return self.globalSum()
@@ -623,7 +630,8 @@ class trilArr:
             plell = True
         return trilArr(array = self.vector.copy(), \
                        shape = self.shape.getGlobalShape(), \
-                       dType = self.dtype, parallel = plell)
+                       dType = self.dtype, parallel = plell, \
+                       map = self.eMap)
 
     def __iter__(self):
         return self.vector.__iter__()
