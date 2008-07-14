@@ -512,10 +512,8 @@ class Variable(object):
 ##                 # Numeric converts them to 'O' objects that it then doesn't understand.
 ##                 if value.typecode() == 'O':
 ##                     value = numerix.array(float(value))
-        print value,"12222222333333"
         if isinstance(value, PF) and value.getUnit().isDimensionless():
             value = value.getNumericValue()
-        print value,"444444445555556"
         return value
 
     def setValue(self, value, unit=None, array=None, where=None):
