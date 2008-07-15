@@ -50,6 +50,7 @@ def _suite():
             'numerix',
             'dump',
             'vector',
+            'trilinosMatrix',
         ), base = __name__)
 
     return theSuite

@@ -112,7 +112,7 @@ class _SparseMatrix:
 
     # Ask about this rsub
     def __rsub__(self, other):
-        return -(__sub__(self, other))
+        return -(self.__sub__(other))
         
         
     def __isub__(self, other):

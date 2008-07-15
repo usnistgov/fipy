@@ -11,6 +11,7 @@
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
+ #  Author: Olivia Buzek   <olivia.buzek@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -81,7 +82,7 @@ class _TrilinosMatrix(_SparseMatrix):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size = None, bandwidth = 0, matrix = None, sizeHint = None):
+    def __init__(self, size = None, bandwidth = 0, matrix = None, sizeHint = None, map = None):
         """
         Creates a `_TrilinosMatrix`.
 
@@ -89,6 +90,7 @@ class _TrilinosMatrix(_SparseMatrix):
           - `size`: The size N for an N by N matrix.
           - `bandwidth`: The proposed band width of the matrix.
           - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
+          - `map`: The `Epetra.Map` necessary to build the matrix.
 
         """
 
@@ -103,14 +105,12 @@ class _TrilinosMatrix(_SparseMatrix):
                 self.bandwidth = (sizeHint + size - 1)/size 
             else:
                 self.bandwidth = bandwidth
-                
-            # Matrix building gets done on one processor - it gets the map for
-            # all the rows
-            if self.comm.MyPID()==0:
-                self.map = Epetra.Map(size, range(0, size), 0, self.comm)
-            else: 
-                self.map = Epetra.Map(size, [], 0, self.comm)
 
+            if map is not None:
+                self.map = map
+            else:
+                self.map = Epetra.Map(size, 0, self.comm)
+            
             self.matrix = Epetra.CrsMatrix(Epetra.Copy, self.map, self.bandwidth*3/2)
 
             # Leave extra bandwidth, to handle multiple insertions into the
@@ -465,6 +465,14 @@ class _TrilinosMatrix(_SparseMatrix):
         if hasattr(id2, 'astype') and id2.dtype.name == 'int64':
             id2 = id2.astype('int32')
 
+        import trilinosArray as TA
+        if TA.isTrilArray(id1):
+            id1 = id1.vector
+        if TA.isTrilArray(id2):
+            id2 = id2.vector
+        if TA.isTrilArray(vector):
+            vector = vector.vector
+
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)
         else:
@@ -510,22 +518,23 @@ class _TrilinosMatrix(_SparseMatrix):
         Returns an equivalent Trilinos matrix, but redistributed evenly over
         all processors.
         """
-        if self.comm.NumProc() == 1:
-            return self.matrix 
-            # No redistribution necessary in serial mode
-        else:
-            self.matrix.GlobalAssemble()
-            totalElements = self.matrix.NumGlobalRows()
+        return self.matrix
+##         if self.comm.NumProc() == 1:
+##             return self.matrix 
+##             # No redistribution necessary in serial mode
+##         else:
+##             self.matrix.GlobalAssemble()
+##             totalElements = self.matrix.NumGlobalRows()
 
 
-            DistributedMap = Epetra.Map(totalElements, 0, self.comm)
-            RootToDist = Epetra.Import(DistributedMap, self.map)
+##             DistributedMap = Epetra.Map(totalElements, 0, self.comm)
+##             RootToDist = Epetra.Import(DistributedMap, self.map)
 
-            DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, self.bandwidth*3/2)
+##             DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, self.bandwidth*3/2)
 
-            DistMatrix.Import(self.matrix, RootToDist, Epetra.Insert)
+##             DistMatrix.Import(self.matrix, RootToDist, Epetra.Insert)
 
-            return DistMatrix
+##             return DistMatrix
 
 def _numpyToTrilinosVector(v, map):
     """
