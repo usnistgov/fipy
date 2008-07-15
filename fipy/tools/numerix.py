@@ -71,7 +71,7 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 
 __docformat__ = 'restructuredtext'
 
-useTril = False
+useTril = True
 
 import numpy as NUMERIX
 from numpy.core import umath

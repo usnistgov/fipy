@@ -243,10 +243,17 @@ class trilArr:
         
         :Parameters:
           - `ids`: What values to take
+          - `axis`: The axis to take along
         
-            >>> t = trilArr(array=[1,2,3,4])
+            >>> t = trilArr(array=[1,2,3,4,5,6,7,8])
             >>> t.take([1,2])
-            array([2, 3])
+            trilArr([2, 3])
+            >>> t.reshape(2,4,copy=False)
+            trilArr([[1, 2, 3, 4],
+                   [5, 6, 7, 8]])
+            >>> t.take([1,2],axis=1)
+            trilArr([[2, 3],
+                   [6, 7]])
          """
         return self.globalTake(ids, axis)
 
@@ -273,7 +280,7 @@ class trilArr:
         allEls = [l for (el,proc) in zip(allEls,range(procs)) \
                   for (l,pos) in zip(el,range(sizes[proc]))]
         allEls = numpy.array(allEls).reshape(shape)
-        return allEls
+        return trilArr(allEls,parallel=False)
 
     def localTake(self,ids,axis):
         indices = numpy.array(ids)
@@ -484,6 +491,7 @@ class trilArr:
         return sum(1 - (numpy.abs(self.array-other.array) < atol+rtol*numpy.abs(other.array))) == 0
 
     def sum(self,axis=None):
+        
         if axis is not None:
             if axis >= self.getRank() or axis < 0:
                 print "ERROR: Axis out of range."
@@ -645,7 +653,7 @@ class trilArr:
         a = self.vector.__getitem__(y[0])
         s = y[1]
         if s == (): return a[0]
-        return trilArr(array = a,shape = s)
+        return trilArr(array = a,shape = s,parallel = False)
 
     def __copy__(self):
         if self.eMap.NumMyElements() == self.eMap.NumGlobalElements():
@@ -676,23 +684,66 @@ class trilArr:
         return self.shape.globalShape[0]
 
     def _makeArray(self):
-	return self.allElems().array.reshape(self.shape.getGlobalShape())
+	return self.array.reshape(self.shape.getGlobalShape())
 
     def __or__(self, other):
 
         return self.array | other.array
 
     def __mul__(self,other):
-        if not isTrilArray(other):
-            return self.__mul__(trilArr(map = self.eMap,array=other))
         res = self.copy()
-        res.vector[:]*=other.vector[:]
+        if isTrilArray(other):
+            res.vector[:]*=other.vector[:]
+        elif numpy.isscalar(other) or other.shape == ():
+            res.vector[:]*=other
+        else:
+            res.vector[:]*=other[:]
         return res
 
     def __add__(self,other):
         res = self.copy()
-        res.vector[:]+=other.vector[:]
+        if isTrilArray(other):
+            res.vector[:]+=other.vector[:]
+        elif numpy.isscalar(other) or other.shape == ():
+            res.vector[:]+=other
+        else:
+            res.vector[:]+=other[:]
         return res
+
+    def __div__(self,other):
+        res = self.copy()
+        if isTrilArray(other):
+            res.vector[:]/=other.vector[:]
+        elif numpy.isscalar(other) or other.shape == ():
+            res.vector[:]/=other
+        else:
+            res.vector[:]/=other[:]
+        return res
+        
+    def __sub__(self,other):
+        res = self.copy()
+        if isTrilArray(other):
+            res.vector[:]-=other.vector[:]
+        elif numpy.isscalar(other) or other.shape == ():
+            res.vector[:]-=other
+        else:
+            res.vector[:]-=other[:]
+        return res
+
+    def invElems(self)
+        return trilArr(array=1/self.vector)
+
+    def __rmul__(self,other):
+        return self.__mul__(other)
+
+    def __radd__(self,other):
+        return self.__add__(other)
+
+    def __rdiv__(self,other):
+        return (self.__div__(self.__mul__(self))).__mul__(other)
+
+    def __rsub__(self,other):
+        return (self.__sub__(self.add(self))).__add(other)
 
 class trilShape:
 
