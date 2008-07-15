@@ -71,7 +71,7 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 
 __docformat__ = 'restructuredtext'
 
-useTril = True
+useTril = False
 
 import numpy as NUMERIX
 from numpy.core import umath
@@ -996,7 +996,7 @@ def dot(a1, a2, axis=0):
 
     ## have to check MA since MA's have dot() method!!!
     if hasattr(a1, 'dot') and not (type(a1) is type(MA.array(0))):
-        return a1.dot(a2,axis)
+        return a1.dot(a2,axis=axis)
     elif hasattr(a2, 'rdot') and not (type(a2) is type(MA.array(0))):
         return a2.rdot(a1)
     elif hasattr(a2, 'dot') and not (type(a2) is type(MA.array(0))):

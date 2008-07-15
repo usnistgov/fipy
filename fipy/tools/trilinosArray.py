@@ -430,6 +430,30 @@ class trilArr:
         return self._applyFloatFunction(numpy.sqrt)
 
     def dot(self, other, axis=None):
+        """
+        Returns the dot product of this and other.  Other does not need to be a trilArr
+
+        :Parrameters:
+          - `other`: the other array, to be dotted with this one
+          - `axis`: the axis to do the dot product over
+        
+            >>> t = trilArr(range(24)).reshape(2,3,4)
+            >>> t.dot(t)
+            4324
+            >>> t.dot(t,axis=0)
+            trilArr([[144, 170, 200, 234],
+                   [272, 314, 360, 410],
+                   [464, 522, 584, 650]])
+            >>> a = numpy.ones((2,3,4))
+            >>> t.dot(a)
+            276
+            >>> a = a.reshape(4,3,2)
+            >>> t.dot(a)
+            Traceback (most recent call last):
+                  ...
+            ValueError: Shapes don't match
+        """
+            
         return (self*other).sum(axis)
 
     def allequal(self, other):
