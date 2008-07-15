@@ -458,7 +458,8 @@ class trilArr:
             >>> t.dot(a)
             Traceback (most recent call last):
                   ...
-            ValueError: Shapes don't match
+            ValueError: shape mismatch: objects cannot be broadcast to a single shape
+
         """
             
         return (self*other).sum(axis)
@@ -697,7 +698,11 @@ class trilArr:
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]*=other
         else:
-            res.vector[:]*=other[:]
+            if type(other) != numpy.ndarray:
+                other = numpy.array(other)
+            if other.shape != self.shape.getGlobalShape():
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            res.vector[:]*=(other.reshape(-1))[:]
         return res
 
     def __add__(self,other):
@@ -707,7 +712,11 @@ class trilArr:
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]+=other
         else:
-            res.vector[:]+=other[:]
+            if type(other) != numpy.ndarray:
+                other = numpy.array(other)
+            if other.shape != self.shape.getGlobalShape():
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            res.vector[:]+=(other.reshape(-1))[:]
         return res
 
     def __div__(self,other):
@@ -717,7 +726,11 @@ class trilArr:
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]/=other
         else:
-            res.vector[:]/=other[:]
+            if type(other) != numpy.ndarray:
+                other = numpy.array(other)
+            if other.shape != self.shape.getGlobalShape():
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            res.vector[:]/=(other.reshape(-1))[:]
         return res
         
     def __sub__(self,other):
@@ -727,11 +740,12 @@ class trilArr:
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]-=other
         else:
-            res.vector[:]-=other[:]
+            if type(other) != numpy.ndarray:
+                other = numpy.array(other)
+            if other.shape != self.shape.getGlobalShape():
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            res.vector[:]-=(other.reshape(-1))[:]
         return res
-
-    def invElems(self)
-        return trilArr(array=1/self.vector)
 
     def __rmul__(self,other):
         return self.__mul__(other)
@@ -740,10 +754,49 @@ class trilArr:
         return self.__add__(other)
 
     def __rdiv__(self,other):
-        return (self.__div__(self.__mul__(self))).__mul__(other)
+        res = self.copy()
+        res.vector[:] = 1/res.vector[:]
+        if isTrilArray(other):
+            res.vector[:]*=other.vector[:]
+        elif numpy.isscalar(other) or other.shape == ():
+            res.vector[:]*=other
+        else:
+            if type(other) != numpy.ndarray:
+                other = numpy.array(other)
+            if other.shape != self.shape.getGlobalShape():
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            res.vector[:]*=(other.reshape(-1))[:]
+        return res
 
     def __rsub__(self,other):
-        return (self.__sub__(self.add(self))).__add(other)
+        """
+        Allows trilArr's to be subtracted from other things.  Currently, only single value or full array operations are available
+
+            >>> a = trilArr(range(4)).reshape(2,2)
+            >>> 1-a
+            trilArr([[ 1,  0],
+                   [-1, -2]])
+            >>> numpy.arange(4).reshape(2,2)-a
+            trilArr([[ 0,  0],
+                   [ 0,  0]])
+            >>> numpy.arange(2) - a
+            Traceback (most recent call last)
+                  ...
+            ValueError: shape mismatch: objects cannot be broadcast to a single shape
+        """
+        res = self.copy()
+        res.vector[:] = -res.vector[:]
+        if isTrilArray(other):
+            res.vector[:]+=other.vector[:]
+        elif numpy.isscalar(other) or other.shape == ():
+            res.vector[:]+=other
+        else:
+            if type(other) != numpy.ndarray:
+                other = numpy.array(other)
+            if other.shape != self.shape.getGlobalShape():
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            res.vector[:]+=(other.reshape(-1))[:]
+        return res
 
 class trilShape:
 
