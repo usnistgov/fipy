@@ -91,17 +91,23 @@ if useTril:
 
 def zeros(a, t='l'):
     if useTril:
-        return TRIL.trilArr(shape=a, dType=t)
+        return TRIL.trilArr(shape=a, dtype=t)
     else:
         return NUMERIX.zeros(a, t)
 
 def ones(a, t='l'):
     if useTril:
-        arr = TRIL.trilArr(shape=a, dType=t)
+        arr = TRIL.trilArr(shape=a, dtype=t)
         arr.fillWith(1)
         return arr
     else:
         return NUMERIX.ones(a, t)
+
+def arange(start, stop=None, step=1, dtype=None):
+    if useTril:
+        arr = TRIL.arange(start,stop,step,dtype)
+        return arr
+    return NUMERIX.arange(start,stop,step,dtype)
 
 def _isPhysical(arr):
     """
@@ -1668,7 +1674,6 @@ def _indexShape(index, arrayShape):
             ellipsislen = 1
         else:
             expanded += (element,)
-            
     if len(expanded) > desiredRank:
         # "If the lenth of the selection tuple is larger than N (=X.ndim) an error 
         # is raised."

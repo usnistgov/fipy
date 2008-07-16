@@ -454,10 +454,11 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-
+        print repr(vector),repr(id1),repr(id2)
+        raw_input("Input to addAt") 
         # Currently, all matrix building gets done on processor 0
-        if(self.comm.MyPID() > 0):
-            return
+        #if(self.comm.MyPID() > 0):
+        #    return
 
         ## This was added as it seems that trilinos does not like int64 arrays
         if hasattr(id1, 'astype') and id1.dtype.name == 'int64':
@@ -472,6 +473,9 @@ class _TrilinosMatrix(_SparseMatrix):
             id2 = id2.vector
         if TA.isTrilArray(vector):
             vector = vector.vector
+        
+        print repr(vector),repr(id1),repr(id2)
+        raw_input("Input to addAt after conversion due to trilinosArrays") 
 
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)
@@ -500,6 +504,7 @@ class _TrilinosMatrix(_SparseMatrix):
             self.addAt(tmp, ids, ids)
         else:
             ids = numerix.arange(len(vector))
+            raw_input("ids to be added")
             self.addAt(vector, ids, ids)
 
     def exportMmf(self, filename):

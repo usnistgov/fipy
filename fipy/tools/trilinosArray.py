@@ -17,7 +17,7 @@
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
+ # and Technology by employe1es of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
  # protection and is in the public domain.  FiPy is an experimental
@@ -54,7 +54,7 @@ class trilArr:
     works in parallel
     printing multidimensional arrays doesn't work in parallel
     """
-    def __init__(self, array=None, shape=None, map=None, dType='l', \
+    def __init__(self, array=None, shape=None, map=None, dtype=None, \
                  parallel=True):
         """
         Creates a trilArr
@@ -62,70 +62,64 @@ class trilArr:
         :Parameters:
           - `shape`:the shape of the array.  If passed with an array, it overrides the shape of the array.
           - `map`:an Epetra.Map or Epetra.BlockMap describing how to split the job between processors
-          - `dType`:the type of data in the array.  However, due to Trilinos limitations, double will be converted to float, and anything besides float or double will become long
+          - `dtype`:the type of data in the array.  However, due to Trilinos limitations, double will be converted to float, and anything besides float or double will become long or boolean.  If passed with an array, it overrides the type of the array, except from float to int, which will become float.
           - `parallel`:whether or not this array should be parallelized
-          - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.  The data type of the array overrides dType if it is passed in.
+          - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
         import operator
+        print dtype
         if shape is None and array is None:
             print "FAIL: Must specify either shape or vector."
-        if str(dType).count("int") != 0 or str(dType).count("bool") != 0 or dType == 'i' or dType == 'b':
-            dType = 'l'
-        elif str(dType).count("float") != 0 or str(dType).count("double") != 0 or dType == 'd':
-            dType = 'f'
+        if array is not None and dtype is None:
+            dtype = type(array[0])
+        elif dtype is None:
+            dtype = 'int'
+        if str(dtype).count("int") != 0 or dtype == 'i' or dtype == 'l':
+            dtype = 'int'
+        elif str(dtype).count("float") != 0 or str(dtype).count("double") != 0 or dtype == 'd':
+            dtype = 'float'
+        elif str(dtype).count('bool') > 0:
+            dtype = 'bool'
+        print dtype
         if array is None or str(type(array)).count("Epetra") == 0:
-            
             if array is not None:
                 self.shape  = trilShape(numpy.array(array).shape)
                 if str(numpy.array(array).dtype).count("float") != 0:
-                    dType = 'f'
+                    dtype = 'float'
             if shape is not None:
                 self.shape = trilShape(shape)
-
             if map is not None:
-                
                 self.comm = map.Comm()
                 self.eMap = map
                 self.shape.setMap(self.eMap)
-
             if map is None:
-
                 self.comm = Epetra.PyComm()
-
                 if not parallel:
                     if array is None:
                         self.eMap = None
-    
-                        if dType=='l':
-                            self.vector = Epetra.IntVector(NUMERIX.zeros(shape,dType))
+                        if dtype=='int' or dtype=='bool':
+                            self.vector = Epetra.IntVector(NUMERIX.zeros(shape,dtype))
                             self.vtype = IV
-    
-                        elif dType=='f':
-    
-                            self.vector = Epetra.Vector(NUMERIX.zeros(shape,dType))
+                        elif dtype=='float':
+                            self.vector = Epetra.Vector(NUMERIX.zeros(shape,dtype))
                             self.vtype = V
                     else:
                         tmpArray = numpy.array(array).reshape(-1)
-                        if dType=='l':
+                        if dtype=='int':
                             self.vector = Epetra.IntVector(tmpArray)
                             self.vtype = IV
-                        elif dType=='f':
+                        elif dtype=='float':
                             self.vector = Epetra.Vector(tmpArray)
                             self.vtype = V
-                             
                 elif parallel:
                     self.eMap = Epetra.Map(self.shape.getSize(),0,self.comm)
                     self.shape.setMap(self.eMap)
-
             if not hasattr(self, "vector"):
                 if array is None:
-                    if dType == 'l':
-    
+                    if dtype == 'int' or dtype== 'bool':
                         self.vector = Epetra.IntVector(self.eMap)
                         self.vtype = IV
-    
-                    if dType == 'f':
-    
+                    if dtype == 'float':
                         self.vector = Epetra.Vector(self.eMap)
                         self.vtype = V
                 else:
@@ -137,18 +131,16 @@ class trilArr:
                     else:
                         mini = -1
                         maxi = -1
-                    if dType == 'l':
+                    if dtype == 'int' or dtype == 'bool':
                         self.vector = Epetra.IntVector(self.eMap,tmpArray[mini:maxi])
                         self.vtype = IV
-                    if dType == 'f':
+                    if dtype == 'float':
                         self.vector = Epetra.Vector(self.eMap,tmpArray[mini:maxi])
                         self.vtype = V
-                        
-            self.dtype = dType
-
+            self.dtype = dtype
         elif array is not None:
             if str(numpy.array(array).dtype).count("float") != 0:
-                dType = 'f'
+                dtype = 'float'
             self.vector = array
             self.comm = array.Comm()
             if map is not None:
@@ -165,14 +157,11 @@ class trilArr:
             if shape is not None:
                 self.shape.reshape(shape)
             if isinstance(array, Epetra.IntVector):
-
                 self.vtype = IV
-                self.dtype = 'l'
-                
+                self.dtype = 'int'
             elif isinstance(array, Epetra.Vector):
-
                 self.vtype = V
-                self.dtype = 'f'
+                self.dtype = 'float'
         self.array = self.vector.array
 
     def fillWith(self, value):
@@ -188,12 +177,15 @@ class trilArr:
             trilArr([9, 9, 9, 9])
         """
         if self.vtype==IV:
-            
             self.vector.PutValue(value)
-            
         else:
-            
             self.vector.PutScalar(value)
+
+    def fillWithRange(self, start, stop, step):
+        nme = self.comm.NumMyElements()
+        myStop = self.comm.ScanSum(nme)
+        myStart = myStop-nme
+        self.vector[myStart:myStop]=range(start+myStart*step,stop-(self.shape.actualShape - myStop*step),step)
 
     def put(self, ids, values, mode='raise'):
         """
@@ -248,7 +240,7 @@ class trilArr:
             >>> t = trilArr(array=[1,2,3,4,5,6,7,8])
             >>> t.take([1,2])
             trilArr([2, 3])
-            >>> t.reshape(2,4,copy=False)
+            >>> t.reshape(2,4,copy=False).allElems()
             trilArr([[1, 2, 3, 4],
                    [5, 6, 7, 8]])
             >>> t.take([1,2],axis=1)
@@ -619,20 +611,22 @@ class trilArr:
                        parallel=False)
 
     def isFloat(self):
-        return self.dType=='f'
+        return self.dtype=='float'
 
     def isInt(self):
-        return self.dType=='l'
+        return self.dtype=='int'
 
     def getTypecode(self):
-        if self.dType=='f':
+        if self.dtype=='float':
             return 'd'
         else:
-            return self.dType
+            return self.dtype
 
     def copy(self):
         return self.__copy__()
-
+    
+    size = property(fget = lambda self: self.shape.getSize())
+    
     def __iter__(self):
         return self.vector.__iter__()
 
@@ -663,7 +657,7 @@ class trilArr:
             plell = True
         return trilArr(array = self.vector.copy(), \
                        shape = self.shape.getGlobalShape(), \
-                       dType = self.dtype, parallel = plell, \
+                       dtype = self.dtype, parallel = plell, \
                        map = self.eMap)
 
     def __iter__(self):
@@ -671,25 +665,24 @@ class trilArr:
 
     def __repr__(self):
         if self.comm.NumProc() == 1:
-            return "trilArr("+self._makeArray().__repr__()[6:-1]+")"
+            return "trilArr("+self.__array__().__repr__()[6:-1]+")"
         else:
             return "trilArr("+self.vector.array.__repr__()[6:-1]+")"
 
     def __str__(self):
         if self.comm.NumProc() == 1:
-            return self._makeArray().__str__()
+            return self.__array__().__str__()
         else:
             return self.vector.__str__()
 
     def __len__(self):
         return self.shape.globalShape[0]
 
-    def _makeArray(self):
-	return self.array.reshape(self.shape.getGlobalShape())
+    def __array__(self,dtype=None):
+	return numpy.array(self.allElems().array.reshape(self.shape.getGlobalShape()),dtype = self.dtype)
 
     def __or__(self, other):
-
-        return self.array | other.array
+        return trilArr(numpy.array(self) | numpy.array(other))
 
     def __mul__(self,other):
         res = self.copy()
@@ -776,13 +769,6 @@ class trilArr:
             >>> 1-a
             trilArr([[ 1,  0],
                    [-1, -2]])
-            >>> numpy.arange(4).reshape(2,2)-a
-            trilArr([[ 0,  0],
-                   [ 0,  0]])
-            >>> numpy.arange(2) - a
-            Traceback (most recent call last)
-                  ...
-            ValueError: shape mismatch: objects cannot be broadcast to a single shape
         """
         res = self.copy()
         res.vector[:] = -res.vector[:]
@@ -798,11 +784,24 @@ class trilArr:
             res.vector[:]+=(other.reshape(-1))[:]
         return res
 
+    def __neg__(self):
+        """
+        Returns the negation of this array
+
+            >>> a = trilArr(range(4)).reshape(2,2)
+            >>> -a
+            trilArr([[ 0, -1],
+                   [-2, -3]])
+        """
+        res = self.copy()
+        res.vector[:] = -res.vector[:]
+        return res
+
 class trilShape:
 
     def __init__(self, shape, eMap=None):
         if str(type(shape)).count("int") != 0: shape = (shape,)
-        self.globalShape = shape
+        self.globalShape = tuple(shape)
         self.dimensions = self._dimensions(shape)
         self.actualShape = self._size(shape)
         shape = self._shapeCheck(shape)
@@ -871,9 +870,16 @@ class trilShape:
 
     def _globalTranslateIndices(self, index):
         tup = False
-        if type(index)==int or type(index)==list or type(index)==slice:
+        if type(index) == numpy.ndarray or isTrilArray(index):
+            if str(index.dtype).count('bool')>0:
+                res = [i for i in range(index.size) if index[i]]
+                return (res,(len(res),))
+            index = list(index)
+        if type(index) == int or type(index) == list or type(index) == slice:
             index=[self._fillToDim((index,))]
-        elif type(index)==tuple:
+        elif type(index) == type(Ellipsis):
+            index = [self._fillToDim(())]
+        elif type(index) == tuple:
             if list(index).count(Ellipsis) > 0:
                 index = list(index)
                 while index.count(Ellipsis) > 0:
@@ -881,35 +887,30 @@ class trilShape:
                     index.remove(Ellipsis)
                     self._fill(index,ind)
                 index = [tuple(index)]
-            elif type(index[0])!=int and type(index[0])!=slice and type(index[0])!=list:
-                while type(index)!=int and len(index)==1:
+            elif type(index[0]) != int and type(index[0]) != slice and type(index[0]) != list:
+                while type(index) != int and len(index) == 1:
                     index=index[0]
-                if type(index)==int or type(index)==slice:
+                if type(index) == int or type(index) == slice:
                     index=[self._fillToDim((index,))]
-                elif len(index)<=self.dimensions:
+                elif len(index) <= self.dimensions:
                     index = [tuple([i[el] for i in index]) for el in range(len(index[0]))]
                     index = [self._fillToDim(i) for i in index]
                     tup = True
             else:
                 index = [self._fillToDim(tuple(index))]
         s = self._calculateRes(index[0])[1]
-        
         index = [el for i in index for el in self._globalTranslateSlices(i)]
-        
         if tup:
             s = len(index)
         indices = []
-
         for ind in index:
             if self._dimensions(ind)>self.dimensions:
                 return -1
             if not sum([i<j for (i,j) in zip(ind,self.globalShape)]):
                 return -2
-
             lineIndex = 0
             for (mult,i) in zip(self.steps,range(len(ind))):
                 lineIndex += mult*ind[i]
-
             indices.append(lineIndex)
         return (indices,s)
 
@@ -936,20 +937,15 @@ class trilShape:
             k2[i]*=k2[i-1]
             if k2[i] == 0:
                 return [()]
-
         m = k2[-1]
-
         ans = [tuple([p for el in \
                       [(tup[i],)*(m/l) for i in range(j)]\
                       for p in el]) \
                for (tup,l,j) in zip(res,k2,k)]
-
         k2 = [1] + k2
-
         fin = [tuple([p for el in (tup,)*z \
                       for p in el]) \
                for (tup,z) in zip(ans,k2[:-1])]
-
         inds = [tuple([i[j] for i in fin]) for j in range(m)]
         return inds
 
@@ -1043,6 +1039,15 @@ class trilShape:
 
 def isTrilArray(obj):
     return isinstance(obj, trilArr)
+
+def arange(start,stop,step,dtype):
+    if stop is None:
+        stop = start
+        start = 0
+    l = int((stop-start)/step)
+    arr = trilArr(shape=l,dtype=dtype)
+    arr.fillWithRange(start,stop,step)
+    return arr
 
 if __name__ == '__main__':
     import doctest
