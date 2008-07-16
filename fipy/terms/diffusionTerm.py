@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 6/7/08 {11:08:59 PM} 
+ #                                last update: 7/16/08 {11:19:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ from fipy.tools import numerix
 from fipy.terms.term import Term
 from fipy.tools import numerix
 
-class _DiffusionTerm(Term):
+class DiffusionTerm(Term):
 
     r"""
     This term represents a higher order diffusion term. The order of the term is determined
@@ -137,7 +137,7 @@ class _DiffusionTerm(Term):
         return higherOrderBCs, lowerOrderBCs
 
     def _getNormals(self, mesh):
-        pass
+        return mesh._getFaceCellToCellNormals()
 
     def _getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
@@ -171,7 +171,7 @@ class _DiffusionTerm(Term):
         return self.rotationTensor
     
     def _treatMeshAsOrthogonal(self, mesh):
-        pass
+        return mesh._isOrthogonal()
 
     def _calcAnisotropySource(self, coeff, mesh, var):
 
@@ -586,19 +586,12 @@ class _DiffusionTerm(Term):
         """
         pass
 
-class DiffusionTermNoCorrection(_DiffusionTerm):
+class DiffusionTermNoCorrection(DiffusionTerm):
     def _getNormals(self, mesh):
         return mesh._getFaceNormals()
 
     def _treatMeshAsOrthogonal(self, mesh):
         return True
-        
-class DiffusionTerm(_DiffusionTerm):
-    def _getNormals(self, mesh):
-        return mesh._getFaceCellToCellNormals()
-
-    def _treatMeshAsOrthogonal(self, mesh):
-        return mesh._isOrthogonal()
         
 def _test(): 
     import doctest
