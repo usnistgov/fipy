@@ -349,8 +349,8 @@ class _TrilinosMatrix(_SparseMatrix):
         """
 
         # Currently, all matrix building gets done on processor 0
-        if(self.comm.MyPID() > 0):
-            return
+##         if(self.comm.MyPID() > 0):
+##             return
 
         if self._getMatrix().Filled():
             if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
@@ -476,6 +476,10 @@ class _TrilinosMatrix(_SparseMatrix):
         
         print repr(vector),repr(id1),repr(id2)
         raw_input("Input to addAt after conversion due to trilinosArrays") 
+
+        print id1
+        print id2
+        print vector
 
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)

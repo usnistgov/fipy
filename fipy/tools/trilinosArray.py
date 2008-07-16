@@ -185,7 +185,7 @@ class trilArr:
         nme = self.comm.NumMyElements()
         myStop = self.comm.ScanSum(nme)
         myStart = myStop-nme
-        self.vector[myStart:myStop]=range(start+myStart*step,stop-(self.shape.actualShape - myStop*step),step)
+        self.vector[myStart:myStop]=range(start+myStart*step,start+ myStop*step),step)
 
     def put(self, ids, values, mode='raise'):
         """
