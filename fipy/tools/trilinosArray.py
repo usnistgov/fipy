@@ -72,7 +72,7 @@ class trilArr:
         if array is not None and numpy.shape(array) == ():
             array = [array]
         if array is not None and dtype is None:
-            dtype = type(array[0])
+            dtype = type(numpy.array(array).take([0])[0])
         elif dtype is None:
             dtype = 'int'
         if str(dtype).count("int") != 0 or dtype == 'i' or dtype == 'l':
@@ -185,7 +185,7 @@ class trilArr:
         nme = self.eMap.NumMyElements()
         myStop = self.comm.ScanSum(nme)
         myStart = myStop-nme
-        self.vector[myStart:myStop]=range(start+myStart*step,start+ myStop*step,step)
+        self.vector[:]=range(start+myStart*step,start+ myStop*step,step)
 
     def put(self, ids, values, mode='raise'):
         """
