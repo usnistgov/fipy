@@ -46,6 +46,7 @@ import numpy
 
 IV = 0
 V = 1
+DIMLESS = 2
 
 class trilArr:
     """
@@ -70,7 +71,8 @@ class trilArr:
         if shape is None and array is None:
             print "FAIL: Must specify either shape or vector."
         if array is not None and numpy.shape(array) == ():
-            array = [array]
+            array=[array+0]
+            vtype = DIMLESS
         if array is not None and dtype is None:
             dtype = type(numpy.array(array).take([0])[0])
         elif dtype is None:
@@ -163,6 +165,9 @@ class trilArr:
                 self.vtype = V
                 self.dtype = 'float'
         self.array = self.vector.array
+        if vtype = DIMLESS
+            self.vtype = DIMLESS
+            self.shape = trilShape(0)
 
     def fillWith(self, value):
         """
@@ -692,7 +697,7 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                v = Epetra.Vector([k for (i,k) in numpy.broadcast(self.vector,other.vector)],self.eMap)
+                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
                 res.vector[:]*=v
             else:
                 res.vector[:]*=other.vector[:]
@@ -704,8 +709,7 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(numpy.array(other).reshape(-1))
-                li*=(self.vector.GlobalLength()/other.size)
+                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
                 res.vector[:]*=li
             else:
                 res.vector[:]*=other
@@ -719,9 +723,8 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(other.vector)
-                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
-                res.vector[:]+=li
+                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
+                res.vector[:]+=v
             else:
                 res.vector[:]+=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
@@ -732,8 +735,7 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(numpy.array(other).reshape(-1))
-                li*=(self.vector.GlobalLength()/other.size)
+                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
                 res.vector[:]+=li
             else:
                 res.vector[:]+=other
@@ -747,9 +749,8 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(other.vector)
-                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
-                res.vector[:]/=li
+                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
+                res.vector[:]/=v
             else:
                 res.vector[:]/=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
@@ -760,13 +761,12 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(numpy.array(other).reshape(-1))
-                li*=(self.vector.GlobalLength()/other.size)
+                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
                 res.vector[:]/=li
             else:
                 res.vector[:]/=other
         return res
-        
+
     def __sub__(self,other):
         res = self.copy()
         if isTrilArray(other):
@@ -775,9 +775,8 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(other.vector)
-                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
-                res.vector[:]-=li
+                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
+                res.vector[:]-=v
             else:
                 res.vector[:]-=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
@@ -788,8 +787,7 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(numpy.array(other).reshape(-1))
-                li*=(self.vector.GlobalLength()/other.size)
+                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
                 res.vector[:]-=li
             else:
                 res.vector[:]-=other
@@ -804,15 +802,15 @@ class trilArr:
     def __rdiv__(self,other):
         res = self.copy()
         res.vector[:] = 1/res.vector[:]
+        res = self.copy()
         if isTrilArray(other):
             import numerix
             s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(other.vector)
-                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
-                res.vector[:]*=li
+                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
+                res.vector[:]*=v
             else:
                 res.vector[:]*=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
@@ -823,8 +821,7 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(numpy.array(other).reshape(-1))
-                li*=(self.vector.GlobalLength()/other.size)
+                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
                 res.vector[:]*=li
             else:
                 res.vector[:]*=other
@@ -833,15 +830,15 @@ class trilArr:
     def __rsub__(self,other):
         res = self.copy()
         res.vector[:] = -res.vector[:]
+        res = self.copy()
         if isTrilArray(other):
             import numerix
             s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(other.vector)
-                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
-                res.vector[:]+=li
+                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
+                res.vector[:]+=v
             else:
                 res.vector[:]+=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
@@ -852,8 +849,7 @@ class trilArr:
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
-                li = list(numpy.array(other).reshape(-1))
-                li*=(self.vector.GlobalLength()/other.size)
+                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
                 res.vector[:]+=li
             else:
                 res.vector[:]+=other

@@ -109,6 +109,11 @@ def arange(start, stop=None, step=1, dtype=None):
         return arr
     return NUMERIX.arange(start,stop,step,dtype)
 
+def array(object, dtype=None, copy=1,order=None, subok=0,ndmin=0):
+    if useTril:
+        return TRIL.trilArr(array=object)
+    return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok,ndmin=ndmin)
+
 def _isPhysical(arr):
     """
     Returns `True` if arr is a `Variable` or `PhysicalField`.
