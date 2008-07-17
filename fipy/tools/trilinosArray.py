@@ -67,9 +67,10 @@ class trilArr:
           - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
         import operator
-        print dtype
         if shape is None and array is None:
             print "FAIL: Must specify either shape or vector."
+        if array is not None and numpy.shape(array) == ():
+            array = [array]
         if array is not None and dtype is None:
             dtype = type(array[0])
         elif dtype is None:
@@ -80,7 +81,6 @@ class trilArr:
             dtype = 'float'
         elif str(dtype).count('bool') > 0:
             dtype = 'bool'
-        print dtype
         if array is None or str(type(array)).count("Epetra") == 0:
             if array is not None:
                 self.shape  = trilShape(numpy.array(array).shape)
@@ -182,10 +182,10 @@ class trilArr:
             self.vector.PutScalar(value)
 
     def fillWithRange(self, start, stop, step):
-        nme = self.comm.NumMyElements()
+        nme = self.eMap.NumMyElements()
         myStop = self.comm.ScanSum(nme)
         myStart = myStop-nme
-        self.vector[myStart:myStop]=range(start+myStart*step,start+ myStop*step),step)
+        self.vector[myStart:myStop]=range(start+myStart*step,start+ myStop*step,step)
 
     def put(self, ids, values, mode='raise'):
         """
@@ -687,57 +687,112 @@ class trilArr:
     def __mul__(self,other):
         res = self.copy()
         if isTrilArray(other):
-            res.vector[:]*=other.vector[:]
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
+            if s is None:
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            elif s != self.shape.getGlobalShape:
+                v = Epetra.Vector([k for (i,k) in numpy.broadcast(self.vector,other.vector)],self.eMap)
+                res.vector[:]*=v
+            else:
+                res.vector[:]*=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]*=other
         else:
-            if type(other) != numpy.ndarray:
-                other = numpy.array(other)
-            if other.shape != self.shape.getGlobalShape():
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
+            if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            res.vector[:]*=(other.reshape(-1))[:]
+            elif s != self.shape.getGlobalShape:
+                li = list(numpy.array(other).reshape(-1))
+                li*=(self.vector.GlobalLength()/other.size)
+                res.vector[:]*=li
+            else:
+                res.vector[:]*=other
         return res
 
     def __add__(self,other):
         res = self.copy()
         if isTrilArray(other):
-            res.vector[:]+=other.vector[:]
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
+            if s is None:
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            elif s != self.shape.getGlobalShape:
+                li = list(other.vector)
+                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
+                res.vector[:]+=li
+            else:
+                res.vector[:]+=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]+=other
         else:
-            if type(other) != numpy.ndarray:
-                other = numpy.array(other)
-            if other.shape != self.shape.getGlobalShape():
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
+            if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            res.vector[:]+=(other.reshape(-1))[:]
+            elif s != self.shape.getGlobalShape:
+                li = list(numpy.array(other).reshape(-1))
+                li*=(self.vector.GlobalLength()/other.size)
+                res.vector[:]+=li
+            else:
+                res.vector[:]+=other
         return res
 
     def __div__(self,other):
         res = self.copy()
         if isTrilArray(other):
-            res.vector[:]/=other.vector[:]
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
+            if s is None:
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            elif s != self.shape.getGlobalShape:
+                li = list(other.vector)
+                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
+                res.vector[:]/=li
+            else:
+                res.vector[:]/=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]/=other
         else:
-            if type(other) != numpy.ndarray:
-                other = numpy.array(other)
-            if other.shape != self.shape.getGlobalShape():
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
+            if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            res.vector[:]/=(other.reshape(-1))[:]
+            elif s != self.shape.getGlobalShape:
+                li = list(numpy.array(other).reshape(-1))
+                li*=(self.vector.GlobalLength()/other.size)
+                res.vector[:]/=li
+            else:
+                res.vector[:]/=other
         return res
         
     def __sub__(self,other):
         res = self.copy()
         if isTrilArray(other):
-            res.vector[:]-=other.vector[:]
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
+            if s is None:
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            elif s != self.shape.getGlobalShape:
+                li = list(other.vector)
+                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
+                res.vector[:]-=li
+            else:
+                res.vector[:]-=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]-=other
         else:
-            if type(other) != numpy.ndarray:
-                other = numpy.array(other)
-            if other.shape != self.shape.getGlobalShape():
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
+            if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            res.vector[:]-=(other.reshape(-1))[:]
+            elif s != self.shape.getGlobalShape:
+                li = list(numpy.array(other).reshape(-1))
+                li*=(self.vector.GlobalLength()/other.size)
+                res.vector[:]-=li
+            else:
+                res.vector[:]-=other
         return res
 
     def __rmul__(self,other):
@@ -750,38 +805,58 @@ class trilArr:
         res = self.copy()
         res.vector[:] = 1/res.vector[:]
         if isTrilArray(other):
-            res.vector[:]*=other.vector[:]
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
+            if s is None:
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            elif s != self.shape.getGlobalShape:
+                li = list(other.vector)
+                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
+                res.vector[:]*=li
+            else:
+                res.vector[:]*=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]*=other
         else:
-            if type(other) != numpy.ndarray:
-                other = numpy.array(other)
-            if other.shape != self.shape.getGlobalShape():
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
+            if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            res.vector[:]*=(other.reshape(-1))[:]
+            elif s != self.shape.getGlobalShape:
+                li = list(numpy.array(other).reshape(-1))
+                li*=(self.vector.GlobalLength()/other.size)
+                res.vector[:]*=li
+            else:
+                res.vector[:]*=other
         return res
 
     def __rsub__(self,other):
-        """
-        Allows trilArr's to be subtracted from other things.  Currently, only single value or full array operations are available
-
-            >>> a = trilArr(range(4)).reshape(2,2)
-            >>> 1-a
-            trilArr([[ 1,  0],
-                   [-1, -2]])
-        """
         res = self.copy()
         res.vector[:] = -res.vector[:]
         if isTrilArray(other):
-            res.vector[:]+=other.vector[:]
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
+            if s is None:
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
+            elif s != self.shape.getGlobalShape:
+                li = list(other.vector)
+                li*=(self.vector.GlobalLength()/other.vector.GlobalLength())
+                res.vector[:]+=li
+            else:
+                res.vector[:]+=other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
             res.vector[:]+=other
         else:
-            if type(other) != numpy.ndarray:
-                other = numpy.array(other)
-            if other.shape != self.shape.getGlobalShape():
+            import numerix
+            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
+            if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            res.vector[:]+=(other.reshape(-1))[:]
+            elif s != self.shape.getGlobalShape:
+                li = list(numpy.array(other).reshape(-1))
+                li*=(self.vector.GlobalLength()/other.size)
+                res.vector[:]+=li
+            else:
+                res.vector[:]+=other
         return res
 
     def __neg__(self):
@@ -864,11 +939,19 @@ class trilShape:
         return tuple(i)
 
     def _fill(self,i,start):
-        while len(i)<self.dimensions:
+        """
+        Fills list i with full slice objects until the length of i is equal to the number of dimensions in this shape.
+        It ignors Nones, and starts at index `start`
+        """
+        while (len(i)-i.count(None))<self.dimensions:
             i.insert(start,slice(None,None,None))
         return i
 
     def _globalTranslateIndices(self, index):
+        o = index
+        if o is None: o = (None,)
+        if index is None:
+            index = (Ellipsis,)
         tup = False
         if type(index) == numpy.ndarray or isTrilArray(index):
             if str(index.dtype).count('bool')>0:
@@ -877,18 +960,24 @@ class trilShape:
             index = list(index)
         if type(index) == int or type(index) == list or type(index) == slice:
             index=[self._fillToDim((index,))]
+            o = (o,)
         elif type(index) == type(Ellipsis):
             index = [self._fillToDim(())]
+            o = (o,)
         elif type(index) == tuple:
-            if list(index).count(Ellipsis) > 0:
-                index = list(index)
+            index = list(index)
+            while index.count(None) > 0:
+                index.remove(None)
+            if len(index) == 0:
+                index = [Ellipsis]
+            if index.count(Ellipsis) > 0:
                 while index.count(Ellipsis) > 0:
                     ind = index.index(Ellipsis)
                     index.remove(Ellipsis)
                     self._fill(index,ind)
                 index = [tuple(index)]
             elif type(index[0]) != int and type(index[0]) != slice and type(index[0]) != list:
-                while type(index) != int and len(index) == 1:
+                while type(index) != int and type(index) != slice and len(index) == 1:
                     index=index[0]
                 if type(index) == int or type(index) == slice:
                     index=[self._fillToDim((index,))]
@@ -898,7 +987,7 @@ class trilShape:
                     tup = True
             else:
                 index = [self._fillToDim(tuple(index))]
-        s = self._calculateRes(index[0])[1]
+        s = self._calculateRes(index[0],original=o)[1]
         index = [el for i in index for el in self._globalTranslateSlices(i)]
         if tup:
             s = len(index)
@@ -914,7 +1003,7 @@ class trilShape:
             indices.append(lineIndex)
         return (indices,s)
 
-    def _calculateRes(self, sls):
+    def _calculateRes(self, sls, original=None):
         dims = [numpy.arange(i) for i in self.globalShape]
         if sls is not None:
             sls = list(sls)
@@ -923,10 +1012,24 @@ class trilShape:
                 if type(el)==int:
                     sls[i]=self._intToSlice(el)
             res = [tuple(list(dim[sl])) for (sl,dim) in zip(sls,dims)]
-            s = tuple([len(d) for (d,n) in zip(res,o) if str(type(n)).count("int")==0])
+            s = [len(d) for (d,n) in zip(res,o) if str(type(n)).count("int")==0]
+            if original is not None:
+                o = list(original)
+                if o.count(Ellipsis) > 0:
+                    if o.count(Ellipsis) > 0:
+                        ind = o.index(Ellipsis)
+                        o.remove(Ellipsis)
+                        self._fill(o,ind)
+                numNone=0
+                while o.count(None) > 0:
+                    ind = o.index(None)+numNone
+                    o.remove(None)
+                    s.insert(ind,1)
+                    numNone += 1
+            s = tuple(s)
         else:
             res = dims
-            s = None
+            s = self.globalShape
         return (res,s)
 
     def _globalTranslateSlices(self, sls = None):
