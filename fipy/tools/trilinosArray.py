@@ -67,6 +67,7 @@ class trilArr:
           - `parallel`:whether or not this array should be parallelized
           - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
+        vtype = -1
         import operator
         if shape is None and array is None:
             print "FAIL: Must specify either shape or vector."
@@ -165,7 +166,7 @@ class trilArr:
                 self.vtype = V
                 self.dtype = 'float'
         self.array = self.vector.array
-        if vtype = DIMLESS
+        if vtype == DIMLESS:
             self.vtype = DIMLESS
             self.shape = trilShape(0)
 
@@ -631,7 +632,8 @@ class trilArr:
         return self.__copy__()
     
     size = property(fget = lambda self: self.shape.getSize())
-    
+    rank = property(fget = lambda self: self.shape.getRank())
+
     def __iter__(self):
         return self.vector.__iter__()
 
@@ -684,13 +686,13 @@ class trilArr:
         return self.shape.globalShape[0]
 
     def __array__(self,dtype=None):
+        if self.vtype == DIMLESS: return numpy.array(self.vector[0])
 	return numpy.array(self.allElems().array.reshape(self.shape.getGlobalShape()),dtype = self.dtype)
 
     def __or__(self, other):
         return trilArr(numpy.array(self) | numpy.array(other))
-
-    def __mul__(self,other):
-        res = self.copy()
+    
+    def _findVec(self,other):
         if isTrilArray(other):
             import numerix
             s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
@@ -698,11 +700,11 @@ class trilArr:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
                 v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
-                res.vector[:]*=v
+                return v
             else:
-                res.vector[:]*=other.vector[:]
+                return other.vector[:]
         elif numpy.isscalar(other) or other.shape == ():
-            res.vector[:]*=other
+            return other
         else:
             import numerix
             s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
@@ -710,150 +712,93 @@ class trilArr:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
             elif s != self.shape.getGlobalShape:
                 li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
-                res.vector[:]*=li
+                return li
             else:
-                res.vector[:]*=other
-        return res
+                return other
+    
+    def __mul__(self,other):
+        if self.size >= numpy.array(other).size:
+            res = self.copy()
+            res.vector[:]*=self._findVec(other)
+            return res
+        else:
+            res = trilArr(other)
+            res.vector[:]*=res._findVec(self)
+            return res
 
     def __add__(self,other):
-        res = self.copy()
-        if isTrilArray(other):
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
-                res.vector[:]+=v
-            else:
-                res.vector[:]+=other.vector[:]
-        elif numpy.isscalar(other) or other.shape == ():
-            res.vector[:]+=other
+        if self.size >= numpy.array(other).size:
+            res = self.copy()
+            res.vector[:]+=self._findVec(other)
+            return res
         else:
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
-                res.vector[:]+=li
-            else:
-                res.vector[:]+=other
-        return res
+            res = trilArr(other)
+            res.vector[:]+=res._findVec(self)
+            return res
 
     def __div__(self,other):
-        res = self.copy()
-        if isTrilArray(other):
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
-                res.vector[:]/=v
-            else:
-                res.vector[:]/=other.vector[:]
-        elif numpy.isscalar(other) or other.shape == ():
-            res.vector[:]/=other
+        if self.size >= numpy.array(other).size:
+            res = self.copy()
+            res.vector[:]/=self._findVec(other)
+            return res
         else:
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
-                res.vector[:]/=li
-            else:
-                res.vector[:]/=other
-        return res
+            res = trilArr(other)
+            res = 1/res
+            res.vector[:]*=res._findVec(self)
+            return res
 
     def __sub__(self,other):
-        res = self.copy()
-        if isTrilArray(other):
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
-                res.vector[:]-=v
-            else:
-                res.vector[:]-=other.vector[:]
-        elif numpy.isscalar(other) or other.shape == ():
-            res.vector[:]-=other
+        if self.size >= numpy.array(other).size:
+            res = self.copy()
+            res.vector[:]-=self._findVec(other)
+            return res
         else:
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
-                res.vector[:]-=li
-            else:
-                res.vector[:]-=other
-        return res
+            res = trilArr(other)
+            res = -res
+            res.vector[:]+=res._findVec(self)
+            return res
 
     def __rmul__(self,other):
-        return self.__mul__(other)
+        if self.size >= numpy.array(other).size:
+            res = self.copy()
+            res.vector[:]*=self._findVec(other)
+            return res
+        else:
+            res = trilArr(other)
+            res.vector[:]*=res._findVec(self)
+            return res
 
     def __radd__(self,other):
-        return self.__add__(other)
+        if self.size >= numpy.array(other).size:
+            res = self.copy()
+            res.vector[:]+=self._findVec(other)
+            return res
+        else:
+            res = trilArr(other)
+            res.vector[:]+=res._findVec(self)
+            return res
 
     def __rdiv__(self,other):
-        res = self.copy()
-        res.vector[:] = 1/res.vector[:]
-        res = self.copy()
-        if isTrilArray(other):
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
-                res.vector[:]*=v
-            else:
-                res.vector[:]*=other.vector[:]
-        elif numpy.isscalar(other) or other.shape == ():
-            res.vector[:]*=other
+        if self.size >= numpy.array(other).size:
+            res = self.copy()
+            res.vector[:] = 1/res.vector[:]
+            res.vector[:]*=self._findVec(other)
+            return res
         else:
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
-                res.vector[:]*=li
-            else:
-                res.vector[:]*=other
-        return res
+            res = trilArr(other)
+            res.vector[:]/=res._findVec(self)
+            return res
 
     def __rsub__(self,other):
-        res = self.copy()
-        res.vector[:] = -res.vector[:]
-        res = self.copy()
-        if isTrilArray(other):
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
-                res.vector[:]+=v
-            else:
-                res.vector[:]+=other.vector[:]
-        elif numpy.isscalar(other) or other.shape == ():
-            res.vector[:]+=other
+        if self.size >= numpy.array(other).size:
+            res = self.copy()
+            res.vector[:] = -res.vector[:]
+            res.vector[:]+=self._findVec(other)
+            return res
         else:
-            import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
-            if s is None:
-                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
-                li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
-                res.vector[:]+=li
-            else:
-                res.vector[:]+=other
-        return res
+            res = trilArr(other)
+            res.vector[:]-=res._findVec(self)
+            return res
 
     def __neg__(self):
         """
@@ -893,12 +838,15 @@ class trilShape:
             print "ERROR: Must be an Epetra Map."
 
     def getGlobalShape(self):
+        if self.globalShape == (0,): return ()
         return self.globalShape
 
     def getRank(self):
+        if self.globalShape == (0,): return 0
         return self.dimensions
 
     def getSize(self):
+        if self.globalShape == (0,): return 1
         return self.actualShape
     
     def getSteps(self):
