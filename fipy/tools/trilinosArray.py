@@ -68,11 +68,15 @@ class trilArr:
           - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
 
+##         if array is not None and hasattr(array,'getValue'):
+##             array = array.getValue()
+        ## POSSIBLY A GOOD IDEA BUT MAYBE NOT
+        
         if dtype is not None:
             dtype = fixType(dtype)
         else:
             if array is not None:
-                dtype = fixType(type(numpy.array(array).take([0])[0]))
+                dtype = determineType(array)
             else:
                 dtype = 'int'
 
@@ -119,8 +123,10 @@ class trilArr:
             elif not parallel:
                 # create array based on shape
                 array = Vect(numpy.zeros(_size(shape)))
-        
-        if _size(array) != _size(shape):
+
+        if determineType(array) not in ['int','float'] and \
+               ((_size(array) != _size(shape)) \
+                or _size(shape)==0):
             raise ValueError('Shape does not match size of array.')
 
         if type(array) in [Epetra.Vector,Epetra.IntVector]:
@@ -130,7 +136,26 @@ class trilArr:
             else:
                 vec = array
             map = vec.Map()
-        if type(array) in [list,tuple,type(numpy.array(0))]:
+        elif numpy.isscalar(array):
+            if shape is ():
+                vec = array ## possible fix: Vect([array])
+                vtype = DIMLESS
+                map = None
+            else:
+                if parallel:
+                    vec = Vect(map)
+                    vec[:] = ty(array)
+                else:
+                    vec = Vect([array]*_size(shape))
+        elif isinstance(array,trilArr):
+            vec = array.vector
+            dtype = array.dtype
+            vtype = array.vtype
+            map = array.eMap
+            shape = array.shape
+        else:
+            if type(array) not in [list,tuple,type(numpy.array(0))]:
+                array = numpy.array(array)
             if parallel:
                 vec = Vect(map)
                 inds = map.MyGlobalElements()
@@ -139,18 +164,6 @@ class trilArr:
             else:
                 vec = Vect(array)
             map = vec.Map()
-        if numpy.isscalar(array):
-            dtype = fixtype(type(array))
-            vec = array
-            vtype = DIMLESS
-            map = None
-            shape = ()
-        if isinstance(array,trilArr):
-            vec = array.vector
-            dtype = array.dtype
-            vtype = array.vtype
-            map = array.eMap
-            shape = array.shape
 
         self.vector = vec
         if not numpy.isscalar(vec):
@@ -158,8 +171,8 @@ class trilArr:
         self.dtype = dtype
         self.eMap = map
         self.comm = Epetra.PyComm()
-        self.shape = trilShape(shape)
-        self.shape.setMap(map)
+        self.shp = trilShape(shape)
+        self.shp.setMap(map)
         self.vtype = vtype
 
     def fillWith(self, value):
@@ -299,7 +312,7 @@ class trilArr:
         else:
             res = f(self.array, optarg.array)    
         v = Epetra.Vector(self.eMap, res)
-        return trilArr(array=v,shape=self.shape.getGlobalShape())
+        return trilArr(array=v,shape=self.shape)
 
     def arccos(self):
         """
@@ -488,9 +501,9 @@ class trilArr:
                 print "ERROR: Axis out of range."
                 return -1
             res = self.take([0],axis=axis)
-            for i in range(self.shape[axis])[1:]:
+            for i in range(self.shp[axis])[1:]:
                 res += self.take([i],axis)
-            newshp = self.shape.globalShape[:axis]+self.shape.globalShape[axis+1:]
+            newshp = self.shp.globalShape[:axis]+self.shp.globalShape[axis+1:]
             return res.reshape(newshp,False)
         return self.globalSum()
 
@@ -557,24 +570,24 @@ class trilArr:
                     shp = args[0]
                 else:
                     shp = args
-        if self.shape._shapeCheck(shp) is None:
+        if self.shp._shapeCheck(shp) is None:
             return
         if copy:
             newArr = self.__copy__()
             newArr.shape.reshape(shp)
             return newArr
         else:
-            self.shape.reshape(shp)
+            self.shp.reshape(shp)
             return self
 
     def getShape(self):
-        return self.shape.getGlobalShape()
+        return self.shape
 
     def rank(self):
         return self.getRank()
     
     def getRank(self):
-        return self.shape.getRank()
+        return self.shp.getRank()
 
     def allElems(self):
         """
@@ -605,7 +618,7 @@ class trilArr:
             allEls = [i for (i,j) in zip(allEls,range(1,len(allEls)+1)) \
                       if j<=maxsize*(sz%procs) or j%maxsize]
         return trilArr(array=numpy.array(allEls), \
-                       shape=self.shape.getGlobalShape(), \
+                       shape=self.shape, \
                        parallel=False)
 
     def isFloat(self):
@@ -642,9 +655,10 @@ class trilArr:
 
     def copy(self):
         return self.__copy__()
-    
-    size = property(fget = lambda self: self.shape.getSize())
-    rank = property(fget = lambda self: self.shape.getRank())
+
+    shape = property(fget = lambda self: self.shp.getGlobalShape())
+    size = property(fget = lambda self: self.shp.getSize())
+    rank = property(fget = lambda self: self.shp.getRank())
 
     def __iter__(self):
         return self.vector.__iter__()
@@ -656,14 +670,14 @@ class trilArr:
         return self.__getitem__(slice(i,j,None))
     
     def __setitem__(self, i, y):
-        i = self.shape.getLocalIndex(i)
+        i = self.shp.getLocalIndex(i)
         szProcEls = len(i[0])
         res = self.comm.ScanSum(szProcEls)-szProcEls
         y = numpy.array(y).reshape(-1)
         self.vector.__setitem__(i[0], y[res:])
 
     def __getitem__(self, y):
-        y = self.shape.getLocalIndex(y)
+        y = self.shp.getLocalIndex(y)
         a = self.vector.__getitem__(y[0])
         s = y[1]
         if s == (): return a[0]
@@ -675,7 +689,7 @@ class trilArr:
         else:
             plell = True
         return trilArr(array = self.vector.copy(), \
-                       shape = self.shape.getGlobalShape(), \
+                       shape = self.shape, \
                        dtype = self.dtype, parallel = plell, \
                        map = self.eMap)
 
@@ -683,52 +697,60 @@ class trilArr:
         return self.vector.__iter__()
 
     def __repr__(self):
+        if self.vtype == DIMLESS:
+            return "trilArr("+repr(self.vector)+")"
         if self.comm.NumProc() == 1:
             return "trilArr("+self.__array__().__repr__()[6:-1]+")"
         else:
             return "trilArr("+self.vector.array.__repr__()[6:-1]+")"
 
     def __str__(self):
+        if self.vtype == DIMLESS:
+            return str(self.vector)
         if self.comm.NumProc() == 1:
             return self.__array__().__str__()
         else:
             return self.vector.__str__()
 
     def __len__(self):
-        return self.shape.globalShape[0]
+        return self.shp.globalShape[0]
 
     def __array__(self,dtype=None):
-        if self.vtype == DIMLESS: return numpy.array(self.vector[0])
-	return numpy.array(self.allElems().array.reshape(self.shape.getGlobalShape()),dtype = self.dtype)
+        if self.vtype == DIMLESS: return numpy.array(self.vector)
+	return numpy.array(self.allElems().array.reshape(self.shape),dtype = self.dtype)
 
     def __or__(self, other):
         return trilArr(numpy.array(self) | numpy.array(other))
     
     def _findVec(self,other):
-        if isTrilArray(other):
+        if numpy.isscalar(other):
+            return [other]*self.size
+        elif other.shape == ():
+            return [other+0]*self.size
+        elif isTrilArray(other):
             import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape.getGlobalShape())
+            s = numerix._broadcastShape(self.shape,other.shape)
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
+            elif s != self.shape:
                 v = Epetra.Vector(self.eMap,[k for (i,k) in numpy.broadcast(self.__array__(),other.__array__())])
                 return v
             else:
-                return other.vector[:]
-        elif numpy.isscalar(other) or other.shape == ():
-            return other
+                return other.vector
         else:
             import numerix
-            s = numerix._broadcastShape(self.shape.getGlobalShape(),other.shape)
+            s = numerix._broadcastShape(self.shape,other.shape)
             if s is None:
                 raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
-            elif s != self.shape.getGlobalShape:
+            elif s != self.shape:
                 li = [k for (i,k) in numpy.broadcast(self.__array__(),other)]
                 return li
             else:
                 return other
     
     def __mul__(self,other):
+        if self.vtype==DIMLESS:
+            return self.vector*other
         if self.size >= numpy.array(other).size:
             res = self.copy()
             vec = self._findVec(other)
@@ -741,6 +763,8 @@ class trilArr:
         return res
 
     def __add__(self,other):
+        if self.vtype==DIMLESS:
+            return self.vector+other
         if self.size >= numpy.array(other).size:
             res = self.copy()
             vec = self._findVec(other)
@@ -753,6 +777,8 @@ class trilArr:
         return res
 
     def __div__(self,other):
+        if self.vtype==DIMLESS:
+            return self.vector/other
         if self.size >= numpy.array(other).size:
             res = self.copy()
             vec = self._findVec(other)
@@ -770,6 +796,8 @@ class trilArr:
         return res
 
     def __sub__(self,other):
+        if self.vtype==DIMLESS:
+            return self.vector-other
         if self.size >= numpy.array(other).size:
             res = self.copy()
             vec = self._findVec(other)
@@ -787,40 +815,52 @@ class trilArr:
         return res
 
     def __rmul__(self,other):
+        ## APPEARS TO OCCASIONALLY RETURN NONE
+        ## check out fipy/variables/variable.py(436)getValue()
+        ## fipy/variables/binaryOperatorVariable.py(80)_calcValuePy()
+        ## when running triltester
+        if self.vtype==DIMLESS:
+            return other*self.vector
         self.__mul__(other)
 
     def __radd__(self,other):
+        if self.vtype==DIMLESS:
+            return other+self.vector
         self.__add__(other)
 
     def __rdiv__(self,other):
-        if self.size < numpy.array(other).size:
+        if self.vtype==DIMLESS:
+            return other/self.vector
+        if self.size >= numpy.array(other).size:
             res = self.copy()
+            res.vector[:] = 1/res.vector[:]
             vec = self._findVec(other)
+        else:
+            res = trilArr(other)
+            vec = res._findVec(self)
             if type(vec)==list:
                 vec = [1/el for el in vec]
             else:
                 vec[:] = 1/vec[:]
-        else:
-            res = trilArr(other)
-            res.vector[:] = 1/res.vector[:]
-            vec = res._findVec(self)
         if determineType(vec) is not determineType(res):
             res.changeType(determineType(vec))
         res.vector[:]*=vec
         return res
 
     def __rsub__(self,other):
-        if self.size < numpy.array(other).size:
+        if self.vtype==DIMLESS:
+            return other-self.vector
+        if self.size >= numpy.array(other).size:
             res = self.copy()
+            res = -res
             vec = self._findVec(other)
+        else:
+            res = trilArr(other)
+            vec = res._findVec(self)
             if type(vec)==list:
                 vec = [-el for el in vec]
             else:
                 vec = -vec
-        else:
-            res = trilArr(other)
-            res = -res
-            vec = res._findVec(self)
         if determineType(vec) is not determineType(res):
             res.changeType(determineType(vec))
         res.vector[:]+=vec
@@ -860,11 +900,12 @@ class trilShape:
         self.steps = tuple(tmp)
 
     def setMap(self, eMap):
-        
         if isinstance(eMap,Epetra.Map) or isinstance(eMap,Epetra.BlockMap):
             self.map = eMap
+        elif eMap is None:
+            self.map = None
         else:
-            print "ERROR: Must be an Epetra Map."
+            raise ValueError('Must be an Epetra Map.')
 
     def getGlobalShape(self):
         if self.globalShape == (0,): return ()
@@ -1109,10 +1150,11 @@ def _size(shape):
     # Possibly should be a different method, though it's
     # not really necessary.
 
-    if type(shape) is None:
+    if type(shape) in [None]:
         return -1
     
-    if type(shape) in [list,type(numpy.array(0))] or isinstance(shape,trilArr):
+    if type(shape) in [list,type(numpy.array(0))] \
+           or isinstance(shape,trilArr):
         shape = numpy.shape(shape)
     elif str(type(shape)).count("Epetra")>0:
         if str(type(shape)).count("Vector")>0:
@@ -1120,6 +1162,8 @@ def _size(shape):
         shape = shape.NumGlobalElements()
 
     if type(shape) is tuple or isinstance(shape,trilShape):
+        if _dimensions(shape)==0:
+            return 0
         size = shape[0]
         for i in range(_dimensions(shape))[1:]:
             size*=shape[i]
@@ -1148,7 +1192,7 @@ def determineType(obj):
     if numpy.isscalar(obj):
         t = type(obj)
     else:
-        t = numpy.array(obj).dtype
+        t = numpy.array(obj).dtype  ## THIS NEEDS TO BE FIXED
     if str(t).count('float')>0:
         return 'float'
     if str(t).count('int')>0:
