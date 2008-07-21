@@ -180,10 +180,9 @@ class Variable(object):
             ValueError: setting an array element with a sequence.
             >>> print numerix.array([numerix.array(Variable(0)), numerix.array(Variable(0))])
             [0 0]
-             
         """
-        import numpy
-        return numpy.array(self.getValue(), t)
+        
+        return numerix.array(self.getValue(), t)
 
 ##    def _get_array_interface(self):
 ##        return self._getArray().__array_interface__
@@ -448,6 +447,7 @@ class Variable(object):
             7
 
         """
+        
         if self.stale or not self._isCached() or self.value is None:
             value = self._calcValue()
             if self._isCached():
@@ -456,7 +456,8 @@ class Variable(object):
                 self._setValue(value=None)
             self._markFresh()
         else:
-            value = self.value 
+            value = self.value
+            
         return value
 
     def _isCached(self):
