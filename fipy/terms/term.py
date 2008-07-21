@@ -111,10 +111,11 @@ class Term:
             raw_input()
         
         
-##         raw_input()
-##         print "x", var
-##         print "L", matrix
-##         print "b", RHSvector
+        print "ME:\n",repr(self),self.__class__.__name__
+        print "x:\n", repr(var)
+        print "L:\n", matrix
+        print "b:\n", repr(RHSvector)
+        raw_input("Final Matrix")
         
         return matrix, RHSvector
 

@@ -79,7 +79,6 @@ class trilArr:
                 dtype = determineType(array)
             else:
                 dtype = 'int'
-
         if dtype in ['int','bool']:
             Vect = Epetra.IntVector
             ty = int
@@ -574,7 +573,7 @@ class trilArr:
             return
         if copy:
             newArr = self.__copy__()
-            newArr.shape.reshape(shp)
+            newArr.shp.reshape(shp)
             return newArr
         else:
             self.shp.reshape(shp)
@@ -634,23 +633,24 @@ class trilArr:
             return self.dtype
 
     def changeType(self, dtype):
-        if dtype is 'int' or 'bool':
-            self.dtype = dtype
+        if dtype in ['int','bool']:
             if self.dtype is 'int' or 'bool':
+                self.dtype = dtype
                 return
+            self.dtype = dtype
             iv = Epetra.IntVector(self.eMap)
             iv[:]=[int(i) for i in self]
             self.vector = iv
-            self.array = self.vector.array
             self.vtype = IV
         else:
-            self.dtype = dtype
             if self.dtype is 'float':
                 return
+            self.dtype = dtype
             v = Epetra.Vector(self.eMap)
-            v[:]=self.vector[:]
+            v[:]=[i for i in self]
             self.vector = v
             self.vtype = V
+            self.eMap = v.Map()
         self.array = self.vector.array
 
     def copy(self):
@@ -725,9 +725,9 @@ class trilArr:
     def _findVec(self,other):
         if numpy.isscalar(other):
             return [other]*self.size
-        elif other.shape == ():
-            return [other+0]*self.size
         elif isTrilArray(other):
+            if other.vtype == DIMLESS:
+                return [other.vector]*self.size
             import numerix
             s = numerix._broadcastShape(self.shape,other.shape)
             if s is None:
@@ -737,6 +737,8 @@ class trilArr:
                 return v
             else:
                 return other.vector
+        elif other.shape == ():
+            return [other+0]*self.size
         else:
             import numerix
             s = numerix._broadcastShape(self.shape,other.shape)
@@ -758,7 +760,9 @@ class trilArr:
             res = trilArr(other)
             vec = res._findVec(self)
         if determineType(vec) is not determineType(res):
-            res.changeType(determineType(vec))
+            if determineType(res) != 'float':
+                if determineType(res) != 'int' or determineType(vec) != 'bool':
+                    res.changeType(determineType(vec))
         res.vector[:]*=vec
         return res
 
@@ -772,7 +776,9 @@ class trilArr:
             res = trilArr(other)
             vec = res._findVec(self)
         if determineType(vec) is not determineType(res):
-            res.changeType(determineType(vec))
+            if determineType(res) != 'float':
+                if determineType(res) != 'int' or determineType(vec) != 'bool':
+                    res.changeType(determineType(vec))
         res.vector[:]+=vec
         return res
 
@@ -791,7 +797,9 @@ class trilArr:
             res.vector[:] = 1/res.vector[:]
             vec = res._findVec(self)
         if determineType(vec) is not determineType(res):
-            res.changeType(determineType(vec))
+            if determineType(res) != 'float':
+                if determineType(res) != 'int' or determineType(vec) != 'bool':
+                    res.changeType(determineType(vec))
         res.vector[:]*=vec
         return res
 
@@ -810,23 +818,21 @@ class trilArr:
             res = -res
             vec = res._findVec(self)
         if determineType(vec) is not determineType(res):
-            res.changeType(determineType(vec))
+            if determineType(res) != 'float':
+                if determineType(res) != 'int' or determineType(vec) != 'bool':
+                    res.changeType(determineType(vec))
         res.vector[:]+=vec
         return res
 
     def __rmul__(self,other):
-        ## APPEARS TO OCCASIONALLY RETURN NONE
-        ## check out fipy/variables/variable.py(436)getValue()
-        ## fipy/variables/binaryOperatorVariable.py(80)_calcValuePy()
-        ## when running triltester
         if self.vtype==DIMLESS:
             return other*self.vector
-        self.__mul__(other)
+        return self.__mul__(other)
 
     def __radd__(self,other):
         if self.vtype==DIMLESS:
             return other+self.vector
-        self.__add__(other)
+        return self.__add__(other)
 
     def __rdiv__(self,other):
         if self.vtype==DIMLESS:
@@ -843,7 +849,9 @@ class trilArr:
             else:
                 vec[:] = 1/vec[:]
         if determineType(vec) is not determineType(res):
-            res.changeType(determineType(vec))
+            if determineType(res) != 'float':
+                if determineType(res) != 'int' or determineType(vec) != 'bool':
+                    res.changeType(determineType(vec))
         res.vector[:]*=vec
         return res
 
@@ -862,7 +870,9 @@ class trilArr:
             else:
                 vec = -vec
         if determineType(vec) is not determineType(res):
-            res.changeType(determineType(vec))
+            if determineType(res) != 'float':
+                if determineType(res) != 'int' or determineType(vec) != 'bool':
+                    res.changeType(determineType(vec))
         res.vector[:]+=vec
         return res
 
@@ -1191,8 +1201,14 @@ def determineType(obj):
         return obj.dtype
     if numpy.isscalar(obj):
         t = type(obj)
+    elif type(obj) in [list,tuple,Epetra.IntVector,Epetra.Vector,numpy.ndarray]:
+        tmp = obj
+        while type(tmp) in [list,tuple,Epetra.IntVector,Epetra.Vector,numpy.ndarray]:
+            tmp = tmp[0]
+        t = type(tmp)
     else:
-        t = numpy.array(obj).dtype  ## THIS NEEDS TO BE FIXED
+        if hasattr(obj,"getValue"):
+            t = obj.getValue().dtype
     if str(t).count('float')>0:
         return 'float'
     if str(t).count('int')>0:
@@ -1203,7 +1219,7 @@ def determineType(obj):
 def isTrilArray(obj):
     return isinstance(obj, trilArr)
 
-def arange(start,stop,step,dtype):
+def arange(start,stop=None,step=1,dtype=None):
     if stop is None:
         stop = start
         start = 0

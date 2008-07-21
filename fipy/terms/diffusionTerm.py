@@ -222,9 +222,11 @@ class _DiffusionTerm(Term):
         interiorCoeff = numerix.array(coeff)
         
         interiorCoeff[mesh.getExteriorFaces().getValue()] = 0
-        
+        print interiorCoeff,mesh._getCellFaceIDs()
+        raw_input("Getting passed to take 1")
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
-
+        print interiorCoeff
+        raw_input("After take")
         coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
@@ -232,7 +234,6 @@ class _DiffusionTerm(Term):
         interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
         
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
-
         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[0], interiorFaceCellIDs[1])
         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
@@ -272,7 +273,6 @@ class _DiffusionTerm(Term):
         
         N = mesh.getNumberOfCells()
         M = mesh._getMaxFacesPerCell()
-
         if self.order > 2:
 
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
@@ -281,6 +281,7 @@ class _DiffusionTerm(Term):
                                                                                  boundaryConditions = lowerOrderBCs, 
                                                                                  dt = dt,
                                                                                  equation=equation)
+            
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()
@@ -344,10 +345,9 @@ class _DiffusionTerm(Term):
 
                 del coeff
                 del minusCoeff
-                
+
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
             del lowerOrderBCs
-
             L, b = self._doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
                                self._getCoefficientMatrix(SparseMatrix, mesh, self.coeffDict['cell 1 diag']), numerix.zeros(N,'d'))
 
@@ -355,7 +355,6 @@ class _DiffusionTerm(Term):
                 b -= self.anisotropySource
                                
             del higherOrderBCs
-
 
         else:
             

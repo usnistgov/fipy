@@ -83,8 +83,8 @@ class _Equation(Term):
 
         N = len(var)
         self.RHSvector = numerix.zeros((N,),'d')
-        self.matrix = SparseMatrix(size=N)
-
+        self.matrix = SparseMatrix(size=N)#        print "vector:\n",repr(self.RHSvector)
+#        print "self.orderedPlusOtherKeys():\n",self.orderedPlusOtherKeys()
         for key in self.orderedPlusOtherKeys():
             term = self.terms[key]
             if term is not None:
@@ -97,10 +97,12 @@ class _Equation(Term):
                     self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
                     self._viewer.plot(matrix=termMatrix)
                     raw_input()
-
+                print "vector:\n%s" %(termRHSvector,)
+                print "matrix:\n%s" %(termMatrix,)
+                raw_input("In equation, building final matrix.  Current term: %s" %(key,))
+                print ""
                 self.matrix += termMatrix
                 self.RHSvector += termRHSvector
-	
         matrix = self.matrix
         RHSvector = self.RHSvector
         if not self._cacheMatrix:
