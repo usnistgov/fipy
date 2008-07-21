@@ -69,7 +69,6 @@ class trilArr:
         """
 
 
-        #print "Passed in:",repr(array),repr(shape),repr(map),repr(dtype),repr(parallel)
         if type(array) == tuple:
             array = list(array)
         if type(shape) == list:
@@ -124,7 +123,7 @@ class trilArr:
             elif not parallel:
                 # create array based on shape
                 array = Vect(numpy.zeros(_size(shape)))
-
+                
         if fixType(type(array)) not in ['int','float','bool'] and \
                ((_size(array) != _size(shape)) \
                 or _size(shape)==0):
@@ -175,6 +174,7 @@ class trilArr:
         self.shp = trilShape(shape)
         self.shp.setMap(map)
         self.vtype = vtype
+        self.isParallel = parallel
 
     def fillWith(self, value):
         """
@@ -682,17 +682,17 @@ class trilArr:
         y = self.shp.getLocalIndex(y)
         a = self.vector.__getitem__(y[0])
         s = y[1]
-        if s == (): return a[0]
+        if s == () and len(a) is not 0:
+            return a[0]
         return trilArr(array = a,shape = s,parallel = False)
 
     def __copy__(self):
-        if self.eMap.NumMyElements() == self.eMap.NumGlobalElements():
-            plell = False
-        else:
-            plell = True
-        return trilArr(array = self.vector.copy(), \
+        Vect = type(self.vector)
+        newVect = Vect(self.eMap)
+        newVect[:] = self.vector[:]
+        return trilArr(array = newVect, \
                        shape = self.shape, \
-                       dtype = self.dtype, parallel = plell, \
+                       dtype = self.dtype, parallel = self.isParallel, \
                        map = self.eMap)
 
     def __iter__(self):
@@ -701,7 +701,7 @@ class trilArr:
     def __repr__(self):
         if self.vtype == DIMLESS:
             return "trilArr("+repr(self.vector)+")"
-        if self.comm.NumProc() == 1:
+        if not self.isParallel:
             return "trilArr("+self.__array__().__repr__()[6:-1]+")"
         else:
             return "trilArr("+self.vector.array.__repr__()[6:-1]+")"
@@ -709,7 +709,7 @@ class trilArr:
     def __str__(self):
         if self.vtype == DIMLESS:
             return str(self.vector)
-        if self.comm.NumProc() == 1:
+        if not self.isParallel:
             return self.__array__().__str__()
         else:
             return self.vector.__str__()
@@ -719,14 +719,14 @@ class trilArr:
 
     def __array__(self,dtype=None):
         if self.vtype == DIMLESS: return numpy.array(self.vector)
-	return numpy.array(self.array.reshape(self.shape),dtype = self.dtype)  #ADD BACK IN AllElems() --> It was removed for debugging purposes
+	return numpy.array(self.allElems().array.reshape(self.shape),dtype = self.dtype)  
 
     def __or__(self, other):
         return trilArr(numpy.array(self) | numpy.array(other))
     
     def _findVec(self,other):
         if numpy.isscalar(other):
-            return [other]*self.size
+            return [other]*len(self.vector)
         elif isTrilArray(other):
             if other.vtype == DIMLESS:
                 return [other.vector]*self.size
@@ -740,7 +740,9 @@ class trilArr:
             else:
                 return other.vector
         elif other.shape == ():
-            return [other+0]*self.size
+            if type(other) is numpy.ndarray:
+                other = other.item()
+            return [other]*len(self.vector)
         else:
             import numerix
             s = numerix._broadcastShape(self.shape,other.shape)
@@ -1229,7 +1231,7 @@ def _size(shape):
     # not really necessary.
     if hasattr(shape,"getValue"):
         shape = shape.getValue()
-    if type(shape) in [None]:
+    if type(shape) is None:
         return -1
     
     if type(shape) in [list,type(numpy.array(0))] \
@@ -1300,6 +1302,8 @@ def arange(start,stop=None,step=1,dtype=None):
     return arr
 
 def getShape(array):
+    if isTrilArray(array) or type(array) == numpy.ndarray:
+        return array.shape
     dims = []
     flag = True
     while not numpy.isscalar(array) and flag:
