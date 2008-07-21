@@ -68,10 +68,12 @@ class trilArr:
           - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
 
-##         if array is not None and hasattr(array,'getValue'):
-##             array = array.getValue()
-        ## POSSIBLY A GOOD IDEA BUT MAYBE NOT
-        
+
+        #print "Passed in:",repr(array),repr(shape),repr(map),repr(dtype),repr(parallel)
+        if type(array) == tuple:
+            array = list(array)
+        if type(shape) == list:
+            shape = tuple(shape)
         if dtype is not None:
             dtype = fixType(dtype)
         else:
@@ -101,7 +103,7 @@ class trilArr:
                     shape=(map.NumGlobalElements(),)
             else:
                 # derive shape from map
-                shape=numpy.shape(array)
+                shape = getShape(array)
                 if map is None:
                     map = Epetra.Map(_size(shape),0,comm)
                 else:
@@ -123,7 +125,7 @@ class trilArr:
                 # create array based on shape
                 array = Vect(numpy.zeros(_size(shape)))
 
-        if determineType(array) not in ['int','float'] and \
+        if fixType(type(array)) not in ['int','float','bool'] and \
                ((_size(array) != _size(shape)) \
                 or _size(shape)==0):
             raise ValueError('Shape does not match size of array.')
@@ -158,7 +160,7 @@ class trilArr:
             if parallel:
                 vec = Vect(map)
                 inds = map.MyGlobalElements()
-                array = numpy.array(array).reshape(-1)
+                array = numpy.array(array).flat
                 vec[:] = [ty(el) for el in array[inds]]
             else:
                 vec = Vect(array)
@@ -239,7 +241,7 @@ class trilArr:
             ids = [self.eMap.LID(i) for i in ids if list(elms).count(i)>0]
         numpy.put(self.array, ids, values)
     
-    def take(self,ids,axis=None):
+    def take(self,ids,axis=None,out=None,mode=None):
         """
         Takes values out of the array
         
@@ -717,7 +719,7 @@ class trilArr:
 
     def __array__(self,dtype=None):
         if self.vtype == DIMLESS: return numpy.array(self.vector)
-	return numpy.array(self.allElems().array.reshape(self.shape),dtype = self.dtype)
+	return numpy.array(self.array.reshape(self.shape),dtype = self.dtype)  #ADD BACK IN AllElems() --> It was removed for debugging purposes
 
     def __or__(self, other):
         return trilArr(numpy.array(self) | numpy.array(other))
@@ -875,6 +877,67 @@ class trilArr:
                     res.changeType(determineType(vec))
         res.vector[:]+=vec
         return res
+
+    def __imul__(self,other):
+        if self.vtype==DIMLESS:
+            if isTrilArray(other):
+                self.vector*=other.vector
+            else:
+                self.vector*=other
+        else:
+            vec = self._findVec(other)
+            if determineType(vec) is not determineType(self):
+                if determineType(res) != 'float':
+                    if determineType(res) != 'int' or determineType(vec) != 'bool':
+                        res.changeType(determineType(vec))
+            self.vector[:]*=vec
+        return self
+
+    def __iadd__(self,other):
+        if self.vtype==DIMLESS:
+            if isTrilArray(other):
+                self.vector+=other.vector
+            else:
+                self.vector+=other
+        else:
+            vec = self._findVec(other)
+            if determineType(vec) is not determineType(self):
+                if determineType(res) != 'float':
+                    if determineType(res) != 'int' or determineType(vec) != 'bool':
+                        res.changeType(determineType(vec))
+            self.vector[:]+=vec
+        return self
+
+    def __idiv__(self,other):
+        if self.vtype==DIMLESS:
+            if isTrilArray(other):
+                self.vector/=other.vector
+            else:
+                self.vector/=other
+        else:
+            vec = self._findVec(other)
+            if determineType(vec) is not determineType(self):
+                if determineType(res) != 'float':
+                    if determineType(res) != 'int' or determineType(vec) != 'bool':
+                        res.changeType(determineType(vec))
+            self.vector[:]/=vec
+        return self
+
+    def __isub__(self,other):
+        if self.vtype==DIMLESS:
+            if isTrilArray(other):
+                self.vector-=other.vector
+            else:
+                self.vector-=other
+        else:
+            vec = self._findVec(other)
+            if determineType(vec) is not determineType(self):
+                if determineType(res) != 'float':
+                    if determineType(res) != 'int' or determineType(vec) != 'bool':
+                        res.changeType(determineType(vec))
+            self.vector[:]-=vec
+        return self
+        
 
     def __neg__(self):
         """
@@ -1039,6 +1102,11 @@ class trilShape:
             s = [len(d) for (d,n) in zip(res,o) if str(type(n)).count("int")==0]
             if original is not None:
                 o = list(original)
+                for i in range(len(o)):
+                    if type(o[i]) == numpy.ndarray:
+                        n = list(o[i])
+                        o.remove(o[i])
+                        o.insert(i,n)
                 if o.count(Ellipsis) > 0:
                     if o.count(Ellipsis) > 0:
                         ind = o.index(Ellipsis)
@@ -1159,13 +1227,14 @@ def _size(shape):
     # it should be evaluating a shape or a list.
     # Possibly should be a different method, though it's
     # not really necessary.
-
+    if hasattr(shape,"getValue"):
+        shape = shape.getValue()
     if type(shape) in [None]:
         return -1
     
     if type(shape) in [list,type(numpy.array(0))] \
            or isinstance(shape,trilArr):
-        shape = numpy.shape(shape)
+        shape = getShape(shape)
     elif str(type(shape)).count("Epetra")>0:
         if str(type(shape)).count("Vector")>0:
             shape = shape.Map()
@@ -1194,7 +1263,7 @@ def fixType(t):
     if str(t).count('bool')>0 or t is bool \
            or t in ['b1']:
         return 'bool'
-    raise TypeError
+    return t
 
 def determineType(obj):
     if isTrilArray(obj):
@@ -1202,9 +1271,11 @@ def determineType(obj):
     if numpy.isscalar(obj):
         t = type(obj)
     elif type(obj) in [list,tuple,Epetra.IntVector,Epetra.Vector,numpy.ndarray]:
-        tmp = obj
+        tmp = obj[0]
         while type(tmp) in [list,tuple,Epetra.IntVector,Epetra.Vector,numpy.ndarray]:
             tmp = tmp[0]
+        if isTrilArray(tmp):
+            return tmp.dtype
         t = type(tmp)
     else:
         if hasattr(obj,"getValue"):
@@ -1227,6 +1298,17 @@ def arange(start,stop=None,step=1,dtype=None):
     arr = trilArr(shape=l,dtype=dtype)
     arr.fillWithRange(start,stop,step)
     return arr
+
+def getShape(array):
+    dims = []
+    flag = True
+    while not numpy.isscalar(array) and flag:
+        try:
+            dims.append(len(array))
+            array = array[0]
+        except TypeError:
+            flag = False
+    return tuple(dims)
 
 if __name__ == '__main__':
     import doctest

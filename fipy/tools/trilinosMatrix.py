@@ -454,7 +454,6 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-
         # Currently, all matrix building gets done on processor 0
 ##         if(self.comm.MyPID() > 0):
 ##             return
@@ -500,7 +499,6 @@ class _TrilinosMatrix(_SparseMatrix):
             self.addAt(tmp, ids, ids)
         else:
             ids = numerix.arange(len(vector))
-            raw_input("ids to be added")
             self.addAt(vector, ids, ids)
 
     def exportMmf(self, filename):

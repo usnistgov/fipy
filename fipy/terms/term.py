@@ -108,14 +108,6 @@ class Term:
         if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
             self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)
             self._viewer.plot(matrix=matrix)
-            raw_input()
-        
-        
-        print "ME:\n",repr(self),self.__class__.__name__
-        print "x:\n", repr(var)
-        print "L:\n", matrix
-        print "b:\n", repr(RHSvector)
-        raw_input("Final Matrix")
         
         return matrix, RHSvector
 

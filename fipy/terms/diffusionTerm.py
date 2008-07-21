@@ -222,11 +222,7 @@ class _DiffusionTerm(Term):
         interiorCoeff = numerix.array(coeff)
         
         interiorCoeff[mesh.getExteriorFaces().getValue()] = 0
-        print interiorCoeff,mesh._getCellFaceIDs()
-        raw_input("Getting passed to take 1")
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
-        print interiorCoeff
-        raw_input("After take")
         coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff

@@ -103,7 +103,10 @@ class Grid1D(Mesh1D):
         self.numberOfFaces = self.nx + 1
         f1 = numerix.arange(self.nx)
         f2 = f1 + 1
-        return numerix.array((f1, f2))
+        a = numerix.zeros((2,len(f1)))
+        a[0]=f1
+        a[1]=f2
+        return a
 
     def getDim(self):
         return 1

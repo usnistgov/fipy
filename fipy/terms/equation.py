@@ -96,11 +96,6 @@ class _Equation(Term):
                     and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
                     self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
                     self._viewer.plot(matrix=termMatrix)
-                    raw_input()
-                print "vector:\n%s" %(termRHSvector,)
-                print "matrix:\n%s" %(termMatrix,)
-                raw_input("In equation, building final matrix.  Current term: %s" %(key,))
-                print ""
                 self.matrix += termMatrix
                 self.RHSvector += termRHSvector
         matrix = self.matrix
