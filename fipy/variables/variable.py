@@ -181,8 +181,8 @@ class Variable(object):
             >>> print numerix.array([numerix.array(Variable(0)), numerix.array(Variable(0))])
             [0 0]
         """
-        
-        return numerix.array(self.getValue(), t)
+        import numpy
+        return numpy.array(self.getValue(), t)
 
 ##    def _get_array_interface(self):
 ##        return self._getArray().__array_interface__
