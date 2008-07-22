@@ -56,7 +56,7 @@ class trilArr:
     printing multidimensional arrays doesn't work in parallel
     """
     def __init__(self, array=None, shape=None, map=None, dtype=None, \
-                 parallel=True):
+                 parallel=None):
         """
         Creates a trilArr
 
@@ -94,6 +94,9 @@ class trilArr:
         else:
             comm = Epetra.PyComm()
 
+        if parallel is None:
+            parallel =  (comm.NumProc() != 1)
+        
         if shape is None:
             if array is None:
                 if map is None:
