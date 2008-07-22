@@ -50,8 +50,6 @@ DIMLESS = 2
 
 numTimesInited=0
 
-debug = False
-
 class trilArr:
     """
     trilArr is a wrapper for a Trilinos vector
@@ -288,13 +286,11 @@ class trilArr:
         els = type(els) == numpy.int32 and [els] or list(els)
         locsize = len(els)
         maxsize = self.comm.MaxAll(locsize)
-        print str(self.comm.MyPID())+"take1"
         sizes = self.comm.GatherAll(locsize)
         procs = self.comm.NumProc()
         while locsize<maxsize:
             els.append(-1)
             locsize=len(els)
-        print str(self.comm.MyPID())+"take2"
         allEls = self.comm.GatherAll(els)
         allEls = [l for (el,proc) in zip(allEls,range(procs)) \
                   for (l,pos) in zip(el,range(sizes[proc]))]
@@ -620,7 +616,7 @@ class trilArr:
         if not self.isParallel:
             return self
         print str(self.comm.MyPID())+"allelemy"
-        vec = collectVariable(self.vector)
+        vec = collectVariable(self.vector,self.comm)
         return trilArr(array=vec, \
                        shape=self.shape, \
                        parallel=False)
@@ -685,8 +681,7 @@ class trilArr:
         y = self.shp.getLocalIndex(y)
         a = self.vector.__getitem__(y[0])
         if self.isParallel:
-            print str(self.comm.MyPID())+"getitemy",repr(a)
-            a = collectVariable(a)
+            a = collectVariable(a,self.comm)
         s = y[1]
         if s == () and len(a) is not 0:
             return a[0]
@@ -725,10 +720,10 @@ class trilArr:
 
     def __array__(self,dtype=None):
         if self.vtype == DIMLESS: return numpy.array(self.vector)
-        if not debug:
-            return numpy.array(self.allElems().array.reshape(self.shape),dtype = self.dtype)
+        if self.isParallel:
+            return numpy.array(collectVariable(self.vector,self.comm),dtype=self.dtype).reshape(self.shape)
         else:
-            return numpy.array(self.array.reshape(self.shape),dtype = self.dtype)
+            return numpy.array(self.array,dtype=self.dtype).reshape(self.shape)
 
     def __or__(self, other):
         return trilArr(numpy.array(self) | numpy.array(other))
@@ -776,6 +771,7 @@ class trilArr:
             if determineType(res) != 'float':
                 if determineType(res) != 'int' or determineType(vec) != 'bool':
                     res.changeType(determineType(vec))
+        print str(self.comm.MyPID())+":",repr(res.vector),repr(vec)
         res.vector[:]*=vec
         return res
 
@@ -1335,17 +1331,21 @@ def getShape(array):
                 flag = False
     return tuple(dims)
 
-def collectVariable(var):
-    comm = Epetra.PyComm()
-    locsize = len(var)
-    print str(comm.MyPID())+"coll1"
+counter = 0
+
+def collectVariable(var,comm):
+    global counter
+    counter+=1
+    els = list(var)
+    locsize = len(els)
     sizes = comm.GatherAll(locsize)
     maxsize = comm.MaxAll(locsize)
-    els = list(var)
     while locsize<maxsize:
-        els.append(-1)
+        if fixType(numpy.dtype(var)) in ['int','bool']:
+            els.append(-1)
+        else:
+            els.append(-1.)
         locsize+=1
-    print str(comm.MyPID())+"coll2"
     allEls = comm.GatherAll(els)
     allEls = numpy.array(allEls).reshape(-1)
     l = len(allEls)
