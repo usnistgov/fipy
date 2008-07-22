@@ -50,6 +50,7 @@ class CellVariable(_MeshVariable):
         >>> from fipy.meshes.grid2D import Grid2D
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         
+
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
         >>> x, y = mesh.getCellCenters()
         >>> var.setValue(x * y)

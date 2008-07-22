@@ -48,6 +48,10 @@ IV = 0
 V = 1
 DIMLESS = 2
 
+numTimesInited=0
+
+debug = False
+
 class trilArr:
     """
     trilArr is a wrapper for a Trilinos vector
@@ -69,6 +73,11 @@ class trilArr:
         """
 
 
+        global numTimesInited
+        numTimesInited+=1
+        ## print str(Epetra.PyComm().MyPID())+":",repr(array),repr(shape),repr(map),repr(dtype),repr(parallel),numTimesInited
+        if _sizeArray(array) in [0,1] :
+            parallel = False
         if type(array) == tuple:
             array = list(array)
         if type(shape) == list:
@@ -107,16 +116,16 @@ class trilArr:
                 # derive shape from map
                 shape = getShape(array)
                 if map is None:
-                    map = Epetra.Map(_size(shape),0,comm)
+                    map = Epetra.Map(_sizeShape(shape),0,comm)
                 else:
-                    if map.NumGlobalElements() != _size(shape):
+                    if map.NumGlobalElements() != _sizeShape(shape):
                         raise ValueError('Array shape does not match map.')
         elif shape is not None:
             if map is None:
                 # derive map from shape
-                map = Epetra.Map(_size(shape),0,comm)
+                map = Epetra.Map(_sizeShape(shape),0,comm)
             elif map is not None:
-                if map.NumGlobalElements() != _size(shape):
+                if map.NumGlobalElements() != _sizeShape(shape):
                     raise ValueError('Shape does not match map.')
 
         if array is None:
@@ -125,11 +134,12 @@ class trilArr:
                 array = Vect(map)
             elif not parallel:
                 # create array based on shape
-                array = Vect(numpy.zeros(_size(shape)))
-                
+                array = Vect(numpy.zeros(_sizeShape(shape),dtype=dtype))
+
+        arrSize = _sizeArray(array)
         if fixType(type(array)) not in ['int','float','bool'] and \
-               ((_size(array) != _size(shape)) \
-                or _size(shape)==0):
+              ((arrSize != _sizeShape(shape)) \
+                or _sizeShape(shape)==0):
             raise ValueError('Shape does not match size of array.')
 
         if type(array) in [Epetra.Vector,Epetra.IntVector]:
@@ -149,7 +159,7 @@ class trilArr:
                     vec = Vect(map)
                     vec[:] = ty(array)
                 else:
-                    vec = Vect([array]*_size(shape))
+                    vec = Vect([array]*_sizeShape(shape))
         elif isinstance(array,trilArr):
             vec = array.vector
             dtype = array.dtype
@@ -278,11 +288,13 @@ class trilArr:
         els = type(els) == numpy.int32 and [els] or list(els)
         locsize = len(els)
         maxsize = self.comm.MaxAll(locsize)
+        print str(self.comm.MyPID())+"take1"
         sizes = self.comm.GatherAll(locsize)
         procs = self.comm.NumProc()
         while locsize<maxsize:
             els.append(-1)
             locsize=len(els)
+        print str(self.comm.MyPID())+"take2"
         allEls = self.comm.GatherAll(els)
         allEls = [l for (el,proc) in zip(allEls,range(procs)) \
                   for (l,pos) in zip(el,range(sizes[proc]))]
@@ -605,23 +617,11 @@ class trilArr:
             trilArr([[0, 1],
                    [2, 3]])
         """
-        comm = self.vector.Comm()
-        pid = comm.MyPID()
-        procs = comm.NumProc()
-        m = self.vector.Map()
-        sz = m.NumGlobalElements()
-        locsize = self.vector.MyLength()
-        maxsize = comm.MaxAll(locsize)
-        els = list(self.vector)
-        while locsize<maxsize:
-            els.append(-1)
-            locsize+=1
-        allEls = comm.GatherAll(els)
-        allEls = numpy.array(allEls).reshape(-1)
-        if sz%procs:
-            allEls = [i for (i,j) in zip(allEls,range(1,len(allEls)+1)) \
-                      if j<=maxsize*(sz%procs) or j%maxsize]
-        return trilArr(array=numpy.array(allEls), \
+        if not self.isParallel:
+            return self
+        print str(self.comm.MyPID())+"allelemy"
+        vec = collectVariable(self.vector)
+        return trilArr(array=vec, \
                        shape=self.shape, \
                        parallel=False)
 
@@ -684,6 +684,9 @@ class trilArr:
     def __getitem__(self, y):
         y = self.shp.getLocalIndex(y)
         a = self.vector.__getitem__(y[0])
+        if self.isParallel:
+            print str(self.comm.MyPID())+"getitemy",repr(a)
+            a = collectVariable(a)
         s = y[1]
         if s == () and len(a) is not 0:
             return a[0]
@@ -722,7 +725,10 @@ class trilArr:
 
     def __array__(self,dtype=None):
         if self.vtype == DIMLESS: return numpy.array(self.vector)
-	return numpy.array(self.allElems().array.reshape(self.shape),dtype = self.dtype)  
+        if not debug:
+            return numpy.array(self.allElems().array.reshape(self.shape),dtype = self.dtype)
+        else:
+            return numpy.array(self.array.reshape(self.shape),dtype = self.dtype)
 
     def __or__(self, other):
         return trilArr(numpy.array(self) | numpy.array(other))
@@ -760,7 +766,7 @@ class trilArr:
     def __mul__(self,other):
         if self.vtype==DIMLESS:
             return self.vector*other
-        if self.size >= numpy.array(other).size:
+        if self.size >= _sizeShape(getShape(other)):
             res = self.copy()
             vec = self._findVec(other)
         else:
@@ -776,7 +782,7 @@ class trilArr:
     def __add__(self,other):
         if self.vtype==DIMLESS:
             return self.vector+other
-        if self.size >= numpy.array(other).size:
+        if self.size >= _sizeShape(getShape(other)):
             res = self.copy()
             vec = self._findVec(other)
         else:
@@ -792,7 +798,7 @@ class trilArr:
     def __div__(self,other):
         if self.vtype==DIMLESS:
             return self.vector/other
-        if self.size >= numpy.array(other).size:
+        if self.size >= _sizeShape(getShape(other)):
             res = self.copy()
             vec = self._findVec(other)
             if type(vec)==list:
@@ -813,7 +819,7 @@ class trilArr:
     def __sub__(self,other):
         if self.vtype==DIMLESS:
             return self.vector-other
-        if self.size >= numpy.array(other).size:
+        if self.size >= _sizeShape(getShape(other)):
             res = self.copy()
             vec = self._findVec(other)
             if type(vec)==list:
@@ -844,7 +850,7 @@ class trilArr:
     def __rdiv__(self,other):
         if self.vtype==DIMLESS:
             return other/self.vector
-        if self.size >= numpy.array(other).size:
+        if self.size >= _sizeShape(getShape(other)):
             res = self.copy()
             res.vector[:] = 1/res.vector[:]
             vec = self._findVec(other)
@@ -865,7 +871,7 @@ class trilArr:
     def __rsub__(self,other):
         if self.vtype==DIMLESS:
             return other-self.vector
-        if self.size >= numpy.array(other).size:
+        if self.size >= _sizeShape(getShape(other)):
             res = self.copy()
             res = -res
             vec = self._findVec(other)
@@ -966,7 +972,7 @@ class trilShape:
         if str(type(shape)).count("int") != 0: shape = (shape,)
         self.globalShape = tuple(shape)
         self.dimensions = _dimensions(shape)
-        self.actualShape = _size(shape)
+        self.actualShape = _sizeShape(shape)
         shape = self._shapeCheck(shape)
         self.map = eMap
         mult = 1
@@ -1161,7 +1167,7 @@ class trilShape:
 
     def reshape(self, shape):
         shape = self._shapeCheck(shape)
-        if _size(shape) < 0:
+        if _sizeShape(shape) < 0:
             un = -1
             tot = 1
             for i in shape:
@@ -1184,11 +1190,11 @@ class trilShape:
             shape[un] = int(p)
             shape = tuple(shape)
 
-        if self.actualShape != _size(shape):
+        if self.actualShape != _sizeShape(shape):
             print "ERROR: New shape is differently sized from old shape."
             return -1
         self.globalShape = shape
-        self.actualShape = _size(shape)
+        self.actualShape = _sizeShape(shape)
         self.dimensions = _dimensions(shape)
 
         mult = 1
@@ -1227,24 +1233,29 @@ def _dimensions(shape):
         return 1
     return len(shape)
 
-def _size(shape):
-    # This returns something different based on whether
-    # it should be evaluating a shape or a list.
-    # Possibly should be a different method, though it's
-    # not really necessary.
-    if hasattr(shape,"getValue"):
-        shape = shape.getValue()
+def _sizeArray(arr):
+    if arr is None:
+        return -1
+    
+    if hasattr(arr,"getValue"):
+        arr = arr.getValue()
+    if type(arr) in [list,type(numpy.array(0))] \
+           or isinstance(arr,trilArr):
+        arr = getShape(arr)
+        return _sizeShape(arr)
+    elif str(type(arr)).count("Epetra")>0:
+        if str(type(arr)).count("Vector")>0:
+            arr = arr.Map()
+        return arr.NumGlobalElements()
+    elif numpy.isscalar(arr):
+        return 0
+    else:
+        raise TypeError('Type is not supported by _sizeArray method.')
+    
+def _sizeShape(shape):
     if type(shape) is None:
         return -1
     
-    if type(shape) in [list,type(numpy.array(0))] \
-           or isinstance(shape,trilArr):
-        shape = getShape(shape)
-    elif str(type(shape)).count("Epetra")>0:
-        if str(type(shape)).count("Vector")>0:
-            shape = shape.Map()
-        shape = shape.NumGlobalElements()
-
     if type(shape) is tuple or isinstance(shape,trilShape):
         if _dimensions(shape)==0:
             return 0
@@ -1254,7 +1265,7 @@ def _size(shape):
     elif type(shape)==int:
         size = shape
     else:
-        raise TypeError('Type is not supported by _size method.')
+        raise TypeError('Type is not supported by _sizeShape method.')
         
     return size
 
@@ -1276,6 +1287,8 @@ def determineType(obj):
     if numpy.isscalar(obj):
         t = type(obj)
     elif type(obj) in [list,tuple,Epetra.IntVector,Epetra.Vector,numpy.ndarray]:
+        if len(obj)is 0:
+            return 'int'
         tmp = obj[0]
         while type(tmp) in [list,tuple,Epetra.IntVector,Epetra.Vector,numpy.ndarray]:
             tmp = tmp[0]
@@ -1305,17 +1318,40 @@ def arange(start,stop=None,step=1,dtype=None):
     return arr
 
 def getShape(array):
-    if isTrilArray(array) or type(array) == numpy.ndarray:
-        return array.shape
     dims = []
     flag = True
     while not numpy.isscalar(array) and flag:
-        try:
-            dims.append(len(array))
-            array = array[0]
-        except TypeError:
+        if type(array) in [Epetra.Vector, Epetra.IntVector]:
+            dims.append(array.Map().NumGlobalElements())
             flag = False
+        elif isTrilArray(array) or type(array) == numpy.ndarray:
+            dims.extend(list(array.shape))
+            flag = False
+        else:
+            try:
+                dims.append(len(array))
+                array = array[0]
+            except TypeError:
+                flag = False
     return tuple(dims)
+
+def collectVariable(var):
+    comm = Epetra.PyComm()
+    locsize = len(var)
+    print str(comm.MyPID())+"coll1"
+    sizes = comm.GatherAll(locsize)
+    maxsize = comm.MaxAll(locsize)
+    els = list(var)
+    while locsize<maxsize:
+        els.append(-1)
+        locsize+=1
+    print str(comm.MyPID())+"coll2"
+    allEls = comm.GatherAll(els)
+    allEls = numpy.array(allEls).reshape(-1)
+    l = len(allEls)
+    allEls = [i for (i,j) in zip(allEls,range(l)) \
+              if j%maxsize<sizes[j/maxsize]]
+    return allEls
 
 if __name__ == '__main__':
     import doctest

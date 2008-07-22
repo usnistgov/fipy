@@ -114,6 +114,12 @@ def array(object, dtype=None, copy=1,order=None, subok=0,ndmin=0):
         return TRIL.trilArr(array=object)
     return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok,ndmin=ndmin)
 
+def logical_or(x1,x2):
+    print "LOGICAL OR!  =D"
+    return NUMERIX.logical_or(x1,x2)
+
+logical_or.reduce = lambda k:reduce(NUMERIX.logical_or,k)
+
 def _isPhysical(arr):
     """
     Returns `True` if arr is a `Variable` or `PhysicalField`.
