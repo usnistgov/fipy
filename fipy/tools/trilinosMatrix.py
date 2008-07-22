@@ -471,7 +471,7 @@ class _TrilinosMatrix(_SparseMatrix):
             id2 = id2.vector
         if TA.isTrilArray(vector):
             vector = vector.vector
-
+        print str(Epetra.PyComm().MyPID())+":",repr(id1),repr(id2),repr(vector)
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)
         else:

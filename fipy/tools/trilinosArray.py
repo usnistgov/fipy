@@ -733,7 +733,7 @@ class trilArr:
             return [other]*len(self.vector)
         elif isTrilArray(other):
             if other.vtype == DIMLESS:
-                return [other.vector]*self.size
+                return [other.vector]*len(self.vector)
             import numerix
             s = numerix._broadcastShape(self.shape,other.shape)
             if s is None:
@@ -771,7 +771,6 @@ class trilArr:
             if determineType(res) != 'float':
                 if determineType(res) != 'int' or determineType(vec) != 'bool':
                     res.changeType(determineType(vec))
-        print str(self.comm.MyPID())+":",repr(res.vector),repr(vec)
         res.vector[:]*=vec
         return res
 
