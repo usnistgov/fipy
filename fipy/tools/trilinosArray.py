@@ -48,8 +48,6 @@ IV = 0
 V = 1
 DIMLESS = 2
 
-numTimesInited=0
-
 class trilArr:
     """
     trilArr is a wrapper for a Trilinos vector
@@ -69,11 +67,6 @@ class trilArr:
           - `parallel`:whether or not this array should be parallelized
           - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
-
-
-        global numTimesInited
-        numTimesInited+=1
-        ## print str(Epetra.PyComm().MyPID())+":",repr(array),repr(shape),repr(map),repr(dtype),repr(parallel),numTimesInited
         if _sizeArray(array) in [0,1] :
             parallel = False
         if type(array) == tuple:
@@ -615,7 +608,6 @@ class trilArr:
         """
         if not self.isParallel:
             return self
-        print str(self.comm.MyPID())+"allelemy"
         vec = collectVariable(self.vector,self.comm)
         return trilArr(array=vec, \
                        shape=self.shape, \
@@ -672,10 +664,12 @@ class trilArr:
     
     def __setitem__(self, i, y):
         i = self.shp.getLocalIndex(i)
+        if isTrilArray(i):
+            from PyTrilinos import Nothing
         szProcEls = len(i[0])
         res = self.comm.ScanSum(szProcEls)-szProcEls
-        y = numpy.array(y).reshape(-1)
-        self.vector.__setitem__(i[0], y[res:])
+        y = [k for (j,k) in numpy.broadcast(numpy.zeros(i[1]),y)]
+        self.vector.__setitem__(i[0],y[res:])
 
     def __getitem__(self, y):
         y = self.shp.getLocalIndex(y)
@@ -970,6 +964,10 @@ class trilShape:
         self.actualShape = _sizeShape(shape)
         shape = self._shapeCheck(shape)
         self.map = eMap
+        if self.map is None:
+            self.comm = Epetra.PyComm()
+        else:
+            self.comm = self.map.Comm()
         mult = 1
         tmp = []
         for i in range(len(self.globalShape)+1)[1:]:
@@ -1047,8 +1045,13 @@ class trilShape:
             index = (Ellipsis,)
         tup = False
         if type(index) == numpy.ndarray or isTrilArray(index):
-            if str(index.dtype).count('bool')>0:
-                res = [i for i in range(index.size) if index[i]]
+            dtype = index.dtype
+            size = index.size
+            if isTrilArray(index):
+                index = collectVariable(index.vector,self.comm)
+                o = index
+            if str(dtype).count('bool')>0:
+                res = [i for i in range(size) if index[i]]
                 return (res,(len(res),))
             index = list(index)
         if type(index) == int or type(index) == list or type(index) == slice:
@@ -1072,7 +1075,7 @@ class trilShape:
             elif type(index[0]) != int and type(index[0]) != slice and type(index[0]) != list:
                 while type(index) != int and type(index) != slice and len(index) == 1:
                     index=index[0]
-                if type(index) == int or type(index) == slice:
+                if type(index) == int or type(index) == slice or type(index) == list:
                     index=[self._fillToDim((index,))]
                 elif len(index) <= self.dimensions:
                     index = [tuple([i[el] for i in index]) for el in range(len(index[0]))]

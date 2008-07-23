@@ -41,7 +41,7 @@
  #  2007-06-11 MLG 1.0 original
  # ###################################################################
  ##
-
+count = 0
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import Epetra
@@ -135,8 +135,10 @@ class _TrilinosMatrix(_SparseMatrix):
     def __getitem__(self, index):
         if not self.matrix.Filled():
             self._getMatrix().FillComplete()
-
-        return self.matrix[index]
+        if index[0] in self.map.MyGlobalElements() and index[1] in self.matrix.ColMap().MyGlobalElements():
+            return self.matrix[index]
+        else:
+            return 0
         
     def __str__(self):
         if not self.matrix.Filled():
@@ -459,19 +461,41 @@ class _TrilinosMatrix(_SparseMatrix):
 ##             return
 
         ## This was added as it seems that trilinos does not like int64 arrays
+        global count
+        #print count,str(Epetra.PyComm().MyPID())+":",repr(id1),repr(id2),repr(vector)
         if hasattr(id1, 'astype') and id1.dtype.name == 'int64':
             id1 = id1.astype('int32')
         if hasattr(id2, 'astype') and id2.dtype.name == 'int64':
             id2 = id2.astype('int32')
-
         import trilinosArray as TA
         if TA.isTrilArray(id1):
+            s = id1.size
             id1 = id1.vector
+            if len(id1) != s:
+                id1 = TA.collectVariable(id1,self.comm)
         if TA.isTrilArray(id2):
+            s = id2.size
             id2 = id2.vector
+            if len(id2) != s:
+                id2 = TA.collectVariable(id2,self.comm)
         if TA.isTrilArray(vector):
+            s = vector.size
             vector = vector.vector
-        print str(Epetra.PyComm().MyPID())+":",repr(id1),repr(id2),repr(vector)
+            if len(vector) != s:
+                vector = TA.collectVariable(vector,self.comm)
+        myEls = self.map.MyGlobalElements()
+        #print count,str(Epetra.PyComm().MyPID())+":",repr(id1),repr(id2),repr(vector)
+        vector = [vector[i] for i in range(len(vector)) if id1[i] in myEls]
+        id2 = [id2[i] for i in range(len(id2)) if id1[i] in myEls]
+        id1 = [i for i in id1 if i in myEls]
+#        if not TA.isTrilArray(vector):
+#            if TA.isTrilArray(id1):
+#                numEls = len(id1.vector)
+#            else:
+#                numEls = len(id1)
+#            myEls = self.comm.ScanSum(numEls)-numEls
+#            vector = vector[myEls:myEls+numEls]
+        #print count,str(Epetra.PyComm().MyPID())+":",repr(id1),repr(id2),repr(vector)
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)
         else:
@@ -489,6 +513,7 @@ class _TrilinosMatrix(_SparseMatrix):
                 # Would incur performance costs, and since FiPy does not use 
                 # this function in such a way as would generate these errors,
                 # I have not implemented the change.
+        count += 1
 
 
     def addAtDiagonal(self, vector):

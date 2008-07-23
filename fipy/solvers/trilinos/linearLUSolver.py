@@ -80,23 +80,23 @@ class LinearLUSolver(TrilinosSolver):
 
        
     def _applyTrilinosSolver(self, A, LHS, RHS):
+
         for iteration in range(self.iterations):
 
             # errorVector = L*x - b
             errorVector = Epetra.Vector(A.RowMap())
             A.Multiply(False, LHS, errorVector)
-            errorVector = errorVector - RHS
-
+            errorVector -= RHS
             tol = max(numerix.absolute(_trilinosToNumpyVector(errorVector)))
 
             if tol <= self.tolerance: 
                 break
-
-            xError = _numpyToTrilinosVector(numerix.zeros(errorVector.GlobalLength(), 'd'), A.RowMap())
-                
+            
+            if numerix.useTril:
+                xError = numerix.zeros(errorVector.GlobalLength(), 'd').vector
+            else:
+                xError = _numpyToTrilinosVector(numerix.zeros(errorVector.GlobalLength(),'d'), A.RowMap())
             Problem = Epetra.LinearProblem(A, xError, errorVector)
             Solver = self.Factory.Create("Klu", Problem)
             Solver.Solve()
-
             LHS[:] = LHS - xError
-            

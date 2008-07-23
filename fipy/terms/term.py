@@ -87,11 +87,11 @@ class Term:
     def __buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
 
         self._verifyCoeffType(var)
-        
+
         if numerix.getShape(dt) != ():
             raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
         dt = float(dt)
-    
+
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
@@ -119,7 +119,7 @@ class Term:
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
 
         solver = self._getDefaultSolver(solver) or solver or DefaultSolver()
-
+        
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         return (solver, matrix, RHSvector)
 
@@ -140,7 +140,6 @@ class Term:
         """
         
         solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
-
         self._solveLinearSystem(var, solver, matrix, RHSvector)
 
     def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):

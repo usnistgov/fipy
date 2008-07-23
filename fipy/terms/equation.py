@@ -83,8 +83,7 @@ class _Equation(Term):
 
         N = len(var)
         self.RHSvector = numerix.zeros((N,),'d')
-        self.matrix = SparseMatrix(size=N)#        print "vector:\n",repr(self.RHSvector)
-#        print "self.orderedPlusOtherKeys():\n",self.orderedPlusOtherKeys()
+        self.matrix = SparseMatrix(size=N)
         for key in self.orderedPlusOtherKeys():
             term = self.terms[key]
             if term is not None:

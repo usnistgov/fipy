@@ -183,7 +183,6 @@ class _DiffusionTerm(Term):
 
     def _calcGeomCoeff(self, mesh):
         if self.nthCoeff is not None:
-          
             coeff = self.nthCoeff
             shape = numerix.getShape(coeff)
 
@@ -195,7 +194,6 @@ class _DiffusionTerm(Term):
 
             if rank == 0 and self._treatMeshAsOrthogonal(mesh):
                 tmpBop = (coeff * mesh._getFaceAreas() / mesh._getCellDistances())[numerix.newaxis, :]
-
             else:
 
                 if rank == 1 or rank == 0:
@@ -220,7 +218,6 @@ class _DiffusionTerm(Term):
 
     def _getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
         interiorCoeff = numerix.array(coeff)
-        
         interiorCoeff[mesh.getExteriorFaces().getValue()] = 0
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
         coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
@@ -228,13 +225,11 @@ class _DiffusionTerm(Term):
         del interiorCoeff
         
         interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
-        
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[0], interiorFaceCellIDs[1])
         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[1], interiorFaceCellIDs[0])
-        
         return coefficientMatrix
         
     def _bcAdd(self, coefficientMatrix, boundaryB, LLbb):
@@ -322,7 +317,6 @@ class _DiffusionTerm(Term):
         elif self.order == 2:
 
             if not hasattr(self, 'coeffDict'):
-
                 coeff = self._getGeomCoeff(mesh)
                 minusCoeff = -coeff[0]
 
@@ -346,10 +340,8 @@ class _DiffusionTerm(Term):
             del lowerOrderBCs
             L, b = self._doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
                                self._getCoefficientMatrix(SparseMatrix, mesh, self.coeffDict['cell 1 diag']), numerix.zeros(N,'d'))
-
             if hasattr(self, 'anisotropySource'):
                 b -= self.anisotropySource
-                               
             del higherOrderBCs
 
         else:
