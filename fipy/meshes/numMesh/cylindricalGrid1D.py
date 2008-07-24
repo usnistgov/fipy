@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "test.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:47:17 PM} 
+ #  FILE: "cylindricalGrid1D.py"
+ #                                    created: 11/10/03 {3:30:42 PM} 
+ #                                last update: 5/27/08 {3:22:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,31 +40,55 @@
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+"""
+1D Mesh
+"""
+__docformat__ = 'restructuredtext'
 
-def _suite():
-    return _LateImportDocTestSuite(docTestModuleNames = (
-            'exponential1D.mesh1D',
-            'exponential1D.cylindricalMesh1D',
-            'exponential1D.cylindricalMesh1DNonUniform',
-            'exponential1D.tri2D',
-            'exponential2D.mesh2D',
-            'exponential2D.cylindricalMesh2D',
-            'exponential2D.cylindricalMesh2DNonUniform',
-            'exponential1DBack.mesh1D',
-            'powerLaw1D.mesh1D',
-            'exponential1DSource.mesh1D',
-            'exponential2D.tri2D',
-            'exponential1DSource.tri2D',
-            'powerLaw1D.tri2D',
-            'advection.vanLeerUpwind',
-            'peclet',
-            'robin',
-        ), base = __name__)
+from fipy.tools import numerix
+
+from fipy.meshes.numMesh.grid1D import Grid1D
+
+class CylindricalGrid1D(Grid1D):
+    """
+    Creates a 1D cyliondrical grid mesh.
     
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
+        >>> mesh = CylindricalGrid1D(nx = 3)
+        >>> print mesh.getCellCenters()
+        [[ 0.5  1.5  2.5]]
+         
+        >>> mesh = CylindricalGrid1D(dx = (1, 2, 3))
+        >>> print mesh.getCellCenters()
+        [[ 0.5  2.   4.5]]
+         
+        >>> mesh = CylindricalGrid1D(nx = 2, dx = (1, 2, 3))
+        Traceback (most recent call last):
+        ...
+        IndexError: nx != len(dx)
 
-            
-            
+    """
+    def __init__(self, dx=1., nx=None):
+        Grid1D.__init__(self, dx=dx, nx=nx)
+
+    def _calcFaceAreas(self):
+        self.faceAreas = self.getFaceCenters()[0]
+
+    def _test(self):
+        """
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected. Fixed a bug where the following throws
+        an error on solve() when nx is a float.
+
+            >>> from fipy import CellVariable, DiffusionTerm
+            >>> mesh = CylindricalGrid1D(nx=3., dx=(1., 2., 3.))
+            >>> var = CellVariable(mesh=mesh)
+            >>> DiffusionTerm().solve(var)
+
+        """
+
+def _test():
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
