@@ -67,6 +67,7 @@ class trilArr:
           - `parallel`:whether or not this array should be parallelized
           - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
+        sizeA = _sizeArray(array)
         if _sizeArray(array) in [0,1] :
             parallel = False
         if type(array) == tuple:
