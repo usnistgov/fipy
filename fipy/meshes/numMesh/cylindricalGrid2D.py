@@ -78,6 +78,7 @@ class CylindricalGrid2D(Grid2D):
             factor = numerix.resize(factor, (2,1))
         
         return CylindricalGrid2D(dx = self.dx * numerix.array(factor[0]), nx = self.nx, 
+                                 dy = self.dy * numerix.array(factor[1]), ny = self.ny, 
                                  origin = self.origin * factor)
 
     def getVertexCoords(self):
