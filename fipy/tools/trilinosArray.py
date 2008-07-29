@@ -664,6 +664,7 @@ class trilArr:
         return self.__getitem__(slice(i,j,None))
     
     def __setitem__(self, i, y):
+        print "s",repr(i),repr(y)
         i = self.shp.getLocalIndex(i)
         if isTrilArray(i):
             from PyTrilinos import Nothing
@@ -673,6 +674,7 @@ class trilArr:
         self.vector.__setitem__(i[0],y[res:])
 
     def __getitem__(self, y):
+        print "g",repr(y)
         y = self.shp.getLocalIndex(y)
         a = self.vector.__getitem__(y[0])
         if self.isParallel:
@@ -1055,13 +1057,14 @@ class trilShape:
                 res = [i for i in range(size) if index[i]]
                 return (res,(len(res),))
             index = list(index)
-        if type(index) == int or type(index) == list or type(index) == slice:
+        t = type(index)
+        if t == int or t == list or t == slice:
             index=[self._fillToDim((index,))]
             o = (o,)
-        elif type(index) == type(Ellipsis):
+        elif t == type(Ellipsis):
             index = [self._fillToDim(())]
             o = (o,)
-        elif type(index) == tuple:
+        elif t == tuple:
             index = list(index)
             while index.count(None) > 0:
                 index.remove(None)
@@ -1105,12 +1108,14 @@ class trilShape:
         if sls is not None:
             sls = list(sls)
             o = list(sls)
-            for (el,i) in zip(sls,range(len(sls))):
+            for i in range(len(sls)):
+                el = sls[i]
                 if type(el)==int:
                     sls[i]=self._intToSlice(el)
             res = [tuple(list(dim[sl])) for (sl,dim) in zip(sls,dims)]
-            s = [len(d) for (d,n) in zip(res,o) if str(type(n)).count("int")==0]
+            s = None
             if original is not None:
+                s = [len(d) for (d,n) in zip(res,o) if str(type(n)).count("int")==0]
                 o = list(original)
                 for i in range(len(o)):
                     if type(o[i]) == numpy.ndarray:
@@ -1128,7 +1133,7 @@ class trilShape:
                     o.remove(None)
                     s.insert(ind,1)
                     numNone += 1
-            s = tuple(s)
+                s = tuple(s)
         else:
             res = dims
             s = self.globalShape
