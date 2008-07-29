@@ -23,8 +23,8 @@ class _TrilinosArray:
             if vLength is None:
                 vLength = shape[-1]
             if epetraMap is None:
-                epetraMap = Epetra.Map(vLength,0,comm)
                 comm = Epetra.PyComm()
+                epetraMap = Epetra.Map(vLength,0,comm)
             else:
                 comm = epetraMap.Comm()
                 vLength = epetraMap.NumGlobalElements()
@@ -39,11 +39,35 @@ class _TrilinosArray:
             if not flag:
                 narray = numpy.array(array,dtype='object')
                 t1 = narray.take([0])[0]
-                flag = flag or isinstance(t1,_TrilinosArray) or type(t1) == Epetra.MultiVector
+                flag = isinstance(t1,_TrilinosArray) or type(t1) == Epetra.MultiVector
                 if flag:
                     depth = len(narray.shape)
-                    shape = narray.shape + t1.shape
-                    
+                    nshape = narray.shape
+                    tshape = t1.shape
+                    tsize = tshape[0]
+                    for k in tshape[1:-1]:
+                        tsize*=k
+                    if isinstance(t1,_TrilinosArray):
+                        t1 = t1.multiVector
+                    comm = t1.Comm()
+                    vLength = t1.GlobalLength()
+                    if epetraMap is None:
+                        epetraMap = Epetra.Map(vLength,0,comm)
+                    mv = Epetra.MultiVector(epetraMap,narray.size*tsize)
+                    f = narray.flat
+                    curN = 0
+                    for i in range(len(f)):
+                        v = f[i]
+                        if isinstance(v,_TrilinosArray):
+                            v = v.multiVector
+                        for k in range(len(v)):
+                            mv[curN,:] = v[k,:]
+                            curN+=1
+                    self._shape = nshape+tshape
+                    self._vLength = vLength
+                    self._map = epetraMap
+                    self._comm = comm
+                    self._mV = mv
             else:
                 if shape is None or shape == array.shape or shape == (array.shape,):
                     self._shape = array.shape
@@ -54,12 +78,14 @@ class _TrilinosArray:
                     self._comm = comm
                     oldMap = array.Map()
                     if epetraMap is None:
-                        epetraMap = oldMap
-                    self._map = epetraMap
-                    DistToPers = Epetra.Import(epetraMap,oldMap)
-                    PersonalV = Epetra.MultiVector(epetraMap,array.NumVectors())
-                    PersonalV.Import(array, DistToPers, Epetra.Insert)
-                    self._mV = PersonalV
+                        self._map = oldMap
+                        self._mV = Epetra.MultiVector(Epetra.Copy,array)
+                    else:
+                        self._map = epetraMap
+                        DistToPers = Epetra.Import(epetraMap,oldMap)
+                        PersonalV = Epetra.MultiVector(epetraMap,array.NumVectors())
+                        PersonalV.Import(array, DistToPers, Epetra.Insert)
+                        self._mV = PersonalV
                 else:
                     if isinstance(array,_TrilinosArray):
                         array = array.multiVector
@@ -97,8 +123,8 @@ class _TrilinosArray:
                 vLength = shape[-1]
             narray = narray.reshape(-1,vLength).astype('float')
             if epetraMap is None:
-                epetraMap = Epetra.Map(vLength,0,comm)
                 comm = Epetra.PyComm()
+                epetraMap = Epetra.Map(vLength,0,comm)
             else:
                 comm = epetraMap.Comm()
                 vLength = epetraMap.NumGlobalElements()
@@ -109,12 +135,14 @@ class _TrilinosArray:
             self._map = epetraMap
             narray = narray[...,epetraMap.MyGlobalElements()]
             self._mV = Epetra.MultiVector(epetraMap,narray)
-        
+    
+    
+    
     def __str__(self):
         return self.multiVector.__str__()
 
     def __repr__(self):
-        return "TrilinosArray("+self.multiVector.__str__()+" shape = "+self.shape.__str__()+")"
+        return "_TrilinosArray("+self.multiVector.__str__()+" shape = "+self.shape.__str__()+")"
 
 class trilIntArr:
     def __init__(self,array=None,shape=None,map=None,dtype=None):
