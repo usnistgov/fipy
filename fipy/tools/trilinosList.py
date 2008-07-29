@@ -29,11 +29,7 @@ class _TrilinosArray:
                 comm = epetraMap.Comm()
                 vLength = epetraMap.NumGlobalElements()
                 shape = shape[:-1]+(vLength,)
-            self._shape = shape
-            self._vLength = vLength
-            self._comm = comm
-            self._map = epetraMap
-            self._mV = Epetra.MultiVector(epetraMap)
+            mv = Epetra.MultiVector(epetraMap)
         else:
             flag = isinstance(array,_TrilinosArray) or type(array) == Epetra.MultiVector
             if not flag:
@@ -63,29 +59,21 @@ class _TrilinosArray:
                         for k in range(len(v)):
                             mv[curN,:] = v[k,:]
                             curN+=1
-                    self._shape = nshape+tshape
-                    self._vLength = vLength
-                    self._map = epetraMap
-                    self._comm = comm
-                    self._mV = mv
             else:
                 if shape is None or shape == array.shape or shape == (array.shape,):
-                    self._shape = array.shape
+                    shape = array.shape
                     if isinstance(array,_TrilinosArray):
                         array = array.multiVector
-                    self._vLength = array.GlobalLength()
+                    vLength = array.GlobalLength()
                     comm = array.Comm()
-                    self._comm = comm
                     oldMap = array.Map()
                     if epetraMap is None:
-                        self._map = oldMap
-                        self._mV = Epetra.MultiVector(Epetra.Copy,array)
+                        epetraMap = oldMap
+                        mv = Epetra.MultiVector(Epetra.Copy,array)
                     else:
-                        self._map = epetraMap
                         DistToPers = Epetra.Import(epetraMap,oldMap)
-                        PersonalV = Epetra.MultiVector(epetraMap,array.NumVectors())
-                        PersonalV.Import(array, DistToPers, Epetra.Insert)
-                        self._mV = PersonalV
+                        mv = Epetra.MultiVector(epetraMap,array.NumVectors())
+                        mv.Import(array, DistToPers, Epetra.Insert)
                 else:
                     if isinstance(array,_TrilinosArray):
                         array = array.multiVector
@@ -95,7 +83,7 @@ class _TrilinosArray:
                     PersonalV.Import(array, DistToPers, Epetra.Insert)
                     vLength = shape[-1]
                     PersonalV = PersonalV.reshape(-1,vLength)
-                    self._comm = array.comm
+                    comm = array.comm
                     if epetraMap is None:
                         epetraMap = Epetra.Map(vLength,0,comm)
                     else:
@@ -103,11 +91,8 @@ class _TrilinosArray:
                         shape = shape[:-1]+(vLength,)
                     if type(shape) != tuple:
                         shape = (shape,)
-                    self._shape = shape
-                    self._vLength = vLength
-                    self._map = epetraMap
                     PersonalV = PersonalV[...,epetraMap.MyGlobalElements()]
-                    self._mV = Epetra.MultiVector(epetraMap,narray)
+                    mv = Epetra.MultiVector(epetraMap,narray)
                     
         if not flag:
             del t1
@@ -129,12 +114,13 @@ class _TrilinosArray:
                 comm = epetraMap.Comm()
                 vLength = epetraMap.NumGlobalElements()
                 shape = shape[:-1]+(vLength,)
-            self._shape = shape
-            self._vLength = vLength
-            self._comm = comm
-            self._map = epetraMap
             narray = narray[...,epetraMap.MyGlobalElements()]
-            self._mV = Epetra.MultiVector(epetraMap,narray)
+            mv = Epetra.MultiVector(epetraMap,narray)
+        self._shape = shape
+        self._vLength = vLength
+        self._comm = comm
+        self._map = epetraMap
+        self._mV = mv
     
     
     
