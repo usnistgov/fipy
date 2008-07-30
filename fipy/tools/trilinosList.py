@@ -13,8 +13,48 @@ class _TrilinosArray:
     array = property(lambda self:self.__array__(),"The array representing the global _TrilinosArray")
     
     def __init__(self,array=None, vLength = None, shape=None,epetraMap=None):
+        if type(array) is Epetra.MultiVector:
+            if epetraMap is None:
+                self._mV = array
+                self._map = array.Map()
+                self._comm = array.Comm()
+                self._vLength = vLength
+                self._shape = shape
+                size = 1
+                for i in shape[:-1]:
+                    size *= i
+                self._size = size*shape[-1]
+                self._dims = len(shape)
+                inds = numpy.arange(size)
+                if self._dims != 1:
+                    self._indices = inds.reshape(shape[:-1])
+                else:
+                    self._indices = inds
+                self._reprMV = numpy.arange(vLength)
+            else:
+                self._map = epetraMap
+                self._comm = array.Comm()
+                self._vLength = array.GlobalLength()
+                self._shape = shape
+                size = 1
+                for i in shape[:-1]:
+                    size *= i
+                self._size = size*shape[-1]
+                self._dims = len(shape)
+                inds = numpy.arange(size)
+                if self._dims != 1:
+                    self._indices = inds.reshape(shape[:-1])
+                else:
+                    self._indices = inds
+                self._reprMV = numpy.arange(vLength)
+                oldMap = array.Map()
+                DistToPers = Epetra.Import(epetraMap,oldMap)
+                mv = Epetra.MultiVector(epetraMap,array.NumVectors())
+                mv.Import(array, DistToPers, Epetra.Insert)
+                self._mV = mv
+            return
         if array is None:
-            flag = False
+            isTril = False
             if shape is None:
                 if epetraMap is None:
                     raise TypeError("_TrilinosArray.__init__() needs a map, shape, or array")
@@ -31,20 +71,19 @@ class _TrilinosArray:
                 shape = shape[:-1]+(vLength,)
             mv = Epetra.MultiVector(epetraMap)
         else:
-            flag = isinstance(array,_TrilinosArray) or type(array) == Epetra.MultiVector
-            if not flag:
+            isTril = isinstance(array,_TrilinosArray)
+            if not isTril:
                 narray = numpy.array(array,dtype='object')
                 t1 = narray.take([0])[0]
-                flag = isinstance(t1,_TrilinosArray) or type(t1) == Epetra.MultiVector
-                if flag:
+                isTril = isinstance(t1,_TrilinosArray)
+                if isTril:
                     depth = len(narray.shape)
                     nshape = narray.shape
                     tshape = t1.shape
                     tsize = tshape[0]
                     for k in tshape[1:-1]:
                         tsize*=k
-                    if isinstance(t1,_TrilinosArray):
-                        t1 = t1.multiVector
+                    t1 = t1.multiVector
                     comm = t1.Comm()
                     vLength = t1.GlobalLength()
                     if epetraMap is None:
@@ -53,17 +92,14 @@ class _TrilinosArray:
                     f = narray.flat
                     curN = 0
                     for i in range(len(f)):
-                        v = f[i]
-                        if isinstance(v,_TrilinosArray):
-                            v = v.multiVector
+                        v = f[i].multiVector
                         for k in range(len(v)):
                             mv[curN,:] = v[k,:]
                             curN+=1
             else:
                 if shape is None or shape == array.shape or shape == (array.shape,):
                     shape = array.shape
-                    if isinstance(array,_TrilinosArray):
-                        array = array.multiVector
+                    array = array.multiVector
                     vLength = array.GlobalLength()
                     comm = array.Comm()
                     oldMap = array.Map()
@@ -75,8 +111,7 @@ class _TrilinosArray:
                         mv = Epetra.MultiVector(epetraMap,array.NumVectors())
                         mv.Import(array, DistToPers, Epetra.Insert)
                 else:
-                    if isinstance(array,_TrilinosArray):
-                        array = array.multiVector
+                    array = array.multiVector
                     PersonalMap = Epetra.Map(-1, range(0, array.GlobalLength()), 0, v.Comm())
                     DistToPers = Epetra.Import(PersonalMap, array.Map())
                     PersonalV = Epetra.Vector(PersonalMap)
@@ -93,8 +128,7 @@ class _TrilinosArray:
                         shape = (shape,)
                     PersonalV = PersonalV[...,epetraMap.MyGlobalElements()]
                     mv = Epetra.MultiVector(epetraMap,narray)
-                    
-        if not flag:
+        if not isTril:
             del t1
             if shape is None:
                 if array is not None:
@@ -121,9 +155,59 @@ class _TrilinosArray:
         self._comm = comm
         self._map = epetraMap
         self._mV = mv
+        size = 1
+        for i in shape[:-1]:
+            size *= i
+        self._size = size*shape[-1]
+        self._dims = len(shape)
+        inds = numpy.arange(size)
+        if self._dims != 1:
+            self._indices = inds.reshape(shape[:-1])
+        else:
+            self._indices = inds
+        self._reprMV = numpy.arange(vLength)
     
-    
-    
+    def __getitem__(self,y):
+        if type(y) is not tuple:
+            y = (y,)
+        shape = ()
+        numS = len(y)
+        numNone = list(y).count(None)
+        numNonNone = numS-numNone
+        dims = self._dims
+        indices = self._indices
+        vLength = self._vLength
+        mv = self._mV
+        m = self._map
+        myInds = m.MyGlobalElements()
+        comm = self._comm
+        test = self._reprMV
+        if dims == 1:
+            if numNonNone is 0:
+                shape = indices[y].shape+(vLength,)
+                return self.copy().reshape(shape)
+            elif numNone is 0:
+                y = y[0]
+                if type(y) is int:
+                    res = 0
+                    if myInds.__contains__(y):
+                        res = mv[0,y]
+                    res = comm.SumAll(res)
+                    return res
+                els = test[y]
+                allMap = Epetra.Map(-1,els.size,0,comm)
+                toDist = Epetra.Import(allMap,m)
+                newMV = Epetra.MultiVector(allMap,1)
+                newMV.Import(mv,toDist,Epetra.Insert)
+                return _TrilinosArray(newMV,vLength = els.size,shape=(els.size,))
+        if numNonNone == dims:
+            formv = y[-1]
+            if formv is None:
+                raise ValueError("Once a _TrilinosArray is initialized, you cannot change the vector length")
+            y = y[:-1]
+        
+        
+        
     def __str__(self):
         return self.multiVector.__str__()
 
@@ -133,7 +217,3 @@ class _TrilinosArray:
 class trilIntArr:
     def __init__(self,array=None,shape=None,map=None,dtype=None):
         pass
-
-
-def __call__(*args,**kwargs):
-    return _TrilinosArray(args,kwargs)
