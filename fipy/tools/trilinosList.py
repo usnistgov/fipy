@@ -15,6 +15,7 @@ class _TrilinosArray:
     array = property(lambda self:self._mV.array,"The array representing the local _TrilinosArray")
     
     def __init__(self,array=None, vLength = None, shape=None,epetraMap=None,init=True):
+        #print repr(array),repr(vLength),repr(shape),repr(epetraMap),repr(init)
         if init:
             if type(array) is Epetra.MultiVector:
                 if epetraMap is None:
@@ -40,7 +41,8 @@ class _TrilinosArray:
                         self._indices = inds.reshape(shape[:-1])
                     else:
                         self._indices = inds
-                        self._reprMV = numpy.arange(vLength)
+                    self._reprMV = numpy.arange(vLength)
+                    return
                 else:
                     self._map = epetraMap
                     self._comm = array.Comm()
@@ -218,11 +220,11 @@ class _TrilinosArray:
                     inds = indices[y]
                     if inds[0] is 0:
                         inds = ()
-                    els = test[forMV]
+                    els = numpy.array([m.LID(k) for k in test[forMV] if k in myInds])
                     numEls = els.size
                     m = Epetra.Map(-1,numEls,0,comm)
-                    newMV = Epetra.MultiVector(m,mv[inds,els])
-                    return _TrilinosArray(newMV,shape=inds.shape+(m.NumGlobalElements(),))
+                    newMV = Epetra.MultiVector(m,mv[0,els])
+                    return _TrilinosArray(newMV,shape=inds.shape[:-1]+(m.NumGlobalElements(),))
         else:
             last = y[-1]
             if numNonNone is 0:
@@ -257,14 +259,15 @@ class _TrilinosArray:
                     return _TrilinosArray(newMV,shape=inds.shape+(vLength,))
                 else:
                     inds = indices[y]
-                    els = test[forMV]
+                    els = numpy.array([m.LID(k) for k in test[forMV] if k in myInds])
                     numEls = els.size
                     m = Epetra.Map(-1,numEls,0,comm)
-                    newMV = Epetra.MultiVector(m,mv[inds,els])
+                    newMV = Epetra.MultiVector(m,mv[inds][:,els])
                     return _TrilinosArray(newMV,shape=inds.shape+(m.NumGlobalElements(),))
-                    
-                    
-            
+    
+    def __setitem__(self,y,a):
+        pass
+    
     def copy(self):
         newMV = Epetra.MultiVector(self._map,self.array.copy())
         newTril = _TrilinosArray(init=False)
