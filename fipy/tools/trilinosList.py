@@ -266,7 +266,29 @@ class _TrilinosArray:
                     return _TrilinosArray(newMV,shape=inds.shape+(m.NumGlobalElements(),))
     
     def __setitem__(self,y,a):
-        pass
+        if type(y) is not tuple:
+            y = (y,)
+        m = self._map
+        comm = self._comm
+        dims = self._dims
+        indices = self._indices
+        test = self._reprMV
+        myInds = self._map.MyGlobalElements()
+        mv = self._mV
+        if len(y) == dims or y.__contains__(Ellipsis):
+            indices = indices[y[:-1]]
+            test = test[y[-1]]
+            if type(test) is not numpy.ndarray:
+                test = numpy.array([test])
+            test = [i for i in test if myInds.__contains__(i)]
+        else:
+            indices = indices[y]
+        print repr(indices),repr(test)
+        if dims is 1:
+            mv[0,test] = a
+        else:
+            print repr(mv[indices][:,test])
+            mv[indices][:,test] = a
     
     def copy(self):
         newMV = Epetra.MultiVector(self._map,self.array.copy())
