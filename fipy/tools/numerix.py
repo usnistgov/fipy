@@ -71,8 +71,6 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 
 __docformat__ = 'restructuredtext'
 
-useTril = True
-
 import numpy as NUMERIX
 from numpy.core import umath
 from numpy import newaxis as NewAxis
@@ -85,6 +83,14 @@ except ImportError:
     # masked arrays have been moved in numpy 1.1
     from numpy import ma as MA
     numpy_version = 'new'
+
+useTril = False
+import os
+if os.environ.has_key('FIPY_ARRAYS'):
+    if os.environ['FIPY_ARRAYS'].lower() == 'numpy':
+        useTril = False
+    elif os.environ['FIPY_ARRAYS'].lower() == 'trilinos':
+        useTril = True
 
 if useTril:
     import trilinosArray as TRIL
@@ -115,7 +121,6 @@ def array(object, dtype=None, copy=1,order=None, subok=0,ndmin=0):
     return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok,ndmin=ndmin)
 
 def logical_or(x1,x2):
-    print "LOGICAL OR!  =D"
     return NUMERIX.logical_or(x1,x2)
 
 logical_or.reduce = lambda k:reduce(NUMERIX.logical_or,k)

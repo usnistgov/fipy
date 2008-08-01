@@ -7,7 +7,7 @@ import sys
 
 class _TrilinosArray:
 
-    shape = property(lambda self:self._shape,"The global shape of the array")
+    shape = property(lambda self:self._shape,lambda self,s:self.reshape(s,copy=False),"The global shape of the array")
     vLength = property(lambda self:self._vLength,"The global length of each vector in the MultiVector")
     epetraMap = property(lambda self:self._map,lambda self,m:self.setMap(m),"The Epetra map used to distribute the MultiVector")
     comm = property(lambda self:self._comm,"The Epetra communicator used by this _TrilinosArray")
@@ -304,18 +304,27 @@ class _TrilinosArray:
         newTril._reprMV = self._reprMV
         return newTril
 
-    def reshape(self,shape,*args):
+    def reshape(self,shape,*args,**copy):
+        if copy == {}: copy['copy'] = True
         shape = (args and (shape,)+args) or shape
-        newTril = self.copy()
-        newTril._shape = shape
-        if shape[-1] != self._vLength:
-            raise ValueError("The final dimension of a _TrilinosArray must remain unchanged")
-        newTril._indices = self._indices.reshape(shape[:-1])
-        newTril._dims = len(shape)
-        return newTril
+        if copy['copy']:
+            newTril = self.copy()
+            newTril._shape = shape
+            if shape[-1] != self._vLength:
+                raise ValueError("The final dimension of a _TrilinosArray must remain unchanged")
+            newTril._indices = self._indices.reshape(shape[:-1])
+            newTril._dims = len(shape)
+            return newTril
+        else:
+            self._shape = shape[:-1]
+            if shape[-1] != self._vLength:
+                raise ValueError("The final dimension of a _TrilinosArray must remain unchanged")
+            self._indices = self._indices.reshape(shape[:-1])
+            self._dims = len(shape)
+            
         
     def __str__(self):
-        return self.multiVector.__str__()
+        return self.array.reshape(self.shape[:-1]+(-1,)).__str__()
 
     def __repr__(self):
         return "_TrilinosArray("+self.multiVector.__str__()+" shape = "+self.shape.__str__()+")"

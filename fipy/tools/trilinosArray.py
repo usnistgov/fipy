@@ -579,7 +579,7 @@ class trilArr:
         if self.shp._shapeCheck(shp) is None:
             return
         if copy:
-            newArr = self.__copy__()
+            newArr = self.copy()
             newArr.shp.reshape(shp)
             return newArr
         else:
@@ -647,9 +647,6 @@ class trilArr:
             self.eMap = v.Map()
         self.array = self.vector.array
 
-    def copy(self):
-        return self.__copy__()
-
     shape = property(fget = lambda self: self.shp.getGlobalShape())
     size = property(fget = lambda self: self.shp.getSize())
     rank = property(fget = lambda self: self.shp.getRank())
@@ -684,7 +681,7 @@ class trilArr:
             return a[0]
         return trilArr(array = a,shape = s,parallel = False)
 
-    def __copy__(self):
+    def copy(self):
         Vect = type(self.vector)
         newVect = Vect(self.eMap)
         newVect[:] = self.vector[:]
