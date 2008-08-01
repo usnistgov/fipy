@@ -71,7 +71,7 @@ class _TrilinosArray:
                     if epetraMap is None:
                         raise TypeError("_TrilinosArray.__init__() needs a map, shape, or array")
                     else:
-                        shape = (epetraMap.NumGlobalElements())
+                        shape = (epetraMap.NumGlobalElements(),)
                 if vLength is None:
                     vLength = shape[-1]
                 if epetraMap is None:
@@ -104,10 +104,9 @@ class _TrilinosArray:
                         mv = Epetra.MultiVector(epetraMap,narray.size*tsize)
                         f = narray.flat
                         curN = 0
-                        for i in range(len(f)):
-                            v = f[i].multiVector
-                            for k in range(len(v)):
-                                mv[curN,:] = v[k,:]
+                        for i in f:
+                            for k in i.multiVector:
+                                mv[curN] = k
                                 curN+=1
                 else:
                     if shape is None or shape == array.shape or shape == (array.shape,):
@@ -280,7 +279,7 @@ class _TrilinosArray:
             test = test[y[-1]]
             if type(test) is not numpy.ndarray:
                 test = numpy.array([test])
-            test = [i for i in test if myInds.__contains__(i)]
+            test = [i for i in test if i in myInds]
         else:
             indices = indices[y]
         print repr(indices),repr(test)
@@ -305,10 +304,20 @@ class _TrilinosArray:
         return newTril
 
     def reshape(self,shape,*args,**copy):
-        if copy == {}: copy['copy'] = True
+        if copy == {}:
+            copy['copy'] = True
+        elif not copy.has_key('copy'):
+            raise TypeError, "Invalid keyword arguments.  The only valid keyword is 'copy'."
+        
         shape = (args and (shape,)+args) or shape
         if copy['copy']:
-            newTril = self.copy()
+            newTril = _TrilinosArray(init=False)
+            newTril._mV = self._mV
+            newTril._vLength = self._vLength
+            newTril._comm = self._comm
+            newTril._map = self._map
+            newTril._size = self._size
+            newTril._reprMV = self._reprMV
             newTril._shape = shape
             if shape[-1] != self._vLength:
                 raise ValueError("The final dimension of a _TrilinosArray must remain unchanged")
