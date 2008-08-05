@@ -15,6 +15,7 @@ class _TrilinosArray:
     array = property(lambda self:self._mV.array,"The array representing the local _TrilinosArray")
     
     def __init__(self,array=None, vLength = None, shape=None,epetraMap=None,init=True):
+        self.takes = {}
         #print repr(array),repr(vLength),repr(shape),repr(epetraMap),repr(init)
         if init:
             if type(array) is Epetra.MultiVector:
@@ -177,28 +178,36 @@ class _TrilinosArray:
             self._reprMV = numpy.arange(vLength)
     
     def take(self,ids,axis=None,mode=None):
-        myInds = m.MyGlobalElements()
+        currMap = self._map
+        comm = self._comm
+        myInds = currMap.MyGlobalElements()
         if axis is None:
-            if hasattr(ids,_mV):
-                resMap = ids._map
-                throughMap = Epetra.Map(-1,ids.array.astype(int),0,comm) #MUST be changed on addition of intvectors
-                throughVec = Epetra.MultiVector(throughMap,1)
+            if hasattr(ids,'_mV'):
+                takes = self.takes
+                key = str(ids)
+                if takes.has_key(key):
+                    throughVec,imp,resMap = takes[key]
+                    resVec = Epetra.MultiVector(resMap,1)
+                    throughVec.Import(self._mV,imp,Epetra.Insert)
+                    resVec += throughVec
+                    return _TrilinosArray(resVec,shape=(resVec.GlobalLength(),))
+                else:
+                    resMap = ids._map
+                    resVec = Epetra.MultiVector(resMap,1)
+                    throughMap = Epetra.Map(-1,ids.array.astype(int)[0],0,comm) #MUST be changed on addition of intvectors
+                    throughVec = Epetra.MultiVector(throughMap,self._indices.size)
+                    imp = Epetra.Import(throughMap,currMap)
+                    throughVec.Import(self._mV,imp,Epetra.Insert)
+                    resVec+=throughVec
+                    takes[key] = (throughVec,imp,resMap)
+                    return _TrilinosArray(resVec,shape=(resVec.GlobalLength(),))
+        else:
+            
                 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+                
 
+    def __getslice__(self,i,j):
+        return self.__getitem__((slice(i,j,None),))
     
     def __getitem__(self,y):
         if type(y) is not tuple:
@@ -224,13 +233,13 @@ class _TrilinosArray:
             else:
                 forMV = y[-1]
                 y = y[:-1]
-                if type(forMV) is int:
+                if type(forMV) is int and y is ():
                     res = 0
                     if myInds.__contains__(forMV):
                         res = mv[0,forMV]
                     res = comm.SumAll(res)
                     return res
-                elif isinstance(forMV,trilIntArr) and forMV.dtype == bool:
+                elif isinstance(forMV,_TrilinosArray) and forMV.dtype == bool:
                     els = mv[forMV.array.astype('bool')]
                     numEls = els.size
                     m = Epetra.Map(-1,numEls,0,comm)
@@ -263,13 +272,13 @@ class _TrilinosArray:
                             res = mv[y]
                         res = comm.SumAll(res)
                         return res
-                    forMV = y[-1]
+                    forMV = last
                     y = y[:-1]
                 elif y[-1] == Ellipsis:
                     forMV = Ellipsis
                     y = y[:-1]+(Ellipsis,)
                 elif y.__contains__(Ellipsis):
-                    forMV = y[-1]
+                    forMV = last
                     y = y[:-1]
                 else:
                     forMV = slice(0, sys.maxint, None)
@@ -279,13 +288,33 @@ class _TrilinosArray:
                     return _TrilinosArray(newMV,shape=inds.shape+(vLength,))
                 else:
                     inds = indices[y]
-                    els = numpy.array([m.LID(k) for k in test[forMV] if k in myInds])
+                    test = test[forMV]
+                    if type(test) is not numpy.ndarray:
+                        res = []
+                        ind = 0
+                        if test in myInds:
+                            res = mv[inds.reshape(-1)][:,test]
+                            ind = comm.MyPID()
+                        ind = comm.SumAll(ind)
+                        res = comm.GatherAll(res)[ind]
+                        res = res.reshape(inds.shape)
+                        m = Epetra.Map(res.shape[-1],0,comm)
+                        return _TrilinosArray(Epetra.MultiVector(m,res))
+                    els = numpy.array([m.LID(k) for k in test if k in myInds])
                     numEls = els.size
                     m = Epetra.Map(-1,numEls,0,comm)
-                    newMV = Epetra.MultiVector(m,mv[inds][:,els])
+                    newMV = Epetra.MultiVector(m,mv[inds.reshape(-1)][:,els])
                     return _TrilinosArray(newMV,shape=inds.shape+(m.NumGlobalElements(),))
+
+    def __setslice__(self,i,j,a):
+        self.__setitem__((slice(i,j,None),),a)
     
     def __setitem__(self,y,a):
+        if isinstance(a,_TrilinosArray):
+            if a._dims is 1:
+                a = a.array[0]
+            else:
+                a = a.array
         if type(y) is not tuple:
             y = (y,)
         m = self._map
@@ -303,7 +332,6 @@ class _TrilinosArray:
             test = [i for i in test if i in myInds]
         else:
             indices = indices[y]
-        print repr(indices),repr(test)
         if dims is 1:
             mv[0,test] = a
         else:
@@ -329,8 +357,9 @@ class _TrilinosArray:
             copy['copy'] = True
         elif not copy.has_key('copy'):
             raise TypeError, "Invalid keyword arguments.  The only valid keyword is 'copy'."
-        
         shape = (args and (shape,)+args) or shape
+        if shape[-1] != self._vLength:
+            raise ValueError("The final dimension of a _TrilinosArray must remain unchanged")
         if copy['copy']:
             newTril = _TrilinosArray(init=False)
             newTril._mV = self._mV
@@ -340,15 +369,11 @@ class _TrilinosArray:
             newTril._size = self._size
             newTril._reprMV = self._reprMV
             newTril._shape = shape
-            if shape[-1] != self._vLength:
-                raise ValueError("The final dimension of a _TrilinosArray must remain unchanged")
             newTril._indices = self._indices.reshape(shape[:-1])
             newTril._dims = len(shape)
             return newTril
         else:
-            self._shape = shape[:-1]
-            if shape[-1] != self._vLength:
-                raise ValueError("The final dimension of a _TrilinosArray must remain unchanged")
+            self._shape = shape
             self._indices = self._indices.reshape(shape[:-1])
             self._dims = len(shape)
             
@@ -464,6 +489,7 @@ class _TrilinosArray:
         return "_TrilinosArray("+self.multiVector.__str__()+" shape = "+self.shape.__str__()+")"
 
     def __getattr__(self,attr):
+        print repr(attr)
         attribute = getattr(self._mV,attr)
         if callable(attribute):
             return lambda *args,**kwargs: _wrap(attribute,self.shape,*args,**kwargs)
@@ -475,4 +501,3 @@ def _wrap(fn,retShape,*args,**kwargs):
     if type(obj) == Epetra.MultiVector:
         return _TrilinosArray(obj,shape=retShape)
     return obj
-    
