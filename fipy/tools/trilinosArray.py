@@ -67,6 +67,12 @@ class trilArr:
           - `parallel`:whether or not this array should be parallelized
           - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
+        if shape is not None:
+            print repr(dtype),repr(shape)
+            print repr(array)
+        elif array is not None:
+            print dtype,numpy.shape(array)
+            print array
         sizeA = _sizeArray(array)
         if _sizeArray(array) in [0,1] :
             parallel = False
@@ -661,7 +667,6 @@ class trilArr:
         return self.__getitem__(slice(i,j,None))
     
     def __setitem__(self, i, y):
-        print "s",repr(i),repr(y)
         i = self.shp.getLocalIndex(i)
         if isTrilArray(i):
             from PyTrilinos import Nothing
@@ -671,7 +676,6 @@ class trilArr:
         self.vector.__setitem__(i[0],y[res:])
 
     def __getitem__(self, y):
-        print "g",repr(y)
         y = self.shp.getLocalIndex(y)
         a = self.vector.__getitem__(y[0])
         if self.isParallel:

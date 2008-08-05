@@ -24,13 +24,10 @@ class _TrilinosArray:
                     self._comm = array.Comm()
                     if vLength is None:
                         vLength = array.GlobalLength()
-                        self._vLength = vLength
-                    else:
-                        self._vLength = vLength
+                    self._vLength = vLength
                     if shape is None:
-                        self._shape = (vLength,)
-                    else:
-                        self._shape = shape
+                        shape = array.shape
+                    self._shape = shape
                     size = 1
                     for i in shape[:-1]:
                         size *= i
@@ -178,6 +175,30 @@ class _TrilinosArray:
             else:
                 self._indices = inds
             self._reprMV = numpy.arange(vLength)
+    
+    def take(self,ids,axis=None,mode=None):
+        myInds = m.MyGlobalElements()
+        if axis is None:
+            if hasattr(ids,_mV):
+                resMap = ids._map
+                throughMap = Epetra.Map(-1,ids.array.astype(int),0,comm) #MUST be changed on addition of intvectors
+                throughVec = Epetra.MultiVector(throughMap,1)
+                
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
     
     def __getitem__(self,y):
         if type(y) is not tuple:
@@ -331,13 +352,127 @@ class _TrilinosArray:
             self._indices = self._indices.reshape(shape[:-1])
             self._dims = len(shape)
             
-        
+            
+    def __mul__(self,other):
+        res = self.copy()
+        if hasattr(other,'_mV'):
+            res._mV *= other._mV
+            return res
+        res._mV *= other
+        return res
+    
+    def __add__(self,other):
+        res = self.copy()
+        if hasattr(other,'_mV'):
+            res._mV += other._mV
+            return res
+        res._mV += other
+        return res
+
+    def __div__(self,other):
+        res = self.copy()
+        if hasattr(other,'_mV'):
+            res._mV /= other._mV
+            return res
+        res._mV /= other
+        return res
+
+    def __sub__(self,other):
+        res = self.copy()
+        if hasattr(other,'_mV'):
+            res._mV -= other._mV
+            return res
+        res._mV -= other
+        return res
+
+    def __rmul__(self,other):
+        res = self.copy()
+        if hasattr(other,'_mV'):
+            res._mV *= other._mV
+            return res
+        res._mV *= other
+        return res
+    
+    def __radd__(self,other):
+        res = self.copy()
+        if hasattr(other,'_mV'):
+            res._mV += other._mV
+            return res
+        res._mV += other
+        return res
+    
+    def __rdiv__(self,other):
+        if hasattr(other,'_mV'):
+            res = other.copy()
+            res._mV /= self._mV
+            return res
+        res = self.__inv__()
+        res._mV *= other
+        return res
+
+    def __rsub__(self,other):
+        if hasattr(other,'_mV'):
+            res = other.copy()
+            res._mV -= self._mV
+            return res
+        res = self.__neg__()
+        res._mV += other
+        return res
+
+    def __imul__(self,other):
+        if hasattr(other,'_mV'):
+            self._mV *= other._mV
+            return self
+        self._mV *= other
+        return self
+    
+    def __iadd__(self,other):
+        if hasattr(other,'_mV'):
+            self._mV += other._mV
+            return self
+        self._mV += other
+        return self
+    
+    def __idiv__(self,other):
+        if hasattr(other,'_mV'):
+            self._mV /= other._mV
+            return self
+        self._mV /= other
+        return self
+
+    def __isub__(self,other):
+        if hasattr(other,'_mV'):
+            self._mV -= other._mV
+            return self
+        self._mV -= other
+        return self
+    
+    def __inv__(self):
+        res = self.copy()
+        res._mV = 1/res._mV
+        return res
+
+    def __neg__(self):
+        res = self.copy()
+        res._mV = res._mV.__neg__()
+        return res
+    
     def __str__(self):
         return self.array.reshape(self.shape[:-1]+(-1,)).__str__()
 
     def __repr__(self):
         return "_TrilinosArray("+self.multiVector.__str__()+" shape = "+self.shape.__str__()+")"
 
-class trilIntArr:
-    def __init__(self,array=None,shape=None,map=None,dtype=None):
-        pass
+    def __getattr__(self,attr):
+        attribute = getattr(self._mV,attr)
+        if callable(attribute):
+            return lambda *args,**kwargs: _wrap(attribute,self.shape,*args,**kwargs)
+        else:
+            return attribute
+
+def _wrap(fn,retShape,*args,**kwargs):
+    obj = fn(*args,**kwargs)
+    if type(obj) == Epetra.MultiVector:
+        return _TrilinosArray(obj,shape=retShape)
+    return obj
+    
