@@ -319,6 +319,8 @@ class Variable(object):
         return str(self.getValue())
             
     def __repr__(self):
+        if not hasattr(self,'name'):
+            return self.__class__.__name__
         if len(self.name) > 0:
             return self.name
         else:
@@ -494,7 +496,7 @@ class Variable(object):
                 if isinstance(v, PF):
                     v = self.value.value
                 if type(value) in (type(1), type(1.)):
-                    if type(v) is type(numerix.array(1)):
+                    if type(v) in [type(numerix.array(1)),type(numerix.array([1]))]:
                         if v.shape is not ():
 ##                        if len(v) > 1:
                             value = numerix.resize(value, v.shape).astype(v.dtype)

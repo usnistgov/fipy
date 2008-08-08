@@ -91,6 +91,8 @@ class _MeshVariable(Variable):
         
     def __repr__(self):
         s = Variable.__repr__(self)
+        if not hasattr(self,'name'):
+            return s
         if len(self.name) == 0:
             s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
         return s

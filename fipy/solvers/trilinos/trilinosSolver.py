@@ -118,10 +118,12 @@ class TrilinosSolver(Solver):
 
         A.FillComplete()
         A.OptimizeStorage()
-        
         if(numerix.useTril):
-            LHS = x.vector
-            RHS = b.vector
+            LHS = x._mV
+            m = LHS.Map()
+            LHS = Epetra.Vector(m,LHS.array[0])
+            RHS = b._mV
+            RHS = Epetra.Vector(m,RHS.array[0])
         else:
             LHS = _numpyToTrilinosVector(x, A.RowMap())
             RHS = _numpyToTrilinosVector(b, A.RowMap())
