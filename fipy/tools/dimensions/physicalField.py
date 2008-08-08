@@ -587,7 +587,7 @@ class PhysicalField(object):
             if type(value) is type(numerix.array((0))) and (t is None or t == value.dtype.char):
                 return value
             else:
-                return numerix.array(self.getNumericValue(), t)
+                return numerix.array(self.getNumericValue(), t,useTril=False)
         else:
             raise TypeError, 'Numeric array value must be dimensionless'
         
@@ -1259,7 +1259,7 @@ class PhysicalUnit:
             self.names = names
         self.factor = factor
         self.offset = offset
-        self.powers = numerix.array(powers)
+        self.powers = numerix.array(powers,useTril=False)
 
     def __repr__(self):
         """

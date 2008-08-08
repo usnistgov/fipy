@@ -456,46 +456,19 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-        # Currently, all matrix building gets done on processor 0
-##         if(self.comm.MyPID() > 0):
-##             return
-
         ## This was added as it seems that trilinos does not like int64 arrays
-        global count
         #print count,str(Epetra.PyComm().MyPID())+":",repr(id1),repr(id2),repr(vector)
         if hasattr(id1, 'astype') and id1.dtype.name == 'int64':
             id1 = id1.astype('int32')
         if hasattr(id2, 'astype') and id2.dtype.name == 'int64':
             id2 = id2.astype('int32')
-        import trilinosArray as TA
+        TA = numerix.TRIL
         if TA.isTrilArray(id1):
-            s = id1.size
-            id1 = id1.vector
-            if len(id1) != s:
-                id1 = TA.collectVariable(id1,self.comm)
+            id1 = id1.array
         if TA.isTrilArray(id2):
-            s = id2.size
-            id2 = id2.vector
-            if len(id2) != s:
-                id2 = TA.collectVariable(id2,self.comm)
+            id2 = id2.array
         if TA.isTrilArray(vector):
-            s = vector.size
-            vector = vector.vector
-            if len(vector) != s:
-                vector = TA.collectVariable(vector,self.comm)
-        myEls = self.map.MyGlobalElements()
-        #print count,str(Epetra.PyComm().MyPID())+":",repr(id1),repr(id2),repr(vector)
-        vector = [vector[i] for i in range(len(vector)) if id1[i] in myEls]
-        id2 = [id2[i] for i in range(len(id2)) if id1[i] in myEls]
-        id1 = [i for i in id1 if i in myEls]
-#        if not TA.isTrilArray(vector):
-#            if TA.isTrilArray(id1):
-#                numEls = len(id1.vector)
-#            else:
-#                numEls = len(id1)
-#            myEls = self.comm.ScanSum(numEls)-numEls
-#            vector = vector[myEls:myEls+numEls]
-        #print count,str(Epetra.PyComm().MyPID())+":",repr(id1),repr(id2),repr(vector)
+            vector = vector.array
         if not self._getMatrix().Filled():
             self._getMatrix().InsertGlobalValues(id1, id2, vector)
         else:
@@ -513,8 +486,6 @@ class _TrilinosMatrix(_SparseMatrix):
                 # Would incur performance costs, and since FiPy does not use 
                 # this function in such a way as would generate these errors,
                 # I have not implemented the change.
-        count += 1
-
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
@@ -583,13 +554,15 @@ def _numpyToTrilinosVector(v, map):
         return distVector
 
 def _trilinosToNumpyVector(v):
+    import numpy
+    
     """
     Takes a distributed Trilinos vector and gives all processors a copy of it
     in a numpy vector.
     """
 
     if(v.Comm().NumProc() == 1):
-        return numerix.array(v)
+        return numpy.array(v)
     else:
         PersonalMap = Epetra.Map(-1, range(0, v.GlobalLength()), 0, v.Comm())
         DistToPers = Epetra.Import(PersonalMap, v.Map())
@@ -597,7 +570,7 @@ def _trilinosToNumpyVector(v):
         PersonalV = Epetra.Vector(PersonalMap)
         PersonalV.Import(v, DistToPers, Epetra.Insert) 
 
-        return numerix.array(PersonalV)
+        return numpy.array(PersonalV)
         
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """

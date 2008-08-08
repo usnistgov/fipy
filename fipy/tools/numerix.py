@@ -85,6 +85,7 @@ except ImportError:
     numpy_version = 'new'
 
 useTril = False
+
 import os
 if os.environ.has_key('FIPY_ARRAYS'):
     if os.environ['FIPY_ARRAYS'].lower() == 'numpy':
@@ -92,33 +93,45 @@ if os.environ.has_key('FIPY_ARRAYS'):
     elif os.environ['FIPY_ARRAYS'].lower() == 'trilinos':
         useTril = True
 
-if useTril:
-    import trilinosArray as TRIL
+t = False
 
-def zeros(a, t='l'):
+if t:
+    import trilinosArray as TRIL
+    from trilinosArray import trilArr as TA
+else:
+    import trilinosList as TRIL
+    from trilinosList import _TrilinosArray as TA
+
+def zeros(a, t='l',useTril=useTril):
+    t = TRIL.fixType(t)
     if useTril:
-        return TRIL.trilArr(shape=a, dtype=t)
+        return TA(shape=a,dtype=t)
     else:
         return NUMERIX.zeros(a, t)
 
-def ones(a, t='l'):
+def ones(a, t='l',useTril=useTril):
+    t = TRIL.fixType(t)
     if useTril:
-        arr = TRIL.trilArr(shape=a, dtype=t)
+        arr = TA(shape=a, dtype=t)
         arr.fillWith(1)
         return arr
     else:
         return NUMERIX.ones(a, t)
 
-def arange(start, stop=None, step=1, dtype=None):
+def arange(start, stop=None, step=1, dtype=None,useTril=useTril):
+    dtype = TRIL.fixType(dtype)
     if useTril:
         arr = TRIL.arange(start,stop,step,dtype)
         return arr
     return NUMERIX.arange(start,stop,step,dtype)
 
-def array(object, dtype=None, copy=1,order=None, subok=0,ndmin=0):
+def array(object, dtype=None, copy=1,order=None, subok=0,useTril=useTril):
+    if not hasattr(object,'__len__') or type(object) == NUMERIX.ndarray and object.shape is ():
+        return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok)
+    dtype = TRIL.fixType(dtype)
     if useTril:
-        return TRIL.trilArr(array=object)
-    return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok,ndmin=ndmin)
+        return TA(array=object)
+    return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok)
 
 def logical_or(x1,x2):
     return NUMERIX.logical_or(x1,x2)

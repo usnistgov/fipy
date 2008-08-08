@@ -48,6 +48,8 @@ IV = 0
 V = 1
 DIMLESS = 2
 
+count = 0
+
 class trilArr:
     """
     trilArr is a wrapper for a Trilinos vector
@@ -67,12 +69,9 @@ class trilArr:
           - `parallel`:whether or not this array should be parallelized
           - `array`:the array to be used.  Any iterable type is accepted here (numpy.array, list, tuple).  Default is all zeros.
         """
-        if shape is not None:
-            print repr(dtype),repr(shape)
-            print repr(array)
-        elif array is not None:
-            print dtype,numpy.shape(array)
-            print array
+        global count
+        count += 1
+        print count,repr(array)
         sizeA = _sizeArray(array)
         if _sizeArray(array) in [0,1] :
             parallel = False
@@ -507,7 +506,6 @@ class trilArr:
         return sum(1 - (numpy.abs(self.array-other.array) < atol+rtol*numpy.abs(other.array))) == 0
 
     def sum(self,axis=None):
-        
         if axis is not None:
             if axis >= self.getRank() or axis < 0:
                 print "ERROR: Axis out of range."
