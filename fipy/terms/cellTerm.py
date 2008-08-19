@@ -94,11 +94,11 @@ class CellTerm(Term):
         
     def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
         N = len(oldArray)
-
+        map = oldArray.getMesh().cellMap
         b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
-        b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
-        L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
-        L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
+        b += numerix.ones([N],map=map) * numerix.array(coeffVectors['b vector'])
+        L.addAtDiagonal(numerix.ones([N],map=map) * numerix.array(coeffVectors['new value']) / dt)
+        L.addAtDiagonal(numerix.ones([N],map=map) * numerix.array(coeffVectors['diagonal']))
         
 ##      L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
 ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
@@ -127,8 +127,12 @@ class CellTerm(Term):
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
         N = len(var)
-        b = numerix.zeros((N),'d')
-        L = SparseMatrix(size=N)
+        map = var.getMesh().cellMap
+        b = numerix.zeros((N,),'d',map=map)
+        if hasattr(var.getMesh(),'cellMap'):
+            L = SparseMatrix(map=var.getMesh().cellMap)
+        else:
+            L = SparseMatrix(size=N)
         
         # The sign of the matrix diagonal doesn't seem likely to change
         # after initialization, but who knows?

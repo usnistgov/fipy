@@ -101,6 +101,8 @@ class _TrilinosMatrix(_SparseMatrix):
             self.bandwidth = (matrix.NumGlobalNonzeros() + matrix.NumGlobalRows()-1)/matrix.NumGlobalRows()
         else:
             self.comm = Epetra.PyComm()
+            if size is None:
+                size = map.NumGlobalElements()
             if sizeHint is not None and bandwidth == 0:
                 self.bandwidth = (sizeHint + size - 1)/size 
             else:
@@ -489,12 +491,12 @@ class _TrilinosMatrix(_SparseMatrix):
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getMatrix().GetGlobalRows())
-            tmp = numerix.zeros((self._getMatrix().GetGlobalRows(),), 'd')
+            ids = numerix.arange(self._getMatrix().GetMyRows())
+            tmp = numerix.zeros((self._getMatrix().GetGlobalRows(),), 'd',map=self.RowMap())
             tmp[:] = vector
             self.addAt(tmp, ids, ids)
         else:
-            ids = numerix.arange(len(vector))
+            ids = numerix.arange(vector.vLength,map=vector.map)
             self.addAt(vector, ids, ids)
 
     def exportMmf(self, filename):

@@ -71,13 +71,21 @@ class _MeshVariable(Variable):
         if value is None:
             array = None
         else:
-            array = numerix.zeros(self.elementshape 
-                                  + self._getShapeFromMesh(mesh),
-                                  numerix.obj2sctype(numerix.array(value)))
-            if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
-                if not isinstance(value, Variable):
-                    value = _Constant(value)
-                value = value[..., numerix.newaxis]
+            #Needs to initialize a parallel array if it can.  Currently done in a VERY UGLY way.
+            if hasattr(mesh,'parallel') and mesh.parallel == True:
+                array = numerix.zeros(self.elementshape+self._getLocalShapeFromMesh(mesh),numerix.obj2sctype(numerix.array(value)),map=self._getMapFromMesh(mesh))
+                if numerix._broadcastShape(array.shape,numerix.shape(value)) is None:
+                    if not isinstance(value,Variable):
+                        value = _Constant(value)
+                    value = value[...,numerix.newaxis]
+            else:
+                array = numerix.zeros(self.elementshape 
+                                      + self._getShapeFromMesh(mesh),
+                                      numerix.obj2sctype(numerix.array(value)))
+                if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
+                    if not isinstance(value, Variable):
+                        value = _Constant(value)
+                    value = value[..., numerix.newaxis]
                                   
         if isinstance(value, _MeshVariable):
             mesh = mesh or value.mesh
@@ -105,6 +113,14 @@ class _MeshVariable(Variable):
         return None
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
+    def _getLocalShapeFromMesh(mesh):
+        return None
+    _getLocalShapeFromMesh = staticmethod(_getShapeFromMesh)
+
+    def _getMapFromMesh(mesh):
+        return None
+    _getMapFromMesh = staticmethod(_getMapFromMesh)
+    
     def getShape(self):
         """
             >>> from fipy.meshes.grid2D import Grid2D

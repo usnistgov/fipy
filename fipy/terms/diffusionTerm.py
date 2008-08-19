@@ -217,14 +217,16 @@ class _DiffusionTerm(Term):
             return None
 
     def _getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
+        print repr(coeff)+"\n\n\n\n\n"
         interiorCoeff = numerix.array(coeff)
         interiorCoeff[mesh.getExteriorFaces().getValue()] = 0
+        print "\n\n\n\n\n"+repr(interiorCoeff)
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
         coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
-        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
+        interiorFaces = mesh._getFaceIDs()[mesh.getInteriorFaces().getValue()]
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[0], interiorFaceCellIDs[1])
@@ -303,8 +305,8 @@ class _DiffusionTerm(Term):
 
             mm = self._getCoefficientMatrix(SparseMatrix, mesh, self.coeffDict['cell 1 diag'])
             L, b = self._doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
-                               mm, numerix.zeros(N,'d'))
-                               
+                                   mm, numerix.zeros(N,'d'))
+                                   
             del higherOrderBCs
             del mm
 
@@ -345,11 +347,12 @@ class _DiffusionTerm(Term):
             del higherOrderBCs
 
         else:
-            
-            L = SparseMatrix(size = N)
+            if hasattr(mesh,'cellMap'):
+                L = SparseMatrix(map=mesh.cellMap)
+            else:
+                L = SparseMatrix(size = N)
             L.addAtDiagonal(mesh.getCellVolumes())
-            b = numerix.zeros((N),'d')
-            
+            b = numerix.zeros((N,),'d')
         return (L, b)
         
     def _test(self):

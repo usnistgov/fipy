@@ -433,6 +433,16 @@ class CellVariable(_MeshVariable):
         return (mesh.getNumberOfCells(),)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
+    def _getLocalShapeFromMesh(mesh):
+        if hasattr(mesh,'_getNumberOfLocalCells'):
+            return (mesh._getNumberOfLocalCells(),)
+    _getLocalShapeFromMesh = staticmethod(_getLocalShapeFromMesh)
+
+    def _getMapFromMesh(mesh):
+        if hasattr(mesh,'cellMap'):
+            return mesh.cellMap
+    _getMapFromMesh = staticmethod(_getMapFromMesh)
+
     def _getArithmeticBaseClass(self, other = None):
         """
         Given `self` and `other`, return the desired base

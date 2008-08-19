@@ -82,8 +82,13 @@ class _Equation(Term):
         from fipy.tools import numerix
 
         N = len(var)
-        self.RHSvector = numerix.zeros((N,),'d')
-        self.matrix = SparseMatrix(size=N)
+        mesh = var.getMesh()
+        if hasattr(mesh,'cellMap'):
+            self.RHSvector = numerix.zeros((mesh.getNumberOfCells(),),'d',map=mesh.cellMap)
+            self.matrix = SparseMatrix(map=mesh.cellMap)
+        else:
+            self.RHSvector = numerix.zeros((N,),'d')
+            self.matrix = SparseMatrix(size=N)
         for key in self.orderedPlusOtherKeys():
             term = self.terms[key]
             if term is not None:
@@ -95,6 +100,8 @@ class _Equation(Term):
                     and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
                     self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
                     self._viewer.plot(matrix=termMatrix)
+                #print termMatrix
+                #print repr(termRHSvector)
                 self.matrix += termMatrix
                 self.RHSvector += termRHSvector
         matrix = self.matrix
@@ -103,7 +110,8 @@ class _Equation(Term):
             self.matrix = None
         if not self._cacheRHSvector:
             self.RHSvector = None
-            
+        print matrix
+        print repr(RHSvector)
 	return (matrix, RHSvector)
         
     def _getDefaultSolver(self, solver):

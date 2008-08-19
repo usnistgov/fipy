@@ -87,51 +87,60 @@ except ImportError:
 useTril = False
 
 import os
-if os.environ.has_key('FIPY_ARRAYS'):
-    if os.environ['FIPY_ARRAYS'].lower() == 'numpy':
-        useTril = False
-    elif os.environ['FIPY_ARRAYS'].lower() == 'trilinos':
+if os.environ.has_key('FIPY_ARRAYS') and os.environ['FIPY_ARRAYS'].lower() == 'trilinos':
+    useTril = True
+try:
+    from PyTrilinos import Epetra
+    import sys
+    k = sys.argv.count('--trilinos')
+    comm = Epetra.PyComm()
+    k = comm.SumAll(k)
+    if k:
         useTril = True
+    del Epetra
+    del sys
+    del k
+    del comm
+except ImportError:
+    pass
 
-t = False
+useTril = True
 
-if t:
-    import trilinosArray as TRIL
-    from trilinosArray import trilArr as TA
-else:
-    import trilinosList as TRIL
-    from trilinosList import _TrilinosArray as TA
+import trilinosList as TRIL
+from trilinosList import _TrilinosArray as TA
 
-def zeros(a, t='l',useTril=useTril):
+def zeros(a, t='float',map=None):
+    if map is None or not useTril:
+        return NUMERIX.zeros(a,t)
     t = TRIL.fixType(t)
-    if useTril:
-        return TA(shape=a,dtype=t)
-    else:
-        return NUMERIX.zeros(a, t)
+    return TA(shape=a,dtype=t,map=map)
 
-def ones(a, t='l',useTril=useTril):
+def ones(a, t='float',map=None):
+    if map is None or not useTril:
+        return NUMERIX.ones(a,t)
     t = TRIL.fixType(t)
-    if useTril:
-        arr = TA(shape=a, dtype=t)
-        arr.fillWith(1)
-        return arr
-    else:
-        return NUMERIX.ones(a, t)
+    arr = TA(shape=a, dtype=t,map=map)
+    arr.fillWith(1)
+    return arr
 
-def arange(start, stop=None, step=1, dtype=None,useTril=useTril):
+def empty(a,t='float',map=None):
+    if map is None or useTril is False:
+        return NUMERIX.empty(a,t)
+    t = TRIL.fixType(t)
+    return TA(shape=a,dtype=t,map=map)
+
+def arange(start, stop=None, step=1, dtype='int',map=None):
+    if map is None or not useTril:
+        return NUMERIX.arange(start,stop,step,dtype)
     dtype = TRIL.fixType(dtype)
-    if useTril:
-        arr = TRIL.arange(start,stop,step,dtype)
-        return arr
-    return NUMERIX.arange(start,stop,step,dtype)
+    arr = TRIL.arange(start,stop,step,dtype=dtype,map=map)
+    return arr
 
-def array(object, dtype=None, copy=1,order=None, subok=0,useTril=useTril):
-    if not hasattr(object,'__len__') or type(object) == NUMERIX.ndarray and object.shape is ():
+def array(object, dtype=None, copy=1,order=None, subok=0,map=None):
+    if (map is None and type(object) != TA and not _isPhysical(object)) or not useTril:
         return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok)
     dtype = TRIL.fixType(dtype)
-    if useTril:
-        return TA(array=object)
-    return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok)
+    return TA(array=object,map=map)
 
 def logical_or(x1,x2):
     return NUMERIX.logical_or(x1,x2)
@@ -139,13 +148,16 @@ def logical_or(x1,x2):
 logical_or.reduce = lambda k:reduce(NUMERIX.logical_or,k)
 
 def _isPhysical(arr):
-    """
-    Returns `True` if arr is a `Variable` or `PhysicalField`.
-    """
-    from fipy.variables.variable import Variable
-    from fipy.tools.dimensions.physicalField import PhysicalField
-
-    return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
+    try:
+        """
+        Returns `True` if arr is a `Variable` or `PhysicalField`.
+        """
+        from fipy.variables.variable import Variable
+        from fipy.tools.dimensions.physicalField import PhysicalField
+        
+        return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
+    except ImportError:
+        return False
 
 def put(arr, ids, values):
     """

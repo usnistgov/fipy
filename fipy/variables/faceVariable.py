@@ -48,7 +48,17 @@ class FaceVariable(_MeshVariable):
         """
         return (mesh._getNumberOfFaces(),)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
-        
+
+    def _getLocalShapeFromMesh(mesh):
+        if hasattr(mesh,'_getNumberOfLocalFaces'):
+            return (mesh._getNumberOfLocalFaces(),)
+    _getLocalShapeFromMesh = staticmethod(_getLocalShapeFromMesh)
+    
+    def _getMapFromMesh(mesh):
+        if hasattr(mesh,'faceMap'):
+            return mesh.faceMap
+    _getMapFromMesh = staticmethod(_getMapFromMesh)
+    
     def _getArithmeticBaseClass(self, other = None):
         """
         Given `self` and `other`, return the desired base class for an operation

@@ -76,8 +76,6 @@ class UniformGrid1D(Grid1D):
         self.numberOfFaces = self.nx + 1
         self.numberOfCells = self.nx
         
-        self.exteriorFaces = self.getFacesLeft() | self.getFacesRight()
-        
         self.scale = {
             'length': 1.,
             'area': 1.,
@@ -164,9 +162,7 @@ class UniformGrid1D(Grid1D):
 
     def getFaceCellIDs(self):
         c1 = numerix.arange(self.numberOfFaces)
-        ids = MA.ones((2,self.numberOfFaces),dtype='l')
-        ids[0] = c1-1
-        ids[1] = c1
+        ids = MA.array((c1-1,c1))
         ids[0,0] = ids[1,0]
         ids[1,0] = MA.masked
         ids[1,-1] = MA.masked

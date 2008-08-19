@@ -343,7 +343,12 @@ class Mesh:
         """
         x = self.getFaceCenters()[0]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == min(x))
+        m = min(x)
+        if hasattr(self,'parallel') and self.parallel:
+            from PyTrilinos import Epetra
+            comm = Epetra.PyComm()
+            m = comm.MinAll(m)
+        return FaceVariable(mesh=self, value=x == m)
 
     def getFacesRight(self):
         """
@@ -363,7 +368,12 @@ class Mesh:
         """
         x = self.getFaceCenters()[0]        
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == max(x))
+        m = max(x)
+        if hasattr(self,'parallel') and self.parallel:
+            from PyTrilinos import Epetra
+            comm = Epetra.PyComm()
+            m = comm.MaxAll(m)
+        return FaceVariable(mesh=self, value=x == m)
 
     def getFacesBottom(self):
         """
@@ -381,9 +391,14 @@ class Mesh:
             1
             
         """
-        y = self.getFaceCenters()[1]        
+        y = self.getFaceCenters()[1]
+        m = min(y)
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == min(y))
+        if hasattr(self,'parallel') and self.parallel:
+            from PyTrilinos import Epetra
+            comm = Epetra.PyComm()
+            m = comm.MinAll(m)
+        return FaceVariable(mesh=self, value=y == m)
 
     getFacesDown = getFacesBottom
 
@@ -405,7 +420,12 @@ class Mesh:
         """
         y = self.getFaceCenters()[1]        
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == max(y))
+        m = max(y)
+        if hasattr(self,'parallel') and self.parallel:
+            from PyTrilinos import Epetra
+            comm = Epetra.PyComm()
+            m = comm.MaxAll(m)
+        return FaceVariable(mesh=self, value=y == m)
 
     getFacesUp = getFacesTop
 
@@ -423,7 +443,12 @@ class Mesh:
         """
         z = self.getFaceCenters()[2]        
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == max(z))
+        m = max(z)
+        if hasattr(self,'parallel') and self.parallel:
+            from PyTrilinos import Epetra
+            comm = Epetra.PyComm()
+            m = comm.MaxAll(m)
+        return FaceVariable(mesh=self, value=z == m)
 
     def getFacesFront(self):
         """
@@ -439,7 +464,12 @@ class Mesh:
         """
         z = self.getFaceCenters()[2]        
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == min(z))
+        m = min(z)
+        if hasattr(self,'parallel') and self.parallel:
+            from PyTrilinos import Epetra
+            comm = Epetra.PyComm()
+            m = comm.MinAll(m)
+        return FaceVariable(mesh=self, value=z == m)
     
     def _getMaxFacesPerCell(self):
         pass
