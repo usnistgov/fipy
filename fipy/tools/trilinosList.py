@@ -486,7 +486,7 @@ class _TrilinosArray(object):
             y = y.__array__()
             t = True
         if t:
-            self._mv[y] = a
+            self._mV[y] = a
         if type(y) is not tuple:
             y = (y,)
         print repr(y),repr(a)
