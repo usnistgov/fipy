@@ -28,24 +28,39 @@ class _TrilinosArray(object):
                 raise TypeError("_TrilinosArray.__init__() needs a map, shape, or array")
             if hasattr(array,'getValue'):
                 array = array.getValue()
-            if dtype is None:
-                if array is None:
-                    dtype = 'float'
-                elif hasattr(array,'_dtype'):
-                    dtype = array._dtype
-                elif hasattr(array,'dtype'):
-                    dtype = fixType(array.dtype)
+            a = array
+            if hasattr(array,'shape'):
+                shape = a.shape
+            if array is not None:
+                if hasattr(array,'_dims'):
+                    b = a[(0,)*array._dims]
+                    if dtype is None:
+                        dtype = a.dtype
+                elif hasattr(array,'take'):
+                    b = a.take([0])[0]
+                    if dtype is None:
+                        dtype = a.dtype
                 else:
+                    b = a #Used again later
+                    shape = (len(a),)
                     a = array[0]
                     while hasattr(a,'__len__'):
+                        shape = shape + (len(a),)
+                        if type(b) is not _TrilinosArray:
+                            b = a
                         a = a[0]
-                    if hasattr(array,'_dtype'):
-                        dtype = a._dtype
-                    elif hasattr(array,'dtype'):
-                        dtype = fixType(a.dtype)
-                    else:
-                        dtype = fixType(type(a))
+                if dtype is None:
+                    dtype = fixType(type(a))
+                else:
+                    dtype = fixType(dtype)
+            else:
+                if dtype is None:
+                    dtype = 'float'
+                else:
+                    dtype = fixType(dtype)
             self._dtype = dtype
+            if dtype == numpy.object_:
+                raise Exception
             if type(array) is Epetra.MultiVector:
                 if map is None:
                     self._mV = array
@@ -117,13 +132,10 @@ class _TrilinosArray(object):
             else:
                 isTril = isinstance(array,_TrilinosArray)
                 if not isTril:
-                    narray = numpy.array(array,dtype='object')
-                    t1 = narray.take([0])[0]
+                    t1 = b
                     isTril = isinstance(t1,_TrilinosArray)
                     if isTril:
-                        nshape = narray.shape
-                        tshape = t1.shape
-                        shape = nshape+tshape
+                        tshape = b.shape
                         tsize = 1
                         for k in tshape[:-1]:
                             tsize*=k
@@ -166,6 +178,7 @@ class _TrilinosArray(object):
                         PersonalV = PersonalV[...,map.MyGlobalElements()]
                         mv = Epetra.MultiVector(map,narray)
             if not isTril:
+                narray = numpy.array(array)
                 del t1
                 if shape is None:
                     if array is not None:
@@ -288,6 +301,23 @@ class _TrilinosArray(object):
             a = self._mV[inds.flatten()].array
             mv = Epetra.MultiVector(currMap,a)
             return _TrilinosArray(mv,shape = inds.shape+(mv.GlobalLength(),))
+
+    def sum(self,axis=None):
+        if axis is not None:
+            if axis < 0:
+                axis += self._dims
+            if axis >= self._dims:
+                raise ValueError("Axis out of range")
+            elif axis == self._dims-1:
+                res = self.take([0],axis=axis)
+                for i in range(self.shp[axis])[1:]:
+                    res += self.take([i],axis)
+                    newshp = self.shp.globalShape[:axis]+self.shp.globalShape[axis+1:]
+                return res.reshape(newshp,False)
+        raise Exception
+
+    def dot(self,axis=None):
+        return (self*other).sum(axis=axis)
     
     def fillWith(self,i):
         if debug:
@@ -368,7 +398,6 @@ class _TrilinosArray(object):
     def __getitem__(self,y):
         if debug:
             print "IN __getitem__"
-            print "self = "+repr(self)+"y = "+str(y)+"\n"
         if type(y) is not tuple:
             y = (y,)
         shape = ()
@@ -393,19 +422,18 @@ class _TrilinosArray(object):
                 forMV = y[-1]
                 y = y[:-1]
                 if type(forMV) is int and y is ():
-                    res = 0
+                    res = 0.
                     if myInds.__contains__(forMV):
                         res = mv[0,forMV]
                     res = comm.SumAll(res)
                     return res.astype(self._dtype)
                 elif type(forMV) is _TrilinosArray:
-                    print repr(forMV)
                     els = mv[0,forMV.array]
                     numEls = els.size
                     totEls = comm.SumAll(numEls)
                     m = Epetra.Map(-1,numEls,0,comm)
                     newMV = Epetra.MultiVector(m,els)
-                    return _TrilinosArray(newMV,shape=totEls)
+                    return _TrilinosArray(newMV,shape=totEls,dtype=self._dtype)
                 else:
                     inds = indices[y]
                     if inds[0] is 0:
@@ -417,7 +445,7 @@ class _TrilinosArray(object):
                     numEls = els.size
                     m = Epetra.Map(-1,numEls,0,comm)
                     newMV = Epetra.MultiVector(m,mv[0,els])
-                    return _TrilinosArray(newMV,shape=inds.shape[:-1]+(m.NumGlobalElements(),))
+                    return _TrilinosArray(newMV,shape=inds.shape[:-1]+(m.NumGlobalElements(),),dtype=self._dtype)
         else:
             last = y[-1]
             if numNonNone is 0:
@@ -449,7 +477,7 @@ class _TrilinosArray(object):
                 if forMV == Ellipsis or (type(forMV) == slice and forMV.stop >= vLength and forMV.start <= 0):
                     inds = indices[y]
                     newMV = mv[inds.reshape(-1)]
-                    return _TrilinosArray(newMV,shape=inds.shape+(vLength,))
+                    return _TrilinosArray(newMV,shape=inds.shape+(vLength,),dtype=self._dtype)
                 else:
                     inds = indices[y]
                     test = test[forMV]
@@ -468,7 +496,7 @@ class _TrilinosArray(object):
                     numEls = els.size
                     m = Epetra.Map(-1,numEls,0,comm)
                     newMV = Epetra.MultiVector(m,mv[inds.reshape(-1)][:,els])
-                    return _TrilinosArray(newMV,shape=inds.shape+(m.NumGlobalElements(),))
+                    return _TrilinosArray(newMV,shape=inds.shape+(m.NumGlobalElements(),),dtype=self._dtype)
 
     def __setslice__(self,i,j,a):
         if debug:
@@ -485,11 +513,14 @@ class _TrilinosArray(object):
         if type(y) == _TrilinosArray:
             y = y.__array__()
             t = True
-        if t:
-            self._mV[y] = a
         if type(y) is not tuple:
             y = (y,)
-        print repr(y),repr(a)
+        if t:
+            if self._dims == 1:
+                self._mV[(0,)+y] = a
+            else:
+                self._mV[y] = a
+            return
         m = self.map
         comm = self.comm
         dims = self._dims
@@ -732,6 +763,8 @@ class _TrilinosArray(object):
         return _TrilinosArray(mv,shape=self._shape,dtype = fixType(a.dtype))
     
     def __eq__(self,other):
+        if other is None or (fixType(type(other)) not in ('int','float','bool') and not hasattr(other,'__len__')):
+            return False
         if debug:
             print "IN __eq__\n"
         a = self.__array__()

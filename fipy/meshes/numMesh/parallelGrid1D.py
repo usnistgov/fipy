@@ -12,6 +12,15 @@ class ParallelGrid1D(UniformGrid1D):
         self.cellMap = Epetra.Map(self.numberOfCells,0,comm)
         self.faceMap = Epetra.Map(self.numberOfFaces,0,comm)
         self.exteriorFaces = self.getFacesLeft() | self.getFacesRight()
+
+    
+    def _createCells(self):
+        self.numberOfFaces = self.nx + 1
+        f1 = numerix.arange(self.nx,map=self.cellMap)
+        f2 = f1 + 1
+        a = numerix.array((f1,f2),cTril = True)
+        return a
+
         
     def _translate(self, vector):
         return ParallelGrid1D(dx = self.dx, nx = self.nx, origin = self.origin + vector)

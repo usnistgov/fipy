@@ -109,35 +109,35 @@ useTril = True
 import trilinosList as TRIL
 from trilinosList import _TrilinosArray as TA
 
-def zeros(a, t='float',map=None):
-    if map is None or not useTril:
+def zeros(a, t='float',map=None,cTril=False):
+    if not useTril or (map is None and not cTril):
         return NUMERIX.zeros(a,t)
     t = TRIL.fixType(t)
     return TA(shape=a,dtype=t,map=map)
 
-def ones(a, t='float',map=None):
-    if map is None or not useTril:
+def ones(a, t='float',map=None,cTril=False):
+    if not useTril or (map is None and not cTril):
         return NUMERIX.ones(a,t)
     t = TRIL.fixType(t)
     arr = TA(shape=a, dtype=t,map=map)
     arr.fillWith(1)
     return arr
 
-def empty(a,t='float',map=None):
-    if map is None or useTril is False:
+def empty(a,t='float',map=None,cTril=False):
+    if not useTril or (map is None and not cTril):
         return NUMERIX.empty(a,t)
     t = TRIL.fixType(t)
     return TA(shape=a,dtype=t,map=map)
 
-def arange(start, stop=None, step=1, dtype='int',map=None):
-    if map is None or not useTril:
+def arange(start, stop=None, step=1, dtype='int',map=None,cTril=False):
+    if not useTril or (map is None  and not cTril):
         return NUMERIX.arange(start,stop,step,dtype)
     dtype = TRIL.fixType(dtype)
     arr = TRIL.arange(start,stop,step,dtype=dtype,map=map)
     return arr
 
-def array(object, dtype=None, copy=1,order=None, subok=0,map=None):
-    if (map is None and type(object) != TA and not _isPhysical(object)) or not useTril:
+def array(object, dtype=None, copy=1,order=None, subok=0,map=None,cTril=False):
+    if not useTril or ((map is None and type(object) != TA and not _isPhysical(object)) and not cTril):
         return NUMERIX.array(object=object,dtype=dtype,copy=copy,order=order,subok=subok)
     dtype = TRIL.fixType(dtype)
     return TA(array=object,map=map)
@@ -1159,7 +1159,6 @@ def take(a, indices, axis=0, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
     """
-           
     if _isPhysical(a):
         taken = a.take(indices, axis=axis)   
     elif type(indices) is type(MA.array((0))):

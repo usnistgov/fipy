@@ -7,6 +7,7 @@ from fipy import *
 from fipy.meshes.numMesh.parallelGrid1D import ParallelGrid1D
 import profiler
 
+print "Made it through the import"
 
 #fudge = profiler.calibrate_profiler(10000)
 
@@ -22,9 +23,12 @@ print repr(v)
 
 e = TransientTerm() == DiffusionTerm()
 
+#tools.trilinosList.count = True
+
 e.solve(v,dt=.1)
 
 print repr(v)
 #profile.stop()
+
 
 Epetra.Finalize()

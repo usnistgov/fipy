@@ -217,15 +217,19 @@ class _DiffusionTerm(Term):
             return None
 
     def _getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
-        print repr(coeff)+"\n\n\n\n\n"
+        print "made it here 1"
         interiorCoeff = numerix.array(coeff)
+        print "made it here 2"
         interiorCoeff[mesh.getExteriorFaces().getValue()] = 0
-        print "\n\n\n\n\n"+repr(interiorCoeff)
+        print "made it here 3"
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
+        print "made it here 4"
         coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
+        print "made it here 5"
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
+        print "made it here 6"
         del interiorCoeff
-        
+
         interiorFaces = mesh._getFaceIDs()[mesh.getInteriorFaces().getValue()]
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)

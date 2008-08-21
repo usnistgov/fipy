@@ -496,7 +496,11 @@ class _TrilinosMatrix(_SparseMatrix):
             tmp[:] = vector
             self.addAt(tmp, ids, ids)
         else:
-            ids = numerix.arange(vector.vLength,map=vector.map)
+            import trilinosList
+            if trilinosList.isTrilArray(vector):
+                ids = numerix.arange(vector.vLength,map=vector.map)
+            else:
+                ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
 
     def exportMmf(self, filename):
