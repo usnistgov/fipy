@@ -1193,6 +1193,9 @@ class Variable(object):
 
     def ceil(self):
         return self._UnaryOperatorVariable(lambda a: numerix.ceil(a))
+
+    def sign(self):
+        return self._UnaryOperatorVariable(lambda a: numerix.sign(a), canInline=False)
         
     def conjugate(self):
         return self._UnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline=False)
