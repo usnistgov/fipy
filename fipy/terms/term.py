@@ -190,7 +190,7 @@ class Term:
 
         return residual
 
-    def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None):
+    def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -206,11 +206,16 @@ class Term:
 
         """
         solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+
+        print 'RHSvector',RHSvector
         
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 
-        return self._calcResidualVector(var, matrix, RHSvector)
+        residualFn = residualFn or self._calcResidual
+        residual = residualFn(var, matrix, RHSvector)
+        
+        return residual
 
     def _verifyCoeffType(self, var):
         pass
