@@ -171,6 +171,7 @@ class Term:
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+           - `residualFn`: A function that takes var, matrix, and RHSvector arguments, used to customize the residual calculation.
 
         """
         solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
@@ -203,19 +204,17 @@ class Term:
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+           - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
 
         """
         solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
 
-        print 'RHSvector',RHSvector
-        
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 
         residualFn = residualFn or self._calcResidual
-        residual = residualFn(var, matrix, RHSvector)
         
-        return residual
+        return residualFn(var, matrix, RHSvector)
 
     def _verifyCoeffType(self, var):
         pass
