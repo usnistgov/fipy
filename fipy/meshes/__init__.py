@@ -8,3 +8,5 @@ from numMesh.tri2D import Tri2D
 from numMesh.gmshImport import GmshImporter2D
 from numMesh.gmshImport import GmshImporter2DIn3DSpace
 from numMesh.gmshImport import GmshImporter3D
+from cylindricalGrid1D import CylindricalGrid1D
+from cylindricalGrid2D import CylindricalGrid2D

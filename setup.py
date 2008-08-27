@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 6/24/08 {3:51:42 PM} 
+ #                                last update: 8/27/08 {3:34:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -707,11 +707,6 @@ try:
 except IOError, e:
     license = ''
     
-try:
-    execfile(os.path.join('fipy', '__version__.py'))
-except IOError, e:
-    __version__ = ''
-
 # The following doesn't work reliably, because it requires fipy
 # to already be installed (or at least egged), which is kind of 
 # obnoxious. We use cmdclass instead.
@@ -724,7 +719,7 @@ except IOError, e:
 #         },
 
 dist = setup(	name = "FiPy",
-        version = __version__,
+        version = "2.0a1", 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
@@ -740,6 +735,11 @@ dist = setup(	name = "FiPy",
         },
         test_suite="fipy.test._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
+        package_data={
+            '': ['../DISCLAIMER.txt',
+                 '../LICENSE.txt',
+                 '../README.txt'],
+        },
         entry_points="""
             [fipy.viewers]
             gist = fipy.viewers.gistViewer:GistViewer

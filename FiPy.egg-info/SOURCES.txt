@@ -7,6 +7,7 @@ MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
 setup.py
+test.txt
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
 FiPy.egg-info/dependency_links.txt
@@ -144,6 +145,8 @@ examples/convection/advection/explicitUpwind.py
 examples/convection/advection/implicitUpwind.py
 examples/convection/advection/vanLeerUpwind.py
 examples/convection/exponential1D/__init__.py
+examples/convection/exponential1D/cylindricalMesh1D.py
+examples/convection/exponential1D/cylindricalMesh1DNonUniform.py
 examples/convection/exponential1D/mesh1D.py
 examples/convection/exponential1D/tri2D.py
 examples/convection/exponential1DBack/__init__.py
@@ -152,6 +155,8 @@ examples/convection/exponential1DSource/__init__.py
 examples/convection/exponential1DSource/mesh1D.py
 examples/convection/exponential1DSource/tri2D.py
 examples/convection/exponential2D/__init__.py
+examples/convection/exponential2D/cylindricalMesh2D.py
+examples/convection/exponential2D/cylindricalMesh2DNonUniform.py
 examples/convection/exponential2D/mesh2D.py
 examples/convection/exponential2D/tri2D.py
 examples/convection/powerLaw1D/__init__.py
@@ -264,7 +269,6 @@ examples/phase/missOrientation/modCircle.gz
 examples/phase/missOrientation/modCircle.py
 examples/phase/missOrientation/test.py
 fipy/__init__.py
-fipy/__version__.py
 fipy/test.py
 fipy/boundaryConditions/__init__.py
 fipy/boundaryConditions/boundaryCondition.py
@@ -274,6 +278,8 @@ fipy/boundaryConditions/nthOrderBoundaryCondition.py
 fipy/boundaryConditions/test.py
 fipy/meshes/__init__.py
 fipy/meshes/adaptiveMesh.py
+fipy/meshes/cylindricalGrid1D.py
+fipy/meshes/cylindricalGrid2D.py
 fipy/meshes/gmshExport.py
 fipy/meshes/gmshImport.py
 fipy/meshes/grid1D.py
@@ -289,6 +295,10 @@ fipy/meshes/common/mesh.py
 fipy/meshes/numMesh/GmshTest2D.msh
 fipy/meshes/numMesh/__init__.py
 fipy/meshes/numMesh/cell.py
+fipy/meshes/numMesh/cylindricalGrid1D.py
+fipy/meshes/numMesh/cylindricalGrid2D.py
+fipy/meshes/numMesh/cylindricalUniformGrid1D.py
+fipy/meshes/numMesh/cylindricalUniformGrid2D.py
 fipy/meshes/numMesh/face.py
 fipy/meshes/numMesh/gmshExport.py
 fipy/meshes/numMesh/gmshImport.py

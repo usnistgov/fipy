@@ -4,9 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "implicitSourceTerm.py"
- #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 3/29/07 {10:40:42 AM} 
+ #  FILE: "cylindricalGrid1D.py"
+ #                                    created: 11/10/03 {3:30:42 PM} 
+ #                                last update: 5/27/08 {3:22:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,58 +36,59 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
+ #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
+"""
+1D Mesh
+"""
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.sourceTerm import SourceTerm
 from fipy.tools import numerix
 
-class ImplicitSourceTerm(SourceTerm):
-    r"""
+from fipy.meshes.numMesh.grid1D import Grid1D
 
-    The `ImplicitSourceTerm` represents
-
-    .. raw:: latex
-
-       \[ \int_V \phi S \,dV \simeq \phi_P S_P V_P \] where $S$ is the
-
-    `coeff` value.       
+class CylindricalGrid1D(Grid1D):
     """
-    def _calcCoeffVectors(self, var, equation=None):
+    Creates a 1D cyliondrical grid mesh.
+    
+        >>> mesh = CylindricalGrid1D(nx = 3)
+        >>> print mesh.getCellCenters()
+        [[ 0.5  1.5  2.5]]
+         
+        >>> mesh = CylindricalGrid1D(dx = (1, 2, 3))
+        >>> print mesh.getCellCenters()
+        [[ 0.5  2.   4.5]]
+         
+        >>> mesh = CylindricalGrid1D(nx = 2, dx = (1, 2, 3))
+        Traceback (most recent call last):
+        ...
+        IndexError: nx != len(dx)
+
+    """
+    def __init__(self, dx=1., nx=None):
+        Grid1D.__init__(self, dx=dx, nx=nx)
+
+    def _calcFaceAreas(self):
+        self.faceAreas = self.getFaceCenters()[0]
+
+    def _test(self):
         """
-        Test for a bug due to the sign operator not being updating
-        correctly.
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected. Fixed a bug where the following throws
+        an error on solve() when nx is a float.
 
-            >>> from fipy import *
-            >>> m = Grid1D(nx=1)
-            >>> v = CellVariable(mesh=m, value=1.)
-            >>> eq = TransientTerm() == ImplicitSourceTerm(v)
-            >>> eq.solve(v)
-            >>> print v
-            [ 2.]
-            >>> v.setValue(-1.)
-            >>> eq.solve(v)
-            >>> print v
-            [-0.5]
-            
+            >>> from fipy import CellVariable, DiffusionTerm
+            >>> mesh = CylindricalGrid1D(nx=3., dx=(1., 2., 3.))
+            >>> var = CellVariable(mesh=mesh)
+            >>> DiffusionTerm().solve(var)
+
         """
 
-        coeff = self._getGeomCoeff(var.getMesh())
-        from fipy.tools.numerix import sign
-        combinedSign = self._diagonalSign * sign(coeff)
-        self.coeffVectors = {
-            'diagonal': coeff * (combinedSign >= 0),
-            'old value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd'),
-            'b vector': -coeff * var * (combinedSign < 0),
-            'new value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd')
-        }
-
-def _test(): 
+def _test():
     import doctest
     return doctest.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

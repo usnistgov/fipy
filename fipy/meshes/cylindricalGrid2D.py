@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
+ #  FiPy - Python-based phase field solver
  # 
- #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/6/06 {8:57:23 AM} 
+ #  FILE: "cylindricalGrid2D.py"
+ #                                    created: 11/20/03 {4:47:54 PM} 
+ #                                last update: 5/15/06 {3:24:38 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -28,6 +28,7 @@
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
+ # ========================================================================
  #  
  #  Description: 
  # 
@@ -35,36 +36,32 @@
  # 
  #  modified   by  rev reason
  #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
+ #  2003-11-20 JEG 1.0 original
  # ###################################################################
  ##
 
-"""Test numeric implementation of the mesh
-"""
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+def CylindricalGrid2D(dr=None, dz=None, nr=None, nz=None, dx=1., dy=1., nx=None, ny=None):
+    from numMesh import cylindricalUniformGrid2D
+    from numMesh import cylindricalGrid2D
 
-def _suite():
-    return _LateImportDocTestSuite(
-        docTestModuleNames = (
-            'fipy.meshes.numMesh.mesh',
-            'fipy.meshes.numMesh.mesh2D',
-            'fipy.meshes.numMesh.grid1D',
-            'fipy.meshes.numMesh.grid2D',
-            'fipy.meshes.numMesh.grid3D',
-            'fipy.meshes.numMesh.tri2D',
-            'fipy.meshes.numMesh.gmshImport',
-            'fipy.meshes.numMesh.periodicGrid1D',
-            'fipy.meshes.numMesh.periodicGrid2D',
-            'fipy.meshes.numMesh.uniformGrid1D',
-            'fipy.meshes.numMesh.uniformGrid2D',
-            'fipy.meshes.numMesh.uniformGrid3D',
-            'fipy.meshes.numMesh.cylindricalUniformGrid1D',
-            'fipy.meshes.numMesh.cylindricalUniformGrid2D',
-            'fipy.meshes.numMesh.cylindricalGrid1D',
-            'fipy.meshes.numMesh.cylindricalGrid2D',
-        ))
+    from fipy.tools import numerix
+
+    if dr is not None:
+        dx = dr
+
+    if dz is not None:
+        dy = dz
+
+    nx = nr or nx
+    ny = nz or ny
+
+    if dx is None:
+        dx = 1.
+    if dy is None:
+        dy = 1.
     
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
+    if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
+        return cylindricalUniformGrid2D.CylindricalUniformGrid2D(dx=dx, dy=dy, nx=nx or 1, ny=ny or 1)
+    else:
+        return cylindricalGrid2D.CylindricalGrid2D(dx=dx, dy=dy, nx=nx, ny=ny)

@@ -833,6 +833,15 @@ def ceil(arr):
     else:
         return umath.ceil(arr)
 
+
+def sign(arr):
+    if _isPhysical(arr):
+        return arr.sign()
+    elif type(arr) is type(array((0))):
+        return NUMERIX.sign(arr)
+    else:
+        return umath.sign(arr)
+
 def exp(arr):
     r"""
     Natural exponent of
