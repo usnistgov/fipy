@@ -1,10 +1,9 @@
-import os
-execfile(os.path.join(__path__[0], '__version__.py'))
+from pkg_resources import Requirement, resource_string, get_distribution
 
-f = file(os.path.join(os.path.split(__path__[0])[0], 'README.txt'))
-__doc__ = f.read()
-f.close()
-del f
+FiPy = Requirement.parse("FiPy")
+
+__version__ = get_distribution(FiPy).version
+__doc__ = resource_string(FiPy,"README.txt")
 __docformat__ = 'restructuredtext'
 
 from boundaryConditions import *
