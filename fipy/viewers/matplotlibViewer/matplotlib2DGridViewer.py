@@ -76,8 +76,9 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
                                           self._getLimit('ymin'), self._getLimit('ymax')),
                                   vmin=self._getLimit(key=('datamin', 'zmin')),
                                   vmax=self._getLimit(key=('datamax', 'zmax')))
-                                          
-        pylab.title(self.vars[0].getName())
+                   
+        if title is None:                          
+            pylab.title(self.vars[0].getName())
 
         # colorbar will not automatically update
         # http://sourceforge.net/mailarchive/forum.php?thread_id=10159140&forum_id=33405
