@@ -1,9 +1,9 @@
-from pkg_resources import Requirement, resource_string, get_distribution
+from pkg_resources import get_distribution
 
-FiPy = Requirement.parse("FiPy")
+FiPy = get_distribution(__name__)
 
-__version__ = get_distribution(FiPy).version
-__doc__ = resource_string(FiPy,"README.txt")
+__version__ = FiPy.version
+__doc__ = FiPy.get_metadata("PKG-INFO")
 __docformat__ = 'restructuredtext'
 
 from boundaryConditions import *

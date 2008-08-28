@@ -270,7 +270,6 @@ examples/phase/missOrientation/modCircle.gz
 examples/phase/missOrientation/modCircle.py
 examples/phase/missOrientation/test.py
 fipy/__init__.py
-fipy/__version__.py
 fipy/test.py
 fipy/boundaryConditions/__init__.py
 fipy/boundaryConditions/boundaryCondition.py

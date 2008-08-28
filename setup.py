@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 8/27/08 {2:58:35 PM} 
+ #                                last update: 8/28/08 {9:08:40 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -735,11 +735,6 @@ dist = setup(	name = "FiPy",
         },
         test_suite="fipy.test._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
-        package_data={
-            '': ['../DISCLAIMER.txt',
-                 '../LICENSE.txt',
-                 '../README.txt'],
-        },
         classifiers = [
             'Development Status :: 5 - Production/Stable',
             'Environment :: Console',
