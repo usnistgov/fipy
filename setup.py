@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 8/28/08 {9:08:40 AM} 
+ #                                last update: 8/28/08 {9:38:04 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,6 +40,10 @@ import os
 import string
 
 from distutils.core import Command
+
+# bootstrap setuptools for users that don't already have it
+import ez_setup
+ez_setup.use_setuptools()
 
 from setuptools import setup, find_packages
 
