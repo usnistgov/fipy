@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 7/25/07 {9:57:14 AM} 
+ #                                last update: 9/17/08 {9:34:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -212,7 +212,7 @@ class Term:
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 
-        residualFn = residualFn or self._calcResidual
+        residualFn = residualFn or self._calcResidualVector
         
         return residualFn(var, matrix, RHSvector)
 
