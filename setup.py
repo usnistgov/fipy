@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 2/12/07 {3:03:34 PM} 
+ #                                last update: 10/6/08 {10:46:21 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -248,7 +248,8 @@ class build_docs (Command):
                                                'TALKS',
                                                'TODOLIST',
                                                'SVN',
-                                               'EFFICIENCY'],
+                                               'EFFICIENCY',
+                                               'VKML'],
                                           'startlower': 
                                               ['MAIL']}
 
