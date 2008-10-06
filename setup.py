@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "setup.py"
- #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 8/28/08 {9:38:04 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -371,7 +370,8 @@ class build_docs (Command):
                                                'TALKS',
                                                'TODOLIST',
                                                'SVN',
-                                               'EFFICIENCY'],
+                                               'EFFICIENCY',
+                                               'VKML'],
                                           'startlower': 
                                               ['MAIL']}
 
