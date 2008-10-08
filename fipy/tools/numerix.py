@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 1/30/07 {5:20:18 PM} 
+ #                                last update: 10/8/08 {3:49:45 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -79,10 +79,16 @@ __docformat__ = 'restructuredtext'
 ## numpy
 import numpy as NUMERIX
 from numpy.core import umath
-from numpy.core import ma as MA
 from numpy import newaxis as NewAxis
 from numpy import *
 from numpy import oldnumeric
+try:
+    from numpy.core import ma as MA
+    numpy_version = 'old'
+except ImportError:
+    # masked arrays have been moved in numpy 1.1
+    from numpy import ma as MA
+    numpy_version = 'new'
 
 def nonzero(a):
     nz = NUMERIX.nonzero(a)
@@ -207,7 +213,11 @@ def put(arr, ids, values):
         return NUMERIX.put(arr, ids, values)
     elif type(arr) is type(MA.array((0))):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
-            return MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+            if numpy_version == 'old':
+                pvalues = MA.array(values, mask=MA.getmaskarray(ids))
+            else:
+                pvalues = MA.array(values.filled(), mask=MA.getmaskarray(ids))
+            MA.put(arr, ids.compressed(), pvalues.compressed())
         else:
             return MA.put(arr, ids, values)
     else:
@@ -357,13 +367,15 @@ def tostring(arr, max_line_width = None, precision = None, suppress_small = None
                                     suppress_small=suppress_small,
                                     separator=separator)
     elif isFloat(arr):
-        from numpy.core.arrayprint import _floatFormat, _formatFloat
-##      _floatFormat seems to be broken
-##         if isinstance(arr, NUMERIX.ndarray):
-##             format, length = _floatFormat(arr, precision = precision, suppress_small = suppress_small)
-##         else:
-##             format, length = _floatFormat(NUMERIX.array(arr), precision = precision, suppress_small = suppress_small)
-        return _formatFloat(arr, format = '%%1.%df' % precision)
+        try:
+            ## this is for numpy 1.0.4 and above
+            ## why has the interface changed again?
+            from numpy.core.arrayprint import FloatFormat
+            return FloatFormat(NUMERIX.array((arr,)), precision, suppress_small)(arr).strip()       
+        except:
+            from numpy.core.arrayprint import _floatFormat, _formatFloat
+            return _formatFloat(arr, format='%%1.%df' % precision)
+
     elif isInt(arr):
         from numpy.core.arrayprint import _formatInteger
         return _formatInteger(arr, format = '%d')
@@ -640,7 +652,7 @@ def cos(arr):
     ..
 
         >>> print tostring(cos(2*pi/6), precision = 3)
-        0.5  
+        0.5
         >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision = 3, suppress_small = 1)
         [ 1.   0.5  0. ]
         >>> from fipy.variables.variable import Variable
@@ -1226,7 +1238,8 @@ def take(a, indices, axis=0, fill_value = None):
         if mask is not MA.nomask:
             taken = MA.array(data = taken, mask = mask)
         else:
-            if MA.getmask(taken) is MA.nomask:
+            if MA.getmask(taken) is MA.nomask and numpy_version == 'old':
+                # numpy 1.1 returns normal array when masked array is filled
                 taken = taken.filled()
 
     elif type(a) in (type(array((0))), type(()), type([])):

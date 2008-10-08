@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/8/08 {11:39:33 AM} 
+ #                                last update: 10/8/08 {3:48:13 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -211,8 +211,15 @@ class Mesh(_CommonMesh):
         faceCorrelates = {}
         for i in range(otherNumFaces):
 ##          Seems to be overwriting other.faceVertexIDs with new numpy
-##            currFace = other.faceVertexIDs[i] 
-            currFace = other.faceVertexIDs[i].copy()
+##            currFace = other.faceVertexIDs[i]
+##            currFace = other.faceVertexIDs[i].copy()
+##          Changed this again as numpy 1.0.4 seems to have no copy method for
+##          masked arrays.
+            try:
+                currFace = other.faceVertexIDs[i].copy()
+            except:
+                currFace = MA.array(other.faceVertexIDs[i], mask=MA.getmask(other.faceVertexIDs[i]))
+
             keepGoing = 1
             currIndex = 0
 
@@ -331,7 +338,6 @@ class Mesh(_CommonMesh):
         self.faceCellIDs[:,0] = firstRow[:]
         self.faceCellIDs[:,1] = secondRow[:]
         
-
     def _calcInteriorAndExteriorFaceIDs(self):
         self.exteriorFaces = FaceIterator(mesh=self, 
                                           ids=numerix.nonzero(MA.getmask(self.faceCellIDs[:,1])))
@@ -490,7 +496,8 @@ class Mesh(_CommonMesh):
         
     def _calcFaceToCellDistances(self):
         tmp = MA.repeat(self.faceCenters[:,numerix.NewAxis,...], 2, 1)
-        tmp -= numerix.take(self.cellCenters, self.faceCellIDs)
+        # array -= masked_array screws up masking for on numpy 1.1
+        tmp = tmp - numerix.take(self.cellCenters, self.faceCellIDs)
         self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,2))
 
