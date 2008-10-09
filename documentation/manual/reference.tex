@@ -4,7 +4,7 @@
  % 
  %  FILE: "reference.tex"
  %                                    created: 9/29/04 {11:03:55 AM} 
- %                                last update: 4/6/07 {9:35:15 AM} 
+ %                                last update: 10/9/08 {2:58:34 PM} 
  %  Author: Jonathan Guyer <guyer@nist.gov>
  %  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  %  Author: James Warren <jwarren@nist.gov>
@@ -41,15 +41,65 @@
  %%
 
 \documentclass[letterpaper,twoside,openright,10pt]{memoir}
+% \documentclass{article}
+% \usepackage[creator={epydoc 3.0.1},title={},index,hyperlink]{epydoc-default}
 
+\usepackage{xr-hyper}
 \usepackage[tocAsPDFchapter,index]{fipy}
-\usepackage{docutils-emulation}
+% \usepackage{docutils-emulation}
 
 \externaldocument[FiPy-]{fipy}
+
+\usepackage{import}
 
 % \usepackage{showidx}
 
 % \makeindex
+
+\usepackage[utf8]{inputenc}
+
+% \usepackage[DIV12]{typearea}
+%% generator Docutils: http://docutils.sourceforge.net/
+\newlength{\admonitionwidth}
+\setlength{\admonitionwidth}{0.9\textwidth}
+\newlength{\docinfowidth}
+\setlength{\docinfowidth}{0.9\textwidth}
+\newlength{\locallinewidth}
+\newcommand{\optionlistlabel}[1]{\bf #1 \hfill}
+\newenvironment{optionlist}[1]
+{\begin{list}{}
+  {\setlength{\labelwidth}{#1}
+   \setlength{\rightmargin}{1cm}
+   \setlength{\leftmargin}{\rightmargin}
+   \addtolength{\leftmargin}{\labelwidth}
+   \addtolength{\leftmargin}{\labelsep}
+   \renewcommand{\makelabel}{\optionlistlabel}}
+}{\end{list}}
+\newlength{\lineblockindentation}
+\setlength{\lineblockindentation}{2.5em}
+\newenvironment{lineblock}[1]
+{\begin{list}{}
+  {\setlength{\partopsep}{\parskip}
+   \addtolength{\partopsep}{\baselineskip}
+   \topsep0pt\itemsep0.15\baselineskip\parsep0pt
+   \leftmargin#1}
+ \raggedright}
+{\end{list}}
+% begin: floats for footnotes tweaking.
+\setlength{\floatsep}{0.5em}
+\setlength{\textfloatsep}{\fill}
+\addtolength{\textfloatsep}{3em}
+\renewcommand{\textfraction}{0.5}
+\renewcommand{\topfraction}{0.5}
+\renewcommand{\bottomfraction}{0.5}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+% end floats for footnotes
+% some commands, that could be overwritten in the style file.
+\newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
+\newcommand{\titlereference}[1]{\textsl{#1}}
+% end of "some commands"
 
 \begin{document}
 
@@ -69,20 +119,34 @@
 and the Center for Theoretical and Computational Materials Science 
 \and Materials Science and Engineering Laboratory}
 
-\begin{titlingpage}
 \maketitle
+% \thispagestyle{empty}
 \thispagestyle{titlingpage}
 
 \newpage
+
 \vspace*{\fill}
-\thispagestyle{empty}
 \input license
-\end{titlingpage}
 
+\rule{\textwidth}{0.1pt}
 
-% \rule{\textwidth}{1pt}
+\thispagestyle{empty}
+\input disclaimer
+
+% \begin{titlingpage}
+% \maketitle
+% \thispagestyle{titlingpage}
 % 
-% \input disclaimer
+% \newpage
+% \vspace*{\fill}
+% \thispagestyle{empty}
+% \input license
+% \end{titlingpage}
+% 
+% 
+% % \rule{\textwidth}{1pt}
+% % 
+% % \input disclaimer
 
 \maxtocdepth{section} 
 \tableofcontents
@@ -94,7 +158,8 @@ and the Center for Theoretical and Computational Materials Science
 
 \input howtoread
 
-\input api
+\import{api/latex/}{api-rev}
+% \input api
 
 \fussy
 

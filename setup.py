@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 4/13/07 {9:15:23 PM} 
+ #                                last update: 10/9/08 {2:53:55 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -37,6 +37,7 @@
 
 import glob
 import os
+import sys
 import string
 
 from distutils.core import setup
@@ -103,9 +104,16 @@ class build_docs (Command):
     def _epydocFiles(self, module, dir = None, type = 'pdflatex'):
         dir = os.path.join(dir, type)
         
-        command = "epydoc --" + type + " --output " + dir + "--graph=umlclasstree --name FiPy " + module
+##         command = "epydoc --" + type + " --output " + dir + "--graph=umlclasstree --name FiPy " + module
+#         command = "epydoc --" + type + " --output " + dir + "--no-private --show-imports --name FiPy " + module 
         
-        os.system(command)
+#         os.system(command)
+
+        oldargv = sys.argv
+        import epydoc.cli
+        sys.argv = ["epydoc", "--%s" % type, "--output", dir, "--no-private", "--show-imports", "--name", "FiPy", module]
+        epydoc.cli.cli()
+        sys.argv = oldargv
 
     def _buildTeXAPIs(self):
         dir = os.path.join('documentation', 'manual', 'api')
@@ -115,20 +123,30 @@ class build_docs (Command):
 ##         from utils.epydoc import driver
 ##         driver.epylatex(module_names = ['fipy/'], options = {'target':dir, 'list_modules':0})
         
-        os.system("epydoc --pdflatex --output %s --no-sub-modules --graph=umlclasstree --inheritance=listed fipy/" % dir)
+##         os.system("epydoc --latex --output %s --no-sub-modules --graph=umlclasstree --inheritance=listed fipy/" % dir)
+#         os.system("epydoc --latex --output %s --graph=umlclasstree --inheritance=listed --no-private --show-imports fipy/" % dir)
+        oldargv = sys.argv
+        import epydoc.cli
+        sys.argv = ["epydoc", "--latex", "--output", dir, "--graph=umlclasstree", "--inheritance=listed", "--no-private", "--show-imports", "fipy/"]
+        epydoc.cli.cli()
+        sys.argv = oldargv
         
         savedir = os.getcwd()
         try:
             
             os.chdir(os.path.join('documentation','manual'))
-            f = open('api.tex', 'w')
+#             f = open('api.tex', 'w')
+            f = open(os.path.join('api','latex', 'api-rev.tex'), 'w')
             f.write("% This file is created automatically by:\n")
             f.write("% 	python setup.py build_docs --latex\n\n")
             for root, dirs, files in os.walk(os.path.join('api','latex'), topdown=True):
                 
                 if 'api.tex' in files:
                     files.remove('api.tex')
-                    
+
+                if 'api-rev.tex' in files:
+                    files.remove('api-rev.tex')
+
                 if 'fipy-module.tex' in files:
                     files.remove('fipy-module.tex')
 
@@ -185,7 +203,8 @@ class build_docs (Command):
                         
                     split = os.path.splitext(name)
                     if split[1] == ".tex":
-                        f.write("\\input{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n\\newpage\n")
+                        f.write("\\input{" + os.path.splitext(name)[0] + "}\n\\newpage\n")
+#                         f.write("\\input{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n\\newpage\n")
 
             f.close()
         except:
@@ -271,9 +290,11 @@ class build_docs (Command):
 ##                             'examples/cahnHilliard/'
 ##                             ]
                                
-##                 from utils.epydoc import driver
-##                 driver.epylatex(module_names = ['examples/'], options = {'target':dir})
-                os.system("epydoc --latex --output %s examples/" % dir)
+                oldargv = sys.argv
+                import epydoc.cli
+                sys.argv = ["epydoc", "--latex", "--output", dir, "--no-private", "--show-imports", "examples/"]
+                epydoc.cli.cli()
+                sys.argv = oldargv
 
         if self.html:
             dir = os.path.join('documentation', 'manual', 'api')
@@ -284,10 +305,10 @@ class build_docs (Command):
             # build the package/module/class example documentation
             
             dir = os.path.join('documentation', 'manual', 'tutorial')
-##             self._initializeDirectory(dir = dir, type = 'latex')
-##             dir = os.path.join(dir, 'latex')
-            self._initializeDirectory(dir = dir, type = 'pdflatex')
-            dir = os.path.join(dir, 'pdflatex')
+            self._initializeDirectory(dir = dir, type = 'latex')
+            dir = os.path.join(dir, 'latex')
+##             self._initializeDirectory(dir = dir, type = 'pdflatex')
+##             dir = os.path.join(dir, 'pdflatex')
 
             # to avoid a collision between the real fipy namespace
             # and the fictional fipy namespace we use for the illustration
@@ -306,7 +327,13 @@ if sys.modules.has_key('epydoc.uid'):
 
 ## from epydoc import driver
 ## driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options = {'target':dir, 'list_modules':0})
-os.system("epydoc --pdflatex --output %s --no-sub-modules --graph=classtree  documentation/manual/tutorial/fipy/" % dir)
+## os.system("epydoc --pdflatex --output %s --no-sub-modules --graph=classtree  documentation/manual/tutorial/fipy/" % dir)
+# os.system("epydoc --latex --output %s --no-private --show-imports documentation/manual/tutorial/fipy/" % dir)
+oldargv = sys.argv
+import epydoc.cli
+sys.argv = ["epydoc", "--latex", "--output", dir, "--no-private", "--show-imports", "documentation/manual/tutorial/fipy/"]
+epydoc.cli.cli()
+sys.argv = oldargv
 """)
 
         if self.guide or self.apis:

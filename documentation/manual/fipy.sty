@@ -1,20 +1,43 @@
 \NeedsTeXFormat{LaTeX2e} %[1995/12/01]
 \ProvidesPackage{fipy}
-	     [2007/04/06 Document style (FiPy manual)]
+	     [2008/10/09 Document style (FiPy manual)]
+
+% Pass options to the epydoc base package.
+\RequirePackage{xkeyval}
+\DeclareOptionX{index}{\PassOptionsToPackage{index}{examples/latex/epydoc-base}}
+\DeclareOptionX{hyperlink}{\PassOptionsToPackage{hyperlink}{examples/latex/epydoc-base}}
+\DeclareOptionX{title}[]{\PassOptionsToPackage{title={#1}}{examples/latex/epydoc-base}}
+\DeclareOptionX{creator}[]{\PassOptionsToPackage{creator={#1}}{examples/latex/epydoc-base}}
 
 % Put Part as topmost level in PDF bookmarks
 \def\tocPDFlevel{-1}
-\DeclareOption{tocAsPDFpart}{\def\tocPDFlevel{-1}}
-\DeclareOption{tocAsPDFchapter}{\def\tocPDFlevel{0}}
-\DeclareOption{index}{\PassOptionsToPackage{index}{epydoc}}
-\ProcessOptions\relax
+\DeclareOptionX{tocAsPDFpart}{\def\tocPDFlevel{-1}}
+\DeclareOptionX{tocAsPDFchapter}{\def\tocPDFlevel{0}}
 
-% Use epydoc base style to format module documentation
-\RequirePackage{epydoc}
+\ProcessOptionsX\relax
+
+% \usepackage{xr-hyper}
+
+% \RequirePackage[hyperlink]{examples/latex/epydoc-base}
+\RequirePackage{examples/latex/epydoc-base}
+\RequirePackage{longtable}
 
 \RequirePackage{crop}
 
-\tocotherhead{part}
+% \tocotherhead{part}
+% \renewcommand{\bibsection}{% 
+% \part{\bibname} 
+% \prebibhook}
+
+\renewcommand{\bibsection}{% 
+\chapter*{\bibname} 
+\bibmark 
+\ifnobibintoc\else 
+\phantomsection 
+\addcontentsline{toc}{part}{\bibname} 
+\fi 
+\prebibhook}
+
 \setlength{\columnsep}{35pt}
 
 \RequirePackage{amsmath} 
@@ -22,21 +45,20 @@
 \DeclareMathOperator{\erf}{erf}
 \newcommand{\abs}[1]{\lvert#1\rvert}
 
-\usepackage{xr-hyper}
+\RequirePackage{color}
 \definecolor{UrlColor}{rgb}{0,0.08,0.45}
-\RequirePackage[pdftex, hyperfigures=true, pagebackref, pdftitle={FiPy User's Guide}, pdfcreator={epydoc 3.0beta1}, bookmarks=true, bookmarksopen, bookmarksopenlevel=2, pdfpagemode=UseOutlines, colorlinks=true, plainpages=false, pdfpagelabels, linkcolor=blue, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=UrlColor]{hyperref}
+% \RequirePackage[pdftex, hyperfigures=true, pagebackref, pdftitle={FiPy User's Guide}, pdfcreator={epydoc 3.0beta1}, bookmarks=true, bookmarksopen, bookmarksopenlevel=2, pdfpagemode=UseOutlines, colorlinks=true, plainpages=false, pdfpagelabels, linkcolor=blue, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=UrlColor]{hyperref}
 
 \RequirePackage[tight]{minitoc}
 \setcounter{parttocdepth}{2}
 \mtcsetrules{parttoc}{off}
 
-\RequirePackage{color}
 \definecolor{darkblue}{rgb}{0,0.05,0.35}
 \definecolor{redish}{rgb}{0.894,0.122,0.122}
 \definecolor{bluish}{rgb}{0.216,0.188,0.533}
-\RequirePackage[pdftex]{graphicx}
+% \RequirePackage[pdftex]{graphicx}
 
-\graphicspath{{../figures/},{images/}}
+\graphicspath{{./api/latex/},{../figures/},{images/}}
 
 \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 \renewcommand{\subsectionmark}[1]{\markright{#1}}
@@ -85,13 +107,14 @@
                            
                            
 \newcommand{\@Code}[1]{\texttt{#1}}
-\newcommand{\IndexClass}[1]{\index{#1@\EpydocIndex[class]{\EpydocDottedName{#1}} class}}
-\newcommand{\IndexModule}[1]{\index{#1@\EpydocIndex[module]{\EpydocDottedName{#1}} module}}
-\newcommand{\IndexPackage}[1]{\index{#1@\EpydocIndex[package]{\EpydocDottedName{#1}} package}}
+\newcommand{\IndexClass}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{class} class}}
+% \newcommand{\IndexClass}[1]{\index{#1 class}}
+\newcommand{\IndexModule}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{module} module}}
+\newcommand{\IndexPackage}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{package} package}}
 \newcommand{\IndexSoftware}[1]{\index{#1@\@Software{#1}}}
-\newcommand{\IndexFunction}[1]{\index{#1@\EpydocIndex[function]{\EpydocDottedName{#1}}}}
-\newcommand{\IndexConstant}[2]{\index{$#1\equiv\text{#2}$@$#1\equiv\text{\EpydocIndex[module]{\EpydocDottedName{#2}}}$}%
-                               \index{#2$\equiv #1$@$\text{\EpydocIndex[module]{\EpydocDottedName{#2}}}\equiv #1$}}
+\newcommand{\IndexFunction}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{function}}}
+\newcommand{\IndexConstant}[2]{\index{$#1\equiv\text{#2}$@$#1\equiv\text{\protect\EpydocIndex{#2}{\EpydocDottedName{#2}}{module}}$}%
+                               \index{#2$\equiv #1$@$\text{\protect\EpydocIndex{#2}{\EpydocDottedName{#2}}{module}}\equiv #1$}}
 \newcommand{\Class}[1]{\@Code{#1}\IndexClass{#1}}
 \newcommand{\Module}[1]{\@Code{#1}\IndexModule{#1}}
 
@@ -151,22 +174,19 @@
 % 
 % \expandafter\mod@join{fipy (module)}\expandafter\mod@dovariables.variable.\relax.
 
-\renewcommand{\EpydocHyperlink}[2]{\hyperlink{#1}{#2}}
-\renewcommand{\EpydocHypertarget}[2]{\label{#1}\hypertarget{#1}{#2}}
-
 % differentiate the appearance of different Index items (somewhat 
 % overriden by url.sty-formatted items).
-\renewcommand{\EpydocIndex}[2][]{%
+\renewcommand{\EpydocIndex}[3]{%
 %     #2%
-    \ifthenelse{\equal{#1}{}}{}{%
-        \ifthenelse{\equal{#1}{method}\OR\equal{#1}{function}}{%
+    \ifthenelse{\equal{#3}{}}{}{%
+        \ifthenelse{\equal{#3}{method}\OR\equal{#3}{function}}{%
             #2()%
         }{%
-            \ifthenelse{\equal{#1}{module}\OR\equal{#1}{package}}{%
+            \ifthenelse{\equal{#3}{module}\OR\equal{#3}{package}}{%
                 #2}{%
-                \ifthenelse{\equal{#1}{class}}{%
+                \ifthenelse{\equal{#3}{class}}{%
                     #2}{%\textbf{#2}
-                    #2 \textit{(\MakeLowercase{#1})}}}%
+                    #2 \textit{(\MakeLowercase{#3})}}}%
         }%
     }%
 }
@@ -192,7 +212,7 @@
    \end{lrbox}%
    \colorbox{\cmcolor}{\usebox{\@tempboxa}}}%
 
-\renewenvironment{EpydocFunction}[2]{%
+\renewenvironment{EpydocFunctionSignature}[1]{%
     \gdef\and{, }%
     \newcommand{\VarArg}[1]{*\textit{##1}}%
     \newcommand{\GenericArg}{\textit{\ldots}}%
@@ -201,15 +221,13 @@
     \newcommand{\Param}[2][]{%
         \textit{##2}%
         \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
-    {\raggedright\Large\hangfrom{\ttfamily #1(}{#2{\ttfamily)}}% 
-    \\*[-0.6ex]\rule{\textwidth}{0.5\fboxrule}}%
-    \nopagebreak\begin{list}{}{\setlength{\leftmargin}{\parindent}\item{}}}
-    {\end{list}}
+    \raggedright\Large\@hangfrom{\ttfamily #1(}}%
+    {{\ttfamily)\par}\vspace*{-2\EpydocParskip}\rule{\textwidth}{0.5\fboxrule}}%
     
-% indent on left
-\renewenvironment{EpydocDocstring}{%
-    \begin{list}{}{\leftmargin1.5em}\item{}}
-    {\end{list}}
+% % indent on left
+% \renewenvironment{EpydocDocstring}{%
+%     \begin{list}{}{\leftmargin1.5em}\item{}}
+%     {\end{list}}
 
 % box in gray, indent on left
 \renewenvironment{EpydocFunctionParameters}[1]{%
@@ -221,23 +239,23 @@
     \begin{description}}
     {\end{description}\end{quote}\end{cminipage}\end{list}}
 
-\renewcommand{\EpydocFunctionReturns}[2][]{%
-    \vspace{0.4ex}
-    \begin{list}{}{\leftmargin1.5em}\item{}%
-    \begin{cminipage}[light-gray]\textbf{Return Value}
-    \begin{quote}
-        \gdef\@EpydocReturnType{#1}
-        \gdef\@EpydocReturnDescription{#2}
-        \ifx\@EpydocReturnType\empty
-            \@EpydocReturnDescription
-        \else
-            \ifx\@EpydocReturnDescription\empty
-                \textit{\@EpydocReturnType}
-            \else
-                \@EpydocReturnDescription \textit{(type=\@EpydocReturnType)}
-            \fi
-        \fi
-    \end{quote}\end{cminipage}\end{list}}
+% \renewcommand{\EpydocFunctionReturns}[2][]{%
+%     \vspace{0.4ex}
+%     \begin{list}{}{\leftmargin1.5em}\item{}%
+%     \begin{cminipage}[light-gray]\textbf{Return Value}
+%     \begin{quote}
+%         \gdef\@EpydocReturnType{#1}
+%         \gdef\@EpydocReturnDescription{#2}
+%         \ifx\@EpydocReturnType\empty
+%             \@EpydocReturnDescription
+%         \else
+%             \ifx\@EpydocReturnDescription\empty
+%                 \textit{\@EpydocReturnType}
+%             \else
+%                 \@EpydocReturnDescription \textit{(type=\@EpydocReturnType)}
+%             \fi
+%         \fi
+%     \end{quote}\end{cminipage}\end{list}}
 
 \renewenvironment{EpydocFunctionRaises}{%
     \vspace{0.4ex}
@@ -255,16 +273,16 @@
     \ifthenelse{#1=1}{\textit{(inherited documentation)}}{}%
     \end{list}}
 
-\renewenvironment{EpydocInheritanceList}{%
-    \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
-       \normalfont\bfseries Inherited from ##1:}
-    \raggedright\begin{description}}
-    {\end{description}}
-
-\renewenvironment{EpydocDescriptionShortList}[1]{%
-    \gdef\and{, }%
-    \raggedright\begin{description}\item[#1: ]}
-    {\end{description}}
+% \renewenvironment{EpydocInheritanceList}{%
+%     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+%        \normalfont\bfseries Inherited from ##1:}
+%     \raggedright\begin{description}}
+%     {\end{description}}
+% 
+% \renewenvironment{EpydocDescriptionShortList}[1]{%
+%     \gdef\and{, }%
+%     \raggedright\begin{description}\item[#1: ]}
+%     {\end{description}}
 
 \renewenvironment{EpydocModuleList}{%
     \newcommand{\CrossRef}[1]{}
@@ -273,11 +291,18 @@
         \setlength{\parskip}{0ex}}
     {\end{itemize}}
 
-\renewenvironment{EpydocModuleSubList}{%
-    \begin{itemize}
-        \renewcommand{\makelabel}[1]{\textbf{##1}}
-        \setlength{\parskip}{0ex}}
-    {\end{itemize}}
+% \renewenvironment{EpydocModuleSubList}{%
+%     \begin{itemize}
+%         \renewcommand{\makelabel}[1]{\textbf{##1}}
+%         \setlength{\parskip}{0ex}}
+%     {\end{itemize}}
+
+\renewenvironment{EpydocMetadataShortList}[1]{%
+    \renewcommand{\and}{, }%
+    \par
+    \begin{list}{}{\itemindent-\leftmargin}
+    \item \textbf{#1:} \ignorespaces}
+    {\end{list}\ignorespacesafterend\par}
 
 % Same as book.cls, except ragged-right. Looks much better for long 
 % module names.
