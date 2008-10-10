@@ -118,12 +118,6 @@ class Term:
             self._viewer.plot(matrix=matrix)
             raw_input()
         
-        
-##         raw_input()
-##         print "x", var
-##         print "L", matrix
-##         print "b", RHSvector
-        
         return matrix, RHSvector
 
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
@@ -133,11 +127,11 @@ class Term:
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
 
+
         solver = self._getDefaultSolver(solver) or solver or DefaultSolver()
 
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         return (solver, matrix, RHSvector)
-
     
     def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
         r"""
@@ -290,6 +284,10 @@ class Term:
 
         """
         from fipy.terms.equation import _Equation
+
+##        print 'self',self
+##        print 'other',other
+##        print 'isinstance(other, _Equation)',isinstance(other, _Equation)
         
         if self._otherIsZero(other):
             return self
@@ -298,10 +296,14 @@ class Term:
         elif self.__class__ == other.__class__:
             return self.__class__(coeff=self.coeff + other.coeff)
         else:
-            eq = _Equation()
-            eq += self
-            eq += other
-            return eq
+            return self._add(other)
+                
+    def _add(self, other):
+        from fipy.terms.equation import _Equation
+        eq = _Equation()
+        eq += self
+        eq += other
+        return eq
             
     def __radd__(self, other):
         r"""
@@ -402,6 +404,16 @@ class Term:
         else:
             return self - other
 
+    def __mul__(self, other):
+        from fipy.terms.mulTerm import _MulTerm
+        return _MulTerm(term=self, coeff=other)
+
+    __rmul__ = __mul__
+               
+    def __div__(self, other):
+        from fipy.terms.mulTerm import _MulTerm
+        return _MulTerm(term=self, coeff=1. / other)
+    
     def __repr__(self):
         """
         The representation of a `Term` object is given by,
@@ -425,6 +437,9 @@ class Term:
         
     def _getWeight(self, mesh):
         pass
+
+    def _isAdditive(self):
+        return True
             
 def _test(): 
     import doctest

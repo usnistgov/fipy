@@ -6,6 +6,7 @@ MANIFEST-WINDOWS.in
 MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
+ez_setup.py
 setup.py
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
@@ -19,19 +20,17 @@ documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TALKS.txt
 documentation/TODOLIST.txt
-documentation/VERSION.txt
+documentation/VKML.txt
 documentation/figures/NIST_right2line.pdf
 documentation/logo/logo.tex
 documentation/manual/epydoc.sty
 documentation/manual/faq.tex
 documentation/manual/fipy.bst
 documentation/manual/fipy.dbj
-documentation/manual/fipy.pdf
 documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex
 documentation/manual/introduction.tex
-documentation/manual/reference.pdf
 documentation/manual/reference.tex
 documentation/manual/refs.bib
 documentation/manual/tocvsec2.sty
@@ -105,7 +104,6 @@ documentation/www/head.html
 documentation/www/logo.html
 documentation/www/menu.html
 documentation/www/meta.html
-documentation/www/tail.html
 documentation/www/examples/cahnHilliard/CH.png
 documentation/www/examples/levelSet/electroChem/experimentalSuperfill.png
 documentation/www/examples/levelSet/electroChem/superfillImage.png
@@ -402,6 +400,7 @@ fipy/terms/faceTerm.py
 fipy/terms/hybridConvectionTerm.py
 fipy/terms/implicitDiffusionTerm.py
 fipy/terms/implicitSourceTerm.py
+fipy/terms/mulTerm.py
 fipy/terms/nthOrderDiffusionTerm.py
 fipy/terms/powerLawConvectionTerm.py
 fipy/terms/sourceTerm.py
