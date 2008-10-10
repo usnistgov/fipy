@@ -405,14 +405,27 @@ class Term:
             return self - other
 
     def __mul__(self, other):
+        r"""
+        Mutiply a term
+
+            >>> 2. * Term(0.5)
+            2.0 * Term(coeff=0.5)
+            
+        """         
         from fipy.terms.mulTerm import _MulTerm
         return _MulTerm(term=self, coeff=other)
 
     __rmul__ = __mul__
                
     def __div__(self, other):
-        from fipy.terms.mulTerm import _MulTerm
-        return _MulTerm(term=self, coeff=1. / other)
+        r"""
+        Divide a term
+
+            >>> Term(2.) / 2.
+            0.5 * Term(coeff=2.0)
+
+        """
+        return (1 / other) * self
     
     def __repr__(self):
         """

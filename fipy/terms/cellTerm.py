@@ -68,14 +68,6 @@ class CellTerm(Term):
         self.coeffVectors = None
         self._var = None
 
-    def __mul__(self, other):
-        return self.__class__(coeff=self.coeff * other)
-
-    __rmul__ = __mul__
-
-    def __div__(self, other):
-        return self.__class__(coeff=self.coeff / other)
-
     def _calcCoeffVectors(self, var):
         mesh = var.getMesh()
         coeff = self._getGeomCoeff(mesh)
