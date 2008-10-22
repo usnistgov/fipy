@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/9/08 {2:53:55 PM} 
+ #                                last update: 10/21/08 {5:12:29 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,32 +104,22 @@ class build_docs (Command):
     def _epydocFiles(self, module, dir = None, type = 'pdflatex'):
         dir = os.path.join(dir, type)
         
-##         command = "epydoc --" + type + " --output " + dir + "--graph=umlclasstree --name FiPy " + module
-#         command = "epydoc --" + type + " --output " + dir + "--no-private --show-imports --name FiPy " + module 
-        
-#         os.system(command)
-
-        oldargv = sys.argv
         import epydoc.cli
-        sys.argv = ["epydoc", "--%s" % type, "--output", dir, "--no-private", "--show-imports", "--name", "FiPy", module]
-        epydoc.cli.cli()
-        sys.argv = oldargv
+        epydoc.cli.cli(["--%s" % type, "--output", dir, 
+                        "--no-private", "--show-imports", 
+                        "--name", "FiPy", 
+                        module])
 
     def _buildTeXAPIs(self):
         dir = os.path.join('documentation', 'manual', 'api')
         self._initializeDirectory(dir = dir, type = 'latex')
         dir = os.path.join(dir, 'latex')
         
-##         from utils.epydoc import driver
-##         driver.epylatex(module_names = ['fipy/'], options = {'target':dir, 'list_modules':0})
-        
-##         os.system("epydoc --latex --output %s --no-sub-modules --graph=umlclasstree --inheritance=listed fipy/" % dir)
-#         os.system("epydoc --latex --output %s --graph=umlclasstree --inheritance=listed --no-private --show-imports fipy/" % dir)
-        oldargv = sys.argv
         import epydoc.cli
-        sys.argv = ["epydoc", "--latex", "--output", dir, "--graph=umlclasstree", "--inheritance=listed", "--no-private", "--show-imports", "fipy/"]
-        epydoc.cli.cli()
-        sys.argv = oldargv
+        epydoc.cli.cli(["--latex", "--output", dir, 
+                        "--graph=classtree", "--inheritance=listed", 
+                        "--no-private", "--show-imports", 
+                        "fipy/"])
         
         savedir = os.getcwd()
         try:
@@ -290,11 +280,10 @@ class build_docs (Command):
 ##                             'examples/cahnHilliard/'
 ##                             ]
                                
-                oldargv = sys.argv
                 import epydoc.cli
-                sys.argv = ["epydoc", "--latex", "--output", dir, "--no-private", "--show-imports", "examples/"]
-                epydoc.cli.cli()
-                sys.argv = oldargv
+                epydoc.cli.cli(["--latex", "--output", dir, 
+                                "--no-private", "--show-imports", 
+                                "examples/"])
 
         if self.html:
             dir = os.path.join('documentation', 'manual', 'api')
@@ -325,15 +314,11 @@ if sys.modules.has_key('epydoc.uid'):
     sys.modules['epydoc.uid']._variable_uids = {}
     sys.modules['epydoc.uid']._name_to_uid = {}
 
-## from epydoc import driver
-## driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options = {'target':dir, 'list_modules':0})
-## os.system("epydoc --pdflatex --output %s --no-sub-modules --graph=classtree  documentation/manual/tutorial/fipy/" % dir)
-# os.system("epydoc --latex --output %s --no-private --show-imports documentation/manual/tutorial/fipy/" % dir)
-oldargv = sys.argv
 import epydoc.cli
-sys.argv = ["epydoc", "--latex", "--output", dir, "--no-private", "--show-imports", "documentation/manual/tutorial/fipy/"]
-epydoc.cli.cli()
-sys.argv = oldargv
+epydoc.cli.cli(["--latex", "--output", dir, 
+                "--graph=classtree", 
+                "--no-private", "--show-imports", 
+                "documentation/manual/tutorial/fipy/"])
 """)
 
         if self.guide or self.apis:
