@@ -18,8 +18,8 @@
 
 % \usepackage{xr-hyper}
 
-% \RequirePackage[hyperlink]{examples/latex/epydoc-base}
-\RequirePackage{examples/latex/epydoc-base}
+\RequirePackage[hyperlink]{examples/latex/epydoc-base}
+% \RequirePackage[hyperlink]{examples/latex/epydoc-shaded}
 \RequirePackage{longtable}
 
 \RequirePackage{crop}
@@ -108,7 +108,6 @@
                            
 \newcommand{\@Code}[1]{\texttt{#1}}
 \newcommand{\IndexClass}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{class} class}}
-% \newcommand{\IndexClass}[1]{\index{#1 class}}
 \newcommand{\IndexModule}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{module} module}}
 \newcommand{\IndexPackage}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{package} package}}
 \newcommand{\IndexSoftware}[1]{\index{#1@\@Software{#1}}}
@@ -203,14 +202,78 @@
 % lifted from <http://www.texnik.de/color/color.phtml> for colored 
 % paragraph boxes
 \newcommand{\cmcolor}{}
-\newenvironment{cminipage}[1][white]%
+\newenvironment{cminipage}[2][white]%
   {%\setlength{\fboxsep}{-\fboxrule}
    \renewcommand{\cmcolor}{#1}\noindent%
    \begin{lrbox}{\@tempboxa}%
-     \begin{minipage}{\linewidth-2\fboxsep}}%
+     \begin{minipage}{#2}}%{\linewidth-2\fboxsep}}%
   {  \end{minipage}%
    \end{lrbox}%
    \colorbox{\cmcolor}{\usebox{\@tempboxa}}}%
+
+\renewcommand{\CrossRef}[1]{}
+
+% \definecolor{EpydocNameColor}{gray}{1.0}
+% 
+% \renewenvironment{EpydocFunctionList}{%
+%   \setlength{\parskip}{\EpydocListsep}%
+%   \newcommand{\EpydocFunction}[1]{{
+%     \setkeys[Epydoc]{function}{##1}%
+%     % Decide whether to include a 'details' block
+%     \newif\ifEpydoc@details%
+%     \@ifundefined{cmdEpydoc@function@description}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@parameters}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@returndescr}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@returntype}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@raises}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@overrides}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@metadata}{}{\Epydoc@detailstrue}%
+%     % Add some vertical space.
+%     \par
+%     % Put a box around the whole thing, so the signature line and the
+%     % body don't get split across pages.
+% %     \begin{minipage}{\textwidth}%
+%       {\setlength{\parskip}{-1pt}\raggedleft%
+%       % Add the function signature in a gray95 box.
+%       \begin{cminipage}[EpydocNameColor]%
+%                        {\dimexpr \textwidth-2\fboxsep}
+%         \Large\raggedright\cmdEpydoc@function@signature
+%       \end{cminipage}\par
+%       % Add the details in a gray90 box.
+%       \ifEpydoc@details
+%         \begin{cminipage}[EpydocDetailsColor]%
+%                          {\dimexpr 0.95\linewidth-2\fboxsep}%
+%           \@ifundefined{cmdEpydoc@function@description}{}{%
+%               \par\cmdEpydoc@function@description}%
+%           \@ifundefined{cmdEpydoc@function@parameters}{}{%
+%               \par\cmdEpydoc@function@parameters}%
+%           \@ifundefined{cmdEpydoc@function@returntype}{
+%               \@ifundefined{cmdEpydoc@function@returndescr}{}{
+%                   \par\textbf{Return Value}%
+%                   \par\vspace{-\EpydocParskip}%
+%                   \begin{quote}\cmdEpydoc@function@returndescr%
+%                   \end{quote}}%
+%           }{
+%               \par\textbf{Return Value}%
+%               \par\vspace{-\EpydocParskip}%
+%               \begin{quote}%
+%                 \@ifundefined{cmdEpydoc@function@returndescr}{
+%                     \textit{\cmdEpydoc@function@returntype}%
+%                 }{%
+%                     \cmdEpydoc@function@returndescr%
+%                       \textit{(type=\cmdEpydoc@function@returntype)}}%
+%               \end{quote}}%
+%           \@ifundefined{cmdEpydoc@function@raises}{}{%
+%               \par\cmdEpydoc@function@raises}%
+%           \@ifundefined{cmdEpydoc@function@overrides}{}{%
+%               \par\cmdEpydoc@function@overrides}%
+%           \@ifundefined{cmdEpydoc@function@metadata}{}{%
+%               \par\cmdEpydoc@function@metadata}%
+%         \end{cminipage}\par
+%       \fi%
+% %    \end{minipage}
+%    }\par}}}
+%   {}
 
 \renewenvironment{EpydocFunctionSignature}[1]{%
     \gdef\and{, }%
@@ -233,7 +296,7 @@
 \renewenvironment{EpydocFunctionParameters}[1]{%
     \vspace{0.4ex}
     \begin{list}{}{\leftmargin1.5em}\item{}%
-    \begin{cminipage}[light-gray]\textbf{Parameters}\begin{quote}%
+    \begin{cminipage}[light-gray]{\linewidth-2\fboxsep}\textbf{Parameters}\begin{quote}%
     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
        \normalfont\rmfamily\itshape ##1:}
     \begin{description}}
@@ -260,7 +323,7 @@
 \renewenvironment{EpydocFunctionRaises}{%
     \vspace{0.4ex}
     \begin{list}{}{\leftmargin1.5em}\item{}%
-    \begin{cminipage}[light-gray]\textbf{Raises}\begin{quote}%
+    \begin{cminipage}[light-gray]{\linewidth-2\fboxsep}\textbf{Raises}\begin{quote}%
     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
        \normalfont\rmfamily\itshape ##1:}
     \begin{description}}
@@ -271,6 +334,11 @@
     \begin{list}{}{\leftmargin1.5em}\item{}%
     \raggedright Overrides: #2() %
     \ifthenelse{#1=1}{\textit{(inherited documentation)}}{}%
+    \end{list}}
+
+\renewcommand{\EpydocInheritanceList}[2]{%
+    \begin{list}{}{\leftmargin1.5em}\item{}%
+    \raggedright \textbf{Inherited from {#1}:} #2\par %
     \end{list}}
 
 % \renewenvironment{EpydocInheritanceList}{%
@@ -304,6 +372,41 @@
     \item \textbf{#1:} \ignorespaces}
     {\end{list}\ignorespacesafterend\par}
 
+\renewenvironment{EpydocVariableList}{%
+    \newcommand{\EpydocVariable}[1]{{%
+        \setkeys[Epydoc]{variable}{##1}%
+        {\item[\cmdEpydoc@variable@name]
+        \@ifundefined{cmdEpydoc@variable@value}{}{%
+            = \texttt{\cmdEpydoc@variable@value}\par}
+        \@ifundefined{cmdEpydoc@variable@description}{%
+            \@ifundefined{cmdEpydoc@variable@type}{%
+                \@ifundefined{cmdEpydoc@variable@metadata}{%
+                    \def\@EpydocDontQuote{}}{}%
+            }{}%
+        }{}
+        \@ifundefined{@EpydocDontQuote}{%
+            \begin{quote}
+                \setlength{\parskip}{\EpydocParskip}%
+                \@ifundefined{cmdEpydoc@variable@description}{}{%
+                    \par\cmdEpydoc@variable@description}%
+                \@ifundefined{cmdEpydoc@variable@type}{}{%
+                    \par\textbf{Type:} \cmdEpydoc@variable@type}%
+                \@ifundefined{cmdEpydoc@variable@metadata}{}{%
+                    \ifx\cmdEpydoc@variable@metadata\empty\else
+                        \par\cmdEpydoc@variable@metadata\fi}%
+            \end{quote}}{}%
+        }}}
+        \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+                       \normalfont\rmfamily\itshape ##1}        
+        \renewcommand{\EpydocInheritanceList}[2]{%
+            \item[] {\bfseries Inherited from {##1}:} ##2}
+        \begin{description}}
+  {\end{description}}
+
+% \renewcommand{\EpydocInheritanceList}[2]{%
+%     {\item[Inherited from {#1}]} #2}
+% \renewcommand{\EpydocInheritanceList}[2]{}
+
 % Same as book.cls, except ragged-right. Looks much better for long 
 % module names.
 \renewcommand\section{\@startsection {section}{1}{\z@}%
@@ -336,18 +439,18 @@
 \renewenvironment{reSTadmonition}[1][]{%
     \begin{center}\begin{sffamily}%
     \ifthenelse{\equal{#1}{}\OR\equal{#1}{Note}}{
-        \begin{cminipage}[light-gray]
+        \begin{cminipage}[light-gray]{\linewidth-2\fboxsep}
     }{%
         \ifthenelse{\equal{#1}{Warning}}{%
-            \begin{cminipage}[hazy-red] %[hazy-yellow]
+            \begin{cminipage}[hazy-red]{\linewidth-2\fboxsep} %[hazy-yellow]
         }{%
             \ifthenelse{\equal{#1}{Attention!}}{%
-                \begin{cminipage}[hazy-orange]
+                \begin{cminipage}[hazy-orange]{\linewidth-2\fboxsep}
             }{%
                 \ifthenelse{\equal{#1}{Danger}}{%
-                    \begin{cminipage}[hazy-red]
+                    \begin{cminipage}[hazy-red]{\linewidth-2\fboxsep}
                 }{%
-                    \begin{cminipage}
+                    \begin{cminipage}{\linewidth-2\fboxsep}
                 }%
             }%
         }%
