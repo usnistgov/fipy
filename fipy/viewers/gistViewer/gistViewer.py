@@ -6,7 +6,7 @@
  # 
  #  FILE: "gistViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/3/07 {3:23:40 PM}
+ #                                last update: 10/23/08 {3:17:34 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -72,6 +72,9 @@ class GistViewer(Viewer):
           - `title`: displayed at the top of the Viewer window
           - `dpi`: the dot-per-inch resolution of the display
         """
+        if self.__class__ is GistViewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         Viewer.__init__(self, vars = vars, limits = limits, title = title)
         
         self.mesh = self.vars[0].getMesh()

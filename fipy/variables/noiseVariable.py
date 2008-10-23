@@ -4,7 +4,7 @@
  # 
  #  FILE: "noiseVariable.py"
  #                                    created: 8/25/05 {1:25:23 PM} 
- #                                last update: 12/23/05 {1:41:56 PM} 
+ #                                last update: 10/23/08 {3:16:41 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,6 +59,9 @@ class NoiseVariable(CellVariable):
     number generated used by all `NoiseVariable` objects.
     """
     def __init__(self, mesh, name = '', hasOld = 0):
+        if self.__class__ is NoiseVariable:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         CellVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
         self.scramble()
         

@@ -7,7 +7,7 @@
  # 
  #  FILE: "scipySolver.py"
  #                                    created: 06/28/07
- #                                last update: 06/29/07
+ #                                last update: 10/23/08 {3:05:25 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -52,6 +52,11 @@ class ScipySolver(Solver):
     
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
+    def __init__(self, *args, **kwargs):
+        if self.__class__ is ScipySolver:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
+        Solver.__init__(self, *args, **kwargs)
 
     def _getMatrixClass(self):
         return _PysparseMatrix

@@ -6,7 +6,7 @@
  # 
  #  FILE: "faceTerm.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/7/08 {11:11:20 PM} 
+ #                                last update: 10/23/08 {3:13:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,6 +54,9 @@ class FaceTerm(Term):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.):
+        if self.__class__ is FaceTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         Term.__init__(self, coeff=coeff)
         self.coeffMatrix = None
             

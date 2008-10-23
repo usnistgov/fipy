@@ -6,7 +6,7 @@
  # 
  #  FILE: "sourceTerm.py"
  #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 3/28/07 {10:17:48 AM} 
+ #                                last update: 10/23/08 {3:14:26 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,6 +49,8 @@ class SourceTerm(CellTerm):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff = 0.):
+        if self.__class__ is SourceTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
 	CellTerm.__init__(self, coeff = coeff) 
 	
     def _calcGeomCoeff(self, mesh):
