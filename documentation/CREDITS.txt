@@ -31,7 +31,7 @@ Max Gibiansky
     added support for the Trilinos_ solvers while he was a SURF_ student
     from `Harvey Mudd College`_
 
-Andrew Reeve
+`Andrew Reeve`_
     added support for anistropic diffusion coefficients while he was on 
     sebatical from the `University of Maine`_.
 
@@ -68,3 +68,4 @@ Daniel Stiles
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler
 .. _Jim Warren:     http://www.ctcms.nist.gov/~jwarren/
+.. _Andrew Reeve:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.geology.um.maine.edu/HTML-ERS/People/PeopleFSAndyReeve.htm
