@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "matplotlib2DViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/5/07 {10:11:32 AM} { 2:45:36 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,36 +47,19 @@ from fipy.tools import numerix
 from matplotlibViewer import MatplotlibViewer
 
 class Matplotlib2DGridContourViewer(MatplotlibViewer):
-    """
-    Displays a contour plot of a 2D `CellVariable` object.    
+    """Displays a contour plot of a 2D `CellVariable` object.    
 
     The `Matplotlib2DGridContourViewer` plots a 2D `CellVariable` using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
-
-
     """
+    
+    __doc__ += MatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
 
 
     def __init__(self, vars, limits = None, title = None):
-        """
-        Creates a `Matplotlib2DViewer`.
+        """Creates a `Matplotlib2DViewer`.
         
-        >>> from fipy import *
-        >>> from fipy.tools.numerix import *
-        >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-        >>> x, y = mesh.getCellCenters()
-        >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-        >>> k = Variable(name="k")
-        >>> viewer = Matplotlib2DGridContourViewer(vars=sin(k * xyVar), 
-        ...                                        limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-        ...                                        title="Matplotlib2DGridContourViewer test")
-        >>> for kval in range(10):
-        ...     k.setValue(kval)
-        ...     viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
-
         :Parameters:
           - `vars`: A `CellVariable` object.
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
@@ -147,6 +129,10 @@ class Matplotlib2DGridContourViewer(MatplotlibViewer):
 
         pylab.ylim(ymin=self._getLimit('ymin'),
                    ymax=self._getLimit('ymax'))
+                   
+def _test():
+    from fipy.viewers.viewer import _test2D
+    _test2D(Matplotlib2DGridContourViewer)
 
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus

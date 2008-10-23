@@ -17,7 +17,7 @@ considerable resources repeatedly developing limited tools for
 specific problems.  Our approach, combining the FV method and Python_,
 provides a tool that is extensible, powerful and freely available. A
 significant advantage to Python_ is the existing suite of tools for
-array calculations, sparse matrices and data rendering.
+array calculations, sparse matrices and data rendering. 
 
 The |FiPy| framework includes terms for transient diffusion, convection and
 standard sources, enabling the solution of arbitrary combinations of

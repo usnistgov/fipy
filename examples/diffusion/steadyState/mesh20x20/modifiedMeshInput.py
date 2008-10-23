@@ -6,7 +6,7 @@
  # 
  #  FILE: "ttri2Dinput.py"
  #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:09:34 PM} 
+ #                                last update: 5/28/08 {11:35:17 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -58,6 +58,9 @@ The result is again tested in the same way:
     >>> print var.allclose(analyticalArray, atol = 0.025)
     1
 
+    >>> max(mesh._getNonOrthogonality()) < 0.51
+    True
+
 Note that this test case will only work if you run it by running the
 main FiPy test suite. If you run it directly from the directory it is
 in it will not be able to find the mesh file.
@@ -81,9 +84,9 @@ var = CellVariable(name = "solution variable",
                    value = valueLeft)
 
 exteriorFaces = mesh.getExteriorFaces()
-xFace = exteriorFaces.getCenters()[0]
-boundaryConditions = (FixedValue(exteriorFaces.where(xFace ** 2 < 0.000000000000001), valueLeft),
-                      FixedValue(exteriorFaces.where((xFace - 20) ** 2 < 0.000000000000001), valueRight))
+xFace = mesh.getFaceCenters()[0]
+boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001), valueLeft),
+                      FixedValue(exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001), valueRight))
                       
 
 if __name__ == '__main__':
@@ -99,9 +102,12 @@ if __name__ == '__main__':
                    value = abs(errorArray))
     errorViewer = viewers.make(vars = errorVar)
     errorViewer.plot()
+
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = viewers.make(vars = NonOrthoVar)    
+    NOViewer = viewers.make(vars = NonOrthoVar)
+
+
     NOViewer.plot()
     raw_input("finished")

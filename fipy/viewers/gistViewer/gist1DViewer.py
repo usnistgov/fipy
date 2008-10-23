@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gist1DViewer.py"
- #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/5/07 {9:30:22 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -49,23 +48,11 @@ from fipy.tools import numerix
 from fipy.viewers.gistViewer.gistViewer import GistViewer
 
 class Gist1DViewer(GistViewer):
-    """
-    Displays a y vs. x plot of one or more 1D `CellVariable` objects.
-
-        >>> from fipy import *
-        >>> mesh = Grid1D(nx=100)
-        >>> x = mesh.getCellCenters()[0]
-        >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
-        >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
-        >>> viewer = Gist1DViewer(vars=(var1, var2), 
-        ...                       limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
-        ...                       title="Gist1DViewer test")
-        >>> viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
-
+    """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
     """
     
+    __doc__ += GistViewer._test1D(viewer="Gist1DViewer")
+
     def __init__(self, vars, title = None, limits = None, xlog = 0, ylog = 0, style = "work.gs"):
         """
         Creates a `Gist1DViewer`.

@@ -88,17 +88,14 @@ class LinearLUSolver(PysparseSolver):
 
         LU = superlu.factorize(L._getMatrix().to_csr())
 
+        error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
+
         for iteration in range(self.iterations):
             errorVector = L * x - b
-            tol = max(numerix.absolute(errorVector*maxdiag))
-            # Multiplied by maxdiag so that it is equal to the residual seen externally
 
-            if tol <= self.tolerance:
+            if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
                 break
 
             xError = numerix.zeros(len(b),'d')
             LU.solve(errorVector, xError)
             x[:] = x - xError
-
-            #tol = max(numerix.absolute(xError))
-            # Old termination condition was based on the correction made to x

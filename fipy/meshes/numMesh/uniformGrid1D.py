@@ -6,7 +6,7 @@
  # 
  #  FILE: "uniformGrid1D.py"
  #                                    created: 2/22/06 {11:32:04 AM}
- #                                last update: 3/7/06 {5:02:19 PM} 
+ #                                last update: 5/28/08 {11:31:34 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,7 +48,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid1D import Grid1D
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 
@@ -77,7 +76,7 @@ class UniformGrid1D(Grid1D):
         self.numberOfFaces = self.nx + 1
         self.numberOfCells = self.nx
         
-        self.exteriorFaces = self.getFacesLeft() + self.getFacesRight()
+        self.exteriorFaces = self.getFacesLeft() | self.getFacesRight()
         
         self.scale = {
             'length': 1.,
@@ -124,8 +123,10 @@ class UniformGrid1D(Grid1D):
         return MA.array(self._createCells())
         
     def getInteriorFaces(self):
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.numberOfFaces-2) + 1)
+        from fipy.variables.faceVariable import FaceVariable
+        interiorFaces = FaceVariable(mesh=self, value=False)
+        interiorFaces[numerix.arange(self.numberOfFaces-2) + 1] = True
+        return interiorFaces
             
     def _getCellFaceOrientations(self):
         orientations = numerix.ones((2, self.numberOfCells))
@@ -256,6 +257,33 @@ class UniformGrid1D(Grid1D):
     
     def _calcScaledGeometry(self):
         pass
+
+    def _getNearestCellID(self, points):
+        """
+        Test cases
+
+           >>> from fipy import *
+           >>> m = Grid1D(nx=3)
+           >>> print m._getNearestCellID(([0., .9, 3.],))
+           [0 0 2]
+           >>> print m._getNearestCellID(([1.1],))
+           [1]
+           >>> m0 = Grid1D(nx=2, dx=1.)
+           >>> m1 = Grid1D(nx=4, dx=.5)
+           >>> print m0._getNearestCellID(m1.getCellCenters())
+           [0 0 1 1]
+           
+        """
+        x0, = self.getCellCenters()[...,0]        
+        xi, = points
+        nx, = self.getShape()
+        dx = self.dx
+        
+        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i[i < 0] = 0
+        i[i > nx - 1] = nx - 1
+
+        return i
 
     def _test(self):
         """

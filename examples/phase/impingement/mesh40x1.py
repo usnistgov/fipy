@@ -285,12 +285,12 @@ extracts the data and compares it with the `theta` variable.
 
 .. raw:: latex
 
-   \IndexModule{dump}
+   \IndexFunction{loadtxt}
 
 ..
 
    >>> import os
-   >>> testData = dump.read(os.path.splitext(__file__)[0] + '.gz')
+   >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
    >>> print theta.allclose(testData)
    1
 """

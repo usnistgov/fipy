@@ -1,8 +1,9 @@
 import sys
-from fipy.tools import numerix 
+from fipy.tools import numerix
+from fipy.tools.inline import inlineFlagOn
 
 def _optionalInline(inlineFn, pythonFn, *args):
-    if '--inline' in sys.argv[1:]:
+    if inlineFlagOn:
         return inlineFn(*args)
     else:
         return pythonFn(*args)
@@ -38,7 +39,7 @@ def _runInline(code_in, converters=None, verbose=0, **args):
     for key in args.keys():
         if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
             args[key] = args[key].astype('B')
-            
+
     weave.inline(code,
                  args.keys(),
                  local_dict=args,
@@ -47,7 +48,6 @@ def _runInline(code_in, converters=None, verbose=0, **args):
                  force=0,
                  verbose = 0 or verbose,
                  extra_compile_args =['-O3'])
-
                  
 def _runIterateElementInline(code_in, converters=None, verbose=0, **args):
     loops = """

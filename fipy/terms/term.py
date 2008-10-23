@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 7/25/07 {9:57:14 AM} 
+ #                                last update: 9/17/08 {9:34:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -82,7 +82,15 @@ class Term:
 
     def _calcResidual(self, var, matrix, RHSvector):
 
-        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
+        L2norm = numerix.sqrt(numerix.sum(self._calcResidualVector(var, matrix, RHSvector)**2))
+        RHSL2norm = numerix.sqrt(numerix.sum(RHSvector**2))
+        
+        if RHSL2norm == 0:
+            return L2norm
+        else:
+            return L2norm / RHSL2norm 
+
+##        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
 
     def __buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
 
@@ -94,6 +102,9 @@ class Term:
     
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
+
+        for bc in boundaryConditions:
+            bc._resetBoundaryConditionApplied()
 
         if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
             if not hasattr(self, "_viewer"):
@@ -121,13 +132,8 @@ class Term:
         var[:] = array
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        if solverSuite() == 'Trilinos':
-            defaultSolver = LinearGMRESSolver()
-            # This makes the largest number of test cases pass without needing
-            # to special-case anything
-        else:
-            defaultSolver = LinearPCGSolver()
-        solver = self._getDefaultSolver(solver) or solver or defaultSolver
+
+        solver = self._getDefaultSolver(solver) or solver or DefaultSolver()
 
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         return (solver, matrix, RHSvector)
@@ -165,6 +171,7 @@ class Term:
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+           - `residualFn`: A function that takes var, matrix, and RHSvector arguments, used to customize the residual calculation.
 
         """
         solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
@@ -184,7 +191,7 @@ class Term:
 
         return residual
 
-    def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None):
+    def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -197,14 +204,17 @@ class Term:
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+           - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
 
         """
         solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
-        
+
         if underRelaxation is not None:
             matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
 
-        return self._calcResidualVector(var, matrix, RHSvector)
+        residualFn = residualFn or self._calcResidualVector
+        
+        return residualFn(var, matrix, RHSvector)
 
     def _verifyCoeffType(self, var):
         pass

@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gist2DViewer.py"
- #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 7/5/07 {9:43:48 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,36 +47,15 @@ from fipy.tools import numerix
 from fipy.viewers.gistViewer.gistViewer import GistViewer
 
 class Gist2DViewer(GistViewer):
-    """
-    Displays a contour plot of a 2D `CellVariable` object.
-
+    """Displays a contour plot of a 2D `CellVariable` object.
     """
     
+    __doc__ += GistViewer._test2D(viewer="Gist2DViewer")
+    __doc__ += GistViewer._test2Dirregular(viewer="Gist2DViewer")
+    
     def __init__(self, vars, limits = None, title = None, palette = 'heat.gp', grid = 1, dpi = 75):
-        """
-        Creates a `Gist2DViewer`.
+        """Creates a `Gist2DViewer`.
         
-        >>> from fipy import *
-        >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-        >>> x, y = mesh.getCellCenters()
-        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-        >>> viewer = Gist2DViewer(vars=var, 
-        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-        ...                       title="Gist2DViewer test")
-        >>> viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
-
-        >>> mesh = Tri2D(nx=50, ny=100, dx=0.1, dy=0.01)
-        >>> x, y = mesh.getCellCenters()
-        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-        >>> viewer = Gist2DViewer(vars=var, 
-        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-        ...                       title="Gist2DViewer test")
-        >>> viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
-
         :Parameters:
           - `vars`: A `CellVariable` or tuple of `CellVariable` objects to plot.
             Only the first 2D `CellVariable` will be plotted.

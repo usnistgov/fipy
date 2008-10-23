@@ -6,7 +6,7 @@
  # 
  # FILE: "binaryOperatorVariable.py"
  #                                     created: 5/16/07 {9:55:54 AM}
- #                                 last update: 5/16/07 {9:55:54 AM}
+ #                                 last update: 6/1/08 {11:02:52 AM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -32,10 +32,39 @@
  # 
  # #############################################################################
  ##
+ 
+__docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
 def _BinaryOperatorVariable(operatorClass=None):
+    """
+    Test BinOp pickeling
+
+        >>> from fipy import Grid1D, FaceVariable, CellVariable, dump, Variable
+        >>> import os, sys
+        >>> m = Grid1D()
+        >>> vs = (CellVariable(mesh=m, value=2.), FaceVariable(mesh=m, value=3.), Variable(4))
+        >>> tmp = []
+        >>> for v in vs:
+        ...     (f, n) = dump.write(v * v)
+        ...     tmp += [dump.read(n)]
+        ...     os.remove(n)
+        ...     if sys.platform != 'win32':
+        ...         os.close(f)
+        >>> for v in tmp:
+        ...     print v.__class__
+        <class 'fipy.variables.cellVariable.CellVariable'>
+        <class 'fipy.variables.faceVariable.FaceVariable'>
+        <class 'fipy.variables.variable.Variable'>
+        >>> print tmp[0].allclose(4.)
+        True
+        >>> print numerix.allclose(tmp[1], [9., 9.])
+        True
+        >>> print tmp[2].allclose(16)
+        True
+
+    """
     # declare a binary operator class with the desired base class
     class binOp(operatorClass):
 
@@ -62,6 +91,24 @@ def _BinaryOperatorVariable(operatorClass=None):
         def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
             self.id = id
             return "(" + operatorClass._getRepresentation(self, style=style, argDict=argDict, id=id, freshen=freshen) + ")"
+
+        def __reduce__(self):
+            """
+            Allows binOps to be pickled
+            """
+            state =  self.__getstate__()
+            if 'mesh' in state.keys():
+                args = (state['mesh'],)
+            else:
+                args = ()
+                        
+            return (self._getVariableClass(), args, self.__getstate__())
             
     return binOp
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test()   

@@ -6,7 +6,7 @@
  # 
  #  FILE: "physicalField.py"
  #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 4/30/07 {11:37:23 AM} 
+ #                                last update: 6/1/08 {1:25:53 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -640,23 +640,22 @@ class PhysicalField(object):
         corresponding to the test against each element.
         
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
-            >>> print a > PhysicalField("13 ft")
-            [[False True]
-             [True True]]
+            >>> print numerix.allclose(a > PhysicalField("13 ft"), 
+            ...                        [[False, True], [ True, True]])
+            True
 
-         
         Appropriately formatted dimensional quantity strings can also be
         compared.
         
-            >>> print a > "13 ft"
-            [[False True]
-             [True True]]
+            >>> print numerix.allclose(a > "13 ft",
+            ...                        [[False, True], [ True, True]])
+            True
                     
         Arrays are compared element to element
         
-            >>> print a > PhysicalField(((3.,13.),(17.,6.)),"ft")
-            [[True True]
-             [False True]]
+            >>> print numerix.allclose(a > PhysicalField(((3.,13.),(17.,6.)),"ft"),
+            ...                        [[ True, True], [False, True]])
+            True
          
         Units must be compatible
         
@@ -994,8 +993,8 @@ class PhysicalField(object):
         """
         Return the hyperbolic tangent of the `PhysicalField`
         
-            >>> PhysicalField(1.).tanh()
-            0.761594155956
+            >>> print numerix.allclose(PhysicalField(1.).tanh(), 0.761594155956)
+            True
         
         The units of the `PhysicalField` must be dimensionless
         
@@ -1111,8 +1110,8 @@ class PhysicalField(object):
         """
         Return the complex conjugate of the `PhysicalField`. 
         
-            >>> print PhysicalField(2.2 - 3j,"ohm").conjugate()
-            (2.2+3j) ohm
+            >>> print PhysicalField(2.2 - 3j,"ohm").conjugate() == PhysicalField(2.2 + 3j,"ohm")
+            True
         """
         return self.__class__(value = umath.conjugate(self.value), unit = self.unit)
 
@@ -1563,11 +1562,13 @@ class PhysicalUnit:
             
             >>> a = PhysicalField("1. mm")
             >>> b = PhysicalField("1. inch")
-            >>> print a.getUnit().isCompatible(b.getUnit())
-            [True True True True True True True True True]
+            >>> print numerix.allclose(a.getUnit().isCompatible(b.getUnit()),
+            ...                        [True, True, True, True, True, True, True, True, True])
+            True
             >>> c = PhysicalField("1. K")
-            >>> print a.getUnit().isCompatible(c.getUnit())
-            [False True True True False True True True True]
+            >>> print numerix.allclose(a.getUnit().isCompatible(c.getUnit()),
+            ...                        [False, True, True, True, False, True, True, True, True])
+            True
             
         """
         return self.powers == other.powers

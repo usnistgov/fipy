@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid2D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/27/07 {2:38:39 PM} 
+ #                                last update: 5/30/08 {8:04:51 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,7 +50,6 @@ from fipy.tools import numerix
 
 from fipy.tools.inline import inline
 from fipy.meshes.numMesh.mesh2D import Mesh2D
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -163,50 +162,6 @@ class Grid2D(Mesh2D):
         nj=self.ny)
 
         return cellFaceIDs
-
-    def getFacesLeft(self):
-        """
-        Return list of faces on left boundary of Grid2D.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((9, 13), mesh.getFacesLeft())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces, self.nx + 1))
-        
-    def getFacesRight(self):
-        """
-        Return list of faces on right boundary of Grid2D.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((12, 16), mesh.getFacesRight())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces + self.nx, self.numberOfFaces, self.nx + 1))
-        
-    def getFacesTop(self):
-        """
-        Return list of faces on top boundary of Grid2D.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((6, 7, 8), mesh.getFacesTop())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.numberOfHorizontalFaces - self.nx, self.numberOfHorizontalFaces))
-
-    getFacesUp = getFacesTop
-        
-    def getFacesBottom(self):
-        """
-        Return list of faces on bottom boundary of Grid2D.
-        
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((0, 1, 2), mesh.getFacesBottom())
-            1
-        """
-        return FaceIterator(mesh = self, ids = numerix.arange(self.nx))
-
-    getFacesDown = getFacesBottom
     
     def getScale(self):
         return self.scale['length']
@@ -277,13 +232,13 @@ class Grid2D(Mesh2D):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> tmp = list(mesh.getExteriorFaces())
-            >>> tmp.sort()
-            >>> numerix.allequal(externalFaces, tmp)
+            >>> numerix.allequal(externalFaces, 
+            ...                  numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA

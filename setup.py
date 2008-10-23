@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "setup.py"
- #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/21/08 {5:12:29 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,8 +39,131 @@ import os
 import sys
 import string
 
-from distutils.core import setup
 from distutils.core import Command
+
+# bootstrap setuptools for users that don't already have it
+import ez_setup
+ez_setup.use_setuptools()
+
+from setuptools import setup, find_packages
+
+# from fipy.tests.testRunner import test, unittest
+
+from setuptools.command.test import test as _test
+
+def _TestClass(base):
+    class _test(base):
+        description = base.description + ", for FiPy and its examples"
+
+        # List of option tuples: long name, short name (None if no short
+        # name), and help string.
+        user_options = base.user_options + [
+            ('inline', None, "run FiPy with inline compilation enabled"),
+            ('Trilinos', None, "run FiPy using Trilinos solvers"),
+            ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
+            ('all', None, "run all non-interactive FiPy tests (default)"),
+            ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
+            ('examples', None, "test FiPy examples"),
+            ('modules', None, "test FiPy code modules"),
+            ('viewers', None, "test FiPy viewer modules (requires user input)"),
+            ('cache', None, "run FiPy with Variable caching"),
+            ('no-cache', None, "run FiPy without Variable caching"),
+           ]
+
+
+        def initialize_options(self):
+            base.initialize_options(self)
+            
+            self.all = False
+            self.really_all = False
+            self.examples = False
+            self.modules = False
+            self.viewers = False
+            
+            self.inline = False
+            self.cache = False
+            self.no_cache = True
+            self.Trilinos = False
+            self.Pysparse = False
+
+        def finalize_options(self):
+            noSuiteOrModule = (self.test_suite is None 
+                               and self.test_module is None)
+                
+            base.finalize_options(self)
+            
+            if noSuiteOrModule:
+                self.test_args.remove(self.distribution.test_suite)
+                
+            if not (self.examples or self.modules or self.viewers):
+                self.all = True
+            if self.all or self.really_all:
+                self.examples = True
+                self.modules = True
+            if self.really_all:
+                self.viewers = True
+            
+                
+            if self.viewers:
+                print "*" * 60
+                print "*" + "".center(58) + "*"
+                print "*" + "ATTENTION".center(58) + "*"
+                print "*" + "".center(58) + "*"
+                print "*" + "Some of the following tests require user interaction".center(58) + "*"
+                print "*" + "".center(58) + "*"
+                print "*" * 60
+                
+                self.test_args.append("fipy.viewers.testinteractive._suite")
+
+            if self.modules:
+                self.test_args.append("fipy.test._suite")
+            
+            if self.examples:
+                self.test_args.append("examples.test._suite")
+
+            if self.test_args and noSuiteOrModule:
+                self.test_suite = "dummy"
+                
+        def run_tests(self):
+            import sys
+            if '--Trilinos' in sys.argv[1:]:
+                try:
+                    ## The import scipy statement is added to allow
+                    ## the --Trilinos tests to run without throwing a
+                    ## segmentation fault. This is caused by weird
+                    ## behavior in scipy and PyTrilinos depending on
+                    ## the order in which modules are imported
+                    try:
+                        import scipy
+                    except:
+                        pass
+                    import PyTrilinos
+                except ImportError, a:
+                    print >>sys.stderr, "!!! Trilinos library is not installed"
+                    return
+
+            if '--inline' in sys.argv[1:]:
+                try:
+                    from scipy import weave
+                except ImportError, a:
+                    print >>sys.stderr, "!!! weave library is not installed"
+                    return
+
+            base.run_tests(self)
+
+    return _test                    
+            
+test = _TestClass(_test)
+
+try:
+    # we only need "unittest" if bitten is installed 
+    # (and we're running as a bitten.slave)
+    from bitten.util.testrunner import unittest as _unittest
+    unittest = _TestClass(_unittest)
+except ImportError, e:
+    unittest = test
+
+
 
 class build_docs (Command):
 
@@ -259,7 +381,8 @@ class build_docs (Command):
                                                'TALKS',
                                                'TODOLIST',
                                                'SVN',
-                                               'EFFICIENCY'],
+                                               'EFFICIENCY',
+                                               'VKML'],
                                           'startlower': 
                                               ['MAIL']}
 
@@ -271,14 +394,6 @@ class build_docs (Command):
                 dir = os.path.join('documentation', 'manual', 'examples')
                 self._initializeDirectory(dir = dir, type = 'latex')
                 dir = os.path.join(dir, 'latex')
-##                 modules = ['examples/update0_1to1_0.py',
-##                                'examples/diffusion/',
-##                             'examples/convection/',
-##                             'examples/phase/',
-##                             'examples/levelSet/',
-##                             'examples/elphf/',
-##                             'examples/cahnHilliard/'
-##                             ]
                                
                 import epydoc.cli
                 epydoc.cli.cli(["--latex", "--output", dir, 
@@ -450,82 +565,6 @@ epydoc.cli.cli(["--latex", "--output", dir,
                 
     # run()
 
-class test(Command):
-    description = "test FiPy and its examples"
-
-    # List of option tuples: long name, short name (None if no short
-    # name), and help string.
-    user_options = [('inline', None, "run FiPy with inline compilation enabled"),
-                    ('Trilinos', None, "run FiPy using Trilinos solvers"),
-                    ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
-                    ('all', None, "run all non-interactive FiPy tests (default)"),
-                    ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
-                    ('examples', None, "test FiPy examples"),
-                    ('modules', None, "test FiPy code modules"),
-                    ('viewers', None, "test FiPy viewer modules (requires user input)"),
-                    ('terse', None, "give limited output during tests"),
-                    ('verbose', None, "give considerable output during tests"),
-                    ('cache', None, "run FiPy with Variable caching"),
-                    ('no-cache', None, "run FiPy without Variable caching"),
-                   ]
-
-
-    def initialize_options (self):
-        self.inline = False
-        self.verbosity = 0
-        self.terse = False
-        self.all = False
-        self.really_all = False
-        self.examples = False
-        self.modules = False
-        self.viewers = False
-        self.cache = False
-        self.no_cache = True
-        self.Trilinos = False
-        self.Pysparse = False
-
-    def finalize_options (self):
-        if self.verbose:
-            self.verbosity = 2
-        if self.terse:
-            self.verbosity = 1
-        if not (self.examples or self.modules or self.viewers):
-            self.all = True
-        if self.all or self.really_all:
-            self.examples = True
-            self.modules = True
-        if self.really_all:
-            self.viewers = True
-        
-    def run (self):
-        import unittest
-        theSuite = unittest.TestSuite()
-
-        if self.viewers:
-            import fipy.viewers.testinteractive
-            print "*" * 60
-            print "*" + "".center(58) + "*"
-            print "*" + "ATTENTION".center(58) + "*"
-            print "*" + "".center(58) + "*"
-            print "*" + "Some of the following tests require user interaction".center(58) + "*"
-            print "*" + "".center(58) + "*"
-            print "*" * 60
-            theSuite.addTest(fipy.viewers.testinteractive._suite())
-
-        if self.modules:
-            import fipy.test
-            theSuite.addTest(fipy.test._suite())
-        
-        if self.examples:
-            import examples.test
-            theSuite.addTest(examples.test._suite())
-        
-        testRunner = unittest.TextTestRunner(verbosity=self.verbosity)
-        result = testRunner.run(theSuite)
-        
-        import sys
-        sys.exit(not result.wasSuccessful())
-        
 class copy_script(Command):
     description = "copy an example script into a new editable file"
 
@@ -676,58 +715,48 @@ class efficiency_test(Command):
 
             f.close()
 
-f = open('README.txt', 'r')
-long_description = '\n' + f.read() + '\n'
-f.close()
+try:            
+    f = open('README.txt', 'r')
+    long_description = '\n' + f.read() + '\n'
+    f.close()
+except IOError, e:
+    long_description = ''
         
-f = open('LICENSE.txt', 'r') 
-license = '\n' + f.read() + '\n'
-f.close()
-
-execfile(os.path.join('fipy', '__version__.py'))
+try:
+    f = open('LICENSE.txt', 'r') 
+    license = '\n' + f.read() + '\n'
+    f.close()
+except IOError, e:
+    license = ''
+    
+# The following doesn't work reliably, because it requires fipy
+# to already be installed (or at least egged), which is kind of 
+# obnoxious. We use cmdclass instead.
+# 
+#         entry_points = {
+#             'distutils.commands': [
+#                 'test = fipy.tests.testRunner:test',
+#                 'unittest = fipy.tests.testRunner:unittest', 
+#             ],
+#         },
 
 dist = setup(	name = "FiPy",
-        version = __version__,
+        version = "2.0a1", 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
-        author_email = "guyer@nist.gov",
-        url = "http://ctcms.nist.gov/fipy/",
+        author_email = "fipy@nist.gov",
+        url = "http://www.ctcms.nist.gov/fipy/",
         license = license,
         description = "A finite volume PDE solver in Python",
         long_description = long_description,
         cmdclass = {
             'build_docs':build_docs,
             'test':test,
+            'unittest':unittest,
             'copy_script': copy_script,
             'efficiency_test': efficiency_test
         },
-        packages = ['fipy',
-                        'fipy.boundaryConditions',
-                        'fipy.meshes',
-                            'fipy.meshes.common',
-                            'fipy.meshes.numMesh',
-                            'fipy.meshes.pyMesh',
-                        'fipy.models',
-                            'fipy.models.levelSet',
-                                'fipy.models.levelSet.advection',
-                                'fipy.models.levelSet.distanceFunction',
-                                'fipy.models.levelSet.electroChem',
-                                'fipy.models.levelSet.surfactant',
-                        'fipy.solvers',
-                            'fipy.solvers.pysparse',
-                            'fipy.solvers.trilinos',
-                            'fipy.solvers.scipy',
-                        'fipy.steppers',
-                        'fipy.terms',
-                        'fipy.tests',
-                        'fipy.tools',
-                            'fipy.tools.dimensions',
-                            'fipy.tools.inline',
-                        'fipy.variables',
-                        'fipy.viewers',
-                            'fipy.viewers.gistViewer',
-                            'fipy.viewers.gnuplotViewer',
-                            'fipy.viewers.matplotlibViewer',
-                            'fipy.viewers.mayaviViewer'],
+        test_suite="fipy.test._suite",
+        packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         classifiers = [
             'Development Status :: 5 - Production/Stable',
             'Environment :: Console',

@@ -93,8 +93,8 @@ ny = int(sqrt(numberOfElements))
 
 steps = numberOfSteps
 
-dx = 2.
-dy = 2.
+dx = 0.5
+dy = 0.5
 
 L = dx * nx
 
@@ -117,12 +117,6 @@ diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative
 diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
 eqch = TransientTerm() - diffTerm2 - diffTerm4
 
-##solver = LinearLUSolver(tolerance=1e-15, iterations=1000)
-if solverSuite() == 'Trilinos':
-    solver = LinearGMRESSolver()
-else:
-    solver = LinearPCGSolver(tolerance=1e-15, iterations=1000)
-
 BCs = (FixedFlux(mesh.getFacesRight(), 0),
        FixedFlux(mesh.getFacesLeft(), 0),
        NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 3),
@@ -139,10 +133,10 @@ dexp=-5
 
 for step in range(steps):
     dt = exp(dexp)
-    dt = min(100, dt)
+    dt = min(1.0, dt)
     dexp += 0.01
     var.updateOld()
-    eqch.solve(var, boundaryConditions = BCs, solver = solver, dt = dt)
+    eqch.solve(var, boundaryConditions = BCs, dt = dt)
 
     if __name__ == '__main__':
         viewer.plot()

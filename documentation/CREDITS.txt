@@ -23,10 +23,25 @@ Alex Mont
     he was a student at `Montgomery Blair High School`_.
 
 Katie Travis
-    is a student at `Smith College`_. Katie developed the automated 
-    ``--inline`` optimization code for ``Variable`` objects. 
+    developed the automated 
+    ``--inline`` optimization code for ``Variable`` objects 
+    while she was a SURF_ student from `Smith College`_.
   
+Max Gibiansky
+    added support for the Trilinos_ solvers while he was a SURF_ student
+    from `Harvey Mudd College`_
 
+Andrew Reeve
+    added support for anistropic diffusion coefficients while he was on 
+    sebatical from the `University of Maine`_.
+
+Olivia Buzek
+    worked on adding Trilinos_ parallel computations while she was a SURF_ student
+    from the `University of Maryland`_
+
+Daniel Stiles
+    worked on adding Trilinos_ parallel computations while he was
+    a student at `Montgomery Blair High School`_.
 
 .. include:: ../utils/include.txt
 
@@ -40,10 +55,15 @@ Katie Travis
 .. _Center for Theoretical and Computational Materials Science:    http://www.ctcms.nist.gov/
 .. _Metallurgy Division:                                           http://www.metallurgy.nist.gov/
 .. _National Institute of Standards and Technology:                http://www.nist.gov/
+.. _SURF:                                                          http://www.surf.nist.gov/surf2.htm
 
 .. _Montgomery Blair High School:                                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.mbhs.edu/
-
 .. _Smith College:                                                 http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.smith.edu/
+.. _Harvey Mudd College:                                           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.hmc.edu/
+.. _University of Maryland:                                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.maryland.edu/
+.. _University of Maine:                                           
+
+.. _Trilinos:                                                      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler

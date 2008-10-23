@@ -6,7 +6,7 @@
  # 
  #  FILE: "tri2D.py"
  #                                    created: 07/07/04 {4:28:00 PM} 
- #                                last update: 1/3/07 {3:11:20 PM} 
+ #                                last update: 5/29/08 {8:55:54 AM} 
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -46,7 +46,6 @@ __docformat__ = "restructuredtext"
 from fipy.tools import numerix
 
 from fipy.meshes.numMesh.mesh2D import Mesh2D
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -173,39 +172,6 @@ class Tri2D(Mesh2D):
         topOfBoxCells = numerix.array([topFaces, upperLeftDiagonalFaces, upperRightDiagonalFaces])
         leftOfBoxCells = numerix.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces])
         return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells), axis=1)
-
-    def getFacesLeft(self):
-        """Return list of faces on left boundary of Grid2D.
-        """
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfHorizontalFaces, 
-                                               self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
-                                               self.nx + 1))
-        
-    def getFacesRight(self):
-        """Return list of faces on right boundary of Grid2D.
-        """
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfHorizontalFaces + self.nx, 
-                                               self.numberOfHorizontalFaces + self.numberOfVerticalFaces, 
-                                               self.nx + 1))
-        
-    def getFacesTop(self):
-        """Return list of faces on top boundary of Grid2D.
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.numberOfHorizontalFaces - self.nx, 
-                                               self.numberOfHorizontalFaces))
-
-    getFacesUp = getFacesTop
-        
-    def getFacesBottom(self):
-        """Return list of faces on bottom boundary of Grid2D.
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.nx))
-
-    getFacesDown = getFacesBottom
         
     def getScale(self):
         return self.scale['length']
@@ -271,11 +237,13 @@ class Tri2D(Mesh2D):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA

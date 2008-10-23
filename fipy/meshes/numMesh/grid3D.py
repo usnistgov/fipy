@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid3D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/27/07 {2:38:58 PM} 
+ #                                last update: 5/30/08 {8:05:14 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,7 +45,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.numMesh.mesh import Mesh
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -193,86 +192,7 @@ class Grid3D(Mesh):
         topFaces = bottomFaces + (self.nx * self.ny)
 
         return numerix.array((frontFaces, backFaces, leftFaces, rightFaces, bottomFaces, topFaces))
-
-    def getFacesBottom(self):
-        """
-        Return list of faces on bottom boundary of Grid3D.
-
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((12, 13, 14), mesh.getFacesBottom())
-            1
-        """
-        return FaceIterator(mesh=self, 
-                            ids=self._repeatWithOffset(numerix.arange(self.numberOfXYFaces, 
-                                                                      self.numberOfXYFaces + self.nx), 
-                                                       self.nx * (self.ny + 1), self.nz))
-
-    getFacesDown = getFacesBottom
-        
-    def getFacesTop(self):
-        """
-        Return list of faces on top boundary of Grid3D.
-        
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((18, 19, 20), mesh.getFacesTop())
-            1
-        """
-        return FaceIterator(mesh=self, 
-                            ids=self._repeatWithOffset(numerix.arange(self.numberOfXYFaces + (self.nx * self.ny), 
-                                                                      self.numberOfXYFaces + (self.nx * self.ny) + self.nx), 
-                                                       self.nx * (self.ny + 1), self.nz))
-
-    getFacesUp = getFacesTop
-    
-    def getFacesBack(self):
-        """
-        Return list of faces on back boundary of Grid3D.
-        
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((6, 7, 8, 9, 10, 11), mesh.getFacesBack())
-            1
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.numberOfXYFaces - (self.nx * self.ny), 
-                                               self.numberOfXYFaces))
-        
-    def getFacesFront(self):
-        """
-        Return list of faces on front boundary of Grid3D.
-        
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((0, 1, 2, 3, 4, 5), mesh.getFacesFront())
-            1
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.nx * self.ny))
-
-    def getFacesLeft(self):
-        """
-        Return list of faces on left boundary of Grid3D.
-        
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((21, 25), mesh.getFacesLeft())
-            1
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces, 
-                                               self.numberOfFaces, 
-                                               self.nx + 1))
-
-    def getFacesRight(self):
-        """
-        Return list of faces on right boundary of Grid3D.
-        
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((24, 28), mesh.getFacesRight())
-            1
-        """
-        return FaceIterator(mesh=self, 
-                            ids=numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces + self.nx, 
-                                               self.numberOfFaces, 
-                                               self.nx + 1))
-        
+         
     def getScale(self):
         return self.scale['length']
         
@@ -408,13 +328,13 @@ class Grid3D(Mesh):
             1
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
-            >>> tmp = list(mesh.getExteriorFaces())
-            >>> tmp.sort()
-            >>> numerix.allequal(externalFaces, tmp)
+            >>> numerix.allequal(externalFaces, 
+            ...                  numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA

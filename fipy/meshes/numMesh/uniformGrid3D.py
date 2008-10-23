@@ -6,7 +6,7 @@
  # 
  # FILE: "uniformGrid3D.py"
  #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 3/7/06 {4:59:52 PM}
+ #                                 last update: 5/30/08 {8:37:58 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -42,7 +42,6 @@
 from fipy.tools.numerix import MA
 
 from fipy.meshes.numMesh.grid3D import Grid3D
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -121,10 +120,10 @@ class UniformGrid3D(Grid3D):
                              origin = self.origin * factor)
 
     def _getConcatenableMesh(self):
-        from fipy.meshes.numMesh.mesh3D import Mesh3D
-        return Mesh3D(vertexCoords = self.getVertexCoords(), 
-                      faceVertexIDs = self._createFaces(), 
-                      cellFaceIDs = self._createCells())
+        from fipy.meshes.numMesh.mesh import Mesh
+        return Mesh(vertexCoords = self.getVertexCoords(), 
+                    faceVertexIDs = self._createFaces(), 
+                    cellFaceIDs = self._createCells())
                       
     def _concatenate(self, other, smallNumber):
         return self._getConcatenableMesh()._concatenate(other = other, smallNumber = smallNumber)
@@ -149,25 +148,41 @@ class UniformGrid3D(Grid3D):
         return ids.reshape((self.nz, self.ny, self.nx + 1)).swapaxes(0,2)
 
     def getExteriorFaces(self):
+        """
+        Return only the faces that have one neighboring cell.
+        """
         XYids = self._getXYFaceIDs()
         XZids = self._getXZFaceIDs()
         YZids = self._getYZFaceIDs()
-        return FaceIterator(mesh=self,
-                            ids=numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0,1)), 
-                                                     numerix.ravel(XYids[...,     -1].swapaxes(0,1)),
-                                                     numerix.ravel(XZids[...,  0,...]), 
-                                                     numerix.ravel(XZids[..., -1,...]),
-                                                     numerix.ravel(YZids[ 0,     ...]), 
-                                                     numerix.ravel(YZids[-1,     ...]))))
+        
+        exteriorIDs = numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0,1)), 
+                                           numerix.ravel(XYids[...,     -1].swapaxes(0,1)),
+                                           numerix.ravel(XZids[...,  0,...]), 
+                                           numerix.ravel(XZids[..., -1,...]),
+                                           numerix.ravel(YZids[ 0,     ...]), 
+                                           numerix.ravel(YZids[-1,     ...])))
+                                                     
+        from fipy.variables.faceVariable import FaceVariable
+        exteriorFaces = FaceVariable(mesh=self, value=False)
+        exteriorFaces[exteriorIDs] = True
+        return exteriorFaces
         
     def getInteriorFaces(self):
+        """
+        Return only the faces that have two neighboring cells
+        """
         XYids = self._getXYFaceIDs()
         XZids = self._getXZFaceIDs()
         YZids = self._getYZFaceIDs()
-        return FaceIterator(mesh=self,
-                            ids=numerix.concatenate((numerix.ravel(XYids[ ...     ,1:-1]),
-                                                     numerix.ravel(XZids[ ...,1:-1, ...]),
-                                                     numerix.ravel(YZids[1:-1,      ...].swapaxes(0,1)))))
+        
+        interiorIDs = numerix.concatenate((numerix.ravel(XYids[ ...     ,1:-1]),
+                                           numerix.ravel(XZids[ ...,1:-1, ...]),
+                                           numerix.ravel(YZids[1:-1,      ...].swapaxes(0,1))))
+                                                     
+        from fipy.variables.faceVariable import FaceVariable
+        interiorFaces = FaceVariable(mesh=self, value=False)
+        interiorFaces[interiorIDs] = True
+        return interiorFaces
 
     def _getCellFaceOrientations(self):
         tmp = numerix.take(self.getFaceCellIDs()[0], self._getCellFaceIDs())
@@ -453,6 +468,26 @@ class UniformGrid3D(Grid3D):
     
     def _calcScaledGeometry(self):
         pass
+    
+    def _getNearestCellID(self, points):
+        x0, y0, z0 = self.getCellCenters()[...,0]        
+        xi, yi, zi = points
+        nx, ny, nz = self.getShape()
+        dx, dy, dz = self.dx, self.dy, self.dz
+        
+        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i[i < 0] = 0
+        i[i > nx - 1] = nx - 1
+
+        j = numerix.array(numerix.rint(((yi - y0) / dy)), 'l')
+        j[j < 0] = 0
+        j[j > ny - 1]  = ny - 1
+
+        k = numerix.array(numerix.rint(((zi - z0) / dz)), 'l')
+        k[k < 0] = 0
+        k[k > nz - 1]  = nz - 1
+        
+        return k * ny * nx + j * nx + i
         
     def _test(self):
         """
@@ -533,12 +568,14 @@ class UniformGrid3D(Grid3D):
             >>> numerix.allequal(cells, mesh._createCells())
             1
 
-            >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 25, 24, 28))
-            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
+            >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA

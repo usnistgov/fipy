@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/29/07 {10:40:47 AM} 
+ #                                last update: 7/16/08 {11:19:56 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,7 +47,7 @@ from fipy.tools import numerix
 from fipy.terms.term import Term
 from fipy.tools import numerix
 
-class _DiffusionTerm(Term):
+class DiffusionTerm(Term):
 
     r"""
     This term represents a higher order diffusion term. The order of the term is determined
@@ -137,7 +137,7 @@ class _DiffusionTerm(Term):
         return higherOrderBCs, lowerOrderBCs
 
     def _getNormals(self, mesh):
-        pass
+        return mesh._getFaceCellToCellNormals()
 
     def _getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
@@ -171,7 +171,7 @@ class _DiffusionTerm(Term):
         return self.rotationTensor
     
     def _treatMeshAsOrthogonal(self, mesh):
-        pass
+        return mesh._isOrthogonal()
 
     def _calcAnisotropySource(self, coeff, mesh, var):
 
@@ -204,7 +204,7 @@ class _DiffusionTerm(Term):
                 if rank > 0:
                     shape = numerix.getShape(coeff)
                     if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
-                        raise IndexError, 'diffusion coefficent tensor index error'          
+                        raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'          
 
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
                 rotationTensor = self._getRotationTensor(mesh)
@@ -221,7 +221,7 @@ class _DiffusionTerm(Term):
     def _getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
         interiorCoeff = numerix.array(coeff)
         
-        numerix.put(interiorCoeff, mesh.getExteriorFaces(), 0)
+        interiorCoeff[mesh.getExteriorFaces().getValue()] = 0
         
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
@@ -229,7 +229,7 @@ class _DiffusionTerm(Term):
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
-        interiorFaces = mesh.getInteriorFaces()
+        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
         
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
 
@@ -570,7 +570,7 @@ class _DiffusionTerm(Term):
            >>> print numerix.allclose(term._getGeomCoeff(mesh)[0], val)
            Traceback (most recent call last):
                ...
-           IndexError: diffusion coefficent tensor index error
+           IndexError: diffusion coefficent tensor is not an appropriate shape for this mesh
 
         Anisotropy test
 
@@ -586,19 +586,12 @@ class _DiffusionTerm(Term):
         """
         pass
 
-class DiffusionTermNoCorrection(_DiffusionTerm):
+class DiffusionTermNoCorrection(DiffusionTerm):
     def _getNormals(self, mesh):
         return mesh._getFaceNormals()
 
     def _treatMeshAsOrthogonal(self, mesh):
         return True
-        
-class DiffusionTerm(_DiffusionTerm):
-    def _getNormals(self, mesh):
-        return mesh._getFaceCellToCellNormals()
-
-    def _treatMeshAsOrthogonal(self, mesh):
-        return mesh._isOrthogonal()
         
 def _test(): 
     import doctest

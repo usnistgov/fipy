@@ -242,31 +242,39 @@ class Grid2D(Mesh):
         return interiorFaces
 
     def getFacesLeft(self):
-	"""Return list of faces on left boundary of Grid2D.
-	"""
+        """
+        Return list of faces on left boundary of Grid2D with the
+        x-axis running from left to right.
+        """
 	nx=self.nx
 	ny=self.ny
 	start = len(self.interiorFaces) + 2 * nx
 	return self.faces[start:start + ny]
 	
     def getFacesRight(self):
-	"""Return list of faces on right boundary of Grid2D.
-	"""
+        """
+        Return list of faces on right boundary of Grid2D with the
+        x-axis running from left to right.
+        """
 	nx=self.nx
 	ny=self.ny
 	start = len(self.interiorFaces) + 2 * nx + ny
 	return self.faces[start:start + ny]
 	
     def getFacesTop(self):
-	"""Return list of faces on top boundary of Grid2D.
-	"""
+        """
+        Return list of faces on top boundary of Grid2D with the
+        y-axis running from bottom to top.
+        """
 	nx=self.nx
 	start = len(self.interiorFaces) + nx
 	return self.faces[start:start + nx]
 	
     def getFacesBottom(self):
-	"""Return list of faces on bottom boundary of Grid2D.
-	"""
+        """
+        Return list of faces on bottom boundary of Grid2D with the
+        y-axis running from bottom to top.
+        """
 	nx=self.nx
 	start = len(self.interiorFaces)
 	return self.faces[start:start + nx]

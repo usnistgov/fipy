@@ -6,7 +6,7 @@
  # 
  #  FILE: "mesh20x20.py"
  #                                    created: 4/6/06 {10:50:18 AM}
- #                                last update: 7/5/07 {8:21:45 PM} 
+ #                                last update: 5/25/08 {9:29:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -41,8 +41,9 @@
  ##
 
 r"""
-This example again solves a 1D diffusion problem as in
-``examples/diffusion/mesh1D.py``, but now on a two-dimensional mesh:
+
+This example solves a diffusion problem and demonstrates the use of
+applying boundary condition patches.
 
 .. raw:: latex
 
@@ -56,6 +57,7 @@ This example again solves a 1D diffusion problem as in
     >>> ny = nx
     >>> dx = 1.
     >>> dy = dx
+    >>> L = dx * nx
     >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 We create a `CellVariable` and initialize it to zero:
@@ -85,11 +87,11 @@ iterative conjugate gradient solver.
 
 We apply Dirichlet boundary conditions
 
-    >>> valueLeft = 1
-    >>> valueRight = 0
+    >>> valueTopLeft = 0
+    >>> valueBottomRight = 1
 
-to the left and right.  Neumann boundary conditions are
-automatically applied to the top and bottom.
+to the top-left and bottom-right corners.  Neumann boundary conditions
+are automatically applied to the top-right and bottom-left corners.
 
 .. raw:: latex
 
@@ -97,10 +99,14 @@ automatically applied to the top and bottom.
 
 ..
 
-    >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), 
-    ...                   value=valueLeft),
-    ...        FixedValue(faces=mesh.getFacesRight(), 
-    ...                   value=valueRight))
+    >>> x, y = mesh.getFaceCenters()
+    >>> facesTopLeft = ((mesh.getFacesLeft() & (y > L / 2))
+    ...                 | (mesh.getFacesTop() & (x < L / 2)))
+    >>> facesBottomRight = ((mesh.getFacesRight() & (y < L / 2))
+    ...                     | (mesh.getFacesBottom() & (x > L / 2)))
+
+    >>> BCs = (FixedValue(faces=facesTopLeft, value=valueTopLeft),
+    ...        FixedValue(faces=facesBottomRight, value=valueBottomRight))
     
 We create a viewer to see the results
 
@@ -130,29 +136,11 @@ and solve the equation by repeatedly looping in time:
    :scale: 50
    :align: center
 
-We can again test against the analytical solution 
-
-.. raw:: latex
-
-   $\phi = 1 - \erf(x/2\sqrt{D t})$.
-   \IndexSoftware{SciPy}
-   \IndexFunction{sqrt}
-
 ..
 
-    >>> x = mesh.getCellCenters()[0]
-    >>> t = timeStepDuration * steps
-    >>> phiAnalytical = CellVariable(name="analytical value",
-    ...                              mesh=mesh)
+We can test the value of the bottom-right corner cell.
 
-    >>> try:
-    ...     from scipy.special import erf
-    ...     phiAnalytical.setValue(1 - erf(x / (2 * sqrt(D * t))))
-    ... except ImportError:
-    ...     print "The SciPy library is not available to test the solution to \
-    ... the transient diffusion equation"
-
-    >>> print phi.allclose(phiAnalytical, atol = 4e-2)
+    >>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
     1
 
     >>> if __name__ == '__main__':
@@ -171,12 +159,9 @@ We can also solve the steady-state problem directly
    :scale: 50
    :align: center
 
-and test the result against the expected linear composition profile:
+and test the value of the bottom-right corner cell.
 
-    >>> L = nx * dx
-    >>> x = mesh.getCellCenters()[0]
-    >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / L
-    >>> print phi.allclose(analyticalArray, rtol = 2e-10, atol = 2e-10)
+    >>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
     1
     
     >>> if __name__ == '__main__':

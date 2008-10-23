@@ -466,7 +466,7 @@ is calculated with the CFL number and the maximum extension velocity.
     $\nabla\phi\cdot\nabla v_\text{ext} = 0$.
 
 ..
-
+   
    >>> for step in range(numberOfSteps):
    ...
    ...     for viewer in viewers:
@@ -483,12 +483,12 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
-   ...     advectionEquation.solve(distanceVar, dt=dt)
+   ...     advectionEquation.solve(distanceVar, dt=dt, solver=LinearCGSSolver())
    ...     surfactantEquation.solve(catalystVar, dt=dt)
    ...     metalEquation.solve(var=metalVar, dt=dt,
-   ...                         boundaryConditions=metalEquationBCs)
+   ...                         boundaryConditions=metalEquationBCs, solver=LinearCGSSolver())
    ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
-   ...                                   boundaryConditions=catalystBCs)
+   ...                                   boundaryConditions=catalystBCs, solver=LinearCGSSolver())
 
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
@@ -496,14 +496,14 @@ to tell if something has changed or been broken.
 
 .. raw:: latex
 
-   \IndexModule{dump}
+   \IndexFunction{loadtxt}
    
 ..
  
    >>> import os
    >>> filepath = os.path.join(os.path.split(__file__)[0], 
    ...                         "simpleTrenchSystem.gz")
-   >>> print catalystVar.allclose(dump.read(filepath), rtol=1e-4)
+   >>> print catalystVar.allclose(loadtxt(filepath), rtol=1e-4)
    1
 
    >>> if __name__ == '__main__':

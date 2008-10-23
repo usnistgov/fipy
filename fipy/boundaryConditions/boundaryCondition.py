@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 1/3/07 {3:01:47 PM} 
+ #                                last update: 6/2/08 {10:41:16 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,30 +68,22 @@ class BoundaryCondition:
 
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 2)
-            >>> bc = BoundaryCondition(mesh.getFaces(), 0)
+            >>> bc = BoundaryCondition(mesh.getInteriorFaces(), 0)
             Traceback (most recent call last):
                 ...
             IndexError: Face list has interior faces
-            >>> bc = BoundaryCondition(mesh.getFaces()[0] + mesh.getFaces()[0], 0)
-            Traceback (most recent call last):
-                ...
-            IndexError: Face list has repeated entries
 
         """
         self.faces = faces
         self.value = PhysicalField(value)
         
-        import sets
-        if len(sets.Set(self.faces)) < len(self.faces):
-            raise IndexError, 'Face list has repeated entries'
-        
-        if not (sets.Set(self.faces).issubset(sets.Set(self.faces.getMesh().getExteriorFaces()))):
+        if not (self.faces | self.faces.getMesh().getExteriorFaces() 
+                == self.faces.getMesh().getExteriorFaces()).getValue().all():
             raise IndexError, 'Face list has interior faces'
-
-##      self.adjacentCellIDs = numerix.array([face.getCellID() for face in self.faces])
-##      self.adjacentCellIDs = numerix.take(self.faces.getMesh()._getAdjacentCellIDs()[0], self.faces)
-        self.adjacentCellIDs = self.faces._getAdjacentCellIDs()
-
+        
+        self.adjacentCellIDs = self.faces.getMesh()._getAdjacentCellIDs()[0][self.faces.getValue()]
+        self.boundaryConditionApplied = False
+        
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Return the effect of this boundary condition on the equation
         solution matrices.
@@ -118,9 +110,11 @@ class BoundaryCondition:
         else:
             return None
 
-
     def __repr__(self):
         return "%s(faces = %s, value = %s)" % (self.__class__.__name__, `self.faces`, `self.value`)
+
+    def _resetBoundaryConditionApplied(self):
+        self.boundaryConditionApplied = False
 
 def _test(): 
     import doctest

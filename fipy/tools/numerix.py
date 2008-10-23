@@ -6,7 +6,7 @@
  # 
  #  FILE: "numerix.py"
  #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 10/19/07 {9:37:05 PM} 
+ #                                last update: 9/29/08 {9:52:36 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -71,17 +71,17 @@ __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
 from numpy.core import umath
-from numpy.core import ma as MA
 from numpy import newaxis as NewAxis
 from numpy import *
 from numpy import oldnumeric
+try:
+    from numpy.core import ma as MA
+    numpy_version = 'old'
+except ImportError:
+    # masked arrays have been moved in numpy 1.1
+    from numpy import ma as MA
+    numpy_version = 'new'
 
-def nonzero(a):
-    nz = NUMERIX.nonzero(a)
-    if len(nz) == 1:
-        return nz[0]
-    else:
-        return nz
 def zeros(a, t='l'):
     return NUMERIX.zeros(a, t)
 def ones(a, t='l'):
@@ -135,7 +135,11 @@ def put(arr, ids, values):
         arr.put(ids, values)
     elif MA.isMaskedArray(arr):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
-            MA.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+            if numpy_version == 'old':
+                pvalues = MA.array(values, mask=MA.getmaskarray(ids))
+            else:
+                pvalues = MA.array(values.filled(), mask=MA.getmaskarray(ids))
+            MA.put(arr, ids.compressed(), pvalues.compressed())
         else:
             MA.put(arr, ids, values)
     elif MA.isMaskedArray(ids):
@@ -566,8 +570,8 @@ def cos(arr):
        
     ..
 
-        >>> print tostring(cos(2*pi/6), precision=3)
-        0.5
+        >>> print allclose(cos(2*pi/6), 0.5)
+        True
         >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision=3, suppress_small=1)
         [ 1.   0.5  0. ]
         >>> from fipy.variables.variable import Variable
@@ -829,6 +833,15 @@ def ceil(arr):
     else:
         return umath.ceil(arr)
 
+
+def sign(arr):
+    if _isPhysical(arr):
+        return arr.sign()
+    elif type(arr) is type(array((0))):
+        return NUMERIX.sign(arr)
+    else:
+        return umath.sign(arr)
+
 def exp(arr):
     r"""
     Natural exponent of
@@ -885,8 +898,8 @@ def conjugate(arr):
        
     ..
 
-        >>> print conjugate(3 + 4j)
-        (3-4j)
+        >>> print conjugate(3 + 4j) == 3 - 4j
+        True
         >>> print allclose(conjugate(array((3 + 4j, -2j, 10))), (3 - 4j, 2j, 10))
         1
         >>> from fipy.variables.variable import Variable
@@ -911,24 +924,6 @@ def conjugate(arr):
 #   Vector operations   #
 #                       #
 #########################
-
-def crossProd(v1,v2):
-    r"""
-    Vector cross-product of
-    
-    .. raw:: latex
-    
-       $\vec{v}_1$ and $\vec{v}_2$, $\vec{v}_1 \times \vec{v}_2$
-       
-    ..
-
-    """
-    v1n = array(v1)
-    v2n = array(v2)
-
-    return array((v1n[1] * v2n[2] - v1n[2] * v2n[1],
-                  v1n[2] * v2n[0] - v1n[0] * v2n[2],
-                  v1n[0] * v2n[1] - v1n[1] * v2n[0]))
 
 def dot(a1, a2, axis=0):
     """
@@ -1078,6 +1073,17 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     else:
         return MA.allclose(first, second, atol=atol, rtol=rtol)
 
+def isclose(first, second, rtol=1.e-5, atol=1.e-8):
+    r"""
+    Returns which elements of `first` and `second` are equal, subect to the given
+    relative and absolute tolerances, such that::
+        
+        | first - second | < atol + rtol * | second |
+        
+    This means essentially that both elements are small compared to `atol` or
+    their difference divided by `second`'s value is small compared to `rtol`.
+    """
+    return abs(first - second) < atol + rtol * abs(second)
 
 def take(a, indices, axis=0, fill_value=None):
     """
@@ -1104,7 +1110,8 @@ def take(a, indices, axis=0, fill_value=None):
         if mask is not MA.nomask:
             taken = MA.array(data=taken, mask=mask)
         else:
-            if MA.getmask(taken) is MA.nomask:
+            if MA.getmask(taken) is MA.nomask and numpy_version == 'old':
+                # numpy 1.1 returns normal array when masked array is filled
                 taken = taken.filled()
 
     elif type(a) in (type(array((0))), type(()), type([])):
@@ -1269,6 +1276,178 @@ while (return_val.refcount() > 1) {
 #define MAX_DIMS 30
                      """,
                      extra_compile_args =['-O3'])
+
+if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
+    # if one is present, but not the other, something is wrong and
+    # we shouldn't try to patch.
+    
+    # The following routines were introduced in NumPy 1.0.3
+    # c.f. http://projects.scipy.org/scipy/numpy/changeset/3722
+    
+    # Adapted from matplotlib 
+    
+    def _getconv(dtype): 
+        typ = dtype.type 
+        if issubclass(typ, bool_): 
+            return lambda x: bool(int(x)) 
+        if issubclass(typ, integer): 
+            return int 
+        elif issubclass(typ, floating): 
+            return float 
+        elif issubclass(typ, complex): 
+            return complex 
+        else: 
+            return str 
+     
+     
+    def _string_like(obj): 
+        try: obj + '' 
+        except (TypeError, ValueError): return 0 
+        return 1 
+     
+    def loadtxt(fname, dtype=float, comments='#', delimiter=None, converters=None, 
+                skiprows=0, usecols=None, unpack=False): 
+        """ 
+        Load ASCII data from fname into an array and return the array. 
+     
+        The data must be regular, same number of values in every row 
+     
+        fname can be a filename or a file handle.  Support for gzipped files is 
+        automatic, if the filename ends in .gz 
+     
+        See scipy.loadmat to read and write matfiles. 
+     
+        Example usage: 
+     
+          X = loadtxt('test.dat')  # data in two columns 
+          t = X[:,0] 
+          y = X[:,1] 
+     
+        Alternatively, you can do the same with "unpack"; see below 
+     
+          X = loadtxt('test.dat')    # a matrix of data 
+          x = loadtxt('test.dat')    # a single column of data 
+     
+     
+        dtype - the data-type of the resulting array.  If this is a 
+        record data-type, the the resulting array will be 1-d and each row will 
+        be interpreted as an element of the array. The number of columns 
+        used must match the number of fields in the data-type in this case.  
+         
+        comments - the character used to indicate the start of a comment 
+        in the file 
+     
+        delimiter is a string-like character used to seperate values in the 
+        file. If delimiter is unspecified or none, any whitespace string is 
+        a separator. 
+     
+        converters, if not None, is a dictionary mapping column number to 
+        a function that will convert that column to a float.  Eg, if 
+        column 0 is a date string: converters={0:datestr2num} 
+     
+        skiprows is the number of rows from the top to skip 
+     
+        usecols, if not None, is a sequence of integer column indexes to 
+        extract where 0 is the first column, eg usecols=(1,4,5) to extract 
+        just the 2nd, 5th and 6th columns 
+     
+        unpack, if True, will transpose the matrix allowing you to unpack 
+        into named arguments on the left hand side 
+     
+            t,y = load('test.dat', unpack=True) # for  two column data 
+            x,y,z = load('somefile.dat', usecols=(3,5,7), unpack=True) 
+     
+        """ 
+     
+        if _string_like(fname): 
+            if fname.endswith('.gz'): 
+                import gzip 
+                fh = gzip.open(fname) 
+            else: 
+                fh = file(fname) 
+        elif hasattr(fname, 'seek'): 
+            fh = fname 
+        else: 
+            raise ValueError('fname must be a string or file handle') 
+        X = [] 
+
+        dtype = NUMERIX.dtype(dtype) 
+        defconv = _getconv(dtype) 
+        converterseq = None     
+        if converters is None: 
+            converters = {} 
+            if dtype.names is not None: 
+                converterseq = [_getconv(dtype.fields[name][0]) \
+                                for name in dtype.names] 
+                 
+        for i,line in enumerate(fh): 
+            if i<skiprows: continue 
+            line = line[:line.find(comments)].strip() 
+            if not len(line): continue 
+            vals = line.split(delimiter) 
+            if converterseq is None: 
+               converterseq = [converters.get(j,defconv) \
+                               for j in xrange(len(vals))] 
+            if usecols is not None: 
+                row = [converterseq[j](vals[j]) for j in usecols] 
+            else: 
+                row = [converterseq[j](val) for j,val in enumerate(vals)] 
+            if dtype.names is not None: 
+                row = tuple(row) 
+            X.append(row) 
+     
+        X = array(X, dtype) 
+        r,c = X.shape 
+        if r==1 or c==1: 
+            X.shape = max([r,c]), 
+        if unpack: return X.T 
+        else:  return X 
+     
+     
+    # adjust so that fmt can change across columns if desired.  
+     
+    def savetxt(fname, X, fmt='%.18e',delimiter=' '): 
+        """ 
+        Save the data in X to file fname using fmt string to convert the 
+        data to strings 
+     
+        fname can be a filename or a file handle.  If the filename ends in .gz, 
+        the file is automatically saved in compressed gzip format.  The load() 
+        command understands gzipped files transparently. 
+     
+        Example usage: 
+     
+        save('test.out', X)         # X is an array 
+        save('test1.out', (x,y,z))  # x,y,z equal sized 1D arrays 
+        save('test2.out', x)        # x is 1D 
+        save('test3.out', x, fmt='%1.4e')  # use exponential notation 
+     
+        delimiter is used to separate the fields, eg delimiter ',' for 
+        comma-separated values 
+        """ 
+     
+        if _string_like(fname): 
+            if fname.endswith('.gz'): 
+                import gzip 
+                fh = gzip.open(fname,'wb') 
+            else: 
+                fh = file(fname,'w') 
+        elif hasattr(fname, 'seek'): 
+            fh = fname 
+        else: 
+            raise ValueError('fname must be a string or file handle') 
+     
+     
+        X = asarray(X) 
+        origShape = None 
+        if len(X.shape)==1: 
+            origShape = X.shape 
+            X.shape = len(X), 1 
+        for row in X: 
+            fh.write(delimiter.join([fmt%val for val in row]) + '\n') 
+     
+        if origShape is not None: 
+            X.shape = origShape 
 
     
 def L1norm(arr):

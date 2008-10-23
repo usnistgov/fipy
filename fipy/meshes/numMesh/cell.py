@@ -68,7 +68,9 @@ class Cell:
         adjCellID = self._getCellToCellIDs()[...,index]
         vec = self.getCenter() - self.mesh.getCellCenters()[...,adjCellID]
         return vec / dis
-    
+
+    def __repr__(self):
+        return "%s(mesh=%s, id=%s)" % (self.__class__.__name__,`self.getMesh()`, `self.getID()`)
 
                 
                 

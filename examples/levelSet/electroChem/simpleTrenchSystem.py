@@ -337,18 +337,18 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         distanceVar.extendVariable(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
-        advectionEquation.solve(distanceVar, dt = dt) 
+        advectionEquation.solve(distanceVar, dt = dt, solver=LinearCGSSolver()) 
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt, 
-                            boundaryConditions = metalEquationBCs)
+                            boundaryConditions = metalEquationBCs, solver=LinearCGSSolver())
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                                   boundaryConditions = catalystBCs)
+                                   boundaryConditions = catalystBCs, solver=LinearCGSSolver())
 
     try:
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
         
-        print catalystVar.allclose(dump.read(filepath), rtol = 1e-4)
+        print catalystVar.allclose(loadtxt(filepath), rtol = 1e-4)
     except:
         return 0
 

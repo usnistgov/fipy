@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "matplotlib2DViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/6/07 {7:58:36 PM} { 2:45:36 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,30 +53,13 @@ class Matplotlib2DViewer(MatplotlibViewer):
     The `Matplotlib2DViewer` plots a 2D `CellVariable` using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
-
-
-    """
-
+    """ 
+    
+    __doc__ += MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
     def __init__(self, vars, limits = None, title = None):
-        """
-        Creates a `Matplotlib2DViewer`.
+        """Creates a `Matplotlib2DViewer`.
         
-        >>> from fipy import *
-        >>> from fipy.tools.numerix import *
-        >>> ## mesh = Grid2D(nx=25, ny=10, dx=0.1, dy=0.1) + (Tri2D(nx=25, ny=5, dx=0.1, dy=0.1) + ((25*0.1,), (2*0.1,)))
-        >>> mesh = Grid2D(nx=5, ny=10, dx=0.1, dy=0.1) + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) + ((5*0.1,), (2*0.1,)))
-        >>> x, y = mesh.getCellCenters()
-        >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-        >>> k = Variable(name="k")
-        >>> viewer = Matplotlib2DViewer(vars=sin(k * xyVar), 
-        ...                             limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-        ...                             title="Matplotlib2DViewer test")
-        >>> for kval in range(10):
-        ...     k.setValue(kval)
-        ...     viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
 
         :Parameters:
           - `vars`: A `CellVariable` object.
@@ -127,25 +109,29 @@ class Matplotlib2DViewer(MatplotlibViewer):
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
         self.collection.set_linewidth(0)
-        ax.add_patch(self.collection)
+        try:
+            ax.add_patch(self.collection)
+        except:
+            # PolyCollection not child of PatchCollection in matplotlib 0.98
+            ax.add_collection(self.collection)
 
         if self._getLimit('xmin') is None:
-            xmin = min(numerix.array(self.collection._verts)[:,:,0].flat)
+            xmin = xCoords.min()
         else:
             xmin = self._getLimit('xmin')
 
         if self._getLimit('xmax') is None:
-            xmax = max(numerix.array(self.collection._verts)[:,:,0].flat)
+            xmax = xCoords.max()
         else:
             xmax = self._getLimit('xmax')
 
         if self._getLimit('ymin') is None:
-            ymin = min(numerix.array(self.collection._verts)[:,:,1].flat)
+            ymin = yCoords.min()
         else:
             ymin = self._getLimit('ymin')
 
         if self._getLimit('ymax') is None:
-            ymax = max(numerix.array(self.collection._verts)[:,:,1].flat)
+            ymax = yCoords.max()
         else:
             ymax = self._getLimit('ymax')
 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 10/17/07 {12:58:43 PM}
+ #                                last update: 6/7/08 {11:00:32 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -318,7 +318,7 @@ class DistanceVariable(CellVariable):
         ext = numerix.zeros(self.mesh.getNumberOfCells(), 'd')
 
         positiveInterfaceFlag = numerix.where(self.value > 0, interfaceFlag, 0)
-        negativeInterfaceIDs = numerix.nonzero(numerix.where(self.value < 0, interfaceFlag, 0))
+        negativeInterfaceIDs = numerix.nonzero(numerix.where(self.value < 0, interfaceFlag, 0))[0]
 
         for id in negativeInterfaceIDs:
             tmp, extensionVariable[...,id] = self._calcTrialValue(id, positiveInterfaceFlag, extensionVariable)
@@ -332,7 +332,7 @@ class DistanceVariable(CellVariable):
 
         trialFlag = numerix.logical_and(numerix.logical_not(interfaceFlag), hasAdjInterface).astype('l')
 
-        trialIDs = list(numerix.nonzero(trialFlag))
+        trialIDs = list(numerix.nonzero(trialFlag)[0])
         evaluatedFlag = interfaceFlag
 
 
@@ -364,7 +364,11 @@ class DistanceVariable(CellVariable):
         adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs)
         adjValues = numerix.take(self.value, adjIDs)
         adjValues = numerix.where(adjEvaluatedFlag, adjValues, 1e+10)
-        indices = numerix.argsort(abs(adjValues))
+        try:
+            indices = numerix.argsort(abs(adjValues))
+        except TypeError:
+            # numpy 1.1 raises a TypeError when using argsort function
+            indices = abs(adjValues).argsort()
         sign = (self.value[id] > 0) * 2 - 1
         d0 = self.cellToCellDistances[indices[0], id]
         v0 = self.value[..., adjIDs[indices[0]]]
@@ -624,7 +628,7 @@ class DistanceVariable(CellVariable):
         faceGrad = numerix.array(faceGrad)
 
         ## set faceGrad zero on exteriorFaces
-        faceGrad[:,self.exteriorFaces.getIDs()] = 0.
+        faceGrad[..., self.exteriorFaces.getValue()] = 0.
         
         return faceGrad / faceGradMag 
 

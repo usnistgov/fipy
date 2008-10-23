@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 2/8/08 {1:51:23 PM} 
+ #                                last update: 6/13/08 {6:31:33 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,7 +44,6 @@ from fipy.tools.numerix import MA
 
 from fipy.meshes.common.mesh import Mesh as _CommonMesh
 
-from fipy.meshes.meshIterator import FaceIterator
 from fipy.meshes.numMesh.cell import Cell
 
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -111,7 +110,7 @@ class Mesh(_CommonMesh):
             [2 3 4 5]
             [6 7 9 10]]
             
-           >>> mesh._connectFaces(mesh.getFacesLeft(), mesh.getFacesRight())
+           >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
            >>> print mesh._getCellFaceIDs()
            [[0 1 2 3]
@@ -124,8 +123,11 @@ class Mesh(_CommonMesh):
         ## check for errors
 
         ## check that faces are members of exterior faces
-        from sets import Set
-        assert Set(faces0).union(Set(faces1)).issubset(Set(self.getExteriorFaces()))
+        from fipy.variables.faceVariable import FaceVariable
+        faces = FaceVariable(mesh=self, value=False)
+        faces[faces0] = True
+        faces[faces1] = True
+        assert (faces | self.getExteriorFaces() == self.getExteriorFaces()).all()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
         assert numerix.alltrue(numerix.take(self.areaProjections, faces0, axis=1) 
@@ -335,27 +337,31 @@ class Mesh(_CommonMesh):
 
 ##         MA.put(firstRow, cellFaceIDsFlat[::-1], array[::-1])
 ##         MA.put(secondRow, cellFaceIDsFlat, array)
-        numerix.put(self.faceCellIDs[0], self.cellFaceIDs[::-1,::-1], array[::-1,::-1])
-        numerix.put(self.faceCellIDs[1], self.cellFaceIDs, array)
-        self.faceCellIDs = MA.sort(MA.array(self.faceCellIDs,
-                                            mask = ((False,) * self.numberOfFaces, 
-                                                    (self.faceCellIDs[0] == self.faceCellIDs[1]))),
+        firstRow = self.faceCellIDs[0]
+        secondRow = self.faceCellIDs[1]
+        numerix.put(firstRow, self.cellFaceIDs[::-1,::-1], array[::-1,::-1])
+        numerix.put(secondRow, self.cellFaceIDs, array)
+        
+        mask = ((False,) * self.numberOfFaces, (firstRow == secondRow))
+        self.faceCellIDs = MA.sort(MA.array(self.faceCellIDs, mask = mask),
                                    axis=0)
 
     def _calcInteriorAndExteriorFaceIDs(self):
-        self.exteriorFaces = FaceIterator(mesh=self, 
-                                          ids=numerix.nonzero(MA.getmask(self.faceCellIDs[1])))
-        self.interiorFaces = FaceIterator(mesh=self, 
-                                          ids=numerix.nonzero(numerix.logical_not(MA.getmask(self.faceCellIDs[1]))))
+        from fipy.variables.faceVariable import FaceVariable
+        mask = MA.getmask(self.faceCellIDs[1])
+        self.exteriorFaces = FaceVariable(mesh=self, 
+                                          value=mask)
+        self.interiorFaces = FaceVariable(mesh=self, 
+                                          value=numerix.logical_not(mask))
 
     def _calcInteriorAndExteriorCellIDs(self):
         try:
             import sets
-            self.exteriorCellIDs = sets.Set(MA.take(self.faceCellIDs[0], self.getExteriorFaces()))
+            self.exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.getExteriorFaces().getValue()])
             self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
             self.exteriorCellIDs = list(self.exteriorCellIDs)
         except:
-            self.exteriorCellIDs = numerix.take(self.faceCellIDs[0], self.getExteriorFaces())
+            self.exteriorCellIDs = self.faceCellIDs[0, self.getExteriorFaces().getValue()]
             tmp = numerix.zeros(self.numberOfCells)
             numerix.put(tmp, self.exteriorCellIDs, numerix.ones(len(self.exteriorCellIDs)))
             self.exteriorCellIDs = numerix.nonzero(tmp)            
@@ -382,8 +388,17 @@ class Mesh(_CommonMesh):
         cell  `d` spacings.
         
         Used by the `Grid` meshes.
+
+        This tests a bug that was occuring with PeriodicGrid1D when
+        using a numpy float as the argument for the grid spacing.
+
+           >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
+           >>> PeriodicGrid1D(nx=2, dx=numerix.float32(1.))
+           PeriodicGrid1D(dx=1.0, nx=2)
+
         """
-        if type(d) in [type(1), type(1.)]:
+
+        if type(d) in [type(1), type(1.)] or not hasattr(d, '__len__'):
             n = int(n or 1)
         else:
             n = int(n or len(d))
@@ -406,26 +421,33 @@ class Mesh(_CommonMesh):
     """get Topology methods"""
 
     def getVertexCoords(self):
-        return self.vertexCoords
+        if hasattr(self, 'vertexCoords'):
+            return self.vertexCoords
+        else:
+            return self._createVertices()
 
     def getExteriorFaces(self):
+        """
+        Return only the faces that have one neighboring cell.
+        """
         return self.exteriorFaces
             
     def getInteriorFaces(self):
+        """
+        Return only the faces that have two neighboring cells.
+        """
         return self.interiorFaces
         
     def getFaceCellIDs(self):
         return self.faceCellIDs
 
     def _getFaces(self):
-        return FaceIterator(mesh=self,
-                            ids=numerix.arange(self.numberOfFaces),
-                            checkIDs=False)
+        return numerix.arange(self.numberOfFaces)
 
     def _getCellsByID(self, ids = None):
         if ids is None:
             ids = range(self.numberOfCells) 
-        return [Cell(self, ID) for ID in ids]
+        return numerix.array([Cell(self, ID) for ID in ids])
     
     def _getMaxFacesPerCell(self):
         return len(self.cellFaceIDs[...,0])
@@ -450,7 +472,7 @@ class Mesh(_CommonMesh):
         faceVertexCoords = faceVertexCoords - faceOrigins
         left = range(faceVertexIDs.shape[0])
         right = left[1:] + [left[0]]
-        cross = numerix.sum(numerix.crossProd(faceVertexCoords, numerix.take(faceVertexCoords, right, 1)), 1)
+        cross = numerix.sum(numerix.cross(faceVertexCoords, numerix.take(faceVertexCoords, right, 1), axis=0), 1)
         self.faceAreas = numerix.sqrtDot(cross, cross) / 2.
 
     def _calcFaceCenters(self):
@@ -476,7 +498,7 @@ class Mesh(_CommonMesh):
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
-        norm = numerix.crossProd(t1, t2)
+        norm = numerix.cross(t1, t2, axis=0)
         ## reordering norm's internal memory for inlining
         norm = norm.copy()
         norm = norm / numerix.sqrtDot(norm, norm)
@@ -514,14 +536,15 @@ class Mesh(_CommonMesh):
         
     def _calcFaceToCellDistances(self):
         tmp = MA.repeat(self.faceCenters[...,numerix.NewAxis,:], 2, 1)
-        tmp -= numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
+        # array -= masked_array screws up masking for on numpy 1.1
+        tmp = tmp - numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,0))
 
     def _calcCellDistances(self):
         tmp = numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         tmp = tmp[...,1,:] - tmp[...,0,:]
-        tmp = MA.filled(MA.where(MA.getmask(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
+        tmp = MA.filled(MA.where(MA.getmaskarray(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
         self.cellDistanceVectors = tmp
         self.cellDistances = MA.filled(MA.sqrt(MA.sum(tmp * tmp, 0)))
 
@@ -543,7 +566,7 @@ class Mesh(_CommonMesh):
                                                      axis=1))
         tmp = self.faceCenters - faceVertexCoord
         self.faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
-        tmp = numerix.crossProd(self.faceTangents1, self.faceNormals)
+        tmp = numerix.cross(self.faceTangents1, self.faceNormals, axis=0)
         self.faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
         
     def _calcCellToCellDistances(self):
@@ -699,11 +722,13 @@ class Mesh(_CommonMesh):
             >>> mesh = Mesh(vertexCoords=vertices, faceVertexIDs=faces, cellFaceIDs=cells)
 
             >>> externalFaces = numerix.array((0, 1, 2, 4, 5, 6, 7, 8, 9))
-            >>> numerix.allequal(externalFaces, mesh.getExteriorFaces())
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.getExteriorFaces()))
             1
 
             >>> internalFaces = numerix.array((3,))
-            >>> numerix.allequal(internalFaces, mesh.getInteriorFaces())
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.getInteriorFaces()))
             1
 
             >>> from fipy.tools.numerix import MA
@@ -783,7 +808,7 @@ class Mesh(_CommonMesh):
             >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tmp = numerix.crossProd(tangents1, faceNormals)
+            >>> tmp = numerix.cross(tangents1, faceNormals, axis=0)
             >>> tangents2 = tmp / numerix.sqrtDot(tmp, tmp)
             >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
             1

@@ -6,7 +6,7 @@
  # 
  #  FILE: "testBase.py"
  #                                    created: 12/5/03 {4:34:49 PM} 
- #                                last update: 7/12/05 {11:35:01 AM} 
+ #                                last update: 5/30/08 {8:52:38 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,20 +55,3 @@ class _TestBase(unittest.TestCase):
     def testResult(self):
         pass
 
-##    def getTestValue(self, cell):
-##	pass
-	
-##    def getTestValues(self):
-##	values = self.var.getNumericValue().copy()
-##	for cell in self.mesh.getCells():
-##	    id = cell.getID()
-##	    values[id] = self.getTestValue(cell)
-##	return values
-	
-##    def testResult(self):
-##	for step in range(self.steps):
-##	    self.it.timestep() #, maxSweeps = 10)
-##	array = self.var.getNumericValue()
-##	values = self.getTestValues()
-##	values = numerix.reshape(values, numerix.shape(array))
-##	self.assertArrayWithinTolerance(array, values, self.tolerance)

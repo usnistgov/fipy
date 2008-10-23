@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/5/07 {5:03:50 PM}
+ #                                last update: 6/7/08 {11:04:24 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -131,25 +131,26 @@ class MayaviSurfactantViewer(Viewer):
         ##maxX = self.distanceVar.getMesh().getFaceCenters()[0].max()
         ##minX = self.distanceVar.getMesh().getFaceCenters()[0].min()
 
-        IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())
-        coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()), IDs)
-        
-        coordinates -= numerix.take(self.distanceVar.getGrad() * self.distanceVar, IDs)
+        IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())[0]
+        coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()).swapaxes(0,1), IDs)
+
+        coordinates -= numerix.take(numerix.array(self.distanceVar.getGrad() * self.distanceVar).swapaxes(0,1), IDs)
+
         coordinates *= self.zoomFactor
 
         shiftedCoords = coordinates.copy()
         shiftedCoords[:,0] = -coordinates[:,0] ##+ (maxX - minX)
         coordinates = numerix.concatenate((coordinates, shiftedCoords))
 
-
         from lines import _getOrderedLines
+
         lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.getMesh()._getCellDistances().min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 
         data = numerix.concatenate((data, data))
 
-        tmpIDs = numerix.nonzero(data > 0.0001)
+        tmpIDs = numerix.nonzero(data > 0.0001)[0]
         if len(tmpIDs) > 0:
             val = numerix.take(data, tmpIDs).min()
         else:
@@ -158,7 +159,6 @@ class MayaviSurfactantViewer(Viewer):
         data = numerix.where(data < 0.0001,
                              val,
                              data)
-
         
         for line in lines:
             if len(line) > 2: 
@@ -254,13 +254,13 @@ class MayaviSurfactantViewer(Viewer):
         xmin = self._getLimit('datamin')
         if xmin is None:
             xmin = self.surfactantVar.min()
-            
+
         slh.range_var.set((xmin, xmax))
         slh.set_range_var()
         
-        slh.v_range_var.set((self.surfactantVar.min(), self.surfactantVar.max()))
+        slh.v_range_var.set((float(self.surfactantVar.min()), float(self.surfactantVar.max())))
         slh.set_v_range_var()
-        
+
         self._viewer.Render()
         
         if filename is not None:

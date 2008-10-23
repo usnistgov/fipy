@@ -6,7 +6,7 @@ from fipy.tools.numerix import *
 #from scipy_base.fastumath import *
 from arrayfns import *
 from gist import *
-from slice3 import *
+from gist.slice3 import *
 
 def _nice_levels (z, n = 8) :
    """_nice_levels(z, n = 8) finds approximately n "nice values"
@@ -33,7 +33,7 @@ def _nice_levels (z, n = 8) :
       cmax = cmax - unit
    n = int ( ( (cmax - cmin) / unit + 0.5) + 1)
    levs = span (cmin, cmax, n)
-   list = nonzero (less (abs (levs), 0.1 * unit))
+   list = nonzero(less (abs (levs), 0.1 * unit))
    if len (list) > 0 :
       array_set (levs, list, 0.0)
    return levs

@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:47:09 PM} 
+ #                                last update: 6/23/08 {11:46:40 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -50,6 +50,7 @@ def _suite():
         'matplotlib1DViewer',
         'matplotlib2DViewer',
         'matplotlib2DGridViewer',
+        'matplotlib2DGridContourViewer',
         'matplotlibVectorViewer',
         ), base = __name__)
     

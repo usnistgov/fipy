@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "matplotlib1DViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/4/07 {8:14:53 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -51,24 +50,11 @@ class Matplotlib1DViewer(MatplotlibViewer):
     Displays a y vs.  x plot of one or more 1D `CellVariable` objects using
     Matplotlib_.
     
-        >>> from fipy import *
-        >>> from fipy.tools.numerix import *
-        >>> mesh = Grid1D(nx=100)
-        >>> x = mesh.getCellCenters()[0]
-        >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
-        >>> k = Variable(name="k")
-        >>> viewer = Matplotlib1DViewer(vars=(sin(k * xVar), cos(k * xVar / pi)), 
-        ...                             limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
-        ...                             title="Matplotlib1DViewer test")
-        >>> for kval in numerix.arange(0,0.3,0.03):
-        ...     k.setValue(kval)
-        ...     viewer.plot()
-        >>> viewer._promptForOpinion()
-
     .. _Matplotlib: http://matplotlib.sourceforge.net/
-
-
     """
+    
+    __doc__ += MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
+    
     def __init__(self, vars, limits = None, title = None, xlog=False, ylog=False):
         MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title)
     

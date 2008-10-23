@@ -6,7 +6,7 @@
  # 
  #  FILE: "leveler.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:19:55 PM} { 1:23:41 PM}
+ #                                last update: 6/7/08 {11:17:02 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -371,12 +371,12 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         mesh.getTopFaces(),
         bulkLevelerConcentration),)
 
-    eqnTuple = ( (advectionEquation, distanceVar, ()),
-                 (levelerSurfactantEquation, levelerVar, ()),
-                 (acceleratorSurfactantEquation, acceleratorVar, ()),
-                 (metalEquation, metalVar,  metalEquationBCs),
-                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs),
-                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs))
+    eqnTuple = ( (advectionEquation, distanceVar, (), None),
+                 (levelerSurfactantEquation, levelerVar, (), None),
+                 (acceleratorSurfactantEquation, acceleratorVar, (), None),
+                 (metalEquation, metalVar,  metalEquationBCs, LinearPCGSolver()),
+                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs, LinearPCGSolver()),
+                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs, LinearPCGSolver()))
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 
@@ -407,17 +407,17 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
         dt = cflNumber * cellSize / extOnInt.max()
 
-        id = nonzero(distanceVar._getInterfaceFlag()).max()
+        id = nonzero(distanceVar._getInterfaceFlag())[0].max()
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
 
         extensionVelocityVariable[mesh.getFineMesh().getNumberOfCells():] = 0.
 
-        for eqn, var, BCs in eqnTuple:
+        for eqn, var, BCs, solver in eqnTuple:
             var.updateOld()
 
-        for eqn, var, BCs in eqnTuple:
-            eqn.solve(var, boundaryConditions = BCs, dt = dt)
-            
+        for eqn, var, BCs, solver in eqnTuple:
+            eqn.solve(var, boundaryConditions = BCs, dt = dt, solver=solver)
+
         totalTime += dt
 
     try:

@@ -245,13 +245,15 @@ The solution will be tested against data that was created with ``steps
 modeling. The following code opens the file `mesh20x20.gz` extracts the
 data and compares it with the `theta` variable.
 
+.. raw:: latex
+
+   \IndexFunction{loadtxt}
+
+..
+
     >>> import os
-    >>> import gzip
-    >>> filestream = gzip.open(os.path.splitext(__file__)[0] + '.gz','r')
-    >>> import cPickle
-    >>> testData = cPickle.load(filestream)
-    >>> filestream.close()
-    
+    >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
+
 .. raw:: latex
 
    \IndexFunction{resize}

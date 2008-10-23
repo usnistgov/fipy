@@ -6,7 +6,7 @@
  # 
  #  FILE: "grid1D.py"
  #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 3/27/07 {2:38:22 PM} 
+ #                                last update: 5/27/08 {3:22:24 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -108,18 +108,6 @@ class Grid1D(Mesh1D):
     def getDim(self):
         return 1
         
-    def getFacesLeft(self):
-        """Return face on left boundary of Grid1D as list.
-        """
-        from fipy.meshes.meshIterator import FaceIterator
-        return FaceIterator(mesh = self, ids = (0,))
-        
-    def getFacesRight(self):
-        """Return face on right boundary of Grid1D as list.
-        """
-        from fipy.meshes.meshIterator import FaceIterator
-        return FaceIterator(mesh = self, ids = (self.numberOfFaces - 1,))
-        
     def getScale(self):
         return self.scale['length']
         
@@ -152,7 +140,8 @@ class Grid1D(Mesh1D):
         everything works as expected. Fixed a bug where the following throws
         an error on solve() when nx is a float.
 
-            >>> from fipy import *
+            >>> # from fipy import *
+            >>> from fipy import CellVariable, DiffusionTerm
             >>> mesh = Grid1D(nx=3., dx=(1., 2., 3.))
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var)

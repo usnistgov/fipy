@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "variable.py"
- #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 7/16/07 {10:03:05 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -176,17 +175,14 @@ class Variable(object):
         Convert a list of 1 element Variables to an array
 
             >>> numerix.array([Variable(0), Variable(0)])
-            [[0,]
-             [0,]]
-            >>> print Variable(0) + Variable(0)
-            0
-            >>> numerix.array([Variable(0) + Variable(0), Variable(0)])
-
-            >>> numerix.array([Variable(0), Variable(0) + Variable(0)])
-            [[0,]
-             [0,]]
+            Traceback (most recent call last):
+               ...
+            ValueError: setting an array element with a sequence.
+            >>> print numerix.array([numerix.array(Variable(0)), numerix.array(Variable(0))])
+            [0 0]
              
         """
+
         return numerix.array(self.getValue(), t)
 
 ##    def _get_array_interface(self):
@@ -1055,8 +1051,8 @@ class Variable(object):
 
             >>> a = Variable(value=(0, 0, 1, 1))
             >>> b = Variable(value=(0, 1, 0, 1))
-            >>> print (a == 0) & (b == 1)
-            [0 1 0 0]
+            >>> numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            1
             >>> print a & b
             [0 0 0 1]
             >>> from fipy.meshes.grid1D import Grid1D
@@ -1064,13 +1060,13 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print (a == 0) & (b == 1)
-            [0 1 0 0]
+            >>> numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            1
             >>> print a & b
             [0 0 0 1]
 
         """
-        return self._BinaryOperatorVariable(lambda a,b: a.astype('h') & b.astype('h'), other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a,b: a & b, other, canInline=False)
 
     def __or__(self, other):
         """
@@ -1078,8 +1074,8 @@ class Variable(object):
 
             >>> a = Variable(value=(0, 0, 1, 1))
             >>> b = Variable(value=(0, 1, 0, 1))
-            >>> print (a == 0) | (b == 1)
-            [1 1 0 1]
+            >>> numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            1
             >>> print a | b
             [0 1 1 1]
             >>> from fipy.meshes.grid1D import Grid1D
@@ -1087,14 +1083,13 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print (a == 0) | (b == 1)
-            [1 1 0 1]
+            >>> numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            1
             >>> print a | b
             [0 1 1 1]
             
         """
-        
-        return self._BinaryOperatorVariable(lambda a,b: a.astype('h') | b.astype('h'), other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a,b: a | b, other, canInline=False)
 
     def __iter__(self):
         return iter(self.getValue())
@@ -1104,6 +1099,35 @@ class Variable(object):
         
     def __float__(self):
         return float(self.getValue())
+        
+    def __nonzero__(self):
+        """
+            >>> print bool(Variable(value=0))
+            0
+            >>> print bool(Variable(value=(0, 0, 1, 1)))
+            Traceback (most recent call last):
+                ...
+            ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+        """
+        return bool(self.getValue())
+    
+    def any(self, axis=None, out=None):
+        """
+            >>> print Variable(value=0).any()
+            0
+            >>> print Variable(value=(0, 0, 1, 1)).any()
+            1
+        """
+        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis, out=out))
+
+    def all(self, axis=None, out=None):
+        """
+            >>> print Variable(value=(0, 0, 1, 1)).all()
+            0
+            >>> print Variable(value=(1, 1, 1, 1)).all()
+            1
+        """
+        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis, out=out))
 
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))
@@ -1169,6 +1193,9 @@ class Variable(object):
 
     def ceil(self):
         return self._UnaryOperatorVariable(lambda a: numerix.ceil(a))
+
+    def sign(self):
+        return self._UnaryOperatorVariable(lambda a: numerix.sign(a), canInline=False)
         
     def conjugate(self):
         return self._UnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline=False)
@@ -1360,7 +1387,6 @@ class Variable(object):
             'unit': self.getUnit(),
             'array': None,
             'name': self.name,
-            'cached': self._cached
         }
         
     def __setstate__(self, dict):

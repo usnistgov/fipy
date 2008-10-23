@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 10/9/08 {9:39:44 AM}
+ #                                last update: 10/22/08 {10:38:35 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,42 +65,6 @@ for gmsh_, see the `gmsh manual`_.
 
 .. _gmsh manual: http://www.geuz.org/gmsh/doc/texinfo/gmsh.html
 
-    >>> lines = [ 'cellSize = ' + str(cellSize) + ';\n',
-    ...           'radius = ' + str(radius) + ';\n',
-    ...           'Point(1) = {0, 0, 0, cellSize};\n',
-    ...           'Point(2) = {-radius, 0, 0, cellSize};\n',
-    ...           'Point(3) = {0, radius, 0, cellSize};\n',
-    ...           'Point(4) = {radius, 0, 0, cellSize};\n',
-    ...           'Point(5) = {0, -radius, 0, cellSize};\n',
-    ...           'Circle(6) = {2, 1, 3};\n',
-    ...           'Circle(7) = {3, 1, 4};\n',
-    ...           'Circle(8) = {4, 1, 5};\n',
-    ...           'Circle(9) = {5, 1, 2};\n',
-    ...           'Line Loop(10) = {6, 7, 8, 9} ;\n',
-    ...           'Plane Surface(11) = {10};\n']
-
-    >>> import tempfile
-    >>> (f, geomName) = tempfile.mkstemp('.geo')
-    >>> file = open(geomName, 'w')
-    >>> file.writelines(lines)
-    >>> file.close()
-    >>> import os
-    >>> os.close(f)
-
-The temporary file created above is used by gmsh_ to mesh the
-geometrically defined region.
-
-    >>> import sys
-    >>> if sys.platform == 'win32':
-    ...     meshName = 'tmp.msh'
-    ... else:
-    ...     (f, meshName) = tempfile.mkstemp('.msh')
-    >>> os.system('gmsh ' + geomName + ' -2 -v 0 -format msh -o ' + meshName)
-    0
-    >>> if sys.platform != 'win32':
-    ...     os.close(f)
-    >>> os.remove(geomName)
-
 The mesh created by gmsh_ is then imported into |FiPy| using the
 `GmshImporter2D` object.
    
@@ -111,8 +75,21 @@ The mesh created by gmsh_ is then imported into |FiPy| using the
 ..
 
     >>> from fipy import *
-    >>> mesh = GmshImporter2D(meshName)
-    >>> os.remove(meshName)
+    >>> mesh = GmshImporter2D('''
+    ...                       cellSize = %(cellSize)g;
+    ...                       radius = %(radius)g;
+    ...                       Point(1) = {0, 0, 0, cellSize};
+    ...                       Point(2) = {-radius, 0, 0, cellSize};
+    ...                       Point(3) = {0, radius, 0, cellSize};
+    ...                       Point(4) = {radius, 0, 0, cellSize};
+    ...                       Point(5) = {0, -radius, 0, cellSize};
+    ...                       Circle(6) = {2, 1, 3};
+    ...                       Circle(7) = {3, 1, 4};
+    ...                       Circle(8) = {4, 1, 5};
+    ...                       Circle(9) = {5, 1, 2};
+    ...                       Line Loop(10) = {6, 7, 8, 9};
+    ...                       Plane Surface(11) = {10};
+    ...                       ''' % locals())
     
 Using this mesh, we can construct a solution variable
 
@@ -126,14 +103,10 @@ Using this mesh, we can construct a solution variable
     ...                    mesh = mesh,
     ...                    value = 0.)
 
-We can now create a viewer to see the mesh (only the `Gist2DViewer` is
-capable of displaying variables on this sort of irregular mesh)
+We can now create a viewer to see the mesh
 
 .. raw:: latex
 
-   \IndexSoftware{Pygist}
-   \IndexSoftware{gist}
-   \IndexClass{Gist2DViewer}
    \IndexModule{viewers}
 
 ..
@@ -173,8 +146,7 @@ faces. These are used as the boundary condition fixed values.
 
 ..
 
-    >>> exteriorXcoords = take(mesh.getFaceCenters()[0],
-    ...                        mesh.getExteriorFaces())
+    >>> X, Y = mesh.getFaceCenters()
 
 .. raw:: latex
 
@@ -182,7 +154,7 @@ faces. These are used as the boundary condition fixed values.
 
 ..
     
-    >>> BCs = (FixedValue(faces=mesh.getExteriorFaces(), value=exteriorXcoords),)
+    >>> BCs = (FixedValue(faces=mesh.getExteriorFaces(), value=X),)
 
 We first step through the transient problem
 

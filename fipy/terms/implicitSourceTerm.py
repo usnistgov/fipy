@@ -57,6 +57,24 @@ class ImplicitSourceTerm(SourceTerm):
     `coeff` value.       
     """
     def _calcCoeffVectors(self, var, equation=None):
+        """
+        Test for a bug due to the sign operator not being updating
+        correctly.
+
+            >>> from fipy import *
+            >>> m = Grid1D(nx=1)
+            >>> v = CellVariable(mesh=m, value=1.)
+            >>> eq = TransientTerm() == ImplicitSourceTerm(v)
+            >>> eq.solve(v)
+            >>> print v
+            [ 2.]
+            >>> v.setValue(-1.)
+            >>> eq.solve(v)
+            >>> print v
+            [-0.5]
+            
+        """
+
         coeff = self._getGeomCoeff(var.getMesh())
         from fipy.tools.numerix import sign
         combinedSign = self._diagonalSign * sign(coeff)
@@ -66,3 +84,10 @@ class ImplicitSourceTerm(SourceTerm):
             'b vector': -coeff * var * (combinedSign < 0),
             'new value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd')
         }
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

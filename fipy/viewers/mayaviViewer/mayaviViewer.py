@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mayaviViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/5/07 {9:33:50 AM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -48,44 +47,17 @@ __docformat__ = 'restructuredtext'
 from fipy.viewers.viewer import Viewer
 
 class MayaviViewer(Viewer):
-    """
-    The `MayaviViewer` creates viewers with the Mayavi_ python
-    plotting package.
-
-        >>> from fipy import *
-        >>> mesh = Grid1D(nx=100)
-        >>> x = mesh.getCellCenters()[0]
-        >>> var1 = CellVariable(mesh=mesh, name=r"$sin(x)$", value=numerix.sin(x))
-        >>> var2 = CellVariable(mesh=mesh, name=r"$cos(x/\pi)$", value=numerix.cos(x / numerix.pi))
-        >>> viewer = MayaviViewer(vars=(var1, var2), 
-        ...                       limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
-        ...                       title="MayaviViewer test")
-        >>> viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
-        
-        >>> mesh = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-        >>> x, y = mesh.getCellCenters()
-        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y)$", value=numerix.sin(x * y))
-        >>> viewer = MayaviViewer(vars=var, 
-        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-        ...                       title="MayaviViewer test")
-        >>> viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
-
-        >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
-        >>> x, y, z = mesh.getCellCenters()
-        >>> var = CellVariable(mesh=mesh, name=r"$sin(x y z)$", value=numerix.sin(x * y * z))
-        >>> viewer = MayaviViewer(vars=var, 
-        ...                       limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
-        ...                       title="MayaviViewer test")
-        >>> viewer.plot()
-        >>> viewer._promptForOpinion()
-        >>> del viewer
+    """The `MayaviViewer` creates viewers with the Mayavi_ python plotting package.
 
     .. _Mayavi: http://mayavi.sourceforge.net/
-
+    """
+    
+    __doc__ += Viewer._test1D(viewer="MayaviViewer")
+    __doc__ += Viewer._test2D(viewer="MayaviViewer")
+    __doc__ += Viewer._test2Dirregular(viewer="MayaviViewer")
+    __doc__ += Viewer._test3D(viewer="MayaviViewer")
+    
+    __doc__ += """
     Issues with the `MayaviViewer` are
 
       - `_getOrderedCellVertexIDs()` doesn't return the correct ordering
@@ -105,8 +77,7 @@ class MayaviViewer(Viewer):
     """
         
     def __init__(self, vars, limits = None, title = None):
-        """
-        Create a `MayaviViewer`.
+        """Create a `MayaviViewer`.
         
         :Parameters:
 
@@ -130,7 +101,10 @@ class MayaviViewer(Viewer):
         self.structures = []
             
         for var in self.vars:
+            if var.getRank() > 0:
+                raise IndexError, "Mayavi can only plot scalar values"
             self.structures.append(self._getStructure(var.getMesh()))
+
                                        
     def _getStructure(self, mesh):
 
@@ -224,12 +198,12 @@ class MayaviViewer(Viewer):
             
             xmax = self._getLimit('datamax')
             if xmax is None:
-                xmax = var.max()
+                xmax = float(var.max())
 
             xmin = self._getLimit('datamin')
             if xmin is None:
-                xmin = var.min()
-            
+                xmin = float(var.min())
+
             slh.range_var.set((xmin, xmax))
             slh.set_range_var()
 

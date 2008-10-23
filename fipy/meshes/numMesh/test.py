@@ -60,6 +60,10 @@ def _suite():
             'fipy.meshes.numMesh.uniformGrid1D',
             'fipy.meshes.numMesh.uniformGrid2D',
             'fipy.meshes.numMesh.uniformGrid3D',
+            'fipy.meshes.numMesh.cylindricalUniformGrid1D',
+            'fipy.meshes.numMesh.cylindricalUniformGrid2D',
+            'fipy.meshes.numMesh.cylindricalGrid1D',
+            'fipy.meshes.numMesh.cylindricalGrid2D',
         ))
     
 if __name__ == '__main__':
