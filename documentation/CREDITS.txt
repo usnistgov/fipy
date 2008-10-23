@@ -26,7 +26,13 @@ Katie Travis
     is a student at `Smith College`_. Katie developed the automated 
     ``--inline`` optimization code for ``Variable`` objects. 
   
+Olivia Buzek
+    worked on adding Trilinos_ parallel computations while she was a SURF_ student
+    from the `University of Maryland`_
 
+Daniel Stiles
+    worked on adding Trilinos_ parallel computations while he was
+    a student at `Montgomery Blair High School`_.
 
 .. include:: ../utils/include.txt
 
@@ -42,8 +48,8 @@ Katie Travis
 .. _National Institute of Standards and Technology:                http://www.nist.gov/
 
 .. _Montgomery Blair High School:                                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.mbhs.edu/
-
 .. _Smith College:                                                 http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.smith.edu/
+.. _University of Maryland:                                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.maryland.edu/
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler
