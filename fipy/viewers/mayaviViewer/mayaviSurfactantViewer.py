@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mayaviSurfactantViewer.py"
- #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 6/7/08 {11:04:24 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 

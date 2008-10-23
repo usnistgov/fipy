@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "linearLUSolver.py"
- #                                    created: 06/07/07 
- #                                last update: 06/11/07 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2007-06-12 MLG 1.0 original
  # ###################################################################
  ##
 

@@ -5,10 +5,8 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "lateImportTest.py"
- #                                    created: 12/9/04 {8:26:13 PM} 
- #                                last update: 4/1/05 {2:48:40 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -30,13 +28,6 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-12-09 JEG 1.0 original
  # ###################################################################
  ##
 

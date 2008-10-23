@@ -5,12 +5,9 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "superfill.py"
- #                                     created: 1/19/06 {4:09:41 PM}
- #                                 last update: 7/5/07 {8:09:40 PM}
- # Author: Jonathan Guyer
- # E-mail: <guyer@nist.gov>
- # Author: Daniel Wheeler
- # E-mail: daniel.wheeler@nist.gov
+ #
+ # Author: Jonathan Guyer <guyer@nist.gov>
+ # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
  #  
@@ -30,12 +27,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
- # History
- # 
- # modified   by  rev reason
- # ---------- --- --- -----------
- # 1940-01-18 JEG 1.0 original
  # 
  # ########################################################################
  ##

@@ -5,13 +5,10 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "stokesCavity.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 6/2/08 {8:58:07 AM}
+ #
  # Stolen from:
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 

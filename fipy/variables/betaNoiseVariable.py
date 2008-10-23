@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "betaNoiseVariable.py"
- #                                    created: 8/26/05 {11:37:57 PM} 
- #                                last update: 12/22/05 {11:57:09 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

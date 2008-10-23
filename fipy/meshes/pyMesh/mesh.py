@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh.py"
- #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 7/12/05 {11:32:40 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "arithmeticCellToFaceVariable.py"
- #                                    created: 2/20/04 {11:14:05 AM} 
- #                                last update: 1/3/07 {3:25:20 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

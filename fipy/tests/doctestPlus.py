@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "doctestPlus.py"
- #                                    created: 10/27/04 {9:14:53 AM} 
- #                                last update: 3/29/05 {3:53:26 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-10-27 JEG 1.0 original
  # ###################################################################
  ##
 

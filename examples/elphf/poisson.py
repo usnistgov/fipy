@@ -5,8 +5,7 @@
  #  FiPy - Python-based phase field solver
  # 
  #  FILE: "input1DpoissonRightCharge.py"
- #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 7/5/07 {9:11:07 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-01-15 JEG 1.0 original
  # ###################################################################
  ##
 

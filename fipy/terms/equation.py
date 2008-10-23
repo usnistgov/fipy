@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "equation.py"
- #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 10/23/08 {4:10:02 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-11-09 JEG 1.0 original
  # ###################################################################
  ##
 

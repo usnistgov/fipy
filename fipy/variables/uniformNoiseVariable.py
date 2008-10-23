@@ -3,8 +3,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "uniformNoiseVariable.py"
- #                                    created: 8/26/05 {3:08:48 PM} 
- #                                last update: 3/7/06 {11:55:44 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

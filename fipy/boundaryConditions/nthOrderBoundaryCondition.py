@@ -5,10 +5,8 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "nthOrderBoundaryCondition.py"
- #                                    created: 6/9/04 {4:09:25 PM} 
- #                                last update: 1/3/07 {3:03:59 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -31,13 +29,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-06-09 JEG 1.0 original
  # ###################################################################
  ##
 

@@ -5,13 +5,9 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "inputTanh1D.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:21:50 PM}
- # Stolen from:
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -32,13 +28,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 

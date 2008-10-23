@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "pysparseSolver.py"
- #                                    created: 06/28/07
- #                                last update: 10/23/08 {3:04:27 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-14 JEG 1.0 original
  # ###################################################################
  ##
 

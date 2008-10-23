@@ -3,8 +3,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "exponentialNoiseVariable.py"
- #                                    created: 8/27/05 {9:26:58 AM} 
- #                                last update: 12/22/05 {11:55:58 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

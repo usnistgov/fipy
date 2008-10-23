@@ -3,8 +3,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "base.py"
- #                                    created: 8/16/05 {10:41:26 AM} 
- #                                last update: 9/16/05 {3:01:41 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -34,11 +33,6 @@
  #   
  #    This file is purely for illustration of documentation conventions
  #
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  1939-08-16 JEG 1.0 original
  # ###################################################################
  ##
 

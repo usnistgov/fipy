@@ -3,8 +3,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "noiseVariable.py"
- #                                    created: 8/25/05 {1:25:23 PM} 
- #                                last update: 10/23/08 {3:16:41 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  #  See the file "license.terms" for information on usage and  redistribution of
  #  this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  1939-08-25 JEG 1.0 original
  # ###################################################################
  ##
 

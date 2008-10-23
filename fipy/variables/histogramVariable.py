@@ -3,8 +3,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "histogramVariable.py"
- #                                    created: 8/26/05 {3:11:08 PM} 
- #                                last update: 12/22/05 {11:52:59 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

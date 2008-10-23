@@ -5,12 +5,9 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "cahnHilliard.py"
- #                                     created: 1/18/06 {2:36:12 PM}
- #                                 last update: 7/5/07 {8:06:35 PM}
- # Author: Jonathan Guyer
- # E-mail: <guyer@nist.gov>
- # Author: Daniel Wheeler
- # E-mail: daniel.wheeler@nist.gov
+ #
+ # Author: Jonathan Guyer <guyer@nist.gov>
+ # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
  #  
@@ -31,12 +28,6 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and 
  #  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- # 
- # History
- # 
- # modified   by  rev reason
- # ---------- --- --- -----------
- # 1940-01-18 JEG 1.0 original
  # 
  # ########################################################################
  ##
