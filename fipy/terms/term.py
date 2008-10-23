@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 10/23/08 {3:44:50 PM} 
+ #                                last update: 10/23/08 {4:05:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -286,10 +286,10 @@ class Term:
         r"""
         Add a `Term` to another `Term`, number or variable.
 
-           >>> Term(coeff=1.) + 10.
-           10.0 + Term(coeff=1.0) == 0
-           >>> Term(coeff=1.) + Term(coeff=2.)
-           Term(coeff=3.0)
+           >>> __Term(coeff=1.) + 10.
+           10.0 + __Term(coeff=1.0) == 0
+           >>> __Term(coeff=1.) + __Term(coeff=2.)
+           __Term(coeff=3.0)
 
         """
         from fipy.terms.equation import _Equation
@@ -310,8 +310,8 @@ class Term:
         r"""
         Add a number or variable to a `Term`.
 
-           >>> 10. + Term(coeff=1.)
-           10.0 + Term(coeff=1.0) == 0
+           >>> 10. + __Term(coeff=1.)
+           10.0 + __Term(coeff=1.0) == 0
         """
         return self + other
     
@@ -319,8 +319,8 @@ class Term:
         r"""
          Negate a `Term`.
 
-           >>> -Term(coeff=1.)
-           Term(coeff=-1.0)
+           >>> -__Term(coeff=1.)
+           __Term(coeff=-1.0)
 
         """
         try:
@@ -334,8 +334,8 @@ class Term:
         r"""
         Posate a `Term`.
 
-           >>> +Term(coeff=1.)
-           Term(coeff=1.0)
+           >>> +__Term(coeff=1.)
+           __Term(coeff=1.0)
 
         """
         return self
@@ -344,10 +344,10 @@ class Term:
         r"""
         Subtract a `Term` from a `Term`, number or variable.
 
-           >>> Term(coeff=1.) - 10.
-           -10.0 + Term(coeff=1.0) == 0
-           >>> Term(coeff=1.) - Term(coeff=2.)
-           Term(coeff=-1.0)
+           >>> __Term(coeff=1.) - 10.
+           -10.0 + __Term(coeff=1.0) == 0
+           >>> __Term(coeff=1.) - __Term(coeff=2.)
+           __Term(coeff=-1.0)
            
         """        
         if self._otherIsZero(other):
@@ -359,8 +359,8 @@ class Term:
         r"""
         Subtract a `Term`, number or variable from a `Term`.
 
-           >>> 10. - Term(coeff=1.)
-           10.0 + Term(coeff=-1.0) == 0
+           >>> 10. - __Term(coeff=1.)
+           10.0 + __Term(coeff=-1.0) == 0
 
         """        
         if self._otherIsZero(other):
@@ -373,30 +373,30 @@ class Term:
         This method allows `Terms` to be equated in a natural way. Note that the
         following does not return `False.`
 
-           >>> Term(coeff=1.) == Term(coeff=2.)
-           Term(coeff=-1.0)
+           >>> __Term(coeff=1.) == __Term(coeff=2.)
+           __Term(coeff=-1.0)
 
         it is equivalent to,
 
-           >>> Term(coeff=1.) - Term(coeff=2.)
-           Term(coeff=-1.0)
+           >>> __Term(coeff=1.) - __Term(coeff=2.)
+           __Term(coeff=-1.0)
 
         A `Term` can also equate with a number. 
 
-           >>> Term(coeff=1.) == 1.  
-           -1.0 + Term(coeff=1.0) == 0
+           >>> __Term(coeff=1.) == 1.  
+           -1.0 + __Term(coeff=1.0) == 0
            
         Likewise for integers.
 
-           >>> Term(coeff=1.) == 1
-           -1 + Term(coeff=1.0) == 0
+           >>> __Term(coeff=1.) == 1
+           -1 + __Term(coeff=1.0) == 0
            
         Equating to zero is allowed, of course
         
-            >>> Term(coeff=1.) == 0
-            Term(coeff=1.0)
-            >>> 0 == Term(coeff=1.)
-            Term(coeff=1.0)
+            >>> __Term(coeff=1.) == 0
+            __Term(coeff=1.0)
+            >>> 0 == __Term(coeff=1.)
+            __Term(coeff=1.0)
            
         """
 
@@ -409,8 +409,8 @@ class Term:
         """
         The representation of a `Term` object is given by,
         
-           >>> print Term(123.456)
-           Term(coeff=123.456)
+           >>> print __Term(123.456)
+           __Term(coeff=123.456)
 
         """
         return "%s(coeff=%s)" % (self.__class__.__name__, repr(self.coeff))
@@ -429,6 +429,12 @@ class Term:
     def _getWeight(self, mesh):
         raise NotImplementedError
             
+class __Term(Term): 
+    """
+    Dummy subclass for tests
+    """
+    pass 
+
 def _test(): 
     import doctest
     return doctest.testmod()

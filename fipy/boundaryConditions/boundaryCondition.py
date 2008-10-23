@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 10/23/08 {2:59:32 PM} 
+ #                                last update: 10/23/08 {4:11:11 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -65,7 +65,7 @@ class BoundaryCondition:
 
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 2)
-            >>> bc = BoundaryCondition(mesh.getInteriorFaces(), 0)
+            >>> bc = __BoundaryCondition(mesh.getInteriorFaces(), 0)
             Traceback (most recent call last):
                 ...
             IndexError: Face list has interior faces
@@ -115,6 +115,12 @@ class BoundaryCondition:
 
     def _resetBoundaryConditionApplied(self):
         self.boundaryConditionApplied = False
+
+class __BoundaryCondition(BoundaryCondition): 
+    """
+    Dummy subclass for tests
+    """
+    pass 
 
 def _test(): 
     import doctest
