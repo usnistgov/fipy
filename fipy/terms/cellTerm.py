@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellTerm.py"
  #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 3/29/07 {10:40:50 AM} 
+ #                                last update: 10/23/08 {4:00:20 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,6 +54,9 @@ class CellTerm(Term):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.):
+        if self.__class__ is CellTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         from fipy.variables.variable import Variable
         if not isinstance(coeff, Variable):
             from fipy.variables.constant import _Constant

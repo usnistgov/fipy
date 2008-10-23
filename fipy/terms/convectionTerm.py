@@ -6,7 +6,7 @@
  # 
  #  FILE: "convectionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 3/29/07 {10:40:48 AM} 
+ #                                last update: 10/23/08 {3:12:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -107,6 +107,9 @@ class ConvectionTerm(FaceTerm):
           - `coeff` : The `Term`'s coefficient value.
           - `diffusionTerm` : ** deprecated **. The Peclet number is calculated automatically.
         """
+        if self.__class__ is ConvectionTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         if diffusionTerm is not None:
             import warnings
             warnings.warn("The Peclet number is calculated automatically. diffusionTerm will be ignored.", DeprecationWarning, stacklevel=2)

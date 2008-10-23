@@ -7,7 +7,7 @@
  # 
  #  FILE: "preconditioner.py"
  #                                    created: 06/25/07
- #                                last update: 06/25/07
+ #                                last update: 10/23/08 {3:07:49 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,8 +55,9 @@ class Preconditioner:
         """
         Create a `Preconditioner` object.
         """
-        pass
+        if self.__class__ is Preconditioner:
+            raise NotImplementedError, "can't instantiate abstract base class"
 	
     def _applyToSolver(self, solver, matrix):
-        pass
+        raise NotImplementedError
         

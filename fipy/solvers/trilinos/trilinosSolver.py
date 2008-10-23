@@ -6,7 +6,7 @@
  # 
  #  FILE: "trilinosSolver.py"
  #                                    created: 06/07/07 
- #                                last update: 06/25/07 
+ #                                last update: 10/23/08 {3:10:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,7 +59,10 @@ class TrilinosSolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
 
     """
-    
+    def __init__(self, *args, **kwargs):
+        if self.__class__ is TrilinosSolver:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
     def _makeTrilinosMatrix(self, L):
         """ 
         Takes in a Pysparse matrix and returns an Epetra.CrsMatrix . 
@@ -131,4 +134,4 @@ class TrilinosSolver(Solver):
         return _TrilinosMatrix
 
     def _applyTrilinosSolver(self):
-        pass
+        raise NotImplementedError

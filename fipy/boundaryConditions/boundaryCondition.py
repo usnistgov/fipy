@@ -6,7 +6,7 @@
  # 
  #  FILE: "boundaryCondition.py"
  #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 6/2/08 {10:41:16 PM} 
+ #                                last update: 10/23/08 {2:59:32 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -55,9 +55,6 @@ class BoundaryCondition:
     
     def __init__(self,faces,value):
         """
-
-        The `BoundaryCondition` class should not be invoked directly.
-        
         :Parameters:
             - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
             - `value`: The value to impose.
@@ -74,6 +71,9 @@ class BoundaryCondition:
             IndexError: Face list has interior faces
 
         """
+        if self.__class__ is BoundaryCondition:
+            raise NotImplementedError, "can't instantiate abstract base class"
+        
         self.faces = faces
         self.value = PhysicalField(value)
         
@@ -99,7 +99,7 @@ class BoundaryCondition:
         A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's 
         (**L**, **b**) matrices.
         """ 
-        pass
+        raise NotImplementedError
     
     def _getDerivative(self, order):
         """Return a tuple of the boundary conditions to apply

@@ -6,7 +6,7 @@
  # 
  #  FILE: "matplotlibViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/5/07 {10:08:26 AM}
+ #                                last update: 10/23/08 {3:18:58 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -77,6 +77,9 @@ class MatplotlibViewer(Viewer):
             determine the width and height for a figure that would fit array 
             preserving aspect ratio.
         """
+        if self.__class__ is MatplotlibViewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         Viewer.__init__(self, vars = vars, limits = limits, title=title)
 
         import pylab

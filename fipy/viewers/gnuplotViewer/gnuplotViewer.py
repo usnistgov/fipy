@@ -6,7 +6,7 @@
  # 
  #  FILE: "gnuplotViewer.py"
  #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:31:22 PM} { 2:45:36 PM}
+ #                                last update: 10/23/08 {3:18:18 PM} { 2:45:36 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -84,6 +84,9 @@ class GnuplotViewer(Viewer):
           - `title`: displayed at the top of the Viewer window
 
         """
+        if self.__class__ is GnuplotViewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         Viewer.__init__(self, vars = vars, limits = limits, title = title)
         import Gnuplot
         self.g = Gnuplot.Gnuplot()

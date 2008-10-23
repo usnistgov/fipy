@@ -6,7 +6,7 @@
  # 
  #  FILE: "term.py"
  #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 9/17/08 {9:34:46 AM} 
+ #                                last update: 10/23/08 {3:44:50 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -63,6 +63,9 @@ class Term:
             `FaceVariable` objects are also acceptable for diffusion or convection terms.
 
         """  
+        if self.__class__ is Term:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         self.coeff = coeff
         self.geomCoeff = None
         self._cacheMatrix = False
@@ -72,7 +75,7 @@ class Term:
         self._diagonalSign = Variable(value=1)
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
-        pass
+        raise NotImplementedError
 
     def _calcResidualVector(self, var, matrix, RHSvector):
 
@@ -424,7 +427,7 @@ class Term:
         return self.geomCoeff
         
     def _getWeight(self, mesh):
-        pass
+        raise NotImplementedError
             
 def _test(): 
     import doctest

@@ -7,7 +7,7 @@
  # 
  #  FILE: "solver.py"
  #                                    created: 11/14/03 {3:47:20 PM} 
- #                                last update: 11/16/06 {2:36:00 PM} 
+ #                                last update: 10/23/08 {3:02:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -110,6 +110,9 @@ class Solver:
           - `precon`: Preconditioner to use. This parameter is only available for Trilinos solvers. 
 
         """
+        if self.__class__ is Solver:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         self.tolerance = tolerance
         if steps is not None:
             import warnings
@@ -125,7 +128,7 @@ class Solver:
         self.preconditioner = precon
 	
     def _solve(self, L, x, b):
-        pass
+        raise NotImplementedError
         
     _warningList = (ScalarQuantityOutOfRangeWarning,
                     StagnatedSolverWarning,
@@ -151,4 +154,4 @@ class Solver:
         return True
 
     def _getMatrixClass(self):
-        pass
+        raise NotImplementedError
