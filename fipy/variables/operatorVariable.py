@@ -4,7 +4,7 @@
  # 
  # FILE: "operatorVariable.py"
  #                                     created: 5/6/07 {10:53:26 AM}
- #                                 last update: 5/6/07 {10:53:26 AM}
+ #                                 last update: 10/20/08 {3:27:24 PM}
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -1131,4 +1131,4 @@ def _test():
     return doctest.testmod()
     
 if __name__ == "__main__": 
-    _test() 
+    _test()

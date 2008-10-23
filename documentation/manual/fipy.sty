@@ -1,83 +1,43 @@
 \NeedsTeXFormat{LaTeX2e} %[1995/12/01]
 \ProvidesPackage{fipy}
-	     [2004/10/07 Document style (FiPy manual)]
+	     [2008/10/09 Document style (FiPy manual)]
 
-\renewcommand{\@m@mchapter}[1][]{%
-  \def\ch@pt@c{#1}% capture first optional arg
-   \@ifnextchar[{\@chapter}{\@chapter[]}%
-}
-\def\@chapter[#1]#2{%
-% if |\ch@pt@c| is empty, no [ was found at all. Use |#2| as
-% entry for all fields.
-   \ifx\ch@pt@c\@empty
-     \def\f@rtoc{#2}%
-     \def\f@rhdr{#2}%
-   \else
-% otherwise at least one [ was found. If |#1| is empty then only
-% one was found.
-     \let\f@rtoc\ch@pt@c
-     \ifx\@empty#1\@empty
-       \let\f@rhdr\ch@pt@c
-     \else
-       \def\f@rhdr{#1}%
-     \fi
-   \fi
-   \ifnum \c@secnumdepth >\m@ne
-     \if@mainmatter
-       \refstepcounter{chapter}%
-     \fi
-   \fi
-   \chaptermark{\f@rhdr}%
-   \ifartopt
-     \@makechapterhead{#2}%
-     \@afterheading
-   \else
-     \insertchapterspace
-     \if@twocolumn
-       \@topnewpage[\@makechapterhead{#2}]%
-     \else
-       \@makechapterhead{#2}%
-     \fi
-     \@afterheading
-   \fi
-   \ifnum \c@secnumdepth >\m@ne
-     \if@mainmatter
-       \ifanappendix
-         \addcontentsline{toc}{appendix}{%
-           \protect\chapternumberline{\thechapter}\f@rtoc}%
-       \else
-         \addcontentsline{toc}{chapter}{%
-           \protect\chapternumberline{\thechapter}\f@rtoc}%
-       \fi
-     \else
-       \addcontentsline{toc}{chapter}{\f@rtoc}%
-     \fi
-   \else
-     \addcontentsline{toc}{chapter}{\f@rtoc}%
-   \fi
-   \ifheadnameref\M@gettitle{\f@rhdr}\else\M@gettitle{\f@rtoc}\fi
-}
+% Pass options to the epydoc base package.
+\RequirePackage{xkeyval}
+\DeclareOptionX{index}{\PassOptionsToPackage{index}{examples/latex/epydoc-base}}
+\DeclareOptionX{hyperlink}{\PassOptionsToPackage{hyperlink}{examples/latex/epydoc-base}}
+\DeclareOptionX{title}[]{\PassOptionsToPackage{title={#1}}{examples/latex/epydoc-base}}
+\DeclareOptionX{creator}[]{\PassOptionsToPackage{creator={#1}}{examples/latex/epydoc-base}}
 
 % Put Part as topmost level in PDF bookmarks
 \def\tocPDFlevel{-1}
-\DeclareOption{tocAsPDFpart}{\def\tocPDFlevel{-1}}
-\DeclareOption{tocAsPDFchapter}{\def\tocPDFlevel{0}}
-\ProcessOptions
+\DeclareOptionX{tocAsPDFpart}{\def\tocPDFlevel{-1}}
+\DeclareOptionX{tocAsPDFchapter}{\def\tocPDFlevel{0}}
 
-% Use epydoc base class to format module documentation
-\RequirePackage[index]{epydoc}
+\ProcessOptionsX\relax
 
-% \usepackage[text={7in,9.333in}]{geometry}
+% \usepackage{xr-hyper}
 
-% \RequirePackage{geometry}
+\RequirePackage[hyperlink,linkcolor=blue]{examples/latex/epydoc-base}
+% \RequirePackage[hyperlink]{examples/latex/epydoc-shaded}
+\RequirePackage{longtable}
 
 \RequirePackage{crop}
 
-% \RequirePackage{alltt, parskip, fancyhdr, boxedminipage}
-% \RequirePackage{multirow, longtable, makeidx, amssymb} 
+% \tocotherhead{part}
+% \renewcommand{\bibsection}{% 
+% \part{\bibname} 
+% \prebibhook}
 
-% \RequirePackage[other]{tocbibind}
-\tocotherhead{part}
+\renewcommand{\bibsection}{% 
+\chapter*{\bibname} 
+\bibmark 
+\ifnobibintoc\else 
+\phantomsection 
+\addcontentsline{toc}{part}{\bibname} 
+\fi 
+\prebibhook}
+
 \setlength{\columnsep}{35pt}
 
 \RequirePackage{amsmath} 
@@ -85,140 +45,23 @@
 \DeclareMathOperator{\erf}{erf}
 \newcommand{\abs}[1]{\lvert#1\rvert}
 
-\usepackage{xr-hyper}
+\RequirePackage[usenames]{color}
+\definecolor{UrlColor}{rgb}{0,0.08,0.45}
+% \RequirePackage[pdftex, hyperfigures=true, pagebackref, pdftitle={FiPy User's Guide}, pdfcreator={epydoc 3.0beta1}, bookmarks=true, bookmarksopen, bookmarksopenlevel=2, pdfpagemode=UseOutlines, colorlinks=true, plainpages=false, pdfpagelabels, linkcolor=blue, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=UrlColor]{hyperref}
 
-% \usepackage[dvips, pagebackref, pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines, colorlinks=true, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, pagecolor=black, urlcolor=darkblue]{hyperref}
-\RequirePackage[urlcolor=blue,linkcolor=blue,bookmarksopen,bookmarksopenlevel=2,pdftex,pagebackref,pdftitle={FiPy}, pdfcreator={epydoc 2.1}, bookmarks=true, bookmarksopen=false, pdfpagemode=UseOutlines,colorlinks=true,plainpages=false,pdfpagelabels]{hyperref}
-
-% Give a mini-table-of-contents for each part
 \RequirePackage[tight]{minitoc}
-% \setcounter{tocdepth}{0}
 \setcounter{parttocdepth}{2}
-% minitoc.sty doesn't show the page number of a part's TOC, which
-% looks weird.
-% % \renewcommand{\thispageparttocstyle}{\thispagestyle{plain}}
-
 \mtcsetrules{parttoc}{off}
 
-% minitoc.sty uses archaic font selectors
-% % \@ifundefined{chapter}{%
-% % \def\ptcfont{\small\rmfamily}    % font for the parttoc
-% % \def\ptcSfont{\small\bfseries}   % font for the parttoc (sections)
-% % \def\ptifont{\large\bfseries}    % font for titles
-% % }{%
-% % \def\ptcfont{\normalsize\rmfamily}    % font for the parttoc
-% % \def\ptcCfont{\normalsize\bfseries}   % font for the parttoc (chapters)
-% % \def\ptcSfont{\normalsize\rmfamily}   % font for the parttoc (sections)
-% % \def\ptifont{\Huge\bfseries}     % font for titles
-% % }
-
-\RequirePackage[ascii]{inputenc}
-
-% \usepackage{fullpage}
-%\usepackage[headings]{fullpage}
-% \makeindex
-% \RequirePackage[usenames]{color}
-\RequirePackage{color}
 \definecolor{darkblue}{rgb}{0,0.05,0.35}
 \definecolor{redish}{rgb}{0.894,0.122,0.122}
 \definecolor{bluish}{rgb}{0.216,0.188,0.533}
-\RequirePackage{graphicx}
+% \RequirePackage[pdftex]{graphicx}
 
-% \usepackage{nameref}
+\graphicspath{{./api/latex/},{../figures/},{images/}}
 
-\graphicspath{{../figures/},{images/}}
-
-% for reStructuredText
-\RequirePackage{shortvrb}
-\RequirePackage{tabularx}
-\setlength{\extrarowheight}{2pt}
-\newlength{\admonitionwidth}
-\setlength{\admonitionwidth}{0.9\textwidth}
-\newlength{\docinfowidth}
-\setlength{\docinfowidth}{0.9\textwidth}
-\newlength{\locallinewidth}
-\newcommand{\optionlistlabel}[1]{\bf #1 \hfill}
-\newenvironment{optionlist}[1]
-{\begin{list}{}
-  {\setlength{\labelwidth}{#1}
-   \setlength{\rightmargin}{1cm}
-   \setlength{\leftmargin}{\rightmargin}
-   \addtolength{\leftmargin}{\labelwidth}
-   \addtolength{\leftmargin}{\labelsep}
-   \renewcommand{\makelabel}{\optionlistlabel}}
-}{\end{list}}
-% begin: floats for footnotes tweaking.
-% % % \setlength{\floatsep}{0.5em}
-% % % \setlength{\textfloatsep}{\fill}
-% % % \addtolength{\textfloatsep}{3em}
-% % % \renewcommand{\textfraction}{0.5}
-% % % \renewcommand{\topfraction}{0.5}
-% % % \renewcommand{\bottomfraction}{0.5}
-\setcounter{totalnumber}{50}
-\setcounter{topnumber}{50}
-\setcounter{bottomnumber}{50}
-% end floats for footnotes
-% some commands, that could be overwritten in the style file.
-\newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
-\newcommand{\titlereference}[1]{\textsl{#1}}
-
-
-\newcommand{\logo}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}
-% \newcommand{\logoToo}{\raisebox{-.15em}{\textcolor{bluish}{\(\pi\)}}\kern-.64em\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% reformat the TOC
-% \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{3.3em}}
-% \renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
-% \renewcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{5.1em}}
-% \renewcommand*\l@paragraph{\@dottedtocline{4}{10em}{6em}}
-% \renewcommand*\l@subparagraph{\@dottedtocline{5}{12em}{7em}}
-
-% \usepackage{layout}
-
-% \RequirePackage{tocvsec2}
-
-\input{version}
-
-% \setlength{\fboxrule}{2\fboxrule}
-% \newlength{\BCL} % base class length, for base trees.
-
-% \pagestyle{Ruled}
 \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 \renewcommand{\subsectionmark}[1]{\markright{#1}}
-
-% \fancyhead{}
-% \fancyhead[LO]{\slshape \rightmark}
-% \fancyhead[RE]{\slshape \leftmark}
-% \fancyhead[LE,RO]{\thepage}
-% \fancyfoot{}
-
-\copypagestyle{fipy}{Ruled}
-\makeevenhead{fipy}{\thepage}{}{\slshape\leftmark}
-\makeoddhead{fipy}{\slshape\rightmark}{}{\thepage}
-\makeevenfoot{fipy}{}{}{}
-\makeoddfoot{fipy}{}{}{}
-% \makeheadrule{fipy}{\pagewidth}{\normalrulethickness}
-
-% \aliaspagestyle{fipy}{Ruled}
-\pagestyle{fipy}
-
-% \newenvironment{Ventry}[1]%
-%   {\begin{list}{}{%
-%     \renewcommand{\makelabel}[1]{\texttt{##1:}\hfil}%
-%     \settowidth{\labelwidth}{\texttt{#1:}}%
-%     \setlength{\leftmargin}{\labelsep}%
-%     \addtolength{\leftmargin}{\labelwidth}}}%
-%   {\end{list}}
-
-\newsavebox{\NISTbox}
-\sbox{\NISTbox}{\includegraphics[trim=5 2 5 5,scale=1.5]{NIST_right2line}}
-%\newlength{\photoheight}
-%\settoheight{\photoheight}{\usebox{\photobox}}
-%\newlength{\photowidth}
-%\settowidth{\photowidth}{\usebox{\photobox}}
 
 \newenvironment{changemargin}[2]{%
  \begin{list}{}{%
@@ -244,94 +87,6 @@
     \if@restonecol\twocolumn\fi
     }
 
-\newcommand*{\ps@mytitlepage}{%
-  \let\@oddhead\@empty
-  \renewcommand*{\@oddfoot}{%
-  \rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}}%\vspace*{-0.5in}}
-
-\copypagestyle{titlingpage}{empty} 
-% \makeoddfoot{titlingpage}{}{}{\begin{changemargin}{-1in}{-0.5in}\begin{flushright}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}\end{flushright}\end{changemargin}}
-\makeoddfoot{titlingpage}{}{}{\rule{7in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}
-% \makeevenfoot{titlingpage}{}{}{\usebox{\NISTbox}}
-
-% \def\@makeauthor{\begingroup
-% \renewcommand{\and}{\\}
-% \begin{tabular}[t]{r@{}}%
-%     \@author
-% \end{tabular}
-% \endgroup
-% }
-
-\def\@makeaffiliation{\begingroup
-\renewcommand{\and}{\\}
-\textit{
-\begin{tabular}[t]{r@{}}%
-    \@affiliation
-\end{tabular}}
-\endgroup
-}
-
-\def\subtitle#1{\gdef\@subtitle{#1}}
-\def\@subtitle{}
-\def\affiliation#1{\begingroup
-\renewcommand{\and}{\\}
-\gdef\@affiliation{#1}
-\endgroup
-}
-\def\@affiliation{}
-
-\setlength{\droptitle}{-1.4in}
-
-\renewcommand{\maketitlehooka}{%
-    \begin{changemargin}{-1in}{-0.5in}%
-    \let\footnotesize\small%
-    \let\footnoterule\relax%
-    \let \footnote \thanks%
-    \begin{flushright}%
-%       \vspace*{-0.6in}
-      \scalebox{10}{\logo}\par
-      \vskip 3em%
-    \end{flushright}
-}
-
-\pretitle{\begin{flushright}\Huge}
-\posttitle{\par\end{flushright}}
-
-\renewcommand{\maketitlehookb}{%
-\begin{flushright}
-\huge \@subtitle \par
-\end{flushright}
-\vskip 3em%
-}
-
-\preauthor{\begin{flushright}%
-\renewcommand*{\andnext}{\\}%
-\large\lineskip 0.75em% 
-\begin{tabular}[t]{r@{}}} 
-\postauthor{\end{tabular}\par\end{flushright}} 
-
-\renewcommand{\maketitlehookc}{%
-\begin{flushright}
-\par \@makeaffiliation \par%
-\end{flushright}
-\vskip 1.5em%
-}
- 
-\predate{\begin{flushright}\large}
-\postdate{\par\end{flushright}}
-
-\renewcommand{\maketitlehookd}{%
-\vskip 1.5em%
-\begin{flushright}
-{\large Version~\Version \par}
-\vspace*{\fill}
-% \parbox[t][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}
-% \rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}
-% \raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}
-\end{flushright}
-\end{changemargin}
-}
-
 \newcounter{FAQdepth}
 \setcounter{FAQdepth}{0}
 
@@ -351,42 +106,14 @@
                            \fi\adjustmtc}
                            
                            
-% \renewcommand{\maketitle}{%
-% \begin{titlepage}%
-% \thispagestyle{mytitlepage}
-% \begin{changemargin}{-1in}{-0.5in}
-% \let\footnotesize\small
-% \let\footnoterule\relax
-% \let \footnote \thanks
-% \begin{flushright}%
-%   \vspace*{-0.6in}
-%   \scalebox{10}{\logo}\par
-%   \vskip 3em%
-%   {\Huge \@title \par}%
-%   {\huge \@subtitle \par}%
-%   \vskip 3em%
-%   {\large
-%    \lineskip .75em%
-%    \@makeauthor \par
-%    \@makeaffiliation \par }%
-%     \vskip 1.5em%
-%   {\large \@date \par}%       % Set date in \large size.
-%       \vskip 1.5em%
-%   {\large Version~\Version \par}
-%   \vspace*{\fill}%
-% \end{flushright}%
-% \end{changemargin}%
-% \end{titlepage}%
-% }
-
 \newcommand{\@Code}[1]{\texttt{#1}}
-\newcommand{\IndexClass}[1]{\index{#1@\EpydocIndex[Class]{\EpydocDottedName{#1}} class}}
-\newcommand{\IndexModule}[1]{\index{#1@\EpydocIndex[Module]{\EpydocDottedName{#1}} module}}
-\newcommand{\IndexPackage}[1]{\index{#1@\EpydocIndex[Package]{\EpydocDottedName{#1}} package}}
+\newcommand{\IndexClass}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{class} class}}
+\newcommand{\IndexModule}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{module} module}}
+\newcommand{\IndexPackage}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{package} package}}
 \newcommand{\IndexSoftware}[1]{\index{#1@\@Software{#1}}}
-\newcommand{\IndexFunction}[1]{\index{#1@\EpydocIndex[Function]{\EpydocDottedName{#1}}}}
-\newcommand{\IndexConstant}[2]{\index{$#1\equiv\text{#2}$@$#1\equiv\text{\EpydocIndex[Module]{\EpydocDottedName{#2}}}$}%
-                               \index{#2$\equiv #1$@$\text{\EpydocIndex[Module]{\EpydocDottedName{#2}}}\equiv #1$}}
+\newcommand{\IndexFunction}[1]{\index{#1@\protect\EpydocIndex{#1}{\EpydocDottedName{#1}}{function}}}
+\newcommand{\IndexConstant}[2]{\index{$#1\equiv\text{#2}$@$#1\equiv\text{\protect\EpydocIndex{#2}{\EpydocDottedName{#2}}{module}}$}%
+                               \index{#2$\equiv #1$@$\text{\protect\EpydocIndex{#2}{\EpydocDottedName{#2}}{module}}\equiv #1$}}
 \newcommand{\Class}[1]{\@Code{#1}\IndexClass{#1}}
 \newcommand{\Module}[1]{\@Code{#1}\IndexModule{#1}}
 
@@ -446,23 +173,19 @@
 % 
 % \expandafter\mod@join{fipy (module)}\expandafter\mod@dovariables.variable.\relax.
 
-\renewcommand{\EpydocHyperlink}[2]{\hyperlink{#1}{#2}}
-\renewcommand{\EpydocHypertarget}[2]{\label{#1}\hypertarget{#1}{#2}}
-% \renewcommand{\EpydocHypertarget}[2]{\hypertarget{#1}{#2}}
-
 % differentiate the appearance of different Index items (somewhat 
 % overriden by url.sty-formatted items).
-\renewcommand{\EpydocIndex}[2][]{%
+\renewcommand{\EpydocIndex}[3]{%
 %     #2%
-    \ifthenelse{\equal{#1}{}}{}{%
-        \ifthenelse{\equal{#1}{Method}\OR\equal{#1}{Function}}{%
+    \ifthenelse{\equal{#3}{}}{}{%
+        \ifthenelse{\equal{#3}{method}\OR\equal{#3}{function}}{%
             #2()%
         }{%
-            \ifthenelse{\equal{#1}{Module}\OR\equal{#1}{Package}}{%
+            \ifthenelse{\equal{#3}{module}\OR\equal{#3}{package}}{%
                 #2}{%
-                \ifthenelse{\equal{#1}{Class}}{%
+                \ifthenelse{\equal{#3}{class}}{%
                     #2}{%\textbf{#2}
-                    #2 \textit{(\MakeLowercase{#1})}}}%
+                    #2 \textit{(\MakeLowercase{#3})}}}%
         }%
     }%
 }
@@ -479,112 +202,132 @@
 % lifted from <http://www.texnik.de/color/color.phtml> for colored 
 % paragraph boxes
 \newcommand{\cmcolor}{}
-\newenvironment{cminipage}[1][white]%
+\newenvironment{cminipage}[2][white]%
   {%\setlength{\fboxsep}{-\fboxrule}
    \renewcommand{\cmcolor}{#1}\noindent%
    \begin{lrbox}{\@tempboxa}%
-     \begin{minipage}{\linewidth-2\fboxsep}}%
+     \begin{minipage}{#2}}%{\linewidth-2\fboxsep}}%
   {  \end{minipage}%
    \end{lrbox}%
    \colorbox{\cmcolor}{\usebox{\@tempboxa}}}%
 
-% no explicit box around functions, but keep them grouped 
-% (we could use a plain minipage)
-% \renewenvironment{EpydocFunction}{%
-%     \begin{cminipage}}%
-%     {\end{cminipage}}
+\renewcommand{\CrossRef}[1]{}
 
-   
-\renewenvironment{EpydocFunction}[2]{%
-    \renewcommand{\and}{, }%
+% \definecolor{EpydocNameColor}{gray}{1.0}
+% 
+% \renewenvironment{EpydocFunctionList}{%
+%   \setlength{\parskip}{\EpydocListsep}%
+%   \newcommand{\EpydocFunction}[1]{{
+%     \setkeys[Epydoc]{function}{##1}%
+%     % Decide whether to include a 'details' block
+%     \newif\ifEpydoc@details%
+%     \@ifundefined{cmdEpydoc@function@description}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@parameters}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@returndescr}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@returntype}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@raises}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@overrides}{}{\Epydoc@detailstrue}%
+%     \@ifundefined{cmdEpydoc@function@metadata}{}{\Epydoc@detailstrue}%
+%     % Add some vertical space.
+%     \par
+%     % Put a box around the whole thing, so the signature line and the
+%     % body don't get split across pages.
+% %     \begin{minipage}{\textwidth}%
+%       {\setlength{\parskip}{-1pt}\raggedleft%
+%       % Add the function signature in a gray95 box.
+%       \begin{cminipage}[EpydocNameColor]%
+%                        {\dimexpr \textwidth-2\fboxsep}
+%         \Large\raggedright\cmdEpydoc@function@signature
+%       \end{cminipage}\par
+%       % Add the details in a gray90 box.
+%       \ifEpydoc@details
+%         \begin{cminipage}[EpydocDetailsColor]%
+%                          {\dimexpr 0.95\linewidth-2\fboxsep}%
+%           \@ifundefined{cmdEpydoc@function@description}{}{%
+%               \par\cmdEpydoc@function@description}%
+%           \@ifundefined{cmdEpydoc@function@parameters}{}{%
+%               \par\cmdEpydoc@function@parameters}%
+%           \@ifundefined{cmdEpydoc@function@returntype}{
+%               \@ifundefined{cmdEpydoc@function@returndescr}{}{
+%                   \par\textbf{Return Value}%
+%                   \par\vspace{-\EpydocParskip}%
+%                   \begin{quote}\cmdEpydoc@function@returndescr%
+%                   \end{quote}}%
+%           }{
+%               \par\textbf{Return Value}%
+%               \par\vspace{-\EpydocParskip}%
+%               \begin{quote}%
+%                 \@ifundefined{cmdEpydoc@function@returndescr}{
+%                     \textit{\cmdEpydoc@function@returntype}%
+%                 }{%
+%                     \cmdEpydoc@function@returndescr%
+%                       \textit{(type=\cmdEpydoc@function@returntype)}}%
+%               \end{quote}}%
+%           \@ifundefined{cmdEpydoc@function@raises}{}{%
+%               \par\cmdEpydoc@function@raises}%
+%           \@ifundefined{cmdEpydoc@function@overrides}{}{%
+%               \par\cmdEpydoc@function@overrides}%
+%           \@ifundefined{cmdEpydoc@function@metadata}{}{%
+%               \par\cmdEpydoc@function@metadata}%
+%         \end{cminipage}\par
+%       \fi%
+% %    \end{minipage}
+%    }\par}}}
+%   {}
+
+\renewenvironment{EpydocFunctionSignature}[1]{%
+    \gdef\and{, }%
     \newcommand{\VarArg}[1]{*\textit{##1}}%
     \newcommand{\GenericArg}{\textit{\ldots}}%
     \newcommand{\KWArg}[1]{**\textit{##1}}%
+    \newcommand{\ArgList}[1]{(##1)}%
     \newcommand{\Param}[2][]{%
         \textit{##2}%
-        \ifthenelse{\equal{##1}{}}{}{=\TX@verb|##1|}}%
-%         \ifthenelse{\equal{##1}{}}{}{=\TX@verb*|##1|}}%
-    {\raggedright\Large\hangfrom{\ttfamily #1(}{#2{\ttfamily)}}% 
-    \\*[-0.6ex]\rule{\textwidth}{0.5\fboxrule}}%
-    \nopagebreak\begin{list}{}{\setlength{\leftmargin}{\parindent}\item{}}}
-    {\end{list}}
+        \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
+    \raggedright\Large\@hangfrom{\ttfamily #1(}}%
+    {{\ttfamily)\par}\vspace*{-2\EpydocParskip}\rule{\textwidth}{0.5\fboxrule}}%
     
-% \newcommand{\@EpydocFunctionSignature}[2]{%
-%     \renewcommand{\and}{, }%
-%     \newcommand{\VarArg}[1]{*\textit{##1}}%
-%     \newcommand{\GenericArg}{\textit{\ldots}}%
-%     \newcommand{\KWArg}[1]{**\textit{##1}}%
-%     \newcommand{\Param}[2][]{%
-%         \textit{##2}%
-%         \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
-%     {\Large\raggedright\hangfrom{\ttfamily #1(}#2{\ttfamily)}}% 
-%     \\\vspace{-0.6ex}\rule{\textwidth}{0.5\fboxrule}}
-% 
-% \renewenvironment{EpydocFunction}[2]{%
-%     \@EpydocFunctionSignature{#1}{#2}
-%     \begin{list}{}{}\item{}}
+% % indent on left
+% \renewenvironment{EpydocDocstring}{%
+%     \begin{list}{}{\leftmargin1.5em}\item{}}
 %     {\end{list}}
-       
-% format function signatures in large text, with long arguments 
-% aligned at open-(, and whole thing underlined to separate from 
-% rest of function documentation.
-% \renewenvironment{EpydocFunctionSignature}[1]{%
-%     \renewcommand{\and}{, }%
-%     \newcommand{\VarArg}[1]{*\textit{##1}}%
-%     \newcommand{\GenericArg}{\textit{\ldots}}%
-%     \newcommand{\KWArg}[1]{**\textit{##1}}%
-%     \newcommand{\Param}[2][]{%
-%         \textit{##2}%
-%         \ifthenelse{\equal{##1}{}}{}{=\texttt{##1}}}%
-%     \Large\raggedright\hangfrom{\ttfamily #1(}% 
-%     }
-%     {{\ttfamily)}\\\vspace{-0.6ex}\rule{\textwidth}{0.5\fboxrule}}
-
-% indent on left
-\renewenvironment{EpydocDocstring}{%
-    \begin{list}{}{\leftmargin1.5em}\item{}}
-    {\end{list}}
 
 % box in gray, indent on left
 \renewenvironment{EpydocFunctionParameters}[1]{%
     \vspace{0.4ex}
     \begin{list}{}{\leftmargin1.5em}\item{}%
-    \begin{cminipage}[light-gray]\textbf{Parameters}\begin{quote}%
-%     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
-%        \normalfont\bfseries ##1:}
+    \begin{cminipage}[light-gray]{\linewidth-2\fboxsep}\textbf{Parameters}\begin{quote}%
     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
        \normalfont\rmfamily\itshape ##1:}
     \begin{description}}
     {\end{description}\end{quote}\end{cminipage}\end{list}}
 
 % \renewcommand{\EpydocFunctionReturns}[2][]{%
-%     \textbf{Return Value}
+%     \vspace{0.4ex}
+%     \begin{list}{}{\leftmargin1.5em}\item{}%
+%     \begin{cminipage}[light-gray]\textbf{Return Value}
 %     \begin{quote}
-%         \ifthenelse{\equal{#1}{}}{#2}{%
-%             #1 \textit{(type=#2)}%
-%         }
-%     \end{quote}
-%     \vspace{1ex}}
+%         \gdef\@EpydocReturnType{#1}
+%         \gdef\@EpydocReturnDescription{#2}
+%         \ifx\@EpydocReturnType\empty
+%             \@EpydocReturnDescription
+%         \else
+%             \ifx\@EpydocReturnDescription\empty
+%                 \textit{\@EpydocReturnType}
+%             \else
+%                 \@EpydocReturnDescription \textit{(type=\@EpydocReturnType)}
+%             \fi
+%         \fi
+%     \end{quote}\end{cminipage}\end{list}}
 
-\renewcommand{\EpydocFunctionReturns}[2][]{%
+\renewenvironment{EpydocFunctionRaises}{%
     \vspace{0.4ex}
     \begin{list}{}{\leftmargin1.5em}\item{}%
-    \begin{cminipage}[light-gray]\textbf{Return Value}
-    \begin{quote}
-        \ifthenelse{\equal{#1}{}}{#2}{%
-            #1 \textit{(type=#2)}%
-        }
-    \end{quote}\end{cminipage}\end{list}}
-
-\renewcommand{\EpydocFunctionReturns}[2][]{%
-    \vspace{0.4ex}
-    \begin{list}{}{\leftmargin1.5em}\item{}%
-    \begin{cminipage}[light-gray]\textbf{Return Value}
-    \begin{quote}
-        \ifthenelse{\equal{#1}{}}{#2}{%
-            #2 \textit{(type=#1)}%
-        }
-    \end{quote}\end{cminipage}\end{list}}
+    \begin{cminipage}[light-gray]{\linewidth-2\fboxsep}\textbf{Raises}\begin{quote}%
+    \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+       \normalfont\rmfamily\itshape ##1:}
+    \begin{description}}
+    {\end{description}\end{quote}\end{cminipage}\end{list}}
 
 % indent on left
 \renewcommand{\EpydocFunctionOverrides}[2][0]{%
@@ -593,16 +336,21 @@
     \ifthenelse{#1=1}{\textit{(inherited documentation)}}{}%
     \end{list}}
 
-\renewenvironment{EpydocInheritanceList}{%
-    \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
-       \normalfont\bfseries Inherited from ##1:}
-    \raggedright\begin{description}}
-    {\end{description}}
+\renewcommand{\EpydocInheritanceList}[2]{%
+    \begin{list}{}{\leftmargin1.5em}\item{}%
+    \raggedright \textbf{Inherited from {#1}:} #2\par %
+    \end{list}}
 
-\renewenvironment{EpydocDescriptionShortList}[1]{%
-    \renewcommand{\and}{, }%
-    \raggedright\begin{description}\item[#1: ]}
-    {\end{description}}
+% \renewenvironment{EpydocInheritanceList}{%
+%     \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+%        \normalfont\bfseries Inherited from ##1:}
+%     \raggedright\begin{description}}
+%     {\end{description}}
+% 
+% \renewenvironment{EpydocDescriptionShortList}[1]{%
+%     \gdef\and{, }%
+%     \raggedright\begin{description}\item[#1: ]}
+%     {\end{description}}
 
 \renewenvironment{EpydocModuleList}{%
     \newcommand{\CrossRef}[1]{}
@@ -611,19 +359,54 @@
         \setlength{\parskip}{0ex}}
     {\end{itemize}}
 
-\renewenvironment{EpydocModuleSubList}{%
-    \begin{itemize}
-        \renewcommand{\makelabel}[1]{\textbf{##1}}
-        \setlength{\parskip}{0ex}}
-    {\end{itemize}}
+% \renewenvironment{EpydocModuleSubList}{%
+%     \begin{itemize}
+%         \renewcommand{\makelabel}[1]{\textbf{##1}}
+%         \setlength{\parskip}{0ex}}
+%     {\end{itemize}}
 
-% % % lifted from memoir.cls
-% % \newcommand{\hangfrom}[1]{%
-% %   \setbox\@tempboxa\hbox{{#1}}%
-% %   \hangindent \wd\@tempboxa\noindent\box\@tempboxa}
+\renewenvironment{EpydocMetadataShortList}[1]{%
+    \renewcommand{\and}{, }%
+    \par
+    \begin{list}{}{\itemindent-\leftmargin}
+    \item \textbf{#1:} \ignorespaces}
+    {\end{list}\ignorespacesafterend\par}
 
+\renewenvironment{EpydocVariableList}{%
+    \newcommand{\EpydocVariable}[1]{{%
+        \setkeys[Epydoc]{variable}{##1}%
+        {\item[\cmdEpydoc@variable@name]
+        \@ifundefined{cmdEpydoc@variable@value}{}{%
+            = \texttt{\cmdEpydoc@variable@value}\par}
+        \@ifundefined{cmdEpydoc@variable@description}{%
+            \@ifundefined{cmdEpydoc@variable@type}{%
+                \@ifundefined{cmdEpydoc@variable@metadata}{%
+                    \def\@EpydocDontQuote{}}{}%
+            }{}%
+        }{}
+        \@ifundefined{@EpydocDontQuote}{%
+            \begin{quote}
+                \setlength{\parskip}{\EpydocParskip}%
+                \@ifundefined{cmdEpydoc@variable@description}{}{%
+                    \par\cmdEpydoc@variable@description}%
+                \@ifundefined{cmdEpydoc@variable@type}{}{%
+                    \par\textbf{Type:} \cmdEpydoc@variable@type}%
+                \@ifundefined{cmdEpydoc@variable@metadata}{}{%
+                    \ifx\cmdEpydoc@variable@metadata\empty\else
+                        \par\cmdEpydoc@variable@metadata\fi}%
+            \end{quote}}{}%
+        }}}
+        \renewcommand*{\descriptionlabel}[1]{\hspace\labelsep
+                       \normalfont\rmfamily\itshape ##1}        
+        \renewcommand{\EpydocInheritanceList}[2]{%
+            \item[] {\bfseries Inherited from {##1}:} ##2}
+        \begin{description}}
+  {\end{description}}
 
-  
+% \renewcommand{\EpydocInheritanceList}[2]{%
+%     {\item[Inherited from {#1}]} #2}
+% \renewcommand{\EpydocInheritanceList}[2]{}
+
 % Same as book.cls, except ragged-right. Looks much better for long 
 % module names.
 \renewcommand\section{\@startsection {section}{1}{\z@}%
@@ -647,53 +430,27 @@
                                        {-1em}%
                                       {\raggedright\normalfont\normalsize\bfseries}}
 
-% display style for Python modules. Allows non-hyphenated wrapping at 
-% . module separators. Rest is a simplified version of url.sty's tt 
-% style.
-\RequirePackage{url}
-\def\Url@pydo{% style assignments for tt fonts or T1 encoding
-\def\UrlBreaks{\do\.\do\]\do\)}%
-\def\UrlBigBreaks{\do@url@hyp}%
-\def\UrlNoBreaks{\do\(\do\[\do\{\do\<\do\_}% (unnecessary)
-\def\UrlSpecials{\do\ {\ }}%
-\def\UrlOrds{\do\*\do\-\do\~}% any ordinary characters that aren't usually
-}
-
-% \newcommand\capdo[1]{\ifx\capdo#1\else 
-%  \do#1{\allowbreak\mathchar`#1} \expandafter\capdo\fi} 
-% 
-% \def\Url@pydo{% style assignments for tt fonts or T1 encoding 
-%  \def\UrlBreaks{\do\.\do\]\do\) }% 
-%  \def\UrlBigBreaks{\do@url@hyp} % 
-%  \def\UrlNoBreaks{\do\(\do\[\do \{\do\<\do\_}% (unnecessary) 
-%  \def\UrlSpecials{\do\ {\ }% 
-%   \capdo ABCDEFGHIJKLMNOPQRSTUVWXYZ\capdo}% 
-%  \def\UrlOrds{\do\*\do\-\do\~}% 
-% } 
-
 \def\url@pystyle{%
 \@ifundefined{selectfont}{\def\UrlFont{\tt}}{\def\UrlFont{\ttfamily}}\Url@pydo
 }
-\newcommand\pymodule{\begingroup \urlstyle{py}\Url}
-\renewcommand\EpydocDottedName[1]{\texorpdfstring{\protect\pymodule{#1}}{#1}}
 
 \usepackage{booktabs}
 
 \renewenvironment{reSTadmonition}[1][]{%
     \begin{center}\begin{sffamily}%
     \ifthenelse{\equal{#1}{}\OR\equal{#1}{Note}}{
-        \begin{cminipage}[light-gray]
+        \begin{cminipage}[light-gray]{\linewidth-2\fboxsep}
     }{%
         \ifthenelse{\equal{#1}{Warning}}{%
-            \begin{cminipage}[hazy-red] %[hazy-yellow]
+            \begin{cminipage}[hazy-red]{\linewidth-2\fboxsep} %[hazy-yellow]
         }{%
             \ifthenelse{\equal{#1}{Attention!}}{%
-                \begin{cminipage}[hazy-orange]
+                \begin{cminipage}[hazy-orange]{\linewidth-2\fboxsep}
             }{%
                 \ifthenelse{\equal{#1}{Danger}}{%
-                    \begin{cminipage}[hazy-red]
+                    \begin{cminipage}[hazy-red]{\linewidth-2\fboxsep}
                 }{%
-                    \begin{cminipage}
+                    \begin{cminipage}{\linewidth-2\fboxsep}
                 }%
             }%
         }%
@@ -742,9 +499,164 @@
     \end{framed}}
 
 
+\@ifclassloaded{memoir}{%
+
+\newcommand{\logo}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}
+
+\newsavebox{\NISTbox}
+\sbox{\NISTbox}{\includegraphics[trim=5 2 5 5,scale=1.5]{NIST_right2line}}
+
+\input{version}
+
+\copypagestyle{fipy}{Ruled}
+\makeevenhead{fipy}{\thepage}{}{\slshape\leftmark}
+\makeoddhead{fipy}{\slshape\rightmark}{}{\thepage}
+\makeevenfoot{fipy}{}{}{}
+\makeoddfoot{fipy}{}{}{}
+
+\pagestyle{fipy}
+
+\newcommand*{\ps@mytitlepage}{%
+  \let\@oddhead\@empty
+  \renewcommand*{\@oddfoot}{%
+  \rule{6.4in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}}
+
+\copypagestyle{titlingpage}{empty} 
+\makeoddfoot{titlingpage}{}{}{\rule{7in}{0in}\raisebox{-0.6in}{\parbox[b][0pt]{0pt}{\makebox[0pt][r]{\usebox{\NISTbox}}}}}
+
+\def\@makeaffiliation{\begingroup
+\gdef\and{\\}
+\textit{
+\begin{tabular}[t]{r@{}}%
+    \@affiliation
+\end{tabular}}
+\endgroup
+}
+
+\def\subtitle#1{\gdef\@subtitle{#1}}
+\def\@subtitle{}
+\def\affiliation#1{\begingroup
+\gdef\and{\\}
+\gdef\@affiliation{#1}
+\endgroup
+}
+\def\@affiliation{}
+
+\setlength{\droptitle}{-1.4in}
+
+\renewcommand{\maketitlehooka}{%
+    \begin{changemargin}{-1in}{-0.5in}%
+    \let\footnotesize\small%
+    \let\footnoterule\relax%
+    \let \footnote \thanks%
+    \begin{flushright}%
+%       \vspace*{-0.6in}
+      \scalebox{10}{\logo}\par
+      \vskip 3em%
+    \end{flushright}
+}
+
+\pretitle{\begin{flushright}\Huge}
+\posttitle{\par\end{flushright}}
+
+\renewcommand{\maketitlehookb}{%
+\begin{flushright}
+\huge \@subtitle \par
+\end{flushright}
+\vskip 3em%
+}
+
+\preauthor{\begin{flushright}%
+\renewcommand*{\andnext}{\\}%
+\large\lineskip 0.75em% 
+\begin{tabular}[t]{r@{}}} 
+\postauthor{\end{tabular}\par\end{flushright}} 
+
+\renewcommand{\maketitlehookc}{%
+\begin{flushright}
+\par \@makeaffiliation \par%
+\end{flushright}
+\vskip 1.5em%
+}
+ 
+\predate{\begin{flushright}\large}
+\postdate{\par\end{flushright}}
+
+\renewcommand{\maketitlehookd}{%
+\vskip 1.5em%
+\begin{flushright}
+{\large Version~\Version \par}
+\vspace*{\fill}
+\end{flushright}
+\end{changemargin}
+}
+
+\renewcommand{\@m@mchapter}[1][]{%
+  \def\ch@pt@c{#1}% capture first optional arg
+   \@ifnextchar[{\@chapter}{\@chapter[]}%
+}
+\def\@chapter[#1]#2{%
+% if |\ch@pt@c| is empty, no [ was found at all. Use |#2| as
+% entry for all fields.
+   \ifx\ch@pt@c\@empty
+     \def\f@rtoc{#2}%
+     \def\f@rhdr{#2}%
+   \else
+% otherwise at least one [ was found. If |#1| is empty then only
+% one was found.
+     \let\f@rtoc\ch@pt@c
+     \ifx\@empty#1\@empty
+       \let\f@rhdr\ch@pt@c
+     \else
+       \def\f@rhdr{#1}%
+     \fi
+   \fi
+   \ifnum \c@secnumdepth >\m@ne
+     \if@mainmatter
+       \refstepcounter{chapter}%
+     \fi
+   \fi
+   \chaptermark{\f@rhdr}%
+   \ifartopt
+     \@makechapterhead{#2}%
+     \@afterheading
+   \else
+     \insertchapterspace
+     \if@twocolumn
+       \@topnewpage[\@makechapterhead{#2}]%
+     \else
+       \@makechapterhead{#2}%
+     \fi
+     \@afterheading
+   \fi
+   \ifnum \c@secnumdepth >\m@ne
+     \if@mainmatter
+       \ifanappendix
+         \addcontentsline{toc}{appendix}{%
+           \protect\chapternumberline{\thechapter}\f@rtoc}%
+       \else
+         \addcontentsline{toc}{chapter}{%
+           \protect\chapternumberline{\thechapter}\f@rtoc}%
+       \fi
+     \else
+       \addcontentsline{toc}{chapter}{\f@rtoc}%
+     \fi
+   \else
+     \addcontentsline{toc}{chapter}{\f@rtoc}%
+   \fi
+   \ifheadnameref\M@gettitle{\f@rhdr}\else\M@gettitle{\f@rtoc}\fi
+}
+
 % % Temporary(?) patch supplied by Morten H¿gholm in
 % % <http://groups.google.com/group/comp.text.tex/browse_frm/thread/911a3cd94427194a/e22e4003b9ac2ff1?hl=en#e22e4003b9ac2ff1
 
-    
 \usepackage{memhfixc}
+
+}{
+% lifted from memoir.cls
+\newcommand{\hangfrom}[1]{%
+  \setbox\@tempboxa\hbox{{#1}}%
+  \hangindent \wd\@tempboxa\noindent\box\@tempboxa}
+}
+    
 

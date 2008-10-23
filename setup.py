@@ -36,6 +36,7 @@
 
 import glob
 import os
+import sys
 import string
 
 from distutils.core import Command
@@ -222,33 +223,42 @@ class build_docs (Command):
             
         os.makedirs(dir)
         
-    def _epydocFiles(self, module, dir = None, type = 'latex'):
+    def _epydocFiles(self, module, dir = None, type = 'pdflatex'):
         dir = os.path.join(dir, type)
         
-        command = "epydoc --" + type + " --output " + dir + " --name FiPy " + module
-        
-        os.system(command)
+        import epydoc.cli
+        epydoc.cli.cli(["--%s" % type, "--output", dir, 
+                        "--no-private", "--show-imports", 
+                        "--name", "FiPy", 
+                        module])
 
     def _buildTeXAPIs(self):
         dir = os.path.join('documentation', 'manual', 'api')
         self._initializeDirectory(dir = dir, type = 'latex')
         dir = os.path.join(dir, 'latex')
         
-        from utils.epydoc import driver
-        driver.epylatex(module_names = ['fipy/'], options = {'target':dir, 'list_modules':0})
+        import epydoc.cli
+        epydoc.cli.cli(["--latex", "--output", dir, 
+                        "--graph=classtree", "--inheritance=listed", 
+                        "--no-private", "--show-imports", 
+                        "fipy/"])
         
         savedir = os.getcwd()
         try:
             
             os.chdir(os.path.join('documentation','manual'))
-            f = open('api.tex', 'w')
+#             f = open('api.tex', 'w')
+            f = open(os.path.join('api','latex', 'api-rev.tex'), 'w')
             f.write("% This file is created automatically by:\n")
             f.write("% 	python setup.py build_docs --latex\n\n")
             for root, dirs, files in os.walk(os.path.join('api','latex'), topdown=True):
                 
                 if 'api.tex' in files:
                     files.remove('api.tex')
-                    
+
+                if 'api-rev.tex' in files:
+                    files.remove('api-rev.tex')
+
                 if 'fipy-module.tex' in files:
                     files.remove('fipy-module.tex')
 
@@ -305,7 +315,8 @@ class build_docs (Command):
                         
                     split = os.path.splitext(name)
                     if split[1] == ".tex":
-                        f.write("\\input{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n\\newpage\n")
+                        f.write("\\input{" + os.path.splitext(name)[0] + "}\n\\newpage\n")
+#                         f.write("\\input{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n\\newpage\n")
 
             f.close()
         except:
@@ -384,9 +395,11 @@ class build_docs (Command):
                 self._initializeDirectory(dir = dir, type = 'latex')
                 dir = os.path.join(dir, 'latex')
                                
-                from utils.epydoc import driver
-                driver.epylatex(module_names = ['examples/'], options = {'target':dir})
-                
+                import epydoc.cli
+                epydoc.cli.cli(["--latex", "--output", dir, 
+                                "--no-private", "--show-imports", 
+                                "examples/"])
+
         if self.html:
             dir = os.path.join('documentation', 'manual', 'api')
             self._initializeDirectory(dir = dir, type = 'html')
@@ -398,6 +411,8 @@ class build_docs (Command):
             dir = os.path.join('documentation', 'manual', 'tutorial')
             self._initializeDirectory(dir = dir, type = 'latex')
             dir = os.path.join(dir, 'latex')
+##             self._initializeDirectory(dir = dir, type = 'pdflatex')
+##             dir = os.path.join(dir, 'pdflatex')
 
             # to avoid a collision between the real fipy namespace
             # and the fictional fipy namespace we use for the illustration
@@ -414,8 +429,11 @@ if sys.modules.has_key('epydoc.uid'):
     sys.modules['epydoc.uid']._variable_uids = {}
     sys.modules['epydoc.uid']._name_to_uid = {}
 
-from utils.epydoc import driver
-driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options = {'target':dir, 'list_modules':0})
+import epydoc.cli
+epydoc.cli.cli(["--latex", "--output", dir, 
+                "--graph=classtree", 
+                "--no-private", "--show-imports", 
+                "documentation/manual/tutorial/fipy/"])
 """)
 
         if self.guide or self.apis:
