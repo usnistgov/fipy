@@ -5,12 +5,9 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "cellVolumeAverageVariable.py"
- #                                    created: 10/7/04 {2:28:00 PM} 
- #                                last update: 1/3/07 {3:25:48 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  

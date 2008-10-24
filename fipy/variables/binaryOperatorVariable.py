@@ -5,8 +5,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "binaryOperatorVariable.py"
- #                                     created: 5/16/07 {9:55:54 AM}
- #                                 last update: 6/1/08 {11:02:52 AM}
+ #
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>

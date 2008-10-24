@@ -5,8 +5,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "uniformGrid3D.py"
- #                                     created: 3/2/06 {3:57:15 PM}
- #                                 last update: 7/2/08 {9:54:05 AM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,12 +28,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
- # History
- # 
- # modified   by  rev reason
- # ---------- --- --- -----------
- # 2006-03-02 JEG 1.0 original
  # 
  # ########################################################################
  ##

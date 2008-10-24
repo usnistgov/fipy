@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "modPhysicalField.py"
- #                                    created: 12/28/03 {10:56:55 PM} 
- #                                last update: 9/3/04 {10:35:55 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -34,11 +33,6 @@
  # 
  # Physical fields or quantities with units
  #
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-12-28 JEG 1.0 original
  # ###################################################################
  ##
 

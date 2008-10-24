@@ -5,10 +5,8 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "collectedDiffusionTerm.py"
- #                                     created: 3/28/07 {8:44:05 AM}
- #                                 last update: 3/29/07 {12:25:22 PM}
- # Author: Jonathan Guyer
- # E-mail: <guyer@nist.gov>
+ #
+ # Author: Jonathan Guyer <guyer@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
  #  
@@ -28,12 +26,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
- # History
- # 
- # modified   by  rev reason
- # ---------- --- --- -----------
- # 2007-03-28 JEG 1.0 original
  # 
  # #############################################################################
  ##

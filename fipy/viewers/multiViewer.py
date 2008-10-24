@@ -3,10 +3,8 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "multiViewer.py"
- #                                    created: 12/17/05 {6:28:03 PM} 
- #                                last update: 7/2/08 {5:10:41 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -29,13 +27,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2005-12-17 JEG 1.0 original
  # ###################################################################
  ##
 

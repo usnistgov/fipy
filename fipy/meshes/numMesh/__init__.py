@@ -5,8 +5,7 @@
  #  FiPy - Python-based phase field solver
  # 
  #  FILE: "__init__.py"
- #                                    created: 11/20/03 {4:47:54 PM} 
- #                                last update: 9/3/04 {10:38:58 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-20 JEG 1.0 original
  # ###################################################################
  ##
 

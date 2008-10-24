@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "solver.py"
- #                                    created: 11/14/03 {3:47:20 PM} 
- #                                last update: 11/16/06 {2:36:00 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-14 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -110,6 +102,9 @@ class Solver:
           - `precon`: Preconditioner to use. This parameter is only available for Trilinos solvers. 
 
         """
+        if self.__class__ is Solver:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         self.tolerance = tolerance
         if steps is not None:
             import warnings
@@ -125,7 +120,7 @@ class Solver:
         self.preconditioner = precon
 	
     def _solve(self, L, x, b):
-        pass
+        raise NotImplementedError
         
     _warningList = (ScalarQuantityOutOfRangeWarning,
                     StagnatedSolverWarning,
@@ -151,4 +146,4 @@ class Solver:
         return True
 
     def _getMatrixClass(self):
-        pass
+        raise NotImplementedError

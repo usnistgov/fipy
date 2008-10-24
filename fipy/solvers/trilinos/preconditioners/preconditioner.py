@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "preconditioner.py"
- #                                    created: 06/25/07
- #                                last update: 06/25/07
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,13 +31,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
@@ -55,8 +47,9 @@ class Preconditioner:
         """
         Create a `Preconditioner` object.
         """
-        pass
+        if self.__class__ is Preconditioner:
+            raise NotImplementedError, "can't instantiate abstract base class"
 	
     def _applyToSolver(self, solver, matrix):
-        pass
+        raise NotImplementedError
         

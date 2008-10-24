@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "numerix.py"
- #                                    created: 1/10/04 {10:23:17 AM} 
- #                                last update: 6/13/08 {6:38:52 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1073,6 +1072,17 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     else:
         return MA.allclose(first, second, atol=atol, rtol=rtol)
 
+def isclose(first, second, rtol=1.e-5, atol=1.e-8):
+    r"""
+    Returns which elements of `first` and `second` are equal, subect to the given
+    relative and absolute tolerances, such that::
+        
+        | first - second | < atol + rtol * | second |
+        
+    This means essentially that both elements are small compared to `atol` or
+    their difference divided by `second`'s value is small compared to `rtol`.
+    """
+    return abs(first - second) < atol + rtol * abs(second)
 
 def take(a, indices, axis=0, fill_value=None):
     """

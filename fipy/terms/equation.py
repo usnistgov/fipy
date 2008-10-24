@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "equation.py"
- #                                    created: 11/9/04 {11:51:08 AM} 
- #                                last update: 7/25/07 {9:57:05 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-11-09 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -133,10 +125,10 @@ class _Equation(Term):
         r"""
         Add a `Term` to another `Term`, number or variable.
 
-           >>> Term(coeff=1.) + 10. + Term(2.)
-           10.0 + Term(coeff=3.0) == 0
-           >>> Term(coeff=1.) + Term(coeff=2.) + Term(coeff=3.)
-           Term(coeff=6.0)
+           >>> __Term(coeff=1.) + 10. + __Term(2.)
+           10.0 + __Term(coeff=3.0) == 0
+           >>> __Term(coeff=1.) + __Term(coeff=2.) + __Term(coeff=3.)
+           __Term(coeff=6.0)
 
         """
         if self._otherIsZero(other):
@@ -177,8 +169,8 @@ class _Equation(Term):
         r"""
          Negate a `Term`.
 
-           >>> -(Term(coeff=1.) - Term(coeff=2.))
-           Term(coeff=1.0)
+           >>> -(__Term(coeff=1.) - __Term(coeff=2.))
+           __Term(coeff=1.0)
 
         """
         dup = self.copy()
@@ -188,6 +180,12 @@ class _Equation(Term):
                 dup.terms[key] = -term
                 
         return dup
+
+class __Term(Term):
+    """
+    Dummy subclass for tests
+    """
+    pass 
 
 def _test(): 
     import doctest

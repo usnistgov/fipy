@@ -31,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -61,6 +54,9 @@ class _Viewer:
           - `title`: displayed at the top of the `Viewer` window
 
         """
+        if self.__class__ is _Viewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         self.vars = self._getSuitableVars(vars)
 
         kwlimits.update(limits)
@@ -123,7 +119,7 @@ class _Viewer:
         """
         Update the display of the viewed variables.
         """
-        pass
+        raise NotImplementedError
 
     def plotMesh(self, filename = None):
         """

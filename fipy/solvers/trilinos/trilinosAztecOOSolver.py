@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "trilinosAztecOOSolver.py"
- #                                    created: 06/25/07 
- #                                last update: 06/25/07 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
@@ -64,6 +56,9 @@ class TrilinosAztecOOSolver(TrilinosSolver):
           - `precon`: Preconditioner object to use. 
 
         """
+        if self.__class__ is TrilinosAztecOOSolver:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         TrilinosSolver.__init__(self, tolerance=tolerance,
                                 iterations=iterations, steps=steps, precon=None)
         self.preconditioner = precon

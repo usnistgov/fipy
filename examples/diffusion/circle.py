@@ -29,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2006- 4- 6 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -184,7 +177,9 @@ We first step through the transient problem
 
 .. raw:: latex
 
-   {\tiny \verbatimtabinput[30]{images/examples/diffusion/myTSV.tsv}}
+   \tabson[30]
+   {\tiny \verbatiminput{images/examples/diffusion/myTSV.tsv}}
+   \tabsoff
    
 The values are listed at the `Cell` centers. Particularly for irregular
 meshes, no specific ordering should be relied upon. Vector quantities are
