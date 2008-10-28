@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 3/6/06 {8:57:23 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,13 +28,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -60,6 +52,10 @@ def _suite():
             'fipy.meshes.numMesh.uniformGrid1D',
             'fipy.meshes.numMesh.uniformGrid2D',
             'fipy.meshes.numMesh.uniformGrid3D',
+            'fipy.meshes.numMesh.cylindricalUniformGrid1D',
+            'fipy.meshes.numMesh.cylindricalUniformGrid2D',
+            'fipy.meshes.numMesh.cylindricalGrid1D',
+            'fipy.meshes.numMesh.cylindricalGrid2D',
         ))
     
 if __name__ == '__main__':

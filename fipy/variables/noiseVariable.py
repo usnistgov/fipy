@@ -3,8 +3,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "noiseVariable.py"
- #                                    created: 8/25/05 {1:25:23 PM} 
- #                                last update: 12/23/05 {1:41:56 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  #  See the file "license.terms" for information on usage and  redistribution of
  #  this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  1939-08-25 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -59,6 +51,9 @@ class NoiseVariable(CellVariable):
     number generated used by all `NoiseVariable` objects.
     """
     def __init__(self, mesh, name = '', hasOld = 0):
+        if self.__class__ is NoiseVariable:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         CellVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
         self.scramble()
         

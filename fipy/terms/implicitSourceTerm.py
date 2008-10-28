@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "implicitSourceTerm.py"
- #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 3/29/07 {10:40:42 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -57,6 +49,24 @@ class ImplicitSourceTerm(SourceTerm):
     `coeff` value.       
     """
     def _calcCoeffVectors(self, var, equation=None):
+        """
+        Test for a bug due to the sign operator not being updating
+        correctly.
+
+            >>> from fipy import *
+            >>> m = Grid1D(nx=1)
+            >>> v = CellVariable(mesh=m, value=1.)
+            >>> eq = TransientTerm() == ImplicitSourceTerm(v)
+            >>> eq.solve(v)
+            >>> print v
+            [ 2.]
+            >>> v.setValue(-1.)
+            >>> eq.solve(v)
+            >>> print v
+            [-0.5]
+            
+        """
+
         coeff = self._getGeomCoeff(var.getMesh())
         from fipy.tools.numerix import sign
         combinedSign = self._diagonalSign * sign(coeff)
@@ -66,3 +76,10 @@ class ImplicitSourceTerm(SourceTerm):
             'b vector': -coeff * var * (combinedSign < 0),
             'new value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd')
         }
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

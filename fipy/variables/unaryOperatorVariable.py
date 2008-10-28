@@ -3,8 +3,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "unaryOperatorVariable.py"
- #                                     created: 5/16/07 {9:55:46 AM}
- #                                 last update: 5/16/07 {9:55:46 AM}
+ #
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>

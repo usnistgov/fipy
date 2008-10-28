@@ -608,13 +608,24 @@ class Mesh:
     def getNearestCell(self, point):
         return self._getCellsByID([self._getNearestCellID(point)])[0]
 
-    def _getNearestCellID(self, point):
+    def _getNearestCellID(self, points):
+        """
+        Test cases
+
+           >>> from fipy import *
+           >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
+           >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
+           >>> print m0._getNearestCellID(m1.getCellCenters())
+           [4 5 7 8]
+           
+        """
+        points = numerix.resize(points, (self.getNumberOfCells(), len(points), len(points[0]))).swapaxes(0,1)
+
         try:
-            tmp = self.getCellCenters() - point
+            tmp = self.getCellCenters()[...,numerix.newaxis] - points
         except TypeError:
-            tmp = self.getCellCenters() - PhysicalField(point)
-        i = numerix.argmin(numerix.add.reduce((tmp * tmp), axis = 0))
-        return i   
+            tmp = self.getCellCenters()[...,numerix.newaxis] - PhysicalField(points)
+        return numerix.argmin(numerix.dot(tmp, tmp, axis = 0), axis=0)
         
     def _subscribe(self, var):
         if not hasattr(self, 'subscribedVariables'):
@@ -634,8 +645,6 @@ class Mesh:
         
         return self.subscribedVariables
         
-
-
 ## pickling
 
 ##    self.__getinitargs__(self):

@@ -3,8 +3,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "matplotlibSparseMatrixViewer.py"
- #                                     created: 7/24/07 {9:42:55 AM}
- #                                 last update: 7/25/07 {10:29:55 AM}
+ #
  # Author: Jonathan Guyer <guyer@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>

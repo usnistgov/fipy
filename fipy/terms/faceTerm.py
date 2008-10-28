@@ -29,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
  
@@ -53,6 +46,9 @@ class FaceTerm(Term):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.):
+        if self.__class__ is FaceTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         Term.__init__(self, coeff=coeff)
         self.coeffMatrix = None
             

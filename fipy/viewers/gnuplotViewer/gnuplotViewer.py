@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gnuplotViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 7/6/05 {4:31:22 PM} { 2:45:36 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -84,6 +76,9 @@ class GnuplotViewer(Viewer):
           - `title`: displayed at the top of the Viewer window
 
         """
+        if self.__class__ is GnuplotViewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         Viewer.__init__(self, vars = vars, limits = limits, title = title)
         import Gnuplot
         self.g = Gnuplot.Gnuplot()

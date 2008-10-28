@@ -29,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -1240,6 +1233,9 @@ class Variable(object):
 
     def ceil(self):
         return self._UnaryOperatorVariable(lambda a: numerix.ceil(a))
+
+    def sign(self):
+        return self._UnaryOperatorVariable(lambda a: numerix.sign(a), canInline=False)
         
     def conjugate(self):
         return self._UnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline=False)

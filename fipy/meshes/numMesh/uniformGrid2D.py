@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "uniformGrid1D.py"
- #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 6/5/08 {8:27:07 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2006-02-28 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -554,6 +546,39 @@ class UniformGrid2D(Grid2D):
     def _calcScaledGeometry(self):
         pass
 
+    def _getNearestCellID(self, points):
+        """
+        Test cases
+
+           >>> from fipy import *
+           >>> m = Grid2D(nx=3, ny=2)
+           >>> eps = numerix.array([[1e-5, 1e-5]])
+           >>> print m._getNearestCellID(((0., .9, 3.), (0., 2., 2.)))
+           [0 3 5]
+           >>> print m._getNearestCellID(([1.1], [1.5]))
+           [4]
+           >>> m0 = Grid2D(nx=2, ny=2, dx=1., dy=1.)
+           >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
+           >>> print m0._getNearestCellID(m1.getCellCenters())
+           [0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3]
+           
+        """
+        x0, y0 = self.getCellCenters()[...,0]        
+        xi, yi = points
+        nx, ny = self.getShape()
+        dx, dy = self.dx, self.dy
+        
+        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i[i < 0] = 0
+        i[i > nx - 1] = nx - 1
+
+        j = numerix.array(numerix.rint(((yi - y0) / dy)), 'l')
+        j[j < 0] = 0
+        j[j > ny - 1]  = ny - 1
+
+        return j * nx + i
+
+        
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

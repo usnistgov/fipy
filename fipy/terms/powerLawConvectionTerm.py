@@ -5,10 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "powerLawConvectionTerm.py"
- #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 1/19/06 {11:19:52 AM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  

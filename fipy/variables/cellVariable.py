@@ -143,12 +143,54 @@ class CellVariable(_MeshVariable):
                                         value=self,
                                         hasOld=0)
             
-    def __call__(self, point=None):
-        if point is not None:
-            return self[...,self.getMesh()._getNearestCellID(point)]
+    def __call__(self, points=None, order=0):
+        r"""
+        Interpolates the CellVariable to a set of points using a
+        method that has a memory requirement on the order of Ncells by
+        Npoints in general, but uses only Ncells when the
+        CellVariable's mesh is a UniformGrid object.
+
+        :Parameters:
+
+           - `points`: A point or set of points in the format (X, Y, Z)
+           - `order`: The order of interpolation, 0 or 1, default is 0
+
+        Tests
+
+            >>> from fipy import *
+            >>> m = Grid2D(nx=3, ny=2)
+            >>> v = CellVariable(mesh=m, value=m.getCellCenters()[0])
+            >>> print v(((0., 1.1, 1.2), (0., 1., 1.)))
+            [ 0.5  1.5  1.5]
+            >>> print v(((0., 1.1, 1.2), (0., 1., 1.)), order=1)
+            [ 0.25  1.1   1.2 ]
+            >>> m0 = Grid2D(nx=2, ny=2, dx=1., dy=1.)
+            >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
+            >>> x, y = m0.getCellCenters()
+            >>> v0 = CellVariable(mesh=m0, value=x * y)
+            >>> print v0(m1.getCellCenters())
+            [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
+              0.75  0.75  2.25  2.25]
+            >>> print v0(m1.getCellCenters(), order=1)
+            [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
+              1.875  2.25   0.625  1.     2.25   2.625]
+
+        """           
+        if points is not None:
+
+            if order == 0:
+                return self[...,self.getMesh()._getNearestCellID(points)]
+
+            elif order == 1:
+                cellID = self.getMesh()._getNearestCellID(points)
+                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().getCellCenters()[...,cellID], self.getGrad()[...,cellID])
+
+            else:
+                raise ValueError, 'order should be either 0 or 1'
+
         else:
             return _MeshVariable.__call__(self)
-
+        
     def getCellVolumeAverage(self):
         r"""
         Return the cell-volume-weighted average of the `CellVariable`:
@@ -479,7 +521,6 @@ class CellVariable(_MeshVariable):
 ##         self.__init__(hasOld=hasOld, **dict)
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())
-
 
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):

@@ -3,8 +3,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "operatorVariable.py"
- #                                     created: 5/6/07 {10:53:26 AM}
- #                                 last update: 6/16/08 {4:55:45 PM}
+ #
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -52,6 +51,9 @@ def _OperatorVariableClass(baseClass=None):
                 self._requires(aVar)
             
             self.dontCacheMe()
+            
+        def copy(self):
+            return baseClass.copy(self)
 
         def _calcValue(self):
             if not self.canInline:
@@ -1128,4 +1130,4 @@ def _test():
     return doctest.testmod()
     
 if __name__ == "__main__": 
-    _test() 
+    _test()

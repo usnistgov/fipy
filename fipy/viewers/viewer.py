@@ -31,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -62,6 +55,9 @@ class Viewer:
           - `title`: displayed at the top of the Viewer window
 
         """
+        if self.__class__ is Viewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         self.vars = self._getSuitableVars(vars)
 
         self.limits = limits
@@ -124,7 +120,7 @@ class Viewer:
         """
         Update the display of the viewed variables.
         """
-        pass
+        raise NotImplementedError
 
     def _autoscale(self, vars, datamin=None, datamax=None):
         from fipy.tools import numerix

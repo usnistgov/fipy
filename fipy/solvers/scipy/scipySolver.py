@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "scipySolver.py"
- #                                    created: 06/28/07
- #                                last update: 06/29/07
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2007-06-28 MLG 1.0 original
  # ###################################################################
  ##
 
@@ -52,6 +44,11 @@ class ScipySolver(Solver):
     
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
+    def __init__(self, *args, **kwargs):
+        if self.__class__ is ScipySolver:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
+        Solver.__init__(self, *args, **kwargs)
 
     def _getMatrixClass(self):
         return _PysparseMatrix

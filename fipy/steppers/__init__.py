@@ -3,10 +3,8 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "__init__.py"
- #                                     created: 11/1/06 {4:27:40 PM}
- #                                 last update: 11/13/06 {9:27:59 AM}
- # Author: Jonathan Guyer
- # E-mail: <guyer@nist.gov>
+ #
+ # Author: Jonathan Guyer <guyer@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
  #  
@@ -26,12 +24,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
- # History
- # 
- # modified   by  rev reason
- # ---------- --- --- -----------
- # 2006-11-06 JEG 1.0 original
  # 
  # ########################################################################
  ##

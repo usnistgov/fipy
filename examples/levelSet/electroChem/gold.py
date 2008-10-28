@@ -5,10 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gold.py"
- #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 11/9/07 {6:59:37 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
@@ -30,13 +28,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 

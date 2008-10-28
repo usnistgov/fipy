@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "sourceTerm.py"
- #                                    created: 11/28/03 {11:36:25 AM} 
- #                                last update: 3/28/07 {10:17:48 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -49,6 +41,8 @@ class SourceTerm(CellTerm):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff = 0.):
+        if self.__class__ is SourceTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
 	CellTerm.__init__(self, coeff = coeff) 
 	
     def _calcGeomCoeff(self, mesh):

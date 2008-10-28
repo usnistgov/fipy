@@ -31,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
  
@@ -95,7 +88,11 @@ class Matplotlib2DViewer(MatplotlibViewer):
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
         self.collection.set_linewidth(0)
-        ax.add_patch(self.collection)
+        try:
+            ax.add_patch(self.collection)
+        except:
+            # PolyCollection not child of PatchCollection in matplotlib 0.98
+            ax.add_collection(self.collection)
 
         if self._getLimit('xmin') is None:
             xmin = coords[0].min()

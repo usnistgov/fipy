@@ -29,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-13 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -46,7 +39,7 @@ from fipy.tools import numerix
 from fipy.terms.term import Term
 from fipy.tools import numerix
 
-class _DiffusionTerm(Term):
+class DiffusionTerm(Term):
 
     r"""
     This term represents a higher order diffusion term. The order of the term is determined
@@ -136,7 +129,7 @@ class _DiffusionTerm(Term):
         return higherOrderBCs, lowerOrderBCs
 
     def _getNormals(self, mesh):
-        pass
+        return mesh._getFaceCellToCellNormals()
 
     def _getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
@@ -170,7 +163,7 @@ class _DiffusionTerm(Term):
         return self.rotationTensor
     
     def _treatMeshAsOrthogonal(self, mesh):
-        pass
+        return mesh._isOrthogonal()
 
     def _calcAnisotropySource(self, coeff, mesh, var):
 
@@ -584,19 +577,12 @@ class _DiffusionTerm(Term):
         """
         pass
 
-class DiffusionTermNoCorrection(_DiffusionTerm):
+class DiffusionTermNoCorrection(DiffusionTerm):
     def _getNormals(self, mesh):
         return mesh._getFaceNormals()
 
     def _treatMeshAsOrthogonal(self, mesh):
         return True
-        
-class DiffusionTerm(_DiffusionTerm):
-    def _getNormals(self, mesh):
-        return mesh._getFaceCellToCellNormals()
-
-    def _treatMeshAsOrthogonal(self, mesh):
-        return mesh._isOrthogonal()
         
 def _test(): 
     import doctest

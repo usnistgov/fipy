@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "convectionTerm.py"
- #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 11/4/07 {4:31:00 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-13 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -68,20 +60,20 @@ class ConvectionTerm(FaceTerm):
             >>> fv = FaceVariable(mesh = m)
             >>> vcv = CellVariable(mesh=m, rank=1)
             >>> vfv = FaceVariable(mesh=m, rank=1)
-            >>> ConvectionTerm(coeff = cv)
+            >>> __ConvectionTerm(coeff = cv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a vector value.
-            >>> ConvectionTerm(coeff = fv)
+            >>> __ConvectionTerm(coeff = fv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a vector value.
-            >>> ConvectionTerm(coeff = vcv) #doctest: +ELLIPSIS
-            ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(...))
-            >>> ConvectionTerm(coeff = vfv)
-            ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
-            >>> ConvectionTerm(coeff = (1,))
-            ConvectionTerm(coeff=(1,))
+            >>> __ConvectionTerm(coeff = vcv) #doctest: +ELLIPSIS
+            __ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(...))
+            >>> __ConvectionTerm(coeff = vfv)
+            __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
+            >>> __ConvectionTerm(coeff = (1,))
+            __ConvectionTerm(coeff=(1,))
             >>> from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
             >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var = cv)
             >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var = cv)
@@ -93,8 +85,12 @@ class ConvectionTerm(FaceTerm):
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)
             >>> vfv2 = FaceVariable(mesh=m2, rank=1)
-            >>> ct = ConvectionTerm(coeff=vcv2)
-            >>> ct = ConvectionTerm(coeff=vfv2)
+            >>> __ConvectionTerm(coeff=vcv2)
+            __ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+            >>> __ConvectionTerm(coeff=vfv2)
+            __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
             >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2)
             >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2)
 
@@ -103,6 +99,9 @@ class ConvectionTerm(FaceTerm):
           - `coeff` : The `Term`'s coefficient value.
           - `diffusionTerm` : ** deprecated **. The Peclet number is calculated automatically.
         """
+        if self.__class__ is ConvectionTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         if diffusionTerm is not None:
             import warnings
             warnings.warn("The Peclet number is calculated automatically. diffusionTerm will be ignored.", DeprecationWarning, stacklevel=2)
@@ -167,6 +166,12 @@ class ConvectionTerm(FaceTerm):
             return self.__class__(coeff=self.coeff + other.coeff)
         else:
             return FaceTerm.__add__(self, other)
+
+class __ConvectionTerm(ConvectionTerm): 
+    """
+    Dummy subclass for tests
+    """
+    pass 
 
 def _test(): 
     import doctest

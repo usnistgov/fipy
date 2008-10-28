@@ -865,6 +865,15 @@ def ceil(arr):
     else:
         return umath.ceil(arr)
 
+
+def sign(arr):
+    if _isPhysical(arr):
+        return arr.sign()
+    elif type(arr) is type(array((0))):
+        return NUMERIX.sign(arr)
+    else:
+        return umath.sign(arr)
+
 def exp(arr):
     r"""
     Natural exponent of
@@ -1119,6 +1128,18 @@ def minimum(a, b, c=None):
         return b.minimum(a)
     else:
         return NUMERIX.minimum(a, b, c)
+
+def isclose(first, second, rtol=1.e-5, atol=1.e-8):
+    r"""
+    Returns which elements of `first` and `second` are equal, subect to the given
+    relative and absolute tolerances, such that::
+        
+        | first - second | < atol + rtol * | second |
+        
+    This means essentially that both elements are small compared to `atol` or
+    their difference divided by `second`'s value is small compared to `rtol`.
+    """
+    return abs(first - second) < atol + rtol * abs(second)
 
 def maximum(a, b, c=None):
     from fipy.variables.variable import Variable

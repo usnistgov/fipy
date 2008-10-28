@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  #
  #  FILE: "gmshImport.py"
- #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 11/8/07 {6:01:15 PM}
+ #
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,13 +33,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-8-12 ADM 1.0 original
  # ###################################################################
  #
 

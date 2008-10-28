@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gistViewer.py"
- #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 1/3/07 {3:23:40 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -72,6 +64,9 @@ class GistViewer(Viewer):
           - `title`: displayed at the top of the Viewer window
           - `dpi`: the dot-per-inch resolution of the display
         """
+        if self.__class__ is GistViewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         Viewer.__init__(self, vars = vars, limits = limits, title = title)
         
         self.mesh = self.vars[0].getMesh()
