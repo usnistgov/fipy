@@ -302,13 +302,15 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
             viewer = MultiViewer(viewers=(
                 Viewer(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
                 Viewer(catalystVar.getInterfaceVar())))
+    else:
+        viewer = None
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
 
     for step in range(numberOfSteps):
 
-        if step % 5 == 0:
+        if step % 5 == 0 and viewer is not None:
             viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
