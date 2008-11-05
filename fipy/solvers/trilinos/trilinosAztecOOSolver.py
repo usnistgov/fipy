@@ -73,4 +73,4 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         if self.preconditioner is not None:
             self.preconditioner._applyToSolver(solver=Solver, matrix=A)
         
-        return Solver.Iterate(self.iterations, self.tolerance)
+        Solver.Iterate(self.iterations, self.tolerance)
