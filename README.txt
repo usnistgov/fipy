@@ -2,7 +2,6 @@
 Overview
 ========
 
-
 |FiPy| is an object oriented, partial differential equation (PDE) solver,
 written in Python_ |citePython|, based on a standard finite volume (FV)
 approach.  The framework has been developed in the `Metallurgy Division`_
