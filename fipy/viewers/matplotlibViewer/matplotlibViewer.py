@@ -69,7 +69,7 @@ class _MatplotlibViewer(_Viewer):
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
         """
-        if self.__class__ is MatplotlibViewer:
+        if self.__class__ is _MatplotlibViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
             
         kwlimits.update(limits)

@@ -64,7 +64,7 @@ class _GistViewer(_Viewer):
             All viewers will use `datamin` and `datamax`. 
             Any limit set to a (default) value of `None` will autoscale.
         """
-        if self.__class__ is GistViewer:
+        if self.__class__ is _GistViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
     
         kwlimits.update(limits)

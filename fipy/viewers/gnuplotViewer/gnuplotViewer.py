@@ -76,7 +76,7 @@ class _GnuplotViewer(_Viewer):
             `None` will autoscale.
 
         """
-        if self.__class__ is GnuplotViewer:
+        if self.__class__ is _GnuplotViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
     
         kwlimits.update(limits)
