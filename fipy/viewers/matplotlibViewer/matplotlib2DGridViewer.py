@@ -47,7 +47,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
     
     __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
 
-    def __init__(self, vars, title=None, limits={}, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, **kwlimits):
         """
         Creates a `Matplotlib2DGridViewer`.
         
@@ -57,6 +57,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
           - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
             `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
             a (default) value of `None` will autoscale.
+          - `cmap`: The colormap. Defaults to `pylab.cm.jet`
 
         """
         kwlimits.update(limits)
@@ -64,18 +65,25 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
 
         import pylab
 
+        if cmap is None:
+            self.cmap = pylab.cm.jet
+        else:
+            self.cmap = cmap
+
         self.image = pylab.imshow(self._getData(),
                                   extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
                                           self._getLimit('ymin'), self._getLimit('ymax')),
                                   vmin=self._getLimit(key=('datamin', 'zmin')),
-                                  vmax=self._getLimit(key=('datamax', 'zmax')))
+                                  vmax=self._getLimit(key=('datamax', 'zmax')),
+                                  cmap=self.cmap)
                    
         if title is None:                          
             pylab.title(self.vars[0].getName())
 
         # colorbar will not automatically update
         # http://sourceforge.net/mailarchive/forum.php?thread_id=10159140&forum_id=33405
-        pylab.colorbar()
+        self.colorbar = pylab.colorbar()
+        self.colorbar.set_label(self.vars[0].getName())
 
     def _getLimit(self, key):
         limit = _MatplotlibViewer._getLimit(self, key)
@@ -107,8 +115,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
 
     def _plot(self):
         import pylab
-        pylab.jet()
-
+        
         # per http://sourceforge.net/tracker/index.php?func=detail&aid=1656374&group_id=80706&atid=560720
         # although seems to no longer be needed with matplotlib >= 0.91.1
         pylab.sci(self.image)
