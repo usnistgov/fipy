@@ -156,7 +156,7 @@
             \begin{reSTadmonition}[Warning]
                 There are subtleties in properly linearizing a source term
                 which are examined in
-                Example~\ref{examples:phase:simple:input}.
+                Example~\ref{examples:phase:simple}.
             \end{reSTadmonition}
 
             \subsection{How do I represent a \dots{} term that 
@@ -234,7 +234,7 @@
 \end{verbatim}
                     \end{quote}
                     This technique is used in
-                    Example~\ref{examples:phase:anisotropy:input}.
+                    Example~\ref{examples:phase:anisotropy}.
                     
         \subsection{What if my term involves the dependent variable, 
             but not where \FiPy{} puts it?}
@@ -283,15 +283,17 @@
             \end{reSTadmonition}
 
 
-    \section{How do I export data?} The way to save your calculations
+    \section{How can I see what I'm doing?}
+    
+    \subsection{How do I export data?} The way to save your calculations
     depends on how you plan to make use of the data. If you want to
     save it for ``restart'' (so that you can continue or redirect a
     calculation from some intermediate stage), then you'll want to
     ``pickle'' the \Python{} data with the \Module{dump} module. This
-    is illustrated in Examples~\ref{examples:phase:anisotropy:input},
-    \ref{examples:phase:impingement:mesh40x1:input},
-    \ref{examples:phase:impingement:mesh20x20:input}, and
-    \ref{examples:levelSet:electroChem:inputWriteScriptHowTo}.
+    is illustrated in Examples~\ref{examples:phase:anisotropy},
+    \ref{examples:phase:impingement:mesh40x1},
+    \ref{examples:phase:impingement:mesh20x20}, and
+    \ref{examples:levelSet:electroChem:howToWriteAScript}.
     
     On the other hand, pickled \FiPy{} data is of little use to
     anything besides \Python{} and \FiPy{}. If you want to import your
@@ -302,7 +304,7 @@
     tab-separated-values with a \Class{TSVViewer}. This is 
     illustrated in Example~\ref{examples:diffusion:circle}.
     
-    \section{How do I save a plot image?} Some of the viewers have a
+    \subsection{How do I save a plot image?} Some of the viewers have a
     button or other mechanism in the user interface for saving an
     image file. Also, you can supply an optional keyword
     \verb+filename+ when you tell the viewer to \verb+plot()+,
@@ -349,7 +351,7 @@
     Graphics}). \MayaVi{} only accepts ``\verb+.png+''. \gnuplot{} 
     only accepts ``\verb+.eps+''.
     
-        \subsection{What if I only want the saved file, with no
+        \subsubsection{What if I only want the saved file, with no
         display on screen?} To our knowledge, this is only supported
         by \Matplotlib{}, as is explained in the
         \href{http://matplotlib.sourceforge.net/faq.html#BATCHMODE}{\Matplotlib{}
@@ -359,11 +361,27 @@
         \url{http://matplotlib.sourceforge.net/backends.html}.
         
 
-    \section{How do I make a movie?} \FiPy{} has no facilities for 
+    \subsection{How do I make a movie?} \FiPy{} has no facilities for 
     making movies. You will need to save individual frames (see the 
     previous question) and then stitch them together into a movie, 
     using one of a variety of different free, shareware, or 
     commercial software packages.
+    
+    \subsection{Why don't the \Class{Viewer}s look the way I want?}
+    \FiPy's viewers are utilitarian. They're designed to let you see 
+    \emph{something} with a minimum of effort. Because different 
+    plotting packages have different capabilities and some are easier 
+    to install on some platforms than on others, we have tried to 
+    support a range of \Python{} plotters with a minimal common set of 
+    features. Many of these packages are capable of much more, 
+    however. Often, you can invoke the \Class{Viewer} you want, and 
+    then issue supplemental commands for the underlying plotting 
+    package. The better option is to make a ``subclass'' of the 
+    \FiPy{} \Class{Viewer} that comes closest to producing the image 
+    you want. You can then override just the behavior you wan to 
+    change, while letting \FiPy{} do most of the heavy lifting. See 
+    \ref{examples:phase:anisotropy} for an example of creating a custom 
+    \Matplotlib{} \Class{Viewer} class.
     
     \section{Iterations, timesteps, and sweeps? Oh, my!} 
     \label{FAQ-IterationsTimestepsSweeps}
@@ -462,7 +480,7 @@
         \end{quote}
         Sweeps are used to achieve better solutions in
         Examples~\ref{examples:diffusion:mesh1D}, 
-        \ref{examples:phase:simple:input}, 
+        \ref{examples:phase:simple}, 
         \ref{examples:phase:binary}, and \ref{examples:flow:stokesCavity}.
 
         \item[timesteps] This outermost layer of repetition is of most
@@ -511,7 +529,7 @@
         function of elapsed time in
         Example~\ref{examples:diffusion:mesh1D}. The timestep is
         chosen based on the expected interfacial velocity in
-        Example~\ref{examples:phase:simple:input}. The timestep is
+        Example~\ref{examples:phase:simple}. The timestep is
         gradually increased as the kinetics slow down in
         Example~\ref{examples:cahnHilliard:inputTanh1D}.
     
