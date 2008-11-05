@@ -20,6 +20,7 @@ documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TALKS.txt
 documentation/TODOLIST.txt
+documentation/VERSION.txt
 documentation/VKML.txt
 documentation/figures/NIST_right2line.pdf
 documentation/logo/logo.tex
@@ -28,6 +29,7 @@ documentation/manual/epydoc.sty
 documentation/manual/faq.tex
 documentation/manual/fipy.bst
 documentation/manual/fipy.dbj
+documentation/manual/fipy.pdf
 documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex
@@ -292,6 +294,7 @@ fipy/meshes/tri2D.py
 fipy/meshes/common/__init__.py
 fipy/meshes/common/mesh.py
 fipy/meshes/numMesh/GmshTest2D.msh
+fipy/meshes/numMesh/UniformCylindricalGrid2D.py
 fipy/meshes/numMesh/__init__.py
 fipy/meshes/numMesh/cell.py
 fipy/meshes/numMesh/cylindricalGrid1D.py
