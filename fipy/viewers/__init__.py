@@ -94,7 +94,7 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
             ViewerClass = ep.load()
             
             while len(vars) > 0:
-                viewer = ViewerClass(vars=vars, title=title, limits=limits)
+                viewer = ViewerClass(vars=vars, title=title, limits=limits, **kwlimits)
                 
                 for var in viewer.getVars():
                     vars.remove(var)
