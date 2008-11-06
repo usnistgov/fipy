@@ -43,8 +43,12 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
     the '`FIPY_VIEWER`' environment variable to either '`gist`', '`gnuplot`',
     '`matplotlib`', or '`tsv`' will specify the viewer.
        
-    The `limits` parameter can be used to constrain the view. For example::
+    The `kwlimits` or `limits` parameters can be used to constrain the view. For example::
             
+        Viewer(vars = some1Dvar, xmin=0.5, xmax=None, datamax=3)
+               
+    or::
+        
         Viewer(vars = some1Dvar, 
                limits = {'xmin': 0.5, 'xmax': None, 'datamax': 3})
         
@@ -63,6 +67,9 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
         will also use `'ymin'` and `'ymax'`, and so on.
         All viewers will use `'datamin'` and `'datamax'`.
         Any limit set to a (default) value of `None` will autoscale.
+      - `**kwlimits`: can be any of *xmin*, *xmax*,
+        *ymin*, *ymax*, *zmin*, *zmax*, *datamin*, *datamax*, with the same
+        caveats as for *limits*.
       
     """
     
@@ -120,6 +127,9 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
         return viewers[0]
         
 def make(*args, **kwargs):
+    """
+    A deprecated synonym for `Viewer`
+    """
     import warnings
     warnings.warn("'Viewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
     return Viewer(*args, **kwargs)
