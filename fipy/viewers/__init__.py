@@ -45,11 +45,11 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
        
     The `kwlimits` or `limits` parameters can be used to constrain the view. For example::
             
-        Viewer(vars = some1Dvar, xmin=0.5, xmax=None, datamax=3)
+        Viewer(vars=some1Dvar, xmin=0.5, xmax=None, datamax=3)
                
     or::
         
-        Viewer(vars = some1Dvar, 
+        Viewer(vars=some1Dvar, 
                limits = {'xmin': 0.5, 'xmax': None, 'datamax': 3})
         
     will return a viewer that displays a line plot from an `x` value
@@ -58,18 +58,17 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
     limit.
 
     :Parameters:
-
-      - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-      - `title`: displayed at the top of the Viewer window
-      - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`,
-        `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
-        A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer
-        will also use `'ymin'` and `'ymax'`, and so on.
-        All viewers will use `'datamin'` and `'datamax'`.
-        Any limit set to a (default) value of `None` will autoscale.
-      - `**kwlimits`: can be any of *xmin*, *xmax*,
-        *ymin*, *ymax*, *zmin*, *zmax*, *datamin*, *datamax*, with the same
-        caveats as for *limits*.
+      vars
+        a `CellVariable` or tuple of `CellVariable` objects to plot
+      title
+        displayed at the top of the Viewer window
+      limits : dict
+        a (deprecated) alternative to limit keyword arguments
+      xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+        displayed range of data. A 1D `Viewer` will only use `xmin` and
+        `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
+        viewers will use `datamin` and `datamax`. Any limit set to a
+        (default) value of `None` will autoscale.
       
     """
     

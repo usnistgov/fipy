@@ -55,12 +55,17 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         
 
         :Parameters:
-          - `vars`: A `CellVariable` object.
-          - `title`: displayed at the top of the `Viewer` window
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+          vars
+            a `CellVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          cmap
+            the colormap. Defaults to `pylab.cm.jet`
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `cmap`: The colormap. Defaults to `pylab.jet`
 
         """
         kwlimits.update(limits)

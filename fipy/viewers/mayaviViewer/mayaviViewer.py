@@ -73,16 +73,15 @@ class MayaviViewer(_Viewer):
         """Create a `MayaviViewer`.
         
         :Parameters:
-
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `title`: displayed at the top of the `Viewer` window
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`,
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
-            use `ymin` and `ymax`, and so on.  All viewers will use
-            `datamin` and `datamax`.  Any limit set to a (default) value of
-            `None` will autoscale.
-
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
         """
         kwlimits.update(limits)
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
@@ -144,14 +143,6 @@ class MayaviViewer(_Viewer):
                                       polygon = cellDict['polygon'])
 
     def plot(self, filename = None):
-        """
-        Plot the `CellVariable` as a contour plot.
-
-        :Parameters:
-          - `filename`: The name of the file for PNG hard copies.
-        
-        """
-
         import os
         import tempfile
         

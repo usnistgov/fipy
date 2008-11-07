@@ -64,13 +64,19 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         """Creates a `Matplotlib2DViewer`.
 
         :Parameters:
-          - `vars`: A `CellVariable` object.
-          - `title`: displayed at the top of the `Viewer` window
-          - `scale`: if not `None`, scale all arrow lengths by this value
-          - `sparsity`: if not `None`, then this number of arrows will be
+          vars
+            a rank-1 `CellVariable` or `FaceVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          scale
+            if not `None`, scale all arrow lengths by this value
+          sparsity
+            if not `None`, then this number of arrows will be
             randomly chosen (weighted by the cell volume or face area)
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
 
         """

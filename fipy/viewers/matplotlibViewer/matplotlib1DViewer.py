@@ -49,6 +49,24 @@ class Matplotlib1DViewer(_MatplotlibViewer):
     __doc__ += _MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
     
     def __init__(self, vars, title=None, xlog=False, ylog=False, limits={}, **kwlimits):
+        """
+        
+        :Parameters:
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          xlog
+            log scaling of x axis if `True`
+          ylog
+            log scaling of y axis if `True`
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
+            (*ymin* and *ymax* are synonyms for *datamin* and *datamax*).
+        """
         kwlimits.update(limits)
         _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
     

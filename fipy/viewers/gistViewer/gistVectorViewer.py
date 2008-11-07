@@ -49,7 +49,20 @@ class GistVectorViewer(_GistViewer):
     __doc__ += _GistViewer._test2Dvector(viewer="GistVectorViewer")
     __doc__ += _GistViewer._test2DvectorIrregular(viewer="GistVectorViewer")
     
-    def __init__(self, vars, title = '', limits={}, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
+        """Creates a `GistVectorViewer`.
+        
+        :Parameters:
+          vars
+            a rank-1 `CellVariable` or `FaceVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
+        """
         kwlimits.update(limits)
 	_GistViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
@@ -64,7 +77,7 @@ class GistVectorViewer(_GistViewer):
         # this viewer can only display one variable
         return [vars[0]]
         
-    def plot(self, filename = None):
+    def plot(self, filename=None):
         import gist
 
         gist.window(self.id, wait = 1)

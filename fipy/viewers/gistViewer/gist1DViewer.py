@@ -51,15 +51,22 @@ class Gist1DViewer(_GistViewer):
         Creates a `Gist1DViewer`.
         
         :Parameters:
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `title`: displayed at the top of the `Viewer` window
-          - `xlog`: set `True` to give logarithmic scaling of the x axis
-          - `ylog`: set `True` to give logarithmic scaling of the y axis
-          - `style`: the Gist style file to use
-          - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'datamin'`, `'datamax'`. Any limit set to a (default) value of
-            `None` will autoscale.
-
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          xlog
+            log scaling of x axis if `True`
+          ylog
+            log scaling of y axis if `True`
+          stye
+            the Gist stylefile to use.
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
+            (*ymin* and *ymax* are synonyms for *datamin* and *datamax*).
         """
         kwlimits.update(limits)
         _GistViewer.__init__(self, vars=vars, title=title, **kwlimits)
@@ -96,9 +103,6 @@ class Gist1DViewer(_GistViewer):
         gist.logxy(self.xlog, self.ylog)
 
     def plot(self, filename = None):
-        """
-        Plot the `CellVariable` or list of `CellVariables` as a y vs x plot.
-        """
         import gist
 
         gist.window(self.id, wait = 1, style = self.style)

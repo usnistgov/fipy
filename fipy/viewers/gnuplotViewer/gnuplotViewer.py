@@ -59,27 +59,25 @@ class _GnuplotViewer(_Viewer):
         `_GnuplotViewer` requires Gnuplot_ version 4.0.
 
    """    
-    def __init__(self, vars, title=None, limits={}, **kwlimits):
+    def __init__(self, vars, title=None, **kwlimits):
         """
         The `_GnuplotViewer` should not be called directly only `Gnuplot1DViewer`
         and `Gnuplot2DViewer` should be called.
         
         :Parameters:
-
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `title`: displayed at the top of the `Viewer` window
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`,
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
-            use `ymin` and `ymax`, and so on.  All viewers will use
-            `datamin` and `datamax`.  Any limit set to a (default) value of
-            `None` will autoscale.
-
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
         """
         if self.__class__ is _GnuplotViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
     
-        kwlimits.update(limits)
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         import Gnuplot
         self.g = Gnuplot.Gnuplot()
@@ -93,13 +91,6 @@ class _GnuplotViewer(_Viewer):
             return str(limit)
 
     def plot(self, filename = None):
-        """
-        Plot the `CellVariable` as a contour plot.
-
-        :Parameters:
-          - `filename`: The name of the file for hard copies.
-          
-        """
         pairs = (('x', 'x'), ('y', 'y'), ('z', 'z'), ('cb', 'data'))
         
         for pair  in pairs:

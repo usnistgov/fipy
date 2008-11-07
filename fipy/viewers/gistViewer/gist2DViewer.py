@@ -46,21 +46,24 @@ class Gist2DViewer(_GistViewer):
     __doc__ += _GistViewer._test2D(viewer="Gist2DViewer")
     __doc__ += _GistViewer._test2Dirregular(viewer="Gist2DViewer")
     
-    def __init__(self, vars, title=None, palette='heat.gp', grid=1, dpi=75, limits={}, **kwlimits):
+    def __init__(self, vars, title=None, palette='heat.gp', grid=True, dpi=75, limits={}, **kwlimits):
         """Creates a `Gist2DViewer`.
         
         :Parameters:
-          - `vars`: A `CellVariable` or tuple of `CellVariable` objects to plot.
-            Only the first 2D `CellVariable` will be plotted.
-          - `title`: Displayed at the top of the `Viewer` window.
-          - `palette`: The color scheme to use for the image plot. Default is 
+          vars
+            a `CellVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          palette
+            The color scheme to use for the image plot. Default is 
             `heat.gp`. Another choice would be `rainbow.gp`.
-          - `grid`: Whether to show the grid lines in the plot. Default is 1. 
-            Use 0 to switch them off.
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+          grid
+            whether to show the grid lines in the plot.
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
-            
         """
         kwlimits.update(limits)
         _GistViewer.__init__(self, vars=vars, title=" ", dpi=dpi, **kwlimits)
@@ -131,9 +134,6 @@ class Gist2DViewer(_GistViewer):
         _GistViewer.plot(self, filename = filename)
 
     def plotMesh(self, filename = None):
-        """
-        Plot the `CellVariable`'s mesh as a wire frame.
-        """
         self._plot()
         
         faceVertexIDs = self.mesh._getFaceVertexIDs()

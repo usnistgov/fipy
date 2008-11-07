@@ -12,16 +12,17 @@ def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
     instance of the first `GnuplotViewer` it finds of the correct dimension.
     
     :Parameters:
-
-      - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-      - `title`: displayed at the top of the `Viewer` window
-      - `limits`: a dictionary with possible keys `xmin`, `xmax`,
-        `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-        A 1D `Viewer` will only use `xmin` and `xmax`, a 2D viewer
-        will also use `ymin` and `ymax`, and so on.
-        All viewers will use `datamin` and `datamax`.
-        Any limit set to a (default) value of `None` will autoscale.
-
+      vars
+        a `CellVariable` or tuple of `CellVariable` objects to plot
+      title
+        displayed at the top of the Viewer window
+      limits : dict
+        a (deprecated) alternative to limit keyword arguments
+      xmin, xmax, ymin, ymax, datamin, datamax
+        displayed range of data. A 1D `Viewer` will only use `xmin` and
+        `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
+        viewers will use `datamin` and `datamax`. Any limit set to a
+        (default) value of `None` will autoscale.
     """
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
@@ -43,6 +44,9 @@ def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
         raise IndexError, "Gnuplot can only plot 1D and 2D data"
 
 def make(*args, **kwargs):
+    """
+    A deprecated synonym for `GnuplotViewer`
+    """
     import warnings
     warnings.warn("'GnuplotViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
     return GnuplotViewer(*args, **kwargs)

@@ -40,26 +40,25 @@ class _Viewer:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, vars, title=None, limits={}, **kwlimits):
+    def __init__(self, vars, title=None, **kwlimits):
         """Create a `_Viewer` object.
         
         :Parameters:
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D `Viewer` will only use `xmin` and `xmax`, a 2D viewer 
-            will also use `ymin` and `ymax`, and so on. 
-            All viewers will use `datamin` and `datamax`. 
-            Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the `Viewer` window
-
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
         """
         if self.__class__ is _Viewer:
             raise NotImplementedError, "can't instantiate abstract base class"
             
         self.vars = self._getSuitableVars(vars)
 
-        kwlimits.update(limits)
         self.limits = kwlimits
 
         if title is None:
@@ -83,13 +82,14 @@ class _Viewer:
         Update the limits.
 
         :Parameters:
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D `Viewer` will only use `xmin` and `xmax`, a 2D viewer 
-            will also use `ymin` and `ymax`, and so on. 
-            All viewers will use `datamin` and `datamax`. 
-            Any limit set to a (default) value of `None` will autoscale.
-            
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
+
         """           
         self.limits.update(limits)
         self.limits.update(kwlimits)
@@ -99,7 +99,8 @@ class _Viewer:
         Return the limit associated with the first available key in `keys`
         
         :Parameters:
-          - `keys`: a `tuple`, `list`, or single key string that identifies
+          keys
+            a `tuple`, `list`, or single key string that identifies
             the limit of interest
             
         :Returns:
@@ -118,12 +119,21 @@ class _Viewer:
     def plot(self, filename=None):
         """
         Update the display of the viewed variables.
+        
+        :Parameters:
+          filename
+            If not `None`, the name of a file to save the image into.
         """
+
         raise NotImplementedError
 
-    def plotMesh(self, filename = None):
+    def plotMesh(self, filename=None):
         """
         Display a representation of the mesh
+        
+        :Parameters:
+          filename
+            If not `None`, the name of a file to save the image into.
         """
         pass
 

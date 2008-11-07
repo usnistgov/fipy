@@ -50,29 +50,28 @@ class _MatplotlibViewer(_Viewer):
 
     """
         
-    def __init__(self, vars, title=None, figaspect=1.0, limits={}, **kwlimits):
+    def __init__(self, vars, title=None, figaspect=1.0, **kwlimits):
         """
         Create a `_MatplotlibViewer`.
         
         :Parameters:
-
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `title`: displayed at the top of the `Viewer` window
-          - `figaspect`: Desired aspect ration of figure. If arg is a number, 
-            use that aspect ratio. If arg is an array, figaspect will 
-            determine the width and height for a figure that would fit array 
-            preserving aspect ratio.
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`,
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
-            use `ymin` and `ymax`, and so on.  All viewers will use
-            `datamin` and `datamax`.  Any limit set to a (default) value of
-            `None` will autoscale.
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          figaspect
+            desired aspect ratio of figure. If arg is a number, use that aspect
+            ratio. If arg is an array, figaspect will determine the width and
+            height for a figure that would fit array preserving aspect ratio.
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
         """
         if self.__class__ is _MatplotlibViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
             
-        kwlimits.update(limits)
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
 
         import pylab
@@ -86,14 +85,6 @@ class _MatplotlibViewer(_Viewer):
         pylab.title(self.title)
         
     def plot(self, filename = None):
-        """
-        Plot the `CellVariable` as a contour plot.
-
-        :Parameters:
-          - `filename`: The name of the file for hard copies.
-          
-        """
-        
         import pylab
 
         pylab.figure(self.id)
