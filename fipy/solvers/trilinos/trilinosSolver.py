@@ -54,6 +54,8 @@ class TrilinosSolver(Solver):
     def __init__(self, *args, **kwargs):
         if self.__class__ is TrilinosSolver:
             raise NotImplementedError, "can't instantiate abstract base class"
+        else:
+            Solver.__init__(self, *args, **kwargs)
             
     def _makeTrilinosMatrix(self, L):
         """ 
@@ -120,7 +122,6 @@ class TrilinosSolver(Solver):
         self._applyTrilinosSolver(A, LHS, RHS)
 
         x[:] = _trilinosToNumpyVector(LHS)
-
 
     def _getMatrixClass(self):
         return _TrilinosMatrix
