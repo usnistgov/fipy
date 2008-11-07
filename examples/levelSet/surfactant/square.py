@@ -98,8 +98,10 @@ advectionEquation = buildHigherOrderAdvectionEquation(
     advectionCoeff = velocity)
 
 if __name__ == '__main__':
-    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -.001, 'datamax': .001})
-    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 2.})
+    distanceViewer = Viewer(vars = distanceVariable, 
+                            limits = {'datamin': -.001, 'datamax': .001})
+    surfactantViewer = Viewer(vars = surfactantVariable, 
+                              limits = {'datamin': 0., 'datamax': 2.})
 
 
     distanceVariable.calcDistanceFunction()

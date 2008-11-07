@@ -199,8 +199,7 @@ def runGold(faradaysConstant=9.6e4,
 
         try:
             
-            viewers = (
-                MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage', animate=True),)
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage', animate=True)
             
         except:
             
@@ -212,20 +211,19 @@ def runGold(faradaysConstant=9.6e4,
                 def _calcValue(self):
                     return array(self.var[:self.mesh.getNumberOfCells()])
 
-            viewers = (
-                viewers.make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
-                viewers.make(PlotVariable(var = catalystVar.getInterfaceVar())))
-
+            viewer = MultiViewer(viewers=(
+                Viewer(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
+                Viewer(PlotVariable(var = catalystVar.getInterfaceVar()))))
     else:
-        viewers = ()
+        viewer = None
+
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
     step = 0
     
     while step < numberOfSteps:
 
-        if step % 10 == 0:
-            for viewer in viewers:
-                viewer.plot()
+        if step % 10 == 0 and viewer is not None:
+            viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             

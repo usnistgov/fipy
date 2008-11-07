@@ -38,10 +38,10 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from gnuplotViewer import GnuplotViewer
+from gnuplotViewer import _GnuplotViewer
 from fipy.meshes.grid2D import Grid2D
 
-class Gnuplot2DViewer(GnuplotViewer):
+class Gnuplot2DViewer(_GnuplotViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
        
@@ -51,8 +51,8 @@ class Gnuplot2DViewer(GnuplotViewer):
     .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
     """
     
-    __doc__ += GnuplotViewer._test2D(viewer="Gnuplot2DViewer")
-    __doc__ += GnuplotViewer._test2Dirregular(viewer="Gnuplot2DViewer")
+    __doc__ += _GnuplotViewer._test2D(viewer="Gnuplot2DViewer")
+    __doc__ += _GnuplotViewer._test2Dirregular(viewer="Gnuplot2DViewer")
     
     __doc__ += """
     Different style script demos_ are available at the Gnuplot_ site.
@@ -62,21 +62,25 @@ class Gnuplot2DViewer(GnuplotViewer):
 
     .. note::
     
-        `GnuplotViewer` requires Gnuplot_ version 4.0.
+        `Gnuplot2DViewer` requires Gnuplot_ version 4.0.
 
     """
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title = None, limits={}, **kwlimits):
         """Creates a `Gnuplot2DViewer`.
 
         :Parameters:
-          - `vars`: A `CellVariable` object.
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+          vars
+            a `CellVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
-
         """
-        GnuplotViewer.__init__(self, vars = vars, limits = limits, title = title)
+        kwlimits.update(limits)
+        _GnuplotViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         if len(self.vars) != 1:
             raise IndexError, "A 2D Gnuplot viewer can only display one Variable"

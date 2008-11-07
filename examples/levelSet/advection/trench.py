@@ -90,7 +90,8 @@ for the initial position of the interface:
 Advect the interface and check the position.
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var, limits = {'datamin': -0.1, 'datamax': 0.1})
+    ...     viewer = Viewer(vars = var, 
+    ...                     limits = {'datamin': -0.1, 'datamax': 0.1})
     ...     
     ...     viewer.plot()
 

@@ -153,7 +153,7 @@ If we are running the example interactively, we view the result
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(charge, potential, analytical))
+    ...     viewer = Viewer(vars=(charge, potential, analytical))
     ...     viewer.plot()
     ...     raw_input("Press any key to continue...")
 

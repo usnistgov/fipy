@@ -109,8 +109,8 @@ We create a viewer to see the results
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=phi,
-    ...                           limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=phi,
+    ...                     limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
 
 and solve the equation by repeatedly looping in time:

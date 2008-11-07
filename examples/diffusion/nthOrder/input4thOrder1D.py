@@ -148,7 +148,7 @@ If the problem is run interactively, we can view the result:
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(var, analytical))
+    ...     viewer = Viewer(vars=(var, analytical))
     ...     viewer.plot()
 
 .. image:: examples/diffusion/nthOrder/input4thOrder1D.pdf

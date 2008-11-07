@@ -119,7 +119,7 @@ if __name__ == '__main__':
     v2.setName('PN')
     v3.setName('TM')
 
-    KMViewer = viewers.make((v1, v2, v3), title = 'Gradient Stimulus: Profile')
+    KMViewer = Viewer((v1, v2, v3), title = 'Gradient Stimulus: Profile')
 
     KMViewer.plot()
 

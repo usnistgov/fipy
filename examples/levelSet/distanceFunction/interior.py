@@ -94,6 +94,7 @@ var.setValue(1, where=((x < dx) | (x > (Lx - dx))
 var.calcDistanceFunction()
 
 if __name__ == '__main__':
-    viewer = viewers.make(vars = var, limits = {'datamin': -5., 'datamax': 5.})
+    viewer = Viewer(vars = var, 
+                    limits = {'datamin': -5., 'datamax': 5.})
     viewer.plot()
     raw_input('finished')

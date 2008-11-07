@@ -223,12 +223,12 @@ by the phase
 ..
 
     >>> if __name__ == '__main__':
-    ...     phaseViewer = viewers.make(vars=phase,
-    ...                                limits={'datamin': 0., 'datamax': 1.})
+    ...     phaseViewer = Viewer(vars=phase,
+    ...                          limits={'datamin': 0., 'datamax': 1.})
     ...     thetaProd = -pi + phase * (theta + pi)
-    ...     thetaProductViewer = make(vars=thetaProd,
-    ...                               limits={'datamin': -pi, 
-    ...                                       'datamax': pi})
+    ...     thetaProductViewer = Viewer(vars=thetaProd,
+    ...                                 limits={'datamin': -pi, 
+    ...                                         'datamax': pi})
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 

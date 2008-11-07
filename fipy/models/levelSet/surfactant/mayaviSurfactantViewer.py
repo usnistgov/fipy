@@ -5,7 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mayaviSurfactantViewer.py"
- #
+ #                                    created: 7/29/04 {10:39:23 AM} 
+ #                                last update: 7/2/08 {5:10:42 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,15 +30,22 @@
  # they have been modified.
  # ========================================================================
  #  
+ #  Description: 
+ # 
+ #  History
+ # 
+ #  modified   by  rev reason
+ #  ---------- --- --- -----------
+ #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 from fipy.tools import numerix
 
-class MayaviSurfactantViewer(Viewer):
+class MayaviSurfactantViewer(_Viewer):
     
     """
     The `MayaviSurfactantViewer` creates a viewer with the Mayavi_ python
@@ -47,7 +55,7 @@ class MayaviSurfactantViewer(Viewer):
 
     """
         
-    def __init__(self, distanceVar, surfactantVar=None, levelSetValue=0., limits=None, title=None, smooth=0, zoomFactor=1., animate=False):
+    def __init__(self, distanceVar, surfactantVar=None, levelSetValue=0., title=None, smooth=0, zoomFactor=1., animate=False, limits={}, **kwlimits):
         """
         Create a `MayaviSurfactantViewer`.
         
@@ -89,18 +97,19 @@ class MayaviSurfactantViewer(Viewer):
 
           - `distanceVar`: a `DistanceVariable` object.
           - `levelSetValue`: the value of the contour to be displayed
+          - `title`: displayed at the top of the `Viewer` window
+          - `animate`: whether to show only the initial condition and the 
           - `limits`: a dictionary with possible keys `xmin`, `xmax`,
             `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            Viewer will only use `xmin` and `xmax`, a 2D viewer will also
+            `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
             use `ymin` and `ymax`, and so on.  All viewers will use
             `datamin` and `datamax`.  Any limit set to a (default) value of
             `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
-          - `animate`: whether to show only the initial condition and the 
             moving top boundary or to show all contours (Default)
         """
 
-        Viewer.__init__(self, vars = [], limits = limits, title = title)
+        kwlimits.update(limits)
+        _Viewer.__init__(self, vars=[], title=title, **kwlimits)
         import mayavi
         self._viewer = mayavi.mayavi()
         self.distanceVar = distanceVar

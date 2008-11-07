@@ -110,7 +110,7 @@ The analytical solution for this equation is given by,
     ...             ((P + A)**2*exp(A / 2)- (P - A)**2 * exp(-A / 2)))
 
     >>> if __name__ == '__main__':
-    ...     viewer=make(vars=(C, CAnalytical))
+    ...     viewer = Viewer(vars=(C, CAnalytical))
 
     >>> res = 1e+10
     >>> while res > 1e-5:

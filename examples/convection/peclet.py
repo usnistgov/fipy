@@ -56,7 +56,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     ...                       FixedValue(faces=mesh.getFacesRight(), value=valueRight))
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var)
+    ...     viewer = Viewer(vars = var)
 
     >>> convCoeff = 1.0
     >>> peclet = 1e-3

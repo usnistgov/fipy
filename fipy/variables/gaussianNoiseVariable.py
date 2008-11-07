@@ -116,8 +116,9 @@ class GaussianNoiseVariable(NoiseVariable):
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin':-5, 'datamax':5})
-           ...     histoplot = viewers.make(vars = (histogram, gauss))
+           ...     viewer = Viewer(vars = noise, 
+           ...                     limits = {'datamin':-5, 'datamax':5})
+           ...     histoplot = Viewer(vars = (histogram, gauss))
            
            >>> for i in range(10):
            ...     noise.scramble()

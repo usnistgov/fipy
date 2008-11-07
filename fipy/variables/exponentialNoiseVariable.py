@@ -69,8 +69,10 @@ class ExponentialNoiseVariable(NoiseVariable):
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin': 0, 'datamax': 5})
-           ...     histoplot = viewers.make(vars = (histogram, expdist), limits = {'datamin': 0, 'datamax': 1.5})
+           ...     viewer = Viewer(vars = noise, 
+           ...                     limits = {'datamin': 0, 'datamax': 5})
+           ...     histoplot = Viewer(vars = (histogram, expdist), 
+           ...                        limits = {'datamin': 0, 'datamax': 1.5})
            
            >>> from fipy.tools.numerix import arange, exp
            

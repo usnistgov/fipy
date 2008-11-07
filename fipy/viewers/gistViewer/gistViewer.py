@@ -40,52 +40,54 @@ import os
 
 from fipy.tools import numerix
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 
-class GistViewer(Viewer):
+class _GistViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     
     _id=0
     
-    def __init__(self, vars, limits = None, title = None, dpi = 75):
+    def __init__(self, vars, title=None, dpi=75, **kwlimits):
         """
-        Create a `GistViewer` object.
+        Create a `_GistViewer` object.
         
         :Parameters:
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-            will also use `ymin` and `ymax`, and so on. 
-            All viewers will use `datamin` and `datamax`. 
-            Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
-          - `dpi`: the dot-per-inch resolution of the display
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          dpi
+            the dot-per-inch resolution of the display
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
         """
-        if self.__class__ is GistViewer:
+        if self.__class__ is _GistViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
-            
-        Viewer.__init__(self, vars = vars, limits = limits, title = title)
+    
+        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         self.mesh = self.vars[0].getMesh()
 
-        self.id = GistViewer._id 
-        GistViewer._id += 1
+        self.id = _GistViewer._id 
+        _GistViewer._id += 1
         
         import gist
         
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
 
     def _getLimit(self, keys):
-        limit = Viewer._getLimit(self, keys=keys)
+        limit = _Viewer._getLimit(self, keys=keys)
         if limit is None:
             limit = 'e'
             
         return limit
         
-    def plot(self, filename = None):
+    def plot(self, filename=None):
         import gist
     
         if filename is not None:

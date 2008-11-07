@@ -94,8 +94,8 @@ Construct a `distanceVariable` object.
 ..
 
    >>> if __name__ == '__main__':
-   ...     viewer = viewers.make(vars = var, 
-   ...                           limits = {'datamin': -5., 'datamax': 5.})
+   ...     viewer = Viewer(vars = var, 
+   ...                     limits = {'datamin': -5., 'datamax': 5.})
    ...     viewer.plot()
 
 The result can be tested with the following commands.

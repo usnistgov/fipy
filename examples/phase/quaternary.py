@@ -432,10 +432,10 @@ If we're running interactively, we create a viewer
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase] \
-    ...                                  + interstitials + substitutionals \
-    ...                                  + [solvent],
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase]
+    ...                           + interstitials + substitutionals
+    ...                           + [solvent]),
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 and again iterate to equilibrium

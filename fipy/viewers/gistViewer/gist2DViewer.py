@@ -37,40 +37,43 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.viewers.gistViewer.gistViewer import GistViewer
+from fipy.viewers.gistViewer.gistViewer import _GistViewer
 
-class Gist2DViewer(GistViewer):
+class Gist2DViewer(_GistViewer):
     """Displays a contour plot of a 2D `CellVariable` object.
     """
     
-    __doc__ += GistViewer._test2D(viewer="Gist2DViewer")
-    __doc__ += GistViewer._test2Dirregular(viewer="Gist2DViewer")
+    __doc__ += _GistViewer._test2D(viewer="Gist2DViewer")
+    __doc__ += _GistViewer._test2Dirregular(viewer="Gist2DViewer")
     
-    def __init__(self, vars, limits = None, title = None, palette = 'heat.gp', grid = 1, dpi = 75):
+    def __init__(self, vars, title=None, palette='heat.gp', grid=True, dpi=75, limits={}, **kwlimits):
         """Creates a `Gist2DViewer`.
         
         :Parameters:
-          - `vars`: A `CellVariable` or tuple of `CellVariable` objects to plot.
-            Only the first 2D `CellVariable` will be plotted.
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
-            a (default) value of `None` will autoscale.
-          - `title`: Displayed at the top of the Viewer window.
-          - `palette`: The color scheme to use for the image plot. Default is 
+          vars
+            a `CellVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          palette
+            the color scheme to use for the image plot. Default is 
             `heat.gp`. Another choice would be `rainbow.gp`.
-          - `grid`: Whether to show the grid lines in the plot. Default is 1. 
-            Use 0 to switch them off.
-            
+          grid
+            whether to show the grid lines in the plot.
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
         """
-        GistViewer.__init__(self, vars = vars, limits = limits, 
-                            title = " ", dpi = dpi)
+        kwlimits.update(limits)
+        _GistViewer.__init__(self, vars=vars, title=" ", dpi=dpi, **kwlimits)
                             
         self.palette = palette
         self.grid = grid
         
     def _getSuitableVars(self, vars):
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
           if (var.getMesh().getDim() == 2 and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
@@ -128,12 +131,9 @@ class Gist2DViewer(GistViewer):
 
         colorbar._color_bar(minz=datamin, maxz=datamax, ncol=240, zlabel=self.vars[0].getName())
 
-        GistViewer.plot(self, filename = filename)
+        _GistViewer.plot(self, filename = filename)
 
     def plotMesh(self, filename = None):
-        """
-        Plot the `CellVariable`'s mesh as a wire frame.
-        """
         self._plot()
         
         faceVertexIDs = self.mesh._getFaceVertexIDs()

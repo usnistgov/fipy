@@ -757,6 +757,13 @@ dist = setup(	name = "FiPy",
         },
         test_suite="fipy.test._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
+        entry_points="""
+            [fipy.viewers]
+            gist = fipy.viewers.gistViewer:GistViewer
+            gnuplot = fipy.viewers.gnuplotViewer:GnuplotViewer
+            matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
+            mayavi = fipy.viewers.mayaviViewer:MayaviViewer
+        """,
         classifiers = [
             'Development Status :: 5 - Production/Stable',
             'Environment :: Console',

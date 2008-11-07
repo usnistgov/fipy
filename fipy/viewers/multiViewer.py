@@ -30,22 +30,28 @@
  # ###################################################################
  ##
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 
-class MultiViewer(Viewer):
+class MultiViewer(_Viewer):
     """
     Treat a collection of different viewers (such for different 2D plots 
     or 1D plots with different axes) as a single viewer that will `plot()` 
     all subviewers simultaneously.
     """
     def __init__(self, viewers):
+        """
+        :Parameters:
+          viewers : list
+            the viewers to bind together
+        """
         if type(viewers) not in [type([]), type(())]:
             viewers = [viewers]
         self.viewers = viewers
 
-    def setLimits(self, limits):
+    def setLimits(self, limits={}, **kwlimits):
+        kwlimits.update(limits)
         for viewer in self.getViewers():
-            viewer.setLimits(limits)
+            viewer.setLimits(**kwlimits)
             
     def plot(self):
         for viewer in self.getViewers():

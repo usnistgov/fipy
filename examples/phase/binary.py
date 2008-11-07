@@ -539,8 +539,8 @@ We plot the result against the sharp interface solution
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(phase, C, sharp), 
-    ...                           limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=(phase, C, sharp), 
+    ...                     limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
 
 Because the phase field interface will not move, and because we've seen in

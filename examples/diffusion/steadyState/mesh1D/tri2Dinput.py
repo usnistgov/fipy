@@ -86,7 +86,7 @@ boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars=var)
     viewer.plot()
     x = mesh.getCellCenters()[0]
     Lx = nx * dx
