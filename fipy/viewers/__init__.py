@@ -61,7 +61,7 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
       vars
         a `CellVariable` or tuple of `CellVariable` objects to plot
       title
-        displayed at the top of the Viewer window
+        displayed at the top of the `Viewer` window
       limits : dict
         a (deprecated) alternative to limit keyword arguments
       xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax

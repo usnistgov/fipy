@@ -55,7 +55,7 @@ class Gist2DViewer(_GistViewer):
           title
             displayed at the top of the `Viewer` window
           palette
-            The color scheme to use for the image plot. Default is 
+            the color scheme to use for the image plot. Default is 
             `heat.gp`. Another choice would be `rainbow.gp`.
           grid
             whether to show the grid lines in the plot.

@@ -34,6 +34,8 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.viewers.gistViewer.gistViewer import _GistViewer
 
 from fipy.variables.cellVariable import CellVariable

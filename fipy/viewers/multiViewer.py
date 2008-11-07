@@ -39,6 +39,11 @@ class MultiViewer(_Viewer):
     all subviewers simultaneously.
     """
     def __init__(self, viewers):
+        """
+        :Parameters:
+          viewers : list
+            the viewers to bind together
+        """
         if type(viewers) not in [type([]), type(())]:
             viewers = [viewers]
         self.viewers = viewers
