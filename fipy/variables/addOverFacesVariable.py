@@ -74,7 +74,7 @@ class _AddOverFacesVariable(CellVariable):
               // unreproduceable problems on OS X (who knows why not elsewhere)
               long id = ids[i + j * numberOfCells];
               if (id >= 0) { 
-                  value[i] += orientations[i + j * numberOfCells] * faceVariable[ids[i + j * numberOfCells]];
+                  value[i] += orientations[i + j * numberOfCells] * faceVariable[id];
               }
             }
             value[i] = value[i] / cellVolume[i];
