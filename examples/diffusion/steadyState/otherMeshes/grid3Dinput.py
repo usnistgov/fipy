@@ -95,6 +95,6 @@ eqn = ImplicitDiffusionTerm()
 
 if __name__ == '__main__':
     eqn.solve(var2, boundaryConditions = boundaryConditions2)
-    viewer = viewers.make(var2)
+    viewer = Viewer(var2)
     viewer.plot()
     raw_input("finished")

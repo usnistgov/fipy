@@ -36,31 +36,30 @@
 
 __docformat__ = 'restructuredtext'
 
-class Viewer:
+class _Viewer:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, vars, limits = None, title = None):
-        """
-        Create a `Viewer` object.
+    def __init__(self, vars, title=None, **kwlimits):
+        """Create a `_Viewer` object.
         
         :Parameters:
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-            will also use `ymin` and `ymax`, and so on. 
-            All viewers will use `datamin` and `datamax`. 
-            Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
-
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
         """
-        if self.__class__ is Viewer:
+        if self.__class__ is _Viewer:
             raise NotImplementedError, "can't instantiate abstract base class"
             
         self.vars = self._getSuitableVars(vars)
 
-        self.limits = limits
+        self.limits = kwlimits
 
         if title is None:
             if len(self.vars) == 1:
@@ -78,28 +77,30 @@ class Viewer:
             vars = [vars]
         return [var for var in vars]
         
-    def setLimits(self, limits):
+    def setLimits(self, limits={}, **kwlimits):
         """
         Update the limits.
 
         :Parameters:
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`, 
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.
-            A 1D Viewer will only use `xmin` and `xmax`, a 2D viewer 
-            will also use `ymin` and `ymax`, and so on. 
-            All viewers will use `datamin` and `datamax`. 
-            Any limit set to a (default) value of `None` will autoscale.
-            
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
+
         """           
-        for key in limits.keys():
-            self.limits[key] = limits[key]
+        self.limits.update(limits)
+        self.limits.update(kwlimits)
         
     def _getLimit(self, keys):
         """
         Return the limit associated with the first available key in `keys`
         
         :Parameters:
-          - `keys`: a `tuple`, `list`, or single key string that identifies
+          keys
+            a `tuple`, `list`, or single key string that identifies
             the limit of interest
             
         :Returns:
@@ -109,8 +110,7 @@ class Viewer:
             keys = (keys,)
         limit = None
         for key in keys:
-            if self.limits and self.limits.has_key(key):
-                limit = self.limits[key]
+            limit = self.limits.get(key, limit)
             if limit is not None:
                 break
             
@@ -119,8 +119,23 @@ class Viewer:
     def plot(self, filename=None):
         """
         Update the display of the viewed variables.
+        
+        :Parameters:
+          filename
+            If not `None`, the name of a file to save the image into.
         """
+
         raise NotImplementedError
+
+    def plotMesh(self, filename=None):
+        """
+        Display a representation of the mesh
+        
+        :Parameters:
+          filename
+            If not `None`, the name of a file to save the image into.
+        """
+        pass
 
     def _autoscale(self, vars, datamin=None, datamax=None):
         from fipy.tools import numerix
@@ -166,7 +181,8 @@ class Viewer:
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
             >>> k = Variable(name="k", value=0)
             >>> viewer = %(viewer)s(vars=(sin(k * xVar), cos(k * xVar / pi)), 
-            ...                 limits={'xmin':10, 'xmax':90, 'datamin':-0.9, 'datamax':2.0},
+            ...                 limits= {'xmin': 10, 'xmax': 90}, 
+            ...                 datamin=-0.9, datamax=2.0,
             ...                 title="%(viewer)s test")
             >>> for kval in numerix.arange(0,0.3,0.03):
             ...     k.setValue(kval)
@@ -183,7 +199,8 @@ class Viewer:
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar), 
-            ...                 limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                 limits= {'ymin': 0.1, 'ymax': 0.9}, 
+            ...                 datamin=-0.9, datamax=2.0,
             ...                 title="%(viewer)s test")
             >>> for kval in range(10):
             ...     k.setValue(kval)
@@ -193,13 +210,13 @@ class Viewer:
     _test2Dbase = staticmethod(_test2Dbase)
 
     def _test2D(**kwargs):
-        return Viewer._test2Dbase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
-                                  **kwargs)
+        return _Viewer._test2Dbase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+                                   **kwargs)
     _test2D = staticmethod(_test2D)
 
     def _test2Dirregular(**kwargs):
         """"""
-        return Viewer._test2Dbase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+        return _Viewer._test2Dbase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
             ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2Dirregular = staticmethod(_test2Dirregular)
@@ -228,13 +245,13 @@ class Viewer:
     _test2DvectorBase = staticmethod(_test2DvectorBase)
 
     def _test2Dvector(**kwargs):
-        return Viewer._test2DvectorBase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+        return _Viewer._test2DvectorBase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
                                         **kwargs)
     _test2Dvector = staticmethod(_test2Dvector)
 
     def _test2DvectorIrregular(**kwargs):
         """"""
-        return Viewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+        return _Viewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
             ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2DvectorIrregular = staticmethod(_test2DvectorIrregular)
@@ -248,7 +265,8 @@ class Viewer:
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
             >>> k = Variable(name="k", value=0)
             >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 
-            ...                     limits={'ymin':0.1, 'ymax':0.9, 'datamin':-0.9, 'datamax':2.0},
+            ...                     limits= {'ymin': 0.1, 'ymax': 0.9}, 
+            ...                     datamin=-0.9, datamax=2.0,
             ...                     title="%(viewer)s test")
             >>> for kval in range(10):
             ...     k.setValue(kval)
@@ -258,5 +276,5 @@ class Viewer:
     _test3D = staticmethod(_test3D)
 
 def make(vars, title=None, limits=None):
-    return Viewer(vars=vars, title=title, limits=limits)
+    return _Viewer(vars=vars, title=title, limits=limits)
         

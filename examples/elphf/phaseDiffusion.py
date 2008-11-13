@@ -207,9 +207,9 @@ or
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 This problem does not have an analytical solution, so after
@@ -277,9 +277,9 @@ the remaining two substitutional species.
 Again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary
@@ -374,9 +374,9 @@ and the solvent and a liquid phase rich in the two substitutional species.
 Once again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary

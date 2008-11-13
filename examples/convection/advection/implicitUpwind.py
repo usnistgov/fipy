@@ -68,7 +68,7 @@ eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
-    viewer = viewers.make(vars=(var,))
+    viewer = Viewer(vars=(var,))
     viewer.plot()
     raw_input("press key to continue")
     for step in range(steps):

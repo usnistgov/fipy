@@ -102,8 +102,8 @@ eq2 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))
 
 if __name__ == '__main__':
 
-    viewer1 = viewers.make(vars=var1)
-    viewer2 = viewers.make(vars=var2)
+    viewer1 = Viewer(vars=var1)
+    viewer2 = Viewer(vars=var2)
     viewer1.plot()
     viewer2.plot()
 

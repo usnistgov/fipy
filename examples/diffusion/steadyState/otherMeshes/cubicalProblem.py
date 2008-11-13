@@ -66,7 +66,7 @@ var = CellVariable(name = "variable",
 ##viewer7 = Grid3DPyxViewer(var, zvalue = 7.0)
 ##viewer9 = Grid3DPyxViewer(var, zvalue = 9.0)
 
-## viewer = viewers.make(vars = var)
+## viewer = Viewer(vars = var)
 
 ## viewer.plot()
 

@@ -72,8 +72,10 @@ class GammaNoiseVariable(NoiseVariable):
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin': 0, 'datamax': 30})
-           ...     histoplot = viewers.make(vars = (histogram, gammadist), limits = {'datamin': 0, 'datamax': 1})
+           ...     viewer = Viewer(vars = noise, 
+           ...                     limits = {'datamin': 0, 'datamax': 30})
+           ...     histoplot = Viewer(vars = (histogram, gammadist), 
+           ...                        limits = {'datamin': 0, 'datamax': 1})
            
            >>> from fipy.tools.numerix import arange, exp
            >>> from scipy.special import gamma as Gamma

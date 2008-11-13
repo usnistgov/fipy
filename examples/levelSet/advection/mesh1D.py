@@ -110,8 +110,8 @@ The problem can then be solved by executing a serious of time steps.
 ..
 
    >>> if __name__ == '__main__':
-   ...     viewer = viewers.make(vars=var,
-   ...                           limits={'datamin': -10., 'datamax': 10.})
+   ...     viewer = Viewer(vars=var,
+   ...                     limits={'datamin': -10., 'datamax': 10.})
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()

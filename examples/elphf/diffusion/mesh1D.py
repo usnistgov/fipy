@@ -140,9 +140,8 @@ We create one diffusion equation for each substitutional component
 If we are running interactively, we create a viewer to see the results 
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(
-    ...         vars = [solvent] + substitutionals,
-    ...         limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=[solvent] + substitutionals,
+    ...                     limits={'datamin': 0, 'datamax': 1})
     ...     viewer.plot()
 
 Now, we iterate the problem to equilibrium, plotting as we go

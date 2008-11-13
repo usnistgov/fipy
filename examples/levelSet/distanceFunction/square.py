@@ -100,6 +100,7 @@ var.setValue(1, where=((Lx / 3. < x) & (x < 2. * Lx / 3.)) & ((Ly / 3. < y) & (y
 var.calcDistanceFunction()
 
 if __name__ == '__main__':
-    viewer = viewers.make(vars = var, limits = {'maxval': -5., 'minval': 5.})
+    viewer = Viewer(vars = var, 
+                    limits = {'maxval': -5., 'minval': 5.})
     viewer.plot()
     raw_input('finished')

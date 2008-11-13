@@ -131,7 +131,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
 
 if __name__ == '__main__':
 
-    phaseViewer = viewers.make(vars = phase) 
+    phaseViewer = Viewer(vars = phase) 
     phaseViewer.plot()
     for step in range(steps):
         phase.updateOld()

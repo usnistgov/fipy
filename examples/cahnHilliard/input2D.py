@@ -115,7 +115,7 @@ BCs = (FixedFlux(mesh.getFacesRight(), 0),
 
 if __name__ == '__main__':
 
-    viewer = viewers.make(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
+    viewer = Viewer(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
     viewer.plot()
     
 dexp=-5

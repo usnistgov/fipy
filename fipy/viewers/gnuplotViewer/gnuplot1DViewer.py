@@ -38,9 +38,9 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from gnuplotViewer import GnuplotViewer
+from gnuplotViewer import _GnuplotViewer
 
-class Gnuplot1DViewer(GnuplotViewer):
+class Gnuplot1DViewer(_GnuplotViewer):
     """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
 
     The `Gnuplot1DViewer` plots a 1D `CellVariable` using a front end python
@@ -49,7 +49,7 @@ class Gnuplot1DViewer(GnuplotViewer):
     .. _Gnuplot.py: http://gnuplot-py.sourceforge.net/
     """
     
-    __doc__ += GnuplotViewer._test1D(viewer="Gnuplot1DViewer")
+    __doc__ += _GnuplotViewer._test1D(viewer="Gnuplot1DViewer")
 
     __doc__ += """
     Different style script demos_ are available at the Gnuplot_ site.
@@ -59,7 +59,7 @@ class Gnuplot1DViewer(GnuplotViewer):
 
     .. note::
     
-        `GnuplotViewer` requires Gnuplot_ version 4.0.
+        `Gnuplot1DViewer` requires Gnuplot_ version 4.0.
 
     """
     def _plot(self):

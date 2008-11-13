@@ -59,7 +59,7 @@ if __name__ == '__main__':
                        mesh = mesh,
                        value = valueLeft)
 
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars = var)
 
     ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                              FixedValue(mesh.getFacesRight(), valueRight)))
@@ -71,12 +71,12 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = 'absolute error',
                             mesh = mesh,
                             value = abs(errorArray))
-    errorViewer = viewers.make(vars = errorVar)
+    errorViewer = Viewer(vars = errorVar)
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = viewers.make(vars = NonOrthoVar)
+    NOViewer = Viewer(vars = NonOrthoVar)
     viewer.plot()
     NOViewer.plot()
 

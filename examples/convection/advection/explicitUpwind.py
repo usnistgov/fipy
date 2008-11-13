@@ -68,7 +68,7 @@ eq = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
-    viewer = viewers.make(vars=(var,))
+    viewer = Viewer(vars=(var,))
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,

@@ -82,7 +82,7 @@ We test the solution against the analytical result:
     1
    
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var)
+    ...     viewer = Viewer(vars = var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

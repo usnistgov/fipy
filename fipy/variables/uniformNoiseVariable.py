@@ -53,8 +53,9 @@ class UniformNoiseVariable(NoiseVariable):
         
         >>> if __name__ == '__main__':
         ...     from fipy import viewers
-        ...     viewer = viewers.make(vars = noise, limits = {'datamin':0, 'datamax':1})
-        ...     histoplot = viewers.make(vars = histogram)
+        ...     viewer = Viewer(vars = noise, 
+        ...                     limits = {'datamin':0, 'datamax':1})
+        ...     histoplot = Viewer(vars = histogram)
         
         >>> for i in range(10):
         ...     noise.scramble()

@@ -419,25 +419,24 @@ If running interactively, create viewers.
 
 .. raw:: latex
 
-   \IndexModule{viewers}
    \IndexClass{MayaviSurfactantViewer}
    
 ..
 
    >>> if __name__ == '__main__':
    ...     try:
-   ...         viewers = (
-   ...             MayaviSurfactantViewer(distanceVar,
-   ...                                    catalystVar.getInterfaceVar(),
-   ...                                    zoomFactor=1e6,
-   ...                                    limits={ 'datamax' : 1.0, 'datamin' : 0.0 },
-   ...                                    smooth=1),)
+   ...         viewer = MayaviSurfactantViewer(distanceVar,
+   ...                                         catalystVar.getInterfaceVar(),
+   ...                                         zoomFactor=1e6,
+   ...                                         datamax=1.0, 
+   ...                                         datamin=0.0,
+   ...                                         smooth=1)
    ...     except:
-   ...         viewers = (
-   ...             viewers.make(distanceVar, limits={ 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-   ...             viewers.make(catalystVar.getInterfaceVar()))
+   ...         viewer = MultiViewer(viewers=(
+   ...             Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
+   ...             Viewer(catalystVar.getInterfaceVar())))
    ... else:
-   ...     viewers = ()
+   ...     viewer = None
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
@@ -459,7 +458,7 @@ is calculated with the CFL number and the maximum extension velocity.
    
    >>> for step in range(numberOfSteps):
    ...
-   ...     for viewer in viewers:
+   ...     if viewer is not None:
    ...         viewer.plot()
    ...
    ...     if step % levelSetUpdateFrequency == 0:

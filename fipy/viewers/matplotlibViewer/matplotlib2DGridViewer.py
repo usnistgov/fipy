@@ -36,47 +36,62 @@
  
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer
 
-class Matplotlib2DGridViewer(MatplotlibViewer):
+class Matplotlib2DGridViewer(_MatplotlibViewer):
     """
     Displays an image plot of a 2D `CellVariable` object using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
+    __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
 
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title=None, limits={}, cmap=None, **kwlimits):
         """
         Creates a `Matplotlib2DGridViewer`.
         
         :Parameters:
-          - `vars`: A `CellVariable` object.
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+          vars
+            A `CellVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          cmap
+            The colormap. Defaults to `pylab.cm.jet`
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
 
         """
-        MatplotlibViewer.__init__(self, vars = vars, limits = limits, title = title)
+        kwlimits.update(limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
 
         import pylab
+
+        if cmap is None:
+            self.cmap = pylab.cm.jet
+        else:
+            self.cmap = cmap
 
         self.image = pylab.imshow(self._getData(),
                                   extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
                                           self._getLimit('ymin'), self._getLimit('ymax')),
                                   vmin=self._getLimit(key=('datamin', 'zmin')),
-                                  vmax=self._getLimit(key=('datamax', 'zmax')))
-                                          
-        pylab.title(self.vars[0].getName())
+                                  vmax=self._getLimit(key=('datamax', 'zmax')),
+                                  cmap=self.cmap)
+                   
+        if title is None:                          
+            pylab.title(self.vars[0].getName())
 
         # colorbar will not automatically update
         # http://sourceforge.net/mailarchive/forum.php?thread_id=10159140&forum_id=33405
-        pylab.colorbar()
+        self.colorbar = pylab.colorbar()
+        self.colorbar.set_label(self.vars[0].getName())
 
     def _getLimit(self, key):
-        limit = MatplotlibViewer._getLimit(self, key)
+        limit = _MatplotlibViewer._getLimit(self, key)
         if limit is None:
             if 'xmin' in key or 'ymin' in key:
                 limit = 0
@@ -91,7 +106,7 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
 ##         raise MeshDimensionError, "I'm just being pissy"
         from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
@@ -105,8 +120,11 @@ class Matplotlib2DGridViewer(MatplotlibViewer):
 
     def _plot(self):
         import pylab
-        pylab.jet()
-
+        
+        # per http://sourceforge.net/tracker/index.php?func=detail&aid=1656374&group_id=80706&atid=560720
+        # although seems to no longer be needed with matplotlib >= 0.91.1
+        pylab.sci(self.image)
+        
         datamin = self._getLimit(('datamin', 'zmin')) 
         datamax = self._getLimit(('datamax', 'zmax')) 
         if datamin is None or datamax is None:

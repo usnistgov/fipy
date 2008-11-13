@@ -116,8 +116,10 @@ surfactantEquation = SurfactantEquation(
 
 if __name__ == '__main__':
     
-    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
-    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': -1., 'datamax': 100.})
+    distanceViewer = Viewer(vars = distanceVariable, 
+                            limits = {'datamin': -initialRadius, 'datamax': initialRadius})
+    surfactantViewer = Viewer(vars = surfactantVariable, 
+                              limits = {'datamin': -1., 'datamax': 100.})
     distanceViewer.plot()
     surfactantViewer.plot()
 

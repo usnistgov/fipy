@@ -72,7 +72,7 @@ if __name__ == '__main__':
              boundaryConditions = BCs,
              solver = solver)
     
-    viewer = viewers.make(var)
+    viewer = Viewer(var)
     viewer.plot()
 
     print var.allclose(mesh.getCellCenters()[0], atol = 10)

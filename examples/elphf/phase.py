@@ -204,7 +204,7 @@ We verify that the correct equilibrium solution is attained
 If we are running interactively, we plot the error
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = (phase - \
+    ...     viewer = Viewer(vars = (phase - \
     ...         CellVariable(name = "analytical", mesh = mesh, 
     ...                      value = analyticalArray),))
     ...     viewer.plot()

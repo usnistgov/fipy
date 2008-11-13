@@ -114,7 +114,7 @@ answer = array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.19644866e
         0.00000000e+00,  1.55453500e-09,  6.18653630e-05,  8.85109369e-02])
 
 if __name__ == '__main__':
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars = var)
     for step in range(steps):
         var.updateOld()        
         eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)

@@ -83,7 +83,7 @@ boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars = var)
     viewer.plot()
     varArray = array(var)
     x = mesh.getCellCenters()[0]
@@ -92,13 +92,13 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = "absolute error",
                    mesh = mesh,
                    value = abs(errorArray))
-    errorViewer = viewers.make(vars = errorVar)
+    errorViewer = Viewer(vars = errorVar)
     errorViewer.plot()
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = viewers.make(vars = NonOrthoVar)
+    NOViewer = Viewer(vars = NonOrthoVar)
 
 
     NOViewer.plot()

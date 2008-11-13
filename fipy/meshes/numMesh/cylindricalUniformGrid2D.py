@@ -47,6 +47,9 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,))):
         UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, origin=origin)
+
+    def _getAreaProjections(self):
+        return self._getAreaProjectionsPy()
             
     def _getFaceAreas(self):
         faceAreas = numerix.zeros(self.numberOfFaces, 'd')

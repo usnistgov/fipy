@@ -8,10 +8,6 @@ Refer to SVN.txt for the current tagging conventions.
 Branches
 --------
 
-.. attention::
-
-   svnmerge_ is recommended for all but the most trivial of branches
-
 Break off for radical refactoring::
 
     $ cd trunk    
@@ -20,29 +16,10 @@ Break off for radical refactoring::
     $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
     $ cd ..
     $ svn co $FIPYROOT/branches/$BRANCH
-    $ cd $BRANCH
-
-If using svnmerge_ (*highly* recommended):
-
-    $ svnmerge.py init
-
-.. note::
-
-   Edit the commit message in `svnmerge-commit-message.txt` to comply with 
-   TracLink syntax. E.g., change::
-
-       Initialized merge tracking via "svnmerge" with revisions "1-2771" from 
-       svn+ssh://matforge.org/usr/local/svn-fipy-repos/trunk
-
-   to::
-
-       Initialized merge tracking via "svnmerge" with log:trunk@1:2771
-
-    $ svn ci -F svnmerge-commit-message.txt
-    $ rm svnmerge-commit-message.txt
 
 Edit and add to branch::
 
+    $ cd $BRANCH
     $ emacs ...
     $ svn ci -m "refactoring_stage_A"
     $ emacs ...
@@ -51,122 +28,61 @@ Edit and add to branch::
 Merging changes from trunk to the branch
 ----------------------------------------
 
-.. attention:: Use svnmerge_
+Find the initial (IRN) and latest (LRN) revision numbers from the last 
+merge from trunk::
 
-    $ svnmerge.py merge
+    $ cd ../trunk
+    $ svn update
 
-Review the merge, fix any conflicts.
+Set `$LRN` based on the updated revision of trunk
 
-.. note::
+    $ LRN=...
 
-   Edit the commit message in `svnmerge-commit-message.txt` to comply with 
-   TracLink syntax, as above.
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    
+Look for "`merged trunk changes r${IRN}:${LRN} to ${BRANCH}`" or 
+"`merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}`" and set `IRN` 
+to `${LRN}` from log message, otherwise to the revision at which the branch 
+was created.
 
-..
+    $ IRN=...
 
-Commit the changes
+Merge updated state of trunk to the branch::
 
-    $ svn ci -F svnmerge-commit-message.txt
-    $ rm svnmerge-commit-message.txt
+    $ cd ../$BRANCH
+    $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
+    $ svn diff
 
-.. note:: 
+Resolve any conflicts
 
-   If you're *not* using svnmerge_ for some reason:
-
-   Find the initial (IRN) and latest (LRN) revision numbers from the last 
-   merge from trunk::
-
-       $ cd ../trunk
-       $ svn update
-
-   Set `$LRN` based on the updated revision of trunk
-
-       $ LRN=...
-
-       $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
-       
-   Look for "`merged trunk changes r${IRN}:${LRN} to ${BRANCH}`" or 
-   "`merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}`" and set `IRN` 
-   to `${LRN}` from log message, otherwise to the revision at which the branch 
-   was created.
-
-       $ IRN=...
-
-   Merge updated state of trunk to the branch::
-
-       $ cd ../$BRANCH
-       $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
-       $ svn diff
-
-   Resolve any conflicts
-
-       $ python setup.py test
-       $ svn ci -m "merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}@${LRN}"
+    $ python setup.py test
+    $ svn ci -m "merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}@${LRN}"
     
 Refactoring complete: merge branch to the trunk
 -----------------------------------------------
 
+First, follow the instructions for 
+`Merging changes from trunk to the branch`_.
+
+Find the `HEAD` revision number::
+
     $ cd trunk
     $ svn update
+    $ HRN=...
 
-.. attention:: Use svnmerge_
+Merge the branch `HEAD` to trunk::
 
-.. attention::
+    $ svn merge ${FIPYROOT}/trunk@${HRN} \
+                ${FIPYROOT}/branches/${BRANCH}@${HRN}
+    $ svn diff
 
-   If you haven't previously done so, initialize merge tracking support
+Resolve any conflicts
 
-       $ svnmerge.py init ${FIPYROOT}/branches/${BRANCH}
-
-   .. note::
-
-      Edit the commit message in `svnmerge-commit-message.txt` to comply with 
-      TracLink syntax, as above.
-
-   Commit the changes
-
-       $ svn ci -F svnmerge-commit-message.txt
-       $ rm svnmerge-commit-message.txt
-
-Merge the branch to the trunk
-
-    $ svnmerge.py merge --bidirectional
-
-.. note::
-
-   Edit the commit message in `svnmerge-commit-message.txt` to comply with 
-   TracLink syntax, as above.
-
-Commit the changes
-
-    $ svn ci -F svnmerge-commit-message.txt
-    $ rm svnmerge-commit-message.txt
-
-.. note:: 
-
-   If you're *not* using svnmerge_ for some reason:
-
-   First, follow the instructions for 
-   `Merging changes from trunk to the branch`_.
-
-   Record the `HEAD` revision number from the update::
-
-       $ HRN=...
-
-   Merge the branch `HEAD` to trunk::
-
-       $ svn merge ${FIPYROOT}/trunk@${HRN} \
-                   ${FIPYROOT}/branches/${BRANCH}@${HRN}
-       $ svn diff
-
-   Resolve any conflicts
-
-       $ python setup.py test
-       $ svn ci -m "merged source:branches/${BRANCH}@${HRN} to source:trunk@${HRN}"
-
+    $ python setup.py test
+    $ svn ci -m "merged source:branches/${BRANCH}@${HRN} to source:trunk@${HRN}"
 
 When completely done with the branch
 
-    $ svnmerge.py uninit
     $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk" \
         ${FIPYROOT}/branches/${BRANCH}
     
@@ -451,6 +367,3 @@ At this point, you can get rid of all of the conversion materials
 
     $ cd ..
     $ rm -rf cvs2svnSandbox
-
-
-.. _svnmerge: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.orcaware.com/svn/wiki/Svnmerge.py

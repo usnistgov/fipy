@@ -129,9 +129,12 @@ surfactantEquation = SurfactantEquation(
 
 if __name__ == '__main__':
     
-    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
-    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 100.})
-    velocityViewer = viewers.make(vars = velocity, limits = {'datamin': 0., 'datamax': 200.})
+    distanceViewer = Viewer(vars = distanceVariable, 
+                            limits = {'datamin': -initialRadius, 'datamax': initialRadius})
+    surfactantViewer = Viewer(vars = surfactantVariable, 
+                              limits = {'datamin': 0., 'datamax': 100.})
+    velocityViewer = Viewer(vars = velocity, 
+                            limits = {'datamin': 0., 'datamax': 200.})
     distanceViewer.plot()
     surfactantViewer.plot()
     velocityViewer.plot()

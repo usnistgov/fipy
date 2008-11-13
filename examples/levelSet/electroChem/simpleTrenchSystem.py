@@ -297,22 +297,21 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage')
         except:
-            viewers = (
-                viewers.make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-                viewers.make(catalystVar.getInterfaceVar()))
+            viewer = MultiViewer(viewers=(
+                Viewer(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+                Viewer(catalystVar.getInterfaceVar())))
     else:
-        viewers = ()
+        viewer = None
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
 
     for step in range(numberOfSteps):
 
-        if step % 5 == 0:
-            for viewer in viewers:
-                viewer.plot()
+        if step % 5 == 0 and viewer is not None:
+            viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction()

@@ -147,7 +147,7 @@ If the problem is run interactively, we can view the result:
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=var)
+    ...     viewer = Viewer(vars=var)
     ...     viewer.plot()
 
 """

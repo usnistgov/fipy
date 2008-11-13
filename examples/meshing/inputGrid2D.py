@@ -79,7 +79,7 @@ Obtain all the left exterior faces, this is equal to `ny`.
 One can view the mesh with the following code,
 
    >>> if __name__ == '__main__':
-   ...     viewer = viewers.make(CellVariable(value = 0, mesh = mesh))
+   ...     viewer = Viewer(CellVariable(value = 0, mesh = mesh))
    ...     viewer.plot()
    
 """
