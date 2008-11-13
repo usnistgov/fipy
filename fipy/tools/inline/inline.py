@@ -1,4 +1,5 @@
-import sys
+import inspect
+
 from fipy.tools import numerix
 from fipy.tools.inline import inlineFlagOn
 
@@ -8,7 +9,23 @@ def _optionalInline(inlineFn, pythonFn, *args):
     else:
         return pythonFn(*args)
                          
-def _runInline(code_in, converters=None, verbose=0, **args):
+def _frameComment(code, level=2):
+    frame = inspect.getouterframes(inspect.currentframe())[level]
+
+    # note: 
+    # don't use #line because it actually makes it harder 
+    # to find the offending code in both the C++ source and in the Python
+    #line %d "%s"
+    
+    return '''
+/* 
+    %s:%d
+
+    %s 
+*/
+''' % (frame[1], frame[2] - len(code.splitlines()), frame[3])
+
+def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
     argsKeys = args.keys()
     dimList = ['i', 'j', 'k']
           
@@ -34,6 +51,11 @@ def _runInline(code_in, converters=None, verbose=0, **args):
             enders += "\n" + "\t" * (dimensions - dim -1) + "}"
         code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 
+    if comment is None:
+        comment = _frameComment(code_in)
+        
+    code = "\n" + comment + "\n" + code
+    
     from scipy import weave
 
     for key in args.keys():
@@ -49,7 +71,7 @@ def _runInline(code_in, converters=None, verbose=0, **args):
                  verbose = 0 or verbose,
                  extra_compile_args =['-O3'])
                  
-def _runIterateElementInline(code_in, converters=None, verbose=0, **args):
+def _runIterateElementInline(code_in, converters=None, verbose=0, comment=None, **args):
     loops = """
 int i;
 for(i=0; i < ni; i++) {
@@ -69,20 +91,21 @@ for(i=0; i < ni; i++) {
 }
 """
         
+    indent = "\t" * rank
+    
     code = """
     #define ITEM(arr,i,vec) (arr[arrayIndex(arr##_array, i, vec)])
                     
     int vec[%(rank)d];
-    %(loops)s%(indent)s%(code)s%(enders)s
+    %(loops)s%(indent)s%(code_in)s%(enders)s
                     
     #undef ITEM
-    """ % {
-        'rank': rank, 
-        'loops': loops, 
-        'indent': "\t" * rank, 
-        'code': code_in, 
-        'enders': enders
-    }
+    """ % locals()
+
+    if comment is None:
+        comment = _frameComment(code_in)
+
+    code = "\n" + comment + "\n" + code
 
     from scipy import weave
 

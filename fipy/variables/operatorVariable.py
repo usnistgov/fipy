@@ -34,7 +34,7 @@ from fipy.variables.variable import Variable
 
 def _OperatorVariableClass(baseClass=None):
     class _OperatorVariable(baseClass):
-        def __init__(self, op, var, opShape=(), canInline=True, unit=None, *args, **kwargs):
+        def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, *args, **kwargs):
             self.op = op
             self.var = var
             self.opShape = opShape
@@ -52,6 +52,8 @@ def _OperatorVariableClass(baseClass=None):
             
             self.dontCacheMe()
 
+            self.comment = inlineComment
+
         def _calcValue(self):
             if not self.canInline:
                 return self._calcValuePy()
@@ -60,7 +62,7 @@ def _OperatorVariableClass(baseClass=None):
                 return inline._optionalInline(self._calcValueIn, self._calcValuePy)
 
         def _calcValueIn(self):
-            return self._execInline()
+            return self._execInline(comment=self.comment)
 
         def _calcValuePy(self):
             pass
