@@ -8,10 +8,20 @@ def _optionalInline(inlineFn, pythonFn, *args):
         return inlineFn(*args)
     else:
         return pythonFn(*args)
-                         
-def _frameComment(code, level=2):
-    frame = inspect.getouterframes(inspect.currentframe())[level]
+              
+def _getframeinfo(level, context=1):
+    """
+    Much faster alternative to `inspect.getouterframes(inspect.currentframe())[level]`
+    """
+    frame = inspect.currentframe()
+    for l in range(level+1):
+        frame = frame.f_back
+        
+    return (frame,) + inspect.getframeinfo(frame, context=context)
 
+def _rawCodeComment(code, level=2):
+    finfo = _getframeinfo(level=level)
+    
     # note: 
     # don't use #line because it actually makes it harder 
     # to find the offending code in both the C++ source and in the Python
@@ -23,7 +33,31 @@ def _frameComment(code, level=2):
 
     %s 
 */
-''' % (frame[1], frame[2] - len(code.splitlines()), frame[3])
+''' % (finfo[1], finfo[2] - len(code.splitlines()), finfo[3])
+
+def _operatorVariableComment(canInline=True, level=3):
+    if canInline and inlineFlagOn:
+        finfo = _getframeinfo(level=level)
+
+        # note: 
+        # don't use #line because it actually makes it harder 
+        # to find the offending code in both the C++ source and in the Python
+        #line %d "%s"
+        
+        if finfo[4] is not None:
+            code = "\n".join(finfo[4])
+        else:
+            code = ""
+            
+        return '''
+/* 
+%s:%d
+
+%s
+ */
+        ''' % (finfo[1], finfo[2], code)
+    else:
+        return ""
 
 def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
     argsKeys = args.keys()
@@ -52,7 +86,7 @@ def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
         code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 
     if comment is None:
-        comment = _frameComment(code_in)
+        comment = _rawCodeComment(code_in)
         
     code = "\n" + comment + "\n" + code
     
@@ -103,7 +137,7 @@ for(i=0; i < ni; i++) {
     """ % locals()
 
     if comment is None:
-        comment = _frameComment(code_in)
+        comment = _rawCodeComment(code_in)
 
     code = "\n" + comment + "\n" + code
 

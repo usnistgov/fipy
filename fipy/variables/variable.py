@@ -41,6 +41,7 @@ import inspect
 from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
+from fipy.tools.inline import inline
 
 class Variable(object):
     
@@ -803,28 +804,6 @@ class Variable(object):
         baseClass = baseClass or self._getVariableClass()
         return operatorVariable._OperatorVariableClass(baseClass=baseClass)
             
-    def _inlineComment(self, level=3):
-        frame = inspect.getouterframes(inspect.currentframe())[level]
-
-        # note: 
-        # don't use #line because it actually makes it harder 
-        # to find the offending code in both the C++ source and in the Python
-        #line %d "%s"
-        
-        if frame[4] is not None:
-            code = "\n".join(frame[4])
-        else:
-            code = ""
-            
-        return '''
-/* 
-    %s:%d
-    
-    %s
- */
-        ''' % (frame[1], frame[2], code)
-         
-
     def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None):
         """
         Check that getUnit() works for unOp
@@ -848,10 +827,8 @@ class Variable(object):
         if not self.getUnit().isDimensionless():
             canInline = False
 
-        var = unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit, inlineComment=self._inlineComment())
-#         var.comment = self._frameComment(level=7)
-        
-        return var
+        return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit, 
+                    inlineComment=inline._operatorVariableComment(canInline=canInline))
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
@@ -897,10 +874,8 @@ class Variable(object):
         from fipy.variables import binaryOperatorVariable
         binOp = binaryOperatorVariable._BinaryOperatorVariable(operatorClass)
         
-        var = binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit, inlineComment=self._inlineComment())
-#         var.comment = self._frameComment(level=7)
-
-        return var
+        return binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit, 
+                     inlineComment=inline._operatorVariableComment(canInline=canInline))
     
     def __add__(self, other):
         from fipy.terms.term import Term
