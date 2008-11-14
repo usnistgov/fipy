@@ -10,9 +10,6 @@ ez_setup.py
 setup.py
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
-FiPy.egg-info/SOURCES.txt.merge-left.r0
-FiPy.egg-info/SOURCES.txt.merge-right.r2817
-FiPy.egg-info/SOURCES.txt.working
 FiPy.egg-info/dependency_links.txt
 FiPy.egg-info/entry_points.txt
 FiPy.egg-info/top_level.txt
