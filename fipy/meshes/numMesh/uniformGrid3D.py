@@ -777,7 +777,7 @@ class UniformGrid3D(Grid3D):
             >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 2, cellVertexIDs + 6,
             ...                                cellVertexIDs + 8, cellVertexIDs + 12, cellVertexIDs + 14))
             >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
-            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> print numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
             1
             
             >>> nx = 3
@@ -790,7 +790,7 @@ class UniformGrid3D(Grid3D):
             >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
             ...                                cellVertexIDs + 8, cellVertexIDs + 9, cellVertexIDs + 10))
             >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
-            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> print numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
             1
 
         """
