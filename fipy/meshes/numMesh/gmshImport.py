@@ -121,9 +121,9 @@ Test cases:
    [[2 0 1 0 3 1 4 4 3 5 3 6 5 7 7]
     [0 1 2 3 2 4 2 3 5 4 6 5 7 4 6]]
    
-   >>> (mesh._getCellFaceIDs() == [[0, 0, 2, 7, 7, 8, 12, 14],
-   ...                             [1, 3, 5, 4, 8, 10, 13, 11],
-   ...                             [2, 4, 6, 6, 9, 11, 9, 12]]).flat.all()
+   >>> print (mesh._getCellFaceIDs() == [[0, 0, 2, 7, 7, 8, 12, 14],
+   ...                                   [1, 3, 5, 4, 8, 10, 13, 11],
+   ...                                   [2, 4, 6, 6, 9, 11, 9, 12]]).all().all()
    True
    
 The following test case is to test the handedness of the mesh to check

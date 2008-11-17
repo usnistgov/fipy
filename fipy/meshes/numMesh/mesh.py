@@ -103,18 +103,18 @@ class Mesh(_CommonMesh):
            >>> from fipy.meshes.numMesh.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
-           >>> (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
-           ...                             [7, 8, 10, 11],
-           ...                             [2, 3, 4, 5],
-           ...                             [6, 7, 9, 10]]).flat.all()
+           >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           ...                                   [7, 8, 10, 11],
+           ...                                   [2, 3, 4, 5],
+           ...                                   [6, 7, 9, 10]]).all().all()
            True
            
            >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
-           >>> (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
-           ...                             [7, 6, 10, 9],
-           ...                             [2, 3, 4, 5],
-           ...                             [6, 7, 9, 10]]).flat.all()
+           >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           ...                                   [7, 6, 10, 9],
+           ...                                   [2, 3, 4, 5],
+           ...                                   [6, 7, 9, 10]]).all().all()
            True
 
         """
