@@ -59,11 +59,11 @@ class PeriodicGrid2D(Grid2D):
         >>> print mesh._getCellDistances()
         [ 0.5   0.5   0.5   0.5   0.25  0.25  1.    1.    0.5   1.    1.    0.5 ]
  
-        >>> print mesh._getCellFaceIDs()
-        [[0 1 2 3]
-         [7 6 10 9]
-         [2 3 0 1]
-         [6 7 9 10]]
+        >>> (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+        ...                             [7, 6, 10, 9],
+        ...                             [2, 3, 0, 1],
+        ...                             [6, 7, 9, 10]]).flat.all()
+        True
 
         >>> print mesh._getCellToCellDistances()
         [[ 0.5  0.5  0.5  0.5]
