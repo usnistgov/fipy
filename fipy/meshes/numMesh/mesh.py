@@ -106,15 +106,15 @@ class Mesh(_CommonMesh):
            >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
            ...                                   [7, 8, 10, 11],
            ...                                   [2, 3, 4, 5],
-           ...                                   [6, 7, 9, 10]]).all().all()
+           ...                                   [6, 7, 9, 10]]).flatten().all()
            True
-           
+
            >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
            >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
            ...                                   [7, 6, 10, 9],
            ...                                   [2, 3, 4, 5],
-           ...                                   [6, 7, 9, 10]]).all().all()
+           ...                                   [6, 7, 9, 10]]).flatten().all()
            True
 
         """
