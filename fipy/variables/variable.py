@@ -220,7 +220,7 @@ class Variable(object):
             Variable(value=array([0, 1, 2]))
             
         """
-        return Variable(value=self)
+        return self._getArithmeticBaseClass()(value=self)
 
 
     def _getUnitAsOne(self):

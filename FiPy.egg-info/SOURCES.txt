@@ -21,7 +21,6 @@ documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TALKS.txt
 documentation/TODOLIST.txt
-documentation/VERSION.txt
 documentation/VKML.txt
 documentation/figures/NIST_right2line.pdf
 documentation/logo/logo.tex
@@ -30,7 +29,6 @@ documentation/manual/epydoc.sty
 documentation/manual/faq.tex
 documentation/manual/fipy.bst
 documentation/manual/fipy.dbj
-documentation/manual/fipy.pdf
 documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex

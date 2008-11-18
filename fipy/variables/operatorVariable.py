@@ -190,13 +190,6 @@ def _OperatorVariableClass(baseClass=None):
                 name = self._getRepresentation(style="name")
             return name
             
-        def copy(self):
-            return self.__class__(
-                op = self.op,
-                var = self.var,
-                opShape = self.opShape,
-                canInline = self.canInline)
- 
         def getShape(self):
             if self.opShape is not None:
                 return self.opShape

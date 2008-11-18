@@ -59,9 +59,9 @@ class FaceVariable(_MeshVariable):
         return _MeshVariable._getArithmeticBaseClass(self, other)
 
     def copy(self):
-        return self.__class__(mesh = self.mesh, 
-                              name = self.name + "_copy", 
-                              value = self.getValue())
+        return self._getArithmeticBaseClass()(mesh=self.mesh, 
+                                              name=self.name + "_copy", 
+                                              value=self.getValue())
 
     def getDivergence(self):
         """

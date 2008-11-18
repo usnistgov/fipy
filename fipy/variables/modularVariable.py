@@ -207,6 +207,16 @@ class ModularVariable(CellVariable):
     def __rsub__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
 
+    def _getArithmeticBaseClass(self, other=None):
+        """
+        Given `self` and `other`, return the desired base
+        class for an operation result.
+        """
+        if other is None:
+            return ModularVariable
+            
+        return CellVariable._getArithmeticBaseClass(self, other)
+
 
 def _test(): 
     import doctest

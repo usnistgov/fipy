@@ -131,11 +131,10 @@ class CellVariable(_MeshVariable):
         
     def copy(self):
         
-        return self.__class__(
-            mesh = self.mesh, 
-            name = self.name + "_old", 
-            value = self.getValue(),
-            hasOld = 0)
+        return self._getArithmeticBaseClass()(mesh=self.mesh, 
+                                              name=self.name + "_old", 
+                                              value=self.getValue(),
+                                              hasOld=False)
             
     def __call__(self, points=None, order=0):
         r"""
