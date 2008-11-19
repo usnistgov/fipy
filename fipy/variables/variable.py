@@ -758,8 +758,8 @@ class Variable(object):
             self.typecode = numerix.obj2sctype(argDict['result'])
         else:
             if self.value is None:
-                if self.getsctype() == numpy.bool_:
-                    argDict['result'] = numerix.empty(dim, numpy.int8)
+                if self.getsctype() == numerix.bool_:
+                    argDict['result'] = numerix.empty(dim, numerix.int8)
                 else:
                     argDict['result'] = numerix.empty(dim, self.getsctype())
             else:
