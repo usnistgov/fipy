@@ -84,8 +84,8 @@ class CellVariable(_MeshVariable):
             >>> b = c.getOld() + 3
             >>> print b
             [2]
-            >>> b.getTypecode()
-            'l'
+            >>> b.getsctype()
+            <type 'numpy.int32'>
             
         replacing with the same thing is no problem
         

@@ -1169,6 +1169,20 @@ def indices(dimensions, typecode=None):
     ## we don't turn the list back into an array because that is expensive and not required
     return lst
 
+def obj2sctype(rep, default=None):
+    if _isPhysical(rep):
+        sctype = rep.getsctype(default=default)
+    else:
+        if type(rep) in (type(()), type([])):
+            rep = array(rep)
+        sctype = NUMERIX.obj2sctype(rep=rep, default=default)
+        
+    if sctype is None:
+        return obj2sctype(type(rep), default=default)
+    else:
+        return sctype
+        
+
 def getTypecode(arr):
     """
     

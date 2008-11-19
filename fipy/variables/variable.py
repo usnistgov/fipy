@@ -315,7 +315,7 @@ class Variable(object):
         return str(self.getValue())
             
     def __repr__(self):
-        if len(self.name) > 0:
+        if hasattr(self, 'name') and len(self.name) > 0:
             return self.name
         else:
             s = self.__class__.__name__ + '('
@@ -548,7 +548,7 @@ class Variable(object):
         """
 
         if where is not None:
-            tmp = numerix.zeros(numerix.getShape(where), numerix.getTypecode(value))
+            tmp = numerix.zeros(numerix.getShape(where), numerix.obj2sctype(value))
             tmp[:] = value
             tmp = numerix.where(where, tmp, self.getValue())
         else:
@@ -602,6 +602,25 @@ class Variable(object):
             
     shape = property(fget=lambda self: self.getShape(), doc="Tuple of array dimensions.")
 
+    def getsctype(self, default=None):
+        """
+
+        Returns the Numpy sctype of the underlying array.
+
+            >>> Variable(1).getsctype()
+            <type 'numpy.int32'>
+            >>> Variable(1.).getsctype()
+            <type 'numpy.float64'>
+            >>> Variable((1,1.)).getsctype()
+            <type 'numpy.float64'>
+            
+        """
+        
+        if not hasattr(self, 'typecode'):
+            self.typecode = numerix.obj2sctype(rep=self.getNumericValue(), default=default)
+        
+        return self.typecode
+    
     def getTypecode(self):
         """
 
@@ -617,7 +636,7 @@ class Variable(object):
         """
         
         if not hasattr(self, 'typecode'):
-            self.typecode = numerix.getTypecode(self.getValue())
+            self.typecode = numerix.getTypecode(self.getNumericValue())
         
         return self.typecode
 
@@ -736,13 +755,13 @@ class Variable(object):
             self.canInline = False
             argDict['result'] = self.getValue()
             self.canInline = True
-            self.typecode = numerix.getTypecode(argDict['result'])
+            self.typecode = numerix.obj2sctype(argDict['result'])
         else:
             if self.value is None:
-                if self.getTypecode() == '?':
-                    argDict['result'] = numerix.empty(dim, 'b')
+                if self.getsctype() == numpy.bool_:
+                    argDict['result'] = numerix.empty(dim, numpy.int8)
                 else:
-                    argDict['result'] = numerix.empty(dim, self.getTypecode())
+                    argDict['result'] = numerix.empty(dim, self.getsctype())
             else:
                 argDict['result'] = self.value
 
