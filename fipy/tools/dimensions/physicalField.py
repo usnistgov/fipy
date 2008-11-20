@@ -557,7 +557,36 @@ class PhysicalField(object):
             self.value[index] = value.value
         else:
             self.value[index] = value
-            
+          
+##    __array_priority__ and __array_wrap__ are required to override
+##    the default behavior of numpy. If a numpy array and a Variable
+##    are in a binary operation and numpy is first, then numpy will,
+##    by default, try and do everything it can to get a a raw numpy
+##    array out of Variable. __array_wrap__ seems to have been
+##    introduced into masked array to fix this issue. __array_wrap__ is
+##    called after the operation is done so it could hurt efficiency badly.
+##    Something else needs to be done to stop the initial evaluation.
+
+    __array_priority__ = 100.0    
+
+    def __array_wrap__(self, arr, context=None):
+        """
+        Required to prevent numpy not calling the reverse binary operations.
+        Both the following tests are examples ufuncs.
+        
+           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0], 'm'))
+           <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
+
+           >>> from scipy.special import gamma as Gamma
+           >>> print type(Gamma(PhysicalField([1.0, 2.0])))
+           <type 'numpy.ndarray'>
+
+        """
+        if context is not None and len(context[1])==2:
+            return NotImplemented
+        else:
+            return arr
+
     def __array__(self, t = None):
         """
         Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
@@ -591,7 +620,8 @@ class PhysicalField(object):
             else:
                 return numerix.array(self.getNumericValue(), t)
         else:
-            raise TypeError, 'Numeric array value must be dimensionless'
+            return self.getNumericValue()
+#             raise TypeError, 'Numeric array value must be dimensionless'
         
     def _getArray(self):
         if self.unit.isDimensionlessOrAngle():
