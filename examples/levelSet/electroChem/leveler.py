@@ -336,7 +336,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         diffusionCoeff = metalDiffusionCoefficient,
         metalIonMolarVolume = atomicVolume)
 
-    metalEquationBCs = FixedValue(mesh.getTopFaces(), bulkMetalConcentration)
+    metalEquationBCs = FixedValue(mesh.getFacesTop(), bulkMetalConcentration)
 
     bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkAcceleratorVar,
@@ -347,7 +347,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         rateConstant = kAccelerator * siteDensity)
 
     bulkAcceleratorEquationBCs = (FixedValue(
-        mesh.getTopFaces(),
+        mesh.getFacesTop(),
         bulkAcceleratorConcentration),)
 
     bulkLevelerEquation = buildSurfactantBulkDiffusionEquation(
@@ -358,7 +358,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         rateConstant = kLeveler * siteDensity)
 
     bulkLevelerEquationBCs =  (FixedValue(
-        mesh.getTopFaces(),
+        mesh.getFacesTop(),
         bulkLevelerConcentration),)
 
     eqnTuple = ( (advectionEquation, distanceVar, (), None),

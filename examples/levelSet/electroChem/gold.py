@@ -30,7 +30,7 @@
  #  
  # ###################################################################
  ##
-
+ 
 r"""
 This input file
 
@@ -193,7 +193,7 @@ def runGold(faradaysConstant=9.6e4,
         diffusionCoeff = metalDiffusion,
         metalIonMolarVolume = molarVolume)
 
-    metalEquationBCs = FixedValue(mesh.getTopFaces(), metalConcentration)
+    metalEquationBCs = FixedValue(mesh.getFacesTop(), metalConcentration)
 
     if displayViewers:
 

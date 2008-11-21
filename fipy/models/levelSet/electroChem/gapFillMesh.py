@@ -120,7 +120,7 @@ class GapFillMesh(Mesh2D):
         dict['actualFineRegionHeight'] = self.actualFineRegionHeight
         dict['cellSize'] = self.cellSize
         dict['fineMesh'] = self.fineMesh
-        dict['faceVertexIDs'] = self.faceVertexIDs.copy()
+        dict['faceVertexIDs'] = self.faceVertexIDs.filled()
         return dict
             
     def __setstate__(self, dict):
@@ -200,8 +200,8 @@ class TrenchMesh(GapFillMesh):
         
         >>> from fipy.boundaryConditions.fixedValue import FixedValue
         
-        >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
-        ...                                     FixedValue(mesh.getTopFaces(), domainHeight)))
+        >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getFacesBottom(), 0.),
+        ...                                     FixedValue(mesh.getFacesTop(), domainHeight)))
 
     Evaluate the result:
        
@@ -340,7 +340,18 @@ class TrenchMesh(GapFillMesh):
         self.overBumpWidth = dict['overBumpWidth']
         self.overBumpRadius = dict['overBumpRadius']
         GapFillMesh.__setstate__(self, dict)
-    
+
+    def getTopFaces(self):
+        """
+        Included to not break the interface
+        """
+        return self.getFacesTop(self)
+
+    def getFacesBottom(self):
+        """
+        Included to not break the interface
+        """
+        return self.getFacesBottom(self)
 
 def _test(): 
     import doctest

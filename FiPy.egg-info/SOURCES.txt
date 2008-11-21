@@ -21,6 +21,7 @@ documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TALKS.txt
 documentation/TODOLIST.txt
+documentation/VERSION.txt
 documentation/VKML.txt
 documentation/figures/NIST_right2line.pdf
 documentation/logo/logo.tex
@@ -29,6 +30,7 @@ documentation/manual/epydoc.sty
 documentation/manual/faq.tex
 documentation/manual/fipy.bst
 documentation/manual/fipy.dbj
+documentation/manual/fipy.pdf
 documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex
@@ -361,12 +363,6 @@ fipy/solvers/pysparse/linearJORSolver.py
 fipy/solvers/pysparse/linearLUSolver.py
 fipy/solvers/pysparse/linearPCGSolver.py
 fipy/solvers/pysparse/pysparseSolver.py
-fipy/solvers/scipy/__init__.py
-fipy/solvers/scipy/linearCGSolver.py
-fipy/solvers/scipy/linearGMRESSolver.py
-fipy/solvers/scipy/linearLUSolver.py
-fipy/solvers/scipy/scipySolver.py
-fipy/solvers/scipy/test.py
 fipy/solvers/trilinos/__init__.py
 fipy/solvers/trilinos/linearBicgstabSolver.py
 fipy/solvers/trilinos/linearCGSSolver.py
