@@ -123,6 +123,18 @@ evolution of their problem.
     ...     eq.solve(phi, dt=dt)
     ...     if __name__ == "__main__":
     ...         viewer.plot()
+
+.. image:: examples/cahnHilliard/mesh1000x1000-early.pdf
+   :scale: 50
+   :align: left
+
+.. image:: examples/cahnHilliard/mesh1000x1000-mid.pdf
+   :scale: 50
+   :align: center
+   
+.. image:: examples/cahnHilliard/mesh1000x1000-late.pdf
+   :scale: 50
+   :align: right
 """
 __docformat__ = 'restructuredtext'
 

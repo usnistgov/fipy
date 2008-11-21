@@ -96,6 +96,10 @@ evolution of their problem.
     ...     eq.solve(phi, dt=dt)
     ...     if __name__ == "__main__":
     ...         viewer.plot()
+
+.. image:: examples/cahnHilliard/mesh100x100x100.pdf
+   :scale: 50
+   :align: center
 """
 __docformat__ = 'restructuredtext'
 
