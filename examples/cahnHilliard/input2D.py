@@ -32,105 +32,104 @@
  ##
 
 r"""
-
-This example solves the Cahn-Hilliard equation given by:
-
-.. raw:: latex
-
-    $$ \frac{\partial \phi}{\partial t} = \nabla \cdot D \nabla
-    \left( \frac{\partial f}{\partial \phi} - \epsilon^2
-    \nabla^2 \phi \right) $$
-
-where the free energy functional is given by,
-
-.. raw:: latex
-
-    $$ f = \frac{a^2}{2} \phi^2 (1 - \phi)^2 $$
-
-The equation is transformed into
-the following form,
+The spinodal decomposition phenomenon is a spontaneous separation of
+an initially homogenous mixture into two distinct regions of different
+properties (spin-up/spin-down, component A/component B). It is a
+"barrierless" phase separation process, such that under the right
+thermodynamic conditions, any fluctuation, no matter how small, will
+tend to grow. This is in contrast to nucleation, where a fluctuation
+must exceed some critical magnitude before it will survive and grow.
+Spinodal decomposition can be described by the "Cahn-Hilliard"
+equation (also known as
+"conserved Ginsberg-Landau" or "model B" of Hohenberg & Halperin)
 
 .. raw:: latex
 
-    $$ \frac{\partial \phi}{\partial t} 
-    = \nabla \cdot D \frac{\partial^2 f}{\partial \phi^2} \nabla \phi - \nabla \cdot D \nabla \epsilon^2 \nabla^2 \  phi $$
+   $$\frac{\partial \phi}{\partial t}
+   = \nabla\cdot D \nabla\left( \frac{\partial f}{\partial \phi}   - \epsilon^2 \nabla^2 \phi\right).$$
 
-This form of the equation allows the `CahnHilliardEquation` to be
-constructed from a transient term, a diffusion term, and a fourth
-order diffusion term. Notice that the diffusion coefficient for the
-diffusion term does not always remain positive since,
+   where $\phi$ is a conserved order parameter, possibly representing 
+   alloy composition or spin.
+   The double-well free energy function $f = (a^2/2) \phi^2 (1 -
+   \phi)^2$ penalizes states with intermediate values of $\phi$
+   between 0 and 1. The gradient energy term $\epsilon^2 \nabla^2
+   \phi$, on the other hand, penalizes sharp changes of $\phi$.
+   These two competing effects result in the segregation
+   of $\phi$ into domains of 0 and 1, separated by abrupt, but
+   smooth, transitions. The parameters $a$ and $\epsilon$ determine the relative 
+   weighting of the two effects and $D$ is a rate constant.
+
+We can simulate this process in FiPy with a simple script:
+
+    >>> from fipy import *
+
+(Note that all of the functionality of NumPy is imported along with FiPy, although
+much is augmented for FiPy's needs.)
+
+    >>> mesh = Grid2D(nx=100, ny=100, dx=0.25, dy=0.25)
+    >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
+
+We start the problem with random fluctuations about $\phi = 1/2$
+
+    >>> phi.setValue(GaussianNoiseVariable(mesh=mesh,
+    ...                                    mean=0.5,
+    ...                                    variance=0.01))
+
+FiPy doesn't plot or output anything unless you tell it to:
+
+    >>> if __name__ == "__main__":
+    ...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
+
+For FiPy, we need to perform the partial derivative 
 
 .. raw:: latex
 
-    $$ \frac{\partial^2 f}{\partial \phi^2} = a^2 (1 - 6 \phi (1 - \phi)) $$
+   $\partial f/\partial \phi$ 
+   
+manually and then put the equation in the canonical
+form by decomposing the spatial derivatives
+so that each `Term` is of a single, even order:
+    
+.. raw:: latex
 
-can be less than zero and thus unstable. The fourth order diffusion
-term acts to stabilize the problem.
+   $$\frac{\partial \phi}{\partial t}
+    = \nabla\cdot D a^2 \left[ 1 - 6 \phi \left(1 - \phi\right)\right] \nabla \phi- \nabla\cdot D \nabla \epsilon^2 \nabla^2 \phi.$$
 
+FiPy would automatically interpolate
+`D * a**2 * (1 - 6 * phi * (1 - phi))`
+onto the `Face`\s, where the diffusive flux is calculated, but we obtain
+somewhat more accurate results by performing a linear interpolation from
+`phi` at `Cell` centers to `PHI` at `Face` centers.
+Some problems benefit from non-linear interpolations, such as harmonic or
+geometric means, and FiPy makes it easy to obtain these, too.
+
+    >>> PHI = phi.getArithmeticFaceValue()
+    >>> D = a = epsilon = 1.
+    >>> eq = (TransientTerm()
+    ...       == DiffusionTerm(coeff=D * a**2 * (1 - 6 * PHI * (1 - PHI)))
+    ...       - DiffusionTerm(coeff=(D, epsilon**2)))
+
+Because the evolution of a spinodal microstructure slows with time, we
+use exponentially increasing time steps to keep the simulation
+"interesting". The FiPy user always has direct control over the
+evolution of their problem.
+
+    >>> dexp = -5
+    >>> elapsed = 0.
+    >>> while elapsed < 1000.:
+    ...     dt = min(100, exp(dexp))
+    ...     elapsed += dt
+    ...     dexp += 0.01
+    ...     eq.solve(phi, dt=dt)
+    ...     if __name__ == "__main__":
+    ...         viewer.plot()
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.parser import parse
-
-numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 400)
-numberOfSteps = parse('--numberOfSteps', action = 'store', type = 'int', default = 10)
-
-from fipy import *
-
-nx = int(sqrt(numberOfElements))
-ny = int(sqrt(numberOfElements))
-
-steps = numberOfSteps
-
-dx = 0.5
-dy = 0.5
-
-L = dx * nx
-
-asq = 1.0
-epsilon = 1
-diffusionCoeff = 1
-
-mesh = Grid2D(dx, dy, nx, ny)
-
-from fipy.tools.numerix import random
-
-var = CellVariable(name = "phase field",
-                   mesh = mesh,
-                   value = random.random(nx * ny))
-
-faceVar = var.getArithmeticFaceValue()
-doubleWellDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
-
-diffTerm2 = ImplicitDiffusionTerm(coeff = (diffusionCoeff * doubleWellDerivative,))
-diffTerm4 = ImplicitDiffusionTerm(coeff = (diffusionCoeff, -epsilon**2))
-eqch = TransientTerm() - diffTerm2 - diffTerm4
-
-BCs = (FixedFlux(mesh.getFacesRight(), 0),
-       FixedFlux(mesh.getFacesLeft(), 0),
-       NthOrderBoundaryCondition(mesh.getFacesLeft(), 0, 3),
-       NthOrderBoundaryCondition(mesh.getFacesRight(), 0, 3),
-       NthOrderBoundaryCondition(mesh.getFacesTop(), 0, 3),
-       NthOrderBoundaryCondition(mesh.getFacesBottom(), 0, 3))
-
 if __name__ == '__main__':
-
-    viewer = Viewer(vars = var, limits = {'datamin': 0., 'datamax': 1.0})
-    viewer.plot()
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus._getScript())
     
-dexp=-5
+    raw_input('finished')
 
-for step in range(steps):
-    dt = exp(dexp)
-    dt = min(1.0, dt)
-    dexp += 0.01
-    var.updateOld()
-    eqch.solve(var, boundaryConditions = BCs, dt = dt)
 
-    if __name__ == '__main__':
-        viewer.plot()
-        print 'step',step,'dt',dt
-	
-def _run():
-    pass
-            
