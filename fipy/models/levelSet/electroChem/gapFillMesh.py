@@ -345,13 +345,13 @@ class TrenchMesh(GapFillMesh):
         """
         Included to not break the interface
         """
-        return self.getFacesTop(self)
+        return self.getFacesTop()
 
-    def getFacesBottom(self):
+    def getBottomFaces(self):
         """
         Included to not break the interface
         """
-        return self.getFacesBottom(self)
+        return self.getFacesBottom()
 
 def _test(): 
     import doctest

@@ -319,19 +319,9 @@ def arccos(arr):
         >>> print tostring(arccos(0.0), precision=3)
         1.571
          
-    If SciPy has been loaded, the next test will return `NaN`, otherwise it will
-    generate `OverflowError: math range error`
+        >>> isnan(arccos(2.0))
+        True
     
-        >>> try:
-        ...     import sys
-        ...     if sys.platform == 'win32':
-        ...         print str(arccos(2.0)) == '-1.#IND'
-        ...     else:
-        ...         print str(arccos(2.0)) == 'nan'
-        ... except (OverflowError, ValueError):
-        ...     print 1
-        1
-
         >>> print tostring(arccos(array((0,0.5,1.0))), precision=3)
         [ 1.571  1.047  0.   ]
         >>> from fipy.variables.variable import Variable
@@ -368,19 +358,9 @@ def arccosh(arr):
         >>> print arccosh(1.0)
         0.0
 
-    If SciPy has been loaded, the next test will return `NaN`, otherwise it will
-    generate `OverflowError: math range error`
+        >>> isnan(arccosh(0.0))
+        True
     
-        >>> try:
-        ...     import sys
-        ...     if sys.platform == 'win32':
-        ...         print str(arccosh(0.0)) == '-1.#IND'
-        ...     else:
-        ...         print str(arccosh(0.0)) == 'nan'
-        ... except (OverflowError, ValueError):
-        ...     print 1
-        1
-
         >>> print tostring(arccosh(array((1,2,3))), precision=3)
         [ 0.     1.317  1.763]
         >>> from fipy.variables.variable import Variable
@@ -409,18 +389,8 @@ def arcsin(arr):
         >>> print tostring(arcsin(1.0), precision=3)
         1.571
          
-    If SciPy has been loaded, the next test will return `NaN`, otherwise it will
-    generate `OverflowError: math range error`
-    
-        >>> try:
-        ...     import sys
-        ...     if sys.platform == 'win32':
-        ...         print str(arcsin(2.0)) == '-1.#IND'
-        ...     else:
-        ...         print str(arcsin(2.0)) == 'nan'
-        ... except (OverflowError, ValueError):
-        ...     print 1
-        1
+        >>> isnan(arcsin(2.0))
+        True
 
         >>> print tostring(arcsin(array((0,0.5,1.0))), precision=3)
         [ 0.     0.524  1.571]
