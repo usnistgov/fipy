@@ -46,8 +46,8 @@ class GapFillMesh(Mesh2D):
         >>> eq = DiffusionTerm()
         
         >>> from fipy.boundaryConditions.fixedValue import FixedValue
-        >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getBottomFaces(), 0.),
-        ...                                     FixedValue(mesh.getTopFaces(), domainHeight)))
+        >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getFacesBottom(), 0.),
+        ...                                     FixedValue(mesh.getFacesTop(), domainHeight)))
 
     Evaluate the result:
        
@@ -120,6 +120,7 @@ class GapFillMesh(Mesh2D):
         dict['actualFineRegionHeight'] = self.actualFineRegionHeight
         dict['cellSize'] = self.cellSize
         dict['fineMesh'] = self.fineMesh
+        dict['faceVertexIDs'] = self.faceVertexIDs.copy()
         return dict
             
     def __setstate__(self, dict):
@@ -131,10 +132,6 @@ class GapFillMesh(Mesh2D):
         Mesh2D.__init__(self, dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
     
     def buildTransitionMesh(self, nx, height, cellSize):
-
-        import tempfile
-        (f, geomName) = tempfile.mkstemp('.geo')
-        file = open(geomName, 'w')    
 
         ## Required to coerce gmsh to use the correct number of
         ## cells in the X direction.
@@ -160,16 +157,6 @@ class GapFillMesh(Mesh2D):
         Line Loop(9) = {5, 6, 7, 8} ;
         Plane Surface(10) = {9} ; """)
     
-    def getTopFaces(self):
-        y = self.getFaceCenters()[1]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y > self.actualDomainHeight - self.epsilon)
-
-    def getBottomFaces(self):
-        y = self.getFaceCenters()[1]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y < self.epsilon)
-
     def getCellIDsAboveFineRegion(self):
         return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)[0]
 
