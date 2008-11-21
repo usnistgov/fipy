@@ -36,8 +36,7 @@ from fipy.tests.lateImportTest import _LateImportTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportTestSuite(testModuleNames = (
-        'scipy.test',
+    return _LateImportTestSuite(testModuleNames = (,
     ), base = __name__)
     
 if __name__ == '__main__':
