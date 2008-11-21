@@ -37,7 +37,7 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'inputTanh1D',
+            'tanh1D',
         ), base = __name__)
 
 if __name__ == '__main__':
