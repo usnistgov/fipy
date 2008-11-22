@@ -485,9 +485,7 @@ class Variable(object):
             
         PF = physicalField.PhysicalField
 
-        if isinstance(value, Variable):
-            value = value.getValue()
-        elif not isinstance(value, PF):
+        if not isinstance(value, PF):
             
             if getattr(self, 'value', None) is not None:
                 v = self.value
