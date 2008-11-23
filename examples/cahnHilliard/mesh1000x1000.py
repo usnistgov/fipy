@@ -125,15 +125,15 @@ evolution of their problem.
     ...         viewer.plot()
 
 .. image:: examples/cahnHilliard/mesh1000x1000-early.pdf
-   :scale: 50
+   :scale: 20
    :align: left
 
 .. image:: examples/cahnHilliard/mesh1000x1000-mid.pdf
-   :scale: 50
+   :scale: 20
    :align: center
    
 .. image:: examples/cahnHilliard/mesh1000x1000-late.pdf
-   :scale: 50
+   :scale: 20
    :align: right
 """
 __docformat__ = 'restructuredtext'
