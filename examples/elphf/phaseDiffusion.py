@@ -48,7 +48,7 @@ on a 1D mesh
 
 We create the phase field
 
-    >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
+    >>> phase = CellVariable(mesh=mesh, name='xi', value=1., hasOld=1)
     >>> phase.mobility = 1.
     >>> phase.gradientEnergy = 0.025
 

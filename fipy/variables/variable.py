@@ -548,7 +548,7 @@ class Variable(object):
         """
 
         if where is not None:
-            tmp = numerix.zeros(numerix.getShape(where), numerix.obj2sctype(value))
+            tmp = numerix.zeros(numerix.getShape(where), self.getsctype())
             tmp[:] = value
             tmp = numerix.where(where, tmp, self.getValue())
         else:

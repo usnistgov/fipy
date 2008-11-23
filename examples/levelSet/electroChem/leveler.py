@@ -253,10 +253,10 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
     distanceVar = DistanceVariable(
         name = 'distance variable',
         mesh = mesh,
-        value = -1,
+        value = -1.,
         narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, where=mesh.getElectrolyteMask())
+    distanceVar.setValue(1., where=mesh.getElectrolyteMask())
     
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
     levelerVar = SurfactantVariable(

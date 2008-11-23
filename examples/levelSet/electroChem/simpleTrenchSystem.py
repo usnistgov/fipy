@@ -218,7 +218,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     distanceVar = DistanceVariable(
         name = 'distance variable',
         mesh = mesh,
-        value = -1,
+        value = -1.,
         narrowBandWidth = narrowBandWidth,
         hasOld = 1)
 
@@ -228,7 +228,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     sideWidth = (trenchSpacing - trenchWidth) / 2
 
     x, y = mesh.getCellCenters()
-    distanceVar.setValue(1, where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
+    distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 

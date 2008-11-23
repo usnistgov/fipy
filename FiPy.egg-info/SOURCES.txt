@@ -35,10 +35,16 @@ documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex
 documentation/manual/introduction.tex
+documentation/manual/reference.pdf
 documentation/manual/reference.tex
 documentation/manual/refs.bib
 documentation/manual/tocvsec2.sty
 documentation/manual/images/objects.pdf
+documentation/manual/images/examples/cahnHilliard/mesh1000x1000-early.pdf
+documentation/manual/images/examples/cahnHilliard/mesh1000x1000-late.pdf
+documentation/manual/images/examples/cahnHilliard/mesh1000x1000-mid.pdf
+documentation/manual/images/examples/cahnHilliard/mesh100x100x100.pdf
+documentation/manual/images/examples/cahnHilliard/sphere.pdf
 documentation/manual/images/examples/diffusion/circleMesh.pdf
 documentation/manual/images/examples/diffusion/circleSteadyState.pdf
 documentation/manual/images/examples/diffusion/circleTSV.pdf
@@ -131,8 +137,10 @@ examples/benchmarking/phaseImpingement.py
 examples/benchmarking/superfill.py
 examples/benchmarking/transientPulse.py
 examples/cahnHilliard/__init__.py
-examples/cahnHilliard/input2D.py
-examples/cahnHilliard/inputTanh1D.py
+examples/cahnHilliard/mesh1000x1000.py
+examples/cahnHilliard/mesh100x100x100.py
+examples/cahnHilliard/sphere.py
+examples/cahnHilliard/tanh1D.py
 examples/cahnHilliard/test.py
 examples/chemotaxis/__init__.py
 examples/chemotaxis/input.py
@@ -252,6 +260,7 @@ examples/meshing/test.py
 examples/phase/__init__.py
 examples/phase/anisotropy.gz
 examples/phase/anisotropy.py
+examples/phase/anisotropyNew.py
 examples/phase/binary.py
 examples/phase/quaternary.py
 examples/phase/simple.py
