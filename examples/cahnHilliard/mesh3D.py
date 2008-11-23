@@ -36,10 +36,14 @@ Solves the Cahn-Hilliard problem in a 3D cube
 
     >>> from fipy import *
 
-The only difference from ``examples.cahnHilliard.mesh1000x1000`` is the
+The only difference from ``examples.cahnHilliard.mesh2D`` is the
 declaration of `mesh`.
 
-    >>> mesh = Grid3D(nx=100, ny=100, nz=100, dx=0.25, dy=0.25, dz=0.25)
+    >>> if __name__ == "__main__":
+    ...     nx = ny = nz = 100
+    ... else:
+    ...     nx = ny = nz = 10
+    >>> mesh = Grid3D(nx=nx, ny=ny, nz=nz, dx=0.25, dy=0.25, dz=0.25)
     >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 
 We start the problem with random fluctuations about $\phi = 1/2$
@@ -89,7 +93,11 @@ evolution of their problem.
 
     >>> dexp = -5
     >>> elapsed = 0.
-    >>> while elapsed < 1000.:
+    >>> if __name__ == "__main__":
+    ...     duration = 1000.
+    ... else:
+    ...     duration = 1e-2
+    >>> while elapsed < duration:
     ...     dt = min(100, exp(dexp))
     ...     elapsed += dt
     ...     dexp += 0.01
@@ -97,7 +105,7 @@ evolution of their problem.
     ...     if __name__ == "__main__":
     ...         viewer.plot()
 
-.. image:: examples/cahnHilliard/mesh100x100x100.pdf
+.. image:: examples/cahnHilliard/mesh3D.pdf
    :scale: 50
    :align: center
 """

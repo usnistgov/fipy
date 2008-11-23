@@ -37,7 +37,7 @@ may occur on vesicles (http://www.youtube.com/watch?v=kDsFP67_ZSE).
 
     >>> from fipy import *
 
-The only difference from ``examples.cahnHilliard.mesh1000x1000`` is the
+The only difference from ``examples.cahnHilliard.mesh2D`` is the
 declaration of `mesh`.
 
     >>> mesh = GmshImporter2DIn3DSpace("""
@@ -116,7 +116,11 @@ evolution of their problem.
 
     >>> dexp = -5
     >>> elapsed = 0.
-    >>> while elapsed < 1000.:
+    >>> if __name__ == "__main__":
+    ...     duration = 1000.
+    ... else:
+    ...     duration = 1e-2
+    >>> while elapsed < duration:
     ...     dt = min(100, exp(dexp))
     ...     elapsed += dt
     ...     dexp += 0.01

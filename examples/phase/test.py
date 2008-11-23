@@ -40,6 +40,7 @@ def _suite():
                                    ),
                                    docTestModuleNames = (
                                        'binary',
+                                       'anisotropyOLD',
                                        'anisotropy',
                                        'quaternary',
                                        'simple',

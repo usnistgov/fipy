@@ -38,6 +38,9 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
             'tanh1D',
+            'mesh2D',
+            'mesh3D',
+            'sphere'
         ), base = __name__)
 
 if __name__ == '__main__':

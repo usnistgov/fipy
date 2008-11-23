@@ -66,7 +66,11 @@ We can simulate this process in FiPy with a simple script:
 (Note that all of the functionality of NumPy is imported along with FiPy, although
 much is augmented for FiPy's needs.)
 
-    >>> mesh = Grid2D(nx=1000, ny=1000, dx=0.25, dy=0.25)
+    >>> if __name__ == "__main__":
+    ...     nx = ny = 1000
+    ... else:
+    ...     nx = ny = 10
+    >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
     >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 
 We start the problem with random fluctuations about $\phi = 1/2$
@@ -116,7 +120,11 @@ evolution of their problem.
 
     >>> dexp = -5
     >>> elapsed = 0.
-    >>> while elapsed < 1000.:
+    >>> if __name__ == "__main__":
+    ...     duration = 1000.
+    ... else:
+    ...     duration = 1e-2
+    >>> while elapsed < duration:
     ...     dt = min(100, exp(dexp))
     ...     elapsed += dt
     ...     dexp += 0.01
@@ -124,15 +132,15 @@ evolution of their problem.
     ...     if __name__ == "__main__":
     ...         viewer.plot()
 
-.. image:: examples/cahnHilliard/mesh1000x1000-early.pdf
+.. image:: examples/cahnHilliard/mesh2D-early.pdf
    :scale: 20
    :align: left
 
-.. image:: examples/cahnHilliard/mesh1000x1000-mid.pdf
+.. image:: examples/cahnHilliard/mesh2D-mid.pdf
    :scale: 20
    :align: center
    
-.. image:: examples/cahnHilliard/mesh1000x1000-late.pdf
+.. image:: examples/cahnHilliard/mesh2D-late.pdf
    :scale: 20
    :align: right
 """
