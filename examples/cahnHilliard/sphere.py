@@ -40,7 +40,7 @@ may occur on vesicles (http://www.youtube.com/watch?v=kDsFP67_ZSE).
 The only difference from ``examples.cahnHilliard.mesh2D`` is the
 declaration of `mesh`.
 
-    >>> mesh = GmshImporter2DIn3DSpace("""
+    >>> mesh = GmshImporter2DIn3DSpace('''
     ...     radius = 5.0;
     ...     cellSize = 0.3;
     ...     
@@ -66,7 +66,7 @@ declaration of `mesh`.
     ...     
     ...     // create entire inner and outer shell
     ...     Surface Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
-    ... """).extrude(extrudeFunc=lambda r: 1.1 * r)
+    ... ''').extrude(extrudeFunc=lambda r: 1.1 * r)
     >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 
 We start the problem with random fluctuations about $\phi = 1/2$
