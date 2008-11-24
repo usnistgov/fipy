@@ -160,7 +160,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
               and var.getRank() == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-1, 2D CellVariable"
+            raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-0, 2D CellVariable"
         # this viewer can only display one variable
         return [vars[0]]
         
