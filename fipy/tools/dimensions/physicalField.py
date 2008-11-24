@@ -284,14 +284,7 @@ class PhysicalField(object):
 
 
     def _sum(self, other, sign1 = lambda a: a, sign2 = lambda b: b):
-        # stupid Numeric bug
-        # it's smart enough to negate a boolean, but not 
-        # smart enough to know that it's negative when it
-        # gets done.
-        
         selfValue = self.value
-##        if type(self.value) is type(numerix.array((0))) and self.value.typecode() == 'b':
-##            selfValue = 1. * self.value
             
         if _isVariable(other):
             return sign2(other) + self.__class__(value = sign1(selfValue), unit = self.unit)
@@ -302,21 +295,14 @@ class PhysicalField(object):
         if not isinstance(other,PhysicalField):
             if numerix.alltrue(other == 0):
                 new_value = sign1(selfValue)
-            elif self.unit.isDimensionlessOrAngle():
-                otherValue = other
-##                if type(other) is type(numerix.array((0))) and other.typecode() == 'b':
-##                    otherValue = 1. * other
-                new_value = sign1(selfValue) + sign2(otherValue)
+            elif self.unit.isDimensionlessOrAngle() or self.unit.isInverseAngle():
+                new_value = sign1(selfValue) + sign2(other)
             else:
                 raise TypeError, str(self) + ' and ' + str(other) + ' are incompatible.'
         else:
-            otherValue = other.value
-##            if type(other.value) is type(numerix.array((0))) and other.value.typecode() == 'b':
-##                otherValue = 1. * other.value
-
-            new_value = sign1(selfValue) + \
-                        sign2(otherValue)*other.unit.conversionFactorTo(self.unit)
-        return self.__class__(value = new_value, unit = self.unit)
+            new_value = (sign1(selfValue)
+                         + sign2(other.value) * other.unit.conversionFactorTo(self.unit))
+        return self.__class__(value=new_value, unit=self.unit)
 
     def __add__(self, other):
         """
@@ -365,12 +351,8 @@ class PhysicalField(object):
         such as Numeric that cannot use units, while ensuring the quantities
         have the desired units.
         
-            >>> print numerix.array(PhysicalField(10., 's') * PhysicalField(2., 'Hz'))
+            >>> print (PhysicalField(10., 's') * PhysicalField(2., 'Hz'))
             20.0
-            >>> print numerix.array(PhysicalField(10., 's') * PhysicalField(2., 's'))
-            Traceback (most recent call last):
-                ...
-            TypeError: Numeric array value must be dimensionless
         """
         if _isVariable(other):
             return other.__mul__(self)
@@ -404,15 +386,10 @@ class PhysicalField(object):
         such as Numeric_ that cannot use units, while ensuring the quantities
         have the desired units
         
-            >>> print numerix.array(PhysicalField(1., 'inch') 
-            ...                     / PhysicalField(1., 'mm'))
+            >>> print (PhysicalField(1., 'inch') 
+            ...        / PhysicalField(1., 'mm'))
             25.4
-            >>> print numerix.array(PhysicalField(1., 'inch') 
-            ...                     / PhysicalField(1., 'kg'))
-            Traceback (most recent call last):
-                ...
-            TypeError: Numeric array value must be dimensionless
-        
+            
         .. _Numeric: http://www.numpy.org
         """
         if _isVariable(other):
@@ -521,7 +498,7 @@ class PhysicalField(object):
             elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
                 other = PhysicalField(value = other, unit = self.unit)
             else:
-                raise TypeError, 'Incompatible types'
+                raise TypeError, 'Incompatible units'
         return other.inUnitsOf(self.unit)
         
     def __getitem__(self, index): 
@@ -558,6 +535,39 @@ class PhysicalField(object):
         else:
             self.value[index] = value
             
+##    __array_priority__ and __array_wrap__ are required to override
+##    the default behavior of numpy. If a numpy array and a Variable
+##    are in a binary operation and numpy is first, then numpy will,
+##    by default, try and do everything it can to get a a raw numpy
+##    array out of Variable. __array_wrap__ seems to have been
+##    introduced into masked array to fix this issue. __array_wrap__ is
+##    called after the operation is done so it could hurt efficiency badly.
+##    Something else needs to be done to stop the initial evaluation.
+
+    __array_priority__ = 100.0    
+
+    def __array_wrap__(self, arr, context=None):
+        """
+        Required to prevent numpy not calling the reverse binary operations.
+        Both the following tests are examples ufuncs.
+        
+           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0]))
+           <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
+
+           >>> from scipy.special import gamma as Gamma
+           >>> print type(Gamma(PhysicalField([1.0, 2.0])))
+           <type 'numpy.ndarray'>
+
+        """
+        result = arr
+        
+        if context is not None:
+            (func, args, _) = context
+            if len(args) == 2:
+                result = NotImplemented
+
+        return result
+
     def __array__(self, t = None):
         """
         Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
@@ -574,24 +584,31 @@ class PhysicalField(object):
              [ 0.06981317  0.08726646]]
 
          
-        If the array is not dimensionless, the conversion fails.
+        If the array is not dimensionless, the numerical value in the current
+        units is returned.
         
             >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m"))
-            Traceback (most recent call last):
-                ...
-            TypeError: Numeric array value must be dimensionless
+            array([[ 2.,  3.],
+                   [ 4.,  5.]])
         
         .. _Numeric: http://www.numpy.org
         """
-        if self.unit.isDimensionlessOrAngle():
-            value = self.getNumericValue()
-##            if type(value) is type(numerix.array((0))) and (t is None or t == value.typecode()):
-            if type(value) is type(numerix.array((0))) and (t is None or t == value.dtype.char):
-                return value
-            else:
-                return numerix.array(self.getNumericValue(), t)
+        if self.unit.isAngle():
+            value = self.inRadians()
         else:
-            raise TypeError, 'Numeric array value must be dimensionless'
+            value = self.value
+            
+        return numerix.array(value, t)
+        
+#         if self.unit.isDimensionlessOrAngle():
+#             value = self.getNumericValue()
+# ##            if type(value) is type(numerix.array((0))) and (t is None or t == value.typecode()):
+#             if type(value) is type(numerix.array((0))) and (t is None or t == value.dtype.char):
+#                 return value
+#             else:
+#                 return numerix.array(self.getNumericValue(), t)
+#         else:
+#             raise TypeError, 'Numeric array value must be dimensionless'
         
     def _getArray(self):
         if self.unit.isDimensionlessOrAngle():
@@ -714,6 +731,58 @@ class PhysicalField(object):
         unit = _findUnit(unit)
         self.value = _convertValue (self.value, self.unit, unit)
         self.unit = unit
+
+    def inRadians(self):
+        """
+        Converts an angular quantity to radians and returns the numerical value. 
+        
+            >>> print PhysicalField(((2.,3.),(4.,5.)),"rad").inRadians()
+            [[ 2.  3.]
+             [ 4.  5.]]
+            >>> print PhysicalField(((2.,3.),(4.,5.)),"deg").inRadians()
+            [[ 0.03490659  0.05235988]
+             [ 0.06981317  0.08726646]]
+         
+         As a special case, assumes a dimensionless quantity is already in
+         radians.
+         
+             >>> print PhysicalField(((2.,3.),(4.,5.))).inRadians()
+             [[ 2.  3.]
+              [ 4.  5.]]
+                 
+         It's an error to convert a quantity with non-angular units
+         
+            >>> print PhysicalField(((2.,3.),(4.,5.)),"m").inRadians()
+            Traceback (most recent call last):
+                ...
+            TypeError: Incompatible units
+
+        """
+        if self.unit.isDimensionless():
+            return self.value
+        else:
+            return self.inUnitsOf("rad").value
+            
+    def inDimensionless(self):
+        """
+        Returns the numerical value of a dimensionless quantity.
+        
+             >>> print PhysicalField(((2.,3.),(4.,5.))).inDimensionless()
+             [[ 2.  3.]
+              [ 4.  5.]]
+                 
+         It's an error to convert a quantity with units
+         
+            >>> print PhysicalField(((2.,3.),(4.,5.)),"m").inDimensionless()
+            Traceback (most recent call last):
+                ...
+            TypeError: Incompatible units
+
+        """
+        if self.unit.isDimensionless():
+            return self.value
+        else:
+            raise TypeError, 'Incompatible units'
 
     def inUnitsOf(self, *units):
         """
@@ -858,9 +927,9 @@ class PhysicalField(object):
             >>> print round(PhysicalField("1 m").arccos(), 6)
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return PhysicalField(value = umath.arccos(self), unit = "rad")
+        return PhysicalField(value=umath.arccos(self.inDimensionless()), unit = "rad")
         
     def arccosh(self):
         """
@@ -871,12 +940,12 @@ class PhysicalField(object):
         
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1 m").arccosh(), 6)
+            >>> print round(PhysicalField("1. m").arccosh(), 6)
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return umath.arccosh(self)
+        return umath.arccosh(self.inDimensionless())
 
     def arcsin(self):
         """
@@ -890,9 +959,9 @@ class PhysicalField(object):
             >>> print round(PhysicalField("1 m").arcsin(), 6)
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return PhysicalField(value = umath.arcsin(self), unit = "rad")
+        return PhysicalField(value = umath.arcsin(self.inDimensionless()), unit = "rad")
         
     def sqrt(self):
         """
@@ -924,13 +993,9 @@ class PhysicalField(object):
             >>> PhysicalField(30.,"m").sin()
             Traceback (most recent call last):
                 ...
-            TypeError: Argument of sin must be an angle
+            TypeError: Incompatible units
         """
-        if self.unit.isAngle():
-            return umath.sin(self.value * \
-                             self.unit.conversionFactorTo(_unit_table['rad']))
-        else:
-            raise TypeError, 'Argument of sin must be an angle'
+        return umath.sin(self.inRadians())
 
     def sinh(self):
         """
@@ -944,9 +1009,9 @@ class PhysicalField(object):
             >>> PhysicalField(60.,"m").sinh()
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return umath.sinh(self)
+        return umath.sinh(self.inDimensionless())
 
     def cos(self):
         """
@@ -962,13 +1027,9 @@ class PhysicalField(object):
             >>> PhysicalField(60.,"m").cos()
             Traceback (most recent call last):
                 ...
-            TypeError: Argument of cos must be an angle
+            TypeError: Incompatible units
         """
-        if self.unit.isAngle():
-            return umath.cos(self.value * \
-                             self.unit.conversionFactorTo(_unit_table['rad']))
-        else:
-            raise TypeError, 'Argument of cos must be an angle'
+        return umath.cos(self.inRadians())
 
     def cosh(self):
         """
@@ -982,9 +1043,9 @@ class PhysicalField(object):
             >>> PhysicalField(60.,"m").cosh()
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return umath.cosh(self)
+        return umath.cosh(self.inDimensionless())
 
     def tan(self):
         """
@@ -1000,13 +1061,9 @@ class PhysicalField(object):
             >>> PhysicalField(45.,"m").tan()
             Traceback (most recent call last):
                 ...
-            TypeError: Argument of tan must be an angle
+            TypeError: Incompatible units
         """
-        if self.unit.isAngle():
-            return umath.tan(self.value * \
-                             self.unit.conversionFactorTo(_unit_table['rad']))
-        else:
-            raise TypeError, 'Argument of tan must be an angle'
+        return umath.tan(self.inRadians())
             
     def tanh(self):
         """
@@ -1020,9 +1077,9 @@ class PhysicalField(object):
             >>> PhysicalField(60.,"m").tanh()
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return umath.tanh(self)
+        return umath.tanh(self.inDimensionless())
 
     def arctan2(self,other):
         """
@@ -1031,15 +1088,18 @@ class PhysicalField(object):
             >>> print round(PhysicalField(2.).arctan2(PhysicalField(5.)), 6)
             0.380506
         
-        The input `PhysicalField` objects must be dimensionless
+        The input `PhysicalField` objects must be in the same dimensions
         
+            >>> print round(PhysicalField(2.54, "cm").arctan2(PhysicalField(1., "inch")), 6)
+            0.785398
+
             >>> print round(PhysicalField(2.).arctan2(PhysicalField("5. m")), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
         """
-        other = self._inMyUnits(other)
-        return PhysicalField(value = umath.arctan2(self, other), unit = "rad")
+        return PhysicalField(value=umath.arctan2(self.value, 
+                                                 self._inMyUnits(other).value), unit="rad")
             
     def arctan(self):
         """
@@ -1053,9 +1113,9 @@ class PhysicalField(object):
             >>> print round(PhysicalField("1 m").arctan(), 6)
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return PhysicalField(value = umath.arctan(self), unit = "rad")
+        return PhysicalField(value= umath.arctan(self.inDimensionless()), unit = "rad")
         
     def arctanh(self):
         """
@@ -1066,12 +1126,12 @@ class PhysicalField(object):
         
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1 m").arccosh(), 6)
+            >>> print round(PhysicalField("1 m").arctanh(), 6)
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return umath.arctanh(self)
+        return umath.arctanh(self.inDimensionless())
 
 
     def log(self):
@@ -1083,28 +1143,28 @@ class PhysicalField(object):
             
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1 m").log(), 6)
+            >>> print round(PhysicalField("1. m").log(), 6)
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return umath.log(self)
+        return umath.log(self.inDimensionless())
             
     def log10(self):
         """
         Return the base-10 logarithm of the `PhysicalField`
         
-            >>> print round(PhysicalField(10).log10(), 6)
+            >>> print round(PhysicalField(10.).log10(), 6)
             1.0
             
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1 m").log10(), 6)
+            >>> print round(PhysicalField("1. m").log10(), 6)
             Traceback (most recent call last):
                 ...
-            TypeError: Numeric array value must be dimensionless
+            TypeError: Incompatible units
         """
-        return umath.log10(self)
+        return umath.log10(self.inDimensionless())
         
         
     def floor(self):
@@ -1616,7 +1676,22 @@ class PhysicalUnit:
         """
         return self.powers[7] == 1 and \
                numerix.add.reduce(self.powers) == 1
-               
+     
+    def isInverseAngle(self):
+        """
+        Returns `True` if the 1 divided by the unit is an angle
+            
+            >>> PhysicalField("1. deg**-1").getUnit().isInverseAngle()
+            1
+            >>> PhysicalField("1. 1/rad").getUnit().isInverseAngle()
+            1
+            >>> PhysicalField("1. inch").getUnit().isInverseAngle()
+            0
+        """
+        return self.powers[7] == -1 and \
+               numerix.add.reduce(self.powers) == -1
+                
+
     def isDimensionlessOrAngle(self):
         """
         Returns `True` if the unit is dimensionless or an angle

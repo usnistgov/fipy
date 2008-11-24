@@ -117,7 +117,7 @@ class ModularVariable(CellVariable):
             [ 1.] 1
             
         """
-        self.setValue(self.getValue().mod(self()))
+        self.setValue(self.getValue().mod(self().inRadians()))
         if self.old is not None:
             self.old.setValue(self.value.value.copy())
 
