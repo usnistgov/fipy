@@ -93,7 +93,7 @@ We create the phase field
 
     >>> phase = CellVariable(mesh = mesh, name = 'xi')
     >>> import scipy
-    >>> phase.mobility = scipy.inf
+    >>> phase.mobility = inf
     >>> phase.gradientEnergy = 0.025
     
 Although we are not interested in them for this problem, we create one field to 
