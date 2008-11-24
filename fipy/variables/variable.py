@@ -142,14 +142,29 @@ class Variable(object):
 
            >>> from scipy.special import gamma as Gamma
            >>> print type(Gamma(Variable([1.0, 2.0])))
-           <type 'numpy.ndarray'>
+           <class 'fipy.variables.unaryOperatorVariable.unOp'>
 
         """
-        if context is not None and len(context[1])==2:
-            return NotImplemented
-        else:
-            return arr
+        result = arr
+        
+        if context is not None:
+            from fipy.variables.constant import _Constant
+            (func, args, _) = context
+            def __makeVariable(v):
+                if not isinstance(v, Variable):
+                    v = _Constant(v)
+                return v
+            args = [__makeVariable(arg) for arg in args]
 
+            if len(args) == 1:
+                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape)
+            elif len(args) == 2:
+                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape)
+            else:
+                result = NotImplemented
+
+        return result
+        
     def __array__(self, t=None):
         """
         Attempt to convert the `Variable` to a numerix `array` object
@@ -158,14 +173,11 @@ class Variable(object):
             >>> print numerix.array(v)
             [2 3]
         
-        It is an error to convert a dimensional `Variable` to a 
-        Numeric `array`
+        A dimensional `Variable` will convert to the numeric value in the current units
     
             >>> v = Variable(value=[2,3], unit="m")
             >>> numerix.array(v)
-            Traceback (most recent call last):
-                ...
-            TypeError: Numeric array value must be dimensionless
+            array([2, 3])
 
         Convert a list of 1 element Variables to an array
 

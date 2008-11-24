@@ -32,6 +32,8 @@
 
 from fipy.variables.variable import Variable
 
+from fipy.tools import numerix
+
 def _OperatorVariableClass(baseClass=None):
     class _OperatorVariable(baseClass):
         def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, *args, **kwargs):
@@ -91,6 +93,44 @@ def _OperatorVariableClass(baseClass=None):
             """
             import opcode
             
+            def __var(i):
+                v = self.var[i]
+                if style == "__repr__":
+                    result = repr(v)
+                elif style == "name":
+                    if isinstance(v, Variable):
+                        result = v.getName()
+                        if len(result) == 0:
+                            # The string form of a variable
+                            # would probably be too long and messy.
+                            # Just give shorthand.
+                            result = "%s(...)" % v.__class__.__name__
+                    elif type(v) in (type(1), type(1.)):
+                        result = repr(v)
+                    else:
+                        # The string form of anything but a
+                        # number would be too long and messy.
+                        # Just give shorthand.
+                        result = "<...>"
+
+                elif style == "TeX":
+                    raise Exception, "TeX style not yet implemented"
+                elif style == "C":
+                    if not v._isCached():
+                        result = v._getCstring(argDict, id=id + str(i), freshen=freshen)
+                        v.value = None
+                    else:
+                        result = v._getVariableClass()._getCstring(v, argDict,
+                                                                   id=id + str(i),
+                                                                   freshen=False)
+                else:
+                    raise SyntaxError, "Unknown style: %s" % style
+                    
+                return result
+
+            if isinstance(self.op, numerix.ufunc):
+                return "%s(%s)" % (self.op.__name__, ", ".join([__var(i) for i in range(len(self.var))]))
+            
             bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
                 
             def _popIndex():
@@ -129,39 +169,7 @@ def _OperatorVariableClass(baseClass=None):
                     counter = _popIndex()
                     stack.append(self.op.func_code.co_names[counter])
                 elif opcode.opname[bytecode] == 'LOAD_FAST':
-                    if style == "__repr__":
-                        stack.append(repr(self.var[_popIndex()]))
-                    elif style == "name":
-                        v = self.var[_popIndex()]
-                        if isinstance(v, Variable):
-                            name = v.getName()
-                            if len(name) > 0:
-                                stack.append(name)
-                            else:
-                                # The string form of a variable
-                                # would probably be too long and messy.
-                                # Just give shorthand.
-                                stack.append("%s(...)" % v.__class__.__name__)
-                        elif type(v) in (type(1), type(1.)):
-                            stack.append(repr(v))
-                        else:
-                            # The string form of anything but a
-                            # number would be too long and messy.
-                            # Just give shorthand.
-                            stack.append("<...>")
-                    elif style == "TeX":
-                        raise Exception, "TeX style not yet implemented"
-                    elif style == "C":
-                        counter = _popIndex()
-                        if not self.var[counter]._isCached():
-                            stack.append(self.var[counter]._getCstring(argDict, id=id + str(counter), freshen=freshen))
-                            self.var[counter].value = None
-                        else:
-                            stack.append(self.var[counter]._getVariableClass()._getCstring(self.var[counter], argDict, \
-                                                                                           id=id + str(counter),\
-                                                                                           freshen=False))
-                    else:
-                        raise SyntaxError, "Unknown style: %s" % style
+                    stack.append(__var(_popIndex()))
                 elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
                     args = []
                     for j in range(bytecodes.pop(1)):
