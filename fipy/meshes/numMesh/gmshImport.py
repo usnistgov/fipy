@@ -412,16 +412,16 @@ class MshFile:
                 self.deletegeofile = False
                 geofile = arg
                 
-            import sys
-            if sys.platform == 'win32':
-                self.mshfile = 'tmp.msh'
-            else:
-                (f, self.mshfile) = tempfile.mkstemp('.msh')
+##            import sys
+##            if sys.platform == 'win32':
+##                self.mshfile = 'tmp.msh'
+##            else:
+            (f, self.mshfile) = tempfile.mkstemp('.msh')
 
             os.system('gmsh ' + geofile + ' -2 -v 0 -format msh -o ' + self.mshfile)
 
-            if sys.platform != 'win32':
-                os.close(f)
+##            if sys.platform != 'win32':
+            os.close(f)
 
             if self.deletegeofile:
                 os.remove(geofile)
