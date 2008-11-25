@@ -410,13 +410,27 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
         totalTime += dt
 
-    try:
-        import os
-        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
-        N = mesh.getFineMesh().getNumberOfCells()
-        return allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
-    except:
-        return 0
+##    minY = 1e+10
+##    for i in range(mesh.getNumberOfCells()):
+##        if distanceVar[i] > 0.0:
+##            if  mesh.getCellCenters()[1,i] < minY:
+##                minY = mesh.getCellCenters()[1,i]
+##                minX = mesh.getCellCenters()[0,i]
+
+##    print 'minX, minY',minX, minY
+##    print distanceVar(((1.25e-08, 3.125e-07),))
+##    print distanceVar(((1.25e-08,), (3.125e-07,)), order=1)
+
+    point = ((1.25e-08,), (3.125e-07,))
+    value = 2.02815779e-08
+    return abs(float(distanceVar(((1.25e-08,), (3.125e-07,)), order=1)) - value) < cellSize / 10.0
+##    try:
+##        import os
+##        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
+##        N = mesh.getFineMesh().getNumberOfCells()
+##        return allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
+##    except:
+##        return 0
     
 if __name__ == '__main__':
     runLeveler()
