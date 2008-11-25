@@ -245,13 +245,9 @@ def runGold(faradaysConstant=9.6e4,
                     
         step += 1
 
-    try:
-        import os
-        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
-        n = mesh.getFineMesh().getNumberOfCells()
-        print allclose(catalystVar[:n], data[:n], atol=1.0)
-    except:
-        return 0
+    point = ((5e-09,), (1.15e-07,))
+    value = 1.45346701e-09
+    return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
     
 if __name__ == '__main__':
     runGold(numberOfSteps = 300, cellSize = 0.05e-7)
