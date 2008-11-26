@@ -56,6 +56,12 @@ def _OperatorVariableClass(baseClass=None):
 
             self.comment = inlineComment
 
+        def __setitem__(self, index, value):
+            raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
+            
+        def setValue(self, value, unit=None, where=None):
+            raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
+        
         def _calcValue(self):
             if not self.canInline:
                 return self._calcValuePy()
