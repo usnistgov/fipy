@@ -110,7 +110,7 @@ class ModularVariable(CellVariable):
 
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 1)
-            >>> var = ModularVariable(mesh=mesh, value=1, hasOld=1)
+            >>> var = ModularVariable(mesh=mesh, value=1., hasOld=1)
             >>> var.updateOld()
             >>> var[:] = 2
             >>> print var.getOld()

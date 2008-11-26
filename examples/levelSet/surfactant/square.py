@@ -77,7 +77,7 @@ x1 = (L + boxSize) / 2
 
 distanceVariable = DistanceVariable(
     mesh = mesh,
-    value = 1,
+    value = 1.,
     hasOld = 1
     )
 

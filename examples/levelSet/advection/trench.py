@@ -62,7 +62,7 @@ This example creates a trench with the following zero level set:
 
     >>> var = DistanceVariable(name = 'level set variable',
     ...                        mesh = mesh,
-    ...                        value = -1,
+    ...                        value = -1.,
     ...                        hasOld = 1
     ...                        )
 

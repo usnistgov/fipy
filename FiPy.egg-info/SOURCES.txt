@@ -35,6 +35,7 @@ documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex
 documentation/manual/introduction.tex
+documentation/manual/reference.pdf
 documentation/manual/reference.tex
 documentation/manual/refs.bib
 documentation/manual/tocvsec2.sty
