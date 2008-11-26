@@ -899,6 +899,17 @@ class PhysicalField(object):
         """
         return self.unit
         
+    def setUnit(self, unit):
+        """
+        Change the unit object of `self` to `unit`
+        
+            >>> a = PhysicalField(value="1 m")
+            >>> a.setUnit("m**2/s")
+            >>> print a
+            1 m**2/s
+        """
+        self.unit = _findUnit(unit)
+        
     def getNumericValue(self):
         """
         Return the `PhysicalField` without units, after conversion to base SI units.

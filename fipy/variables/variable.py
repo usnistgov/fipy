@@ -250,11 +250,29 @@ class Variable(object):
     def getUnit(self):
         """
         Return the unit object of `self`.
+        
             >>> Variable(value="1 m").getUnit()
             <PhysicalUnit m>
         """
         return self._extractUnit(self.getValue())
         
+    def setUnit(self, unit):
+        """
+        Change the unit object of `self` to `unit`
+        
+            >>> a = Variable(value="1 m")
+            >>> a.setUnit("m**2/s")
+            >>> print a
+            1 m**2/s
+        """
+        if self.value is None:
+            self.getValue()
+
+        if isinstance(self.value, physicalField.PhysicalField):
+            self.value.setUnit(unit)
+        else:
+            self.value = physicalField.PhysicalField(value=self.value, unit=unit)
+
     def inBaseUnits(self):
         """
         Return the value of the `Variable` with all units reduced to 
