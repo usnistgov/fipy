@@ -97,6 +97,13 @@ def _isPhysical(arr):
 
     return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
+def getUnit(arr):
+    if hasattr(arr, "getUnit") and callable(arr.getUnit):
+        return arr.getUnit()
+    else:
+        from fipy.tools.dimensions import physicalField
+        return physicalField._unity
+        
 def put(arr, ids, values):
     """
     The opposite of `take`.  The values of `arr` at the locations
@@ -1153,47 +1160,6 @@ def obj2sctype(rep, default=None):
         return sctype
         
 
-def getTypecode(arr):
-    """
-    
-    Returns the `typecode()` of the array or `Variable`. Also returns a meaningful
-    typecode for ints and floats.
-
-        >>> getTypecode(1)
-        'l'
-        >>> getTypecode(1.)
-        'd'
-        >>> getTypecode(array(1))
-        'l'
-        >>> getTypecode(array(1.))
-        'd'
-        >>> from fipy.variables.variable import Variable
-        >>> getTypecode(Variable(1.))
-        'd'
-        >>> getTypecode(Variable(1))
-        'l'
-        >>> getTypecode([0])
-        'l'
-        >>> getTypecode("a")
-        Traceback (most recent call last):
-              ...
-        TypeError: No typecode for object
-
-    """
-    if type(arr) in (type(()), type([])):
-        arr = array(arr)
-    
-    if hasattr(arr, 'getTypecode'):
-        return arr.getTypecode()
-    elif hasattr(arr, 'dtype'): ## type(arr) is type(array(0)):
-        return arr.dtype.char
-    elif type(arr) is type(0):
-        return 'l'
-    elif type(arr) is type(0.):
-        return 'd'
-    else:
-        raise TypeError, "No typecode for object"
-    
 if not hasattr(NUMERIX, 'empty'):
     print 'defining empty'
     def empty(shape, dtype='d', order='C'):
