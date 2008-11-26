@@ -172,8 +172,17 @@ class PhysicalField(object):
         .. _PhysicalQuantity: http://starship.python.net/~hinsen/ScientificPython/ScientificPythonManual/Scientific_31.html
         .. _Numeric: http://www.numpy.org
         """
+        if hasattr(value, "getValue") and callable(value.getValue):
+            value = value.getValue()
+            
         if isinstance(value, PhysicalField):
-            unit = value.unit
+            if unit is not None:
+                if not value.unit.isDimensionless():
+                    value = value.inUnitsOf(unit)
+                unit = _findUnit(unit)
+            else:
+                unit = value.unit
+            
             if hasattr(value.value, 'copy'):
                 value = value.value.copy()
             else:
@@ -207,7 +216,7 @@ class PhysicalField(object):
             unit = _unity
 ##             unit = _findUnit("")
 
-        self.value = value
+        self.value = numerix.array(value)
         self.unit = unit
         if array is not None:
             array[:] = self.value
@@ -262,10 +271,16 @@ class PhysicalField(object):
             >>> PhysicalField(value = 3., unit = "eV")
             PhysicalField(3.0,'eV')
         """
-        if self.unit is _unity:
-            return `self.value`
+        value = self.value
+        if value.shape == ():
+            value = str(value)
         else:
-            return (self.__class__.__name__ + '(' + `self.value` + ',' + 
+            value = repr(value)
+            
+        if self.unit is _unity:
+            return value
+        else:
+            return (self.__class__.__name__ + '(' + value + ',' + 
                     `self.unit.name()` + ')')
 
     def tostring(self, max_line_width=75, precision=8, suppress_small=False, separator=' '):
@@ -492,7 +507,10 @@ class PhysicalField(object):
         return self.value != 0
         
     def _inMyUnits(self, other):
-        if not isinstance(other,PhysicalField):
+        if _isVariable(other):
+            other = other.getValue()
+            
+        if not isinstance(other, PhysicalField):
             if type(other) is type(''):
                 other = PhysicalField(other)
             elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
@@ -514,7 +532,7 @@ class PhysicalField(object):
         
     def __setitem__(self, index, value):
         """
-        Assign the specified element of the array, performing apropriate
+        Assign the specified element of the array, performing appropriate
         conversions.
         
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
@@ -529,12 +547,36 @@ class PhysicalField(object):
         """
         if type(value) is type(''):
             value = PhysicalField(value)
-        if isinstance(value,PhysicalField):
-            value = self._inMyUnits(value)
-            self.value[index] = value.value
-        else:
-            self.value[index] = value
+        if isinstance(value, PhysicalField) or _isVariable(value):
+            value = self._inMyUnits(value).value
+        self.value[index] = value
             
+    def itemset(self, value):
+        """
+        Assign the value of a scalar array, performing appropriate
+        conversions.
+        
+            >>> a = PhysicalField(4.,"m")
+            >>> a.itemset(PhysicalField("6 ft"))
+            >>> print a
+            1.8288 m
+            >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
+            >>> a.itemset(PhysicalField("6 ft"))
+            Traceback (most recent call last):
+                ...
+            ValueError: can only place a scalar for an  array of size 1
+            >>> a.itemset(PhysicalField("2 min"))
+            Traceback (most recent call last):
+                ...
+            TypeError: Incompatible units
+        """
+        if type(value) is type(''):
+            value = PhysicalField(value)
+        if isinstance(value, PhysicalField) or _isVariable(value):
+            value = self._inMyUnits(value).value
+        self.value.itemset(value)
+            
+
 ##    __array_priority__ and __array_wrap__ are required to override
 ##    the default behavior of numpy. If a numpy array and a Variable
 ##    are in a binary operation and numpy is first, then numpy will,
@@ -1313,7 +1355,7 @@ class PhysicalField(object):
         """
         other = self._inMyUnits(other)
         return MA.allequal(self.value, other.value)
-
+        
 class PhysicalUnit:
     """
     A `PhysicalUnit` represents the units of a `PhysicalField`.
@@ -1843,11 +1885,11 @@ def _Scale(quantity, scaling):
         + ' are incompatible'
         
     return dimensionless
- 
+  
 def _isVariable(var):
-    from fipy.variables.variable import Variable
-    return isinstance(var, Variable)
-    
+    from fipy.variables import variable
+    return isinstance(var, variable.Variable)
+
 # SI unit definitions
 
 _base_names = ['m', 'kg', 's', 'A', 'K', 'mol', 'cd', 'rad', 'sr']

@@ -420,6 +420,12 @@ class Variable(object):
         self.value[index] = value
         self._markFresh()
         
+    def itemset(self, value):
+        if self.value is None:
+            self.getValue()
+        self.value.itemset(value)
+        self._markFresh()
+        
     def put(self, indices, value):
         if self.value is None:
             self.getValue()
@@ -492,8 +498,12 @@ class Variable(object):
         ## arrays. A test case was put in _execInline(). The best fix turned out to
         ## be here.
         
-        if hasattr(value, 'iscontiguous') and not value.iscontiguous():
+        if (inline.inlineFlagOn 
+            and hasattr(value, 'iscontiguous') and not value.iscontiguous()):
             value = value.copy()
+            
+        if isinstance(value, Variable):
+            value = value.getValue()
             
         PF = physicalField.PhysicalField
 
@@ -527,7 +537,7 @@ class Variable(object):
             
         return value
 
-    def setValue(self, value, unit=None, array=None, where=None):
+    def setValue(self, value, unit=None, where=None):
         """
         Set the value of the Variable. Can take a masked array.
 
@@ -558,9 +568,8 @@ class Variable(object):
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
             
         """
-
         if where is not None:
-            tmp = numerix.zeros(numerix.getShape(where), self.getsctype())
+            tmp = numerix.empty(numerix.getShape(where), self.getsctype())
             tmp[:] = value
             tmp = numerix.where(where, tmp, self.getValue())
         else:
@@ -569,7 +578,13 @@ class Variable(object):
             else:
                 tmp = value
 
-        self._setValue(value=tmp, unit=unit, array=array)
+        value = self._makeValue(value=tmp, unit=unit, array=None)
+
+        if numerix.getShape(self.value) == ():
+            self.value.itemset(value)
+        else:
+            self.value[:] = value
+            
         self._markFresh()
         
     def _setNumericValue(self, value):
@@ -633,25 +648,6 @@ class Variable(object):
         
         return self.typecode
     
-    def getTypecode(self):
-        """
-
-        Returns the Numpy typecode of the underlying array.
-
-            >>> Variable(1).getTypecode()
-            'l'
-            >>> Variable(1.).getTypecode()
-            'd'
-            >>> Variable((1,1.)).getTypecode()
-            'd'
-            
-        """
-        
-        if not hasattr(self, 'typecode'):
-            self.typecode = numerix.getTypecode(self.getNumericValue())
-        
-        return self.typecode
-
     def _calcValue(self):
         return self.value
         
