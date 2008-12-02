@@ -21,7 +21,6 @@ documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TALKS.txt
 documentation/TODOLIST.txt
-documentation/VERSION.txt
 documentation/VKML.txt
 documentation/figures/NIST_right2line.pdf
 documentation/logo/logo.tex
@@ -30,12 +29,10 @@ documentation/manual/epydoc.sty
 documentation/manual/faq.tex
 documentation/manual/fipy.bst
 documentation/manual/fipy.dbj
-documentation/manual/fipy.pdf
 documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex
 documentation/manual/introduction.tex
-documentation/manual/reference.pdf
 documentation/manual/reference.tex
 documentation/manual/refs.bib
 documentation/manual/tocvsec2.sty
@@ -238,10 +235,8 @@ examples/levelSet/distanceFunction/square.py
 examples/levelSet/distanceFunction/test.py
 examples/levelSet/electroChem/README.txt
 examples/levelSet/electroChem/__init__.py
-examples/levelSet/electroChem/gold.gz
 examples/levelSet/electroChem/gold.py
 examples/levelSet/electroChem/howToWriteAScript.py
-examples/levelSet/electroChem/leveler.gz
 examples/levelSet/electroChem/leveler.py
 examples/levelSet/electroChem/simpleTrenchSystem.gz
 examples/levelSet/electroChem/simpleTrenchSystem.py
