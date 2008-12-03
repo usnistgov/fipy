@@ -348,7 +348,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         	
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPGSSolver`.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            

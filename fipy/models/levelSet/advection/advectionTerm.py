@@ -153,8 +153,8 @@ class _AdvectionTerm(Term):
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
-        from fipy.solvers import LinearCGSSolver
-        return solver or LinearCGSSolver()
+        from fipy.solvers import LinearLUSolver
+        return solver or LinearLUSolver()
 
 
 def _test(): 

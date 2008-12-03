@@ -131,7 +131,7 @@ instantiator as follows:
 .. raw:: latex
 
    \IndexClass{ExponentialConvectionTerm}
-   \IndexClass{LinearCGSSolver}
+   \IndexClass{LinearLUSolver}
    \IndexClass{SteadyConvectionDiffusionScEquation}
 
 ..
@@ -146,7 +146,7 @@ instantiator as follows:
    ...      var = var,
    ...      diffusionCoeff = diffCoeff,
    ...      convectionCoeff = convCoeff,
-   ...      solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000),
+   ...      solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000),
    ...      convectionScheme = ExponentialConvectionTerm,
    ...      boundaryConditions = boundaryConditions
    ...      )
@@ -317,13 +317,13 @@ suitable):
     
 .. raw:: latex
 
-   \IndexClass{LinearCGSSolver}
+   \IndexClass{LinearLUSolver}
 
 ..
 
     >>> from fipy.solvers import *
     >>> eq.solve(var = var, 
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000), 
+    ...          solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000), 
     ...          boundaryConditions = boundaryConditions)
 
 .. note:: In version 0.1, the `Equation` object had to be told about the
