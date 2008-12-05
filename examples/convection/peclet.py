@@ -35,7 +35,7 @@
 r"""
 
 This example tests diffusion-convection for increasing Peclet numbers.
-This test case has been introduced because `LinearCGSSolver` wsa not
+This test case has been introduced because `LinearCGSSolver` was not
 working with Peclet numbers over 1. LinearLUSOlver is now the default
 for ConvectionTerm. For `nx = 1000` the Linear GMRESSOLVER does not work,
 but the LinearScipyGMRESSolver does work! Oh dear...
