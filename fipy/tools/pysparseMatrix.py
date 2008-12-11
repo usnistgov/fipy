@@ -96,7 +96,7 @@ class _PysparseMatrix(_SparseMatrix):
         Add two sparse matrices
         
             >>> L = _PysparseMatrix(size = 3)
-            >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L + _PysparseIdentityMatrix(3)
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
@@ -137,9 +137,9 @@ class _PysparseMatrix(_SparseMatrix):
         Multiply a sparse matrix by another sparse matrix
         
             >>> L1 = _PysparseMatrix(size = 3)
-            >>> L1.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L2 = _PysparseIdentityMatrix(size = 3)
-            >>> L2.put((4.38,12357.2,1.1), (2,1,0), (1,0,2))
+            >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
             
             >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
@@ -195,7 +195,7 @@ class _PysparseMatrix(_SparseMatrix):
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
             >>> L = _PysparseMatrix(size = 3)
-            >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L
                 ---    10.000000   3.000000  
                 ---     3.141593      ---    
@@ -208,12 +208,12 @@ class _PysparseMatrix(_SparseMatrix):
         Put elements of `vector` along diagonal of matrix
         
             >>> L = _PysparseMatrix(size = 3)
-            >>> L.putDiagonal((3.,10.,numerix.pi))
+            >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print L
              3.000000      ---        ---    
                 ---    10.000000      ---    
                 ---        ---     3.141593  
-            >>> L.putDiagonal((10.,3.))
+            >>> L.putDiagonal([10.,3.])
             >>> print L
             10.000000      ---        ---    
                 ---     3.000000      ---    
@@ -242,8 +242,8 @@ class _PysparseMatrix(_SparseMatrix):
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
             >>> L = _PysparseMatrix(size = 3)
-            >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
-            >>> L.addAt((1.73,2.2,8.4,3.9,1.23), (1,2,0,0,1), (2,2,0,0,2))
+            >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+            >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
             >>> print L
             12.300000  10.000000   3.000000  
                 ---     3.141593   2.960000  
@@ -295,7 +295,7 @@ class _PysparseIdentityMatrix(_PysparseMatrix):
         """
         _PysparseMatrix.__init__(self, size = size, bandwidth = 1)
         ids = numerix.arange(size)
-        self.put(numerix.ones(size), ids, ids)
+        self.put(numerix.ones(size, 'd'), ids, ids)
         
 def _test(): 
     import doctest

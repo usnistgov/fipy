@@ -75,6 +75,7 @@ documentation/manual/images/examples/levelSet/electroChem/inputSimpleTrenchSyste
 documentation/manual/images/examples/levelSet/electroChem/leveler.pdf
 documentation/manual/images/examples/levelSet/electroChem/schematicOfEquations.pdf
 documentation/manual/images/examples/levelSet/electroChem/superfillImage.pdf
+documentation/manual/images/examples/phase/anisotropy.pdf
 documentation/manual/images/examples/phase/quaternary.pdf
 documentation/manual/images/examples/phase/binary/moving.pdf
 documentation/manual/images/examples/phase/binary/stationary.pdf
