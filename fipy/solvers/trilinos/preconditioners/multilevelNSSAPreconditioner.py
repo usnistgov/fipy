@@ -58,7 +58,7 @@ class MultilevelNSSAPreconditioner(Preconditioner):
         
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
 
-        self.Prec.SetParameterList({"output": 10,
+        self.Prec.SetParameterList({"output": 0,
                                     "max levels" : 10,
                                     "prec type" : "MGW",
                                     "increasing or decreasing" : "increasing",

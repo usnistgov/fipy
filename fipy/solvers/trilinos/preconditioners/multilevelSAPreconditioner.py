@@ -60,7 +60,7 @@ class MultilevelSAPreconditioner(Preconditioner):
         
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
 
-        self.Prec.SetParameterList({"output": 10,
+        self.Prec.SetParameterList({"output": 0,
                                     "max levels" : 10,
                                     "prec type" : "MGV",
                                     "increasing or decreasing" : "increasing",

@@ -58,14 +58,13 @@ class MultilevelDDMLPreconditioner(Preconditioner):
         
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
 
-        self.Prec.SetParameterList({"output": 10,
+        self.Prec.SetParameterList({"output": 0,
                                     "max levels" : 3,
                                     "prec type" : "MGV",
                                     "increasing or decreasing" : "increasing",
                                     "aggregation: type" : "METIS",
-                                    "aggregation: local aggregates" : 1,
                                     "aggregation: nodes per aggregate" : 512,
-                                    "aggregation: next level aggregates per process" : 128,
+                                    "aggregation: next-level aggregates per process" : 128,
                                     "aggregation: damping factor" : 4. / 3.,
                                     "eigen-analysis: type" : "power-method",
                                     "eigen-analysis: iterations" : 20,
