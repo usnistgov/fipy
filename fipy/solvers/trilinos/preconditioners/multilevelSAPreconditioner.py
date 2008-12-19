@@ -5,7 +5,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "multilevelSolverSmootherPreconditioner.py"
+ #  FILE: "multilevelSAPreconditioner.py"
  #                                    created: 06/25/07
  #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -47,27 +47,41 @@ __docformat__ = 'restructuredtext'
 from PyTrilinos import ML
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-class MultilevelSolverSmootherPreconditioner(Preconditioner):
+class MultilevelSAPreconditioner(Preconditioner):
     """
-    Multilevel preconditioner for Trilinos solvers using Aztec solvers
-    as smoothers.
-    
+    Multilevel preconditioner for Trilinos solvers suitable classical
+    smoothed aggregation for symmetric positive definite or nearly
+    symmetric positive definite systems.    
     """
-    def __init__(self, levels=10):
-        """
-        Initialize the multilevel preconditioner
-
-        - `levels`: Maximum number of levels
-        """
-        self.levels = levels
 
     def _applyToSolver(self, solver, matrix):
         if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
             return
         
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
-        self.Prec.SetParameterList({"output": 0, "smoother: type" : "Aztec", "smoother: Aztec as solver" : True})
+
+        self.Prec.SetParameterList({"output": 10,
+                                    "max levels" : 10,
+                                    "prec type" : "MGV",
+                                    "increasing or decreasing" : "increasing",
+                                    "aggregation: type" : "Uncoupled-MIS",
+                                    "aggregation: damping factor" : 4. / 3.,
+##                                    "energy minimization: enable" : False,
+##                                    "smoother: type" : "Aztec",
+##                                    "smoother: type" : "symmetric Gauss-Seidel",
+##                                    "eigen-analysis: type" : "power-method",
+                                    "eigen-analysis: type" : "cg",
+                                    "eigen-analysis: iterations" : 10,
+                                    "smoother: sweeps" : 2,
+                                    "smoother: damping factor" : 1.0,
+                                    "smoother: pre or post" : 'both',
+                                    "smoother: type" : "symmetric Gauss-Seidel",
+                                    "coarse: type" : 'Amesos-KLU',
+                                    "coarse: max size" : 128
+                                    })
+
         self.Prec.ComputePreconditioner()
+        
         solver.SetPrecOperator(self.Prec)
         
 

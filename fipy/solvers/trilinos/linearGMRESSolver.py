@@ -45,6 +45,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
 from fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner import MultilevelDDPreconditioner
+from fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner import MultilevelSGSPreconditioner
+from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
 from PyTrilinos import AztecOO
 
@@ -55,7 +57,7 @@ class LinearGMRESSolver(TrilinosAztecOOSolver):
     using a the `MultilevelDDPreconditioner` by default.
 
     """
-      
+    
     def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelDDPreconditioner()):
         """
         :Parameters:
@@ -67,4 +69,5 @@ class LinearGMRESSolver(TrilinosAztecOOSolver):
         """
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
                                        iterations=iterations, steps=steps, precon=precon)
+##        self.solver = AztecOO.AZ_gmres_condnum
         self.solver = AztecOO.AZ_gmres
