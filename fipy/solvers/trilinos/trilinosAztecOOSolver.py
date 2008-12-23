@@ -73,7 +73,4 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         if self.preconditioner is not None:
             self.preconditioner._applyToSolver(solver=Solver, matrix=A)
         
-        tmp = Solver.Iterate(self.iterations, self.tolerance)
-
-        print 'tmp',tmp
-        raw_input("stopped")
+        Solver.Iterate(self.iterations, self.tolerance)
