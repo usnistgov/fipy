@@ -9,14 +9,8 @@ Simple Windows Installation
 These instructions are for the `Windows XP`_ and `Windows 2000`_
 platforms. Please see the more general |INSTALLATION-txt| for detailed
 installation instructions.  These instructions are not the only way to
-set up |FiPy| on a Windows_ OS but represent the most expedient way
-from our experience to have a usable installation up and running.
-
-.. note::
-
-   These steps require downloading installation ``.exe`` binary files from
-   various web sites.  When given the choice to ``run`` (``open``) or
-   ``save`` these files it is best to simply choose ``run`` (``open``).
+set up |FiPy| on a Windows_ OS but represent the most expedient way from
+our experience to have a usable installation up and running.
 
 .. include:: utils/include.txt
 
@@ -32,14 +26,18 @@ Required Packages
 Python
 ------
 
-http://code.enthought.com/enthon/
+http://www.pythonxy.com
 
-We recommend the use of `Enthought Python`_. This version of Python_ has
-some of the packages for |FiPy| already included. Download and install
-the latest version.
+http://www.enthought.com
 
-.. _Enthought Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/enthon/
+We recommend the use of either `Enthought Python`_ or
+`Python(x,y)`_. These versions of Python_ have some of the prerequisite
+packages for |FiPy| already included. Download and install the latest
+version.
+
+.. _Python(x,y): http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.pythonxy.com
 .. _Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
+.. _Enthought Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.enthought.com
 
 PySparse
 --------
@@ -47,9 +45,8 @@ PySparse
 http://sourceforge.net/project/showfiles.php?group_id=101403
 
 Download and install the latest version of PySparse for Windows_
-(pysparse-x.y.z.win32-py2.X.exe). Be sure to select the version
-compiled with the correct version of Python_ to match the 
-`Enthought Python`_ installation.
+(pysparse-x.y.z.win32-py2.X.exe). Be sure to select the version compiled
+with the correct version of Python_ to match the `Python`_ installation.
 
 
 |FiPy|
@@ -71,67 +68,51 @@ http://www.geuz.org/gmsh
 
 If you wish to run examples that have unstructured meshes, it is
 necessary to install Gmsh. Download and unpack the latest version of
-Gmsh for Windows. Open the unpacked folder with a browser and copy the
-``gmsh.exe`` file to ``C:\Python2X``.
-
-.. note::
-
-   This is a required package for superfill examples.
-
-.. warning::
-
-   |FiPy| does not currently work with version 2.0 or higher of Gmsh.
-   Be certain to use older versions.
+Gmsh for Windows. Open the unpacked folder with a browser and make sure
+that ``gmsh.exe`` is placed somewhere on the execution path.
 
 PyVTK
 -----
 
 http://www.ctcms.nist.gov/fipy/download/
 
-If you wish to use MayaVi_, PyVTK is a requirement.  Download and
-install the latest version from the |FiPy| downloads page
+If you wish to use `MayaVi 1`_, PyVTK is a requirement.  Download and
+install the latest version from the |FiPy| `downloads page`_
 (``PyVTK-x.y.z.win32.exe``).
 
+.. _downloads page: http://www.ctcms.nist.gov/fipy/download
+
+MayaVi 1
+--------
+
+http://mayavi.sourceforge.net
+
+`MayaVi 1`_ is a requirement if you wish to view 3D problems or improve
+the viewing capabilities of the superfill examples.  Download the source
+code and run ``python setup.py install`` to install from the python
+source in order for ``import mayavi`` to work at the command line.
+
+.. warning::
+
+   At the time of writing the ``import mayavi`` command is not working
+   with the `python(x,y)`_ version of `python`_.
+
 .. note::
 
-   This is a required package for superfill examples.
+   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
+   `MayaVi 2`_ as soon as possible.
 
-MayaVi
-------
-
-MayaVi comes with `Enthought Python`_, so no installation steps need to
-be taken.
-
-.. note::
-
-   This is a required step for superfill examples.
+.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
 Using |FiPy| on Windows
 =======================
 
-Both the IDLE_ and Ipython_ environments are packaged with `Enthought
-Python`_. Ipython_ is recommended over IDLE_ with some caveats that
-will be outlined below. Both of these environments will appear in the
-Windows Program menu after installation. The following videos may be
-useful for explaining the use of Ipython_ on Windows:
+A number of interactive python environments are avaibale such as the
+IDLE_ and Ipython_ environments. The following videos may be useful for
+explaining the use of Ipython_ on Windows:
 
 http://showmedo.com/videos/series?name=PythonIPythonSeries
-
-Interactive Viewing
--------------------
-
-Ipython_ works well with Matplotlib_, but does not seem to display the
-Mayavi_ viewer correctly. IDLE_ has problems with interactive viewing,
-but this can be remedied by the following:
-
-   - Click on ``Start``
-   - Click on ``Programs``
-   - Click on ``Python 2.X (Enthought Edition)``
-   - Right click on ``IDLE (Python GUI)`` and click on ``Create Shortcut`` which creates ``IDLE (Python GUI)(2)``
-   - Right click on ``IDLE (Python GUI)(2)``
-   - Click on properties
-   - Add the ``-n`` option to ``Target`` being sure to leave a space after the last quote and before ``-n``
-   - Drag and drop ``IDLE (Python GUI)(2)`` to the desktop to create an icon.
 
 Testing
 -------
@@ -142,51 +123,16 @@ directory, by typing
 
     >>> run setup.py test 
 
-in the Ipython_ shell. There does not seem to be a good way to run the
-tests using IDLE_.
+in the Ipython_ shell.
 
 Running Examples
 ----------------
 
-Running the |FiPy| examples can be problematic in Ipython_ as there
-seems to be a bug with the execution of the doctest environment. One
-way to overcome this is to extract the example doctests to regular
-script files using:
+To run the |FiPy| examples in Ipython_ simply use the `run` command:
 
-    >>> run setup.py copy_script --From=path/to/doctest/script.py --To=script.py``
+    >>> run examples/diffusion/mesh20x20.py
 
-and then execute using:
-
-    >>> run script.py
-
-You can edit python files with the edit command:
-
-    >>> edit script.py
-
-Yoou can also use IDLE_ to run the examples. You can use the IDLE_
-file browser to open the examples and run the module.
-
-    - Click on ``File``
-    - Click on ``Open``
-    - Open ``C:\Path\To\Base\FiPy\directory\examples\diffusion\steadyState\mesh50x50\input.py``
-
-This will open an editor, press the F5 key to run the example.  A
-matplotlib_ viewer should appear with rainbow stripes.
-
-Another way to use |FiPy| examples is to import the example file and
-then run any functionality it may have. For example at the IDLE_
-command line run the following code:
-
-    >>> import sys
-    >>> sys.path.append('C://Path//To//Base//FiPy//Directory')
-    >>> from examples.levelSet.electroChem.inputGold import runGold
-    >>> runGold(numberOfSteps = 100)
-
-If you have installed the optional packages, a MayaVi_ viewer should
-appear with a trench filling simulation.
-
-.. _matplotlib: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
-.. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
+.. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/doc/idlemain.html
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. _Ipython: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://ipython.scipy.org
 
