@@ -184,6 +184,9 @@ viewers and the dimension of the mesh.
 
 ..
 
+    >>> phiAnalytical = CellVariable(name="analytical value",
+    ...                              mesh=mesh)
+
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars=(phi, phiAnalytical),
     ...                     limits={'datamin': 0., 'datamax': 1.})
@@ -202,9 +205,6 @@ diffusion problem is given by
 
     >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
-
-    >>> phiAnalytical = CellVariable(name="analytical value",
-    ...                              mesh=mesh)
 
     >>> try:
     ...     from scipy.special import erf
