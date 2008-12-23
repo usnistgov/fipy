@@ -170,6 +170,25 @@ We limit our steps to 90% of that value for good measure
     >>> timeStepDuration = 0.9 * dx**2 / (2 * D)
     >>> steps = 100
 
+If we're running interactively, we'll want to view the result, but not if
+this example is being run automatically as a test. We accomplish this by
+having Python check if this script is the "`__main__`" script, which will
+only be true if we explicitly launched it and not if it has been imported
+by another script such as the automatic tester. The factory function
+``Viewer()`` returns a suitable viewer depending on available
+viewers and the dimension of the mesh.
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
+
+    >>> if __name__ == '__main__':
+    ...     viewer = Viewer(vars=(phi, phiAnalytical),
+    ...                     limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer.plot()
+
 In a semi-infinite domain, the analytical solution for this transient
 diffusion problem is given by
 
@@ -193,25 +212,6 @@ diffusion problem is given by
     ... except ImportError:
     ...     print "The SciPy library is not available to test the solution to \
     ... the transient diffusion equation"
-
-If we're running interactively, we'll want to view the result, but not if
-this example is being run automatically as a test. We accomplish this by
-having Python check if this script is the "`__main__`" script, which will
-only be true if we explicitly launched it and not if it has been imported
-by another script such as the automatic tester. The factory function
-``Viewer()`` returns a suitable viewer depending on available
-viewers and the dimension of the mesh.
-
-.. raw:: latex
-
-   \IndexModule{viewers}
-
-..
-
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=(phi, phiAnalytical),
-    ...                     limits={'datamin': 0., 'datamax': 1.})
-    ...     viewer.plot()
 
 We then solve the equation by repeatedly looping in time:
 
