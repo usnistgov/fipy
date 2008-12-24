@@ -26,11 +26,10 @@ else:
     else:
         # If no argument or environment variable, try importing them and seeing
         # what works
-        if not foundSolvers:
-            try: 
-                from fipy.solvers.pysparse import *
+        try: 
+            from fipy.solvers.pysparse import *
+        except:
+            try:
+                from fipy.solvers.trilinos import *
             except:
-                try:
-                    from fipy.solvers.trilinos import *
-                except:
-                    raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
+                raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
