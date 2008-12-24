@@ -40,7 +40,7 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
-from fipy.solvers import *
+from fipy.solvers import LinearLUSolver
 
 from fipy.tools import numerix
 
