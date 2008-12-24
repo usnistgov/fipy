@@ -387,6 +387,8 @@ class PhysicalField(object):
 
     __rmul__ = __mul__
 
+    multiply = __mul__
+
     def __div__(self, other):
         """
         Divide two physical quantities.  The unit of the result is the
@@ -498,6 +500,16 @@ class PhysicalField(object):
         """
         return self.__class__(value = -self.value, unit = self.unit)
 
+    def sign(self):
+        """
+        Return the sign of the quantity. The `unit` is unchanged.
+        
+            >>> print sign(PhysicalField(((3.,-2.),(-1.,4.)), 'm'))
+            [[ 1  -1]
+             [ -1  1]]
+        """
+        return numerix.sign(self.value)
+
     def __nonzero__(self):
         """
         Test if the quantity is zero. 
@@ -605,8 +617,15 @@ class PhysicalField(object):
         
         if context is not None:
             (func, args, _) = context
-            if len(args) == 2:
-                result = NotImplemented
+            def __makePhysical(v):
+                if not (isinstance(v, PhysicalField) or _isVariable(v)):
+                    v = PhysicalField(v)
+                return v
+            args = [__makePhysical(arg) for arg in args]
+            
+            meth = getattr(args[0], func.__name__, None)
+            if meth is not None and callable(meth):
+                result = meth(*args[1:])
 
         return result
 
@@ -906,7 +925,7 @@ class PhysicalField(object):
             >>> a = PhysicalField(value="1 m")
             >>> a.setUnit("m**2/s")
             >>> print a
-            1 m**2/s
+            1.0 m**2/s
         """
         self.unit = _findUnit(unit)
         
@@ -1480,7 +1499,7 @@ class PhysicalUnit:
                                 self.offset * other)
 
     __rmul__ = __mul__
-
+    
     def __div__(self, other):
         """
         Divide one unit by another

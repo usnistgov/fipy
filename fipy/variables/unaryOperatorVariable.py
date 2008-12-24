@@ -40,7 +40,7 @@ def _UnaryOperatorVariable(operatorClass=None):
                 try:
                     return self._extractUnit(self.op(self.var[0]._getUnitAsOne()))
                 except:
-                    return self._extractUnit(self.op(self._calcValue()))
+                    return self._extractUnit(self._calcValue())
             else:
                 return self.unit
             

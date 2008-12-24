@@ -236,10 +236,11 @@ class Variable(object):
 
 
     def _getUnitAsOne(self):
-        if self.getUnit() is physicalField._unity:
+        unit = self.getUnit()
+        if unit is physicalField._unity:
             return 1.
         else:
-            return physicalField.PhysicalField(value=1, unit=self.getUnit())
+            return physicalField.PhysicalField(value=1, unit=unit)
 
     def _extractUnit(self, value):
         if isinstance(value, physicalField.PhysicalField):
@@ -263,7 +264,7 @@ class Variable(object):
             >>> a = Variable(value="1 m")
             >>> a.setUnit("m**2/s")
             >>> print a
-            1 m**2/s
+            1.0 m**2/s
         """
         if self.value is None:
             self.getValue()
@@ -1141,6 +1142,9 @@ class Variable(object):
         
     def __float__(self):
         return float(self.getValue())
+        
+    def __int__(self):
+        return int(self.getValue())
         
     def __nonzero__(self):
         """
