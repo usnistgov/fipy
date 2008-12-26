@@ -66,6 +66,9 @@ class Term:
         self.RHSvector = None
         self._diagonalSign = Variable(value=1)
         
+    def copy(self):
+        return self.__class__(self.coeff)
+        
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
         raise NotImplementedError
 

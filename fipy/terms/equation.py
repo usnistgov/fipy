@@ -56,7 +56,9 @@ class _Equation(Term):
 	
     def copy(self):
         eq = _Equation()
-        eq.terms = self.terms
+        for key, val in self.terms.iteritems():
+            if val is not None:
+                eq.terms[key] = val.copy()
         return eq
         
     def orderedPlusOtherKeys(self):
