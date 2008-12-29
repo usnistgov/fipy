@@ -141,14 +141,19 @@ class GapFillMesh(Mesh2D):
         ## cells in the X direction.
         
         fakeCellSize = nx * cellSize / (nx +0.5)
- 
+
+        ## including extra point with height extraPointHeight due to new gmsh 2.0 issue, see thread
+        ## http://www.geuz.org/pipermail/gmsh/2007/002465.html
+
         file.write('cellsize = ' + str(fakeCellSize) + """ ;
         height = """ + str(height) + """ ;
         spacing = """ + str(nx * cellSize) + """ ;
+        extraPointHeight = """ + str(100. * height) + """ ;
         Point(1) = {0  , 0, 0, cellsize } ;  
         Point(2) = {spacing, 0, 0, cellsize } ;
         Point(3) = {0  , height , 0, spacing } ;
         Point(4) = {spacing, height, 0, spacing } ;
+        Point(5) = {0, extraPointHeight, 0, cellsize} ;
         Line(5) = {1, 2} ;
         Line(6) = {2, 4} ;
         Line(7) = {4, 3} ;

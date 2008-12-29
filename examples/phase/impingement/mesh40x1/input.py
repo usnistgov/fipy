@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/2/06 {1:54:41 PM}
+ #                                last update: 12/29/08 {2:34:40 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -296,7 +296,7 @@ extracts the data and compares it with the `theta` variable.
 
 .. raw:: latex
 
-   \IndexModule{dump}
+   \IndexModule{loadtxt}
 
 ..
 
@@ -305,9 +305,8 @@ extracts the data and compares it with the `theta` variable.
    >>> import examples.phase.impingement.mesh40x1
    >>> filepath = os.path.join(examples.phase.impingement.mesh40x1.__path__[0],
    ...                         testFile)
-   >>> import fipy.tools.dump as dump
-   >>> testData = dump.read(filepath)
    >>> from fipy.tools import numerix
+   >>> testData = numerix.loadtxt(filepath)
    >>> print theta.allclose(numerix.array(testData))
    1
 """

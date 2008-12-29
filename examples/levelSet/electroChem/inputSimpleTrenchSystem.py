@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/18/06 {8:41:56 PM} { 1:23:41 PM}
+ #                                last update: 12/29/08 {2:31:04 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -373,7 +373,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         
         from fipy.tools import dump
         from fipy.tools import numerix
-        print catalystVar.allclose(numerix.array(dump.read(filepath)), rtol = 1e-4)
+        print catalystVar.allclose(numerix.array(numerix.loadtxt(filepath)), rtol = 1e-4)
     except:
         return 0
 

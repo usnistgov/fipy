@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/2/06 {1:53:15 PM} { 5:14:21 PM}
+ #                                last update: 12/29/08 {2:25:33 PM} { 5:14:21 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -276,7 +276,7 @@ the data and compares it with the `phase` variable.
 
 .. raw:: latex
 
-   \IndexModule{dump}
+   \IndexModule{loadtxt}
    \IndexModule{numerix}
    \IndexFunction{allclose}
 
@@ -285,11 +285,9 @@ the data and compares it with the `phase` variable.
    >>> import examples.phase.anisotropy
    >>> import os
    >>> filepath = os.path.join(examples.phase.anisotropy.__path__[0], 'test.gz')
-   >>> from fipy.tools import dump
-   >>> testData = dump.read(filepath)
-   >>> from fipy.tools.numerix import allclose
    >>> from fipy.tools import numerix
-   >>> print allclose(phase, numerix.array(testData))
+   >>> testData = numerix.loadtxt(filepath)
+   >>> print numerix.allclose(phase, numerix.array(testData))
    1
    
 """
