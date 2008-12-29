@@ -6,7 +6,7 @@
  # 
  #  FILE: "inputWriteScriptHowTo.py"
  #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 5/15/06 {2:49:35 PM} { 1:23:41 PM}
+ #                                last update: 12/29/08 {2:29:59 PM} { 1:23:41 PM}
  #  Author: Jonathan Guyer
  #  E-mail: guyer@nist.gov
  #  Author: Daniel Wheeler
@@ -523,9 +523,8 @@ to tell if something has changed or been broken.
    >>> import examples.levelSet.electroChem
    >>> filepath = os.path.join(examples.levelSet.electroChem.__path__[0], 
    ...                         'test.gz')
-   >>> from fipy.tools import dump
    >>> from fipy.tools import numerix
-   >>> print catalystVar.allclose(numerix.array(dump.read(filepath)), rtol=1e-4)
+   >>> print catalystVar.allclose(numerix.array(numerix.loadtxt(filepath)), rtol=1e-4)
    1
 
    >>> if __name__ == '__main__':

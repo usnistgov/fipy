@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 1/12/06 {9:19:20 PM} 
+ #                                last update: 12/29/08 {2:23:34 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -96,9 +96,8 @@ data and compares it with the `theta` variable.
    >>> import os
    >>> import examples.phase.missOrientation.modCircle
    >>> filepath = os.path.join(examples.phase.missOrientation.modCircle.__path__[0], 'test.gz')
-   >>> from fipy.tools import dump
-   >>> testData = dump.read(filepath)
    >>> from fipy.tools import numerix
+   >>> testData = numerix.loadtxt(filepath)
    >>> print numerix.allclose(numerix.array(testData), phase)
    1
 

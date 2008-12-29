@@ -6,7 +6,7 @@
  # 
  #  FILE: "input.py"
  #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 5/18/06 {8:41:33 PM}
+ #                                last update: 12/29/08 {3:25:47 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -258,16 +258,20 @@ The solution will be tested against data that was created with ``steps
 modeling. The following code opens the file `test.gz` extracts the
 data and compares it with the `theta` variable.
 
+.. raw:: latex
+
+   \IndexModule{loadtxt}
+
+..
+
     >>> import os
     >>> testFile = 'test.gz'
     >>> import examples.phase.impingement.mesh20x20
     >>> import gzip
     >>> filepath = os.path.join(examples.phase.impingement.mesh20x20.__path__[0], 
     ...                         testFile)
-    >>> filestream = gzip.open(filepath,'r')
-    >>> import cPickle
-    >>> testData = cPickle.load(filestream)
-    >>> filestream.close()
+    >>> from fipy.tools import numerix
+    >>> testData = numerix.loadtxt(filepath)
     
 .. raw:: latex
 
