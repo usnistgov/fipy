@@ -4,10 +4,6 @@ from linearJORSolver import LinearJORSolver
 from linearLUSolver import LinearLUSolver
 from linearPCGSolver import LinearPCGSolver
 
-from linearScipyLUSolver import LinearScipyLUSolver
-from linearScipyCGSolver import LinearScipyCGSolver
-from linearScipyGMRESSolver import LinearScipyGMRESSolver
-
 from solver import SolverConvergenceWarning, \
      PreconditionerWarning, \
      ScalarQuantityOutOfRangeWarning, \

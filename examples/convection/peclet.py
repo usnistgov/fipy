@@ -6,7 +6,7 @@
  # 
  #  FILE: "peclet.py"
  #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 8/9/05 {4:15:47 PM} 
+ #                                last update: 12/29/08 {5:14:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,9 +43,9 @@
 r"""
 
 This example tests diffusion-convection for increasing Peclet numbers.
-This test case has been introduced because `LinearCGSSolver` wsa not
-working with Peclet numbers over 1. LinearLUSOlver is now the default
-for ConvectionTerm. For `nx = 1000` the Linear GMRESSOLVER does not work,
+This test case has been introduced because `LinearCGSSolver` was not
+working with Peclet numbers over 1. LinearLUSolver is now the default
+for ConvectionTerm. For `nx = 1000` the LinearGMRESSolver does not work,
 but the LinearScipyGMRESSolver does work! Oh dear...
 
     >>> L = 1.
@@ -73,7 +73,6 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     >>> from fipy.terms.transientTerm import TransientTerm
 
     >>> ##from fipy.solvers.linearCGSSolver import LinearCGSSolver
-    >>> ##from fipy.solvers.linearScipyGMRESSolver import LinearScipyGMRESSolver as GMRES
 
     >>> convCoeff = 1.0
     >>> peclet = 1e-3
