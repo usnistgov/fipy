@@ -128,7 +128,7 @@ class ConvectionTerm(FaceTerm):
 
         if self.stencil is None:
 
-            small = 1e-20
+            small = -1e-20
             
             if equation is None:
                 diffCoeff = small
@@ -137,8 +137,8 @@ class ConvectionTerm(FaceTerm):
                 if diffCoeff is None:
                     diffCoeff = small
                 else:
-                    diffCoeff = diffCoeff * (diffCoeff != 0.) + small * (diffCoeff == 0.)
-                    
+                    diffCoeff = (diffCoeff - small) * (diffCoeff != 0.) + small
+
             alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
