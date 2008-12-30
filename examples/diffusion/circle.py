@@ -6,7 +6,7 @@
  # 
  #  FILE: "circle.py"
  #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 5/18/06 {8:40:45 PM}
+ #                                last update: 12/29/08 {10:31:53 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -221,7 +221,9 @@ We first step through the transient problem
 
 .. raw:: latex
 
-   {\tiny \verbatimtabinput[30]{images/examples/diffusion/myTSV.tsv}}
+   \tabson[30] 
+   {\tiny \verbatiminput{images/examples/diffusion/myTSV.tsv}} 
+   \tabsoff
    
 The values are listed at the `Cell` centers. Particularly for irregular
 meshes, no specific ordering should be relied upon. Vector quantities are

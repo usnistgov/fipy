@@ -39,9 +39,9 @@ Binary Installation
    
    .. note:: 
    
-      If you wish to run the superfill examples, you will require the
-      MayaVi_ viewer, which is best installed via Fink_, so you should
-      follow the `Fink Installation`_ instructions.
+      If you wish to view 3D models, the MayaVi_ viewer is required, which
+      is best installed via Fink_, so you should follow the `Fink
+      Installation`_ instructions.
 
 Pre-built binaries for many of the required packages are available at 
 http://pythonmac.org/packages/py24-fat/.
@@ -67,7 +67,12 @@ installation will not be harmed.
 .. note::
 
    Another option is ActivePython_, which probably is the most heavily 
-   supported installation on the Mac, but seems to lack `readline` support.
+   supported installation on the Mac, but seems to lack `readline` support, 
+   but these instructions
+
+       http://www.friday.com/bbum/2006/03/06/python-mac-os-x-and-readline/
+
+   worked for us.
 
 .. _ActivePython: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.activestate.com/Products/ActivePython/
 
@@ -189,7 +194,7 @@ Ensure that Fink_ is installed and up to date for your OS.
 unstable tree
 ~~~~~~~~~~~~~
 
-Follow the directions at http://fink.sourceforge.net/faq/usage-fink.php#unstable
+Follow the directions at http://www.finkproject.org/faq/usage-fink.php#unstable
 
 .. note::
 
@@ -207,8 +212,14 @@ Remaining Fink packages
 Execute the following commands from Terminal application (you can use 
 ``xterm`` or any other terminal application of your choosing)::
 
-    $ sudo apt-get install python
-    $ fink --use-binary-dist install matplotlib-py24
+    $ fink --use-binary-dist install python
+
+Take note of the version of Python that gets installed (`python
+--version`). Many other packages, indicated by a "`-pyXX`" suffix, require
+you substitute the Python version. E.g., Python 2.4 takes "`-py24`", Python
+2.5 takes "`-py25`", and so on.
+
+    $ fink --use-binary-dist install matplotlib-pyXX
 
 .. attention::
 
@@ -219,7 +230,7 @@ Execute the following commands from Terminal application (you can use
    
 .. note::
 
-   If the installation of matplotlib-py24 fails for some reason, we 
+   If the installation of matplotlib-pyXX fails for some reason, we 
    recommend you execute the ``install`` command again.
       
 A few changes are needed to allow matplotlib_ to run::
@@ -235,7 +246,7 @@ You may now choose to either edit the "backend" configuration in
     
 or you can install wxPython with::
 
-    $ fink --use-binary-dist install wxpython-py24
+    $ fink --use-binary-dist install wxpython-pyXX
     
 (the second choice takes awhile, as it needs to build things).
 
@@ -293,19 +304,25 @@ points to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 MayaVi
 ------
 
-This is one package that is probably much easier to install via Fink_ than 
-by hand. You might attempt to follow the instructions at 
-http://mayavi.sourceforge.net/mwiki/BuildingVTKOnOSX but they are quite 
-out of date and did not work for us.
+`MayaVi 1`_ is a requirement if you wish to view 3D problems or improve the
+viewing capabilities of the superfill examples. This is one package that is
+probably much easier to install via Fink_ than by hand. You might attempt
+to follow the instructions at
+http://mayavi.sourceforge.net/mwiki/BuildingVTKOnOSX but they are quite out
+of date and did not work for us.
 
 If you have already followed the `Fink Installation`_ instructions, then 
 you can go to the command line and type::
 
-    $ sudo apt-get install mayavi-py24
+    $ sudo apt-get install mayavi-pyXX
     
 .. note::
 
-   This is a required step for superfill examples.
+   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
+   `MayaVi 2`_ as soon as possible.
+
+.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
 SciPy
 -----
@@ -341,7 +358,7 @@ is not present:
     * If you followed the `Fink Installation`_ procedure, then you should be
       able to type::
 
-          $ sudo apt-get install scipy-py24
+          $ sudo apt-get install scipy-pyXX
 
 
 .. _ScipySuperpack: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trichech.us/?page_id=4
@@ -415,7 +432,7 @@ commands in the Python Shell:
     >>> from examples.levelSet.electroChem.inputGold import runGold
     >>> runGold(numberOfSteps = 100)
 
-If you have installed the optional packages, a MayaVi_ viewer should
+If you have installed the optional packages, a viewer should
 appear with a trench filling simulation.
 
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/

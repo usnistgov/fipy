@@ -258,6 +258,11 @@ It works on all common platforms and produces publication quality hard
 copies. Version 0.72.1 or higher is required. `Matplotlib installers
 for specific platforms`_ are available |citeMatplotlibDownload|.
 
+.. note::
+
+   Matplotlib_ is noticeably slower than Pygist_ or Gnuplot.py_, but
+   has superior image rendering and plotting functionality.
+
 .. _Matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
 .. _Matplotlib installers for specific platforms: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
 .. |citeMatplotlibDownload| raw:: latex
@@ -308,11 +313,6 @@ Matplotlib_.
    The facility to produce hard copies in Pygist_ does not work very well and
    may crash the |FiPy| run. "``.eps``" and "``.cgm``" export seem to work.
 
-.. attention::
-
-   Pygist_ seems to be unable to make contour plots on x86_64
-   architectures running Linux.
-
 .. note::
 
    If you experience difficulty building the native Pygist_ viewer on
@@ -321,26 +321,13 @@ Matplotlib_.
 
 .. note::
 
-   Pygist_ can have problems finding color pallets, such as "``heat.gp``"
-   and "``work.gs``", when installed locally. A fix for this problem is to
-   copy the required pallets into the local directory. The color
-   pallets are in "``src/gist/g``" of the base Pygist_ installation.
+   Pygist_ can have problems finding color pallets, such as "``heat.gp``" and 
+   "``work.gs``", when installed locally. You may need to set the 
+   ``GISTPATH`` environment variable to point to the directory containing 
+   these files (you may find it as "``g/``" within the directory you 
+   specified for ``--home``). 
 
-.. warning::
-
-   If Pygist_ is installed in a local directory a further path may
-   have to be added to the PYTHONPATH environment variable. For
-   example, if
-
-       $ python setup.py install --home=/some/directory/some/where
-
-   then both /some/directory/some/where and
-   /some/directory/some/where/lib/python/gist are required to be added to
-   the PYTHONPATH. e.g.
-
-       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python/gist
-
-.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bonsai.ims.u-tokyo.ac.jp/~mdehoon/software/python/pygist.html
+.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
 
 MayaVi
 ------
@@ -351,16 +338,15 @@ MayaVi
 
 http://mayavi.sourceforge.net
 
-The MayaVi_ Data Visualizer is a free, easy to use scientific data
+The `MayaVi 1`_ Data Visualizer is a free, easy to use scientific data
 visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
 viewer available for 3D data. Other viewers are probably better for 1D
-or 2D viewing. The `Enthon for Windows`_ version of python is
-recommended for Windows_ users who wish to use MayaVi_.
+or 2D viewing. 
 
 .. warning::
 
-   MayaVi_ can only display 3D meshes consisting entirely of
-   tetrahedrons or wedge elements. The ordering of vertices for other
+   |FiPy| can only use `MayaVi 1`_ to display 3D meshes consisting entirely
+   of tetrahedrons or wedge elements. The ordering of vertices for other
    mesh types may not work.
 
 .. note::
@@ -368,11 +354,16 @@ recommended for Windows_ users who wish to use MayaVi_.
    Is is also necessary to install the PyVTK_ package to use the
    |FiPy| MayaVi_ viewers.
 
-.. _MayaVi: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
-.. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
-.. _Enthon for Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.enthought.com/python/
+.. note::
 
-Recommended Packages
+   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
+   `MayaVi 2`_ as soon as possible.
+
+.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
+.. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
+
+Optional Packages
 ====================
 
 .. note::
@@ -423,18 +414,13 @@ It is possible to create irregular meshes with this package.
    underlying shell tool, create a shell alias called ``gmsh`` that
    corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 
-.. warning::
-
-   Version 2.0 of Gmsh does not currently work with |FiPy|. Please use
-   earlier versions.
-
 ----------------
 Obtaining |FiPy|
 ----------------
 
 |FiPy| is freely available for download via Subversion_ or as a `compressed
-archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion, issue the following
-command::
+archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion,
+issue the following command::
 
     $ svn checkout http://matforge.org/svn/fipy/tags/CURRENT
 
@@ -492,7 +478,7 @@ executing::
 
     $ python setup.py test
 
-Depending on the packages you chose to install in `Recommended Packages`_,
+Depending on the packages you chose to install in `Optional Packages`_,
 be sure to set the appropriate environment variables.  You can expect a few
 errors if you did not install all of the recommended packages.
 
@@ -520,11 +506,12 @@ removing key``" in |the FAQ|).
 
 .. attention::
 
-   You can expect three test failures in 
-   ``fipy.variables.variable.Variable.__array__`` with the message::
+   Depending on your operating system and version of gmsh_ you may get
+   failures in ``examples.levelSet.electroChem.inputGold`` and
+   ``examples.levelSet.electroChem.inputLeveler``. These are caused by the
+   test being overly strict and are not cause for concern. The models are 
+   solved accurately.
 
-       ValueError: setting an array element with a sequence.
-       
 -----------------
 Installing |FiPy|
 -----------------

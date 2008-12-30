@@ -6,7 +6,7 @@
  # 
  #  FILE: "test.py"
  #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 4/1/05 {2:49:49 PM} 
+ #                                last update: 12/29/08 {5:27:48 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -40,16 +40,12 @@
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
+from fipy.tests.doctestPlus import _LateImportTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    theSuite = _LateImportDocTestSuite(docTestModuleNames = (
-            'linearScipyGMRESSolver',
-            'linearScipyCGSolver',
-        ), base = __name__)
-
-    return theSuite
+    return _LateImportTestSuite(testModuleNames = (), 
+                                base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
