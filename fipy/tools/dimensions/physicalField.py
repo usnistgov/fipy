@@ -506,8 +506,8 @@ class PhysicalField(object):
         
             >>> from fipy.tools.numerix import sign
             >>> print sign(PhysicalField(((3.,-2.),(-1.,4.)), 'm'))
-            [[ 1  -1]
-             [ -1  1]]
+            [[ 1. -1.]
+             [-1.  1.]]
         """
         return numerix.sign(self.value)
 
