@@ -82,8 +82,12 @@ install the latest version from the |FiPy| `downloads page`_
 
 .. _downloads page: http://www.ctcms.nist.gov/fipy/download
 
-MayaVi 1
---------
+MayaVi
+------
+
+.. raw:: latex
+
+   \IndexSoftware{MayaVi}
 
 http://mayavi.sourceforge.net
 

@@ -39,9 +39,9 @@ Binary Installation
    
    .. note:: 
    
-      If you wish to run the superfill examples, you will require the
-      MayaVi_ viewer, which is best installed via Fink_, so you should
-      follow the `Fink Installation`_ instructions.
+      If you wish to view 3D models, the MayaVi_ viewer is required, which
+      is best installed via Fink_, so you should follow the `Fink
+      Installation`_ instructions.
 
 Pre-built binaries for many of the required packages are available at 
 http://pythonmac.org/packages/py24-fat/.
@@ -304,10 +304,12 @@ points to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 MayaVi
 ------
 
-This is one package that is probably much easier to install via Fink_ than 
-by hand. You might attempt to follow the instructions at 
-http://mayavi.sourceforge.net/mwiki/BuildingVTKOnOSX but they are quite 
-out of date and did not work for us.
+`MayaVi 1`_ is a requirement if you wish to view 3D problems or improve the
+viewing capabilities of the superfill examples. This is one package that is
+probably much easier to install via Fink_ than by hand. You might attempt
+to follow the instructions at
+http://mayavi.sourceforge.net/mwiki/BuildingVTKOnOSX but they are quite out
+of date and did not work for us.
 
 If you have already followed the `Fink Installation`_ instructions, then 
 you can go to the command line and type::
@@ -316,7 +318,11 @@ you can go to the command line and type::
     
 .. note::
 
-   This is a required step for superfill examples.
+   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
+   `MayaVi 2`_ as soon as possible.
+
+.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
 SciPy
 -----
@@ -426,7 +432,7 @@ commands in the Python Shell:
     >>> from examples.levelSet.electroChem.inputGold import runGold
     >>> runGold(numberOfSteps = 100)
 
-If you have installed the optional packages, a MayaVi_ viewer should
+If you have installed the optional packages, a viewer should
 appear with a trench filling simulation.
 
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
