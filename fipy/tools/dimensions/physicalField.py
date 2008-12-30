@@ -504,6 +504,7 @@ class PhysicalField(object):
         """
         Return the sign of the quantity. The `unit` is unchanged.
         
+            >>> from fipy.tools.numerix import sign
             >>> print sign(PhysicalField(((3.,-2.),(-1.,4.)), 'm'))
             [[ 1  -1]
              [ -1  1]]
@@ -605,13 +606,18 @@ class PhysicalField(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
         
-           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0]))
+           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0], unit="m"))
            <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
+
+        For not very intelligible reasons, the `PhysicalField`\ness gets cast 
+        away if there are no units. Probably not harmful, so not worth investigating
+        
+           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0]))
+           <type 'numpy.ndarray'>
 
            >>> from scipy.special import gamma as Gamma
            >>> print type(Gamma(PhysicalField([1.0, 2.0])))
            <type 'numpy.ndarray'>
-
         """
         result = arr
         
