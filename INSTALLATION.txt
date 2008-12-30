@@ -601,13 +601,6 @@ removing key``" in |the FAQ|).
 
        $ export PYTHONPATH=.:${PYTHONPATH}
 
-.. attention::
-
-   You can expect three test failures in 
-   ``fipy.variables.variable.Variable.__array__`` with the message::
-
-       ValueError: setting an array element with a sequence.
-       
 -----------------
 Installing |FiPy|
 -----------------
