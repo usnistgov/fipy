@@ -423,11 +423,6 @@ It is possible to create irregular meshes with this package.
    underlying shell tool, create a shell alias called ``gmsh`` that
    corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 
-.. warning::
-
-   Version 2.0 of Gmsh does not currently work with |FiPy|. Please use
-   earlier versions.
-
 ----------------
 Obtaining |FiPy|
 ----------------
@@ -520,10 +515,11 @@ removing key``" in |the FAQ|).
 
 .. attention::
 
-   You can expect three test failures in 
-   ``fipy.variables.variable.Variable.__array__`` with the message::
-
-       ValueError: setting an array element with a sequence.
+   Depending on your operating system and version of gmsh_ you may get
+   failures in ``examples.levelSet.electroChem.inputGold`` and
+   ``examples.levelSet.electroChem.inputLeveler``. These are caused by the
+   test being overly strict and are not cause for concern. The models are 
+   solved accurately.
        
 -----------------
 Installing |FiPy|

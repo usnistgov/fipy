@@ -78,11 +78,6 @@ Gmsh for Windows. Open the unpacked folder with a browser and copy the
 
    This is a required package for superfill examples.
 
-.. warning::
-
-   |FiPy| does not currently work with version 2.0 or higher of Gmsh.
-   Be certain to use older versions.
-
 PyVTK
 -----
 
