@@ -108,7 +108,7 @@ source in order for ``import mayavi`` to work at the command line.
 Using |FiPy| on Windows
 =======================
 
-A number of interactive python environments are avaibale such as the
+A number of interactive python environments are available such as the
 IDLE_ and Ipython_ environments. The following videos may be useful for
 explaining the use of Ipython_ on Windows:
 
