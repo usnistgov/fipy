@@ -403,8 +403,8 @@ class UniformGrid2D(Grid2D):
                 areaProjections[i + 0 * ni] = dy;
            }
         """,
-        dx = self.dx,
-        dy = self.dy,
+        dx = float(self.dx), # horrible hack to get around
+        dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
         nx = self.nx,
         Nhor = self.numberOfHorizontalFaces,
         areaProjections = areaProjections,
