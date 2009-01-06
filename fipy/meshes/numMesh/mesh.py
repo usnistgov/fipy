@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/6/09 {1:41:07 PM} 
+ #                                last update: 1/6/09 {2:00:43 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -100,19 +100,19 @@ class Mesh(_CommonMesh):
            >>> from fipy.meshes.numMesh.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
-           >>> print mesh._getCellFaceIDs()
-           [[0 7 2 6]
-            [1 8 3 7]
-            [2 10 4 9]
-            [3 11 5 10]]
-            
+           >>> print (mesh._getCellFaceIDs() == [[0, 7, 2, 6],
+           ...                                   [1, 8, 3, 7],
+           ...                                   [2, 10, 4, 9],
+           ...                                   [3, 11, 5, 10]]).flatten().all()
+           True
+
            >>> mesh._connectFaces(mesh.getFacesLeft(), mesh.getFacesRight())
 
-           >>> print mesh._getCellFaceIDs()
-           [[0 7 2 6]
-            [1 6 3 7]
-            [2 10 4 9]
-            [3 9 5 10]]
+           >>> print (mesh._getCellFaceIDs() == [[0, 7, 2, 6],
+           ...                                   [1, 6, 3, 7],
+           ...                                   [2, 10, 4, 9],
+           ...                                   [3, 9, 5, 10]]).flatten().all()
+           True
 
         """
 

@@ -404,8 +404,12 @@ def arccos(arr):
     If SciPy has been loaded, the next test will return `NaN`, otherwise it will
     generate `OverflowError: math range error`
     
-        >>> try: 
-        ...     print str(arccos(2.0)) == "nan"
+        >>> try:
+        ...     import sys
+        ...     if sys.platform == 'win32':
+        ...         print str(arccos(2.0)) == '-1.#IND'
+        ...     else:
+        ...         print str(arccos(2.0)) == 'nan'
         ... except (OverflowError, ValueError):
         ...     print 1
         1
@@ -449,8 +453,12 @@ def arccosh(arr):
     If SciPy has been loaded, the next test will return `NaN`, otherwise it will
     generate `OverflowError: math range error`
     
-        >>> try: 
-        ...     print str(arccosh(0.0)) == "nan"
+        >>> try:
+        ...     import sys
+        ...     if sys.platform == 'win32':
+        ...         print str(arccosh(0.0)) == '-1.#IND'
+        ...     else:
+        ...         print str(arccosh(0.0)) == 'nan'
         ... except (OverflowError, ValueError):
         ...     print 1
         1
@@ -486,8 +494,12 @@ def arcsin(arr):
     If SciPy has been loaded, the next test will return `NaN`, otherwise it will
     generate `OverflowError: math range error`
     
-        >>> try: 
-        ...     print str(arcsin(2.0)) == "nan"
+        >>> try:
+        ...     import sys
+        ...     if sys.platform == 'win32':
+        ...         print str(arcsin(2.0)) == '-1.#IND'
+        ...     else:
+        ...         print str(arcsin(2.0)) == 'nan'
         ... except (OverflowError, ValueError):
         ...     print 1
         1

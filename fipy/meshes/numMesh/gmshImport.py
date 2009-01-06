@@ -7,7 +7,7 @@
  #
  #  FILE: "gmshImport.py"
  #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 3/19/07 {5:14:26 PM}
+ #                                last update: 1/6/09 {2:04:33 PM}
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -162,15 +162,15 @@ Test cases:
     [7 4]
     [7 6]]
    
-   >>> print mesh._getCellFaceIDs()
-   [[0 1 2]
-    [0 3 4]
-    [2 5 6]
-    [7 4 6]
-    [7 8 9]
-    [8 10 11]
-    [12 13 9]
-    [14 11 12]]
+   >>> print (mesh._getCellFaceIDs() == [[0, 1, 2],
+   ...                                   [0, 3, 4],
+   ...                                   [2, 5, 6],
+   ...                                   [7, 4, 6],
+   ...                                   [7, 8, 9],
+   ...                                   [8, 10, 11],
+   ...                                   [12, 13, 9],
+   ...                                   [14, 11, 12]]).flatten().all()
+   True
 
 The following test case is to test the handedness of the mesh to check
 it does not return negative volumes. Firstly we set up a list with
