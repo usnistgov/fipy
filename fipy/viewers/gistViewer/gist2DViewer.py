@@ -6,7 +6,7 @@
  # 
  #  FILE: "gist2DViewer.py"
  #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 10/30/06 {11:02:43 AM} 
+ #                                last update: 1/6/09 {1:42:39 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -121,7 +121,7 @@ class Gist2DViewer(GistViewer):
             maxVal = minVal + 1e-10
 
         
-        vertexIDs = self.mesh._getOrderedCellVertexIDs().flat
+        vertexIDs = self.mesh._getOrderedCellVertexIDs().flatten()
 
         import MA
         
@@ -130,8 +130,8 @@ class Gist2DViewer(GistViewer):
             
         vertexCoords = self.mesh.getVertexCoords()
 
-        xCoords = numerix.take(vertexCoords[:,0], numerix.array(vertexIDs).flat)
-        yCoords = numerix.take(vertexCoords[:,1], numerix.array(vertexIDs).flat)
+        xCoords = numerix.take(vertexCoords[:,0], numerix.array(vertexIDs).flatten())
+        yCoords = numerix.take(vertexCoords[:,1], numerix.array(vertexIDs).flatten())
 
         import gist
 

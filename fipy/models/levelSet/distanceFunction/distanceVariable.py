@@ -6,7 +6,7 @@
  # 
  #  FILE: "distanceVariable.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 1/6/09 {10:19:41 AM}
+ #                                last update: 1/6/09 {1:38:31 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -276,15 +276,15 @@ class DistanceVariable(CellVariable):
 
         index = numerix.arange(len(indices[:,0])) * len(indices[0])
 
-        s = MA.take(distances.flat, indices[:,0] + index)
+        s = MA.take(distances.flatten(), indices[:,0] + index)
 
         if self.mesh.getDim() == 2:
 
-            t = MA.take(distances.flat, indices[:,1] + index)
-            u = MA.take(distances.flat, indices[:,2] + index)
+            t = MA.take(distances.flatten(), indices[:,1] + index)
+            u = MA.take(distances.flatten(), indices[:,2] + index)
 
-            ns = numerix.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,0] + index)
-            nt = numerix.take(MA.reshape(self.cellNormals.flat, (-1, 2)), indices[:,1] + index)
+            ns = numerix.take(MA.reshape(self.cellNormals.flatten(), (-1, 2)), indices[:,0] + index)
+            nt = numerix.take(MA.reshape(self.cellNormals.flatten(), (-1, 2)), indices[:,1] + index)
 
             signedDistance = MA.where(MA.getmask(s),
                                       self.value,

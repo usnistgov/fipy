@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh1D.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/3/07 {3:04:23 PM} 
+ #                                last update: 1/6/09 {1:41:23 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -59,7 +59,7 @@ class Mesh1D(Mesh):
         if MA.getmask(self.faceVertexIDs) == None:
             faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
         else:
-            faceVertexCoordsMask = numerix.reshape(numerix.repeat(MA.getmaskarray(self.faceVertexIDs).flat, self.dim), numerix.shape(faceVertexCoords))
+            faceVertexCoordsMask = numerix.reshape(numerix.repeat(MA.getmaskarray(self.faceVertexIDs).flatten(), self.dim), numerix.shape(faceVertexCoords))
             
         self.faceCenters = MA.array(data = faceVertexCoords, mask = faceVertexCoordsMask)
         

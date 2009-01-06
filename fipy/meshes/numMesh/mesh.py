@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 1/6/09 {10:12:18 AM} 
+ #                                last update: 1/6/09 {1:41:07 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -457,7 +457,7 @@ class Mesh(_CommonMesh):
         if MA.getmask(self.faceVertexIDs) is False:
             faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
         else:
-            faceVertexCoordsMask = numerix.reshape(numerix.repeat(MA.getmaskarray(self.faceVertexIDs).flat, self.dim), numerix.shape(faceVertexCoords))
+            faceVertexCoordsMask = numerix.reshape(numerix.repeat(MA.getmaskarray(self.faceVertexIDs).flatten(), self.dim), numerix.shape(faceVertexCoords))
 
             
         faceVertexCoords = MA.array(data = faceVertexCoords, mask = faceVertexCoordsMask)
@@ -556,7 +556,7 @@ class Mesh(_CommonMesh):
         cellFaceVertices = take(self.faceVertexIDs, self.cellFaceIDs)
 
         ## get a sorted list of vertices for each cell 
-        cellVertexIDs = MA.reshape(cellFaceVertices.flat, (NCells, -1))
+        cellVertexIDs = MA.reshape(cellFaceVertices.flatten(), (NCells, -1))
         cellVertexIDs = MA.sort(cellVertexIDs, axis = 1, fill_value = -1)
         cellVertexIDs = cellVertexIDs[:,::-1]
 
@@ -590,7 +590,7 @@ class Mesh(_CommonMesh):
 
 ##        ## get a sorted list of vertices for each cell
 ##        NCells = self.getNumberOfCells()
-##        cellVertexIDs = MA.reshape(cellFaceVertices.flat, (NCells, -1))
+##        cellVertexIDs = MA.reshape(cellFaceVertices.flatten(), (NCells, -1))
 ##        newmask = MA.getmaskarray(cellVertexIDs).copy()
 
 ##        for i in range(len(cellVertexIDs[0]) - 1):
