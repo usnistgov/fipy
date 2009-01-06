@@ -1386,20 +1386,12 @@ class Variable(object):
            1
            >>> print var.allclose((1,))
            1
-           >>> print var.allclose((1,1,1))
-           Traceback (most recent call last):
-               ...
-           ValueError: shape mismatch: objects cannot be broadcast to a single shape
 
         The following test is to check that the system does not run
         out of memory.
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
-           >>> print var.allclose(numerix.ones(10001))
-           Traceback (most recent call last):
-               ...
-           ValueError: shape mismatch: objects cannot be broadcast to a single shape
            
         """
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
