@@ -72,7 +72,7 @@ a test against the analytical result.
 
 The ``RHSBC`` variable acts like an outflow boundary condition when applied as a source term.
 
-    >>> RHSBC = (mesh._getFaceNormals() * mesh.getFacesRight()).getDivergence()
+    >>> RHSBC = (mesh._getOrientedFaceNormals() * mesh.getFacesRight()).getDivergence()
     >>> eq = PowerLawConvectionTerm((1,)) + ImplicitSourceTerm(alpha + RHSBC)
     >>> eq.solve(phi, boundaryConditions=BCs)
     >>> print numerix.allclose(phi, phi0 * exp(-alpha * mesh.getCellCenters()[0]), atol=1e-3)
