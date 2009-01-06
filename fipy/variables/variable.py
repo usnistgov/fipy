@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/3/07 {3:15:42 PM} 
+ #                                last update: 1/6/09 {2:19:54 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -1692,20 +1692,14 @@ class Variable(object):
            1
            >>> print var.allclose((1,))
            1
-           >>> print var.allclose((1,1,1))
-           Traceback (most recent call last):
-               ...
-           ValueError
 
         The following test is to check that the system does not run
         out of memory.
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
-           >>> var.allclose(numerix.ones(10001))
-           Traceback (most recent call last):
-               ...
-           ValueError
+           >>> print var.allclose(numerix.zeros(10000))
+           False
            
         """
 
