@@ -1392,6 +1392,8 @@ class Variable(object):
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
+           >>> print var.allclose(numerix.zeros(10000))
+           False
            
         """
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
