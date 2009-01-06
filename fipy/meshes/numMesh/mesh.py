@@ -7,7 +7,7 @@
  # 
  #  FILE: "mesh.py"
  #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 10/8/08 {3:48:13 PM} 
+ #                                last update: 1/6/09 {10:12:18 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -316,7 +316,7 @@ class Mesh(_CommonMesh):
 
     def _calcFaceCellIDs(self):
         array = MA.indices((len(self.cellFaceIDs), len(self.cellFaceIDs[0])), 'l')[0]
-        array = MA.array(data = array, mask = MA.getmask(self.cellFaceIDs)).flat
+        array = MA.array(data = array, mask = MA.getmask(self.cellFaceIDs)).flatten()
         cellFaceIDsFlat = MA.ravel(self.cellFaceIDs)
         firstRow = MA.zeros(self.numberOfFaces, 'l')
         secondRow = MA.zeros(self.numberOfFaces, 'l')
