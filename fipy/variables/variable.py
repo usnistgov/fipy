@@ -6,7 +6,7 @@
  # 
  #  FILE: "variable.py"
  #                                    created: 11/10/03 {3:15:38 PM} 
- #                                last update: 1/6/09 {2:19:54 PM} 
+ #                                last update: 1/6/09 {2:37:46 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -576,7 +576,7 @@ class Variable(object):
             >>> print b
             [3 4 5]
 
-            >>> a.setValue((4,5,6), where = (1, 0))
+            >>> a.setValue((4,5,6), where = (1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ....
             ValueError: array dimensions must agree
