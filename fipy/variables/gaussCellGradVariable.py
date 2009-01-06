@@ -6,7 +6,7 @@
  # 
  #  FILE: "gaussCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 1/3/07 {3:24:56 PM} 
+ #                                last update: 1/6/09 {10:21:46 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -92,7 +92,7 @@ class _GaussCellGradVariable(VectorCellVariable):
 ##      )
             
     def _calcValuePy(self, N, M, ids, orientations, volumes):
-        contributions = numerix.take(self.faceGradientContributions[:],ids.flat)
+        contributions = numerix.take(self.faceGradientContributions[:],ids.flatten())
 
         contributions = numerix.reshape(contributions, (N, M, self.mesh.getDim()))
         orientations = numerix.reshape(orientations, (N, M, 1))
