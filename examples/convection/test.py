@@ -53,6 +53,7 @@ def _suite():
             'advection.vanLeerUpwind',
             'peclet',
             'robin',
+            'source',
         ), base = __name__)
     
 if __name__ == '__main__':

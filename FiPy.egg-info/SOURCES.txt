@@ -150,6 +150,7 @@ examples/chemotaxis/test.py
 examples/convection/__init__.py
 examples/convection/peclet.py
 examples/convection/robin.py
+examples/convection/source.py
 examples/convection/test.py
 examples/convection/advection/__init__.py
 examples/convection/advection/explicitUpwind.py
