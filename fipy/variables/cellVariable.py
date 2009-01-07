@@ -6,7 +6,7 @@
  # 
  #  FILE: "cellVariable.py"
  #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 1/3/07 {3:16:57 PM} 
+ #                                last update: 1/7/09 {9:22:45 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -224,6 +224,10 @@ class CellVariable(Variable):
         Tests
 
             >>> from fipy import Grid2D
+            
+        The following test fails with NumPy 1.2 and 1.3. 
+        Bug http://scipy.org/scipy/numpy/ticket/979 has been filed.
+        
             >>> print CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
             [[8.0 1.2]
              [8.0 2.0]

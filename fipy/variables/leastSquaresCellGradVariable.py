@@ -6,7 +6,7 @@
  # 
  #  FILE: "leastSquaresCellGradVariable.py"
  #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 1/3/07 {3:24:56 PM} 
+ #                                last update: 1/7/09 {9:24:05 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -68,6 +68,10 @@ class _LeastSquaresCellGradVariable(VectorCellVariable):
                 mat[:,:,i,j] = cellDistanceNormals[:, :, i] * cellDistanceNormals[:, :, j]
 
         mat = numerix.sum(mat, axis=1)
+
+        # (neighborValue - value[...,numerix.newaxis])[...,numerix.newaxis] * cellDistanceNormals
+        # produces erroneous results (mask and sometimes value) with NumPy 1.2 and 1.3.
+        # Bug http://scipy.org/scipy/numpy/ticket/979 has been filed.
 
         vec = numerix.sum((neighborValue - value[...,numerix.newaxis])[...,numerix.newaxis] * cellDistanceNormals, axis=1)
 
