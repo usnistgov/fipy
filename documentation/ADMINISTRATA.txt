@@ -112,7 +112,7 @@ Again, merge n.m.q+1 changes back to main trunk::
 Making a Release
 ================
 
-Change the version number in fipy/__init__.py
+Change the version number in `setup.py`
 
 Check items in TODOLIST.txt
 
@@ -121,15 +121,10 @@ Check out a clean copy of the desired release::
     $ svn co $FIPYROOT/trunk CLEAN
     $ cd CLEAN
 
-Run the test suite!:
+.. attention::
 
-    $ python setup.py test --no-cache
-    $ python setup.py test --inline --no-cache
-    $ python setup.py test --cache
-    $ python setup.py test --inline --cache
-
-.. attention:: If tests don't pass, make sure the release notes reflect 
-   that fact!
+   If Bitten_ doesn't show all green boxes for this release, make sure to
+   add appropriate notes in README.txt or INSTALLATION.txt!
 
 Build the documentation and the web pages::
 
@@ -145,7 +140,7 @@ Build a windows executable installer::
     $ rm MANIFEST
     $ python setup.py bdist --formats=wininst
 
-Combine the windows installer and examples into one tar ball.
+Combine the windows installer and examples into one archive.
 
     $ rm MANIFEST
     $ set FIPY_VERSION=XXX
@@ -156,6 +151,15 @@ Combine the windows installer and examples into one tar ball.
 
 Tag the repository as appropriate (see `SVN practices`_ above).
 
+Upload the build products and documentation from `dist/` to MatForge: 
+
+  * http://matforge.org/fipy/admin/general/downloader
+
+Update the current documentation links:
+
+  * http://matforge.org/fipy/wiki/FiPyManual?action=edit
+  * http://matforge.org/fipy/wiki/FiPyReference?action=edit
+
 Upload to the CTCMS website::
 
     $ python setup.py build_docs --upload
@@ -164,20 +168,8 @@ Upload to the CTCMS website::
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
-`Upload the release to SourceForge`_ and to the `MatForge download page`_.  You can use, e.g.,::
+Make an announcement to `mailto:fipy@nist.gov`_
 
-    $ svn log --revision HEAD:${LASTREV}
-
-to build the ChangeLog. You can determine the revision number LASTREV by examining the "Last Changed 
-Rev:" field given by::
-
-    $ svn info http://matforge.org/svn/fipy/tags/version-x_y
-
-Make an announcement to `fipy@nist.gov`_
-
-
-.. Upload the release to SourceForge: https://sourceforge.net/project/admin/qrs.php?package_id=&group_id=118428
-.. MatForge download page: http://matforge.org/fipy/wiki/FiPyFiles
 .. fipy@nist.gov: mailto:fipy@nist.gov
 
 ==========================================
