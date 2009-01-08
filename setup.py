@@ -560,12 +560,12 @@ epydoc.cli.cli(["--latex", "--output", dir,
 
             print "build products in `dist/` must be manually uploaded to MatForge"
             import webbrowser
-            webbrowser.open("http://matforge.org/fipy/admin/general/downloader", new=True, autoraise=False)
+            webbrowser.open("http://matforge.org/fipy/admin/general/downloader", autoraise=False)
             
             print "please update the current links, as appropriate"
-            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit")
-            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyManual?action=edit")
-            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyReference?action=edit")
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit", autoraise=False)
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyReference?action=edit", autoraise=False)
             
 
 
