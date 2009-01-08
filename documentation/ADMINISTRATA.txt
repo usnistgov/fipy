@@ -57,7 +57,7 @@ Bug fixes
 
 At the point some fix is made to an old version n.m::
 
-    $ BRANCH=branch-version-n_m
+    $ BRANCH=version-n_m
     $ svn copy $FIPYROOT/tags/version-n_m  $FIPYROOT/branches/$BRANCH -m "making branch for version n.m"
     $ svn co $FIPYROOT/branches/$BRANCH
 

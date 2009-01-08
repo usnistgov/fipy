@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 1/8/09 {10:31:39 AM} 
+ #                                last update: 1/8/09 {12:14:15 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -423,12 +423,12 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
 
             print "build products in `dist/` must be manually uploaded to MatForge"
             import webbrowser
-            webbrowser.open("http://matforge.org/fipy/admin/general/downloader", new=True, autoraise=False)
+            webbrowser.open("http://matforge.org/fipy/admin/general/downloader", autoraise=False)
             
             print "please update the current links, as appropriate"
-            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit")
-            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyManual?action=edit")
-            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyReference?action=edit")
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit", autoraise=False)
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyReference?action=edit", autoraise=False)
             
 
 
