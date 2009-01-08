@@ -6,7 +6,7 @@
  # 
  #  FILE: "setup.py"
  #                                    created: 4/6/04 {1:24:29 PM} 
- #                                last update: 10/6/08 {10:46:21 AM} 
+ #                                last update: 1/8/09 {10:31:39 AM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -393,33 +393,9 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
                 for name in dirs: 
                     os.rmdir(os.path.join(root, name)) 
 
-        if self.upload:
-
-            print "setting group and ownership of manuals..."
-            os.system('chgrp -R pfm documentation/manual/fipy.pdf')
-            os.system('chmod -R g+w documentation/manual/reference.pdf')
-            os.system('chmod -R g+w documentation/manual/reference.pdf')
-            os.system('chgrp -R pfm documentation/manual/fipy.pdf')
-            
-            print "linking manuals to website..."
-            os.system('mkdir documentation/www/download/')
-            os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/fipy-%s.pdf'%self.distribution.metadata.get_version())
-            os.system('ln -sf ../../manual/reference.pdf documentation/www/download/reference-%s.pdf'%self.distribution.metadata.get_version())
-            
-            for name in ('.tar.gz', '.win32.zip'):
-                file = 'dist/FiPy-%s%s'%(self.distribution.metadata.get_version(), name)
-                print "setting group and ownership for %s ..."%file
-                os.system('chmod -R g+w %s'%file)
-                os.system('chgrp -R pfm %s'%file)
-
-                print "linking %s to website ..."%file
-                os.system('ln -sf ../../../%s documentation/www/download/'%file)
-                
-
-        if self.upload or self.uploadwww:
+        if self.uploadwww:
                  
             print "setting group and ownership of web pages..."
-            os.system('chgrp -R pfm documentation/www/')
             os.system('chmod -R g+w documentation/www/')
             
             print "uploading web pages..."
@@ -429,6 +405,32 @@ driver.epylatex(module_names = ['documentation/manual/tutorial/fipy/'], options 
 
             print "activating web pages..."
             os.system(os.environ['FIPY_WWWACTIVATE'])
+            
+        if self.upload:
+            print "setting permissions of manuals..."
+            os.system('chmod -R g+w documentation/manual/fipy.pdf')
+            os.system('chmod -R g+w documentation/manual/reference.pdf')
+            
+            print "linking manuals to `dist/`..."
+            os.system('mkdir dist/')
+            os.system('ln -f documentation/manual/fipy.pdf dist/fipy-%s.pdf'%self.distribution.metadata.get_version())
+            os.system('ln -f documentation/manual/reference.pdf dist/reference-%s.pdf'%self.distribution.metadata.get_version())
+            
+            for name in ('.tar.gz', '.win32.zip'):
+                file = 'dist/FiPy-%s%s'%(self.distribution.metadata.get_version(), name)
+                print "setting permissions for %s ..."%file
+                os.system('chmod -R g+w %s'%file)
+
+            print "build products in `dist/` must be manually uploaded to MatForge"
+            import webbrowser
+            webbrowser.open("http://matforge.org/fipy/admin/general/downloader", new=True, autoraise=False)
+            
+            print "please update the current links, as appropriate"
+            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit")
+            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyManual?action=edit")
+            webbrowser.open_new_tab("http://matforge.org/fipy/wiki/FiPyReference?action=edit")
+            
+
 
                 
     # run()
