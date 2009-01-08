@@ -52,7 +52,7 @@ creation of the mesh,
    
 ..
 
-    >>> cellSize = 0.05
+    >>> cellSize = 0.045
     >>> radius = 1.
 
 The `cellSize` is the preferred edge length of each mesh element and
