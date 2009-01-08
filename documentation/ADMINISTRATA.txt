@@ -198,18 +198,22 @@ Combine the windows installer and examples into one archive.
 
 Tag the repository as appropriate (see `SVN practices`_ above).
 
-Upload the build products and documentation from `dist/` to MatForge: 
+Upload the build products and documentation from `dist/` to MatForge and 
+the web site to CTCMS:
 
-  * http://matforge.org/fipy/admin/general/downloader
+    $ python setup.py build_docs --upload --uploadwww
 
-Update the current documentation links:
+.. note::
 
-  * http://matforge.org/fipy/wiki/FiPyManual?action=edit
-  * http://matforge.org/fipy/wiki/FiPyReference?action=edit
+   You will need to manually upload the files
 
-Upload to the CTCMS website::
+     * http://matforge.org/fipy/admin/general/downloader
 
-    $ python setup.py build_docs --upload
+   and, if appropriate, update the links to current files:
+
+     * http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit
+     * http://matforge.org/fipy/wiki/FiPyManual?action=edit
+     * http://matforge.org/fipy/wiki/FiPyReference?action=edit
 
 .. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
