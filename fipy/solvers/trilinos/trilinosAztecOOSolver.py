@@ -76,12 +76,12 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
 ##        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_all)
 ##        Solver.SetAztecOption(AztecOO.AZ_kspace, 10000)        
-##        Solver.SetAztecOption(AztecOO.AZ_kspace, AztecOO.AZ_max_iter)
+        Solver.SetAztecOption(AztecOO.AZ_kspace, AztecOO.AZ_max_iter)
                         
         if self.preconditioner is not None:
             self.preconditioner._applyToSolver(solver=Solver, matrix=A)
 ##            self.preconditioner.Prec.AnalyzeSmoothers(5, 5)
 ##            self.preconditioner.Prec.AnalyzeCycle(10)
 
-        Solver.Iterate(self.iterations, self.tolerance)
+        return Solver.Iterate(self.iterations, self.tolerance)
 
