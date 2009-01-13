@@ -190,7 +190,7 @@ Build a windows executable installer::
 Combine the windows installer and examples into one archive.
 
     $ rm MANIFEST
-    $ set FIPY_VERSION=XXX
+    $ FIPY_VERSION=XXX
     $ ln -s dist/FiPy-${FIPY_VERSION}.win32.exe .
     $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults --formats=zip
     $ unlink FiPy-${FIPY_VERSION}.win32.exe
