@@ -52,7 +52,8 @@ class _AddOverFacesVariable(CellVariable):
         
         contributions = numerix.take(self.faceVariable, ids)
 
-        return numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0) / self.mesh.getCellVolumes()
+        # FIXME: numerix.MA.filled casts away dimensions
+        return numerix.MA.filled(numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0)) / self.mesh.getCellVolumes()
         
     def _calcValueIn(self):
 
