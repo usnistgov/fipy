@@ -1,0 +1,28 @@
+from fipy.variables.cellToFaceVariable import _CellToFaceVariable
+from fipy.tools.numerix import exp, take, where
+
+class ScharfetterGummelFaceVariable(_CellToFaceVariable):
+    def __init__(self, var, boundaryConditions=()):
+        _CellToFaceVariable.__init__(self, var)
+        self.bcs = boundaryConditions
+        
+    def _calcValuePy(self, alpha, id1, id2):
+        cell1 = take(self.var,id1)
+        cell2 = take(self.var,id2)
+        delta = cell1 - cell2
+        
+        eps = 1e-14
+        value = where(abs(delta) < eps, 1. / exp(delta), 0.)
+        delta = where(abs(delta) < eps, eps, delta) 
+        value = where((abs(delta) > eps) & (delta < 100), 
+                      delta / (exp(delta) - 1), value)
+                            
+        value *= exp(cell1) 
+        
+        for bc in self.bcs:
+            if isinstance(bc, FixedValue):
+                value[bc.faces.getValue()] = bc._getValue()
+        
+        return value
+        
+    _calcValueIn = _calcValuePy
