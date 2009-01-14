@@ -334,6 +334,7 @@ class PhysicalField(object):
         return self._sum(other)
 
     __radd__ = __add__
+    add = __add__
 
     def __sub__(self, other):
         """
@@ -348,6 +349,8 @@ class PhysicalField(object):
             TypeError: Incompatible units
         """
         return self._sum(other, sign2 = lambda b: -b)
+        
+    subtract = __sub__
 
     def __rsub__(self, other):
         return self._sum(other, sign1 = lambda a: -a)
@@ -386,7 +389,6 @@ class PhysicalField(object):
             return self.__class__(value = value, unit = unit)
 
     __rmul__ = __mul__
-
     multiply = __mul__
 
     def __div__(self, other):
@@ -424,6 +426,8 @@ class PhysicalField(object):
         else:
             return self.__class__(value = value, unit = unit)
 
+    divide = __div__
+    
     def __rdiv__(self, other):
         if _isVariable(other):
             return other.__div__(self)
