@@ -597,6 +597,11 @@ install`` method. The best approach that we have found is as follows:
 Depending on your platform, other options may be helpful or necessary;
 see ``../configure --help``, the Trilinos_ user guide available from
 http://trilinos.sandia.gov/documentation.html, or
+
+.. raw:: latex
+
+    \newline
+
 http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more
 in-depth documentation.
 
