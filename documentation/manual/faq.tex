@@ -135,11 +135,11 @@
 \begin{verbatim}
 >>> DiffusionTerm([[[5, 0], [0, 1]]])
 \end{verbatim}
-          Notice that the tensor, written in the form of a list, is
-          contained within a list. This is because the first index of
-          the list refers to the order of the term not the first index
-          of the tensor (see the FAQ,
-          Chapter~\ref{subsection:higherOrderDiffusion}
+          which represents $5 \partial_x^2 + \partial_y^2$.  Notice that
+          the tensor, written in the form of a list, is contained within
+          a list. This is because the first index of the list refers to
+          the order of the term not the first index of the tensor (see
+          the FAQ, Chapter~\ref{subsection:higherOrderDiffusion}
           ``\titleref{subsection:higherOrderDiffusion}''). This
           notation, although succinct can sometimes be confusing so a
           number of cases are interpreted below.
@@ -150,34 +150,37 @@
 >>> DiffusionTerm([[5, 1]])
 \end{verbatim}
               This represents the same term as the case examined above.
-              The vector notation is just a short-hand representation for
-              the diagonal of the tensor. Off-diagonals are assumed to
-              be zero.
+              The vector notation is just a short-hand representation
+              for the diagonal of the tensor. Off-diagonals are assumed
+              to be zero.
 
             \item
 \begin{verbatim}
 >>> DiffusionTerm([5, 1])
 \end{verbatim}
               This simply represents a fourth order isotropic diffusion
-              term.
+              term of the form $5 \left( \partial_x^2 + \partial_y^2
+              \right)^2$.
 
             \item 
 \begin{verbatim}
 >>> DiffusionTerm([[1, 0], [0, 1]])
 \end{verbatim}
               Nominally, this should represent a fourth order diffusion
-              term of the form $\partial_x^2 \partial_y^2 \phi$, but
-              \FiPy{} does not currently support anisotropy for higher
-              order diffusion terms so this may well throw an error or
-              give anomalous results.
+              term of the form $\partial_x^2 \partial_y^2$, but \FiPy{}
+              does not currently support anisotropy for higher order
+              diffusion terms so this may well throw an error or give
+              anomalous results.
             
             \item
 \begin{verbatim}
 >>> x, y = mesh.getCellCenters()
->>> DiffusionTerm([[[x**2, x * y], [-x * y, y**2]]])
+>>> DiffusionTerm([[[x**2, x * y], [-x * y, -y**2]]])
 \end{verbatim}
               This represents an anisotropic diffusion coefficient that
-              varies spatially.
+              varies spatially so that the term has the form $x
+              \partial_x - y \partial_y + x^2 \partial_x^2 - y^2
+              \partial_y^2$.
 
             \item Generally, anisotropy is not conveniently aligned
               along the coordinate axes; in these cases, it is necessary
