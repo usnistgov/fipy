@@ -106,20 +106,88 @@
            will not be accounted for.
 
             
+           
            \subsection{How do I represent a term $\nabla^4 \phi$ or
             $\nabla \cdot \left( \Gamma_1 \nabla \left(
             \nabla\cdot\left( 
             \Gamma_2 \nabla \phi\right) \right) \right) $ such as for 
-            Cahn-Hilliard?}
-            \hspace*{\fill}
+            Cahn-Hilliard? \label{subsection:higherOrderDiffusion}}
+          \hspace*{\fill}
             
-            \begin{quote}
+          \begin{quote}
 \begin{verbatim}
 >>> ImplicitDiffusionTerm(coeff = (Gamma1, Gamma2))
 \end{verbatim}
-            \end{quote}
-            The number of elements supplied for \verb|coeff| determines the
-            order of the term.
+          \end{quote}
+          The number of elements supplied for \verb|coeff| determines the
+          order of the term.
+
+          \subsection{Is there a way to model an anisotropic diffusion
+            process or more generally to represent the diffusion
+            coefficient as a tensor so that the diffusion term takes the
+            form $\partial_i \Gamma_{ij}\partial_j \phi$?}
+          Terms of the form $\partial_i \Gamma_{ij}\partial_j \phi$ can
+          be posed in \FiPy{} by using a list, tuple, rank 1 or rank 2
+          \Class{FaceVariable} to represent a vector or tensor diffusion
+          coefficient.  For example, if we wished to represent a
+          diffusion term with an anisotropy ratio of 5 aligned along the
+          x-coordinate axis, we could write the term as,
+\begin{verbatim}
+>>> DiffusionTerm([[[5, 0], [0, 1]]])
+\end{verbatim}
+          Notice that the tensor, written in the form of a list, is
+          contained within a list. This is because the first index of
+          the list refers to the order of the term not the first index
+          of the tensor (see the FAQ,
+          Chapter~\ref{subsection:higherOrderDiffusion}
+          ``\titleref{subsection:higherOrderDiffusion}''). This
+          notation, although succinct can sometimes be confusing so a
+          number of cases are interpreted below.
+          \begin{itemize}
+
+            \item
+\begin{verbatim}
+>>> DiffusionTerm([[5, 1]])
+\end{verbatim}
+              This represents the same term as the case examined above.
+              The vector notation is just a short-hand representation for
+              the diagonal of the tensor. Off-diagonals are assumed to
+              be zero.
+
+            \item
+\begin{verbatim}
+>>> DiffusionTerm([5, 1])
+\end{verbatim}
+              This simply represents a fourth order isotropic diffusion
+              term.
+
+            \item 
+\begin{verbatim}
+>>> DiffusionTerm([[1, 0], [0, 1]])
+\end{verbatim}
+              Nominally, this should represent a fourth order diffusion
+              term of the form $\partial_x^2 \partial_y^2 \phi$, but
+              \FiPy{} does not currently support anisotropy for higher
+              order diffusion terms so this may well throw an error or
+              give anomalous results.
+            
+            \item
+\begin{verbatim}
+>>> x, y = mesh.getCellCenters()
+>>> DiffusionTerm([[[x**2, x * y], [-x * y, y**2]]])
+\end{verbatim}
+              This represents an anisotropic diffusion coefficient that
+              varies spatially.
+
+            \item Generally, anisotropy is not conveniently aligned
+              along the coordinate axes; in these cases, it is necessary
+              to apply a rotation matrix in order to calculate the
+              correct tensor values, see
+              Chapter~\ref{sec:Examples:diffusion:anisotropy}
+              ``\titleref{sec:Examples:diffusion:anisotropy}'' for
+              details.
+
+            \end{itemize}
 
             \subsection{What if the term isn't one of those?}
             Any term that cannot be written in one of the previous

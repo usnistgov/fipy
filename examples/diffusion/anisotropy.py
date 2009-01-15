@@ -41,7 +41,7 @@ coefficient.  We wish to solve the following problem.
 
     $$ \frac{\partial \phi}{\partial t} = \partial_j \Gamma_{ij}
     \partial_i \phi $$ on a circular domain centred at $(0, 0)$. We
-    can choose an anisotropy of 80\% such that $$\Gamma' =
+    can choose an anisotropy ratio of 5 such that $$\Gamma' =
     \begin{pmatrix} 0.2 & 0 \\ 0 & 1 \end{pmatrix}$$ A new matrix is
     formed by rotating $\Gamma'$ such that $$R = \begin{pmatrix}
     \cos\theta & \sin\theta \\ -\sin\theta & \cos\theta
