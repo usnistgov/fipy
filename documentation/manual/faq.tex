@@ -178,8 +178,10 @@
 >>> DiffusionTerm([[[x**2, x * y], [-x * y, -y**2]]])
 \end{verbatim}
               This represents an anisotropic diffusion coefficient that
-              varies spatially so that the term has the form $x
-              \partial_x - y \partial_y + x^2 \partial_x^2 - y^2
+              varies spatially so that the term has the form 
+              $\partial_x (x^2 \partial_x + x y \partial_y)
+              + \partial_y (-x y \partial_x - y^2 \partial_y)
+              \equiv x \partial_x - y \partial_y + x^2 \partial_x^2 - y^2
               \partial_y^2$.
 
             \item Generally, anisotropy is not conveniently aligned
@@ -496,7 +498,7 @@
         Solver iterations are changed from their defaults in
         Examples~\ref{examples:cahnHilliard:inputTanh1D},
         \ref{examples:flow:stokesCavity}, and
-        \ref{chap:Update0.1to1.0}.
+        \ref{examples:update0-1to1-0}.
         
         \item[sweeps] This middle layer of repetition is important
         when a PDE is non-linear (\emph{e.g.}, a diffusivity that
