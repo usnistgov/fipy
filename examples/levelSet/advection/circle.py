@@ -118,8 +118,7 @@ The problem can then be solved by executing a serious of time steps.
 ..
 
    >>> if __name__ == '__main__':
-   ...     viewer = Viewer(vars=var, 
-   ...                     limits={'datamin': -radius, 'datamax': radius})
+   ...     viewer = Viewer(vars=var, datamin=-radius, datamax=radius)
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()

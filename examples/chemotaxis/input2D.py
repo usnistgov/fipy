@@ -114,15 +114,15 @@ if __name__ == '__main__':
 
     PNView = PN / PN.getCellVolumeAverage()
     PNView.setName('PN')
-    PNViewer = Viewer(PNView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    PNViewer = Viewer(PNView, datamax=2., datamin=0., title='')
     
     KMView = KMVar / KMVar.getCellVolumeAverage()
     KMView.setName('KM')
-    KMViewer = Viewer(KMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    KMViewer = Viewer(KMView, datamax=2., datamin=0., title='')
     
     TMView = TMVar / TMVar.getCellVolumeAverage()
     TMView.setName('TM')
-    TMViewer = Viewer(TMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    TMViewer = Viewer(TMView, datamax=2., datamin=0., title='')
 
     for i in range(100):
         for var, eqn in eqs:

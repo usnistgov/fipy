@@ -245,8 +245,7 @@ And Poisson's equation
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     phaseViewer = Viewer(vars = phase,
-    ...                          limits = {'datamin': 0, 'datamax': 1})
+    ...     phaseViewer = Viewer(vars=phase, datamin=0, datamax=1)
     ...     concViewer = Gist1DViewer(vars = [solvent] + substitutionals + interstitials, ylog = 1)
     ...     potentialViewer = Viewer(vars = potential)
     ...     phaseViewer.plot()

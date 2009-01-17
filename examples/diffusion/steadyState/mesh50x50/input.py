@@ -75,6 +75,6 @@ boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     
-    viewer = Viewer(vars = var, limits = {'datamin': 0., 'datamax': 1.})
+    viewer = Viewer(vars=var, datamin=0., datamax=1.)
     viewer.plot()
     raw_input("finished")

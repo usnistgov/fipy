@@ -209,7 +209,7 @@ If running interactively, we create viewers to display the results
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars=([phase, solvent]
     ...                           + substitutionals + interstitials),
-    ...                     limits={'datamin': 0, 'datamax': 1})
+    ...                     datamin=0, datamax=1)
     ...     viewer.plot()
 
 This problem does not have an analytical solution, so after
@@ -279,7 +279,7 @@ Again, if we're running interactively, we create a viewer
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars=([phase, solvent]
     ...                           + substitutionals + interstitials),
-    ...                     limits={'datamin': 0, 'datamax': 1})
+    ...                     datamin=0, datamax=1)
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary
@@ -376,7 +376,7 @@ Once again, if we're running interactively, we create a viewer
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars=([phase, solvent]
     ...                           + substitutionals + interstitials),
-    ...                     limits={'datamin': 0, 'datamax': 1})
+    ...                     datamin=0, datamax=1)
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary

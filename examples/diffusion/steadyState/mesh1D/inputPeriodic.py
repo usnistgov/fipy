@@ -56,8 +56,7 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
     ...                                                value = initialArray)
 
     >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars = var,
-    ...                     limits = {'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=var, datamin=0., datamax=1.)
     ...     viewer.plot()
     ...     raw_input("press key to continue")
     

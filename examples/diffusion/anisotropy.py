@@ -83,7 +83,7 @@ Make the equation, viewer and solve.
     >>> eqn = TransientTerm() == DiffusionTerm((gamma,))
 
     >>> if __name__ == '__main__':
-    ...     viewer = Viewer(var, limits={'datamin' : 0.0, 'datamax' : 0.001})
+    ...     viewer = Viewer(var, datamin=0.0, datamax=0.001)
 
     >>> mass = float(numerix.sum(mesh.getCellVolumes() * var))
     >>> time = 0

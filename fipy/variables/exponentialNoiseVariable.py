@@ -68,11 +68,10 @@ class ExponentialNoiseVariable(NoiseVariable):
            >>> x = histogram.getMesh().getCellCenters()[0]
            
            >>> if __name__ == '__main__':
-           ...     from fipy import viewers
-           ...     viewer = Viewer(vars = noise, 
-           ...                     limits = {'datamin': 0, 'datamax': 5})
-           ...     histoplot = Viewer(vars = (histogram, expdist), 
-           ...                        limits = {'datamin': 0, 'datamax': 1.5})
+           ...     from fipy import Viewer
+           ...     viewer = Viewer(vars=noise, datamin=0, datamax=5)
+           ...     histoplot = Viewer(vars=(histogram, expdist), 
+           ...                        datamin=0, datamax=1.5)
            
            >>> from fipy.tools.numerix import arange, exp
            

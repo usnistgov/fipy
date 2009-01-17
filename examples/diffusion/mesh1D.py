@@ -189,7 +189,7 @@ viewers and the dimension of the mesh.
 
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars=(phi, phiAnalytical),
-    ...                     limits={'datamin': 0., 'datamax': 1.})
+    ...                     datamin=0., datamax=1.)
     ...     viewer.plot()
 
 In a semi-infinite domain, the analytical solution for this transient
@@ -612,7 +612,7 @@ analytical solution from before.
 
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars=phi + [phiAnalytical],
-    ...                     limits={'datamin': 0., 'datamax': 1.})
+    ...                     datamin=0., datamax=1.)
     ...     viewer.plot()
 
 .. raw:: latex

@@ -199,7 +199,7 @@ def runGold(faradaysConstant=9.6e4,
 
         try:
             
-            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage', animate=True)
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, datamax=1.0, datamin=0.0, smooth = 1, title = 'catalyst coverage', animate=True)
             
         except:
             
@@ -212,7 +212,7 @@ def runGold(faradaysConstant=9.6e4,
                     return array(self.var[:self.mesh.getNumberOfCells()])
 
             viewer = MultiViewer(viewers=(
-                Viewer(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
+                Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
                 Viewer(PlotVariable(var = catalystVar.getInterfaceVar()))))
     else:
         viewer = None

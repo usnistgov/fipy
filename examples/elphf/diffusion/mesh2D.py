@@ -133,8 +133,7 @@ We create one diffusion equation for each substitutional component
 If we are running interactively, we create a viewer to see the results 
 
     >>> if __name__ == '__main__':
-    ...     viewers = [Viewer(vars=field, 
-    ...                       limits={'datamin': 0, 'datamax': 1}) 
+    ...     viewers = [Viewer(vars=field, datamin=0, datamax=1) 
     ...                for field in [solvent] + substitutionals]
     ...     for viewer in viewers:
     ...         viewer.plot()
