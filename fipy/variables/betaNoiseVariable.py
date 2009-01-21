@@ -76,6 +76,7 @@ class BetaNoiseVariable(NoiseVariable):
            ...     from fipy import Viewer
            ...     viewer = Viewer(vars=noise, datamin=0, datamax=1)
            ...     histoplot = Viewer(vars=(histogram, betadist), 
+           ...                        datamin=0, datamax=1.5)
            
            >>> from fipy.tools.numerix import arange, exp
            >>> from scipy.special import gamma as Gamma
