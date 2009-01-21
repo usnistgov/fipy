@@ -47,6 +47,12 @@ Even if you don't read manuals...
 What's new in version |VERSION|?
 --------------------------------
 
+.. warning::
+
+   |FiPy| 2 brings unavoidable syntax changes. Please see
+   |examples.update1_0to2_0| for guidance on the changes that you will need
+   to make to your |FiPy| 1.x scripts.
+
 The significant changes since version 1.2 are:
 
 - ``CellVariable`` and ``FaceVariable`` objects can hold values of any 
@@ -184,6 +190,16 @@ or a
 .. |EFFICIENCY-txt| replace:: |htmlEFFICIENCY| |latexEFFICIENCY|
 .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
 .. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
+
+.. |html1to2| raw:: html
+
+   <code>example.update1_0to2_0</code>
+
+.. |latex1to2| raw:: latex
+
+   Example~\ref{examples:update1-0to2-0}
+
+.. |examples.update1_0to2_0| replace:: |html1to2| |latex1to2|
 
 .. |citePython| raw:: latex
 
