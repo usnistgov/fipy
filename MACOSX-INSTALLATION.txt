@@ -6,15 +6,16 @@ Simple Mac OS X Installation
    :local:
    :depth: 2
 
-We present two comparatively simple routes to installing |FiPy| on `Mac OS
+We present four comparatively simple routes to installing |FiPy| on `Mac OS
 X`_. The `Fink Installation`_ procedure is appropriate if you are already
-familiar with the Fink_ package manager. The `Binary Installation`_
-procedure is the most expedient if you have never heard of Fink_ or if
-you are not comfortable with it. Please see the more general
-|INSTALLATION-txt| for detailed installation instructions. These
-instructions are not the only ways to set up |FiPy| on `Mac OS X`_ but
-represent the most expedient ways, from our experience, to have a usable
-installation up and running.
+familiar with the Fink_ package manager. Either `EasyInstall`_ or
+`Enthought Python Edition`_ will get |FiPy| running in a minumum number of
+steps. The `Binary Installation`_ procedure is the next most expedient if
+you have never heard of Fink_ or if you are not comfortable with it. Please
+see the more general |INSTALLATION-txt| for detailed installation
+instructions. These instructions are not the only ways to set up |FiPy| on
+`Mac OS X`_ but represent the most expedient ways, from our experience, to
+have a usable installation up and running.
 
 .. attention::
 
@@ -26,6 +27,43 @@ installation up and running.
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
 .. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://fink.sourceforge.net
+
+EasyInstall
+===========
+
+http://peak.telecommunity.com/DevCenter/EasyInstall
+
+.. note::
+
+   Several packages installed with `easy_install` will need be
+   automatically compiled, which requires that you install the 
+   `Xcode Development Tools`_ before proceding.
+
+If Python_ and setuptools_ are already available, a minimally functional 
+installation of |FiPy| can be obtained by issuing the commands::
+
+    $ easy_install numpy
+    $ easy_install matplotlib
+    $ easy_install pysparse
+    $ easy_install fipy
+    
+Some of the `Optional Packages`_ may also be available via
+``easy_install``, but not all are.
+
+.. _setuptools: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi/setuptools
+
+Enthought Python Edition
+========================
+
+http://www.enthought.com/epd
+
+This installer provides a very large number of useful scientific packages
+for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and ipython_.
+
+.. attention::
+
+   PySparse_ and |FiPy| are not presently included in EPD, so you will need
+   to separately install them, either manually or via EasyInstall_.
 
 Binary Installation
 ===================
@@ -281,7 +319,7 @@ Optional Packages
 ipython
 -------
 
-http://ipython.scipy.org/moin/Download
+http://ipython.scipy.org/
 
 This interactive Python shell is nicer to use than the default, and 
 integrates nicely with matplotlib_. Download the source and follow the 

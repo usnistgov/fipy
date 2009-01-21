@@ -30,6 +30,57 @@ It is *best to obtain and install those first*, before attempting to install
    For each package, please follow any instructions given in its `README` or 
    `INSTALLATION` files.
 
+
+---------
+Shortcuts
+---------
+
+Detailed prerequisites and links are given below and in platform-specific 
+instructions, but for the courageous and the impatient, |FiPy| can be up 
+and running quickly with one of the following methods.
+
+
+EasyInstall
+===========
+
+http://peak.telecommunity.com/DevCenter/EasyInstall
+
+If Python_ and setuptools_ are already available, a minimally functional 
+installation of |FiPy| can be obtained by issuing the commands::
+
+    $ easy_install numpy
+    $ easy_install matplotlib
+    $ easy_install pysparse
+    $ easy_install fipy
+    
+Some of the `Optional Packages`_ may also be available via
+``easy_install``, but not all are.
+
+.. _setuptools: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi/setuptools
+
+Enthought Python Edition
+========================
+
+http://www.enthought.com/epd
+
+This installer provides a very large number of useful scientific packages
+for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and ipython_.
+Installers are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
+
+.. attention::
+
+   PySparse_ and |FiPy| are not presently included in EPD, so you will need
+   to separately install them, either manually or via EasyInstall_.
+
+Python(x,y)
+===========
+
+http://www.pythonxy.com/
+
+Another comprehensive Python package installer for scientific applications,
+presently only available for Windows_. See |WINDOWS-INSTALLATION-txt| for
+more information.
+
 ----------
 Privileges
 ----------
@@ -61,11 +112,10 @@ Prerequisites
 Operating System
 ================
 
-|FiPy| has been developed and tested on the following operating
-systems, `Mac OS X`_ 10.3 "Panther" & 10.4 "Tiger", `Debian Linux`_
-3.1 "Sarge", `Windows XP`_ and `Windows 2000`_.  We welcome reports of
-compatibility with other systems, along with any steps necessary to
-install. 
+|FiPy| is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and 10.5 "Leopard",
+`Debian Linux`_ 4.0 "etch", `Ubuntu Linux`_ 10.10, and `Windows XP`_. We
+welcome reports of compatibility with other systems, particularly if any
+additional steps are necessary to install.
 
 .. note::
 
@@ -85,8 +135,11 @@ Whether building from source or using a prebuilt installer, please read and
 follow explicitly any instructions given in the respective packages'
 ``README`` and ``INSTALLATION`` files.
 
+.. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
-.. _Debian Linux:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
+.. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
+.. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
+.. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
 .. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
 .. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
 .. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
@@ -144,10 +197,11 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   |FiPy| requires at least version 2.3 of Python_ and has not yet
-    been tested with version 2.5.
+   |FiPy| requires at least version 2.3 of Python_. |FiPy| has not yet
+    been tested (and will almost certainly not work) with `Python 3.0`_.
 
 .. _Python:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
+.. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
 .. |citePythonDownload| raw:: latex
 
@@ -555,6 +609,15 @@ It is possible to create irregular meshes with this package.
    is structured a bit differently than on other platforms.  To access the
    underlying shell tool, create a shell alias called ``gmsh`` that
    corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
+
+ipython
+=======
+
+http://ipython.scipy.org/
+
+This interactive Python shell is nicer to use than the default, and 
+integrates nicely with matplotlib_. Depending on platform, you may be able 
+to download a binary or build from source.
 
 Trilinos
 ========
