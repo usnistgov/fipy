@@ -238,10 +238,10 @@ def runGold(faradaysConstant=9.6e4,
         catalystVar.updateOld()
         metalVar.updateOld()
 
-        advectionEquation.solve(distanceVar, dt = dt, solver=LinearCGSSolver())
-        catalystSurfactantEquation.solve(catalystVar, dt = dt, solver=LinearCGSSolver())
+        advectionEquation.solve(distanceVar, dt = dt)
+        catalystSurfactantEquation.solve(catalystVar, dt = dt)
 
-        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt, solver=LinearPCGSolver())
+        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
                     
         step += 1
 

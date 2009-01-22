@@ -361,12 +361,12 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         mesh.getFacesTop(),
         bulkLevelerConcentration),)
 
-    eqnTuple = ( (advectionEquation, distanceVar, (), LinearCGSSolver()),
-                 (levelerSurfactantEquation, levelerVar, (), LinearCGSSolver()),
-                 (acceleratorSurfactantEquation, acceleratorVar, (), LinearCGSSolver()),
-                 (metalEquation, metalVar,  metalEquationBCs, LinearPCGSolver()),
-                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs, LinearPCGSolver()),
-                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs, LinearPCGSolver()))
+    eqnTuple = ( (advectionEquation, distanceVar, (), None),
+                 (levelerSurfactantEquation, levelerVar, (), None),
+                 (acceleratorSurfactantEquation, acceleratorVar, (), None),
+                 (metalEquation, metalVar,  metalEquationBCs, None),
+                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs, None),
+                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs, None))
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 
