@@ -361,9 +361,9 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         mesh.getFacesTop(),
         bulkLevelerConcentration),)
 
-    eqnTuple = ( (advectionEquation, distanceVar, (), None),
-                 (levelerSurfactantEquation, levelerVar, (), None),
-                 (acceleratorSurfactantEquation, acceleratorVar, (), None),
+    eqnTuple = ( (advectionEquation, distanceVar, (), LinearCGSSolver()),
+                 (levelerSurfactantEquation, levelerVar, (), LinearCGSSolver()),
+                 (acceleratorSurfactantEquation, acceleratorVar, (), LinearCGSSolver()),
                  (metalEquation, metalVar,  metalEquationBCs, LinearPCGSolver()),
                  (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs, LinearPCGSolver()),
                  (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs, LinearPCGSolver()))

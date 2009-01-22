@@ -472,12 +472,12 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
-   ...     advectionEquation.solve(distanceVar, dt=dt, solver=LinearLUSolver())
-   ...     surfactantEquation.solve(catalystVar, dt=dt)
+   ...     advectionEquation.solve(distanceVar, dt=dt, solver=LinearCGSSolver())
+   ...     surfactantEquation.solve(catalystVar, dt=dt, solver=LinearCGSSolver())
    ...     metalEquation.solve(var=metalVar, dt=dt,
-   ...                         boundaryConditions=metalEquationBCs, solver=LinearLUSolver())
+   ...                         boundaryConditions=metalEquationBCs, solver=LinearPCGSolver())
    ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
-   ...                                   boundaryConditions=catalystBCs, solver=LinearLUSolver())
+   ...                                   boundaryConditions=catalystBCs, solver=LinearPCGSolver())
 
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
