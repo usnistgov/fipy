@@ -34,7 +34,7 @@ r"""
 
 |FiPy| 2.0 introduces several syntax changes from |FiPy| 1.0. We appreciate that
 this is very inconvenient for our users, but we hope you'll agree that the new
-sytax is easier to read and easier to use. We assure you that this is not
+syntax is easier to read and easier to use. We assure you that this is not
 something we do casually; it has been over three years since our last
 incompatible change (when |FiPy| 1.0 superceded |FiPy| 0.1).
 
@@ -61,7 +61,7 @@ The following items **must** be changed in your scripts
       >>> x = mesh.getCellCenters()[...,0]
        
    This seemingly arbitrary change simplifies a great many things in |FiPy|, but
-   the one most noticeable to user is that you can now write
+   the one most noticeable to the user is that you can now write
    
        >>> x, y = mesh.getCellCenters()
   
@@ -69,6 +69,26 @@ The following items **must** be changed in your scripts
    
        >>> x = mesh.getCellCenters()[...,0]
        >>> y = mesh.getCellCenters()[...,1]
+
+   Unfortunately, we cannot reliably automate this conversion, but we find that
+   searching for "`...,`" and "`:,`" finds almost everything. Please don't
+   blindly "search & replace all" as that is almost bound to create more
+   problems than it's worth.
+   
+   .. note:: 
+       
+      Any vector constants must be reoriented. For instance, in order to offset
+      a `Mesh`, you must write
+   
+          >>> mesh = Grid2D(...) + ((deltax,), (deltay,))
+       
+      or
+   
+          >>> mesh = Grid2D(...) + [[deltax], [deltay]]
+
+      instead of
+
+          >>> mesh = Grid2D(...) + (deltax, deltay)
 
  * `VectorCellVariable` and `VectorFaceVariable` no longer exist. `CellVariable`
    and `FaceVariable` now both inherit from `MeshVariable`, and a `MeshVariable`
@@ -80,6 +100,18 @@ The following items **must** be changed in your scripts
    instead of
 
        >>> vectorField = VectorCellVariable(mesh=mesh)
+
+   .. note:: 
+       
+      Because vector fields are properly supported, use vector operations to
+      manipulate them, such as
+      
+          >>> phase.getFaceGrad().dot((( 0, 1),
+          ...                          (-1, 0)))
+
+      instead of the hackish
+      
+          >>> phase.getFaceGrad()._take((1, 0), axis=1) * (-1, 1)
 
  * For internal reasons, |FiPy| now supports `CellVariable` and `FaceVariable`
    objects that contain integers, but it is not meaningful to solve a PDE for an
@@ -98,14 +130,19 @@ The following items **must** be changed in your scripts
  * The `faces` argument to `BoundaryCondition` now takes a mask, instead of a
    list of `Face` IDs. Now you write
    
+       >>> X, Y = mesh.getFaceCenters()
        >>> FixedValue(faces=mesh.getExteriorFaces() & (X**2 < 1e-6), value=...)
        
    instead of
    
-       >>> FixedValue(faces=mesh.getExteriorFaces().where(X**2 < 1e-6), value=...)
+       >>> exteriorFaces = mesh.getExteriorFaces()
+       >>> X = exteriorFaces.getCenters()[...,0]
+       >>> FixedValue(faces=exteriorFaces.where(X**2 < 1e-6), value=...)
        
-   This simple case may not seem like much of an improvement, but with the old
-   syntax, it was extremely difficult to achieve the effect of
+   With the old syntax, a different call to `getCenters()` had to be made for
+   each set of `Face` objects. It was also extremely difficult to specify
+   boundary conditions that depended both on position in space and on the
+   current values of other `Variables`
    
        >>> FixedValue(faces=(mesh.getExteriorFaces() 
        ...                   & (((X**2 < 1e-6) 
@@ -114,7 +151,51 @@ The following items **must** be changed in your scripts
        ...                         < sin(gamma.getArithmeticFaceValue())))), value=...)
 
    although it probably could have been done with a rather convoluted (and
-   slow!) `filter` function passed to `where`.
+   slow!) `filter` function passed to `where`. There no longer are any `filter`
+   methods used in |FiPy|. You now would write 
+   
+       >>> x, y = mesh.getCellCenters()
+       >>> initialArray[(x < dx) | (x > (Lx - dx)) | (y < dy) | (y > (Ly - dy))] = 1.
+
+   instead of the **much** slower
+
+       >>> def cellFilter(cell): 
+       ...     return ((cell.getCenter()[0] < dx) 
+       ...             or (cell.getCenter()[0] > (Lx - dx)) 
+       ...             or (cell.getCenter()[1] < dy) 
+       ...             or (cell.getCenter()[1] > (Ly - dy)))
+
+       >>> positiveCells = mesh.getCells(filter=cellFilter)
+       >>> for cell in positiveCells:
+       ...     initialArray[cell.getID()] = 1.
+
+   Although they still exist, we find very lille cause to ever call
+   `mesh.getCells()` or `mesh.getFaces()`.
+   
+ * Some modules, such as `fipy.solvers`, have been significantly rearranged.
+   For example, you need to change
+
+       >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+
+   to either
+
+       >>> from fipy import LinearPCGSolver
+
+   or
+
+       >>> from fipy.solvers.pysparse.linearPCGSolver import LinearPCGSolver
+
+       
+ * The `numerix.max()` and `numerix.min()` functions no longer exist. Either
+   call `max()` and `min()` or `var.max()` and `var.min()`.
+   
+ * The `Numeric` module has not been supported for a long time. Be sure to use
+ 
+       >>> from fipy import numerix
+ 
+   instead of 
+   
+       >>> import Numeric
 
 The remaining changes are not **required**, but they make scripts easier to read
 and we recommend them. |FiPy| may issue a `DeprecationWarning` for some cases,
@@ -131,9 +212,9 @@ to indicate that we may not maintain the old syntax indefinitely.
        >>> from fipy.terms.powerLawConvectionTerm import PowerLawConvectionTerm 
        >>> from fipy.variables.cellVariable import CellVariable 
 
-   imports that we used to use. The explicit imports should continue to work, so
-   you do not need to change them if you don't wish to, but we find our own scripts
-   much easier to read without them.
+   imports that we used to use. Most of the explicit imports should continue to
+   work, so you do not need to change them if you don't wish to, but we find our
+   own scripts much easier to read without them. 
    
    All of the `numerix` module is now imported into the `fipy` namespace, so you
    can call `numerix` functions a number of different ways, including:
@@ -151,7 +232,7 @@ to indicate that we may not maintain the old syntax indefinitely.
        >>> from fipy.tools.numerix import exp
        >>> y = exp(x)
        
-   We generally use the first, but you may see the others, as well, and should
+   We generally use the first, but you may see us use the others, and should
    feel free to use whichever form you find most comfortable.
 
    .. note::
@@ -211,7 +292,16 @@ to indicate that we may not maintain the old syntax indefinitely.
    It is definitely still advantageous to hand-linearize your source terms, but
    it is no longer necessary to worry about putting the "wrong" sign on the
    diagonal of the matrix.
+   
+ * To make clearer the distinction between iterations, timesteps, and sweeps
+ 
+   .. raw:: latex
+   
+      (see FAQ~\ref{FAQ-IterationsTimestepsSweeps})
+      
+   the `steps` argument to a `Solver` object has been renamed `iterations`.
 
+ * `ImplicitDiffusionTerm` has been renamed to `DiffusionTerm`.
 
 .. |FiPy| raw:: latex
 

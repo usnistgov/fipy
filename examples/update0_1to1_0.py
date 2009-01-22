@@ -32,21 +32,21 @@
 
 r"""
 
-The syntax of |FiPy| scripts has changed considerably between version 0.1
-and version 1.0.  We have incremented the full version-number to stress
+It seems unlikely that many users are still running |FiPy| 0.1, but for those
+that are, the syntax of |FiPy| scripts changed considerably between version 0.1
+and version 1.0.  We incremented the full version-number to stress
 that previous scripts are incompatible.  We strongly believe that these
 changes are for the better, resulting in easier code to write and read as
 well as slightly improved efficiency, but we realize that this represents
 an inconvenience to our users that have already written scripts of their
 own.  We will strive to avoid any such incompatible changes in the future.
 
-All examples included with version 1.0 have been updated to use the new
-syntax, but any scripts you have written for |FiPy| 0.1 will need to be
-updated to work with |FiPy| 1.0.  As a tutorial for updating your scripts,
-we will walk through updating the file
-`examples/convection/exponential1D/input.py` from |FiPy| 0.1.  If you
-attempt to run that script with |FiPy| 1.0, the script will fail and you
-will see the errors shown below:
+Any scripts you have written for |FiPy| 0.1 should be updated in two steps,
+first to work with |FiPy| 1.0, and then with |FiPy| 2.0. As a tutorial for
+updating your scripts, we will walk through updating the file
+`examples/convection/exponential1D/input.py` from |FiPy| 0.1. If you attempt to
+run that script with |FiPy| 1.0, the script will fail and you will see the
+errors shown below:
 
 ----
 
