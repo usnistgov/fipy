@@ -639,23 +639,16 @@ difficult problems that PySparse_ cannot solve.
     NOT recommended in a basic install of |FiPy|.
 
 Trilinos_ is built using the standard ``configure``, ``make`` and ``make
-install`` method. The best approach that we have found is as follows:
+install`` method. The best approach that we have found is as follows::
 
- * ``cd trilinos-X.Y/``
-
- * ``mkdir BUILD_DIR``
-
- * ``cd BUILD_DIR``
-
- * Configure::
-
-      ../configure CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5 -funroll-all-loops \
+    $ cd trilinos-X.Y/
+    $ mkdir BUILD_DIR    
+    $ cd BUILD_DIR
+    $ ../configure CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5 -funroll-all-loops \
       -malign-double" --enable-epetra --enable-aztecoo --enable-pytrilinos \
       --enable-ml --enable-ifpack --enable-amesos --with-gnumake --enable-galeri
-
- * ``make``
-
- * ``make install``
+    $ make
+    $ make install
 
 Depending on your platform, other options may be helpful or necessary;
 see ``../configure --help``, the Trilinos_ user guide available from
@@ -694,28 +687,30 @@ the ``FIPY_SOLVERS`` environment variable to ``Trilinos`` or
 the |FiPy| script, overriding the environment. In the absence of these
 indicators, |FiPy| will default to using PySparse_ if it is present.
 
-.. warning:: 
+.. note:: 
 
     Trilinos_ solvers frequently give intermediate output that |FiPy| cannot
     suppress. The most commonly encountered messages are:
 
-    "``Gen_Prolongator warning : Max eigen <= 0.0``", which is not
-    significant to |FiPy|;
+     ``Gen_Prolongator warning : Max eigen <= 0.0``:
+        which is not significant to |FiPy|.
 
-    "``Aztec status AZ_loss: loss of precision``", which indicates that there
-    was some difficulty in solving the problem to the requested tolerance due
-    to precision limitations, but usually does not prevent the solver from
-    finding an adequate solution;
+     ``Aztec status AZ_loss: loss of precision``:
+        which indicates that there was some difficulty in solving the
+        problem to the requested tolerance due to precision limitations,
+        but usually does not prevent the solver from finding an adequate
+        solution.
 
-    "``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``", which
-    indicates that GMRES is having trouble with the problem, and may indicate
-    that trying a different solver or preconditioner may give more accurate
-    results if GMRES fails;
+     ``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``:
+        which indicates that GMRES is having trouble with the problem, and
+        may indicate that trying a different solver or preconditioner may
+        give more accurate results if GMRES fails.
 
-    "``Aztec status AZ_breakdown: numerical breakdown``", which usually
-    indicates serious problems solving the equation which forced the solver
-    to stop before reaching an adequate solution. Different solvers,
-    different preconditioners, or a less restrictive tolerance may help.
+     ``Aztec status AZ_breakdown: numerical breakdown``
+        which usually indicates serious problems solving the equation which
+        forced the solver to stop before reaching an adequate solution.
+        Different solvers, different preconditioners, or a less restrictive
+        tolerance may help.
 
 .. _Trilinos: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 .. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
