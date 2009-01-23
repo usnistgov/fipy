@@ -966,7 +966,7 @@ def sqrtDot(a1, a2):
     
     Usually used with v1==v2 to return magnitude of v1.
     """
-    from fipy.tools.inline import inline
+    from fipy.tools import inline
 
     ## We can't use Numeric.dot on an array of vectors
 ##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
@@ -992,7 +992,7 @@ def _sqrtDotPy(a1, a2):
 ##    return result
 
 def _sqrtDotIn(a1, a2):
-    from fipy.tools.inline import inline
+    from fipy.tools import inline
     
     unit1 = unit2 = 1
     if _isPhysical(a1):
@@ -1174,7 +1174,7 @@ if not hasattr(NUMERIX, 'empty'):
         We approximate this routine when unavailable, but note that `order` is
         ignored when using Numeric.
         """
-        from fipy.tools.inline import inline
+        from fipy.tools import inline
 
         return inline._optionalInline(_emptyIn, _emptyPy, shape, dtype)
   

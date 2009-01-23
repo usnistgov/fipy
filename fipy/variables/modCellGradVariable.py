@@ -34,10 +34,9 @@
  # ###################################################################
  ##
  
-from fipy.tools import numerix
-
 from fipy.variables.gaussCellGradVariable import _GaussCellGradVariable
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 class _ModCellGradVariable(_GaussCellGradVariable):
     def __init__(self, var, modIn, modPy):

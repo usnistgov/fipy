@@ -37,13 +37,11 @@
 """
 __docformat__ = 'restructuredtext'
 
-
-from fipy.tools.numerix import MA
-
 from fipy.meshes.numMesh.grid2D import Grid2D
 from fipy.tools import numerix
+from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools.inline import inline
+from fipy.tools import inline
 
 class UniformGrid2D(Grid2D):
     """

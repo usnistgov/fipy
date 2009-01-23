@@ -33,9 +33,7 @@
  ##
 
 from fipy.tools import numerix
-
-from fipy.tools import numerix
-import fipy.tools.inline.inline as inline
+from fipy.tools import inline
 from fipy.variables.cellVariable import CellVariable
 
 class _AddOverFacesVariable(CellVariable):

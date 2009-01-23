@@ -41,7 +41,7 @@ import inspect
 from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
-from fipy.tools.inline import inline
+from fipy.tools import inline
 
 class Variable(object):
     
@@ -507,7 +507,7 @@ class Variable(object):
         ## arrays. A test case was put in _execInline(). The best fix turned out to
         ## be here.
         
-        if (inline.inlineFlagOn 
+        if (inline.doInline 
             and hasattr(value, 'iscontiguous') and not value.iscontiguous()):
             value = value.copy()
             
@@ -729,7 +729,7 @@ class Variable(object):
             [ 1.  1.  1.  1.]
         """
     
-        from fipy.tools.inline import inline
+        from fipy.tools import inline
         argDict = {}
         string = self._getCstring(argDict=argDict, freshen=True) + ';'
         

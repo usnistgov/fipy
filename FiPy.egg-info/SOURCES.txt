@@ -424,6 +424,7 @@ fipy/tests/testBase.py
 fipy/tests/testProgram.py
 fipy/tools/__init__.py
 fipy/tools/dump.py
+fipy/tools/inline.py
 fipy/tools/memoryLeak.py
 fipy/tools/memoryLogger.py
 fipy/tools/memoryUsage.py
@@ -439,8 +440,6 @@ fipy/tools/dimensions/LICENSE
 fipy/tools/dimensions/NumberDict.py
 fipy/tools/dimensions/__init__.py
 fipy/tools/dimensions/physicalField.py
-fipy/tools/inline/__init__.py
-fipy/tools/inline/inline.py
 fipy/variables/__init__.py
 fipy/variables/addOverFacesVariable.py
 fipy/variables/arithmeticCellToFaceVariable.py

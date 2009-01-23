@@ -1,10 +1,32 @@
 import inspect
+import sys
 
 from fipy.tools import numerix
-from fipy.tools.inline import inlineFlagOn
+
+def _inlineEnvironmentFlag(name):
+    import os
+
+    if os.environ.has_key(name):
+        if os.environ[name].lower() == 'true':
+            flag = True
+        elif os.environ[name].lower() == 'false':
+            flag = False
+        else:
+            raise ImportError, 'Unknown setting for %s: %s, should be true or false' % (name, os.environ['name'])
+    else:
+        flag = False
+        
+    return flag
+
+if '--inline' in sys.argv[1:]:
+    doInline = True
+else:
+    doInline = _inlineEnvironmentFlag('FIPY_INLINE')
+    
+inlineFrameComment = _inlineEnvironmentFlag('FIPY_INLINE_COMMENT')
 
 def _optionalInline(inlineFn, pythonFn, *args):
-    if inlineFlagOn:
+    if doInline:
         return inlineFn(*args)
     else:
         return pythonFn(*args)
@@ -20,23 +42,26 @@ def _getframeinfo(level, context=1):
     return (frame,) + inspect.getframeinfo(frame, context=context)
 
 def _rawCodeComment(code, level=2):
-    finfo = _getframeinfo(level=level)
-    
-    # note: 
-    # don't use #line because it actually makes it harder 
-    # to find the offending code in both the C++ source and in the Python
-    #line %d "%s"
-    
-    return '''
+    if inlineFrameComment:
+        finfo = _getframeinfo(level=level)
+        
+        # note: 
+        # don't use #line because it actually makes it harder 
+        # to find the offending code in both the C++ source and in the Python
+        #line %d "%s"
+        
+        return '''
 /* 
     %s:%d
 
     %s 
 */
-''' % (finfo[1], finfo[2] - len(code.splitlines()), finfo[3])
+        ''' % (finfo[1], finfo[2] - len(code.splitlines()), finfo[3])
+    else:
+        return ""
 
 def _operatorVariableComment(canInline=True, level=3):
-    if canInline and inlineFlagOn:
+    if canInline and doInline and inlineFrameComment:
         finfo = _getframeinfo(level=level)
 
         # note: 

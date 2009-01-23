@@ -9,7 +9,7 @@ class _FixedBCFaceGradVariable(FaceVariable):
         self.bcs = boundaryConditions
 
     def _calcValue(self):        
-        from fipy.tools.inline import inline
+        from fipy.tools import inline
         return inline._optionalInline(self._calcValueInline, self._calcValuePy)
     
     def _calcValuePy(self):

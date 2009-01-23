@@ -37,11 +37,9 @@
 """
 __docformat__ = 'restructuredtext'
 
-
-from fipy.tools import numerix
-
-from fipy.tools.inline import inline
 from fipy.meshes.numMesh.mesh2D import Mesh2D
+from fipy.tools import inline
+from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
