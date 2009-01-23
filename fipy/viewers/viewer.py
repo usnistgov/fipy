@@ -179,7 +179,7 @@ class _Viewer:
             >>> mesh = Grid1D(nx=100)
             >>> x, = mesh.getCellCenters()
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
-            >>> k = Variable(name="k", value=0)
+            >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=(sin(k * xVar), cos(k * xVar / pi)), 
             ...                 limits={'xmin': 10, 'xmax': 90}, 
             ...                 datamin=-0.9, datamax=2.0,
@@ -197,7 +197,7 @@ class _Viewer:
             >>> mesh = %(mesh)s
             >>> x, y = mesh.getCellCenters()
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k", value=0)
+            >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar), 
             ...                 limits={'ymin': 0.1, 'ymax': 0.9}, 
             ...                 datamin=-0.9, datamax=2.0,
@@ -227,7 +227,7 @@ class _Viewer:
             >>> mesh = %(mesh)s
             >>> x, y = mesh.getCellCenters()
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k", value=0)
+            >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar).getGrad(), 
             ...                 title="%(viewer)s test")
             >>> for kval in range(10):
@@ -263,7 +263,7 @@ class _Viewer:
             >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
             >>> x, y, z = mesh.getCellCenters()
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
-            >>> k = Variable(name="k", value=0)
+            >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 
             ...                     limits={'ymin': 0.1, 'ymax': 0.9}, 
             ...                     datamin=-0.9, datamax=2.0,

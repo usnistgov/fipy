@@ -101,6 +101,13 @@ class _MatplotlibViewer(_Viewer):
 
     def _validFileExtensions(self):
         import pylab
-        filetypes = pylab.figure(self.id).canvas.filetypes
-        return [".%s" for key in filetypes.keys()]
+        return ["""
+        Matplotlib has no reliable way to determine 
+        valid file extensions. Either guess, or see
+        <http://matplotlib.sourceforge.net/faq/installing_faq.html#backends> 
+        and then guess. Yes, this is lame.
+        """]
+        
+#         filetypes = pylab.figure(self.id).canvas.filetypes
+#         return [".%s" % key for key in filetypes.keys()]
         
