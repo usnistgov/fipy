@@ -163,12 +163,12 @@ class _Viewer:
         import inspect
         raw_input = inspect.currentframe().f_back.f_globals.get('raw_input', __builtins__['raw_input'])
         
-        opinion = raw_input(self.__class__.__name__ + ": " + prompt)
-        if len(opinion.strip()) > 0:
+        opinion = raw_input(self.__class__.__name__ + ": " + prompt).strip()
+        if len(opinion) > 0:
             extensions = ", ".join(self._validFileExtensions())
             if len(extensions) > 0:
                 extensions = " (%s)" % extensions
-            snapshot = raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions)
+            snapshot = raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions).strip()
             self.plot(snapshot)
             print opinion
               
