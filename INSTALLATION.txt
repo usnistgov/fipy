@@ -531,32 +531,50 @@ directory, or "``~/path/to/fipy``" if you are working in your own directory).
 Using |FiPy|
 ------------
 
-To see examples of problems that |FiPy| is capable of solving, you can
-run any of the scripts in |examples/|. You can type, *e.g.*::
+To see examples of problems that |FiPy| is capable of solving, you can run
+any of the scripts in |examples/|. 
 
-    $ python examples/diffusion/steadyState/mesh1D/input.py
+.. note::
 
-at the command line, which should produce a graphical display of the
-solution. 
+   We strongly recommend you proceed through |examples/|, but at 
+   the very least work through |examples/diffusion/mesh1D-py| to understand 
+   the notation and basic concepts of |FiPy|.
 
-With judicious use of the weave_ package, we have been able to obtain
-significantly improved performance for some problems, while keeping the code as clear as
-possible.  You can invoke this faster code by passing the ``--inline``
-option at the command line, *i.e.*::
+We exlusively use either the unix
+command line or IPython_ to interact with |FiPy|. The commands in
+|examples/| are written with the assumption that they will be executed from
+the command line. For instance, from within the main |FiPy| directory, you
+can type::
 
-    $ python examples/diffusion/steadyState/mesh1D/input.py --inline
+    $ python examples/diffusion/mesh1D.py
 
-Some modest speed efficiency gains can be made with the use of the
-``--cache`` flag. This flag instructs |FiPy| to trade memory for
-speed. This flag can be invoked with, *e.g.*::
+A viewer should appear and you should be prompted through a series of
+examples.
 
-    $ python examples/diffusion/steadyState/mesh1D/input.py --inline --cache
+.. note::
+
+   From within IPython_, you would type::
+
+       >>> run examples/diffusion/mesh1D.py
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
 yourself with the excellent `Python tutorial`_ |citePythonTutorial| 
 or with `Dive Into Python`_ |citeDiveIntoPython|.
 
+As you gain experience, you will want to see
+|FAQ-FlagsAndEnvironmentVariables| to learn about the flags and environment
+variables that modify |FiPy|'s default behavior.
+
+.. |latexMesh1D-py| raw:: latex
+
+   Example~\ref{sec:Examples:diffusion:mesh1D} ``\titleref{sec:Examples:diffusion:mesh1D}''
+
+.. |htmlMesh1D-py| raw:: html
+
+   Example 7.1: "Module <code>examples.diffusion.mesh1D</code>" of the <a href="download/fipy.pdf">Manual</a>
+
+.. |examples/diffusion/mesh1D-py| replace:: |htmlMesh1D-py| |latexMesh1D-py|
 
 -----------------
 Optional Packages
@@ -645,8 +663,8 @@ install`` method. The best approach that we have found is as follows::
     $ mkdir BUILD_DIR    
     $ cd BUILD_DIR
     $ ../configure CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5 -funroll-all-loops \
-      -malign-double" --enable-epetra --enable-aztecoo --enable-pytrilinos \
-      --enable-ml --enable-ifpack --enable-amesos --with-gnumake --enable-galeri
+    > -malign-double" --enable-epetra --enable-aztecoo --enable-pytrilinos \
+    > --enable-ml --enable-ifpack --enable-amesos --with-gnumake --enable-galeri
     $ make
     $ make install
 
@@ -745,6 +763,16 @@ indicators, |FiPy| will default to using PySparse_ if it is present.
    \cite{DiveIntoPython}
 
 .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
+
+.. |latexFAQ-FlagsAndEnvironmentVariables| raw:: latex
+
+   FAQ~\ref{FAQ-FlagsAndEnvironmentVariables}
+
+.. |htmlFAQ-FlagsAndEnvironmentVariables| raw:: html
+
+   FAQ 6.6: "How do I change FiPy's default behavior?" of the <a href="download/fipy.pdf">Manual</a>
+
+.. |FAQ-FlagsAndEnvironmentVariables| replace:: |htmlFAQ-FlagsAndEnvironmentVariables| |latexFAQ-FlagsAndEnvironmentVariables|
 
 .. |outsideLinks| raw:: html
 

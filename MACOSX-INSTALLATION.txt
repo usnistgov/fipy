@@ -252,10 +252,10 @@ Execute the following commands from Terminal application (you can use
 
     $ fink --use-binary-dist install python
 
-Take note of the version of Python that gets installed (`python
---version`). Many other packages, indicated by a "`-pyXX`" suffix, require
-you substitute the Python version. E.g., Python 2.4 takes "`-py24`", Python
-2.5 takes "`-py25`", and so on.
+Take note of the version of Python that gets installed (``python
+--version``). Many other packages, indicated by a "``-pyXX``" suffix, require
+you substitute the Python version. E.g., Python 2.4 takes "``-py24``", Python
+2.5 takes "``-py25``", and so on::
 
     $ fink --use-binary-dist install matplotlib-pyXX
 
@@ -275,7 +275,7 @@ A few changes are needed to allow matplotlib_ to run::
 
     $ mkdir ~/.matplotlib
     $ curl http://matplotlib.sourceforge.net/matplotlibrc \
-      > ~/.matplotlib/matplotlibrc
+    > ~/.matplotlib/matplotlibrc
 
 You may now choose to either edit the "backend" configuration in
 ``~/.matplotlib/matplotlibrc`` to read::
@@ -413,22 +413,8 @@ Using |FiPy| on Mac OS X
 ========================
 
 We do a substantial amount of our |FiPy| development on `Mac OS X`_, so you
-can assume that it is well-tested on this platform. We exlusively use the
-unix command line to interact with |FiPy|. The commands in |examples/| are
-written with the assumption that they will be executed from the command
-line. For instance, from within the main |FiPy| directory, you can type::
-
-    $ python examples/diffusion/mesh1D.py
-
-A matplotlib_ viewer should appear and you should be prompted 
-through a series of examples. 
-
-.. note::
-
-   We strongly recommend you proceed through |examples/|, but at 
-   the very least work through |examples/diffusion/mesh1D-py| to understand 
-   the notation and basic concepts of |FiPy|.
-
+can assume that it is well-tested on this platform. See |Using FiPy| for 
+more information.
 
 IDLE Environment
 ----------------
@@ -461,32 +447,19 @@ The script will open in an editor window.
 A matplotlib_ viewer should appear and the Python Shell should prompt you 
 through a series of examples.
 
-Another way to use |FiPy| examples is to import the example file and then
-run any functionality it may have. For example, execute the following
-commands in the Python Shell:
-
-    >>> import sys
-    >>> sys.path.append('\Path\To\Base\FiPy\Directory')
-    >>> from examples.levelSet.electroChem.inputGold import runGold
-    >>> runGold(numberOfSteps = 100)
-
-If you have installed the optional packages, a viewer should
-appear with a trench filling simulation.
-
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy| 
-.. |examples/| replace:: |htmlExamples/| |latexExamples/|
 
-.. |latexMesh1D-py| raw:: latex
+.. |latexUsing FiPy| raw:: latex
 
-   Section~\ref{sec:Examples:diffusion:mesh1D} ``\titleref{sec:Examples:diffusion:mesh1D}''
+   \hyperlink{using-fipy}{Using \FiPy{}}
+   % Section~\ref{using-fipy}, ``\titleref{using-fipy}''
 
-.. |htmlMesh1D-py| raw:: html
+.. |htmlUsing FiPy| raw:: html
 
-   Example 7.1: "Module <code>examples.diffusion.mesh1D</code>" of the <a href="download/fipy.pdf">Manual</a>
+   <a href="installation.html#using-fipy">Using FiPy</a>
 
-.. |examples/diffusion/mesh1D-py| replace:: |htmlMesh1D-py| |latexMesh1D-py|
-
+.. |Using FiPy| replace:: |htmlUsing FiPy| |latexUsing FiPy|
 
 
 

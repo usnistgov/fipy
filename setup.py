@@ -461,7 +461,8 @@ epydoc.cli.cli(["--latex", "--output", dir,
                                          settings ={'use_latex_toc': True,
                                                     'footnote_references': 'superscript',
                                                     'table_style': 'nolines',
-                                                    'documentclass': key})
+                                                    'documentclass': key,
+                                                    'reference_label': "ref*"})
 
             for key in mainRestructuredTextFiles.keys():
                 self._translateTextFiles(files = secondaryRestructuredTextFiles[key],
@@ -470,7 +471,8 @@ epydoc.cli.cli(["--latex", "--output", dir,
                                          settings ={'use_latex_toc': True,
                                                     'footnote_references': 'superscript',
                                                     'table_style': 'booktabs',
-                                                    'documentclass': key})
+                                                    'documentclass': key,
+                                                    'reference_label': "ref*"})
 
             if self.guide:
                 os.system("pdflatex fipy")
