@@ -700,12 +700,13 @@
     \section{How do I change \FiPy{}'s default behavior?}
         \FiPy{} tries to make reasonable choices, based on what 
         packages it finds installed, but there may be times that you 
-        wish to override these behaviors. \FiPy{} looks for the 
-        following:
+        wish to override these behaviors. 
         \subsection{Command-line Flags}
+        You can add any of the following flags after the name of a 
+        script you call from the command line
         \begin{description}
             \item[\texttt{--cache}] Causes the value of a calculated 
-            \Class{Variable} expression to be cached in memory, 
+            \Class{Variable} expression to be stored in memory, 
             rather than be recalculated each time it is requested.
             
             \item[\texttt{--inline}] Causes many mathematical
@@ -714,7 +715,7 @@
             package. 
 
             \item[\texttt{--no-cache}] (default) Discourages the
-            caching of the value of a calculated \Class{Variable}
+            storing of the value of a calculated \Class{Variable}
             expression. This flag takes precedence over the \texttt{FIPY\_CACHE}
             environment variable.
             \begin{reSTadmonition}[Note]
@@ -745,14 +746,19 @@
         \end{description}
         
         \subsection{Environment Variables}
-        
+        You can set any of the following environment variables in the 
+        manner appropriate for your shell. If you are not running in 
+        a shell (\emph{e.g.}, you are invoking \FiPy{} scripts from within IPython or 
+        IDLE), you can set these variables via the 
+        \texttt{os.environ} dictionary, but you must do so before 
+        importing anything from the \texttt{fipy} package.
         \begin{description}
             \item[\texttt{FIPY\_CACHE}] Causes the value of a calculated 
-            \Class{Variable} expression to be cached in memory, 
+            \Class{Variable} expression to be stored in memory, 
             rather than be recalculated each time it is requested.
             
             \item[\texttt{FIPY\_DISPLAY\_MATRIX}] If present, causes
-            the graphical displays the solution matrix of each
+            the graphical display of the solution matrix of each
             equation at each call of \texttt{solve()} or
             \texttt{sweep()}. If set to ``\texttt{terms}'', causes the
             display of the matrix for each \Class{Term} that composes

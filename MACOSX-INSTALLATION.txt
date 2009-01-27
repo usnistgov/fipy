@@ -58,7 +58,7 @@ Enthought Python Edition
 http://www.enthought.com/epd
 
 This installer provides a very large number of useful scientific packages
-for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and ipython_.
+for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and IPython_.
 
 .. attention::
 
@@ -316,7 +316,7 @@ Install |FiPy|_ packages as explained above.
 Optional Packages
 =================
 
-ipython
+IPython
 -------
 
 http://ipython.scipy.org/

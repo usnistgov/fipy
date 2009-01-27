@@ -113,8 +113,8 @@ Using |FiPy| on Windows
 =======================
 
 A number of interactive python environments are available such as the
-IDLE_ and Ipython_ environments. The following videos may be useful for
-explaining the use of Ipython_ on Windows:
+IDLE_ and IPython_ environments. The following videos may be useful for
+explaining the use of IPython_ on Windows:
 
 http://showmedo.com/videos/series?name=PythonIPythonSeries
 
@@ -122,23 +122,23 @@ Testing
 -------
 
 If you have a working copy of the source, not an installed version of
-|FiPy|, you can run the tests using Ipython_ from the base |FiPy|
+|FiPy|, you can run the tests using IPython_ from the base |FiPy|
 directory, by typing
 
     >>> run setup.py test 
 
-in the Ipython_ shell.
+in the IPython_ shell.
 
 Running Examples
 ----------------
 
-To run the |FiPy| examples in Ipython_ simply use the `run` command:
+To run the |FiPy| examples in IPython_ simply use the `run` command:
 
     >>> run examples/diffusion/mesh20x20.py
 
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/doc/idlemain.html
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
-.. _Ipython: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://ipython.scipy.org
+.. _IPython: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://ipython.scipy.org
 
 
 

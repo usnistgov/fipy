@@ -64,7 +64,7 @@ Enthought Python Edition
 http://www.enthought.com/epd
 
 This installer provides a very large number of useful scientific packages
-for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and ipython_.
+for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and IPython_.
 Installers are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
 
 .. attention::
@@ -610,7 +610,7 @@ It is possible to create irregular meshes with this package.
    underlying shell tool, create a shell alias called ``gmsh`` that
    corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 
-ipython
+IPython
 =======
 
 http://ipython.scipy.org/
