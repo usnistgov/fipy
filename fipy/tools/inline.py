@@ -1,29 +1,15 @@
 import inspect
+import os
 import sys
 
 from fipy.tools import numerix
 
-def _inlineEnvironmentFlag(name):
-    import os
-
-    if os.environ.has_key(name):
-        if os.environ[name].lower() == 'true':
-            flag = True
-        elif os.environ[name].lower() == 'false':
-            flag = False
-        else:
-            raise ImportError, 'Unknown setting for %s: %s, should be true or false' % (name, os.environ['name'])
-    else:
-        flag = False
-        
-    return flag
-
 if '--inline' in sys.argv[1:]:
     doInline = True
 else:
-    doInline = _inlineEnvironmentFlag('FIPY_INLINE')
+    doInline = os.environ.has_key('FIPY_INLINE')
     
-inlineFrameComment = _inlineEnvironmentFlag('FIPY_INLINE_COMMENT')
+inlineFrameComment = os.environ.has_key('FIPY_INLINE_COMMENT')
 
 def _optionalInline(inlineFn, pythonFn, *args):
     if doInline:

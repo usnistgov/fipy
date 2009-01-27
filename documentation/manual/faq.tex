@@ -663,17 +663,17 @@
         
     \section{What does this error message mean?}\hspace*{\fill}
     
-        \begin{itemize}
+        \begin{description}
             
-            \item ``\texttt{ValueError: frames are not aligned}''
+            \item[``\texttt{ValueError: frames are not aligned}'']
             
             This error most likely means that you have provided a
             \Class{CellVariable} when \FiPy{} was expecting a
             \Class{FaceVariable} (or vice versa).
 
-            \item ``\texttt{MA.MA.MAError: Cannot automatically
+            \item[``\texttt{MA.MA.MAError: Cannot automatically
             convert masked array to Numeric because data is masked in one or
-            more locations.}''
+            more locations.}'']
             
             This not-so-helpful error message could mean a number of things,
             but the most likely explanation is that the solution has become
@@ -681,7 +681,7 @@
             taking too large a timestep or by using explicit terms instead of
             implicit ones.
             
-            \item ``\texttt{repairing catalog by removing key}''
+            \item[``\texttt{repairing catalog by removing key}'']
             
             This message (not really an error, but may cause test 
             failures) can result when using the \SciPy{} \weave{} 
@@ -689,13 +689,97 @@
             in \SciPy{} that has been patched in their source 
             repository: \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
             
-            \item ``\texttt{numerix Numeric 23.6}''
+            \item[``\texttt{numerix Numeric 23.6}'']
             
             This is neither an error nor a warning. It's just a sloppy 
             message left in \SciPy{}:
             \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
             
-        \end{itemize}
+        \end{description}
+        
+    \section{How do I change \FiPy{}'s default behavior?}
+        \FiPy{} tries to make reasonable choices, based on what 
+        packages it finds installed, but there may be times that you 
+        wish to override these behaviors. \FiPy{} looks for the 
+        following:
+        \subsection{Command-line Flags}
+        \begin{description}
+            \item[\texttt{--cache}] Causes the value of a calculated 
+            \Class{Variable} expression to be cached in memory, 
+            rather than be recalculated each time it is requested.
+            
+            \item[\texttt{--inline}] Causes many mathematical
+            operations to be performed in C, rather than Python, for
+            improved performance. Requires the \SciPy{} \weave{}
+            package. 
+
+            \item[\texttt{--no-cache}] (default) Discourages the
+            caching of the value of a calculated \Class{Variable}
+            expression. This flag takes precedence over the \texttt{FIPY\_CACHE}
+            environment variable.
+            \begin{reSTadmonition}[Note]
+                Despite this flag, the value of a calculated 
+                \Class{Variable} expression may be cached anyway, if 
+                it is used by more than one expression. \emph{E.g.}, 
+                in
+                \begin{quote}
+\begin{verbatim}
+>>> A = Variable(value=3.)
+>>> B = Variable(value=4.)
+>>> C = A * B
+>>> D = Variable(5.) + C
+>>> E = Variable(6.) * C
+\end{verbatim}
+                \end{quote}
+                \texttt{C} would be cached, but \texttt{D} and 
+                \texttt{E} would not.
+            \end{reSTadmonition}
+
+            \item[\texttt{--Pysparse}] Forces the use of the 
+            \Trilinos{} solvers. This flag takes precedence over the 
+            \texttt{FIPY\_SOLVERS} environment variable.
+
+            \item[\texttt{--Trilinos}] Forces the use of the 
+            \Trilinos{} solvers. This flag takes precedence over the 
+            \texttt{FIPY\_SOLVERS} environment variable.
+        \end{description}
+        
+        \subsection{Environment Variables}
+        
+        \begin{description}
+            \item[\texttt{FIPY\_CACHE}] Causes the value of a calculated 
+            \Class{Variable} expression to be cached in memory, 
+            rather than be recalculated each time it is requested.
+            
+            \item[\texttt{FIPY\_DISPLAY\_MATRIX}] If present, causes
+            the graphical displays the solution matrix of each
+            equation at each call of \texttt{solve()} or
+            \texttt{sweep()}. If set to ``\texttt{terms}'', causes the
+            display of the matrix for each \Class{Term} that composes
+            the equation. Requires the \Matplotlib{} package.
+
+            \item[\texttt{FIPY\_INLINE}] If present, causes many
+            mathematical operations to be performed in C, rather than
+            Python. Requires the \SciPy{} \weave{} package.
+        
+            \item[\texttt{FIPY\_INLINE\_COMMENT}] If present, causes
+            the addition of a comment showing the Python context that
+            produced a particular piece of \SciPy{} \weave{} C code.
+            Useful for debugging.
+        
+            \item[\texttt{FIPY\_SOLVERS}] Forces the use of the
+            specified suite of linear solvers. Valid
+            (case-insensitive) choices are ``\texttt{PySparse}'' and
+            ``\texttt{Trilinos}''.
+            
+            \item[\texttt{FIPY\_VIEWER}] Forces the use of the 
+            specified viewer. Valid values are any 
+            ``\texttt{\textit{<viewer>}}''
+            from the \texttt{\EpydocDottedName{fipy.viewers.\textit{<viewer>}Viewer}} 
+            modules. The special value of ``\texttt{dummy}'' will 
+            allow the script to run without displaying anything.
+        \end{description}
+
 
     \section{What if my question isn't answered here?}  
         
