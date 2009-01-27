@@ -69,7 +69,11 @@ declaration of `mesh`.
     ... ''').extrude(extrudeFunc=lambda r: 1.1 * r)
     >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 
-We start the problem with random fluctuations about $\phi = 1/2$
+We start the problem with random fluctuations about 
+
+.. raw:: latex
+
+   $\phi = 1/2$
 
     >>> phi.setValue(GaussianNoiseVariable(mesh=mesh,
     ...                                    mean=0.5,
