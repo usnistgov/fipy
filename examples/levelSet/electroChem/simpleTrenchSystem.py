@@ -342,6 +342,8 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     except:
         return 0
 
+__all__ = ["runSimpleTrenchSystem"]
+
 if __name__ == '__main__':
     runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)
     raw_input("finished")

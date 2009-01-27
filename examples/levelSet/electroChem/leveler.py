@@ -414,6 +414,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
     value = 2.02815779e-08
     return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
     
+__all__ = ["runLeveler"]
+
 if __name__ == '__main__':
     runLeveler()
     raw_input("finished")    

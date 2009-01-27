@@ -249,6 +249,8 @@ def runGold(faradaysConstant=9.6e4,
     value = 1.45346701e-09
     return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
     
+__all__ = ["runGold"]
+
 if __name__ == '__main__':
     runGold(numberOfSteps = 300, cellSize = 0.05e-7)
     raw_input("finished")
