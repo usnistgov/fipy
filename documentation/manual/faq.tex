@@ -111,7 +111,7 @@
             $\nabla \cdot \left( \Gamma_1 \nabla \left(
             \nabla\cdot\left( 
             \Gamma_2 \nabla \phi\right) \right) \right) $ such as for 
-            Cahn-Hilliard? \label{subsection:higherOrderDiffusion}}
+            Cahn-Hilliard? \label{FAQ-higherOrderDiffusion}}
           \hspace*{\fill}
             
           \begin{quote}
@@ -139,8 +139,8 @@
           the tensor, written in the form of a list, is contained within
           a list. This is because the first index of the list refers to
           the order of the term not the first index of the tensor (see
-          the FAQ, Chapter~\ref{subsection:higherOrderDiffusion}
-          ``\titleref{subsection:higherOrderDiffusion}''). This
+          the FAQ, Chapter~\ref{FAQ-higherOrderDiffusion}
+          ``\titleref{FAQ-higherOrderDiffusion}''). This
           notation, although succinct can sometimes be confusing so a
           number of cases are interpreted below.
           \begin{itemize}
@@ -660,7 +660,176 @@
         desired \Class{FaceVariable} rather than letting \FiPy{} 
         assume one.
     \end{reSTadmonition}
-        
+
+    \section{How do I represent boundary conditions?}  
+
+    \subsection{What is a \Class{FixedValue} boundary condition?}
+
+    This is simply a Dirichlet boundary condition by another name.
+    
+    \subsection{What does the \Class{FixedFlux} boundary condition actually represent?}
+
+    In \FiPy{} a \Class{FixedFlux} boundary condition object represents the
+    quantity $$ \Gamma \vec{n} \cdot \nabla \phi - \vec{n} \cdot \vec{u} \phi $$
+    on a given boundary edge with $\vec{n}$ pointing out of the boundary. The
+    quantity $\Gamma$ represents the diffusion coefficient and $\vec{u}$
+    represents the convection coefficient for a general convection-diffusion
+    equation of the type given in Eq.~\eqref{eqn:num:gen}. See
+    Example~\ref{sec:Examples:convection:robin} for a usage case.
+
+    \subsection{I can't get the \Class{FixedValue} or \Class{FixedFlux} boundary
+      condition objects to work right. What do I do now?\label{FAQ-anyBoundaryCondition}}
+
+    There have been a number of questions on the mailing list about boundary
+    conditions and from the feedback it is clear that there are some problematic
+    issues with the design and implementation of the boundary condition objects.
+    We hope to rectify this in future releases. However, it is possible to
+    specify almost any boundary condition by using a rank 1 \verb+FaceVariable+
+    to represent the external flux value and apply the \verb+getDivergence+
+    method to this object and then use it as as a source term in the given
+    equation. The following code demonstrates how to implement this technique.
+    First define the coefficients,
+\begin{verbatim}
+>>> convectionCoeff = FaceVaravble(..., rank=1)
+>>> diffusionCoeff = FaceVariable(...)
+\end{verbatim}
+    where the \verb+convectionCoeff+ and \verb+diffusionCoeff+ are defined over
+    all the faces. We will define a third \Class{FaceVariable} to represent the
+    boundary source term and then set the values of the coefficients to zero on
+    the exterior faces.
+\begin{verbatim}
+>>> boundarySource = FaceVariable(..., rank=1)
+>>> convectionCoeff.setValue(0, where=mesh.getExteriorFaces())
+>>> diffusionCoeff.setValue(0, where=mesh.getExteriorFaces())
+>>> boundarySource.setValue(vectorValues, where=mesh.getExteriorFaces())
+\end{verbatim}
+    The \verb+vectorValues+ quantity can be set to whatever value is required for
+    the particular boundary condition. The variable \verb+boundarySource+ could
+    be a variable that defines a relationship between other variables rather than
+    a simple container object. To finish off, the \verb+boundarySource.getDivergence()+ object
+    must be added to the regular equation
+\begin{verbatim}
+>>> eqn = TransientTerm() + ConvectionTerm(convectionSource) = \
+...     DiffusionSource(diffusionCoeff) + boundarySource.getDivergnces()
+\end{verbatim}
+    No other boundary conditions need to be applied. It may be necessary to reset
+    or update the values of \verb+boundarySource+, \verb+diffusionCoeff+ and
+    \verb+convectionCoeff+ at each sweep if they are not automatically updated or
+    if the exterior values need to be reset to zero. For complex boundary
+    conditions, it is often easier to implement the technique described here
+    rather than trying to get the \Class{FixedValue} and \Class{FixedFlux}
+    boundary conditions to work correctly.
+
+    \subsection{How do I apply an outlet or inlet boundary
+      condition?\label{FAQ-inletOutletBoundaryCondition}}
+
+    There is no good way to do this with the standard boundary conditions in
+    \FiPy{} and thus one needs to use the method suggested above,
+    see~\ref{FAQ-anyBoundaryCondition} ``\titleref{FAQ-anyBoundaryCondition}''.
+    Currently, boundary conditions for the \Class{ConvectionTerm} assume a
+    \Class{FixedFlux} boundary condition with a \verb+value+ of 0. This is in
+    fact not the most intuitive default boundary condition, a natural outlet or
+    inlet boundary condition would in fact be more sensible. In order to apply an
+    inlet/outlet boundary condition one needs a separate exterior convection
+    coefficient (velocity vector) to hold the boundary values,
+\begin{verbatim}
+>>> convectionCoeff = FaceVaravble(..., rank=1)
+>>> exteriorCoeff = FaceVariable(..., value=0, rank=1)
+\end{verbatim}
+    The \verb+exteriorCoeff+ can now be given non-zero values on
+    \verb+inletOutletFaces+ and the \verb+convectionCoeff+ can be set to zero on
+    these faces.
+\begin{verbatim}
+>>> exteriorCoeff.setValue(convectionCoeff, where=inletOutletFaces)
+>>> convectionCoeff.setValue(0, where=inletOutletFaces)
+\end{verbatim}
+    where the \verb+inletOutletFaces+ object are the faces over which the
+    inlet/outlet boundary condition applies. The divergence of the
+    \verb+exteriorCoeff+ is then included in the equations with an
+    \Class{ImplicitSourceTerm}. This allows an implicit formulation for outlet
+    boundary conditions and an explicit formulation for inlet boundary
+    conditions, consistent with an upwind convection scheme.
+\begin{verbatim}
+>>> eqn = TransientTerm() + ConvectionTerm(convectionCoeff) + \
+...     ImplicitSourceTerm(exteriorCoeff.getDivergence()) == DiffusionTerm(diffusionCoeff)
+\end{verbatim}
+    As in the previous section, the coefficient values may need updating on the
+    exterior faces between sweeps. See
+    Example~\ref{sec:Examples:convection:source}
+    ``\titleref{sec:Examples:convection:source}'' for an example of this usage.
+
+    \subsection{How do I apply a fixed gradient?}
+
+    In general, it is not currently possible to apply a fixed gradient or Von
+    Neumann type boundary condition explicitly. Of course, it is often possible
+    to use \Class{FixedValue} or \Class{FixedFlux} boundary conditions to mimic a
+    fixed gradient condition. In the case when there is no convection, one can
+    simply use a \Class{FixedFlux} condition and divide through by the diffusion
+    coefficient to create the boundary condition,
+\begin{verbatim}
+FixedFlux(value=gradient / diffusionCoeff, faces=myFaces)
+\end{verbatim}
+    where \verb+gradient+ is the value of the boundary gradient and
+    \verb+myFaces+ are the faces over which the boundary condition applies.  If
+    the equation contains a \Class{ConvectionTerm} and the boundary condition has
+    a zero gradient then one would use a \Class{FixedValue} boundary condition of
+    the form
+\begin{verbatim}
+FixedValue(value=phi.getFaceValue(), faces=myFaces)
+\end{verbatim}
+    This is not an ''implicit'' boundary condition so would in general require
+    sweeps to reach convergence. See Example~\ref{sec:Examples:convection:source}
+    ``\titleref{sec:Examples:convection:source}'' for an example of this usage.
+    In the case of a non-zero gradient one would need to employ the techniques in
+    both~\ref{FAQ-anyBoundaryCondition} ``\titleref{FAQ-anyBoundaryCondition}''
+    and~\ref{FAQ-inletOutletBoundaryCondition}
+    ``\titleref{FAQ-inletOutletBoundaryCondition}'' without using either a
+    \Class{FixedValue} or a \Class{FixedFlux} object.
+
+    \subsection{How do I apply spatially varying boundary conditions?}
+
+    The use of spatial varying boundary conditions is best demonstrated with an
+    example. Given a 2D equation in the domain $0 < x < 1$ and $0 < y < 1$ with
+    boundary conditions,
+    \begin{eqnarray}
+      \phi =& xy \; & \text{on $x>1/2$ and $y>1/2$} \\
+      \vec{n} \cdot \vec{F} =& 0 \;& \text{elsewhere}
+    \end{eqnarray}
+    where $\vec{F}$ represents the flux. The boundary conditions in \FiPy{} can
+    be written with the following code,
+\begin{verbatim}
+>>> x, y = mesh.getFaceCenters()
+>>> mask =  ((x < 0.5) | (y < 0.5))
+>>> BCs = [FixedFlux(value=0, faces=mesh.getExteriorFaces() & mask),
+...        FixedValue(value=x * y, faces=mesh.getExteriorFaces() & ~mask)]
+\end{verbatim}
+    The \verb+BCs+ list can then be passed to the \verb+solve+ when its called,
+\begin{verbatim}
+>>> eqn.solve(..., boundaryConditions=BCs)
+\end{verbatim}
+    Further demonstrations of spatially varying boundary condition can be found
+    are in Example~\ref{sec:Examples:diffusion:mesh20x20}
+    ``\titleref{sec:Examples:diffusion:mesh20x20}''
+    and~\ref{sec:Examples:diffusion:circle}
+    ``\titleref{sec:Examples:diffusion:circle}''
+
+%    http://thread.gmane.org/gmane.comp.python.fipy/726
+%    http://thread.gmane.org/gmane.comp.python.fipy/846
+
+%    \subsection{Fourth order boundary conditions}
+
+%    http://thread.gmane.org/gmane.comp.python.fipy/923
+
+%    \subsection{Periodic boundary conditions}
+
+%    http://thread.gmane.org/gmane.comp.python.fipy/135
+
+%    \subsection{Time dependent boundary conditions}
+
+%    http://thread.gmane.org/gmane.comp.python.fipy/2
+
+%    \subsection{Internal boundary conditions}
+
     \section{What does this error message mean?}\hspace*{\fill}
     
         \begin{description}
