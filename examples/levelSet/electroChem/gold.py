@@ -76,7 +76,7 @@ more complex mesh.
     \IndexSoftware{gmsh}
 
     There are a few differences between the gold superfill model presented
-    in this example and Example~\ref{inputSimpleTrench}. Most default
+    in this example and Example~\ref{simpleTrenchSystem}. Most default
     values have changed to account for a different metal ion (gold)
     and catalyst (lead). In this system the catalyst is not present in
     the electrolyte but instead has a non-zero initial coverage. Thus

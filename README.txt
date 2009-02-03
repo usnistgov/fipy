@@ -187,7 +187,6 @@ or a
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
-.. |EFFICIENCY-txt| replace:: |htmlEFFICIENCY| |latexEFFICIENCY|
 .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
 .. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
 

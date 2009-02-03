@@ -496,9 +496,9 @@
         clearer.
         \end{reSTadmonition}
         Solver iterations are changed from their defaults in
-        Examples~\ref{examples:cahnHilliard:inputTanh1D},
-        \ref{examples:flow:stokesCavity}, and
+        Examples~\ref{examples:flow:stokesCavity} and
         \ref{examples:update0-1to1-0}.
+        % ~\ref{Examples:cahnHilliard:inputTanh1D},
         
         \item[sweeps] This middle layer of repetition is important
         when a PDE is non-linear (\emph{e.g.}, a diffusivity that
@@ -606,7 +606,7 @@
         chosen based on the expected interfacial velocity in
         Example~\ref{examples:phase:simple}. The timestep is
         gradually increased as the kinetics slow down in
-        Example~\ref{examples:cahnHilliard:inputTanh1D}.
+        Example~\ref{sec:Examples:cahnHilliard:mesh2D}.
     
     \end{description}
     
@@ -690,7 +690,7 @@
     equation. The following code demonstrates how to implement this technique.
     First define the coefficients,
 \begin{verbatim}
->>> convectionCoeff = FaceVaravble(..., rank=1)
+>>> convectionCoeff = FaceVariable(..., rank=1)
 >>> diffusionCoeff = FaceVariable(...)
 \end{verbatim}
     where the \verb+convectionCoeff+ and \verb+diffusionCoeff+ are defined over
@@ -803,12 +803,13 @@ FixedValue(value=phi.getFaceValue(), faces=myFaces)
 >>> BCs = [FixedFlux(value=0, faces=mesh.getExteriorFaces() & mask),
 ...        FixedValue(value=x * y, faces=mesh.getExteriorFaces() & ~mask)]
 \end{verbatim}
-    The \verb+BCs+ list can then be passed to the \verb+solve+ when its called,
+    The \verb+BCs+ list can then be passed to the equation's \verb+solve+ method
+    when its called,
 \begin{verbatim}
 >>> eqn.solve(..., boundaryConditions=BCs)
 \end{verbatim}
     Further demonstrations of spatially varying boundary condition can be found
-    are in Example~\ref{sec:Examples:diffusion:mesh20x20}
+    in Examples~\ref{sec:Examples:diffusion:mesh20x20}
     ``\titleref{sec:Examples:diffusion:mesh20x20}''
     and~\ref{sec:Examples:diffusion:circle}
     ``\titleref{sec:Examples:diffusion:circle}''

@@ -38,7 +38,7 @@ r"""
     \label{howToWriteAScript} This input file demonstrates how to
     create a new superfill script if the existing suite of scripts do
     not meet the required needs. It provides the functionality of
-    Example~\ref{simpleTrenchSytem}.
+    Example~\ref{simpleTrenchSystem}.
 
 To run this example from the base fipy directory type::
     

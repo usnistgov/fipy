@@ -52,16 +52,14 @@ mechanism can be found in |citeMoffat|.
 Using |FiPy| to model Superfill
 -------------------------------
 
-Example |inputSimpleTrench| provides a simple way to use |FiPy|
-to model the superfill process. The example includes a detailed
-description of the governing equations and feature geometry. It
-requires the user to import and execute a function at the python
-prompt.  The model parameters can be passed as arguments to this
-function. In future all superfill examples will be provided with this
-type of interface. Example |howToWriteAScript| has the same
-functionality as |simpleTrenchSystem| but demonstrates how to
-write a new script in the case where the existing suite of scripts do
-not meet the required needs.
+Example |simpleTrenchSystem| provides a simple way to use |FiPy| to model the
+superfill process. The example includes a detailed description of the governing
+equations and feature geometry. It requires the user to import and execute a
+function at the python prompt.  The model parameters can be passed as arguments
+to this function. In future all superfill examples will be provided with this
+type of interface. Example |howToWriteAScript| has the same functionality as
+|simpleTrenchSystem| but demonstrates how to write a new script in the case where
+the existing suite of scripts do not meet the required needs.
 
 In general it is a good idea to obtain the Mayavi_ plotting package
 for which a specialized superfill viewer class has been created, see
@@ -112,7 +110,7 @@ of high surfactant concentration have an increased deposition rate.
 
    <a href="download/fipy.pdf">1</a>
 
-.. |simpleTrench| replace:: |htmlSimpleTrenchSystem| |latexSimpleTrenchSystem|
+.. |simpleTrenchSystem| replace:: |htmlSimpleTrenchSystem| |latexSimpleTrenchSystem|
 
 .. |latexHowToWriteAScript| raw:: latex
 
