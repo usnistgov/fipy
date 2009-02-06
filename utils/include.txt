@@ -62,4 +62,11 @@
 
    <a href="windows-installation.html">Windows installation</a>
 
+.. |html1to2| raw:: html
+
+   <code>example.update1_0to2_0</code>
+
+.. |latex1to2| raw:: latex
+
+   Example~\ref{examples:update1-0to2-0}
 

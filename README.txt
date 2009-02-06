@@ -190,14 +190,6 @@ or a
 .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
 .. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
 
-.. |html1to2| raw:: html
-
-   <code>example.update1_0to2_0</code>
-
-.. |latex1to2| raw:: latex
-
-   Example~\ref{examples:update1-0to2-0}
-
 .. |examples.update1_0to2_0| replace:: |html1to2| |latex1to2|
 
 .. |citePython| raw:: latex

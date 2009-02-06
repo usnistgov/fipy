@@ -63,7 +63,7 @@
             in Section~\ref{sec:NumericalSchemes}. The velocity coefficient 
             \verb|u| must be a rank-1 \Class{FaceVariable}, or a 
             constant vector in the form of a Python list or tuple, 
-            \emph{e.g.} \verb|(1,2)| for a vector in 2D.
+            \emph{e.g.} \verb|((1,), (2,))| for a vector in 2D.
             
             \begin{reSTadmonition}[Note]
                 As discussed in Section~\ref{sec:NumericalSchemes}, the
@@ -95,7 +95,7 @@
 \end{verbatim}
            \end{quote}
            \Class{ExplicitDiffusionTerm} is provided only for illustrative purposes.
-           \Class{ImplicitDiffusionTerm} is almost always preferred. It is
+           \Class{ImplicitDiffusionTerm} is almost always preferred (\Class{DiffusionTerm} is a synonym for \Class{ImplicitDiffusionTerm} to reinforce this preference). It is
            theoretically possible to create an explicit diffusion term with
            \begin{quote}
 \begin{verbatim}
@@ -211,7 +211,7 @@
                 \EpydocDottedName{fipy.tools.numerix} module.
                 \begin{reSTadmonition}[Warning]
                     Generally, things will not work as expected if the
-                    equivalent function is used from the \Numeric{}
+                    equivalent function is used from the \NumPy{} or \SciPy{}
                     library.
                 \end{reSTadmonition}
             \end{reSTadmonition}
@@ -226,12 +226,6 @@
 \end{verbatim}
             \end{quote}
             
-            \begin{reSTadmonition}[Warning]
-                There are subtleties in properly linearizing a source term
-                which are examined in
-                Example~\ref{examples:phase:simple}.
-            \end{reSTadmonition}
-
             \subsection{How do I represent a \dots{} term that 
             \emph{doesn't} involve the dependent variable?}
             It is important to realize that, even though an expression may
@@ -247,7 +241,7 @@
                         + \nabla\cdot\left( D_2 \nabla \xi\right)
                     \]
                     then the first term is a \Class{TransientTerm} and the second term 
-                    is an \Class{ImplicitDiffusionTerm}, but the third term is 
+                    is a \Class{DiffusionTerm}, but the third term is 
                     simply an explicit source, which is written in Python as
                     \begin{quote}
 \begin{verbatim}
@@ -263,7 +257,7 @@
                         second-order spatial discretization of the
                         diffusion term in $\xi$, consistent with the
                         matrix that is formed by
-                        \Class{ImplicitDiffusionTerm} for $\phi$.
+                        \Class{DiffusionTerm} for $\phi$.
                     \end{reSTadmonition}
 
                 \subsubsection{How do I represent a convective source?}
@@ -328,7 +322,7 @@
             counter-diffusion of $\xi$, so
             \begin{quote}
 \begin{verbatim}
->>> diffTerm = ImplicitDiffusionTerm(coeff = D1)
+>>> diffTerm = DiffusionTerm(coeff = D1)
 >>> convTerm = <Specific>ConvectionTerm(coeff = D2 * xi.getFaceGrad(), 
 ...                                     diffusionTerm = diffTerm)
 >>> eq = TransientTerm() == diffTerm + convTerm
@@ -345,7 +339,7 @@
             not a problem for \FiPy. Simply write it as it appears:
             \begin{quote}
 \begin{verbatim}
->>> diffTerm = ImplicitDiffusionTerm(coeff = Gamma0 * phi * (1 - phi))
+>>> diffTerm = DiffusionTerm(coeff = Gamma0 * phi * (1 - phi))
 \end{verbatim}
             \end{quote}
             \begin{reSTadmonition}[Note]
