@@ -93,10 +93,6 @@ Versions
 At point of version release x.y, *on main trunk*::
 
     $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/version-x_y -m "tagging version x.y"
-    $ svn delete $FIPYROOT/tags/STABLE -m "moving STABLE to new version"
-    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/STABLE -m "version x.y is STABLE"
-    $ svn delete $FIPYROOT/tags/CURRENT -m "moving CURRENT to new version"
-    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/CURRENT -m "version x.y is CURRENT"	
 
 ---------
 Bug fixes
@@ -113,13 +109,6 @@ Fix the code::
     $ cd $BRANCH
     $ svn ci -m "fix n.m.q"
     $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/version-n_m_q
-
-Possibly::
-
-    $ svn delete $FIPYROOT/tags/CURRENT -m "moving CURRENT to new version"
-    $ svn delete $FIPYROOT/tags/STABLE -m "moving STABLE to new version"
-    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/CURRENT -m "version n.m.q is CURRENT"
-    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/STABLE -m "version n.m.q is STABLE"
 
 Find the initial revision number for the branch (IRN) and the latest revision number (LRN)::
 
