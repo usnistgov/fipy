@@ -733,7 +733,7 @@ except IOError, e:
         
 try:
     f = open('LICENSE.txt', 'r') 
-    license = '\n' + f.read() + '\n'
+    license = '\n' + ''.join([' '*8 + l for l in f])
     f.close()
 except IOError, e:
     license = ''
