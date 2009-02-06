@@ -876,36 +876,10 @@ FixedValue(value=phi.getFaceValue(), faces=myFaces)
         You can add any of the following flags after the name of a 
         script you call from the command line
         \begin{description}
-            \item[\texttt{--cache}] Causes the value of a calculated 
-            \Class{Variable} expression to be stored in memory, 
-            rather than be recalculated each time it is requested.
-            
             \item[\texttt{--inline}] Causes many mathematical
             operations to be performed in C, rather than Python, for
             improved performance. Requires the \SciPy{} \weave{}
             package. 
-
-            \item[\texttt{--no-cache}] (default) Discourages the
-            storing of the value of a calculated \Class{Variable}
-            expression. This flag takes precedence over the \texttt{FIPY\_CACHE}
-            environment variable.
-            \begin{reSTadmonition}[Note]
-                Despite this flag, the value of a calculated 
-                \Class{Variable} expression may be cached anyway, if 
-                it is used by more than one expression. \emph{E.g.}, 
-                in
-                \begin{quote}
-\begin{verbatim}
->>> A = Variable(value=3.)
->>> B = Variable(value=4.)
->>> C = A * B
->>> D = Variable(5.) + C
->>> E = Variable(6.) * C
-\end{verbatim}
-                \end{quote}
-                \texttt{C} would be cached, but \texttt{D} and 
-                \texttt{E} would not.
-            \end{reSTadmonition}
 
             \item[\texttt{--Pysparse}] Forces the use of the 
             \Trilinos{} solvers. This flag takes precedence over the 
@@ -924,10 +898,6 @@ FixedValue(value=phi.getFaceValue(), faces=myFaces)
         \texttt{os.environ} dictionary, but you must do so before 
         importing anything from the \texttt{fipy} package.
         \begin{description}
-            \item[\texttt{FIPY\_CACHE}] Causes the value of a calculated 
-            \Class{Variable} expression to be stored in memory, 
-            rather than be recalculated each time it is requested.
-            
             \item[\texttt{FIPY\_DISPLAY\_MATRIX}] If present, causes
             the graphical display of the solution matrix of each
             equation at each call of \texttt{solve()} or
