@@ -704,7 +704,7 @@
     must be added to the regular equation
 \begin{verbatim}
 >>> eqn = TransientTerm() + ConvectionTerm(convectionSource) = \
-...     DiffusionSource(diffusionCoeff) + boundarySource.getDivergnces()
+...     DiffusionSource(diffusionCoeff) + boundarySource.getDivergence()
 \end{verbatim}
     No other boundary conditions need to be applied. It may be necessary to reset
     or update the values of \verb+boundarySource+, \verb+diffusionCoeff+ and

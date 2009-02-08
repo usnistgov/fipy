@@ -231,7 +231,6 @@ existing viewers to create a specialized display:
 
     >>> if __name__ == "__main__":
     ...     try:
-    ...         raise ImportError, "fakin'"
     ...         import pylab
     ...         class DendriteViewer(Matplotlib2DGridViewer):
     ...             def __init__(self, phase, dT, title=None, limits={}, **kwlimits):
