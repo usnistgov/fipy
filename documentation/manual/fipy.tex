@@ -36,10 +36,10 @@
 % \documentclass[letterpaper]{book}
 \usepackage{xr-hyper}
 
-\usepackage[tocAsPDFchapter,index]{fipy}
+\usepackage[tocAsPDFchapter,index,bookmarksdepth=subsection]{fipy}
 
 
-\externaldocument[API-]{reference}
+\externaldocument[API-]{reference}[http://matforge.org/fipy/wiki/FiPyManual]
 
 \usepackage{moreverb}
 
@@ -87,17 +87,6 @@
 \newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
 \newcommand{\titlereference}[1]{\textsl{#1}}
 % end of "some commands"
-
-% \renewcommand{\bibsection}{% 
-% \chapter*{\bibname} 
-% \bibmark 
-% \ifnobibintoc\else 
-% \phantomsection 
-% \addcontentsline{toc}{part}{\bibname} 
-% \fi 
-% \prebibhook}
-
-
 
 \begin{document}
 
