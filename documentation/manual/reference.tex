@@ -41,11 +41,13 @@
 % \documentclass{article}
 % \usepackage[creator={epydoc 3.0.1},title={},index,hyperlink]{epydoc-default}
 
-\usepackage{xr-hyper}
+% FIXME - xr-hyper throws "! Use of \@index doesn't match its definition."
+% \usepackage{xr-hyper}
+\usepackage{xr}
 \usepackage[tocAsPDFchapter,index]{fipy}
 % \usepackage{docutils-emulation}
 
-\externaldocument[FiPy-]{fipy}[http://matforge.org/fipy/wiki/FiPyReference]
+\externaldocument[FiPy-]{fipy} %[http://matforge.org/fipy/wiki/FiPyReference]
 
 \usepackage{import}
 

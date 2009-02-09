@@ -33,7 +33,7 @@ Max Gibiansky
 
 `Andrew Reeve`_
     added support for anistropic diffusion coefficients while he was on 
-    sebatical from the `University of Maine`_.
+    sabbatical from the `University of Maine`_.
 
 .. include:: ../utils/include.txt
 
