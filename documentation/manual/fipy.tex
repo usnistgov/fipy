@@ -4,7 +4,7 @@
  % 
  %  FILE: "fipy.tex"
  %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 1/27/09 {4:39:26 PM} 
+ %                                last update: 2/9/09 {2:36:05 PM} 
  %  Author: Jonathan Guyer
  %  E-mail: guyer@nist.gov
  %  Author: Daniel Wheeler
@@ -44,17 +44,6 @@
 
 
 \externaldocument[API-]{reference}
-
-% \usepackage{mdwlist}
-% \newenvironment{faq}{%
-%     \begin{basedescript}{%
-%         \setlength\labelwidth\textwidth%
-%         \desclabelstyle{\multilinelabel}%
-%         \renewcommand{\makelabel}[1]{\bfseries##1\newline}%
-%     }%
-% }{%
-%     \end{basedescript}%
-% }
 
 \usepackage{moreverb}
 
@@ -102,6 +91,17 @@
 \newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
 \newcommand{\titlereference}[1]{\textsl{#1}}
 % end of "some commands"
+
+% \renewcommand{\bibsection}{% 
+% \chapter*{\bibname} 
+% \bibmark 
+% \ifnobibintoc\else 
+% \phantomsection 
+% \addcontentsline{toc}{part}{\bibname} 
+% \fi 
+% \prebibhook}
+
+
 
 \begin{document}
 
@@ -377,23 +377,28 @@ book~\cite{levelSetBook}.
 
 \fussy
 
-% \bibliographystyle{unsrt_no_title}
+\nobibintoc
+\phantomsection
+\addcontentsline{toc}{part}{\bibname}%
 \bibliographystyle{fipy}
 \bibliography{refs}
 
 \sloppy
 \raggedright
+
+\noindexintoc
+\phantomsection
+\addcontentsline{toc}{part}{\indexname}%
 \printindex
 
 \fussy
-
 
 \appendix 
 
 % Credits
 
 \chapter*{Contributors}
-% \addstarredpart{Contributors} 
+\phantomsection
 \addcontentsline{toc}{part}{Contributors} 
 \label{chap:Contributors}
 

@@ -24,20 +24,6 @@
 
 \RequirePackage{crop}
 
-% \tocotherhead{part}
-% \renewcommand{\bibsection}{% 
-% \part{\bibname} 
-% \prebibhook}
-
-\renewcommand{\bibsection}{% 
-\chapter*{\bibname} 
-\bibmark 
-\ifnobibintoc\else 
-\phantomsection 
-\addcontentsline{toc}{part}{\bibname} 
-\fi 
-\prebibhook}
-
 \setlength{\columnsep}{35pt}
 
 \RequirePackage{amsmath} 
