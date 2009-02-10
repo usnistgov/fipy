@@ -665,6 +665,20 @@ install`` method. The best approach that we have found is as follows::
     $ ../configure CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5 -funroll-all-loops \
     > -malign-double" --enable-epetra --enable-aztecoo --enable-pytrilinos \
     > --enable-ml --enable-ifpack --enable-amesos --with-gnumake --enable-galeri
+
+.. note::
+
+   Recif reports that to build on a 64-bit system, the ``configure`` step
+   needs to be::
+
+       $ ../configure CXXFLAGS="-O3 -fpic" CFLAGS="-O3 -fpic" \
+       > FFLAGS="-O5 -fpic -funroll-all-loops" \
+       > --enable-epetra --enable-aztecoo  --enable-pytrilinos \
+       > --enable-ml --enable-ifpack --enable-amesos --with-gnumake \
+       > --enable-galeri
+
+..
+
     $ make
     $ make install
 
