@@ -712,6 +712,11 @@ in-depth documentation.
     ``--with-swig=$PATH_TO_SWIG_EXECUTABLE`` flag with the configure
     step.
 
+.. note::
+    
+    See SURF2007_ for further details on installing and running Trilinos as well
+    as installing on 64 bit machines.
+    
 Trilinos_ solvers can be used to replace PySparse_ solvers. If both
 PySparse_ and Trilinos_ are present, useage can be controlled by setting
 the ``FIPY_SOLVERS`` environment variable to ``Trilinos`` or
@@ -749,6 +754,8 @@ indicators, |FiPy| will default to using PySparse_ if it is present.
 .. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
 .. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
+.. _SURF2007: http://matforge.org/fipy/wiki/SURF2007#CompilingrunningTrilinosontheCTCMSlabmachines
+
 
 .. include:: utils/include.txt
 
