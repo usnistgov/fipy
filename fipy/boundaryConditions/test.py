@@ -41,6 +41,7 @@ def _suite():
     return _LateImportDocTestSuite(
         docTestModuleNames = (
             'fipy.boundaryConditions.boundaryCondition',
+            'fipy.boundaryConditions.fixedFlux',
         ))
     
 if __name__ == '__main__':

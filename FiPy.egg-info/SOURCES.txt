@@ -23,7 +23,7 @@ documentation/TALKS.txt
 documentation/TODOLIST.txt
 documentation/VERSION.txt
 documentation/VKML.txt
-documentation/figures/NIST_right2line.pdf
+documentation/figures/nistident_flright_vec.pdf
 documentation/logo/logo.tex
 documentation/manual/docutils-emulation.sty
 documentation/manual/epydoc.sty
