@@ -21,7 +21,6 @@ documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TALKS.txt
 documentation/TODOLIST.txt
-documentation/VERSION.txt
 documentation/VKML.txt
 documentation/figures/nistident_flright_vec.pdf
 documentation/logo/logo.tex
@@ -30,7 +29,6 @@ documentation/manual/epydoc.sty
 documentation/manual/faq.tex
 documentation/manual/fipy.bst
 documentation/manual/fipy.dbj
-documentation/manual/fipy.pdf
 documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex
@@ -367,6 +365,7 @@ fipy/models/levelSet/surfactant/surfactantVariable.py
 fipy/solvers/__init__.py
 fipy/solvers/solver.py
 fipy/solvers/test.py
+fipy/solvers/pykrylov/__init__.py
 fipy/solvers/pysparse/__init__.py
 fipy/solvers/pysparse/linearCGSSolver.py
 fipy/solvers/pysparse/linearGMRESSolver.py

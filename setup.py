@@ -61,6 +61,7 @@ def _TestClass(base):
             ('pythoncompiled=', None, "directory in which to put weave's work product"),
             ('Trilinos', None, "run FiPy using Trilinos solvers"),
             ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
+            ('Pykrylov', None, "run FiPy using Pykrylov solvers (default)"),
             ('all', None, "run all non-interactive FiPy tests (default)"),
             ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
             ('examples', None, "test FiPy examples"),
@@ -86,6 +87,7 @@ def _TestClass(base):
             self.no_cache = True
             self.Trilinos = False
             self.Pysparse = False
+            self.Pykrylov = False
 
         def finalize_options(self):
             noSuiteOrModule = (self.test_suite is None 

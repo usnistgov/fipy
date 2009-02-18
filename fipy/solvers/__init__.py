@@ -9,10 +9,13 @@ from solver import SolverConvergenceWarning, \
      MaximumIterationWarning
 
 # First check for command-line arguments
+
 if '--Trilinos' in sys.argv[1:]:
     from fipy.solvers.trilinos import *
 elif '--Pysparse' in sys.argv[1:]:
     from fipy.solvers.pysparse import *
+elif '--Pykrylov' in sys.argv[1:]:
+    from fipy.solvers.pykrylov import *
 else:
     import os
     # Next, check for an environment variable telling us which solver to use
@@ -21,6 +24,8 @@ else:
             from fipy.solvers.pysparse import *
         elif os.environ['FIPY_SOLVERS'].lower() == 'trilinos':
             from fipy.solvers.trilinos import *
+        elif os.environ['FIPY_SOLVERS'].lower() == 'pykrylov':
+            from fipy.solvers.pykrylov import *
         else:
             raise ImportError, 'Unknown solver package %s' % os.environ['FIPY_SOLVERS']
     else:
