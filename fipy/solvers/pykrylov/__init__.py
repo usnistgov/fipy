@@ -8,10 +8,21 @@ from fipy.tools import numerix
 
 class PykrylovSolver(Solver):
     def _solve(self, L, x, b):
-        diagL = numerix.absolute(L.takeDiagonal())
-        solver = self.solverClass(lambda u: L * u, reltol=self.tolerance, matvec_max=self.iterations)##, precon=lambda u: u / diagL)
-        solver.solve(b, guess=x)
+
+        diag = L.takeDiagonal()
+
+        jacobi =  self._getMatrixClass()(L.matrix.shape[0])
+        jacobi.putDiagonal(1. / diag)
+        L = jacobi * L
+        b = b / diag
+
+        solver = self.solverClass(lambda u: L * u, reltol=self.tolerance, abstol=self.tolerance, matvec_max=self.iterations)
+
+        solver.solve(b), guess=x)
         x[:] = solver.bestSolution
+##        print 'solver.nMatvec',solver.nMatvec
+##        print 'solver.residNorm',solver.residNorm
+
 
     def _getMatrixClass(self):
         return _PysparseMatrix
@@ -19,10 +30,17 @@ class PykrylovSolver(Solver):
 class LinearCGSSolver(PykrylovSolver):
     solverClass = CGS
 
+    def _canSolveAssymetric(self):
+        return True
+    
 class LinearPCGSolver(PykrylovSolver):
     solverClass = CG
 
-DefaultSolver = LinearPCGSolver
-LinearGMRESSolver = LinearCGSSolver
-LinearLUSolver = LinearCGSSolver
-    
+    def _canSolveAssymetric(self):
+        return False
+
+LinearPCGSolver = LinearCGSSolver
+DefaultSolver = LinearCGSSolver
+from fipy.solvers.pysparse.linearLUSolver import LinearLUSolver
+##LinearLUSolver = LinearCGSSolver
+
