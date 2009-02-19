@@ -18,7 +18,7 @@ class PykrylovSolver(Solver):
 
         solver = self.solverClass(lambda u: L * u, reltol=self.tolerance, abstol=self.tolerance, matvec_max=self.iterations)
 
-        solver.solve(b), guess=x)
+        solver.solve(b, guess=x)
         x[:] = solver.bestSolution
 ##        print 'solver.nMatvec',solver.nMatvec
 ##        print 'solver.residNorm',solver.residNorm
