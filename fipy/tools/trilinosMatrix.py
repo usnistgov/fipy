@@ -514,9 +514,8 @@ class _TrilinosMatrix(_SparseMatrix):
             return self.matrix 
             # No redistribution necessary in serial mode
         else:
-            self.matrix.GlobalAssemble()
+##            self.matrix.GlobalAssemble()
             totalElements = self.matrix.NumGlobalRows()
-
 
             DistributedMap = Epetra.Map(totalElements, 0, self.comm)
             RootToDist = Epetra.Import(DistributedMap, self.map)

@@ -70,3 +70,7 @@ class LinearGMRESSolver(TrilinosAztecOOSolver):
                                        iterations=iterations, steps=steps, precon=precon)
 ##        self.solver = AztecOO.AZ_gmres_condnum
         self.solver = AztecOO.AZ_gmres
+##        self.solver.SetAztecOption(AztecOO.AZ_kspace, 100)
+
+
+    

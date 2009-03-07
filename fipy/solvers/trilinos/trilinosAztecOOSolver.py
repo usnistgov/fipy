@@ -69,19 +69,39 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         self.preconditioner = precon
 
     def _applyTrilinosSolver(self, A, LHS, RHS):
-        
-        Solver = AztecOO.AztecOO(A, LHS, RHS)
-        
-        Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
-        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
-##        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_all)
-##        Solver.SetAztecOption(AztecOO.AZ_kspace, 10000)        
-        Solver.SetAztecOption(AztecOO.AZ_kspace, AztecOO.AZ_max_iter)
-                        
+
+        solver = AztecOO.AztecOO(A, LHS, RHS)
+        solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
+
+        solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
+
+##        solver.SetAztecOption(AztecOO.AZ_kspace, 100)
+##        Solver.SetAztecOption(AztecOO.AZ_kspace, AztecOO.AZ_max_iter)
+
         if self.preconditioner is not None:
-            self.preconditioner._applyToSolver(solver=Solver, matrix=A)
-##            self.preconditioner.Prec.AnalyzeSmoothers(5, 5)
-##            self.preconditioner.Prec.AnalyzeCycle(10)
+            self.preconditioner._applyToSolver(solver=solver, matrix=self.precMatrix)
+        else:
+            solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
+        
+        output = solver.Iterate(self.iterations, self.tolerance)
 
-        return Solver.Iterate(self.iterations, self.tolerance)
+##         status = solver.GetAztecStatus()
 
+##         print
+##         print 'AztecOO.AZ_its:',status[AztecOO.AZ_its]
+##         failure = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
+##                    AztecOO.AZ_param : 'AztecOO.AZ_param',
+##                    AztecOO.AZ_breakdown : 'AztecOO.AZ_breakdown',
+##                    AztecOO.AZ_loss : 'AztecOO.AZ_loss',
+##                    AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
+##                    AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
+##         print 'stuff',stuff
+##         print 'failure',failure[status[AztecOO.AZ_why]]
+                                
+##         print 'AztecOO.AZ_r:',status[AztecOO.AZ_r]
+##         print 'AztecOO.AZ_scaled_r:',status[AztecOO.AZ_scaled_r]
+##         print 'AztecOO.AZ_rec_r:',status[AztecOO.AZ_rec_r]
+##         print 'AztecOO.AZ_solve_time:',status[AztecOO.AZ_solve_time]
+##         print 'AztecOO.AZ_Aztec_version:',status[AztecOO.AZ_Aztec_version]
+
+        return output
