@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "modCellGradVariable.py"
- #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 5/18/06 {8:39:42 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -35,10 +34,9 @@
  # ###################################################################
  ##
  
-from fipy.tools import numerix
-
 from fipy.variables.gaussCellGradVariable import _GaussCellGradVariable
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 class _ModCellGradVariable(_GaussCellGradVariable):
     def __init__(self, var, modIn, modPy):

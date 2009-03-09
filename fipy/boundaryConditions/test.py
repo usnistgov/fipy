@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "test.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 8/29/05 {1:51:00 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,13 +28,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -49,6 +41,7 @@ def _suite():
     return _LateImportDocTestSuite(
         docTestModuleNames = (
             'fipy.boundaryConditions.boundaryCondition',
+            'fipy.boundaryConditions.fixedFlux',
         ))
     
 if __name__ == '__main__':

@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "modCellToFaceVariable.py"
- #                                    created: 12/18/03 {2:23:41 PM} 
- #                                last update: 5/18/06 {8:39:15 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -36,8 +35,7 @@
  ##
 
 from fipy.tools import numerix
-
-from fipy.tools.inline import inline
+from fipy.tools import inline
 from fipy.variables.arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
 
 class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):

@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "nthOrderDiffusionTerm.py"
- #                                    created: 5/10/04 {11:24:01 AM} 
- #                                last update: 8/10/05 {10:56:45 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-05-10 JEG 1.0 original
  # ###################################################################
  ##
 

@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "faceTerm.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 6/7/08 {11:11:20 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,30 +29,24 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
  
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
 from fipy.terms.term import Term
-import fipy.tools.vector
+from fipy.tools import vector
 from fipy.tools import numerix
-from fipy.tools.inline import inline
+from fipy.tools import inline
 
 class FaceTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.):
+        if self.__class__ is FaceTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         Term.__init__(self, coeff=coeff)
         self.coeffMatrix = None
             
@@ -142,8 +135,8 @@ class FaceTerm(Term):
         cell2diag = numerix.take(coeffMatrix['cell 2 diag'], interiorFaces)
         cell2offdiag = numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces)
 
-        fipy.tools.vector.putAdd(b, id1, -(cell1diag * oldArrayId1 + cell1offdiag * oldArrayId2))
-        fipy.tools.vector.putAdd(b, id2, -(cell2diag * oldArrayId2 + cell2offdiag * oldArrayId1))
+        vector.putAdd(b, id1, -(cell1diag * oldArrayId1 + cell1offdiag * oldArrayId2))
+        vector.putAdd(b, id2, -(cell2diag * oldArrayId2 + cell2offdiag * oldArrayId1))
 
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)

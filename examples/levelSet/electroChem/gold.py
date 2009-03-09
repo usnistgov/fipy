@@ -5,10 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gold.py"
- #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:56:32 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
@@ -30,16 +28,9 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
-
+ 
 r"""
 This input file
 
@@ -85,7 +76,7 @@ more complex mesh.
     \IndexSoftware{gmsh}
 
     There are a few differences between the gold superfill model presented
-    in this example and Example~\ref{inputSimpleTrench}. Most default
+    in this example and Example~\ref{simpleTrenchSystem}. Most default
     values have changed to account for a different metal ion (gold)
     and catalyst (lead). In this system the catalyst is not present in
     the electrolyte but instead has a non-zero initial coverage. Thus
@@ -158,10 +149,10 @@ def runGold(faradaysConstant=9.6e4,
     distanceVar = DistanceVariable(
        name = 'distance variable',
        mesh = mesh,
-       value = -1,
+       value = -1.,
        narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, where=mesh.getElectrolyteMask())
+    distanceVar.setValue(1., where=mesh.getElectrolyteMask())
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
     catalystVar = SurfactantVariable(
@@ -202,14 +193,13 @@ def runGold(faradaysConstant=9.6e4,
         diffusionCoeff = metalDiffusion,
         metalIonMolarVolume = molarVolume)
 
-    metalEquationBCs = FixedValue(mesh.getTopFaces(), metalConcentration)
+    metalEquationBCs = FixedValue(mesh.getFacesTop(), metalConcentration)
 
     if displayViewers:
 
         try:
             
-            viewers = (
-                MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 1.0, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage', animate=True),)
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, datamax=1.0, datamin=0.0, smooth = 1, title = 'catalyst coverage', animate=True)
             
         except:
             
@@ -221,20 +211,19 @@ def runGold(faradaysConstant=9.6e4,
                 def _calcValue(self):
                     return array(self.var[:self.mesh.getNumberOfCells()])
 
-            viewers = (
-                viewers.make(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
-                viewers.make(PlotVariable(var = catalystVar.getInterfaceVar())))
-
+            viewer = MultiViewer(viewers=(
+                Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
+                Viewer(PlotVariable(var = catalystVar.getInterfaceVar()))))
     else:
-        viewers = ()
+        viewer = None
+
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
     step = 0
     
     while step < numberOfSteps:
 
-        if step % 10 == 0:
-            for viewer in viewers:
-                viewer.plot()
+        if step % 10 == 0 and viewer is not None:
+            viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             
@@ -252,18 +241,16 @@ def runGold(faradaysConstant=9.6e4,
         advectionEquation.solve(distanceVar, dt = dt)
         catalystSurfactantEquation.solve(catalystVar, dt = dt)
 
-        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt, solver=LinearPCGSolver())
+        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
                     
         step += 1
 
-    try:
-        import os
-        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
-        n = mesh.getFineMesh().getNumberOfCells()
-        print allclose(catalystVar[:n], data[:n], atol=1.0)
-    except:
-        return 0
+    point = ((5e-09,), (1.15e-07,))
+    value = 1.45346701e-09
+    return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
     
+__all__ = ["runGold"]
+
 if __name__ == '__main__':
     runGold(numberOfSteps = 300, cellSize = 0.05e-7)
     raw_input("finished")

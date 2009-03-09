@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:13:37 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -56,7 +48,7 @@ on a 1D mesh
 
 We create the phase field
 
-    >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
+    >>> phase = CellVariable(mesh=mesh, name='xi', value=1., hasOld=1)
     >>> phase.mobility = 1.
     >>> phase.gradientEnergy = 0.025
 
@@ -215,9 +207,9 @@ or
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     datamin=0, datamax=1)
     ...     viewer.plot()
 
 This problem does not have an analytical solution, so after
@@ -285,9 +277,9 @@ the remaining two substitutional species.
 Again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     datamin=0, datamax=1)
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary
@@ -382,9 +374,9 @@ and the solvent and a liquid phase rich in the two substitutional species.
 Once again, if we're running interactively, we create a viewer
     
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = [phase, solvent] \
-    ...                                  + substitutionals + interstitials,
-    ...                           limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=([phase, solvent]
+    ...                           + substitutionals + interstitials),
+    ...                     datamin=0, datamax=1)
     ...     viewer.plot()
 
 We reinitialize the sharp phase boundary

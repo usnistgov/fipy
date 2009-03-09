@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  #
  #  FILE: "periodicGrid2D.py"
- #                                    created: 11/10/03 {3:30:42 PM} 
- #                                last update: 6/7/08 {11:09:26 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -67,11 +59,11 @@ class PeriodicGrid2D(Grid2D):
         >>> print mesh._getCellDistances()
         [ 0.5   0.5   0.5   0.5   0.25  0.25  1.    1.    0.5   1.    1.    0.5 ]
  
-        >>> print mesh._getCellFaceIDs()
-        [[0 1 2 3]
-         [7 6 10 9]
-         [2 3 0 1]
-         [6 7 9 10]]
+        >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+        ...                                   [7, 6, 10, 9],
+        ...                                   [2, 3, 0, 1],
+        ...                                   [6, 7, 9, 10]]).flatten().all()
+        True
 
         >>> print mesh._getCellToCellDistances()
         [[ 0.5  0.5  0.5  0.5]

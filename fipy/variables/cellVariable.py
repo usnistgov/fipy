@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "cellVariable.py"
- #                                    created: 12/9/03 {2:03:28 PM} 
- #                                last update: 6/7/08 {10:46:14 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -85,8 +84,8 @@ class CellVariable(_MeshVariable):
             >>> b = c.getOld() + 3
             >>> print b
             [2]
-            >>> b.getTypecode()
-            'l'
+            >>> b.getsctype()
+            <type 'numpy.int32'>
             
         replacing with the same thing is no problem
         
@@ -132,11 +131,10 @@ class CellVariable(_MeshVariable):
         
     def copy(self):
         
-        return self.__class__(
-            mesh = self.mesh, 
-            name = self.name + "_old", 
-            value = self.getValue(),
-            hasOld = 0)
+        return self._getArithmeticBaseClass()(mesh=self.mesh, 
+                                              name=self.name + "_old", 
+                                              value=self.getValue(),
+                                              hasOld=False)
             
     def __call__(self, points=None, order=0):
         r"""

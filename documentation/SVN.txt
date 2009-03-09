@@ -60,19 +60,6 @@ development by issuing the command::
 in the base directory of the working copy. The main tags (``<tag>``)
 for FiPy, in decreasing order of stability, are:
 
-``tags/STABLE``
-    designates the most recent release in the repository that can be
-    considered stable for daily use by the common user.  This is a good tag
-    to track if you don't want to run into bugs introduced with ongoing
-    development but would like to take advantage of new features as soon as
-    possible.
-
-``tags/CURRENT``
-    designates the most recent code on the trunk forming a coherent state
-    of FiPy, in general this will mean a release, but can also mean a
-    pre-release testing version.  For instance, the release engineer might
-    ask testers to test ``tags/CURRENT`` before he makes a release.
-
 ``trunk``
     designates the latest revision of any file present in the
     repository.  FiPy is not guaranteed to pass its tests or to be in a
@@ -92,6 +79,28 @@ In addition:
     ``tags/version-0_1_1``, and can be obtained from ``branches/version-0_1``).
 
 Any other tags will not generally be of interest to most users.
+
+.. note::
+
+   We formerly provided ``tags/STABLE`` and ``tags/CURRENT``. Our
+   experience has been that these tags serve little purpose. They were
+   invariably set to point at the same revision and that was frequently far
+   out of date from what we were using for our own research. Rather than
+   trying to make these tags relevant, we think it's preferable to direct
+   users to track either ``trunk`` or some specific ``version-x_y``. An
+   existing working copy can be switched with, e.g.,::
+
+      $ svn switch http://matforge.org/svn/fipy/trunk
+
+   For some time now, we have done all significant development work on
+   branches, only merged back to ``trunk`` when the tests pass
+   successfully. Although we cannot guarantee that ``trunk`` will never be
+   broken, you can always check our build status page 
+
+       http://matforge.org/fipy/build
+
+   to find the most recent revision that it is running acceptably.
+
 
 For those who are interested in learning more about Subversion, the
 canonical manual is the `online Subversion Red Bean book`_

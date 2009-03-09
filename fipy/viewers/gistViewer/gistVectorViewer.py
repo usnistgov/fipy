@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gistViewer.py"
- #                                    created: 11/10/03 {2:48:25 PM} 
- #                                last update: 6/23/08 {4:24:31 PM} { 2:45:36 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,36 +31,45 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
-from fipy.viewers.gistViewer.gistViewer import GistViewer
+__docformat__ = 'restructuredtext'
+
+from fipy.viewers.gistViewer.gistViewer import _GistViewer
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
 from fipy.tools import numerix
 
-class GistVectorViewer(GistViewer):
+class GistVectorViewer(_GistViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using gist.
     """
 
-    __doc__ += GistViewer._test2Dvector(viewer="GistVectorViewer")
-    __doc__ += GistViewer._test2DvectorIrregular(viewer="GistVectorViewer")
+    __doc__ += _GistViewer._test2Dvector(viewer="GistVectorViewer")
+    __doc__ += _GistViewer._test2DvectorIrregular(viewer="GistVectorViewer")
     
-    def __init__(self, vars, limits=None, title = ''):
-	GistViewer.__init__(self, vars=vars, limits=limits, title=title)
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
+        """Creates a `GistVectorViewer`.
+        
+        :Parameters:
+          vars
+            a rank-1 `CellVariable` or `FaceVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
+        """
+        kwlimits.update(limits)
+	_GistViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
     def _getSuitableVars(self, vars):
-        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
           if (var.getMesh().getDim() == 2 \
               and (isinstance(var, FaceVariable) \
                    or isinstance(var, CellVariable)) and var.getRank() == 1)]
@@ -71,7 +79,7 @@ class GistVectorViewer(GistViewer):
         # this viewer can only display one variable
         return [vars[0]]
         
-    def plot(self, filename = None):
+    def plot(self, filename=None):
         import gist
 
         gist.window(self.id, wait = 1)

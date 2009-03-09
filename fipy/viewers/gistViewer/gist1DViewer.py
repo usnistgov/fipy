@@ -31,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -45,30 +38,38 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
  
-from fipy.viewers.gistViewer.gistViewer import GistViewer
+from fipy.viewers.gistViewer.gistViewer import _GistViewer
 
-class Gist1DViewer(GistViewer):
+class Gist1DViewer(_GistViewer):
     """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
     """
     
-    __doc__ += GistViewer._test1D(viewer="Gist1DViewer")
+    __doc__ += _GistViewer._test1D(viewer="Gist1DViewer")
 
-    def __init__(self, vars, title = None, limits = None, xlog = 0, ylog = 0, style = "work.gs"):
+    def __init__(self, vars, title=None, xlog=0, ylog=0, style="work.gs", limits={}, **kwlimits):
         """
         Creates a `Gist1DViewer`.
         
         :Parameters:
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'datamin'`, `'datamax'`. Any limit set to a (default) value of
-            `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
-          - `xlog`: set `True` to give logarithmic scaling of the x axis
-          - `ylog`: set `True` to give logarithmic scaling of the y axis
-          - `style`: the Gist style file to use
-
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          xlog
+            log scaling of x axis if `True`
+          ylog
+            log scaling of y axis if `True`
+          stye
+            the Gist stylefile to use.
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
+            (*ymin* and *ymax* are synonyms for *datamin* and *datamax*).
         """
-        GistViewer.__init__(self, vars = vars, limits = limits, title = title)
+        kwlimits.update(limits)
+        _GistViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         self.xlog = xlog
         self.ylog = ylog
@@ -76,7 +77,7 @@ class Gist1DViewer(GistViewer):
         
     def _getSuitableVars(self, vars):
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in GistViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
           if (var.getMesh().getDim() == 1 and isinstance(var, CellVariable))]
         if len(vars) > 1:
             vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
@@ -102,9 +103,6 @@ class Gist1DViewer(GistViewer):
         gist.logxy(self.xlog, self.ylog)
 
     def plot(self, filename = None):
-        """
-        Plot the `CellVariable` or list of `CellVariables` as a y vs x plot.
-        """
         import gist
 
         gist.window(self.id, wait = 1, style = self.style)
@@ -119,7 +117,7 @@ class Gist1DViewer(GistViewer):
             
         self._plotArrays()
             
-        GistViewer.plot(self, filename = filename)
+        _GistViewer.plot(self, filename = filename)
 
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus

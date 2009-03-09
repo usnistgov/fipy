@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:39 PM} { 5:14:21 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,140 +29,135 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
 r"""
-
-In this example we solve a coupled phase and temperature equation to model
-solidification, and eventually dendritic growth, based on the work of
+To convert a liquid material to a solid,  it must be cooled to a 
+temperature below its melting point (known as "undercooling" or "supercooling"). The rate of 
+solidification is often assumed (and experimentally found) to be proportional to the
+undercooling. Under the right circumstances, the
+solidification front can become unstable, leading to dendritic
+patterns as seen in Figure~\ref{fig-experimental-dendrites}. 
 Warren, Kobayashi, Lobkovsky and Carter
     
 .. raw:: latex
 
    \cite{WarrenPolycrystal}
    
-   We start from a circular seed in a 2D mesh:
+have described a phase field model ("Allen-Cahn", "non-conserved
+Ginsberg-Landau", or "model A" of Hohenberg & Halperin) of such a system,
+including the effects of discrete crystalline orientations (anisotropy).
+
+We start with a regular 2D Cartesian mesh
+
+.. raw:: latex
+
    \IndexClass{Grid2D}
 
 ..
 
     >>> from fipy import *
-
-    >>> numberOfCells = 40
-    >>> Length = numberOfCells * 2.5 / 100.
-    >>> nx = numberOfCells
-    >>> ny = numberOfCells
-    >>> dx = Length / nx
-    >>> dy = Length / ny
-    >>> radius = Length / 4.
-    >>> seedCenter = (Length / 2., Length / 2.)
-    >>> initialTemperature = -0.4
+    >>> dx = dy = 0.025
+    >>> if __name__ == '__main__':
+    ...     nx = ny = 500
+    ... else:
+    ...     nx = ny = 20
     >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
-    
-Dendritic growth will not be observed with this small test system. If
-you wish to see dendritic growth reset the following parameters such
-that ``numberOfCells = 500``, ``steps = 10000``, ``radius = dx * 5.``
-``seedCenter = (0. , 0.)`` and ``initialTemperature = -0.5``.
 
-The governing equation for the phase field is given by:
+and we'll take fixed timesteps
 
-.. raw:: latex
+    >>> dt = 5e-4
 
-    $$ \tau_{\phi} \frac{\partial \phi}{\partial t} 
-    = \nabla \cdot \left[ D \nabla \phi + A \nabla \xi \right] +
-      \phi ( 1 - \phi ) m ( \phi , T) $$
-
-where
+We consider the simultaneous evolution of a "phase field" variable
 
 .. raw:: latex
 
-    $$ m(\phi, T) 
-    = \phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right). $$
-
-    The coefficients $D$ and $A$ are given by,
-
-    $$ D = \alpha^2 \left[ 1 + c \beta \right]^2 $$
-
-    and
-
-    $$ A = \alpha^2 c \left[ 1 + c \beta \right] \beta_\psi $$
-
-    where $ \beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2} $,
-    $ \Phi = \tan \left( \frac{ N } { 2 } \psi \right) $,
-    $ \psi = \theta + \arctan \frac{ \phi_y } { \phi_x } $ and
-    $ \xi_x = -\phi_y $ and $ \xi_y = \phi_x $.
-
-    The governing equation for temperature is given by:
-
-    $$ \frac{\partial T}{\partial t} = D_T \nabla^2 T + \frac{\partial \phi}{\partial t} $$
-
-..  Further details of the numerical method for this problem can be found in
-    "Extending Phase Field Models of Solidification to Polycrystalline
-    Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003) 6035-6058.
-
-Here the phase and temperature equations are solved with an explicit
-and implicit technique, respectively.
-
-The parameters for these equations are 
-
-    >>> timeStepDuration = 5e-5
-    >>> tau = 3e-4
-    >>> alpha = 0.015
-    >>> c = 0.02
-    >>> N = 4.
-    >>> kappa1 = 0.9
-    >>> kappa2 = 20.    
-    >>> tempDiffusionCoeff = 2.25
-    >>> theta = 0.
-
-The `phase` variable is `0` for a liquid and `1` for a solid.  Here,
-the `phase` variable is initialized as a liquid,
-
-.. raw:: latex
-
+   $\phi$ (taken to be 0 in the liquid phase and 1 in the solid)
    \IndexClass{CellVariable}
 
 ..
 
-    >>> phase = CellVariable(name='phase field', mesh=mesh, hasOld=1)
+    >>> phase = CellVariable(name=r'$\phi$', mesh=mesh, hasOld=True)
 
-The `hasOld` flag keeps the old value of the variable. This is
-necessary for a transient solution. In this example we wish to set up
-an interior region that is solid. A value of `1` is assigned to the
-`phase` variable on a patch defined by the method:
-
-The domain is seeded with a circular solidified region with parameters
-`seedCenter` and `radius` representing the center and radius of the
-seed.
-   
-    >>> x, y = mesh.getCellCenters()
-    >>> phase.setValue(1., where=((x - seedCenter[0])**2 
-    ...                           + (y - seedCenter[1])**2) < radius**2)
-
-The temperature field is initialized to a value of `-0.4` throughout:
-
-    >>> temperature = CellVariable(
-    ...     name='temperature',
-    ...     mesh=mesh,
-    ...     value=initialTemperature,
-    ...     hasOld=1
-    ...     )
+and a dimensionless undercooling 
 
 .. raw:: latex
-  
-   The $m(\phi, T)$ variable 
-   
-is created from the `phase` and `temperature` variables.
+
+   $\Delta T$ ($\Delta T = 0$ at the melting point)
+
+..
+
+    >>> dT = CellVariable(name=r'$\Delta T$', mesh=mesh, hasOld=True)
+
+The `hasOld` flag causes the storage of the value of variable from the
+previous timestep. This is necessary for solving equations with
+non-linear coefficients or for coupling between PDEs.
+
+The governing equation for the temperature field is the heat flux
+equation, with a source due to the latent heat of solidification
 
 .. raw:: latex
+
+   \begin{equation*}
+       \frac{\partial \Delta T}{\partial t} 
+       = D_T \nabla^2 \Delta T 
+       + \frac{\partial \phi}{\partial t}
+   \end{equation*}
+   \IndexClass{TransientTerm}
+   \IndexClass{DiffusionTerm}
+
+..
+
+    >>> DT = 2.25
+    >>> heatEq = (TransientTerm()
+    ...           == DiffusionTerm(DT)
+    ...           + (phase - phase.getOld()) / dt)
+
+The governing equation for the phase field is
+
+.. raw:: latex
+
+   \begin{equation*}
+       \tau_{\phi} \frac{\partial \phi}{\partial t} 
+       = \nabla \cdot \mathsf{D} \nabla \phi
+       +   \phi ( 1 - \phi ) m ( \phi , \Delta T)
+   \end{equation*}
+   
+where
+
+.. raw:: latex
+
+   \begin{equation*}
+       m(\phi, \Delta T) 
+       = \phi - \frac{1}{2} 
+       - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 \Delta T \right)
+   \end{equation*}
+   
+represents a source of anisotropy. The coefficient 
+
+.. raw:: latex 
+
+   $\mathsf{D}$ 
+   
+is an anisotropic diffusion tensor in two dimensions
+
+.. raw:: latex
+
+   \begin{equation*}
+       \mathsf{D} = \alpha^2 \left( 1 + c \beta \right)
+       \left[
+       \begin{matrix}
+           1 + c \beta & -c \frac{\partial \beta}{\partial \psi} \\
+           c \frac{\partial \beta}{\partial \psi} & 1 + c \beta
+       \end{matrix}
+       \right]
+   \end{equation*}
+   
+   where $\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}$,
+   $\Phi = \tan \left( \frac{ N } { 2 } \psi \right)$, 
+   $\psi = \theta + \arctan \frac{\partial \phi / \partial
+   y}{\partial \phi / \partial x}$, $\theta$ is the orientation, and $N$ is the symmetry.
 
    \IndexConstant{\pi}{pi}
    \IndexFunction{arctan}
@@ -172,68 +166,62 @@ is created from the `phase` and `temperature` variables.
 
 ..
 
-    >>> mVar = phase - 0.5 - kappa1 / pi * arctan(kappa2 * temperature)
-
-.. raw:: latex
-
-    The following section of code builds up the $A$ and $D$ coefficients.
-
-..
-
-    >>> phaseY = phase.getFaceGrad().dot((0, 1))
-    >>> phaseX = phase.getFaceGrad().dot((1, 0))
-    >>> psi = theta + arctan2(phaseY, phaseX)
+    >>> alpha = 0.015
+    >>> c = 0.02
+    >>> N = 6.
+    >>> theta = pi / 8.
+    >>> psi = theta + arctan2(phase.getFaceGrad()[1], 
+    ...                       phase.getFaceGrad()[0])
     >>> Phi = tan(N * psi / 2)
     >>> PhiSq = Phi**2
     >>> beta = (1. - PhiSq) / (1. + PhiSq)
-    >>> betaPsi = -N * 2 * Phi / (1 + PhiSq)
-    >>> A = alpha**2 * c * (1.+ c * beta) * betaPsi
-    >>> D = alpha**2 * (1.+ c * beta)**2
+    >>> DbetaDpsi = -N * 2 * Phi / (1 + PhiSq)
+    >>> Ddia = (1.+ c * beta)
+    >>> Doff = c * DbetaDpsi
+    >>> D = alpha**2 * (1.+ c * beta) * (Ddia * (( 1, 0),
+    ...                                          ( 0, 1)) + Doff * (( 0,-1),
+    ...                                                             ( 1, 0)))
 
-.. raw:: latex
+With these expressions defined, we can construct the phase field equation
+as
 
-    The $\nabla \xi$ variable
-
-(`dxi`),
-
-.. raw:: latex
-
-    given by $(\xi_x, \xi_y) = (-\phi_y, \phi_x)$,
-    is constructed by first obtaining $\nabla \phi$
-    
-using `getFaceGrad()`. The axes are rotated ninety degrees.
-
-    >>> dxi = phase.getFaceGrad().dot(((0, 1),(-1,0)))
-    >>> anisotropySource = (A * dxi).getDivergence()
-
-The phase equation can now be constructed.
-    
 .. raw:: latex
 
    \IndexClass{TransientTerm}
-   \IndexClass{ExplicitDiffusionTerm}
+   \IndexClass{DiffusionTerm}
    \IndexClass{ImplicitSourceTerm}
 
 ..
 
-    >>> phaseEq = TransientTerm(tau) == ExplicitDiffusionTerm(D) + \
-    ...     ImplicitSourceTerm(mVar * ((mVar < 0) - phase)) + \
-    ...     ((mVar > 0.) * mVar * phase + anisotropySource)
+    >>> tau = 3e-4
+    >>> kappa1 = 0.9
+    >>> kappa2 = 20.
+    >>> phaseEq = (TransientTerm(tau)
+    ...            == DiffusionTerm(D)
+    ...            + ImplicitSourceTerm((phase - 0.5 - kappa1 / pi * arctan(kappa2 * dT))
+    ...                                 * (1 - phase)))
 
-The temperature equation is built in the following way,
+We seed a circular solidified region in the center
 
-.. raw:: latex
+    >>> radius = dx * 5.
+    >>> C = (nx * dx / 2, ny * dy / 2)
+    >>> x, y = mesh.getCellCenters()
+    >>> phase.setValue(1., where=((x - C[0])**2 + (y - C[1])**2) < radius**2)
 
-   \IndexClass{ImplicitDiffusionTerm}
+and quench the entire simulation domain below the melting point
 
-..
+    >>> dT.setValue(-0.5)
 
-    >>> temperatureEq = TransientTerm() == \
-    ...                 ImplicitDiffusionTerm(tempDiffusionCoeff) + \
-    ...                 (phase - phase.getOld()) / timeStepDuration
+In a real solidification process, dendritic branching is induced by small thermal
+fluctuations along an otherwise smooth surface, but the granularity of the
+`Mesh` is enough "noise" in this case, so we don't need to explicitly
+introduce randomness, the way we did in the Cahn-Hilliard problem.  
 
-If we are running this example interactively, we create viewers for
-the phase and temperature fields
+FiPy's viewers are utilitarian, striving to let the user see *something*,
+regardless of their operating system or installed packages, so you won't
+be able to simultaneously view two fields "out of the box", but, because all of Python is
+accessible and FiPy is object oriented, it is not hard to adapt one of the
+existing viewers to create a specialized display:
 
 .. raw:: latex
 
@@ -241,42 +229,71 @@ the phase and temperature fields
 
 ..
 
+    >>> if __name__ == "__main__":
+    ...     try:
+    ...         import pylab
+    ...         class DendriteViewer(Matplotlib2DGridViewer):
+    ...             def __init__(self, phase, dT, title=None, limits={}, **kwlimits):
+    ...                 self.phase = phase
+    ...                 self.contour = None
+    ...                 Matplotlib2DGridViewer.__init__(self, vars=(dT,), title=title,
+    ...                                                 cmap=pylab.cm.hot,
+    ...                                                 limits=limits, **kwlimits)
+    ...                                         
+    ...             def _plot(self):
+    ...                 Matplotlib2DGridViewer._plot(self)
+    ...                 
+    ...                 if self.contour is not None:
+    ...                     for c in self.contour.collections:
+    ...                         c.remove()
+    ...                         
+    ...                 mesh = self.phase.getMesh()
+    ...                 shape = mesh.getShape()
+    ...                 x, y = mesh.getCellCenters()
+    ...                 z = self.phase.getValue()
+    ...                 x, y, z = [a.reshape(shape, order="FORTRAN") for a in (x, y, z)]
+    ...                 
+    ...                 self.contour = pylab.contour(x, y, z, (0.5,))
+    ...                 
+    ...         viewer = DendriteViewer(phase=phase, dT=dT,
+    ...                                 title=r"%s & %s" % (phase.name, dT.name),
+    ...                                 datamin=-0.1, datamax=0.05)
+    ...     except ImportError:
+    ...         viewer = MultiViewer(viewers=(Viewer(vars=phase),
+    ...                                       Viewer(vars=dT,
+    ...                                              datamin=-0.5, 
+    ...                                              datamax=0.5)))
+
+and iterate the solution in time, plotting as we go,
+
     >>> if __name__ == '__main__':
-    ...     phaseViewer = viewers.make(vars=phase)
-    ...     temperatureViewer = viewers.make(vars=temperature,
-    ...                                      limits={'datamin': -0.5, 'datamax': 0.5})
-    ...     phaseViewer.plot()
-    ...     temperatureViewer.plot()
-
-we iterate the solution in time, plotting as we go if running interactively,
-
-    >>> steps = 10
+    ...     steps = 10000
+    ... else:
+    ...     steps = 10
     >>> for i in range(steps):
     ...     phase.updateOld()
-    ...     temperature.updateOld()
-    ...     phaseEq.solve(phase, dt=timeStepDuration)
-    ...     temperatureEq.solve(temperature, dt=timeStepDuration)
-    ...     if i%10 == 0 and __name__ == '__main__':
-    ...         phaseViewer.plot()
-    ...         temperatureViewer.plot()
+    ...     dT.updateOld()
+    ...     phaseEq.solve(phase, dt=dt)
+    ...     heatEq.solve(dT, dt=dt)
+    ...     if __name__ == "__main__" and (i % 10 == 0):
+    ...         viewer.plot()
 
-The solution is compared with test data. The test data was created for
-``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for phase
-field modeling. The following code opens the file ``anisotropy.gz`` extracts
-the data and compares it with the `phase` variable.
+.. image:: examples/phase/anisotropy.pdf
+   :scale: 50
+   :align: center
+
+The non-uniform temperature results from the release of latent 
+heat at the solidifying interface. The dendrite arms grow fastest 
+where the temperature gradient is steepest.
+
+We note that this FiPy simulation is written in about 50 lines of code (excluding the
+custom viewer), compared with over 800 lines of (fairly lucid) FORTRAN code used for
+the figures in 
 
 .. raw:: latex
 
-   \IndexFunction{loadtxt}
-   \IndexFunction{allclose}
+   \cite{WarrenPolycrystal}.
 
-..
-
-   >>> import os
-   >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
-   >>> print phase.allclose(testData)
-   1
-   
 """
 __docformat__ = 'restructuredtext'
 

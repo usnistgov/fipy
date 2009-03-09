@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "cellTerm.py"
- #                                    created: 11/12/03 {11:00:54 AM} 
- #                                last update: 3/29/07 {10:40:50 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,22 +29,14 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
 from fipy.terms.term import Term
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 from fipy.tools.sparseMatrix import _SparseMatrix
 
@@ -54,6 +45,9 @@ class CellTerm(Term):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.):
+        if self.__class__ is CellTerm:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         from fipy.variables.variable import Variable
         if not isinstance(coeff, Variable):
             from fipy.variables.constant import _Constant
@@ -157,23 +151,24 @@ class CellTerm(Term):
             >>> fv = FaceVariable(mesh=m)
             >>> vcv = CellVariable(mesh=m, rank=1)
             >>> vfv = FaceVariable(mesh=m, rank=1)
-            >>> CellTerm(coeff=cv)
-            CellTerm(coeff=CellVariable(value=array([ 0.,  0.]), mesh=UniformGrid1D(dx=1.0, nx=2)))
-            >>> CellTerm(coeff=1)
-            CellTerm(coeff=1)
-            >>> CellTerm(coeff=fv)
+
+            >>> __CellTerm(coeff=cv)
+            __CellTerm(coeff=CellVariable(value=array([ 0.,  0.]), mesh=UniformGrid1D(dx=1.0, nx=2)))
+            >>> __CellTerm(coeff=1)
+            __CellTerm(coeff=1)
+            >>> __CellTerm(coeff=fv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
-            >>> CellTerm(coeff=vcv)
+            >>> __CellTerm(coeff=vcv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
-            >>> CellTerm(coeff=vfv)
+            >>> __CellTerm(coeff=vfv)
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
-            >>> CellTerm(coeff=(1,))
+            >>> __CellTerm(coeff=(1,))
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
@@ -181,6 +176,12 @@ class CellTerm(Term):
         """
         pass
 
+class __CellTerm(CellTerm):
+    """
+    Dummy subclass for tests
+    """
+    pass 
+    
 
 def _test(): 
     import doctest

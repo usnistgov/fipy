@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "leastSquaresCellGradVariable.py"
- #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 1/3/07 {3:24:56 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

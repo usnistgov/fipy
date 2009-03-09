@@ -5,12 +5,9 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "howToWriteAScript.py"
- #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:40 PM} { 1:23:41 PM}
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -31,13 +28,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -48,7 +38,7 @@ r"""
     \label{howToWriteAScript} This input file demonstrates how to
     create a new superfill script if the existing suite of scripts do
     not meet the required needs. It provides the functionality of
-    Example~\ref{simpleTrenchSytem}.
+    Example~\ref{simpleTrenchSystem}.
 
 To run this example from the base fipy directory type::
     
@@ -194,7 +184,7 @@ function
    >>> distanceVar = DistanceVariable(
    ...    name='distance variable',
    ...    mesh= mesh,
-   ...    value=-1,
+   ...    value=-1.,
    ...    narrowBandWidth=narrowBandWidth,
    ...    hasOld=1)
 
@@ -207,9 +197,9 @@ region will be negative.
    >>> sideWidth = (trenchSpacing - trenchWidth) / 2
    
    >>> x, y = mesh.getCellCenters()
-   >>> distanceVar.setValue(1, where=(y > trenchHeight) 
-   ...                               | ((y > bottomHeight) 
-   ...                                  & (x < xCells * cellSize - sideWidth)))
+   >>> distanceVar.setValue(1., where=(y > trenchHeight) 
+   ...                                 | ((y > bottomHeight) 
+   ...                                    & (x < xCells * cellSize - sideWidth)))
 
    >>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10)
 
@@ -429,25 +419,24 @@ If running interactively, create viewers.
 
 .. raw:: latex
 
-   \IndexModule{viewers}
    \IndexClass{MayaviSurfactantViewer}
    
 ..
 
    >>> if __name__ == '__main__':
    ...     try:
-   ...         viewers = (
-   ...             MayaviSurfactantViewer(distanceVar,
-   ...                                    catalystVar.getInterfaceVar(),
-   ...                                    zoomFactor=1e6,
-   ...                                    limits={ 'datamax' : 1.0, 'datamin' : 0.0 },
-   ...                                    smooth=1),)
+   ...         viewer = MayaviSurfactantViewer(distanceVar,
+   ...                                         catalystVar.getInterfaceVar(),
+   ...                                         zoomFactor=1e6,
+   ...                                         datamax=1.0, 
+   ...                                         datamin=0.0,
+   ...                                         smooth=1)
    ...     except:
-   ...         viewers = (
-   ...             viewers.make(distanceVar, limits={ 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-   ...             viewers.make(catalystVar.getInterfaceVar()))
+   ...         viewer = MultiViewer(viewers=(
+   ...             Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
+   ...             Viewer(catalystVar.getInterfaceVar())))
    ... else:
-   ...     viewers = ()
+   ...     viewer = None
 
 The `levelSetUpdateFrequency` defines how often to call the
 `distanceEquation` to reinitialize the `distanceVariable` to a
@@ -469,7 +458,7 @@ is calculated with the CFL number and the maximum extension velocity.
    
    >>> for step in range(numberOfSteps):
    ...
-   ...     for viewer in viewers:
+   ...     if viewer is not None:
    ...         viewer.plot()
    ...
    ...     if step % levelSetUpdateFrequency == 0:
@@ -483,12 +472,12 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
-   ...     advectionEquation.solve(distanceVar, dt=dt, solver=LinearCGSSolver())
+   ...     advectionEquation.solve(distanceVar, dt=dt)
    ...     surfactantEquation.solve(catalystVar, dt=dt)
    ...     metalEquation.solve(var=metalVar, dt=dt,
-   ...                         boundaryConditions=metalEquationBCs, solver=LinearCGSSolver())
+   ...                         boundaryConditions=metalEquationBCs)
    ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
-   ...                                   boundaryConditions=catalystBCs, solver=LinearCGSSolver())
+   ...                                   boundaryConditions=catalystBCs)
 
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way

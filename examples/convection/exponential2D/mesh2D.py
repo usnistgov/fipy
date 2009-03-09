@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh1D.py"
- #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:09:16 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -72,7 +64,7 @@ mesh with `nx = 10` and `ny = 10`:
 
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
 
 We test the solution against the analytical result:
 
@@ -85,7 +77,7 @@ We test the solution against the analytical result:
     1
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var)
+    ...     viewer = Viewer(vars = var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

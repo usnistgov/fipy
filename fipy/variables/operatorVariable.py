@@ -3,8 +3,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "operatorVariable.py"
- #                                     created: 5/6/07 {10:53:26 AM}
- #                                 last update: 5/6/07 {10:53:26 AM}
+ #
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -33,9 +32,11 @@
 
 from fipy.variables.variable import Variable
 
+from fipy.tools import numerix
+
 def _OperatorVariableClass(baseClass=None):
     class _OperatorVariable(baseClass):
-        def __init__(self, op, var, opShape=(), canInline=True, unit=None, *args, **kwargs):
+        def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, *args, **kwargs):
             self.op = op
             self.var = var
             self.opShape = opShape
@@ -53,15 +54,23 @@ def _OperatorVariableClass(baseClass=None):
             
             self.dontCacheMe()
 
+            self.comment = inlineComment
+
+        def __setitem__(self, index, value):
+            raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
+            
+        def setValue(self, value, unit=None, where=None):
+            raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
+        
         def _calcValue(self):
             if not self.canInline:
                 return self._calcValuePy()
             else:
-                from fipy.tools.inline import inline
+                from fipy.tools import inline
                 return inline._optionalInline(self._calcValueIn, self._calcValuePy)
 
         def _calcValueIn(self):
-            return self._execInline()
+            return self._execInline(comment=self.comment)
 
         def _calcValuePy(self):
             pass
@@ -89,6 +98,44 @@ def _OperatorVariableClass(baseClass=None):
 
             """
             import opcode
+            
+            def __var(i):
+                v = self.var[i]
+                if style == "__repr__":
+                    result = repr(v)
+                elif style == "name":
+                    if isinstance(v, Variable):
+                        result = v.getName()
+                        if len(result) == 0:
+                            # The string form of a variable
+                            # would probably be too long and messy.
+                            # Just give shorthand.
+                            result = "%s(...)" % v.__class__.__name__
+                    elif type(v) in (type(1), type(1.)):
+                        result = repr(v)
+                    else:
+                        # The string form of anything but a
+                        # number would be too long and messy.
+                        # Just give shorthand.
+                        result = "<...>"
+
+                elif style == "TeX":
+                    raise Exception, "TeX style not yet implemented"
+                elif style == "C":
+                    if not v._isCached():
+                        result = v._getCstring(argDict, id=id + str(i), freshen=freshen)
+                        v.value = None
+                    else:
+                        result = v._getVariableClass()._getCstring(v, argDict,
+                                                                   id=id + str(i),
+                                                                   freshen=False)
+                else:
+                    raise SyntaxError, "Unknown style: %s" % style
+                    
+                return result
+
+            if isinstance(self.op, numerix.ufunc):
+                return "%s(%s)" % (self.op.__name__, ", ".join([__var(i) for i in range(len(self.var))]))
             
             bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
                 
@@ -128,39 +175,7 @@ def _OperatorVariableClass(baseClass=None):
                     counter = _popIndex()
                     stack.append(self.op.func_code.co_names[counter])
                 elif opcode.opname[bytecode] == 'LOAD_FAST':
-                    if style == "__repr__":
-                        stack.append(repr(self.var[_popIndex()]))
-                    elif style == "name":
-                        v = self.var[_popIndex()]
-                        if isinstance(v, Variable):
-                            name = v.getName()
-                            if len(name) > 0:
-                                stack.append(name)
-                            else:
-                                # The string form of a variable
-                                # would probably be too long and messy.
-                                # Just give shorthand.
-                                stack.append("%s(...)" % v.__class__.__name__)
-                        elif type(v) in (type(1), type(1.)):
-                            stack.append(repr(v))
-                        else:
-                            # The string form of anything but a
-                            # number would be too long and messy.
-                            # Just give shorthand.
-                            stack.append("<...>")
-                    elif style == "TeX":
-                        raise Exception, "TeX style not yet implemented"
-                    elif style == "C":
-                        counter = _popIndex()
-                        if not self.var[counter]._isCached():
-                            stack.append(self.var[counter]._getCstring(argDict, id=id + str(counter), freshen=freshen))
-                            self.var[counter].value = None
-                        else:
-                            stack.append(self.var[counter]._getVariableClass()._getCstring(self.var[counter], argDict, \
-                                                                                           id=id + str(counter),\
-                                                                                           freshen=False))
-                    else:
-                        raise SyntaxError, "Unknown style: %s" % style
+                    stack.append(__var(_popIndex()))
                 elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
                     args = []
                     for j in range(bytecodes.pop(1)):
@@ -189,13 +204,6 @@ def _OperatorVariableClass(baseClass=None):
                 name = self._getRepresentation(style="name")
             return name
             
-        def copy(self):
-            return self.__class__(
-                op = self.op,
-                var = self.var,
-                opShape = self.opShape,
-                canInline = self.canInline)
- 
         def getShape(self):
             if self.opShape is not None:
                 return self.opShape
@@ -251,8 +259,8 @@ def _testBinOp(self):
     Check that getTypeCode() works as expected.
 
         >>> a = Variable(1.) * Variable(1)
-        >>> a.getTypecode()
-        'd'
+        >>> a.getsctype()
+        <type 'numpy.float64'>
 
     The following test is to correct an `--inline` bug that was
     being thrown by the Cahn-Hilliard example. The fix for this
@@ -1131,4 +1139,4 @@ def _test():
     return doctest.testmod()
     
 if __name__ == "__main__": 
-    _test() 
+    _test()

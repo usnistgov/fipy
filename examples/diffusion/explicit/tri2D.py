@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "tri2D.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:11:34 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -116,7 +108,7 @@ if __name__ == '__main__':
     for step in range(steps):
         eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
     print var
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars = var)
     viewer.plot()
     raw_input('finished')
 

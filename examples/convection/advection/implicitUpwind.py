@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "impicitUpwind.py"
- #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:09:25 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -76,7 +68,7 @@ eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity,))
 
 if __name__ == '__main__':
     
-    viewer = viewers.make(vars=(var,))
+    viewer = Viewer(vars=(var,))
     viewer.plot()
     raw_input("press key to continue")
     for step in range(steps):

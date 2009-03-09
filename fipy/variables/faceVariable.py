@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "faceVariable.py"
- #                                    created: 12/9/03 {1:58:27 PM} 
- #                                last update: 1/3/07 {3:18:21 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -60,9 +59,9 @@ class FaceVariable(_MeshVariable):
         return _MeshVariable._getArithmeticBaseClass(self, other)
 
     def copy(self):
-        return self.__class__(mesh = self.mesh, 
-                              name = self.name + "_copy", 
-                              value = self.getValue())
+        return self._getArithmeticBaseClass()(mesh=self.mesh, 
+                                              name=self.name + "_copy", 
+                                              value=self.getValue())
 
     def getDivergence(self):
         """

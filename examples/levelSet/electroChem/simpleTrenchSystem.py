@@ -5,12 +5,9 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "inputSimpleTrenchSystem.py"
- #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:55:45 PM} { 1:23:41 PM}
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -31,13 +28,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -228,7 +218,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     distanceVar = DistanceVariable(
         name = 'distance variable',
         mesh = mesh,
-        value = -1,
+        value = -1.,
         narrowBandWidth = narrowBandWidth,
         hasOld = 1)
 
@@ -238,7 +228,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     sideWidth = (trenchSpacing - trenchWidth) / 2
 
     x, y = mesh.getCellCenters()
-    distanceVar.setValue(1, where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
+    distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
@@ -307,22 +297,21 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            viewers = (MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage'),)
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
-            viewers = (
-                viewers.make(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
-                viewers.make(catalystVar.getInterfaceVar()))
+            viewer = MultiViewer(viewers=(
+                Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
+                Viewer(catalystVar.getInterfaceVar())))
     else:
-        viewers = ()
+        viewer = None
 
     levelSetUpdateFrequency = int(0.8 * narrowBandWidth \
                                   / (cellSize * cflNumber * 2))
 
     for step in range(numberOfSteps):
 
-        if step % 5 == 0:
-            for viewer in viewers:
-                viewer.plot()
+        if step % 5 == 0 and viewer is not None:
+            viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction()
@@ -337,20 +326,23 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         distanceVar.extendVariable(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
-        advectionEquation.solve(distanceVar, dt = dt, solver=LinearCGSSolver()) 
+        advectionEquation.solve(distanceVar, dt = dt) 
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt, 
-                            boundaryConditions = metalEquationBCs, solver=LinearCGSSolver())
+                            boundaryConditions = metalEquationBCs)
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                                   boundaryConditions = catalystBCs, solver=LinearCGSSolver())
+                                   boundaryConditions = catalystBCs)
 
     try:
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
         
         print catalystVar.allclose(loadtxt(filepath), rtol = 1e-4)
+
     except:
         return 0
+
+__all__ = ["runSimpleTrenchSystem"]
 
 if __name__ == '__main__':
     runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)

@@ -5,12 +5,9 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "leveler.py"
- #                                    created: 8/26/04 {10:29:10 AM} 
- #                                last update: 6/7/08 {11:17:02 PM} { 1:23:41 PM}
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
  #  
@@ -31,13 +28,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -263,10 +253,10 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
     distanceVar = DistanceVariable(
         name = 'distance variable',
         mesh = mesh,
-        value = -1,
+        value = -1.,
         narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, where=mesh.getElectrolyteMask())
+    distanceVar.setValue(1., where=mesh.getElectrolyteMask())
     
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
     levelerVar = SurfactantVariable(
@@ -346,7 +336,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         diffusionCoeff = metalDiffusionCoefficient,
         metalIonMolarVolume = atomicVolume)
 
-    metalEquationBCs = FixedValue(mesh.getTopFaces(), bulkMetalConcentration)
+    metalEquationBCs = FixedValue(mesh.getFacesTop(), bulkMetalConcentration)
 
     bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkAcceleratorVar,
@@ -357,7 +347,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         rateConstant = kAccelerator * siteDensity)
 
     bulkAcceleratorEquationBCs = (FixedValue(
-        mesh.getTopFaces(),
+        mesh.getFacesTop(),
         bulkAcceleratorConcentration),)
 
     bulkLevelerEquation = buildSurfactantBulkDiffusionEquation(
@@ -368,15 +358,15 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         rateConstant = kLeveler * siteDensity)
 
     bulkLevelerEquationBCs =  (FixedValue(
-        mesh.getTopFaces(),
+        mesh.getFacesTop(),
         bulkLevelerConcentration),)
 
     eqnTuple = ( (advectionEquation, distanceVar, (), None),
                  (levelerSurfactantEquation, levelerVar, (), None),
                  (acceleratorSurfactantEquation, acceleratorVar, (), None),
-                 (metalEquation, metalVar,  metalEquationBCs, LinearPCGSolver()),
-                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs, LinearPCGSolver()),
-                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs, LinearPCGSolver()))
+                 (metalEquation, metalVar,  metalEquationBCs, None),
+                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs, None),
+                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs, None))
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 
@@ -384,8 +374,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
     if displayViewers:
         viewers = (
-            MayaviSurfactantViewer(distanceVar, acceleratorVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'accelerator coverage'),
-            MayaviSurfactantViewer(distanceVar, levelerVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'leveler coverage'))
+            MayaviSurfactantViewer(distanceVar, acceleratorVar.getInterfaceVar(), zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
+            MayaviSurfactantViewer(distanceVar, levelerVar.getInterfaceVar(), zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))
         
     for step in range(numberOfSteps):
 
@@ -420,14 +410,12 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
         totalTime += dt
 
-    try:
-        import os
-        data = dump.read(os.path.splitext(__file__)[0] + '.gz')
-        N = mesh.getFineMesh().getNumberOfCells()
-        return allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
-    except:
-        return 0
+    point = ((1.25e-08,), (3.125e-07,))
+    value = 2.02815779e-08
+    return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
     
+__all__ = ["runLeveler"]
+
 if __name__ == '__main__':
     runLeveler()
     raw_input("finished")    

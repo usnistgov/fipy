@@ -31,22 +31,15 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
  
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer
 
-class Matplotlib2DViewer(MatplotlibViewer):
+class Matplotlib2DViewer(_MatplotlibViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
 
@@ -55,21 +48,28 @@ class Matplotlib2DViewer(MatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """ 
     
-    __doc__ += MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
+    __doc__ += _MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title=None, limits={}, cmap=None, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
         
 
         :Parameters:
-          - `vars`: A `CellVariable` object.
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'datamin'`, `'datamax'`. Any limit set to 
+          vars
+            a `CellVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          cmap
+            the colormap. Defaults to `pylab.cm.jet`
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
 
         """
-        MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title, figaspect=1. / 1.3)
+        kwlimits.update(limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, figaspect=1. / 1.3, **kwlimits)
 
         self.colorbar = None
         
@@ -83,14 +83,6 @@ class Matplotlib2DViewer(MatplotlibViewer):
         yCoords = numerix.take(vertexCoords[1], vertexIDs)
         
         polys = []
-##         for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):
-##             if hasattr(x, 'mask'):
-##                 x = x.compressed()
-##             if hasattr(y, 'mask'):
-##                 y = y.compressed()
-##             polys.append(x)
-##             polys.append(y)
-##             polys.append('b')
 
         for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):
             if hasattr(x, 'mask'):
@@ -137,13 +129,15 @@ class Matplotlib2DViewer(MatplotlibViewer):
 
         pylab.axis((xmin, xmax, ymin, ymax))
 
-##        self.polygons = ax.fill(linewidth=0., *polys)
-        
         cbax, kw = matplotlib.colorbar.make_axes(ax, orientation='vertical')
         
         # Set the colormap and norm to correspond to the data for which
         # the colorbar will be used.
-        cmap = matplotlib.cm.jet
+        if cmap is None:
+            self.cmap = matplotlib.cm.jet
+        else:
+            self.cmap = cmap
+            
         norm = matplotlib.colors.normalize(vmin=-1, vmax=1)
         
         # ColorbarBase derives from ScalarMappable and puts a colorbar
@@ -151,7 +145,7 @@ class Matplotlib2DViewer(MatplotlibViewer):
         # standalone colorbar.  There are many more kwargs, but the
         # following gives a basic continuous colorbar with ticks
         # and labels.
-        self.cb = matplotlib.colorbar.ColorbarBase(cbax, cmap=cmap,
+        self.cb = matplotlib.colorbar.ColorbarBase(cbax, cmap=self.cmap,
                                                    norm=norm,
                                                    orientation='vertical')
         self.cb.set_label(self.vars[0].name)
@@ -161,12 +155,12 @@ class Matplotlib2DViewer(MatplotlibViewer):
     def _getSuitableVars(self, vars):
         from fipy.meshes.numMesh.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if ((isinstance(var.getMesh(), Mesh2D) and isinstance(var, CellVariable))
               and var.getRank() == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "The mesh must be a Mesh2D instance"
+            raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-0, 2D CellVariable"
         # this viewer can only display one variable
         return [vars[0]]
         
@@ -186,31 +180,20 @@ class Matplotlib2DViewer(MatplotlibViewer):
 
         diff = zmax - zmin
         
-        import pylab
         import matplotlib
 
-        faceColors = []
+        import matplotlib
 
-        for value in Z:
-            if diff == 0:
-                rgba = pylab.cm.jet(0.5)
-            else:
-                rgba = pylab.cm.jet((value - zmin) / diff)
+        if diff == 0:
+            rgba = self.cmap(0.5)
+        else:
+            rgba = self.cmap((Z - zmin) / diff)
+        
+        self.collection.set_facecolors(rgba)
+        self.collection.set_edgecolors(rgba)
 
-            faceColors.append(rgba)
-
-        self.collection.set_facecolors(faceColors)
-##        self.collection.set_edgecolors(faceColors)
-            
-##         for poly, value in zip(self.polygons, Z):
-##             if diff == 0:
-##                 rgba = pylab.cm.jet(0.5)
-##             else:
-##                 rgba = pylab.cm.jet((value - zmin) / diff)
-
-##             poly.set_facecolor(rgba)
-            
         self.cb.norm = matplotlib.colors.normalize(vmin=zmin, vmax=zmax)
+        self.cb.cmap = self.cmap
         self.cb.draw_all()
         
 ##        pylab.xlim(xmin=self._getLimit('xmin'),
@@ -218,9 +201,6 @@ class Matplotlib2DViewer(MatplotlibViewer):
 
 ##        pylab.ylim(ymin=self._getLimit('ymin'),
 ##                   ymax=self._getLimit('ymax'))
-
-    def plotMesh(self, filename = None):
-        pass
 
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus

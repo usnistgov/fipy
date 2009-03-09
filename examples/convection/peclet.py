@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "peclet.py"
- #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {8:18:42 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,22 +29,15 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
 r"""
 
 This example tests diffusion-convection for increasing Peclet numbers.
-This test case has been introduced because `LinearCGSSolver` wsa not
-working with Peclet numbers over 1. LinearLUSOlver is now the default
-for ConvectionTerm. For `nx = 1000` the Linear GMRESSOLVER does not work,
+This test case has been introduced because `LinearCGSSolver` was not
+working with Peclet numbers over 1. LinearLUSolver is now the default
+for ConvectionTerm. For `nx = 1000` the LinearGMRESSolver does not work,
 but the LinearScipyGMRESSolver does work! Oh dear...
 
     >>> from fipy import *
@@ -64,7 +56,7 @@ but the LinearScipyGMRESSolver does work! Oh dear...
     ...                       FixedValue(faces=mesh.getFacesRight(), value=valueRight))
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var)
+    ...     viewer = Viewer(vars = var)
 
     >>> convCoeff = 1.0
     >>> peclet = 1e-3

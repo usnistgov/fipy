@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "trilinosSolver.py"
- #                                    created: 06/07/07 
- #                                last update: 06/25/07 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2007-06-04 MLG 1.0 original
  # ###################################################################
  ##
 
@@ -59,7 +51,12 @@ class TrilinosSolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
 
     """
-    
+    def __init__(self, *args, **kwargs):
+        if self.__class__ is TrilinosSolver:
+            raise NotImplementedError, "can't instantiate abstract base class"
+        else:
+            Solver.__init__(self, *args, **kwargs)
+            
     def _makeTrilinosMatrix(self, L):
         """ 
         Takes in a Pysparse matrix and returns an Epetra.CrsMatrix . 
@@ -132,4 +129,4 @@ class TrilinosSolver(Solver):
         return _TrilinosMatrix
 
     def _applyTrilinosSolver(self):
-        pass
+        raise NotImplementedError

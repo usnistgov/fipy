@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh1D.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {9:11:18 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -148,9 +140,8 @@ We create one diffusion equation for each substitutional component
 If we are running interactively, we create a viewer to see the results 
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(
-    ...         vars = [solvent] + substitutionals,
-    ...         limits = {'datamin': 0, 'datamax': 1})
+    ...     viewer = Viewer(vars=[solvent] + substitutionals,
+    ...                     datamin=0, datamax=1)
     ...     viewer.plot()
 
 Now, we iterate the problem to equilibrium, plotting as we go

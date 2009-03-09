@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "faceGradVariable.py"
- #                                    created: 12/18/03 {2:52:12 PM} 
- #                                last update: 1/3/07 {3:26:15 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -37,7 +36,7 @@
 
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
-from fipy.tools.inline import inline
+from fipy.tools import inline
 
 class _FaceGradVariable(FaceVariable):
     def __init__(self, var):

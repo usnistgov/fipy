@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh.py"
- #                                    created: 11/10/03 {2:44:42 PM} 
- #                                last update: 6/13/08 {6:31:33 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -104,19 +103,19 @@ class Mesh(_CommonMesh):
            >>> from fipy.meshes.numMesh.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
-           >>> print mesh._getCellFaceIDs()
-           [[0 1 2 3]
-            [7 8 10 11]
-            [2 3 4 5]
-            [6 7 9 10]]
-            
+           >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           ...                                   [7, 8, 10, 11],
+           ...                                   [2, 3, 4, 5],
+           ...                                   [6, 7, 9, 10]]).flatten().all()
+           True
+
            >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
-           >>> print mesh._getCellFaceIDs()
-           [[0 1 2 3]
-            [7 6 10 9]
-            [2 3 4 5]
-            [6 7 9 10]]
+           >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           ...                                   [7, 6, 10, 9],
+           ...                                   [2, 3, 4, 5],
+           ...                                   [6, 7, 9, 10]]).flatten().all()
+           True
 
         """
 

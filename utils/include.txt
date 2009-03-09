@@ -62,11 +62,11 @@
 
    <a href="windows-installation.html">Windows installation</a>
 
-.. |latexEFFICIENCY| raw:: latex
+.. |html1to2| raw:: html
 
-   Chapter~\ref{chap:Efficiency} ``\titleref{chap:Efficiency}''
+   <code>example.update1_0to2_0</code>
 
-.. |htmlEFFICIENCY| raw:: html
+.. |latex1to2| raw:: latex
 
-   Chapter 5: "Efficiency" of the <a href="download/fipy.pdf">Manual</a>
+   Example~\ref{examples:update1-0to2-0}
 

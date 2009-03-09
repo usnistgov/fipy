@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  #
  #  FILE: "gmshImport.py"
- #                                    created: 11/10/03 {2:44:42 PM}
- #                                last update: 3/19/07 {6:03:58 PM}
+ #
  #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,13 +33,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-8-12 ADM 1.0 original
  # ###################################################################
  #
 
@@ -129,11 +121,11 @@ Test cases:
    [[2 0 1 0 3 1 4 4 3 5 3 6 5 7 7]
     [0 1 2 3 2 4 2 3 5 4 6 5 7 4 6]]
    
-   >>> print mesh._getCellFaceIDs()
-   [[0 0 2 7 7 8 12 14]
-    [1 3 5 4 8 10 13 11]
-    [2 4 6 6 9 11 9 12]]
-
+   >>> print (mesh._getCellFaceIDs() == [[0, 0, 2, 7, 7, 8, 12, 14],
+   ...                                   [1, 3, 5, 4, 8, 10, 13, 11],
+   ...                                   [2, 4, 6, 6, 9, 11, 9, 12]]).flatten().all()
+   True
+   
 The following test case is to test the handedness of the mesh to check
 it does not return negative volumes. Firstly we set up a list with
 tuples of strings to be read by gmsh. The list provide instuctions to
@@ -420,16 +412,11 @@ class MshFile:
                 self.deletegeofile = False
                 geofile = arg
                 
-            import sys
-            if sys.platform == 'win32':
-                self.mshfile = 'tmp.msh'
-            else:
-                (f, self.mshfile) = tempfile.mkstemp('.msh')
+            (f, self.mshfile) = tempfile.mkstemp('.msh')
 
             os.system('gmsh ' + geofile + ' -2 -v 0 -format msh -o ' + self.mshfile)
 
-            if sys.platform != 'win32':
-                os.close(f)
+            os.close(f)
 
             if self.deletegeofile:
                 os.remove(geofile)

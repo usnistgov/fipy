@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "circle.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {9:12:59 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -124,8 +116,9 @@ surfactantEquation = SurfactantEquation(
 
 if __name__ == '__main__':
     
-    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -initialRadius, 'datamax': initialRadius})
-    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': -1., 'datamax': 100.})
+    distanceViewer = Viewer(vars=distanceVariable, 
+                            datamin=-initialRadius, datamax=initialRadius)
+    surfactantViewer = Viewer(vars=surfactantVariable, datamin=-1., datamax=100.)
     distanceViewer.plot()
     surfactantViewer.plot()
 

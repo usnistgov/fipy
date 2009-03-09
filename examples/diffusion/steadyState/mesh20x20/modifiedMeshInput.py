@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "ttri2Dinput.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 5/28/08 {11:35:17 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -91,7 +83,7 @@ boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001
 
 if __name__ == '__main__':
     ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer = viewers.make(vars = var)
+    viewer = Viewer(vars = var)
     viewer.plot()
     varArray = array(var)
     x = mesh.getCellCenters()[0]
@@ -100,13 +92,13 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = "absolute error",
                    mesh = mesh,
                    value = abs(errorArray))
-    errorViewer = viewers.make(vars = errorVar)
+    errorViewer = Viewer(vars = errorVar)
     errorViewer.plot()
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    NOViewer = viewers.make(vars = NonOrthoVar)
+    NOViewer = Viewer(vars = NonOrthoVar)
 
 
     NOViewer.plot()

@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "adsorbingSurfactantEquation.py"
- #                                    created: 8/31/04 {10:39:23 AM} 
- #                                last update: 12/22/05 {12:00:28 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -48,7 +40,7 @@ from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.solvers import *
+from fipy.solvers import LinearLUSolver, LinearPCGSolver
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
@@ -350,13 +342,13 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         if consumptionCoeff is not None:
             self.eq += ImplicitSourceTerm(consumptionCoeff)
 
-    def solve(self, var, boundaryConditions = (), solver = LinearPCGSolver(), dt = 1.):
+    def solve(self, var, boundaryConditions=(), solver=LinearPCGSolver(), dt = 1.):
         """
         Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
         	
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            
@@ -364,7 +356,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
                 
         for coeff in self.coeffs:
             coeff._updateDt(dt)
-        SurfactantEquation.solve(self, var, boundaryConditions = boundaryConditions, solver = solver, dt = dt)
+        SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
 
     def sweep(self, var, solver=LinearLUSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
@@ -375,7 +367,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. 
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation

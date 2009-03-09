@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:09:38 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -64,8 +56,7 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
     ...                                                value = initialArray)
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var,
-    ...                           limits = {'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=var, datamin=0., datamax=1.)
     ...     viewer.plot()
     ...     raw_input("press key to continue")
     

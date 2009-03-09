@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh1D.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:43 PM} { 1:23:41 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -94,9 +86,9 @@ Construct a `distanceVariable` object.
 
    >>> var = DistanceVariable(name='level set variable',
    ...                        mesh=mesh,
-   ...                        value=-1,
+   ...                        value=-1.,
    ...                        hasOld=1)
-   >>> var.setValue(1, where=mesh.getCellCenters()[0] > interfacePosition)
+   >>> var.setValue(1., where=mesh.getCellCenters()[0] > interfacePosition)
    >>> var.calcDistanceFunction()
    
 The `advectionEquation` is constructed.
@@ -118,8 +110,7 @@ The problem can then be solved by executing a serious of time steps.
 ..
 
    >>> if __name__ == '__main__':
-   ...     viewer = viewers.make(vars=var,
-   ...                           limits={'datamin': -10., 'datamax': 10.})
+   ...     viewer = Viewer(vars=var, datamin=-10., datamax=10.)
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()

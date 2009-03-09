@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "advectionEquation.py"
- #                                    created: 11/12/03 {10:39:23 AM} 
- #                                last update: 3/29/07 {10:39:19 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -142,7 +134,7 @@ class _AdvectionTerm(Term):
         adjacentValues = numerix.take(oldArray, cellToCellIDs)
 
         differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
-        differences = MA.filled(differences, value = 0)
+        differences = MA.filled(differences, 0)
         
         minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
         maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
@@ -161,8 +153,8 @@ class _AdvectionTerm(Term):
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
-        from fipy.solvers import LinearCGSSolver
-        return solver or LinearCGSSolver()
+        from fipy.solvers import LinearLUSolver
+        return solver or LinearLUSolver()
 
 
 def _test(): 

@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "tsvViewer.py"
- #                                    created: 3/10/05 {2:54:11 PM} 
- #                                last update: 7/11/07 {2:47:43 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -48,11 +40,11 @@ import sys
 
 from fipy.tools import numerix
  
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
-class TSVViewer(Viewer):
+class TSVViewer(_Viewer):
     """
     "Views" one or more variables in tab-separated-value format.
         
@@ -67,33 +59,37 @@ class TSVViewer(Viewer):
         :
         :
         
-    Any cell centers that lie outside the `limits` provided will not be included.
-    Any values that lie outside the `datamin` or `datamax` of  `limits` will be 
-    replaced with `nan`.
-    
-    All variables must have the same mesh.
-        
-    It tries to do something reasonable with rank-1 `CellVariable` and `FaceVariable` objects.
-
     """
     _axis = ["x", "y", "z"]
     
-    def __init__(self, vars, limits = None, title = None):
+    def __init__(self, vars, title=None, limits={}, **kwlimits):
         """
         Creates a `TSVViewer`.
+
+        Any cell centers that lie outside the limits provided will not be included.
+        Any values that lie outside the *datamin* or *datamax* will be 
+        replaced with `nan`.
         
+        All variables must have the same mesh.
+            
+        It tries to do something reasonable with rank-1 `CellVariable` and `FaceVariable` objects.
+
+
         :Parameters:
-          - `vars`: A `tuple` ot `list` of `CellVariable`,
-            `FaceVariable`, objects.
-          - `limits`: A dictionary with possible keys `'xmin'`, `'xmax'`, 
-            `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
-            A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer 
-            will also use `'ymin'` and `'ymax'`, and so on. 
-            All viewers will use `'datamin'` and `'datamax'`. 
-            Any limit set to a (default) value of `None` will autoscale.
-          - `title`: displayed at the top of the Viewer output
+          vars
+            a `CellVariable`, a `FaceVariable`, a tuple of `CellVariable`
+            objects, or a tuple of `FaceVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
         """
-        Viewer.__init__(self, vars = vars, limits = limits, title = title)
+        kwlimits.update(limits)
+        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
+        
         mesh = self.vars[0].getMesh()
         
         for var in self.vars:
@@ -130,7 +126,7 @@ class TSVViewer(Viewer):
             f.write("\t".join(line))
             f.write("\n")
 
-    def plot(self, filename = None):
+    def plot(self, filename=None):
         """
         "plot" the coordinates and values of the variables to `filename`. 
         If `filename` is not provided, "plots" to stdout.
@@ -154,6 +150,10 @@ class TSVViewer(Viewer):
         0.15    0.15    2       10      5
         0.05    0.45    -2      35      -3.33333333333333
         0.15    0.45    5       35      5
+        
+        :Parameters:
+          filename
+            If not `None`, the name of a file to save the image into.
         """
         if filename is not None:
             import os
@@ -165,7 +165,7 @@ class TSVViewer(Viewer):
         else:
             f = sys.stdout
         
-        if self.title:
+        if self.title and len(self.title) > 0:
             f.write(self.title)
             f.write("\n")
             

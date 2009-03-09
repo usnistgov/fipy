@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {9:11:13 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -253,10 +245,9 @@ And Poisson's equation
 If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
-    ...     phaseViewer = viewers.make(vars = phase,
-    ...                                limits = {'datamin': 0, 'datamax': 1})
+    ...     phaseViewer = Viewer(vars=phase, datamin=0, datamax=1)
     ...     concViewer = Gist1DViewer(vars = [solvent] + substitutionals + interstitials, ylog = 1)
-    ...     potentialViewer = viewers.make(vars = potential)
+    ...     potentialViewer = Viewer(vars = potential)
     ...     phaseViewer.plot()
     ...     concViewer.plot()
     ...     potentialViewer.plot()
@@ -265,7 +256,7 @@ If running interactively, we create viewers to display the results
 Again, this problem does not have an analytical solution, so after
 iterating to equilibrium
 
-    >>> solver = LinearCGSSolver(tolerance = 1e-3)
+    >>> solver = LinearLUSolver(tolerance = 1e-3)
 
     >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
 
@@ -273,7 +264,7 @@ iterating to equilibrium
     >>> potential.residual = CellVariable(mesh = mesh)
     >>> for Cj in substitutionals + interstitials:
     ...     Cj.residual = CellVariable(mesh = mesh)
-    >>> residualViewer = viewers.make(vars = [phase.residual, potential.residual] + [Cj.residual for Cj in substitutionals + interstitials])
+    >>> residualViewer = Viewer(vars = [phase.residual, potential.residual] + [Cj.residual for Cj in substitutionals + interstitials])
     
     >>> tsv = TSVViewer(vars = [phase, potential] + substitutionals + interstitials)
     

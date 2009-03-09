@@ -3,8 +3,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "uniformNoiseVariable.py"
- #                                    created: 8/26/05 {3:08:48 PM} 
- #                                last update: 3/7/06 {11:55:44 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -54,8 +53,9 @@ class UniformNoiseVariable(NoiseVariable):
         
         >>> if __name__ == '__main__':
         ...     from fipy import viewers
-        ...     viewer = viewers.make(vars = noise, limits = {'datamin':0, 'datamax':1})
-        ...     histoplot = viewers.make(vars = histogram)
+        ...     viewer = Viewer(vars=noise, 
+        ...                     datamin=0, datamax=1)
+        ...     histoplot = Viewer(vars=histogram)
         
         >>> for i in range(10):
         ...     noise.scramble()

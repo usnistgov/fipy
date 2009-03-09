@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "circle.py"
- #                                    created: 11/10/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:15:28 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -139,7 +131,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
 
 if __name__ == '__main__':
 
-    phaseViewer = viewers.make(vars = phase) 
+    phaseViewer = Viewer(vars = phase) 
     phaseViewer.plot()
     for step in range(steps):
         phase.updateOld()

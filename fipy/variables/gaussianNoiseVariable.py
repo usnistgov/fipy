@@ -5,8 +5,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "gaussianNoiseVariable.py"
- #                                    created: 7/26/05 {8:35:17 AM} 
- #                                last update: 12/22/05 {11:58:26 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,13 +31,6 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2005-07-26 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -124,8 +116,9 @@ class GaussianNoiseVariable(NoiseVariable):
            
            >>> if __name__ == '__main__':
            ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin':-5, 'datamax':5})
-           ...     histoplot = viewers.make(vars = (histogram, gauss))
+           ...     viewer = Viewer(vars=noise, 
+           ...                     datamin=-5, datamax=5)
+           ...     histoplot = Viewer(vars=(histogram, gauss))
            
            >>> for i in range(10):
            ...     noise.scramble()

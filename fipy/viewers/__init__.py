@@ -35,19 +35,22 @@ from tsvViewer import TSVViewer
 class MeshDimensionError(IndexError):
     pass
 
-def make(vars, title = None, limits = None):
-    r"""
+def Viewer(vars, title = None, limits={}, **kwlimits):
+    r"""Generic function for creating a `Viewer`. 
     
-    Generic function for creating a `Viewer`. The `make` function will
-    search the module tree and return an instance of the first
-    `Viewer` it finds that supports the dimensions of `vars`. Setting the
-    '`FIPY_VIEWER`' environment variable to either '`gist`',
-    '`gnuplot`', '`matplotlib`', or '`tsv`' will specify the viewer.
+    The `Viewer` factory will search the module tree and return an instance of
+    the first `Viewer` it finds that supports the dimensions of `vars`. Setting
+    the '`FIPY_VIEWER`' environment variable to either '`gist`', '`gnuplot`',
+    '`matplotlib`', or '`tsv`' will specify the viewer.
        
-    The `limits` parameter can be used to constrain the view. For example::
+    The `kwlimits` or `limits` parameters can be used to constrain the view. For example::
             
-        fipy.viewers.make(vars = some1Dvar, 
-                          limits = {'xmin': 0.5, 'xmax': None, 'datamax': 3})
+        Viewer(vars=some1Dvar, xmin=0.5, xmax=None, datamax=3)
+               
+    or::
+        
+        Viewer(vars=some1Dvar, 
+               limits={'xmin': 0.5, 'xmax': None, 'datamax': 3})
         
     will return a viewer that displays a line plot from an `x` value
     of 0.5 up to the largest `x` value in the dataset. The data values
@@ -55,15 +58,17 @@ def make(vars, title = None, limits = None):
     limit.
 
     :Parameters:
-
-      - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-      - `limits`: a dictionary with possible keys `'xmin'`, `'xmax'`,
-        `'ymin'`, `'ymax'`, `'zmin'`, `'zmax'`, `'datamin'`, `'datamax'`.
-        A 1D Viewer will only use `'xmin'` and `'xmax'`, a 2D viewer
-        will also use `'ymin'` and `'ymax'`, and so on.
-        All viewers will use `'datamin'` and `'datamax'`.
-        Any limit set to a (default) value of `None` will autoscale.
-      - `title`: displayed at the top of the Viewer window
+      vars
+        a `CellVariable` or tuple of `CellVariable` objects to plot
+      title
+        displayed at the top of the `Viewer` window
+      limits : dict
+        a (deprecated) alternative to limit keyword arguments
+      xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+        displayed range of data. A 1D `Viewer` will only use `xmin` and
+        `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
+        viewers will use `datamin` and `datamax`. Any limit set to a
+        (default) value of `None` will autoscale.
       
     """
     
@@ -72,41 +77,45 @@ def make(vars, title = None, limits = None):
     vars = list(vars)
     
     if os.environ.has_key('FIPY_VIEWER'):
-        viewerClassNames = [os.environ['FIPY_VIEWER'] + 'Viewer']
+        FIPY_VIEWER = os.environ['FIPY_VIEWER']
     else:
-        viewerPaths = []
-    
-        for suffix, mode, moduleType in [("", "", imp.PKG_DIRECTORY)] + imp.get_suffixes():
-            if moduleType is not imp.PY_COMPILED:
-                for path in __path__:
-                    viewerPaths += glob.glob(os.path.join(path, "*Viewer%s" % suffix))
-                
-        viewerClassNames = []
-        for viewerPath in viewerPaths:
-            path, f = os.path.split(viewerPath)
-            className, ext = os.path.splitext(f)
-            viewerClassNames.append(className)
+        FIPY_VIEWER = None
 
+    if FIPY_VIEWER == "dummy":
+        from viewer import _Viewer
+        return _Viewer(vars=vars)
 
     errors = []
 
+    attempts = []
     viewers = []
-    for className in viewerClassNames:
+    
+    import pkg_resources
+    for ep in pkg_resources.iter_entry_points(group='fipy.viewers', 
+                                              name=FIPY_VIEWER):
+                                                  
+        attempts.append(ep.name)
+        
         try:
-            className = string.lower(className[0]) + className[1:]
-            viewerModule = imp.load_module(className, *imp.find_module(className, __path__))
+            ViewerClass = ep.load()
             
             while len(vars) > 0:
-                viewer = viewerModule.make(vars = vars, title = title, limits = limits)
+                viewer = ViewerClass(vars=vars, title=title, limits=limits, **kwlimits)
                 
                 for var in viewer.getVars():
                     vars.remove(var)
                 
                 viewers.append(viewer)
-            
+                
             break
         except Exception, s:
-            errors.append("%s: %s" % (className, s))
+            errors.append("%s: %s" % (ep.name, s))
+
+    if len(attempts) == 0:
+        if FIPY_VIEWER is not None:
+            raise ImportError, "`%s` viewer not found" % FIPY_VIEWER
+        else:
+            raise ImportError, "No viewers found"
         
     if len(vars) > 0:
         raise ImportError, "Failed to import a viewer: %s" % str(errors)        
@@ -116,4 +125,10 @@ def make(vars, title = None, limits = None):
     else:
         return viewers[0]
         
-
+def make(*args, **kwargs):
+    """
+    A deprecated synonym for `Viewer`
+    """
+    import warnings
+    warnings.warn("'Viewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
+    return Viewer(*args, **kwargs)

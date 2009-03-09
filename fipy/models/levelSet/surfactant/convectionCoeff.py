@@ -6,8 +6,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "convectionCoeff.py"
- #                                    created: 7/28/04 {10:39:23 AM} 
- #                                last update: 10/17/07 {12:58:58 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -124,8 +116,8 @@ class _ConvectionCoeff(FaceVariable):
      
         faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._getFaceAreas()
 
-        cellFaceNormalAreas = numerix.array(MA.filled(numerix.take(faceNormalAreas, cellFaceIDs, axis=-1), value = 0))
-        norms = numerix.array(MA.filled(MA.array(self.mesh._getCellNormals()), value = 0))
+        cellFaceNormalAreas = numerix.array(MA.filled(numerix.take(faceNormalAreas, cellFaceIDs, axis=-1), 0))
+        norms = numerix.array(MA.filled(MA.array(self.mesh._getCellNormals()), 0))
         
         alpha = numerix.dot(cellFaceNormalAreas, norms)
         alpha = numerix.where(alpha > 0, alpha, 0)

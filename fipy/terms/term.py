@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "term.py"
- #                                    created: 11/12/03 {10:54:37 AM} 
- #                                last update: 9/17/08 {9:34:46 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-12 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -48,7 +40,7 @@ from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.solvers import *
+from fipy.solvers import DefaultSolver
 
 class Term:
     """
@@ -63,6 +55,9 @@ class Term:
             `FaceVariable` objects are also acceptable for diffusion or convection terms.
 
         """  
+        if self.__class__ is Term:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         self.coeff = coeff
         self.geomCoeff = None
         self._cacheMatrix = False
@@ -71,8 +66,11 @@ class Term:
         self.RHSvector = None
         self._diagonalSign = Variable(value=1)
         
+    def copy(self):
+        return self.__class__(self.coeff)
+        
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
-        pass
+        raise NotImplementedError
 
     def _calcResidualVector(self, var, matrix, RHSvector):
 
@@ -93,7 +91,11 @@ class Term:
 ##        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
 
     def __buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
-
+        if numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float']:
+            import warnings
+            warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
+                          UserWarning, stacklevel=4)
+        
         self._verifyCoeffType(var)
         
         if numerix.getShape(dt) != ():
@@ -115,7 +117,7 @@ class Term:
         
         if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
             self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)
-            self._viewer.plot(matrix=matrix)
+            self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
             raw_input()
         
         return matrix, RHSvector
@@ -142,7 +144,7 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearGMRESSolver` for Trilinos.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
 
@@ -161,7 +163,7 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearGMRESSolver` for Trilinos.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
@@ -194,7 +196,7 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
@@ -209,6 +211,39 @@ class Term:
         residualFn = residualFn or self._calcResidualVector
         
         return residualFn(var, matrix, RHSvector)
+
+    def residualVectorAndNorm(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, normFn=None):
+        r"""
+        Builds the `Term`'s linear system once. This method
+        also recalculates and returns the residual as well as applying
+        under-relaxation.
+
+        :Parameters:
+
+           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
+           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+           - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
+
+        """
+        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+
+        if underRelaxation is not None:
+            matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
+
+        vector = self._calcResidualVector(var, matrix, RHSvector)
+        
+        L2norm = numerix.L2norm(vector)
+        RHSL2norm = numerix.L2norm(RHSvector)
+        
+#         if RHSL2norm != 0:
+#             L2norm /= RHSL2norm 
+#         else:
+#             print "b is zero!!!"
+
+        return vector, L2norm
 
     def _verifyCoeffType(self, var):
         pass
@@ -277,10 +312,10 @@ class Term:
         r"""
         Add a `Term` to another `Term`, number or variable.
 
-           >>> Term(coeff=1.) + 10.
-           10.0 + Term(coeff=1.0) == 0
-           >>> Term(coeff=1.) + Term(coeff=2.)
-           Term(coeff=3.0)
+           >>> __Term(coeff=1.) + 10.
+           10.0 + __Term(coeff=1.0) == 0
+           >>> __Term(coeff=1.) + __Term(coeff=2.)
+           __Term(coeff=3.0)
 
         """
         from fipy.terms.equation import _Equation
@@ -309,8 +344,8 @@ class Term:
         r"""
         Add a number or variable to a `Term`.
 
-           >>> 10. + Term(coeff=1.)
-           10.0 + Term(coeff=1.0) == 0
+           >>> 10. + __Term(coeff=1.)
+           10.0 + __Term(coeff=1.0) == 0
         """
         return self + other
     
@@ -318,8 +353,8 @@ class Term:
         r"""
          Negate a `Term`.
 
-           >>> -Term(coeff=1.)
-           Term(coeff=-1.0)
+           >>> -__Term(coeff=1.)
+           __Term(coeff=-1.0)
 
         """
         try:
@@ -333,8 +368,8 @@ class Term:
         r"""
         Posate a `Term`.
 
-           >>> +Term(coeff=1.)
-           Term(coeff=1.0)
+           >>> +__Term(coeff=1.)
+           __Term(coeff=1.0)
 
         """
         return self
@@ -343,10 +378,10 @@ class Term:
         r"""
         Subtract a `Term` from a `Term`, number or variable.
 
-           >>> Term(coeff=1.) - 10.
-           -10.0 + Term(coeff=1.0) == 0
-           >>> Term(coeff=1.) - Term(coeff=2.)
-           Term(coeff=-1.0)
+           >>> __Term(coeff=1.) - 10.
+           -10.0 + __Term(coeff=1.0) == 0
+           >>> __Term(coeff=1.) - __Term(coeff=2.)
+           __Term(coeff=-1.0)
            
         """        
         if self._otherIsZero(other):
@@ -358,8 +393,8 @@ class Term:
         r"""
         Subtract a `Term`, number or variable from a `Term`.
 
-           >>> 10. - Term(coeff=1.)
-           10.0 + Term(coeff=-1.0) == 0
+           >>> 10. - __Term(coeff=1.)
+           10.0 + __Term(coeff=-1.0) == 0
 
         """        
         if self._otherIsZero(other):
@@ -372,30 +407,30 @@ class Term:
         This method allows `Terms` to be equated in a natural way. Note that the
         following does not return `False.`
 
-           >>> Term(coeff=1.) == Term(coeff=2.)
-           Term(coeff=-1.0)
+           >>> __Term(coeff=1.) == __Term(coeff=2.)
+           __Term(coeff=-1.0)
 
         it is equivalent to,
 
-           >>> Term(coeff=1.) - Term(coeff=2.)
-           Term(coeff=-1.0)
+           >>> __Term(coeff=1.) - __Term(coeff=2.)
+           __Term(coeff=-1.0)
 
         A `Term` can also equate with a number. 
 
-           >>> Term(coeff=1.) == 1.  
-           -1.0 + Term(coeff=1.0) == 0
+           >>> __Term(coeff=1.) == 1.  
+           -1.0 + __Term(coeff=1.0) == 0
            
         Likewise for integers.
 
-           >>> Term(coeff=1.) == 1
-           -1 + Term(coeff=1.0) == 0
+           >>> __Term(coeff=1.) == 1
+           -1 + __Term(coeff=1.0) == 0
            
         Equating to zero is allowed, of course
         
-            >>> Term(coeff=1.) == 0
-            Term(coeff=1.0)
-            >>> 0 == Term(coeff=1.)
-            Term(coeff=1.0)
+            >>> __Term(coeff=1.) == 0
+            __Term(coeff=1.0)
+            >>> 0 == __Term(coeff=1.)
+            __Term(coeff=1.0)
            
         """
 
@@ -408,8 +443,8 @@ class Term:
         r"""
         Mutiply a term
 
-            >>> 2. * Term(0.5)
-            2.0 * Term(coeff=0.5)
+            >>> 2. * __Term(coeff=0.5)
+            2.0 * __Term(coeff=0.5)
             
         """         
         from fipy.terms.mulTerm import _MulTerm
@@ -421,8 +456,8 @@ class Term:
         r"""
         Divide a term
 
-            >>> Term(2.) / 2.
-            0.5 * Term(coeff=2.0)
+            >>> __Term(2.) / 2.
+            0.5 * __Term(coeff=2.0)
 
         """
         return (1 / other) * self
@@ -431,8 +466,8 @@ class Term:
         """
         The representation of a `Term` object is given by,
         
-           >>> print Term(123.456)
-           Term(coeff=123.456)
+           >>> print __Term(123.456)
+           __Term(coeff=123.456)
 
         """
         return "%s(coeff=%s)" % (self.__class__.__name__, repr(self.coeff))
@@ -449,11 +484,17 @@ class Term:
         return self.geomCoeff
         
     def _getWeight(self, mesh):
-        pass
+        raise NotImplementedError
 
     def _isAdditive(self):
         return True
             
+class __Term(Term): 
+    """
+    Dummy subclass for tests
+    """
+    pass 
+
 def _test(): 
     import doctest
     return doctest.testmod()

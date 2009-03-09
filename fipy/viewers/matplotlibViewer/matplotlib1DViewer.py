@@ -31,21 +31,14 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
  
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer
 
-class Matplotlib1DViewer(MatplotlibViewer):
+class Matplotlib1DViewer(_MatplotlibViewer):
     """
     Displays a y vs.  x plot of one or more 1D `CellVariable` objects using
     Matplotlib_.
@@ -53,10 +46,29 @@ class Matplotlib1DViewer(MatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
+    __doc__ += _MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
     
-    def __init__(self, vars, limits = None, title = None, xlog=False, ylog=False):
-        MatplotlibViewer.__init__(self, vars=vars, limits=limits, title=title)
+    def __init__(self, vars, title=None, xlog=False, ylog=False, limits={}, **kwlimits):
+        """
+        
+        :Parameters:
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          xlog
+            log scaling of x axis if `True`
+          ylog
+            log scaling of y axis if `True`
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
+            (*ymin* and *ymax* are synonyms for *datamin* and *datamax*).
+        """
+        kwlimits.update(limits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
     
         import pylab
         
@@ -87,7 +99,7 @@ class Matplotlib1DViewer(MatplotlibViewer):
         return [[array(var.getMesh().getCellCenters()[0]), array(var)] for var in self.vars]
             
     def _getSuitableVars(self, vars):
-        vars = [var for var in MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
         if len(vars) > 1:
             vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
         if len(vars) == 0:

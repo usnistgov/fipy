@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh1D.py"
- #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:07:20 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -77,7 +69,7 @@ This example solves the steady-state convection-diffusion equation as described 
 
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearCGSSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
 
 We test the solution against the analytical result:
 
@@ -90,7 +82,7 @@ We test the solution against the analytical result:
     1
    
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var)
+    ...     viewer = Viewer(vars = var)
     ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "CylindricalUniformGrid2D.py"
- #                                    created: 2/28/06 {2:30:24 PM} 
- #                                last update: 5/30/08 {8:38:01 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2006-02-28 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -55,6 +47,9 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,))):
         UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, origin=origin)
+
+    def _getAreaProjections(self):
+        return self._getAreaProjectionsPy()
             
     def _getFaceAreas(self):
         faceAreas = numerix.zeros(self.numberOfFaces, 'd')

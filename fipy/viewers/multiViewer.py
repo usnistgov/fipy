@@ -3,10 +3,8 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "multiViewer.py"
- #                                    created: 12/17/05 {6:28:03 PM} 
- #                                last update: 10/25/06 {4:10:46 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -29,32 +27,31 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2005-12-17 JEG 1.0 original
  # ###################################################################
  ##
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 
-class MultiViewer(Viewer):
+class MultiViewer(_Viewer):
     """
     Treat a collection of different viewers (such for different 2D plots 
     or 1D plots with different axes) as a single viewer that will `plot()` 
     all subviewers simultaneously.
     """
     def __init__(self, viewers):
+        """
+        :Parameters:
+          viewers : list
+            the viewers to bind together
+        """
         if type(viewers) not in [type([]), type(())]:
             viewers = [viewers]
         self.viewers = viewers
 
-    def setLimits(self, limits):
+    def setLimits(self, limits={}, **kwlimits):
+        kwlimits.update(limits)
         for viewer in self.getViewers():
-            viewer.setLimits(limits)
+            viewer.setLimits(**kwlimits)
             
     def plot(self):
         for viewer in self.getViewers():

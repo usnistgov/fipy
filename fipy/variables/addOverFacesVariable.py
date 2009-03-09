@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "addOverFacesVariable.py"
- #                                    created: 4/30/04 {10:39:23 AM} 
- #                                last update: 1/3/07 {3:26:40 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,20 +29,11 @@
  # they have been modified.
  # ========================================================================
  # 
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004- 4-30 JEG 1.0 original
  # ###################################################################
  ##
 
 from fipy.tools import numerix
-
-from fipy.tools import numerix
-import fipy.tools.inline.inline as inline
+from fipy.tools import inline
 from fipy.variables.cellVariable import CellVariable
 
 class _AddOverFacesVariable(CellVariable):
@@ -60,7 +50,8 @@ class _AddOverFacesVariable(CellVariable):
         
         contributions = numerix.take(self.faceVariable, ids)
 
-        return numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0) / self.mesh.getCellVolumes()
+        # FIXME: numerix.MA.filled casts away dimensions
+        return numerix.MA.filled(numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0)) / self.mesh.getCellVolumes()
         
     def _calcValueIn(self):
 
@@ -78,7 +69,12 @@ class _AddOverFacesVariable(CellVariable):
           value[i] = 0.;
           for(j = 0; j < numberOfCellFaces; j++)
             {
-              value[i] += orientations[i + j * numberOfCells] * faceVariable[ids[i + j * numberOfCells]];
+              // _getCellFaceIDs() can be masked, which caused subtle and 
+              // unreproduceable problems on OS X (who knows why not elsewhere)
+              long id = ids[i + j * numberOfCells];
+              if (id >= 0) { 
+                  value[i] += orientations[i + j * numberOfCells] * faceVariable[id];
+              }
             }
             value[i] = value[i] / cellVolume[i];
           }

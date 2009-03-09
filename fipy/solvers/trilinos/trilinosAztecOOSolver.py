@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "trilinosAztecOOSolver.py"
- #                                    created: 06/25/07 
- #                                last update: 06/25/07 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
@@ -64,6 +56,9 @@ class TrilinosAztecOOSolver(TrilinosSolver):
           - `precon`: Preconditioner object to use. 
 
         """
+        if self.__class__ is TrilinosAztecOOSolver:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
         TrilinosSolver.__init__(self, tolerance=tolerance,
                                 iterations=iterations, steps=steps, precon=None)
         self.preconditioner = precon
@@ -73,13 +68,12 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         solver = AztecOO.AztecOO(A, LHS, RHS)
         solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
 
+##        solver.SetAztecOption(AztecOO.AZ_kspace, 100)
+
         solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
 
-##        solver.SetAztecOption(AztecOO.AZ_kspace, 100)
-##        Solver.SetAztecOption(AztecOO.AZ_kspace, AztecOO.AZ_max_iter)
-
         if self.preconditioner is not None:
-            self.preconditioner._applyToSolver(solver=solver, matrix=self.precMatrix)
+            self.preconditioner._applyToSolver(solver=solver, matrix=A)
         else:
             solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
         

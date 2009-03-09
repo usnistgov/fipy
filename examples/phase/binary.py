@@ -5,8 +5,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "binary.py"
- #                                     created: 4/10/06 {2:20:36 PM}
- #                                 last update: 7/5/07 {8:21:38 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -29,12 +28,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
- # History
- # 
- # modified   by  rev reason
- # ---------- --- --- -----------
- # 2006-04-10 JEG 1.0 original
  # 
  # ########################################################################
  ##
@@ -546,8 +539,8 @@ We plot the result against the sharp interface solution
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(phase, C, sharp), 
-    ...                           limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=(phase, C, sharp), 
+    ...                     datamin=0., datamax=1.)
     ...     viewer.plot()
 
 Because the phase field interface will not move, and because we've seen in

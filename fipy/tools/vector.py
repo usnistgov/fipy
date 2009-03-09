@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "tools.py"
- #                                    created: 11/17/03 {5:05:47 PM} 
- #                                last update: 6/7/08 {11:02:01 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -68,9 +60,10 @@ def _putAddPy(vector, ids, additionVector, mask = False):
             for id, value in zip(ids.flat, additionVector.flat):
                 vector.flat[id] += value
 
-### !!! THIS NEEDS WORK !!! ###
+## FIXME: inline version doesn't account for all of the conditions that Python 
+## version does.
 def _putAddIn(vector, ids, additionVector):
-    from fipy.tools.inline import inline
+    from fipy.tools import inline
     inline._runInline("""
         int ID = ids[i];
 	vector[ID] += additionVector[i];
@@ -82,7 +75,7 @@ def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
     what we thought it was doing.
     """
-    from fipy.tools.inline import inline
+    from fipy.tools import inline
     inline._optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
 def prune(array, shift, start=0, axis=0):

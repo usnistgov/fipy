@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "gaussCellGradVariable.py"
- #                                    created: 12/18/03 {2:28:00 PM} 
- #                                last update: 1/3/07 {3:24:56 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -35,11 +34,9 @@
  # ###################################################################
  ##
  
-from fipy.tools.numerix import MA
-
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
-from fipy.tools.inline import inline
+from fipy.tools import inline
 from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 
@@ -63,8 +60,8 @@ class _GaussCellGradVariable(CellVariable):
                 
             ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
         """,val = val,
-            ids = numerix.array(MA.filled(ids, 0)),
-            orientations = numerix.array(MA.filled(orientations, 0)),
+            ids = numerix.array(numerix.MA.filled(ids, 0)),
+            orientations = numerix.array(numerix.MA.filled(orientations, 0)),
             volumes = numerix.array(volumes),
             areaProj = numerix.array(self.mesh._getAreaProjections()),
             faceValues = numerix.array(self.var.getArithmeticFaceValue()),

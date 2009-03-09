@@ -5,8 +5,7 @@
  #  FiPy - Python-based phase field solver
  # 
  #  FILE: "electrostatics.py"
- #                                    created: 1/15/04 {3:45:27 PM} 
- #                                last update: 7/5/07 {9:08:45 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-01-15 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -161,7 +153,7 @@ If we are running the example interactively, we view the result
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(charge, potential, analytical))
+    ...     viewer = Viewer(vars=(charge, potential, analytical))
     ...     viewer.plot()
     ...     raw_input("Press any key to continue...")
 

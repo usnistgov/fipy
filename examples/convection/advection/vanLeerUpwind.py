@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "vanLeerUpwind.py"
- #                                    created: 12/16/03 {3:23:47 PM}
- #                                last update: 7/5/07 {9:07:24 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -110,8 +102,8 @@ eq2 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))
 
 if __name__ == '__main__':
 
-    viewer1 = viewers.make(vars=var1)
-    viewer2 = viewers.make(vars=var2)
+    viewer1 = Viewer(vars=var1)
+    viewer2 = Viewer(vars=var2)
     viewer1.plot()
     viewer2.plot()
 

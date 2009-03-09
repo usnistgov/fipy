@@ -29,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -43,10 +36,12 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import os
+import inspect
 
 from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
+from fipy.tools import inline
 
 class Variable(object):
     
@@ -147,14 +142,29 @@ class Variable(object):
 
            >>> from scipy.special import gamma as Gamma
            >>> print type(Gamma(Variable([1.0, 2.0])))
-           <type 'numpy.ndarray'>
+           <class 'fipy.variables.unaryOperatorVariable.unOp'>
 
         """
-        if context is not None and len(context[1])==2:
-            return NotImplemented
-        else:
-            return arr
+        result = arr
+        
+        if context is not None:
+            from fipy.variables.constant import _Constant
+            (func, args, _) = context
+            def __makeVariable(v):
+                if not isinstance(v, Variable):
+                    v = _Constant(v)
+                return v
+            args = [__makeVariable(arg) for arg in args]
 
+            if len(args) == 1:
+                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape)
+            elif len(args) == 2:
+                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape)
+            else:
+                result = NotImplemented
+
+        return result
+        
     def __array__(self, t=None):
         """
         Attempt to convert the `Variable` to a numerix `array` object
@@ -163,24 +173,11 @@ class Variable(object):
             >>> print numerix.array(v)
             [2 3]
         
-        It is an error to convert a dimensional `Variable` to a 
-        Numeric `array`
+        A dimensional `Variable` will convert to the numeric value in the current units
     
             >>> v = Variable(value=[2,3], unit="m")
             >>> numerix.array(v)
-            Traceback (most recent call last):
-                ...
-            TypeError: Numeric array value must be dimensionless
-
-        Convert a list of 1 element Variables to an array
-
-            >>> numerix.array([Variable(0), Variable(0)])
-            Traceback (most recent call last):
-               ...
-            ValueError: setting an array element with a sequence.
-            >>> print numerix.array([numerix.array(Variable(0)), numerix.array(Variable(0))])
-            [0 0]
-             
+            array([2, 3])
         """
 
         return numerix.array(self.getValue(), t)
@@ -225,14 +222,15 @@ class Variable(object):
             Variable(value=array([0, 1, 2]))
             
         """
-        return Variable(value=self)
+        return self._getArithmeticBaseClass()(value=self)
 
 
     def _getUnitAsOne(self):
-        if self.getUnit() is physicalField._unity:
+        unit = self.getUnit()
+        if unit is physicalField._unity:
             return 1.
         else:
-            return physicalField.PhysicalField(value=1, unit=self.getUnit())
+            return physicalField.PhysicalField(value=1, unit=unit)
 
     def _extractUnit(self, value):
         if isinstance(value, physicalField.PhysicalField):
@@ -243,11 +241,29 @@ class Variable(object):
     def getUnit(self):
         """
         Return the unit object of `self`.
+        
             >>> Variable(value="1 m").getUnit()
             <PhysicalUnit m>
         """
         return self._extractUnit(self.getValue())
         
+    def setUnit(self, unit):
+        """
+        Change the unit object of `self` to `unit`
+        
+            >>> a = Variable(value="1 m")
+            >>> a.setUnit("m**2/s")
+            >>> print a
+            1.0 m**2/s
+        """
+        if self.value is None:
+            self.getValue()
+
+        if isinstance(self.value, physicalField.PhysicalField):
+            self.value.setUnit(unit)
+        else:
+            self.value = physicalField.PhysicalField(value=self.value, unit=unit)
+
     def inBaseUnits(self):
         """
         Return the value of the `Variable` with all units reduced to 
@@ -320,7 +336,7 @@ class Variable(object):
         return str(self.getValue())
             
     def __repr__(self):
-        if len(self.name) > 0:
+        if hasattr(self, 'name') and len(self.name) > 0:
             return self.name
         else:
             s = self.__class__.__name__ + '('
@@ -413,6 +429,12 @@ class Variable(object):
         self.value[index] = value
         self._markFresh()
         
+    def itemset(self, value):
+        if self.value is None:
+            self.getValue()
+        self.value.itemset(value)
+        self._markFresh()
+        
     def put(self, indices, value):
         if self.value is None:
             self.getValue()
@@ -485,8 +507,12 @@ class Variable(object):
         ## arrays. A test case was put in _execInline(). The best fix turned out to
         ## be here.
         
-        if hasattr(value, 'iscontiguous') and not value.iscontiguous():
+        if (inline.doInline 
+            and hasattr(value, 'iscontiguous') and not value.iscontiguous()):
             value = value.copy()
+            
+        if isinstance(value, Variable):
+            value = value.getValue()
             
         PF = physicalField.PhysicalField
 
@@ -520,7 +546,7 @@ class Variable(object):
             
         return value
 
-    def setValue(self, value, unit=None, array=None, where=None):
+    def setValue(self, value, unit=None, where=None):
         """
         Set the value of the Variable. Can take a masked array.
 
@@ -551,9 +577,8 @@ class Variable(object):
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
             
         """
-
         if where is not None:
-            tmp = numerix.zeros(numerix.getShape(where), numerix.getTypecode(value))
+            tmp = numerix.empty(numerix.getShape(where), self.getsctype())
             tmp[:] = value
             tmp = numerix.where(where, tmp, self.getValue())
         else:
@@ -562,7 +587,13 @@ class Variable(object):
             else:
                 tmp = value
 
-        self._setValue(value=tmp, unit=unit, array=array)
+        value = self._makeValue(value=tmp, unit=unit, array=None)
+
+        if numerix.getShape(self.value) == ():
+            self.value.itemset(value)
+        else:
+            self.value[:] = value
+            
         self._markFresh()
         
     def _setNumericValue(self, value):
@@ -607,25 +638,25 @@ class Variable(object):
             
     shape = property(fget=lambda self: self.getShape(), doc="Tuple of array dimensions.")
 
-    def getTypecode(self):
+    def getsctype(self, default=None):
         """
 
-        Returns the Numpy typecode of the underlying array.
+        Returns the Numpy sctype of the underlying array.
 
-            >>> Variable(1).getTypecode()
-            'l'
-            >>> Variable(1.).getTypecode()
-            'd'
-            >>> Variable((1,1.)).getTypecode()
-            'd'
+            >>> Variable(1).getsctype()
+            <type 'numpy.int32'>
+            >>> Variable(1.).getsctype()
+            <type 'numpy.float64'>
+            >>> Variable((1,1.)).getsctype()
+            <type 'numpy.float64'>
             
         """
         
         if not hasattr(self, 'typecode'):
-            self.typecode = numerix.getTypecode(self.getValue())
+            self.typecode = numerix.obj2sctype(rep=self.getNumericValue(), default=default)
         
         return self.typecode
-
+    
     def _calcValue(self):
         return self.value
         
@@ -673,7 +704,7 @@ class Variable(object):
     def _getVariableClass(self):
         return Variable
         
-    def _execInline(self):
+    def _execInline(self, comment=None):
         """
         Gets the stack from _getCstring() which calls _getRepresentation()
         
@@ -698,7 +729,7 @@ class Variable(object):
             [ 1.  1.  1.  1.]
         """
     
-        from fipy.tools.inline import inline
+        from fipy.tools import inline
         argDict = {}
         string = self._getCstring(argDict=argDict, freshen=True) + ';'
         
@@ -741,13 +772,13 @@ class Variable(object):
             self.canInline = False
             argDict['result'] = self.getValue()
             self.canInline = True
-            self.typecode = numerix.getTypecode(argDict['result'])
+            self.typecode = numerix.obj2sctype(argDict['result'])
         else:
             if self.value is None:
-                if self.getTypecode() == '?':
-                    argDict['result'] = numerix.empty(dim, 'b')
+                if self.getsctype() == numerix.bool_:
+                    argDict['result'] = numerix.empty(dim, numerix.int8)
                 else:
-                    argDict['result'] = numerix.empty(dim, self.getTypecode())
+                    argDict['result'] = numerix.empty(dim, self.getsctype())
             else:
                 argDict['result'] = self.value
 
@@ -756,7 +787,7 @@ class Variable(object):
             if resultShape == ():
                 argDict['result'] = numerix.reshape(argDict['result'], (1,))
 
-            inline._runInline(string, converters=None, **argDict)
+            inline._runInline(string, converters=None, comment=comment, **argDict)
 
             if resultShape == ():
                 argDict['result'] = numerix.reshape(argDict['result'], resultShape)
@@ -832,7 +863,8 @@ class Variable(object):
         if not self.getUnit().isDimensionless():
             canInline = False
 
-        return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit)
+        return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit, 
+                    inlineComment=inline._operatorVariableComment(canInline=canInline))
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
@@ -878,7 +910,8 @@ class Variable(object):
         from fipy.variables import binaryOperatorVariable
         binOp = binaryOperatorVariable._BinaryOperatorVariable(operatorClass)
         
-        return binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit)
+        return binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit, 
+                     inlineComment=inline._operatorVariableComment(canInline=canInline))
     
     def __add__(self, other):
         from fipy.terms.term import Term
@@ -1103,6 +1136,9 @@ class Variable(object):
         
     def __float__(self):
         return float(self.getValue())
+        
+    def __int__(self):
+        return int(self.getValue())
         
     def __nonzero__(self):
         """
@@ -1344,20 +1380,14 @@ class Variable(object):
            1
            >>> print var.allclose((1,))
            1
-           >>> print var.allclose((1,1,1))
-           Traceback (most recent call last):
-               ...
-           ValueError: shape mismatch: objects cannot be broadcast to a single shape
 
         The following test is to check that the system does not run
         out of memory.
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
-           >>> print var.allclose(numerix.ones(10001))
-           Traceback (most recent call last):
-               ...
-           ValueError: shape mismatch: objects cannot be broadcast to a single shape
+           >>> print var.allclose(numerix.zeros(10000))
+           False
            
         """
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)

@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "fixedFlux.py"
- #                                    created: 11/15/03 {9:47:59 PM} 
- #                                last update: 6/2/08 {10:40:45 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,13 +30,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-15 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -69,7 +61,8 @@ class FixedFlux(BoundaryCondition):
             
         """
         BoundaryCondition.__init__(self,faces,value)
-        self.contribution = self.value * self.faces.getMesh()._getFaceAreas()
+        ## The extra index [self.faces.getValue()] makes self.contribution the same length as self.adjacentCellIDs
+        self.contribution = (self.value * self.faces.getMesh()._getFaceAreas())[self.faces.getValue()]
         
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Leave **L** unchanged and add gradient to **b**
@@ -95,4 +88,25 @@ class FixedFlux(BoundaryCondition):
         else:
             return BoundaryCondition._getDerivative(self, order)
 
+    def _test(self):
+        """
+        The following tests check that self.contributions is the same length as
+        self.adjacentCellIDs.
 
+           >>> from fipy import *
+           >>> m = Grid1D(nx = 10)
+           >>> v = FaceVariable(mesh=m)
+           >>> bc = FixedFlux(value=v[-1], faces=m.getFacesRight())
+           >>> len(bc.contribution) == len(bc.adjacentCellIDs)
+           True
+           >>> bc = FixedFlux(value=v, faces=m.getFacesRight())
+           >>> len(bc.contribution) == len(bc.adjacentCellIDs)
+           True
+        """
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test()

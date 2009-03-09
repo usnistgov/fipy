@@ -5,14 +5,11 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:08:33 PM} { 5:14:21 PM}
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
- #  Author: Daniel Wheeler
- #  E-mail: daniel.wheeler@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
- #     www: http://ctcms.nist.gov
+ #     www: http://ctcms.nist.gov/fipy
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards
@@ -31,13 +28,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -124,15 +114,15 @@ if __name__ == '__main__':
 
     PNView = PN / PN.getCellVolumeAverage()
     PNView.setName('PN')
-    PNViewer = viewers.make(PNView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    PNViewer = Viewer(PNView, datamax=2., datamin=0., title='')
     
     KMView = KMVar / KMVar.getCellVolumeAverage()
     KMView.setName('KM')
-    KMViewer = viewers.make(KMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    KMViewer = Viewer(KMView, datamax=2., datamin=0., title='')
     
     TMView = TMVar / TMVar.getCellVolumeAverage()
     TMView.setName('TM')
-    TMViewer = viewers.make(TMView, limits = {'datamax' : 2., 'datamin' : 0.}, title = '')
+    TMViewer = Viewer(TMView, datamax=2., datamin=0., title='')
 
     for i in range(100):
         for var, eqn in eqs:

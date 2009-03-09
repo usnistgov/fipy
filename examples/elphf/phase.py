@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:13:39 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -101,7 +93,7 @@ We create the phase field
 
     >>> phase = CellVariable(mesh = mesh, name = 'xi')
     >>> import scipy
-    >>> phase.mobility = scipy.inf
+    >>> phase.mobility = inf
     >>> phase.gradientEnergy = 0.025
     
 Although we are not interested in them for this problem, we create one field to 
@@ -212,7 +204,7 @@ We verify that the correct equilibrium solution is attained
 If we are running interactively, we plot the error
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = (phase - \
+    ...     viewer = Viewer(vars = (phase - \
     ...         CellVariable(name = "analytical", mesh = mesh, 
     ...                      value = analyticalArray),))
     ...     viewer.plot()

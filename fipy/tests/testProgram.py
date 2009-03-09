@@ -5,8 +5,7 @@
  #  FiPy - Python-based phase field solver
  # 
  #  FILE: "testSuite.py"
- #                                    created: 2/12/04 {11:02:02 AM} 
- #                                last update: 5/18/06 {8:34:04 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>

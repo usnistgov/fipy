@@ -5,8 +5,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "meshVariable.py"
- #                                     created: 5/4/07 {12:40:38 PM}
- #                                 last update: 6/2/08 {5:06:30 PM}
+ #
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -73,7 +72,7 @@ class _MeshVariable(Variable):
         else:
             array = numerix.zeros(self.elementshape 
                                   + self._getShapeFromMesh(mesh),
-                                  numerix.obj2sctype(numerix.array(value)))
+                                  numerix.obj2sctype(value))
             if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
                 if not isinstance(value, Variable):
                     value = _Constant(value)
@@ -263,7 +262,7 @@ class _MeshVariable(Variable):
     def getRank(self):
         return len(self.shape) - 1
         
-    def setValue(self, value, unit = None, array = None, where = None):
+    def setValue(self, value, unit = None, where = None):
         if where is not None:
             shape = numerix.getShape(where)
             if shape != self.shape \
@@ -271,7 +270,7 @@ class _MeshVariable(Variable):
                 for dim in self.elementshape:
                     where = numerix.repeat(where[numerix.newaxis, ...], repeats=dim, axis=0)
         
-        return Variable.setValue(self, value=value, unit=unit, array=array, where=where)
+        return Variable.setValue(self, value=value, unit=unit, where=where)
 
     def _axisClass(self, axis):
         """

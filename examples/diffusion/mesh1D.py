@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh1D.py"
- #                                    created: 4/4/06 {11:45:06 AM} 
- #                                last update: 7/5/07 {9:08:40 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2006- 4- 4 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -178,6 +170,28 @@ We limit our steps to 90% of that value for good measure
     >>> timeStepDuration = 0.9 * dx**2 / (2 * D)
     >>> steps = 100
 
+If we're running interactively, we'll want to view the result, but not if
+this example is being run automatically as a test. We accomplish this by
+having Python check if this script is the "`__main__`" script, which will
+only be true if we explicitly launched it and not if it has been imported
+by another script such as the automatic tester. The factory function
+``Viewer()`` returns a suitable viewer depending on available
+viewers and the dimension of the mesh.
+
+.. raw:: latex
+
+   \IndexModule{viewers}
+
+..
+
+    >>> phiAnalytical = CellVariable(name="analytical value",
+    ...                              mesh=mesh)
+
+    >>> if __name__ == '__main__':
+    ...     viewer = Viewer(vars=(phi, phiAnalytical),
+    ...                     datamin=0., datamax=1.)
+    ...     viewer.plot()
+
 In a semi-infinite domain, the analytical solution for this transient
 diffusion problem is given by
 
@@ -192,34 +206,12 @@ diffusion problem is given by
     >>> x = mesh.getCellCenters()[0]
     >>> t = timeStepDuration * steps
 
-    >>> phiAnalytical = CellVariable(name="analytical value",
-    ...                              mesh=mesh)
-
     >>> try:
     ...     from scipy.special import erf
     ...     phiAnalytical.setValue(1 - erf(x / (2 * sqrt(D * t))))
     ... except ImportError:
     ...     print "The SciPy library is not available to test the solution to \
     ... the transient diffusion equation"
-
-If we're running interactively, we'll want to view the result, but not if
-this example is being run automatically as a test. We accomplish this by
-having Python check if this script is the "`__main__`" script, which will
-only be true if we explicitly launched it and not if it has been imported
-by another script such as the automatic tester. The function
-``viewers.make()`` returns a suitable viewer depending on available
-viewers and the dimension of the mesh.
-
-.. raw:: latex
-
-   \IndexModule{viewers}
-
-..
-
-    >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(phi, phiAnalytical),
-    ...                           limits={'datamin': 0., 'datamax': 1.})
-    ...     viewer.plot()
 
 We then solve the equation by repeatedly looping in time:
 
@@ -524,7 +516,7 @@ The analytical solution is simply
 And finally, we can plot the result
 
     >>> if __name__ == '__main__':
-    ...     viewers.make(vars=(phi, phiAnalytical)).plot()
+    ...     Viewer(vars=(phi, phiAnalytical)).plot()
     ...     raw_input("Non-uniform steady-state diffusion. Press <return> to proceed...")
 
 
@@ -619,8 +611,8 @@ We create a viewer to compare the different numbers of sweeps with the
 analytical solution from before.
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=phi + [phiAnalytical],
-    ...                           limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=phi + [phiAnalytical],
+    ...                     datamin=0., datamax=1.)
     ...     viewer.plot()
 
 .. raw:: latex

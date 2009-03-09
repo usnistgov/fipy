@@ -3,8 +3,7 @@
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "stepper.py"
- #                                     created: 10/31/06 {9:50:24 AM}
- #                                 last update: 11/28/06 {5:09:53 PM}
+ #
  # Author: Jonathan Guyer <guyer@nist.gov>
  # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  # Author: James Warren   <jwarren@nist.gov>
@@ -27,12 +26,6 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
- # History
- # 
- # modified   by  rev reason
- # ---------- --- --- -----------
- # 2006-10-31 JEG 1.0 original
  # 
  # ########################################################################
  ##

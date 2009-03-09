@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh20x20.py"
- #                                    created: 10/26/04 {9:00:00 PM} 
- #                                last update: 7/5/07 {8:21:37 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2004-10-26 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -231,12 +223,10 @@ by the phase
 ..
 
     >>> if __name__ == '__main__':
-    ...     phaseViewer = viewers.make(vars=phase,
-    ...                                limits={'datamin': 0., 'datamax': 1.})
+    ...     phaseViewer = Viewer(vars=phase, datamin=0., datamax=1.)
     ...     thetaProd = -pi + phase * (theta + pi)
-    ...     thetaProductViewer = make(vars=thetaProd,
-    ...                               limits={'datamin': -pi, 
-    ...                                       'datamax': pi})
+    ...     thetaProductViewer = Viewer(vars=thetaProd,
+    ...                                 datamin=-pi, datamax=pi)
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 

@@ -3,8 +3,7 @@
  #  FiPy - a finite volume PDE solver in Python
  # 
  #  FILE: "exponentialNoiseVariable.py"
- #                                    created: 8/27/05 {9:26:58 AM} 
- #                                last update: 12/22/05 {11:55:58 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -69,9 +68,10 @@ class ExponentialNoiseVariable(NoiseVariable):
            >>> x = histogram.getMesh().getCellCenters()[0]
            
            >>> if __name__ == '__main__':
-           ...     from fipy import viewers
-           ...     viewer = viewers.make(vars = noise, limits = {'datamin': 0, 'datamax': 5})
-           ...     histoplot = viewers.make(vars = (histogram, expdist), limits = {'datamin': 0, 'datamax': 1.5})
+           ...     from fipy import Viewer
+           ...     viewer = Viewer(vars=noise, datamin=0, datamax=5)
+           ...     histoplot = Viewer(vars=(histogram, expdist), 
+           ...                        datamin=0, datamax=1.5)
            
            >>> from fipy.tools.numerix import arange, exp
            

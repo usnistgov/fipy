@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "matplotlibViewer.py"
- #                                    created: 9/14/04 {2:48:25 PM} 
- #                                last update: 10/5/07 {10:08:26 AM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,52 +31,48 @@
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
 
 __docformat__ = 'restructuredtext'
 
-from fipy.viewers.viewer import Viewer
+from fipy.viewers.viewer import _Viewer
 
-class MatplotlibViewer(Viewer):
+class _MatplotlibViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
 
-    The `MatplotlibViewer` is the base class for the viewers that use the
+    The `_MatplotlibViewer` is the base class for the viewers that use the
     Matplotlib_ python plotting package.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
         
-    def __init__(self, vars, limits=None, title=None, figaspect=1.0):
+    def __init__(self, vars, title=None, figaspect=1.0, **kwlimits):
         """
-        Create a `MatplotlibViewer`.
+        Create a `_MatplotlibViewer`.
         
         :Parameters:
-
-          - `vars`: a `CellVariable` or tuple of `CellVariable` objects to plot
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`,
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            Viewer will only use `xmin` and `xmax`, a 2D viewer will also
-            use `ymin` and `ymax`, and so on.  All viewers will use
-            `datamin` and `datamax`.  Any limit set to a (default) value of
-            `None` will autoscale.
-          - `title`: displayed at the top of the Viewer window
-          - `figaspect`: Desired aspect ration of figure. If arg is a number, 
-            use that aspect ratio. If arg is an array, figaspect will 
-            determine the width and height for a figure that would fit array 
-            preserving aspect ratio.
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          figaspect
+            desired aspect ratio of figure. If arg is a number, use that aspect
+            ratio. If arg is an array, figaspect will determine the width and
+            height for a figure that would fit array preserving aspect ratio.
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
         """
-        Viewer.__init__(self, vars = vars, limits = limits, title=title)
+        if self.__class__ is _MatplotlibViewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
+            
+        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
 
         import pylab
 
@@ -89,32 +84,7 @@ class MatplotlibViewer(Viewer):
         
         pylab.title(self.title)
         
-##    def _autoscale(self, vars, datamin=None, datamax=None):
-##        from fipy.tools import numerix
-
-##        if datamin is None:
-##            datamin = 1e300
-##            for var in vars:
-##                datamin = min(datamin, var.min())
-
-##        if datamax is None:
-##            from fipy.tools import numerix
-##            datamax = -1e300
-##            for var in vars:
-##                datamax = max(datamax, var.max())
-                
-##        return datamin, datamax
-
-
     def plot(self, filename = None):
-        """
-        Plot the `CellVariable` as a contour plot.
-
-        :Parameters:
-          - `filename`: The name of the file for hard copies.
-          
-        """
-        
         import pylab
 
         pylab.figure(self.id)
@@ -130,5 +100,14 @@ class MatplotlibViewer(Viewer):
             pylab.savefig(filename)
 
     def _validFileExtensions(self):
-        return [".eps", ".jpg", ".png"]
+        import pylab
+        return ["""
+        Matplotlib has no reliable way to determine 
+        valid file extensions. Either guess, or see
+        <http://matplotlib.sourceforge.net/faq/installing_faq.html#backends> 
+        and then guess. Yes, this is lame.
+        """]
+        
+#         filetypes = pylab.figure(self.id).canvas.filetypes
+#         return [".%s" % key for key in filetypes.keys()]
         

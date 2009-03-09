@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "circle.py"
- #                                    created: 4/6/06 {11:26:11 AM}
- #                                last update: 6/30/08 {5:19:08 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2006- 4- 6 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -114,8 +106,7 @@ We can now create a viewer to see the mesh
     >>> viewer = None
     >>> if __name__ == '__main__':
     ...     try:
-    ...         viewer = viewers.make(vars=phi,
-    ...                               limits={'datamin': -1, 'datamax': 1.})
+    ...         viewer = Viewer(vars=phi, datamin=-1, datamax=1.)
     ...         viewer.plotMesh()
     ...         raw_input("Irregular circular mesh. Press <return> to proceed...")
     ...     except:
@@ -185,7 +176,9 @@ We first step through the transient problem
 
 .. raw:: latex
 
-   {\tiny \verbatimtabinput[30]{images/examples/diffusion/myTSV.tsv}}
+   \tabson[30]
+   {\tiny \verbatiminput{images/examples/diffusion/myTSV.tsv}}
+   \tabsoff
    
 The values are listed at the `Cell` centers. Particularly for irregular
 meshes, no specific ordering should be relied upon. Vector quantities are

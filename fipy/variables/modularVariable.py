@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "modularVariable.py"
- #                                    created: 12/8/03 {5:47:27 PM} 
- #                                last update: 1/3/07 {3:19:29 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -111,14 +110,14 @@ class ModularVariable(CellVariable):
 
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 1)
-            >>> var = ModularVariable(mesh=mesh, value=1, hasOld=1)
+            >>> var = ModularVariable(mesh=mesh, value=1., hasOld=1)
             >>> var.updateOld()
             >>> var[:] = 2
             >>> print var.getOld()
             [ 1.] 1
             
         """
-        self.setValue(self.getValue().mod(self()))
+        self.setValue(self.getValue().mod(self().inRadians()))
         if self.old is not None:
             self.old.setValue(self.value.value.copy())
 
@@ -207,6 +206,16 @@ class ModularVariable(CellVariable):
         
     def __rsub__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
+
+    def _getArithmeticBaseClass(self, other=None):
+        """
+        Given `self` and `other`, return the desired base
+        class for an operation result.
+        """
+        if other is None:
+            return ModularVariable
+            
+        return CellVariable._getArithmeticBaseClass(self, other)
 
 
 def _test(): 

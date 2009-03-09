@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "square.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {9:12:56 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -85,7 +77,7 @@ x1 = (L + boxSize) / 2
 
 distanceVariable = DistanceVariable(
     mesh = mesh,
-    value = 1,
+    value = 1.,
     hasOld = 1
     )
 
@@ -106,8 +98,10 @@ advectionEquation = buildHigherOrderAdvectionEquation(
     advectionCoeff = velocity)
 
 if __name__ == '__main__':
-    distanceViewer = viewers.make(vars = distanceVariable, limits = {'datamin': -.001, 'datamax': .001})
-    surfactantViewer = viewers.make(vars = surfactantVariable, limits = {'datamin': 0., 'datamax': 2.})
+    distanceViewer = Viewer(vars=distanceVariable, 
+                            datamin=-.001, datamax=.001)
+    surfactantViewer = Viewer(vars=surfactantVariable, 
+                              datamin=0., datamax=2.)
 
 
     distanceVariable.calcDistanceFunction()

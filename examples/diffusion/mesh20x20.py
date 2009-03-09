@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mesh20x20.py"
- #                                    created: 4/6/06 {10:50:18 AM}
- #                                last update: 5/25/08 {9:29:46 AM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2006- 4- 6 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -117,8 +109,7 @@ We create a viewer to see the results
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=phi,
-    ...                           limits={'datamin': 0., 'datamax': 1.})
+    ...     viewer = Viewer(vars=phi, datamin=0., datamax=1.)
     ...     viewer.plot()
 
 and solve the equation by repeatedly looping in time:

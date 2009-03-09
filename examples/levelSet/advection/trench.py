@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "trench.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {9:13:12 PM} { 1:23:41 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -70,7 +62,7 @@ This example creates a trench with the following zero level set:
 
     >>> var = DistanceVariable(name = 'level set variable',
     ...                        mesh = mesh,
-    ...                        value = -1,
+    ...                        value = -1.,
     ...                        hasOld = 1
     ...                        )
 
@@ -98,7 +90,7 @@ for the initial position of the interface:
 Advect the interface and check the position.
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars = var, limits = {'datamin': -0.1, 'datamax': 0.1})
+    ...     viewer = Viewer(vars=var, datamin=-0.1, datamax=0.1)
     ...     
     ...     viewer.plot()
 

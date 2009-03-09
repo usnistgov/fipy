@@ -1,6 +1,7 @@
 from variable import Variable
 from cellVariable import CellVariable
 from faceVariable import FaceVariable
+from scharfetterGummelFaceVariable import ScharfetterGummelFaceVariable
 
 from modularVariable import ModularVariable
 

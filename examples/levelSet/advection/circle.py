@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "circle.py"
- #                                    created: 11/17/03 {10:29:10 AM} 
- #                                last update: 7/5/07 {8:21:44 PM} { 1:23:41 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-17 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -126,8 +118,7 @@ The problem can then be solved by executing a serious of time steps.
 ..
 
    >>> if __name__ == '__main__':
-   ...     viewer = viewers.make(vars=var, 
-   ...                           limits={'datamin': -radius, 'datamax': radius})
+   ...     viewer = Viewer(vars=var, datamin=-radius, datamax=radius)
    ...     viewer.plot()
    ...     for step in range(steps):
    ...         var.updateOld()

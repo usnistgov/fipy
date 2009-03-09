@@ -5,10 +5,8 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "upwindConvectionTerm.py"
- #                                    created: 12/5/03 {2:50:05 PM} 
- #                                last update: 3/30/07 {4:29:11 PM} 
- #  Author: Jonathan Guyer
- #  E-mail: guyer@nist.gov
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -36,13 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
 
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
-
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 class UpwindConvectionTerm(ConvectionTerm):
     r"""

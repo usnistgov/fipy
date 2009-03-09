@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "input.py"
- #                                    created: 12/29/03 {3:23:47 PM}
- #                                last update: 7/5/07 {6:04:03 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -30,13 +29,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2003-11-10 JEG 1.0 original
  # ###################################################################
  ##
 
@@ -156,7 +148,7 @@ If the problem is run interactively, we can view the result:
 ..
 
     >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=(var, analytical))
+    ...     viewer = Viewer(vars=(var, analytical))
     ...     viewer.plot()
 
 .. image:: examples/diffusion/nthOrder/input4thOrder1D.pdf

@@ -93,10 +93,6 @@ Versions
 At point of version release x.y, *on main trunk*::
 
     $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/version-x_y -m "tagging version x.y"
-    $ svn delete $FIPYROOT/tags/STABLE -m "moving STABLE to new version"
-    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/STABLE -m "version x.y is STABLE"
-    $ svn delete $FIPYROOT/tags/CURRENT -m "moving CURRENT to new version"
-    $ svn copy $FIPYROOT/tags/version-x_y $FIPYROOT/tags/CURRENT -m "version x.y is CURRENT"	
 
 ---------
 Bug fixes
@@ -104,7 +100,7 @@ Bug fixes
 
 At the point some fix is made to an old version n.m::
 
-    $ BRANCH=branch-version-n_m
+    $ BRANCH=version-n_m
     $ svn copy $FIPYROOT/tags/version-n_m  $FIPYROOT/branches/$BRANCH -m "making branch for version n.m"
     $ svn co $FIPYROOT/branches/$BRANCH
 
@@ -113,13 +109,6 @@ Fix the code::
     $ cd $BRANCH
     $ svn ci -m "fix n.m.q"
     $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/version-n_m_q
-
-Possibly::
-
-    $ svn delete $FIPYROOT/tags/CURRENT -m "moving CURRENT to new version"
-    $ svn delete $FIPYROOT/tags/STABLE -m "moving STABLE to new version"
-    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/CURRENT -m "version n.m.q is CURRENT"
-    $ svn copy $FIPYROOT/tags/version-n_m_q $FIPYROOT/tags/STABLE -m "version n.m.q is STABLE"
 
 Find the initial revision number for the branch (IRN) and the latest revision number (LRN)::
 
@@ -159,7 +148,7 @@ Again, merge n.m.q+1 changes back to main trunk::
 Making a Release
 ================
 
-Change the version number in fipy/__init__.py
+Change the version number in `setup.py`
 
 Check items in TODOLIST.txt
 
@@ -168,15 +157,10 @@ Check out a clean copy of the desired release::
     $ svn co $FIPYROOT/trunk CLEAN
     $ cd CLEAN
 
-Run the test suite!:
+.. attention::
 
-    $ python setup.py test --no-cache
-    $ python setup.py test --inline --no-cache
-    $ python setup.py test --cache
-    $ python setup.py test --inline --cache
-
-.. attention:: If tests don't pass, make sure the release notes reflect 
-   that fact!
+   If Bitten_ doesn't show all green boxes for this release, make sure to
+   add appropriate notes in README.txt or INSTALLATION.txt!
 
 Build the documentation and the web pages::
 
@@ -192,10 +176,10 @@ Build a windows executable installer::
     $ rm MANIFEST
     $ python setup.py bdist --formats=wininst
 
-Combine the windows installer and examples into one tar ball.
+Combine the windows installer and examples into one archive.
 
     $ rm MANIFEST
-    $ set FIPY_VERSION=XXX
+    $ FIPY_VERSION=XXX
     $ ln -s dist/FiPy-${FIPY_VERSION}.win32.exe .
     $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults --formats=zip
     $ unlink FiPy-${FIPY_VERSION}.win32.exe
@@ -203,28 +187,29 @@ Combine the windows installer and examples into one tar ball.
 
 Tag the repository as appropriate (see `SVN practices`_ above).
 
-Upload to the CTCMS website::
+Upload the build products and documentation from `dist/` to MatForge and 
+the web site to CTCMS:
 
-    $ python setup.py build_docs --upload
+    $ python setup.py build_docs --upload --uploadwww
+
+.. note::
+
+   You will need to manually upload the files
+
+     * http://matforge.org/fipy/admin/general/downloader
+
+   and, if appropriate, update the links to current files:
+
+     * http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit
+     * http://matforge.org/fipy/wiki/FiPyManual?action=edit
+     * http://matforge.org/fipy/wiki/FiPyReference?action=edit
 
 .. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
-`Upload the release to SourceForge`_ and to the `MatForge download page`_.  You can use, e.g.,::
+Make an announcement to `mailto:fipy@nist.gov`_
 
-    $ svn log --revision HEAD:${LASTREV}
-
-to build the ChangeLog. You can determine the revision number LASTREV by examining the "Last Changed 
-Rev:" field given by::
-
-    $ svn info http://matforge.org/svn/fipy/tags/version-x_y
-
-Make an announcement to `fipy@nist.gov`_
-
-
-.. Upload the release to SourceForge: https://sourceforge.net/project/admin/qrs.php?package_id=&group_id=118428
-.. MatForge download page: http://matforge.org/fipy/wiki/FiPyFiles
 .. fipy@nist.gov: mailto:fipy@nist.gov
 
 ==========================================
