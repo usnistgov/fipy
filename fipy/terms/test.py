@@ -49,7 +49,8 @@ def _suite():
             'equation',
             'upwindConvectionTerm',
             'collectedDiffusionTerm',
-            'implicitSourceTerm'
+            'implicitSourceTerm',
+            'mulTerm'
         ), base = __name__)
 
 if __name__ == '__main__':

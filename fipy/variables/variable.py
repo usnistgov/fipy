@@ -933,7 +933,11 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: b-a, other)
             
     def __mul__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: a*b, other)
+        from fipy.terms.term import Term
+        if isinstance(other, Term):
+            return other * self
+        else:
+            return self._BinaryOperatorVariable(lambda a,b: a*b, other)
 
     __rmul__ = __mul__
             
