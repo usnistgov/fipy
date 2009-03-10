@@ -1,0 +1,72 @@
+.. |latexFiPy| raw:: latex
+
+    \FiPy{}
+
+.. |htmlFiPy| raw:: html
+
+    <em>FiPy</em>
+
+.. |latexTeX| raw:: latex
+
+   \TeX{}
+
+.. |htmlTeX| raw:: html
+
+   TeX
+
+.. |latexLaTeX| raw:: latex
+
+   \LaTeX{}
+
+.. |htmlLaTeX| raw:: html
+
+   LaTeX
+
+.. |latexINSTALL| raw:: latex
+
+   Chapter~\ref{chap:Installation} ``\titleref{chap:Installation}''
+
+.. |htmlINSTALL| raw:: html
+
+   the <a href="installation.html">Installation Guide</a>
+
+.. |latexExamples/| raw:: latex
+
+   Part~\ref{part:Examples} ``\titleref{part:Examples}''
+
+.. |htmlExamples/| raw:: html
+
+   the Examples portion of the <a href="download/fipy.pdf">Manual</a>
+
+.. |latexSVN.txt| raw:: latex
+
+   Section~\ref{sec:SVN}
+
+.. |htmlSVN.txt| raw:: html
+
+   <a href="svn.html">SVN tags</a>
+
+.. |latexFAQ| raw:: latex
+
+   Chapter~\ref{chap:FAQ} ``\titleref{chap:FAQ}''
+
+.. |htmlFAQ| raw:: html
+
+   Chapter 6: "Frequently Asked Questions" of the <a href="download/fipy.pdf">Manual</a>
+
+.. |latexWINDOWS-INSTALLATION| raw:: latex
+
+   Section~\ref{sec:WindowsInstallation} ``\titleref{sec:WindowsInstallation}''
+
+.. |htmlWINDOWS-INSTALLATION| raw:: html
+
+   <a href="windows-installation.html">Windows installation</a>
+
+.. |html1to2| raw:: html
+
+   <code>example.update1_0to2_0</code>
+
+.. |latex1to2| raw:: latex
+
+   Example~\ref{examples:update1-0to2-0}
+

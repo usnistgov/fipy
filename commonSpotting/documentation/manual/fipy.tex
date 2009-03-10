@@ -1,0 +1,394 @@
+%% -*-TeX-*-
+ % ###################################################################
+ %  FiPy - a finite volume PDE solver in Python
+ % 
+ %  Author: Jonathan Guyer <guyer@nist.gov>
+ %  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ %  Author: James Warren <jwarren@nist.gov>
+ %    mail: NIST
+ %     www: http://ctcms.nist.gov
+ %  
+ % ========================================================================
+ % This document was prepared at the National Institute of Standards
+ % and Technology by employees of the Federal Government in the course
+ % of their official duties.  Pursuant to title 17 Section 105 of the
+ % United States Code this document is not subject to copyright
+ % protection and is in the public domain.  fipy.tex
+ % is an experimental work.  NIST assumes no responsibility whatsoever
+ % for its use by other parties, and makes no guarantees, expressed
+ % or implied, about its quality, reliability, or any other characteristic.
+ % We would appreciate acknowledgement if the document is used.
+ % 
+ % This document can be redistributed and/or modified freely
+ % provided that any derivative works bear some notice that they are
+ % derived from it, and any modified versions bear some notice that
+ % they have been modified.
+ % ========================================================================
+ % See the file "license.terms" for information on usage and  redistribution of
+ % this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ %  
+ % ###################################################################
+ %%
+
+% \documentclass[tocAsPDFpart]{fipy}
+\documentclass[letterpaper,twoside,openright,10pt]{memoir}
+
+% \documentclass[letterpaper]{book}
+\usepackage{xr-hyper}
+
+\usepackage[tocAsPDFchapter,index,bookmarksdepth=subsection]{fipy}
+
+
+\externaldocument[API-]{reference}[http://matforge.org/fipy/wiki/FiPyManual]
+
+\usepackage{moreverb}
+
+\usepackage[utf8]{inputenc}
+
+% \usepackage[DIV12]{typearea}
+%% generator Docutils: http://docutils.sourceforge.net/
+\newlength{\admonitionwidth}
+\setlength{\admonitionwidth}{0.9\textwidth}
+\newlength{\docinfowidth}
+\setlength{\docinfowidth}{0.9\textwidth}
+\newlength{\locallinewidth}
+\newcommand{\optionlistlabel}[1]{\bf #1 \hfill}
+\newenvironment{optionlist}[1]
+{\begin{list}{}
+  {\setlength{\labelwidth}{#1}
+   \setlength{\rightmargin}{1cm}
+   \setlength{\leftmargin}{\rightmargin}
+   \addtolength{\leftmargin}{\labelwidth}
+   \addtolength{\leftmargin}{\labelsep}
+   \renewcommand{\makelabel}{\optionlistlabel}}
+}{\end{list}}
+\newlength{\lineblockindentation}
+\setlength{\lineblockindentation}{2.5em}
+\newenvironment{lineblock}[1]
+{\begin{list}{}
+  {\setlength{\partopsep}{\parskip}
+   \addtolength{\partopsep}{\baselineskip}
+   \topsep0pt\itemsep0.15\baselineskip\parsep0pt
+   \leftmargin#1}
+ \raggedright}
+{\end{list}}
+% begin: floats for footnotes tweaking.
+\setlength{\floatsep}{0.5em}
+\setlength{\textfloatsep}{\fill}
+\addtolength{\textfloatsep}{3em}
+\renewcommand{\textfraction}{0.5}
+\renewcommand{\topfraction}{0.5}
+\renewcommand{\bottomfraction}{0.5}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+% end floats for footnotes
+% some commands, that could be overwritten in the style file.
+\newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
+\newcommand{\titlereference}[1]{\textsl{#1}}
+% end of "some commands"
+
+\begin{document}
+
+\dominitoc
+\doparttoc
+
+\frontmatter
+
+\title{\FiPy{}}
+%\subtitle{A Finite Volume PDE Solver Using Python}
+\subtitle{User's Guide}
+
+% \author{Daniel Wheeler \and Jonathan E. Guyer \and James A. Warren}
+% \affiliation{Metallurgy Division \and
+% and the Center for Theoretical and Computational Materials Science 
+% \and Materials Science and Engineering Laboratory}
+
+\author{Daniel Wheeler \andnext Jonathan E. Guyer \andnext James A. Warren}
+\affiliation{Metallurgy Division \and
+and the Center for Theoretical and Computational Materials Science 
+\and Materials Science and Engineering Laboratory}
+
+% \begin{titlingpage}
+\maketitle
+% \thispagestyle{empty}
+\thispagestyle{titlingpage}
+
+\newpage
+
+\vspace*{\fill}
+\input license
+
+\rule{\textwidth}{0.1pt}
+
+\thispagestyle{empty}
+\input disclaimer
+% \end{titlingpage}
+
+\maxtocdepth{all} 
+\tableofcontents
+% \faketableofcontents
+
+\mainmatter
+
+%%%%%%%%%%%%%%%%
+% I. INTRODUCTION
+%%%%%%%%%%%%%%%%
+
+\part{Introduction}
+
+\settocdepth{chapter} 
+
+\renewcommand{\ptctitle}{Introduction Contents}
+
+\parttoc
+
+% Technical Overview
+
+\chapter{Overview}
+
+\inputencoding{latin1}
+
+\input readme  
+
+\section{Mailing List}
+
+\input mail
+
+% Installation
+
+\chapter{Installation and Usage}
+\label{chap:Installation}
+
+\inputencoding{latin1}
+
+\input installation
+
+\newpage
+
+\section{Mac OS X Installation}
+\label{sec:MacOSXInstallation}
+
+\inputencoding{latin1}
+
+\input macosx-installation
+
+\newpage
+
+\section{Windows Installation}
+\label{sec:WindowsInstallation}
+
+\inputencoding{latin1}
+
+\input windows-installation
+
+\section{Subversion tags}
+\label{sec:SVN}
+
+\input svn
+
+% Numerical
+
+\chapter{Theoretical and Numerical Background}
+\label{chap:Numerics}
+
+\inputencoding{ascii}
+
+\input numerical/numerical
+
+% Implementation
+
+\chapter{Design and Implementation}
+\label{chap:Design}
+
+\inputencoding{latin1}
+
+\input introduction
+
+% Efficiency
+
+%\chapter{Efficiency}
+%\label{chap:Efficiency}
+
+%\inputencoding{latin1}
+
+%\input efficiency
+
+\chapter{Frequently Asked Questions}
+\label{chap:FAQ}
+
+\input faq
+
+% TODO List
+
+% \chapter{Future Work}
+% \label{chap:ToDo}
+% 
+% \inputencoding{latin1}
+% 
+% \input todolist
+
+%%%%%%%%%%%%%%%%%
+% 2. EXAMPLES
+%%%%%%%%%%%%%%%%%
+
+\settocdepth{all} 
+
+\sloppy
+
+\part{Examples}
+\label{part:Examples}
+
+\input{examples/readme}
+
+\settocdepth{chapter} 
+\renewcommand{\ptctitle}{Example Contents}
+\parttoc
+
+\chapter{Diffusion Examples}
+
+\input{examples/latex/examples.diffusion.mesh1D-module}
+\label{sec:Examples:diffusion:mesh1D}
+\input{examples/latex/examples.diffusion.mesh20x20-module}
+\label{sec:Examples:diffusion:mesh20x20}
+\input{examples/latex/examples.diffusion.circle-module}
+\label{sec:Examples:diffusion:circle}
+\input{examples/latex/examples.diffusion.electrostatics-module}
+\input{examples/latex/examples.diffusion.nthOrder.input4thOrder1D-module}
+\input{examples/latex/examples.diffusion.anisotropy-module}
+\label{sec:Examples:diffusion:anisotropy}
+
+\chapter{Convection Examples}
+
+\input{examples/latex/examples.convection.exponential1D.mesh1D-module}
+\input{examples/latex/examples.convection.exponential1DSource.mesh1D-module}
+% \newpage
+\input{examples/latex/examples.convection.robin-module}
+\label{sec:Examples:convection:robin}
+
+\input{examples/latex/examples.convection.source-module}
+\label{sec:Examples:convection:source}
+% \newpage
+% \input{examples/latex/examples.convection.exponential2D.mesh2D-module}
+% \newpage
+% \input{examples/latex/examples.convection.powerLaw1D.mesh1D-module}
+% \newpage
+
+\chapter{Phase Field Examples}
+
+The phase field method is a ``diffuse interface'' technique for
+modeling phase transformations and interface motion. Several good
+review articles have been written on the subject
+\cite{BoettingerReview:2002,ChenReview:2002,McFaddenReview:2002}.
+
+\input{examples/latex/examples.phase.simple-module}
+\input{examples/latex/examples.phase.binary-module}
+\input{examples/latex/examples.phase.quaternary-module}
+
+\input{examples/latex/examples.phase.anisotropy-module}
+\label{sec:anisotropy}
+\input{examples/latex/examples.phase.impingement.mesh40x1-module}
+\input{examples/latex/examples.phase.impingement.mesh20x20-module}
+\label{sec:impingement}
+
+% \section*{Electrochemistry Examples}
+% \addstarredsection{Electrochemistry Examples} 
+% \addcontentsline{toc}{section}{Electrochemistry Examples} 
+
+% \input{../../examples/elphf/README.tex}
+
+% \input{examples/latex/examples.elphf.phase-module}
+% \newpage
+% \input{examples/latex/examples.elphf.diffusion.mesh1D-module}
+% \newpage
+% \input{examples/latex/examples.elphf.diffusion.mesh1Ddimensional-module}
+% \newpage
+% \input{examples/latex/examples.elphf.diffusion.mesh2D-module}
+
+% \newpage
+% \input{examples/latex/examples.elphf.poisson-module}
+% \newpage
+% \input{examples/latex/examples.elphf.phaseDiffusion-module}
+% \newpage
+
+
+\chapter{Level Set Examples}
+
+The Level Set Method (LSM) is a popular interface tracking
+method. Further details of the LSM and descriptions of the algorithms
+used in \FiPy{} can be found in Sethian's Level Set
+book~\cite{levelSetBook}.
+
+\input{examples/latex/examples.levelSet.distanceFunction.mesh1D-module}
+\input{examples/latex/examples.levelSet.distanceFunction.circle-module}
+\input{examples/latex/examples.levelSet.advection.mesh1D-module}
+\input{examples/latex/examples.levelSet.advection.circle-module}
+
+\newpage
+\section*{Superconformal Electrodeposition Examples}
+\addcontentsline{toc}{section}{Superconformal Electrodeposition Examples} 
+
+\input{examples/levelset/electrochem/readme}
+
+\input{examples/latex/examples.levelSet.electroChem.simpleTrenchSystem-module}
+\input{examples/latex/examples.levelSet.electroChem.gold-module}
+\input{examples/latex/examples.levelSet.electroChem.leveler-module}
+\input{examples/latex/examples.levelSet.electroChem.howToWriteAScript-module}
+
+\chapter{Cahn-Hilliard Examples}
+
+\input{examples/latex/examples.cahnHilliard.mesh2D-module}
+\label{sec:Examples:cahnHilliard:mesh2D}
+\input{examples/latex/examples.cahnHilliard.sphere-module}
+% \newpage
+
+\chapter{Fluid Flow Examples}
+
+\input{examples/latex/examples.flow.stokesCavity-module}
+
+\chapter{Converting from older versions of \FiPy}
+\label{chap:UpdateFiPy}
+
+\input{examples/latex/examples.update1_0to2_0-module}
+\input{examples/latex/examples.update0_1to1_0-module}
+
+\settocdepth{all} 
+
+\backmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                 Index                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\fussy
+
+\nobibintoc
+\phantomsection
+\addcontentsline{toc}{part}{\bibname}%
+\bibliographystyle{fipy}
+\bibliography{refs}
+
+\sloppy
+\raggedright
+
+\noindexintoc
+\phantomsection
+\addcontentsline{toc}{part}{\indexname}%
+\printindex
+
+\fussy
+
+\appendix 
+
+% Credits
+
+\chapter*{Contributors}
+\phantomsection
+\addcontentsline{toc}{part}{Contributors} 
+\label{chap:Contributors}
+
+\inputencoding{latin1}
+
+\input credits
+
+\end{document}

@@ -1,0 +1,232 @@
+-----------
+Future Work
+-----------
+
+Long term Goals
+---------------
+
+- Turn off sourceforge tracker
+
+- Different tracker items in Trac
+
+- Tarball of the repository
+
+- Get a decent dendritic simulation working. Figure out why out dendrite doesn't look
+  as cool as Jim's. Why do we have thin little arms and interface splitting?
+
+- Allow some keyword parameters to be passed to the plot() methods of viewers
+
+- Update Mayavi viewers to use TVTK (much better according to Prabhu) instead of PyVTK.
+  Should be able to remove all uses of PyVTK.
+
+- Add axi-symmetric test case
+
+- Add dendrite pic
+
+- include dophyn comparison in efficiency discussion
+
+- multipy a term by a CellVariable or constant.
+
+- Boundary conditions should be able to take CellVariables or FaceVariables as values and pull out the correct values.
+
+- Level set
+
+  * refactor to use basic types, make level set code work independently of FiPy
+  * unstructured grids
+  * 3D grids
+  * input files should not refer to equation objects
+  * Superfill manual
+
+- other stuff
+
+  * clean up variable-vector-numerix-physicalfield interactions
+
+    - merge fipy.tools.variable into numerix.
+    - merge phsycial field and variable
+    - get rid of most references to Numeric function in the code
+    - maybe even get rid of many explicit calls to Numeric function calls in numerix.
+
+      * e.g. looks in numerix, no sin function
+      * numerix then passes Numeric's sin function to Variable's apply method and hey presto
+        a new variable is returned. Sounds like science fiction......
+      * is there a way to do this automagically??? (using __array__ or something)
+
+    - Definetly most of these functions need not be in Variable and numerix
+
+  * Reduce run time
+
+    - Choose external references 
+
+      * Ryo's code
+      * Spectral MATLAB CH problem
+      * DOLFIN (has similar python objects)
+      * Dolfyn
+
+- Functionlity
+
+  * Flow solver using Dolfyn comparison
+
+    - Get better results compared with Dolfyn
+
+      * Higher order Implicit Diffusion
+      * Higher order explicit diffusion
+      * Wall boundary condition
+      * Improved mass flux evaluation
+      * Extrapolation of cell values to boundaries using gradients
+
+    - Add convection term to Navier-Stokes and compare with Dolfyn
+    - Add transient term and compare with Dolfyn 
+    - Efficieny tests of Dolfyn against FiPy
+
+- Implement some PETC solvers
+
+- Investiagte using VISION for some simple FiPy examples.
+
+- Improve BC doc, make clear no internal BCs    
+
+- The reference manual should have a 'returns' section similar to 'parameters' for methods and functions.
+
+- Include some examples on the web page.
+
+- Dimensions are semi-broken, e.g., 
+  examples/elphf/diffusion/input1Ddimensional.py
+  Also, numerix inverse trig operations should return an angular
+  quantity, rather than a raw number.
+
+- Automatic conversion of dimensionless PhysicalField to simple
+  number or array should be done in `__array__` method, not in 
+  `__mul__` and __div__.
+
+- make ConvectionTerm -> BaseConvectionTerm, PowerLawConvectionTerm -> ConvectionTerm
+
+- make eqns auto generate their Peclet numbers
+
+- Documentation:
+
+  * Examples:
+  
+    - 1000*1000 example for efficiency discussion.
+
+- Distribution
+
+  * freeze or py2exe for CEAC stand-alone
+
+    - viewer? GPL or GLL for gnuplot?
+
+- Functionality:
+
+  * Multigrid method.
+  * Cell centered FVM.
+  * Multilevel preconditioners
+  * Adaptive meshing.
+  * Linear Algebra:
+
+    - Petc.
+    - SciPy.
+    - matpy
+	
+  * Look into pyrex as an alternative to inlining.
+  * Laminar Fluid Flow module.
+  * DX viewer.
+  * Pass ``PhysicalField`` back to `Konrad Hinsen`_.
+  * Found group of solvers from sandia called Trilionos
+    http://software.sandia.gov/trilinos
+  * As a stop gap measure for 4th and 6th order terms, 
+    find an implementation of incomplete cholesky factorization.
+
+- Refactoring:
+
+  * Use an array module rather than Numeric and switch to numarray.
+
+  * Global approach to phase field equations.
+
+  * Make the ``build_docs`` just update the files that have changed since
+    the last build.
+    
+  * Merge ``term`` and ``equation`` objects into one object:
+
+    - Boundary conditions should just be terms.
+    
+  * Reconcile variable operators and terms
+
+    - Apply boundary conditions to variables instead of terms
+    - Equations should be stated in terms of variable operators.
+    - For example a DiffusionTerm is represented by var.getGrad().getDiv()
+    - getGrad() and getDiv() should calculate matrices and then use the matrices
+      either as part of the solution scheme or explicitly if one just requires the value.
+    - The convection term would have a special operator
+    - One problem is that terms are really volume integrals while operators
+      are just differences. Thus all operators would be volume integrals
+      and then divide through be the volume when asked by getValue()
+    - The first step would be to make operators use the terms to evaluate themselves.
+      i.e.::
+
+          DivGradVariable(CellVariable):
+              def __init__(self, var)
+                  self.var = var
+                  self.matrix =  ImplicitDiffusionTerm.getMatrix()
+
+              def getMatrix(self, ...):
+                  return self.matrix
+             
+              def getValue(self)
+                  return ImplicitDiffusionTerm.getMatrix() * self.var.getValue() / self.mesh.getCellVolumes()
+
+     - Next step would be to move the terms to the operator variables.
+     - We are now moving terms into variables and that may have hidden benefits.
+     - This philosophy should apply to all terms including transient terms.
+     - Basicly terms are being abandoned in favor of variable objects.   
+
+  * Use ``doctest`` exclusively.
+
+  * Major mesh refactor:
+
+    - Remove separate ``nummesh`` and ``pymesh`` structure
+    - Think about the ``mesh`` hierarchy as it stands:
+
+      * Many branches at present.
+      * Consolidate functionality (``__add__`` etc).
+      * How does Gmsh fit in?
+
+    - Lazy mesh array evaluations.
+    - support for meshes in higher spaces.
+
+  * Viewers:
+
+    - Use viewers in scipy that are similar to gist and remove gist (?).
+
+- Documentation:
+
+  * Write a paper on FiPy.
+  * Better documentation in Reference.pdf
+
+- Efficiency
+
+  * Automatic inlining
+  * Cache mesh calculations
+  * Caching/building sparse matrices?
+  * NthOrderDiffusionTerm 
+
+    - recursive stencil vs. recursive matrix?
+    - special case lower orders?
+    - compare/merge n=2 to ImplicitDiffusionTerm
+
+  * Track down general inefficiencies
+
+    - len(get.xxx()) vs. getNumXXX()
+    - array conversions
+
+  * SciPy linear algebra vs. PySparse
+
+    - solution efficiency
+    - matrix manipulation efficiency
+  
+  * NumArray vs Numeric
+
+    - encapsulate array class
+
+.. _SourceForge CVS repository:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cvs.sourceforge.net/viewcvs.py/fipy/
+.. _Steve:                            mailto:slanger@nist.gov
+.. _Konrad Hinsen:                    mailto:hinsen@cnrs-orleans.fr
+.. _Roman Geus:                       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
+

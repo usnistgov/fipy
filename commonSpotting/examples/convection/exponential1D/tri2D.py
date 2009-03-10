@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+
+## 
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
+ # 
+ #  FILE: "tri2D.py"
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #    mail: NIST
+ #     www: http://www.ctcms.nist.gov/fipy/
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  FiPy is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  
+ # ###################################################################
+ ##
+
+"""
+
+This example solves the steady-state convection-diffusion equation as described in
+`./examples/diffusion/convection/exponential1D/input.py` but uses a 
+`Tri2D` mesh.
+
+Here the axes are reversed (`nx = 1`, `ny = 1000`) and
+
+.. raw:: latex
+
+    $$ \\vec{u} = (0, 10) $$
+
+.. 
+
+    >>> from fipy import *
+
+    >>> L = 10.
+    >>> nx = 1
+    >>> ny = 1000
+    >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
+    
+    >>> valueBottom = 0.
+    >>> valueTop = 1.
+
+    >>> var = CellVariable(name = "concentration",
+    ...                    mesh = mesh,
+    ...                    value = valueBottom)
+
+    >>> boundaryConditions = (
+    ...     FixedValue(mesh.getFacesBottom(), valueBottom),
+    ...     FixedValue(mesh.getFacesTop(), valueTop),
+    ... )
+
+    >>> diffCoeff = 1.
+    >>> convCoeff = (0., 10.)
+
+    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+    ...       + ExponentialConvectionTerm(coeff=convCoeff))
+
+    >>> eq.solve(var = var,
+    ...          boundaryConditions = boundaryConditions)
+
+
+The analytical solution test for this problem is given by:
+
+    >>> axis = 1
+    >>> y = mesh.getCellCenters()[axis]
+    >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
+    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+    >>> analyticalArray = CC / DD
+    >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
+    1
+    
+    >>> if __name__ == '__main__':
+    ...     viewer = Viewer(vars = var)
+    ...     viewer.plot()
+"""
+__docformat__ = 'restructuredtext'
+
+if __name__ == '__main__':
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus._getScript())
+    
+    raw_input('finished')

@@ -1,0 +1,812 @@
+============
+Installation
+============
+
+.. contents::
+   :local:
+   :depth: 2
+
+.. raw:: latex
+
+   \minitoc[e]
+
+The |FiPy| finite volume PDE solver relies on several third-party packages.
+It is *best to obtain and install those first*, before attempting to install
+|FiPy|.
+
+|outsideLinks|
+
+.. note::
+
+   Most of the installation steps will involve a variant on the command::
+
+       $ python setup.py ...
+
+   In addition to the specific commands given here, further information
+   about each ``setup.py`` script is available by typing::
+
+       $ python setup.py --help
+
+   For each package, please follow any instructions given in its `README` or 
+   `INSTALLATION` files.
+
+
+---------
+Shortcuts
+---------
+
+Detailed prerequisites and links are given below and in platform-specific 
+instructions, but for the courageous and the impatient, |FiPy| can be up 
+and running quickly with one of the following methods.
+
+
+EasyInstall
+===========
+
+http://peak.telecommunity.com/DevCenter/EasyInstall
+
+If Python_ and setuptools_ are already available, a minimally functional 
+installation of |FiPy| can be obtained by issuing the commands::
+
+    $ easy_install numpy
+    $ easy_install matplotlib
+    $ easy_install pysparse
+    $ easy_install fipy
+    
+Some of the `Optional Packages`_ may also be available via
+``easy_install``, but not all are.
+
+.. _setuptools: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi/setuptools
+
+Enthought Python Edition
+========================
+
+http://www.enthought.com/epd
+
+This installer provides a very large number of useful scientific packages
+for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and IPython_.
+Installers are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
+
+.. attention::
+
+   PySparse_ and |FiPy| are not presently included in EPD, so you will need
+   to separately install them, either manually or via EasyInstall_.
+
+Python(x,y)
+===========
+
+http://www.pythonxy.com/
+
+Another comprehensive Python package installer for scientific applications,
+presently only available for Windows_. See |WINDOWS-INSTALLATION-txt| for
+more information.
+
+----------
+Privileges
+----------
+
+If you do not have administrative privileges on your computer, or if for
+any reason you don't want to tamper with your existing Python_
+installation, most packages (including |FiPy|) will allow you to install to
+an alternate location.  Instead of installing these packages with
+``python setup.py install``,
+you would use
+``python setup.py install --home=<dir>``,
+where ``<dir>`` is the desired installation directory (usually "``~``" to
+indicate your home directory).  You will then need to append
+``<dir>/lib/python`` to your ``PYTHONPATH`` environment variable.  See the
+`Alternate Installation`_ section of the Python_ document "`Installing
+Python Modules`_" |citeInstallingPythonModules| for more information, such
+as circumstances in which you should use ``--prefix`` instead of
+``--home``.
+
+.. _Alternate Installation: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/alt-install-windows.html
+
+.. _Installing Python Modules: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/
+
+
+-------------
+Prerequisites
+-------------
+
+Operating System
+================
+
+|FiPy| is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and 10.5 "Leopard",
+`Debian Linux`_ 4.0 "etch", `Ubuntu Linux`_ 10.10, and `Windows XP`_. We
+welcome reports of compatibility with other systems, particularly if any
+additional steps are necessary to install.
+
+.. note::
+
+   Simple instructions for `Mac OS X`_ users are in |MACOSX-INSTALLATION-txt|.
+   Simple instructions for Windows_ users are in |WINDOWS-INSTALLATION-txt|.
+
+The only elements of |FiPy| that are likely to be platform-dependent
+are the viewers, but at least one viewer should work on each platform.
+All other aspects should function on any platform that has a recent
+Python_ installation.
+
+Many of the packages listed below have prebuilt installers for different
+platforms (particularly for Windows).  These installers can save considerable
+time and effort compared to configuring and building from source, although
+they frequently comprise somewhat older versions of the respective code.
+Whether building from source or using a prebuilt installer, please read and
+follow explicitly any instructions given in the respective packages'
+``README`` and ``INSTALLATION`` files.
+
+.. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
+.. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
+.. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
+.. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
+.. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
+.. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
+.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
+.. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
+
+.. |latexWINDOWSINSTALL| raw:: latex
+
+   Section~\ref{sec:WindowsInstallation} ``\titleref{sec:WindowsInstallation}''
+
+.. |htmlWINDOWSINSTALL| raw:: html
+
+   the <a href="windows-installation.html">Windows Installation Guide</a>
+
+.. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWSINSTALL| |latexWINDOWSINSTALL|
+
+.. |latexMACOSXINSTALL| raw:: latex
+
+   Section~\ref{sec:MacOSXInstallation} ``\titleref{sec:MacOSXInstallation}''
+
+.. |htmlMACOSXINSTALL| raw:: html
+
+   the <a href="macosx-installation.html">Mac OS X Installation Guide</a>
+
+
+.. |MACOSX-INSTALLATION-txt| replace:: |htmlMACOSXINSTALL| |latexMACOSXINSTALL|
+
+Required Packages
+=================
+
+.. warning::
+
+   |FiPy| will not run if the following items are not installed.
+
+Python
+------
+
+.. raw:: latex
+
+   \IndexSoftware{Python}
+
+http://www.python.org/
+
+|FiPy| is written in the Python_ language and requires a Python_
+installation to run.  Python_ comes pre-installed on many operating
+systems, which you can check by opening a terminal and typing
+``python``, *e.g.*::
+
+    $ python
+    Python 2.3 (#1, Sep 13 2003, 00:49:11) 
+    ...
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> 
+
+If necessary, you can download_ and install it for your platform 
+|citePythonDownload|.
+
+.. note::
+
+   |FiPy| requires at least version 2.3 of Python_. |FiPy| has not yet
+    been tested (and will almost certainly not work) with `Python 3.0`_.
+
+.. _Python:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
+.. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
+.. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
+.. |citePythonDownload| raw:: latex
+
+   \cite{PythonDownload}
+
+NumPy
+-----
+
+.. raw:: latex
+
+   \IndexSoftware{NumPy}
+
+http://sourceforge.net/projects/numpy/
+
+Obtain and install the NumPy_ package. |FiPy| requires at least
+version 1.0 of NumPy_.
+
+.. attention::
+
+   |FiPy| no longer uses the older Numeric_ or numarray_ packages.
+
+   .. raw:: latex
+
+      \IndexSoftware{numarray}
+      \IndexSoftware{Numeric}
+
+.. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
+.. _numarray: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.stsci.edu/resources/software_hardware/numarray
+.. _NumPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
+
+PySparse
+--------
+
+.. raw:: latex
+
+   \IndexSoftware{PySparse}
+
+http://pysparse.sourceforge.net
+
+|FiPy| requires `Roman Geus`_' PySparse_ package.
+
+You can `download the PySparse archive`_ or check it out via
+anonymous CVS download::
+
+    $ cvs -d:pserver:anonymous@pysparse.cvs.sourceforge.net:/cvsroot/pysparse login
+
+and press enter at the password prompt, then::
+
+    $ cvs -z3 -d:pserver:anonymous@pysparse.cvs.sourceforge.net:/cvsroot/pysparse \
+    >     checkout pysparse
+
+From within the ``pysparse`` base directory, follow its included
+instructions for building PySparse_ for your platform. `PySparse Windows
+installers`_ are available.
+
+.. note::
+
+   Windows users who choose to build from source should pay particular 
+   attention to the instructions in the INSTALL file in the base PySparse_
+   directory.
+
+.. warning::
+
+   If pysparse is installed in a local directory a further path may
+   have to be added to the PYTHONPATH environment variable. For
+   example, if
+
+       $ python setup.py install --home=/some/directory/some/where
+
+   then both /some/directory/some/where and
+   /some/directory/some/where/lib/python are required to be added to
+   the PYTHONPATH. e.g.
+
+       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python
+
+.. warning::
+
+   |FiPy| requires version 1.0 or higher of PySparse_.
+
+.. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
+.. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
+.. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
+.. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
+
+Viewers
+=======
+
+|FiPy| will work perfectly well without them, but at least one of the
+following packages will be required to view the results of |FiPy|
+calculations. |FiPy| will select the first viewer that is available
+from the list below.  If more than one is installed, specify a viewer
+by setting the ``FIPY_VIEWER`` environment variable to either
+"``gist``", "``gnuplot``" or "``matplotlib``".
+
+Matplotlib
+----------
+
+.. raw:: latex
+
+   \IndexSoftware{Matplotlib}
+
+http://matplotlib.sourceforge.net
+
+Matplotlib_ is a Python_ package that displays publication quality
+results. It displays both 1D X-Y type plots and 2D contour plots for
+structured data. It does not display unstructured 2D data or 3D data.
+It works on all common platforms and produces publication quality hard
+copies. Version 0.72.1 or higher is required. `Matplotlib installers
+for specific platforms`_ are available |citeMatplotlibDownload|.
+
+.. note::
+
+   Matplotlib_ is noticeably slower than Pygist_ or Gnuplot.py_, but
+   has superior image rendering and plotting functionality.
+
+.. _Matplotlib:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net
+.. _Matplotlib installers for specific platforms: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
+.. |citeMatplotlibDownload| raw:: latex
+
+   \cite{MatplotlibDownload}
+
+Gnuplot-py
+----------
+
+http://gnuplot-py.sourceforge.net
+
+Gnuplot.py_ is a Python_ package that interfaces to gnuplot_, the
+popular open-source plotting program. It displays both 1D X-Y type
+plots and 2D contour plots for structured data but not for
+unstructured data or 3D data. It works on all common platforms and
+produces hard copies, however, it sometimes breaks on Windows. As a
+general remark, the viewing quality using either Pygist_ or
+Matplotlib_ is preferable.
+
+.. _Gnuplot:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot.sorceforge.net/
+.. _Gnuplot.py:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot-py.sourceforge.net
+
+Pygist
+------
+
+.. raw:: latex
+
+   \IndexSoftware{Pygist}
+   \IndexSoftware{gist}
+
+http://hifweb.lbl.gov/public/software/gist/
+
+The Pygist_ package can be used to display simulation results. It
+displays both 1D X-Y type plots and 2D contour plots for both
+structured and unstructured data. It does not display 3D
+data. Although stated as working on Windows, it does not seem to do a
+good job of rendering on this platform. Pygist_ works fine on other
+common platforms. Pygist_ no longer seems to be under development, but
+is still recommended as a fast light weight alternative to
+Matplotlib_.
+
+.. attention::
+
+   Pygist requires the old Numeric module to be installed.
+
+.. warning:: 
+
+   The facility to produce hard copies in Pygist_ does not work very well and
+   may crash the |FiPy| run. "``.eps``" and "``.cgm``" export seem to work.
+
+.. note::
+
+   If you experience difficulty building the native Pygist_ viewer on
+   `Mac OS X`_, you may wish to build the package with the ``--x11``
+   option described in its documentation.
+
+.. note::
+
+   Pygist_ can have problems finding color pallets, such as "``heat.gp``" and 
+   "``work.gs``", when installed locally. You may need to set the 
+   ``GISTPATH`` environment variable to point to the directory containing 
+   these files (you may find it as "``g/``" within the directory you 
+   specified for ``--home``). 
+
+.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
+
+MayaVi
+------
+
+.. raw:: latex
+
+   \IndexSoftware{MayaVi}
+
+http://mayavi.sourceforge.net
+
+The `MayaVi 1`_ Data Visualizer is a free, easy to use scientific data
+visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
+viewer available for 3D data. Other viewers are probably better for 1D
+or 2D viewing. 
+
+.. warning::
+
+   |FiPy| can only use `MayaVi 1`_ to display 3D meshes consisting entirely
+   of tetrahedrons or wedge elements. The ordering of vertices for other
+   mesh types may not work.
+
+.. note::
+
+   Is is also necessary to install the PyVTK_ package to use the
+   |FiPy| MayaVi_ viewers.
+
+.. note::
+
+   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
+   `MayaVi 2`_ as soon as possible.
+
+.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
+.. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
+
+----------------
+Obtaining |FiPy|
+----------------
+
+|FiPy| is freely available for download via Subversion_ or as a `compressed
+archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion,
+issue the following command::
+
+    $ svn checkout http://matforge.org/svn/fipy/tags/CURRENT
+
+This will download a fairly stable version of |FiPy| (somewhere
+between version |VERSION| and HEAD). If you prefer, you can download
+|FiPy| version |VERSION| (recommended) with::
+
+    $ svn checkout http://matforge.org/svn/fipy/tags/STABLE
+
+Further information about Subversion_ can be found in
+|documentation:SVN.txt| and in the `online Subversion Red Bean book`_
+|citeSubversionRedBean|.
+
+.. warning::
+
+   Keep in mind that if you choose to download the `compressed
+   archive`_ you will then need to preserve your changes when upgrades
+   to |FiPy| become available (upgrades via Subversion_ will handle
+   this issue automatically).
+
+.. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
+.. |citeFiPyDownload| raw:: latex
+
+   \cite{FiPyDownload}
+
+Manual
+======
+
+You can `download the latest manual`_ |citeFiPyGuide|. Alternatively,
+it may be possible to build a fresh copy by issuing the following
+command in the base directory::
+
+    $ python setup.py build_docs --latex --manual
+
+.. note::
+
+   This mechanism is intended primarily for the developers.  A
+   command-line pdfTeX installation and several |LaTeX| packages are
+   required; particularly ``memoir.cls``.  You will also need to add
+   ``~/path/to/fipy/utils`` to your ``PYTHONPATH`` environment
+   variable.
+
+.. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
+
+.. |citeFiPyGuide| raw:: latex
+
+   \cite{FiPyGuide}
+
+--------------
+Testing |FiPy|
+--------------
+
+From the base directory, you can verify that |FiPy| works properly by
+executing::
+
+    $ python setup.py test
+
+Depending on the packages you chose to install in `Optional Packages`_,
+be sure to set the appropriate environment variables.  You can expect a few
+errors if you did not install all of the recommended packages.
+
+If you chose to install the `weave`_ package, you should rerun the
+tests with::
+
+    $ python setup.py test --inline
+
+A few tests will fail the first time as a result of the messages
+output in the course of caching the compiled inline code, but a repeat
+test should have no failures (although see "``repairing catalog by
+removing key``" in |the FAQ|).
+
+.. note::
+
+   In order for Python_ to find the |FiPy| modules, you will need to ensure
+   that the base directory is added to your ``PYTHONPATH`` environment
+   variable, *e.g.*::
+
+       $ setenv PYTHONPATH .:${PYTHONPATH}
+
+   or::
+
+       $ export PYTHONPATH=.:${PYTHONPATH}
+
+-----------------
+Installing |FiPy|
+-----------------
+
+It is not necessary to formally install |FiPy|, but if you wish to do so
+and you are confident that all of the requisite packages have been
+installed properly and |FiPy| passes its tests, you can install it by
+typing::
+
+    $ python setup.py install
+
+at the command line.  Alternatively, you may choose not to formally install
+|FiPy| and to simply work within the base directory instead.  
+
+If you choose to install, Python_ will find your |FiPy| modules 
+automatically. If you choose not to install, then you will need to ensure 
+that the |FiPy| distribution directory is appended to your ``PYTHONPATH`` 
+environment variable (either "``.``" if you are working within the |FiPy| 
+directory, or "``~/path/to/fipy``" if you are working in your own directory).
+
+------------
+Using |FiPy|
+------------
+
+To see examples of problems that |FiPy| is capable of solving, you can run
+any of the scripts in |examples/|. 
+
+.. note::
+
+   We strongly recommend you proceed through |examples/|, but at 
+   the very least work through |examples/diffusion/mesh1D-py| to understand 
+   the notation and basic concepts of |FiPy|.
+
+We exlusively use either the unix
+command line or IPython_ to interact with |FiPy|. The commands in
+|examples/| are written with the assumption that they will be executed from
+the command line. For instance, from within the main |FiPy| directory, you
+can type::
+
+    $ python examples/diffusion/mesh1D.py
+
+A viewer should appear and you should be prompted through a series of
+examples.
+
+.. note::
+
+   From within IPython_, you would type::
+
+       >>> run examples/diffusion/mesh1D.py
+
+In order to customize the examples, or to develop your own scripts, some
+knowledge of Python syntax is required.  We recommend you familiarize
+yourself with the excellent `Python tutorial`_ |citePythonTutorial| 
+or with `Dive Into Python`_ |citeDiveIntoPython|.
+
+As you gain experience, you will want to see
+|FAQ-FlagsAndEnvironmentVariables| to learn about the flags and environment
+variables that modify |FiPy|'s default behavior.
+
+.. |latexMesh1D-py| raw:: latex
+
+   Example~\ref{sec:Examples:diffusion:mesh1D} ``\titleref{sec:Examples:diffusion:mesh1D}''
+
+.. |htmlMesh1D-py| raw:: html
+
+   Example 7.1: "Module <code>examples.diffusion.mesh1D</code>" of the <a href="download/fipy.pdf">Manual</a>
+
+.. |examples/diffusion/mesh1D-py| replace:: |htmlMesh1D-py| |latexMesh1D-py|
+
+-----------------
+Optional Packages
+-----------------
+
+.. note::
+
+   The following packages are not required to run |FiPy|, but they can be helpful.
+
+SciPy
+=====
+
+.. raw:: latex
+
+   \IndexSoftware{SciPy}
+
+http://www.scipy.org/
+
+Significantly improved performance has been achieved with the
+judicious use of C language inlining, via the weave_ module of the
+SciPy_ package. `SciPy download instructions`_ 
+|citeSciPyDownload| are available. We recommend version 0.5.2 or greater.
+
+.. note:: 
+
+   A handful of test cases use functions from the SciPy_ library and will
+   throw errors if it is missing.
+
+.. _weave: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/weave/
+.. _SciPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/
+.. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
+.. |citeSciPyDownload| raw:: latex
+
+   \cite{SciPyDownload}
+
+gmsh
+====
+
+.. raw:: latex
+
+   \IndexSoftware{gmsh}
+
+http://www.geuz.org/gmsh/
+
+It is possible to create irregular meshes with this package.
+
+.. note::
+
+   The `Mac OS X`_ distribution of gmsh provides a nice graphical tool, but
+   is structured a bit differently than on other platforms.  To access the
+   underlying shell tool, create a shell alias called ``gmsh`` that
+   corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
+
+IPython
+=======
+
+http://ipython.scipy.org/
+
+This interactive Python shell is nicer to use than the default, and 
+integrates nicely with matplotlib_. Depending on platform, you may be able 
+to download a binary or build from source.
+
+Trilinos
+========
+
+.. raw:: latex
+
+    \IndexSoftware{Trilinos}
+    
+http://trilinos.sandia.gov
+
+Trilinos_ provides solvers and preconditioners, and can be used instead of
+PySparse_. Trilinos_ preconditioning allows for iterative solutions to some
+difficult problems that PySparse_ cannot solve.
+
+.. attention:: 
+    
+    Trilinos_ is a large software suite with its own set of prerequisites, and
+    can be difficult to set up. It is not necessary for most problems, and is
+    NOT recommended in a basic install of |FiPy|.
+
+Trilinos_ is built using the standard ``configure``, ``make`` and ``make
+install`` method. The best approach that we have found is as follows::
+
+    $ cd trilinos-X.Y/
+    $ mkdir BUILD_DIR    
+    $ cd BUILD_DIR
+    $ ../configure CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5 -funroll-all-loops \
+    > -malign-double" --enable-epetra --enable-aztecoo --enable-pytrilinos \
+    > --enable-ml --enable-ifpack --enable-amesos --with-gnumake --enable-galeri
+
+.. note::
+
+   Recif reports that to build on a 64-bit system, the ``configure`` step
+   needs to be::
+
+       $ ../configure CXXFLAGS="-O3 -fpic" CFLAGS="-O3 -fpic" \
+       > FFLAGS="-O5 -fpic -funroll-all-loops" \
+       > --enable-epetra --enable-aztecoo  --enable-pytrilinos \
+       > --enable-ml --enable-ifpack --enable-amesos --with-gnumake \
+       > --enable-galeri
+
+..
+
+    $ make
+    $ make install
+
+Depending on your platform, other options may be helpful or necessary;
+see ``../configure --help``, the Trilinos_ user guide available from
+http://trilinos.sandia.gov/documentation.html, or
+
+.. raw:: latex
+
+    \newline
+
+http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more
+in-depth documentation.
+
+.. note:: 
+ 
+    Trilinos can be installed in a non-standard location by adding the
+    ``--prefix=$LOCAL_INSTALLATION_DIR`` flag to the configure step. If
+    Trilinos_ is installed in a nonstandard location, the path to the
+    PyTrilinos site-packages directory should be added to the
+    ``PYTHONPATH`` environment variable; this should be of the form
+    ``$INSTALL_DIR/lib/$PYTHON_VERSION/site-packages/``. Also, the path
+    to the Trilinos_ lib directory should be added to the
+    ``LD_LIBRARY_PATH`` (on Linux) or ``DYLD_LIBRARY_PATH`` (on Mac OS
+    X) environment variable; this should be of the form
+    ``$INSTALL_DIR/lib``.
+
+.. note::
+
+    If swig is in a non-standard place use the
+    ``--with-swig=$PATH_TO_SWIG_EXECUTABLE`` flag with the configure
+    step.
+
+.. note::
+    
+    See SURF2007_ for further details on installing and running Trilinos as well
+    as installing on 64 bit machines.
+    
+Trilinos_ solvers can be used to replace PySparse_ solvers. If both
+PySparse_ and Trilinos_ are present, useage can be controlled by setting
+the ``FIPY_SOLVERS`` environment variable to ``Trilinos`` or
+``Pysparse``, or by passing a ``--Trilinos`` or ``--Pysparse`` flag to
+the |FiPy| script, overriding the environment. In the absence of these
+indicators, |FiPy| will default to using PySparse_ if it is present.
+
+.. note:: 
+
+    Trilinos_ solvers frequently give intermediate output that |FiPy| cannot
+    suppress. The most commonly encountered messages are:
+
+     ``Gen_Prolongator warning : Max eigen <= 0.0``:
+        which is not significant to |FiPy|.
+
+     ``Aztec status AZ_loss: loss of precision``:
+        which indicates that there was some difficulty in solving the
+        problem to the requested tolerance due to precision limitations,
+        but usually does not prevent the solver from finding an adequate
+        solution.
+
+     ``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``:
+        which indicates that GMRES is having trouble with the problem, and
+        may indicate that trying a different solver or preconditioner may
+        give more accurate results if GMRES fails.
+
+     ``Aztec status AZ_breakdown: numerical breakdown``
+        which usually indicates serious problems solving the equation which
+        forced the solver to stop before reaching an adequate solution.
+        Different solvers, different preconditioners, or a less restrictive
+        tolerance may help.
+
+.. _Trilinos: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
+.. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
+.. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
+.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
+.. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
+.. _SURF2007: http://matforge.org/fipy/wiki/SURF2007#CompilingrunningTrilinosontheCTCMSlabmachines
+
+
+.. include:: utils/include.txt
+
+.. include:: documentation/VERSION.txt
+
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+.. |TeX| replace:: |latexTeX| |htmlTeX|
+.. |LaTeX| replace:: |latexLaTeX| |htmlLaTeX|
+.. |examples/| replace:: |htmlExamples/| |latexExamples/|
+.. |documentation:SVN.txt| replace:: |latexSVN.txt| |htmlSVN.txt|
+
+.. |citeSubversionRedBean| raw:: latex
+
+   \cite{SubversionRedBean}
+
+.. |citeInstallingPythonModules| raw:: latex
+
+   \cite{InstallingPythonModules}
+
+.. |citePythonTutorial| raw:: latex
+
+   \cite{PythonTutorial}
+
+.. |citeDiveIntoPython| raw:: latex
+
+   \cite{DiveIntoPython}
+
+.. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
+
+.. |latexFAQ-FlagsAndEnvironmentVariables| raw:: latex
+
+   FAQ~\ref{FAQ-FlagsAndEnvironmentVariables}
+
+.. |htmlFAQ-FlagsAndEnvironmentVariables| raw:: html
+
+   FAQ 6.6: "How do I change FiPy's default behavior?" of the <a href="download/fipy.pdf">Manual</a>
+
+.. |FAQ-FlagsAndEnvironmentVariables| replace:: |htmlFAQ-FlagsAndEnvironmentVariables| |latexFAQ-FlagsAndEnvironmentVariables|
+
+.. |outsideLinks| raw:: html
+
+    <div class="note">
+    <p class="admonition-title">Note</p>
+    By selecting the links on this page, you will be leaving NIST webspace.
+    We have provided these links to other web sites because they may have
+    information that would be of interest to you.  No inferences should be
+    drawn on account of other sites being referenced, or not, from this
+    page.  There may be other web sites that are more appropriate for your
+    purpose.  NIST does not necessarily endorse the views expressed, or
+    concur with the facts presented on these sites.  Further, NIST does not
+    endorse any commercial products that may be mentioned on these sites.
+    Please address comments about this page to <a class="reference"
+    href="mailto:fipy@nist.gov">fipy@nist.gov</a>.
+    </div>
