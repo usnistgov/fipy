@@ -260,9 +260,9 @@ class Grid3D(Mesh):
 
     def __getstate__(self):
         dict = {
-            'dx' : self.dx,            
-            'dy' : self.dy,
-            'dz' : self.dz,
+            'dx' : self.dx * self.scale['length'],
+            'dy' : self.dy * self.scale['length'],
+            'dz' : self.dz * self.scale['length'],
             'nx' : self.nx,
             'ny' : self.ny,
             'nz' : self.nz
@@ -270,7 +270,7 @@ class Grid3D(Mesh):
         return dict
 
     def __setstate__(self, dict):
-        self.__init__(dx = dict['dx'], dy = dict['dy'], dz = dict['dz'], nx = dict['nx'], ny = dict['ny'], nz = dict['nz'])
+        self.__init__(**dict)
 
 
     def _test(self):

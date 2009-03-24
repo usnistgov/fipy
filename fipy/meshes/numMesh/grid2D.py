@@ -178,8 +178,8 @@ class Grid2D(Mesh2D):
         `Grid2D` to persistent storage.
         """
         return {
-            'dx' : self.dx,            
-            'dy' : self.dy,
+            'dx' : self.dx * self.scale['length'],            
+            'dy' : self.dy * self.scale['length'],
             'nx' : self.nx,
             'ny' : self.ny
         }
@@ -189,7 +189,7 @@ class Grid2D(Mesh2D):
         Used internally to create a new `Grid2D` from ``pickled`` 
         persistent storage.
         """
-        self.__init__(dx = dict['dx'], dy = dict['dy'], nx = dict['nx'], ny = dict['ny'])
+        self.__init__(**dict)
 
     def _test(self):
         """

@@ -119,12 +119,12 @@ class Grid1D(Mesh1D):
 
     def __getstate__(self):
         return {
-            'dx' : self.dx,            
+            'dx' : self.dx * self.scale['length'],            
             'nx' : self.nx
         }
         
     def __setstate__(self, dict):
-        self.__init__(dx = dict['dx'], nx = dict['nx'])
+        self.__init__(**dict)
 
     def _test(self):
         """
