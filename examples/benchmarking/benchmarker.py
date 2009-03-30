@@ -52,8 +52,15 @@ script = script.replace("""nx = ny = 20""",
 script = script.replace("""steps = 10""", 
                         """steps = 0""")
 
+script0 = script.replace('''
+#    \cite{WarrenPolycrystal}.''', '''
+#    \cite{WarrenPolycrystal}.
+                        
+TSVViewer(vars=(phase, dT)).plot("anisotropy-0.txt.gz")
+''')
+                        
 fd, path = mkstemp(".py")
-os.write(fd, script)
+os.write(fd, script0)
 os.close(fd)
 
 p = popen2.Popen3('python "%s" --inline' % path)
@@ -63,23 +70,41 @@ ru0 = resource.getrusage(resource.RUSAGE_CHILDREN)
 
 script = script.replace("""steps = 0""", 
                         """steps = %d""" % steps)
+                        
 
-f = open(path, "w")
-f.write(script)
-f.close()
+for block in range(20):
+    script1 = script.replace('''
+for i in range(steps):''', '''
+data = loadtxt("anisotropy-%d.txt.gz", skiprows=1)
+phase.setValue(data[..., 2])
+dT.setValue(data[..., 3])
+for i in range(steps):''' % (block * steps))
 
-p = popen2.Popen4('python "%s"' % path)
-p.wait()
+    script1 = script1.replace('''
+#    \cite{WarrenPolycrystal}.''', '''
+#    \cite{WarrenPolycrystal}.
+                        
+TSVViewer(vars=(phase, dT)).plot("anisotropy-%%d.txt.gz" %% (steps + %d))
+''' % (block * steps))
 
-for l in p.fromchild:
-    print l.rstrip()
+    f = open(path, "w")
+    f.write(script1)
+    f.close()
 
-ru = resource.getrusage(resource.RUSAGE_CHILDREN)
+    p = popen2.Popen4('python "%s"' % path)
+    p.wait()
 
-print "-" * 79
+    for l in p.fromchild:
+        print l.rstrip()
 
-print "          user time: %.9f s / step / cell" % ((ru.ru_utime - ru0.ru_utime) / steps / N**2)
-print "        system time: %.9f s / step / cell" % ((ru.ru_stime - ru0.ru_utime) / steps / N**2)
-print "max resident memory: %.2f B / cell" % (float(ru.ru_maxrss) / N**2)
+    ru = resource.getrusage(resource.RUSAGE_CHILDREN)
 
+    print "-" * 79
+
+    print "          user time: %.9f s / step / cell" % ((ru.ru_utime - ru0.ru_utime) / steps / N**2)
+    print "        system time: %.9f s / step / cell" % ((ru.ru_stime - ru0.ru_stime) / steps / N**2)
+    print "max resident memory: %.2f B / cell" % (float(ru.ru_maxrss) / N**2)
+
+    ru0 = ru
+    
 os.remove(path)
