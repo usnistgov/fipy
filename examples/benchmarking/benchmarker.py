@@ -39,7 +39,7 @@ from fipy.tests import doctestPlus
 import examples.phase.anisotropy
 
 N = 1000
-steps = 5
+steps = 20
 
 script = doctestPlus._getScript("examples.phase.anisotropy")
 
@@ -55,10 +55,10 @@ script = script.replace("""steps = 10""",
 script0 = script.replace('''
 #    \cite{WarrenPolycrystal}.''', '''
 #    \cite{WarrenPolycrystal}.
-                        
-TSVViewer(vars=(phase, dT)).plot("anisotropy-0.txt.gz")
+
+dump.write((mesh, phase, dT), "anisotropy-0.dmp.gz")
 ''')
-                        
+
 fd, path = mkstemp(".py")
 os.write(fd, script0)
 os.close(fd)
@@ -71,20 +71,23 @@ ru0 = resource.getrusage(resource.RUSAGE_CHILDREN)
 script = script.replace("""steps = 0""", 
                         """steps = %d""" % steps)
                         
+                        
+datafile = file("data.txt", mode="w+", buffering=1)
+datafile.write("step\tuser / (s / step / cell)\tsys / (s / step / cell)\tmem / (B / cell)\n")
 
-for block in range(20):
+for block in range(500):
     script1 = script.replace('''
 for i in range(steps):''', '''
-data = loadtxt("anisotropy-%d.txt.gz", skiprows=1)
-phase.setValue(data[..., 2])
-dT.setValue(data[..., 3])
+mesh_tmp, phase_tmp, dT_tmp = dump.read("anisotropy-%d.dmp.gz")
+phase.setValue(phase_tmp.getValue())
+dT.setValue(dT_tmp.getValue())
 for i in range(steps):''' % (block * steps))
 
     script1 = script1.replace('''
 #    \cite{WarrenPolycrystal}.''', '''
 #    \cite{WarrenPolycrystal}.
-                        
-TSVViewer(vars=(phase, dT)).plot("anisotropy-%%d.txt.gz" %% (steps + %d))
+                    
+dump.write((mesh, phase, dT), "anisotropy-%%d.dmp.gz" %% (steps + %d))
 ''' % (block * steps))
 
     f = open(path, "w")
@@ -105,6 +108,13 @@ TSVViewer(vars=(phase, dT)).plot("anisotropy-%%d.txt.gz" %% (steps + %d))
     print "        system time: %.9f s / step / cell" % ((ru.ru_stime - ru0.ru_stime) / steps / N**2)
     print "max resident memory: %.2f B / cell" % (float(ru.ru_maxrss) / N**2)
 
+    datafile.write("%d\t%g\t%g\t%g\n" % ((block + 1) * steps,
+                                         (ru.ru_utime - ru0.ru_utime) / steps / N**2,
+                                         (ru.ru_stime - ru0.ru_stime) / steps / N**2,
+                                         float(ru.ru_maxrss) / N**2))
+
     ru0 = ru
     
 os.remove(path)
+
+datafile.close()
