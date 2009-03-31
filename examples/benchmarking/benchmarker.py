@@ -31,6 +31,7 @@
  ##
 
 import os
+import re
 from tempfile import mkstemp
 import popen2
 import resource
@@ -38,7 +39,7 @@ import resource
 from fipy.tests import doctestPlus
 import examples.phase.anisotropy
 
-N = 1000
+N = 100
 steps = 20
 
 script = doctestPlus._getScript("examples.phase.anisotropy")
@@ -63,17 +64,38 @@ fd, path = mkstemp(".py")
 os.write(fd, script0)
 os.close(fd)
 
-p = popen2.Popen3('python "%s" --inline' % path)
-p.wait()
+cputime_RE = re.compile("(\d+:)?(\d+):(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?")
 
-ru0 = resource.getrusage(resource.RUSAGE_CHILDREN)
+def monitor(p):
+    def cputimestring2secs(str):
+        m = cputime_RE.match(str)
+        
+        secs = 60 * int(m.group(2)) + float(m.group(3))
+        if m.group(1) is not None:
+            secs += 3600 * int(m.group(1))
+            
+        return secs
+        
+    rsz = vsz = cputime = -1
+    while p.poll() == -1:
+        r, w = popen2.popen2("ps -p %d -o rsz,vsz,cputime" % p.pid)
+        ps = r.readlines()[1].split()
+        rsz = max(rsz, int(ps[0]) * 1024)
+        vsz = max(vsz, int(ps[1]) * 1024)
+        cputime = max(cputime, cputimestring2secs(ps[2]))
+        
+    return rsz, vsz, cputime
+    
+p = popen2.Popen3('python "%s" --inline' % path)
+
+rsz0, vsz0, cputime0 = monitor(p)
 
 script = script.replace("""steps = 0""", 
                         """steps = %d""" % steps)
                         
                         
 datafile = file("data.txt", mode="w+", buffering=1)
-datafile.write("step\tuser / (s / step / cell)\tsys / (s / step / cell)\tmem / (B / cell)\n")
+datafile.write("step\cpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)\n")
 
 for block in range(500):
     script1 = script.replace('''
@@ -95,26 +117,25 @@ dump.write((mesh, phase, dT), "anisotropy-%%d.dmp.gz" %% (steps + %d))
     f.close()
 
     p = popen2.Popen4('python "%s"' % path)
-    p.wait()
+    
+    rsz, vsz, cputime = monitor(p)
 
     for l in p.fromchild:
         print l.rstrip()
 
-    ru = resource.getrusage(resource.RUSAGE_CHILDREN)
-
     print "-" * 79
 
-    print "          user time: %.9f s / step / cell" % ((ru.ru_utime - ru0.ru_utime) / steps / N**2)
-    print "        system time: %.9f s / step / cell" % ((ru.ru_stime - ru0.ru_stime) / steps / N**2)
-    print "max resident memory: %.2f B / cell" % (float(ru.ru_maxrss) / N**2)
+    print "           cpu time: %.9f s / step / cell" % ((cputime - cputime0) / steps / N**2)
+    print "max resident memory: %.2f B / cell" % (float(rsz) / N**2)
+    print " max virtual memory: %.2f B / cell" % (float(vsz) / N**2)
 
     datafile.write("%d\t%g\t%g\t%g\n" % ((block + 1) * steps,
-                                         (ru.ru_utime - ru0.ru_utime) / steps / N**2,
-                                         (ru.ru_stime - ru0.ru_stime) / steps / N**2,
-                                         float(ru.ru_maxrss) / N**2))
-
-    ru0 = ru
+                                         (cputime - cputime0) / steps / N**2,
+                                         float(rsz) / N**2,
+                                         float(vsz) / N**2))
     
 os.remove(path)
 
 datafile.close()
+
+
