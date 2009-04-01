@@ -39,7 +39,7 @@ import resource
 from fipy.tests import doctestPlus
 import examples.phase.anisotropy
 
-N = 100
+N = 1000
 steps = 20
 
 script = doctestPlus._getScript("examples.phase.anisotropy")
