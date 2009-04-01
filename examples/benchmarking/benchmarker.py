@@ -78,11 +78,14 @@ def monitor(p):
         
     rsz = vsz = cputime = -1
     while p.poll() == -1:
-        r, w = popen2.popen2("ps -p %d -o rsz,vsz,cputime" % p.pid)
-        ps = r.readlines()[1].split()
-        rsz = max(rsz, int(ps[0]) * 1024)
-        vsz = max(vsz, int(ps[1]) * 1024)
-        cputime = max(cputime, cputimestring2secs(ps[2]))
+        try:
+            r, w = popen2.popen2("ps -p %d -o rsz,vsz,cputime" % p.pid)
+            ps = r.readlines()[1].split()
+            rsz = max(rsz, int(ps[0]) * 1024)
+            vsz = max(vsz, int(ps[1]) * 1024)
+            cputime = max(cputime, cputimestring2secs(ps[2]))
+        except:
+            break
         
     return rsz, vsz, cputime
     
