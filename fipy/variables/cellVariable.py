@@ -136,7 +136,7 @@ class CellVariable(_MeshVariable):
                                               value=self.getValue(),
                                               hasOld=False)
             
-    def __call__(self, points=None, order=0):
+    def __call__(self, points=None, order=0, nearestCellIDs=None):
         r"""
         Interpolates the CellVariable to a set of points using a
         method that has a memory requirement on the order of Ncells by
@@ -146,7 +146,9 @@ class CellVariable(_MeshVariable):
         :Parameters:
 
            - `points`: A point or set of points in the format (X, Y, Z)
-           - `order`: The order of interpolation, 0 or 1, default is 0
+           - `order`: The order of interpolation, 0 or 1, default is 0 
+           - `nearestCellIDs` : Optional argument if user can calculate own
+             nearest cell IDs array, shape should be same as points
 
         Tests
 
@@ -171,12 +173,16 @@ class CellVariable(_MeshVariable):
         """           
         if points is not None:
 
+            if nearestCellIDs is None:
+                nearestCellIDs = self.getMesh()._getNearestCellID(points)
+
             if order == 0:
-                return self[...,self.getMesh()._getNearestCellID(points)]
+                return self[..., nearestCellIDs]
 
             elif order == 1:
-                cellID = self.getMesh()._getNearestCellID(points)
-                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().getCellCenters()[...,cellID], self.getGrad()[...,cellID])
+                ##cellID = self.getMesh()._getNearestCellID(points)
+##                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().getCellCenters()[...,cellID], self.getGrad()[...,cellID])
+                return self[..., nearestCellIDs] + numerix.dot(points - self.getMesh().getCellCenters()[...,nearestCellIDs], self.getGrad()[...,nearestCellIDs])
 
             else:
                 raise ValueError, 'order should be either 0 or 1'
