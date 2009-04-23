@@ -80,7 +80,7 @@ If you wish to use `MayaVi 1`_, PyVTK is a requirement.  Download and
 install the latest version from the |FiPy| `downloads page`_
 (``PyVTK-x.y.z.win32.exe``).
 
-.. _downloads page: http://www.ctcms.nist.gov/fipy/download
+.. _downloads page: http://matforge.org/fipy/downloader
 
 MayaVi
 ------
