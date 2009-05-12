@@ -125,7 +125,10 @@ class Term:
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
         array = var.getNumericValue()
         solver._solve(matrix, array, RHSvector)
-        var[:] = array
+        factor = var.getUnit().factor
+        if factor != 1:
+            array /= var.getUnit().factor
+        var[:] = array 
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
 

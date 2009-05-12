@@ -137,6 +137,7 @@ class ConvectionTerm(FaceTerm):
                 if diffCoeff is None:
                     diffCoeff = small
                 else:
+                    diffCoeff = diffCoeff.getNumericValue()
                     diffCoeff = (diffCoeff == 0) * small + diffCoeff
 
             alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)

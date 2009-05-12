@@ -173,11 +173,11 @@ class Variable(object):
             >>> print numerix.array(v)
             [2 3]
         
-        A dimensional `Variable` will convert to the numeric value in the current units
+        A dimensional `Variable` will convert to the numeric value in its base units
     
-            >>> v = Variable(value=[2,3], unit="m")
+            >>> v = Variable(value=[2,3], unit="mm")
             >>> numerix.array(v)
-            array([2, 3])
+            array([ 0.002,  0.003])
         """
 
         return numerix.array(self.getValue(), t)
