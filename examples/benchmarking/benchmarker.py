@@ -35,30 +35,35 @@ import re
 from tempfile import mkstemp
 import popen2
 import resource
+from textwrap import dedent
         
 from fipy.tests import doctestPlus
 import examples.phase.anisotropy
 
-N = 1000
-steps = 20
+N = 100
+steps = 2
 
 script = doctestPlus._getScript("examples.phase.anisotropy")
 
 script = script.replace("__main__", 
                         "__DONT_RUN_THIS__")
                         
-script = script.replace("""nx = ny = 20""", 
-                        """nx = ny = %d""" % N)
+script = script.replace("nx = ny = 20", 
+                        "nx = ny = %d" % N)
 
-script = script.replace("""steps = 10""", 
-                        """steps = 0""")
+script = script.replace("steps = 10", 
+                        "steps = 0")
 
-script0 = script.replace('''
-#    \cite{WarrenPolycrystal}.''', '''
-#    \cite{WarrenPolycrystal}.
+old = '''\
+      #    \cite{WarrenPolycrystal}.
+      '''
+new = '''\
+      #    \cite{WarrenPolycrystal}.
+      
+      dump.write((mesh, phase, dT), "anisotropy-0.dmp.gz")
+      '''
 
-dump.write((mesh, phase, dT), "anisotropy-0.dmp.gz")
-''')
+script0 = script.replace(dedent(old), dedent(new))
 
 fd, path = mkstemp(".py")
 os.write(fd, script0)
@@ -100,20 +105,27 @@ script = script.replace("""steps = 0""",
 datafile = file("data.txt", mode="w+", buffering=1)
 datafile.write("step\cpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)\n")
 
-for block in range(500):
-    script1 = script.replace('''
-for i in range(steps):''', '''
-mesh_tmp, phase_tmp, dT_tmp = dump.read("anisotropy-%d.dmp.gz")
-phase.setValue(phase_tmp.getValue())
-dT.setValue(dT_tmp.getValue())
-for i in range(steps):''' % (block * steps))
+for block in range(5):
+    old = '''
+          for i in range(steps):
+          '''
+    new = '''
+          mesh_tmp, phase_tmp, dT_tmp = dump.read("anisotropy-%d.dmp.gz")
+          phase.setValue(phase_tmp.getValue())
+          dT.setValue(dT_tmp.getValue())
+          for i in range(steps):
+          ''' % (block * steps)
+    script1 = script.replace(dedent(old), dedent(new)) 
 
-    script1 = script1.replace('''
-#    \cite{WarrenPolycrystal}.''', '''
-#    \cite{WarrenPolycrystal}.
-                    
-dump.write((mesh, phase, dT), "anisotropy-%%d.dmp.gz" %% (steps + %d))
-''' % (block * steps))
+    old = '''\
+          #    \cite{WarrenPolycrystal}.
+          '''
+    new = '''\
+          #    \cite{WarrenPolycrystal}.
+          
+          dump.write((mesh, phase, dT), "anisotropy-%%d.dmp.gz" %% (steps + %d))
+          ''' % (block * steps)
+    script1 = script1.replace(dedent(old), dedent(new))
 
     f = open(path, "w")
     f.write(script1)

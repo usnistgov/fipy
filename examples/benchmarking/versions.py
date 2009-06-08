@@ -33,7 +33,9 @@
 import popen2
 import re
 
-r, w = popen2.popen2("svn log --quiet --revision 3000:HEAD")
+r, w = popen2.popen2(("svn", "log", "--quiet", 
+                      "--revision", "3000:HEAD", 
+                      "--stop-on-copy"))
 
 scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
 
