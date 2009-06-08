@@ -83,7 +83,7 @@ def monitor(p):
             
         return secs
         
-    rsz = vsz = cputime = -1
+    rsz = vsz = cpu = -1
     while p.poll() is None:
         try:
             r = Popen(("ps", "-p", str(p.pid), "-o" "rsz,vsz,cputime"),
@@ -93,7 +93,7 @@ def monitor(p):
             ps = r.splitlines()[1].split()
             rsz = max(rsz, int(ps[0]) * 1024)
             vsz = max(vsz, int(ps[1]) * 1024)
-            cpu = max(cputime, cputimestring2secs(ps[2]))
+            cpu = max(cpu, cputimestring2secs(ps[2]))
         except:
             break
         
