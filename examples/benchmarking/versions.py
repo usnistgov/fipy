@@ -54,8 +54,8 @@ try:
     scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
 
     reCPU = re.compile("cpu time: (%s) s / step / cell" % scanf_e)
-    reRM = re.compile("max resident memory: (%s) B / cell" % scanf_e)
-    reVM = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
+    reRSZ = re.compile("max resident memory: (%s) B / cell" % scanf_e)
+    reVSZ = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
 
     for entry in client.log(info.url):
         client.update(dir, revision=entry.revision)
@@ -71,10 +71,10 @@ try:
         r = "".join(r)
         
         cpu = reCPU.search(r, re.MULTILINE)
-        rm = reRM.search(r, re.MULTILINE)
-        vm = reVM.search(r, re.MULTILINE)
+        rsz = reRSZ.search(r, re.MULTILINE)
+        vsz = reVSZ.search(r, re.MULTILINE)
         
-        print entry.revision.number, cpu.group(1), rm.group(1), vm.group(1)
+        print entry.revision.number, cpu.group(1), rsz.group(1), vsz.group(1)
 except Exception, e:
     print e
     

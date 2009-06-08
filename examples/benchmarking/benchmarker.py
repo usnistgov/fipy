@@ -34,8 +34,8 @@ import os
 import sys
 import re
 from tempfile import mkstemp
-import popen2
 import resource
+from subprocess import Popen, PIPE
 from textwrap import dedent
         
 from fipy.tests import doctestPlus
@@ -84,21 +84,24 @@ def monitor(p):
         return secs
         
     rsz = vsz = cputime = -1
-    while p.poll() == -1:
+    while p.poll() is None:
         try:
-            r, w = popen2.popen2(("ps", "-p", str(p.pid), "-o" "rsz,vsz,cputime"))
-            ps = r.readlines()[1].split()
+            r = Popen(("ps", "-p", str(p.pid), "-o" "rsz,vsz,cputime"),
+                      stdout=PIPE,
+                      env=os.environ).communicate()[0]
+
+            ps = r.splitlines()[1].split()
             rsz = max(rsz, int(ps[0]) * 1024)
             vsz = max(vsz, int(ps[1]) * 1024)
-            cputime = max(cputime, cputimestring2secs(ps[2]))
+            cpu = max(cputime, cputimestring2secs(ps[2]))
         except:
             break
         
-    return rsz, vsz, cputime
+    return rsz, vsz, cpu
     
-p = popen2.Popen3(("python", path) + args)
+p = Popen(("python", path) + args)
 
-rsz0, vsz0, cputime0 = monitor(p)
+rsz0, vsz0, cpu0 = monitor(p)
 
 script = script.replace("""steps = 0""", 
                         """steps = %d""" % steps)
@@ -107,7 +110,7 @@ script = script.replace("""steps = 0""",
 datafile = file("data.txt", mode="w+", buffering=1)
 datafile.write("step\cpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)\n")
 
-for block in range(5):
+for block in range(1):
     old = '''
           for i in range(steps):
           '''
@@ -133,21 +136,21 @@ for block in range(5):
     f.write(script1)
     f.close()
 
-    p = popen2.Popen4(("python", path) + args)
+    p = Popen(("python", path) + args, stdout=PIPE)
     
-    rsz, vsz, cputime = monitor(p)
+    rsz, vsz, cpu = monitor(p)
 
-    for l in p.fromchild:
+    for l in p.stdout:
         print l.rstrip()
 
     print "-" * 79
 
-    print "           cpu time: %.9f s / step / cell" % ((cputime - cputime0) / steps / N**2)
+    print "           cpu time: %.9f s / step / cell" % ((cpu - cpu0) / steps / N**2)
     print "max resident memory: %.2f B / cell" % (float(rsz) / N**2)
     print " max virtual memory: %.2f B / cell" % (float(vsz) / N**2)
 
     datafile.write("%d\t%g\t%g\t%g\n" % ((block + 1) * steps,
-                                         (cputime - cputime0) / steps / N**2,
+                                         (cpu - cpu0) / steps / N**2,
                                          float(rsz) / N**2,
                                          float(vsz) / N**2))
     
