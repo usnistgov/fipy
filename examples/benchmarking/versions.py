@@ -46,9 +46,9 @@ reMemory = re.compile("max resident memory: (%s) B / cell" % scanf_e)
 revs = re.findall(r"^r([0-9]*) \|", "".join(r), re.MULTILINE)
 
 for rev in revs:
-    r, w = popen2.popen2("svn update --revision %s" % rev)
+    r, w = popen2.popen2(("svn", "update", "--revision", rev))
     
-    r, w = popen2.popen2("python benchmarker.py")
+    r, w = popen2.popen2(("python", "benchmarker.py"))
     
     r = "".join(r)
     

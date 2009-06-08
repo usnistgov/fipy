@@ -31,6 +31,7 @@
  ##
 
 import os
+import sys
 import re
 from tempfile import mkstemp
 import popen2
@@ -39,6 +40,8 @@ from textwrap import dedent
         
 from fipy.tests import doctestPlus
 import examples.phase.anisotropy
+
+args = tuple(sys.argv[1:])
 
 N = 100
 steps = 2
@@ -62,7 +65,6 @@ new = '''\
       
       dump.write((mesh, phase, dT), "anisotropy-0.dmp.gz")
       '''
-
 script0 = script.replace(dedent(old), dedent(new))
 
 fd, path = mkstemp(".py")
@@ -84,7 +86,7 @@ def monitor(p):
     rsz = vsz = cputime = -1
     while p.poll() == -1:
         try:
-            r, w = popen2.popen2("ps -p %d -o rsz,vsz,cputime" % p.pid)
+            r, w = popen2.popen2(("ps", "-p", str(p.pid), "-o" "rsz,vsz,cputime"))
             ps = r.readlines()[1].split()
             rsz = max(rsz, int(ps[0]) * 1024)
             vsz = max(vsz, int(ps[1]) * 1024)
@@ -94,7 +96,7 @@ def monitor(p):
         
     return rsz, vsz, cputime
     
-p = popen2.Popen3('python "%s" --inline' % path)
+p = popen2.Popen3(("python", path) + args)
 
 rsz0, vsz0, cputime0 = monitor(p)
 
@@ -131,7 +133,7 @@ for block in range(5):
     f.write(script1)
     f.close()
 
-    p = popen2.Popen4('python "%s"' % path)
+    p = popen2.Popen4(("python", path) + args)
     
     rsz, vsz, cputime = monitor(p)
 
