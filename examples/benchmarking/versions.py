@@ -30,30 +30,52 @@
  # ###################################################################
  ##
 
-import popen2
+import os
 import re
+import shutil
+from subprocess import Popen, PIPE
+import tempfile
 
-r, w = popen2.popen2(("svn", "log", "--quiet", 
-                      "--revision", "3000:HEAD", 
-                      "--stop-on-copy"))
+import pysvn
 
-scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
+client = pysvn.Client()
 
-reUser = re.compile("user time: (%s) s / step / cell" % scanf_e)
-reSystem = re.compile("system time: (%s) s / step / cell" % scanf_e)
-reMemory = re.compile("max resident memory: (%s) B / cell" % scanf_e)
+# svn manipulations on the working copy in-place are dangerous
 
-revs = re.findall(r"^r([0-9]*) \|", "".join(r), re.MULTILINE)
+info = client.info('.')
+dir = tempfile.mkdtemp()
 
-for rev in revs:
-    r, w = popen2.popen2(("svn", "update", "--revision", rev))
+env = os.environ.copy()
+env['PYTHONPATH'] = dir
+
+try:
+    client.checkout(info.url, dir)
+
+    scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
+
+    reCPU = re.compile("cpu time: (%s) s / step / cell" % scanf_e)
+    reRM = re.compile("max resident memory: (%s) B / cell" % scanf_e)
+    reVM = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
+
+    for entry in client.log(info.url):
+        client.update(dir, revision=entry.revision)
+        
+        p = Popen(["python", 
+                   os.path.join(os.path.dirname(__file__), 
+                                "benchmarker.py")], 
+                  stdout=PIPE, 
+                  stderr=PIPE, 
+                  env=env)
+
+        r = p.communicate()[0]
+        r = "".join(r)
+        
+        cpu = reCPU.search(r, re.MULTILINE)
+        rm = reRM.search(r, re.MULTILINE)
+        vm = reVM.search(r, re.MULTILINE)
+        
+        print entry.revision.number, cpu.group(1), rm.group(1), vm.group(1)
+except Exception, e:
+    print e
     
-    r, w = popen2.popen2(("python", "benchmarker.py"))
-    
-    r = "".join(r)
-    
-    user = reUser.search(r, re.MULTILINE)
-    sys = reSystem.search(r, re.MULTILINE)
-    mem = reMemory.search(r, re.MULTILINE)
-    
-    print rev, user.group(1), sys.group(1), mem.group(1)
+shutil.rmtree(dir)
