@@ -39,8 +39,8 @@ from textwrap import dedent
 
 from fipy.tools.parser import parse
 from fipy.tools.numerix import sqrt
-        
 from fipy.tests import doctestPlus
+
 import examples.phase.anisotropy
 
 numberOfElements = parse('--numberOfElements', action='store',
@@ -57,6 +57,8 @@ cpu0 = parse('--cpuBaseLine', action='store',
               type='float', default=0.)
               
 args = tuple(sys.argv[1:])
+
+dir = os.path.dirname(__file__)
 
 script = doctestPlus._getScript("examples.phase.anisotropy")
 
@@ -106,11 +108,11 @@ if start is not 0:
           for i in range(steps):
           '''
     new = '''
-          mesh_tmp, phase_tmp, dT_tmp = dump.read("anisotropy-%d.dmp.gz")
+          mesh_tmp, phase_tmp, dT_tmp = dump.read("%s/anisotropy-%d.dmp.gz")
           phase.setValue(phase_tmp.getValue())
           dT.setValue(dT_tmp.getValue())
           for i in range(steps):
-          ''' % start
+          ''' % (dir, start)
     script = script.replace(dedent(old), dedent(new)) 
 
 old = '''\
@@ -119,8 +121,8 @@ old = '''\
 new = '''\
       #    \cite{WarrenPolycrystal}.
       
-      dump.write((mesh, phase, dT), "anisotropy-%%d.dmp.gz" %% (steps + %d))
-      ''' % start
+      dump.write((mesh, phase, dT), "%s/anisotropy-%%d.dmp.gz" %% (steps + %d))
+      ''' % (dir, start)
 script = script.replace(dedent(old), dedent(new))
 
 f = open(path, "w")
