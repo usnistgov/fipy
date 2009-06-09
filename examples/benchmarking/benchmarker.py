@@ -34,17 +34,29 @@ import os
 import sys
 import re
 from tempfile import mkstemp
-import resource
 from subprocess import Popen, PIPE
 from textwrap import dedent
+
+from fipy.tools.parser import parse
+from fipy.tools.numerix import sqrt
         
 from fipy.tests import doctestPlus
 import examples.phase.anisotropy
 
-args = tuple(sys.argv[1:])
+numberOfElements = parse('--numberOfElements', action='store',
+                         type='int', default=10000)
+N = int(sqrt(numberOfElements))
 
-N = 100
-steps = 2
+steps = parse('--numberOfSteps', action='store',
+              type='int', default=20)
+
+start = parse('--startingStep', action='store',
+              type='int', default=0)
+
+cpu0 = parse('--cpuBaseLine', action='store',
+              type='float', default=0.)
+              
+args = tuple(sys.argv[1:])
 
 script = doctestPlus._getScript("examples.phase.anisotropy")
 
@@ -55,20 +67,10 @@ script = script.replace("nx = ny = 20",
                         "nx = ny = %d" % N)
 
 script = script.replace("steps = 10", 
-                        "steps = 0")
-
-old = '''\
-      #    \cite{WarrenPolycrystal}.
-      '''
-new = '''\
-      #    \cite{WarrenPolycrystal}.
-      
-      dump.write((mesh, phase, dT), "anisotropy-0.dmp.gz")
-      '''
-script0 = script.replace(dedent(old), dedent(new))
+                        "steps = %d" % steps)
 
 fd, path = mkstemp(".py")
-os.write(fd, script0)
+os.write(fd, script)
 os.close(fd)
 
 cputime_RE = re.compile("(\d+:)?(\d+):(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?")
@@ -99,18 +101,7 @@ def monitor(p):
         
     return rsz, vsz, cpu
     
-p = Popen(("python", path) + args)
-
-rsz0, vsz0, cpu0 = monitor(p)
-
-script = script.replace("""steps = 0""", 
-                        """steps = %d""" % steps)
-                        
-                        
-datafile = file("data.txt", mode="w+", buffering=1)
-datafile.write("step\cpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)\n")
-
-for block in range(1):
+if start is not 0:
     old = '''
           for i in range(steps):
           '''
@@ -119,43 +110,41 @@ for block in range(1):
           phase.setValue(phase_tmp.getValue())
           dT.setValue(dT_tmp.getValue())
           for i in range(steps):
-          ''' % (block * steps)
-    script1 = script.replace(dedent(old), dedent(new)) 
+          ''' % start
+    script = script.replace(dedent(old), dedent(new)) 
 
-    old = '''\
-          #    \cite{WarrenPolycrystal}.
-          '''
-    new = '''\
-          #    \cite{WarrenPolycrystal}.
-          
-          dump.write((mesh, phase, dT), "anisotropy-%%d.dmp.gz" %% (steps + %d))
-          ''' % (block * steps)
-    script1 = script1.replace(dedent(old), dedent(new))
+old = '''\
+      #    \cite{WarrenPolycrystal}.
+      '''
+new = '''\
+      #    \cite{WarrenPolycrystal}.
+      
+      dump.write((mesh, phase, dT), "anisotropy-%%d.dmp.gz" %% (steps + %d))
+      ''' % start
+script = script.replace(dedent(old), dedent(new))
 
-    f = open(path, "w")
-    f.write(script1)
-    f.close()
+f = open(path, "w")
+f.write(script)
+f.close()
 
-    p = Popen(("python", path) + args, stdout=PIPE)
-    
-    rsz, vsz, cpu = monitor(p)
+p = Popen(("python", path) + args, stdout=PIPE)
 
-    for l in p.stdout:
-        print l.rstrip()
+rsz, vsz, cpu = monitor(p)
 
-    print "-" * 79
+for l in p.stdout:
+    print l.rstrip()
 
+print "-" * 79
+
+if steps == 0:
+    print "           cpu time: %.9f s / step / cell" % cpu
+    print "max resident memory: %.2f B / cell" % float(rsz)
+    print " max virtual memory: %.2f B / cell" % float(vsz)
+else:
     print "           cpu time: %.9f s / step / cell" % ((cpu - cpu0) / steps / N**2)
     print "max resident memory: %.2f B / cell" % (float(rsz) / N**2)
     print " max virtual memory: %.2f B / cell" % (float(vsz) / N**2)
 
-    datafile.write("%d\t%g\t%g\t%g\n" % ((block + 1) * steps,
-                                         (cpu - cpu0) / steps / N**2,
-                                         float(rsz) / N**2,
-                                         float(vsz) / N**2))
-    
 os.remove(path)
-
-datafile.close()
 
 

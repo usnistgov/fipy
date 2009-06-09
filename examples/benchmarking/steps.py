@@ -31,50 +31,56 @@
  ##
 
 import os
+import sys
 import re
-import shutil
+from tempfile import mkstemp
+import resource
 from subprocess import Popen, PIPE
-import tempfile
-
-import pysvn
-
-client = pysvn.Client()
-
-# svn manipulations on the working copy in-place are dangerous
-
-info = client.info('.')
-dir = tempfile.mkdtemp()
-
-env = os.environ.copy()
-env['PYTHONPATH'] = dir
-
-try:
-    client.checkout(info.url, dir)
-
-    scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
-
-    reCPU = re.compile("cpu time: (%s) s / step / cell" % scanf_e)
-    reRSZ = re.compile("max resident memory: (%s) B / cell" % scanf_e)
-    reVSZ = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
-
-    for entry in client.log(info.url):
-        client.update(dir, revision=entry.revision)
+from textwrap import dedent
         
-        p = Popen(["python", 
-                   os.path.join(os.path.dirname(__file__), 
-                                "benchmarker.py")], 
-                  stdout=PIPE, 
-                  stderr=PIPE, 
-                  env=env)
 
-        r = "".join(p.communicate()[0])
-        
-        cpu = reCPU.search(r, re.MULTILINE)
-        rsz = reRSZ.search(r, re.MULTILINE)
-        vsz = reVSZ.search(r, re.MULTILINE)
-        
-        print entry.revision.number, cpu.group(1), rsz.group(1), vsz.group(1)
-except Exception, e:
-    print e
+benchmarker = os.path.join(os.path.dirname(__file__), 
+                           "benchmarker.py")
+
+steps = 2
+
+args = sys.argv[1:]
+
+scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
+
+reCPU = re.compile("cpu time: (%s) s / step / cell" % scanf_e)
+reRSZ = re.compile("max resident memory: (%s) B / cell" % scanf_e)
+reVSZ = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
+
+def monitor(p):
+    r = "".join(p.communicate()[0])
+
+    cpu = reCPU.search(r, re.MULTILINE)
+    rsz = reRSZ.search(r, re.MULTILINE)
+    vsz = reVSZ.search(r, re.MULTILINE)
+
+    return (float(cpu.group(1)),
+            float(rsz.group(1)),
+            float(vsz.group(1)))
     
-shutil.rmtree(dir)
+p = Popen(["python", benchmarker, 
+           "--numberOfSteps=0"] + args, 
+          stdout=PIPE,
+          stderr=PIPE)
+
+cpu0, rsz0, vsz0 = monitor(p)
+
+print "step\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)"
+
+for block in range(10):
+    p = Popen(["python", benchmarker, 
+               "--numberOfSteps=%d" % steps,
+               "--cpuBaseLine=%f" % cpu0] + args, 
+              stdout=PIPE,
+              stderr=PIPE)
+
+    cpu, rsz, vsz = monitor(p)
+
+    print "%d\t%g\t%g\t%g" % ((block + 1) * steps, cpu, rsz, vsz)
+
+
