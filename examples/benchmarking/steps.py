@@ -33,10 +33,7 @@
 import os
 import sys
 import re
-from tempfile import mkstemp
-import resource
 from subprocess import Popen, PIPE
-from textwrap import dedent
         
 
 benchmarker = os.path.join(os.path.dirname(__file__), 
