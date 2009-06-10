@@ -72,25 +72,7 @@ class Term:
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
         raise NotImplementedError
 
-    def _calcResidualVector(self, var, matrix, RHSvector):
-
-        Lx = matrix * numerix.array(var)
-      
-        return Lx - RHSvector
-
-    def _calcResidual(self, var, matrix, RHSvector):
-
-        L2norm = numerix.sqrt(numerix.sum(self._calcResidualVector(var, matrix, RHSvector)**2))
-        RHSL2norm = numerix.sqrt(numerix.sum(RHSvector**2))
-        
-        if RHSL2norm == 0:
-            return L2norm
-        else:
-            return L2norm / RHSL2norm 
-
-##        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
-
-    def __buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
+    def __buildMatrix(self, var, solver, boundaryConditions, dt):
         if numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float']:
             import warnings
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
@@ -113,30 +95,22 @@ class Term:
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        matrix, RHSvector = self._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
+        matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
+        
+        solver.var = var
+        solver.matrix = matrix
+        solver.RHSvector = RHSvector
         
         if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
             self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)
             self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
             raw_input()
-        
-        return matrix, RHSvector
-
-    def _solveLinearSystem(self, var, solver, matrix, RHSvector):
-        array = var.getNumericValue()
-        solver._solve(matrix, array, RHSvector)
-        factor = var.getUnit().factor
-        if factor != 1:
-            array /= var.getUnit().factor
-        var[:] = array 
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-
-
         solver = self._getDefaultSolver(solver) or solver or DefaultSolver()
 
-        matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
-        return (solver, matrix, RHSvector)
+        self.__buildMatrix(var, solver, boundaryConditions, dt)
+        return solver
     
     def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
         r"""
@@ -153,9 +127,9 @@ class Term:
 
         """
         
-        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
-
-        self._solveLinearSystem(var, solver, matrix, RHSvector)
+        solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+        
+        solver._solve()
 
     def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
@@ -173,20 +147,11 @@ class Term:
            - `residualFn`: A function that takes var, matrix, and RHSvector arguments, used to customize the residual calculation.
 
         """
-        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
-        if underRelaxation is not None:
-            matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
+        solver = self._prepareLinearSystem(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt)
+        solver._applyUnderRelaxation(underRelaxation=underRelaxation)
+        residual = solver._calcResidual(residualFn=residualFn)
 
-        residualFn = residualFn or self._calcResidual
-        residual = residualFn(var, matrix, RHSvector)
-##         residual = self._calcResidual(var, matrix, RHSvector)
-
-##         print "x", var 
-
-        self._solveLinearSystem(var, solver, matrix, RHSvector)
-
-##         print "L", matrix
-##         print "b", RHSvector
+        solver._solve()
 
         return residual
 
@@ -206,16 +171,12 @@ class Term:
            - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
 
         """
-        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+        solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+        solver._applyUnderRelaxation(underRelaxation)
 
-        if underRelaxation is not None:
-            matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
+        return solver._calcResidualVector(residualFn=residualFn)
 
-        residualFn = residualFn or self._calcResidualVector
-        
-        return residualFn(var, matrix, RHSvector)
-
-    def residualVectorAndNorm(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, normFn=None):
+    def residualVectorAndNorm(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -231,20 +192,11 @@ class Term:
            - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
 
         """
-        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
-
-        if underRelaxation is not None:
-            matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
-
-        vector = self._calcResidualVector(var, matrix, RHSvector)
+        solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+        solver._applyUnderRelaxation(underRelaxation)
+        vector = solver._calcResidualVector(residualFn=residualFn)
         
         L2norm = numerix.L2norm(vector)
-        RHSL2norm = numerix.L2norm(RHSvector)
-        
-#         if RHSL2norm != 0:
-#             L2norm /= RHSL2norm 
-#         else:
-#             print "b is zero!!!"
 
         return vector, L2norm
 
@@ -295,13 +247,6 @@ class Term:
 
         return self.RHSvector
     
-
-
-    def _applyUnderRelaxation(self, matrix, var, RHSVector, underRelaxation):
-        matrix.putDiagonal(matrix.takeDiagonal() / underRelaxation)
-        RHSVector += (1 - underRelaxation) * matrix.takeDiagonal() * numerix.array(var)
-        return matrix, RHSVector
-
     def _getDefaultSolver(self, solver):
         return None
         

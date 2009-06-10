@@ -48,6 +48,8 @@ can abort whenever it has problems with::
 """
 __docformat__ = 'restructuredtext'
 
+from fipy.tools import numerix
+
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):
         self.solver = solver
@@ -119,8 +121,35 @@ class Solver:
 
         self.preconditioner = precon
 	
-    def _solve(self, L, x, b):
-        raise NotImplementedError
+    def _solve(self):
+        array = self.var.getNumericValue()
+        self._solve_(self.matrix, array, self.RHSvector)
+        factor = self.var.getUnit().factor
+        if factor != 1:
+            array /= self.var.getUnit().factor
+        self.var[:] = array 
+        
+    def _applyUnderRelaxation(self, underRelaxation=None):
+        if underRelaxation is not None:
+            self.matrix.putDiagonal(self.matrix.takeDiagonal() / underRelaxation)
+            self.RHSvector += (1 - underRelaxation) * self.matrix.takeDiagonal() * numerix.array(self.var)
+
+    def _calcResidualVector(self, residualFn=None):
+        if residualFn is not None:
+            return residualFn(self.var, self.matrix, self.RHSvector)
+        else:
+            Lx = self.matrix * numerix.array(self.var)
+          
+            return Lx - self.RHSvector
+
+    def _calcResidual(self, residualFn=None):
+        if residualFn is not None:
+            return residualFn(self.var, self.matrix, self.RHSvector)
+        else:
+            return numerix.sqrt(numerix.sum(self._calcResidualVector()**2))
+
+    def _calcRHSNorm(self):
+        return numerix.sqrt(numerix.sum(self.RHSvector**2))
         
     _warningList = (ScalarQuantityOutOfRangeWarning,
                     StagnatedSolverWarning,

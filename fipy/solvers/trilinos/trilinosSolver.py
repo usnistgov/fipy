@@ -105,7 +105,7 @@ class TrilinosSolver(Solver):
 
         return A
 
-    def _solve(self, L, x, b):
+    def _solve_(self, L, x, b):
 
         if not isinstance(L, _TrilinosMatrix):
             A = self._makeTrilinosMatrix(L)

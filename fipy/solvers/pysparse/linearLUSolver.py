@@ -71,7 +71,7 @@ class LinearLUSolver(PysparseSolver):
         
         PysparseSolver.__init__(self, tolerance = tolerance, iterations=iterations, steps = steps, precon = precon)
 
-    def _solve(self, L, x, b):
+    def _solve_(self, L, x, b):
         diag = L.takeDiagonal()
         maxdiag = max(numerix.absolute(diag))
 

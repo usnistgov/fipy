@@ -57,7 +57,7 @@ class LinearPCGSolver(PysparseSolver):
     
     """
      
-    def _solve(self, L, x, b):
+    def _solve_(self, L, x, b):
 ##      print 'L:',L
 ##      print 'x:',x
 ##      print 'b:',b
