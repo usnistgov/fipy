@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+d#!/usr/bin/env python
 
 ## 
  # ###################################################################
@@ -38,7 +38,7 @@ temperature below its melting point (known as "undercooling" or "supercooling").
 solidification is often assumed (and experimentally found) to be proportional to the
 undercooling. Under the right circumstances, the
 solidification front can become unstable, leading to dendritic
-patterns as seen in Figure~\ref{fig-experimental-dendrites}. 
+patterns. 
 Warren, Kobayashi, Lobkovsky and Carter
     
 .. raw:: latex
