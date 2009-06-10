@@ -105,6 +105,28 @@ class TrilinosSolver(Solver):
 
         return A
 
+    def _solve(self):
+        if I'm not parallel:
+            Solver._solve(self)
+        else:
+            mesh = self.var.getMesh()
+            comm = Epetra.PyComm()
+            
+            nonOverlappingMap = Epetra.Map(-1, list(mesh.getGlobalNonOverlappingCellIDs()), 0, comm)
+            nonOverlappingVector = Epetra.Vector(nonOverlappingMap, self.var[mesh.getLocalNonOverlappingCellIDs()])
+            
+            nonOverlappingRHSvector = Epetra.Vector(nonOverlappingMap, self.RHSvector[mesh.getLocalNonOverlappingCellIDs()])
+                                     
+            self._solve_(someDamnMatrix, nonOverlappingVector, nonOverlappingRHSvector)
+            
+            overlappingMap =  Epetra.Map(-1, list(mesh.getGlobalOverlappingCellIDs()), 0, comm)
+            overlappingVector = Epetra.Vector(overlappingMap, self.var)
+        
+            overlappingVector.Import(nonOverlappingVector, Epetra.Import(overlappingMap, nonOverlappingMap), Epetra.Insert)
+            
+            self.var.setValue(overlappingVector)
+            
+            
     def _solve_(self, L, x, b):
 
         if not isinstance(L, _TrilinosMatrix):
