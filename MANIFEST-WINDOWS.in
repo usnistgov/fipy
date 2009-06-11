@@ -8,3 +8,4 @@ recursive-include documentation/www/ *.html *.css *.gif *.png
 include documentation/manual/reference.pdf
 include documentation/manual/fipy.pdf
 
+exclude MANIFEST.in
