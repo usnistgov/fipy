@@ -63,9 +63,9 @@ class TrilinosAztecOOSolver(TrilinosSolver):
                                 iterations=iterations, steps=steps, precon=None)
         self.preconditioner = precon
 
-    def _applyTrilinosSolver(self, A, LHS, RHS):
+    def _solve_(self, L, x, b):
 
-        Solver = AztecOO.AztecOO(A, LHS, RHS)
+        Solver = AztecOO.AztecOO(L, x, b)
         Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
 
 ##        solver.SetAztecOption(AztecOO.AZ_kspace, 100)
@@ -73,7 +73,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
 
         if self.preconditioner is not None:
-            self.preconditioner._applyToSolver(solver=Solver, matrix=A)
+            self.preconditioner._applyToSolver(solver=Solver, matrix=L)
         else:
             Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
         

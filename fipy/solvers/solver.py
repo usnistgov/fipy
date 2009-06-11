@@ -129,6 +129,9 @@ class Solver:
             array /= self.var.getUnit().factor
         self.var[:] = array 
         
+    def _solve_(self, L, x, b):
+        raise NotImplementedError
+        
     def _applyUnderRelaxation(self, underRelaxation=None):
         if underRelaxation is not None:
             self.matrix.putDiagonal(self.matrix.takeDiagonal() / underRelaxation)

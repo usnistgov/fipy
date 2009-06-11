@@ -71,14 +71,14 @@ class LinearLUSolver(TrilinosSolver):
         self.Factory = Amesos.Factory()
 
        
-    def _applyTrilinosSolver(self, A, LHS, RHS):
+    def _solve_(self, L, x, b):
          
         for iteration in range(self.iterations):
 
              # errorVector = L*x - b
-             errorVector = Epetra.Vector(A.RowMap())
-             A.Multiply(False, LHS, errorVector)
-             errorVector = errorVector - RHS
+             errorVector = Epetra.Vector(L.RowMap())
+             L.Multiply(False, x, errorVector)
+             errorVector = errorVector - b
 
              tol = max(numerix.absolute(_trilinosToNumpyVector(errorVector)))
 
@@ -88,10 +88,10 @@ class LinearLUSolver(TrilinosSolver):
              if (tol / tol0) <= self.tolerance: 
                  break
 
-             xError = _numpyToTrilinosVector(numerix.zeros(errorVector.GlobalLength(), 'd'), A.RowMap())
+             xError = _numpyToTrilinosVector(numerix.zeros(errorVector.GlobalLength(), 'd'), L.RowMap())
               
-             Problem = Epetra.LinearProblem(A, xError, errorVector)
+             Problem = Epetra.LinearProblem(L, xError, errorVector)
              Solver = self.Factory.Create("Klu", Problem)
              Solver.Solve()
 
-             LHS[:] = LHS - xError
+             x[:] = x - xError
