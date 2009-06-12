@@ -76,10 +76,10 @@ class TrilinosSolver(Solver):
         
         A = self.matrix[localNonOverlappingCellIDs, localOverlappingCellIDs].matrix
         
-        keys = A.keys()
-        globalMatrix.InsertGlobalValues(globalNonOverlappingCellIDs[keys[0]], 
-                                        globalOverlappingCellIDs[keys[1]], 
-                                        A.values())
+        values, irow, jcol = A.find()
+        globalMatrix.InsertGlobalValues(globalNonOverlappingCellIDs[irow], 
+                                        globalOverlappingCellIDs[jcol], 
+                                        values)
         
         globalMatrix.FillComplete()
         globalMatrix.OptimizeStorage()
