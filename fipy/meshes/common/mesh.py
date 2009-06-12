@@ -323,7 +323,7 @@ class Mesh:
         
         .. note:: Trivial except for parallel meshes
         """
-        return self.getCells()
+        return numerix.arange(self.numberOfCells)
 
     def _getGlobalOverlappingCellIDs(self):
         """
@@ -341,7 +341,7 @@ class Mesh:
         
         .. note:: Trivial except for parallel meshes
         """
-        return self.getCells()
+        return numerix.arange(self.numberOfCells)
 
     def _getLocalNonOverlappingCellIDs(self):
         """
@@ -359,7 +359,7 @@ class Mesh:
         
         .. note:: Trivial except for parallel meshes
         """
-        return self.getCells()
+        return numerix.arange(self.numberOfCells)
 
     def _getLocalOverlappingCellIDs(self):
         """
@@ -376,10 +376,8 @@ class Mesh:
         ------------------
         
         .. note:: Trivial except for parallel meshes
-        
-        .. note:: never ever used for anything... ever...
         """
-        return self.getCells()
+        return numerix.arange(self.numberOfCells)
 
     def _getFaces(self):
         pass
