@@ -34,15 +34,12 @@
 
 
 
-def Grid1D(dx = 1., nx = None):
+def Grid1D(dx=1., nx=None, overlap=2):
     from numMesh import uniformGrid1D
     from numMesh import grid1D
-
+    
     from fipy.tools import numerix
     if numerix.getShape(dx) == ():
-        return uniformGrid1D.UniformGrid1D(dx = dx, nx = nx or 1)
+        return uniformGrid1D.UniformGrid1D(dx=dx, nx=nx or 1, overlap=overlap)
     else:
-        return grid1D.Grid1D(dx = dx, nx = nx)
-
-
-
+        return grid1D.Grid1D(dx=dx, nx=nx, overlap=overlap)

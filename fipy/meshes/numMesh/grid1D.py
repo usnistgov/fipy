@@ -59,13 +59,20 @@ class Grid1D(Mesh1D):
         IndexError: nx != len(dx)
 
     """
-    def __init__(self, dx = 1., nx = None):
+    def __init__(self, dx=1., nx=None, overlap=2):
         from fipy.tools.dimensions.physicalField import PhysicalField
-        self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
-        self.dx /= scale
+        dx = PhysicalField(value=dx)
+        scale = PhysicalField(value=1, unit = dx.getUnit())
+        dx /= scale
         
-        self.nx = self._calcNumPts(d=self.dx, n = nx)
+        nx = self._calcNumPts(d=dx, n=nx)
+        
+        (self.nx,
+         self.overlap,
+         self.offset) = self._calcParallelGridInfo(dx, nx, overlap)
+         
+        if numerix.getShape(self.dx) is not ():
+            self.dx = self.dx[self.offset:self.offset + self.nx]
         
         self.numberOfVertices = self.nx + 1
         
@@ -76,6 +83,31 @@ class Grid1D(Mesh1D):
         
         self.setScale(value = scale)
         
+    def _calcParallelGridInfo(self, nx, overlap):
+        try:
+            from PyTrilinos import Epetra
+            
+            procID = Epetra.PyComm().MyPID()
+            Nproc = Epetra.PyComm().NumProc()
+        except Exception:
+            procID = 0
+            Nproc = 1
+            
+        overlap = {
+            'left': overlap * (procID > 0),
+            'right': overlap * (procID < Nproc - 1)
+        }
+        
+        offset = procID * (nx / Nproc) - overlap['left']
+        local_nx = nx / Nproc
+        if procID == Nproc - 1:
+            local_nx = (nx % Nproc) or local_nx
+        local_nx = local_nx + overlap['left'] + overlap['right']
+        
+        self.globalNumberOfCells = nx
+        
+        return local_nx, overlap, offset
+
     def __repr__(self):
         return "%s(dx=%s, nx=%d)" % (self.__class__.__name__, `self.dx`, self.nx)
 
@@ -114,6 +146,74 @@ class Grid1D(Mesh1D):
     
     def getShape(self):
         return (self.nx,)
+        
+    def _getGlobalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1] for mesh A
+
+            A        B
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.offset + self.overlap['left'], 
+                              self.offset + self.nx - self.overlap['right'])
+
+    def _getGlobalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2] for mesh A
+
+            A        B
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.offset, self.offset + self.nx)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1] for mesh A
+
+            A        B
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.overlap['left'], 
+                              self.nx - self.overlap['right'])
+
+    def _getLocalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2] for mesh A
+
+            A        B
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(0, self.nx)
+
+
     
 ## pickling
 

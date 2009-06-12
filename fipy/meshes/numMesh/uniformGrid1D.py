@@ -52,17 +52,22 @@ class UniformGrid1D(Grid1D):
         [[ 0.5  1.5  2.5]]
          
     """
-    def __init__(self, dx = 1., nx = 1, origin = (0,)):
+    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2):
         self.dim = 1
         
-        self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        self.dx = PhysicalField(value=dx)
+        scale = PhysicalField(value=1, unit=self.dx.getUnit())
         self.dx /= scale
         
-        self.origin = PhysicalField(value = origin)
-        self.origin /= scale
+        nx = int(nx)
         
-        self.nx = int(nx)
+        (self.nx,
+         self.overlap,
+         self.offset) = self._calcParallelGridInfo(nx, overlap)
+        
+        self.origin = PhysicalField(value=origin)
+        self.origin /= scale
+        self.origin += (self.offset - self.overlap['left']) * self.dx
         
         self.numberOfVertices = self.nx + 1
         self.numberOfFaces = self.nx + 1
@@ -76,7 +81,7 @@ class UniformGrid1D(Grid1D):
             'volume': 1.
         }
         
-        self.setScale(value = scale)
+        self.setScale(value=scale)
         
     def _translate(self, vector):
         return UniformGrid1D(dx = self.dx, nx = self.nx, origin = self.origin + vector)
