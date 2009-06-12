@@ -37,6 +37,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.solvers.solver import Solver
 from fipy.tools.trilinosMatrix import _TrilinosMatrix
+from fipy.tools.pysparseMatrix import _PysparseMatrix
 from fipy.tools.trilinosMatrix import _numpyToTrilinosVector
 from fipy.tools.trilinosMatrix import _trilinosToNumpyVector
 
@@ -57,60 +58,14 @@ class TrilinosSolver(Solver):
         else:
             Solver.__init__(self, *args, **kwargs)
             
-    def _makeTrilinosMatrix(self, L):
-        """ 
-        Takes in a Pysparse matrix and returns an Epetra.CrsMatrix . 
-        Slow, but works.
-        """
-        # This should no longer ever be called, except for debugging!
-        import warnings
-        warnings.warn("Incorrect matrix type - got Pysparse matrix, expected Trilinos matrix! The conversion is extremely slow and should never be necessary!", UserWarning, stacklevel=2)
-        
-        Comm = Epetra.PyComm() 
-        if(Comm.NumProc() > 1):
-            raise NotImplemented, "Cannot convert from Pysparse to Trilinos matrix in parallel."
-
-        m,n = L._getMatrix().shape 
-
-        Map = Epetra.Map(m, 0, Comm)
-
-        #A = Epetra.FECrsMatrix(Epetra.Copy, Map, n)
-        #A.InsertGlobalValues(\
-        #                Epetra.IntSerialDenseVector(range(0,m)),\
-        #                Epetra.IntSerialDenseVector(range(0,n)),\
-        #                Epetra.SerialDenseMatrix(L.getNumpyArray()))
-        # Replaced with writing to/reading from matrixmarket format temporary file
-        
-        import tempfile
-        import os
-
-        filename = tempfile.mktemp(suffix=".mm")
-        L._getMatrix().export_mtx(filename)
-        (ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
-        
-        # File on disk replaced with pipe (NOT REPLACED - NOT WORKING EFFICIENTLY)
-        #os.mkfifo(filename)
-        #pid = os.fork()     
-        #
-        #if(pid == 0):
-        #    L._getMatrix().export_mtx(filename)
-        #    import sys
-        #    sys.exit(0)
-        #
-        #(ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
-        #
-        #os.waitpid(pid, 0)
-        
-        os.remove(filename)
-
-        return A
-
     def _solve(self):
         mesh = self.var.getMesh()
         comm = Epetra.PyComm()
         
         globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
+        globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
         localNonOverlappingCellIDs = mesh._getLocalNonOverlappingCellIDs()
+        localOverlappingCellIDs = mesh._getLocalOverlappingCellIDs()
         
         nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
         nonOverlappingVector = Epetra.Vector(nonOverlappingMap, self.var[localNonOverlappingCellIDs])
@@ -119,24 +74,26 @@ class TrilinosSolver(Solver):
 
         globalMatrix = Epetra.CrsMatrix(Epetra.Copy, nonOverlappingMap, -1)
         
-        globalMatrix[globalNonOverlappingCellIDs] = self.matrix[localNonOverlappingCellIDs]
+        A = self.matrix[localNonOverlappingCellIDs, localOverlappingCellIDs].matrix
+        
+        keys = A.keys()
+        globalMatrix.InsertGlobalValues(globalNonOverlappingCellIDs[keys[0]], 
+                                        globalOverlappingCellIDs[keys[1]], 
+                                        A.values())
         
         globalMatrix.FillComplete()
         globalMatrix.OptimizeStorage()
         
-        status = self._applyTrilinosSolver(matrix, nonOverlappingVector, nonOverlappingRHSvector)
-        
         self._solve_(globalMatrix, nonOverlappingVector, nonOverlappingRHSvector)
         
-        overlappingMap =  Epetra.Map(-1, list(mesh._getGlobalOverlappingCellIDs()), 0, comm)
+        overlappingMap =  Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
         overlappingVector = Epetra.Vector(overlappingMap, self.var)
         
         overlappingVector.Import(nonOverlappingVector, Epetra.Import(overlappingMap, nonOverlappingMap), Epetra.Insert)
         
         self.var.setValue(overlappingVector)
-        
-        return status
             
     def _getMatrixClass(self):
-        return _TrilinosMatrix
+        # an ugly expediency (I blame Wheeler)
+        return _PysparseMatrix
 
