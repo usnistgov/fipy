@@ -36,20 +36,28 @@ import shutil
 from subprocess import Popen, PIPE
 import tempfile
 
+from fipy.tools.parser import parse
+
+url = parse('--svnURL', action='store',
+              type='string', default=None)
+
 import pysvn
 
 client = pysvn.Client()
 
 # svn manipulations on the working copy in-place are dangerous
 
-info = client.info('.')
+if url is None:
+    info = client.info('.')
+    url = info.url
+    
 dir = tempfile.mkdtemp()
 
 env = os.environ.copy()
 env['PYTHONPATH'] = dir
 
 try:
-    client.checkout(info.url, dir)
+    client.checkout(url, dir)
 
     scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
 
@@ -57,7 +65,7 @@ try:
     reRSZ = re.compile("max resident memory: (%s) B / cell" % scanf_e)
     reVSZ = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
 
-    for entry in client.log(info.url):
+    for entry in client.log(url):
         client.update(dir, revision=entry.revision)
         
         p = Popen(["python", 
