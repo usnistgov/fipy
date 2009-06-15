@@ -62,7 +62,7 @@ class Grid1D(Mesh1D):
     def __init__(self, dx=1., nx=None, overlap=2):
         from fipy.tools.dimensions.physicalField import PhysicalField
         dx = PhysicalField(value=dx)
-        scale = PhysicalField(value=1, unit = dx.getUnit())
+        scale = PhysicalField(value=1, unit=dx.getUnit())
         dx /= scale
         
         nx = self._calcNumPts(d=dx, n=nx)
