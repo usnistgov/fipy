@@ -48,14 +48,14 @@ class UniformGrid2D(Grid2D):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx = 1., dy = 1., nx = 1, ny = 1, origin = ((0,),(0,))):
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2):
         self.dim = 2
         
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
         
-        self.nx = int(nx)
+        nx = int(nx)
         
         self.dy = PhysicalField(value = dy)
         if self.dy.getUnit().isDimensionless():
@@ -63,10 +63,17 @@ class UniformGrid2D(Grid2D):
         else:
             self.dy /= scale
             
-        self.ny = int(ny)
+        ny = int(ny)
+        
+        (self.nx,
+         self.ny,
+         self.overlap,
+         self.offset) = self._calcParallelGridInfo(nx, ny, overlap)
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
+        self.origin += (((self.offset[0] - self.overlap['left']) * self.dx,),
+                        ((self.offset[1] - self.overlap['bottom']) * self.dy,))
 
         self.numberOfVertices = (self.nx + 1) * (self.ny + 1)
         self.numberOfHorizontalFaces = self.nx * (self.ny + 1)
