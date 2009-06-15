@@ -48,7 +48,7 @@ class Grid2D(Mesh2D):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=None, ny=None):
+    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2):
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value=1, unit=self.dx.getUnit())
         self.dx /= scale

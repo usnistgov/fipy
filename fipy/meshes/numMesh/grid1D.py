@@ -61,15 +61,15 @@ class Grid1D(Mesh1D):
     """
     def __init__(self, dx=1., nx=None, overlap=2):
         from fipy.tools.dimensions.physicalField import PhysicalField
-        dx = PhysicalField(value=dx)
-        scale = PhysicalField(value=1, unit=dx.getUnit())
-        dx /= scale
+        self.dx = PhysicalField(value=dx)
+        scale = PhysicalField(value=1, unit=self.dx.getUnit())
+        self.dx /= scale
         
-        nx = self._calcNumPts(d=dx, n=nx)
+        nx = self._calcNumPts(d=self.dx, n=nx)
         
         (self.nx,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(dx, nx, overlap)
+         self.offset) = self._calcParallelGridInfo(nx, overlap)
          
         if numerix.getShape(self.dx) is not ():
             self.dx = self.dx[self.offset:self.offset + self.nx]

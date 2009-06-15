@@ -68,7 +68,7 @@ non-constant cell spacing.
     >>> nr = 100
     >>> Rratio = (r1 / r0)**(1 / float(nr))
     >>> dr = r0 * (Rratio - 1) * Rratio**numerix.arange(nr)
-    >>> mesh = CylindricalGrid2D(dr=dr) + ((r0,),)
+    >>> mesh = CylindricalGrid1D(dr=dr) + ((r0,),)
     
 and impose the boundary conditions
 

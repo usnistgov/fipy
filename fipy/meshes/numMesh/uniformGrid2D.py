@@ -72,8 +72,8 @@ class UniformGrid2D(Grid2D):
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
-        self.origin += ((self.offset[0] * self.dx,),
-                        (self.offset[1] * self.dy,))
+        self.origin += ((self.offset[0] * float(self.dx),),
+                        (self.offset[1] * float(self.dy),))
 
         self.numberOfVertices = (self.nx + 1) * (self.ny + 1)
         self.numberOfHorizontalFaces = self.nx * (self.ny + 1)
