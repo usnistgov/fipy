@@ -67,7 +67,7 @@ class UniformGrid1D(Grid1D):
         
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
-        self.origin += (self.offset - self.overlap['left']) * self.dx
+        self.origin += self.offset * self.dx
         
         self.numberOfVertices = self.nx + 1
         self.numberOfFaces = self.nx + 1
