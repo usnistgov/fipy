@@ -101,7 +101,7 @@ class Grid1D(Mesh1D):
         offset = procID * (nx / Nproc) - overlap['left']
         local_nx = nx / Nproc
         if procID == Nproc - 1:
-            local_nx = (nx % Nproc) or local_nx
+            local_nx += (nx % Nproc)
         local_nx = local_nx + overlap['left'] + overlap['right']
         
         self.globalNumberOfCells = nx
