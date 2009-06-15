@@ -89,7 +89,7 @@ class Grid1D(Mesh1D):
             
             procID = Epetra.PyComm().MyPID()
             Nproc = Epetra.PyComm().NumProc()
-        except Exception:
+        except ImportError:
             procID = 0
             Nproc = 1
             
