@@ -63,6 +63,10 @@ class CellVariable(_MeshVariable):
     """
     
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
+        if value is not None:
+            valueShape = numerix.getShape(value)
+            if valueShape is not () and valueShape[-1] == mesh.globalNumberOfCells:
+                value = value[..., mesh._getGlobalOverlappingCellIDs()]
         _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
                                rank=rank, elementshape=elementshape, unit=unit)
 
