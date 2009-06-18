@@ -104,6 +104,7 @@ class Term:
         if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
             self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)
             self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
+            from fipy import raw_input
             raw_input()
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):

@@ -21,7 +21,7 @@ try:
     
     if Epetra.PyComm().NumProc() > 1:
         raw_input_original = raw_input
-        def mpi_raw_input(prompt):
+        def mpi_raw_input(prompt=""):
             import sys
             Epetra.PyComm().Barrier()
             sys.stdout.flush()
