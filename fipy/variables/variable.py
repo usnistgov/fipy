@@ -690,6 +690,10 @@ class Variable(object):
             self.requiredVariables.append(var)
             var._requiredBy(self)
             self._markStale()
+        else:
+            from fipy.variables.constant import _Constant
+            var = _Constant(value=var)
+            
         return var
             
     def _requiredBy(self, var):

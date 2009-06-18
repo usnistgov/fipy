@@ -49,8 +49,10 @@ with coefficients
    
 or
 
+    >>> from fipy import *
+
     >>> diffCoeff = 1.
-    >>> convCoeff = (10.,)
+    >>> convCoeff = array(((10.,), (0.,)))
     
 We define a 2D cylindrical mesh representing an anulus. The mesh is a
 suedo 1D mesh, but is a good test case for the `CylindricalGrid2D`
@@ -61,8 +63,6 @@ mesh. The mesh has a non-constant cell spacing.
    \IndexClass{Grid1D}
 
 ..
-
-    >>> from fipy import *
 
     >>> r0 = 1.
     >>> r1 = 2.
