@@ -43,7 +43,7 @@ from fipy.meshes.numMesh.grid1D import Grid1D
 
 class CylindricalGrid1D(Grid1D):
     """
-    Creates a 1D cyliondrical grid mesh.
+    Creates a 1D cylindrical grid mesh.
     
         >>> mesh = CylindricalGrid1D(nx = 3)
         >>> print mesh.getCellCenters()
@@ -67,7 +67,8 @@ class CylindricalGrid1D(Grid1D):
         self.faceAreas = self.getFaceCenters()[0]
 
     def _calcCellVolumes(self):
-        return Grid1D.getCellVolumes(self) * self.getCellCenters()[0]
+        Grid1D._calcCellVolumes(self)
+        self.cellVolumes *= self.getCellCenters()[0]
         
     def _translate(self, vector):
         return CylindricalUniformGrid1D(dx=self.dx, nx=self.nx, 
