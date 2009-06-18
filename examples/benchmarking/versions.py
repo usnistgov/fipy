@@ -34,12 +34,15 @@ import os
 import re
 import shutil
 from subprocess import Popen, PIPE
+import sys
 import tempfile
 
 from fipy.tools.parser import parse
 
 url = parse('--svnURL', action='store',
               type='string', default=None)
+
+args = sys.argv[1:]
 
 import pysvn
 
@@ -70,7 +73,7 @@ try:
         
         p = Popen(["python", 
                    os.path.join(os.path.dirname(__file__), 
-                                "benchmarker.py")], 
+                                "benchmarker.py")] + args, 
                   stdout=PIPE, 
                   stderr=PIPE, 
                   env=env)
