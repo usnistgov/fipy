@@ -59,12 +59,32 @@ class CylindricalGrid1D(Grid1D):
         IndexError: nx != len(dx)
 
     """
-    def __init__(self, dx=1., nx=None):
+    def __init__(self, dx=1., nx=None, origin=(0,)):
+        self.origin = origin
         Grid1D.__init__(self, dx=dx, nx=nx)
 
     def _calcFaceAreas(self):
         self.faceAreas = self.getFaceCenters()[0]
 
+    def _calcCellVolumes(self):
+        return Grid1D.getCellVolumes(self) * self.getCellCenters()[0]
+        
+    def _translate(self, vector):
+        return CylindricalUniformGrid1D(dx=self.dx, nx=self.nx, 
+                                        origin =self.origin + vector)
+    def __mul__(self, factor):
+        return CylindricalGrid2D(dx=self.dx * factor, nx=self.nx, 
+                                 origin=self.origin * factor)
+
+    def getVertexCoords(self):
+        return self.vertexCoords + self.origin
+
+    def getCellCenters(self):
+        return self.cellCenters + self.origin
+
+    def getFaceCenters(self):
+        return self.faceCenters + self.origin
+    
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
