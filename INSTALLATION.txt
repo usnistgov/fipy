@@ -243,7 +243,7 @@ http://pysparse.sourceforge.net
 
 |FiPy| requires `Roman Geus`_' PySparse_ package.
 
-You can `download the PySparse archive`_ or check it out via anonymous CVS
+You can `download the PySparse archive`_ or check it out via anonymous SVN
 download. From within the ``pysparse`` base directory, follow its included
 instructions for building PySparse_ for your platform. `PySparse Windows
 installers`_ are available.
