@@ -38,7 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
+from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.meshes.numMesh.grid1D import Grid1D
 
 class CylindricalGrid1D(Grid1D):
@@ -60,7 +60,10 @@ class CylindricalGrid1D(Grid1D):
 
     """
     def __init__(self, dx=1., nx=None, origin=(0,)):
-        self.origin = origin
+        scale = PhysicalField(value=1, unit=PhysicalField(value=dx).getUnit())
+        self.origin = PhysicalField(value=origin)
+        self.origin /= scale
+    
         Grid1D.__init__(self, dx=dx, nx=nx)
 
     def _calcFaceAreas(self):
@@ -71,10 +74,11 @@ class CylindricalGrid1D(Grid1D):
         self.cellVolumes *= self.getCellCenters()[0]
         
     def _translate(self, vector):
-        return CylindricalUniformGrid1D(dx=self.dx, nx=self.nx, 
-                                        origin =self.origin + vector)
+        return CylindricalGrid1D(dx=self.dx, nx=self.nx, 
+                                 origin=numerix.array(self.origin) + vector)
+                                 
     def __mul__(self, factor):
-        return CylindricalGrid2D(dx=self.dx * factor, nx=self.nx, 
+        return CylindricalGrid1D(dx=self.dx * factor, nx=self.nx, 
                                  origin=self.origin * factor)
 
     def getVertexCoords(self):
