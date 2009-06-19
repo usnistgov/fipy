@@ -39,12 +39,31 @@ import tempfile
 
 from fipy.tools.parser import parse
 
+from utils import monitor
+
 url = parse('--svnURL', action='store',
               type='string', default=None)
+              
+revision = parse('--svnRevision', action='store',
+                 type='string', default="HEAD:0")
 
 args = sys.argv[1:]
 
 import pysvn
+
+m = re.match(r"(\d+|HEAD):(\d+|HEAD)", revision)
+
+def str2rev(s):
+    if s == "HEAD":
+        return pysvn.Revision(pysvn.opt_revision_kind.head)
+    else:
+        return pysvn.Revision(pysvn.opt_revision_kind.number, int(s))
+        
+if m is None:
+    revisionStart = revisionEnd = str2rev(revision)
+else:
+    revisionStart = str2rev(m.group(1))
+    revisionEnd = str2rev(m.group(2))
 
 client = pysvn.Client()
 
@@ -59,6 +78,9 @@ dir = tempfile.mkdtemp()
 env = os.environ.copy()
 env['PYTHONPATH'] = dir
 
+benchmarker = os.path.join(os.path.dirname(__file__), 
+                           "benchmarker.py")
+
 try:
     client.checkout(url, dir)
 
@@ -68,23 +90,31 @@ try:
     reRSZ = re.compile("max resident memory: (%s) B / cell" % scanf_e)
     reVSZ = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
 
-    for entry in client.log(url):
-        client.update(dir, revision=entry.revision)
-        
-        p = Popen(["python", 
-                   os.path.join(os.path.dirname(__file__), 
-                                "benchmarker.py")] + args, 
-                  stdout=PIPE, 
-                  stderr=PIPE, 
-                  env=env)
+    for entry in client.log(url, 
+                            revision_start=revisionStart,
+                            revision_end=revisionEnd):
+        try:
+            client.update(dir, revision=entry.revision)
+            
+            p = Popen(["python", benchmarker] + args 
+                      + ["--numberOfSteps=0"], 
+                      stdout=PIPE,
+                      stderr=PIPE)
 
-        r = "".join(p.communicate()[0])
-        
-        cpu = reCPU.search(r, re.MULTILINE)
-        rsz = reRSZ.search(r, re.MULTILINE)
-        vsz = reVSZ.search(r, re.MULTILINE)
-        
-        print entry.revision.number, cpu.group(1), rsz.group(1), vsz.group(1)
+            cpu0, rsz0, vsz0 = monitor(p)
+            
+            p = Popen(["python", benchmarker] + args
+                      + ["--cpuBaseLine=%f" % cpu0],
+                      stdout=PIPE, 
+                      stderr=PIPE, 
+                      env=env)
+                      
+            cpu, rsz, vsz = monitor(p)
+            
+            print entry.revision.number, cpu, rsz, vsz
+            
+        except Exception, e:
+            print entry.revision.number, e
 except Exception, e:
     print e
     

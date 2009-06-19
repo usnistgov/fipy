@@ -37,6 +37,8 @@ from subprocess import Popen, PIPE
         
 from fipy.tools.parser import parse
 
+from utils import monitor
+
 steps = parse('--numberOfSteps', action='store',
               type='int', default=20)
 
@@ -48,23 +50,6 @@ benchmarker = os.path.join(os.path.dirname(__file__),
 
 args = sys.argv[1:]
 
-scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
-
-reCPU = re.compile("cpu time: (%s) s / step / cell" % scanf_e)
-reRSZ = re.compile("max resident memory: (%s) B / cell" % scanf_e)
-reVSZ = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
-
-def monitor(p):
-    r = "".join(p.communicate()[0])
-
-    cpu = reCPU.search(r, re.MULTILINE)
-    rsz = reRSZ.search(r, re.MULTILINE)
-    vsz = reVSZ.search(r, re.MULTILINE)
-
-    return (float(cpu.group(1)),
-            float(rsz.group(1)),
-            float(vsz.group(1)))
-    
 p = Popen(["python", benchmarker] + args 
           + ["--numberOfSteps=0"], 
           stdout=PIPE,
