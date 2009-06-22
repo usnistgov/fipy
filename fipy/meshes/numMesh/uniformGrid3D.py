@@ -91,7 +91,10 @@ class UniformGrid3D(Grid3D):
         self.numberOfFaces = self.numberOfXYFaces + self.numberOfXZFaces + self.numberOfYZFaces
         self.numberOfCells = self.nx * self.ny * self.nz
         
+        # !!! temporary until we write the parallel version !!!
+        self.globalNumberOfCells = self.numberOfCells
         
+
         self.scale = {
             'length': 1.,
             'area': 1.,
