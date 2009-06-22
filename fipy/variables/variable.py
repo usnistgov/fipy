@@ -105,12 +105,10 @@ class Variable(object):
         self.subscribedVariables = []
 
         if isinstance(value, Variable):
-            name = value.name
             value = value.getValue()
             if hasattr(value, 'copy'):
                 value = value.copy()
             unit = None
-            array = None
             
         self._setValue(value=value, unit=unit, array=array)
         
