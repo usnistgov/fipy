@@ -42,7 +42,7 @@ declaration of `mesh`.
 
     >>> mesh = GmshImporter2DIn3DSpace('''
     ...     radius = 5.0;
-    ...     cellSize = 0.3;
+    ...     cellSize = 1;
     ...     
     ...     // create inner 1/8 shell
     ...     Point(1) = {0, 0, 0, cellSize};
