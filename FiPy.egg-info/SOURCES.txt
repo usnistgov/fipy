@@ -425,6 +425,7 @@ fipy/tools/memoryLeak.py
 fipy/tools/memoryLogger.py
 fipy/tools/memoryUsage.py
 fipy/tools/numerix.py
+fipy/tools/parallel.py
 fipy/tools/parser.py
 fipy/tools/pysparseMatrix.py
 fipy/tools/sparseMatrix.py
