@@ -65,8 +65,8 @@ script = doctestPlus._getScript("examples.phase.anisotropy")
 script = script.replace("__main__", 
                         "__DONT_RUN_THIS__")
                         
-script = script.replace("nx = ny = 20", 
-                        "nx = ny = %d" % N)
+script = script.replace("numberOfCells = 40", 
+                        "numberOfCells = %d" % N)
 
 script = script.replace("steps = 10", 
                         "steps = %d" % steps)
