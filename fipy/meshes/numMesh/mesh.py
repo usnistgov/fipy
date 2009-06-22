@@ -314,6 +314,8 @@ class Mesh(_CommonMesh):
         self.dim = len(self.vertexCoords[...,0])
         self.numberOfFaces = self.faceVertexIDs.shape[-1]
         self.numberOfCells = self.cellFaceIDs.shape[-1]
+        if not hasattr(self, "globalNumberOfCells"):
+            self.globalNumberOfCells = self.numberOfCells
         self._calcFaceCellIDs()
         
         _CommonMesh._calcTopology(self)
