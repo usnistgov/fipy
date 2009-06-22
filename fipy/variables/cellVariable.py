@@ -37,6 +37,8 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.meshVariable import _MeshVariable
+from fipy.variables.variable import Variable
+from fipy.variables.constant import _Constant
 from fipy.tools import numerix
 
         
@@ -64,7 +66,9 @@ class CellVariable(_MeshVariable):
     
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
         if value is not None:
-            valueShape = numerix.getShape(value)
+            if not isinstance(value, Variable):
+                value = _Constant(value)
+            valueShape = value.getShape()
             if valueShape is not () and valueShape[-1] == mesh.globalNumberOfCells:
                 value = value[..., mesh._getGlobalOverlappingCellIDs()]
         _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
