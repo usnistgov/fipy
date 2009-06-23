@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 7/16/08 {11:19:56 AM} 
+ #                                last update: 6/23/09 {4:14:19 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -93,8 +93,8 @@ class _MulTerm(Term):
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
-        from fipy.solvers import LinearLUSolver
-        return solver or LinearLUSolver()
+        from fipy.solvers import DefaultAssymetricSolver
+        return solver or DefaultAssymetricSolver()
 
     def __repr__(self):
         """
@@ -132,8 +132,10 @@ class _MulTerm(Term):
            >>> BCs = (FixedValue(faces=m.getFacesLeft(), value=0.),
            ...        FixedValue(faces=m.getFacesRight(), value=1.))
            >>> res = 1.
-           >>> while res > 1e-8:
+           >>> sweep = 0
+           >>> while res > 1e-8 and sweep < 100:
            ...     res = eqn.sweep(v, boundaryConditions=BCs)
+           ...     sweep += 1
            >>> x = m.getCellCenters()[0]
            >>> answer = (numerix.exp(x) - numerix.exp(-x)) / (numerix.exp(L) - numerix.exp(-L))
            >>> print numerix.allclose(v, answer, rtol=2e-5)
@@ -150,7 +152,6 @@ class _MulTerm(Term):
            >>> eqn.solve(v, boundaryConditions=BCs)
            >>> print numerix.allclose(v, answer, rtol=2e-5)
            True
-
         """
         pass
 
