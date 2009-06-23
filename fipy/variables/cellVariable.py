@@ -39,7 +39,7 @@ __docformat__ = 'restructuredtext'
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
-from fipy.tools import numerix
+from fipy.tools import numerix, parallel
 
         
 class CellVariable(_MeshVariable):
@@ -428,6 +428,45 @@ class CellVariable(_MeshVariable):
         as a rank-1 `FaceVariable` using averaging for the normal direction(second-order gradient)
         """
         return self.getGrad().getArithmeticFaceValue()
+
+    def sum(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def sumParallel(a):
+                a = a[self.mesh._getLocalNonOverlappingCellIDs()]
+                return Epetra.PyComm().SumAll(a.sum(axis=axis))
+                
+            return self._axisOperator(opname="sumVar", 
+                                      op=sumParallel, 
+                                      axis=axis)
+        else:
+            return _MeshVariable.sum(self, axis=axis)
+                                    
+    def max(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def maxParallel(a):
+                a = a[self.mesh._getLocalNonOverlappingCellIDs()]
+                return Epetra.PyComm().MaxAll(a.max(axis=axis))
+                
+            return self._axisOperator(opname="maxVar", 
+                                      op=maxParallel, 
+                                      axis=axis)
+        else:
+            return _MeshVariable.max(self, axis=axis)
+                                  
+    def min(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def minParallel(a):
+                a = a[self.mesh._getLocalNonOverlappingCellIDs()]
+                return Epetra.PyComm().MinAll(a.min(axis=axis))
+                
+            return self._axisOperator(opname="minVar", 
+                                      op=minParallel, 
+                                      axis=axis)
+        else:
+            return _MeshVariable.min(self, axis=axis)
 
     def getOld(self):
         """
