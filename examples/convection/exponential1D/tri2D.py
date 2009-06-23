@@ -66,7 +66,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     ... )
 
     >>> diffCoeff = 1.
-    >>> convCoeff = (0., 10.)
+    >>> convCoeff = array(((0.,), (10.,)))
 
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
