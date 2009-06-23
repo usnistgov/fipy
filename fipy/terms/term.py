@@ -97,9 +97,7 @@ class Term:
 
         matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         
-        solver.var = var
-        solver.matrix = matrix
-        solver.RHSvector = RHSvector
+        solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
         if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
             self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)

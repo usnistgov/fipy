@@ -121,6 +121,11 @@ class Solver:
 
         self.preconditioner = precon
 	
+    def _storeMatrix(self, var, matrix, RHSvector):
+        self.var = var
+        self.matrix = matrix
+        self.RHSvector = RHSvector
+
     def _solve(self):
         array = self.var.getNumericValue()
         self._solve_(self.matrix, array, self.RHSvector)
