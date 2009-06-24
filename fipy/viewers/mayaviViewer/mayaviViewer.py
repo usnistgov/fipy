@@ -39,20 +39,19 @@ __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import _Viewer
 
-class _MatplotlibViewer(_Viewer):
+class MayaviViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
 
-    The `_MatplotlibViewer` is the base class for the viewers that use the
-    Matplotlib_ python plotting package.
+    The `_MayaviViewer` is the base class for the viewers that use the
+    Mayavi python plotting package.
 
-    .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
         
-    def __init__(self, vars, title=None, figaspect=1.0, **kwlimits):
+    def __init__(self, vars, title=None, **kwlimits):
         """
-        Create a `_MatplotlibViewer`.
+        Create a `MayaviViewer`.
         
         :Parameters:
           vars
@@ -69,45 +68,86 @@ class _MatplotlibViewer(_Viewer):
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
         """
-        if self.__class__ is _MatplotlibViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
-            
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
+        self.oldSrcs = []
+        self.oldMods = []
+        from enthought.mayavi.api import Engine
+        self.e = Engine()
+        self.e.start()
+        self.e.new_scene(title)
 
-        import pylab
-
-        pylab.ion()
-
-        w, h = pylab.figaspect(figaspect)
-        fig = pylab.figure(figsize=(w, h))
-        self.id = fig.number
-        
-        pylab.title(self.title)
-        
     def plot(self, filename = None):
-        import pylab
+        from fipy.tools.numerix import array
+        for var in self.vars:
+            mesh = var.getMesh()
+            name = var.getName()
+            if name is '':
+                name = 'default'
 
-        pylab.figure(self.id)
+            rank = var.getRank()
+            ug = None
+            mod = None
+            if rank == 0:
+                from enthought.tvtk.api import tvtk
+                cvi = mesh._getCellVertexIDs().swapaxes(0,1)
+                counts = cvi.count(axis=1)
+                comp = cvi.compressed()
+                lcells = []
+                loffsets = []
+                total = 0
+                num = 0
+                for n in counts:
+                    loffsets += [total+num]
+                    lcells += [n]
+                    for i in range(n):
+                        lcells += [comp[total+i]]
+                    total += n
+                    num += 1
+                points = mesh.getVertexCoords().swapaxes(0,1)
+                cells = array(lcells)
+                offset = array(loffsets)
+                cps_type = tvtk.ConvexPointSet().cell_type
+                cell_types = array([cps_type]*num)
+                cell_array = tvtk.CellArray()
+                cell_array.set_cells(num, cells)
+                
+                ug = tvtk.UnstructuredGrid(points=points)
+                ug.set_cells(cell_types, offset, cell_array)
+                ug.cell_data.scalars = var.value
+                ug.cell_data.scalars.name = 'scalars'
 
-        pylab.ioff()
-        
-        self._plot()
-        pylab.draw()
-        
-        pylab.ion()
+                from enthought.mayavi.modules.api import Surface
+                mod = Surface()
+                
+            elif rank == 1:
+                cellCenters = mesh.getCellCenters().swapaxes(0,1)
+                ug = tvtk.UnstructuredGrid(points=cellCenters)
+                ug.point_data.vectors = var.value
+                ug.point_data.vectors.name = 'vectors'
+                
+                from enthought.mayavi.modules import Vectors
+                mod = Vectors()
+
+            if (mod is None) or (ug is None):
+                raise TypeError("The data for mayavi must be scalars or vectors")
+
+            from enthought.mayavi.sources.api import VTKDataSource
+            src = VTKDataSource(data=ug)
+            self.e.add_source(src)
+            self.e.add_module(mod,obj=src)
+            if (len(self.oldSrcs) > 0):
+                oldSrc = self.oldSrcs.pop(0)
+                oldMod = self.oldMods.pop(0)
+                oldMod.stop()
+                oldSrc.stop()
+            self.oldSrcs += [src]
+            self.oldMods += [mod]
 
         if filename is not None:
-            pylab.savefig(filename)
+            pass
+        def _validFileExtensions(self):
+            return [".png"]
 
-    def _validFileExtensions(self):
-        import pylab
-        return ["""
-        Matplotlib has no reliable way to determine 
-        valid file extensions. Either guess, or see
-        <http://matplotlib.sourceforge.net/faq/installing_faq.html#backends> 
-        and then guess. Yes, this is lame.
-        """]
-        
-#         filetypes = pylab.figure(self.id).canvas.filetypes
-#         return [".%s" % key for key in filetypes.keys()]
-        
+    def show(self):
+        from enthought.mayavi import mlab
+        mlab.show()
