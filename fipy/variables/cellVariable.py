@@ -41,7 +41,6 @@ from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix, parallel
 
-        
 class CellVariable(_MeshVariable):
     """
     Represents the field of values of a variable on a `Mesh`.
@@ -226,6 +225,7 @@ class CellVariable(_MeshVariable):
         ..
 
             >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
             >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
             >>> print var.getCellVolumeAverage()
