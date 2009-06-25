@@ -94,6 +94,7 @@ class Grid2D(Mesh2D):
     def _calcParallelGridInfo(self, nx, ny, overlap):
         from fipy.tools.parallel import procID, Nproc
         
+        overlap = min(overlap, ny)
         cellsPerNode = max(int(ny / Nproc), overlap)
         occupiedNodes = int(ny / cellsPerNode)
             
