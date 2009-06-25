@@ -74,8 +74,28 @@ class MayaviViewer(_Viewer):
         from enthought.mayavi.api import Engine
         self.e = Engine()
         self.e.start()
-        self.e.new_scene(title)
-
+        self.e.new_scene(name=title)
+    
+    _getMul=lambda self,dims:(dims == 3 and 1 or dims == 2 and 2 or 4)
+    
+    def _makeDims3(self, arr,move=True):
+        num = arr.shape[0]
+        dims = arr.shape[1]
+        if dims == 3:
+            return arr
+        from fipy.tools.numerix import zeros
+        a = zeros((num*self._getMul(dims),3))
+        a[:,:arr.shape[1]]=list(arr)*self._getMul(dims)
+        if not move:
+            return a
+        a[num:num*2,2]=1
+        if dims == 2:
+            return a
+        a[num*2:num*3,1]=1
+        a[num*3:,2]=1
+        a[num*3:,1]=1
+        return a
+    
     def plot(self, filename = None):
         from fipy.tools.numerix import array
         for var in self.vars:
@@ -85,25 +105,39 @@ class MayaviViewer(_Viewer):
                 name = 'default'
 
             rank = var.getRank()
+            dims = mesh.dim
             ug = None
             mod = None
+            from enthought.tvtk.api import tvtk
             if rank == 0:
-                from enthought.tvtk.api import tvtk
+                points = mesh.getVertexCoords().swapaxes(0,1)
+                numpoints = len(points)
+                points = self._makeDims3(points)
                 cvi = mesh._getCellVertexIDs().swapaxes(0,1)
-                counts = cvi.count(axis=1)
-                comp = cvi.compressed()
+                from fipy.tools import numerix
+                if (type(cvi)==numerix.ma.masked_array):
+                    counts = cvi.count(axis=1)
+                    comp = cvi.compressed()
+                else:
+                    counts = [cvi.shape[1]]*cvi.shape[0]
+                    comp = cvi.reshape(-1)
                 lcells = []
                 loffsets = []
                 total = 0
+                mul = self._getMul(dims)
                 num = 0
                 for n in counts:
-                    loffsets += [total+num]
-                    lcells += [n]
+                    loffsets += [total*mul+num]
+                    lcells += [n*mul]
                     for i in range(n):
                         lcells += [comp[total+i]]
+                        if (dims < 3):
+                            lcells += [comp[total+i]+numpoints]
+                            if (dims < 2):
+                                lcells += [comp[total+i]+numpoints*2]
+                                lcells += [comp[total+i]+numpoints*3]
                     total += n
                     num += 1
-                points = mesh.getVertexCoords().swapaxes(0,1)
                 cells = array(lcells)
                 offset = array(loffsets)
                 cps_type = tvtk.ConvexPointSet().cell_type
@@ -144,9 +178,10 @@ class MayaviViewer(_Viewer):
             self.oldMods += [mod]
 
         if filename is not None:
-            pass
+            from enthought.mayavi import mlab
+            mlab.savefig(filename)
         def _validFileExtensions(self):
-            return [".png"]
+            return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
 
     def show(self):
         from enthought.mayavi import mlab
