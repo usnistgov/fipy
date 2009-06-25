@@ -49,6 +49,15 @@ class UniformGrid2D(Grid2D):
     first and then vertical faces.
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2):
+        self.args = {
+            'dx': dx, 
+            'dy': dy, 
+            'nx': nx, 
+            'ny': ny, 
+            'origin': origin,
+            'overlap': overlap
+        }
+    
         self.dim = 2
         
         self.dx = PhysicalField(value = dx)

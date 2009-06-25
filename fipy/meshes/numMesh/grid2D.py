@@ -49,6 +49,14 @@ class Grid2D(Mesh2D):
     first and then vertical faces.
     """
     def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2):
+        self.args = {
+            'dx': dx, 
+            'dy': dy, 
+            'nx': nx, 
+            'ny': ny, 
+            'overlap': overlap
+        }
+    
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value=1, unit=self.dx.getUnit())
         self.dx /= scale
@@ -292,19 +300,14 @@ class Grid2D(Mesh2D):
         Used internally to collect the necessary information to ``pickle`` the 
         `Grid2D` to persistent storage.
         """
-        return {
-            'dx' : self.dx,            
-            'dy' : self.dy,
-            'nx' : self.nx,
-            'ny' : self.ny
-        }
+        return self.args
 
     def __setstate__(self, dict):
         """
         Used internally to create a new `Grid2D` from ``pickled`` 
         persistent storage.
         """
-        self.__init__(dx = dict['dx'], dy = dict['dy'], nx = dict['nx'], ny = dict['ny'])
+        self.__init__(**dict)
 
     def _test(self):
         """

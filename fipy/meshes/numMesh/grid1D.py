@@ -60,6 +60,12 @@ class Grid1D(Mesh1D):
 
     """
     def __init__(self, dx=1., nx=None, overlap=2):
+        self.args = {
+            'dx': dx, 
+            'nx': nx, 
+            'overlap': overlap
+        }
+
         from fipy.tools.dimensions.physicalField import PhysicalField
         self.dx = PhysicalField(value=dx)
         scale = PhysicalField(value=1, unit=self.dx.getUnit())
@@ -86,6 +92,7 @@ class Grid1D(Mesh1D):
     def _calcParallelGridInfo(self, nx, overlap):
         from fipy.tools.parallel import procID, Nproc
         
+        overlap = min(overlap, nx)
         cellsPerNode = max(int(nx / Nproc), overlap)
         occupiedNodes = int(nx / cellsPerNode)
             
@@ -214,13 +221,10 @@ class Grid1D(Mesh1D):
 ## pickling
 
     def __getstate__(self):
-        return {
-            'dx' : self.dx,            
-            'nx' : self.nx
-        }
+        return self.args
         
     def __setstate__(self, dict):
-        self.__init__(dx = dict['dx'], nx = dict['nx'])
+        self.__init__(**dict)
 
     def _test(self):
         """

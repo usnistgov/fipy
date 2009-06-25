@@ -45,7 +45,7 @@ from fipy.tools import numerix, parallel
 class CellVariable(_MeshVariable):
     """
     Represents the field of values of a variable on a `Mesh`.
-    
+
     A `CellVariable` can be ``pickled`` to persistent storage (disk) for later use:
         
         >>> from fipy.meshes.grid2D import Grid2D
@@ -63,7 +63,7 @@ class CellVariable(_MeshVariable):
         1
         
     """
-    
+
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
         if value is not None:
             if not isinstance(value, Variable):
@@ -143,6 +143,21 @@ class CellVariable(_MeshVariable):
                                               name=self.name + "_old", 
                                               value=self.getValue(),
                                               hasOld=False)
+                                              
+    def __str__(self):
+        return str(self.getGlobalValue())
+        
+    def getGlobalValue(self):
+        import sys
+        from fipy.tools import parallel
+        localValue = self.getValue()
+        if parallel.Nproc > 1:
+            from mpi4py import MPI
+            localValue = localValue[..., self.mesh._getLocalNonOverlappingCellIDs()]
+            comm = MPI.COMM_WORLD
+            return numerix.concatenate(comm.allgather(localValue))
+        else:
+            return localValue
             
     def __call__(self, points=None, order=0, nearestCellIDs=None):
         r"""
@@ -575,7 +590,7 @@ class CellVariable(_MeshVariable):
         return {
             'mesh' : self.mesh,
             'name' : self.name,
-            'value' : self.getValue(),
+            'value' : self.getGlobalValue(),
             'unit' : self.getUnit(),
             'old' : self.old
         }

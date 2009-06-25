@@ -53,6 +53,13 @@ class UniformGrid1D(Grid1D):
          
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2):
+        self.args = {
+            'dx': dx, 
+            'nx': nx, 
+            'origin': origin, 
+            'overlap': overlap
+        }
+        
         self.dim = 1
         
         self.dx = PhysicalField(value=dx)
