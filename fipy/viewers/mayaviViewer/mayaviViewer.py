@@ -74,8 +74,10 @@ class MayaviViewer(_Viewer):
         from enthought.mayavi.api import Engine
         self.e = Engine()
         self.e.start()
-        self.e.new_scene(name=title)
-    
+        from enthought.mayavi.core.module_manager import ModuleManager
+        self.modMan = ModuleManager()
+        self.modMan.scalar_lut_manager.use_default_range=False
+        
     _getMul=lambda self,dims:(dims == 3 and 1 or dims == 2 and 2 or 4)
     
     def _makeDims3(self, arr,move=True):
@@ -97,6 +99,40 @@ class MayaviViewer(_Viewer):
         return a
     
     def plot(self, filename = None):
+        if not self.e.scenes:
+            self.e.new_scene()
+        xmin = self._getLimit('xmin')
+        xmax = self._getLimit('xmax')
+        ymin = self._getLimit('ymin')
+        ymax = self._getLimit('ymax')
+        zmin = self._getLimit('zmin')
+        zmax = self._getLimit('zmax')
+        datamin = self._getLimit('datamin')
+        datamax = self._getLimit('datamax')
+        for var in self.vars:
+            mesh = var.getMesh()
+            from fipy.tools import numerix
+            x,y,z = numerix.NUMERIX.min(mesh.getVertexCoords(),axis=1)
+            d = numerix.NUMERIX.min(var.value)
+            if self._getLimit('xmin') is None and (xmin is None or x<xmin):
+                xmin = x
+            if self._getLimit('ymin') is None and (ymin is None or y<ymin):
+                ymax = y
+            if self._getLimit('zmin') is None and (zmin is None or z<zmin):
+                zmax = z
+            if self._getLimit('datamin') is None and (datamin is None or d<datamin):
+                datamin = d
+            x,y,z = numerix.NUMERIX.max(mesh.getVertexCoords(),axis=1)
+            d = numerix.NUMERIX.max(var.value)
+            if self._getLimit('xmax') is None and (xmax is None or x>xmax):
+                xmax = x
+            if self._getLimit('ymax') is None and (ymax is None or y>ymax):
+                ymax = y
+            if self._getLimit('zmax') is None and (zmax is None or z>zmax):
+                zmax = z
+            if self._getLimit('datamax') is None and (datamax is None or d>datamax):
+                datamax = d
+        self.modMan.scalar_lut_manager.data_range = (datamin,datamax)
         from fipy.tools.numerix import array
         for var in self.vars:
             mesh = var.getMesh()
@@ -152,7 +188,7 @@ class MayaviViewer(_Viewer):
 
                 from enthought.mayavi.modules.api import Surface
                 mod = Surface()
-                
+                mod.module_manager = self.modMan
             elif rank == 1:
                 cellCenters = mesh.getCellCenters().swapaxes(0,1)
                 ug = tvtk.UnstructuredGrid(points=cellCenters)
