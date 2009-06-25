@@ -84,29 +84,25 @@ class Grid2D(Mesh2D):
         self.setScale(value = scale)
         
     def _calcParallelGridInfo(self, nx, ny, overlap):
-        try:
-            from PyTrilinos import Epetra
-            
-            procID = Epetra.PyComm().MyPID()
-            Nproc = Epetra.PyComm().NumProc()
-        except ImportError:
-            procID = 0
-            Nproc = 1
+        from fipy.tools.parallel import procID, Nproc
+        
+        cellsPerNode = max(int(ny / Nproc), overlap)
+        occupiedNodes = int(ny / cellsPerNode)
             
         overlap = {
             'left': 0,
             'right': 0,
-            'bottom': overlap * (procID > 0),
-            'top': overlap * (procID < Nproc - 1)
+            'bottom': overlap * (procID > 0) * (procID < occupiedNodes),
+            'top': overlap * (procID < occupiedNodes - 1)
         }
         
         offset = (0,
-                  procID * (ny / Nproc) - overlap['bottom'])
+                  min(procID, occupiedNodes-1) * cellsPerNode - overlap['bottom'])
                 
         local_nx = nx
-        local_ny = ny / Nproc
-        if procID == Nproc - 1:
-            local_ny += (ny % Nproc)
+        local_ny = cellsPerNode * (procID < occupiedNodes)
+        if procID == occupiedNodes - 1:
+            local_ny += (ny % occupiedNodes)
         local_ny = local_ny + overlap['bottom'] + overlap['top']
         
         self.globalNumberOfCells = nx * ny
