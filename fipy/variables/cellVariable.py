@@ -447,7 +447,22 @@ class CellVariable(_MeshVariable):
             from PyTrilinos import Epetra
             def maxParallel(a):
                 a = a[self.mesh._getLocalNonOverlappingCellIDs()]
-                return Epetra.PyComm().MaxAll(a.max(axis=axis))
+                
+                if numerix.multiply.reduce(a.shape) == 0:
+                    if axis is None:
+                        opShape = ()
+                    else:
+                        opShape=self.shape[:axis] + self.shape[axis+1:]
+                        
+                    if len(opShape) == 0:
+                        nodeMax = -numerix.inf
+                    else:
+                        nodeMax = numerix.empty(opShape)
+                        nodeMax[:] = -numerix.inf
+                else:
+                    nodeMax = a.max(axis=axis)
+                    
+                return Epetra.PyComm().MaxAll(nodeMax)
                 
             return self._axisOperator(opname="maxVar", 
                                       op=maxParallel, 
@@ -460,7 +475,22 @@ class CellVariable(_MeshVariable):
             from PyTrilinos import Epetra
             def minParallel(a):
                 a = a[self.mesh._getLocalNonOverlappingCellIDs()]
-                return Epetra.PyComm().MinAll(a.min(axis=axis))
+                
+                if numerix.multiply.reduce(a.shape) == 0:
+                    if axis is None:
+                        opShape = ()
+                    else:
+                        opShape=self.shape[:axis] + self.shape[axis+1:]
+                        
+                    if len(opShape) == 0:
+                        nodeMin = numerix.inf
+                    else:
+                        nodeMin = numerix.empty(opShape)
+                        nodeMin[:] = numerix.inf
+                else:
+                    nodeMin = a.min(axis=axis)
+
+                return Epetra.PyComm().MinAll(nodeMin)
                 
             return self._axisOperator(opname="minVar", 
                                       op=minParallel, 
