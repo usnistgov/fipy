@@ -69,15 +69,8 @@ class MayaviViewer(_Viewer):
             (default) value of `None` will autoscale.
         """
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
-        self.oldSrcs = []
-        self.oldMods = []
-        from enthought.mayavi.api import Engine
-        self.e = Engine()
-        self.e.start()
-        from enthought.mayavi.core.module_manager import ModuleManager
-        self.modMan = ModuleManager()
-        self.modMan.scalar_lut_manager.use_default_range=False
-        
+        self.oldSrcs=[]
+    
     _getMul=lambda self,dims:(dims == 3 and 1 or dims == 2 and 2 or 4)
     
     def _makeDims3(self, arr,move=True):
@@ -99,8 +92,6 @@ class MayaviViewer(_Viewer):
         return a
     
     def plot(self, filename = None):
-        if not self.e.scenes:
-            self.e.new_scene()
         xmin = self._getLimit('xmin')
         xmax = self._getLimit('xmax')
         ymin = self._getLimit('ymin')
@@ -117,9 +108,9 @@ class MayaviViewer(_Viewer):
             if self._getLimit('xmin') is None and (xmin is None or x<xmin):
                 xmin = x
             if self._getLimit('ymin') is None and (ymin is None or y<ymin):
-                ymax = y
+                ymin = y
             if self._getLimit('zmin') is None and (zmin is None or z<zmin):
-                zmax = z
+                zmin = z
             if self._getLimit('datamin') is None and (datamin is None or d<datamin):
                 datamin = d
             x,y,z = numerix.NUMERIX.max(mesh.getVertexCoords(),axis=1)
@@ -132,7 +123,6 @@ class MayaviViewer(_Viewer):
                 zmax = z
             if self._getLimit('datamax') is None and (datamax is None or d>datamax):
                 datamax = d
-        self.modMan.scalar_lut_manager.data_range = (datamin,datamax)
         from fipy.tools.numerix import array
         for var in self.vars:
             mesh = var.getMesh()
@@ -151,12 +141,12 @@ class MayaviViewer(_Viewer):
                 points = self._makeDims3(points)
                 cvi = mesh._getCellVertexIDs().swapaxes(0,1)
                 from fipy.tools import numerix
-                if (type(cvi)==numerix.ma.masked_array):
+                if (type(cvi)==array):
                     counts = cvi.count(axis=1)
                     comp = cvi.compressed()
                 else:
-                    counts = [cvi.shape[1]]*cvi.shape[0]
-                    comp = cvi.reshape(-1)
+                    counts = cvi.count(axis=1)
+                    comp = cvi.compressed()
                 lcells = []
                 loffsets = []
                 total = 0
@@ -185,34 +175,25 @@ class MayaviViewer(_Viewer):
                 ug.set_cells(cell_types, offset, cell_array)
                 ug.cell_data.scalars = var.value
                 ug.cell_data.scalars.name = 'scalars'
+                
+                from enthought.mayavi import mlab
+                src = mlab.pipeline.surface(ug,extent=[xmin, xmax, ymin, ymax, zmin, zmax],vmin=datamin,vmax=datamax)
 
-                from enthought.mayavi.modules.api import Surface
-                mod = Surface()
-                mod.module_manager = self.modMan
             elif rank == 1:
                 cellCenters = mesh.getCellCenters().swapaxes(0,1)
                 ug = tvtk.UnstructuredGrid(points=cellCenters)
                 ug.point_data.vectors = var.value
                 ug.point_data.vectors.name = 'vectors'
                 
-                from enthought.mayavi.modules import Vectors
-                mod = Vectors()
+                from enthought.mayavi import mlab
+                src = mlab.pipeline.vectors(ug,extent=[xmin, xmax, ymin, ymax, zmin, zmax],vmin=datamin,vmax=datamax)
 
-            if (mod is None) or (ug is None):
+            if (ug is None):
                 raise TypeError("The data for mayavi must be scalars or vectors")
-
-            from enthought.mayavi.sources.api import VTKDataSource
-            src = VTKDataSource(data=ug)
-            self.e.add_source(src)
-            self.e.add_module(mod,obj=src)
-            if (len(self.oldSrcs) > 0):
-                oldSrc = self.oldSrcs.pop(0)
-                oldMod = self.oldMods.pop(0)
-                oldMod.stop()
-                oldSrc.stop()
-            self.oldSrcs += [src]
-            self.oldMods += [mod]
-
+            if len(self.oldSrcs)>0:
+                self.oldSrcs.pop(0).stop()
+            self.oldSrcs+=[src]
+            
         if filename is not None:
             from enthought.mayavi import mlab
             mlab.savefig(filename)
