@@ -69,7 +69,7 @@ class MayaviViewer(_Viewer):
             (default) value of `None` will autoscale.
         """
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
-        self.oldSrcs=[]
+        self.srcs=[]
     
     _getMul=staticmethod(lambda dims:(dims == 3 and 1 or dims == 2 and 2 or 4))
     
@@ -78,9 +78,9 @@ class MayaviViewer(_Viewer):
         dims = arr.shape[1]
         if dims == 3:
             return arr
-        from fipy.tools.numerix import zeros
-        a = zeros((num*MayaviViewer._getMul(dims),3))
-        a[:,:arr.shape[1]]=list(arr)*MayaviViewer._getMul(dims)
+        from fipy.tools.numerix import zeros,array
+        a = zeros((num*MayaviViewer._getMul(dims),3),t='d')
+        a[:,:arr.shape[1]]=array(arr.tolist()*MayaviViewer._getMul(dims))
         if not move:
             return a
         a[num:num*2,2]=1
@@ -198,39 +198,49 @@ class MayaviViewer(_Viewer):
         from fipy.tools.numerix import array
         for var in self.vars:
             mesh = var.getMesh()
-            name = var.getName()
-            if name is '':
-                name = 'default'
-
             rank = var.getRank()
-            dims = mesh.dim
-            ug = None
-            mod = None
-            from enthought.tvtk.api import tvtk
-            surf = MayaviViewer.makeUnstructuredGrid(mesh)
-            if rank == 0:
-                ug=surf
-                ug.cell_data.scalars = var.getValue()
-                ug.cell_data.scalars.name = 'scalars'
+            done = False
+            if (len(self.srcs)!=0):
+                old = self.srcs.pop(0)
+                oldMesh = old[0]
+                if (oldMesh == mesh):
+                    done = True
+                    if rank == 0:
+                        src = old[1]
+                        src.data.cell_data.scalars.to_array()[:] = var.getValue()
+                        src.update()
+                        s = old[2]
+                        s.parent.scalar_lut_manager.data_range=array([datamin,datamax])
+                    elif rank == 1:
+                        src = old[3]
+                        src.data.point_data.vectors.to_array()[:]=MayaviViewer._makeDims3(var.getValue().swapaxes(0,1),move=False)
+                        src.update()
+                    self.srcs.append(old)
+            if (not done):
+                dims = mesh.dim
+                from enthought.tvtk.api import tvtk
+                surf = MayaviViewer.makeUnstructuredGrid(mesh)
+                if rank == 0:
+                    surf.cell_data.scalars = var.getValue()
+                    surf.cell_data.scalars.name = 'scalars'                    
+                    from enthought.mayavi import mlab
+                    src = mlab.pipeline.add_dataset(surf)
+                    s = mlab.pipeline.surface(src,extent=[xmin, xmax, ymin, ymax, zmin, zmax],vmin=datamin,vmax=datamax)
+                    self.srcs.append([mesh,src,s])
+                elif rank == 1:
+                    cellCenters = MayaviViewer._makeDims3(mesh.getCellCenters().swapaxes(0,1),move=False)
+                    ug = tvtk.UnstructuredGrid(points=cellCenters)
+                    ug.point_data.vectors = MayaviViewer._makeDims3(var.getValue().swapaxes(0,1),move=False)
+                    ug.point_data.vectors.name = 'vectors'
+                    from enthought.mayavi import mlab
+                    vecSource = mlab.pipeline.add_dataset(ug)
+                    gridSource = mlab.pipeline.add_dataset(surf)
+                    vecs = mlab.pipeline.vectors(vecSource,extent=[xmin, xmax, ymin, ymax, zmin, zmax] )
+                    grid = mlab.pipeline.surface(gridSource,extent=[xmin,xmax,ymin,ymax,zmin,zmax],opacity=.1)
+                    self.srcs.append([mesh,gridSource,grid,vecSource,vecs])
+                else:
+                    raise TypeError("The data for mayavi must be scalars or vectors")
                 
-                from enthought.mayavi import mlab
-                src = mlab.pipeline.surface(ug,extent=[xmin, xmax, ymin, ymax, zmin, zmax],vmin=datamin,vmax=datamax)
-
-            elif rank == 1:
-                cellCenters = mesh.getCellCenters().swapaxes(0,1)
-                ug = tvtk.UnstructuredGrid(points=cellCenters)
-                ug.point_data.vectors = MayaviViewer._makeDims3(var.getValue(),move=False)
-                ug.point_data.vectors.name = 'vectors'
-                
-                from enthought.mayavi import mlab
-                src = mlab.pipeline.vectors(ug,extent=[xmin, xmax, ymin, ymax, zmin, zmax] )
-                mlab.pipeline.surface(surf,extent=[xmin,xmax,ymin,ymax,zmin,zmax],opacity=.1)
-            if (ug is None):
-                raise TypeError("The data for mayavi must be scalars or vectors")
-            if len(self.oldSrcs)>0:
-                self.oldSrcs.pop(0).stop()
-            self.oldSrcs+=[src]
-            
         if filename is not None:
             from enthought.mayavi import mlab
             mlab.savefig(filename)
