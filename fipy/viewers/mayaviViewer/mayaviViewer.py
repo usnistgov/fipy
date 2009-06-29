@@ -41,12 +41,7 @@ from fipy.viewers.viewer import _Viewer
 
 class MayaviViewer(_Viewer):
     """
-    .. attention:: This class is abstract. Always create one of its subclasses.
-
-    The `_MayaviViewer` is the base class for the viewers that use the
-    Mayavi python plotting package.
-
-
+    MayaviViewer is a viewer for 1,2, and 3
     """
         
     def __init__(self, vars, title=None, **kwlimits):
@@ -73,7 +68,7 @@ class MayaviViewer(_Viewer):
     
     _getMul=staticmethod(lambda dims:(dims == 3 and 1 or dims == 2 and 2 or 4))
     
-    def _makeDims3(arr,move=True):
+    def _makeDims3(arr,expand=1.,move=True):
         num = arr.shape[0]
         dims = arr.shape[1]
         if dims == 3:
@@ -83,22 +78,22 @@ class MayaviViewer(_Viewer):
         a[:,:arr.shape[1]]=array(arr.tolist()*MayaviViewer._getMul(dims))
         if not move:
             return a
-        a[num:num*2,2]=1
+        a[num:num*2,2]=expand
         if dims == 2:
             return a
-        a[num*2:num*3,1]=1
-        a[num*3:,2]=1
-        a[num*3:,1]=1
+        a[num*2:num*3,1]=expand
+        a[num*3:,2]=expand
+        a[num*3:,1]=expand
         return a
     _makeDims3 = staticmethod(_makeDims3)
 
-    def makeUnstructuredGrid(mesh):
+    def makeUnstructuredGrid(mesh,minDim):
         from fipy.tools.numerix import array
         from enthought.tvtk.api import tvtk
         dims = mesh.dim
         points = mesh.getVertexCoords().swapaxes(0,1)
         numpoints = len(points)
-        points = MayaviViewer._makeDims3(points)
+        points = MayaviViewer._makeDims3(points,expand=minDim)
         cvi = mesh._getCellVertexIDs().swapaxes(0,1)
         from fipy.tools import numerix
         if (type(cvi)==numerix.ndarray):
@@ -187,14 +182,21 @@ class MayaviViewer(_Viewer):
                 zmax = z
             if self._getLimit('datamax') is None and d is not None and (datamax is None or d>datamax):
                 datamax = d
-        if ymin is None:
-            ymin = 0
-        if ymax is None:
-            ymax = 1
-        if zmin is None:
+        if zmax is not None and zmin is not None:
+            minDim = min((xmax-xmin,ymax-ymin,zmax-zmin))
+            maxDim = max((xmax-xmin,ymax-ymin,zmax-zmin))
+        elif ymax is not None and ymin is not None:
+            minDim = min((xmax-xmin,ymax-ymin))
+            maxDim = max((xmax-xmin,ymax-ymin))
             zmin = 0
-        if zmax is None:
-            zmax = 1
+            zmax = minDim/20.
+        else:
+            minDim = xmax-xmin
+            maxDim = xmax-xmin
+            ymin = 0.
+            zmin = 0.
+            ymax = minDim/20.
+            zmax = minDim/20.
         from fipy.tools.numerix import array
         for var in self.vars:
             mesh = var.getMesh()
@@ -219,7 +221,7 @@ class MayaviViewer(_Viewer):
             if (not done):
                 dims = mesh.dim
                 from enthought.tvtk.api import tvtk
-                surf = MayaviViewer.makeUnstructuredGrid(mesh)
+                surf = MayaviViewer.makeUnstructuredGrid(mesh,minDim/20.)
                 if rank == 0:
                     surf.cell_data.scalars = var.getValue()
                     surf.cell_data.scalars.name = 'scalars'                    
