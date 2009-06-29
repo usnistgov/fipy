@@ -71,16 +71,16 @@ class MayaviViewer(_Viewer):
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         self.oldSrcs=[]
     
-    _getMul=lambda self,dims:(dims == 3 and 1 or dims == 2 and 2 or 4)
+    _getMul=staticmethod(lambda dims:(dims == 3 and 1 or dims == 2 and 2 or 4))
     
-    def _makeDims3(self, arr,move=True):
+    def _makeDims3(arr,move=True):
         num = arr.shape[0]
         dims = arr.shape[1]
         if dims == 3:
             return arr
         from fipy.tools.numerix import zeros
-        a = zeros((num*self._getMul(dims),3))
-        a[:,:arr.shape[1]]=list(arr)*self._getMul(dims)
+        a = zeros((num*MayaviViewer._getMul(dims),3))
+        a[:,:arr.shape[1]]=list(arr)*MayaviViewer._getMul(dims)
         if not move:
             return a
         a[num:num*2,2]=1
@@ -90,6 +90,51 @@ class MayaviViewer(_Viewer):
         a[num*3:,2]=1
         a[num*3:,1]=1
         return a
+    _makeDims3 = staticmethod(_makeDims3)
+
+    def makeUnstructuredGrid(mesh):
+        from fipy.tools.numerix import array
+        from enthought.tvtk.api import tvtk
+        dims = mesh.dim
+        points = mesh.getVertexCoords().swapaxes(0,1)
+        numpoints = len(points)
+        points = MayaviViewer._makeDims3(points)
+        cvi = mesh._getCellVertexIDs().swapaxes(0,1)
+        from fipy.tools import numerix
+        if (type(cvi)==numerix.ndarray):
+            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])
+            comp = cvi.flatten()
+        else:
+            counts = cvi.count(axis=1)
+            comp = cvi.compressed()
+        lcells = []
+        loffsets = []
+        total = 0
+        mul = MayaviViewer._getMul(dims)
+        num = 0
+        for n in counts:
+            loffsets += [total*mul+num]
+            lcells += [n*mul]
+            for i in range(n):
+                lcells += [comp[total+i]]
+                if (dims < 3):
+                    lcells += [comp[total+i]+numpoints]
+                    if (dims < 2):
+                        lcells += [comp[total+i]+numpoints*2]
+                        lcells += [comp[total+i]+numpoints*3]
+            total += n
+            num += 1
+        cells = array(lcells)
+        offset = array(loffsets)
+        cps_type = tvtk.ConvexPointSet().cell_type
+        cell_types = array([cps_type]*num)
+        cell_array = tvtk.CellArray()
+        cell_array.set_cells(num, cells)
+        
+        ug = tvtk.UnstructuredGrid(points=points)
+        ug.set_cells(cell_types, offset, cell_array)
+        return ug
+    makeUnstructuredGrid = staticmethod(makeUnstructuredGrid)
     
     def plot(self, filename = None):
         xmin = self._getLimit('xmin')
@@ -102,27 +147,54 @@ class MayaviViewer(_Viewer):
         datamax = self._getLimit('datamax')
         for var in self.vars:
             mesh = var.getMesh()
+            rank = var.getRank()
+            dims = mesh.dim
             from fipy.tools import numerix
-            x,y,z = numerix.NUMERIX.min(mesh.getVertexCoords(),axis=1)
-            d = numerix.NUMERIX.min(var.value)
-            if self._getLimit('xmin') is None and (xmin is None or x<xmin):
+            x,y,z = None,None,None
+            x = numerix.NUMERIX.min(mesh.getVertexCoords(),axis=1)
+            if dims > 1:
+                y = x[1:]
+                x = x[0]
+                if dims > 2:
+                    z = y[1]
+                    y = y[0]
+            d = None
+            if rank == 0:
+                d = numerix.NUMERIX.min(var.value)
+            if self._getLimit('xmin') is None and x is not None and (xmin is None or x<xmin):
                 xmin = x
-            if self._getLimit('ymin') is None and (ymin is None or y<ymin):
+            if self._getLimit('ymin') is None and y is not None and (ymin is None or y<ymin):
                 ymin = y
-            if self._getLimit('zmin') is None and (zmin is None or z<zmin):
+            if self._getLimit('zmin') is None and z is not None and (zmin is None or z<zmin):
                 zmin = z
-            if self._getLimit('datamin') is None and (datamin is None or d<datamin):
+            if self._getLimit('datamin') is None and d is not None and (datamin is None or d<datamin):
                 datamin = d
-            x,y,z = numerix.NUMERIX.max(mesh.getVertexCoords(),axis=1)
-            d = numerix.NUMERIX.max(var.value)
-            if self._getLimit('xmax') is None and (xmax is None or x>xmax):
+            x = numerix.NUMERIX.max(mesh.getVertexCoords(),axis=1)
+            if dims > 1:
+                y = x[1:]
+                x = x[0]
+                if dims > 2:
+                    z = y[1]
+                    y = y[0]
+            d = None
+            if rank == 0:
+                d = numerix.NUMERIX.max(var.value)
+            if self._getLimit('xmax') is None and x is not None and (xmax is None or x>xmax):
                 xmax = x
-            if self._getLimit('ymax') is None and (ymax is None or y>ymax):
+            if self._getLimit('ymax') is None and y is not None and (ymax is None or y>ymax):
                 ymax = y
-            if self._getLimit('zmax') is None and (zmax is None or z>zmax):
+            if self._getLimit('zmax') is None and z is not None and (zmax is None or z>zmax):
                 zmax = z
-            if self._getLimit('datamax') is None and (datamax is None or d>datamax):
+            if self._getLimit('datamax') is None and d is not None and (datamax is None or d>datamax):
                 datamax = d
+        if ymin is None:
+            ymin = 0
+        if ymax is None:
+            ymax = 1
+        if zmin is None:
+            zmin = 0
+        if zmax is None:
+            zmax = 1
         from fipy.tools.numerix import array
         for var in self.vars:
             mesh = var.getMesh()
@@ -135,45 +207,10 @@ class MayaviViewer(_Viewer):
             ug = None
             mod = None
             from enthought.tvtk.api import tvtk
+            surf = MayaviViewer.makeUnstructuredGrid(mesh)
             if rank == 0:
-                points = mesh.getVertexCoords().swapaxes(0,1)
-                numpoints = len(points)
-                points = self._makeDims3(points)
-                cvi = mesh._getCellVertexIDs().swapaxes(0,1)
-                from fipy.tools import numerix
-                if (type(cvi)==array):
-                    counts = cvi.count(axis=1)
-                    comp = cvi.compressed()
-                else:
-                    counts = cvi.count(axis=1)
-                    comp = cvi.compressed()
-                lcells = []
-                loffsets = []
-                total = 0
-                mul = self._getMul(dims)
-                num = 0
-                for n in counts:
-                    loffsets += [total*mul+num]
-                    lcells += [n*mul]
-                    for i in range(n):
-                        lcells += [comp[total+i]]
-                        if (dims < 3):
-                            lcells += [comp[total+i]+numpoints]
-                            if (dims < 2):
-                                lcells += [comp[total+i]+numpoints*2]
-                                lcells += [comp[total+i]+numpoints*3]
-                    total += n
-                    num += 1
-                cells = array(lcells)
-                offset = array(loffsets)
-                cps_type = tvtk.ConvexPointSet().cell_type
-                cell_types = array([cps_type]*num)
-                cell_array = tvtk.CellArray()
-                cell_array.set_cells(num, cells)
-                
-                ug = tvtk.UnstructuredGrid(points=points)
-                ug.set_cells(cell_types, offset, cell_array)
-                ug.cell_data.scalars = var.value
+                ug=surf
+                ug.cell_data.scalars = var.getValue()
                 ug.cell_data.scalars.name = 'scalars'
                 
                 from enthought.mayavi import mlab
@@ -182,12 +219,12 @@ class MayaviViewer(_Viewer):
             elif rank == 1:
                 cellCenters = mesh.getCellCenters().swapaxes(0,1)
                 ug = tvtk.UnstructuredGrid(points=cellCenters)
-                ug.point_data.vectors = var.value
+                ug.point_data.vectors = MayaviViewer._makeDims3(var.getValue(),move=False)
                 ug.point_data.vectors.name = 'vectors'
                 
                 from enthought.mayavi import mlab
-                src = mlab.pipeline.vectors(ug,extent=[xmin, xmax, ymin, ymax, zmin, zmax],vmin=datamin,vmax=datamax)
-
+                src = mlab.pipeline.vectors(ug,extent=[xmin, xmax, ymin, ymax, zmin, zmax] )
+                mlab.pipeline.surface(surf,extent=[xmin,xmax,ymin,ymax,zmin,zmax],opacity=.1)
             if (ug is None):
                 raise TypeError("The data for mayavi must be scalars or vectors")
             if len(self.oldSrcs)>0:
