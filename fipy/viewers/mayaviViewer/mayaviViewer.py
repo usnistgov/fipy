@@ -39,43 +39,43 @@ __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import _Viewer
 
-class MayaviViewer(_Viewer):
-    """
-    MayaviViewer is a viewer for 1,2, and 3
-    """
+class _MayaviViewer(_Viewer):
         
     def __init__(self, vars, title=None, **kwlimits):
-        """
-        Create a `MayaviViewer`.
-        
-        :Parameters:
-          vars
-            a `CellVariable` or tuple of `CellVariable` objects to plot
-          title
-            displayed at the top of the `Viewer` window
-          figaspect
-            desired aspect ratio of figure. If arg is a number, use that aspect
-            ratio. If arg is an array, figaspect will determine the width and
-            height for a figure that would fit array preserving aspect ratio.
-          xmin, xmax, ymin, ymax, datamin, datamax
-            displayed range of data. A 1D `Viewer` will only use `xmin` and
-            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
-            viewers will use `datamin` and `datamax`. Any limit set to a
-            (default) value of `None` will autoscale.
-        """
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         self.srcs=[]
-    
-    _getMul=staticmethod(lambda dims:(dims == 3 and 1 or dims == 2 and 2 or 4))
+        self.mods=[]
+        from enthought.mayavi import mlab
+        if title=None:
+            title=vars.name
+        if title=None:
+            title='FiPy'
+        oldScenes = mlab.get_engine().scenes
+        self.id = len(oldScenes)
+        num = 1
+        self.scene = mlab.figure(name=(title+str(num))
+        while self.scene in oldScenes:
+            num += 1
+            self.scene = mlab.figure(name=(title+str(num))
+        
+    _getMul=staticmethod(lambda dims,mul=True:((not mul or dims == 3) and 1 or dims == 2 and 2 or 4))
     
     def _makeDims3(arr,expand=1.,move=True):
+        '''This method takes a numpy array and expands it from some dimension to 3 dimensions.
+        :Parameters:
+          arr
+            The array to expand
+          expand
+            How far to move the copies of the original points (only used if move is True
+          move
+            Whether or not to copy the points and translate them.  This will make 4 copies of a 1D array and 2 copies of a 2D array.'''
         num = arr.shape[0]
         dims = arr.shape[1]
         if dims == 3:
             return arr
         from fipy.tools.numerix import zeros,array
-        a = zeros((num*MayaviViewer._getMul(dims),3),t='d')
-        a[:,:arr.shape[1]]=array(arr.tolist()*MayaviViewer._getMul(dims))
+        a = zeros((num*_MayaviViewer._getMul(dims,move),3),t='d')
+        a[:,:arr.shape[1]]=array(arr.tolist()*_MayaviViewer._getMul(dims,move))
         if not move:
             return a
         a[num:num*2,2]=expand
@@ -88,12 +88,18 @@ class MayaviViewer(_Viewer):
     _makeDims3 = staticmethod(_makeDims3)
 
     def makeUnstructuredGrid(mesh,minDim):
+        '''This method takes a fipy mesh and turns it into an enthought.tvtk unstructured grid.
+        :Parameters:
+          mesh
+            the mesh to make into an unstructured gird
+          minDim
+            tells the method how far to extrude out 1D and 2D meshes'''
         from fipy.tools.numerix import array
         from enthought.tvtk.api import tvtk
         dims = mesh.dim
         points = mesh.getVertexCoords().swapaxes(0,1)
         numpoints = len(points)
-        points = MayaviViewer._makeDims3(points,expand=minDim)
+        points = _MayaviViewer._makeDims3(points,expand=minDim)
         cvi = mesh._getCellVertexIDs().swapaxes(0,1)
         from fipy.tools import numerix
         if (type(cvi)==numerix.ndarray):
@@ -105,7 +111,7 @@ class MayaviViewer(_Viewer):
         lcells = []
         loffsets = []
         total = 0
-        mul = MayaviViewer._getMul(dims)
+        mul = _MayaviViewer._getMul(dims)
         num = 0
         for n in counts:
             loffsets += [total*mul+num]
@@ -132,6 +138,8 @@ class MayaviViewer(_Viewer):
     makeUnstructuredGrid = staticmethod(makeUnstructuredGrid)
     
     def plot(self, filename = None):
+        from enthought.mayavi import mlab
+        mlab.get_engine().current_scene=self.scene
         xmin = self._getLimit('xmin')
         xmax = self._getLimit('xmax')
         ymin = self._getLimit('ymin')
@@ -182,6 +190,18 @@ class MayaviViewer(_Viewer):
                 zmax = z
             if self._getLimit('datamax') is None and d is not None and (datamax is None or d>datamax):
                 datamax = d
+        if type(xmin) == numerix.ndarray:
+            xmin = xmin[0]
+        if type(xmax) == numerix.ndarray:
+            xmax = xmax[0]
+        if type(ymin) == numerix.ndarray:
+            ymin = ymin[0]
+        if type(ymax) == numerix.ndarray:
+            ymax = ymax[0]
+        if type(zmin) == numerix.ndarray:
+            zmin = zmin[0]
+        if type(zmax) == numerix.ndarray:
+            zmax = zmax[0]
         if zmax is not None and zmin is not None:
             minDim = min((xmax-xmin,ymax-ymin,zmax-zmin))
             maxDim = max((xmax-xmin,ymax-ymin,zmax-zmin))
@@ -210,29 +230,19 @@ class MayaviViewer(_Viewer):
                     if rank == 0:
                         src = old[1]
                         src.data.cell_data.scalars.to_array()[:] = var.getValue()
-                        src.update()
-                        s = old[2]
-                        s.parent.scalar_lut_manager.data_range=array([datamin,datamax])
                     elif rank == 1:
                         src = old[3]
-                        src.data.point_data.vectors.to_array()[:]=MayaviViewer._makeDims3(var.getValue().swapaxes(0,1),move=False)
+                        src.data.point_data.vectors.to_array()[:]=_MayaviViewer._makeDims3(var.getValue().swapaxes(0,1),move=False)
                         src.update()
                     self.srcs.append(old)
             if (not done):
                 dims = mesh.dim
                 from enthought.tvtk.api import tvtk
-                surf = MayaviViewer.makeUnstructuredGrid(mesh,minDim/20.)
                 if rank == 0:
-                    surf.cell_data.scalars = var.getValue()
-                    surf.cell_data.scalars.name = 'scalars'                    
-                    from enthought.mayavi import mlab
-                    src = mlab.pipeline.add_dataset(surf)
-                    s = mlab.pipeline.surface(src,extent=[xmin, xmax, ymin, ymax, zmin, zmax],vmin=datamin,vmax=datamax)
-                    self.srcs.append([mesh,src,s])
                 elif rank == 1:
-                    cellCenters = MayaviViewer._makeDims3(mesh.getCellCenters().swapaxes(0,1),move=False)
+                    cellCenters = _MayaviViewer._makeDims3(mesh.getCellCenters().swapaxes(0,1),move=False)
                     ug = tvtk.UnstructuredGrid(points=cellCenters)
-                    ug.point_data.vectors = MayaviViewer._makeDims3(var.getValue().swapaxes(0,1),move=False)
+                    ug.point_data.vectors = _MayaviViewer._makeDims3(var.getValue().swapaxes(0,1),move=False)
                     ug.point_data.vectors.name = 'vectors'
                     from enthought.mayavi import mlab
                     vecSource = mlab.pipeline.add_dataset(ug)
@@ -246,9 +256,14 @@ class MayaviViewer(_Viewer):
         if filename is not None:
             from enthought.mayavi import mlab
             mlab.savefig(filename)
-        def _validFileExtensions(self):
-            return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
+    
+    def _plot(self):
+        pass
+    
+    def _validFileExtensions(self):
+        return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
 
-    def show(self):
+    def show():
         from enthought.mayavi import mlab
         mlab.show()
+    show = staticmethod(show)
