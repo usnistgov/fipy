@@ -146,6 +146,17 @@ class CellVariable(_MeshVariable):
     def __str__(self):
         return str(self.getGlobalValue())
         
+    def __repr__(self):
+        if hasattr(self, 'name') and len(self.name) > 0:
+            return self.name
+        else:
+            s = self.__class__.__name__ + '('
+            s += 'value=' + `self.getGlobalValue()`
+            s += ')'
+            if len(self.name) == 0:
+                s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
+            return s
+        
     def getGlobalValue(self):
         import sys
         from fipy.tools import parallel
