@@ -363,60 +363,73 @@ class DiffusionTerm(Term):
 
            >>> from fipy.meshes.grid1D import Grid1D
            >>> from fipy.tools.pysparseMatrix import _PysparseMatrix as SparseMatrix
+           >>> from fipy.tools.parallel import procID
            >>> mesh = Grid1D(dx = 1., nx = 2)
            >>> term = DiffusionTerm(coeff = (1,))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-            1.000000  -1.000000  
-           -1.000000   1.000000  
+           >>> M = term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
+           >>> print numerix.allclose(M.getNumpyArray(), 
+           ...                        (( 1., -1.), 
+           ...                         (-1.,  1.))) or procID != 0
+           True
            >>> from fipy.variables.cellVariable import CellVariable
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix)
-           >>> print L
-           -1.000000   1.000000  
-            1.000000  -1.000000  
-           >>> print b
-           [ 0.  0.]
+           >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+           >>> print numerix.allclose(L.getNumpyArray(), 
+           ...                        ((-1.,  1.), 
+           ...                         ( 1., -1.))) or procID != 0
+           True
+           >>> print numerix.allclose(b, (0., 0.)) or procID != 0
+           True
 
         The coefficient must be a `FaceVariable`, a `CellVariable` (which will
         be interpolated to a `FaceVariable`), or a scalar value 
         
            >>> from fipy.variables.faceVariable import FaceVariable
-           >>> term = DiffusionTerm(coeff = FaceVariable(mesh = mesh, value = 1))
+           >>> term = DiffusionTerm(coeff=FaceVariable(mesh=mesh, value=1))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-            1.000000  -1.000000  
-           -1.000000   1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix)
-           >>> print L
-           -1.000000   1.000000  
-            1.000000  -1.000000  
-           >>> print b
-           [ 0.  0.]
+           >>> M = term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
+           >>> print numerix.allclose(M.getNumpyArray(), 
+           ...                        (( 1., -1.), 
+           ...                         (-1.,  1.))) or procID != 0
+           True
+           >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+           >>> print numerix.allclose(L.getNumpyArray(), 
+           ...                        ((-1.,  1.), 
+           ...                         ( 1., -1.))) or procID != 0
+           True
+           >>> print numerix.allclose(b, (0., 0.)) or procID != 0
+           True
 
-           >>> term = DiffusionTerm(coeff = CellVariable(mesh = mesh, value = 1))
+           >>> term = DiffusionTerm(coeff=CellVariable(mesh=mesh, value=1))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-            1.000000  -1.000000  
-           -1.000000   1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix)
-           >>> print L
-           -1.000000   1.000000  
-            1.000000  -1.000000  
-           >>> print b
-           [ 0.  0.]
+           >>> M = term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
+           >>> print numerix.allclose(M.getNumpyArray(), 
+           ...                        (( 1., -1.), 
+           ...                         (-1.,  1.))) or procID != 0
+           True
+           >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+           >>> print numerix.allclose(L.getNumpyArray(), 
+           ...                        ((-1.,  1.), 
+           ...                         ( 1., -1.))) or procID != 0
+           True
+           >>> print numerix.allclose(b, (0., 0.)) or procID != 0
+           True
 
            >>> from fipy.variables.variable import Variable
            >>> term = DiffusionTerm(coeff = Variable(value = 1))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-            1.000000  -1.000000  
-           -1.000000   1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix)
-           >>> print L
-           -1.000000   1.000000  
-            1.000000  -1.000000  
-           >>> print b
-           [ 0.  0.]
+           >>> M = term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
+           >>> print numerix.allclose(M.getNumpyArray(), 
+           ...                        (( 1., -1.), 
+           ...                         (-1.,  1.))) or procID != 0
+           True
+           >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+           >>> print numerix.allclose(L.getNumpyArray(), 
+           ...                        ((-1.,  1.), 
+           ...                         ( 1., -1.))) or procID != 0
+           True
+           >>> print numerix.allclose(b, (0., 0.)) or procID != 0
+           True
                       
            >>> term = DiffusionTerm(coeff = ((1,2),))
 
@@ -431,18 +444,21 @@ class DiffusionTerm(Term):
            >>> bcRight = FixedValue(mesh.getFacesRight(), 4.)
            >>> term = DiffusionTerm(coeff = (1.,))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-            1.000000  -1.000000  
-           -1.000000   1.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+           >>> M = term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
+           >>> print numerix.allclose(M.getNumpyArray(), 
+           ...                        (( 1., -1.), 
+           ...                         (-1.,  1.))) or procID != 0
+           True
+           >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), 
            ...                         SparseMatrix=SparseMatrix ,
-           ...                         boundaryConditions = (bcLeft, bcRight))
-           >>> print L
-           -1.000000   1.000000  
-            1.000000  -3.000000  
-           >>> print b
-           [-3. -8.]
-
+           ...                         boundaryConditions=(bcLeft, bcRight))
+           >>> print numerix.allclose(L.getNumpyArray(), 
+           ...                        ((-1.,  1.), 
+           ...                         ( 1., -3.))) or procID != 0
+           True
+           >>> print numerix.allclose(b, (-3., -8.)) or procID != 0
+           True
+           
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvatures 0,
         x = 2, fixed value 1, fixed curvature 0
 
@@ -454,17 +470,21 @@ class DiffusionTerm(Term):
            >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2)
            >>> term = DiffusionTerm(coeff = (1., 1.))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-            1.000000  -1.000000  
-           -1.000000   1.000000  
+           >>> M = term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
+           >>> print numerix.allclose(M.getNumpyArray(), 
+           ...                        (( 1., -1.), 
+           ...                         (-1.,  1.))) or procID != 0
+           True
            >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix,
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
-           >>> print L
-            4.000000  -6.000000  
-           -4.000000  10.000000  
-           >>> print b
-           [  1.  21.]
+           >>> print numerix.allclose(L.getNumpyArray(), 
+           ...                        (( 4., -6.), 
+           ...                         (-4., 10.))) or procID != 0
+           True
+           >>> print numerix.allclose(b, (1., 21.)) or procID != 0
+           True
+
            
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvature 2,
         x = 2, fixed value 4, fixed 3rd order -1
@@ -475,18 +495,22 @@ class DiffusionTerm(Term):
            >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
            >>> term = DiffusionTerm(coeff = (-1., 1.))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-           -1.000000   1.000000  
-            1.000000  -1.000000  
+           >>> M = term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
+           >>> print numerix.allclose(M.getNumpyArray(), 
+           ...                        ((-1.,  1.), 
+           ...                         ( 1., -1.))) or procID != 0
+           True
            >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
            ...                         SparseMatrix=SparseMatrix,
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
-           >>> print L
-           -4.000000   6.000000  
-            2.000000  -4.000000  
-           >>> print b
-           [ 3. -4.]
+           >>> print numerix.allclose(L.getNumpyArray(), 
+           ...                        ((-4.,  6.), 
+           ...                         ( 2., -4.))) or procID != 0
+           True
+           >>> print numerix.allclose(b, (3., -4.)) or procID != 0
+           True
+
 
         Test when dx = 0.5.
 
@@ -497,41 +521,22 @@ class DiffusionTerm(Term):
            >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
            >>> term = DiffusionTerm(coeff = (1., 1.))
            >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-            2.000000  -2.000000  
-           -2.000000   2.000000  
+           >>> M = term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
+           >>> print numerix.allclose(M.getNumpyArray(), 
+           ...                        (( 2., -2.), 
+           ...                         (-2.,  2.))) or procID != 0
+           True
            >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
            ...                         SparseMatrix=SparseMatrix,
            ...                         boundaryConditions = (bcLeft1, bcLeft2, 
            ...                                               bcRight1, bcRight2))
-           >>> ans = numerix.array(((8e+01, -32),(-32, 16)))
-           >>> print numerix.allclose(L.getNumpyArray(), ans)
-           1
-           >>> print b
-           [-8.  4.]
+           >>> print numerix.allclose(L.getNumpyArray(), 
+           ...                        (( 80., -32.),
+           ...                         (-32.,  16.))) or procID != 0
+           True
+           >>> print numerix.allclose(b, (-8., 4.)) or procID != 0
+           True
 
-        Test when dx = 0.25.
-
-           >>> mesh = Grid1D(dx = .25, nx = 2)
-           >>> bcLeft1 = FixedValue(mesh.getFacesLeft(), 0.)
-           >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 1., 2)
-           >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
-           >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
-           >>> term = DiffusionTerm(coeff = (1., 1.))
-           >>> coeff = term._getGeomCoeff(mesh)
-           >>> print term._getCoefficientMatrix(SparseMatrix, mesh, coeff[0])
-            4.000000  -4.000000  
-           -4.000000   4.000000  
-           >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
-           ...                         SparseMatrix=SparseMatrix,
-           ...                         boundaryConditions = (bcLeft1, bcLeft2, 
-           ...                                               bcRight1, bcRight2))
-           >>> ans = numerix.array(((6.4e+2, -2.56e+2), (-2.56e+2, 1.28e+2)))
-           >>> print numerix.allclose(L.getNumpyArray(), ans)
-           1
-           >>> print b
-           [-24.  16.]
-           
         The following tests are to check that DiffusionTerm can take any of the four
         main Variable types.
 
