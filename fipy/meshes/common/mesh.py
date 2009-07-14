@@ -414,7 +414,7 @@ class Mesh:
         """
         x = self.getFaceCenters()[0]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == min(x))
+        return FaceVariable(mesh=self, value=x == _madmin(x))
 
     def getFacesRight(self):
         """
@@ -432,9 +432,9 @@ class Mesh:
             1
             
         """
-        x = self.getFaceCenters()[0]        
+        x = self.getFaceCenters()[0]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == max(x))
+        return FaceVariable(mesh=self, value=x == _madmax(x))
 
     def getFacesBottom(self):
         """
@@ -452,9 +452,9 @@ class Mesh:
             1
             
         """
-        y = self.getFaceCenters()[1]        
+        y = self.getFaceCenters()[1]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == min(y))
+        return FaceVariable(mesh=self, value=y == _madmin(y))
 
     getFacesDown = getFacesBottom
 
@@ -474,9 +474,9 @@ class Mesh:
             1
             
         """
-        y = self.getFaceCenters()[1]        
+        y = self.getFaceCenters()[1]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == max(y))
+        return FaceVariable(mesh=self, value=y == _madmax(y))
 
     getFacesUp = getFacesTop
 
@@ -492,9 +492,9 @@ class Mesh:
             1
 
         """
-        z = self.getFaceCenters()[2]        
+        z = self.getFaceCenters()[2] 
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == max(z))
+        return FaceVariable(mesh=self, value=z == _madmax(z))
 
     def getFacesFront(self):
         """
@@ -508,9 +508,9 @@ class Mesh:
             1
 
         """
-        z = self.getFaceCenters()[2]        
+        z = self.getFaceCenters()[2] or numerix.array([0])
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == min(z))
+        return FaceVariable(mesh=self, value=z == _madmin(z))
     
     def _getMaxFacesPerCell(self):
         pass
@@ -717,7 +717,17 @@ class Mesh:
 ## ##     def __setstate__(self, dict):
 ## ##         self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
         
-                      
+def _madmin(x):
+    if len(x) == 0:
+        return 0
+    else:
+        return min(x)
+        
+def _madmax(x):
+    if len(x) == 0:
+        return 0
+    else:
+        return max(x)
     
 def _test():
     import doctest
