@@ -40,6 +40,8 @@ def Grid1D(dx=1., nx=None, overlap=2):
     
     from fipy.tools import numerix
     if numerix.getShape(dx) == ():
-        return uniformGrid1D.UniformGrid1D(dx=dx, nx=nx or 1, overlap=overlap)
+        if nx is None:
+            nx = 1
+        return uniformGrid1D.UniformGrid1D(dx=dx, nx=nx, overlap=overlap)
     else:
         return grid1D.Grid1D(dx=dx, nx=nx, overlap=overlap)

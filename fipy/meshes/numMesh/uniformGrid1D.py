@@ -77,7 +77,10 @@ class UniformGrid1D(Grid1D):
         self.origin += self.offset * self.dx
         
         self.numberOfVertices = self.nx + 1
-        self.numberOfFaces = self.nx + 1
+        if self.nx == 0:
+            self.numberOfFaces = 0
+        else:
+            self.numberOfFaces = self.nx + 1
         self.numberOfCells = self.nx
         
         self.exteriorFaces = self.getFacesLeft() | self.getFacesRight()
@@ -141,21 +144,24 @@ class UniformGrid1D(Grid1D):
     def _getAdjacentCellIDs(self):
         c1 = numerix.arange(self.numberOfFaces)
         ids = numerix.array((c1 - 1, c1))
-        ids[0,0] = ids[1,0]
-        ids[1,-1] = ids[0,-1]
+        if self.numberOfFaces > 0:
+            ids[0,0] = ids[1,0]
+            ids[1,-1] = ids[0,-1]
         return ids[0], ids[1]
 
     def _getCellToCellIDs(self):
         c1 = numerix.arange(self.numberOfCells)
         ids = MA.array((c1 - 1, c1 + 1))
-        ids[0,0] = MA.masked
-        ids[1,-1] = MA.masked
+        if self.numberOfCells > 0:
+            ids[0,0] = MA.masked
+            ids[1,-1] = MA.masked
         return ids
         
     def _getCellToCellIDsFilled(self):
         ids = self._getCellToCellIDs().filled()
-        ids[0,0] = 0
-        ids[1,-1] = self.numberOfCells - 1
+        if self.numberOfCells > 0:
+            ids[0,0] = 0
+            ids[1,-1] = self.numberOfCells - 1
         return ids
         
     def _getMaxFacesPerCell(self):
@@ -169,9 +175,10 @@ class UniformGrid1D(Grid1D):
     def getFaceCellIDs(self):
         c1 = numerix.arange(self.numberOfFaces)
         ids = MA.array((c1 - 1, c1))
-        ids[0,0] = ids[1,0]
-        ids[1,0] = MA.masked
-        ids[1,-1] = MA.masked
+        if self.numberOfFaces > 0:
+            ids[0,0] = ids[1,0]
+            ids[1,0] = MA.masked
+            ids[1,-1] = MA.masked
         return ids
 
 ##     get geometry methods
@@ -198,17 +205,19 @@ class UniformGrid1D(Grid1D):
         return ((numerix.arange(self.numberOfCells)[numerix.NewAxis, ...] + 0.5) * self.dx + self.origin) * self.scale['length']
 
     def _getCellDistances(self):
-        distances = numerix.zeros(self.numberOfFaces, 'd')
-        distances[1:-1] = self.dx
-        distances[0] = self.dx / 2.
-        distances[-1] = self.dx / 2.
+        distances = numerix.ones(self.numberOfFaces, 'd')
+        distances *= self.dx
+        if len(distances) > 0:
+            distances[0] = self.dx / 2.
+            distances[-1] = self.dx / 2.
         return distances
 
     def _getFaceToCellDistanceRatio(self):
         distances = numerix.ones(self.numberOfFaces, 'd')
         distances *= 0.5
-        distances[0] = 1
-        distances[-1] = 1
+        if len(distances) > 0:
+            distances[0] = 1
+            distances[-1] = 1
         return distances
         
     def _getOrientedAreaProjections(self):
@@ -232,13 +241,15 @@ class UniformGrid1D(Grid1D):
     def _getCellToCellDistances(self):
         distances = MA.zeros((2, self.numberOfCells), 'd')
         distances[:] = self.dx
-        distances[0,0] = self.dx / 2.
-        distances[1,-1] = self.dx / 2.
+        if self.numberOfCells > 0:
+            distances[0,0] = self.dx / 2.
+            distances[1,-1] = self.dx / 2.
         return distances
 
     def _getCellNormals(self):
         normals = numerix.ones((1, 2, self.numberOfCells), 'd')
-        normals[:,0] = -1
+        if self.numberOfCells > 0:
+            normals[:,0] = -1
         return normals
         
     def _getCellAreas(self):

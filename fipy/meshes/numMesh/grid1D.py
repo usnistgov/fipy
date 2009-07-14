@@ -80,10 +80,11 @@ class Grid1D(Mesh1D):
         if numerix.getShape(self.dx) is not ():
             self.dx = self.dx[self.offset:self.offset + self.nx]
         
-        self.numberOfVertices = self.nx + 1
         
         vertices = self._createVertices()
+        self.numberOfVertices = len(vertices[0])
         faces = self._createFaces()
+        self.numberOfFaces = len(faces[0])
         cells = self._createCells()
         Mesh1D.__init__(self, vertices, faces, cells)
         
@@ -94,7 +95,7 @@ class Grid1D(Mesh1D):
         
         overlap = min(overlap, nx)
         cellsPerNode = max(int(nx / Nproc), overlap)
-        occupiedNodes = int(nx / cellsPerNode)
+        occupiedNodes = int(nx / (cellsPerNode or 1))
             
         overlap = {
             'left': overlap * (procID > 0) * (procID < occupiedNodes),
@@ -121,14 +122,16 @@ class Grid1D(Mesh1D):
         return x[numerix.newaxis,...]
     
     def _createFaces(self):
-        return numerix.arange(self.numberOfVertices)[numerix.newaxis, ...]
+        if self.numberOfVertices == 1:
+            return numerix.array([])[numerix.newaxis, ...]
+        else:
+            return numerix.arange(self.numberOfVertices)[numerix.newaxis, ...]
 
     def _createCells(self):
         """
         cells = (f1, f2) going left to right.
         f1 etc. refer to the faces
         """
-        self.numberOfFaces = self.nx + 1
         f1 = numerix.arange(self.nx)
         f2 = f1 + 1
         return numerix.array((f1, f2))

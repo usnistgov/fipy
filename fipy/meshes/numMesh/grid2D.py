@@ -82,10 +82,10 @@ class Grid2D(Mesh2D):
         if numerix.getShape(self.dy) is not ():
             self.dy = self.dy[self.offset[1]:self.offset[1] + self.ny]
 
-        self.numberOfVertices = (self.nx + 1) * (self. ny + 1)
-        
         vertices = self._createVertices()
+        self.numberOfVertices = len(vertices[0])
         faces = self._createFaces()
+        self.numberOfFaces = len(faces[0])
         cells = self._createCells()
         Mesh2D.__init__(self, vertices, faces, cells)
         
@@ -96,7 +96,7 @@ class Grid2D(Mesh2D):
         
         overlap = min(overlap, ny)
         cellsPerNode = max(int(ny / Nproc), overlap)
-        occupiedNodes = int(ny / cellsPerNode)
+        occupiedNodes = int(ny / (cellsPerNode or 1))
             
         overlap = {
             'left': 0,
@@ -116,7 +116,7 @@ class Grid2D(Mesh2D):
         
         self.globalNumberOfCells = nx * ny
         
-        return local__nx, local_ny, overlap, offset
+        return local_nx, local_ny, overlap, offset
 
     def __repr__(self):
         return "%s(dx=%s, dy=%s, nx=%d, ny=%d)" \
@@ -156,6 +156,8 @@ class Grid2D(Mesh2D):
         horizontalFaces[0,:self.nx] = tmp[1,:self.nx]
         horizontalFaces[1,:self.nx] = tmp[0,:self.nx]
 
+        self.numberOfHorizontalFaces = len(horizontalFaces)
+
         tmp = verticalFaces.copy()
         verticalFaces[0, :] = tmp[1, :]
         verticalFaces[1, :] = tmp[0, :]
@@ -169,8 +171,6 @@ class Grid2D(Mesh2D):
         cells = (f1, f2, f3, f4) going anticlock wise.
         f1 etc. refer to the faces
         """
-        self.numberOfHorizontalFaces = self.nx * (self.ny + 1)
-        self.numberOfFaces = self.numberOfHorizontalFaces + self.ny * (self.nx + 1)
         return inline._optionalInline(self._createCellsIn, self._createCellsPy)
 
     def _createCellsPy(self):

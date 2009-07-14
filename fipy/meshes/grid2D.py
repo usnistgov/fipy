@@ -39,8 +39,12 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2):
 
     from fipy.tools import numerix
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
+        if nx is None:
+            nx = 1
+        if ny is None:
+            ny = 1
         return uniformGrid2D.UniformGrid2D(dx=dx, dy=dy, 
-                                           nx=nx or 1, ny=ny or 1,
+                                           nx=nx, ny=ny,
                                            overlap=overlap)
     else:
         return grid2D.Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap)
