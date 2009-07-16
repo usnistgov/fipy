@@ -73,6 +73,7 @@ class MayaviScalarViewer(_MayaviViewer):
         s = mlab.pipeline.surface(src,extent=extent,vmin=datamin,vmax=datamax)
         self.srcs.append(src)
         self.mods.append(s)
+        self.createColorbar()
 
     def _getSuitableVars(self,vars):
         if type(vars) not in [type([]),type(())]:

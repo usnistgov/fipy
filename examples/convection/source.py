@@ -55,7 +55,7 @@ a test against the analytical result.
     >>> from fipy import *
 
     >>> L = 10.
-    >>> nx = 5000
+    >>> nx = 1000
     >>> dx =  L / nx
     >>> mesh = Grid1D(dx=dx, nx=nx)
     >>> phi0 = 1.0

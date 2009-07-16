@@ -48,7 +48,7 @@ class MayaviVectorViewer(_MayaviViewer):
     
     def _update(self,**kwargs):
         var = kwargs['var']
-        src = self.srcs[1]
+        src = self.srcs[0]
         src.data.point_data.vectors.to_array()[:]=_MayaviViewer._makeDims3(var.getValue().swapaxes(0,1),move=False)
         src.update()
     
@@ -70,8 +70,9 @@ class MayaviVectorViewer(_MayaviViewer):
         gridSource = mlab.pipeline.add_dataset(surf)
         vecs = mlab.pipeline.vectors(vecSource,extent=extent)
         grid = mlab.pipeline.surface(gridSource,extent=extent,opacity=.1)
-        self.srcs.extend([gridSource,vecSource])
-        self.mods.extend([grid,vecs])
+        self.srcs.extend([vecSource,gridSource])
+        self.mods.extend([vecs,grid])
+        self.createColorbar()
 
     def _getSuitableVars(self,vars):
         if type(vars) not in [type([]),type(())]:

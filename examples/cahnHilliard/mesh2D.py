@@ -67,7 +67,7 @@ We can simulate this process in FiPy with a simple script:
 much is augmented for FiPy's needs.)
 
     >>> if __name__ == "__main__":
-    ...     nx = ny = 1000
+    ...     nx = ny = 100
     ... else:
     ...     nx = ny = 10
     >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
@@ -77,7 +77,7 @@ We start the problem with random fluctuations about $\phi = 1/2$
 
     >>> phi.setValue(GaussianNoiseVariable(mesh=mesh,
     ...                                    mean=0.5,
-    ...                                    variance=0.01))
+    ...                                    variance=0.1))
 
 FiPy doesn't plot or output anything unless you tell it to:
 
@@ -127,7 +127,7 @@ evolution of their problem.
     >>> while elapsed < duration:
     ...     dt = min(100, exp(dexp))
     ...     elapsed += dt
-    ...     dexp += 0.01
+    ...     dexp += 0.1
     ...     eq.solve(phi, dt=dt)
     ...     if __name__ == "__main__":
     ...         viewer.plot()
