@@ -41,8 +41,33 @@ __docformat__ = 'restructuredtext'
 from fipy.viewers.viewer import _Viewer
 
 class _MayaviViewer(_Viewer):
-        
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+
+    The `_MayaviViewer` is the base class for the viewers that use the
+    Mayavi python plotting package.
+
+    .. Mayavi: http://code.enthought.com/projects/mayavi/docs/development/html/mayavi/index.html
+
+    """
+
     def __init__(self, vars, title=None, **kwlimits):
+        """
+        Create a `_MayaviViewer`.
+        
+        :Parameters:
+          vars
+            a `CellVariable` or tuple of `CellVariable` objects to plot
+          title
+            displayed at the top of the `Viewer` window
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
+        """
+        if self.__clas__ is _MayaviViewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         self.srcs=[]
         self.mods=[]
@@ -54,6 +79,7 @@ class _MayaviViewer(_Viewer):
         self.scene = mlab.figure(name=self.title)
 
     def createColorbar(self,title=None):
+        """Create a Colorbar for this viewer"
         from enthought.mayavi import mlab
         mlab.colorbar(object=self.mods[0],title=title,orientation='horizontal',nb_labels=5)
         
@@ -237,6 +263,7 @@ class _MayaviViewer(_Viewer):
         return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
 
     def show():
+        """Shows this viewer so that the program pauses before displaying the next timestep, or waits to terminate the program till all the windows close"""
         from enthought.mayavi import mlab
         mlab.show()
     show = staticmethod(show)

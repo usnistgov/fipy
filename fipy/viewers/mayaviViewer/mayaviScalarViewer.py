@@ -41,8 +41,36 @@ __docformat__ = 'restructuredtext'
 from mayaviViewer import _MayaviViewer
 
 class MayaviScalarViewer(_MayaviViewer):
+    """Displays a plot of a rank-0 `CellVariable` object
+    of any dimension using Mayavi
+
+    .. Mayavi: http://code.enthought.com/projects/mayavi/docs/development/html/mayavi/index.html
+
+    """
+    __doc__ += _MayaviViewer._test1D(viewer="MayaviScalarViewer")
+    __doc__ += _MayaviViewer._test2D(viewer="MayaviScalarViewer")
+    __doc__ += _MayaviViewer._test2Dirregular(viewer="MayaviScalarViewer")
+    __doc__ += _MayaviViewer._test3D(viewer="MayaviScalarViewer")
     
     def __init__(self,vars,title=None,limits={},**kwlimits):
+        """Creates a MayaviScalarViewer
+
+        :Parameters:
+          vars
+            a rank-1 `CellVariable` or `FaceVariable` object.
+          title
+            displayed at the top of the `Viewer` window
+          scale
+            if not `None`, scale all arrow lengths by this value
+          sparsity
+            if not `None`, then this number of arrows will be
+            randomly chosen (weighted by the cell volume or face area)
+          limits : dict
+            a (deprecated) alternative to limit keyword arguments
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. Any limit set to 
+            a (default) value of `None` will autoscale.
+        """
         kwlimits.update(limits)
         _MayaviViewer.__init__(self,vars,title,**kwlimits)
         self.plot()
