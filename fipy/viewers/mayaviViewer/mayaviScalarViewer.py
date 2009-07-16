@@ -37,15 +37,13 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.viewers.mayaviViewer import _MayaviViewer
+from mayaviViewer import _MayaviViewer
 
 class MayaviScalarViewer(_MayaviViewer):
     
     def __init__(self,vars,title=None,limits={},**kwlimits):
         kwlimits.update(limits)
         _MayaviViewer.__init__(self,vars,title,**kwlimits)
-        if vars.getRank()>0:
-            from 
         self.plot()
 
     def _update(self,**kwargs):
@@ -56,6 +54,7 @@ class MayaviScalarViewer(_MayaviViewer):
         src.data.cell_data.scalars.to_array()[:]=var.getValue()
         src.update()
         s = self.mods[0]
+	from fipy.tools.numerix import array
         s.parent.scalar_lut_manager.data_range=array([datamin,datamax])
     
     def _plot(self,**kwargs):
@@ -71,6 +70,15 @@ class MayaviScalarViewer(_MayaviViewer):
         surf.cell_data.scalars.name = 'scalars'                    
         from enthought.mayavi import mlab
         src = mlab.pipeline.add_dataset(surf)
-        s = mlab.pipeline.surface(src,extent=[xmin, xmax, ymin, ymax, zmin, zmax],vmin=datamin,vmax=datamax)
+        s = mlab.pipeline.surface(src,extent=extent,vmin=datamin,vmax=datamax)
         self.srcs.append(src)
         self.mods.append(s)
+
+    def _getSuitableVars(self,vars):
+        if type(vars) not in [type([]),type(())]:
+            vars = [vars]
+        vars = [var for var in vars if var.getRank()==0]
+        if len(vars) == 0:
+            from fipy.viewers import MeshDimensionError
+            raise MeshDimensionError,"Can only plot scalar data"
+        return [vars[0]]

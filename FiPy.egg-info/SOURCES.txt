@@ -503,6 +503,8 @@ fipy/viewers/matplotlibViewer/matplotlibVectorViewer.py
 fipy/viewers/matplotlibViewer/matplotlibViewer.py
 fipy/viewers/matplotlibViewer/test.py
 fipy/viewers/mayaviViewer/__init__.py
+fipy/viewers/mayaviViewer/mayaviScalarViewer.py
+fipy/viewers/mayaviViewer/mayaviVectorViewer.py
 fipy/viewers/mayaviViewer/mayaviViewer.py
 fipy/viewers/mayaviViewer/test.py
 utils/__init__.py
