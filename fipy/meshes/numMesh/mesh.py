@@ -316,6 +316,8 @@ class Mesh(_CommonMesh):
         self.numberOfCells = self.cellFaceIDs.shape[-1]
         if not hasattr(self, "globalNumberOfCells"):
             self.globalNumberOfCells = self.numberOfCells
+        if not hasattr(self, "globalNumberOfFaces"):
+            self.globalNumberOfFaces = self.numberOfFaces
         self._calcFaceCellIDs()
         
         _CommonMesh._calcTopology(self)

@@ -137,8 +137,9 @@ class UniformGrid1D(Grid1D):
             
     def _getCellFaceOrientations(self):
         orientations = numerix.ones((2, self.numberOfCells))
-        orientations[0] *= -1
-        orientations[0,0] = 1
+        if self.numberOfCells > 0:
+            orientations[0] *= -1
+            orientations[0,0] = 1
         return orientations
 
     def _getAdjacentCellIDs(self):
