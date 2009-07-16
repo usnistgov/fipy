@@ -192,7 +192,8 @@ class UniformGrid1D(Grid1D):
         faceNormals = numerix.ones((1, self.numberOfFaces), 'd')
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
-        faceNormals[...,0] *= -1
+        if self.numberOfFaces > 0:
+            faceNormals[...,0] *= -1
         return faceNormals
 
     def _getFaceCellToCellNormals(self):

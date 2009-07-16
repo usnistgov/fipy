@@ -109,6 +109,7 @@ class Grid1D(Mesh1D):
         local_nx = local_nx + overlap['left'] + overlap['right']
         
         self.globalNumberOfCells = nx
+        self.globalNumberOfFaces = nx + 1
         
         return local_nx, overlap, offset
 
@@ -220,6 +221,71 @@ class Grid1D(Mesh1D):
         """
         return numerix.arange(0, self.nx)
 
+    def _getGlobalNonOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 2] for mesh A
+
+            A    ||   B
+        ------------------
+        0   1    2   3   4
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.offset + self.overlap['left'], 
+                              self.offset + self.numberOfFaces - self.overlap['right'])
+
+    def _getGlobalOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A    ||   B
+        ------------------
+        0   1    2   3   4
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.offset, self.offset + self.numberOfFaces)
+
+    def _getLocalNonOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2] for mesh A
+
+            A    ||   B
+        ------------------
+        0   1   2/1  2   3
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.overlap['left'], 
+                              self.numberOfFaces - self.overlap['right'])
+
+    def _getLocalOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A   ||   B
+        ------------------
+        0   1   2   3    |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(0, self.numberOfFaces)
 
     
 ## pickling

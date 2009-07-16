@@ -86,15 +86,33 @@ class _MeshVariable(Variable):
         Variable.__init__(self, name=name, value=value, unit=unit, 
                           array=array, cached=cached)
                   
+    @staticmethod
+    def _globalToLocalValue(value, globalNumber, globalIDs):
+        if value is not None:
+            if not isinstance(value, Variable):
+                value = _Constant(value)
+            valueShape = value.getShape()
+            if valueShape is not () and valueShape[-1] == globalNumber:
+                value = value[..., globalIDs]
+        return value
+                            
     def getMesh(self):
         return self.mesh
         
+    def __str__(self):
+        return str(self.getGlobalValue())
+        
     def __repr__(self):
-        s = Variable.__repr__(self)
-        if len(self.name) == 0:
-            s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
-        return s
-
+        if hasattr(self, 'name') and len(self.name) > 0:
+            return self.name
+        else:
+            s = self.__class__.__name__ + '('
+            s += 'value=' + `self.getGlobalValue()`
+            s += ')'
+            if len(self.name) == 0:
+                s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
+            return s
+        
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this `MeshVariable` type, given a particular mesh.

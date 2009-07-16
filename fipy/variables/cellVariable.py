@@ -37,8 +37,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.meshVariable import _MeshVariable
-from fipy.variables.variable import Variable
-from fipy.variables.constant import _Constant
 from fipy.tools import numerix, parallel
 
 class CellVariable(_MeshVariable):
@@ -64,12 +62,7 @@ class CellVariable(_MeshVariable):
     """
 
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
-        if value is not None:
-            if not isinstance(value, Variable):
-                value = _Constant(value)
-            valueShape = value.getShape()
-            if valueShape is not () and valueShape[-1] == mesh.globalNumberOfCells:
-                value = value[..., mesh._getGlobalOverlappingCellIDs()]
+        value = self._globalToLocalValue(value, mesh.globalNumberOfCells, mesh._getGlobalOverlappingCellIDs())
         _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
                                rank=rank, elementshape=elementshape, unit=unit)
 
@@ -143,29 +136,20 @@ class CellVariable(_MeshVariable):
                                               value=self.getValue(),
                                               hasOld=False)
                                               
-    def __str__(self):
-        return str(self.getGlobalValue())
-        
-    def __repr__(self):
-        if hasattr(self, 'name') and len(self.name) > 0:
-            return self.name
-        else:
-            s = self.__class__.__name__ + '('
-            s += 'value=' + `self.getGlobalValue()`
-            s += ')'
-            if len(self.name) == 0:
-                s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
-            return s
-        
     def getGlobalValue(self):
-        import sys
         from fipy.tools import parallel
         localValue = self.getValue()
         if parallel.Nproc > 1:
             from mpi4py import MPI
-            localValue = localValue[..., self.mesh._getLocalNonOverlappingCellIDs()]
             comm = MPI.COMM_WORLD
-            return numerix.concatenate(comm.allgather(localValue))
+            localValue = localValue[..., self.mesh._getLocalNonOverlappingCellIDs()]
+            globalIDs = self.mesh._getGlobalNonOverlappingCellIDs()
+            globalIDs = numerix.concatenate(comm.allgather(globalIDs))
+            
+            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,))
+            globalValue[..., globalIDs] =  numerix.concatenate(comm.allgather(localValue), axis=-1)
+
+            return globalValue
         else:
             return localValue
             

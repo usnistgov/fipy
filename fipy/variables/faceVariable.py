@@ -38,6 +38,11 @@ from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 
 class FaceVariable(_MeshVariable):
+    def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, cached=1):
+        value = self._globalToLocalValue(value, mesh.globalNumberOfFaces, mesh._getGlobalOverlappingFaceIDs())
+        _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
+                               rank=rank, elementshape=elementshape, unit=unit, cached=cached)
+                           
     def _getVariableClass(self):
         return FaceVariable
 
@@ -62,6 +67,24 @@ class FaceVariable(_MeshVariable):
         return self._getArithmeticBaseClass()(mesh=self.mesh, 
                                               name=self.name + "_copy", 
                                               value=self.getValue())
+
+    def getGlobalValue(self):
+        from fipy.tools import parallel
+        localValue = self.getValue()
+        if parallel.Nproc > 1:
+            from mpi4py import MPI
+            comm = MPI.COMM_WORLD
+            if localValue.shape[-1] != 0:
+                localValue = localValue[..., self.mesh._getLocalNonOverlappingFaceIDs()]
+            globalIDs = self.mesh._getGlobalNonOverlappingFaceIDs()
+            globalIDs = numerix.concatenate(comm.allgather(globalIDs))
+            
+            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,))
+            globalValue[..., globalIDs] =  numerix.concatenate(comm.allgather(localValue), axis=-1)
+            
+            return globalValue
+        else:
+            return localValue
 
     def getDivergence(self):
         """

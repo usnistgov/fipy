@@ -115,6 +115,7 @@ class Grid2D(Mesh2D):
         local_ny = local_ny + overlap['bottom'] + overlap['top']
         
         self.globalNumberOfCells = nx * ny
+        self.globalNumberOfFaces = nx * (ny + 1) + ny * (nx + 1)
         
         return local_nx, local_ny, overlap, offset
 
