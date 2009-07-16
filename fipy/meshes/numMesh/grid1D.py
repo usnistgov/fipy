@@ -105,7 +105,7 @@ class Grid1D(Mesh1D):
         offset = min(procID, occupiedNodes-1) * cellsPerNode - overlap['left']
         local_nx = cellsPerNode * (procID < occupiedNodes)
         if procID == occupiedNodes - 1:
-            local_nx += (nx % occupiedNodes)
+            local_nx += (nx - cellsPerNode * occupiedNodes)
         local_nx = local_nx + overlap['left'] + overlap['right']
         
         self.globalNumberOfCells = nx

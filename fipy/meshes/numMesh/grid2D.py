@@ -111,7 +111,7 @@ class Grid2D(Mesh2D):
         local_nx = nx
         local_ny = cellsPerNode * (procID < occupiedNodes)
         if procID == occupiedNodes - 1:
-            local_ny += (ny % occupiedNodes)
+            local_ny += (ny - cellsPerNode * occupiedNodes)
         local_ny = local_ny + overlap['bottom'] + overlap['top']
         
         self.globalNumberOfCells = nx * ny
