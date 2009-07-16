@@ -72,7 +72,7 @@ class MayaviVectorViewer(_MayaviViewer):
         grid = mlab.pipeline.surface(gridSource,extent=extent,opacity=.1)
         self.srcs.extend([vecSource,gridSource])
         self.mods.extend([vecs,grid])
-        self.createColorbar()
+        self.createColorbar(title="Magnitude")
 
     def _getSuitableVars(self,vars):
         if type(vars) not in [type([]),type(())]:

@@ -52,9 +52,9 @@ class _MayaviViewer(_Viewer):
             self.title="FiPy Viewer Window "+str(self.id)
         self.scene = mlab.figure(name=self.title)
 
-    def createColorbar(self):
+    def createColorbar(self,title=None):
         from enthought.mayavi import mlab
-        mlab.colorbar(object=self.mods[0],orientation='horizontal',nb_labels=5)
+        mlab.colorbar(object=self.mods[0],title=title,orientation='horizontal',nb_labels=5)
         
     _getMul=staticmethod(lambda dims,mul=True:((not mul or dims == 3) and 1 or dims == 2 and 2 or 4))
     
