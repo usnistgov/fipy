@@ -79,7 +79,7 @@ class _MayaviViewer(_Viewer):
         self.scene = mlab.figure(name=self.title)
 
     def createColorbar(self,title=None):
-        """Create a Colorbar for this viewer"
+        """Create a Colorbar for this viewer"""
         from enthought.mayavi import mlab
         mlab.colorbar(object=self.mods[0],title=title,orientation='horizontal',nb_labels=5)
         
