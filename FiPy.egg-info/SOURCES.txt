@@ -254,6 +254,7 @@ examples/levelSet/surfactant/test.py
 examples/meshing/__init__.py
 examples/meshing/inputGrid2D.py
 examples/meshing/sphere.gmsh
+examples/meshing/sphere.msh
 examples/meshing/sphere.py
 examples/meshing/test.py
 examples/phase/__init__.py
