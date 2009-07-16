@@ -93,7 +93,7 @@ some parameters are declared.
     >>> pressureRelaxation = 0.2
     >>> velocityRelaxation = 0.5
     >>> if __name__ == '__main__':
-    ...     sweeps = 5
+    ...     sweeps = 300
     ... else:
     ...     sweeps = 5
 
@@ -254,13 +254,13 @@ solution. This argument cannot be passed to `solve()`.
     ...                                                ap * mesh.getCellVolumes())
     ...
     ...     if __name__ == '__main__':
-    ...         if sweep%10 == 0:
+    ...         if sweep%1 == 0:
     ...             print 'sweep:',sweep,', x residual:',xres, \
     ...                                  ', y residual',yres, \
     ...                                  ', p residual:',pres, \
     ...                                  ', continuity:',max(abs(rhs))
     ...
-    ...         viewer.plot()
+    ...             viewer.plot()
 
 .. image:: examples/flow/cavity.pdf
    :scale: 40
@@ -283,5 +283,4 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))
-    from fipy.viewers.mayaviViewer import MayaviScalarViewer
-    MayaviScalarViewer.show()
+    raw_input('finished')

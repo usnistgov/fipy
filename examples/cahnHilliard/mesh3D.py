@@ -40,7 +40,7 @@ The only difference from ``examples.cahnHilliard.mesh2D`` is the
 declaration of `mesh`.
 
     >>> if __name__ == "__main__":
-    ...     nx = ny = nz = 10
+    ...     nx = ny = nz = 100
     ... else:
     ...     nx = ny = nz = 10
     >>> mesh = Grid3D(nx=nx, ny=ny, nz=nz, dx=0.25, dy=0.25, dz=0.25)
