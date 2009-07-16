@@ -58,10 +58,11 @@ def write(data, filename = None, extension = ''):
     Test to check pickling and unpickling.
 
         >>> from fipy.meshes.grid1D import Grid1D
-        >>> f, tempfile = write(Grid1D(nx = 2))
-        >>> mesh = read(tempfile, f)
-        >>> print mesh.getNumberOfCells()
-        2
+        >>> old = Grid1D(nx = 2)
+        >>> f, tempfile = write(old)
+        >>> new = read(tempfile, f)
+        >>> print old.getNumberOfCells() == new.getNumberOfCells()
+        True
         
     """
     if parallel.procID == 0:
