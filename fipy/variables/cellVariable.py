@@ -137,21 +137,9 @@ class CellVariable(_MeshVariable):
                                               hasOld=False)
                                               
     def getGlobalValue(self):
-        from fipy.tools import parallel
-        localValue = self.getValue()
-        if parallel.Nproc > 1:
-            from mpi4py import MPI
-            comm = MPI.COMM_WORLD
-            localValue = localValue[..., self.mesh._getLocalNonOverlappingCellIDs()]
-            globalIDs = self.mesh._getGlobalNonOverlappingCellIDs()
-            globalIDs = numerix.concatenate(comm.allgather(globalIDs))
-            
-            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,))
-            globalValue[..., globalIDs] =  numerix.concatenate(comm.allgather(localValue), axis=-1)
+        return self._getGlobalValue(self.mesh._getLocalNonOverlappingCellIDs(), 
+                                    self.mesh._getGlobalNonOverlappingCellIDs())
 
-            return globalValue
-        else:
-            return localValue
             
     def __call__(self, points=None, order=0, nearestCellIDs=None):
         r"""

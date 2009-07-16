@@ -69,22 +69,8 @@ class FaceVariable(_MeshVariable):
                                               value=self.getValue())
 
     def getGlobalValue(self):
-        from fipy.tools import parallel
-        localValue = self.getValue()
-        if parallel.Nproc > 1:
-            from mpi4py import MPI
-            comm = MPI.COMM_WORLD
-            if localValue.shape[-1] != 0:
-                localValue = localValue[..., self.mesh._getLocalNonOverlappingFaceIDs()]
-            globalIDs = self.mesh._getGlobalNonOverlappingFaceIDs()
-            globalIDs = numerix.concatenate(comm.allgather(globalIDs))
-            
-            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,))
-            globalValue[..., globalIDs] =  numerix.concatenate(comm.allgather(localValue), axis=-1)
-            
-            return globalValue
-        else:
-            return localValue
+        return self._getGlobalValue(self.mesh._getLocalNonOverlappingFaceIDs(), 
+                                    self.mesh._getGlobalNonOverlappingFaceIDs())
 
     def getDivergence(self):
         """

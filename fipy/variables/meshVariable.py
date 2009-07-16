@@ -95,6 +95,24 @@ class _MeshVariable(Variable):
             if valueShape is not () and valueShape[-1] == globalNumber:
                 value = value[..., globalIDs]
         return value
+        
+    def _getGlobalValue(self, localIDs, globalIDs):
+        from fipy.tools import parallel
+        localValue = self.getValue()
+        if parallel.Nproc > 1:
+            from mpi4py import MPI
+            comm = MPI.COMM_WORLD
+            if localValue.shape[-1] != 0:
+                localValue = localValue[..., localIDs]
+            globalIDs = numerix.concatenate(comm.allgather(globalIDs))
+            
+            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,))
+            globalValue[..., globalIDs] = numerix.concatenate(comm.allgather(localValue), axis=-1)
+            
+            return globalValue
+        else:
+            return localValue
+
                             
     def getMesh(self):
         return self.mesh
