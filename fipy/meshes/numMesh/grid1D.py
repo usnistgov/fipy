@@ -124,7 +124,7 @@ class Grid1D(Mesh1D):
     
     def _createFaces(self):
         if self.numberOfVertices == 1:
-            return numerix.array([])[numerix.newaxis, ...]
+            return numerix.arange(0)[numerix.newaxis, ...]
         else:
             return numerix.arange(self.numberOfVertices)[numerix.newaxis, ...]
 

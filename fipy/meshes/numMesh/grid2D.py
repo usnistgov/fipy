@@ -82,8 +82,20 @@ class Grid2D(Mesh2D):
         if numerix.getShape(self.dy) is not ():
             self.dy = self.dy[self.offset[1]:self.offset[1] + self.ny]
 
+        if self.nx == 0:
+            self.ny = 0
+        if self.ny == 0:
+            self.nx = 0
+        if self.nx == 0 or self.ny == 0:
+            self.numberOfHorizontalRows = 0
+            self.numberOfVerticalColumns = 0
+        else:
+            self.numberOfHorizontalRows = (self.ny + 1)
+            self.numberOfVerticalColumns = (self.nx + 1)
+
+        self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns
+
         vertices = self._createVertices()
-        self.numberOfVertices = len(vertices[0])
         faces = self._createFaces()
         self.numberOfFaces = len(faces[0])
         cells = self._createCells()
@@ -129,7 +141,7 @@ class Grid2D(Mesh2D):
         x = numerix.resize(x, (self.numberOfVertices,))
             
         y = self._calcVertexCoordinates(self.dy, self.ny)
-        y = numerix.repeat(y, self.nx + 1)
+        y = numerix.repeat(y, self.numberOfVerticalColumns)
         
         return numerix.array((x, y))
     
@@ -141,10 +153,10 @@ class Grid2D(Mesh2D):
         v1 = numerix.arange(self.numberOfVertices)
         v2 = v1 + 1
 
-        horizontalFaces = vector.prune(numerix.array((v1, v2)), self.nx + 1, self.nx, axis=1)
+        horizontalFaces = vector.prune(numerix.array((v1, v2)), self.numberOfVerticalColumns, self.nx, axis=1)
 
-        v1 = numerix.arange(self.numberOfVertices - (self.nx + 1))
-        v2 = v1 + self.nx + 1
+        v1 = numerix.arange(self.numberOfVertices - self.numberOfVerticalColumns)
+        v2 = v1 + self.numberOfVerticalColumns
         verticalFaces =  numerix.array((v1, v2))
 
         ## The cell normals must point out of the cell.
@@ -162,8 +174,9 @@ class Grid2D(Mesh2D):
         tmp = verticalFaces.copy()
         verticalFaces[0, :] = tmp[1, :]
         verticalFaces[1, :] = tmp[0, :]
-        verticalFaces[0, ::(self.nx + 1)] = tmp[0, ::(self.nx + 1)]
-        verticalFaces[1, ::(self.nx + 1)] = tmp[1,::(self.nx + 1)]
+        if self.numberOfVerticalColumns > 0:
+            verticalFaces[0, ::self.numberOfVerticalColumns] = tmp[0, ::self.numberOfVerticalColumns]
+            verticalFaces[1, ::self.numberOfVerticalColumns] = tmp[1,::self.numberOfVerticalColumns]
 
         return numerix.concatenate((horizontalFaces, verticalFaces), axis=1)
 
@@ -177,10 +190,16 @@ class Grid2D(Mesh2D):
     def _createCellsPy(self):
         cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
         faceIDs = numerix.arange(self.numberOfFaces)
-        cellFaceIDs[0,:] = faceIDs[:self.numberOfHorizontalFaces - self.nx]
-        cellFaceIDs[2,:] = cellFaceIDs[0,:] + self.nx
-        cellFaceIDs[1,:] = vector.prune(faceIDs[self.numberOfHorizontalFaces:], self.nx + 1)
-        cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
+        from fipy.tools import debug
+        debug.PRINT("self.numberOfHorizontalFaces:", self.numberOfHorizontalFaces)
+        debug.PRINT("self.nx:", self.nx)
+        debug.PRINT("cellFaceIDs:", cellFaceIDs, cellFaceIDs.shape)
+        debug.PRINT("faceIDs:", faceIDs, faceIDs.shape)
+        if self.numberOfFaces > 0:
+            cellFaceIDs[0,:] = faceIDs[:self.numberOfHorizontalFaces - self.nx]
+            cellFaceIDs[2,:] = cellFaceIDs[0,:] + self.nx
+            cellFaceIDs[1,:] = vector.prune(faceIDs[self.numberOfHorizontalFaces:], self.numberOfVerticalColumns)
+            cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
         return cellFaceIDs
 
     def _createCellsIn(self):

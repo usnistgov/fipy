@@ -312,8 +312,10 @@ class Mesh(_CommonMesh):
 
     def _calcTopology(self):
         self.dim = len(self.vertexCoords[...,0])
-        self.numberOfFaces = self.faceVertexIDs.shape[-1]
-        self.numberOfCells = self.cellFaceIDs.shape[-1]
+        if not hasattr(self, "numberOfFaces"):
+            self.numberOfFaces = self.faceVertexIDs.shape[-1]
+        if not hasattr(self, "numberOfCells"):
+            self.numberOfCells = self.cellFaceIDs.shape[-1]
         if not hasattr(self, "globalNumberOfCells"):
             self.globalNumberOfCells = self.numberOfCells
         if not hasattr(self, "globalNumberOfFaces"):
@@ -453,7 +455,10 @@ class Mesh(_CommonMesh):
         return numerix.array([Cell(self, ID) for ID in ids])
     
     def _getMaxFacesPerCell(self):
-        return len(self.cellFaceIDs[...,0])
+        if self.getNumberOfCells() == 0:
+            return 0
+        else:
+            return len(self.cellFaceIDs[...,0])
 
     """Geometry methods"""
 
@@ -540,6 +545,7 @@ class Mesh(_CommonMesh):
     def _calcFaceToCellDistances(self):
         tmp = MA.repeat(self.faceCenters[...,numerix.NewAxis,:], 2, 1)
         # array -= masked_array screws up masking for on numpy 1.1
+
         tmp = tmp - numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,0))
@@ -582,7 +588,10 @@ class Mesh(_CommonMesh):
                                  self._getMaxFacesPerCell(), 
                                  axis=0)
         direction = (cellFaceCellIDs == cellIDs) * 2 - 1
-        self.cellNormals =  direction[numerix.newaxis, ...] * cellNormals
+        if self._getMaxFacesPerCell() > 0:
+            self.cellNormals =  direction[numerix.newaxis, ...] * cellNormals
+        else:
+            self.cellNormals = cellNormals
                          
     """get geometry methods"""
 
