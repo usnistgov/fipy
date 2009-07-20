@@ -169,7 +169,7 @@ class Grid2D(Mesh2D):
         horizontalFaces[0,:self.nx] = tmp[1,:self.nx]
         horizontalFaces[1,:self.nx] = tmp[0,:self.nx]
 
-        self.numberOfHorizontalFaces = len(horizontalFaces)
+        self.numberOfHorizontalFaces = horizontalFaces.shape[-1]
 
         tmp = verticalFaces.copy()
         verticalFaces[0, :] = tmp[1, :]
@@ -190,11 +190,6 @@ class Grid2D(Mesh2D):
     def _createCellsPy(self):
         cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
         faceIDs = numerix.arange(self.numberOfFaces)
-        from fipy.tools import debug
-        debug.PRINT("self.numberOfHorizontalFaces:", self.numberOfHorizontalFaces)
-        debug.PRINT("self.nx:", self.nx)
-        debug.PRINT("cellFaceIDs:", cellFaceIDs, cellFaceIDs.shape)
-        debug.PRINT("faceIDs:", faceIDs, faceIDs.shape)
         if self.numberOfFaces > 0:
             cellFaceIDs[0,:] = faceIDs[:self.numberOfHorizontalFaces - self.nx]
             cellFaceIDs[2,:] = cellFaceIDs[0,:] + self.nx

@@ -103,18 +103,19 @@ class Mesh(_CommonMesh):
            >>> from fipy.meshes.numMesh.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
-           >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
-           ...                                   [7, 8, 10, 11],
-           ...                                   [2, 3, 4, 5],
-           ...                                   [6, 7, 9, 10]]).flatten().all()
+           >>> from fipy.tools import parallel
+           >>> print parallel.procID != 0 or (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           ...                                                           [7, 8, 10, 11],
+           ...                                                           [2, 3, 4, 5],
+           ...                                                           [6, 7, 9, 10]]).flatten().all()
            True
 
            >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
-           >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
-           ...                                   [7, 6, 10, 9],
-           ...                                   [2, 3, 4, 5],
-           ...                                   [6, 7, 9, 10]]).flatten().all()
+           >>> print parallel.procID != 0 or (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           ...                                                           [7, 6, 10, 9],
+           ...                                                           [2, 3, 4, 5],
+           ...                                                           [6, 7, 9, 10]]).flatten().all()
            True
 
         """
@@ -209,7 +210,7 @@ class Mesh(_CommonMesh):
                 diff = numerix.array(diff)
                 if (sum(diff ** 2) < smallNumber):
                     vertexCorrelates[j] = i
-        if (vertexCorrelates == {}):
+        if (self._getNumberOfVertices() > 0 and other._getNumberOfVertices() > 0 and vertexCorrelates == {}):
             raise MeshAdditionError, "Vertices are not aligned"
 
         
@@ -239,7 +240,7 @@ class Mesh(_CommonMesh):
                 for j in range(selfNumFaces):
                     if (self._equalExceptOrder(currFace, self.faceVertexIDs[...,j])):
                         faceCorrelates[i] = j
-        if(faceCorrelates == {}):
+        if (self._getNumberOfFaces() > 0 and other._getNumberOfFaces() > 0 and faceCorrelates == {}):
             raise MeshAdditionError, "Faces are not aligned"
         
         faceIndicesToAdd = ()
@@ -311,7 +312,7 @@ class Mesh(_CommonMesh):
         return newmesh
 
     def _calcTopology(self):
-        self.dim = len(self.vertexCoords[...,0])
+        self.dim = self.vertexCoords.shape[0]
         if not hasattr(self, "numberOfFaces"):
             self.numberOfFaces = self.faceVertexIDs.shape[-1]
         if not hasattr(self, "numberOfCells"):
@@ -922,10 +923,12 @@ class Mesh(_CommonMesh):
             >>> from fipy.meshes.tri2D import Tri2D
             >>> triMesh = Tri2D(dx, dy, nx, 1) + [[dx*nx], [0]]
             >>> bigMesh = gridMesh + triMesh
-            >>> volumes = numerix.ones(bigMesh.getNumberOfCells(), 'd')
-            >>> volumes[20:] = 0.25
-            >>> numerix.allclose(bigMesh.getCellVolumes(), volumes)
-            1
+            >>> x, y = bigMesh.getCellCenters()
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> volumes = CellVariable(mesh=bigMesh, value=1.)
+            >>> volumes[x > dx * nx] = 0.25
+            >>> print numerix.allclose(bigMesh.getCellVolumes(), volumes)
+            True
             
         """
 

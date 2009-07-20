@@ -279,7 +279,7 @@ class Mesh:
         if hasattr(self, 'numberOfVertices'):
             return self.numberOfVertices
         else:
-            return len(self.vertexCoords[:,0])
+            return self.vertexCoords.shape[-1]
         
     def _getAdjacentCellIDs(self):
         return self.adjacentCellIDs

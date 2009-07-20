@@ -84,7 +84,6 @@ class UniformGrid2D(Grid2D):
         self.origin += ((self.offset[0] * float(self.dx),),
                         (self.offset[1] * float(self.dy),))
 
-        self.numberOfVertices = (self.nx + 1) * (self.ny + 1)
         if self.nx == 0:
             self.ny = 0
         if self.ny == 0:
@@ -95,6 +94,9 @@ class UniformGrid2D(Grid2D):
         else:
             self.numberOfHorizontalRows = (self.ny + 1)
             self.numberOfVerticalColumns = (self.nx + 1)
+            
+        self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns
+
         self.numberOfHorizontalFaces = self.nx * self.numberOfHorizontalRows
         self.numberOfVerticalFaces = self.numberOfVerticalColumns * self.ny
         self.numberOfFaces = self.numberOfHorizontalFaces + self.numberOfVerticalFaces
