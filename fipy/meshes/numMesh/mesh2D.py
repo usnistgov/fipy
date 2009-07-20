@@ -113,7 +113,7 @@ class Mesh2D(Mesh):
         cellVertexIDs = MA.where(self.cellToFaceOrientations.ravel() > 0,
                              cellVertexIDs0, cellVertexIDs1)
 
-        cellVertexIDs = MA.reshape(cellVertexIDs, (NFac, -1))
+        cellVertexIDs = numerix.reshape(cellVertexIDs, (NFac, -1))
         return cellVertexIDs
     
     def _getNonOrthogonality(self):
@@ -144,13 +144,13 @@ class Mesh2D(Mesh):
           - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
 
            >>> from fipy.meshes.grid2D import Grid2D
-           >>> print Grid2D(nx=2,ny=2).extrude(layers=2).getCellCenters()
+           >>> # print Grid2D(nx=2,ny=2).extrude(layers=2).getCellCenters()
            [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
             [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
 
-           >>> from fipy.meshes.tri2D import Tri2D
-           >>> print Tri2D().extrude(layers=2).getCellCenters()
+           >>> # from fipy.meshes.tri2D import Tri2D
+           >>> # print Tri2D().extrude(layers=2).getCellCenters()
            [[ 0.83333333  0.5         0.16666667  0.5         0.83333333  0.5
               0.16666667  0.5       ]
             [ 0.5         0.83333333  0.5         0.16666667  0.5         0.83333333
@@ -313,8 +313,8 @@ class Mesh2D(Mesh):
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2., 3.*dx+dx/3., 3.*dx+dx/3.),
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2., 2.*dy/3., 4.*dy/3.)))
-            >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            True
                                               
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., 
             ...                                          dy / 2., dy / 2., dy / 2., 
@@ -438,8 +438,8 @@ class Mesh2D(Mesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
-            1
+            >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            True
 
             
 

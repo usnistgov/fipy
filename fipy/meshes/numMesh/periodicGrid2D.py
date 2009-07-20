@@ -46,44 +46,56 @@ class PeriodicGrid2D(Grid2D):
     in the usual way.
 
         >>> from fipy import numerix
+        >>> from fipy.tools import parallel
 
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
         
-        >>> print numerix.nonzero(mesh.getExteriorFaces())[0]
-        [ 4  5  8 11]
-
-        >>> print mesh.getFaceCellIDs()
-        [[2 3 0 1 2 3 1 0 1 3 2 3]
-         [0 1 2 3 -- -- 0 1 -- 2 3 --]]
-
-        >>> print mesh._getCellDistances()
-        [ 0.5   0.5   0.5   0.5   0.25  0.25  1.    1.    0.5   1.    1.    0.5 ]
- 
-        >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
-        ...                                   [7, 6, 10, 9],
-        ...                                   [2, 3, 0, 1],
-        ...                                   [6, 7, 9, 10]]).flatten().all()
+        >>> print (parallel.procID > 0 or 
+        ...        numerix.allclose(numerix.nonzero(mesh.getExteriorFaces())[0],
+        ...                         [ 4,  5,  8, 11]))
         True
 
-        >>> print mesh._getCellToCellDistances()
-        [[ 0.5  0.5  0.5  0.5]
-         [ 1.   1.   1.   1. ]
-         [ 0.5  0.5  0.5  0.5]
-         [ 1.   1.   1.   1. ]]
+        >>> print (parallel.procID > 0 or 
+        ...        numerix.allclose(mesh.getFaceCellIDs().filled(-1),
+        ...                         [[2, 3, 0, 1, 2, 3, 1, 0, 1, 3, 2, 3],
+        ...                          [0, 1, 2, 3, -1, -1, 0, 1, -1, 2, 3, -1]]))
+        True
+
+        >>> print (parallel.procID > 0 or 
+        ...        numerix.allclose(mesh._getCellDistances(),
+        ...                         [ 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 1., 1., 0.5, 1., 1., 0.5]))
+        True
+ 
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(mesh._getCellFaceIDs(),
+        ...                            [[0, 1, 2, 3],
+        ...                             [7, 6, 10, 9],
+        ...                             [2, 3, 0, 1],
+        ...                             [6, 7, 9, 10]]))
+        True
+
+        >>> print (parallel.procID > 0 or 
+        ...        numerix.allclose(mesh._getCellToCellDistances(),
+        ...                         [[ 0.5, 0.5, 0.5, 0.5],
+        ...                          [ 1., 1., 1., 1. ],
+        ...                          [ 0.5, 0.5, 0.5, 0.5],
+        ...                          [ 1., 1., 1., 1. ]]))
+        True
 
         >>> normals = [[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
         ...            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]]
 
-        >>> from fipy.tools import numerix
-        >>> numerix.allclose(mesh._getFaceNormals(), normals)
-        1
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(mesh._getFaceNormals(), normals))
+        True
 
-        >>> print mesh._getCellVertexIDs()
-        [[4 5 7 8]
-         [3 4 6 7]
-         [1 2 4 5]
-         [0 1 3 4]]
-
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(mesh._getCellVertexIDs(),
+        ...                            [[4, 5, 7, 8],
+        ...                             [3, 4, 6, 7],
+        ...                             [1, 2, 4, 5],
+        ...                             [0, 1, 3, 4]]))
+        True
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)

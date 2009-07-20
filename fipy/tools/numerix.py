@@ -159,6 +159,19 @@ def reshape(arr, shape):
     lenghts of all the axes is constant (the total number of elements does not
     change).
     """
+    if -1 in shape:
+        # e.g., NUMERIX.reshape(a, (-1, N)) fails if N == 0
+        oldShape = array(getShape(arr))
+        oldShape[oldShape == 0] = 1
+        
+        index = shape.index(-1)
+        left = shape[:index]
+        right = shape[index+1:]
+        newShape = array(left + right)
+        newShape[newShape == 0] = 1
+        
+        shape = left + (oldShape.prod() / newShape.prod(),) + right
+        
     if _isPhysical(arr):
         return arr.reshape(shape)
     elif type(arr) is type(array((0))):

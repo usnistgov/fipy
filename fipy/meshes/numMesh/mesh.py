@@ -611,7 +611,7 @@ class Mesh(_CommonMesh):
         cellFaceVertices = numerix.take(self.faceVertexIDs, self.cellFaceIDs, axis=1)
 
         ## get a sorted list of vertices for each cell 
-        cellVertexIDs = cellFaceVertices.reshape((-1, self.getNumberOfCells()))
+        cellVertexIDs = numerix.reshape(cellFaceVertices, (-1, self.getNumberOfCells()))
         cellVertexIDs = MA.sort(cellVertexIDs, axis=0, fill_value=-1)
 
         cellVertexIDs = MA.sort(MA.concatenate((cellVertexIDs[-1, numerix.newaxis], 
@@ -621,7 +621,10 @@ class Mesh(_CommonMesh):
                                 axis=0, fill_value=-1)
         
         ## resize the array to remove extra masked values
-        length = min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis=0))
+        if cellVertexIDs.shape[-1] == 0:
+            length = 0
+        else:
+            length = min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis=0))
         return cellVertexIDs[length:][::-1]
 
 ## Below is an ordered version of _getCellVertexIDs()
@@ -787,8 +790,8 @@ class Mesh(_CommonMesh):
             >>> cellCenters = numerix.array(((dx/2., dx+dx/3.),
             ...                              (dy/2.,    dy/3.),
             ...                              (dz/2.,    dz/2.)))
-            >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            True
                                               
             >>> d1 = numerix.sqrt((dx / 3.)**2 + (dy / 6.)**2)
             >>> d2 = numerix.sqrt((dx / 6.)**2 + (dy / 3.)**2)
@@ -796,8 +799,8 @@ class Mesh(_CommonMesh):
             >>> d4 = numerix.sqrt((5 * dx / 6.)**2 + (dy / 6.)**2)
             >>> faceToCellDistances = MA.masked_values(((dz / 2., dz / 2., dx / 2., dx / 2., dy / 2., dy / 2., dz / 2., dz / 2., d2, d3),
             ...                                         (     -1,      -1,      -1,      d1,      -1,      -1,      -1,      -1, -1, -1)), -1)
-            >>> numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            True
                                               
             >>> cellDistances = numerix.array((dz / 2., dz / 2., dx / 2.,
             ...                                d4,
@@ -911,8 +914,8 @@ class Mesh(_CommonMesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
-            1
+            >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            True
 
             >>> dx = 1.
             >>> dy = 1.

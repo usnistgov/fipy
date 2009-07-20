@@ -683,7 +683,8 @@ class Mesh:
         return self.scaledCellVolumes
 
     def getCellCenters(self):
-        return self.scaledCellCenters
+        from fipy.variables.cellVariable import CellVariable
+        return CellVariable(mesh=self, value=self.scaledCellCenters, rank=1)
 
     def _getFaceToCellDistances(self):
         return self.scaledFaceToCellDistances
