@@ -71,7 +71,7 @@ class CylindricalGrid1D(Grid1D):
 
     def _calcCellVolumes(self):
         Grid1D._calcCellVolumes(self)
-        self.cellVolumes *= self.getCellCenters()[0]
+        self.cellVolumes *= self.scale['length'] * self.cellCenters[0]
         
     def _translate(self, vector):
         return CylindricalGrid1D(dx=self.dx, nx=self.nx, 
