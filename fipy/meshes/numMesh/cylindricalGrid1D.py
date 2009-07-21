@@ -85,7 +85,7 @@ class CylindricalGrid1D(Grid1D):
         return self.vertexCoords + self.origin
 
     def getCellCenters(self):
-        return self.cellCenters + self.origin
+        return Grid1D.getCellCenters(self) + self.origin
 
     def getFaceCenters(self):
         return self.faceCenters + self.origin

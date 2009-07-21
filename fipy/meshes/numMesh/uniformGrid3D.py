@@ -284,7 +284,7 @@ class UniformGrid3D(Grid3D):
     def getCellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy * self.dz
 
-    def getCellCenters(self):
+    def _getCellCenters(self):
         centers = numerix.zeros((3, self.nx, self.ny, self.nz), 'd')
         indices = numerix.indices((self.nx, self.ny, self.nz))
         centers[0] = (indices[0] + 0.5) * self.dx

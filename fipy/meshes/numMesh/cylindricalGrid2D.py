@@ -80,7 +80,7 @@ class CylindricalGrid2D(Grid2D):
         return self.vertexCoords + self.origin
 
     def getCellCenters(self):
-        return self.cellCenters + self.origin
+        return Grid2D.getCellCenters(self) + self.origin
 
     def getFaceCenters(self):
         return self.faceCenters + self.origin

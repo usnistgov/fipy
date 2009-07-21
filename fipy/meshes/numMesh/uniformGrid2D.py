@@ -372,7 +372,7 @@ class UniformGrid2D(Grid2D):
     def getCellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
 
-    def getCellCenters(self):
+    def _getCellCenters(self):
         centers = numerix.zeros((2, self.nx, self.ny), 'd')
         indices = numerix.indices((self.nx, self.ny))
         centers[0] = (indices[0] + 0.5) * self.dx
