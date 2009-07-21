@@ -53,6 +53,8 @@ class UniformGrid1D(Grid1D):
          
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2):
+        origin = numerix.array(origin)
+        
         self.args = {
             'dx': dx, 
             'nx': nx, 
@@ -94,10 +96,12 @@ class UniformGrid1D(Grid1D):
         self.setScale(value=scale)
         
     def _translate(self, vector):
-        return UniformGrid1D(dx = self.dx, nx = self.nx, origin = self.origin + vector)
+        return UniformGrid1D(dx=self.dx, 
+                             nx=self.args['nx'], 
+                             origin=self.args['origin'] + numerix.array(vector))
 
     def __mul__(self, factor):
-        return UniformGrid1D(dx = self.dx * factor, nx = self.nx, origin = self.origin * factor)
+        return UniformGrid1D(dx=self.dx * factor, nx=self.args['nx'], origin=self.args['origin'] * factor)
 
     def _getConcatenableMesh(self):
         from fipy.meshes.numMesh.mesh1D import Mesh1D
@@ -108,16 +112,22 @@ class UniformGrid1D(Grid1D):
     def _concatenate(self, other, smallNumber):
         """
         Following test was added due to a bug in adding Meshes.
-        
-            >>> a = UniformGrid1D(nx=10) + 10
-            >>> print a.getCellCenters()[0,0]
-            10.5
+
+            >>> a = UniformGrid1D(nx=10) + (10,)
+            >>> print a.getCellCenters()
+            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
             >>> b = 10 + UniformGrid1D(nx=10)
-            >>> print b.getCellCenters()[0,0]
-            10.5
-            >>> c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
-            >>> print c.getCellCenters()[0,-1]
-            19.5
+            >>> print b.getCellCenters()
+            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
+            
+            >>> from fipy.tools import parallel
+            >>> if parallel.Nproc == 1:
+            ...     c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
+            >>> print (parallel.Nproc > 1 
+            ...        or numerix.allclose(c.getCellCenters()[0],
+            ...                            [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
+            ...                            12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]))
+            True
             
         """
         return self._getConcatenableMesh()._concatenate(other = other, smallNumber = smallNumber)
@@ -203,7 +213,7 @@ class UniformGrid1D(Grid1D):
     def getCellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx
 
-    def getCellCenters(self):
+    def _getCellCenters(self):
         return ((numerix.arange(self.numberOfCells)[numerix.NewAxis, ...] + 0.5) * self.dx + self.origin) * self.scale['length']
 
     def _getCellDistances(self):
@@ -291,9 +301,13 @@ class UniformGrid1D(Grid1D):
            [0 0 1 1]
            
         """
-        x0, = self.getCellCenters()[...,0]        
+        nx = self.globalNumberOfCells
+        
+        if nx == 0:
+            return numerix.arange(0)
+            
+        x0, = self.getCellCenters().getGlobalValue()[...,0]        
         xi, = points
-        nx, = self.getShape()
         dx = self.dx
         
         i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
