@@ -93,7 +93,9 @@ class _MeshVariable(Variable):
                 value = _Constant(value)
             valueShape = value.getShape()
             if valueShape is not () and valueShape[-1] == globalNumber:
-                value = value[..., globalIDs]
+                if valueShape[-1] != 0:
+                    # workaround for NumPy:ticket:1171
+                    value = value[..., globalIDs]
         return value
         
     def _getGlobalValue(self, localIDs, globalIDs):
