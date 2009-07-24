@@ -90,12 +90,19 @@ class Mesh:
         
         The two `Mesh` objects must be properly aligned in order to concatenate them
         
-            >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,)))
+            >>> from fipy.tools import parallel
+            >>> if parallel.Nproc == 1:
+            ...     addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
+            ... else:
+            ...     # doctest: +SKIP
             Traceback (most recent call last):
             ...
             MeshAdditionError: Vertices are not aligned
 
-            >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
+            >>> if parallel.Nproc == 1:
+            ...     addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
+            ... else:
+            ...     # doctest: +SKIP
             Traceback (most recent call last):
             ...
             MeshAdditionError: Faces are not aligned
@@ -113,17 +120,22 @@ class Mesh:
             >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
             >>> triMesh = triMesh + ((2,), (0,))
             >>> triAddedMesh = baseMesh + triMesh
-            >>> print triAddedMesh.getCellCenters()
-            [[ 0.5         1.5         0.5         1.5         2.83333333  3.83333333
-               2.5         3.5         2.16666667  3.16666667  2.5         3.5       ]
-             [ 0.5         0.5         1.5         1.5         0.5         0.5
-               0.83333333  0.83333333  0.5         0.5         0.16666667  0.16666667]]
+            >>> cellCenters = [[0.5, 1.5, 0.5, 1.5, 2.83333333,  3.83333333,
+            ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+            ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
+            ...                 0.5, 0.5, 0.16666667, 0.16666667]]
+            >>> print parallel.procID > 0 or numerix.allclose(triAddedMesh.getCellCenters(),
+            ...                                                cellCenters)
+            True
 
         but their faces must still align properly
         
             >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
             >>> triMesh = triMesh + ((2,), (0,))
-            >>> triAddedMesh = baseMesh + triMesh
+            >>> if parallel.Nproc == 1:
+            ...     triAddedMesh = baseMesh + triMesh
+            ... else:
+            ...     # doctest: +SKIP
             Traceback (most recent call last):
             ...
             MeshAdditionError: Faces are not aligned
@@ -287,26 +299,6 @@ class Mesh:
     def getDim(self):
         return self.dim
 
-    def _getCellsByID(self, ids = None):
-        pass
-            
-    def getCells(self, ids=None):
-        """
-        Return `Cell` objects of `Mesh`.
-
-           >>> from fipy import Grid2D
-           >>> m = Grid2D(nx=2, ny=2)
-           >>> x, y = m.getCellCenters()
-           >>> print m.getCells()[x < 1]
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0)
-            Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
-           >>> print m.getCells(ids=(0, 2))
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0)
-            Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
-
-        """
-        return self._getCellsByID(ids)
-        
     def _getGlobalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
@@ -459,23 +451,6 @@ class Mesh:
         """
         return numerix.arange(self.numberOfFaces)
 
-    def _getFaces(self):
-        pass
-    
-    def getFaces(self):
-        """
-        Return `Face` objects of `Mesh`.
-
-           >>> from fipy import Grid2D
-           >>> m = Grid2D(nx=2, ny=2)
-           >>> x, y = m.getFaceCenters()
-           >>> print m.getFaces()[x < 1]
-           [0 2 4 6 9]
-
-        """
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=self._getFaces())
-
     def getFacesLeft(self):
         """
         Return face on left boundary of Grid1D as list with the
@@ -483,13 +458,14 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((21, 25), 
-            ...                  numerix.nonzero(mesh.getFacesLeft())[0])
-            1
+            >>> print numerix.allequal((21, 25), 
+            ...                        numerix.nonzero(mesh.getFacesLeft())[0])
+            True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((9, 13), 
-            ...                  numerix.nonzero(mesh.getFacesLeft())[0])
-            1
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((9, 13), 
+            ...                                               numerix.nonzero(mesh.getFacesLeft())[0])
+            True
 
         """
         x = self.getFaceCenters()[0]
@@ -503,13 +479,14 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((24, 28), 
-            ...                  numerix.nonzero(mesh.getFacesRight())[0])
-            1
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((12, 16), 
-            ...                  numerix.nonzero(mesh.getFacesRight())[0])
-            1
+            >>> print numerix.allequal((24, 28), 
+            ...                        numerix.nonzero(mesh.getFacesRight())[0])
+            True
+            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)    
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((12, 16), 
+            ...                                               numerix.nonzero(mesh.getFacesRight())[0])
+            True
             
         """
         x = self.getFaceCenters()[0]
@@ -545,13 +522,14 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> numerix.allequal((18, 19, 20), 
-            ...                  numerix.nonzero(mesh.getFacesTop())[0])
-            1
+            >>> print numerix.allequal((18, 19, 20), 
+            ...                        numerix.nonzero(mesh.getFacesTop())[0])
+            True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> numerix.allequal((6, 7, 8), 
-            ...                  numerix.nonzero(mesh.getFacesTop())[0])
-            1
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8), 
+            ...                                               numerix.nonzero(mesh.getFacesTop())[0])
+            True
             
         """
         y = self.getFaceCenters()[1]
@@ -588,7 +566,7 @@ class Mesh:
             1
 
         """
-        z = self.getFaceCenters()[2] or numerix.array([0])
+        z = self.getFaceCenters()[2]
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=z == _madmin(z))
     
@@ -772,16 +750,20 @@ class Mesh:
            >>> from fipy import *
            >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
            >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-           >>> print m0._getNearestCellID(m1.getCellCenters())
+           >>> print m0._getNearestCellID(m1.getCellCenters().getGlobalValue())
            [4 5 7 8]
            
         """
-        points = numerix.resize(points, (self.getNumberOfCells(), len(points), len(points[0]))).swapaxes(0,1)
+        if self.globalNumberOfCells == 0:
+            return numerix.arange(0)
+            
+        points = numerix.resize(points, (self.globalNumberOfCells, len(points), len(points[0]))).swapaxes(0,1)
 
+        centers = self.getCellCenters().getGlobalValue()[...,numerix.newaxis]
         try:
-            tmp = self.getCellCenters()[...,numerix.newaxis] - points
+            tmp = centers - points
         except TypeError:
-            tmp = self.getCellCenters()[...,numerix.newaxis] - PhysicalField(points)
+            tmp = centers - PhysicalField(points)
 
         return numerix.argmin(numerix.dot(tmp, tmp, axis = 0), axis=0)
 
