@@ -421,7 +421,8 @@ class Mesh(_CommonMesh):
         Used by the `Grid` meshes.
         """
         x = numerix.zeros((n + 1), 'd')
-        x[1:] = d
+        if n > 0:
+            x[1:] = d
         return numerix.add.accumulate(x)
 
     """get Topology methods"""
@@ -447,14 +448,6 @@ class Mesh(_CommonMesh):
     def getFaceCellIDs(self):
         return self.faceCellIDs
 
-    def _getFaces(self):
-        return numerix.arange(self.numberOfFaces)
-
-    def _getCellsByID(self, ids = None):
-        if ids is None:
-            ids = range(self.numberOfCells) 
-        return numerix.array([Cell(self, ID) for ID in ids])
-    
     def _getMaxFacesPerCell(self):
         if self.getNumberOfCells() == 0:
             return 0

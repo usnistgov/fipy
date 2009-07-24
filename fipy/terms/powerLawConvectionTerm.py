@@ -115,7 +115,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		}
 	    """,
 	    alpha = alpha, eps = eps, P = P,
-	    ni = len(self.mesh.getFaces())
+	    ni = self.mesh._getNumberOfFaces()
 	    )
 
             return self._makeValue(value = alpha)

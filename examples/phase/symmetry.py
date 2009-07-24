@@ -78,32 +78,14 @@ First set the values as given in the above equation:
     ...     viewer = Viewer(vars=var, datamin=0, datamax=L * L / 4.)
     ...     viewer.plot()
 
-then extract the bottom left quadrant of cells:
+The bottom-left quadrant is mirrored into each of the other three quadrants
 
-    >>> bottomLeftCells = mesh.getCells()[(x < L / 2.) & (y < L / 2.)]
-    >>> bottomRightCells = ()
-    >>> topLeftCells = ()
-    >>> topRightCells = ()
-
-Next, extract the corresponding cells from each region in the correct order:
-
-    >>> for cell in bottomLeftCells:
-    ...     x, y = cell.getCenter()
-    ...     bottomRightCells += (mesh.getNearestCell(((L - x,), (y,))),)            
-    ...     topRightCells += (mesh.getNearestCell(((L - x,), (L - y,))),)
-    ...     topLeftCells += (mesh.getNearestCell(((x,), (L - y,))),)
-
-The method `mesh.getNearestCell((x, y))` finds the nearest cell to
-the given coordinate. The cells are then set to the symmetry value:
-
-    >>> orderedCells = (bottomRightCells, topRightCells, topLeftCells)
-    >>> symmetryCells = bottomLeftCells
-    >>> for cellSet in orderedCells:
-    ...     for i in range(len(cellSet)):
-    ...         id = symmetryCells[i].getID()
-    ...         idOther = cellSet[i].getID()
-    ...         var[idOther] = var[id]
-
+    >>> q = (x > L / 2.) & (y < L / 2.)
+    >>> var[q] = var(((L - x)[q],       y[q]))
+    >>> q = (x < L / 2.) & (y > L / 2.)
+    >>> var[q] = var((      x[q], (L - y)[q]))
+    >>> q = (x > L / 2.) & (y > L / 2.)
+    >>> var[q] = var(((L - x)[q], (L - y)[q]))
 
     >>> if __name__ == '__main__':
     ...     viewer.plot()
