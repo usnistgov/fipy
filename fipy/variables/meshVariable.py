@@ -148,14 +148,15 @@ class _MeshVariable(Variable):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=2, ny=3)
             >>> var = CellVariable(mesh=mesh)
-            >>> var.shape
-            (6,)
-            >>> var.getArithmeticFaceValue().shape
-            (17,)
-            >>> var.getGrad().shape
-            (2, 6)
-            >>> var.getFaceGrad().shape
-            (2, 17)
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal(var.shape, (6,))
+            True
+            >>> print parallel.procID > 0 or numerix.allequal(var.getArithmeticFaceValue().shape, (17,))
+            True
+            >>> print parallel.procID > 0 or numerix.allequal(var.getGrad().shape, (2, 6))
+            True
+            >>> print parallel.procID > 0 or numerix.allequal(var.getFaceGrad().shape, (2, 17))
+            True
         """
         return (Variable.getShape(self) 
                 or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
@@ -375,6 +376,7 @@ def _testDot(self):
         ...                                  [6, 7]]])[..., newaxis])
 
         >>> def P(a):
+        ...     a = a.getGlobalValue()
         ...     print a[...,0], a.shape
         
         >>> P(v1.dot(v2))
