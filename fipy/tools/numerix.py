@@ -939,7 +939,7 @@ def dot(a1, a2, axis=0):
        >>> mesh = Grid2D(nx=2, ny=1)
        >>> from fipy.variables.cellVariable import CellVariable
        >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
-       >>> v2 = array(((0,1),(2, 3)))
+       >>> v2 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
        >>> dot(v1, v2)._getVariableClass()
        <class 'fipy.variables.cellVariable.CellVariable'>
        >>> dot(v2, v1)._getVariableClass()
@@ -952,9 +952,10 @@ def dot(a1, a2, axis=0):
        <class 'fipy.variables.cellVariable.CellVariable'>
        >>> print dot(v1, v1)
        [ 4 10]
-       >>> type(dot(v2, v2))
+       >>> v3 = array(((0,1),(2,3)))
+       >>> type(dot(v3, v3))
        <type 'numpy.ndarray'>
-       >>> print dot(v2, v2)
+       >>> print dot(v3, v3)
        [ 4 10]
        
     
