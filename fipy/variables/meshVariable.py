@@ -108,7 +108,8 @@ class _MeshVariable(Variable):
                 localValue = localValue[..., localIDs]
             globalIDs = numerix.concatenate(comm.allgather(globalIDs))
             
-            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,), dtype=localValue.dtype)
+            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,), 
+                                        dtype=numerix.obj2sctype(localValue))
             globalValue[..., globalIDs] = numerix.concatenate(comm.allgather(localValue), axis=-1)
             
             return globalValue
