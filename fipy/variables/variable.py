@@ -1342,49 +1342,6 @@ class Variable(object):
     def take(self, ids, axis=0):
         return numerix.take(self.getValue(), ids, axis)
 
-    def _take(self, ids, axis=0):
-        """
-        
-        Same as take() but returns a `Variable` subclass.  This function
-        has not yet been implemented as a binary operator but is a
-        unary operator.  As a unary operator it has to return the same
-        shape as the `Variable` it is acting on.  This is not a
-        particular useful implementation of take as it stands. It is
-        good for axis permutations.
-        
-
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx=1, ny=1)
-           >>> from fipy.variables.faceVariable import FaceVariable
-           >>> var = FaceVariable(value=((1, 2, 3, 4), (2, 3, 4, 5)), mesh=mesh, rank=1)
-           >>> v10 = var._take((1, 0), axis=0)
-           >>> print v10
-           [[2 3 4 5]
-            [1 2 3 4]]
-           >>> var[0, 3] = 1
-           >>> print v10
-           [[2 3 4 5]
-            [1 2 3 1]]
-           >>> isinstance(var, FaceVariable)
-           True
-           >>> print var.getRank()
-           1
-           >>> v0 = var._take((0,))
-           Traceback (most recent call last):
-              ...
-           IndexError: _take() must take ids that return a Variable of the same shape
-           
-        """
-
-        ## Binary operator doesn't work because ids is turned into a _Constant Variable
-        ## which contains floats and not integers. Numeric.take needs integers for ids.
-        ## return self._BinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis=axis), ids) 
-
-        if numerix.take(self.getValue(), ids, axis=axis).shape == self.shape:
-            return self._UnaryOperatorVariable(lambda a: numerix.take(a, ids, axis=axis), canInline=False)
-        else:
-            raise IndexError, '_take() must take ids that return a Variable of the same shape'
-            
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
         """
            >>> var = Variable((1, 1))
