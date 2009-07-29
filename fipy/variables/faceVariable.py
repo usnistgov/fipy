@@ -72,6 +72,12 @@ class FaceVariable(_MeshVariable):
         return self._getGlobalValue(self.mesh._getLocalNonOverlappingFaceIDs(), 
                                     self.mesh._getGlobalNonOverlappingFaceIDs())
 
+    def setValue(self, value, unit = None, where = None):
+        mesh = self.getMesh()
+        value = self._globalToLocalValue(value, mesh.globalNumberOfFaces, mesh._getGlobalOverlappingFaceIDs())
+        
+        _MeshVariable.setValue(self, value=value, unit=unit, where=where)
+
     def getDivergence(self):
         """
             >>> from fipy.meshes.grid2D import Grid2D
@@ -87,6 +93,7 @@ class FaceVariable(_MeshVariable):
             self.divergence = _AddOverFacesVariable(self.dot(self.getMesh()._getOrientedAreaProjections()))
             
         return self.divergence
+
         
 def _test(): 
     import doctest
