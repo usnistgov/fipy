@@ -111,7 +111,6 @@ class GaussianNoiseVariable(NoiseVariable):
            
     and compare to a Gaussian distribution
     
-           >>> from fipy.variables.cellVariable import CellVariable
            >>> gauss = CellVariable(mesh = histogram.getMesh())
            >>> x = histogram.getMesh().getCellCenters()[0]
            >>> gauss.setValue((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
