@@ -456,10 +456,11 @@ class UniformGrid2D(Grid2D):
     def _getFaceTangents1(self):
         tangents = numerix.zeros((2,self.numberOfFaces), 'd')
 
-        tangents[0, :self.numberOfHorizontalFaces] = -1
-        tangents[0, :self.nx] = 1        
-        tangents[1, self.numberOfHorizontalFaces:] = 1
-        tangents[1, self.numberOfHorizontalFaces::self.numberOfVerticalColumns] = -1
+        if self.numberOfFaces > 0:
+            tangents[0, :self.numberOfHorizontalFaces] = -1
+            tangents[0, :self.nx] = 1        
+            tangents[1, self.numberOfHorizontalFaces:] = 1
+            tangents[1, self.numberOfHorizontalFaces::self.numberOfVerticalColumns] = -1
 
         return tangents
         
