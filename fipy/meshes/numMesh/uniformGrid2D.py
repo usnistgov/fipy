@@ -176,9 +176,10 @@ class UniformGrid2D(Grid2D):
 
     def _getCellFaceOrientations(self):
         cellFaceOrientations = numerix.ones((4, self.numberOfCells))
-        cellFaceOrientations[0, self.nx:] = -1
-        cellFaceOrientations[3, :] = -1
-        cellFaceOrientations[3, ::self.nx] = 1
+        if self.numberOfCells > 0:
+            cellFaceOrientations[0, self.nx:] = -1
+            cellFaceOrientations[3, :] = -1
+            cellFaceOrientations[3, ::self.nx] = 1
         return cellFaceOrientations
 
     def _getAdjacentCellIDs(self):
@@ -260,10 +261,12 @@ class UniformGrid2D(Grid2D):
         ids[2] = indices[0] + (indices[1] + 1) * self.nx
         ids[3] = (indices[0] - 1) + indices[1] * self.nx
         
-        ids[0,..., 0] = MA.masked
-        ids[2,...,-1] = MA.masked
-        ids[1,-1,...] = MA.masked
-        ids[3, 0,...] = MA.masked
+        if self.ny > 0:
+            ids[0,..., 0] = MA.masked
+            ids[2,...,-1] = MA.masked
+        if self.nx > 0:
+            ids[1,-1,...] = MA.masked
+            ids[3, 0,...] = MA.masked
         
         return MA.reshape(ids.swapaxes(1,2), (4, self.numberOfCells))
         
@@ -473,10 +476,12 @@ class UniformGrid2D(Grid2D):
         distances[2] = self.dy
         distances[3] = self.dx
         
-        distances[0,..., 0] = self.dy / 2.
-        distances[2,...,-1] = self.dy / 2.
-        distances[3, 0,...] = self.dx / 2.
-        distances[1,-1,...] = self.dx / 2.
+        if self.ny > 0:
+            distances[0,..., 0] = self.dy / 2.
+            distances[2,...,-1] = self.dy / 2.
+        if self.nx > 0:
+            distances[3, 0,...] = self.dx / 2.
+            distances[1,-1,...] = self.dx / 2.
         
         return distances.reshape((4, self.numberOfCells), order="FORTRAN")
 
