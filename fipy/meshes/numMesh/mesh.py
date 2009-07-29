@@ -449,10 +449,7 @@ class Mesh(_CommonMesh):
         return self.faceCellIDs
 
     def _getMaxFacesPerCell(self):
-        if self.getNumberOfCells() == 0:
-            return 0
-        else:
-            return len(self.cellFaceIDs[...,0])
+        return self.cellFaceIDs.shape[0]
 
     """Geometry methods"""
 
