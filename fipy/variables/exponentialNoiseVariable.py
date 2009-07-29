@@ -109,9 +109,9 @@ class ExponentialNoiseVariable(NoiseVariable):
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
         self.mean = self._requires(mean)
     
-    def _calcValue(self):
+    def random(self):
         return random.exponential(scale = self.mean, 
-                                  size = [self.getMesh().getNumberOfCells()])
+                                  size = [self.getMesh().globalNumberOfCells])
 
 def _test(): 
     import doctest

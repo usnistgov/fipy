@@ -98,13 +98,15 @@ class GaussianNoiseVariable(NoiseVariable):
            
            >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(dx = arange(0.1, 5., 0.1)**2, dy = arange(0.1, 3., 0.1)**3)
+           >>> from fipy.variables.cellVariable import CellVariable
+           >>> volumes = CellVariable(mesh=mesh,value=mesh.getCellVolumes())
            >>> noise = GaussianNoiseVariable(mesh = mesh, mean = mean, 
-           ...                               variance = variance / mesh.getCellVolumes())
+           ...                               variance = variance / volumes)
            
     We histogram the root-volume-weighted noise distribution
     
            >>> from fipy.variables.histogramVariable import HistogramVariable
-           >>> histogram = HistogramVariable(distribution = noise * sqrt(mesh.getCellVolumes()), 
+           >>> histogram = HistogramVariable(distribution = noise * sqrt(volumes), 
            ...                               dx = 0.1, nx = 600, offset = -30)
            
     and compare to a Gaussian distribution
@@ -161,9 +163,14 @@ class GaussianNoiseVariable(NoiseVariable):
         self.variance = variance
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
 
-    def _calcValue(self):
-        return random.normal(self.mean, sqrt(self.variance),
-                             size = [self.getMesh().getNumberOfCells()])
+    def parallelRandom(self):
+        from fipy.tools import parallel
+        variance = self.variance.getGlobalValue()
+        if parallel.procID == 0:
+            return random.normal(self.mean, sqrt(variance),
+                                 size = [self.getMesh().globalNumberOfCells])
+        else:
+            return None
 
 def _test(): 
     import doctest

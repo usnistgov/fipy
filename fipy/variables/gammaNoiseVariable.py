@@ -123,9 +123,9 @@ class GammaNoiseVariable(NoiseVariable):
         self.shapeParam = self._requires(shape)
         self.rate = self._requires(rate)
     
-    def _calcValue(self):
+    def random(self):
         return random.gamma(shape=self.shapeParam, scale=self.rate, 
-                            size=[self.getMesh().getNumberOfCells()])
+                            size=[self.getMesh().globalNumberOfCells])
 
 def _test(): 
     import doctest
