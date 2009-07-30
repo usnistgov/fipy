@@ -1,0 +1,365 @@
+=============
+SVN practices
+=============
+
+Refer to SVN.txt for the current tagging conventions.
+
+--------
+Branches
+--------
+
+Break off for radical refactoring::
+
+    $ cd trunk    
+    $ BRANCH=refactoring_etc
+    $ FIPYROOT=svn+ssh://username@matforge.org/usr/local/svn-fipy-repos
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
+    $ cd ..
+    $ svn co $FIPYROOT/branches/$BRANCH
+
+Edit and add to branch::
+
+    $ cd $BRANCH
+    $ emacs ...
+    $ svn ci -m "refactoring_stage_A"
+    $ emacs ...
+    $ svn ci -m "refactoring_stage_B"
+
+Merging changes from trunk to the branch
+----------------------------------------
+
+Find the initial (IRN) and latest (LRN) revision numbers from the last 
+merge from trunk::
+
+    $ cd ../trunk
+    $ svn update
+
+Set `$LRN` based on the updated revision of trunk
+
+    $ LRN=...
+
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    
+Look for "`merged trunk changes r${IRN}:${LRN} to ${BRANCH}`" or 
+"`merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}`" and set `IRN` 
+to `${LRN}` from log message, otherwise to the revision at which the branch 
+was created.
+
+    $ IRN=...
+
+Merge updated state of trunk to the branch::
+
+    $ cd ../$BRANCH
+    $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
+    $ svn diff
+
+Resolve any conflicts
+
+    $ python setup.py test
+    $ svn ci -m "merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}@${LRN}"
+    
+Refactoring complete: merge branch to the trunk
+-----------------------------------------------
+
+First, follow the instructions for 
+`Merging changes from trunk to the branch`_.
+
+Find the `HEAD` revision number::
+
+    $ cd trunk
+    $ svn update
+    $ HRN=...
+
+Merge the branch `HEAD` to trunk::
+
+    $ svn merge ${FIPYROOT}/trunk@${HRN} \
+                ${FIPYROOT}/branches/${BRANCH}@${HRN}
+    $ svn diff
+
+Resolve any conflicts
+
+    $ python setup.py test
+    $ svn ci -m "merged source:branches/${BRANCH}@${HRN} to source:trunk@${HRN}"
+
+When completely done with the branch
+
+    $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk" \
+        ${FIPYROOT}/branches/${BRANCH}
+    
+--------
+Versions
+--------
+
+At point of version release x.y, *on main trunk*::
+
+    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/version-x_y -m "tagging version x.y"
+
+---------
+Bug fixes
+---------
+
+At the point some fix is made to an old version n.m::
+
+    $ BRANCH=version-n_m
+    $ svn copy $FIPYROOT/tags/version-n_m  $FIPYROOT/branches/$BRANCH -m "making branch for version n.m"
+    $ svn co $FIPYROOT/branches/$BRANCH
+
+Fix the code::
+
+    $ cd $BRANCH
+    $ svn ci -m "fix n.m.q"
+    $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/version-n_m_q
+
+Find the initial revision number for the branch (IRN) and the latest revision number (LRN)::
+
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    $ IRN=..
+    $ LRN=...
+
+Now merge n.m.q changes back to main trunk::
+
+    $ cd ../trunk
+    $ svn diff -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
+    $ svn merge -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
+    $ svn ci -m "merged version n.m.q"    
+
+Make new fix q+1 to n.m::
+
+    $ cd ../$BRANCH 
+    
+Fix the code::
+
+    $ svn ci -m "fix version n.m.q+1"
+
+Find the previous revision number for the branch (PRN) and the latest revision number (LRN)::
+
+    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
+    $ PRN=..
+    $ LRN=...
+
+Again, merge n.m.q+1 changes back to main trunk::
+
+    $ cd ../trunk
+    $ svn diff -r${PRN}:{LRN} $FIPYROOT/branches/$BRANCH
+    $ svn merge -r${PRN}:{LRN} $FIPYROOT/branches/$BRANCH
+    $ svn ci -m "merged version n.m.q+1"
+
+================
+Making a Release
+================
+
+Change the version number in `setup.py`
+
+Check items in TODOLIST.txt
+
+Check out a clean copy of the desired release::
+
+    $ svn co $FIPYROOT/trunk CLEAN
+    $ cd CLEAN
+
+.. attention::
+
+   If Bitten_ doesn't show all green boxes for this release, make sure to
+   add appropriate notes in README.txt or INSTALLATION.txt!
+
+Build the documentation and the web pages::
+
+    $ python setup.py build_docs --manual --latex --webpage
+
+Build the compressed distribution::
+
+    $ rm MANIFEST
+    $ python setup.py sdist
+
+Build a windows executable installer::
+
+    $ rm MANIFEST
+    $ python setup.py bdist --formats=wininst
+
+Combine the windows installer and examples into one archive.
+
+    $ rm MANIFEST
+    $ FIPY_VERSION=XXX
+    $ ln dist/FiPy-${FIPY_VERSION}.win32.exe .
+    $ cp MANIFEST.in MANIFEST.in.bkup
+    $ cp MANIFEST-WINDOWS.in MANIFEST.in
+    $ python setup.py sdist --dist-dir=dist-windows --formats=zip
+    $ cp MANIFEST.in.bkup MANIFEST.in
+    $ unlink FiPy-${FIPY_VERSION}.win32.exe
+    $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
+
+Tag the repository as appropriate (see `SVN practices`_ above).
+
+Upload the build products and documentation from `dist/` to MatForge and 
+the web site to CTCMS:
+
+    $ python setup.py build_docs --upload --uploadwww
+
+.. note::
+
+   You will need to manually upload the files
+
+     * http://matforge.org/fipy/admin/general/downloader
+
+   and, if appropriate, update the links to current files:
+
+     * http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit
+     * http://matforge.org/fipy/wiki/FiPyManual?action=edit
+     * http://matforge.org/fipy/wiki/FiPyReference?action=edit
+
+.. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
+   when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
+   does not have this problem.
+
+Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
+
+.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
+
+Make an announcement to `mailto:fipy@nist.gov`_
+
+.. fipy@nist.gov: mailto:fipy@nist.gov
+
+Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
+
+.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
+
+==========================================
+Making a Windows Distribution for Pysparse
+==========================================
+
+Make sure of the following:
+
+   - mingw is installed
+   - libpython.a is in c:\pythonXX\libs
+   - libblas.a is in c:\mingw\lib
+   - liblapack.a is in c:\mingw\lib
+   - Numeric is installed
+
+If the above is not satisfied implement the Pysparse INSTALL instructions.
+
+Set the PATH to use MINGW's tools.
+
+   set PATH=C:\mingw\bin
+
+Build the distribution.
+
+   C:\pythonXX\python setup.py build --compiler=mingw32 bdist --format=wininst
+
+.. include:: utils/include.txt
+
+.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+
+===============================
+Converting a CVS Project to SVN
+===============================
+
+Obtain cvs2svn_
+
+.. _cvs2svn: http://cvs2svn.tigris.org/
+
+.. note::
+
+   `cvs2svn-1.3.0/www/faq.html` covers this, but if you follow its directions 
+   exactly, you will get the rather ridiculous::
+
+       REPOSITORY
+          |
+          |---> ${PROJECT}
+          |         |
+          |         |---> trunk
+          |         |        |
+          |         |        |---> ${PROJECT}
+          |         |
+          |         |---> branches
+          |         |        |
+          |         |        |---> BRANCH1
+          |         |        |       |
+          |         |        |       |---> ${PROJECT}
+          |         |        |
+          |         |        |---> BRANCH2
+          |         |                |
+          |         |                |---> ${PROJECT}
+          |         |
+          |         |---> tags
+          |                  |
+          |                  |---> TAG1
+          |                  |       |
+          |                  |       |---> ${PROJECT}
+          |                  |
+          |                  |---> TAG2
+          |                          |
+          |                          |---> ${PROJECT}
+          |
+          |---> SOME_OTHER_PROJECT1
+          |
+          |---> SOME_OTHER_PROJECT2
+
+   instead of the more desirable::
+
+       REPOSITORY
+          |
+          |---> ${PROJECT}
+          |         |
+          |         |---> trunk
+          |         |
+          |         |---> branches
+          |         |        |
+          |         |        |---> BRANCH1
+          |         |        |
+          |         |        |---> BRANCH2
+          |         |
+          |         |---> tags
+          |                  |
+          |                  |---> TAG1
+          |                  |
+          |                  |---> TAG2
+          |
+          |---> SOME_OTHER_PROJECT1
+          |
+          |---> SOME_OTHER_PROJECT2
+
+
+Make a copy of the portion of the CVS repository governing the project in 
+question
+
+    $ PROJECT=MyProjectInCVS
+    $ mkdir cvs2svnSandbox
+    $ cd cvs2svnSandbox
+    $ cp -r /path/to/cvs/repository/${PROJECT} ${PROJECT}
+
+Convert the CVS project repository copy into an SVN repository dump file
+
+    $ mkdir ${PROJECT}/CVSROOT
+    $ cvs2svn --dump-only ${PROJECT}
+
+You should now have a file `cvs2svn-dump` in your working directory.
+
+If necessary, create an SVN repository
+
+    $ svnadmin create --fs-type fsfs /path/to/svn/repos
+
+.. note:: An FSFS repository has fewer permissions problems than a Berkeley-DB 
+   repository.
+
+Make sure that the new repository has appropriate group permissions (this is
+still a bit fuzzy for me)
+
+    $ chgrp -R $GROUP /path/to/svn/repos
+    $ chmod -R g+w /path/to/svn/repos
+
+Add a stub for the new project
+
+    $ svn mkdir file:///path/to/svn/repos/${PROJECT} -m "added ${PROJECT} directory"
+
+Import the converted project repository into SVN
+
+    $ svnadmin --parent-dir $PROJECT load /path/to/svn/repos < cvs2svn-dump
+
+You can now test a checkout
+
+    $ svn checkout svn+ssh://MACHINE.IP.ADDR/path/to/svn/repos/${PROJECT}/trunk SVNTEST
+
+At this point, you can get rid of all of the conversion materials
+
+    $ cd ..
+    $ rm -rf cvs2svnSandbox
