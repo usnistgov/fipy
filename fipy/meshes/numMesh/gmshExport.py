@@ -142,6 +142,3 @@ if __name__ == "__main__":
     profile.stop()
     os.system("gmsh -v 0 temp3.msh &")
     
-        
-    
-    
