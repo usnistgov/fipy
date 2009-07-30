@@ -9,6 +9,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Daniel Stiles  <daniel.stiles@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -39,183 +40,219 @@ __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import _Viewer
 
-class MayaviViewer(_Viewer):
-    """The `MayaviViewer` creates viewers with the Mayavi_ python plotting package.
-
-    .. _Mayavi: http://mayavi.sourceforge.net/
+class _MayaviViewer(_Viewer):
     """
-    
-    __doc__ += _Viewer._test1D(viewer="MayaviViewer")
-    __doc__ += _Viewer._test2D(viewer="MayaviViewer")
-    __doc__ += _Viewer._test2Dirregular(viewer="MayaviViewer")
-    __doc__ += _Viewer._test3D(viewer="MayaviViewer")
-    
-    __doc__ += """
-    Issues with the `MayaviViewer` are
+    .. attention:: This class is abstract. Always create one of its subclasses.
 
-      - `_getOrderedCellVertexIDs()` doesn't return the correct ordering
-        for 3D meshes.  This may be okay for tets and wedges but will
-        break for hexahedrons.
+    The `_MayaviViewer` is the base class for the viewers that use the
+    Mayavi python plotting package.
 
-      - Different element types can not be displayed for 3D
-        meshes. This is an ordering issue for the cell data. Could get
-        round this either by implementing a method such as
-        `var.getVertexVariable()` and use point data, or reordering the
-        variable data via [tets, wedges, hexs] and keep using cell
-        data. First option is cleaner. Second option is less work.
-
-      - Should this class be split into various dimensions? Is it
-        useful to display data with different dimension is same viewer?
+    .. Mayavi: http://code.enthought.com/projects/mayavi/docs/development/html/mayavi/index.html
 
     """
-        
-    def __init__(self, vars, title=None, limits={}, **kwlimits):
-        """Create a `MayaviViewer`.
+
+    def __init__(self, vars, title=None, **kwlimits):
+        """
+        Create a `_MayaviViewer`.
         
         :Parameters:
           vars
             a `CellVariable` or tuple of `CellVariable` objects to plot
           title
             displayed at the top of the `Viewer` window
-          limits : dict
-            a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
-            displayed range of data. Any limit set to 
-            a (default) value of `None` will autoscale.
+          xmin, xmax, ymin, ymax, datamin, datamax
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
         """
-        kwlimits.update(limits)
+        if self.__class__ is _MayaviViewer:
+            raise NotImplementedError, "can't instantiate abstract base class"
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
+        self.srcs=[]
+        self.mods=[]
+        from enthought.mayavi import mlab
+        oldScenes = mlab.get_engine().scenes
+        self.id = len(oldScenes)
+	if (self.title==''):
+            self.title="FiPy Viewer Window "+str(self.id)
+        self.scene = mlab.figure(name=self.title)
 
-        import mayavi
+    def createColorbar(self,title=None):
+        """Create a Colorbar for this viewer"""
+        from enthought.mayavi import mlab
+        mlab.colorbar(object=self.mods[0],title=title,orientation='horizontal',nb_labels=5)
         
-        self._viewer = mayavi.mayavi()
-
-        self.structures = []
-            
-        for var in self.vars:
-            if var.getRank() > 0:
-                raise IndexError, "Mayavi can only plot scalar values"
-            self.structures.append(self._getStructure(var.getMesh()))
-
-                                       
-    def _getStructure(self, mesh):
-
-        cellVertexIDs = mesh._getOrderedCellVertexIDs()
-
-        from fipy.tools import numerix
-        lengths = cellVertexIDs.shape[0] - numerix.sum(numerix.MA.getmaskarray(cellVertexIDs), axis=0)
-        
-        cellDict = {2 : [], 4: [], 6: [], 8: [], 'polygon' : []}
-
-        cellVertexListIDs = [[int(ID) for ID in cellVertexIDs[...,i][:lengths[i]]] for i in range(mesh.getNumberOfCells())]
-
-        if mesh.getDim() == 2:
-            cellDict['polygon'] = cellVertexListIDs
-        else:
-
-            if mesh.getDim() == 3:
-                print "Warning: The Mayavi viewer may or may not render 3D meshes correctly"
-                print "The method Mesh._getOrderedCellVertexIDs() needs to be fixed to return the"
-                print "correct ordering for 3D meshes that fits with pyvtk paradigm."
-
-            import sets
-            if len(sets.Set(lengths)) > 1:
-                raise TypeError, 'The MayaviViewer can only render 3D data with cells of the same type'
-            else:
-                if lengths[0] in cellDict.keys():
-                    cellDict[lengths[0]] = cellVertexListIDs
-                else:
-                    raise TypeError, 'These cell types can not be rendered by the MayaviViewer'
-
-
-                
-        coords = numerix.zeros((3, mesh.getVertexCoords().shape[1]), 'd')
-        coords[:mesh.getDim(),:] = mesh.getVertexCoords()
-	coords = coords.swapaxes(0,1).tolist()
-
-        import pyvtk
-
-        return pyvtk.UnstructuredGrid(points = coords,
-                                      line = cellDict[2],
-                                      tetra = cellDict[4],
-                                      wedge = cellDict[6],
-                                      voxel = cellDict[8],
-                                      polygon = cellDict['polygon'])
-
-    def plot(self, filename = None):
-        import os
-        import tempfile
-        
-        for var, structure in zip(self.vars, self.structures):
-            name = var.getName()
-            if name is '':
-                name = 'default'
-
-            import pyvtk
-
-            celldata = pyvtk.CellData(pyvtk.Scalars([float(val) for val in var()], name = name, lookup_table = 'default'))
-            data = pyvtk.VtkData(structure, "mydata", celldata)
-            
-            (f, fileName) = tempfile.mkstemp('.vtk')
-            data.tofile(fileName)
-            self._viewer.open_vtk(fileName, config=0)
-            
-            os.close(f)
-##             os.remove(fileName)
-            
-            self._viewer.load_module('SurfaceMap', 0)
-            rw = self._viewer.get_render_window()
-            rw.z_plus_view()
-
-            ## display legend
-            dvm = self._viewer.get_current_dvm()
-            mm = dvm.get_current_module_mgr()
-            slh = mm.get_scalar_lut_handler()
-            slh.legend_on.set(1)
-            slh.legend_on_off()
-
-            ## display legend with correct range
-            slh.range_on_var.set(1)
-            slh.v_range_on_var.set(1)
-
-            from fipy.tools import numerix 
-            
-            xmax = self._getLimit('datamax')
-            if xmax is None:
-                xmax = float(var.max())
-
-            xmin = self._getLimit('datamin')
-            if xmin is None:
-                xmin = float(var.min())
-
-            slh.range_var.set((xmin, xmax))
-            slh.set_range_var()
-
-            slh.v_range_var.set((var.min().getValue(), var.max().getValue()))
-            slh.set_v_range_var()
-
-            self._viewer.Render()
-            
-##             self._viewer.master.wait_window()
-##             self._viewer = mayavi.mayavi()
-
-        if filename is not None:
-            self._viewer.renwin.save_png(filename)
-
-        def _validFileExtensions(self):
-            return [".png"]
-
-
-##     from fipy.meshes.tri2D import Tri2D
-##     triMesh = Tri2D()
-##     from fipy.meshes.grid2D import Grid2D
-##     gridMesh = Grid2D(nx = 3)
-##     gridMesh += (1, 0)
-
-##     compositeMesh = gridMesh + triMesh
-##     compositeMesh += (0, 2)
-##     vars += [CellVariable(value = range(7), mesh = compositeMesh)]
+    _getMul=staticmethod(lambda dims,mul=True:((not mul or dims == 3) and 1 or dims == 2 and 2 or 4))
     
-if __name__ == "__main__": 
-    import fipy.tests.doctestPlus
-    fipy.tests.doctestPlus.execButNoTest()
+    def _makeDims3(arr,expand=1.,move=True):
+        '''This method takes a numpy array and expands it from some dimension to 3 dimensions.
+        :Parameters:
+          arr
+            The array to expand
+          expand
+            How far to move the copies of the original points (only used if move is True
+          move
+            Whether or not to copy the points and translate them.  This will make 4 copies of a 1D array and 2 copies of a 2D array.'''
+        num = arr.shape[0]
+        dims = arr.shape[1]
+        if dims == 3:
+            return arr
+        from fipy.tools.numerix import zeros,array
+        a = zeros((num*_MayaviViewer._getMul(dims,move),3),t='d')
+        a[:,:arr.shape[1]]=array(arr.tolist()*_MayaviViewer._getMul(dims,move))
+        if not move:
+            return a
+        a[num:num*2,2]=expand
+        if dims == 2:
+            return a
+        a[num*2:num*3,1]=expand
+        a[num*3:,2]=expand
+        a[num*3:,1]=expand
+        return a
+    _makeDims3 = staticmethod(_makeDims3)
+
+    def makeUnstructuredGrid(mesh,minDim):
+        '''This method takes a fipy mesh and turns it into an enthought.tvtk unstructured grid.
+        :Parameters:
+          mesh
+            the mesh to make into an unstructured gird
+          minDim
+            tells the method how far to extrude out 1D and 2D meshes'''
+        from fipy.tools.numerix import array
+        from enthought.tvtk.api import tvtk
+        dims = mesh.dim
+        points = mesh.getVertexCoords().swapaxes(0,1)
+        numpoints = len(points)
+        points = _MayaviViewer._makeDims3(points,expand=minDim)
+        cvi = mesh._getCellVertexIDs().swapaxes(0,1)
+        from fipy.tools import numerix
+        if dims == 2:
+            cvi = numerix.concatenate((cvi,cvi+numpoints),axis=1)
+        elif dims == 1:
+            cvi = numerix.concatenate((cvi,cvi+numpoints,cvi+numpoints*2,cvi+numpoints*3),axis=1)
+        if (type(cvi)==numerix.ndarray):
+            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
+            cells = numerix.concatenate((counts,cvi),axis=1).flatten()
+        else:
+            counts = cvi.count(axis=1)[:,None]
+            cells = numerix.concatenate((counts,cvi),axis=1).compressed()
+        num = counts.shape[0]
+        offset = numerix.cumsum(counts[:,0]+1)
+        offset[1:]=offset[:-1]
+        offset[0]=0
+        cps_type = tvtk.ConvexPointSet().cell_type
+        cell_types = array([cps_type]*num)
+        cell_array = tvtk.CellArray()
+        cell_array.set_cells(num, cells)
+        
+        ug = tvtk.UnstructuredGrid(points=points)
+        ug.set_cells(cell_types, offset, cell_array)
+        return ug
+    makeUnstructuredGrid = staticmethod(makeUnstructuredGrid)
+    
+    def plot(self, filename = None):
+        from enthought.mayavi import mlab
+        mlab.get_engine().current_scene=self.scene
+        xmin = self._getLimit('xmin')
+        xmax = self._getLimit('xmax')
+        ymin = self._getLimit('ymin')
+        ymax = self._getLimit('ymax')
+        zmin = self._getLimit('zmin')
+        zmax = self._getLimit('zmax')
+        datamin = self._getLimit('datamin')
+        datamax = self._getLimit('datamax')
+        for var in self.vars:
+            mesh = var.getMesh()
+            rank = var.getRank()
+            dims = mesh.dim
+            from fipy.tools import numerix
+            x,y,z = None,None,None
+            x = numerix.NUMERIX.min(mesh.getVertexCoords(),axis=1)
+            if dims > 1:
+                y = x[1:]
+                x = x[0]
+                if dims > 2:
+                    z = y[1]
+                    y = y[0]
+            d = None
+            if rank == 0:
+                d = numerix.NUMERIX.min(var.value)
+            if self._getLimit('xmin') is None and x is not None and (xmin is None or x<xmin):
+                xmin = x
+            if self._getLimit('ymin') is None and y is not None and (ymin is None or y<ymin):
+                ymin = y
+            if self._getLimit('zmin') is None and z is not None and (zmin is None or z<zmin):
+                zmin = z
+            if self._getLimit('datamin') is None and d is not None and (datamin is None or d<datamin):
+                datamin = d
+            x = numerix.NUMERIX.max(mesh.getVertexCoords(),axis=1)
+            if dims > 1:
+                y = x[1:]
+                x = x[0]
+                if dims > 2:
+                    z = y[1]
+                    y = y[0]
+            d = None
+            if rank == 0:
+                d = numerix.NUMERIX.max(var.value)
+            if self._getLimit('xmax') is None and x is not None and (xmax is None or x>xmax):
+                xmax = x
+            if self._getLimit('ymax') is None and y is not None and (ymax is None or y>ymax):
+                ymax = y
+            if self._getLimit('zmax') is None and z is not None and (zmax is None or z>zmax):
+                zmax = z
+            if self._getLimit('datamax') is None and d is not None and (datamax is None or d>datamax):
+                datamax = d
+        if type(xmin) == numerix.ndarray:
+            xmin = xmin[0]
+        if type(xmax) == numerix.ndarray:
+            xmax = xmax[0]
+        if type(ymin) == numerix.ndarray:
+            ymin = ymin[0]
+        if type(ymax) == numerix.ndarray:
+            ymax = ymax[0]
+        if type(zmin) == numerix.ndarray:
+            zmin = zmin[0]
+        if type(zmax) == numerix.ndarray:
+            zmax = zmax[0]
+        if zmax is not None and zmin is not None:
+            minDim = min((xmax-xmin,ymax-ymin,zmax-zmin))
+            maxDim = max((xmax-xmin,ymax-ymin,zmax-zmin))
+        elif ymax is not None and ymin is not None:
+            minDim = min((xmax-xmin,ymax-ymin))
+            maxDim = max((xmax-xmin,ymax-ymin))
+            zmin = 0
+            zmax = minDim/20.
+        else:
+            minDim = xmax-xmin
+            maxDim = xmax-xmin
+            ymin = 0.
+            zmin = 0.
+            ymax = minDim/20.
+            zmax = minDim/20.
+        from fipy.tools.numerix import array
+        for var in self.vars:
+            mesh = var.getMesh()
+            rank = var.getRank()
+            done = False
+            if (len(self.srcs)!=0):
+		self._update(var=var,datamin=datamin,datamax=datamax)
+            else:
+		self._plot(var=var,datamin=datamin,datamax=datamax,extent=[xmin,xmax,ymin,ymax,zmin,zmax],minDim=minDim)
+                
+        if filename is not None:
+            from enthought.mayavi import mlab
+            mlab.savefig(filename)
+    
+    def _plot(self):
+        pass
+    
+    def _validFileExtensions(self):
+        return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
+
+    def show():
+        """Shows this viewer so that the program pauses before displaying the next timestep, or waits to terminate the program till all the windows close"""
+        from enthought.mayavi import mlab
+        mlab.show()
+    show = staticmethod(show)
