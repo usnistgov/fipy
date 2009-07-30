@@ -128,30 +128,15 @@ class _MayaviViewer(_Viewer):
         cvi = mesh._getCellVertexIDs().swapaxes(0,1)
         from fipy.tools import numerix
         if (type(cvi)==numerix.ndarray):
-            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])
-            comp = cvi.flatten()
+            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
+            cells = numerix.concatenate((counts,cvi),axis=1).flatten()
         else:
-            counts = cvi.count(axis=1)
-            comp = cvi.compressed()
-        lcells = []
-        loffsets = []
-        total = 0
-        mul = _MayaviViewer._getMul(dims)
-        num = 0
-        for n in counts:
-            loffsets += [total*mul+num]
-            lcells += [n*mul]
-            for i in range(n):
-                lcells += [comp[total+i]]
-                if (dims < 3):
-                    lcells += [comp[total+i]+numpoints]
-                    if (dims < 2):
-                        lcells += [comp[total+i]+numpoints*2]
-                        lcells += [comp[total+i]+numpoints*3]
-            total += n
-            num += 1
-        cells = array(lcells)
-        offset = array(loffsets)
+            counts = cvi.count(axis=1)[:,None]
+            cells = numerix.concatenate((counts,cvi),axis=1).compressed()
+        num = len(counts)
+        offset = numerix.cumsum(counts[:,0]+1)
+        offset[1:]=offset[:-1]
+        offset[0]=0
         cps_type = tvtk.ConvexPointSet().cell_type
         cell_types = array([cps_type]*num)
         cell_array = tvtk.CellArray()
