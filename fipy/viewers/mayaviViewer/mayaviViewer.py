@@ -127,13 +127,17 @@ class _MayaviViewer(_Viewer):
         points = _MayaviViewer._makeDims3(points,expand=minDim)
         cvi = mesh._getCellVertexIDs().swapaxes(0,1)
         from fipy.tools import numerix
+        if dims == 2:
+            cvi = numerix.concatenate((cvi,cvi+numpoints),axis=1)
+        elif dims == 1:
+            cvi = numerix.concatenate((cvi,cvi+numpoints,cvi+numpoints*2,cvi+numpoints*3),axis=1)
         if (type(cvi)==numerix.ndarray):
             counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
             cells = numerix.concatenate((counts,cvi),axis=1).flatten()
         else:
             counts = cvi.count(axis=1)[:,None]
             cells = numerix.concatenate((counts,cvi),axis=1).compressed()
-        num = len(counts)
+        num = counts.shape[0]
         offset = numerix.cumsum(counts[:,0]+1)
         offset[1:]=offset[:-1]
         offset[0]=0
