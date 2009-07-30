@@ -66,7 +66,7 @@ class _MayaviViewer(_Viewer):
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
         """
-        if self.__clas__ is _MayaviViewer:
+        if self.__class__ is _MayaviViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         self.srcs=[]
