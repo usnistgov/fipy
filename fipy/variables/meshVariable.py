@@ -57,6 +57,13 @@ class _MeshVariable(Variable):
              Default: `rank * (mesh.getDim(),)`
           - `unit`: the physical units of the `Variable`
         """
+        if isinstance(value, _MeshVariable):
+            mesh = mesh or value.mesh
+            
+        self.mesh = mesh
+
+        value = self._globalToLocalValue(value)
+        
         if elementshape is None:
             if rank is not None:
                 elementshape = rank * (mesh.getDim(),)
@@ -78,25 +85,25 @@ class _MeshVariable(Variable):
                     value = _Constant(value)
                 value = value[..., numerix.newaxis]
                                   
-        if isinstance(value, _MeshVariable):
-            mesh = mesh or value.mesh
-            
-        self.mesh = mesh
-
         Variable.__init__(self, name=name, value=value, unit=unit, 
                           array=array, cached=cached)
                   
-    @staticmethod
-    def _globalToLocalValue(value, globalNumber, globalIDs):
+    def _globalToLocalValue(self, value):
         if value is not None:
             if not isinstance(value, Variable):
                 value = _Constant(value)
             valueShape = value.getShape()
-            if valueShape is not () and valueShape[-1] == globalNumber:
+            if valueShape is not () and valueShape[-1] == self._getGlobalNumberOfElements():
                 if valueShape[-1] != 0:
                     # workaround for NumPy:ticket:1171
-                    value = value[..., globalIDs]
+                    value = value[..., self._getGlobalOverlappingIDs()]
         return value
+        
+    def _getGlobalNumberOfElements(self):
+        pass
+        
+    def _getGlobalOverlappingIDs(self):
+        pass
         
     def _getGlobalValue(self, localIDs, globalIDs):
         from fipy.tools import parallel
@@ -261,6 +268,12 @@ class _MeshVariable(Variable):
         dimension of `other` is exactly the `Mesh` dimension, do what the user
         probably "meant" and project `other` onto the `Mesh`.
         """
+        otherShape = numerix.getShape(other)
+        if (not isinstance(other, _MeshVariable) 
+            and otherShape is not () 
+            and otherShape[-1] == self._getGlobalNumberOfElements()):
+            other = self._getVariableClass()(value=other, mesh=self.getMesh())
+
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
         
         if ((newOpShape is None or baseClass is None)

@@ -38,11 +38,6 @@ from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 
 class FaceVariable(_MeshVariable):
-    def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, cached=1):
-        value = self._globalToLocalValue(value, mesh.globalNumberOfFaces, mesh._getGlobalOverlappingFaceIDs())
-        _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
-                               rank=rank, elementshape=elementshape, unit=unit, cached=cached)
-                           
     def _getVariableClass(self):
         return FaceVariable
 
@@ -94,6 +89,11 @@ class FaceVariable(_MeshVariable):
             
         return self.divergence
 
+    def _getGlobalNumberOfElements(self):
+        return self.mesh.globalNumberOfFaces
+        
+    def _getGlobalOverlappingIDs(self):
+        return self.mesh._getGlobalOverlappingFaceIDs()
         
 def _test(): 
     import doctest

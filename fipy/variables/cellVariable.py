@@ -62,7 +62,6 @@ class CellVariable(_MeshVariable):
     """
 
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
-        value = self._globalToLocalValue(value, mesh.globalNumberOfCells, mesh._getGlobalOverlappingCellIDs())
         _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
                                rank=rank, elementshape=elementshape, unit=unit)
 
@@ -135,7 +134,13 @@ class CellVariable(_MeshVariable):
                                               name=self.name + "_old", 
                                               value=self.getValue(),
                                               hasOld=False)
-                                              
+                
+    def _getGlobalNumberOfElements(self):
+        return self.mesh.globalNumberOfCells
+        
+    def _getGlobalOverlappingIDs(self):
+        return self.mesh._getGlobalOverlappingCellIDs()
+
     def getGlobalValue(self):
         return self._getGlobalValue(self.mesh._getLocalNonOverlappingCellIDs(), 
                                     self.mesh._getGlobalNonOverlappingCellIDs())
