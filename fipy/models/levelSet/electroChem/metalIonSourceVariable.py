@@ -58,10 +58,12 @@ class _MetalIonSourceVariable(CellVariable):
        >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
        >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
        >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
-       >>> arr = numerix.array(_MetalIonSourceVariable(ionVar, distance, (1, 1, 1, 1), 1))
+       >>> depositionRate = CellVariable(mesh=mesh, value=(1, 1, 1, 1))
+       >>> arr = _MetalIonSourceVariable(ionVar, distance, depositionRate, 1)
        >>> sqrt = numerix.sqrt(2)
-       >>> numerix.allclose(arr, (0, 1 / sqrt, 1 / sqrt, 0))
-       1
+       >>> ans = CellVariable(mesh=mesh, value=(0, 1 / sqrt, 1 / sqrt, 0))
+       >>> print numerix.allclose(arr, ans)
+       True
 
     """
     def __init__(self, ionVar = None, distanceVar = None, depositionRate = None, metalIonMolarVolume = None):

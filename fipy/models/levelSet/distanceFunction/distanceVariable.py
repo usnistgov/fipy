@@ -509,7 +509,10 @@ class DistanceVariable(CellVariable):
         dim = self.mesh.getDim()
 
         valueOverFaces = numerix.repeat(self._getCellValueOverFaces()[numerix.newaxis, ...], dim, axis=0)
-        interfaceNormals = self._getInterfaceNormals()[...,self.cellFaceIDs]
+        if self.cellFaceIDs.shape[-1] > 0:
+            interfaceNormals = self._getInterfaceNormals()[...,self.cellFaceIDs]
+        else:
+            interfaceNormals = 0
         from fipy.tools.numerix import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
@@ -620,7 +623,9 @@ class DistanceVariable(CellVariable):
         faceGrad = numerix.array(faceGrad)
 
         ## set faceGrad zero on exteriorFaces
-        faceGrad[..., self.exteriorFaces.getValue()] = 0.
+        exteriorFaces = self.exteriorFaces.getValue()
+        if len(self.exteriorFaces.getValue()) > 0:
+            faceGrad[..., self.exteriorFaces.getValue()] = 0.
         
         return faceGrad / faceGradMag 
 

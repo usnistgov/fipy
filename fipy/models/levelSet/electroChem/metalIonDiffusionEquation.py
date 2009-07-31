@@ -117,7 +117,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        >>> L = (nx - 1) * dx - dx / 2
        >>> gradient = cinf / (omega * diffusion / v + L)
        >>> answer = gradient * (x - L - dx * 3 / 2) + cinf
-       >>> answer[0] = 1
+       >>> answer[x < dx] = 1
        >>> print ionVar.allclose(answer)
        1
 

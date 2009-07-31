@@ -89,6 +89,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
         >>> from fipy.meshes.grid1D import Grid1D
         >>> from fipy.solvers import *
+        >>> from fipy.tools import parallel
         >>> SparseMatrix = LinearPCGSolver()._getMatrixClass()
         >>> mesh = Grid1D(dx = 1., nx = 3) 
    
@@ -97,22 +98,22 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> from fipy.variables.cellVariable import CellVariable
         >>> coeff = CellVariable(mesh = mesh, value = numerix.zeros(3, 'd'))
         >>> L, b = _HigherOrderAdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix)
-        >>> numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
-        1
+        >>> print parallel.procID > 0 or numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
+        True
    
     Less trivial test:
 
         >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3))
         >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
-        >>> numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
-        1
+        >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
+        True
 
     Even less trivial
 
         >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3)) 
         >>> L, b = _HigherOrderAdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix)
-        >>> numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
-        1
+        >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
+        True
 
     Another trivial test case (more trivial than a trivial test case
     standing on a harpsichord singing 'trivial test cases are here again')
@@ -120,8 +121,8 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
        >>> vel = numerix.array((-1, 2, -3))
        >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1))) 
        >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-       >>> numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
-       1
+       >>> print parallel.procID > 0 or numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
+       True
 
     Somewhat less trivial test case:
 
@@ -131,8 +132,8 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3 , 1, 6, 7)))
         >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
         >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
-        >>> numerix.allclose(b, answer, atol = 1e-10)
-        1
+        >>> print parallel.procID > 0 or numerix.allclose(b, answer, atol = 1e-10)
+        True
 
     For the above test cases the `_HigherOrderAdvectionTerm` gives the
     same result as the `_AdvectionTerm`. The following test imposes a quadratic
@@ -158,14 +159,14 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
 
-        >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
-        0
+        >>> print numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
+        False
 
     The higher order term is spot on.
 
         >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-        >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
-        1
+        >>> print numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
+        True
 
     The `_HigherOrderAdvectionTerm` will also resolve a circular field with
     more accuracy,
@@ -182,8 +183,10 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> r = numerix.sqrt(x**2 + y**2)
         >>> coeff = CellVariable(mesh = mesh, value = r)
         >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
-        >>> error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print error.max()
+        >>> error = CellVariable(mesh=mesh, value=b + 1)
+        >>> print error
+        >>> # error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
+        >>> print error[(x > 2) & (x < 8) & (y > 2) & (y < 8)] # .max()
         0.123105625618
 
     The maximum error is large (about 12 %) for the first order advection.
