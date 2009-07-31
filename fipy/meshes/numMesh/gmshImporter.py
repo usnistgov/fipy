@@ -304,11 +304,13 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 		formatted = False
 	if not formatted:
 		CSVfilename = formatMshFile(MSHfilename,csvFile)
+	else:
+		CSVfilename=MSHfilename
 	if MSHfilename != filename:
 		os.remove(MSHfilename)
 	#Find the tags in the .msh file
 	tags = findTags(CSVfilename)
-	from numpy import genfromtxt,ma,unique1d,arange,zeros,ones,sort,array
+	from numpy import genfromtxt,ma,unique1d,arange,zeros,ones,sort,array,indices
 
 	#Load the lines under the Elements tag into an array (Ignore the first line as it is just the number of elements)
 	fi = open(CSVfilename)
@@ -339,7 +341,7 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 			#Use the array in gmshHelper to give us the FaceVertex IDs for all the cells of this type
 			faceVertexPart=elems[:,currArr]
 			faceVertexPart.mask[:]|=currArr.mask
-			faceVertexPart = faceVertexPart.reshape(-1,currArr.shape[1])-1
+			faceVertexPart = faceVertexPart.reshape(-1,currArr.shape[1])
 			#Fill in masked values if there are more Faces per Cell in some other type of cell
 			cellFacePart=ma.concatenate((cellFacePart,ma.MaskedArray(zeros((cellFacePart.shape[0],maxFacesPerCell-cellFacePart.shape[1])),ones((cellFacePart.shape[0],maxFacesPerCell-cellFacePart.shape[1])),dtype='int')),axis=1)
 			#Fill in masked values if there are more Vertices per Face in some other type of cell
@@ -373,8 +375,13 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 	#cellVertexIDs=arr[(arr[None,:,gmshHelper.colNames['ElemType']]==array(maxDimTypes)[:,None]).sum(axis=0).astype('bool'),gmshHelper.colNames['VertexStart']:].swapaxes(0,1)
 
 	#Get the vertex coordinates
-	vertexCoords = genfromtxt(subFile(fi,tags['Nodes'][1],tags['EndNodes'][0]),delimiter=',')[1:,1:dimensions+1].swapaxes(0,1)
+	vertexCoords = genfromtxt(subFile(fi,tags['Nodes'][1],tags['EndNodes'][0]),delimiter=',')[1:,:dimensions+1].swapaxes(0,1)
 	
+	vertexPointIDs=zeros((2,vertexCoords.shape[1]),dtype='int')
+	vertexPointIDs[0]=indices((vertexCoords.shape[1],))[0]
+	vertexPointIDs[1]=vertexCoords[0]
+	vertexCoords=vertexCoords[1:]
+	faceVertexIDs=ma.MaskedArray(((faceVertexIDs==vertexPointIDs[1,:,None,None]).data*vertexPointIDs[0,:,None,None]).sum(axis=0),faceVertexIDs.mask)
 	fi.close()
 	if not keepFile:
 		os.remove(CSVfilename)
@@ -382,9 +389,6 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 	faceVertexIDs.fillValue=-1
 	cellFaceIDs.fillValue=-1
 
-	print vertexCoords.shape
-	print faceVertexIDs.shape
-	print cellFaceIDs.shape
 	#create the mesh
 	from mesh import Mesh
 	from mesh1D import Mesh1D
