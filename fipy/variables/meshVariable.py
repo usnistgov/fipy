@@ -57,26 +57,63 @@ class _MeshVariable(Variable):
              Default: `rank * (mesh.getDim(),)`
           - `unit`: the physical units of the `Variable`
         """
-        if isinstance(value, _MeshVariable):
-            mesh = mesh or value.mesh
-            
-        self.mesh = mesh
+        from fipy.tools import debug
 
+        if isinstance(value, (list, tuple)):
+            value = numerix.array(value)
+            
+        if isinstance(value, _MeshVariable):
+            if mesh is None:
+                mesh = value.mesh
+            elif mesh != value.mesh:
+                raise ValueError, "The new 'Variable' must use the same mesh as the supplied value"
+
+        self.mesh = mesh
         value = self._globalToLocalValue(value)
-        
-        if elementshape is None:
-            if rank is not None:
-                elementshape = rank * (mesh.getDim(),)
-            else:
-                elementshape = ()
-        else:
-            if rank is not None and len(elementshape) != rank:
-                raise DimensionError, 'len(elementshape) != rank'
-        self.elementshape = elementshape
         
         if value is None:
             array = None
-        else:
+        elif not isinstance(value, _Constant) and isinstance(value, Variable):
+            name = name or value.name
+            unit = None
+            if isinstance(value, _MeshVariable):
+                if not isinstance(value, self._getVariableClass()):
+                    raise TypeError, "A '%s' cannot be cast to a '%s'" % (value._getVariableClass().__name__, 
+                                                                          self._getVariableClass().__name__)
+                if elementshape is not None and elementshape != value.shape[:-1]:
+                    raise ValueError, "'elementshape' != shape of elements of 'value'"
+
+                if rank is not None and rank != value.getRank():
+                    raise ValueError, "'rank' != rank of 'value'"
+
+                elementshape = value.shape[:-1]
+                array = None
+
+#             value = value._copyValue()
+
+        if elementshape is None:
+            valueShape = numerix.getShape(value)
+            if valueShape != () and valueShape[-1] == self._getShapeFromMesh(mesh)[-1]:
+                if elementshape is not None and elementshape != valueShape[:-1]:
+                    raise ValueError, "'elementshape' != shape of elements of 'value'"
+
+                if rank is not None and rank != len(valueShape[:-1]):
+                    raise ValueError, "'rank' != rank of 'value'"
+                elementshape = valueShape[:-1]
+            elif rank is None and elementshape is None:
+                elementshape = valueShape
+
+        if rank is None:
+            if elementshape is None:
+                elementshape = ()
+        elif elementshape is None:
+            elementshape = rank * (mesh.getDim(),)
+        elif len(elementshape) != rank:
+            raise ValueError, 'len(elementshape) != rank'
+                
+        self.elementshape = elementshape
+        
+        if not locals().has_key("array"):
             array = numerix.zeros(self.elementshape 
                                   + self._getShapeFromMesh(mesh),
                                   numerix.obj2sctype(value))
@@ -97,6 +134,8 @@ class _MeshVariable(Variable):
                 if valueShape[-1] != 0:
                     # workaround for NumPy:ticket:1171
                     value = value[..., self._getGlobalOverlappingIDs()]
+                    
+            value = value.getValue()
         return value
         
     def _getGlobalNumberOfElements(self):
