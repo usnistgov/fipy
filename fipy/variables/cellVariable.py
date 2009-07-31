@@ -146,10 +146,7 @@ class CellVariable(_MeshVariable):
                                     self.mesh._getGlobalNonOverlappingCellIDs())
 
     def setValue(self, value, unit = None, where = None):
-        mesh = self.getMesh()
-        value = self._globalToLocalValue(value, mesh.globalNumberOfCells, mesh._getGlobalOverlappingCellIDs())
-        
-        _MeshVariable.setValue(self, value=value, unit=unit, where=where)
+        _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 
     def __call__(self, points=None, order=0, nearestCellIDs=None):
         r"""
