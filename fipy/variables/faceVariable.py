@@ -68,10 +68,7 @@ class FaceVariable(_MeshVariable):
                                     self.mesh._getGlobalNonOverlappingFaceIDs())
 
     def setValue(self, value, unit = None, where = None):
-        mesh = self.getMesh()
-        value = self._globalToLocalValue(value, mesh.globalNumberOfFaces, mesh._getGlobalOverlappingFaceIDs())
-        
-        _MeshVariable.setValue(self, value=value, unit=unit, where=where)
+        _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 
     def getDivergence(self):
         """
