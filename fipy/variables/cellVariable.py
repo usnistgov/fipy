@@ -290,21 +290,21 @@ class CellVariable(_MeshVariable):
             >>> mesh = Grid1D(dx = (1., 1.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-            >>> answer = (var[0] - var[1]) * (0.5 / 1.) + var[1]
+            >>> answer = (var[1] - var[0]) * (0.5 / 1.) + var[0]
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
             
             >>> mesh = Grid1D(dx = (2., 4.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-            >>> answer = (var[0] - var[1]) * (1.0 / 3.0) + var[1]
+            >>> answer = (var[1] - var[0]) * (1.0 / 3.0) + var[0]
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
 
             >>> mesh = Grid1D(dx = (10., 100.))
             >>> var = CellVariable(mesh = mesh, value = (1, 2))
             >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-            >>> answer = (var[0] - var[1]) * (5.0 / 55.0) + var[1]
+            >>> answer = (var[1] - var[0]) * (5.0 / 55.0) + var[0]
             >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
             1
         """
