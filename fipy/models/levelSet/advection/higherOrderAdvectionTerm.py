@@ -184,17 +184,19 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> coeff = CellVariable(mesh = mesh, value = r)
         >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
         >>> error = CellVariable(mesh=mesh, value=b + 1)
-        >>> print error
-        >>> # error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print error[(x > 2) & (x < 8) & (y > 2) & (y < 8)] # .max()
-        0.123105625618
+        >>> ans = CellVariable(mesh=mesh, value=b + 1)
+        >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.123105625618
+        >>> print (ans - error).min()
+        0.0
 
     The maximum error is large (about 12 %) for the first order advection.
 
         >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
-        >>> error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print error.max()
-        0.0201715476597
+        >>> error = CellVariable(mesh=mesh, value=b + 1)
+        >>> ans = CellVariable(mesh=mesh, value=b + 1)
+        >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.0201715476598
+        >>> print (ans - error).min()
+        0.0
 
     The maximum error is 2 % when using a higher order contribution.
 
