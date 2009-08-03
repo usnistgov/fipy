@@ -742,7 +742,7 @@ except IOError, e:
 #         },
 
 dist = setup(	name = "FiPy",
-        version = "2.0.2", 
+        version = "2.0.3a1", 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
