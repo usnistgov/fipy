@@ -1163,23 +1163,23 @@ class Variable(object):
         """
         return bool(self.getValue())
     
-    def any(self, axis=None, out=None):
+    def any(self, axis=None):
         """
             >>> print Variable(value=0).any()
             0
             >>> print Variable(value=(0, 0, 1, 1)).any()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis, out=out))
+        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis))
 
-    def all(self, axis=None, out=None):
+    def all(self, axis=None):
         """
             >>> print Variable(value=(0, 0, 1, 1)).all()
             0
             >>> print Variable(value=(1, 1, 1, 1)).all()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis, out=out))
+        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis))
 
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))
