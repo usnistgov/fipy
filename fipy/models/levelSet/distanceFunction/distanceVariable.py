@@ -439,9 +439,10 @@ class DistanceVariable(CellVariable):
            >>> mesh = Grid1D(dx = 1., nx = 4)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
            ...                                     value = (-1.5, -0.5, 0.5, 1.5))
-           >>> numerix.allclose(distanceVariable.getCellInterfaceAreas(), 
-           ...                  (0, 0., 1., 0))
-           1
+           >>> answer = CellVariable(mesh=mesh, value=(0, 0., 1., 0))
+           >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), 
+           ...                        answer)
+           True
 
         A 2D test case:
         
@@ -478,19 +479,18 @@ class DistanceVariable(CellVariable):
 	..
 	
            >>> mesh = Grid2D(dx = 0.05, dy = 0.05, nx = 20, ny = 20)
-           >>> from fipy.variables.cellVariable import CellVariable
            >>> r = 0.25
            >>> x, y = mesh.getCellCenters()
            >>> rad = numerix.sqrt((x - .5)**2 + (y - .5)**2) - r
            >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-           >>> print CellVariable(mesh=mesh, 
-           ...                    value=distanceVariable.getCellInterfaceAreas()).sum()
+           >>> print distanceVariable.getCellInterfaceAreas().sum()
            1.57984690073
            
         """        
         normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), 0))
         areas = numerix.array(MA.filled(self.mesh._getCellAreaProjections(), 0))
-        return numerix.sum(abs(numerix.dot(normals, areas)), axis=0)
+        return CellVariable(mesh=self.mesh, 
+                            value=numerix.sum(abs(numerix.dot(normals, areas)), axis=0))
 
     def _getCellInterfaceNormals(self):
         """
