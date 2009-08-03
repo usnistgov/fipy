@@ -214,8 +214,13 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> for step in range(10):
        ...     eqn0.solve(var0, dt = dt)
        ...     eqn1.solve(var1, dt = dt)
-       >>> print var0.getInterfaceVar()[2] + var1.getInterfaceVar()[2]
-       1.0
+
+       >>> x, y = mesh.getCellCenters()
+       >>> check = var0.getInterfaceVar() + var1.getInterfaceVar()
+       >>> answer = CellVariable(mesh=mesh, value=check)
+       >>> answer[x==1.25] = 1.
+       >>> print check.allequal(answer)
+       True
 
     The following test case is to fix a bug where setting the adosrbtion
     coefficient to zero leads to the solver not converging and an eventual
@@ -232,8 +237,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
        >>> eqn0.solve(var0, dt = dt)
        >>> eqn0.solve(var0, dt = dt)
-       >>> print numerix.allclose(var0.getInterfaceVar()[2], 0)
-       1
+       >>> answer = CellVariable(mesh=mesh, value=var0.getInterfaceVar())
+       >>> answer[x==1.25] = 0.
+       >>> print var0.getInterfaceVar().allclose(answer)
+       True
 
     The following test case is to fix a bug that allows the accelerator to
     become negative.
@@ -241,12 +248,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        >>> nx = 5
        >>> ny = 5
        >>> mesh = Grid2D(dx = 1., dy = 1., nx = nx, ny = ny)
-       >>> values = numerix.ones(mesh.getNumberOfCells(), 'd')
-       >>> values[0:nx] = -1
-       >>> for i in range(ny):
-       ...     values[i * nx] = -1
-
-       >>> disVar = DistanceVariable(mesh = mesh, value = values, hasOld = 1)
+       >>> x, y = mesh.getCellCenters()
+       >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)
+       >>> disVar[y < dy] = -1
+       >>> disVar[x < dx] = -1
        >>> disVar.calcDistanceFunction()
 
        >>> levVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
@@ -282,8 +287,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
        ...     levEq.solve(levVar, dt = dt)
        ...     accEq.solve(accVar, dt = dt)
 
-       >>> print numerix.sum(accVar < -1e-10) == 0
-       1
+       >>> print (accVar >= -1e-10).all()
+       True
    
    """
     def __init__(self,
