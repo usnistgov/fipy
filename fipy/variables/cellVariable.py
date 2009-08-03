@@ -453,63 +453,7 @@ class CellVariable(_MeshVariable):
                                       axis=axis)
         else:
             return _MeshVariable.sum(self, axis=axis)
-                                    
-    def max(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
-            from PyTrilinos import Epetra
-            def maxParallel(a):
-                a = a[self.mesh._getLocalNonOverlappingCellIDs()]
-                
-                if numerix.multiply.reduce(a.shape) == 0:
-                    if axis is None:
-                        opShape = ()
-                    else:
-                        opShape=self.shape[:axis] + self.shape[axis+1:]
-                        
-                    if len(opShape) == 0:
-                        nodeMax = -numerix.inf
-                    else:
-                        nodeMax = numerix.empty(opShape)
-                        nodeMax[:] = -numerix.inf
-                else:
-                    nodeMax = a.max(axis=axis)
-                    
-                return Epetra.PyComm().MaxAll(nodeMax)
-                
-            return self._axisOperator(opname="maxVar", 
-                                      op=maxParallel, 
-                                      axis=axis)
-        else:
-            return _MeshVariable.max(self, axis=axis)
-                                  
-    def min(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
-            from PyTrilinos import Epetra
-            def minParallel(a):
-                a = a[self.mesh._getLocalNonOverlappingCellIDs()]
-                
-                if numerix.multiply.reduce(a.shape) == 0:
-                    if axis is None:
-                        opShape = ()
-                    else:
-                        opShape=self.shape[:axis] + self.shape[axis+1:]
-                        
-                    if len(opShape) == 0:
-                        nodeMin = numerix.inf
-                    else:
-                        nodeMin = numerix.empty(opShape)
-                        nodeMin[:] = numerix.inf
-                else:
-                    nodeMin = a.min(axis=axis)
-
-                return Epetra.PyComm().MinAll(nodeMin)
-                
-            return self._axisOperator(opname="minVar", 
-                                      op=minParallel, 
-                                      axis=axis)
-        else:
-            return _MeshVariable.min(self, axis=axis)
-
+                     
     def getOld(self):
         """
         Return the values of the `CellVariable` from the previous

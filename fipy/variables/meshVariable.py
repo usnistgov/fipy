@@ -36,7 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
-from fipy.tools import numerix
+from fipy.tools import numerix, parallel
 
 class _MeshVariable(Variable):
     """
@@ -143,7 +143,10 @@ class _MeshVariable(Variable):
         
     def _getGlobalOverlappingIDs(self):
         pass
-        
+
+    def _getLocalNonOverlappingIDs(self):
+        pass
+
     def _getGlobalValue(self, localIDs, globalIDs):
         from fipy.tools import parallel
         localValue = self.getValue()
@@ -295,6 +298,65 @@ class _MeshVariable(Variable):
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
         
         return self.__dot(other, self, self._OperatorVariableClass(baseClass))
+
+    def _maxminparallel_(self, a, axis, default, fn, fnParallel):
+        a = a[self._getLocalNonOverlappingIDs()]
+        
+        if numerix.multiply.reduce(a.shape) == 0:
+            if axis is None:
+                opShape = ()
+            else:
+                opShape=self.shape[:axis] + self.shape[axis+1:]
+                
+            if len(opShape) == 0:
+                nodeMax = default
+            else:
+                nodeMax = numerix.empty(opShape)
+                nodeMax[:] = default
+        else:
+            nodeMax = fn(axis=axis)
+        
+        return fnParallel(nodeMax)
+
+    def max(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def maxParallel(a):
+                return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
+                                             fn=a.max, fnParallel=Epetra.PyComm().MaxAll)
+                
+            return self._axisOperator(opname="maxVar", 
+                                      op=maxParallel, 
+                                      axis=axis)
+        else:
+            return Variable.max(self, axis=axis)
+                                  
+    def min(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def minParallel(a):
+                return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
+                                             fn=a.min, fnParallel=Epetra.PyComm().MinAll)
+                
+            return self._axisOperator(opname="minVar", 
+                                      op=minParallel, 
+                                      axis=axis)
+        else:
+            return Variable.min(self, axis=axis)
+
+    def all(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from mpi4py import MPI
+            def allParallel(a):
+                return self._maxminparallel_(a=a, axis=axis, default=True, 
+                                             fn=a.all, 
+                                             fnParallel=lambda p: MPI.COMM_WORLD.allreduce(p, op=MPI.LAND))
+                
+            return self._axisOperator(opname="allVar", 
+                                      op=allParallel, 
+                                      axis=axis)
+        else:
+            return Variable.all(self, axis=axis)
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
