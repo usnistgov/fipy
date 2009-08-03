@@ -376,9 +376,15 @@ class _MeshVariable(Variable):
             return self._OperatorVariableClass()
 
     def _getitemClass(self, index):
+        if not isinstance(index, tuple):
+            if isinstance(index, list):
+                index = tuple(index)
+            else:
+                index = (index,)
         indexshape = numerix._indexShape(index=index, arrayShape=self.shape)
         if (len(indexshape) > 0
-            and indexshape[-1] == self.shape[-1]):
+            and indexshape[-1] == self.shape[-1]
+            and numerix.obj2sctype(index[-1]) != numerix.obj2sctype(bool)):
             return self._OperatorVariableClass()
         else:
             return Variable._OperatorVariableClass(self, baseClass=Variable)
