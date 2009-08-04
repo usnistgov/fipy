@@ -1100,8 +1100,8 @@ class Variable(object):
 
             >>> a = Variable(value=(0, 0, 1, 1))
             >>> b = Variable(value=(0, 1, 0, 1))
-            >>> numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
-            1
+            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            True
             >>> print a & b
             [0 0 0 1]
             >>> from fipy.meshes.grid1D import Grid1D
@@ -1109,8 +1109,8 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
-            1
+            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            True
             >>> print a & b
             [0 0 0 1]
 
@@ -1123,8 +1123,8 @@ class Variable(object):
 
             >>> a = Variable(value=(0, 0, 1, 1))
             >>> b = Variable(value=(0, 1, 0, 1))
-            >>> numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
-            1
+            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            True
             >>> print a | b
             [0 1 1 1]
             >>> from fipy.meshes.grid1D import Grid1D
@@ -1132,8 +1132,8 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
-            1
+            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            True
             >>> print a | b
             [0 1 1 1]
             
