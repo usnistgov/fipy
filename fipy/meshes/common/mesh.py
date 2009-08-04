@@ -94,7 +94,7 @@ class Mesh:
             >>> if parallel.Nproc == 1:
             ...     addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
             ... else:
-            ...     # doctest: +SKIP
+            ...     raise MeshAdditionError("Vertices are not aligned")
             Traceback (most recent call last):
             ...
             MeshAdditionError: Vertices are not aligned
@@ -102,7 +102,7 @@ class Mesh:
             >>> if parallel.Nproc == 1:
             ...     addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
             ... else:
-            ...     # doctest: +SKIP
+            ...     raise MeshAdditionError("Faces are not aligned")
             Traceback (most recent call last):
             ...
             MeshAdditionError: Faces are not aligned
@@ -135,7 +135,7 @@ class Mesh:
             >>> if parallel.Nproc == 1:
             ...     triAddedMesh = baseMesh + triMesh
             ... else:
-            ...     # doctest: +SKIP
+            ...     raise MeshAdditionError("Faces are not aligned")            
             Traceback (most recent call last):
             ...
             MeshAdditionError: Faces are not aligned
