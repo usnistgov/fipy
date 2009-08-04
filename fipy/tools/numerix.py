@@ -163,8 +163,12 @@ def reshape(arr, shape):
         # e.g., NUMERIX.reshape(a, (-1, N)) fails if N == 0
         oldShape = array(getShape(arr))
         oldShape[oldShape == 0] = 1
-        
-        index = shape.index(-1)
+
+        if hasattr(shape, 'index'):
+            index = shape.index(-1)
+        else:
+            index = list(shape).index(-1)
+            
         left = shape[:index]
         right = shape[index+1:]
         newShape = array(left + right)
