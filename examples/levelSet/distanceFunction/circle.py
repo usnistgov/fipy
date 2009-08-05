@@ -129,7 +129,7 @@ The result can be tested with the following commands.
    ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 
    ...     MASK)
 
-   >>> print MA.allclose(var, trialValues)
+   >>> print numerix.allclose(var, trialValues)
    True
    
 """
