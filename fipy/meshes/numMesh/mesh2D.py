@@ -123,7 +123,7 @@ class Mesh2D(Mesh):
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) ## what we put in for the "fill" doesn't matter because only exterior faces have anything masked, and exterior faces have their displacement vectors set to zero.
         ## if it's an exterior face, make the "displacement vector" equal to zero so the cross product will be zero.
     
-        faceDisplacementVectors = numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)), 0.0, numerix.take(self.getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[1, :]) - numerix.take(self.getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[0, :])).swapaxes(0,1)
+        faceDisplacementVectors = numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)), 0.0, numerix.take(self._getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[1, :]) - numerix.take(self._getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[0, :])).swapaxes(0,1)
         faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1, :]) - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
         faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
         faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self.faceAreas
