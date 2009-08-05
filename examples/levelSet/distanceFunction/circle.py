@@ -128,8 +128,9 @@ The result can be tested with the following commands.
    ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
    ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 
    ...     MASK)
-   >>> print var.allclose(trialValues)
-   1
+
+   >>> print MA.allclose(var, trialValues)
+   True
    
 """
 __docformat__ = 'restructuredtext'
