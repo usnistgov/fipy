@@ -72,7 +72,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
     >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions)
+    ...          boundaryConditions = boundaryConditions, solver=LinearLUSolver())
 
 
 The analytical solution test for this problem is given by:
