@@ -99,7 +99,7 @@ Test cases:
    >>> print newmesh._getFaceVertexIDs()
    [[2 4 4 4 3 4 4 3 4 3]
     [1 1 2 2 1 3 3 2 3 2]
-    [0 0 0 1 0 0 1 0 2 1]]
+    [0 0 0 1 0 0 1 0 2 1]]0
 
    >>> print newmesh._getCellFaceIDs()
    [[0 4 7 9]
@@ -274,6 +274,26 @@ def subFile(fi,start,end):
 	fi.seek(start)
 	return StringIO(fi.read(end-start))
 	
+def invIDs(ids):
+	from numpy.ma import zeros,ones,arange,indices,MaskedArray,bitwise_or
+	if type(ids) != type(MaskedArray(0)):
+		ids = MaskedArray(ids,zeros(ids.shape),dtype=int)
+	l = ids.max()+1
+	u = arange(l)
+	u.mask = zeros(u.shape)
+	e = bitwise_or.reduce(u == ids[...,None])
+	ind = indices(ids.shape)[1,0][...,None]
+	m = e.sum(axis=0).max()
+	z = MaskedArray(zeros((m,l)),ones((m,l)),dtype=int)
+
+	from numpy import vectorize
+	def setCol(n):
+		opp = (e*ind)[e[:,n],n]
+		z.mask[:opp.size,n]=False
+		z[:opp.size,n]=opp
+	setCol=vectorize(setCol)
+	setCol(u,otypes=[])
+	return z
 	
 def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=False,csvFile=None):
 	'''This method generates a FiPy mesh using gmsh.
@@ -388,6 +408,8 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 	
 	faceVertexIDs.fillValue=-1
 	cellFaceIDs.fillValue=-1
+	
+	#Order the vertices in the FaceVertexIDs 
 
 	#create the mesh
 	from mesh import Mesh
