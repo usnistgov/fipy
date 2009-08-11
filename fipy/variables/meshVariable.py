@@ -309,14 +309,14 @@ class _MeshVariable(Variable):
                 opShape=self.shape[:axis] + self.shape[axis+1:]
                 
             if len(opShape) == 0:
-                nodeMax = default
+                nodeVal = default
             else:
-                nodeMax = numerix.empty(opShape)
-                nodeMax[:] = default
+                nodeVal = numerix.empty(opShape)
+                nodeVal[:] = default
         else:
-            nodeMax = fn(axis=axis)
+            nodeVal = fn(axis=axis)
         
-        return fnParallel(nodeMax)
+        return fnParallel(nodeVal)
 
     def max(self, axis=None):
         if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
@@ -348,15 +348,40 @@ class _MeshVariable(Variable):
         if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             from mpi4py import MPI
             def allParallel(a):
-                return self._maxminparallel_(a=a, axis=axis, default=True, 
-                                             fn=a.all, 
-                                             fnParallel=lambda p: MPI.COMM_WORLD.allreduce(p, op=MPI.LAND))
+                a = a[self._getLocalNonOverlappingIDs()]
+                return MPI.COMM_WORLD.allreduce(a.all(axis=axis), op=MPI.LAND)
                 
             return self._axisOperator(opname="allVar", 
                                       op=allParallel, 
                                       axis=axis)
         else:
             return Variable.all(self, axis=axis)
+
+    def any(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from mpi4py import MPI
+            def anyParallel(a):
+                a = a[self._getLocalNonOverlappingIDs()]
+                return MPI.COMM_WORLD.allreduce(a.any(axis=axis), op=MPI.LOR)
+                
+            return self._axisOperator(opname="anyVar", 
+                                      op=anyParallel, 
+                                      axis=axis)
+        else:
+            return Variable.any(self, axis=axis)
+
+    def sum(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def sumParallel(a):
+                a = a[self._getLocalNonOverlappingIDs()]
+                return Epetra.PyComm().SumAll(a.sum(axis=axis))
+                
+            return self._axisOperator(opname="sumVar", 
+                                      op=sumParallel, 
+                                      axis=axis)
+        else:
+            return Variable.sum(self, axis=axis)
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """

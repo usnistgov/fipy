@@ -419,6 +419,7 @@ fipy/tests/lateImportTest.py
 fipy/tests/testBase.py
 fipy/tests/testProgram.py
 fipy/tools/__init__.py
+fipy/tools/debug.py
 fipy/tools/dump.py
 fipy/tools/inline.py
 fipy/tools/memoryLeak.py

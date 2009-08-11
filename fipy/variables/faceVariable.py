@@ -92,6 +92,9 @@ class FaceVariable(_MeshVariable):
     def _getGlobalOverlappingIDs(self):
         return self.mesh._getGlobalOverlappingFaceIDs()
         
+    def _getLocalNonOverlappingIDs(self):
+        return self.mesh._getLocalNonOverlappingFaceIDs()
+
 def _test(): 
     import doctest
     return doctest.testmod()

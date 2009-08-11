@@ -186,8 +186,10 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> error = CellVariable(mesh=mesh, value=b + 1)
         >>> ans = CellVariable(mesh=mesh, value=b + 1)
         >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.123105625618
+        >>> print (error <= ans).all()
+        True
+        >>> print (ans - error)
         >>> print (ans - error).min()
-        0.0
 
     The maximum error is large (about 12 %) for the first order advection.
 
@@ -195,8 +197,8 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> error = CellVariable(mesh=mesh, value=b + 1)
         >>> ans = CellVariable(mesh=mesh, value=b + 1)
         >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.0201715476598
-        >>> print (ans - error).min()
-        0.0
+        >>> print (error <= ans).all()
+        True
 
     The maximum error is 2 % when using a higher order contribution.
 

@@ -37,7 +37,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.meshVariable import _MeshVariable
-from fipy.tools import numerix, parallel
+from fipy.tools import numerix
 
 class CellVariable(_MeshVariable):
     """
@@ -140,6 +140,9 @@ class CellVariable(_MeshVariable):
         
     def _getGlobalOverlappingIDs(self):
         return self.mesh._getGlobalOverlappingCellIDs()
+
+    def _getLocalNonOverlappingIDs(self):
+        return self.mesh._getLocalNonOverlappingCellIDs()
 
     def getGlobalValue(self):
         return self._getGlobalValue(self.mesh._getLocalNonOverlappingCellIDs(), 
@@ -441,19 +444,6 @@ class CellVariable(_MeshVariable):
         """
         return self.getGrad().getArithmeticFaceValue()
 
-    def sum(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
-            from PyTrilinos import Epetra
-            def sumParallel(a):
-                a = a[self.mesh._getLocalNonOverlappingCellIDs()]
-                return Epetra.PyComm().SumAll(a.sum(axis=axis))
-                
-            return self._axisOperator(opname="sumVar", 
-                                      op=sumParallel, 
-                                      axis=axis)
-        else:
-            return _MeshVariable.sum(self, axis=axis)
-                     
     def getOld(self):
         """
         Return the values of the `CellVariable` from the previous
