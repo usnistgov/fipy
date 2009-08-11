@@ -641,12 +641,12 @@ class Variable(object):
 
         Returns the Numpy sctype of the underlying array.
 
-            >>> Variable(1).getsctype()
-            <type 'numpy.int32'>
-            >>> Variable(1.).getsctype()
-            <type 'numpy.float64'>
-            >>> Variable((1,1.)).getsctype()
-            <type 'numpy.float64'>
+            >>> Variable(1).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            True
+            >>> Variable(1.).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            True
+            >>> Variable((1,1.)).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            True
             
         """
         

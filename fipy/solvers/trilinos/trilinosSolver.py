@@ -81,8 +81,20 @@ class TrilinosSolver(Solver):
         A = matrix[localNonOverlappingCellIDs, localOverlappingCellIDs].matrix
         
         values, irow, jcol = A.find()
-        self.globalMatrix.InsertGlobalValues(globalNonOverlappingCellIDs[irow], 
-                                             globalOverlappingCellIDs[jcol], 
+
+        globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDs[irow]
+        if hasattr(globalNonOverlappingCellIDsIrow, 'astype') and \
+               globalNonOverlappingCellIDsIrow.dtype.name == 'int64':
+            globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDsIrow.astype('int32')
+
+        globalOverlappingCellIDsJcol = globalOverlappingCellIDs[jcol]
+        if hasattr(globalOverlappingCellIDsJcol, 'astype') and \
+               globalOverlappingCellIDsJcol.dtype.name == 'int64':
+            globalOverlappingCellIDsJcol = globalOverlappingCellIDsJcol.astype('int32')
+        
+        
+        self.globalMatrix.InsertGlobalValues(globalNonOverlappingCellIDsIrow, 
+                                             globalOverlappingCellIDsJcol, 
                                              values)
         
         self.globalMatrix.FillComplete()

@@ -904,12 +904,12 @@ class PhysicalField(object):
 
         Returns the Numpy sctype of the underlying array.
 
-            >>> PhysicalField(1, 'm').getsctype()
-            <type 'numpy.int32'>
-            >>> PhysicalField(1., 'm').getsctype()
-            <type 'numpy.float64'>
-            >>> PhysicalField((1,1.), 'm').getsctype()
-            <type 'numpy.float64'>
+            >>> PhysicalField(1, 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            True
+            >>> PhysicalField(1., 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            True
+            >>> PhysicalField((1,1.), 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            True
             
         """
         
