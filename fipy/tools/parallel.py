@@ -37,6 +37,12 @@
 __docformat__ = 'restructuredtext'
 
 try:
+    
+    try:
+        import scipy
+    except:
+        pass
+    
     from PyTrilinos import Epetra
     
     procID = Epetra.PyComm().MyPID()
