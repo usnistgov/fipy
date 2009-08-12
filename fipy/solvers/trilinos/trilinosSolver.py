@@ -78,10 +78,13 @@ class TrilinosSolver(Solver):
 
         self.globalMatrix = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, -1)
 
-        A = matrix[localNonOverlappingCellIDs, localOverlappingCellIDs].matrix
-        
-        values, irow, jcol = A.find()
+        localNonOverlappingCellIDsMask = numerix.zeros(len(localOverlappingCellIDs), 'int')
+        localNonOverlappingCellIDsMask[localNonOverlappingCellIDs] = 1
+        A = matrix.matrix
+        A.delete_rows(localNonOverlappingCellIDsMask)
 
+        values, irow, jcol = A.find()
+        
         globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDs[irow]
         if hasattr(globalNonOverlappingCellIDsIrow, 'astype') and \
                globalNonOverlappingCellIDsIrow.dtype.name == 'int64':
