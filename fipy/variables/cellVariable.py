@@ -281,9 +281,11 @@ class CellVariable(_MeshVariable):
         Tests
 
             >>> from fipy import Grid2D
-            >>> print CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
-            [[8.0 8.0 24.0 24.0]
-             [1.2 2.0 1.2 2.0]]
+            >>> m = Grid2D(nx=2, ny=2, dx=0.1, dy=2.0)
+            >>> print numerix.allclose(CellVariable(mesh=m, value=(0,1,3,6)).getLeastSquaresGrad().getGlobalValue(), \
+            ...                                     [[8.0, 8.0, 24.0, 24.0],
+            ...                                      [1.2, 2.0, 1.2, 2.0]])
+            True
 
             >>> from fipy import Grid1D
             >>> print numerix.allclose(CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), 
