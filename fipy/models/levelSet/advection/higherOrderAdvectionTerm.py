@@ -188,8 +188,6 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.123105625618
         >>> print (error <= ans).all()
         True
-        >>> print (ans - error)
-        >>> print (ans - error).min()
 
     The maximum error is large (about 12 %) for the first order advection.
 
