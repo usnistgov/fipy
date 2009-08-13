@@ -442,12 +442,13 @@ and again iterate to equilibrium
 
 .. raw:: latex
 
-   \IndexClass{LinearLUSolver}
+   \IndexClass{DefaultAssymetricSolver}
 
 ..
 
-    >>> solver = LinearLUSolver(tolerance=1e-3)
+    >>> solver = DefaultAssymetricSolver(tolerance=1e-10)
 
+                 
     >>> dt = 10000
     >>> for i in range(5):
     ...     for field in [phase] + substitutionals + interstitials:
@@ -475,19 +476,22 @@ We can confirm that the far-field phases have remained separated
 
 ..
 
-    >>> ends = take(phase, (0,-1))
-    >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
-    1
+    >>> X = mesh.getFaceCenters()[0]
+    >>> print allclose(phase.getFaceValue()[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
+    True
+    >>> print allclose(phase.getFaceValue()[X==L], 0.0, rtol = 1e-5, atol = 1e-5)
+    True
     
 and that the concentration fields have appropriately segregated into 
 their equilibrium values in each phase
 
     >>> equilibrium = True
     >>> for Cj in interstitials + substitutionals:
-    ...     ends = take(Cj, (0,-1))
-    ...     equilibrium &= allclose(ends, (Cj.S, Cj.L), rtol = 3e-3, atol = 3e-3)
+    ...     equilibrium &= allclose(Cj.getFaceValue()[X==0], Cj.S, rtol = 3e-3, atol = 3e-3).getValue()
+    ...     equilibrium &= allclose(Cj.getFaceValue()[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).getValue()
     >>> print equilibrium
-    1
+    True
+    
 """
 __docformat__ = 'restructuredtext'
 

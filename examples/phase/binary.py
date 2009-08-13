@@ -556,12 +556,12 @@ non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep. Because of the
 ``ConvectionTerm``, the solution matrix for ``diffusionEq`` is asymmetric
-and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use a
-``LinearLUSolver`` for this equation.
+and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use the
+``DefaultAssymetricSolver`` for this equation.
 
 .. raw:: latex
 
-   \IndexClass{LinearLUSolver}
+   \IndexClass{DefaultAssymetricSolver}
    \IndexFunction{solve}
    \IndexFunction{sweep}
 
@@ -570,7 +570,7 @@ and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use a
 We now use the "`sweep()`" method instead of "`solve()`" because we
 require the residual.
 
-    >>> solver = LinearLUSolver(tolerance=1e-10)
+    >>> solver = DefaultAssymetricSolver(tolerance=1e-10)
 
     >>> phase.updateOld()
     >>> C.updateOld()
@@ -590,10 +590,11 @@ require the residual.
 We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
 
-    >>> print Cs.allclose(C[0], atol=2e-4)
-    1
-    >>> print Cl.allclose(C[nx-1], atol=2e-4)
-    1
+    >>> X = mesh.getFaceCenters()[0]
+    >>> print Cs.allclose(C.getFaceValue()[X==0], atol=2e-4)
+    True
+    >>> print Cl.allclose(C.getFaceValue()[X==L], atol=2e-4)
+    True
 
 and that the phase fraction remains unchanged
 
