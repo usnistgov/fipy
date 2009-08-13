@@ -38,7 +38,7 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportTestSuite(testModuleNames = (
         'solvers.test',
-#         'models.test',
+        'models.test',
         'terms.test',
         'tools.test',
         'meshes.test',
