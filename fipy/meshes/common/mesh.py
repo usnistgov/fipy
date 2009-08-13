@@ -91,6 +91,7 @@ class Mesh:
         The two `Mesh` objects must be properly aligned in order to concatenate them
         
             >>> from fipy.tools import parallel
+            >>> from fipy.meshes.numMesh.mesh import MeshAdditionError
             >>> if parallel.Nproc == 1:
             ...     addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
             ... else:
