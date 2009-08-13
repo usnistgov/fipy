@@ -112,9 +112,9 @@ class UniformGrid2D(Grid2D):
         self.setScale(value = scale)
         
     def _translate(self, vector):
-        return UniformGrid2D(dx = self.dx, nx = self.nx, 
-                             dy = self.dy, ny = self.ny, 
-                             origin = self.origin + vector)
+        return self.__class__(dx = self.dx, nx = self.nx, 
+                              dy = self.dy, ny = self.ny, 
+                              origin = self.origin + vector)
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():
