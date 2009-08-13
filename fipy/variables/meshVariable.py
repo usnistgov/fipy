@@ -457,7 +457,7 @@ class _MeshVariable(Variable):
         `_MeshVariable`, otherwise we get back a `_MeshVariable` of the same
         class, but lower rank.
         """
-        if axis is None or axis == len(self.shape) or axis == -1:
+        if axis is None or axis == len(self.shape) - 1 or axis == -1:
             return Variable._OperatorVariableClass(self, baseClass=Variable)
         else:
             return self._OperatorVariableClass()
