@@ -101,7 +101,7 @@ class Mesh2D(Mesh):
         return newmesh
 
     def _concatenate(self, other, smallNumber):
-        return Mesh2D(**self._getAddedMeshValues(other, smallNumber))
+        return Mesh2D(**self._getAddedMeshValues(other._getConcatenableMesh(), smallNumber))
 
     def _getOrderedCellVertexIDs(self):
         from fipy.tools.numerix import take

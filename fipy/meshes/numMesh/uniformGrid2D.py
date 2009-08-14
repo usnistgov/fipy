@@ -49,7 +49,7 @@ class UniformGrid2D(Grid2D):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2, parallelModule=parallel):
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2, parallelModule=parallel):        
         self.args = {
             'dx': dx, 
             'dy': dy, 
@@ -114,10 +114,9 @@ class UniformGrid2D(Grid2D):
         self.setScale(value = scale)
         
     def _translate(self, vector):
-        return self.__class__(dx = self.dx, nx = self.nx, 
-                              dy = self.dy, ny = self.ny, 
-                              origin = self.origin + vector,
-                              parallelModule=self.args['parallelModule'])
+        args = self.args.copy()        
+        args['origin'] =  numerix.array(args['origin']) + vector
+        return self.__class__(**args)
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():
@@ -128,13 +127,16 @@ class UniformGrid2D(Grid2D):
                              origin = self.origin * factor)
 
     def _getConcatenableMesh(self):
-        from fipy.meshes.numMesh.mesh2D import Mesh2D
-        return Mesh2D(vertexCoords = self.getVertexCoords(), 
-                      faceVertexIDs = self._createFaces(), 
-                      cellFaceIDs = self._createCells())
-                      
+        from fipy.meshes.numMesh.grid2D import Grid2D
+        args = self.args.copy()
+        origin = args['origin']
+        from fipy.tools import serial
+        args['parallelModule'] = serial
+        del args['origin']
+        return Grid2D(**args) + origin
+
     def _concatenate(self, other, smallNumber):
-        return self._getConcatenableMesh()._concatenate(other = other, smallNumber = smallNumber)
+        return self._getConcatenableMesh()._concatenate(other = other._getConcatenableMesh(), smallNumber = smallNumber)
         
 ##     get topology methods
 
