@@ -278,6 +278,10 @@ def invIDs(ids):
 	from numpy.ma import zeros,ones,arange,indices,MaskedArray,bitwise_or
 	if type(ids) != type(MaskedArray(0)):
 		ids = MaskedArray(ids,zeros(ids.shape),dtype=int)
+	if ids.mask.shape != ids.shape:
+		mask = ids.mask
+		ids=MaskedArray(ids,zeros(ids.shape))
+		ids.mask[:]=mask
 	l = ids.max()+1
 	u = arange(l)
 	u.mask = zeros(u.shape)
@@ -287,12 +291,10 @@ def invIDs(ids):
 	z = MaskedArray(zeros((m,l)),ones((m,l)),dtype=int)
 
 	from numpy import vectorize
-	def setCol(n):
+	for n in xrange(len(u)):
 		opp = (e*ind)[e[:,n],n]
 		z.mask[:opp.size,n]=False
 		z[:opp.size,n]=opp
-	setCol=vectorize(setCol)
-	setCol(u,otypes=[])
 	return z
 	
 def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=False,csvFile=None):

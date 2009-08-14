@@ -1,11 +1,24 @@
 #Names describing the columns in the 'Elements' section of the gmsh file
-colNames = {
+colNames=[]
+
+colNames.append({
+'ElemNumber':0,
+'ElemType':1,
+'PhysicalNum':2,
+'PartitionNum':-1,
+'VertexStart':5
+})
+
+colNames.append({
 'ElemNumber':0,
 'ElemType':1,
 'PhysicalNum':2,
 'PartitionNum':5,
 'VertexStart':6
-}
+})
+
+def initColNames(version):
+	colNames=colNames[version-1]
 
 #The types of primitives used by gmsh. Because we don't use the subdivisions, each categeroy contains many different primitives of the same shape.
 types= {
