@@ -168,7 +168,7 @@ Reverse the handedness of the mesh and check the sign
    
 """
 
-import gmshHelper
+from gmshHelper import GmshHelper
 
 def genMshFile(filename,dimensions):
 	'''Generates a .msh file using gmsh.  Can be passed in a piece of code as a string, a .gmsh filename, a .geo filenae, or a .msh filename.
@@ -278,10 +278,6 @@ def invIDs(ids):
 	from numpy.ma import zeros,ones,arange,indices,MaskedArray,bitwise_or
 	if type(ids) != type(MaskedArray(0)):
 		ids = MaskedArray(ids,zeros(ids.shape),dtype=int)
-	if ids.mask.shape != ids.shape:
-		mask = ids.mask
-		ids=MaskedArray(ids,zeros(ids.shape))
-		ids.mask[:]=mask
 	l = ids.max()+1
 	u = arange(l)
 	u.mask = zeros(u.shape)
@@ -290,7 +286,6 @@ def invIDs(ids):
 	m = e.sum(axis=0).max()
 	z = MaskedArray(zeros((m,l)),ones((m,l)),dtype=int)
 
-	from numpy import vectorize
 	for n in xrange(len(u)):
 		opp = (e*ind)[e[:,n],n]
 		z.mask[:opp.size,n]=False
@@ -332,12 +327,25 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 		os.remove(MSHfilename)
 	#Find the tags in the .msh file
 	tags = findTags(CSVfilename)
+	
+	if tags.has_key('MeshFormat'):
+		version = 2
+	else:
+		version = 1
+
+	elms = (version - 1) and 'Elements' or 'ELMS'
+	endElms = (version - 1) and 'EndElements' or 'ENDELMS'
+	nodes = (version - 1) and 'Nodes' or 'NOD'
+	endNodes = (version - 1) and 'EndNodes' or 'ENDNOD'
+
+	gmshHelper = GmshHelper(2)
+
 	from numpy import genfromtxt,ma,unique1d,arange,zeros,ones,sort,array,indices
 
 	#Load the lines under the Elements tag into an array (Ignore the first line as it is just the number of elements)
 	fi = open(CSVfilename)
 	
-	arr = genfromtxt(subFile(fi,tags['Elements'][1],tags['EndElements'][0]),delimiter=',',usemask=True,dtype='int')[1:]
+	arr = genfromtxt(subFile(fi,tags[elms][1],tags[endElms][0]),delimiter=',',usemask=True,dtype='int')[1:]
 	types=unique1d(arr[:,gmshHelper.colNames['ElemType']]) #The types of primitives found in the .msh file
 	maxDims=0
 	maxFacesPerCell=0
@@ -397,7 +405,7 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 	#cellVertexIDs=arr[(arr[None,:,gmshHelper.colNames['ElemType']]==array(maxDimTypes)[:,None]).sum(axis=0).astype('bool'),gmshHelper.colNames['VertexStart']:].swapaxes(0,1)
 
 	#Get the vertex coordinates
-	vertexCoords = genfromtxt(subFile(fi,tags['Nodes'][1],tags['EndNodes'][0]),delimiter=',')[1:,:dimensions+1].swapaxes(0,1)
+	vertexCoords = genfromtxt(subFile(fi,tags[nodes][1],tags[endNodes][0]),delimiter=',')[1:,:dimensions+1].swapaxes(0,1)
 	
 	vertexPointIDs=zeros((2,vertexCoords.shape[1]),dtype='int')
 	vertexPointIDs[0]=indices((vertexCoords.shape[1],))[0]
