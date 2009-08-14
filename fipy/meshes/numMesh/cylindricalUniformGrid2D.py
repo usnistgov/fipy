@@ -39,14 +39,15 @@ __docformat__ = 'restructuredtext'
 
 from fipy import numerix
 from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
+from fipy.tools import parallel
 
 class CylindricalUniformGrid2D(UniformGrid2D):
     r"""
     Creates a 2D cylindrical grid in the radial and axial directions,
     appropriate for axial symmetry.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2):
-        UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, origin=origin, overlap=overlap)
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2, parallelModule=parallel):
+        UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, origin=origin, overlap=overlap, parallelModule=parallelModule)
 
     def _getAreaProjections(self):
         return self._getAreaProjectionsPy()

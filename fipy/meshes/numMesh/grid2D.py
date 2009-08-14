@@ -42,21 +42,24 @@ from fipy.tools import inline
 from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools import parallel
 
 class Grid2D(Mesh2D):
     """
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2):
+    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, parallelModule=parallel):
+        
         self.args = {
             'dx': dx, 
             'dy': dy, 
             'nx': nx, 
             'ny': ny, 
-            'overlap': overlap
+            'overlap': overlap,
+            'parallelModule': parallelModule
         }
-    
+
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value=1, unit=self.dx.getUnit())
         self.dx /= scale
@@ -74,7 +77,7 @@ class Grid2D(Mesh2D):
         (self.nx,
          self.ny,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, overlap)
+         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, parallelModule)
 
         if numerix.getShape(self.dx) is not ():
             self.dx = self.dx[self.offset[0]:self.offset[0] + self.nx]
@@ -103,13 +106,11 @@ class Grid2D(Mesh2D):
         
         self.setScale(value = scale)
 
-    def _getParallelInfo(self):
-        from fipy.tools.parallel import procID, Nproc
-        return procID, Nproc
+    def _calcParallelGridInfo(self, nx, ny, overlap, parallelModule):
         
-    def _calcParallelGridInfo(self, nx, ny, overlap):
-        procID, Nproc = self._getParallelInfo()
-        
+        procID = parallelModule.procID
+        Nproc = parallelModule.Nproc
+
         overlap = min(overlap, ny)
         cellsPerNode = max(int(ny / Nproc), overlap)
         occupiedNodes = int(ny / (cellsPerNode or 1))

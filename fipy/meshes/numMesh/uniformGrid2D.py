@@ -42,22 +42,24 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
+from fipy.tools import parallel
 
 class UniformGrid2D(Grid2D):
     """
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2):
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2, parallelModule=parallel):
         self.args = {
             'dx': dx, 
             'dy': dy, 
             'nx': nx, 
             'ny': ny, 
             'origin': origin,
-            'overlap': overlap
+            'overlap': overlap,
+            'parallelModule': parallelModule
         }
-    
+
         self.dim = 2
         
         self.dx = PhysicalField(value = dx)
@@ -77,7 +79,7 @@ class UniformGrid2D(Grid2D):
         (self.nx,
          self.ny,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, overlap)
+         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, parallelModule)
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
@@ -114,7 +116,8 @@ class UniformGrid2D(Grid2D):
     def _translate(self, vector):
         return self.__class__(dx = self.dx, nx = self.nx, 
                               dy = self.dy, ny = self.ny, 
-                              origin = self.origin + vector)
+                              origin = self.origin + vector,
+                              parallelModule=self.args['parallelModule'])
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():

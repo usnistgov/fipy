@@ -363,7 +363,8 @@ class DiffusionTerm(Term):
 
            >>> from fipy.meshes.grid1D import Grid1D
            >>> from fipy.tools.pysparseMatrix import _PysparseMatrix as SparseMatrix
-           >>> from fipy.tools.parallel import procID
+           >>> from fipy.tools import parallel
+           >>> procID = parallel.procID
            >>> mesh = Grid1D(dx = 1., nx = 2)
            >>> term = DiffusionTerm(coeff = (1,))
            >>> coeff = term._getGeomCoeff(mesh)

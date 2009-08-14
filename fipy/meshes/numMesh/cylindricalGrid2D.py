@@ -42,18 +42,19 @@ from fipy.tools import numerix
 
 from fipy.meshes.numMesh.grid2D import Grid2D
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools import parallel
 
 class CylindricalGrid2D(Grid2D):
     """
     Creates a 2D cylindrical grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=None, ny=None, origin=((0.,), (0.,)), overlap=2):
+    def __init__(self, dx=1., dy=1., nx=None, ny=None, origin=((0.,), (0.,)), overlap=2, parallelModule=parallel):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).getUnit())
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
         
-        Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap)
+        Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, parallelModule=parallelModule)
 
 
 

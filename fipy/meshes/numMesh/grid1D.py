@@ -91,7 +91,9 @@ class Grid1D(Mesh1D):
         self.setScale(value = scale)
         
     def _calcParallelGridInfo(self, nx, overlap):
-        from fipy.tools.parallel import procID, Nproc
+        from fipy.tools import parallel
+        procID = parallel.procID
+        Nproc = parallel.Nproc
         
         overlap = min(overlap, nx)
         cellsPerNode = max(int(nx / Nproc), overlap)
