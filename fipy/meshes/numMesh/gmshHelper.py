@@ -20,7 +20,7 @@ class GmshHelper(object):
 		'PartitionNum':5,
 		'VertexStart':6
 		})
-
+		
 		colNames=colNames[version-1]
 
                 #The types of primitives used by gmsh. Because we don't use the subdivisions, each categeroy contains many different primitives of the same shape.

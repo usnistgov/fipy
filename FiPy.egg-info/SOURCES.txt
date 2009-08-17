@@ -281,6 +281,7 @@ examples/phase/missOrientation/modCircle.gz
 examples/phase/missOrientation/modCircle.py
 examples/phase/missOrientation/test.py
 fipy/__init__.py
+fipy/fipy82xSLFCSV.msh
 fipy/test.py
 fipy/boundaryConditions/__init__.py
 fipy/boundaryConditions/boundaryCondition.py
@@ -312,7 +313,9 @@ fipy/meshes/numMesh/cylindricalUniformGrid1D.py
 fipy/meshes/numMesh/cylindricalUniformGrid2D.py
 fipy/meshes/numMesh/face.py
 fipy/meshes/numMesh/gmshExport.py
+fipy/meshes/numMesh/gmshHelper.py
 fipy/meshes/numMesh/gmshImport.py
+fipy/meshes/numMesh/gmshImporter.py
 fipy/meshes/numMesh/grid1D.py
 fipy/meshes/numMesh/grid2D.py
 fipy/meshes/numMesh/grid3D.py

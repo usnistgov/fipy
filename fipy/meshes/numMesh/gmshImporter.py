@@ -97,15 +97,15 @@ Test cases:
     [ 0.   1.   0.   0.   0.5]]
 
    >>> print newmesh._getFaceVertexIDs()
-   [[2 4 4 4 3 4 4 3 4 3]
-    [1 1 2 2 1 3 3 2 3 2]
-    [0 0 0 1 0 0 1 0 2 1]]0
+   [[0 0 0 0 0 0 1 1 1 2]
+    [1 1 1 2 2 3 2 2 3 3]
+    [2 3 4 3 4 4 3 4 4 4]]
 
    >>> print newmesh._getCellFaceIDs()
-   [[0 4 7 9]
-    [1 1 2 3]
-    [2 5 5 6]
-    [3 6 8 8]]
+   [[0 1 3 6]
+    [2 2 4 7]
+    [4 5 5 8]
+    [7 8 9 9]]
 
    >>> mesh = GmshImporter2DIn3DSpace('fipy/meshes/numMesh/GmshTest2D.msh')
    >>> print mesh.getVertexCoords()
@@ -119,13 +119,13 @@ Test cases:
     [ 0.   0.   0.5  1.   1.   1.5  2.   2. ]]
 
    >>> print mesh._getFaceVertexIDs()
-   [[2 0 1 0 3 1 4 4 3 5 3 6 5 7 7]
-    [0 1 2 3 2 4 2 3 5 4 6 5 7 4 6]]
+   [[ 1 0 3 2 4 2 4 3 5 6 4 4 5 7 6]
+    [ 0 2 0 1 1 3 2 4 3 3 5 7 6 5 7]]
    
-   >>> print (mesh._getCellFaceIDs() == [[0, 0, 2, 7, 7, 8, 12, 14],
-   ...                                   [1, 3, 5, 4, 8, 10, 13, 11],
-   ...                                   [2, 4, 6, 6, 9, 11, 9, 12]]).flatten().all()
-   True
+   >>> print mesh._getCellFaceIDs()
+   [[ 1  1  3  7  7  8 13 14]
+    [ 3  5  6  6 10 12 10 13]
+    [ 0  2  4  5  8  9 11 12]]
    
 The following test case is to test the handedness of the mesh to check
 it does not return negative volumes. Firstly we set up a list with
@@ -147,6 +147,7 @@ gmsh to form a circular mesh.
    ...           'Circle(9) = {5, 1, 2};\n',
    ...           'Line Loop(10) = {6, 7, 8, 9} ;\n',
    ...           'Plane Surface(11) = {10};\n']
+   >>> lines = ''.join(lines)
 
 Check that the sign of the mesh volumes is correct
 
@@ -204,10 +205,19 @@ def formatMshFile(filename,newName):
 	tags = {} #Dictionary from a tag ($Elements) to the numbermaximum number of columns between that tag and the previous one.  This means that in a properly structured gmsh file, any tag not starting with $End will be associated with 0.
 	maxCols = 0
 	currLine = fi.readline()
+	prevTag=''
 	while currLine:
 		if (currLine[0]=='$'):
-			tags[currLine.strip()[1:]] = maxCols
+			tag=currLine.strip()[1:]
+			tags[tag] = maxCols
 			maxCols = 0
+			if prevTag:
+				tags[tag]=(tags[tag],prevTag)
+				tags[prevTag]=(tags[prevTag],tag)
+				prevTag=''
+			else:
+				prevTag=tag
+				
 		currLine = string.join(currLine.split(),',')
 		maxCols = max(maxCols,currLine.count(',')+1)
 		tmp.write(currLine+'\n')
@@ -231,7 +241,7 @@ def formatMshFile(filename,newName):
 			else:
 				#The maximum number of columns is stored in the $End tag corresponding to this one.
 				inTag = currLine.strip()[1:]
-				currCols = tags['End'+inTag]
+				currCols = tags[tags[inTag][1]][0]
 		else:
 			numCommas = currCols-1-currLine.count(',')
 		tmp.write(currLine.strip())
@@ -251,6 +261,8 @@ def formatMshFile(filename,newName):
 
 def findTags(filename):
 	'''This method returns a dictionary from tags in a .msh file to the position of the character the tag starts at and the position it ends at.
+	   It adds on the matching tag, IE it matches the first tag with the second and vice versa, the third with the fourth and so on.
+	   If the file is correctly structured, this should match tags with end tags.
 	   For example, if the first line were "$Elements", the dictionary would make "Elements" to (0,10) since the \n character is included in this count.
 	   This is useful for parsing the files, as you can just read from the end of one tag to the beginning of its corresponding End tag.'''
 	tags = {}
@@ -258,9 +270,17 @@ def findTags(filename):
 	prevPos = fi.tell()
 	currLine = fi.readline()
 	currPos = fi.tell()
+	prevTag = ''
 	while currLine:
 		if currLine[0]=='$':
-			tags[currLine.strip()[1:]]=(prevPos,currPos)
+			tag = currLine.strip()[1:]
+			tags[tag]=(prevPos,currPos)
+			if prevTag:
+				tags[prevTag]=tags[prevTag]+(tag,)
+				tags[tag]=tags[tag]+(prevTag,)
+				prevTag=''
+			else:
+				prevTag=tag
 		prevPos = currPos
 		currLine = fi.readline()
 		currPos = fi.tell()
@@ -327,18 +347,18 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 		os.remove(MSHfilename)
 	#Find the tags in the .msh file
 	tags = findTags(CSVfilename)
-	
+
 	if tags.has_key('MeshFormat'):
 		version = 2
 	else:
 		version = 1
 
-	elms = (version - 1) and 'Elements' or 'ELMS'
-	endElms = (version - 1) and 'EndElements' or 'ENDELMS'
+	elms = (version - 1) and 'Elements' or 'ELM'
+	endElms = (version - 1) and 'EndElements' or 'ENDELM'
 	nodes = (version - 1) and 'Nodes' or 'NOD'
 	endNodes = (version - 1) and 'EndNodes' or 'ENDNOD'
 
-	gmshHelper = GmshHelper(2)
+	gmshHelper = GmshHelper(version)
 
 	from numpy import genfromtxt,ma,unique1d,arange,zeros,ones,sort,array,indices
 
@@ -410,7 +430,9 @@ def GmshImporter(filename,dimensions=3,shapeDim=None,formatted=False,keepFile=Fa
 	vertexPointIDs=zeros((2,vertexCoords.shape[1]),dtype='int')
 	vertexPointIDs[0]=indices((vertexCoords.shape[1],))[0]
 	vertexPointIDs[1]=vertexCoords[0]
+	vertexPointIDs=ma.MaskedArray(vertexPointIDs,zeros(vertexPointIDs.shape),dtype='int')
 	vertexCoords=vertexCoords[1:]
+
 	faceVertexIDs=ma.MaskedArray(((faceVertexIDs==vertexPointIDs[1,:,None,None]).data*vertexPointIDs[0,:,None,None]).sum(axis=0),faceVertexIDs.mask)
 	fi.close()
 	if not keepFile:

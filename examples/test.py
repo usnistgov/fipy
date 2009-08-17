@@ -48,7 +48,6 @@ def _suite():
             'chemotaxis.test',  
             'cahnHilliard.test',
             'flow.test',
-            'meshing.test',
         ), base = __name__)
 
 if __name__ == '__main__':
