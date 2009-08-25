@@ -358,7 +358,8 @@ class build_docs (Command):
 
     def run (self):
         f = open(os.path.join('documentation','VERSION.txt'), 'w')
-        f.write('.. |VERSION| replace:: ' + self.distribution.metadata.get_version())
+        f.write('.. |VERSION| replace:: ' + self.distribution.metadata.get_version() + '\n')
+        f.write('.. |SVNVERSION| replace:: ' + self.distribution.metadata.get_version().replace('.', '_') + '\n')
         f.close()
 
         mainRestructuredTextFiles = {'article': 
