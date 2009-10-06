@@ -943,24 +943,33 @@ class Mesh(_CommonMesh):
         cell_array = tvtk.CellArray()
         cell_array.set_cells(num, cells)
 
-        vertices = self.getVertexCoords()
-        faceCenters = self.getFaceCenters()
-        cellCenters = self.getCellCenters()
-        points = numerix.concatenate((vertices, faceCenters, cellCenters), axis=1)
-        points = numerix.concatenate((points, 
-                                      numerix.zeros((3 - self.dim, 
-                                                     points.shape[-1]))))
-        points = points.swapaxes(0,1)
+        points = self.getVertexCoords()
+        points = self._toVTK3D(points)
         ug = tvtk.UnstructuredGrid(points=points)
         
         offset = numerix.cumsum(counts[:,0]+1)
         offset -= offset[0]
         ug.set_cells(cell_types, offset, cell_array)
-        
-        return (ug, 
-                vertices.shape[-1], 
-                vertices.shape[-1] + faceCenters.shape[-1], 
-                vertices.shape[-1] + faceCenters.shape[-1] + cellCenters.shape[-1])
+
+        points = self.getFaceCenters()
+        points = self._toVTK3D(points)
+        fc = tvtk.UnstructuredGrid(points=points)
+
+        points = self.getCellCenters()
+        points = self._toVTK3D(points)
+        cc = tvtk.UnstructuredGrid(points=points)
+
+        return (ug, fc, cc)
+                
+    def _toVTK3D(self, arr, rank=1):
+        if rank == 0:
+            return arr
+        else:
+            arr = numerix.concatenate((arr, 
+                                       numerix.zeros((3 - self.dim,) 
+                                                     + arr.shape[1:])))
+            return arr.swapaxes(-2, -1)
+
 
                       
 ### test test test    
