@@ -87,8 +87,8 @@ class _MayaviViewer(_Viewer):
         os.write(self.mmapfile, '\n' + '\x00' * 1023)
         self.mmapfile = mmap(self.mmapfile, 1024)
 
-        from fipy.viewers.vtkViewer.vtkCellViewer import VTKCellViewer
-        self.vtkViewer = VTKCellViewer(vars=vars, title=title)
+        from fipy.viewers.vtkViewer import VTKViewer
+        self.vtkViewer = VTKViewer(vars=vars, title=title)
         self.vtkViewer.plot(filename=self.vtkfname)
 
         

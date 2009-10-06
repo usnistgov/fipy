@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "vtkCellViewer.py"
+ #  FILE: "vtkViewer.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Stiles  <daniel.stiles@nist.gov>
@@ -41,13 +41,15 @@ __docformat__ = 'restructuredtext'
 import os
 import time
 
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
 from fipy.viewers.viewer import _Viewer
 
-class VTKCellViewer(_Viewer):
-    """Renders `CellVariable` data in VTK format
+class VTKViewer(_Viewer):
+    """Renders `_MeshVariable` data in VTK format
     """
     def __init__(self, vars, title=None, limits={}, **kwlimits):
-        """Creates a VTKCellViewer
+        """Creates a VTKViewer
 
         :Parameters:
           vars
@@ -65,69 +67,97 @@ class VTKCellViewer(_Viewer):
 
         mesh = self.vars[0].getMesh()
         
-        (self.vtkDataSet,
-         self.vtkFaceOffset,
-         self.vtkCellOffset,
-         self.vtkTotalPoints) = mesh.getVTKDataSet()
+        (self.cells, 
+         self.faceCenters, 
+         self.cellCenters) = mesh.getVTKDataSet()
+         
+#         self.collection = tvtk.DataSetCollection()
+#         self.collection.append(self.cells)
+#         self.collection.append(self.faceCenters)
+#         self.collection.append(self.cellCenters)
 
         for var in self.vars:
             name = self._getArrayName(var)
-
             rank = var.getRank()
-            if rank == 0:
-                value = var.getValue()
-                i = self.vtkDataSet.cell_data.add_array(value)
-                self.vtkDataSet.cell_data.get_array(i).name = name
-                self.vtkDataSet.cell_data.set_active_scalars(name)
-            else:
-                value = numerix.zeros((self.vtkTotalPoints,) + rank * (3,), 'd')
-                value[self.vtkCellOffset:] = var.getValue().swapaxes(-2,-1)
-            
-                i = self.vtkDataSet.point_data.add_array(value)
-                self.vtkDataSet.point_data.get_array(i).name = name
+            value = var.getValue()
+            if rank == 0 and isinstance(var, CellVariable):
+                i = self.cells.cell_data.add_array(value)
+                self.cells.cell_data.get_array(i).name = name
+                self.cells.cell_data.set_active_scalars(name)
 
-                if rank == 0:
-                    self.vtkDataSet.point_data.set_active_scalars(name)
-                elif rank == 1:
-                    self.vtkDataSet.point_data.set_active_vectors(name)
-                else:
-                    self.vtkDataSet.point_data.set_active_tensors(name)
+            value = var.getMesh()._toVTK3D(value, rank=rank)
+            
+            if isinstance(var, CellVariable):
+                dataset = self.cellCenters
+            elif isinstance(var, FaceVariable):
+                dataset = self.faceCenters
+                
+            i = dataset.point_data.add_array(value)
+            dataset.point_data.get_array(i).name = name
+
+            if rank == 0:
+                dataset.point_data.set_active_scalars(name)
+            elif rank == 1:
+                dataset.point_data.set_active_vectors(name)
+            else:
+                dataset.point_data.set_active_tensors(name)
         
     @staticmethod
     def _getArrayName(var):
         return var.name or "%s #%d" % (var.__class__.__name__, id(var))
+        
+    def _pointValueArray(self, var):
+        rank = var.getRank()
+
+        if rank == 0:
+            bigvalue = numerix.empty((self.vtkTotalPoints,) + rank * (3,), 'd')
+            bigvalue[:] = numerix.nan
+        else:
+            bigvalue = numerix.zeros((self.vtkTotalPoints,) + rank * (3,), 'd')
+
+        value = var.getValue().swapaxes(-2,-1)
+        if isinstance(var, CellVariable):
+            bigvalue[self.vtkCellOffset:] = value
+        elif isinstance(var, FaceVariable):
+            bigvalue[self.vtkFaceOffset:self.vtkCellOffset] = value
+        else:
+            raise TypeError("Can't convert '%s' to VTK" % var.__class__.__name__)
+            
+        return bigvalue
     
     def plot(self, filename=None):
         for var in self.vars:
             name = self._getArrayName(var)
             rank = var.getRank()
-            if rank == 0:
-                value = var.getValue()
-                self.vtkDataSet.cell_data.get_array(name).to_array()[:] = value
-            else:
-                value = numerix.zeros((self.vtkTotalPoints,) + rank * (3,), 'd')
-                value[self.vtkCellOffset:] = var.getValue().swapaxes(-2,-1)
+            value = var.getValue()
+            if rank == 0 and isinstance(var, CellVariable):
+                self.cells.cell_data.get_array(name).to_array()[:] = value
+                
+            value = var.getMesh()._toVTK3D(value, rank=rank)
+            
+            if isinstance(var, CellVariable):
+                dataset = self.cellCenters
+            elif isinstance(var, FaceVariable):
+                dataset = self.faceCenters
+                
+            dataset.point_data.get_array(name).to_array()[:] = value
 
-                self.vtkDataSet.point_data.get_array(name).to_array()[:] = value
-
-        from enthought.tvtk.api import tvtk
-        w = tvtk.UnstructuredGridWriter(input=self.vtkDataSet, file_name=filename)
-        w.write()
-
-#         w = tvtk.XMLUnstructuredGridWriter(input=self.vtkDataSet, file_name=filename) #[:-1] + "u")
+#         from enthought.tvtk.api import tvtk
+#         w = tvtk.UnstructuredGridWriter(input=self.vtkDataSet, file_name=filename)
 #         w.write()
 
-#         from enthought.tvtk.misc import write_data
-#         write_data(self.vtkDataSet, filename)
+#         w = tvtk.XMLDataSetWriter(input=self.collection, file_name=filename) #[:-1] + "u")
+#         w.write()
+
+        from enthought.tvtk.misc import write_data
+        write_data(self.cellCenters, filename)
 
     def _getSuitableVars(self,vars):
         if type(vars) not in [type([]),type(())]:
             vars = [vars]
-        from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in vars if isinstance(var, CellVariable)]
+        vars = [var for var in vars if isinstance(var, CellVariable) or isinstance(var, FaceVariable)]
         if len(vars) == 0:
-            from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError,"Can only plot CellVariable data"
+            raise TypeError, "VTKViewer can only display CellVariable or FaceVariable objects"
         vars = [var for var in vars if var.getMesh()==vars[0].getMesh()]
         return vars
 
@@ -138,12 +168,19 @@ if __name__ == "__main__":
     from fipy import *
     m = Grid3D(nx=3, ny=4, nz=5)
     x, y, z = m.getCellCenters()
-    v1 = CellVariable(mesh=m, value=x*y*z, name="v1")
-    v2 = CellVariable(mesh=m, value=x*y*y, name="v2")
+    v1 = CellVariable(mesh=m, value=x*y*z, name="x*y*z")
+    v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
     v3 = v1.getGrad()
-    v3.name = "v3"
-#     vw = VTKCellViewer(vars=(v1, v2))
-    vw = VTKCellViewer(vars=(v1, v2, v3))
+    v3.name = "v1.getGrad()"
+    v4 = v1.getFaceGrad()
+    v4.name = "v1.getFaceGrad()"
+    v5 = v1.getHarmonicFaceValue()
+    v5.name = "v1.getHarmonicFaceValue()"
+    v6 = v1.getArithmeticFaceValue()
+    v6.name = "v1.getArithmeticFaceValue()"
+
+#     vw = VTKViewer(vars=(v1, v2))
+    vw = VTKViewer(vars=(v1, v2, v3, v4, v5, v6))
     
     vw.plot(filename="vtk.vtk")
 
@@ -151,11 +188,11 @@ if __name__ == "__main__":
 #     x, y = m.getCellCenters()
 #     v1 = CellVariable(mesh=m, value=x*y, name="v1")
 #     v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
-#     vw = VTKCellViewer(vars=(v1, v2))
+#     vw = VTKViewer(vars=(v1, v2))
 
 #     m = Grid1D(nx=10)
 #     x,  = m.getCellCenters()
 #     v1 = CellVariable(mesh=m, value=x*x, name="v1")
 #     v2 = CellVariable(mesh=m, value=x) #, name="v2")
-#     vw = VTKCellViewer(vars=(v1, v2))
+#     vw = VTKViewer(vars=(v1, v2))
 
