@@ -916,6 +916,52 @@ class Mesh(_CommonMesh):
             
         """
 
+    def _getVTKCellType(self):
+        from enthought.tvtk.api import tvtk
+        return tvtk.ConvexPointSet().cell_type
+        
+    def getVTKDataSet(self):
+        """Returns a TVTK `DataSet` representing the cells of this mesh, 
+        the offset to the face center array,
+        the offset to the cell center array, 
+        and the total number of points, 
+        """
+        cvi = self._getOrderedCellVertexIDs().swapaxes(0,1)
+        from fipy.tools import numerix
+        if type(cvi) is numerix.ma.masked_array:
+            counts = cvi.count(axis=1)[:,None]
+            cells = numerix.concatenate((counts,cvi),axis=1).compressed()
+        else:
+            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
+            cells = numerix.concatenate((counts,cvi),axis=1).flatten()
+        
+        from enthought.tvtk.api import tvtk
+        num = counts.shape[0]
+
+        cps_type = self._getVTKCellType()
+        cell_types = numerix.array([cps_type]*num)
+        cell_array = tvtk.CellArray()
+        cell_array.set_cells(num, cells)
+
+        vertices = self.getVertexCoords()
+        faceCenters = self.getFaceCenters()
+        cellCenters = self.getCellCenters()
+        points = numerix.concatenate((vertices, faceCenters, cellCenters), axis=1)
+        points = numerix.concatenate((points, 
+                                      numerix.zeros((3 - self.dim, 
+                                                     points.shape[-1]))))
+        points = points.swapaxes(0,1)
+        ug = tvtk.UnstructuredGrid(points=points)
+        
+        offset = numerix.cumsum(counts[:,0]+1)
+        offset -= offset[0]
+        ug.set_cells(cell_types, offset, cell_array)
+        
+        return (ug, 
+                vertices.shape[-1], 
+                vertices.shape[-1] + faceCenters.shape[-1], 
+                vertices.shape[-1] + faceCenters.shape[-1] + cellCenters.shape[-1])
+
                       
 ### test test test    
 

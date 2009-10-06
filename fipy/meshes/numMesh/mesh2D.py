@@ -231,6 +231,10 @@ class Mesh2D(Mesh):
         ## return a new mesh, extrude could just as easily act on self
         return Mesh(vertices, faces, cells)
 
+    def _getVTKCellType(self):
+        from enthought.tvtk.api import tvtk
+        return tvtk.Polygon().cell_type
+        
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
