@@ -1,11 +1,12 @@
 __docformat__ = 'restructuredtext'
 
+from mayaviViewer import _MayaviViewer as MayaviViewer
 from mayaviScalarViewer import MayaviScalarViewer
 from mayaviVectorViewer import MayaviVectorViewer
 
 __all__ = ["MayaviViewer", "MayaviVectorViewer", "MayaviScalarViewer"]
 
-def MayaviViewer(vars, title=None, limits={}, **kwlimits):
+def __MayaviViewer(vars, title=None, limits={}, **kwlimits):
     """Generic function for creating a `MayaviViewer`. 
     
     The `MayaviViewer` factory will search the module tree and return an

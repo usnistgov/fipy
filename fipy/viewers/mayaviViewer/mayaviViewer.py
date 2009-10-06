@@ -38,6 +38,12 @@
 
 __docformat__ = 'restructuredtext'
 
+from mmap import mmap
+import os
+import subprocess
+import tempfile
+import time
+
 from fipy.viewers.viewer import _Viewer
 
 class _MayaviViewer(_Viewer):
@@ -45,13 +51,13 @@ class _MayaviViewer(_Viewer):
     .. attention:: This class is abstract. Always create one of its subclasses.
 
     The `_MayaviViewer` is the base class for the viewers that use the
-    Mayavi python plotting package.
+    Mayavi_ python plotting package.
 
-    .. Mayavi: http://code.enthought.com/projects/mayavi/docs/development/html/mayavi/index.html
+    .. Mayavi: http://code.enthought.com/projects/mayavi
 
     """
 
-    def __init__(self, vars, title=None, **kwlimits):
+    def __init__(self, vars, title=None, fps=1., **kwlimits):
         """
         Create a `_MayaviViewer`.
         
@@ -60,187 +66,149 @@ class _MayaviViewer(_Viewer):
             a `CellVariable` or tuple of `CellVariable` objects to plot
           title
             displayed at the top of the `Viewer` window
+          fps
+            display rate in frames per second
           xmin, xmax, ymin, ymax, datamin, datamax
             displayed range of data. A 1D `Viewer` will only use `xmin` and
             `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
         """
-        if self.__class__ is _MayaviViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
+#         if self.__class__ is _MayaviViewer:
+#             raise NotImplementedError, "can't instantiate abstract base class"
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
-        self.srcs=[]
-        self.mods=[]
-        from enthought.mayavi import mlab
-        oldScenes = mlab.get_engine().scenes
-        self.id = len(oldScenes)
-	if (self.title==''):
-            self.title="FiPy Viewer Window "+str(self.id)
-        self.scene = mlab.figure(name=self.title)
-
-    def createColorbar(self,title=None):
-        """Create a Colorbar for this viewer"""
-        from enthought.mayavi import mlab
-        mlab.colorbar(object=self.mods[0],title=title,orientation='horizontal',nb_labels=5)
         
-    _getMul=staticmethod(lambda dims,mul=True:((not mul or dims == 3) and 1 or dims == 2 and 2 or 4))
-    
-    def _makeDims3(arr,expand=1.,move=True):
-        '''This method takes a numpy array and expands it from some dimension to 3 dimensions.
-        :Parameters:
-          arr
-            The array to expand
-          expand
-            How far to move the copies of the original points (only used if move is True
-          move
-            Whether or not to copy the points and translate them.  This will make 4 copies of a 1D array and 2 copies of a 2D array.'''
-        num = arr.shape[0]
-        dims = arr.shape[1]
-        if dims == 3:
-            return arr
-        from fipy.tools.numerix import zeros,array
-        a = zeros((num*_MayaviViewer._getMul(dims,move),3),t='d')
-        a[:,:arr.shape[1]]=array(arr.tolist()*_MayaviViewer._getMul(dims,move))
-        if not move:
-            return a
-        a[num:num*2,2]=expand
-        if dims == 2:
-            return a
-        a[num*2:num*3,1]=expand
-        a[num*3:,2]=expand
-        a[num*3:,1]=expand
-        return a
-    _makeDims3 = staticmethod(_makeDims3)
-
-    def makeUnstructuredGrid(mesh,minDim):
-        '''This method takes a fipy mesh and turns it into an enthought.tvtk unstructured grid.
-        :Parameters:
-          mesh
-            the mesh to make into an unstructured gird
-          minDim
-            tells the method how far to extrude out 1D and 2D meshes'''
-        from fipy.tools.numerix import array
-        from enthought.tvtk.api import tvtk
-        dims = mesh.dim
-        points = mesh.getVertexCoords().swapaxes(0,1)
-        numpoints = len(points)
-        points = _MayaviViewer._makeDims3(points,expand=minDim)
-        cvi = mesh._getCellVertexIDs().swapaxes(0,1)
-        from fipy.tools import numerix
-        if dims == 2:
-            cvi = numerix.concatenate((cvi,cvi+numpoints),axis=1)
-        elif dims == 1:
-            cvi = numerix.concatenate((cvi,cvi+numpoints,cvi+numpoints*2,cvi+numpoints*3),axis=1)
-        if (type(cvi)==numerix.ndarray):
-            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
-            cells = numerix.concatenate((counts,cvi),axis=1).flatten()
-        else:
-            counts = cvi.count(axis=1)[:,None]
-            cells = numerix.concatenate((counts,cvi),axis=1).compressed()
-        num = counts.shape[0]
-        offset = numerix.cumsum(counts[:,0]+1)
-        offset[1:]=offset[:-1]
-        offset[0]=0
-        cps_type = tvtk.ConvexPointSet().cell_type
-        cell_types = array([cps_type]*num)
-        cell_array = tvtk.CellArray()
-        cell_array.set_cells(num, cells)
+        self.fps = fps
+        self.surf = None
         
-        ug = tvtk.UnstructuredGrid(points=points)
-        ug.set_cells(cell_types, offset, cell_array)
-        return ug
-    makeUnstructuredGrid = staticmethod(makeUnstructuredGrid)
-    
-    def plot(self, filename = None):
-        from enthought.mayavi import mlab
-        mlab.get_engine().current_scene=self.scene
-        xmin = self._getLimit('xmin')
-        xmax = self._getLimit('xmax')
-        ymin = self._getLimit('ymin')
-        ymax = self._getLimit('ymax')
-        zmin = self._getLimit('zmin')
-        zmax = self._getLimit('zmax')
-        datamin = self._getLimit('datamin')
-        datamax = self._getLimit('datamax')
-        for var in self.vars:
-            mesh = var.getMesh()
-            rank = var.getRank()
-            dims = mesh.dim
-            from fipy.tools import numerix
-            x,y,z = None,None,None
-            x = numerix.NUMERIX.min(mesh.getVertexCoords(),axis=1)
-            if dims > 1:
-                y = x[1:]
-                x = x[0]
-                if dims > 2:
-                    z = y[1]
-                    y = y[0]
-            d = None
-            if rank == 0:
-                d = numerix.NUMERIX.min(var.value)
-            if self._getLimit('xmin') is None and x is not None and (xmin is None or x<xmin):
-                xmin = x
-            if self._getLimit('ymin') is None and y is not None and (ymin is None or y<ymin):
-                ymin = y
-            if self._getLimit('zmin') is None and z is not None and (zmin is None or z<zmin):
-                zmin = z
-            if self._getLimit('datamin') is None and d is not None and (datamin is None or d<datamin):
-                datamin = d
-            x = numerix.NUMERIX.max(mesh.getVertexCoords(),axis=1)
-            if dims > 1:
-                y = x[1:]
-                x = x[0]
-                if dims > 2:
-                    z = y[1]
-                    y = y[0]
-            d = None
-            if rank == 0:
-                d = numerix.NUMERIX.max(var.value)
-            if self._getLimit('xmax') is None and x is not None and (xmax is None or x>xmax):
-                xmax = x
-            if self._getLimit('ymax') is None and y is not None and (ymax is None or y>ymax):
-                ymax = y
-            if self._getLimit('zmax') is None and z is not None and (zmax is None or z>zmax):
-                zmax = z
-            if self._getLimit('datamax') is None and d is not None and (datamax is None or d>datamax):
-                datamax = d
-        if type(xmin) == numerix.ndarray:
-            xmin = xmin[0]
-        if type(xmax) == numerix.ndarray:
-            xmax = xmax[0]
-        if type(ymin) == numerix.ndarray:
-            ymin = ymin[0]
-        if type(ymax) == numerix.ndarray:
-            ymax = ymax[0]
-        if type(zmin) == numerix.ndarray:
-            zmin = zmin[0]
-        if type(zmax) == numerix.ndarray:
-            zmax = zmax[0]
-        if zmax is not None and zmin is not None:
-            minDim = min((xmax-xmin,ymax-ymin,zmax-zmin))
-            maxDim = max((xmax-xmin,ymax-ymin,zmax-zmin))
-        elif ymax is not None and ymin is not None:
-            minDim = min((xmax-xmin,ymax-ymin))
-            maxDim = max((xmax-xmin,ymax-ymin))
-            zmin = 0
-            zmax = minDim/20.
-        else:
-            minDim = xmax-xmin
-            maxDim = xmax-xmin
-            ymin = 0.
-            zmin = 0.
-            ymax = minDim/20.
-            zmax = minDim/20.
-        from fipy.tools.numerix import array
-        for var in self.vars:
-            mesh = var.getMesh()
-            rank = var.getRank()
-            done = False
-            if (len(self.srcs)!=0):
-		self._update(var=var,datamin=datamin,datamax=datamax)
-            else:
-		self._plot(var=var,datamin=datamin,datamax=datamax,extent=[xmin,xmax,ymin,ymax,zmin,zmax],minDim=minDim)
-                
+        (self.vtkfile, self.vtkfname) = tempfile.mkstemp('.vtk')
+        (self.mmapfile, self.mmapfname) = tempfile.mkstemp('.mmap')
+#         f2 = os.open(self.mmapfile, os.O_RDWR)
+        os.write(self.mmapfile, '\n' + '\x00' * 1023)
+        self.mmapfile = mmap(self.mmapfile, 1024)
+
+        from fipy.viewers.vtkViewer.vtkCellViewer import VTKCellViewer
+        self.vtkViewer = VTKCellViewer(vars=vars, title=title)
+        self.vtkViewer.plot(filename=self.vtkfname)
+
+        
+        subprocess.Popen(["python", 
+                          "/Users/guyer/Documents/research/FiPy/mayavi/fipy/viewers/mayaviViewer/mayaviDaemon.py", 
+                          self.vtkfname,
+                          self.mmapfname])
+
+#         self.mods=[]
+#         from enthought.mayavi import mlab
+#         oldScenes = mlab.get_engine().scenes
+#         self.id = len(oldScenes)
+# 	if (self.title==''):
+#             self.title="FiPy Viewer Window "+str(self.id)
+#         self.scene = mlab.figure() #name=self.title)
+
+    def plot(self, filename=None):
+        start = time.time()
+        plotted = False
+        while time.time() - start < 10. and not plotted:
+            msg = self.mmapfile.readline()
+            self.mmapfile.seek(0)
+            if msg.startswith("READY"):
+                self.vtkViewer.plot(filename=self.vtkfname)
+                self.mmapfile.write("PLOT")
+                self.mmapfile.seek(0)
+                plotted = True
+        if not plotted:
+            print "viewer: NOT READY"
+            
+#     def plot(self, filename = None):
+#         from enthought.mayavi import mlab
+# #         mlab.get_engine().current_scene=self.scene
+#         xmin = self._getLimit('xmin')
+#         xmax = self._getLimit('xmax')
+#         ymin = self._getLimit('ymin')
+#         ymax = self._getLimit('ymax')
+#         zmin = self._getLimit('zmin')
+#         zmax = self._getLimit('zmax')
+#         datamin = self._getLimit('datamin')
+#         datamax = self._getLimit('datamax')
+#         for var in self.vars:
+#             mesh = var.getMesh()
+#             rank = var.getRank()
+#             dims = mesh.dim
+#             from fipy.tools import numerix
+#             x,y,z = None,None,None
+#             x = numerix.NUMERIX.min(mesh.getVertexCoords(),axis=1)
+#             if dims > 1:
+#                 y = x[1:]
+#                 x = x[0]
+#                 if dims > 2:
+#                     z = y[1]
+#                     y = y[0]
+#             d = None
+#             if rank == 0:
+#                 d = numerix.NUMERIX.min(var.value)
+#             if self._getLimit('xmin') is None and x is not None and (xmin is None or x<xmin):
+#                 xmin = x
+#             if self._getLimit('ymin') is None and y is not None and (ymin is None or y<ymin):
+#                 ymin = y
+#             if self._getLimit('zmin') is None and z is not None and (zmin is None or z<zmin):
+#                 zmin = z
+#             if self._getLimit('datamin') is None and d is not None and (datamin is None or d<datamin):
+#                 datamin = d
+#             x = numerix.NUMERIX.max(mesh.getVertexCoords(),axis=1)
+#             if dims > 1:
+#                 y = x[1:]
+#                 x = x[0]
+#                 if dims > 2:
+#                     z = y[1]
+#                     y = y[0]
+#             d = None
+#             if rank == 0:
+#                 d = numerix.NUMERIX.max(var.value)
+#             if self._getLimit('xmax') is None and x is not None and (xmax is None or x>xmax):
+#                 xmax = x
+#             if self._getLimit('ymax') is None and y is not None and (ymax is None or y>ymax):
+#                 ymax = y
+#             if self._getLimit('zmax') is None and z is not None and (zmax is None or z>zmax):
+#                 zmax = z
+#             if self._getLimit('datamax') is None and d is not None and (datamax is None or d>datamax):
+#                 datamax = d
+#         if type(xmin) == numerix.ndarray:
+#             xmin = xmin[0]
+#         if type(xmax) == numerix.ndarray:
+#             xmax = xmax[0]
+#         if type(ymin) == numerix.ndarray:
+#             ymin = ymin[0]
+#         if type(ymax) == numerix.ndarray:
+#             ymax = ymax[0]
+#         if type(zmin) == numerix.ndarray:
+#             zmin = zmin[0]
+#         if type(zmax) == numerix.ndarray:
+#             zmax = zmax[0]
+#         if zmax is not None and zmin is not None:
+#             minDim = min((xmax-xmin,ymax-ymin,zmax-zmin))
+#             maxDim = max((xmax-xmin,ymax-ymin,zmax-zmin))
+#         elif ymax is not None and ymin is not None:
+#             minDim = min((xmax-xmin,ymax-ymin))
+#             maxDim = max((xmax-xmin,ymax-ymin))
+#             zmin = 0
+#             zmax = minDim/20.
+#         else:
+#             minDim = xmax-xmin
+#             maxDim = xmax-xmin
+#             ymin = 0.
+#             zmin = 0.
+#             ymax = minDim/20.
+#             zmax = minDim/20.
+#         from fipy.tools.numerix import array
+#         for var in self.vars:
+#             mesh = var.getMesh()
+#             rank = var.getRank()
+#             done = False
+#             if self.surf is not None:
+# 		self._update(var=var,datamin=datamin,datamax=datamax)
+#             else:
+# 		self._plot(var=var,datamin=datamin,datamax=datamax,extent=[xmin,xmax,ymin,ymax,zmin,zmax],minDim=minDim)
+#                 
         if filename is not None:
             from enthought.mayavi import mlab
             mlab.savefig(filename)
