@@ -53,7 +53,12 @@ class MayaviDaemon(object):
         self.facefname = facefname
         self.lockfname = lockfname
         
-        self.setup_data()
+        # 'mayavi' is always defined on the interpreter.
+        mayavi.new_scene()
+
+        self.cellsource = self.setup_source(self.cellfname)
+        self.facesource = self.setup_source(self.facefname)
+        self.view_data()
 
         # Poll the lock file.
         self.timer = Timer(1000, self.poll_file)
@@ -61,66 +66,57 @@ class MayaviDaemon(object):
 
     def poll_file(self):
         if os.path.isfile(self.lockfname):
-            self.update_pipeline()
+            self.update_pipeline(self.cellsource)
+            self.update_pipeline(self.facesource)
             os.unlink(self.lockfname)
 
-    def update_pipeline(self):
+    def update_pipeline(self, data):
         """Override this to do something else if needed.
         """
         # Force the reader to re-read the file.
-        cd = self.celldata
-        cd.reader.modified()
-        cd.update()
+        data.reader.modified()
+        data.update()
         # Propagate the changes in the pipeline.
-        cd.data_changed = True
-
-        # Force the reader to re-read the file.
-        fd = self.facedata
-        fd.reader.modified()
-        fd.update()
-        # Propagate the changes in the pipeline.
-        fd.data_changed = True
-
-    def setup_data(self):
+        data.data_changed = True
+        
+    def setup_source(self, fname):
         """Given a VTK file name `fname`, this creates a mayavi2 reader
         for it and adds it to the pipeline.  It returns the reader
         created.
         """
-        # 'mayavi' is always defined on the interpreter.
-        mayavi.new_scene()
+        source = VTKFileReader()
+        source.initialize(fname)
+        mayavi.add_source(source)
         
-        self.celldata = VTKFileReader()
-        self.celldata.initialize(self.cellfname)
-        self.cellsource = mayavi.add_source(self.celldata)
-        
-        self.view_cells()
-        
-        self.facedata = VTKFileReader()
-        self.facedata.initialize(self.facefname)
-        self.facesource = mayavi.add_source(self.facedata)
-        
-        self.view_faces()
+        return source
 
-    def view_cells(self):
+    def view_data(self):
         """Sets up the mayavi pipeline for the visualization.
         """
-        
         from enthought.mayavi import mlab
+            
         o = mlab.pipeline.outline(self.cellsource)
-        s = mlab.pipeline.surface(self.cellsource) #,extent=extent,vmin=datamin,vmax=datamax)
-        s.module_manager.scalar_lut_manager.show_scalar_bar = True
+        scalars = [out.cell_data.scalars for out in self.cellsource.outputs \
+                   if out.cell_data.scalars is not None]
+        if len(scalars) > 0:
+            s = mlab.pipeline.surface(self.cellsource) #,extent=extent,vmin=datamin,vmax=datamax)
+#             s.module_manager.scalar_lut_manager.show_scalar_bar = True
         p = mlab.pipeline.cell_to_point_data(self.cellsource)
-        v = mlab.pipeline.vectors(p)
+        vectors = [out.cell_data.vectors for out in self.cellsource.outputs \
+                   if out.cell_data.vectors is not None]
+        if len(vectors) > 0:
+            v = mlab.pipeline.vectors(p)
 
-    def view_faces(self):
-        """Sets up the mayavi pipeline for the visualization.
-        """
-        from enthought.mayavi import mlab
-
-        s = mlab.pipeline.surface(self.facesource) #,extent=extent,vmin=datamin,vmax=datamax)
+        scalars = [out.point_data.scalars for o in self.facesource.outputs \
+                   if out.point_data.scalars is not None]
+        if len(scalars) > 0:
+            s = mlab.pipeline.surface(self.facesource) #,extent=extent,vmin=datamin,vmax=datamax)
     #     s.module_manager.scalar_lut_manager.show_scalar_bar = True
         p = mlab.pipeline.cell_to_point_data(self.facesource)
-        v = mlab.pipeline.vectors(p)
+        vectors = [out.point_data.vectors for out in self.facesource.outputs \
+                   if out.point_data.vectors is not None]
+        if len(vectors) > 0:
+            v = mlab.pipeline.vectors(p)
 
 @mayavi2.standalone
 def main():

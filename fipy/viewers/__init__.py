@@ -28,6 +28,7 @@ except:
 
 from multiViewer import MultiViewer
 from tsvViewer import TSVViewer
+from vtkViewer import VTKViewer
 
 
 # what about vector variables?
@@ -41,7 +42,7 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
     The `Viewer` factory will search the module tree and return an instance of
     the first `Viewer` it finds that supports the dimensions of `vars`. Setting
     the '`FIPY_VIEWER`' environment variable to either '`gist`', '`gnuplot`',
-    '`matplotlib`', or '`tsv`' will specify the viewer.
+    '`matplotlib`', '`tsv`', or '`vtk`' will specify the viewer.
        
     The `kwlimits` or `limits` parameters can be used to constrain the view. For example::
             
