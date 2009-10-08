@@ -64,42 +64,42 @@ class _VTKViewer(_Viewer):
         
         self.dataset = self._makeDataSet(mesh)
         
+        data = self._getData()
+        
         for var in self.vars:
-            name = self._getArrayName(var)
-            rank = var.getRank()
-            value = mesh._toVTK3D(var.getValue(), rank=rank)
+            name, rank, value = self._nameRankValue(var)
 
-            i = self.dataset.cell_data.add_array(value)
-            self.dataset.cell_data.get_array(i).name = name
+            i = data.add_array(value)
+            data.get_array(i).name = name
 
             if rank == 0:
-                self.dataset.cell_data.set_active_scalars(name)
+                data.set_active_scalars(name)
             elif rank == 1:
-                self.dataset.cell_data.set_active_vectors(name)
+                data.set_active_vectors(name)
             else:
-                self.dataset.cell_data.set_active_tensors(name)
+                data.set_active_tensors(name)
 
     def _makeDataSet(self, mesh):
         pass
+        
+    def _getData(self):
+        pass
 
     @staticmethod
-    def _getArrayName(var):
-        return var.name or "%s #%d" % (var.__class__.__name__, id(var))
+    def _nameRankValue(var):
+        name = var.name or "%s #%d" % (var.__class__.__name__, id(var))
+        rank = var.getRank()
+        value = var.getMesh()._toVTK3D(var.getValue(), rank=rank)
+
+        return (name, rank, value)
         
     def plot(self, filename=None):
+        data = self._getData()
+
         for var in self.vars:
-            name = self._getArrayName(var)
-            rank = var.getRank()
-            value = var.getMesh()._toVTK3D(var.getValue(), rank=rank)
+            name, rank, value = self._nameRankValue(var)
                 
-            self.dataset.cell_data.get_array(name).to_array()[:] = value
-
-#         from enthought.tvtk.api import tvtk
-#         w = tvtk.UnstructuredGridWriter(input=self.vtkDataSet, file_name=filename)
-#         w.write()
-
-#         w = tvtk.XMLDataSetWriter(input=self.collection, file_name=filename) #[:-1] + "u")
-#         w.write()
+            data.get_array(name).to_array()[:] = value
 
         from enthought.tvtk.misc import write_data
         write_data(self.dataset, filename)

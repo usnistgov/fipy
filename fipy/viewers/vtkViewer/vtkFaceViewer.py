@@ -39,6 +39,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.faceVariable import FaceVariable
+from fipy.viewers.viewer import _Viewer
 
 from vtkViewer import _VTKViewer
 
@@ -47,6 +48,9 @@ class VTKFaceViewer(_VTKViewer):
     """
     def _makeDataSet(self, mesh):
         return mesh.getVTKFaceDataSet()
+        
+    def _getData(self):
+        return self.dataset.point_data
 
     def _getVariableClass(self):
         return FaceVariable
