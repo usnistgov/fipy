@@ -919,12 +919,9 @@ class Mesh(_CommonMesh):
     def _getVTKCellType(self):
         from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
-        
-    def getVTKDataSet(self):
-        """Returns a TVTK `DataSet` representing the cells of this mesh, 
-        the offset to the face center array,
-        the offset to the cell center array, 
-        and the total number of points, 
+                
+    def getVTKCellDataSet(self):
+        """Returns a TVTK `DataSet` representing the cells of this mesh
         """
         cvi = self._getOrderedCellVertexIDs().swapaxes(0,1)
         from fipy.tools import numerix
@@ -951,16 +948,32 @@ class Mesh(_CommonMesh):
         offset -= offset[0]
         ug.set_cells(cell_types, offset, cell_array)
 
+        return ug
+
+    def getVTKFaceDataSet(self):
+        """Returns a TVTK `DataSet` representing the face centers of this mesh
+        """
+        from enthought.tvtk.api import tvtk
+        
         points = self.getFaceCenters()
         points = self._toVTK3D(points)
-        fc = tvtk.UnstructuredGrid(points=points)
+        ug = tvtk.UnstructuredGrid(points=points)
+        
+        num = len(points)
+        counts = numerix.array([1] * num)[..., numerix.newaxis]
+        cells = self._getFaces()[..., numerix.newaxis]
+        cells = numerix.concatenate((counts, cells), axis=1)
+        cell_types = numerix.array([tvtk.Vertex().cell_type]*num)
+        cell_array = tvtk.CellArray()
+        cell_array.set_cells(num, cells)
 
-        points = self.getCellCenters()
-        points = self._toVTK3D(points)
-        cc = tvtk.UnstructuredGrid(points=points)
+        counts = numerix.array([1] * num)
+        offset = numerix.cumsum(counts+1)
+        offset -= offset[0]
+        ug.set_cells(cell_types, offset, cell_array)
 
-        return (ug, fc, cc)
-                
+        return ug
+
     def _toVTK3D(self, arr, rank=1):
         if rank == 0:
             return arr
