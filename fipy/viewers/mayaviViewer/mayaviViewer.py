@@ -38,7 +38,6 @@
 
 __docformat__ = 'restructuredtext'
 
-from mmap import mmap
 import os
 import subprocess
 import tempfile
@@ -46,7 +45,7 @@ import time
 
 from fipy.viewers.viewer import _Viewer
 
-class _MayaviViewer(_Viewer):
+class MayaviViewer(_Viewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
 
@@ -82,15 +81,6 @@ class _MayaviViewer(_Viewer):
         self.vtkCellViewer = VTKCellViewer(vars=vars)
         self.vtkFaceViewer = VTKFaceViewer(vars=vars)
                                            
-#         (self.vtkfile, self.vtkfname) = tempfile.mkstemp('.vtk')
-#         (self.mmapfile, self.mmapfname) = tempfile.mkstemp('.mmap')
-# #         f2 = os.open(self.mmapfile, os.O_RDWR)
-#         os.write(self.mmapfile, '\n' + '\x00' * 1023)
-#         self.mmapfile = mmap(self.mmapfile, 1024)
-# 
-#         from fipy.viewers.vtkViewer import VTKViewer
-#         self.vtkViewer = VTKViewer(vars=vars, title=title)
-
         vars = self.vtkCellViewer.getVars() + self.vtkFaceViewer.getVars()
         
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
@@ -223,14 +213,6 @@ class _MayaviViewer(_Viewer):
 #             from enthought.mayavi import mlab
 #             mlab.savefig(filename)
     
-    def _plot(self):
-        pass
-    
     def _validFileExtensions(self):
         return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
 
-    def show():
-        """Shows this viewer so that the program pauses before displaying the next timestep, or waits to terminate the program till all the windows close"""
-        from enthought.mayavi import mlab
-        mlab.show()
-    show = staticmethod(show)
