@@ -57,7 +57,7 @@ class _MayaviViewer(_Viewer):
 
     """
 
-    def __init__(self, vars, title=None, fps=1., **kwlimits):
+    def __init__(self, vars, title=None, **kwlimits):
         """
         Create a `_MayaviViewer`.
         
@@ -66,21 +66,12 @@ class _MayaviViewer(_Viewer):
             a `CellVariable` or tuple of `CellVariable` objects to plot
           title
             displayed at the top of the `Viewer` window
-          fps
-            display rate in frames per second
-          xmin, xmax, ymin, ymax, datamin, datamax
+          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
             displayed range of data. A 1D `Viewer` will only use `xmin` and
-            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
         """
-#         if self.__class__ is _MayaviViewer:
-#             raise NotImplementedError, "can't instantiate abstract base class"
-        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
-        
-        self.fps = fps
-        self.surf = None
-        
         (self.vtkfile, self.vtkfname) = tempfile.mkstemp('.vtk')
         (self.mmapfile, self.mmapfname) = tempfile.mkstemp('.mmap')
 #         f2 = os.open(self.mmapfile, os.O_RDWR)
@@ -89,6 +80,9 @@ class _MayaviViewer(_Viewer):
 
         from fipy.viewers.vtkViewer import VTKViewer
         self.vtkViewer = VTKViewer(vars=vars, title=title)
+
+        _Viewer.__init__(self, vars=self.vtkViewer.getVars(), title=title, **kwlimits)
+        
         self.vtkViewer.plot(filename=self.vtkfname)
 
         

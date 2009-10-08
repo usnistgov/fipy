@@ -38,14 +38,9 @@
 
 __docformat__ = 'restructuredtext'
 
-import os
-import time
-
-from fipy.variables.cellVariable import CellVariable
-from fipy.variables.faceVariable import FaceVariable
 from fipy.viewers.viewer import _Viewer
 
-class VTKViewer(_Viewer):
+class _VTKViewer(_Viewer):
     """Renders `_MeshVariable` data in VTK format
     """
     def __init__(self, vars, title=None, limits={}, **kwlimits):
@@ -53,7 +48,7 @@ class VTKViewer(_Viewer):
 
         :Parameters:
           vars
-            a `CellVariable` or a tuple of them
+            a `_MeshVariable` or a tuple of them
           title
             displayed at the top of the `Viewer` window
           limits : dict
@@ -67,51 +62,26 @@ class VTKViewer(_Viewer):
 
         mesh = self.vars[0].getMesh()
         
-        (self.cells, 
-         self.faceCenters, 
-         self.cellCenters) = mesh.getVTKDataSet()
-         
-#         self.collection = tvtk.DataSetCollection()
-#         self.collection.append(self.cells)
-#         self.collection.append(self.faceCenters)
-#         self.collection.append(self.cellCenters)
-
+        self.dataset = self._makeDataSet(mesh)
+        
         for var in self.vars:
             name = self._getArrayName(var)
             rank = var.getRank()
-            value = var.getValue()
-            if isinstance(var, CellVariable):
-                if rank == 0 and isinstance(var, CellVariable):
-                    i = self.cells.cell_data.add_array(value)
-                    self.cells.cell_data.get_array(i).name = name
-                    self.cells.cell_data.set_active_scalars(name)
-                else:
-                    value = var.getMesh()._toVTK3D(value, rank=rank)
-                    i = self.cells.cell_data.add_array(value)
-                    self.cells.cell_data.get_array(i).name = name
-                    self.cells.cell_data.set_active_vectors(name)
+            value = mesh._toVTK3D(var.getValue(), rank=rank)
 
-            if isinstance(var, CellVariable):
-                dataset = self.cellCenters
-            elif isinstance(var, FaceVariable):
-                dataset = self.faceCenters
-                
-            value = var.getMesh()._toVTK3D(value, rank=rank)
-
-                
-#             i = dataset.point_data.add_array(value)
-#             dataset.point_data.get_array(i).name = name
-            i = dataset.cell_data.add_array(value)
-            dataset.cell_data.get_array(i).name = name
+            i = self.dataset.cell_data.add_array(value)
+            self.dataset.cell_data.get_array(i).name = name
 
             if rank == 0:
-                dataset.cell_data.set_active_scalars(name)
+                self.dataset.cell_data.set_active_scalars(name)
             elif rank == 1:
-#                 dataset.point_data.set_active_vectors(name)
-                dataset.cell_data.set_active_vectors(name)
+                self.dataset.cell_data.set_active_vectors(name)
             else:
-                dataset.cell_data.set_active_tensors(name)
-        
+                self.dataset.cell_data.set_active_tensors(name)
+
+    def _makeDataSet(self, mesh):
+        pass
+
     @staticmethod
     def _getArrayName(var):
         return var.name or "%s #%d" % (var.__class__.__name__, id(var))
@@ -120,23 +90,9 @@ class VTKViewer(_Viewer):
         for var in self.vars:
             name = self._getArrayName(var)
             rank = var.getRank()
-            value = var.getValue()
-            if isinstance(var, CellVariable):
-                if rank == 0 and isinstance(var, CellVariable):
-                    self.cells.cell_data.get_array(name).to_array()[:] = value
-                else:
-                    value = var.getMesh()._toVTK3D(value, rank=rank)
-                    self.cells.cell_data.get_array(name).to_array()[:] = value
-
-            value = var.getMesh()._toVTK3D(value, rank=rank)
-
-            
-            if isinstance(var, CellVariable):
-                dataset = self.cellCenters
-            elif isinstance(var, FaceVariable):
-                dataset = self.faceCenters
+            value = var.getMesh()._toVTK3D(var.getValue(), rank=rank)
                 
-            dataset.cell_data.get_array(name).to_array()[:] = value
+            self.dataset.cell_data.get_array(name).to_array()[:] = value
 
 #         from enthought.tvtk.api import tvtk
 #         w = tvtk.UnstructuredGridWriter(input=self.vtkDataSet, file_name=filename)
@@ -146,16 +102,18 @@ class VTKViewer(_Viewer):
 #         w.write()
 
         from enthought.tvtk.misc import write_data
-        write_data(self.faceCenters, filename)
-
+        write_data(self.dataset, filename)
+        
     def _getSuitableVars(self,vars):
         if type(vars) not in [type([]),type(())]:
             vars = [vars]
-        vars = [var for var in vars if isinstance(var, CellVariable) or isinstance(var, FaceVariable)]
+        cls = self._getVariableClass()
+        vars = [var for var in vars if isinstance(var, cls)]
         if len(vars) == 0:
-            raise TypeError, "VTKViewer can only display CellVariable or FaceVariable objects"
+            raise TypeError("%s can only display %s" % (self.__class__.__name__, cls.__name__))
         vars = [var for var in vars if var.getMesh()==vars[0].getMesh()]
         return vars
+
 
 if __name__ == "__main__": 
 #     import fipy.tests.doctestPlus
