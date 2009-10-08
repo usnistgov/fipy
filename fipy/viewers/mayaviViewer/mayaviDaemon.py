@@ -54,7 +54,6 @@ class MayaviDaemon(object):
         self.lockfname = lockfname
         
         self.setup_data()
-        self.view_data()
 
         # Poll the lock file.
         self.timer = Timer(1000, self.poll_file)
@@ -94,14 +93,17 @@ class MayaviDaemon(object):
         self.celldata.initialize(self.cellfname)
         self.cellsource = mayavi.add_source(self.celldata)
         
+        self.view_cells()
+        
         self.facedata = VTKFileReader()
         self.facedata.initialize(self.facefname)
         self.facesource = mayavi.add_source(self.facedata)
+        
+        self.view_faces()
 
-    def view_data(self):
+    def view_cells(self):
         """Sets up the mayavi pipeline for the visualization.
         """
-        # 'mayavi' is always defined on the interpreter.
         
         from enthought.mayavi import mlab
         o = mlab.pipeline.outline(self.cellsource)
@@ -109,6 +111,11 @@ class MayaviDaemon(object):
         s.module_manager.scalar_lut_manager.show_scalar_bar = True
         p = mlab.pipeline.cell_to_point_data(self.cellsource)
         v = mlab.pipeline.vectors(p)
+
+    def view_faces(self):
+        """Sets up the mayavi pipeline for the visualization.
+        """
+        from enthought.mayavi import mlab
 
         s = mlab.pipeline.surface(self.facesource) #,extent=extent,vmin=datamin,vmax=datamax)
     #     s.module_manager.scalar_lut_manager.show_scalar_bar = True
