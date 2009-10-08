@@ -72,24 +72,39 @@ class _MayaviViewer(_Viewer):
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
         """
-        (self.vtkfile, self.vtkfname) = tempfile.mkstemp('.vtk')
-        (self.mmapfile, self.mmapfname) = tempfile.mkstemp('.mmap')
-#         f2 = os.open(self.mmapfile, os.O_RDWR)
-        os.write(self.mmapfile, '\n' + '\x00' * 1023)
-        self.mmapfile = mmap(self.mmapfile, 1024)
+        self.vtkdir = tempfile.mkdtemp()
+        self.vtkcellfname = os.path.join(self.vtkdir, "cell.vtk")
+        self.vtkfacefname = os.path.join(self.vtkdir, "face.vtk")
+        self.vtklockfname = os.path.join(self.vtkdir, "lock")
 
-        from fipy.viewers.vtkViewer import VTKViewer
-        self.vtkViewer = VTKViewer(vars=vars, title=title)
+        from fipy.viewers.vtkViewer import VTKCellViewer, VTKFaceViewer
 
-        _Viewer.__init__(self, vars=self.vtkViewer.getVars(), title=title, **kwlimits)
+        self.vtkCellViewer = VTKCellViewer(vars=vars)
+        self.vtkFaceViewer = VTKFaceViewer(vars=vars)
+                                           
+#         (self.vtkfile, self.vtkfname) = tempfile.mkstemp('.vtk')
+#         (self.mmapfile, self.mmapfname) = tempfile.mkstemp('.mmap')
+# #         f2 = os.open(self.mmapfile, os.O_RDWR)
+#         os.write(self.mmapfile, '\n' + '\x00' * 1023)
+#         self.mmapfile = mmap(self.mmapfile, 1024)
+# 
+#         from fipy.viewers.vtkViewer import VTKViewer
+#         self.vtkViewer = VTKViewer(vars=vars, title=title)
+
+        vars = self.vtkCellViewer.getVars() + self.vtkFaceViewer.getVars()
         
-        self.vtkViewer.plot(filename=self.vtkfname)
-
+        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         
+        self.vtkCellViewer.plot(filename=self.vtkcellfname)
+        self.vtkFaceViewer.plot(filename=self.vtkfacefname)
+        lock = file(self.vtklockfname, 'w')
+        lock.close()
+
         subprocess.Popen(["python", 
                           "/Users/guyer/Documents/research/FiPy/mayavi/fipy/viewers/mayaviViewer/mayaviDaemon.py", 
-                          self.vtkfname,
-                          self.mmapfname])
+                          self.vtkcellfname,
+                          self.vtkfacefname,
+                          self.vtklockfname])
 
 #         self.mods=[]
 #         from enthought.mayavi import mlab
@@ -103,12 +118,13 @@ class _MayaviViewer(_Viewer):
         start = time.time()
         plotted = False
         while time.time() - start < 10. and not plotted:
-            msg = self.mmapfile.readline()
-            self.mmapfile.seek(0)
-            if msg.startswith("READY"):
-                self.vtkViewer.plot(filename=self.vtkfname)
-                self.mmapfile.write("PLOT")
-                self.mmapfile.seek(0)
+            if not os.path.isfile(self.vtklockfname):
+                self.vtkCellViewer.plot(filename=self.vtkcellfname)
+                self.vtkFaceViewer.plot(filename=self.vtkfacefname)
+                lock = file(self.vtklockfname, 'w')
+                if filename is not None:
+                    lock.write(filename)
+                lock.close()
                 plotted = True
         if not plotted:
             print "viewer: NOT READY"
@@ -203,9 +219,9 @@ class _MayaviViewer(_Viewer):
 #             else:
 # 		self._plot(var=var,datamin=datamin,datamax=datamax,extent=[xmin,xmax,ymin,ymax,zmin,zmax],minDim=minDim)
 #                 
-        if filename is not None:
-            from enthought.mayavi import mlab
-            mlab.savefig(filename)
+#         if filename is not None:
+#             from enthought.mayavi import mlab
+#             mlab.savefig(filename)
     
     def _plot(self):
         pass
