@@ -78,23 +78,46 @@ class MayaviViewer(_Viewer):
 
         from fipy.viewers.vtkViewer import VTKCellViewer, VTKFaceViewer
 
-        self.vtkCellViewer = VTKCellViewer(vars=vars)
-        self.vtkFaceViewer = VTKFaceViewer(vars=vars)
-                                           
-        vars = self.vtkCellViewer.getVars() + self.vtkFaceViewer.getVars()
-        
-        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
-        
-        self.vtkCellViewer.plot(filename=self.vtkcellfname)
-        self.vtkFaceViewer.plot(filename=self.vtkfacefname)
-        lock = file(self.vtklockfname, 'w')
-        lock.close()
+        try:
+            self.vtkCellViewer = VTKCellViewer(vars=vars)
+            cell_vars = self.vtkCellViewer.getVars()
+        except TypeError:
+            self.vtkCellViewer = None
+            cell_vars = []
 
-        subprocess.Popen(["python", 
-                          "/Users/guyer/Documents/research/FiPy/mayavi/fipy/viewers/mayaviViewer/mayaviDaemon.py", 
-                          self.vtkcellfname,
-                          self.vtkfacefname,
-                          self.vtklockfname])
+        try:
+            self.vtkFaceViewer = VTKFaceViewer(vars=vars)
+            face_vars = self.vtkFaceViewer.getVars()
+        except TypeError:
+            self.vtkFaceViewer = None
+            face_vars = []
+
+        _Viewer.__init__(self, vars=cell_vars + face_vars, title=title, **kwlimits)
+        
+        self.plot()
+
+        cmd = ["python", 
+               "/Users/guyer/Documents/research/FiPy/mayavi/fipy/viewers/mayaviViewer/mayaviDaemon.py",
+               "--lock",
+               self.vtklockfname]
+
+        if self.vtkCellViewer is not None:
+            cmd += ["--cell", self.vtkcellfname]
+            
+        if self.vtkFaceViewer is not None:
+            cmd += ["--face", self.vtkfacefname]
+            
+                
+        cmd += self._getLimit('xmin')
+        cmd += self._getLimit('xmax')
+        cmd += self._getLimit('ymin')
+        cmd += self._getLimit('ymax')
+        cmd += self._getLimit('zmin')
+        cmd += self._getLimit('zmax')
+        cmd += self._getLimit('datamin')
+        cmd += self._getLimit('datamax')
+
+        subprocess.Popen(cmd)
 
 #         self.mods=[]
 #         from enthought.mayavi import mlab
@@ -104,13 +127,37 @@ class MayaviViewer(_Viewer):
 #             self.title="FiPy Viewer Window "+str(self.id)
 #         self.scene = mlab.figure() #name=self.title)
 
+    def _getLimit(self, key):
+        """
+        Return the limit associated with the key
+        
+        .. Note::
+           
+           `MayaviViewer` does not need the generality of multiple keys 
+           because it is always 3D
+        
+        :Parameters:
+          key
+            a key string that identifies the limit of interest
+            
+        :Returns:
+          the value of the limit or `None`
+        """
+        lim = _Viewer._getLimit(self, key)
+        if lim is not None:
+            return ["--%s" % key, str(lim)]
+        else:
+            return []
+
     def plot(self, filename=None):
         start = time.time()
         plotted = False
         while time.time() - start < 10. and not plotted:
             if not os.path.isfile(self.vtklockfname):
-                self.vtkCellViewer.plot(filename=self.vtkcellfname)
-                self.vtkFaceViewer.plot(filename=self.vtkfacefname)
+                if self.vtkCellViewer is not None:
+                    self.vtkCellViewer.plot(filename=self.vtkcellfname)
+                if self.vtkFaceViewer is not None:
+                    self.vtkFaceViewer.plot(filename=self.vtkfacefname)
                 lock = file(self.vtklockfname, 'w')
                 if filename is not None:
                     lock.write(filename)
@@ -119,96 +166,6 @@ class MayaviViewer(_Viewer):
         if not plotted:
             print "viewer: NOT READY"
             
-#     def plot(self, filename = None):
-#         from enthought.mayavi import mlab
-# #         mlab.get_engine().current_scene=self.scene
-#         xmin = self._getLimit('xmin')
-#         xmax = self._getLimit('xmax')
-#         ymin = self._getLimit('ymin')
-#         ymax = self._getLimit('ymax')
-#         zmin = self._getLimit('zmin')
-#         zmax = self._getLimit('zmax')
-#         datamin = self._getLimit('datamin')
-#         datamax = self._getLimit('datamax')
-#         for var in self.vars:
-#             mesh = var.getMesh()
-#             rank = var.getRank()
-#             dims = mesh.dim
-#             from fipy.tools import numerix
-#             x,y,z = None,None,None
-#             x = numerix.NUMERIX.min(mesh.getVertexCoords(),axis=1)
-#             if dims > 1:
-#                 y = x[1:]
-#                 x = x[0]
-#                 if dims > 2:
-#                     z = y[1]
-#                     y = y[0]
-#             d = None
-#             if rank == 0:
-#                 d = numerix.NUMERIX.min(var.value)
-#             if self._getLimit('xmin') is None and x is not None and (xmin is None or x<xmin):
-#                 xmin = x
-#             if self._getLimit('ymin') is None and y is not None and (ymin is None or y<ymin):
-#                 ymin = y
-#             if self._getLimit('zmin') is None and z is not None and (zmin is None or z<zmin):
-#                 zmin = z
-#             if self._getLimit('datamin') is None and d is not None and (datamin is None or d<datamin):
-#                 datamin = d
-#             x = numerix.NUMERIX.max(mesh.getVertexCoords(),axis=1)
-#             if dims > 1:
-#                 y = x[1:]
-#                 x = x[0]
-#                 if dims > 2:
-#                     z = y[1]
-#                     y = y[0]
-#             d = None
-#             if rank == 0:
-#                 d = numerix.NUMERIX.max(var.value)
-#             if self._getLimit('xmax') is None and x is not None and (xmax is None or x>xmax):
-#                 xmax = x
-#             if self._getLimit('ymax') is None and y is not None and (ymax is None or y>ymax):
-#                 ymax = y
-#             if self._getLimit('zmax') is None and z is not None and (zmax is None or z>zmax):
-#                 zmax = z
-#             if self._getLimit('datamax') is None and d is not None and (datamax is None or d>datamax):
-#                 datamax = d
-#         if type(xmin) == numerix.ndarray:
-#             xmin = xmin[0]
-#         if type(xmax) == numerix.ndarray:
-#             xmax = xmax[0]
-#         if type(ymin) == numerix.ndarray:
-#             ymin = ymin[0]
-#         if type(ymax) == numerix.ndarray:
-#             ymax = ymax[0]
-#         if type(zmin) == numerix.ndarray:
-#             zmin = zmin[0]
-#         if type(zmax) == numerix.ndarray:
-#             zmax = zmax[0]
-#         if zmax is not None and zmin is not None:
-#             minDim = min((xmax-xmin,ymax-ymin,zmax-zmin))
-#             maxDim = max((xmax-xmin,ymax-ymin,zmax-zmin))
-#         elif ymax is not None and ymin is not None:
-#             minDim = min((xmax-xmin,ymax-ymin))
-#             maxDim = max((xmax-xmin,ymax-ymin))
-#             zmin = 0
-#             zmax = minDim/20.
-#         else:
-#             minDim = xmax-xmin
-#             maxDim = xmax-xmin
-#             ymin = 0.
-#             zmin = 0.
-#             ymax = minDim/20.
-#             zmax = minDim/20.
-#         from fipy.tools.numerix import array
-#         for var in self.vars:
-#             mesh = var.getMesh()
-#             rank = var.getRank()
-#             done = False
-#             if self.surf is not None:
-# 		self._update(var=var,datamin=datamin,datamax=datamax)
-#             else:
-# 		self._plot(var=var,datamin=datamin,datamax=datamax,extent=[xmin,xmax,ymin,ymax,zmin,zmax],minDim=minDim)
-#                 
 #         if filename is not None:
 #             from enthought.mayavi import mlab
 #             mlab.savefig(filename)
