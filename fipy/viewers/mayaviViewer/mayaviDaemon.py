@@ -158,18 +158,6 @@ class MayaviDaemon(Mayavi):
 
         # Poll the lock file.
         self.timer = Timer(1000, self.poll_file)
-    
-    def __del__(self):
-        if os.path.isfile(self.cellsource):
-            os.unlink(self.cellsource)
-        if os.path.isfile(self.facesource):
-            os.unlink(self.facesource)
-        if os.path.isfile(self.lockfname):
-            os.unlink(self.lockfname)
-#         os.rmdir(self.vtkdir)
-        print "deleted MayaviDaemon"
-
-        Mayavi.__del__(self)
 
     def poll_file(self):
         if os.path.isfile(self.lockfname):
