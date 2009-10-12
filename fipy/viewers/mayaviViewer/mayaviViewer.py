@@ -117,16 +117,18 @@ class MayaviViewer(_Viewer):
         cmd += self._getLimit('datamin')
         cmd += self._getLimit('datamax')
 
-        subprocess.Popen(cmd)
-
-#         self.mods=[]
-#         from enthought.mayavi import mlab
-#         oldScenes = mlab.get_engine().scenes
-#         self.id = len(oldScenes)
-# 	if (self.title==''):
-#             self.title="FiPy Viewer Window "+str(self.id)
-#         self.scene = mlab.figure() #name=self.title)
-
+        self.daemon = subprocess.Popen(cmd)
+        
+    def __del__(self):
+        if os.path.isfile(self.vtkcellfname):
+            os.unlink(self.vtkcellfname)
+        if os.path.isfile(self.vtkfacefname):
+            os.unlink(self.vtkfacefname)
+        if os.path.isfile(self.vtklockfname):
+            os.unlink(self.vtklockfname)
+        os.rmdir(self.vtkdir)
+        _Viewer.__del__(self)
+        
     def _getLimit(self, key):
         """
         Return the limit associated with the key
@@ -165,11 +167,7 @@ class MayaviViewer(_Viewer):
                 plotted = True
         if not plotted:
             print "viewer: NOT READY"
-            
-#         if filename is not None:
-#             from enthought.mayavi import mlab
-#             mlab.savefig(filename)
     
     def _validFileExtensions(self):
         return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
-
+        
