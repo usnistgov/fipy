@@ -34,6 +34,7 @@ import sys
 from enthought.mayavi.plugins.app import Mayavi
 from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
 from enthought.pyface.timer.api import Timer
+from enthought.mayavi import mlab
 
 # FiPy library imports
 from fipy.tools.numerix import array, concatenate, where, zeros
@@ -96,7 +97,7 @@ class MayaviDaemon(Mayavi):
         self.lockfname = options.lock
         self.cellfname = options.cell
         self.facefname = options.face
-        self.extent = [options.xmin, options.xmax, 
+        self.bounds = [options.xmin, options.xmax, 
                        options.ymin, options.ymax, 
                        options.zmin, options.zmax]
                        
@@ -107,7 +108,7 @@ class MayaviDaemon(Mayavi):
         # 'mayavi' is always defined on the interpreter.
         mayavi.new_scene()
 
-        extent = zeros((0, 6))
+        bounds = zeros((0, 6))
         
         self.cellsource = self.setup_source(self.cellfname)
         if self.cellsource is not None:
@@ -121,7 +122,7 @@ class MayaviDaemon(Mayavi):
                    if out.cell_data.tensors is not None]
             self.has_cell_tensors = (len(tmp) > 0)
 
-            extent = concatenate((extent, 
+            bounds = concatenate((bounds, 
                                   [out.bounds for out in self.cellsource.outputs]),
                                  axis=0)
 
@@ -138,30 +139,47 @@ class MayaviDaemon(Mayavi):
                    if out.point_data.tensors is not None]
             self.has_face_tensors = (len(tmp) > 0)
             
-            extent = concatenate((extent, 
+            bounds = concatenate((bounds, 
                                   [out.bounds for out in self.facesource.outputs]),
                                  axis=0)
                                  
-        extentmin = extent.min(axis=0)
-        extentmax = extent.max(axis=0)
+        boundsmin = bounds.min(axis=0)
+        boundsmax = bounds.max(axis=0)
         
-        extent = (extentmin[0], extentmax[1], 
-                  extentmin[2], extentmax[3], 
-                  extentmin[4], extentmax[5])
+        bounds = (boundsmin[0], boundsmax[1], 
+                  boundsmin[2], boundsmax[3], 
+                  boundsmin[4], boundsmax[5])
 
-        self.extent = where(self.extent == array((None,)),
-                            extent, 
-                            self.extent).astype(float)
+        self.bounds = where(self.bounds == array((None,)),
+                            bounds, 
+                            self.bounds).astype(float)
 
         self.view_data()
 
         # Poll the lock file.
         self.timer = Timer(1000, self.poll_file)
     
+    def __del__(self):
+        if os.path.isfile(self.cellsource):
+            os.unlink(self.cellsource)
+        if os.path.isfile(self.facesource):
+            os.unlink(self.facesource)
+        if os.path.isfile(self.lockfname):
+            os.unlink(self.lockfname)
+#         os.rmdir(self.vtkdir)
+        print "deleted MayaviDaemon"
+
+        Mayavi.__del__(self)
+
     def poll_file(self):
         if os.path.isfile(self.lockfname):
             self.update_pipeline(self.cellsource)
             self.update_pipeline(self.facesource)
+            lock = file(self.lockfname, 'r')
+            filename = lock.read()
+            lock.close()
+            if len(filename) > 0:
+                mlab.savefig(filename)
             os.unlink(self.lockfname)
 
     def update_pipeline(self, source):
@@ -191,7 +209,6 @@ class MayaviDaemon(Mayavi):
     def view_data(self):
         """Sets up the mayavi pipeline for the visualization.
         """
-        from enthought.mayavi import mlab
         from enthought.tvtk.api import tvtk
             
         if self.cellsource is not None:
@@ -200,36 +217,35 @@ class MayaviDaemon(Mayavi):
             
             clip = mlab.pipeline.data_set_clipper(self.cellsource)
             clip.filter.inside_out = True
-#             clip.filter.value = self.extent
+#             clip.filter.value = self.bounds
 #             print clip.filter.clip_function
 
-#             clip.filter.clip_function.set_bounds(self.extent)
+#             clip.filter.clip_function.set_bounds(self.bounds)
             clip.widget.widget_mode = 'Box'
             clip.widget.update_implicit_function()
-            clip.widget.implicit_function.set_bounds(self.extent)
+            clip.widget.implicit_function.set_bounds(self.bounds)
 #             planes = tvtk.Planes()
 #             clip.widget.widget.get_planes(planes)
-#             planes.set_bounds(self.extent)
+#             planes.set_bounds(self.bounds)
 # # #             clip.widget.widget.trait_modified = True
 #             clip.widget.trait_modified = True
 #             clip.update_data()
 
 #             clip.widget.visible = False
-            # = self.extent
-#             o = mlab.pipeline.outline(clip) #, extent=self.extent)
+#             o = mlab.pipeline.outline(clip)
             if self.has_cell_scalars:
-                s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax) # , extent=self.extent
+                s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax)
     #             s.module_manager.scalar_lut_manager.show_scalar_bar = True
             p = mlab.pipeline.cell_to_point_data(clip)
             if self.has_cell_tensors:
-                v = mlab.pipeline.vectors(p, vmin=self.datamin, vmax=self.datamax) # , extent=self.extent
+                v = mlab.pipeline.vectors(p, vmin=self.datamin, vmax=self.datamax)
 
-#         if self.facesource is not None:
-#             if self.has_face_scalars:
-#                 s = mlab.pipeline.surface(self.facesource, extent=self.extent, vmin=self.datamin, vmax=self.datamax)
-#         #     s.module_manager.scalar_lut_manager.show_scalar_bar = True
-#             if self.has_face_vectors:
-#                 v = mlab.pipeline.vectors(self.facesource, extent=self.extent, vmin=self.datamin, vmax=self.datamax)
+        if self.facesource is not None:
+            if self.has_face_scalars:
+                s = mlab.pipeline.surface(self.facesource, vmin=self.datamin, vmax=self.datamax)
+        #     s.module_manager.scalar_lut_manager.show_scalar_bar = True
+            if self.has_face_vectors:
+                v = mlab.pipeline.vectors(self.facesource, vmin=self.datamin, vmax=self.datamax)
 
 def main(argv=None):
     """Simple helper to start up the mayavi application.  This returns
