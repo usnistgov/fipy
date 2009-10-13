@@ -82,7 +82,7 @@ We start the problem with random fluctuations about
 FiPy doesn't plot or output anything unless you tell it to:
 
     >>> if __name__ == "__main__":
-    ...     viewer = Viewer(vars=(phi, phi.getHarmonicFaceValue(), phi.getFaceGrad()), datamin=0., datamax=1.)
+    ...     viewer = Viewer(vars=phi, datamin=0., datamax=1., xmin=-2.5, zmax=2.5)
 
 For FiPy, we need to perform the partial derivative 
 

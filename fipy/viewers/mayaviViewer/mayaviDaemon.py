@@ -193,47 +193,53 @@ class MayaviDaemon(Mayavi):
         mayavi.add_source(source)
         
         return source
+        
+    def clip_data(self, src):
+        clip = mlab.pipeline.data_set_clipper(self.cellsource)
+        clip.filter.inside_out = True
+
+        clip.widget.widget_mode = 'Box'
+        clip.widget.widget.place_factor = 1.
+        clip.widget.widget.place_widget(self.bounds)
+        clip.widget.update_implicit_function()
+
+        clip.widget.visible = False
+        
+        return clip
 
     def view_data(self):
         """Sets up the mayavi pipeline for the visualization.
         """
         from enthought.tvtk.api import tvtk
             
+        has_scale_bar = False
         if self.cellsource is not None:
-#             print self.cellsource.traits()
-#             print self.cellsource.__class__.__dict__
+            clip = self.clip_data(self.cellsource)
             
-            clip = mlab.pipeline.data_set_clipper(self.cellsource)
-            clip.filter.inside_out = True
-#             clip.filter.value = self.bounds
-#             print clip.filter.clip_function
-
-#             clip.filter.clip_function.set_bounds(self.bounds)
-            clip.widget.widget_mode = 'Box'
-            clip.widget.update_implicit_function()
-            clip.widget.implicit_function.set_bounds(self.bounds)
-#             planes = tvtk.Planes()
-#             clip.widget.widget.get_planes(planes)
-#             planes.set_bounds(self.bounds)
-# # #             clip.widget.widget.trait_modified = True
-#             clip.widget.trait_modified = True
-#             clip.update_data()
-
-#             clip.widget.visible = False
-#             o = mlab.pipeline.outline(clip)
             if self.has_cell_scalars:
                 s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax)
-    #             s.module_manager.scalar_lut_manager.show_scalar_bar = True
+                s.module_manager.scalar_lut_manager.show_scalar_bar = True
+                has_scale_bar = True
             p = mlab.pipeline.cell_to_point_data(clip)
-            if self.has_cell_tensors:
+            if self.has_cell_vectors:
                 v = mlab.pipeline.vectors(p, vmin=self.datamin, vmax=self.datamax)
+                if not has_scale_bar:
+                    v.module_manager.scalar_lut_manager.show_scalar_bar = True
+                    has_scale_bar = True
 
         if self.facesource is not None:
+            clip = self.clip_data(self.facesource)
+
             if self.has_face_scalars:
-                s = mlab.pipeline.surface(self.facesource, vmin=self.datamin, vmax=self.datamax)
-        #     s.module_manager.scalar_lut_manager.show_scalar_bar = True
+                s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax)
+                if not has_scale_bar:
+                    s.module_manager.scalar_lut_manager.show_scalar_bar = True
+                    has_scale_bar = True
             if self.has_face_vectors:
-                v = mlab.pipeline.vectors(self.facesource, vmin=self.datamin, vmax=self.datamax)
+                v = mlab.pipeline.vectors(clip, vmin=self.datamin, vmax=self.datamax)
+                if not has_scale_bar:
+                    v.module_manager.scalar_lut_manager.show_scalar_bar = True
+                    has_scale_bar = True
 
 def main(argv=None):
     """Simple helper to start up the mayavi application.  This returns
