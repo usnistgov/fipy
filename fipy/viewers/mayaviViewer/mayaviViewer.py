@@ -47,16 +47,17 @@ from fipy.viewers.viewer import _Viewer
 
 class MayaviViewer(_Viewer):
     """
-    .. attention:: This class is abstract. Always create one of its subclasses.
-
-    The `_MayaviViewer` is the base class for the viewers that use the
-    Mayavi_ python plotting package.
+    The `MayaviViewer` uses the Mayavi_ python plotting package.
 
     .. Mayavi: http://code.enthought.com/projects/mayavi
 
     """
+    __doc__ += _Viewer._test1D(viewer="MayaviViewer")
+    __doc__ += _Viewer._test2D(viewer="MayaviViewer")
+    __doc__ += _Viewer._test2Dirregular(viewer="MayaviViewer")
+    __doc__ += _Viewer._test3D(viewer="MayaviViewer")
 
-    def __init__(self, vars, title=None, **kwlimits):
+    def __init__(self, vars, title=None, daemon_file=None, fps=1.0, **kwlimits):
         """
         Create a `_MayaviViewer`.
         
@@ -70,7 +71,14 @@ class MayaviViewer(_Viewer):
             `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
+          daemon_file
+            the path to the script to run the separate MayaVi viewer process.
+            Defaults to "fipy/viewers/mayaviViewer/mayaviDaemon.py"
+          fps
+            frames per second to attempt to display
         """
+        self.fps = fps
+        
         self.vtkdir = tempfile.mkdtemp()
         self.vtkcellfname = os.path.join(self.vtkdir, "cell.vtk")
         self.vtkfacefname = os.path.join(self.vtkdir, "face.vtk")
@@ -96,10 +104,17 @@ class MayaviViewer(_Viewer):
         
         self.plot()
 
+        from pkg_resources import Requirement, resource_filename
+        daemon_file = (daemon_file 
+                       or resource_filename(Requirement.parse("FiPy"), 
+                                            "fipy/viewers/mayaviViewer/mayaviDaemon.py"))
+        
         cmd = ["python", 
-               "/Users/guyer/Documents/research/FiPy/mayavi/fipy/viewers/mayaviViewer/mayaviDaemon.py",
+               daemon_file,
                "--lock",
-               self.vtklockfname]
+               self.vtklockfname,
+               "--fps",
+               str(self.fps)]
 
         if self.vtkCellViewer is not None:
             cmd += ["--cell", self.vtkcellfname]
@@ -127,7 +142,6 @@ class MayaviViewer(_Viewer):
         if os.path.isfile(self.vtklockfname):
             os.unlink(self.vtklockfname)
         os.rmdir(self.vtkdir)
-        _Viewer.__del__(self)
         
     def _getLimit(self, key):
         """
@@ -154,7 +168,7 @@ class MayaviViewer(_Viewer):
     def plot(self, filename=None):
         start = time.time()
         plotted = False
-        while time.time() - start < 10. and not plotted:
+        while time.time() - start < 30. / self.fps and not plotted:
             if not os.path.isfile(self.vtklockfname):
                 if self.vtkCellViewer is not None:
                     self.vtkCellViewer.plot(filename=self.vtkcellfname)
@@ -170,4 +184,9 @@ class MayaviViewer(_Viewer):
     
     def _validFileExtensions(self):
         return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
+        
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()
+
         

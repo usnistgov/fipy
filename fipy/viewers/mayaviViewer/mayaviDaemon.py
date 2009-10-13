@@ -92,6 +92,9 @@ class MayaviDaemon(Mayavi):
         parser.add_option("--datamax", action="store", dest="datamax", type="float", default=None,
                           help="maximum data value")
 
+        parser.add_option("--fps", action="store", dest="fps", type="float", default=1.0,
+                          help="frames per second to attempt to display")
+
         (options, args) = parser.parse_args(argv)
         
         self.lockfname = options.lock
@@ -103,6 +106,8 @@ class MayaviDaemon(Mayavi):
                        
         self.datamin = options.datamin
         self.datamax = options.datamax
+        
+        self.fps = options.fps
         
     def run(self):
         # 'mayavi' is always defined on the interpreter.
@@ -157,7 +162,7 @@ class MayaviDaemon(Mayavi):
         self.view_data()
 
         # Poll the lock file.
-        self.timer = Timer(1000, self.poll_file)
+        self.timer = Timer(1000 / self.fps, self.poll_file)
 
     def poll_file(self):
         if os.path.isfile(self.lockfname):
@@ -195,7 +200,7 @@ class MayaviDaemon(Mayavi):
         return source
         
     def clip_data(self, src):
-        clip = mlab.pipeline.data_set_clipper(self.cellsource)
+        clip = mlab.pipeline.data_set_clipper(src)
         clip.filter.inside_out = True
 
         clip.widget.widget_mode = 'Box'
