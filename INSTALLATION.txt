@@ -388,19 +388,13 @@ visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
 viewer available for 3D data. Other viewers are probably better for 1D
 or 2D viewing. 
 
-.. warning::
-
-   |FiPy| can only use `MayaVi 2`_ to display 3D meshes consisting entirely
-   of tetrahedrons or wedge elements. The ordering of vertices for other
-   mesh types may not work.
-
-.. warning::
-
-   `MayaVi 2`_ does not work with Python 2.4 or older.
-
 .. note::
    
    `MayaVi 2`_ is packaged for Ubuntu and Debian linux. Using the packaged versions makes installion much easier.
+
+.. note::
+
+   MayaVi 1 is no longer supported.
 
 .. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 

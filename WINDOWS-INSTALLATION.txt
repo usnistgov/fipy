@@ -30,14 +30,14 @@ http://www.pythonxy.com
 
 http://www.enthought.com
 
-We recommend the use of either `Enthought Python`_ or
+We recommend the use of either `Enthought Python Distribution`_ or
 `Python(x,y)`_. These versions of Python_ have some of the prerequisite
 packages for |FiPy| already included. Download and install the latest
 version.
 
 .. _Python(x,y): http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.pythonxy.com
 .. _Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
-.. _Enthought Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.enthought.com
+.. _Enthought Python Distribution: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.enthought.com/products/epd.php
 
 PySparse
 --------
@@ -89,24 +89,12 @@ MayaVi
 
    \IndexSoftware{MayaVi}
 
-http://mayavi.sourceforge.net
+http://code.enthought.com/projects/mayavi/
 
-`MayaVi 1`_ is a requirement if you wish to view 3D problems or improve
-the viewing capabilities of the superfill examples.  Download the source
-code and run ``python setup.py install`` to install from the python
-source in order for ``import mayavi`` to work at the command line.
+`MayaVi 2`_ is a requirement if you wish to view 3D problems or improve the
+viewing capabilities of the superfill examples. Either 
+`Enthought Python Distribution`_ or `Python(x,y)`_ is advised.
 
-.. warning::
-
-   At the time of writing the ``import mayavi`` command is not working
-   with the `python(x,y)`_ version of `python`_.
-
-.. note::
-
-   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
-   `MayaVi 2`_ as soon as possible.
-
-.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 .. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
 Using |FiPy| on Windows
