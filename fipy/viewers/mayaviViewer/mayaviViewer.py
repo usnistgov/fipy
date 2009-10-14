@@ -7,9 +7,9 @@
  #  FILE: "mayaviViewer.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Stiles  <daniel.stiles@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
- #  Author: Daniel Stiles  <daniel.stiles@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -56,7 +56,7 @@ class MayaviViewer(_Viewer):
     __doc__ += _Viewer._test2D(viewer="MayaviViewer")
     __doc__ += _Viewer._test2Dirregular(viewer="MayaviViewer")
     __doc__ += _Viewer._test3D(viewer="MayaviViewer")
-
+    
     def __init__(self, vars, title=None, daemon_file=None, fps=1.0, **kwlimits):
         """
         Create a `_MayaviViewer`.
@@ -135,12 +135,9 @@ class MayaviViewer(_Viewer):
         self.daemon = subprocess.Popen(cmd)
         
     def __del__(self):
-        if os.path.isfile(self.vtkcellfname):
-            os.unlink(self.vtkcellfname)
-        if os.path.isfile(self.vtkfacefname):
-            os.unlink(self.vtkfacefname)
-        if os.path.isfile(self.vtklockfname):
-            os.unlink(self.vtklockfname)
+        for fname in [self.vtkcellfname, self.vtkfacefname, self.vtklockfname]:
+            if fname and os.path.isfile(fname):
+                os.unlink(fname)
         os.rmdir(self.vtkdir)
         
     def _getLimit(self, key):

@@ -1,4 +1,47 @@
 #!/usr/bin/env python
+
+## -*-Pyth-*-
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
+ # 
+ #  FILE: "mayaviDaemon.py"
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Stiles  <daniel.stiles@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #    mail: NIST
+ #     www: http://www.ctcms.nist.gov/fipy/
+ #
+ # Based on MayaVi2's poll_file.py
+ #
+ # Author: Prabhu Ramachandran <prabhu@aero.iitb.ac.in>
+ # Copyright (c) 2006-2007, Enthought Inc.
+ # License: BSD Style.
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  FiPy is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ #  
+ # ###################################################################
+ ##
+
+
 """A simple script that polls a data file for changes and then updates
 the mayavi pipeline automatically.
 
@@ -7,27 +50,23 @@ This script is based heavily on the poll_file.py exampe in the mayavi distributi
 
 This script is to be run like so::
 
- $ mayavi2 -x mayaviDaemon.py ???
+ $ mayavi2 -x mayaviDaemon.py <options>
 
 Or::
 
- $ python mayaviDaemon.py ???
+ $ python mayaviDaemon.py <options>
  
-The script currently defaults to using the example data in
-examples/data/heart.vtk.  You can try editing that data file or change
-this script to point to other data which you can edit.
+Run::
+    
+ $ python mayaviDaemon.py --help
+ 
+to see available options.
 """
-
-# Author: Jonathan Guyer <guyer@nist.gov>
-
-# Based on poll_file.py
-#
-# Author: Prabhu Ramachandran <prabhu@aero.iitb.ac.in>
-# Copyright (c) 2006-2007, Enthought Inc.
-# License: BSD Style.
+__docformat__ = 'restructuredtext'
 
 # Standard imports.
 import os
+import signal
 import sys
 
 # Enthought library imports
@@ -45,6 +84,9 @@ class MayaviDaemon(Mayavi):
     polls the file for any changes and automatically updates the
     mayavi pipeline.
     """
+    
+    _viewers = []
+    
     def parse_command_line(self, argv):
         """Parse command line options.
 
@@ -110,8 +152,9 @@ class MayaviDaemon(Mayavi):
         self.fps = options.fps
         
     def run(self):
-        # 'mayavi' is always defined on the interpreter.
-        mayavi.new_scene()
+        MayaviDaemon._viewers.append(self)
+        
+        mlab.clf()
 
         bounds = zeros((0, 6))
         
@@ -164,6 +207,22 @@ class MayaviDaemon(Mayavi):
         # Poll the lock file.
         self.timer = Timer(1000 / self.fps, self.poll_file)
 
+    def __del__(self):
+        dir = None
+        for fname in [self.cellfname, self.facefname, self.lockfname]:
+            if fname and os.path.isfile(fname):
+                os.unlink(fname)
+                if not dir:
+                    dir = os.path.dirname(fname)
+        if dir:
+            os.rmdir(dir)
+        
+    @staticmethod
+    def _sigint_handler(signum, frame):
+        for viewer in MayaviDaemon._viewers:
+            viewer.__del__()
+        raise SystemExit("MayaviDaemon cleaned up")
+
     def poll_file(self):
         if os.path.isfile(self.lockfname):
             self.update_pipeline(self.cellsource)
@@ -195,7 +254,7 @@ class MayaviDaemon(Mayavi):
             
         source = VTKFileReader()
         source.initialize(fname)
-        mayavi.add_source(source)
+        mlab.pipeline.add_dataset(source)
         
         return source
         
@@ -215,8 +274,6 @@ class MayaviDaemon(Mayavi):
     def view_data(self):
         """Sets up the mayavi pipeline for the visualization.
         """
-        from enthought.tvtk.api import tvtk
-            
         has_scale_bar = False
         if self.cellsource is not None:
             clip = self.clip_data(self.cellsource)
@@ -245,6 +302,10 @@ class MayaviDaemon(Mayavi):
                 if not has_scale_bar:
                     v.module_manager.scalar_lut_manager.show_scalar_bar = True
                     has_scale_bar = True
+
+signal.signal(signal.SIGINT, MayaviDaemon._sigint_handler)
+signal.signal(signal.SIGHUP, MayaviDaemon._sigint_handler)
+signal.signal(signal.SIGTERM, MayaviDaemon._sigint_handler)
 
 def main(argv=None):
     """Simple helper to start up the mayavi application.  This returns
