@@ -35,7 +35,6 @@
  ##
  
 from fipy.variables.cellVariable import CellVariable
-from fipy.tools import numerix
 
 class _FaceGradContributions(CellVariable):
     def __init__(self, var):
