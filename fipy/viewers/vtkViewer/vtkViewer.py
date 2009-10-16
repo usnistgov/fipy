@@ -84,6 +84,9 @@ class _VTKViewer(_Viewer):
         
     def _getData(self):
         pass
+        
+    def _getVariableClass(self):
+        pass
 
     @staticmethod
     def _nameRankValue(var):
