@@ -1,6 +1,7 @@
 import os
 import platform
 import subprocess
+import sys
 from xml.dom.minidom import Document
 
 import fipy
@@ -14,6 +15,8 @@ class Vitals(Document):
         
         self.top = self.createElementNS("http://www.ctcms.nist.gov/fipy", "FiPy")
         Document.appendChild(self, self.top)
+        
+        self.appendChild(self.tupleToXML(sys.argv, "sys.argv"))
                      
         version = self.createElement("version")
         self.appendChild(version)
@@ -101,6 +104,19 @@ class Vitals(Document):
         
     def __str__(self):
         return self.toprettyxml()
+        
+    def save(self, fname):
+        f = open(fname, 'w')
+        self.writexml(f, indent="    ", addindent="    ", newl="\n")
+        f.close()
+
+    def appendInfo(self, name, svnpath=None, **kwargs):
+        """append some additional information, possibly about a project under a separate svn repository
+        """
+        elem = self.dictToXML(kwargs, name)
+        if svnpath is not None:
+            elem.appendChild(self.svn(svnpath))
+        self.appendChild(elem)
 
 if __name__ == "__main__":
     v = Vitals()
