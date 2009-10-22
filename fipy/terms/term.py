@@ -80,8 +80,8 @@ class Term:
 
     def _calcResidual(self, var, matrix, RHSvector):
 
-        L2norm = numerix.sqrt(numerix.sum(self._calcResidualVector(var, matrix, RHSvector)**2))
-        RHSL2norm = numerix.sqrt(numerix.sum(RHSvector**2))
+        L2norm = numerix.L2norm(self._calcResidualVector(var, matrix, RHSvector))
+        RHSL2norm = numerix.L2norm(RHSvector)
         
         if RHSL2norm == 0:
             return L2norm
@@ -195,7 +195,7 @@ class Term:
 
     def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
-        Builds and the `Term`'s linear system once. This method
+        Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
         under-relaxation.
 
