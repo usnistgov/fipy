@@ -211,10 +211,6 @@ the web site to CTCMS:
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
-Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
-
-.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
-
 Make an announcement to `mailto:fipy@nist.gov`_
 
 .. fipy@nist.gov: mailto:fipy@nist.gov
