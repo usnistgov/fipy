@@ -1,1 +1,1 @@
-from mayaviViewer import MayaviViewer
+from mayaviClient import MayaviClient

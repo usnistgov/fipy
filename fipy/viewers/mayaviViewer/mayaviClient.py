@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "mayaviViewer.py"
+ #  FILE: "mayaviClient.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Stiles  <daniel.stiles@nist.gov>
@@ -45,21 +45,21 @@ import time
 
 from fipy.viewers.viewer import _Viewer
 
-class MayaviViewer(_Viewer):
+class MayaviClient(_Viewer):
     """
-    The `MayaviViewer` uses the Mayavi_ python plotting package.
+    The `MayaviClient` uses the Mayavi_ python plotting package.
 
     .. Mayavi: http://code.enthought.com/projects/mayavi
 
     """
-    __doc__ += _Viewer._test1D(viewer="MayaviViewer")
-    __doc__ += _Viewer._test2D(viewer="MayaviViewer")
-    __doc__ += _Viewer._test2Dirregular(viewer="MayaviViewer")
-    __doc__ += _Viewer._test3D(viewer="MayaviViewer")
+    __doc__ += _Viewer._test1D(viewer="MayaviClient")
+    __doc__ += _Viewer._test2D(viewer="MayaviClient")
+    __doc__ += _Viewer._test2Dirregular(viewer="MayaviClient")
+    __doc__ += _Viewer._test3D(viewer="MayaviClient")
     
     def __init__(self, vars, title=None, daemon_file=None, fps=1.0, **kwlimits):
         """
-        Create a `_MayaviViewer`.
+        Create a `MayaviClient`.
         
         :Parameters:
           vars
@@ -146,7 +146,7 @@ class MayaviViewer(_Viewer):
         
         .. Note::
            
-           `MayaviViewer` does not need the generality of multiple keys 
+           `MayaviClient` does not need the generality of multiple keys 
            because it is always 3D
         
         :Parameters:
