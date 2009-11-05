@@ -165,7 +165,7 @@ class MayaviViewer(_Viewer):
     def plot(self, filename=None):
         start = time.time()
         plotted = False
-        while time.time() - start < 30. / self.fps and not plotted:
+        while not plotted:
             if not os.path.isfile(self.vtklockfname):
                 if self.vtkCellViewer is not None:
                     self.vtkCellViewer.plot(filename=self.vtkcellfname)
@@ -176,8 +176,12 @@ class MayaviViewer(_Viewer):
                     lock.write(filename)
                 lock.close()
                 plotted = True
+                
+            if (time.time() - start > 30. / self.fps) and not plotted:
+                print "viewer: NOT READY"
+                start = time.time()
         if not plotted:
-            print "viewer: NOT READY"
+            print "viewer: SKIPPED"
     
     def _validFileExtensions(self):
         return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
