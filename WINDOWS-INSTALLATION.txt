@@ -71,17 +71,6 @@ necessary to install Gmsh. Download and unpack the latest version of
 Gmsh for Windows. Open the unpacked folder with a browser and make sure
 that ``gmsh.exe`` is placed somewhere on the execution path.
 
-PyVTK
------
-
-http://www.ctcms.nist.gov/fipy/download/
-
-If you wish to use `MayaVi 1`_, PyVTK is a requirement.  Download and
-install the latest version from the |FiPy| `downloads page`_
-(``PyVTK-x.y.z.win32.exe``).
-
-.. _downloads page: http://matforge.org/fipy/downloader
-
 MayaVi
 ------
 

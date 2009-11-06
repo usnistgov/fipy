@@ -75,12 +75,6 @@ Binary Installation
    way to get |FiPy| up and running, but may offer less flexibility in the 
    long run.
    
-   .. note:: 
-   
-      If you wish to view 3D models, the MayaVi_ viewer is required, which
-      is best installed via Fink_, so you should follow the `Fink
-      Installation`_ instructions.
-
 Pre-built binaries for many of the required packages are available at 
 http://pythonmac.org/packages/py24-fat/.
 
@@ -354,7 +348,7 @@ for either installing with `Enthought Python Distribution`_ or installing
 manually work fine.
 
 If you have already followed the `Fink Installation`_ instructions, then 
-you can go to the command line and type::
+you should be able to go to the command line and type::
 
     $ sudo apt-get install mayavi2-pyXX
     
