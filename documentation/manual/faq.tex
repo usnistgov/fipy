@@ -415,8 +415,9 @@
     (\href{http://www.jpeg.org/}{Joint Photographic Experts Group}),
     and ``\verb+.png+''
     (\href{http://www.w3.org/Graphics/PNG/}{Portable Network
-    Graphics}). \MayaVi{} only accepts ``\verb+.png+''. \gnuplot{} 
-    only accepts ``\verb+.eps+''.
+    Graphics}). \MayaVi{} accepts a large number of extensions; see 
+    the documentation for \verb+enthought.mayavi.mlab.savefig+. 
+    \gnuplot{} only accepts ``\verb+.eps+''.
     
         \subsubsection{What if I only want the saved file, with no
         display on screen?} To our knowledge, this is only supported
@@ -449,9 +450,10 @@
     \FiPy{} \Class{Viewer} that comes closest to producing the image 
     you want. You can then override just the behavior you wan to 
     change, while letting \FiPy{} do most of the heavy lifting. See 
-    \ref{examples:phase:anisotropy} and 
-    \ref{examples:cahnHillard:sphere} for examples of creating a custom 
-    \Matplotlib{} \Class{Viewer} class.
+    \ref{examples:phase:anisotropy} for an example of creating a custom 
+    \Matplotlib{} \Class{Viewer} class and 
+    \ref{examples:cahnHillard:sphere} for an example of creating a custom 
+    \MayaVi{} \Class{Viewer} class.
     
     \section{Iterations, timesteps, and sweeps? Oh, my!} 
     \label{FAQ-IterationsTimestepsSweeps}
