@@ -11,14 +11,19 @@ class SphereDaemon(MayaviDaemon):
         """
         var = mlab.pipeline.set_active_attribute(self.cellsource, cell_scalars=r"$\phi$")
         
-        clip = mlab.pipeline.data_set_clipper(var)
+        if hasattr(mlab.pipeline, "data_set_clipper"):
+            clip = mlab.pipeline.data_set_clipper(var)
 
-        clip.widget.widget_mode = 'Box'
-        clip.widget.widget.place_factor = 1.
-        clip.widget.widget.place_widget(0, 10, 0, 10, 0, 10)
-        clip.widget.update_implicit_function()
+            clip.widget.widget_mode = 'Box'
+            clip.widget.widget.place_factor = 1.
+            clip.widget.widget.place_widget(0, 10, 0, 10, 0, 10)
+            clip.widget.update_implicit_function()
 
-        clip.widget.visible = False
+            clip.widget.visible = False
+        else:
+            # data_set_clipper was not introduced until
+            # Mayavi r24017
+            clip = var
 
         s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax, colormap='hot')
         s.module_manager.scalar_lut_manager.show_scalar_bar = True

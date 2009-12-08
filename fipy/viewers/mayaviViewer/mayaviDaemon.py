@@ -259,15 +259,20 @@ class MayaviDaemon(Mayavi):
         return source
         
     def clip_data(self, src):
-        clip = mlab.pipeline.data_set_clipper(src)
-        clip.filter.inside_out = True
+        if hasattr(mlab.pipeline, "data_set_clipper"):
+            clip = mlab.pipeline.data_set_clipper(src)
+            clip.filter.inside_out = True
 
-        clip.widget.widget_mode = 'Box'
-        clip.widget.widget.place_factor = 1.
-        clip.widget.widget.place_widget(self.bounds)
-        clip.widget.update_implicit_function()
+            clip.widget.widget_mode = 'Box'
+            clip.widget.widget.place_factor = 1.
+            clip.widget.widget.place_widget(self.bounds)
+            clip.widget.update_implicit_function()
 
-        clip.widget.visible = False
+            clip.widget.visible = False
+        else:
+            # data_set_clipper was not introduced until
+            # Mayavi r24017
+            clip = src
         
         return clip
 
