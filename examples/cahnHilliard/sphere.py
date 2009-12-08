@@ -81,13 +81,13 @@ We start the problem with random fluctuations about
 
 FiPy doesn't plot or output anything
 unless you tell it to. If
-``MayaviViewer`` is available, we can
+``MayaviClient`` is available, we can
 customize the view with a sublcass of
 ``MayaviDaemon``.
 
     >>> if __name__ == "__main__":
     ...     try:
-    ...         viewer = MayaviViewer(vars=phi, 
+    ...         viewer = MayaviClient(vars=phi, 
     ...                               datamin=0., datamax=1.,
     ...                               daemon_file="examples/cahnHilliard/sphereDaemon.py")
     ...     except:
