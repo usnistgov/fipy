@@ -21,8 +21,8 @@ class SphereDaemon(MayaviDaemon):
 
             clip.widget.visible = False
         else:
-            # data_set_clipper was not introduced until
-            # Mayavi r24017
+            import warnings
+            warnings.warn("Mayavi r24017 or newer needed for data_set_clipper()", UserWarning, stacklevel=2)
             clip = var
 
         s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax, colormap='hot')
