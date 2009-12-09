@@ -50,7 +50,7 @@ class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
         int ID1 = id1[i];
         int ID2 = id2[i];
         double cell2 = var[ID2];
-        val[i] = mod(var[ID1] - cell2) * alpha[i] + cell2;
+        val[i] = mod(cell2 - var[ID1]) * alpha[i] + var[ID1];
         """,var = self.var.getNumericValue(),
             val = val, 
             alpha = alpha,

@@ -761,10 +761,10 @@
     Neumann type boundary condition explicitly. Of course, it is often possible
     to use \Class{FixedValue} or \Class{FixedFlux} boundary conditions to mimic a
     fixed gradient condition. In the case when there is no convection, one can
-    simply use a \Class{FixedFlux} condition and divide through by the diffusion
+    simply use a \Class{FixedFlux} condition and multiply through by the diffusion
     coefficient to create the boundary condition,
 \begin{verbatim}
-FixedFlux(value=gradient / diffusionCoeff, faces=myFaces)
+FixedFlux(value=diffusionCoeff * gradient, faces=myFaces)
 \end{verbatim}
     where \verb+gradient+ is the value of the boundary gradient and
     \verb+myFaces+ are the faces over which the boundary condition applies.  If

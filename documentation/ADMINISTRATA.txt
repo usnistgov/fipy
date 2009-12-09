@@ -119,9 +119,8 @@ Find the initial revision number for the branch (IRN) and the latest revision nu
 Now merge n.m.q changes back to main trunk::
 
     $ cd ../trunk
-    $ svn diff -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
     $ svn merge -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
-    $ svn ci -m "merged version n.m.q"    
+    $ svn ci -m "merged version n.m.q, source:branches/${BRANCH}@${IRN}:${LRN} to source:trunk@${LRN}"
 
 Make new fix q+1 to n.m::
 
@@ -140,9 +139,8 @@ Find the previous revision number for the branch (PRN) and the latest revision n
 Again, merge n.m.q+1 changes back to main trunk::
 
     $ cd ../trunk
-    $ svn diff -r${PRN}:{LRN} $FIPYROOT/branches/$BRANCH
-    $ svn merge -r${PRN}:{LRN} $FIPYROOT/branches/$BRANCH
-    $ svn ci -m "merged version n.m.q+1"
+    $ svn merge -r${PRN}:${LRN} $FIPYROOT/branches/$BRANCH
+    $ svn ci -m "merged version n.m.q+1, source:branches/${BRANCH}@${PRN}:${LRN} to source:trunk@${LRN}"
 
 ================
 Making a Release
@@ -210,10 +208,6 @@ the web site to CTCMS:
 .. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
-
-Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
-
-.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
 
 Make an announcement to `mailto:fipy@nist.gov`_
 

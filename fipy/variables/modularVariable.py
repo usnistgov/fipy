@@ -60,7 +60,7 @@ class ModularVariable(CellVariable):
 
     Obtaining the arithmetic face value.
 
-        >>> print numerix.allclose(v1.getArithmeticFaceValue(), (2*pi/3, -pi, -2*pi/3))
+        >>> print numerix.allclose(v1.getArithmeticFaceValue(), (2*pi/3, pi, -2*pi/3))
         1
 
     Obtaining the gradient.

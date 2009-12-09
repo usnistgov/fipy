@@ -358,7 +358,8 @@ class build_docs (Command):
 
     def run (self):
         f = open(os.path.join('documentation','VERSION.txt'), 'w')
-        f.write('.. |VERSION| replace:: ' + self.distribution.metadata.get_version())
+        f.write('.. |VERSION| replace:: ' + self.distribution.metadata.get_version() + '\n')
+        f.write('.. |SVNVERSION| replace:: ' + self.distribution.metadata.get_version().replace('.', '_') + '\n')
         f.close()
 
         mainRestructuredTextFiles = {'article': 
@@ -742,7 +743,7 @@ except IOError, e:
 #         },
 
 dist = setup(	name = "FiPy",
-        version = "2.0.2", 
+        version = "2.0.3a1", 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",

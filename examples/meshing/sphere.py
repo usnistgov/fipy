@@ -81,9 +81,6 @@ demonstrates how to create the required mesh.
    >>> min(numerix.sqrt(x**2 + y**2 + z**2)) > 5.2
    True
    
-   >>> while True:
-   ...     pass
-   
 """
 __docformat__ = 'restructuredtext'
 

@@ -44,7 +44,7 @@
 
 .. |htmlSVN.txt| raw:: html
 
-   <a href="svn.html">SVN tags</a>
+   <a href="svn.html">SVN usage</a>
 
 .. |latexFAQ| raw:: latex
 

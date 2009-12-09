@@ -63,11 +63,11 @@ def _getElementType(vertices, dimensions):
         raise MeshExportError, "Element type unsupported by Gmsh"
 
 def _orderVertices(vertexCoords, vertices):
-    coordinates = numerix.take(vertexCoords, vertices)
-    centroid = numerix.add.reduce(coordinates) / coordinates.shape[0]
-    coordinates = coordinates - centroid
+    coordinates = numerix.take(vertexCoords, vertices, axis=1)
+    centroid = numerix.add.reduce(coordinates, axis=1) / coordinates.shape[1]
+    coordinates = coordinates - centroid[..., numerix.newaxis]
     coordinates = numerix.where(coordinates == 0, 1.e-10, coordinates) ## to prevent division by zero
-    angles = numerix.arctan(coordinates[:, 1] / coordinates[:, 0]) + numerix.where(coordinates[:, 0] < 0, numerix.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+    angles = numerix.arctan(coordinates[1] / coordinates[0]) + numerix.where(coordinates[0] < 0, numerix.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
     sortorder = numerix.argsort(angles)
     return numerix.take(vertices, sortorder)
     
@@ -76,40 +76,40 @@ def exportAsMesh(mesh, filename):
     outFile = open(filename, mode = 'w')
     ## do the nodes
     outFile.write("$NOD\n")
-    numNodes = mesh.getVertexCoords().shape[0]
-    dimensions = mesh.getVertexCoords().shape[1]
+    coords = mesh.getVertexCoords()
+    dimensions, numNodes = coords.shape
     outFile.write(str(numNodes))
     outFile.write('\n')
     for i in range(numNodes):
         outFile.write(str(i + 1))
         outFile.write(' ')
-        outFile.write(str(mesh.getVertexCoords()[i, 0]))
+        outFile.write(str(coords[0, i]))
         outFile.write(' ') 
-        outFile.write(str(mesh.getVertexCoords()[i, 1]))
+        outFile.write(str(coords[1, i]))
         outFile.write(' ')
         if(dimensions == 2):
             outFile.write("0 \n")
         elif(dimensions == 3):
-            outFile.write(str(mesh.getVertexCoords()[i, 2]))
+            outFile.write(str(coords[2, i]))
             outFile.write (" \n")
         else:
             raise MeshExportError, "Mesh has fewer than 2 or more than 3 dimensions"
     outFile.write("$ENDNOD\n$ELM\n")
     ## do the elements
-    faceVertexIDs = mesh.faceVertexIDs
-    cellFaceIDs = mesh.cellFaceIDs
-    numCells = cellFaceIDs.shape[0]
+    faceVertexIDs = mesh._getFaceVertexIDs()
+    cellFaceIDs = mesh._getCellFaceIDs()
+    numCells = cellFaceIDs.shape[1]
     outFile.write(str(numCells))
     outFile.write('\n')
     for i in range(numCells):
         ## build the vertex list
         vertexList = []
-        for faceNum in cellFaceIDs[i]:
-            for vertexNum in faceVertexIDs[faceNum]:
+        for faceNum in cellFaceIDs[..., i]:
+            for vertexNum in faceVertexIDs[..., faceNum]:
                 if vertexNum not in vertexList:
                     vertexList = vertexList + [vertexNum]
         if(dimensions == 2):
-            vertexList = _orderVertices(mesh.getVertexCoords(), vertexList)
+            vertexList = _orderVertices(coords, vertexList)
         numVertices = len(vertexList)
         elementType = _getElementType(numVertices, dimensions)
         outFile.write(str(i + 1))
@@ -128,19 +128,28 @@ if __name__ == "__main__":
     from fipy.meshes.grid2D import Grid2D
     from fipy.meshes.tri2D import Tri2D
     from fipy.meshes.grid3D import Grid3D
-    import os
-    ##a = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
-    ##exportAsMesh(a, "temp.msh")
-    ##os.system("gmsh temp.msh &")
-    ##b = Tri2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
-    ##exportAsMesh(b, "temp2.msh")
-    ##os.system("gmsh temp2.msh &")
-    fudge = calibrate_profiler(10000)
-    profile = Profiler('profile', fudge=fudge)
+    
+    import tempfile
+    import subprocess
+
+    a = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
+    f = tempfile.NamedTemporaryFile(suffix=".msh")
+    f.close()
+    exportAsMesh(a, f.name)
+    subprocess.Popen(["gmsh", f.name])
+    b = Tri2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
+    f = tempfile.NamedTemporaryFile(suffix=".msh")
+    f.close()
+    exportAsMesh(b, f.name)
+    subprocess.Popen(["gmsh", f.name])
+#     fudge = calibrate_profiler(10000)
+#     profile = Profiler('profile', fudge=fudge)
     c = Grid3D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, nz = 20)
-    exportAsMesh(c, "temp3.msh")
-    profile.stop()
-    os.system("gmsh -v 0 temp3.msh &")
+    f = tempfile.NamedTemporaryFile(suffix=".msh")
+    f.close()
+    exportAsMesh(c, f.name)
+#     profile.stop()
+    subprocess.Popen(["gmsh", "-v", "0", f.name])
     
         
     
