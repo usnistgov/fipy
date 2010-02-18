@@ -72,8 +72,8 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
     >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions, solver=LinearLUSolver())
-
+    ...          boundaryConditions = boundaryConditions,
+    ...          solver=DefaultAssymetricSolver(iterations=10000))
 
 The analytical solution test for this problem is given by:
 
@@ -82,6 +82,7 @@ The analytical solution test for this problem is given by:
     >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
     >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
     >>> analyticalArray = CC / DD
+
     >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
     1
     

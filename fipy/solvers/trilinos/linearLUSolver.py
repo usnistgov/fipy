@@ -53,7 +53,8 @@ class LinearLUSolver(TrilinosSolver):
     The `LinearLUSolver` is an interface to the Amesos KLU solver in Trilinos.
 
     """
-    def __init__(self, tolerance=1e-10, iterations=5, steps=None, precon=None):
+
+    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None, maxIterations=10):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
@@ -61,6 +62,9 @@ class LinearLUSolver(TrilinosSolver):
           - `steps`: A deprecated name for `iterations`.
 
         """
+
+        iterations = min(iterations, maxIterations)
+        
         TrilinosSolver.__init__(self, tolerance=tolerance, 
                                 iterations=iterations, steps=steps, precon=None)
 
