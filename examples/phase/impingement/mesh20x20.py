@@ -242,7 +242,7 @@ data and compares it with the `theta` variable.
 ..
 
     >>> import os
-    >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
+    >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz').flat
 
 .. raw:: latex
 
@@ -250,8 +250,6 @@ data and compares it with the `theta` variable.
 
 ..
 
-    >>> testData = resize(testData, (mesh.getNumberOfCells(),))
-    
 We step the solution in time, plotting as we go if running interactively,
 
     >>> for i in range(steps):
@@ -267,7 +265,7 @@ The solution is compared against Ryo Kobayashi's test data
 
     >>> print theta.allclose(testData, rtol=1e-7, atol=1e-7)
     1
-
+    
 The following code shows how to restart a simulation from some saved
 data. First, reset the variables to their original values.
 
