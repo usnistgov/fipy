@@ -80,11 +80,17 @@ class Grid2D(Mesh2D):
          self.offset) = self._calcParallelGridInfo(nx, ny, overlap, parallelModule)
 
         if numerix.getShape(self.dx) is not ():
+            Xoffset = numerix.sum(self.dx[0:self.offset[0]])
             self.dx = self.dx[self.offset[0]:self.offset[0] + self.nx]
+        else:
+            Xoffset = 0
 
         if numerix.getShape(self.dy) is not ():
+            Yoffset =  numerix.sum(self.dy[0:self.offset[1]])
             self.dy = self.dy[self.offset[1]:self.offset[1] + self.ny]
-
+        else:
+            Yoffset = 0
+            
         if self.nx == 0:
             self.ny = 0
         if self.ny == 0:
@@ -98,7 +104,7 @@ class Grid2D(Mesh2D):
 
         self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns
 
-        vertices = self._createVertices()
+        vertices = self._createVertices() + ((Xoffset,), (Yoffset,))
         faces = self._createFaces()
         self.numberOfFaces = len(faces[0])
         cells = self._createCells()

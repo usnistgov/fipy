@@ -78,12 +78,12 @@ class Grid1D(Mesh1D):
          self.offset) = self._calcParallelGridInfo(nx, overlap)
 
         if numerix.getShape(self.dx) is not ():
-            Xoffset = numerix.array(((numerix.sum(self.dx[0:self.offset]),),))
+            Xoffset = numerix.sum(self.dx[0:self.offset])
             self.dx = self.dx[self.offset:self.offset + self.nx]
         else:
             Xoffset = 0
             
-        vertices = self._createVertices() + Xoffset
+        vertices = self._createVertices() + ((Xoffset,),)
         self.numberOfVertices = len(vertices[0])
         faces = self._createFaces()
         self.numberOfFaces = len(faces[0])
