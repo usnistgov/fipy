@@ -63,8 +63,8 @@ mesh with `nx = 10` and `ny = 10`:
     >>> eq = ImplicitDiffusionTerm(coeff=diffCoeff) + ExponentialConvectionTerm(coeff=convCoeff)
 
     >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          boundaryConditions=boundaryConditions,
+    ...          solver=DefaultAssymetricSolver(tolerance=1.e-15, iterations=10000))
 
 We test the solution against the analytical result:
 

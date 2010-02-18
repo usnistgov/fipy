@@ -69,7 +69,7 @@ This example solves the steady-state convection-diffusion equation as described 
 
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
+    ...          solver = DefaultAssymetricSolver(tolerance=1.e-15, iterations=10000))
 
 We test the solution against the analytical result:
 
