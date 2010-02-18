@@ -48,8 +48,8 @@ class CylindricalUniformGrid1D(UniformGrid1D):
         [[ 0.5  1.5  2.5]]
          
     """
-    def __init__(self, dx=1., nx=1, origin=(0,)):
-        UniformGrid1D.__init__(self, dx=dx, nx=nx, origin=origin) 
+    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2):
+        UniformGrid1D.__init__(self, dx=dx, nx=nx, origin=origin, overlap=2) 
         
     def _getFaceAreas(self):
         return self.getFaceCenters()[0]
@@ -70,8 +70,8 @@ class CylindricalUniformGrid1D(UniformGrid1D):
         return self._getFaceNormals() * self._getFaceAreas()
 
     def _translate(self, vector):
-        return CylindricalUniformGrid1D(dx=self.dx, nx=self.nx, 
-                                        origin=self.origin + vector)
+        self.args['origin'] = self.args['origin'] + vector
+        return CylindricalUniformGrid1D(**self.args)
 
     def _test(self):
         """
