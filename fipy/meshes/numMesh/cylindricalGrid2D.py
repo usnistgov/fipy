@@ -56,7 +56,7 @@ class CylindricalGrid2D(Grid2D):
         
         Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, parallelModule=parallelModule)
 
-
+        self.args['origin'] = self.origin
 
     def _getFaceAreas(self):
         return Grid2D._getFaceAreas(self) * self.getFaceCenters()[0]
@@ -65,17 +65,19 @@ class CylindricalGrid2D(Grid2D):
         return Grid2D.getCellVolumes(self) * self.getCellCenters()[0]
 
     def _translate(self, vector):
-        return CylindricalGrid2D(dx = self.dx, nx = self.nx, 
-                                 dy = self.dy, ny = self.ny, 
-                                 origin = numerix.array(self.origin) + vector)
+        return CylindricalGrid2D(dx=self.args['dx'], nx=self.args['nx'], 
+                                 dy=self.args['dy'], ny=self.args['ny'], 
+                                 origin=self.args['origin'] + vector,
+                                 overlap=self.args['overlap'])
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():
             factor = numerix.resize(factor, (2,1))
         
-        return CylindricalGrid2D(dx = self.dx * numerix.array(factor[0]), nx = self.nx, 
-                                 dy = self.dy * numerix.array(factor[1]), ny = self.ny, 
-                                 origin = self.origin * factor)
+        return CylindricalGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'], 
+                                 dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'], 
+                                 origin=self.args['origin'] * factor,
+                                 overlap=self.args['overlap'])
 
     def getVertexCoords(self):
         return self.vertexCoords + self.origin

@@ -83,6 +83,7 @@ class UniformGrid2D(Grid2D):
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
+
         self.origin += ((self.offset[0] * float(self.dx),),
                         (self.offset[1] * float(self.dy),))
 
@@ -114,17 +115,17 @@ class UniformGrid2D(Grid2D):
         self.setScale(value = scale)
         
     def _translate(self, vector):
-        args = self.args.copy()        
-        args['origin'] =  numerix.array(args['origin']) + vector
-        return self.__class__(**args)
+        return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
+                              dy = self.args['dy'], ny = self.args['ny'], 
+                             origin = numerix.array(self.args['origin']) + vector, overlap=self.args['overlap'])
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():
             factor = numerix.resize(factor, (2,1))
         
-        return UniformGrid2D(dx = self.dx * numerix.array(factor[0]), nx = self.nx, 
-                             dy = self.dy * numerix.array(factor[1]), ny = self.ny, 
-                             origin = self.origin * factor)
+        return UniformGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'], 
+                             dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'], 
+                             origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
 
     def _getConcatenableMesh(self):
         from fipy.meshes.numMesh.grid2D import Grid2D

@@ -98,10 +98,14 @@ class UniformGrid1D(Grid1D):
     def _translate(self, vector):
         return UniformGrid1D(dx=self.dx, 
                              nx=self.args['nx'], 
-                             origin=self.args['origin'] + numerix.array(vector))
+                             origin=self.args['origin'] + numerix.array(vector),
+                             overlap=self.args['overlap'])
 
     def __mul__(self, factor):
-        return UniformGrid1D(dx=self.dx * factor, nx=self.args['nx'], origin=self.args['origin'] * factor)
+        return UniformGrid1D(dx=self.dx * factor,
+                             nx=self.args['nx'],
+                             origin=self.args['origin'] * factor,
+                             overlap=self.args['overlap'])
 
     def _getConcatenableMesh(self):
         from fipy.meshes.numMesh.mesh1D import Mesh1D

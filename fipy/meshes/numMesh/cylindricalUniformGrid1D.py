@@ -38,6 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.numMesh.uniformGrid1D import UniformGrid1D
+from fipy.tools import numerix
 
 class CylindricalUniformGrid1D(UniformGrid1D):
     """
@@ -70,8 +71,10 @@ class CylindricalUniformGrid1D(UniformGrid1D):
         return self._getFaceNormals() * self._getFaceAreas()
 
     def _translate(self, vector):
-        self.args['origin'] = self.args['origin'] + vector
-        return CylindricalUniformGrid1D(**self.args)
+        return CylindricalUniformGrid1D(dx=self.args['dx'],
+                                        nx=self.args['nx'],
+                                        origin=self.args['origin'] + numerix.array(vector),
+                                        overlap=self.args['overlap'])
 
     def _test(self):
         """

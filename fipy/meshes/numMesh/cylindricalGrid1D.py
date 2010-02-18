@@ -59,12 +59,14 @@ class CylindricalGrid1D(Grid1D):
         IndexError: nx != len(dx)
 
     """
-    def __init__(self, dx=1., nx=None, origin=(0,)):
+    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).getUnit())
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
     
-        Grid1D.__init__(self, dx=dx, nx=nx)
+        Grid1D.__init__(self, dx=dx, nx=nx, overlap=overlap)
+
+        self.args['origin'] = origin
 
     def _calcFaceAreas(self):
         self.faceAreas = self.getFaceCenters()[0]
@@ -74,12 +76,12 @@ class CylindricalGrid1D(Grid1D):
         self.cellVolumes *= self.scale['length'] * self.cellCenters[0]
         
     def _translate(self, vector):
-        return CylindricalGrid1D(dx=self.dx, nx=self.nx, 
-                                 origin=numerix.array(self.origin) + vector)
-                                 
+        return CylindricalGrid1D(dx=self.args['dx'], nx=self.args['nx'], 
+                                 origin=numerix.array(self.args['origin']) + vector, overlap=self.args['overlap'])
+                                     
     def __mul__(self, factor):
-        return CylindricalGrid1D(dx=self.dx * factor, nx=self.nx, 
-                                 origin=self.origin * factor)
+        return CylindricalGrid1D(dx=self.args['dx'] * factor, nx=self.args['nx'], 
+                                 origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
 
     def getVertexCoords(self):
         return self.vertexCoords + self.origin

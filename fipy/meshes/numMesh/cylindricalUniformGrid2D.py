@@ -70,9 +70,10 @@ class CylindricalUniformGrid2D(UniformGrid2D):
         return areas
 
     def _translate(self, vector):
-        return CylindricalUniformGrid2D(dx = self.dx, nx = self.nx, 
-                                        dy = self.dy, ny = self.ny, 
-                                        origin = self.origin + vector)    
+        return CylindricalUniformGrid2D(dx = self.args['dx'], nx = self.args['nx'], 
+                                        dy = self.args['dy'], ny = self.args['ny'], 
+                                        origin=numerix.array(self.args['origin']) + vector,
+                                        overlap=self.args['overlap'])
 
     def _test(self):
         """
