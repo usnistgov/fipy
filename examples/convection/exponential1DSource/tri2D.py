@@ -76,9 +76,9 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
     >>> eq = (-sourceCoeff - ImplicitDiffusionTerm(coeff = diffCoeff)
     ...       - ExponentialConvectionTerm(coeff = convCoeff))
 
-    >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
+    >>> eq.solve(var=var,
+    ...          boundaryConditions=boundaryConditions,
+    ...          solver=DefaultAssymetricSolver(tolerance=1.e-15, iterations=10000))
 
 The analytical solution test for this problem is given by:
 

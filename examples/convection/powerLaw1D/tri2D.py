@@ -62,9 +62,9 @@ This example solves the steady-state convection-diffusion equation as described 
     >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
     ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
-    >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
+    >>> eq.solve(var=var,
+    ...          boundaryConditions=boundaryConditions,
+    ...          solver=DefaultAssymetricSolver(tolerance=1.e-15, iterations=2000))
 
 The analytical solution test for this problem is given by:
 
