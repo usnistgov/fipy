@@ -34,7 +34,7 @@ from linearBicgstabSolver import LinearBicgstabSolver
 from trilinosMLTest import TrilinosMLTest
 
 DefaultSolver = LinearGMRESSolver
-DefaultAssymetricSolver = LinearGMRESSolver
+DefaultAsymmetricSolver = LinearGMRESSolver
 
 
 

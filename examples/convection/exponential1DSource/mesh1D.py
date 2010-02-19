@@ -115,7 +115,7 @@ We define the convection-diffusion equation with source
     
     >>> eq.solve(var=var, 
     ...          boundaryConditions=boundaryConditions,
-    ...          solver=DefaultAssymetricSolver(tolerance=1.e-15, iterations=10000))
+    ...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))
     
 and test the solution against the analytical result:
     

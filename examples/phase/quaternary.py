@@ -442,11 +442,11 @@ and again iterate to equilibrium
 
 .. raw:: latex
 
-   \IndexClass{DefaultAssymetricSolver}
+   \IndexClass{DefaultAsymmetricSolver}
 
 ..
 
-    >>> solver = DefaultAssymetricSolver(tolerance=1e-10)
+    >>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
 
                  
     >>> dt = 10000

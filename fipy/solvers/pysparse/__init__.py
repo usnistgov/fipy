@@ -10,4 +10,4 @@ from linearLUSolver import LinearLUSolver
 from linearJORSolver import LinearJORSolver
 
 DefaultSolver = LinearPCGSolver
-DefaultAssymetricSolver = LinearLUSolver
+DefaultAsymmetricSolver = LinearLUSolver

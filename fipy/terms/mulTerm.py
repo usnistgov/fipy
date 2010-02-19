@@ -93,8 +93,8 @@ class _MulTerm(Term):
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
-        from fipy.solvers import DefaultAssymetricSolver
-        return solver or DefaultAssymetricSolver()
+        from fipy.solvers import DefaultAsymmetricSolver
+        return solver or DefaultAsymmetricSolver()
 
     def __repr__(self):
         """

@@ -73,7 +73,7 @@ Here the axes are reversed (`nx = 1`, `ny = 1000`) and
 
     >>> eq.solve(var = var,
     ...          boundaryConditions = boundaryConditions,
-    ...          solver=DefaultAssymetricSolver(iterations=10000))
+    ...          solver=DefaultAsymmetricSolver(iterations=10000))
 
 The analytical solution test for this problem is given by:
 

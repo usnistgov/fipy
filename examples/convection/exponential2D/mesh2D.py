@@ -64,7 +64,7 @@ mesh with `nx = 10` and `ny = 10`:
 
     >>> eq.solve(var = var,
     ...          boundaryConditions=boundaryConditions,
-    ...          solver=DefaultAssymetricSolver(tolerance=1.e-15, iterations=10000))
+    ...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))
 
 We test the solution against the analytical result:
 

@@ -40,7 +40,7 @@ from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.solvers import DefaultAssymetricSolver, LinearPCGSolver
+from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
@@ -363,7 +363,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             coeff._updateDt(dt)
         SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
 
-    def sweep(self, var, solver=DefaultAssymetricSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var, solver=DefaultAsymmetricSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `AdsorbingSurfactantEquation`'s linear
         system once. This method also recalculates and returns the

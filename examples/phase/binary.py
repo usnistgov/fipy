@@ -557,11 +557,11 @@ non-linear problem to convergence. We use the "residual" of the equations
 equations) as a test for how long to sweep. Because of the
 ``ConvectionTerm``, the solution matrix for ``diffusionEq`` is asymmetric
 and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use the
-``DefaultAssymetricSolver`` for this equation.
+``DefaultAsymmetricSolver`` for this equation.
 
 .. raw:: latex
 
-   \IndexClass{DefaultAssymetricSolver}
+   \IndexClass{DefaultAsymmetricSolver}
    \IndexFunction{solve}
    \IndexFunction{sweep}
 
@@ -570,7 +570,7 @@ and cannot be solved by the default ``LinearPCGSolver``. Therefore, we use the
 We now use the "`sweep()`" method instead of "`solve()`" because we
 require the residual.
 
-    >>> solver = DefaultAssymetricSolver(tolerance=1e-10)
+    >>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
 
     >>> phase.updateOld()
     >>> C.updateOld()
