@@ -153,12 +153,12 @@ class _AdvectionTerm(Term):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
 
     def _getDefaultSolver(self, solver):        
-        if solver and not solver._canSolveAssymetric():
+        if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
         from fipy.solvers import DefaultAsymmetricSolver
-        return solver or DefaultAsymmetricSolvery()
+        return solver or DefaultAsymmetricSolver()
 
 
 def _test(): 
