@@ -121,7 +121,7 @@ We perform one implicit timestep to achieve steady state
    
     >>> eq.solve(var=var,
     ...          boundaryConditions=BCs,
-    ...          solver=LinearLUSolver(tolerance=1e-11))
+    ...          solver=DefaultSolver(tolerance=1e-11, iterations=10000))
 
 The analytical solution is:
 
