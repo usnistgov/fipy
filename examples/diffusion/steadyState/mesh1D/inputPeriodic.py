@@ -50,6 +50,7 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
     >>> valueLeft = 0
     >>> valueRight = 1
     >>> x = mesh.getCellCenters()[0]
+    
     >>> Lx = nx * dx
     >>> initialArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> var = CellVariable(name = "solution variable", mesh = mesh,
@@ -64,15 +65,15 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
 A `TransientTerm` is used to provide some fixed point, otherwise the
 solver has no fixed value and can become unstable.
     
-    >>> eq = TransientTerm(coeff = 1e-7) - ImplicitDiffusionTerm()
-    >>> eq.solve(var = var)
+    >>> eq = TransientTerm(coeff=1e-8) - ImplicitDiffusionTerm()
+    >>> eq.solve(var=var)
 
     >>> if __name__ == '__main__':
     ...     viewer.plot()
 
 The result of the calculation will be the average value over the domain.
 
-   >>> var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5).getValue()
+   >>> print var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5)
    1
    
 """
