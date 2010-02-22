@@ -38,6 +38,7 @@ Peridoic 1D Mesh
 __docformat__ = 'restructuredtext'
 
 from grid1D import Grid1D
+from fipy.tools import numerix
 
 class PeriodicGrid1D(Grid1D):
     """
@@ -99,6 +100,9 @@ class PeriodicGrid1D(Grid1D):
         
     def _getGlobalOverlappingCellIDs(self):
         return Grid1D._getGlobalOverlappingCellIDs(self) % self.args['nx']
+
+    def getCellCenters(self):
+        return Grid1D.getCellCenters(self) % numerix.sum(self.globalNumberOfCells * self.args['dx'])
 
 def _test():
     import doctest

@@ -81,7 +81,7 @@ class Grid1D(Mesh1D):
             Xoffset = numerix.sum(self.dx[0:self.offset])
             self.dx = self.dx[self.offset:self.offset + self.nx]
         else:
-            Xoffset = 0
+            Xoffset = self.dx * self.offset
             
         vertices = self._createVertices() + ((Xoffset,),)
         self.numberOfVertices = len(vertices[0])
