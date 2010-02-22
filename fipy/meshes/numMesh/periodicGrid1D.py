@@ -85,8 +85,20 @@ class PeriodicGrid1D(Grid1D):
     def __init__(self, dx = 1., nx = None):
         Grid1D.__init__(self, dx = dx, nx = nx)
         from fipy.tools import numerix
-        self._connectFaces(numerix.nonzero(self.getFacesLeft()), 
-                           numerix.nonzero(self.getFacesRight()))
+
+        if self.occupiedNodes == 1:
+            self._connectFaces(numerix.nonzero(self.getFacesLeft()),
+                               numerix.nonzero(self.getFacesRight()))
+
+    def _getOverlap(self, overlap, procID, occupiedNodes):
+        self.occupiedNodes = occupiedNodes
+        if occupiedNodes == 1:
+            return Grid1D._getOverlap(self, overlap, procID, occupiedNodes)
+        else:
+            return {'left': overlap, 'right': overlap}
+        
+    def _getGlobalOverlappingCellIDs(self):
+        return Grid1D._getGlobalOverlappingCellIDs(self) % self.args['nx']
 
 def _test():
     import doctest

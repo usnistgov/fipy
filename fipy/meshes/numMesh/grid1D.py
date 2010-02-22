@@ -72,7 +72,7 @@ class Grid1D(Mesh1D):
         self.dx /= scale
         
         nx = self._calcNumPts(d=self.dx, n=nx)
-        
+
         (self.nx,
          self.overlap,
          self.offset) = self._calcParallelGridInfo(nx, overlap)
@@ -91,6 +91,10 @@ class Grid1D(Mesh1D):
         Mesh1D.__init__(self, vertices, faces, cells)
         
         self.setScale(value = scale)
+
+    def _getOverlap(self, overlap, procID, occupiedNodes):
+        return {'left': overlap * (procID > 0) * (procID < occupiedNodes),
+                'right': overlap * (procID < occupiedNodes - 1)}
         
     def _calcParallelGridInfo(self, nx, overlap):
         from fipy.tools import parallel
@@ -101,15 +105,13 @@ class Grid1D(Mesh1D):
         cellsPerNode = max(int(nx / Nproc), overlap)
         occupiedNodes = int(nx / (cellsPerNode or 1))
             
-        overlap = {
-            'left': overlap * (procID > 0) * (procID < occupiedNodes),
-            'right': overlap * (procID < occupiedNodes - 1)
-        }
+        overlap = self._getOverlap(overlap, procID, occupiedNodes)
         
         offset = min(procID, occupiedNodes-1) * cellsPerNode - overlap['left']
         local_nx = cellsPerNode * (procID < occupiedNodes)
         if procID == occupiedNodes - 1:
             local_nx += (nx - cellsPerNode * occupiedNodes)
+            
         local_nx = local_nx + overlap['left'] + overlap['right']
         
         self.globalNumberOfCells = nx
@@ -172,6 +174,7 @@ class Grid1D(Mesh1D):
         
         .. note:: Trivial except for parallel meshes
         """
+
         return numerix.arange(self.offset + self.overlap['left'], 
                               self.offset + self.nx - self.overlap['right'])
 

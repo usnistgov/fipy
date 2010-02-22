@@ -47,16 +47,12 @@ correctly. We advect the wave on different meshes one periodic and one
 non-periodic but twice as long. The results are then compared. The
 periodic wave wraps around the mesh.
 
-    >>> newVar2 = var2.copy()
-
     >>> for step in range(steps):
-    ...	    eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
-    ...     eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
+    ...	    eq1.solve(var=var1, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
+    ...     eq2.solve(var=var2, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
 
-    
-    >>> newVar2[:nx / 4] = var2[nx / 4:]
-    >>> newVar2[nx / 4:] = var2[:nx / 4]
-    >>> print newVar2.allclose(var1[nx / 4:3 * nx / 4], atol = 1e-6)
+    >>> print numerix.allclose(var1.getGlobalValue()[nx / 2:3 * nx / 4],
+    ...                        var2.getGlobalValue()[:nx / 4], atol=1e-6)
     1
 
 Currently after 20 steps the wave has lost 23% of its height. Van Leer
@@ -110,8 +106,8 @@ if __name__ == '__main__':
     newVar2 = var2.copy()
 
     for step in range(steps):
-        eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
-        eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
+        eq1.solve(var=var1, dt=dt, solver=DefaultAsymmetricSolver())
+        eq2.solve(var=var2, dt=dt, solver=DefaultAsymmetricSolver())
         viewer1.plot()
         viewer2.plot()
 
