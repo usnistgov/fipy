@@ -85,7 +85,8 @@ Make the equation, viewer and solve.
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(var, datamin=0.0, datamax=0.001)
 
-    >>> mass = float(numerix.sum(mesh.getCellVolumes() * var))
+    >>> mass = float(var.getCellVolumeAverage() * numerix.sum(mesh.getCellVolumes()))
+    >>> 
     >>> time = 0
     >>> dt=0.00025 
 
