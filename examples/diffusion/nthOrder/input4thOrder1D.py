@@ -118,10 +118,11 @@ and use the `LinearLUSolver` for stability.
 ..
 
 We perform one implicit timestep to achieve steady state
-   
+
+    
     >>> eq.solve(var=var,
     ...          boundaryConditions=BCs,
-    ...          solver=DefaultSolver(tolerance=1e-11, iterations=10000))
+    ...          solver=DefaultAsymmetricSolver())
 
 The analytical solution is:
 
@@ -136,6 +137,7 @@ or
     >>> x = mesh.getCellCenters()[0]
     >>> analytical.setValue(alpha4 / 6. * x**3 + alpha3 / 2. * x**2 + \
     ...                     (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1)
+
     >>> print var.allclose(analytical, rtol=1e-4)
     1
 
