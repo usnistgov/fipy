@@ -86,10 +86,10 @@ class _CollectedDiffusionTerm(DiffusionTerm):
         dup.orders = self.orders
         return dup
         
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver, *args, **kwargs):
         for term in self.orders:
             if term is not None:
-                solver = term._getDefaultSolver(solver)
+                solver = term._getDefaultSolver(solver, *args, **kwargs)
                 if solver is not None:
                     return solver
                 
