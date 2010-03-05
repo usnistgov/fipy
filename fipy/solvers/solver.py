@@ -179,7 +179,7 @@ class Solver:
         return '%s(tolerance=%g, iterations=%g)' \
             % (self.__class__.__name__, self.tolerance, self.iterations)
 
-    def _canSolveAssymetric(self):
+    def _canSolveAsymmetric(self):
         return True
 
     def _getMatrixClass(self):

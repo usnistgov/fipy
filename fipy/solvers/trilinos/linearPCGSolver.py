@@ -61,6 +61,6 @@ class LinearPCGSolver(TrilinosAztecOOSolver):
                                        iterations=iterations, steps=steps, precon=precon)
         self.solver = AztecOO.AZ_cg
 
-    def _canSolveAssymetric(self):
+    def _canSolveAsymmetric(self):
         return False
                 

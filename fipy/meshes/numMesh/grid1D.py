@@ -40,6 +40,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from mesh1D import Mesh1D
+from fipy.tools import parallel
 
 class Grid1D(Mesh1D):
     """
@@ -59,7 +60,7 @@ class Grid1D(Mesh1D):
         IndexError: nx != len(dx)
 
     """
-    def __init__(self, dx=1., nx=None, overlap=2):
+    def __init__(self, dx=1., nx=None, overlap=2, parallelModule=parallel):
         self.args = {
             'dx': dx, 
             'nx': nx, 
@@ -75,7 +76,7 @@ class Grid1D(Mesh1D):
 
         (self.nx,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, overlap)
+         self.offset) = self._calcParallelGridInfo(nx, overlap, parallelModule)
 
         if numerix.getShape(self.dx) is not ():
             Xoffset = numerix.sum(self.dx[0:self.offset])
@@ -96,10 +97,10 @@ class Grid1D(Mesh1D):
         return {'left': overlap * (procID > 0) * (procID < occupiedNodes),
                 'right': overlap * (procID < occupiedNodes - 1)}
         
-    def _calcParallelGridInfo(self, nx, overlap):
-        from fipy.tools import parallel
-        procID = parallel.procID
-        Nproc = parallel.Nproc
+    def _calcParallelGridInfo(self, nx, overlap, parallelModule):
+
+        procID = parallelModule.procID
+        Nproc = parallelModule.Nproc
         
         overlap = min(overlap, nx)
         cellsPerNode = max(int(nx / Nproc), overlap)

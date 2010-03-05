@@ -157,8 +157,15 @@ class _AdvectionTerm(Term):
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
-        from fipy.solvers import DefaultAsymmetricSolver
-        return solver or DefaultAsymmetricSolver()
+        import fipy.solvers.solver
+        if fipy.solvers.solver == 'trilinos':
+            from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+            from fipy.solvers.trilinos.linearGMRESSolver import LinearGMRESSolver
+            return solver or LinearGMRESSolver(precon=JacobiPreconditioner())
+        else:
+            from fipy.solvers import DefaultAsymmetricSolver
+            return solver or DefaultAsymmetricSolver()
+
 
 
 def _test(): 

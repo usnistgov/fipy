@@ -32,9 +32,9 @@
  # ###################################################################
  ##
 
+from fipy.tools import parallel
 
-
-def Grid1D(dx=1., nx=None, overlap=2):
+def Grid1D(dx=1., nx=None, overlap=2, parallelModule=parallel):
     from numMesh import uniformGrid1D
     from numMesh import grid1D
     
@@ -42,6 +42,6 @@ def Grid1D(dx=1., nx=None, overlap=2):
     if numerix.getShape(dx) == ():
         if nx is None:
             nx = 1
-        return uniformGrid1D.UniformGrid1D(dx=dx, nx=nx, overlap=overlap)
+        return uniformGrid1D.UniformGrid1D(dx=dx, nx=nx, overlap=overlap, parallelModule=parallelModule)
     else:
-        return grid1D.Grid1D(dx=dx, nx=nx, overlap=overlap)
+        return grid1D.Grid1D(dx=dx, nx=nx, overlap=overlap, parallelModule=parallelModule)

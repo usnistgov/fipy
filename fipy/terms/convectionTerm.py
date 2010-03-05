@@ -150,7 +150,7 @@ class ConvectionTerm(FaceTerm):
         return self.stencil
 
     def _getDefaultSolver(self, solver):        
-        if solver and not solver._canSolveAssymetric():
+        if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
         return solver or DefaultAsymmetricSolver()

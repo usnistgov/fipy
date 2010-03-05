@@ -74,7 +74,8 @@ Construct the mesh.
 
 ..
 
-   >>> mesh = Grid1D(dx=dx, nx=nx)
+   >>> from fipy.tools import serial
+   >>> mesh = Grid1D(dx=dx, nx=nx, parallelModule=serial)
 
 Construct a `distanceVariable` object.
 

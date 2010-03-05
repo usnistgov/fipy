@@ -72,6 +72,6 @@ class LinearPCGSolver(PysparseSolver):
 
         self._raiseWarning(info, iter, relres)
             
-    def _canSolveAssymetric(self):
+    def _canSolveAsymmetric(self):
         return False
                 

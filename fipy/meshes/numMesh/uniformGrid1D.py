@@ -42,6 +42,7 @@ from fipy.tools.numerix import MA
 from fipy.meshes.numMesh.grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
+from fipy.tools import parallel
 
 class UniformGrid1D(Grid1D):
     """
@@ -52,7 +53,7 @@ class UniformGrid1D(Grid1D):
         [[ 0.5  1.5  2.5]]
          
     """
-    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2):
+    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, parallelModule=parallel):
         origin = numerix.array(origin)
         
         self.args = {
@@ -72,7 +73,7 @@ class UniformGrid1D(Grid1D):
         
         (self.nx,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, overlap)
+         self.offset) = self._calcParallelGridInfo(nx, overlap, parallelModule)
         
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
