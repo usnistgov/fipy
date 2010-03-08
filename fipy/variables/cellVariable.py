@@ -178,10 +178,10 @@ class CellVariable(_MeshVariable):
             >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
             >>> x, y = m0.getCellCenters()
             >>> v0 = CellVariable(mesh=m0, value=x * y)
-            >>> print v0(m1.getCellCenters())
+            >>> print v0(m1.getCellCenters().getGlobalValue())
             [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
               0.75  0.75  2.25  2.25]
-            >>> print v0(m1.getCellCenters(), order=1)
+            >>> print v0(m1.getCellCenters().getGlobalValue(), order=1)
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 

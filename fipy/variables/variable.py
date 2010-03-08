@@ -1109,7 +1109,7 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            >>> print numerix.allequal((a == 0) & (b == 1), [False,  True, False, False])
             True
             >>> print a & b
             [0 0 0 1]
@@ -1132,7 +1132,7 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            >>> print numerix.allequal((a == 0) | (b == 1), [True,  True, False, True])
             True
             >>> print a | b
             [0 1 1 1]

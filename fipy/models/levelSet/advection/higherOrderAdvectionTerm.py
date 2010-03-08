@@ -155,12 +155,11 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         >>> vel = 1.
         >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[0]**2)
         >>> L, b = _AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-        >>> bCell = CellVariable(mesh=mesh, value=b)
         
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
 
-        >>> print numerix.allclose(bCell.getGlobalValue()[1:-1], -2 * mesh.getCellCenters().getGlobalValue()[0][1:-1])
+        >>> print numerix.allclose(CellVariable(mesh=mesh, value=b).getGlobalValue()[1:-1], -2 * mesh.getCellCenters().getGlobalValue()[0][1:-1])
         False
 
     The higher order term is spot on.

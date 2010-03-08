@@ -582,7 +582,7 @@ class UniformGrid2D(Grid2D):
            [4]
            >>> m0 = Grid2D(nx=2, ny=2, dx=1., dy=1.)
            >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
-           >>> print m0._getNearestCellID(m1.getCellCenters())
+           >>> print m0._getNearestCellID(m1.getCellCenters().getGlobalValue())
            [0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3]
            
         """

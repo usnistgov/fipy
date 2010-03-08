@@ -302,7 +302,7 @@ class UniformGrid1D(Grid1D):
            [1]
            >>> m0 = Grid1D(nx=2, dx=1.)
            >>> m1 = Grid1D(nx=4, dx=.5)
-           >>> print m0._getNearestCellID(m1.getCellCenters())
+           >>> print m0._getNearestCellID(m1.getCellCenters().getGlobalValue())
            [0 0 1 1]
            
         """
