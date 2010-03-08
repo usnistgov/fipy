@@ -145,14 +145,13 @@ we create the Cahn-Hilliard equation:
     >>> diffTerm4 = ImplicitDiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
     >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
-.. raw:: latex
+    >>> import fipy.solvers.solver
+    >>> if fipy.solvers.solver == 'pysparse':
+    ...     solver = LinearLUSolver(tolerance=1e-15, iterations=100)
+    ... else:
+    ...     solver = DefaultSolver()
 
-   \IndexClass{LinearLUSolver}
-   
-..
-
-    >>> solver = LinearLUSolver(tolerance=1e-15, iterations=100)
-
+    
 The solution to this 1D problem over an infinite domain is given by,
 
 .. raw:: latex
