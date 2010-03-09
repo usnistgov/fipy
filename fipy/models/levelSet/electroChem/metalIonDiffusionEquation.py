@@ -91,7 +91,8 @@ def buildMetalIonDiffusionEquation(ionVar = None,
        >>> from fipy.meshes.grid1D import Grid1D
        >>> nx = 11
        >>> dx = 1.
-       >>> mesh = Grid1D(nx = nx, dx = dx)
+       >>> from fipy.tools import serial
+       >>> mesh = Grid1D(nx = nx, dx = dx, parallelModule=serial)
        >>> x, = mesh.getCellCenters()
        >>> from fipy.variables.cellVariable import CellVariable
        >>> ionVar = CellVariable(mesh = mesh, value = 1.)
