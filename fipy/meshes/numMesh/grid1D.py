@@ -104,17 +104,17 @@ class Grid1D(Mesh1D):
         
         overlap = min(overlap, nx)
         cellsPerNode = max(int(nx / Nproc), overlap)
-        occupiedNodes = int(nx / (cellsPerNode or 1))
+        occupiedNodes = min(int(nx / (cellsPerNode or 1)), Nproc)
             
         overlap = self._getOverlap(overlap, procID, occupiedNodes)
-        
+
         offset = min(procID, occupiedNodes-1) * cellsPerNode - overlap['left']
         local_nx = cellsPerNode * (procID < occupiedNodes)
         if procID == occupiedNodes - 1:
             local_nx += (nx - cellsPerNode * occupiedNodes)
             
         local_nx = local_nx + overlap['left'] + overlap['right']
-        
+
         self.globalNumberOfCells = nx
         self.globalNumberOfFaces = nx + 1
         

@@ -119,7 +119,7 @@ class Grid2D(Mesh2D):
 
         overlap = min(overlap, ny)
         cellsPerNode = max(int(ny / Nproc), overlap)
-        occupiedNodes = int(ny / (cellsPerNode or 1))
+        occupiedNodes = min(int(ny / (cellsPerNode or 1)), Nproc)
             
         overlap = {
             'left': 0,
