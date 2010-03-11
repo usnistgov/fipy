@@ -245,7 +245,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print parallel.procID > 0 or numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allclose(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             True
             
             >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],

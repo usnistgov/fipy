@@ -264,7 +264,7 @@ class CylindricalGrid2D(Grid2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print parallel.procID > 0 or numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allclose(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             True
         """
 

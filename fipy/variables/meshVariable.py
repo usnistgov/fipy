@@ -398,6 +398,21 @@ class _MeshVariable(Variable):
          else:
              return Variable.allclose(self, other, rtol=rtol, atol=atol)
 
+    def allequal(self, other):
+         if parallel.Nproc > 1:
+             from mpi4py import MPI
+             def allequalParallel(a, b):
+                 return MPI.COMM_WORLD.allreduce(numerix.allequal(a, b), op=MPI.LAND)
+
+             operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
+             return self._BinaryOperatorVariable(allequalParallel,
+                                                 other, 
+                                                 operatorClass=operatorClass,
+                                                 opShape=(),
+                                                 canInline=False)            
+         else:
+             return Variable.allequal(self, other)
+
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """

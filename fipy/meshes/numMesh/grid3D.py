@@ -606,7 +606,7 @@ class Grid3D(Mesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allclose(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             True
 
             The following test was for a bug when dx, dy or dz are arrays.
