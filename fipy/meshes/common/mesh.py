@@ -125,8 +125,8 @@ class Mesh:
             ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
             ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
             ...                 0.5, 0.5, 0.16666667, 0.16666667]]
-            >>> print parallel.procID > 0 or numerix.allclose(triAddedMesh.getCellCenters(),
-            ...                                                cellCenters)
+            >>> print numerix.allclose(triAddedMesh.getCellCenters(),
+            ...                        cellCenters)
             True
 
         but their faces must still align properly

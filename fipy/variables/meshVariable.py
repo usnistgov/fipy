@@ -383,6 +383,22 @@ class _MeshVariable(Variable):
         else:
             return Variable.sum(self, axis=axis)
 
+    def allclose(self, other, rtol=1.e-5, atol=1.e-8):
+         if parallel.Nproc > 1:
+             from mpi4py import MPI
+             def allcloseParallel(a, b):
+                 return MPI.COMM_WORLD.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=MPI.LAND)
+
+             operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
+             return self._BinaryOperatorVariable(allcloseParallel,
+                                                 other, 
+                                                 operatorClass=operatorClass,
+                                                 opShape=(),
+                                                 canInline=False)            
+         else:
+             return Variable.allclose(self, other, rtol=rtol, atol=atol)
+
+
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
         Determine the shape of the result, the base class of the result, and (if
