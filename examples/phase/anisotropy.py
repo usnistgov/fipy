@@ -176,9 +176,9 @@ is an anisotropic diffusion tensor in two dimensions
     >>> DbetaDpsi = -N * 2 * Phi / (1 + PhiSq)
     >>> Ddia = (1.+ c * beta)
     >>> Doff = c * DbetaDpsi
-    >>> D = alpha**2 * (1.+ c * beta) * (Ddia * (( 1, 0),
-    ...                                          ( 0, 1)) + Doff * (( 0,-1),
-    ...                                                             ( 1, 0)))
+    >>> I0 = Variable(value=((1,0), (0,1)))
+    >>> I1 = Variable(value=((0,-1), (1,0)))
+    >>> D = alpha**2 * (1.+ c * beta) * (Ddia * I0 + Doff * I1)
 
 With these expressions defined, we can construct the phase field equation
 as
