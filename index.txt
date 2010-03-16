@@ -12,9 +12,9 @@ Welcome to FiPy's documentation!
    documentation/introduction
    examples/README
    fipy/generated/modules
-   documentation/glossary
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+* :ref:`glossary`
 

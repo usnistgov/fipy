@@ -11,3 +11,4 @@ Introduction
    numerical/numerical
    design
    FAQ
+   glossary
