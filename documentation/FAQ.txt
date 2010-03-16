@@ -299,7 +299,7 @@ What if the coefficient of a term depends on the variable that I'm solving for?
         
 A non-linear coefficient, such as the diffusion coefficient in
 :math:`\nabla\cdot[\Gamma_1(\phi) \nabla \phi] = \nabla\cdot[\Gamma_0 \phi (1 -
-\phi) \nabla\phi]` is not a problem for \FiPy. Simply write it as it
+\phi) \nabla\phi]` is not a problem for |FiPy|. Simply write it as it
 appears:
 
     >>> diffTerm = DiffusionTerm(coeff = Gamma0 * phi * (1 - phi))
@@ -393,7 +393,7 @@ FAQ} should be adaptable to other :class:`Viewer`\s.
 Why don't the :class:`Viewer`\s look the way I want?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-\FiPy's viewers are utilitarian. They're designed to let you see
+|FiPy|'s viewers are utilitarian. They're designed to let you see
 \emph{something} with a minimum of effort. Because different plotting
 packages have different capabilities and some are easier to install on some
 platforms than on others, we have tried to support a range of \Python{}
@@ -567,7 +567,7 @@ Why the distinction between :class:`CellVariable` and :class:`FaceVariable` coef
 source terms describe the change in the value of a field at the
 :class:`Cell` center, and so they take a :class:`CellVariable` coefficient.
 Diffusion and convection terms involve fluxes \emph{between} :class:`Cell`
-centers, and are calculated on the :class:`Face` between two :class:`Cell`s,
+centers, and are calculated on the :class:`Face` between two :class:`Cell`\s,
 and so they take a :class:`FaceVariable` coefficient.
     
 .. note::
@@ -790,27 +790,27 @@ and~\ref{sec:Examples:diffusion:circle}
 What does this error message mean?
 ----------------------------------
 
-  "\texttt{ValueError: frames are not aligned}"
+  "``ValueError: frames are not aligned``"
     This error most likely means that you have provided a
     :class:`CellVariable` when |FiPy| was expecting a :class:`FaceVariable`
     (or vice versa).
 
-  ``\texttt{MA.MA.MAError: Cannot automatically
+  "``MA.MA.MAError: Cannot automatically
   convert masked array to Numeric because data is masked in one or
-  more locations.}''
+  more locations.``"
     This not-so-helpful error message could mean a number of things, but
     the most likely explanation is that the solution has become unstable
     and is diverging to :math:`\pm\infty`. This can be caused by taking too large
     a timestep or by using explicit terms instead of implicit ones.
         
-  "\texttt{repairing catalog by removing key}"
+  "``repairing catalog by removing key``"
     This message (not really an error, but may cause test failures) can
     result when using the \SciPy{} \weave{} package via the
     :option:`--inline` flag. It is due to a bug in \SciPy{} that has been
     patched in their source repository:
     \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
         
-  "\texttt{numerix Numeric 23.6}"
+  "``numerix Numeric 23.6``"
     This is neither an error nor a warning. It's just a sloppy 
     message left in \SciPy{}:
     \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
@@ -830,18 +830,18 @@ Command-line Flags
 You can add any of the following flags after the name of a 
 script you call from the command line
 
-  \texttt{--inline} 
+  :option:`--inline`
     Causes many mathematical operations to be performed in C, rather than
     Python, for improved performance. Requires the \SciPy{} \weave{}
     package.
 
-  \texttt{--Pysparse} 
+  :option:`--Pysparse`
     Forces the use of the \Pysparse{} solvers. This flag takes precedence
-    over the \texttt{FIPY\_SOLVERS} environment variable.
+    over the :envvar:`FIPY_SOLVERS` environment variable.
 
-  \texttt{--Trilinos} 
+  :option:`--Trilinos`
     Forces the use of the \Trilinos{} solvers. This flag takes precedence
-    over the \texttt{FIPY\_SOLVERS} environment variable.
+    over the :envvar:`FIPY_SOLVERS` environment variable.
     
 Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~
@@ -850,35 +850,35 @@ You can set any of the following environment variables in the
 manner appropriate for your shell. If you are not running in 
 a shell (\emph{e.g.}, you are invoking |FiPy| scripts from within IPython or 
 IDLE), you can set these variables via the 
-\texttt{os.environ} dictionary, but you must do so before 
-importing anything from the \texttt{fipy} package.
+:const:`os.environ` dictionary, but you must do so before 
+importing anything from the :mod:`fipy` package.
 
-  \texttt{FIPY\_DISPLAY\_MATRIX} 
+  :envvar:`FIPY_DISPLAY_MATRIX`
     If present, causes the graphical display of the solution matrix of each
-    equation at each call of \texttt{solve()} or \texttt{sweep()}. If set
-    to "\texttt{terms}", causes the display of the matrix for each
+    equation at each call of :meth:`.solve` or :meth:`.sweep`. If set
+    to "``terms``," causes the display of the matrix for each
     :class:`Term` that composes the equation. Requires the \Matplotlib{}
     package.
 
-  \texttt{FIPY\_INLINE} 
+  :envvar:`FIPY_INLINE`
     If present, causes many mathematical operations to be performed in C,
     rather than Python. Requires the \SciPy{} \weave{} package.
 
-  \texttt{FIPY\_INLINE\_COMMENT}
+  :envvar:`FIPY_INLINE_COMMENT`
     If present, causes the addition of a comment showing the Python context
     that produced a particular piece of \SciPy{} \weave{} C code. Useful
     for debugging.
 
-  \texttt{FIPY\_SOLVERS} 
+  :envvar:`FIPY_SOLVERS`
     Forces the use of the specified suite of linear solvers. Valid
-    (case-insensitive) choices are "\texttt{PySparse}" and
-    "\texttt{Trilinos}".
+    (case-insensitive) choices are "``PySparse``" and
+    "``Trilinos``".
     
-  \texttt{FIPY\_VIEWER}
+  :envvar:`FIPY_VIEWER`
     Forces the use of the specified viewer. Valid values are any
-    "\texttt{\textit{<viewer>}}" from the
-    \texttt{\EpydocDottedName{fipy.viewers.\textit{<viewer>}Viewer}}
-    modules. The special value of "\texttt{dummy}" will allow the script
+    :samp:`{<viewer>}` from the
+    :samp:`fipy.viewers.{<viewer>}Viewer`
+    modules. The special value of ``dummy`` will allow the script
     to run without displaying anything.
 
 Why don't my scripts work anymore?
