@@ -41,7 +41,7 @@ published \cite{NIST:damascene:2003}.
 
 To run this example from the base fipy directory type::
     
-    $ examples/levelSet/electroChem/simpleTrenchSystem.py
+    $ python examples/levelSet/electroChem/simpleTrenchSystem.py
 
 at the command line. The results of the simulation will be displayed
 and the word `finished` in the terminal at the end of the
@@ -77,7 +77,7 @@ mechanism. All of the given equations are implemented in the
 :func:`runSimpleTrenchSystem` function. As stated above, all the parameters
 in the equations can be changed with function arguments.
 
-.. image:: electroChem/schematicOfEquations.pdf
+.. image:: electroChem/schematicOfEquations.*
    :width: 90%
    :align: center
    :alt: schematic of superfill equations
@@ -154,18 +154,13 @@ installed (see :ref:`chap:Installation`) then a plot should
 appear that is updated every 20 time steps and will eventually
 resemble the image below.
 
-.. image:: electroChem/inputSimpleTrenchSystem.pdf
+.. image:: electroChem/inputSimpleTrenchSystem.*
    :width: 90%
    :align: center
    :alt: resulting image
 
 """
 __docformat__ = 'restructuredtext'
-
-# from fipy import Grid2D, DistanceVariable, CellVariable, SurfactantVariable, FixedValue
-# from fipy import buildHigherOrderAdvectionEquation, AdsorbingSurfactantEquation, buildMetalIonDiffusionEquation, buildSurfactantBulkDiffusionEquation
-# from fipy import exp, MultiViewer, Viewer
-# 
 
 from fipy import *
 

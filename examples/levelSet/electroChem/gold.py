@@ -32,78 +32,74 @@
  ##
  
 r"""
-This input file
-
-.. raw:: latex
-
-    \label{gold} is a demonstration of the use of \FiPy{} for
-    modeling gold superfill. The material properties and experimental
-    parameters used are roughly those that have been previously
-    published~\cite{NIST:damascene:2005}.
+This input file :mod:`examples.levelSet.electroChem.gold` 
+is a demonstration of the use of |FiPy| for
+modeling gold superfill. The material properties and experimental
+parameters used are roughly those that have been previously
+published~\cite{NIST:damascene:2005}.
 
 To run this example from the base fipy directory type::
     
-    $ examples/levelSet/electroChem/gold.py
+    $ python examples/levelSet/electroChem/gold.py
 
 at the command line. The results of the simulation will be displayed
-and the word `finished` in the terminal at the end of the
+and the word ``finished`` in the terminal at the end of the
 simulation. The simulation will only run for 10 time steps. In order
 to alter the number of timesteps, the python function that
 encapsulates the system of equations must first be imported (at the
 python command line),
 
-.. raw:: latex
+.. index:: runGold
 
-   \IndexFunction{runGold}
-
-..
-
-    >>> from examples.levelSet.electroChem.gold import runGold
+>>> from examples.levelSet.electroChem.gold import runGold
 
 and then the function can be run with a different number of time steps
-with the `numberOfSteps` argument as follows,
+with the ``numberOfSteps`` argument as follows,
 
-    >>> runGold(numberOfSteps=10, displayViewers=False)
-    1
+>>> runGold(numberOfSteps=10, displayViewers=False)
+1
     
-Change the `displayViewers` argument to `True` if you wish to see the
+Change the ``displayViewers`` argument to ``True`` if you wish to see the
 results displayed on the screen. This example has a more realistic
 default boundary layer depth and thus requires `gmsh` to construct a
 more complex mesh.
 
-.. raw:: latex
+.. index:: gmsh
 
-    \IndexSoftware{gmsh}
+There are a few differences between the gold superfill model presented
+in this example and in :mod:`examples.levelSet.electroChem.simpleTrenchSystem`. 
+Most default
+values have changed to account for a different metal ion (gold)
+and catalyst (lead). In this system the catalyst is not present in
+the electrolyte but instead has a non-zero initial coverage. Thus
+quantities associated with bulk catalyst and catalyst accumulation
+are not defined. The current density is given by, 
 
-    There are a few differences between the gold superfill model presented
-    in this example and Example~\ref{simpleTrenchSystem}. Most default
-    values have changed to account for a different metal ion (gold)
-    and catalyst (lead). In this system the catalyst is not present in
-    the electrolyte but instead has a non-zero initial coverage. Thus
-    quantities associated with bulk catalyst and catalyst accumulation
-    are not defined. The current density is given by, $$ i =
-    \frac{c_m}{c_m^{\infty}} \left( b_0 + b_1 \theta \right). $$ The
-    more common representation of the current density includes an
-    exponential part. Here it is buried in $b_0$ and $b_1$. The
-    governing equation for catalyst evolution includes a term for
-    catalyst consumption on the interface and is given by $$
-    \dot{\theta} = J v \theta - k_c v \theta $$ where $k_c$ is the
-    consumption coefficient
+.. math:: 
+    
+   i = \frac{c_m}{c_m^{\infty}} \left( b_0 + b_1 \theta \right).
+   
+The
+more common representation of the current density includes an
+exponential part. Here it is buried in :math:`b_0` and :math:`b_1`. The
+governing equation for catalyst evolution includes a term for
+catalyst consumption on the interface and is given by
 
-(`consumptionRateConstant`). The trench geometry is also given a
-slight taper, given by `taperAngle`.
+.. math::
+    
+   \dot{\theta} = J v \theta - k_c v \theta
+   
+where :math:`k_c` is the consumption coefficient
+(``consumptionRateConstant``). The trench geometry is also given a
+slight taper, given by ``taperAngle``.
 
 If the MayaVi plotting software is
-
-.. raw:: latex
-
-    installed (see Chapter~\ref{chap:Installation}) then a plot should
-    appear that is updated every 10 time steps and will eventually
-
+installed (see :ref:`chap:Installation`) then a plot should
+appear that is updated every 10 time steps and will eventually
 resemble the image below.
 
-.. image:: examples/levelSet/electroChem/inputGold.pdf
-   :scale: 60
+.. image:: electroChem/inputGold.*
+   :width: 90%
    :align: center
    :alt: resulting image
 
