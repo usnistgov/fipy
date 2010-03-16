@@ -63,7 +63,7 @@ The differences between these convection schemes are described
 in Section :ref:`sec:NumericalSchemes`. The velocity coefficient 
 ``u`` must be a rank-1 :class:`FaceVariable`, or a 
 constant vector in the form of a Python list or tuple, 
-\emph{e.g.} ``((1,), (2,))`` for a vector in 2D.
+*e.g.* ``((1,), (2,))`` for a vector in 2D.
 
 .. note::
 
@@ -174,7 +174,7 @@ What if the term isn't one of those?
 Any term that cannot be written in one of the previous
 forms is considered a source :math:`S_{\phi}`. An explicit
 source is written in Python essentially as it appears in
-mathematical form, \emph{e.g.}, :math:`3\kappa^2 + b \sin
+mathematical form, *e.g.*, :math:`3\kappa^2 + b \sin
 \theta` would be written
 
     >>> 3 * kappa**2 + b * sin(theta)
@@ -191,17 +191,17 @@ mathematical form, \emph{e.g.}, :math:`3\kappa^2 + b \sin
     
 If, however, the source depends on the variable that is being solved for,
 it can be advantageous to linearize the source and cast part of it as an
-implicit source term, \emph{e.g.}, :math:`3\kappa^2 + \phi \sin \theta`
+implicit source term, *e.g.*, :math:`3\kappa^2 + \phi \sin \theta`
 might be written as
 
     >>> 3 * kappa**2 + ImplicitSourceTerm(coeff=sin(theta))
     
-How do I represent a `...` term that \emph{doesn't} involve the dependent variable?
+How do I represent a `...` term that *doesn't* involve the dependent variable?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is important to realize that, even though an expression may
 superficially resemble one of those shown above, if the dependent variable
-\emph{for that PDE} does not appear in the appropriate place, then that
+*for that PDE* does not appear in the appropriate place, then that
 term should be treated as a source.
 
 How do I represent a diffusive source?
@@ -338,7 +338,7 @@ How do I save a plot image?
 
 Some of the viewers have a button or other mechanism in the user interface
 for saving an image file. Also, you can supply an optional keyword
-:keyword:`filename` when you tell the viewer to :meth:`.plot()`, \emph{e.g.}
+:keyword:`filename` when you tell the viewer to :meth:`.plot()`, *e.g.*
 
     >>> viewer.plot(filename="myimage.ext")
 
@@ -394,7 +394,7 @@ Why don't the :class:`Viewer`\s look the way I want?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 |FiPy|'s viewers are utilitarian. They're designed to let you see
-\emph{something} with a minimum of effort. Because different plotting
+*something* with a minimum of effort. Because different plotting
 packages have different capabilities and some are easier to install on some
 platforms than on others, we have tried to support a range of \Python{}
 plotters with a minimal common set of features. Many of these packages are
@@ -431,7 +431,7 @@ many similar PDE solvers), there are three layers of repetition.
       generally need to change. If you do wish to change these
       defaults, you'll need to create a new :class:`Solver` object
       with the desired number of iterations and solution tolerance,
-      \emph{e.g.}
+      *e.g.*
 
           >>> mySolver = LinearPCGSolver(iterations=1234, tolerance=5e-6) 
           : 
@@ -449,18 +449,18 @@ many similar PDE solvers), there are three layers of repetition.
     
     sweeps
       This middle layer of repetition is important
-      when a PDE is non-linear (\emph{e.g.}, a diffusivity that
+      when a PDE is non-linear (*e.g.*, a diffusivity that
       depends on concentration) or when multiple PDEs are coupled
-      (\emph{e.g.}, if solute diffusivity depends on temperature and
+      (*e.g.*, if solute diffusivity depends on temperature and
       thermal conductivity depends on concentration). Even if the
-      :class:`Solver` solves the \emph{linear} approximation of the
+      :class:`Solver` solves the *linear* approximation of the
       PDE to absolute perfection by performing an infinite number of
       iterations, the solution may still not be a very good
-      representation of the actual \emph{non-linear} PDE. If we
+      representation of the actual *non-linear* PDE. If we
       resolve the same equation \emph{at the same point in elapsed
       time}, but use the result of the previous solution instead of 
       the previous timestep, then we can get a refined solution to 
-      the \emph{non-linear} PDE in a process known as "sweeping." 
+      the *non-linear* PDE in a process known as "sweeping." 
 
       .. note::
 
@@ -471,7 +471,7 @@ many similar PDE solvers), there are three layers of repetition.
       We need to distinguish between the value of the variable at
       the last timestep and the value of the variable at the last
       sweep (the last cycle where we tried to solve the
-      \emph{current} timestep). This is done by first modifying the
+      *current* timestep). This is done by first modifying the
       way the variable is created:
 
           >>> myVar = CellVariable(..., hasOld=1)
@@ -566,7 +566,7 @@ Why the distinction between :class:`CellVariable` and :class:`FaceVariable` coef
 |FiPy| solves field variables on the :class:`Cell` centers. Transient and
 source terms describe the change in the value of a field at the
 :class:`Cell` center, and so they take a :class:`CellVariable` coefficient.
-Diffusion and convection terms involve fluxes \emph{between} :class:`Cell`
+Diffusion and convection terms involve fluxes *between* :class:`Cell`
 centers, and are calculated on the :class:`Face` between two :class:`Cell`\s,
 and so they take a :class:`FaceVariable` coefficient.
     
@@ -578,7 +578,7 @@ and so they take a :class:`FaceVariable` coefficient.
    undesirable consequences, however. For one thing, the 
    arithmetic face average of a non-linear function is not the 
    same as the same non-linear function of the average argument, 
-   \emph{e.g.}, for :math:`f(x) = x^2`,
+   *e.g.*, for :math:`f(x) = x^2`,
 
    .. math::
 
@@ -848,7 +848,7 @@ Environment Variables
 
 You can set any of the following environment variables in the 
 manner appropriate for your shell. If you are not running in 
-a shell (\emph{e.g.}, you are invoking |FiPy| scripts from within IPython or 
+a shell (*e.g.*, you are invoking |FiPy| scripts from within IPython or 
 IDLE), you can set these variables via the 
 :const:`os.environ` dictionary, but you must do so before 
 importing anything from the :mod:`fipy` package.
