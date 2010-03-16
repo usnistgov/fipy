@@ -68,21 +68,9 @@ script. Firstly, setup the parameters.
 
 Construct the mesh.
 
-.. raw:: latex
-
-   \IndexClass{Grid1D}
-
-..
-
    >>> mesh = Grid1D(dx=dx, nx=nx)
 
 Construct a `distanceVariable` object.
-
-.. raw:: latex
-
-   \IndexClass{DistanceVariable}
-
-..
 
    >>> var = DistanceVariable(name='level set variable',
    ...                        mesh=mesh,
@@ -93,21 +81,9 @@ Construct a `distanceVariable` object.
    
 The `advectionEquation` is constructed.
 
-.. raw:: latex
-
-   \IndexFunction{buildAdvectionEquation}
-
-..
-
    >>> advEqn = buildAdvectionEquation(advectionCoeff=velocity)
 
 The problem can then be solved by executing a serious of time steps.
-
-.. raw:: latex
-
-   \IndexModule{viewers}
-
-..
 
    >>> if __name__ == '__main__':
    ...     viewer = Viewer(vars=var, datamin=-10., datamax=10.)

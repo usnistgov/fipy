@@ -479,7 +479,7 @@ sweeps
   Finally, we will need to repeatedly solve the equation until 
   it gives a stable result. To clearly distinguish that a 
   single cycle will not truly "solve" the equation, we invoke 
-  a different method ":meth:`.sweep`"\IndexFunction{sweep}:
+  a different method ":meth:`~fipy.terms.term.Term.sweep`:
 
       >>> for sweep in range(sweeps):
       ...     eq.sweep(var=myVar, ...)

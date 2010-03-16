@@ -64,21 +64,9 @@ in the following script. Firstly, setup the parameters.
 
 Construct the mesh.
 
-.. raw:: latex
-
-   \IndexClass{Grid2D}
-
-..
-
    >>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
 
 Construct a `distanceVariable` object.
-
-.. raw:: latex
-
-   \IndexClass{DistanceVariable}
-
-..
 
    >>> var = DistanceVariable(
    ...     name = 'level set variable',
@@ -88,34 +76,16 @@ Construct a `distanceVariable` object.
 
 Initialise the `distanceVariable` to be a circular distance function.
 
-.. raw:: latex
-
-   \IndexFunction{sqrt}
-
-..
-
    >>> x, y = mesh.getCellCenters()
    >>> initialArray = sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
    >>> var.setValue(initialArray)
 
 The `advectionEquation` is constructed.
    
-.. raw:: latex
-
-   \IndexFunction{buildAdvectionEquation}
-
-..
-
    >>> advEqn = buildAdvectionEquation(
    ...     advectionCoeff=velocity)
 
 The problem can then be solved by executing a serious of time steps.
-
-.. raw:: latex
-
-   \IndexModule{viewers}
-
-..
 
    >>> if __name__ == '__main__':
    ...     viewer = Viewer(vars=var, datamin=-radius, datamax=radius)
@@ -126,14 +96,6 @@ The problem can then be solved by executing a serious of time steps.
    ...         viewer.plot()
 
 The result can be tested with the following commands.
-
-.. raw:: latex
-
-   \IndexFunction{array}
-   \IndexFunction{where}
-   \IndexFunction{allclose}
-   
-..
 
    >>> for step in range(steps):
    ...     var.updateOld()
@@ -148,12 +110,6 @@ The result can be tested with the following commands.
 
 If the `AdvectionEquation` is built with the `_HigherOrderAdvectionTerm` the result
 is more accurate,
-
-.. raw:: latex
-
-   \IndexFunction{buildHigherOrderAdvectionEquation}
-
-..
 
    >>> var.setValue(initialArray)
    >>> advEqn = buildHigherOrderAdvectionEquation(
