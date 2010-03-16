@@ -1,0 +1,114 @@
+{% extends "defindex.html" %}
+{% block body %}
+  <h1>{{ docstitle|e }}</h1>
+  <p>
+    Welcome! This is
+    {% block description %}the documentation for {{ project|e }}
+    {{ release|e }}{% if last_updated %}, last updated {{ last_updated|e }}{% endif %}{% endblock %}.
+  </p>
+  <p><a class="reference external"
+  href="documentation/glossary.html#term-fipy"><em
+  class="xref">FiPy</em></a> is an object oriented, partial differential
+  equation (PDE) solver,
+  written in <a class="reference external"
+  href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/">Python</a>,
+  based on a standard finite volume (FV) approach. The framework has been
+  developed in the <a class="reference external"
+  href="http://www.metallurgy.nist.gov/">Metallurgy Division</a> and Center
+  for Theoretical and Computational Materials Science (<a class="reference
+  external" href="http://www.ctcms.nist.gov/">CTCMS</a>), in the Materials
+  Science and Engineering Laboratory (<a class="reference external"
+  href="http://www.msel.nist.gov/">MSEL</a>) at the National Institute of
+  Standards and Technology (<a class="reference external"
+  href="http://www.nist.gov/">NIST</a>).</p>
+  <p>The solution of coupled sets of PDEs is ubiquitous to the numerical
+  simulation of science problems. Numerous PDE solvers exist, using a
+  variety of languages and numerical approaches. Many are proprietary,
+  expensive and difficult to customize. As a result, scientists spend
+  considerable resources repeatedly developing limited tools for specific
+  problems. Our approach, combining the FV method and <a class="reference
+  external"
+  href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/">Python</a>,
+  provides a tool that is extensible, powerful and freely available. A
+  significant advantage to <a class="reference external"
+  href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/">Python</a>
+  is the existing suite of tools for array calculations, sparse matrices
+  and data rendering.</p>
+  <p>The <a class="reference external"
+  href="documentation/glossary.html#term-fipy"><em
+  class="xref">FiPy</em></a> framework includes terms for transient
+  diffusion,
+  convection and standard sources, enabling the solution of arbitrary
+  combinations of coupled elliptic, hyperbolic and parabolic PDEs.
+  Currently implemented models include phase field <a class="reference
+  external"
+  href="documentation/manual/refs.bib_cited.html#boettingerreview-2002">[BoettingerReview:2002]</a>
+  <a class="reference external"
+  href="documentation/manual/refs.bib_cited.html#chenreview-2002">[ChenReview:2002]</a>
+  <a class="reference external"
+  href="documentation/manual/refs.bib_cited.html#mcfaddenreview-2002">[McFaddenReview:2002]</a>
+  treatments of polycrystalline, dendritic, and electrochemical phase
+  transformations as well as a level set treatment of the electrodeposition
+  process <a class="reference external"
+  href="documentation/manual/refs.bib_cited.html#nist-damascene-2001">[NIST:damascene:2001]</a>.</p>
+  <div class="admonition attention">
+  <p class="first admonition-title">If you use FiPy in your research, please cite:
+  <a href="_static/fipy.bib">(bibtex)</a>
+  <a href="_static/fipy.ris">(endnote)</a>
+  <a href="http://www.nist.gov/cgi-bin/get_pdf.cgi?pub_id=854461">(pdf)</a></p>
+  <p>J. E. Guyer, D. Wheeler &amp; J. A. Warren,
+  "FiPy: Partial Differential Equations with Python,"
+  <i>Computing in Science &amp; Engineering</i> <b>11</b>(3) pp. 6&mdash;15 (2009),
+  <a href="http://dx.doi.org/10.1109/MCSE.2009.52"><code>doi:10.1109/MCSE.2009.52</code></a>,
+  <a href="http://www.ctcms.nist.gov/fipy"><code>http://www.ctcms.nist.gov/fipy</code></a></p>
+  </div>
+ {% block tables %}
+   <p><strong>Parts of the documentation:</strong></p>
+   <table class="contentstable" align="center"><tr>
+     <td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto("README") }}">About FiPy {{ version }}</a><br/>
+          <span class="linkdescr">start here</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("INSTALLATION") }}">Installation</a><br/>
+          <span class="linkdescr">how to install FiPy on different platforms</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("examples/README") }}">Examples</a><br/>
+          <span class="linkdescr">examples of usage</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("documentation/FAQ") }}">FAQs</a><br/>
+          <span class="linkdescr">frequently asked questions (with answers!)</span></p>
+     </td><td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto("documentation/numerical/numerical") }}">Numerical Approach</a><br/>
+          <span class="linkdescr">background on numerical solutions to PDEs</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("documentation/design") }}">FiPy Design</a><br/>
+          <span class="linkdescr">FilosoPhy of FiPy</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("documentation/reference") }}">FiPy API</a><br/>
+          <span class="linkdescr">reference for Python programmers</span></p>
+     </td></tr>
+   </table>
+
+   <p><strong>Indices and tables:</strong></p>
+   <table class="contentstable" align="center"><tr>
+     <td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto("modindex") }}">Global Module Index</a><br/>
+          <span class="linkdescr">quick access to all modules</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("genindex") }}">General Index</a><br/>
+          <span class="linkdescr">all functions, classes, terms</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("documentation/glossary") }}">Glossary</a><br/>
+          <span class="linkdescr">the most important terms explained</span></p>
+     </td><td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto("search") }}">Search page</a><br/>
+          <span class="linkdescr">search this documentation</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("documentation/contents") }}">Complete Table of Contents</a><br/>
+          <span class="linkdescr">lists all sections and subsections</span></p>
+     </td></tr>
+   </table>
+
+   <p><strong>Meta information:</strong></p>
+   <table class="contentstable" align="center"><tr>
+     <td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto("documentation/BUGS") }}">Reporting bugs</a></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto("documentation/MAIL") }}">Mailing List</a></p>
+     </td><td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto("LICENSE") }}">License</a></p>
+     </td></tr>
+   </table>
+ {% endblock %}
+{% endblock %}
