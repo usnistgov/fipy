@@ -148,13 +148,13 @@ class _AdvectionTerm(Term):
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, solver):        
         if solver and not solver._canSolveAssymetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
         from fipy.solvers import LinearLUSolver
-        return solver or LinearLUSolver(*args, **kwargs)
+        return solver or LinearLUSolver()
 
 
 def _test(): 

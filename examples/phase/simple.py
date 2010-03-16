@@ -336,8 +336,8 @@ Kobayashi:
     ...   + ImplicitSourceTerm(coeff = S1)
     
 .. note:: Because `mPhi` is a variable field, the quantities `(mPhi > 0)`
-   and `(mPhi < 0)` evaluate to variable *fields* of `True` and `False`, 
-   instead of single boolean values.
+   and `(mPhi < 0)` evaluate to variable *fields* of ones and zeroes, instead of 
+   simple boolean values.
 
 This expression converges to the same value given by the explicit
 relaxation approach, but in only 8 sweeps (note that because there is no

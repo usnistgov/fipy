@@ -32,5 +32,5 @@
  # ###################################################################
  ##
 
-from numMesh.periodicGrid2D import PeriodicGrid2D, PeriodicGrid2DLeftRight, PeriodicGrid2DTopBottom
+from numMesh.periodicGrid2D import PeriodicGrid2D
 

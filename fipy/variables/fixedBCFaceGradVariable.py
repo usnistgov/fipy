@@ -27,7 +27,7 @@ class _FixedBCFaceGradVariable(FaceVariable):
         
         tangents1 = self.mesh._getFaceTangents1()
         tangents2 = self.mesh._getFaceTangents2()
-        cellGrad = self.var.getGrad().getValue()
+        cellGrad = self.var.getGrad().getNumericValue()
         
         grad1 = take(cellGrad, id1, axis=1)
         grad2 = take(cellGrad, id2, axis=1)
@@ -40,9 +40,10 @@ class _FixedBCFaceGradVariable(FaceVariable):
         T1 = (t1grad1 + t1grad2) / 2.
         T2 = (t2grad1 + t2grad2) / 2.
 
-        T1 = (id1 == id2) * T1
-        T2 = (id1 == id2) * T2
+        T1 = where(id1 == id2, 0, T1)
 
+        T2 = where(id1 == id2, 0, T2)
+        
         return normals * N + tangents1 * T1 + tangents2 * T2
 
     def _calcValueInline(self):

@@ -41,35 +41,25 @@ from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
 class MultilevelDDPreconditioner(Preconditioner):
     """
-    Multilevel preconditioner for Trilinos solvers. A classical smoothed
-    aggregation-based 2-level domain decomposition.
+    Multilevel preconditioner for Trilinos solvers using Aztec precondtioners
+    (DomDecomp, ILU(fill=0)) as smoothers.
+    
     """
+    def __init__(self, levels=10):
+        """
+        Initialize the multilevel preconditioner
+
+        - `levels`: Maximum number of levels
+        """
+        self.levels = levels
 
     def _applyToSolver(self, solver, matrix):
         if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
             return
         
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
-
-        self.Prec.SetParameterList({"output": 0,
-                                    "max levels" : 2,
-                                    "prec type" : "MGV",
-                                    "increasing or decreasing" : "increasing",
-                                    "aggregation: type" : "METIS",
-                                    "aggregation: local aggregates" : 1,
-                                    "aggregation: damping factor" : 4. / 3.,
-                                    "eigen-analysis: type" : "power-method",
-                                    "eigen-analysis: iterations" : 20,
-                                    "smoother: sweeps" : 1,
-                                    "smoother: pre or post" : 'both',
-                                    "smoother: type" : "Aztec",
-                                    "smoother: Aztec as solver" : False,
-                                    "coarse: type" : 'Amesos-KLU',
-                                    "coarse: max size" : 128
-                                    })
-
+        self.Prec.SetParameterList({"output": 0, "smoother: type" : "Aztec"})
         self.Prec.ComputePreconditioner()
-        
         solver.SetPrecOperator(self.Prec)
         
 

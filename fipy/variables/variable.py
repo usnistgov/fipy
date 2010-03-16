@@ -173,11 +173,11 @@ class Variable(object):
             >>> print numerix.array(v)
             [2 3]
         
-        A dimensional `Variable` will convert to the numeric value in its base units
+        A dimensional `Variable` will convert to the numeric value in the current units
     
-            >>> v = Variable(value=[2,3], unit="mm")
+            >>> v = Variable(value=[2,3], unit="m")
             >>> numerix.array(v)
-            array([ 0.002,  0.003])
+            array([2, 3])
         """
 
         return numerix.array(self.getValue(), t)
@@ -690,10 +690,6 @@ class Variable(object):
             self.requiredVariables.append(var)
             var._requiredBy(self)
             self._markStale()
-        else:
-            from fipy.variables.constant import _Constant
-            var = _Constant(value=var)
-            
         return var
             
     def _requiredBy(self, var):
@@ -937,11 +933,7 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: b-a, other)
             
     def __mul__(self, other):
-        from fipy.terms.term import Term
-        if isinstance(other, Term):
-            return other * self
-        else:
-            return self._BinaryOperatorVariable(lambda a,b: a*b, other)
+        return self._BinaryOperatorVariable(lambda a,b: a*b, other)
 
     __rmul__ = __mul__
             
@@ -979,16 +971,6 @@ class Variable(object):
         
         fabs = abs
         return self._UnaryOperatorVariable(lambda a: fabs(a))
-
-    def __invert__(self):
-        """
-        Returns logical "not" of the `Variable`
-        
-            >>> a = Variable(value=True)
-            >>> print ~a
-            False
-        """
-        return self._UnaryOperatorVariable(lambda a: ~a)
 
     def __lt__(self,other):
         """
