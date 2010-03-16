@@ -401,7 +401,7 @@ and again iterate to equilibrium
 ...     if __name__ == '__main__':    
 ...         viewer.plot()
 
-.. image:: quaternary.pdf
+.. image:: quaternary.*
    :width: 90%
    :align: center
 
