@@ -117,7 +117,7 @@ If we are running interactively, we'll want a viewer to see the results
 ...     raw_input("Initial condition. Press <return> to proceed...")
 
 .. image:: simple/step.*
-   :width: 90%
+   :width: 50%
    :align: center
 
 We choose the parameter values,
@@ -192,7 +192,7 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
 ...     raw_input("Fully explicit source. Press <return> to proceed...")
 
 .. image:: simple/explicit.*
-   :width: 90%
+   :width: 50%
    :align: center
 
 On inspection, we can see that this occurs because, for our step-function initial condition, 
@@ -226,7 +226,7 @@ After 13 time steps, the solution has converged to the analytical solution
 ...     raw_input("Relaxation, explicit. Press <return> to proceed...")
 
 .. image:: simple/relaxation.*
-   :width: 90%
+   :width: 50%
    :align: center
 
 .. note:: The solution is only found accurate to
