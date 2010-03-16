@@ -284,7 +284,7 @@ number of related classes.
 
 .. figure:: objects.*
    
-   Primary object relationships in :term:`FiPy`.
+   Primary object relationships in `FiPy`.
 
 A :class:`Mesh` object is composed of :class:`Cell` objects.  Each
 :class:`Cell` is defined by its bounding :class:`Face` objects and each
