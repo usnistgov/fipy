@@ -10,7 +10,11 @@ Glossary
       See http://www.ctcms.nist.gov/fipy.
 
    gist
-      Another name for :term:`Pygist`
+      Another name for :term:`Pygist`.
+
+   gnuplot
+      A popular open-source plotting program.
+      See http://gnuplot.sorceforge.net/.
 
    Gmsh
       A free and Open Source 3D (and 2D!) finite element grid generator. It
@@ -45,6 +49,20 @@ Glossary
       facilities. See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy.
 
+   Pygist
+      The :term:`Pygist` package can be used to display simulation results. It
+      displays both 1D X-Y type plots and 2D contour plots for both
+      structured and unstructured data. It does not display 3D
+      data. Although stated as working on Windows, it does not seem to do a
+      good job of rendering on this platform. :term:`Pygist` works fine on other
+      common platforms. :term:`Pygist` no longer seems to be under development, but
+      is still recommended as a fast light weight alternative to
+      :term:`Matplotlib`.
+
+   Pyrex
+      A mechanism for mixing C and Python code.
+      See http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/.
+
    PySparse
       The :mod:`pysparse` :term:`Python` package provides sparse matrix
       storage, solvers, and linear algebra routines. See
@@ -55,15 +73,9 @@ Glossary
       written in. See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/.
 
-   Pygist
-      The :term:`Pygist` package can be used to display simulation results. It
-      displays both 1D X-Y type plots and 2D contour plots for both
-      structured and unstructured data. It does not display 3D
-      data. Although stated as working on Windows, it does not seem to do a
-      good job of rendering on this platform. :term:`Pygist` works fine on other
-      common platforms. :term:`Pygist` no longer seems to be under development, but
-      is still recommended as a fast light weight alternative to
-      :term:`Matplotlib`.
+   ScientificPython
+      A collection of useful utilities for scientists. See 
+      http://dirac.cnrs-orleans.fr/plone/software/scientificpython.
 
    SciPy
       The :mod:`scipy` :term:`Python` pacakge provides a wide range of

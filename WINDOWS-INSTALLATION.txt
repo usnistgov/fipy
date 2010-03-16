@@ -82,7 +82,7 @@ MayaVi
 
 http://mayavi.sourceforge.net
 
-:term:`MayaVi`_ is a requirement if you wish to view 3D problems or improve
+:term:`MayaVi` is a requirement if you wish to view 3D problems or improve
 the viewing capabilities of the superfill examples.  Download the source
 code and run ``python setup.py install`` to install from the python
 source in order for ``import mayavi`` to work at the command line.

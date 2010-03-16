@@ -73,7 +73,9 @@ release = fipy.__version__
 #today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-#unused_docs = []
+unused_docs = ['documentation/RESOURCES',
+               'documentation/TODOLIST', 
+               'documentation/VERSION']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.

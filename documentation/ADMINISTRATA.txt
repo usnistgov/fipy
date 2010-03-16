@@ -211,13 +211,13 @@ the web site to CTCMS:
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
-Make an announcement to `mailto:fipy@nist.gov`_
-
-.. fipy@nist.gov: mailto:fipy@nist.gov
+Make an announcement to `fipy@nist.gov`_
 
 Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
 
-.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
+.. _Bitten: http://matforge.org/fipy/build
+.. _fipy@nist.gov: mailto:fipy@nist.gov
+.. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
 
 ==========================================
 Making a Windows Distribution for Pysparse

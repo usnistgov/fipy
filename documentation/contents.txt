@@ -14,11 +14,9 @@ FiPy Contents
    ADMINISTRATA
    CREDITS
    EFFICIENCY
-   RESOURCES
-   TALKS
-   TODOLIST
-   VERSION
+   PUBLICATIONS
    VKML
    ../DISCLAIMER
+   manual
    manual/refs.bib_cited
 
