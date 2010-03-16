@@ -89,17 +89,6 @@ Another comprehensive Python package installer for scientific applications,
 presently only available for Windows_. See :ref:`WINDOWS-INSTALLATION` for
 more information.
 
-Platform-Specific Instructions
-==============================
-
-.. toctree::
-   :maxdepth: 2
-
-   MACOSX-INSTALLATION
-   WINDOWS-INSTALLATION
-   documentation/SVN
-
-
 ----------
 Privileges
 ----------
@@ -631,9 +620,21 @@ indicators, :term:`FiPy` will default to using :term:`PySparse` if it is present
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
 
+------------------------------
+Platform-Specific Instructions
+------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   MACOSX-INSTALLATION
+   WINDOWS-INSTALLATION
+   documentation/SVN
+
+
+
 .. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
 .. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 
-.. include:: documentation/VERSION.txt

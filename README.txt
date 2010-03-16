@@ -88,13 +88,17 @@ Support
 You can communicate with the :term:`FiPy` developers and with other users via our
 `mailing list`_ and we welcome you to use the `tracking
 system`_ for bugs, support requests, feature requests and
-patch submissions [FiPyMailingList,FiPyBugTracker]_. We welcome collaborative efforts on this project.
+patch submissions [FiPyMailingList]_ [FiPyBugTracker]_. We welcome collaborative efforts on this project.
 
 :term:`FiPy` is a member of MatForge_, a project of the `Materials Digital Library
 Pathway`_. This National Science Foundation funded service provides
 management of our public source code repository, our bug tracking system, and
 a "wiki" space for public contributions of code snippets, discussions, and
 tutorials.
+
+.. toctree::
+
+   documentation/MAIL
 
 ------------------------
 Conventions and Notation
