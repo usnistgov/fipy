@@ -53,9 +53,9 @@ These examples can be used in at least four ways:
 
      
 In addition to those presented in this manual, there are dozens of other
-files in the ``examples/`` directory (all with "``input``" in their title),
-that demonstrate other uses of FiPy.  If these examples do not help you
-construct your own problem scripts, please `contact us`_.
+files in the :file:`examples/` directory, that demonstrate other uses of FiPy.
+If these examples do not help you construct your own problem scripts,
+please `contact us`_.
 
 .. toctree::
    :maxdepth: 2
@@ -67,6 +67,7 @@ construct your own problem scripts, please `contact us`_.
    cahnHilliard/index
    flow/index
    updating/index
+
 
 .. _Python:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _doctest:        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/doc/current/lib/module-doctest.html
