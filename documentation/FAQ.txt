@@ -78,8 +78,8 @@ constant vector in the form of a Python list or tuple,
    \Class{VanLeerConvectionTerm} not mentioned and no discussion of
    explicit forms.
 
-How do I represent a diffusion term $\nabla \cdot \left( \Gamma_1 \nabla \phi \right)$?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I represent a diffusion term :math:`\nabla \cdot \left( \Gamma_1 \nabla \phi \right)`?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Either
 
@@ -95,23 +95,23 @@ theoretically possible to create an explicit diffusion term with
 
     >>> (Gamma1 * phi.getFaceGrad()).getDivergence()
 
-Unfortunately, in this form, any boundary conditions on $\phi$ will not be
+Unfortunately, in this form, any boundary conditions on :math:`\phi` will not be
 accounted for.
 
 :label:`FAQ-higherOrderDiffusion`
 
-How do I represent a term $\nabla^4 \phi$ or $\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(  \Gamma_2 \nabla \phi\right) \right) \right) $ such as for  Cahn-Hilliard? 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I represent a term :math:`\nabla^4 \phi` or :math:`\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(  \Gamma_2 \nabla \phi\right) \right) \right)` such as for  Cahn-Hilliard? 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
     >>> ImplicitDiffusionTerm(coeff = (Gamma1, Gamma2))
 
 The number of elements supplied for \verb|coeff| determines the
 order of the term.
 
-Is there a way to model an anisotropic diffusion process or more generally to represent the diffusion coefficient as a tensor so that the diffusion term takes the form $\partial_i \Gamma_{ij}\partial_j \phi$?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Is there a way to model an anisotropic diffusion process or more generally to represent the diffusion coefficient as a tensor so that the diffusion term takes the form :math:`\partial_i \Gamma_{ij}\partial_j \phi`?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Terms of the form $\partial_i \Gamma_{ij}\partial_j \phi$ can
+Terms of the form :math:`\partial_i \Gamma_{ij}\partial_j \phi` can
 be posed in \FiPy{} by using a list, tuple, rank 1 or rank 2
 \Class{FaceVariable} to represent a vector or tensor diffusion
 coefficient.  For example, if we wished to represent a
@@ -120,7 +120,7 @@ x-coordinate axis, we could write the term as,
 
     >>> DiffusionTerm([[[5, 0], [0, 1]]])
 
-which represents $5 \partial_x^2 + \partial_y^2$.  Notice that
+which represents :math:`5 \partial_x^2 + \partial_y^2`.  Notice that
 the tensor, written in the form of a list, is contained within
 a list. This is because the first index of the list refers to
 the order of the term not the first index of the tensor (see
@@ -139,13 +139,13 @@ number of cases are interpreted below.
         >>> DiffusionTerm([5, 1])
 
     This simply represents a fourth order isotropic diffusion
-    term of the form $5 \left( \partial_x^2 + \partial_y^2
-    \right)^2$.
+    term of the form :math:`5 \left( \partial_x^2 + \partial_y^2
+    \right)^2`.
 
         >>> DiffusionTerm([[1, 0], [0, 1]])
 
     Nominally, this should represent a fourth order diffusion
-    term of the form $\partial_x^2 \partial_y^2$, but \FiPy{}
+    term of the form :math:`\partial_x^2 \partial_y^2`, but \FiPy{}
     does not currently support anisotropy for higher order
     diffusion terms so this may well throw an error or give
     anomalous results.
@@ -155,10 +155,10 @@ number of cases are interpreted below.
 
     This represents an anisotropic diffusion coefficient that
     varies spatially so that the term has the form 
-    $\partial_x (x^2 \partial_x + x y \partial_y)
+    :math:`\partial_x (x^2 \partial_x + x y \partial_y)
     + \partial_y (-x y \partial_x - y^2 \partial_y)
     \equiv x \partial_x - y \partial_y + x^2 \partial_x^2 - y^2
-    \partial_y^2$.
+    \partial_y^2`.
 
     Generally, anisotropy is not conveniently aligned
     along the coordinate axes; in these cases, it is necessary
@@ -172,10 +172,10 @@ What if the term isn't one of those?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Any term that cannot be written in one of the previous
-forms is considered a source $S_{\phi}$. An explicit
+forms is considered a source :math:`S_{\phi}`. An explicit
 source is written in Python essentially as it appears in
-mathematical form, \emph{e.g.}, $3\kappa^2 + b \sin
-\theta$ would be written
+mathematical form, \emph{e.g.}, :math:`3\kappa^2 + b \sin
+\theta` would be written
 
     >>> 3 * kappa**2 + b * sin(theta)
     
@@ -191,7 +191,7 @@ mathematical form, \emph{e.g.}, $3\kappa^2 + b \sin
     
 If, however, the source depends on the variable that is being solved for,
 it can be advantageous to linearize the source and cast part of it as an
-implicit source term, \emph{e.g.}, $3\kappa^2 + \phi \sin \theta$
+implicit source term, \emph{e.g.}, :math:`3\kappa^2 + \phi \sin \theta`
 might be written as
 
     >>> 3 * kappa**2 + ImplicitSourceTerm(coeff=sin(theta))
@@ -207,12 +207,14 @@ term should be treated as a source.
 How do I represent a diffusive source?
 ''''''''''''''''''''''''''''''''''''''
 
-If the governing equation for $\phi$ is
-\[
-    \frac{\partial \phi}{\partial t} 
-    = \nabla\cdot\left( D_1 \nabla \phi\right)
-    + \nabla\cdot\left( D_2 \nabla \xi\right)
-\]
+If the governing equation for :math:`\phi` is
+
+.. math::
+
+   \frac{\partial \phi}{\partial t} 
+   = \nabla\cdot\left( D_1 \nabla \phi\right)
+   + \nabla\cdot\left( D_2 \nabla \xi\right)
+
 then the first term is a \Class{TransientTerm} and the second term is a
 \Class{DiffusionTerm}, but the third term is simply an explicit source,
 which is written in Python as
@@ -226,38 +228,42 @@ to \verb+getFaceGrad()+ and \verb+getDivergence()+.
 
    We use \verb|getFaceGrad()|, rather than \verb|getGrad()|, in order to
    obtain a second-order spatial discretization of the diffusion term in
-   $\xi$, consistent with the matrix that is formed by
-   \Class{DiffusionTerm} for $\phi$.
+   :math:`\xi`, consistent with the matrix that is formed by
+   \Class{DiffusionTerm} for :math:`\phi`.
 
 How do I represent a convective source?
 '''''''''''''''''''''''''''''''''''''''
 
-The convection of an independent field $\xi$ as in
-\[
-    \frac{\partial \phi}{\partial t} 
-    = \nabla\cdot
-    \left(
-        \vec{u} \xi
-    \right)
-\]
+The convection of an independent field :math:`\xi` as in
+
+.. math::
+
+   \frac{\partial \phi}{\partial t} 
+   = \nabla\cdot
+   \left(
+       \vec{u} \xi
+   \right)
+
 can be rendered as
 
     >>> (u * xi.getArithmeticFaceValue()).getDivergence()
 
-when $\vec{u}$ is a rank-1 \Class{FaceVariable} (preferred) or as
+when :math:`\vec{u}` is a rank-1 \Class{FaceVariable} (preferred) or as
 
     >>> (u * xi).getDivergence()
 
-if $\vec{u}$ is a rank-1 \Class{CellVariable}.
+if :math:`\vec{u}` is a rank-1 \Class{CellVariable}.
 
 How do I represent a transient source?
 ''''''''''''''''''''''''''''''''''''''
 
-The time-rate-of change of an independent variable $\xi$, such as in
-\[
-    \frac{\partial (\rho_1 \phi)}{\partial t}
-    = \frac{\partial (\rho_2 \xi)}{\partial t}
-\]
+The time-rate-of change of an independent variable :math:`\xi`, such as in
+
+.. math::
+
+   \frac{\partial (\rho_1 \phi)}{\partial t}
+   = \frac{\partial (\rho_2 \xi)}{\partial t}
+
 does not have an abstract form in \FiPy{} and should be discretized
 directly, in the manner of Equation~\eqref{eqn:num:tra}, as
 
@@ -270,16 +276,18 @@ What if my term involves the dependent variable, but not where \FiPy{} puts it?
     
 Frequently, viewing the term from a different perspective will allow it to
 be cast in one of the canonical forms. For example, the third term in
-\[
-    \frac{\partial \phi}{\partial t} 
-    = \nabla\cdot\left( D_1 \nabla \phi\right)
-    + \nabla\cdot\left( D_2 \phi \nabla \xi\right)
-\]
-might be considered as the diffusion of the independent variable $\xi$ with
-a mobility $D_2\phi$ that is a function of the dependent variable $\phi$.
+
+.. math::
+
+   \frac{\partial \phi}{\partial t} 
+   = \nabla\cdot\left( D_1 \nabla \phi\right)
+   + \nabla\cdot\left( D_2 \phi \nabla \xi\right)
+
+might be considered as the diffusion of the independent variable :math:`\xi` with
+a mobility :math:`D_2\phi` that is a function of the dependent variable :math:`\phi`.
 For \FiPy{}'s purposes, however, this term represents the convection of
-$\phi$, with a velocity $D_2\nabla\xi$, due to the counter-diffusion of
-$\xi$, so
+:math:`\phi`, with a velocity :math:`D_2\nabla\xi`, due to the counter-diffusion of
+:math:`\xi`, so
 
     >>> diffTerm = DiffusionTerm(coeff = D1)
     >>> convTerm = <Specific>ConvectionTerm(coeff = D2 * xi.getFaceGrad(), 
@@ -570,9 +578,13 @@ and so they take a \Class{FaceVariable} coefficient.
    undesirable consequences, however. For one thing, the 
    arithmetic face average of a non-linear function is not the 
    same as the same non-linear function of the average argument, 
-   \emph{e.g.}, for $f(x) = x^2$,
-   \[ f(\frac{1+2}{2}) = \frac{9}{4} \neq 
-   \frac{f(1) + f(2)}{2} = \frac{5}{2} \]
+   \emph{e.g.}, for :math:`f(x) = x^2`,
+
+   .. math::
+
+      f(\frac{1+2}{2}) = \frac{9}{4} \neq 
+      \frac{f(1) + f(2)}{2} = \frac{5}{2} 
+
    This distinction is not generally important for smoothly
    varying functions, but can dramatically affect the solution
    when sharp changes are present.  Also, for many problems, such
@@ -597,9 +609,14 @@ What does the \Class{FixedFlux} boundary condition actually represent?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In \FiPy{} a \Class{FixedFlux} boundary condition object represents the
-quantity $$ \Gamma \vec{n} \cdot \nabla \phi - \vec{n} \cdot \vec{u} \phi
-$$ on a given boundary edge with $\vec{n}$ pointing out of the boundary.
-The quantity $\Gamma$ represents the diffusion coefficient and $\vec{u}$
+quantity 
+
+.. math::
+
+   \Gamma \vec{n} \cdot \nabla \phi - \vec{n} \cdot \vec{u} \phi
+
+on a given boundary edge with :math:`\vec{n}` pointing out of the boundary.
+The quantity :math:`\Gamma` represents the diffusion coefficient and :math:`\vec{u}`
 represents the convection coefficient for a general convection-diffusion
 equation of the type given in Eq.~\eqref{eqn:num:gen}. See
 Example~\ref{sec:Examples:convection:robin} for a usage case.
@@ -722,13 +739,13 @@ How do I apply spatially varying boundary conditions?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The use of spatial varying boundary conditions is best demonstrated with an
-example. Given a 2D equation in the domain $0 < x < 1$ and $0 < y < 1$ with
+example. Given a 2D equation in the domain :math:`0 < x < 1` and :math:`0 < y < 1` with
 boundary conditions,
 \begin{eqnarray}
   \phi =& xy \; & \text{on $x>1/2$ and $y>1/2$} \\
   \vec{n} \cdot \vec{F} =& 0 \;& \text{elsewhere}
 \end{eqnarray}
-where $\vec{F}$ represents the flux. The boundary conditions in \FiPy{} can
+where :math:`\vec{F}` represents the flux. The boundary conditions in \FiPy{} can
 be written with the following code,
 
     >>> x, y = mesh.getFaceCenters()
@@ -777,7 +794,7 @@ What does this error message mean?
   more locations.}''
     This not-so-helpful error message could mean a number of things, but
     the most likely explanation is that the solution has become unstable
-    and is diverging to $\pm\infty$. This can be caused by taking too large
+    and is diverging to :math:`\pm\infty`. This can be caused by taking too large
     a timestep or by using explicit terms instead of implicit ones.
         
   ``\texttt{repairing catalog by removing key}''
@@ -791,8 +808,6 @@ What does this error message mean?
     This is neither an error nor a warning. It's just a sloppy 
     message left in \SciPy{}:
     \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
-
-x
 
 \label{FAQ-FlagsAndEnvironmentVariables}
 
@@ -810,7 +825,6 @@ You can add any of the following flags after the name of a
 script you call from the command line
 
   \texttt{--inline} 
-
     Causes many mathematical operations to be performed in C, rather than
     Python, for improved performance. Requires the \SciPy{} \weave{}
     package.
