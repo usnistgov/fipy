@@ -52,8 +52,8 @@ less efficient and requires more storage (a larger matrix band width)
 than the CC-FVM. However, the mesh topology does not have the same
 restrictions as the CC-FVM. :term:`FiPy` does not have a VC-FVM capability.
 
-%Future releases of :term:`FiPy` will have both
-%the CC-FVM and VC-FVM capabilities.
+.. Future releases of :term:`FiPy` will have both
+   the CC-FVM and VC-FVM capabilities.
 
 .. _fig:vc-cc-fv:
 
@@ -184,7 +184,7 @@ equation to a set of discrete linear equations that can then be solved
 to obtain the value of the dependent variable at each CV center. This
 results in a sparse linear system that requires an efficient iterative
 scheme to solve. The iterative schemes available to :term:`FiPy` are
-currently encapsulated in the \href{#id5}{spmatrix} suite of solvers
+currently encapsulated in the :term:`PySparse` suite of solvers
 and include most common solvers such as the conjugate gradient method
 and LU decomposition. There are plans to include other solver suites
 that are compatible with \Python{}.
