@@ -1,5 +1,9 @@
+====================================
+Theoretical and Numerical Background
+====================================
+
 This chapter describes the numerical methods used to solve equations
-in the \FiPy{} programming environment. \FiPy{} uses the finite volume
+in the |FiPy| programming environment. |FiPy| uses the finite volume
 method (FVM) to solve coupled sets of partial differential equations
 (PDEs). For a good introduction to the FVM see Nick Croft's PhD
 thesis~\cite{croftphd}, Patanker~\cite{patanker} or Versteek and
@@ -11,7 +15,7 @@ approximated with linear or higher order interpolations. The
 derivatives in each term of the equation are satisfied with simple
 approximate interpolations in a process known as discretization. The
 (FVM) is a popular discretization technique employed to solve coupled
-PDEs used in many application areas (\emph{e.g.} Fluid Dynamics).
+PDEs used in many application areas (*e.g.*, Fluid Dynamics).
 
 The FVM can be thought of as a subset of the Finite Element Method
 (FEM), just as the Finite Difference Method (FDM) is a subset of the FVM. A
@@ -21,8 +25,11 @@ FV cells, i.e., functions equal to unity~\cite{mattiussi:1997}. Analogously,
 the the discretization of equations with the FVM reduces to the FDM on
 Cartesian grids.
 
-\input numerical/equation
-\input numerical/discret
-\input numerical/scheme
+.. toctree::
+   :hidden:
+
+   equation
+   discret
+   scheme
 
 
