@@ -1,3 +1,5 @@
+.. _FAQ:
+
 Frequently Asked Questions
 ==========================
 
@@ -598,12 +600,12 @@ How do I represent boundary conditions?
 ---------------------------------------
 
 What is a :class:`FixedValue` boundary condition?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This is simply a Dirichlet boundary condition by another name.
 
 What does the :class:`FixedFlux` boundary condition actually represent?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In |FiPy| a :class:`FixedFlux` boundary condition object represents the
 quantity 
@@ -794,9 +796,7 @@ What does this error message mean?
    :class:`CellVariable` when |FiPy| was expecting a :class:`FaceVariable`
    (or vice versa).
 
-``MA.MA.MAError: Cannot automatically
-convert masked array to Numeric because data is masked in one or
-more locations.``
+``MA.MA.MAError: Cannot automatically convert masked array to Numeric because data is masked in one o more locations.``
   This not-so-helpful error message could mean a number of things, but
   the most likely explanation is that the solution has become unstable
   and is diverging to :math:`\pm\infty`. This can be caused by taking too large

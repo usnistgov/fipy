@@ -6,6 +6,7 @@ Introduction
    :maxdepth: 3
 
    ../README
+   MAIL
    installationIndex
    numerical/numerical
    design

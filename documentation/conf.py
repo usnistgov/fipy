@@ -95,7 +95,8 @@ pygments_style = 'sphinx'
 #modindex_common_prefix = []
 
 autosummary_generate = ['examples/diffusion/index.txt',
-                        'examples/convection/index.txt']
+                        'examples/convection/index.txt',
+                        'examples/phase/index.txt']
 
 # -- Options for HTML output ---------------------------------------------------
 

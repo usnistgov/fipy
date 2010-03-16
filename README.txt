@@ -41,7 +41,7 @@ http://www.ctcms.nist.gov/fipy/.
 Even if you don't read manuals...
 ---------------------------------
 
-...please read |INSTALLATION-txt| and |the FAQ|. 
+...please read :ref:`INSTALLATION` and the :ref:`FAQ`. 
 
 --------------------------------
 What's new in version |VERSION|?
@@ -50,22 +50,22 @@ What's new in version |VERSION|?
 .. warning::
 
    |FiPy| 2 brings unavoidable syntax changes. Please see
-   |examples.update1_0to2_0| for guidance on the changes that you will need
+   :mod:`examples.update1_0to2_0` for guidance on the changes that you will need
    to make to your |FiPy| 1.x scripts.
 
 The significant changes since version 1.2 are:
 
-- ``CellVariable`` and ``FaceVariable`` objects can hold values of any 
+- :class:`CellVariable` and :class:`FaceVariable` objects can hold values of any 
   rank.
 
-- Much simpler syntax for specifying ``Cells`` for initial conditions and 
-  ``Faces`` for boundary conditions.
+- Much simpler syntax for specifying :class:`Cells`\s for initial conditions and 
+  :class:`Face`\s for boundary conditions.
 
 - Automated determination of the Peclet number and partitioning of 
-  ``ImplicitSourceTerm`` coefficients between the matrix diagonal and the
+  :class:`ImplicitSourceTerm` coefficients between the matrix diagonal and the
   right-hand-side-vector.
 
-- Simplified ``Viewer`` syntax.
+- Simplified :class:`Viewer` syntax.
 
 - Support for the `Trilinos solvers`_.
 
@@ -77,7 +77,7 @@ The significant changes since version 1.2 are:
 Download and Installation
 -------------------------
 
-Please refer to |INSTALLATION-txt| for details on download and
+Please refer to :ref:`INSTALLATION` for details on download and
 installation. |FiPy| can be redistributed and/or modified
 freely, provided that any derivative works bear some notice that they
 are derived from it, and any modified versions bear some notice that
@@ -104,7 +104,7 @@ Conventions and Notation
 
 |FiPy| is driven by Python_ script files than you can view or modify in any
 text editor.  |FiPy| sessions are invoked from a command-line shell, such
-as ``tcsh`` or ``bash``.
+as :command:`tcsh` or :command:`bash`.
 
 Throughout, text to be typed at the keyboard will appear ``like this``.
 Commands to be issued from an interactive shell will appear::
@@ -143,16 +143,16 @@ When references are made to file system paths, it is assumed that the
 current working directory is the |FiPy| distribution directory, refered to
 as the "base directory", such that::
 
-    examples/diffusion/steadyState/mesh1D/input.py
+    examples/diffusion/steadyState/mesh1D.py
 
 will correspond to, *e.g.*::
 
-    /some/where/FiPy-1.0/examples/diffusion/steadyState/mesh1D/input.py
+    /some/where/FiPy-X.Y/examples/diffusion/steadyState/mesh1D.py
 
 Paths will always be rendered using POSIX conventions (path elements
 separated by "``/``").  Any references of the form::
 
-    examples.diffusion.steadyState.mesh1D.input
+    examples.diffusion.steadyState.mesh1D
 
 are in the Python_ module notation and correspond to the equivalent POSIX
 path given above.
@@ -168,8 +168,6 @@ or a
 .. warning::
 
    to indicate something that could cause serious problems.
-
-.. include::    documentation/MAIL.txt
 
 
 
@@ -190,11 +188,6 @@ or a
 .. include:: documentation/VERSION.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
-.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
-.. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
-.. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
-
-.. |examples.update1_0to2_0| replace:: |html1to2| |latex1to2|
 
 .. |citePython| raw:: latex
 
