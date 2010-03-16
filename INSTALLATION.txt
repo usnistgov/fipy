@@ -509,10 +509,10 @@ SciPy
 
 http://www.scipy.org/
 
-Significantly improved performance has been achieved with the
-judicious use of C language inlining, via the :mod:`scipy.weave` module of the
-:term:`SciPy` package. `SciPy download instructions`_ 
-are available <http://www.scipy.org/Download>. We recommend version 0.5.2 or greater.
+Significantly improved performance has been achieved with the judicious use
+of C language inlining, via the :mod:`scipy.weave`. `SciPy download
+instructions`_ are available <http://www.scipy.org/Download>. We recommend
+version 0.5.2 or greater.
 
 .. note:: 
 
