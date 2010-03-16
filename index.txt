@@ -11,7 +11,7 @@ Welcome to FiPy's documentation!
 
    documentation/introduction
    examples/README
-   documentation/GLOSSARY
+   documentation/glossary
 
 * :ref:`genindex`
 * :ref:`modindex`
