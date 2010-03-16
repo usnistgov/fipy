@@ -9,7 +9,7 @@ Welcome to FiPy's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    documentation/introduction
    documentation/examples

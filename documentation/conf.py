@@ -182,7 +182,7 @@ latex_documents = [
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
-#latex_use_parts = False
+latex_use_parts = True
 
 # Additional stuff for the LaTeX preamble.
 #latex_preamble = ''

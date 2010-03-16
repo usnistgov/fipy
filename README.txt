@@ -169,6 +169,10 @@ or a
 
    to indicate something that could cause serious problems.
 
+.. include::    documentation/MAIL.txt
+
+
+
 .. _MSEL:                 http://www.msel.nist.gov/
 .. _CTCMS:                http://www.ctcms.nist.gov/
 .. _Metallurgy Division:  http://www.metallurgy.nist.gov/
