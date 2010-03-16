@@ -6,8 +6,8 @@ Introduction
    :maxdepth: 3
 
    ../README
-   MAIL
    ../INSTALLATION
    numerical/index
    design
    FAQ
+   glossary
