@@ -902,3 +902,5 @@ Please post your question to the
 `mailing list <http://www.ctcms.nist.gov/fipy/mail.html>`_
 \cite{FiPyMailingList} or
 `file a Tracker request <http://sourceforge.net/tracker/?group_id=118428>`_ \cite{FiPyBugTracker}.
+
+.. |FiPy| replace:: *FiPy*
