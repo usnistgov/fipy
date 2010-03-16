@@ -100,7 +100,8 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/phase/index.txt',
                         'examples/levelSet/index.txt',
                         'examples/cahnHilliard/index.txt',
-                        'examples/flow/index.txt']
+                        'examples/flow/index.txt',
+                        'examples/updating/index.txt']
 
 # -- Options for HTML output ---------------------------------------------------
 

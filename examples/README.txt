@@ -66,7 +66,7 @@ construct your own problem scripts, please `contact us`_.
    levelSet/index
    cahnHilliard/index
    flow/index
-   updating
+   updating/index
 
 .. include:: ../utils/include.txt
 

@@ -1,0 +1,9 @@
+-------------
+Updating FiPy
+-------------
+
+.. autosummary::
+   :toctree: generated
+
+   examples.updating.update0_1to1_0
+   examples.updating.update1_0to2_0
