@@ -3,7 +3,6 @@
 {% block sidebar1 %}{{ sidebar() }}{% endblock %}
 {% block sidebar2 %}{% endblock %}
 {% block linktags %}
-<link rel="stylesheet" href="/CSS/ctcms.css" type="text/css" />
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 {{ super() }}
 {% endblock %}
@@ -137,15 +136,18 @@
             </div>
     </div>
     </div>
+    <div class="msel">
 {{ super() }}
+    </div>
 {% endblock %}
+{% block relbar2 %}{% endblock %}
 {% block document %}
     <div class="msel">
     {{ super() }}
     </div>
 {% endblock %}
 {% block footer %}
-    <div class="footer">
+    <div class="footer msel">
     <p>The National Institute of Standards and Technology (NIST) is an agency of the U.S. Commerce Department.</p>
     <p>
     <a href="http://www.nist.gov/public_affairs/privacy.htm">Privacy policy / security notice / accessibility statement</a> / 
