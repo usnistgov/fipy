@@ -347,36 +347,33 @@ directory. The type of image is determined by the file extension
 ":file:`.ext`". Different viewers have different capabilities:
 
   \Pygist{}
-    accepts ":file:`.eps`"
-    (\href{http://en.wikipedia.org/wiki/Encapsulated_PostScript}{Encapsulated
-    PostScript}) and ":file:`.cgm`"
-    (\href{http://xml.coverpages.org/cgm.html}{Computer Graphics
-    Metafile}).
+    accepts ":file:`.eps`" (`Encapsulated PostScript
+    <http://en.wikipedia.org/wiki/Encapsulated_PostScript>`_) and
+    ":file:`.cgm`" (`Computer Graphics Metafile
+    <http://xml.coverpages.org/cgm.html>`_).
     
   \gnuplot{}
     accepts ":file:`.eps`."
     
   \Matplotlib{}
-    accepts ":file:`.eps`," ":file:`.jpg`"
-    (\href{http://www.jpeg.org/}{Joint Photographic Experts Group}), and
-    ":file:`.png`" (\href{http://www.w3.org/Graphics/PNG/}{Portable
-    Network Graphics}).
+    accepts ":file:`.eps`," ":file:`.jpg`" (`Joint Photographic Experts
+    Group <http://www.jpeg.org/>`_), and ":file:`.png`" (`Portable Network
+    Graphics <http://www.w3.org/Graphics/PNG/>`_).
         
     .. attention::
 
        Actually, \Matplotlib{} supports different extensions, depending on
-       the chosen
-       \href{http://matplotlib.sourceforge.net/backends.html}{backend}, but
-       our :class:`MatplotlibViewer` classes don't properly support this
-       yet.
+       the chosen `backend
+       <http://matplotlib.sourceforge.net/backends.html>`_, but our
+       :class:`MatplotlibViewer` classes don't properly support this yet.
 
 What if I only want the saved file, with no display on screen?
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 To our knowledge, this is only supported by \Matplotlib{}, as is explained
 in the
-\href{http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup}{\Matplotlib{}
-FAQ}. Basically, you need to tell \Matplotlib{} to use an "image
+`Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup>`_. 
+Basically, you need to tell \Matplotlib{} to use an "image
 backend," such as "``Agg``" or "``Cairo``." Backends are discussed at
 \url{http://matplotlib.sourceforge.net/backends.html}.
 
@@ -387,8 +384,7 @@ How do I make a movie?
 individual frames (see the previous question) and then stitch them together
 into a movie, using one of a variety of different free, shareware, or
 commercial software packages. The guidance in the
-\href{http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie}{\Matplotlib{}
-FAQ} should be adaptable to other :class:`Viewer`\s.
+`Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ should be adaptable to other :class:`Viewer`\s.
 
 Why don't the :class:`Viewer`\s look the way I want?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -790,27 +786,27 @@ and~\ref{sec:Examples:diffusion:circle}
 What does this error message mean?
 ----------------------------------
 
-  "``ValueError: frames are not aligned``"
+ ``ValueError: frames are not aligned``
     This error most likely means that you have provided a
     :class:`CellVariable` when |FiPy| was expecting a :class:`FaceVariable`
     (or vice versa).
 
-  "``MA.MA.MAError: Cannot automatically
+  ``MA.MA.MAError: Cannot automatically
   convert masked array to Numeric because data is masked in one or
-  more locations.``"
+  more locations.``
     This not-so-helpful error message could mean a number of things, but
     the most likely explanation is that the solution has become unstable
     and is diverging to :math:`\pm\infty`. This can be caused by taking too large
     a timestep or by using explicit terms instead of implicit ones.
         
-  "``repairing catalog by removing key``"
+  ``repairing catalog by removing key``
     This message (not really an error, but may cause test failures) can
     result when using the \SciPy{} \weave{} package via the
     :option:`--inline` flag. It is due to a bug in \SciPy{} that has been
     patched in their source repository:
     \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
         
-  "``numerix Numeric 23.6``"
+  ``numerix Numeric 23.6``
     This is neither an error nor a warning. It's just a sloppy 
     message left in \SciPy{}:
     \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
@@ -892,7 +888,6 @@ What if my question isn't answered here?
 ----------------------------------------
     
 Please post your question to the
-\href{http://www.ctcms.nist.gov/fipy/mail.html}{mailing list}
+`mailing list <http://www.ctcms.nist.gov/fipy/mail.html>`_
 \cite{FiPyMailingList} or
-\href{http://sourceforge.net/tracker/?group_id=118428}{file a Tracker
-request} \cite{FiPyBugTracker}.
+`file a Tracker request <http://sourceforge.net/tracker/?group_id=118428>`_ \cite{FiPyBugTracker}.
