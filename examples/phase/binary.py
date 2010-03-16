@@ -47,7 +47,6 @@ As in :mod:`examples.phase.simple`, we will examine a 1D problem
 
 The Helmholtz free energy functional can be written as the integral
 \cite{BoettingerReview:2002,McFaddenReview:2002,Wheeler:1992}
-
 .. math::
     
    \mathcal{F}\left(\phi, C, T\right)
@@ -82,6 +81,7 @@ can derive governing equations
     \frac{\partial\phi}{\partial t}
     = M_\phi \left( \kappa_\phi \nabla^2 \phi 
                    - \frac{\partial f}{\partial \phi} \right)
+                   
 for phase and
 
 .. math::
@@ -132,7 +132,7 @@ where
    
 >>> R = 8.314 # J / (mol K)
 
-is the gas constant and :math:`\Omega_S` and :math:`\Omega_L ` are the
+is the gas constant and :math:`\Omega_S` and :math:`\Omega_L` are the
 regular solution interaction parameters for solid and liquid.
 
 Another approach is useful when the free energy densities :math:`f^L(C, T)` 
@@ -279,8 +279,8 @@ divergence, e.g.,::
     for j in range(cells):
         diffusion = (flux[j+.5] - flux[j-.5]) / dx
         
-where we neglect the details of the outer boundaries (``j = 0`` and ``j =
-N``) or exactly how to translate ``j+.5`` or ``j-.5`` into an array index,
+where we neglect the details of the outer boundaries (``j = 0`` and ``j = N``) 
+or exactly how to translate ``j+.5`` or ``j-.5`` into an array index,
 much less the complexities of higher dimensions. FiPy can handle all of
 these issues automatically, so we could just write::
 
@@ -535,7 +535,7 @@ require the residual.
 ...     viewer.plot()
 ...     raw_input("stationary phase field")
 
-.. image:: binary/stationary.pdf
+.. image:: binary/stationary.*
    :width: 90%
    :align: center
 
@@ -586,7 +586,7 @@ diffusion and of phase transformation compete with each other).
 >>> if __name__ == '__main__': 
 ...     raw_input("moving phase field")
 
-.. image:: binary/moving.pdf
+.. image:: binary/moving.*
    :width: 90%
    :align: center
 
