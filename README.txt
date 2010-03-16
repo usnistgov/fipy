@@ -5,7 +5,7 @@ Overview
 .. only:: latex
 
    :term:`FiPy` is an object oriented, partial differential equation (PDE) solver,
-   written in Python_ [Python]_, based on a standard finite volume (FV)
+   written in :term:`Python`, based on a standard finite volume (FV)
    approach.  The framework has been developed in the `Metallurgy Division`_
    and Center for Theoretical and Computational Materials Science (CTCMS_), in
    the Materials Science and Engineering Laboratory (MSEL_) at the National
@@ -16,9 +16,9 @@ Overview
    variety of languages and numerical approaches. Many are proprietary,
    expensive and difficult to customize.  As a result, scientists spend
    considerable resources repeatedly developing limited tools for
-   specific problems.  Our approach, combining the FV method and Python_,
+   specific problems.  Our approach, combining the FV method and :term:`Python`,
    provides a tool that is extensible, powerful and freely available. A
-   significant advantage to Python_ is the existing suite of tools for
+   significant advantage to :term:`Python` is the existing suite of tools for
    array calculations, sparse matrices and data rendering. 
 
    The :term:`FiPy` framework includes terms for transient diffusion,
@@ -42,7 +42,7 @@ Even if you don't read manuals...
 ...please read :ref:`INSTALLATION` and the :ref:`FAQ`. 
 
 --------------------------------
-What's new in version |VERSION|?
+What's new in version |release|?
 --------------------------------
 
 .. warning::
@@ -105,7 +105,7 @@ tutorials.
 Conventions and Notation
 ------------------------
 
-:term:`FiPy` is driven by Python_ script files than you can view or modify in any
+:term:`FiPy` is driven by :term:`Python` script files than you can view or modify in any
 text editor.  :term:`FiPy` sessions are invoked from a command-line shell, such
 as :command:`tcsh` or :command:`bash`.
 
@@ -127,19 +127,19 @@ Text blocks of the form::
     ...
     a is twelve
 
-are intended to indicate an interactive session in the Python_ interpreter.
+are intended to indicate an interactive session in the :term:`Python` interpreter.
 We will refer to these as "interactive sessions" or as "doctest blocks".
 The text "``>>>``" at the beginning of a line denotes the *primary prompt*,
-calling for input of a Python_ command.  The text "``...``" denotes the
+calling for input of a :term:`Python` command.  The text "``...``" denotes the
 *secondary prompt*, which calls for input that continues from the line
-above, when required by Python_ syntax.  All remaining lines, which begin
-at the left margin, denote output from the Python_ interpreter.  In all
-cases, the prompt is supplied by the Python_ interpreter and should not be
+above, when required by :term:`Python` syntax.  All remaining lines, which begin
+at the left margin, denote output from the :term:`Python` interpreter.  In all
+cases, the prompt is supplied by the :term:`Python` interpreter and should not be
 typed by you.
 
 .. warning::
 
-   Python_ is sensitive to indentation and care should be taken to enter
+   :term:`Python` is sensitive to indentation and care should be taken to enter
    text exactly as it appears in the examples.
 
 When references are made to file system paths, it is assumed that the
@@ -157,7 +157,7 @@ separated by "``/``").  Any references of the form::
 
     examples.diffusion.steadyState.mesh1D
 
-are in the Python_ module notation and correspond to the equivalent POSIX
+are in the :term:`Python` module notation and correspond to the equivalent POSIX
 path given above.
 
 We may at times use a 
@@ -178,7 +178,6 @@ or a
 .. _CTCMS:                http://www.ctcms.nist.gov/
 .. _Metallurgy Division:  http://www.metallurgy.nist.gov/
 .. _NIST:                 http://www.nist.gov/
-.. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _Subversion:           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
 .. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/report
@@ -186,6 +185,3 @@ or a
 .. _Sourceforge:          http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.sourceforge.net/projects/fipy
 .. _Materials Digital Library Pathway: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl.org
 .. _MatForge:             http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/
-
-.. include:: documentation/VERSION.txt
-
