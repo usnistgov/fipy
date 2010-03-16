@@ -98,6 +98,10 @@ the power law scheme,
   The power law scheme overcomes the inaccuracies of the hybrid scheme,
   while improving on the computational time for the exponential scheme.
 
+.. warning::
+
+   :class:`~fipy.terms.vanLeerConvectionTerm.VanLeerConvectionTerm` not
+   mentioned and no discussion of explicit forms.
 
 All of the numerical schemes presented here are available in \FiPy{}
 and can be selected by the user.

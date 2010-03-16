@@ -49,12 +49,19 @@ How do I represent a transient term :math:`\partial (\rho \phi) / \partial t`?
 How do I represent a convection term :math:`\nabla \cdot \left( \vec{u} \phi \right)`?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
->>> <Specific>ConvectionTerm(coeff = u, 
+.. currentmodule:: fipy.terms
+
+>>> <SpecificConvectionTerm>(coeff = u, 
 ...                          diffusionTerm = diffTerm)
     
-where :samp:`{<Specific>}` can be any of ``CentralDiff``,
-``Exponential``, ``Hybrid``, ``PowerLaw``,
-``Upwind``, ``ExplicitUpwind``, or ``VanLeer``.
+where :samp:`{<SpecificConvectionTerm>}` can be any of 
+:class:`~centralDiffConvectionTerm.CentralDifferenceConvectionTerm`,
+:class:`~exponentialConvectionTerm.ExponentialConvectionTerm`, 
+:class:`~hybridConvectionTerm.HybridConvectionTerm`, 
+:class:`~powerLawConvectionTerm.PowerLawConvectionTerm`,
+:class:`~upwindConvectionTerm.UpwindConvectionTerm`, 
+:class:`~explicitUpwindConvectionTerm.ExplicitUpwindConvectionTerm`, or 
+:class:`~vanLeerConvectionTerm.VanLeerConvectionTerm`.
 The differences between these convection schemes are described
 in Section :ref:`sec:NumericalSchemes`. The velocity coefficient 
 ``u`` must be a rank-1 :class:`~fipy.variables.faceVariable.FaceVariable`, or a 
@@ -69,15 +76,11 @@ constant vector in the form of a Python list or tuple,
    used in the problem.  It is hoped that this dependency
    can be automated in the future.
 
-.. warning::
-
-   :class:`~fipy.terms.vanLeerConvectionTerm.VanLeerConvectionTerm` not mentioned and no discussion of
-   explicit forms.
-
 How do I represent a diffusion term :math:`\nabla \cdot \left( \Gamma_1 \nabla \phi \right)`?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. currentmodule:: fipy.terms
+
 Either
 
 >>> ImplicitDiffusionTerm(coeff = Gamma1)
@@ -573,13 +576,14 @@ and so they take a :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable` coeff
     
 .. note::
     
-   If you supply a :class:`~fipy.meshes.numMesh.cellVariable.CellVariable` ``var`` when a
-   :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable` is expected, :term:`FiPy` will automatically
-   substitute :meth:`var.getArithmeticFaceValue`.  This can have
-   undesirable consequences, however. For one thing, the 
-   arithmetic face average of a non-linear function is not the 
-   same as the same non-linear function of the average argument, 
-   *e.g.*, for :math:`f(x) = x^2`,
+   If you supply a :class:`~fipy.meshes.numMesh.cellVariable.CellVariable`
+   ``var`` when a :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable`
+   is expected, :term:`FiPy` will automatically substitute
+   ``var.``:meth:`~fipy.variables.cellVariable.CellVariable.getArithmeticFaceValue`.
+   This can have undesirable consequences, however. For one thing, the
+   arithmetic face average of a non-linear function is not the same as the
+   same non-linear function of the average argument, *e.g.*, for
+   :math:`f(x) = x^2`,
 
    .. math::
 
@@ -595,7 +599,7 @@ and so they take a :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable` coeff
    
    If you experience problems (unstable or wrong results, or 
    excessively small timesteps), you may need to explicitly supply the 
-   desired :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable` rather than letting :term:`FiPy` 
+   desired :class:`~fipy.variables.faceVariable.FaceVariable` rather than letting :term:`FiPy` 
    assume one.
 
 How do I represent boundary conditions?
@@ -864,10 +868,12 @@ importing anything from the :mod:`fipy` package.
 
 .. envvar:: FIPY_DISPLAY_MATRIX
 
+   .. currentmodule:: fipy.terms.term
+
    If present, causes the graphical display of the solution matrix of each
-   equation at each call of :meth:`.solve` or :meth:`.sweep`. If set
+   equation at each call of :meth:`~Term.solve` or :meth:`~Term.sweep`. If set
    to "``terms``," causes the display of the matrix for each
-   :class:`~fipy.terms.term.Term` that composes the equation. Requires the \Matplotlib{}
+   :class:`Term` that composes the equation. Requires the \Matplotlib{}
    package.
 
 .. envvar:: FIPY_INLINE
