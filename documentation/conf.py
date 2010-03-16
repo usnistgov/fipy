@@ -100,6 +100,8 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+autoclass_content = "both"
+
 autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/convection/index.txt',
                         'examples/phase/index.txt',
@@ -208,9 +210,9 @@ htmlhelp_basename = 'FiPydoc'
 latex_documents = [
 #   ('index', 'FiPy.tex', u'FiPy Documentation',
 #    u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
-  ('manual', 'FiPy.tex', u'FiPy Documentation',
+  ('documentation/manual', 'FiPy.tex', u'FiPy Documentation',
    u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
-  ('reference', 'FiPyReference.tex', u'FiPy Reference',
+  ('documentation/reference', 'FiPyReference.tex', u'FiPy Reference',
    u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
 ]
 
@@ -232,8 +234,7 @@ latex_preamble = r"""
 """
 
 # Documents to append as an appendix to all manuals.
-latex_appendices = ['glossary',
-                    'references']
+latex_appendices = ['documentation/manual/refs.bib_cited']
 
 # If false, no module index is generated.
 #latex_use_modindex = True
