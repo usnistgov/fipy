@@ -56,14 +56,14 @@ How do I represent a convection term :math:`\nabla \cdot \left( \vec{u} \phi \ri
     >>> <Specific>ConvectionTerm(coeff = u, 
     ...                          diffusionTerm = diffTerm)
     
-where \verb|<Specific>| can be any of \verb|CentralDiff|,
-\verb|Exponential|, \verb|Hybrid|, \verb|PowerLaw|,
-\verb|Upwind|, \verb|ExplicitUpwind|, or \verb|VanLeer|.
+where ``<Specific>`` can be any of ``CentralDiff``,
+``Exponential``, ``Hybrid``, ``PowerLaw``,
+``Upwind``, ``ExplicitUpwind``, or ``VanLeer``.
 The differences between these convection schemes are described
 in Section :ref:`sec:NumericalSchemes`. The velocity coefficient 
-\verb|u| must be a rank-1 \Class{FaceVariable}, or a 
+``u`` must be a rank-1 \Class{FaceVariable}, or a 
 constant vector in the form of a Python list or tuple, 
-\emph{e.g.} \verb|((1,), (2,))| for a vector in 2D.
+\emph{e.g.} ``((1,), (2,))`` for a vector in 2D.
 
 .. note::
 
@@ -105,7 +105,7 @@ How do I represent a term :math:`\nabla^4 \phi` or :math:`\nabla \cdot \left( \G
  
     >>> ImplicitDiffusionTerm(coeff = (Gamma1, Gamma2))
 
-The number of elements supplied for \verb|coeff| determines the
+The number of elements supplied for ``coeff`` determines the
 order of the term.
 
 Is there a way to model an anisotropic diffusion process or more generally to represent the diffusion coefficient as a tensor so that the diffusion term takes the form :math:`\partial_i \Gamma_{ij}\partial_j \phi`?
@@ -125,7 +125,7 @@ the tensor, written in the form of a list, is contained within
 a list. This is because the first index of the list refers to
 the order of the term not the first index of the tensor (see
 the FAQ, Chapter~\ref{FAQ-higherOrderDiffusion}
-``\titleref{FAQ-higherOrderDiffusion}''). This
+"\titleref{FAQ-higherOrderDiffusion}"). This
 notation, although succinct can sometimes be confusing so a
 number of cases are interpreted below.
 
@@ -165,7 +165,7 @@ number of cases are interpreted below.
     to apply a rotation matrix in order to calculate the
     correct tensor values, see
     Chapter~\ref{sec:Examples:diffusion:anisotropy}
-    ``\titleref{sec:Examples:diffusion:anisotropy}'' for
+    "\titleref{sec:Examples:diffusion:anisotropy}" for
     details.
 
 What if the term isn't one of those?
@@ -181,7 +181,7 @@ mathematical form, \emph{e.g.}, :math:`3\kappa^2 + b \sin
     
 .. note::
 
-   Functions like \verb+sin()+ can be obtained from the
+   Functions like :func:`sin` can be obtained from the
    \EpydocDottedName{fipy.tools.numerix} module.
 
    .. warning::
@@ -222,11 +222,11 @@ which is written in Python as
     >>> (D2 * xi.getFaceGrad()).getDivergence()
 
 Higher order diffusive sources can be obtained by simply nesting the calls
-to \verb+getFaceGrad()+ and \verb+getDivergence()+.
+to :meth:`.getFaceGrad()` and :meth:`.getDivergence()`.
 
 .. note::
 
-   We use \verb|getFaceGrad()|, rather than \verb|getGrad()|, in order to
+   We use :meth:`getFaceGrad`, rather than :meth:`getGrad`, in order to
    obtain a second-order spatial discretization of the diffusion term in
    :math:`\xi`, consistent with the matrix that is formed by
    \Class{DiffusionTerm} for :math:`\phi`.
@@ -297,9 +297,9 @@ For \FiPy{}'s purposes, however, this term represents the convection of
 What if the coefficient of a term depends on the variable that I'm solving for?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
-A non-linear coefficient, such as the diffusion coefficient in \(
-\nabla\cdot[\Gamma_1(\phi) \nabla \phi] = \nabla\cdot[\Gamma_0 \phi (1 -
-\phi) \nabla\phi] \) is not a problem for \FiPy. Simply write it as it
+A non-linear coefficient, such as the diffusion coefficient in
+:math:`\nabla\cdot[\Gamma_1(\phi) \nabla \phi] = \nabla\cdot[\Gamma_0 \phi (1 -
+\phi) \nabla\phi]` is not a problem for \FiPy. Simply write it as it
 appears:
 
     >>> diffTerm = DiffusionTerm(coeff = Gamma0 * phi * (1 - phi))
@@ -307,7 +307,7 @@ appears:
 .. note::
 
    Due to the nonlinearity of the coefficient, it will probably be
-   necessary to ``sweep'' the solution to convergence as discussed in
+   necessary to "sweep" the solution to convergence as discussed in
    FAQ~\ref{FAQ-IterationsTimestepsSweeps}.
 
 How can I see what I'm doing?
@@ -317,9 +317,9 @@ How do I export data?
 ~~~~~~~~~~~~~~~~~~~~~
 
 The way to save your calculations depends on how you plan to make use of
-the data. If you want to save it for ``restart'' (so that you can continue
+the data. If you want to save it for "restart" (so that you can continue
 or redirect a calculation from some intermediate stage), then you'll want
-to ``pickle'' the \Python{} data with the \Module{dump} module. This is
+to "pickle" the \Python{} data with the \Module{dump} module. This is
 illustrated in Examples~\ref{examples:phase:anisotropy},
 \ref{examples:phase:impingement:mesh40x1},
 \ref{examples:phase:impingement:mesh20x20}, and
@@ -338,28 +338,28 @@ How do I save a plot image?
 
 Some of the viewers have a button or other mechanism in the user interface
 for saving an image file. Also, you can supply an optional keyword
-\verb+filename+ when you tell the viewer to \verb+plot()+, \emph{e.g.}
+:keyword:`filename` when you tell the viewer to :meth:`.plot()`, \emph{e.g.}
 
     >>> viewer.plot(filename="myimage.ext")
 
-which will save a file named \verb+myimage.ext+ in your current working
+which will save a file named :file:`myimage.ext` in your current working
 directory. The type of image is determined by the file extension
-``\verb+.ext+''. Different viewers have different capabilities:
+":file:`.ext`". Different viewers have different capabilities:
 
   \Pygist{}
-    accepts ``\verb+.eps+''
+    accepts ":file:`.eps`"
     (\href{http://en.wikipedia.org/wiki/Encapsulated_PostScript}{Encapsulated
-    PostScript}) and ``\verb+.cgm+''
+    PostScript}) and ":file:`.cgm`"
     (\href{http://xml.coverpages.org/cgm.html}{Computer Graphics
     Metafile}).
     
   \gnuplot{}
-    accepts ``\verb+.eps+''.
+    accepts ":file:`.eps`."
     
   \Matplotlib{}
-    accepts ``\verb+.eps+'', ``\verb+.jpg+''
+    accepts ":file:`.eps`," ":file:`.jpg`"
     (\href{http://www.jpeg.org/}{Joint Photographic Experts Group}), and
-    ``\verb+.png+'' (\href{http://www.w3.org/Graphics/PNG/}{Portable
+    ":file:`.png`" (\href{http://www.w3.org/Graphics/PNG/}{Portable
     Network Graphics}).
         
     .. attention::
@@ -376,8 +376,8 @@ What if I only want the saved file, with no display on screen?
 To our knowledge, this is only supported by \Matplotlib{}, as is explained
 in the
 \href{http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup}{\Matplotlib{}
-FAQ}. Basically, you need to tell \Matplotlib{} to use an ``image
-backend'', such as ``Agg'' or ``Cairo''. Backends are discussed at
+FAQ}. Basically, you need to tell \Matplotlib{} to use an "image
+backend," such as "``Agg``" or "``Cairo``." Backends are discussed at
 \url{http://matplotlib.sourceforge.net/backends.html}.
 
 How do I make a movie?
@@ -400,7 +400,7 @@ platforms than on others, we have tried to support a range of \Python{}
 plotters with a minimal common set of features. Many of these packages are
 capable of much more, however. Often, you can invoke the \Class{Viewer} you
 want, and then issue supplemental commands for the underlying plotting
-package. The better option is to make a ``subclass'' of the \FiPy{}
+package. The better option is to make a "subclass" of the \FiPy{}
 \Class{Viewer} that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting \FiPy{} do
 most of the heavy lifting. See \ref{examples:phase:anisotropy} for an
@@ -424,7 +424,7 @@ many similar PDE solvers), there are three layers of repetition.
       Sections~\ref{section:discretization} and
       \ref{section:linear-equations}. It is not always practical, or
       even possible, to exactly solve these matrix equations on a
-      computer. \FiPy{} thus employs ``iterative solvers'', which
+      computer. \FiPy{} thus employs "iterative solvers", which
       make successive approximations until the linear equations have
       been satisfactorily solved. \FiPy{} chooses a default number
       of iterations and solution tolerance, which you will not
@@ -440,8 +440,8 @@ many similar PDE solvers), there are three layers of repetition.
 
       .. note::
 
-         The older \Class{Solver} \verb+steps=+ keyword is now deprecated
-         in favor of \verb+iterations=+ to make the role clearer.
+         The older \Class{Solver} :keyword:`steps=` keyword is now deprecated
+         in favor of :keyword:`iterations=` to make the role clearer.
 
       Solver iterations are changed from their defaults in
       Examples~\ref{examples:flow:stokesCavity} and
@@ -460,11 +460,11 @@ many similar PDE solvers), there are three layers of repetition.
       resolve the same equation \emph{at the same point in elapsed
       time}, but use the result of the previous solution instead of 
       the previous timestep, then we can get a refined solution to 
-      the \emph{non-linear} PDE in a process known as ``sweeping.'' 
+      the \emph{non-linear} PDE in a process known as "sweeping." 
 
       .. note::
 
-         Despite references to the ``previous timestep,'' sweeping is 
+         Despite references to the "previous timestep," sweeping is 
          not limited to time-evolving problems. Nonlinear sets of 
          quasi-static or steady-state PDEs can require sweeping, too.
 
@@ -477,14 +477,14 @@ many similar PDE solvers), there are three layers of repetition.
           >>> myVar = CellVariable(..., hasOld=1)
 
       and then by explicitly moving the current value of the 
-      variable into the ``old'' value only when we want to:
+      variable into the "old" value only when we want to:
 
           >>> myVar.updateOld()
 
       Finally, we will need to repeatedly solve the equation until 
       it gives a stable result. To clearly distinguish that a 
-      single cycle will not truly ``solve'' the equation, we invoke 
-      a different method ``\verb+sweep()+''\IndexFunction{sweep}:
+      single cycle will not truly "solve" the equation, we invoke 
+      a different method ":meth:`.sweep()`"\IndexFunction{sweep}:
 
           >>> for sweep in range(sweeps):
           ...     eq.sweep(var=myVar, ...)
@@ -513,7 +513,7 @@ many similar PDE solvers), there are three layers of repetition.
       .. note::
 
          Stability and accuracy are distinctly different. An unstable 
-         solution is often said to ``blow up'', with radically 
+         solution is often said to "blow up", with radically 
          different values from point to point, often diverging to 
          infinity. An inaccurate solution may look perfectly 
          reasonable, but will disagree significantly from an 
@@ -572,9 +572,9 @@ and so they take a \Class{FaceVariable} coefficient.
     
 .. note::
     
-   If you supply a \Class{CellVariable} \verb+var+ when a
+   If you supply a \Class{CellVariable} ``var`` when a
    \Class{FaceVariable} is expected, \FiPy{} will automatically
-   substitute \verb+var.getArithmeticFaceValue()+.  This can have
+   substitute :meth:`.var.getArithmeticFaceValue()`.  This can have
    undesirable consequences, however. For one thing, the 
    arithmetic face average of a non-linear function is not the 
    same as the same non-linear function of the average argument, 
@@ -631,15 +631,15 @@ conditions and from the feedback it is clear that there are some
 problematic issues with the design and implementation of the boundary
 condition objects. We hope to rectify this in future releases. However, it
 is possible to specify almost any boundary condition by using a rank 1
-\verb+FaceVariable+ to represent the external flux value and apply the
-\verb+getDivergence+ method to this object and then use it as as a source
+:class:`FaceVariable` to represent the external flux value and apply the
+:meth:`.getDivergence` method to this object and then use it as as a source
 term in the given equation. The following code demonstrates how to
 implement this technique. First define the coefficients,
 
     >>> convectionCoeff = FaceVariable(..., rank=1)
     >>> diffusionCoeff = FaceVariable(...)
 
-where the \verb+convectionCoeff+ and \verb+diffusionCoeff+ are defined over
+where the ``convectionCoeff`` and ``diffusionCoeff`` are defined over
 all the faces. We will define a third \Class{FaceVariable} to represent the
 boundary source term and then set the values of the coefficients to zero on
 the exterior faces.
@@ -649,18 +649,18 @@ the exterior faces.
     >>> diffusionCoeff.setValue(0, where=mesh.getExteriorFaces())
     >>> boundarySource.setValue(vectorValues, where=mesh.getExteriorFaces())
 
-The \verb+vectorValues+ quantity can be set to whatever value is required for
-the particular boundary condition. The variable \verb+boundarySource+ could
+The ``vectorValues`` quantity can be set to whatever value is required for
+the particular boundary condition. The variable ``boundarySource`` could
 be a variable that defines a relationship between other variables rather than
-a simple container object. To finish off, the \verb+boundarySource.getDivergence()+ object
+a simple container object. To finish off, the :meth:`.boundarySource.getDivergence()` object
 must be added to the regular equation
 
     >>> eqn = TransientTerm() + ConvectionTerm(convectionSource) = \
     ...     DiffusionSource(diffusionCoeff) + boundarySource.getDivergence()
 
 No other boundary conditions need to be applied. It may be necessary to reset
-or update the values of \verb+boundarySource+, \verb+diffusionCoeff+ and
-\verb+convectionCoeff+ at each sweep if they are not automatically updated or
+or update the values of ``boundarySource``, ``diffusionCoeff`` and
+``convectionCoeff`` at each sweep if they are not automatically updated or
 if the exterior values need to be reset to zero. For complex boundary
 conditions, it is often easier to implement the technique described here
 rather than trying to get the \Class{FixedValue} and \Class{FixedFlux}
@@ -673,9 +673,9 @@ How do I apply an outlet or inlet boundary condition?
 
 There is no good way to do this with the standard boundary conditions in
 \FiPy{} and thus one needs to use the method suggested above,
-see~\ref{FAQ-anyBoundaryCondition} ``\titleref{FAQ-anyBoundaryCondition}''.
+see~\ref{FAQ-anyBoundaryCondition} "\titleref{FAQ-anyBoundaryCondition}".
 Currently, boundary conditions for the \Class{ConvectionTerm} assume a
-\Class{FixedFlux} boundary condition with a \verb+value+ of 0. This is in
+\Class{FixedFlux} boundary condition with a ``value`` of 0. This is in
 fact not the most intuitive default boundary condition, a natural outlet or
 inlet boundary condition would in fact be more sensible. In order to apply an
 inlet/outlet boundary condition one needs a separate exterior convection
@@ -684,16 +684,16 @@ coefficient (velocity vector) to hold the boundary values,
     >>> convectionCoeff = FaceVaravble(..., rank=1)
     >>> exteriorCoeff = FaceVariable(..., value=0, rank=1)
 
-The \verb+exteriorCoeff+ can now be given non-zero values on
-\verb+inletOutletFaces+ and the \verb+convectionCoeff+ can be set to zero on
+The ``exteriorCoeff`` can now be given non-zero values on
+``inletOutletFaces`` and the ``convectionCoeff`` can be set to zero on
 these faces.
 
     >>> exteriorCoeff.setValue(convectionCoeff, where=inletOutletFaces)
     >>> convectionCoeff.setValue(0, where=inletOutletFaces)
 
-where the \verb+inletOutletFaces+ object are the faces over which the
+where the ``inletOutletFaces`` object are the faces over which the
 inlet/outlet boundary condition applies. The divergence of the
-\verb+exteriorCoeff+ is then included in the equations with an
+``exteriorCoeff`` is then included in the equations with an
 \Class{ImplicitSourceTerm}. This allows an implicit formulation for outlet
 boundary conditions and an explicit formulation for inlet boundary
 conditions, consistent with an upwind convection scheme.
@@ -704,7 +704,7 @@ conditions, consistent with an upwind convection scheme.
 As in the previous section, the coefficient values may need updating on the
 exterior faces between sweeps. See
 Example~\ref{sec:Examples:convection:source}
-``\titleref{sec:Examples:convection:source}'' for an example of this usage.
+"\titleref{sec:Examples:convection:source}" for an example of this usage.
 
 How do I apply a fixed gradient?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -718,21 +718,21 @@ coefficient to create the boundary condition,
 
     >>> FixedFlux(value=gradient / diffusionCoeff, faces=myFaces)
 
-where \verb+gradient+ is the value of the boundary gradient and
-\verb+myFaces+ are the faces over which the boundary condition applies.  If
+where ``gradient`` is the value of the boundary gradient and
+``myFaces`` are the faces over which the boundary condition applies.  If
 the equation contains a \Class{ConvectionTerm} and the boundary condition has
 a zero gradient then one would use a \Class{FixedValue} boundary condition of
 the form
 
     >>> FixedValue(value=phi.getFaceValue(), faces=myFaces)
 
-This is not an ''implicit'' boundary condition so would in general require
+This is not an "implicit" boundary condition so would in general require
 sweeps to reach convergence. See Example~\ref{sec:Examples:convection:source}
-``\titleref{sec:Examples:convection:source}'' for an example of this usage.
+"\titleref{sec:Examples:convection:source}" for an example of this usage.
 In the case of a non-zero gradient one would need to employ the techniques in
-both~\ref{FAQ-anyBoundaryCondition} ``\titleref{FAQ-anyBoundaryCondition}''
+both~\ref{FAQ-anyBoundaryCondition} "\titleref{FAQ-anyBoundaryCondition}"
 and~\ref{FAQ-inletOutletBoundaryCondition}
-``\titleref{FAQ-inletOutletBoundaryCondition}'' without using either a
+"\titleref{FAQ-inletOutletBoundaryCondition}" without using either a
 \Class{FixedValue} or a \Class{FixedFlux} object.
 
 How do I apply spatially varying boundary conditions?
@@ -741,10 +741,16 @@ How do I apply spatially varying boundary conditions?
 The use of spatial varying boundary conditions is best demonstrated with an
 example. Given a 2D equation in the domain :math:`0 < x < 1` and :math:`0 < y < 1` with
 boundary conditions,
-\begin{eqnarray}
-  \phi =& xy \; & \text{on $x>1/2$ and $y>1/2$} \\
-  \vec{n} \cdot \vec{F} =& 0 \;& \text{elsewhere}
-\end{eqnarray}
+
+.. math::
+
+  \phi = \left\{
+            \begin{aligned} 
+                xy &\quad \text{on $x>1/2$ and $y>1/2$} \\
+                \vec{n} \cdot \vec{F} = 0 &\quad \text{elsewhere}
+            \end{aligned}
+        \right.
+
 where :math:`\vec{F}` represents the flux. The boundary conditions in \FiPy{} can
 be written with the following code,
 
@@ -753,16 +759,16 @@ be written with the following code,
     >>> BCs = [FixedFlux(value=0, faces=mesh.getExteriorFaces() & mask),
     ...        FixedValue(value=x * y, faces=mesh.getExteriorFaces() & ~mask)]
 
-The \verb+BCs+ list can then be passed to the equation's \verb+solve+ method
+The ``BCs`` list can then be passed to the equation's :meth:`.solve` method
 when its called,
 
     >>> eqn.solve(..., boundaryConditions=BCs)
 
 Further demonstrations of spatially varying boundary condition can be found
 in Examples~\ref{sec:Examples:diffusion:mesh20x20}
-``\titleref{sec:Examples:diffusion:mesh20x20}''
+"\titleref{sec:Examples:diffusion:mesh20x20}"
 and~\ref{sec:Examples:diffusion:circle}
-``\titleref{sec:Examples:diffusion:circle}''
+"\titleref{sec:Examples:diffusion:circle}"
 
 .. %    http://thread.gmane.org/gmane.comp.python.fipy/726
    %    http://thread.gmane.org/gmane.comp.python.fipy/846
@@ -784,7 +790,7 @@ and~\ref{sec:Examples:diffusion:circle}
 What does this error message mean?
 ----------------------------------
 
-  ``\texttt{ValueError: frames are not aligned}''
+  "\texttt{ValueError: frames are not aligned}"
     This error most likely means that you have provided a
     \Class{CellVariable} when \FiPy{} was expecting a \Class{FaceVariable}
     (or vice versa).
@@ -797,14 +803,14 @@ What does this error message mean?
     and is diverging to :math:`\pm\infty`. This can be caused by taking too large
     a timestep or by using explicit terms instead of implicit ones.
         
-  ``\texttt{repairing catalog by removing key}''
+  "\texttt{repairing catalog by removing key}"
     This message (not really an error, but may cause test failures) can
-    result when using the \SciPy{} \weave{} package via the \verb+--inline+
-    flag. It is due to a bug in \SciPy{} that has been patched in their
-    source repository:
+    result when using the \SciPy{} \weave{} package via the
+    :option:`--inline` flag. It is due to a bug in \SciPy{} that has been
+    patched in their source repository:
     \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
         
-  ``\texttt{numerix Numeric 23.6}''
+  "\texttt{numerix Numeric 23.6}"
     This is neither an error nor a warning. It's just a sloppy 
     message left in \SciPy{}:
     \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
@@ -850,7 +856,7 @@ importing anything from the \texttt{fipy} package.
   \texttt{FIPY\_DISPLAY\_MATRIX} 
     If present, causes the graphical display of the solution matrix of each
     equation at each call of \texttt{solve()} or \texttt{sweep()}. If set
-    to ``\texttt{terms}'', causes the display of the matrix for each
+    to "\texttt{terms}", causes the display of the matrix for each
     \Class{Term} that composes the equation. Requires the \Matplotlib{}
     package.
 
@@ -865,14 +871,14 @@ importing anything from the \texttt{fipy} package.
 
   \texttt{FIPY\_SOLVERS} 
     Forces the use of the specified suite of linear solvers. Valid
-    (case-insensitive) choices are ``\texttt{PySparse}'' and
-    ``\texttt{Trilinos}''.
+    (case-insensitive) choices are "\texttt{PySparse}" and
+    "\texttt{Trilinos}".
     
   \texttt{FIPY\_VIEWER}
     Forces the use of the specified viewer. Valid values are any
-    ``\texttt{\textit{<viewer>}}'' from the
+    "\texttt{\textit{<viewer>}}" from the
     \texttt{\EpydocDottedName{fipy.viewers.\textit{<viewer>}Viewer}}
-    modules. The special value of ``\texttt{dummy}'' will allow the script
+    modules. The special value of "\texttt{dummy}" will allow the script
     to run without displaying anything.
 
 Why don't my scripts work anymore?
