@@ -1,3 +1,5 @@
+.. _chap:UpdateFiPy:
+
 -------------
 Updating FiPy
 -------------
