@@ -45,7 +45,7 @@ class DiffusionTerm(Term):
     This term represents a higher order diffusion term. The order of the term is determined
     by the number of `coeffs`, such that::
 
-        DiffusionTerm(D1, mesh, bcs)
+        DiffusionTerm(D1)
 
     represents a typical 2nd-order diffusion term of the form
 
@@ -55,7 +55,7 @@ class DiffusionTerm(Term):
 
     and::
 
-        DiffusionTerm((D1,D2), mesh, bcs)
+        DiffusionTerm((D1,D2))
 
     represents a 4th-order Cahn-Hilliard term of the form
 
