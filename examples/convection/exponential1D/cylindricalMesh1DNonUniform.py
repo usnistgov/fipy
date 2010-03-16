@@ -35,135 +35,106 @@
 r"""
 
 This example solves the steady-state cylindrical convection-diffusion equation
-given by:
+given by
 
-.. raw:: latex
+.. math::
 
-   $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0 $$
+   \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0
 
-with coefficients
+with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 
-.. raw:: latex
-
-   $D = 1$ and $\vec{u} = (10,)$,
-   
-or
-
-    >>> diffCoeff = 1.
-    >>> convCoeff = (10.,)
+>>> diffCoeff = 1.
+>>> convCoeff = (10.,)
     
 We define a 1D cylindrical mesh representing an anulus. The mesh has a
 non-constant cell spacing.
 
-.. raw:: latex
+.. index:: Grid1D
 
-   \IndexClass{Grid1D}
+>>> from fipy import *
 
-..
+>>> r0 = 1.
+>>> r1 = 2.
+>>> nr = 100
+>>> Rratio = (r1 / r0)**(1 / float(nr))
+>>> dr = r0 * (Rratio - 1) * Rratio**numerix.arange(nr)
+>>> mesh = CylindricalGrid2D(dr=dr) + ((r0,),)
 
-    >>> from fipy import *
-
-    >>> r0 = 1.
-    >>> r1 = 2.
-    >>> nr = 100
-    >>> Rratio = (r1 / r0)**(1 / float(nr))
-    >>> dr = r0 * (Rratio - 1) * Rratio**numerix.arange(nr)
-    >>> mesh = CylindricalGrid2D(dr=dr) + ((r0,),)
-    
 and impose the boundary conditions
 
-.. raw:: latex
+.. math
 
-   $$ \phi = \begin{cases}
+   \phi = \begin{cases}
    0& \text{at $r = r_0$,} \\
    1& \text{at $r = r_1$,}
-   \end{cases} $$
-   or
-   \IndexClass{FixedValue}
+   \end{cases}
+   
+or
+   
+.. index:: FixedValue
 
-..
+>>> valueLeft = 0.
+>>> valueRight = 1.
+>>> boundaryConditions = (
+...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
+...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
+...     )
 
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
-    >>> boundaryConditions = (
-    ...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-    ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-    ...     )
-
-The solution variable is initialized to `valueLeft`:
+The solution variable is initialized to ``valueLeft``:
     
-.. raw:: latex
+.. index:: CellVariable
 
-   \IndexClass{CellVariable}
+>>> var = CellVariable(mesh=mesh, name = "variable")
 
-..
+The equation is created with the :class:`DiffusionTerm` and
+:class:`ExponentialConvectionTerm`.
 
-    >>> var = CellVariable(mesh=mesh, name = "variable")
+.. index:: DiffusionTerm, ExponentialConvectionTerm
 
-The equation is created with the `DiffusionTerm` and
-`ExponentialConvectionTerm`.
-
-.. raw:: latex
-
-   \IndexClass{DiffusionTerm}
-   \IndexClass{ExponentialConvectionTerm}
-
-..
-
-    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...       + ExponentialConvectionTerm(coeff=convCoeff))
+>>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+...       + ExponentialConvectionTerm(coeff=convCoeff))
    
 More details of the benefits and drawbacks of each type of convection
-term can be found in 
-
-.. raw:: latex
-
-   Section~\ref{sec:NumericalSchemes} ``\nameref{sec:NumericalSchemes}''.
-   
-.. of the manual
-
-Essentially, the `ExponentialConvectionTerm` and `PowerLawConvectionTerm` will
+term can be found in :ref:`sec:NumericalSchemes`.
+Essentially, the :class:`ExponentialConvectionTerm` and :class:`PowerLawConvectionTerm` will
 both handle most types of convection-diffusion cases, with the
-`PowerLawConvectionTerm` being more efficient.
+:class:`PowerLawConvectionTerm` being more efficient.
 
 We solve the equation
 
-   >>> eq.solve(var=var, boundaryConditions=boundaryConditions)
+>>> eq.solve(var=var, boundaryConditions=boundaryConditions)
    
 and test the solution against the analytical result
 
-.. raw:: latex
+.. math::
 
-   $$ \phi = \exp{\frac{u}{D} \left(r_1 - r\right)} \left( \frac{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r}{D}} }{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r_1}{D}} } \right) $$
-   or
-   \IndexFunction{exp}
+   \phi = \exp{\frac{u}{D} \left(r_1 - r\right)} \left( \frac{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r}{D}} }{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r_1}{D}} } \right)
+   
+or
 
-..
+.. index:: exp
 
-    >>> axis = 0
-    >>> try:
-    ...     from scipy.special import expi
-    ...     r = mesh.getCellCenters()[axis]
-    ...     AA = exp(convCoeff[axis] / diffCoeff * (r1 - r))
-    ...     BB = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r / diffCoeff)
-    ...     CC = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r1 / diffCoeff)
-    ...     analyticalArray = AA * BB / CC
-    ... except ImportError:
-    ...     print "The SciPy library is unavailable. It is required for testing purposes."
-    >>> print var.allclose(analyticalArray, atol=1e-3)
-    1
+>>> axis = 0
+>>> try:
+...     from scipy.special import expi
+...     r = mesh.getCellCenters()[axis]
+...     AA = exp(convCoeff[axis] / diffCoeff * (r1 - r))
+...     BB = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r / diffCoeff)
+...     CC = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r1 / diffCoeff)
+...     analyticalArray = AA * BB / CC
+... except ImportError:
+...     print "The SciPy library is unavailable. It is required for testing purposes."
+>>> print var.allclose(analyticalArray, atol=1e-3)
+1
    
 If the problem is run interactively, we can view the result:
 
-.. raw:: latex
+.. index::
+   module: viewers
 
-   \IndexModule{viewers}
-
-..
-
-    >>> if __name__ == '__main__':
-    ...     viewer = viewers.make(vars=var)
-    ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer = viewers.make(vars=var)
+...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
      

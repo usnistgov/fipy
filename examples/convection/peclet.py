@@ -35,55 +35,55 @@
 r"""
 
 This example tests diffusion-convection for increasing Peclet numbers.
-This test case has been introduced because `LinearCGSSolver` was not
-working with Peclet numbers over 1. LinearLUSolver is now the default
-for ConvectionTerm. For `nx = 1000` the LinearGMRESSolver does not work,
-but the LinearScipyGMRESSolver does work! Oh dear...
+This test case has been introduced because :class:`LinearCGSSolver` was not
+working with Peclet numbers over 1. :class:`LinearLUSolver` is now the default
+for :class:`ConvectionTerm`. For ``nx = 1000`` the :class:`LinearGMRESSolver` does not work,
+but the :class:`LinearScipyGMRESSolver` does work! Oh dear...
 
-    >>> from fipy import *
+>>> from fipy import *
 
-    >>> L = 1.
-    >>> nx = 1000
-    >>> dx =  L / nx
-    >>> mesh = Grid1D(dx=dx , nx=nx)
+>>> L = 1.
+>>> nx = 1000
+>>> dx =  L / nx
+>>> mesh = Grid1D(dx=dx , nx=nx)
 
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
+>>> valueLeft = 0.
+>>> valueRight = 1.
 
-    >>> var = CellVariable(name = "solution variable", mesh=mesh, value=valueLeft)
+>>> var = CellVariable(name = "solution variable", mesh=mesh, value=valueLeft)
 
-    >>> boundaryConditions = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-    ...                       FixedValue(faces=mesh.getFacesRight(), value=valueRight))
+>>> boundaryConditions = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
+...                       FixedValue(faces=mesh.getFacesRight(), value=valueRight))
 
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars = var)
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars = var)
 
-    >>> convCoeff = 1.0
-    >>> peclet = 1e-3
-    >>> allcloseList = []
-    >>> while peclet < 1e4:
-    ...     var[:] = valueLeft
-    ...     diffCoeff = convCoeff * dx / peclet
-    ...     eq = (TransientTerm(1e-4) 
-    ...           == ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...           + PowerLawConvectionTerm(coeff=convCoeff))
-    ...     eq.solve(var=var, boundaryConditions=boundaryConditions) 
-    ...     x = mesh.getCellCenters()[0]
-    ...     arg0 = -convCoeff * x / diffCoeff
-    ...     arg0 = where(arg0 < -200, -200, arg0)
-    ...     arg1 = -convCoeff * L / diffCoeff
-    ...     arg1 = (arg1 >= -200) * (arg1 + 200) - 200  
-    ...     CC = 1. - exp(arg0)
-    ...     DD = 1. - exp(arg1)
-    ...     analyticalArray = CC / DD
-    ...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).getValue())
-    ...     if __name__ == '__main__':
-    ...         viewer.plot()
-    ...         raw_input("Peclet number: " + str(peclet) + ", press key")
-    ...     peclet *= 10
+>>> convCoeff = 1.0
+>>> peclet = 1e-3
+>>> allcloseList = []
+>>> while peclet < 1e4:
+...     var[:] = valueLeft
+...     diffCoeff = convCoeff * dx / peclet
+...     eq = (TransientTerm(1e-4) 
+...           == ImplicitDiffusionTerm(coeff=diffCoeff)
+...           + PowerLawConvectionTerm(coeff=convCoeff))
+...     eq.solve(var=var, boundaryConditions=boundaryConditions) 
+...     x = mesh.getCellCenters()[0]
+...     arg0 = -convCoeff * x / diffCoeff
+...     arg0 = where(arg0 < -200, -200, arg0)
+...     arg1 = -convCoeff * L / diffCoeff
+...     arg1 = (arg1 >= -200) * (arg1 + 200) - 200  
+...     CC = 1. - exp(arg0)
+...     DD = 1. - exp(arg1)
+...     analyticalArray = CC / DD
+...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).getValue())
+...     if __name__ == '__main__':
+...         viewer.plot()
+...         raw_input("Peclet number: " + str(peclet) + ", press key")
+...     peclet *= 10
 
-    >>> print allcloseList
-    [True, True, True, True, True, True, True]
+>>> print allcloseList
+[True, True, True, True, True, True, True]
     
 """
 __docformat__ = 'restructuredtext'

@@ -94,7 +94,8 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
-autosummary_generate = ['examples/diffusion/index.txt']
+autosummary_generate = ['examples/diffusion/index.txt',
+                        'examples/convection/index.txt']
 
 # -- Options for HTML output ---------------------------------------------------
 

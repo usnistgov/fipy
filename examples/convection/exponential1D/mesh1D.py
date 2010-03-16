@@ -35,128 +35,99 @@
 r"""
 
 This example solves the steady-state convection-diffusion equation
-given by:
+given by
 
-.. raw:: latex
+.. math::
 
-   $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0 $$
+   \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0
 
-with coefficients
+with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 
-.. raw:: latex
-
-   $D = 1$ and $\vec{u} = (10,)$,
-   
-or
-
-    >>> diffCoeff = 1.
-    >>> convCoeff = (10.,)
+>>> diffCoeff = 1.
+>>> convCoeff = (10.,)
     
 We define a 1D mesh
 
-.. raw:: latex
+.. index:: Grid1D
 
-   \IndexClass{Grid1D}
+>>> from fipy import *
 
-..
-
-    >>> from fipy import *
-
-    >>> L = 10.
-    >>> nx = 10
-    >>> mesh = Grid1D(dx=L / nx, nx=nx)
+>>> L = 10.
+>>> nx = 10
+>>> mesh = Grid1D(dx=L / nx, nx=nx)
 
 and impose the boundary conditions
 
-.. raw:: latex
+.. math::
 
-   $$ \phi = \begin{cases}
+   \phi = \begin{cases}
    0& \text{at $x = 0$,} \\
    1& \text{at $x = L$,}
-   \end{cases} $$ 
-   or
-   \IndexClass{FixedValue}
+   \end{cases}
+   
+or
 
-..
+.. index:: FixedValue
 
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
-    >>> boundaryConditions = (
-    ...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-    ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-    ...     )
+>>> valueLeft = 0.
+>>> valueRight = 1.
+>>> boundaryConditions = (
+...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
+...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
+...     )
 
-The solution variable is initialized to `valueLeft`:
+The solution variable is initialized to ``valueLeft``:
     
-.. raw:: latex
+.. index:: CellVariable
 
-   \IndexClass{CellVariable}
+>>> var = CellVariable(mesh=mesh, name = "variable")
 
-..
-
-    >>> var = CellVariable(mesh=mesh, name = "variable")
-
-The equation is created with the `ImplicitDiffusionTerm` and
-`ExponentialConvectionTerm`. The scheme used by the convection term
+The equation is created with the :class:`ImplicitDiffusionTerm` and
+:class:`ExponentialConvectionTerm`. The scheme used by the convection term
 needs to calculate a Peclet number and thus the diffusion term
 instance must be passed to the convection term.
 
-.. raw:: latex
+.. index:: ImplicitDiffusionTerm, ExponentialConvectionTerm
 
-   \IndexClass{ImplicitDiffusionTerm}
-   \IndexClass{ExponentialConvectionTerm}
-
-..
-
-   >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-   ...       + ExponentialConvectionTerm(coeff=convCoeff))
+>>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+...       + ExponentialConvectionTerm(coeff=convCoeff))
    
 More details of the benefits and drawbacks of each type of convection
-term can be found in 
-
-.. raw:: latex
-
-   Section~\ref{sec:NumericalSchemes} ``\nameref{sec:NumericalSchemes}''.
-   
-.. of the manual
-
-Essentially, the `ExponentialConvectionTerm` and `PowerLawConvectionTerm` will
+term can be found in :ref:`sec:NumericalSchemes`.
+Essentially, the :class:`ExponentialConvectionTerm` and :class:`PowerLawConvectionTerm` will
 both handle most types of convection-diffusion cases, with the
-`PowerLawConvectionTerm` being more efficient.
+:class:`PowerLawConvectionTerm` being more efficient.
 
 We solve the equation
 
-   >>> eq.solve(var=var, boundaryConditions=boundaryConditions)
+>>> eq.solve(var=var, boundaryConditions=boundaryConditions)
    
 and test the solution against the analytical result
 
-.. raw:: latex
+.. math::
 
-   $$ \phi = \frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
-   or
-   \IndexFunction{exp}
+   \phi = \frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)}
+   
+or
 
-..
+.. index:: exp
 
-    >>> axis = 0
-    >>> x = mesh.getCellCenters()[axis]
-    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
-    >>> analyticalArray = CC / DD
-    >>> print var.allclose(analyticalArray)
-    1
+>>> axis = 0
+>>> x = mesh.getCellCenters()[axis]
+>>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+>>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> analyticalArray = CC / DD
+>>> print var.allclose(analyticalArray)
+1
    
 If the problem is run interactively, we can view the result:
 
-.. raw:: latex
+.. index::
+   module: viewers
 
-   \IndexModule{viewers}
-
-..
-
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=var)
-    ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=var)
+...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
      

@@ -34,37 +34,36 @@
 
 r""" 
 
-This example demonstrates the use of the `VanLeerConvectionTerm` as
+This example demonstrates the use of the :class:`VanLeerConvectionTerm` as
 defined by http://www.gre.ac.uk/~physica/phy2.12/theory/node173.htm
 
 In this example a square wave is advected. The Van Leer discretization
 should in theory do a good job of preserving the shape of the
 wave. This may or may not be happening in this case. This example
-needs further testing
+needs further testing.
 
 The test case is mainly to check that the periodic mesh is working
 correctly. We advect the wave on different meshes one periodic and one
 non-periodic but twice as long. The results are then compared. The
 periodic wave wraps around the mesh.
 
-    >>> newVar2 = var2.copy()
+>>> newVar2 = var2.copy()
 
-    >>> for step in range(steps):
-    ...	    eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
-    ...     eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
+>>> for step in range(steps):
+...	    eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
+...     eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
 
-    
-    >>> newVar2[:nx / 4] = var2[nx / 4:]
-    >>> newVar2[nx / 4:] = var2[:nx / 4]
-    >>> print newVar2.allclose(var1[nx / 4:3 * nx / 4], atol = 1e-6)
-    1
+
+>>> newVar2[:nx / 4] = var2[nx / 4:]
+>>> newVar2[nx / 4:] = var2[:nx / 4]
+>>> print newVar2.allclose(var1[nx / 4:3 * nx / 4], atol = 1e-6)
+1
 
 Currently after 20 steps the wave has lost 23% of its height. Van Leer
 should do better than this.
     
-    >>> print var1.max() > 0.77
-    1
-    
+>>> print var1.max() > 0.77
+1
 """
 
 __docformat__ = 'restructuredtext'

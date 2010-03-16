@@ -33,55 +33,51 @@
  ##
 
 r"""
-This example solves the following equation.
+This example solves the equation
 
-.. raw:: latex
+.. math::
 
-    $$ \frac{\partial \phi}{\partial x} - \alpha \phi = 0$$ with $ \phi \left( 0 \right) = 1$
-    at $x = 0$.  The boundary condition at $x = L$ will require the
-    implementation of an outflow boundary condition, which is not
-    currently
-
-implemented in FiPy. An ``ImplicitSourceTerm`` object
-
-.. raw:: latex
-
-    will be used to represent this term. The derivative of $\phi$ can be
-
-represented by a ``ConvectionTerm`` with a constant unitary velocity
+   \frac{\partial \phi}{\partial x} - \alpha \phi = 0
+   
+with :math:`\phi \left( 0 \right) = 1`
+at :math:`x = 0`.  The boundary condition at :math:`x = L` will require the
+implementation of an outflow boundary condition, which is not
+currently implemented in FiPy. An :class:`ImplicitSourceTerm` object
+will be used to represent this term. The derivative of :math:`\phi` can be
+represented by a :class:`ConvectionTerm` with a constant unitary velocity
 field from left to right. The following is an example code that includes
 a test against the analytical result.
 
-    >>> from fipy import *
+>>> from fipy import *
 
-    >>> L = 10.
-    >>> nx = 5000
-    >>> dx =  L / nx
-    >>> mesh = Grid1D(dx=dx, nx=nx)
-    >>> phi0 = 1.0
-    >>> alpha = 1.0
-    >>> phi = CellVariable(name=r"$\phi$", mesh=mesh, value=phi0)
-    >>> solution = CellVariable(name=r"solution", mesh=mesh, value=phi0 * exp(-alpha * mesh.getCellCenters()[0]))
+>>> L = 10.
+>>> nx = 5000
+>>> dx =  L / nx
+>>> mesh = Grid1D(dx=dx, nx=nx)
+>>> phi0 = 1.0
+>>> alpha = 1.0
+>>> phi = CellVariable(name=r"$\phi$", mesh=mesh, value=phi0)
+>>> solution = CellVariable(name=r"solution", mesh=mesh, value=phi0 * exp(-alpha * mesh.getCellCenters()[0]))
 
-    >>> if __name__ == "__main__":
-    ...     viewer = Viewer(vars=(phi, solution))
-    ...     viewer.plot()
-    ...     raw_input("press key to continue")
-    
-    >>> BCs = [FixedValue(faces=mesh.getFacesLeft(), value=phi0)]
+>>> if __name__ == "__main__":
+...     viewer = Viewer(vars=(phi, solution))
+...     viewer.plot()
+...     raw_input("press key to continue")
+
+>>> BCs = [FixedValue(faces=mesh.getFacesLeft(), value=phi0)]
 
 The ``RHSBC`` variable acts like an outflow boundary condition when applied as a source term.
 
-    >>> RHSBC = (((1,),) * mesh.getFacesRight()).getDivergence()
-    >>> eq = PowerLawConvectionTerm((1,)) + ImplicitSourceTerm(alpha + RHSBC)
-    >>> eq.solve(phi, boundaryConditions=BCs)
-    >>> print numerix.allclose(phi, phi0 * exp(-alpha * mesh.getCellCenters()[0]), atol=1e-3)
-    True
-    
-    >>> if __name__ == "__main__":
-    ...     viewer = Viewer(vars=(phi, solution))
-    ...     viewer.plot()
-    ...     raw_input("finished")    
+>>> RHSBC = (((1,),) * mesh.getFacesRight()).getDivergence()
+>>> eq = PowerLawConvectionTerm((1,)) + ImplicitSourceTerm(alpha + RHSBC)
+>>> eq.solve(phi, boundaryConditions=BCs)
+>>> print numerix.allclose(phi, phi0 * exp(-alpha * mesh.getCellCenters()[0]), atol=1e-3)
+True
+
+>>> if __name__ == "__main__":
+...     viewer = Viewer(vars=(phi, solution))
+...     viewer.plot()
+...     raw_input("finished")    
 
 
 """

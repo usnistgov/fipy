@@ -35,49 +35,49 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/mesh1D.py` with `nx = 10` and `ny = 10`.
+:mod:`examples.diffusion.convection.exponential1D.mesh1D` with ``nx = 10`` and ``ny = 10``.
 
-    >>> from fipy import *
+>>> from fipy import *
 
-    >>> L = 10.
-    >>> nx = 10
-    >>> ny = 10
-    >>> mesh = Tri2D(L / nx, L / ny, nx, ny)
+>>> L = 10.
+>>> nx = 10
+>>> ny = 10
+>>> mesh = Tri2D(L / nx, L / ny, nx, ny)
 
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
+>>> valueLeft = 0.
+>>> valueRight = 1.
 
-    >>> var = CellVariable(name = "concentration",
-    ...                    mesh = mesh,
-    ...                    value = valueLeft)
+>>> var = CellVariable(name = "concentration",
+...                    mesh = mesh,
+...                    value = valueLeft)
 
-    >>> boundaryConditions = (
-    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
-    ...     FixedValue(mesh.getFacesRight(), valueRight),
-    ... )
+>>> boundaryConditions = (
+...     FixedValue(mesh.getFacesLeft(), valueLeft),
+...     FixedValue(mesh.getFacesRight(), valueRight),
+... )
 
-    >>> diffCoeff = 1.
-    >>> convCoeff = (10.,0.)
-    
-    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...       + ExponentialConvectionTerm(coeff=convCoeff))
+>>> diffCoeff = 1.
+>>> convCoeff = (10.,0.)
 
-    >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions)
+>>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+...       + ExponentialConvectionTerm(coeff=convCoeff))
+
+>>> eq.solve(var = var,
+...          boundaryConditions = boundaryConditions)
     
 The analytical solution test for this problem is given by:
 
-   >>> axis = 0
-   >>> x = mesh.getCellCenters()[axis]
-   >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
-   >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
-   >>> analyticalArray = CC / DD
-   >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
-   1
-   
-   >>> if __name__ == '__main__':
-   ...     viewer = Viewer(vars = var)
-   ...     viewer.plot()
+>>> axis = 0
+>>> x = mesh.getCellCenters()[axis]
+>>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+>>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> analyticalArray = CC / DD
+>>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
+1
+
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars = var)
+...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
      

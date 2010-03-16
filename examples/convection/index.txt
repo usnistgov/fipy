@@ -1,6 +1,6 @@
-------------------
+-------------------
 Convection Examples
-------------------
+-------------------
 
 .. autosummary::
    :toctree: generated

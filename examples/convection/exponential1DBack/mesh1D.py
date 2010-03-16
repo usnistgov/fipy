@@ -32,58 +32,53 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
-This example solves the steady-state convection-diffusion equation as described in::
-`examples/diffusion/convection/exponential1D/input.py` but with
+This example solves the steady-state convection-diffusion equation as described in
+:mod:`examples.diffusion.convection.exponential1D.input` but with
+:math:`\vec{u} = (-10,)`.
 
-.. raw:: latex
+>>> from fipy import *
 
-    $ \\vec{u} = (-10,)$.
+>>> L = 10.
+>>> nx = 1000
+>>> mesh = Grid1D(dx = L / nx, nx = nx)
 
-..
+>>> valueLeft = 0.
+>>> valueRight = 1.
 
-    >>> from fipy import *
+>>> var = CellVariable(name = "concentration",
+...                    mesh = mesh,
+...                    value = valueLeft)
 
-    >>> L = 10.
-    >>> nx = 1000
-    >>> mesh = Grid1D(dx = L / nx, nx = nx)
+>>> boundaryConditions = (
+...     FixedValue(mesh.getFacesLeft(), valueLeft),
+...     FixedValue(mesh.getFacesRight(), valueRight),
+... )
 
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
+>>> diffCoeff = 1.
+>>> convCoeff = (-10.,)
 
-    >>> var = CellVariable(name = "concentration",
-    ...                    mesh = mesh,
-    ...                    value = valueLeft)
+>>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+...       + ExponentialConvectionTerm(coeff=convCoeff))
 
-    >>> boundaryConditions = (
-    ...     FixedValue(mesh.getFacesLeft(), valueLeft),
-    ...     FixedValue(mesh.getFacesRight(), valueRight),
-    ... )
-
-    >>> diffCoeff = 1.
-    >>> convCoeff = (-10.,)
-    
-    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...       + ExponentialConvectionTerm(coeff=convCoeff))
-
-    >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
+>>> eq.solve(var = var,
+...          boundaryConditions = boundaryConditions,
+...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
 
 We test the solution against the analytical result:
 
-    >>> axis = 0
-    >>> x = mesh.getCellCenters()[axis]
-    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
-    >>> analyticalArray = CC / DD
-    >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
-    1
+>>> axis = 0
+>>> x = mesh.getCellCenters()[axis]
+>>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+>>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> analyticalArray = CC / DD
+>>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
+1
    
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars = var)
-    ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars = var)
+...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
      
