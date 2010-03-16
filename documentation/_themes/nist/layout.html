@@ -2,10 +2,6 @@
 {# put the sidebar before the body #}
 {% block sidebar1 %}{{ sidebar() }}{% endblock %}
 {% block sidebar2 %}{% endblock %}
-{% block linktags %}
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-{{ super() }}
-{% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="http://www.nist.gov/commonspot/javascript/browser-all.js"></script>
 <script type="text/javascript" src="http://www.nist.gov/js/spry/SpryDOMUtils.js"></script>
@@ -18,9 +14,9 @@
         <li><a href="http://www.nist.gov/">NIST Home</a>{{ reldelim1 }}</li>
         <li><a href="http://www.nist.gov/msel/">MSEL</a>{{ reldelim1 }}</li>
         <li><a href="http://www.nist.gov/msel/ctcms/">CTCMS</a>{{ reldelim1 }}</li>
-        <li><img src="{{ pathto('_static/py.png', 1) }}" alt=""
+        <li><a href="{{ pathto('index') }}"><img src="{{ pathto('_static/fipy.png', 1) }}" alt=""
                  style="vertical-align: middle; margin-top: -1px"/></li>
-        <li><a href="{{ pathto('index') }}">FiPy {{ release }}</a>{{ reldelim1 }}</li>
+        FiPy</a>{{ reldelim1 }}</li>
 {% endblock %}
 {% block relbar1 %}
     <a name="__topdoc__"></a><script type="text/javascript" src="http://www.nist.gov/commonspot/javascript/browser-all.js"></script><script src="http://www.nist.gov/commonspot/pagemode/always-include-common.js" type="text/javascript"></script><script src="http://www.nist.gov/commonspot/pagemode/always-include-moz.js" type="text/javascript"></script><div id="base-template-wrapper" class="msel">
@@ -141,7 +137,8 @@
 <a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pub=usnistgov"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0" align="right" /></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pub=usnistgov"></script>
 <!-- AddThis Button END -->  
 {{ super() }}
-<b>FiPy: A Finite Volume PDE Solver Using Python</b>
+<b>FiPy: A Finite Volume PDE Solver Using Python</b><br />
+Version {{ release }}
 {% endblock %}
 {% block footer %}
     <div class="footer msel">
