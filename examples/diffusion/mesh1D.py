@@ -230,8 +230,8 @@ and rerun with much larger time steps
 >>> if __name__ == '__main__':
 ...     raw_input("Implicit transient diffusion. Press <return> to proceed...")
 
-.. image:: examples/diffusion/mesh1Dimplicit.pdf
-   :scale: 50
+.. image:: mesh1Dimplicit.*
+   :width: 90%
    :align: center
 
 Note that although much larger *stable* timesteps can be taken with this
@@ -308,8 +308,8 @@ of :math:`10^{-10}`.
 >>> if __name__ == '__main__':
 ...     raw_input("Implicit steady-state diffusion. Press <return> to proceed...")
 
-.. image:: examples/diffusion/mesh1DsteadyState.pdf
-   :scale: 50
+.. image:: mesh1DsteadyState.*
+   :width: 90%
    :align: center
        
 ------
@@ -348,8 +348,8 @@ condition will automatically update,
 >>> if __name__ == '__main__':
 ...     raw_input("Time-dependent boundary condition. Press <return> to proceed...")
 
-.. image:: examples/diffusion/mesh1DtimedBC.pdf
-   :scale: 50
+.. image:: mesh1DtimedBC.*
+   :width: 90%
    :align: center
 
 ------
@@ -442,8 +442,8 @@ And finally, we can plot the result
 ...     raw_input("Non-uniform steady-state diffusion. Press <return> to proceed...")
 
 
-.. image:: examples/diffusion/mesh1Dnon-uniform.pdf
-   :scale: 50
+.. image:: mesh1Dnon-uniform.*
+   :width: 90%
    :align: center
 
 ------
@@ -592,8 +592,8 @@ can just solve for it directly
 ...     raw_input("Implicit variable diffusity - steady-state. \
 ... Press <return> to proceed...")
 
-.. image:: examples/diffusion/mesh1Dvariable.pdf
-   :scale: 50
+.. image:: mesh1Dvariable.*
+   :width: 90%
    :align: center
 
 ------

@@ -157,8 +157,8 @@ If we are running the example interactively, we view the result
     ...     viewer.plot()
     ...     raw_input("Press any key to continue...")
 
-.. image:: examples/diffusion/electrostatics/uniform.pdf
-   :scale: 50
+.. image:: electrostatics/uniform.*
+   :width: 90%
    :align: center
     
 Next, we segregate all of the electrons to right side of the domain
@@ -206,8 +206,8 @@ and again view the result
     ...     viewer.plot()
     ...     raw_input("Press any key to continue...")
 
-.. image:: examples/diffusion/electrostatics/right.pdf
-   :scale: 50
+.. image:: electrostatics/right.pdf
+   :width: 90%
    :align: center
 
 Finally, we segregate all of the electrons to the left side of the
@@ -254,8 +254,8 @@ and once again view the result
     >>> if __name__ == '__main__':
     ...     viewer.plot()
 
-.. image:: examples/diffusion/electrostatics/left.pdf
-   :scale: 50
+.. image:: electrostatics/left.pdf
+   :width: 90%
    :align: center
 
 """

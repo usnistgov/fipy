@@ -112,8 +112,8 @@ We can now create a viewer to see the mesh
     ...     except:
     ...         print "Unable to create a viewer for an irregular mesh (try Gist2DViewer or Matplotlib2DViewer)"
 
-.. image:: examples/diffusion/circleMesh.pdf
-   :scale: 50
+.. image:: circleMesh.*
+   :width: 90%
    :align: center
 
 We set up a transient diffusion equation
@@ -158,8 +158,8 @@ We first step through the transient problem
     ...     if viewer is not None:
     ...         viewer.plot()
 
-.. image:: examples/diffusion/circleTransient.pdf
-   :scale: 50
+.. image:: circleTransient.*
+   :width: 90%
    :align: center
    
 -----
@@ -241,8 +241,8 @@ Display the results if run as a script.
     ...     viewer.plot()
     ...     raw_input("Steady-state diffusion. Press <return> to proceed...")
 
-.. image:: examples/diffusion/circleSteadyState.pdf
-   :scale: 50
+.. image:: circleSteadyState.pdf
+   :width: 90%
    :align: center
 
 .. |FiPy| raw:: latex

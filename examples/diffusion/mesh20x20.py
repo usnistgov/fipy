@@ -123,8 +123,8 @@ and solve the equation by repeatedly looping in time:
     ...     if __name__ == '__main__':
     ...         viewer.plot()
 
-.. image:: examples/diffusion/mesh20x20transient.pdf
-   :scale: 50
+.. image:: mesh20x20transient.*
+   :width: 90%
    :align: center
 
 ..
@@ -146,8 +146,8 @@ We can also solve the steady-state problem directly
     >>> if __name__ == '__main__':
     ...     viewer.plot()
 
-.. image:: examples/diffusion/mesh20x20steadyState.pdf
-   :scale: 50
+.. image:: mesh20x20steadyState.*
+   :width: 90%
    :align: center
 
 and test the value of the bottom-right corner cell.
