@@ -1,8 +1,6 @@
 Frequently Asked Questions
 ==========================
 
-.. contents::
-
 .. raw:: latex
 
    \minitoc[e]
@@ -67,8 +65,8 @@ constant vector in the form of a Python list or tuple,
 
 .. note::
 
-   As discussed in Section~\ref{sec:NumericalSchemes}, the
-   convection schemes need to calculate a P\'eclet number,
+   As discussed in :ref:`sec:NumericalSchemes`, the
+   convection schemes need to calculate a Peclet number,
    and therefore need to know about any diffusion term
    used in the problem.  It is hoped that this dependency
    can be automated in the future.
@@ -98,7 +96,7 @@ theoretically possible to create an explicit diffusion term with
 Unfortunately, in this form, any boundary conditions on :math:`\phi` will not be
 accounted for.
 
-:label:`FAQ-higherOrderDiffusion`
+.. _FAQ-higherOrderDiffusion:
 
 How do I represent a term :math:`\nabla^4 \phi` or :math:`\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(  \Gamma_2 \nabla \phi\right) \right) \right)` such as for  Cahn-Hilliard? 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,8 +122,7 @@ which represents :math:`5 \partial_x^2 + \partial_y^2`.  Notice that
 the tensor, written in the form of a list, is contained within
 a list. This is because the first index of the list refers to
 the order of the term not the first index of the tensor (see
-the FAQ, Chapter~\ref{FAQ-higherOrderDiffusion}
-"\titleref{FAQ-higherOrderDiffusion}"). This
+the FAQ, :ref:`FAQ-higherOrderDiffusion`). This
 notation, although succinct can sometimes be confusing so a
 number of cases are interpreted below.
 
@@ -160,13 +157,10 @@ number of cases are interpreted below.
     \equiv x \partial_x - y \partial_y + x^2 \partial_x^2 - y^2
     \partial_y^2`.
 
-    Generally, anisotropy is not conveniently aligned
-    along the coordinate axes; in these cases, it is necessary
-    to apply a rotation matrix in order to calculate the
-    correct tensor values, see
-    Chapter~\ref{sec:Examples:diffusion:anisotropy}
-    "\titleref{sec:Examples:diffusion:anisotropy}" for
-    details.
+    Generally, anisotropy is not conveniently aligned along the coordinate
+    axes; in these cases, it is necessary to apply a rotation matrix in
+    order to calculate the correct tensor values, see
+    :ref:`sec:Examples:diffusion:anisotropy` for details.
 
 What if the term isn't one of those?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,7 +176,7 @@ mathematical form, *e.g.*, :math:`3\kappa^2 + b \sin
 .. note::
 
    Functions like :func:`sin` can be obtained from the
-   \EpydocDottedName{fipy.tools.numerix} module.
+   :mod:`fipy.tools.numerix` module.
 
    .. warning::
 
@@ -271,7 +265,7 @@ directly, in the manner of Equation~\eqref{eqn:num:tra}, as
 
     >>> TransientTerm(coeff = rho1) == rho2 * (xi - xi.getOld()) / timeStep
 
-This technique is used in Example~\ref{examples:phase:anisotropy}.
+This technique is used in :ref:`examples:phase:anisotropy`.
     
 What if my term involves the dependent variable, but not where |FiPy| puts it?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -310,7 +304,7 @@ appears:
 
    Due to the nonlinearity of the coefficient, it will probably be
    necessary to "sweep" the solution to convergence as discussed in
-   FAQ~\ref{FAQ-IterationsTimestepsSweeps}.
+   :ref:`FAQ-IterationsTimestepsSweeps`.
 
 How can I see what I'm doing?
 -----------------------------
@@ -321,19 +315,19 @@ How do I export data?
 The way to save your calculations depends on how you plan to make use of
 the data. If you want to save it for "restart" (so that you can continue
 or redirect a calculation from some intermediate stage), then you'll want
-to "pickle" the \Python{} data with the \Module{dump} module. This is
-illustrated in Examples~\ref{examples:phase:anisotropy},
-\ref{examples:phase:impingement:mesh40x1},
-\ref{examples:phase:impingement:mesh20x20}, and
-\ref{examples:levelSet:electroChem:howToWriteAScript}.
+to "pickle" the \Python{} data with the :mod:`dump` module. This is
+illustrated in :ref:`examples:phase:anisotropy`,
+:ref:`examples:phase:impingement:mesh40x1`,
+:ref:`examples:phase:impingement:mesh20x20`, and
+:ref:`examples:levelSet:electroChem:howToWriteAScript`.
    
 On the other hand, pickled |FiPy| data is of little use to anything
 besides \Python{} and |FiPy|. If you want to import your calculations into
 another piece of software, whether to make publication-quality graphs or
 movies, or to perform some analysis, or as input to another stage of a
-multiscale model, then you can save your data as an \textsc{ascii} text
+multiscale model, then you can save your data as an :abbr:`ASCII` text
 file of tab-separated-values with a :class:`TSVViewer`. This is illustrated
-in Example~\ref{examples:diffusion:circle}.
+in :ref:`examples:diffusion:circle`.
    
 How do I save a plot image?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -388,7 +382,8 @@ How do I make a movie?
 individual frames (see the previous question) and then stitch them together
 into a movie, using one of a variety of different free, shareware, or
 commercial software packages. The guidance in the
-`Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ should be adaptable to other :class:`Viewer`\s.
+`Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ 
+should be adaptable to other :class:`Viewer`\s.
 
 Why don't the :class:`Viewer`\s look the way I want?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -403,10 +398,10 @@ want, and then issue supplemental commands for the underlying plotting
 package. The better option is to make a "subclass" of the |FiPy|
 :class:`Viewer` that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting |FiPy| do
-most of the heavy lifting. See \ref{examples:phase:anisotropy} for an
+most of the heavy lifting. See :ref:`examples:phase:anisotropy` for an
 example of creating a custom \Matplotlib{} :class:`Viewer` class.
 
-\label{FAQ-IterationsTimestepsSweeps}
+.. _FAQ-IterationsTimestepsSweeps:
 
 Iterations, timesteps, and sweeps? Oh, my!
 ------------------------------------------
@@ -421,8 +416,8 @@ many similar PDE solvers), there are three layers of repetition.
       which you'll generally need to spend the least time thinking
       about. |FiPy| solves PDEs by discretizing them into a set of
       linear equations in matrix form, as explained in
-      Sections~\ref{section:discretization} and
-      \ref{section:linear-equations}. It is not always practical, or
+      :ref:`section:discretization` and
+      :ref:`section:linear-equations`. It is not always practical, or
       even possible, to exactly solve these matrix equations on a
       computer. |FiPy| thus employs "iterative solvers", which
       make successive approximations until the linear equations have
@@ -444,8 +439,8 @@ many similar PDE solvers), there are three layers of repetition.
          in favor of :keyword:`iterations=` to make the role clearer.
 
       Solver iterations are changed from their defaults in
-      Examples~\ref{examples:flow:stokesCavity} and
-      \ref{examples:update0-1to1-0}.
+      :ref:`examples:flow:stokesCavity` and
+      :ref:`examples:update0-1to1-0`.
     
     sweeps
       This middle layer of repetition is important
@@ -457,8 +452,8 @@ many similar PDE solvers), there are three layers of repetition.
       PDE to absolute perfection by performing an infinite number of
       iterations, the solution may still not be a very good
       representation of the actual *non-linear* PDE. If we
-      resolve the same equation \emph{at the same point in elapsed
-      time}, but use the result of the previous solution instead of 
+      resolve the same equation *at the same point in elapsed
+      time*, but use the result of the previous solution instead of 
       the previous timestep, then we can get a refined solution to 
       the *non-linear* PDE in a process known as "sweeping." 
 
@@ -498,9 +493,9 @@ many similar PDE solvers), there are three layers of repetition.
           ...     residual = eq.sweep(var=myVar, ...)
 
       Sweeps are used to achieve better solutions in
-      Examples~\ref{examples:diffusion:mesh1D}, 
-      \ref{examples:phase:simple}, 
-      \ref{examples:phase:binary}, and \ref{examples:flow:stokesCavity}.
+      :ref:`examples:diffusion:mesh1D`, 
+      :ref:`examples:phase:simple`, 
+      :ref:`examples:phase:binary`, and :ref:`examples:flow:stokesCavity`.
 
     timesteps
       This outermost layer of repetition is of most practical interest to
@@ -542,11 +537,11 @@ many similar PDE solvers), there are three layers of repetition.
 
       A majority of the examples in this manual illustrate time evolving
       behavior. Notably, boundary conditions are made a function of elapsed
-      time in Example~\ref{examples:diffusion:mesh1D}. The timestep is
+      time in :ref:`examples:diffusion:mesh1D`. The timestep is
       chosen based on the expected interfacial velocity in
-      Example~\ref{examples:phase:simple}. The timestep is gradually
+      :ref:`examples:phase:simple`. The timestep is gradually
       increased as the kinetics slow down in
-      Example~\ref{sec:Examples:cahnHilliard:mesh2D}.
+      :ref:`sec:Examples:cahnHilliard:mesh2D`.
 
 Finally, we can (and often do) combine all three layers of repetition:
 
@@ -621,9 +616,9 @@ on a given boundary edge with :math:`\vec{n}` pointing out of the boundary.
 The quantity :math:`\Gamma` represents the diffusion coefficient and :math:`\vec{u}`
 represents the convection coefficient for a general convection-diffusion
 equation of the type given in Eq.~\eqref{eqn:num:gen}. See
-Example~\ref{sec:Examples:convection:robin} for a usage case.
+:ref:`sec:Examples:convection:robin` for a usage case.
 
-\label{FAQ-anyBoundaryCondition}
+.. _FAQ-anyBoundaryCondition:
 
 I can't get the :class:`FixedValue` or :class:`FixedFlux` boundary condition objects to work right. What do I do now?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -659,8 +654,8 @@ be a variable that defines a relationship between other variables rather than
 a simple container object. To finish off, the :meth:`.boundarySource.getDivergence` object
 must be added to the regular equation
 
-    >>> eqn = TransientTerm() + ConvectionTerm(convectionSource) = \
-    ...     DiffusionSource(diffusionCoeff) + boundarySource.getDivergence()
+    >>> eqn = (TransientTerm() + ConvectionTerm(convectionSource) 
+    ...        = DiffusionSource(diffusionCoeff) + boundarySource.getDivergence())
 
 No other boundary conditions need to be applied. It may be necessary to reset
 or update the values of ``boundarySource``, ``diffusionCoeff`` and
@@ -670,14 +665,14 @@ conditions, it is often easier to implement the technique described here
 rather than trying to get the :class:`FixedValue` and :class:`FixedFlux`
 boundary conditions to work correctly.
 
-\label{FAQ-inletOutletBoundaryCondition}
+.. _FAQ-inletOutletBoundaryCondition:
 
 How do I apply an outlet or inlet boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There is no good way to do this with the standard boundary conditions in
 |FiPy| and thus one needs to use the method suggested above,
-see~\ref{FAQ-anyBoundaryCondition} "\titleref{FAQ-anyBoundaryCondition}".
+see :ref:`FAQ-anyBoundaryCondition`\.
 Currently, boundary conditions for the :class:`ConvectionTerm` assume a
 :class:`FixedFlux` boundary condition with a ``value`` of 0. This is in
 fact not the most intuitive default boundary condition, a natural outlet or
@@ -702,13 +697,13 @@ inlet/outlet boundary condition applies. The divergence of the
 boundary conditions and an explicit formulation for inlet boundary
 conditions, consistent with an upwind convection scheme.
 
-    >>> eqn = TransientTerm() + ConvectionTerm(convectionCoeff) + \
-    ...     ImplicitSourceTerm(exteriorCoeff.getDivergence()) == DiffusionTerm(diffusionCoeff)
+    >>> eqn = (TransientTerm() + ConvectionTerm(convectionCoeff)
+    ...        + ImplicitSourceTerm(exteriorCoeff.getDivergence()) 
+    ...        == DiffusionTerm(diffusionCoeff))
 
 As in the previous section, the coefficient values may need updating on the
-exterior faces between sweeps. See
-Example~\ref{sec:Examples:convection:source}
-"\titleref{sec:Examples:convection:source}" for an example of this usage.
+exterior faces between sweeps. See :ref:`sec:Examples:convection:source`
+for an example of this usage.
 
 How do I apply a fixed gradient?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -731,12 +726,12 @@ the form
     >>> FixedValue(value=phi.getFaceValue(), faces=myFaces)
 
 This is not an "implicit" boundary condition so would in general require
-sweeps to reach convergence. See Example~\ref{sec:Examples:convection:source}
-"\titleref{sec:Examples:convection:source}" for an example of this usage.
+sweeps to reach convergence. See :ref:`sec:Examples:convection:source`
+for an example of this usage.
 In the case of a non-zero gradient one would need to employ the techniques in
-both~\ref{FAQ-anyBoundaryCondition} "\titleref{FAQ-anyBoundaryCondition}"
-and~\ref{FAQ-inletOutletBoundaryCondition}
-"\titleref{FAQ-inletOutletBoundaryCondition}" without using either a
+both :ref:`FAQ-anyBoundaryCondition`
+and :ref:`FAQ-inletOutletBoundaryCondition`
+without using either a
 :class:`FixedValue` or a :class:`FixedFlux` object.
 
 How do I apply spatially varying boundary conditions?
@@ -771,10 +766,8 @@ when its called,
     >>> eqn.solve(..., boundaryConditions=BCs)
 
 Further demonstrations of spatially varying boundary condition can be found
-in Examples~\ref{sec:Examples:diffusion:mesh20x20}
-"\titleref{sec:Examples:diffusion:mesh20x20}"
-and~\ref{sec:Examples:diffusion:circle}
-"\titleref{sec:Examples:diffusion:circle}"
+in :ref:`sec:Examples:diffusion:mesh20x20`
+and :ref:`sec:Examples:diffusion:circle`
 
 .. %    http://thread.gmane.org/gmane.comp.python.fipy/726
    %    http://thread.gmane.org/gmane.comp.python.fipy/846
@@ -814,14 +807,14 @@ more locations.``
   result when using the \SciPy{} \weave{} package via the
   :option:`--inline` flag. It is due to a bug in \SciPy{} that has been
   patched in their source repository:
-  \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
+  http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html.
       
 ``numerix Numeric 23.6``
   This is neither an error nor a warning. It's just a sloppy 
   message left in \SciPy{}:
-  \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
+  http://thread.gmane.org/gmane.comp.python.scientific.user/4349.
 
-\label{FAQ-FlagsAndEnvironmentVariables}
+.. _FAQ-FlagsAndEnvironmentVariables:
 
 How do I change |FiPy|'s default behavior?
 -------------------------------------------
@@ -900,7 +893,7 @@ Why don't my scripts work anymore?
 
 |FiPy| has experienced two major API changes. The steps 
 necessary to upgrade older scripts are discussed in 
-Chapter~\ref{chap:UpdateFiPy}.
+:ref:`chap:UpdateFiPy`.
 
 What if my question isn't answered here?
 ----------------------------------------
