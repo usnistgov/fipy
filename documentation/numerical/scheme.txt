@@ -47,7 +47,7 @@ the upwind scheme,
   Equation :eq:`eqn:num:ups` satisfies the inequality in
   Equation :eq:`eqn:num:inq` for all values of :math:`P_f`.  However the
   solution over predicts the diffusive term leading to excessive
-  numerical smearing (``false diffusion'').
+  numerical smearing ("false diffusion").
 
 the exponential scheme, 
   where

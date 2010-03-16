@@ -4,26 +4,29 @@ Finite Volume Method
 To use the FVM, the solution domain must first be divided into
 non-overlapping polyhedral elements or cells.  A solution domain
 divided in such a way is generally known as a mesh (as we will see, a
-\Class{Mesh} is also a \FiPy{} object).  A mesh consists of vertices,
-faces and cells (see Figure~\ref{fig:meshcartoon}).  In the FVM the
+:class:`Mesh` is also a :term:`FiPy` object).  A mesh consists of vertices,
+faces and cells (see Figure :ref:`fig:meshcartoon`).  In the FVM the
 variables of interest are averaged over control volumes (CVs).  The
 CVs are either defined by the cells or are centered on the vertices.
 
-\begin{figure}
- \begin{center}
-%  \resizebox{8cm}{!}{\includegraphics[width=8cm]{numerical/meshcartoon.pdf}}
- \includegraphics[width=8cm]{numerical/meshcartoon.pdf}
- \caption{A mesh consists of cells, faces and vertices. For the
- purposes of \FiPy{}, the divider between two cells is known as a face
- for all dimensions.}  \label{fig:meshcartoon} \end{center}
-\end{figure}
+.. _fig:meshcartoon:
+
+.. figure:: meshcartoon.*
+   :width: 50%
+   :align: center
+
+   Mesh
+
+   A mesh consists of cells, faces and vertices. For the purposes of
+   :term:`FiPy`, the divider between two cells is known as a face for all
+   dimensions.
 
 Cell Centered FVM (CC-FVM)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the CC-FVM the CVs are formed by the mesh cells with the cell
-center ``storing'' the average variable value in the CV, (see
-Figure~\ref{fig:vc-cc-fv}). The face fluxes are approximated using the
+center "storing" the average variable value in the CV, (see
+Figure :ref:`fig:vc-cc-fv`). The face fluxes are approximated using the
 variable values in the two adjacent cells surrounding the face. This
 low order approximation has the advantage of being efficient and
 requiring matrices of low band width (the band width is equal to the
@@ -32,7 +35,7 @@ requirement. However, the mesh topology is restricted due to
 orthogonality and conjunctionality requirements. The value at a face is
 assumed to be the average value over the face. On an unstructured mesh
 the face center may not lie on the line joining the CV centers, which
-will lead to an error in the face interpolation. \FiPy{} currently
+will lead to an error in the face interpolation. :term:`FiPy` currently
 only uses the CC-FVM.
 
 Vertex Centered FVM (VC-FVM)
@@ -40,38 +43,39 @@ Vertex Centered FVM (VC-FVM)
 
 In the VC-FVM, the CV is centered around the vertices and the cells
 are divided into sub-control volumes that make up the main CVs (see
-Figure~\ref{fig:vc-cc-fv}). The vertices ``store'' the average
+Figure :ref:`fig:vc-cc-fv`). The vertices "store" the average
 variable values over the CVs. The CV faces are constructed within the
 cells rather than using the cell faces as in the CC-FVM. The face
 fluxes use all the vertex values from the cell where the face is
 located to calculate interpolations. For this reason, the VC-FVM is
 less efficient and requires more storage (a larger matrix band width)
 than the CC-FVM. However, the mesh topology does not have the same
-restrictions as the CC-FVM. \FiPy{} does not have a VC-FVM capability.
+restrictions as the CC-FVM. :term:`FiPy` does not have a VC-FVM capability.
 
-%Future releases of \FiPy{} will have both
+%Future releases of :term:`FiPy` will have both
 %the CC-FVM and VC-FVM capabilities.
 
-\begin{figure}
-\begin{center}
-%  \rotatebox{-90}{\resizebox{6cm}{!}{\includegraphics{numerical/vc-cc-fv.pdf}}}
- \includegraphics[width=6cm,angle=-90]{numerical/vc-cc-fv.pdf}
- \caption{CV structure for an unstructured mesh, (a) :math:`\Omega_a`
- represents a vertex-based CV and (b) :math:`\Omega_1`, :math:`\Omega_2`,
- :math:`\Omega_3` and :math:`\Omega_4` represent cell centered CVs. }
- \label{fig:vc-cc-fv}
-\end{center}
-\end{figure}
+.. _fig:vc-cc-fv:
+
+.. figure:: vc-cc-fv.*
+   :width: 50%
+   :align: center
+
+   CV structure for an unstructured mesh
+
+   (a) :math:`\Omega_a` represents a vertex-based CV and (b)
+   :math:`\Omega_1`, :math:`\Omega_2`, :math:`\Omega_3` and
+   :math:`\Omega_4` represent cell centered CVs.
 
 .. _section:discretization:
 
 Discretization
 --------------
 
-The first step in the discretization of Equation~\eqref{eqn:num:gen}
+The first step in the discretization of Equation :eq:`num:gen`
 using the CC-FVM is to integrate over a CV and then make appropriate
 approximations for fluxes across the boundary of each CV.  In this
-section, each term in Equation~\eqref{eqn:num:gen} will be examined
+section, each term in Equation :eq:`num:gen` will be examined
 separately.
 
 Transient Term
@@ -80,14 +84,14 @@ Transient Term
 For the transient term, the discretization of the integral :math:`\int_V` over the volume of a CV is given by
 
 .. math::
-   :label: eqn:num:tra
+   :label: num:tra
 
    \int_V \frac{\partial (\rho \phi)}{\partial t} dV
    \simeq
    \frac{(\rho_{P} \phi_{P} - \rho_{P}^\text{old} \phi_{P}^\text{old}) V_P}{\Delta t}
 
 where :math:`\phi_P` represents the average value of :math:`\phi` in a CV
-centered on a point :math:`P` and the superscript ``:math:`\text{old}`''
+centered on a point :math:`P` and the superscript ":math:`\text{old}`"
 represents the previous time-step value.  The value :math:`V_P` is the
 volume of the CV and :math:`\Delta t` is the time step size.
 
@@ -97,7 +101,7 @@ Convection Term
 The discretization for the convection term is given by
 
 .. math::
-   :label: eqn:num:con
+   :label: num:con
 
    \int_V \nabla \cdot (\vec{u} \phi)\,dV &= 
    \int_S (\vec{n} \cdot \vec{u})\phi\,dS \\
@@ -126,7 +130,7 @@ Diffusion Term
 The discretization for the diffusion term is given by
 
 .. math::
-   :label: eqn:num:dif
+   :label: num:dif
 
    \int_V \nabla \cdot (\Gamma\nabla\{\ldots\}) dV 
    &= \int_S \Gamma (\vec{n} \cdot \nabla\{\ldots\}) dS \\
@@ -146,7 +150,7 @@ where the value of :math:`d_{AP}` is the distance between neighboring cell
 centers.  This estimate relies on the orthogonality of the mesh, and
 becomes increasingly inaccurate as the non-orthogonality increases.
 Correction terms have been derived to improve this error but are not
-currently included in \FiPy{}~\cite{croftphd}.
+currently included in :term:`FiPy` \cite{croftphd}.
 
 Source Term
 ~~~~~~~~~~~
@@ -154,13 +158,13 @@ Source Term
 The discretization for the source term is given by, 
 
 .. math::
-   :label: eqn:num:sou
+   :label: num:sou
 
    \int_V S_{\phi}\,dV \simeq S_\phi V_P.
 
 Including any negative dependence of :math:`S_\phi` on :math:`\phi` increases
 solution stability. The dependence can only be included in a linear
-manner so Equation~\eqref{eqn:num:sou} becomes
+manner so Equation :eq:`num:sou` becomes
 
 .. math::
 
@@ -179,19 +183,19 @@ The aim of the discretization is to reduce the continuous general
 equation to a set of discrete linear equations that can then be solved
 to obtain the value of the dependent variable at each CV center. This
 results in a sparse linear system that requires an efficient iterative
-scheme to solve. The iterative schemes available to \FiPy{} are
+scheme to solve. The iterative schemes available to :term:`FiPy` are
 currently encapsulated in the \href{#id5}{spmatrix} suite of solvers
 and include most common solvers such as the conjugate gradient method
 and LU decomposition. There are plans to include other solver suites
 that are compatible with \Python{}.
 
-Combining Equations~\eqref{eqn:num:tra}, \eqref{eqn:num:con},
-\eqref{eqn:num:dif} and \eqref{eqn:num:sou}, the complete
-discretization for equation~\eqref{eqn:num:gen} can now be written for
+Combining Equations :eq:`num:tra`, :eq:`num:con`,
+:eq:`num:dif` and :eq:`num:sou`, the complete
+discretization for equation :eq:`num:gen` can now be written for
 each CV as
 
 .. math::
-   :label: eqn:num:dis
+   :label: num:dis
 
    \frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t}
    = &
@@ -204,12 +208,12 @@ each CV as
    V_P ( S_0 + S_1 \phi_P ).
 
 
-Equation~\eqref{eqn:num:dis} is now in the form of a set of linear
+Equation :eq:`num:dis` is now in the form of a set of linear
 combinations between each CV value and its neighboring values and can be
 written in the form
 
 .. math::
-   :label: eqn:num:dap
+   :label: num:dap
 
    a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P,
 
