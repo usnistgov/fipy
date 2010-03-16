@@ -203,16 +203,19 @@ htmlhelp_basename = 'FiPydoc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
+common_preamble = r"""
+    \usepackage[amssymb]{SIunits}
+    \usepackage{changepage}
+
+    \DeclareMathOperator{\erf}{erf}
+    \providecommand{\abs}[1]{\lvert#1\rvert}
+    """
+
 latex_elements = {
     'fncychap': r"""
     \usepackage[PetersLenny]{fncychap}
     """,
-    'preamble': r"""
-    \usepackage[amssymb]{SIunits}
-    \usepackage{changepage}
-    
-    \DeclareMathOperator{\erf}{erf}
-    \providecommand{\abs}[1]{\lvert#1\rvert}
+    'preamble': common_preamble + r"""
 
     \makeatletter
     \renewcommand{\maketitle}{%
@@ -313,7 +316,7 @@ latex_appendices = ['documentation/refs.bib_cited']
 # If false, no module index is generated.
 #latex_use_modindex = True
 
-pngmath_latex_preamble = latex_elements['preamble']
+pngmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {'http://docs.python.org/': None,
