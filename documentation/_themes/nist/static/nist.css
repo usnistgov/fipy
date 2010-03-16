@@ -291,7 +291,7 @@ hr {
 
 a tt {
     border: 0;
-    color: #CA7900;
+    color: #4070A0;
 }
 
 a tt:hover {
@@ -392,4 +392,16 @@ div.versioninfo {
 
 ol.simple, ul.simple {
     margin-bottom:1em;
+}
+
+ul.simple {
+    list-style-type:disc;
+    margin:0 0 2% 3%;
+    padding:0;
+}
+
+li.toctree-l1, li.toctree-l2, li.toctree-l3, li.toctree-l4, 
+li.toctree-l5, li.toctree-l6, li.toctree-l7, li.toctree-l8 {
+    margin:0 0 2% 3%;
+    padding:0;
 }
