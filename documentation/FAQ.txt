@@ -375,7 +375,7 @@ in the
 `Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup>`_. 
 Basically, you need to tell \Matplotlib{} to use an "image
 backend," such as "``Agg``" or "``Cairo``." Backends are discussed at
-\url{http://matplotlib.sourceforge.net/backends.html}.
+http://matplotlib.sourceforge.net/backends.html.
 
 How do I make a movie?
 ~~~~~~~~~~~~~~~~~~~~~~
