@@ -8,4 +8,5 @@ Introduction
    ../README
    installationIndex
    numerical/numerical
+   design
    FAQ
