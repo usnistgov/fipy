@@ -203,16 +203,25 @@ class build_docs(Command):
         if self.pdf:
             sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
             
+            outdir = os.path.join('documentation', '_build', 'latex')
+            
+            from docutils.core import publish_file
+            from docutils.writers.latex2e import Writer as LaTeXWriter
+
+            for xtra in ("LICENSE", "DISCLAIMER"):
+                publish_file(source_path="%s.txt" % xtra,
+                             destination_path=os.path.join(outdir, "%s.tex" % xtra),
+                             reader_name='standalone',
+                             parser_name='restructuredtext',
+                             writer_name='latex',
+                             settings_overrides= {
+                                 'template': 'documentation/empty.tex'
+                             })
+
             savedir = os.getcwd()
             
-            os.chdir(os.path.join('documentation', '_build', 'latex'))
+            os.chdir(outdir)
                 
-            f = open('version.tex', 'w')
-            f.write("% This file is created automatically by:\n")
-            f.write("% 	python setup.py build_docs --manual\n\n")
-            f.write("\\newcommand{\\Version}{" + self.distribution.metadata.get_version() + "}\n")
-            f.close()
-            
             os.system("pdflatex fipy")
             os.system("pdflatex fipy")
             os.system("pdflatex fipy")

@@ -205,6 +205,87 @@ htmlhelp_basename = 'FiPydoc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
+latex_elements = {
+    'fncychap': r"""
+    \usepackage[PetersLenny]{fncychap}
+    """,
+    'preamble': r"""
+    \usepackage[amssymb]{SIunits}
+    \usepackage{changepage}
+    
+    \DeclareMathOperator{\erf}{erf}
+    \providecommand{\abs}[1]{\lvert#1\rvert}
+
+    \makeatletter
+    \renewcommand{\maketitle}{%
+      \begin{titlepage}%
+        \let\footnotesize\small
+        \let\footnoterule\relax
+        \ifsphinxpdfoutput
+          \begingroup
+          % This \def is required to deal with multi-line authors; it
+          % changes \\ to ', ' (comma-space), making it pass muster for
+          % generating document info in the PDF file.
+          \def\\{, }
+          \pdfinfo{
+            /Author (\@author)
+            /Title (\@title)
+          }
+          \endgroup
+        \fi
+        \changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
+        \begin{flushright}%
+          \fipylogo\par%
+          \vskip 3em%
+          {\rm\Huge\py@HeaderFamily \@title \par}%
+          {\em\LARGE\py@HeaderFamily \py@release\releaseinfo \par}
+          \vfill
+          {\large\py@HeaderFamily \@author \par}
+          \vfill
+          {\py@authoraddress \par}
+          \vfill
+          {%\large
+           \@date \par
+           \vfill
+           \vfill
+           \vfill
+           \vfill
+           \vfill
+           \vfill
+           \includegraphics[trim=5 2 5 5,scale=1.]{nistident_flright_vec}\par
+          }%
+        \end{flushright}%\par
+        \@thanks
+      \end{titlepage}%
+      \clearpage%
+      \changepage{}{}{}{}{}{}{}{}{}
+      \vspace*{\fill}
+      \input LICENSE
+      \rule{\textwidth}{0.1pt}
+      \input DISCLAIMER
+      \clearpage
+      \setcounter{footnote}{0}%
+      \let\thanks\relax\let\maketitle\relax
+      %\gdef\@thanks{}\gdef\@author{}\gdef\@title{}
+    }
+    \makeatother
+
+    \definecolor{redish}{rgb}{0.894,0.122,0.122}
+    \definecolor{bluish}{rgb}{0.216,0.188,0.533}
+    
+    \authoraddress{Metallurgy Division \\
+    and the Center for Theoretical and Computational Materials Science \\
+    Materials Science and Engineering Laboratory}
+    
+    \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
+    
+    \ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont} 
+    \ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont} 
+    \ChTitleVar{\Huge\bfseries\rm}
+    \ChRuleWidth{1pt}
+    """
+}
+
 # The paper size ('letter' or 'a4').
 #latex_paper_size = 'letter'
 
@@ -214,28 +295,19 @@ htmlhelp_basename = 'FiPydoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-#   ('index', 'FiPy.tex', u'FiPy Documentation',
-#    u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
-  ('documentation/manual', 'fipy.tex', u'FiPy Documentation',
-   u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
+  ('documentation/manual', 'fipy.tex', 'FiPy Manual',
+   r'Jonathan E. Guyer \\ Daniel Wheeler \\ James A. Warren', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-#latex_logo = None
+# latex_logo = None
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
 latex_use_parts = True
 
-# Additional stuff for the LaTeX preamble.
-latex_preamble = r"""
-\usepackage[amssymb]{SIunits}
-
-\DeclareMathOperator{\erf}{erf}
-\providecommand{\abs}[1]{\lvert#1\rvert}
-
-"""
+latex_additional_files = ['figures/nistident_flright_vec.pdf']
 
 # Documents to append as an appendix to all manuals.
 latex_appendices = ['documentation/refs.bib_cited']
@@ -243,11 +315,10 @@ latex_appendices = ['documentation/refs.bib_cited']
 # If false, no module index is generated.
 #latex_use_modindex = True
 
-pngmath_latex_preamble = latex_preamble
+pngmath_latex_preamble = latex_elements['preamble']
 
-# refer to Python, NumPy, SciPy, matplotlib, PySparse
+# refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {'http://docs.python.org/': None,
                        'http://docs.scipy.org/doc/numpy/': None,
                        'http://docs.scipy.org/doc/scipy/reference/': None,
-                       'http://matplotlib.sourceforge.net/': None,
-                       'http://pysparse.sourceforge.net/': None}
+                       'http://matplotlib.sourceforge.net/': None}
