@@ -70,8 +70,8 @@ class CylindricalUniformGrid1D(UniformGrid1D):
         return self._getFaceNormals() * self._getFaceAreas()
 
     def _translate(self, vector):
-        return CylindricalUniformGrid1D(dx=self.dx, nx=self.nx, 
-                                        origin=self.origin + vector)
+        return CylindricalUniformGrid1D(dx = self.dx, nx = self.nx, 
+                                        origin =self.origin + vector)
 
     def _test(self):
         """

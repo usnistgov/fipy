@@ -80,8 +80,8 @@ class Term:
 
     def _calcResidual(self, var, matrix, RHSvector):
 
-        L2norm = numerix.L2norm(self._calcResidualVector(var, matrix, RHSvector))
-        RHSL2norm = numerix.L2norm(RHSvector)
+        L2norm = numerix.sqrt(numerix.sum(self._calcResidualVector(var, matrix, RHSvector)**2))
+        RHSL2norm = numerix.sqrt(numerix.sum(RHSvector**2))
         
         if RHSL2norm == 0:
             return L2norm
@@ -120,23 +120,26 @@ class Term:
             self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
             raw_input()
         
+        
+##         raw_input()
+##         print "x", var
+##         print "L", matrix
+##         print "b", RHSvector
+        
         return matrix, RHSvector
 
     def _solveLinearSystem(self, var, solver, matrix, RHSvector):
         array = var.getNumericValue()
         solver._solve(matrix, array, RHSvector)
-        factor = var.getUnit().factor
-        if factor != 1:
-            array /= var.getUnit().factor
-        var[:] = array 
+        var[:] = array
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
 
-
-        solver = self.getDefaultSolver(solver)
+        solver = self._getDefaultSolver(solver) or solver or DefaultSolver()
 
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         return (solver, matrix, RHSvector)
+
     
     def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
         r"""
@@ -192,7 +195,7 @@ class Term:
 
     def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
-        Builds the `Term`'s linear system once. This method
+        Builds and the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
         under-relaxation.
 
@@ -302,12 +305,9 @@ class Term:
         RHSVector += (1 - underRelaxation) * matrix.takeDiagonal() * numerix.array(var)
         return matrix, RHSVector
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, solver):
         return None
         
-    def getDefaultSolver(self, solver=None, *args, **kwargs):
-        return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
-                         
     def _otherIsZero(self, other):
         if (type(other) is type(0) or type(other) is type(0.)) and other == 0:
             return True
@@ -325,10 +325,6 @@ class Term:
 
         """
         from fipy.terms.equation import _Equation
-
-##        print 'self',self
-##        print 'other',other
-##        print 'isinstance(other, _Equation)',isinstance(other, _Equation)
         
         if self._otherIsZero(other):
             return self
@@ -337,14 +333,10 @@ class Term:
         elif self.__class__ == other.__class__:
             return self.__class__(coeff=self.coeff + other.coeff)
         else:
-            return self._add(other)
-                
-    def _add(self, other):
-        from fipy.terms.equation import _Equation
-        eq = _Equation()
-        eq += self
-        eq += other
-        return eq
+            eq = _Equation()
+            eq += self
+            eq += other
+            return eq
             
     def __radd__(self, other):
         r"""
@@ -445,29 +437,6 @@ class Term:
         else:
             return self - other
 
-    def __mul__(self, other):
-        r"""
-        Mutiply a term
-
-            >>> 2. * __Term(coeff=0.5)
-            2.0 * __Term(coeff=0.5)
-            
-        """         
-        from fipy.terms.mulTerm import _MulTerm
-        return _MulTerm(term=self, coeff=other)
-
-    __rmul__ = __mul__
-               
-    def __div__(self, other):
-        r"""
-        Divide a term
-
-            >>> __Term(2.) / 2.
-            0.5 * __Term(coeff=2.0)
-
-        """
-        return (1 / other) * self
-    
     def __repr__(self):
         """
         The representation of a `Term` object is given by,
@@ -491,9 +460,6 @@ class Term:
         
     def _getWeight(self, mesh):
         raise NotImplementedError
-
-    def _isAdditive(self):
-        return True
             
 class __Term(Term): 
     """

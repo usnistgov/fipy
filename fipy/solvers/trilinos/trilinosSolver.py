@@ -118,13 +118,11 @@ class TrilinosSolver(Solver):
 
         LHS = _numpyToTrilinosVector(x, A.RowMap())
         RHS = _numpyToTrilinosVector(b, A.RowMap())
-
         
-        out = self._applyTrilinosSolver(A, LHS, RHS)
+        self._applyTrilinosSolver(A, LHS, RHS)
+
         x[:] = _trilinosToNumpyVector(LHS)
 
-        return out
-    
     def _getMatrixClass(self):
         return _TrilinosMatrix
 

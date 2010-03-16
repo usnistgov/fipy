@@ -100,7 +100,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
-        self.collection.set_linewidth(0.5)
+        self.collection.set_linewidth(0)
         try:
             ax.add_patch(self.collection)
         except:
@@ -180,6 +180,8 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 
         diff = zmax - zmin
         
+        import matplotlib
+
         import matplotlib
 
         if diff == 0:

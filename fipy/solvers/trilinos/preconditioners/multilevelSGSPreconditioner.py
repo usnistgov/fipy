@@ -5,9 +5,8 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "multilevelSAPreconditioner.py"
- #                                    created: 06/25/07
- #                                last update: 06/25/07
+ #  FILE: "multilevelSGSPreconditioner.py"
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -32,13 +31,6 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- #  History
- # 
- #  modified   by  rev reason
- #  ---------- --- --- -----------
- #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
@@ -47,41 +39,26 @@ __docformat__ = 'restructuredtext'
 from PyTrilinos import ML
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-class MultilevelSAPreconditioner(Preconditioner):
+class MultilevelSGSPreconditioner(Preconditioner):
     """
-    Multilevel preconditioner for Trilinos solvers suitable classical
-    smoothed aggregation for symmetric positive definite or nearly
-    symmetric positive definite systems.    
+    Multilevel preconditioner for Trilinos solvers using Symmetric Gauss-Seidel smoothing.
+    
     """
+    def __init__(self, levels=10):
+        """
+        Initialize the multilevel preconditioner
+
+        - `levels`: Maximum number of levels
+        """
+        self.levels = levels
 
     def _applyToSolver(self, solver, matrix):
         if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
             return
         
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
-
-        self.Prec.SetParameterList({"output": 0,
-                                    "max levels" : 10,
-                                    "prec type" : "MGV",
-                                    "increasing or decreasing" : "increasing",
-                                    "aggregation: type" : "Uncoupled-MIS",
-                                    "aggregation: damping factor" : 4. / 3.,
-##                                    "energy minimization: enable" : False,
-##                                    "smoother: type" : "Aztec",
-##                                    "smoother: type" : "symmetric Gauss-Seidel",
-##                                    "eigen-analysis: type" : "power-method",
-                                    "eigen-analysis: type" : "cg",
-                                    "eigen-analysis: iterations" : 10,
-                                    "smoother: sweeps" : 2,
-                                    "smoother: damping factor" : 1.0,
-                                    "smoother: pre or post" : 'both',
-                                    "smoother: type" : "symmetric Gauss-Seidel",
-                                    "coarse: type" : 'Amesos-KLU',
-                                    "coarse: max size" : 128
-                                    })
-
+        self.Prec.SetParameterList({"output": 0, "smoother: type" : "symmetric Gauss-Seidel"})
         self.Prec.ComputePreconditioner()
-        
         solver.SetPrecOperator(self.Prec)
         
 

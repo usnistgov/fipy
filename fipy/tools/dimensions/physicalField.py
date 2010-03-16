@@ -655,19 +655,19 @@ class PhysicalField(object):
              [ 0.06981317  0.08726646]]
 
          
-        If the array is not dimensionless, the numerical value in its base
+        If the array is not dimensionless, the numerical value in the current
         units is returned.
         
-            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"mm"))
-            array([[ 0.002,  0.003],
-                   [ 0.004,  0.005]])
+            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m"))
+            array([[ 2.,  3.],
+                   [ 4.,  5.]])
         
         .. _Numeric: http://www.numpy.org
         """
         if self.unit.isAngle():
             value = self.inRadians()
         else:
-            value = self.inSIUnits().value
+            value = self.value
             
         return numerix.array(value, t)
         

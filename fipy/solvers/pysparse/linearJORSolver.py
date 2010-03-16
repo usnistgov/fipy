@@ -56,7 +56,7 @@ class LinearJORSolver(PysparseSolver):
           - `relaxation`: The relaxation.
           
         """
-        PysparseSolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
         self.relaxation = relaxation
         
     def _solve(self, L, x, b):

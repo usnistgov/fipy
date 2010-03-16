@@ -44,7 +44,6 @@ from fipy.tools import numerix
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import numerix
 from fipy.tools import vector
-from fipy.variables.variable import Variable
 
 class FixedValue(BoundaryCondition):
     r"""
@@ -94,8 +93,6 @@ class FixedValue(BoundaryCondition):
         bb = numerix.zeros((Ncells,),'d')
 
         value = self._getValue()
-        if isinstance(value, Variable):
-            value = value.getValue()
         if value.shape == faces.shape:
             value = value[faces]
             

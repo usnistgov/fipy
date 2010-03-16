@@ -36,7 +36,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
-from fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner import MultilevelDDPreconditioner
+from fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner import MultilevelSGSPreconditioner
 
 from PyTrilinos import AztecOO
 
@@ -48,7 +48,7 @@ class LinearPCGSolver(TrilinosAztecOOSolver):
 
     """
       
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelDDPreconditioner()):
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=MultilevelSGSPreconditioner()):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.

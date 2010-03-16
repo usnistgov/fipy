@@ -38,9 +38,7 @@ def CylindricalGrid1D(dr=None, nr=None, dx=1., nx=None):
 
     from fipy.tools import numerix
 
-    if dr is not None:
-        dx = dr
-        
+    dx = dr or dx
     nx = nr or nx
 
     if numerix.getShape(dx) == ():

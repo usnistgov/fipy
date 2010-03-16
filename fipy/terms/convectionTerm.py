@@ -137,7 +137,6 @@ class ConvectionTerm(FaceTerm):
                 if diffCoeff is None:
                     diffCoeff = small
                 else:
-                    diffCoeff = diffCoeff.getNumericValue()
                     diffCoeff = (diffCoeff == 0) * small + diffCoeff
 
             alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
@@ -149,11 +148,11 @@ class ConvectionTerm(FaceTerm):
 
         return self.stencil
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):        
+    def _getDefaultSolver(self, solver):        
         if solver and not solver._canSolveAssymetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
-        return solver or LinearLUSolver(*args, **kwargs)
+        return solver or LinearLUSolver()
 
     def _verifyCoeffType(self, var):
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
