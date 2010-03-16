@@ -32,7 +32,7 @@
  ##
  
 r"""
-This input file :mod:`examples.levelSet.electroChem.gold` 
+This input file
 is a demonstration of the use of |FiPy| for
 modeling gold superfill. The material properties and experimental
 parameters used are roughly those that have been previously
