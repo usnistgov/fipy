@@ -126,9 +126,9 @@ class _MeshVariable(Variable):
         """
         Workhorse method to calculate the scalar product
         
-        .. raw:: latex
+        .. math::
         
-           \[ \mathsf{a} \cdot \mathsf{b} \]
+           \mathsf{a} \cdot \mathsf{b}
 
         for all but the last index of `a` and `b`. Both `a` and `b` can be of
         arbitrary rank, but at this point, both must be appropriately broadcast
@@ -149,9 +149,9 @@ class _MeshVariable(Variable):
         dynamically perform the mesh-element--by--mesh-element (cell-by-cell,
         face-by-face, etc.) scalar product
         
-        .. raw:: latex
+        .. math::
         
-           \[ \mathsf{A} \cdot \mathsf{B} \]
+           \mathsf{A} \cdot \mathsf{B}
            
         Both `A` and `B` can be of arbitrary rank, but at this point, both must
         be appropriately broadcast `_MeshVariable` objects.
@@ -177,9 +177,9 @@ class _MeshVariable(Variable):
         Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
         etc.) scalar product
         
-        .. raw:: latex
+        .. math::
         
-           \[ \text{self} \cdot \text{other} \]
+           \text{self} \cdot \text{other}
            
         Both `self` and `other` can be of arbitrary rank, and `other` does not
         need to be a `_MeshVariable`.
@@ -196,9 +196,9 @@ class _MeshVariable(Variable):
         Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
         etc.) scalar product
         
-        .. raw:: latex
-        
-           \[ \text{other} \cdot \text{self} \]
+        .. math::
+            
+           \text{other} \cdot \text{self}
            
         Both `self` and `other` can be of arbitrary rank, and `other` does not
         need to be a `_MeshVariable`.

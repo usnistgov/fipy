@@ -40,53 +40,50 @@ the zero level set. This can be represented succinctly in the
 following equation with a boundary condition at the zero level set
 such that,
 
-.. raw:: latex
+.. math::
 
-    $$ \frac{\partial \phi}{\partial x} = 1 $$
+   \frac{\partial \phi}{\partial x} = 1
 
-with the boundary condition,
-
-.. raw:: latex
-
-    $\phi = 0$ at $x = L / 2$.
+with the boundary condition, :math:`\phi = 0` at :math:`x = L / 2`.
 
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
-   >>> from fipy import *
+>>> from fipy import *
 
-   >>> dx = 0.5
-   >>> nx = 10
+>>> dx = 0.5
+>>> nx = 10
 
 Construct the mesh.
 
-   >>> mesh = Grid1D(dx=dx, nx=nx)
+>>> mesh = Grid1D(dx=dx, nx=nx)
 
 Construct a `distanceVariable` object.
 
-   >>> var = DistanceVariable(name='level set variable',
-   ...                        mesh=mesh,
-   ...                        value=-1,
-   ...                        hasOld=1)
-   >>> x = mesh.getCellCenters()[0]
-   >>> var.setValue(1, where=x > dx * nx / 2)
+>>> var = DistanceVariable(name='level set variable',
+...                        mesh=mesh,
+...                        value=-1,
+...                        hasOld=1)
+>>> x = mesh.getCellCenters()[0]
+>>> var.setValue(1, where=x > dx * nx / 2)
  
 Once the initial positive and negative regions have been initialized
 the `calcDistanceFunction()` method can be used to recalculate `var`
 as a distance function from the zero level set.
    
-   >>> var.calcDistanceFunction()
+>>> var.calcDistanceFunction()
    
-The problem can then be solved by executing the `solve()` method of the equation.
+The problem can then be solved by executing the :meth:`~fipy.terms.term.solve`
+method of the equation.
 
-   >>> if __name__ == '__main__':
-   ...     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
-   ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
+...     viewer.plot()
 
 The result can be tested with the following commands.
 
-   >>> print allclose(var, x - dx * nx / 2)
-   1
+>>> print allclose(var, x - dx * nx / 2)
+1
 
 """
 __docformat__ = 'restructuredtext'

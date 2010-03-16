@@ -39,19 +39,12 @@ solidification is often assumed (and experimentally found) to be proportional to
 undercooling. Under the right circumstances, the
 solidification front can become unstable, leading to dendritic
 patterns. 
-Warren, Kobayashi, Lobkovsky and Carter
-    
-.. raw:: latex
-
-   \cite{WarrenPolycrystal}
-   
+Warren, Kobayashi, Lobkovsky and Carter [WarrenPolycrystal]_
 have described a phase field model ("Allen-Cahn", "non-conserved
 Ginsberg-Landau", or "model A" of Hohenberg & Halperin) of such a system,
 including the effects of discrete crystalline orientations (anisotropy).
 
 We start with a regular 2D Cartesian mesh
-
-.. index:: Grid2D
 
 >>> from fipy import *
 >>> dx = dy = 0.025
@@ -67,8 +60,6 @@ and we'll take fixed timesteps
 
 We consider the simultaneous evolution of a "phase field" variable
 :math:`\phi` (taken to be 0 in the liquid phase and 1 in the solid)
-
-.. index:: CellVariable
 
 >>> phase = CellVariable(name=r'$\phi$', mesh=mesh, hasOld=True)
 
@@ -89,8 +80,6 @@ equation, with a source due to the latent heat of solidification
    \frac{\partial \Delta T}{\partial t} 
    = D_T \nabla^2 \Delta T 
    + \frac{\partial \phi}{\partial t}
-
-.. index:: TransientTerm, DiffusionTerm
 
 >>> DT = 2.25
 >>> heatEq = (TransientTerm()
@@ -154,8 +143,6 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 With these expressions defined, we can construct the phase field equation
 as
 
-.. index:: TransientTerm, DiffusionTerm, ImplicitSourceTerm
-
 >>> tau = 3e-4
 >>> kappa1 = 0.9
 >>> kappa2 = 20.
@@ -185,9 +172,6 @@ regardless of their operating system or installed packages, so you won't
 be able to simultaneously view two fields "out of the box", but, because all of Python is
 accessible and FiPy is object oriented, it is not hard to adapt one of the
 existing viewers to create a specialized display:
-
-.. index::
-   :module: fipy.viewers
 
 >>> if __name__ == "__main__":
 ...     try:
@@ -248,7 +232,7 @@ where the temperature gradient is steepest.
 
 We note that this FiPy simulation is written in about 50 lines of code (excluding the
 custom viewer), compared with over 800 lines of (fairly lucid) FORTRAN code used for
-the figures in \cite{WarrenPolycrystal}.
+the figures in [WarrenPolycrystal]_.
 """
 __docformat__ = 'restructuredtext'
 

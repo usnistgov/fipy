@@ -44,12 +44,11 @@ def residual(var, matrix, RHSvector):
       - `RHSvector`: The 
       
     :Returns: 
-      .. raw:: latex
+      .. math::
 
-         \[
          \|\mathsf{L}\vec{x} - \vec{b}\|_\infty
-         \]
-         where $\|\vec{\xi}\|_\infty$ is the $L^\infty$-norm of $\vec{\xi}$.
+         
+      where :math:`\|\vec{\xi}\|_\infty` is the :math:`L^\infty`-norm of :math:`\vec{\xi}`.
     """
     from fipy.tools.numerix import array, LINFnorm
     
@@ -66,14 +65,13 @@ def error(var, matrix, RHSvector, norm):
         a single number
       
     :Returns: 
-      .. raw:: latex
+      .. math::
 
-         \[
          \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_?}
          {\|\mathtt{var}^\text{old}\|_?}
-         \]
-         where $\|\vec{x}\|_?$ is the normalization of $\vec{x}$ provided
-         by `norm()`.
+         
+      where :math:`\|\vec{x}\|_?` is the normalization of :math:`\vec{x}` provided
+      by :func:`~fipy.steppers.norm`.
     """
     from fipy.tools.numerix import L1norm
     denom = L1norm(var.getOld())
@@ -88,13 +86,12 @@ def L1error(var, matrix, RHSvector):
       - `RHSvector`: *(ignored)*
       
     :Returns: 
-      .. raw:: latex
+      .. math::
 
-         \[
          \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_1}
          {\|\mathtt{var}^\text{old}\|_1}
-         \]
-         where $\|\vec{x}\|_1$ is the $L^1$-norm of $\vec{x}$.
+
+      where :math:`\|\vec{x}\|_1` is the :math:`L^1`-norm of :math:`\vec{x}`.
     """
     from fipy.tools.numerix import L1norm
     return error(var, matrix, RHSvector, L1norm)
@@ -107,13 +104,12 @@ def L2error(var, matrix, RHSvector):
       - `RHSvector`: *(ignored)*
       
     :Returns: 
-      .. raw:: latex
+      .. math::
 
-         \[
          \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_2}
          {\|\mathtt{var}^\text{old}\|_2}
-         \]
-         where $\|\vec{x}\|_2$ is the $L^2$-norm of $\vec{x}$.
+
+      where :math:`\|\vec{x}\|_2` is the :math:`L^2`-norm of :math:`\vec{x}`.
     """
     from fipy.tools.numerix import L2norm
     return error(var, matrix, RHSvector, L2norm)
@@ -126,13 +122,12 @@ def LINFerror(var, matrix, RHSvector):
       - `RHSvector`: *(ignored)*
       
     :Returns: 
-      .. raw:: latex
+      .. math::
 
-         \[
          \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_\infty}
          {\|\mathtt{var}^\text{old}\|_\infty}
-         \]
-         where $\|\vec{x}\|_\infty$ is the $L^\infty$-norm of $\vec{x}$.
+
+      where :math:`\|\vec{x}\|_\infty` is the :math:`L^\infty`-norm of :math:`\vec{x}`.
     """
     from fipy.tools.numerix import LINFnorm
     return error(var, matrix, RHSvector, LINFnorm)
@@ -140,8 +135,8 @@ def LINFerror(var, matrix, RHSvector):
 
 def sweepMonotonic(fn, *args, **kwargs):
     """
-    Repeatedly calls `fn(*args, **kwargs)` until the residual returned by
-    `fn()` is no longer decreasing.
+    Repeatedly calls :func:`fn(*args, **kwargs)` until the residual returned by
+    :func:`fn` is no longer decreasing.
     
     :Parameters:
       - `fn`: The function to call

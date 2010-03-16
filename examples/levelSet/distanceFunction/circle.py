@@ -37,81 +37,78 @@ r"""
 Here we solve the level set equation in two dimensions for a circle. The 2D
 level set equation can be written,
 
-.. raw:: latex
+.. math::
 
-    $$ | \nabla \phi | = 1$$
+   \abs{\nabla \phi} = 1
 
-and the boundary condition for a circle is given by,
-
-.. raw:: latex
-
-    $ \phi = 0 $ at $(x - L / 2)^2 + (y - L / 2)^2 = (L / 4)^2 $.
+and the boundary condition for a circle is given by, :math:`\phi = 0` at 
+:math:`(x - L / 2)^2 + (y - L / 2)^2 = (L / 4)^2`.
 
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
-   >>> from fipy import *
+>>> from fipy import *
 
-   >>> dx = 1.
-   >>> dy = 1.
-   >>> nx = 11
-   >>> ny = 11
-   >>> Lx = nx * dx
-   >>> Ly = ny * dy
+>>> dx = 1.
+>>> dy = 1.
+>>> nx = 11
+>>> ny = 11
+>>> Lx = nx * dx
+>>> Ly = ny * dy
 
 Construct the mesh.
 
-   >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
+>>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 Construct a `distanceVariable` object.
 
-   >>> var = DistanceVariable(name='level set variable',
-   ...                        mesh=mesh,
-   ...                        value=-1,
-   ...                        hasOld=1)
+>>> var = DistanceVariable(name='level set variable',
+...                        mesh=mesh,
+...                        value=-1,
+...                        hasOld=1)
 
-   >>> x, y = mesh.getCellCenters()
-   >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
+>>> x, y = mesh.getCellCenters()
+>>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
 
-   >>> var.calcDistanceFunction()
-   
-   >>> if __name__ == '__main__':
-   ...     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
-   ...     viewer.plot()
+>>> var.calcDistanceFunction()
+
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
+...     viewer.plot()
 
 The result can be tested with the following commands.
 
-   >>> dY = dy / 2.
-   >>> dX = dx / 2.
-   >>> mm = min (dX, dY)
-   >>> m1 = dY * dX / sqrt(dY**2 + dX**2)
-   >>> def evalCell(phix, phiy, dx, dy):
-   ...     aa = dy**2 + dx**2
-   ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
-   ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-   ...     sqr = sqrt(bb**2 - 4. * aa * cc)
-   ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
-   >>> v1 = evalCell(-dY, -m1, dx, dy)[0] 
-   >>> v2 = evalCell(-m1, -dX, dx, dy)[0]
-   >>> v3 = evalCell(m1,  m1,  dx, dy)[1]
-   >>> v4 = evalCell(v3, dY, dx, dy)[1]
-   >>> v5 = evalCell(dX, v3, dx, dy)[1]
-   >>> MASK = -1000
-   >>> trialValues = MA.masked_values((
-   ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
-   ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
-   ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
-   ...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
-   ...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX,-dX*3, MASK,
-   ...     MASK, -dX*3,  -dX,   dX,   v5, MASK,   v5,   dX,  -dX,-dX*3, MASK,
-   ...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX,-dX*3, MASK,
-   ...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
-   ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
-   ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
-   ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 
-   ...     MASK)
-   >>> print var.allclose(trialValues)
-   1
+>>> dY = dy / 2.
+>>> dX = dx / 2.
+>>> mm = min (dX, dY)
+>>> m1 = dY * dX / sqrt(dY**2 + dX**2)
+>>> def evalCell(phix, phiy, dx, dy):
+...     aa = dy**2 + dx**2
+...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
+...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
+...     sqr = sqrt(bb**2 - 4. * aa * cc)
+...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
+>>> v1 = evalCell(-dY, -m1, dx, dy)[0] 
+>>> v2 = evalCell(-m1, -dX, dx, dy)[0]
+>>> v3 = evalCell(m1,  m1,  dx, dy)[1]
+>>> v4 = evalCell(v3, dY, dx, dy)[1]
+>>> v5 = evalCell(dX, v3, dx, dy)[1]
+>>> MASK = -1000
+>>> trialValues = MA.masked_values((
+...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
+...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
+...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
+...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
+...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX,-dX*3, MASK,
+...     MASK, -dX*3,  -dX,   dX,   v5, MASK,   v5,   dX,  -dX,-dX*3, MASK,
+...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX,-dX*3, MASK,
+...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
+...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
+...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
+...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 
+...     MASK)
+>>> print var.allclose(trialValues)
+1
    
 """
 __docformat__ = 'restructuredtext'

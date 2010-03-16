@@ -26,16 +26,10 @@ models include phase field |citePhaseField| treatments of polycrystalline,
 dendritic, and electrochemical phase transformations as well as a level set
 treatment of the electrodeposition process |citeCEAC|.
 
-.. raw:: html
+.. only:: latex
   
-   <!--
-
-The latest information about :term:`FiPy` can be found at
-http://www.ctcms.nist.gov/fipy/.
-
-.. raw:: html
-  
-   -->
+   The latest information about :term:`FiPy` can be found at
+   http://www.ctcms.nist.gov/fipy/.
 
 ---------------------------------
 Even if you don't read manuals...

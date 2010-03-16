@@ -42,11 +42,11 @@ class ImplicitSourceTerm(SourceTerm):
 
     The `ImplicitSourceTerm` represents
 
-    .. raw:: latex
+    .. math::
 
-       \[ \int_V \phi S \,dV \simeq \phi_P S_P V_P \] where $S$ is the
-
-    `coeff` value.       
+       \int_V \phi S \,dV \simeq \phi_P S_P V_P 
+       
+    where :math:`S` is the `coeff` value.       
     """
     def _calcCoeffVectors(self, var, equation=None):
         """

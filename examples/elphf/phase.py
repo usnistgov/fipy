@@ -35,179 +35,163 @@
 r"""
 A simple 1D example to test the setup of the phase field equation.
 
-.. raw:: latex
+We rearrange Eq. :eq:`elphf:phase` to
 
-   We rearrange Eq.~\eqref{eq:elphf:phase} to
-   
-   \begin{align*}
-       \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
-       &= 
-       \kappa_{\xi}\nabla^2 \xi
-       +
-       \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
-       \\
-       &\qquad - 
-       \left[
-           p'(\xi) \Delta\mu_n^\circ
-           + g'(\xi) W_n
-       \right]
-       - 
-       \sum_{j=2}^{n-1} C_j \left[
-           p'(\xi) \Delta\mu_{jn}^\circ
-           + g'(\xi) W_{jn}
-       \right]
-       - 
-       C_{\text{e}^{-}} \left[
-           p'(\xi) \Delta\mu_{\text{e}^{-}}^\circ
-           + g'(\xi) W_{\text{e}^{-}}
-       \right]
-   \end{align*}
+.. math::
+
+   \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
+   &= 
+   \kappa_{\xi}\nabla^2 \xi
+   +
+   \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+   \\
+   &\qquad - 
+   \left[
+       p'(\xi) \Delta\mu_n^\circ
+       + g'(\xi) W_n
+   \right]
+   - 
+   \sum_{j=2}^{n-1} C_j \left[
+       p'(\xi) \Delta\mu_{jn}^\circ
+       + g'(\xi) W_{jn}
+   \right]
+   - 
+   C_{\text{e}^{-}} \left[
+       p'(\xi) \Delta\mu_{\text{e}^{-}}^\circ
+       + g'(\xi) W_{\text{e}^{-}}
+   \right]
 
 The single-component phase field governing equation can be represented as
 
-.. raw:: latex
+.. math::
 
-   \[ \frac{1}{M_\xi} \frac{\partial \xi}{\partial t} 
-   =  \kappa_\xi \nabla^2 \xi - 2\xi(1-\xi)(1-2\xi) W \]
+   \frac{1}{M_\xi} \frac{\partial \xi}{\partial t} 
+   =  \kappa_\xi \nabla^2 \xi - 2\xi(1-\xi)(1-2\xi) W
 
-where 
-
-.. raw:: latex
-
-   $\xi$ is the phase field,
-   $t$  is time,
-   $M_\xi$ is the phase field mobility,
-   $\kappa_\xi$ is the phase field gradient energy coefficient, and
-   $W$ is the phase field barrier energy.
+where :math:`\xi` is the phase field, :math:`t` is time, :math:`M_\xi` is the
+phase field mobility, :math:`\kappa_\xi` is the phase field gradient energy
+coefficient, and :math:`W` is the phase field barrier energy.
    
 We solve the problem on a 1D mesh
 
-    >>> from fipy import *
+>>> from fipy import *
 
-    >>> nx = 400
-    >>> dx = 0.01
-    >>> L = nx * dx
-    >>> mesh = Grid1D(dx = dx, nx = nx)
+>>> nx = 400
+>>> dx = 0.01
+>>> L = nx * dx
+>>> mesh = Grid1D(dx = dx, nx = nx)
 
 We create the phase field
 
-    >>> phase = CellVariable(mesh = mesh, name = 'xi')
-    >>> import scipy
-    >>> phase.mobility = inf
-    >>> phase.gradientEnergy = 0.025
+>>> phase = CellVariable(mesh = mesh, name = 'xi')
+>>> import scipy
+>>> phase.mobility = inf
+>>> phase.gradientEnergy = 0.025
     
 Although we are not interested in them for this problem, we create one field to 
 represent the "solvent" component (1 everywhere) 
 
-    >>> class ComponentVariable(CellVariable):
-    ...     def copy(self):
-    ...         new = self.__class__(mesh = self.getMesh(), 
-    ...                              name = self.getName(), 
-    ...                              value = self.getValue())
-    ...         new.standardPotential = self.standardPotential
-    ...         new.barrier = self.barrier
-    ...         return new
+>>> class ComponentVariable(CellVariable):
+...     def copy(self):
+...         new = self.__class__(mesh = self.getMesh(), 
+...                              name = self.getName(), 
+...                              value = self.getValue())
+...         new.standardPotential = self.standardPotential
+...         new.barrier = self.barrier
+...         return new
 
-    >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = 1.)
-    >>> solvent.standardPotential = 0.
-    >>> solvent.barrier = 1.
+>>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = 1.)
+>>> solvent.standardPotential = 0.
+>>> solvent.barrier = 1.
 
 and one field to represent the electrostatic potential (0 everywhere)
 
-    >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
-    >>> permittivityPrime = 0.
+>>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
+>>> permittivityPrime = 0.
     
 We'll have no substitutional species and no interstitial species in this first example
 
-    >>> substitutionals = []
-    >>> interstitials = []
-    
-    >>> for component in substitutionals:
-    ...     solvent -= component
+>>> substitutionals = []
+>>> interstitials = []
 
-    >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
-    ...     == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
-    ...     - (permittivityPrime / 2.) \
-    ...        * potential.getGrad().dot(potential.getGrad())
-    
-    >>> enthalpy = solvent.standardPotential
-    >>> barrier = solvent.barrier
-    >>> for component in substitutionals + interstitials:
-    ...     enthalpy += component * component.standardPotential
-    ...     barrier += component * component.barrier
-          
-We linearize the source term in the same way as in `example.phase.simple.input1D`.
+>>> for component in substitutionals:
+...     solvent -= component
 
-    >>> mXi = -(30 * phase * (1. - phase) * enthalpy \
-    ...         +  4 * (0.5 - phase) * barrier)
-    >>> dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
-    >>> S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
-    >>> S0 = mXi * phase * (1 - phase) - phase * S1
+>>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
+...     == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
+...     - (permittivityPrime / 2.) \
+...        * potential.getGrad().dot(potential.getGrad())
 
-    >>> phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
+>>> enthalpy = solvent.standardPotential
+>>> barrier = solvent.barrier
+>>> for component in substitutionals + interstitials:
+...     enthalpy += component * component.standardPotential
+...     barrier += component * component.barrier
+      
+We linearize the source term in the same way as in :mod:`example.phase.simple.input1D`.
+
+>>> mXi = -(30 * phase * (1. - phase) * enthalpy \
+...         +  4 * (0.5 - phase) * barrier)
+>>> dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
+>>> S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
+>>> S0 = mXi * phase * (1 - phase) - phase * S1
+
+>>> phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
     
-.. note:: Adding a `Term` to an equation formed with `==` will add to the
-   left-hand side of the equation and subtracting a `Term` will add to the
-   right-hand side of the equation
+.. note:: 
+    
+   Adding a :class:`~fipy.terms.term.Term` to an equation formed with ``==`` will
+   add to the left-hand side of the equation and subtracting a
+   :class:`~fipy.terms.term.Term` will add to the right-hand side of the
+   equation
 
 We separate the phase field into electrode and electrolyte regimes
 
-    >>> phase.setValue(1.)
-    >>> phase.setValue(0., where=mesh.getCellCenters()[0] > L / 2)
+>>> phase.setValue(1.)
+>>> phase.setValue(0., where=mesh.getCellCenters()[0] > L / 2)
 
-Even though we are solving the steady-state problem
+Even though we are solving the steady-state problem (:math:`M_\phi = \infty`) we
+still must sweep the solution several times to equilibrate
 
-.. raw:: latex
+>>> for step in range(10):
+...     phase.equation.solve(var = phase)
 
-   ($M_\phi = \infty$)
-   
-we still must sweep the solution several times to equilibrate
+Since we have only a single component :math:`n`, with :math:`\Delta\mu_n^\circ =
+0`, and the electrostatic potential is uniform, Eq. :eq:`elphf:phase` reduces to
 
-    >>> for step in range(10):
-    ...     phase.equation.solve(var = phase)
+.. math::
     
-.. raw:: latex
-
-   Since we have only a single component $n$, with $\Delta\mu_n^\circ = 0$, and
-   the electrostatic potential is uniform, Eq.~\eqref{eq:elphf:phase} reduces to
-
-    \begin{equation*}
-        \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
-        = \kappa_{\xi}\nabla^2 \xi
-        - g'(\xi) W_n
-    \end{equation*}
+   \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
+   = \kappa_{\xi}\nabla^2 \xi
+   - g'(\xi) W_n
     
-which we know from `examples.phase.simple.input1D` has the analytical
+which we know from :mod:`examples.phase.simple.input1D` has the analytical
 solution
 
-.. raw:: latex
+.. math::
 
-   $$ \xi(x) = \frac{1}{2}(1 - \tanh\frac{x - L/2}{2d}) $$
+   \xi(x) = \frac{1}{2}(1 - \tanh\frac{x - L/2}{2d})
    
-with an interfacial thickness
-
-.. raw:: latex
-
-   $ d = \sqrt{\kappa_{\xi}/2W_n} $.
+with an interfacial thickness :math:`d = \sqrt{\kappa_{\xi}/2W_n}`.
    
 We verify that the correct equilibrium solution is attained
 
-    >>> x = mesh.getCellCenters()[0]
-    
-    >>> d = sqrt(phase.gradientEnergy / (2 * solvent.barrier))
-    >>> analyticalArray = (1. - tanh((x - L/2.)/(2 * d))) / 2.
+>>> x = mesh.getCellCenters()[0]
 
-    >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).getValue()
-    1
+>>> d = sqrt(phase.gradientEnergy / (2 * solvent.barrier))
+>>> analyticalArray = (1. - tanh((x - L/2.)/(2 * d))) / 2.
+
+>>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).getValue()
+1
     
 
 If we are running interactively, we plot the error
 
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars = (phase - \
-    ...         CellVariable(name = "analytical", mesh = mesh, 
-    ...                      value = analyticalArray),))
-    ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars = (phase - \
+...         CellVariable(name = "analytical", mesh = mesh, 
+...                      value = analyticalArray),))
+...     viewer.plot()
     
 .. image:: phase/error.*
    :scale: 50
