@@ -491,8 +491,8 @@ yourself with the excellent `Python tutorial`_ [PythonTutorial]_
 or with `Dive Into Python`_ [DiveIntoPython]_.
 
 As you gain experience, you will want to see
-:ref:`FAQ-FlagsAndEnvironmentVariables` to learn about the flags and environment
-variables that modify :term:`FiPy`'s default behavior.
+:ref:`FAQ-FlagsAndEnvironmentVariables` to learn about flags and 
+environment variable that affect :term:`FiPy`.
 
 -----------------
 Optional Packages

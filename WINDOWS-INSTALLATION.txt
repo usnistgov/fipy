@@ -40,7 +40,7 @@ PySparse
 http://sourceforge.net/project/showfiles.php?group_id=101403
 
 Download and install the latest version of PySparse for Windows_
-(pysparse-x.y.z.win32-py2.X.exe). Be sure to select the version compiled
+(:file:`pysparse-{x.y.z}.win32-py2.{X}.exe`). Be sure to select the version compiled
 with the correct version of Python_ to match the `Python`_ installation.
 
 
@@ -49,9 +49,9 @@ FiPy
 
 http://www.ctcms.nist.gov/fipy/download/
 
-Download and unpack the zip file (``FiPy-x.y.win32.zip``).  Run the
-:term:`FiPy` installer ``FiPy-x.y.win32.exe``, which is in the base
-``FiPy-x.y`` directory.
+Download and unpack the zip file (:file:`FiPy-{x.y}.win32.zip`).  Run the
+:term:`FiPy` installer :file:`FiPy-{x.y}.win32.exe`, which is in the base
+:file:`FiPy-{x.y}` directory.
 
 Optional Packages
 =================
@@ -73,7 +73,7 @@ http://www.ctcms.nist.gov/fipy/download/
 
 If you wish to use `MayaVi 1`_, PyVTK is a requirement.  Download and
 install the latest version from the :term:`FiPy` `downloads page`_
-(``PyVTK-x.y.z.win32.exe``).
+(:file:`PyVTK-{x.y.z}.win32.exe`).
 
 .. _downloads page: http://matforge.org/fipy/downloader
 
