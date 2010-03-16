@@ -6,8 +6,8 @@ Examples
 
 .. note::
 
-   Any given "Module example.something.input" can be found in the file
-   "``examples/something/input.py``".
+   Any given module ":mod:`example.something.input`" can be found in the
+   file ":file:`examples/something/input.py`".
 
 These examples can be used in at least four ways:
 
