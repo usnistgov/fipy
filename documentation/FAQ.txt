@@ -786,30 +786,30 @@ and~\ref{sec:Examples:diffusion:circle}
 What does this error message mean?
 ----------------------------------
 
- ``ValueError: frames are not aligned``
-    This error most likely means that you have provided a
-    :class:`CellVariable` when |FiPy| was expecting a :class:`FaceVariable`
-    (or vice versa).
+``ValueError: frames are not aligned``
+   This error most likely means that you have provided a
+   :class:`CellVariable` when |FiPy| was expecting a :class:`FaceVariable`
+   (or vice versa).
 
-  ``MA.MA.MAError: Cannot automatically
-  convert masked array to Numeric because data is masked in one or
-  more locations.``
-    This not-so-helpful error message could mean a number of things, but
-    the most likely explanation is that the solution has become unstable
-    and is diverging to :math:`\pm\infty`. This can be caused by taking too large
-    a timestep or by using explicit terms instead of implicit ones.
-        
-  ``repairing catalog by removing key``
-    This message (not really an error, but may cause test failures) can
-    result when using the \SciPy{} \weave{} package via the
-    :option:`--inline` flag. It is due to a bug in \SciPy{} that has been
-    patched in their source repository:
-    \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
-        
-  ``numerix Numeric 23.6``
-    This is neither an error nor a warning. It's just a sloppy 
-    message left in \SciPy{}:
-    \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
+``MA.MA.MAError: Cannot automatically
+convert masked array to Numeric because data is masked in one or
+more locations.``
+  This not-so-helpful error message could mean a number of things, but
+  the most likely explanation is that the solution has become unstable
+  and is diverging to :math:`\pm\infty`. This can be caused by taking too large
+  a timestep or by using explicit terms instead of implicit ones.
+      
+``repairing catalog by removing key``
+  This message (not really an error, but may cause test failures) can
+  result when using the \SciPy{} \weave{} package via the
+  :option:`--inline` flag. It is due to a bug in \SciPy{} that has been
+  patched in their source repository:
+  \url{http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html}.
+      
+``numerix Numeric 23.6``
+  This is neither an error nor a warning. It's just a sloppy 
+  message left in \SciPy{}:
+  \url{http://thread.gmane.org/gmane.comp.python.scientific.user/4349}.
 
 \label{FAQ-FlagsAndEnvironmentVariables}
 
@@ -826,18 +826,21 @@ Command-line Flags
 You can add any of the following flags after the name of a 
 script you call from the command line
 
-  :option:`--inline`
-    Causes many mathematical operations to be performed in C, rather than
-    Python, for improved performance. Requires the \SciPy{} \weave{}
-    package.
+.. cmdoption:: --inline
 
-  :option:`--Pysparse`
-    Forces the use of the \Pysparse{} solvers. This flag takes precedence
-    over the :envvar:`FIPY_SOLVERS` environment variable.
+   Causes many mathematical operations to be performed in C, rather than
+   Python, for improved performance. Requires the \SciPy{} \weave{}
+   package.
 
-  :option:`--Trilinos`
-    Forces the use of the \Trilinos{} solvers. This flag takes precedence
-    over the :envvar:`FIPY_SOLVERS` environment variable.
+.. cmdoption:: --Pysparse
+
+   Forces the use of the \Pysparse{} solvers. This flag takes precedence
+   over the :envvar:`FIPY_SOLVERS` environment variable.
+
+.. cmdoption:: --Trilinos
+
+   Forces the use of the \Trilinos{} solvers. This flag takes precedence
+   over the :envvar:`FIPY_SOLVERS` environment variable.
     
 Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~
@@ -849,33 +852,38 @@ IDLE), you can set these variables via the
 :const:`os.environ` dictionary, but you must do so before 
 importing anything from the :mod:`fipy` package.
 
-  :envvar:`FIPY_DISPLAY_MATRIX`
-    If present, causes the graphical display of the solution matrix of each
-    equation at each call of :meth:`.solve` or :meth:`.sweep`. If set
-    to "``terms``," causes the display of the matrix for each
-    :class:`Term` that composes the equation. Requires the \Matplotlib{}
-    package.
+.. envvar:: FIPY_DISPLAY_MATRIX
 
-  :envvar:`FIPY_INLINE`
-    If present, causes many mathematical operations to be performed in C,
-    rather than Python. Requires the \SciPy{} \weave{} package.
+   If present, causes the graphical display of the solution matrix of each
+   equation at each call of :meth:`.solve` or :meth:`.sweep`. If set
+   to "``terms``," causes the display of the matrix for each
+   :class:`Term` that composes the equation. Requires the \Matplotlib{}
+   package.
 
-  :envvar:`FIPY_INLINE_COMMENT`
-    If present, causes the addition of a comment showing the Python context
-    that produced a particular piece of \SciPy{} \weave{} C code. Useful
-    for debugging.
+.. envvar:: FIPY_INLINE
 
-  :envvar:`FIPY_SOLVERS`
-    Forces the use of the specified suite of linear solvers. Valid
-    (case-insensitive) choices are "``PySparse``" and
-    "``Trilinos``".
+   If present, causes many mathematical operations to be performed in C,
+   rather than Python. Requires the \SciPy{} \weave{} package.
+
+.. envvar:: FIPY_INLINE_COMMENT
+
+   If present, causes the addition of a comment showing the Python context
+   that produced a particular piece of \SciPy{} \weave{} C code. Useful
+   for debugging.
+
+.. envvar:: FIPY_SOLVERS
+
+   Forces the use of the specified suite of linear solvers. Valid
+   (case-insensitive) choices are "``PySparse``" and
+   "``Trilinos``".
     
-  :envvar:`FIPY_VIEWER`
-    Forces the use of the specified viewer. Valid values are any
-    :samp:`{<viewer>}` from the
-    :samp:`fipy.viewers.{<viewer>}Viewer`
-    modules. The special value of ``dummy`` will allow the script
-    to run without displaying anything.
+.. envvar:: FIPY_VIEWER
+
+   Forces the use of the specified viewer. Valid values are any
+   :samp:`{<viewer>}` from the
+   :samp:`fipy.viewers.{<viewer>}Viewer`
+   modules. The special value of ``dummy`` will allow the script
+   to run without displaying anything.
 
 Why don't my scripts work anymore?
 ----------------------------------
