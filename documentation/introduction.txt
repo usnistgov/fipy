@@ -7,8 +7,7 @@ Introduction
 
    ../README
    MAIL
-   installationIndex
+   ../INSTALLATION
    numerical/numerical
    design
    FAQ
-   glossary

@@ -37,7 +37,7 @@ is a demonstration of the use of :term:`FiPy`
 for modeling electrodeposition using the CEAC mechanism. The
 material properties and experimental parameters used are roughly
 those that have been previously
-published \cite{NIST:damascene:2003}.
+published [NIST:damascene:2003]_.
 
 To run this example from the base fipy directory type::
     

@@ -58,7 +58,7 @@ For example, the diffusion term can represent conventional Fickean
 diffusion [*i.e.*, :math:`\nabla\cdot(\Gamma\nabla\phi)`] when the
 exponent :math:`n = 1` or a Cahn-Hilliard term [*i.e.*, :math:`\nabla
 \cdot (\Gamma_1 \nabla [ \nabla \cdot \Gamma_2 \nabla \phi ) ] )`
-\cite{CahnHilliardI,CahnHilliardII,CahnHilliardIII}] when :math:`n = 2`. Of
+[CahnHilliardI]_ [CahnHilliardII]_ [CahnHilliardIII]_] when :math:`n = 2`. Of
 course, higher order terms (:math:`n > 2`) are also possible.
 
 

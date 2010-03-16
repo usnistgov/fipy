@@ -150,7 +150,7 @@ where the value of :math:`d_{AP}` is the distance between neighboring cell
 centers.  This estimate relies on the orthogonality of the mesh, and
 becomes increasingly inaccurate as the non-orthogonality increases.
 Correction terms have been derived to improve this error but are not
-currently included in :term:`FiPy` \cite{croftphd}.
+currently included in :term:`FiPy` [croftphd]_.
 
 Source Term
 ~~~~~~~~~~~

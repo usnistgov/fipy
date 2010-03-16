@@ -18,7 +18,7 @@ problem can be executed by running::
 
 from the base :term:`FiPy` directory. The in-house code was written by Ryo
 Kobayashi and is used to generate the results presented in
-|citeWarrenPolycrystal|.
+[WarrenPolycrystal]_.
 
 The raw CPU execution times for 10 time steps are presented in the
 following table. The run times are in seconds and the memory usage is
@@ -105,10 +105,6 @@ success with an iterative method.
 .. |NIST| raw:: latex
 
    \NIST{}
-
-.. |citeWarrenPolycrystal| raw:: latex
-
-   \cite{WarrenPolycrystal}
 
 .. |IMPINGEMENT| raw:: latex
    

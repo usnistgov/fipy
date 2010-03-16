@@ -4,15 +4,24 @@
 Installation
 ============
 
-.. contents::
-   :local:
-   :depth: 2
-
 The :term:`FiPy` finite volume PDE solver relies on several third-party packages.
 It is *best to obtain and install those first*, before attempting to install
 :term:`FiPy`.
 
-|outsideLinks|
+.. only:: html
+
+   .. note::
+
+      By selecting the links on this page, you will be leaving NIST
+      webspace. We have provided these links to other web sites because
+      they may have information that would be of interest to you. No
+      inferences should be drawn on account of other sites being
+      referenced, or not, from this page. There may be other web sites that
+      are more appropriate for your purpose. NIST does not necessarily
+      endorse the views expressed, or concur with the facts presented on
+      these sites. Further, NIST does not endorse any commercial products
+      that may be mentioned on these sites. Please address comments about
+      this page to fipy@nist.gov.
 
 .. note::
 
@@ -33,9 +42,10 @@ It is *best to obtain and install those first*, before attempting to install
 Shortcuts
 ---------
 
-Detailed prerequisites and links are given below and in platform-specific 
-instructions, but for the courageous and the impatient, :term:`FiPy` can be up 
-and running quickly with one of the following methods.
+Detailed prerequisites and links are given below and in 
+`platform-specific instructions`_, but for the courageous and the
+impatient, :term:`FiPy` can be up and running quickly with one of the
+following methods.
 
 
 EasyInstall
@@ -79,6 +89,17 @@ Another comprehensive Python package installer for scientific applications,
 presently only available for Windows_. See :ref:`WINDOWS-INSTALLATION` for
 more information.
 
+Platform-Specific Instructions
+==============================
+
+.. toctree::
+   :maxdepth: 2
+
+   MACOSX-INSTALLATION
+   WINDOWS-INSTALLATION
+   documentation/SVN
+
+
 ----------
 Privileges
 ----------
@@ -94,7 +115,7 @@ where ``<dir>`` is the desired installation directory (usually "``~``" to
 indicate your home directory).  You will then need to append
 ``<dir>/lib/python`` to your ``PYTHONPATH`` environment variable.  See the
 `Alternate Installation`_ section of the Python_ document "`Installing
-Python Modules`_" |citeInstallingPythonModules| for more information, such
+Python Modules`_" [InstallingPythonModules]_ for more information, such
 as circumstances in which you should use ``--prefix`` instead of
 ``--home``.
 
@@ -166,7 +187,7 @@ systems, which you can check by opening a terminal and typing
     >>> 
 
 If necessary, you can download_ and install it for your platform 
-|citePythonDownload|.
+[PythonDownload]_.
 
 .. note::
 
@@ -175,9 +196,6 @@ If necessary, you can download_ and install it for your platform
 
 .. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
-.. |citePythonDownload| raw:: latex
-
-   \cite{PythonDownload}
 
 NumPy
 -----
@@ -261,7 +279,7 @@ results. It displays both 1D X-Y type plots and 2D contour plots for
 structured data. It does not display unstructured 2D data or 3D data.
 It works on all common platforms and produces publication quality hard
 copies. Version 0.72.1 or higher is required. `Matplotlib installers
-for specific platforms`_ are available |citeMatplotlibDownload|.
+for specific platforms`_ are available [MatplotlibDownload]_.
 
 .. note::
 
@@ -269,9 +287,6 @@ for specific platforms`_ are available |citeMatplotlibDownload|.
    has superior image rendering and plotting functionality.
 
 .. _Matplotlib installers for specific platforms: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
-.. |citeMatplotlibDownload| raw:: latex
-
-   \cite{MatplotlibDownload}
 
 Gnuplot-py
 ----------
@@ -363,7 +378,7 @@ Obtaining FiPy
 --------------
 
 :term:`FiPy` is freely available for download via Subversion_ or as a `compressed
-archive`_ |citeFiPyDownload|. Please see :ref:`documentation:SVN` for 
+archive`_ [FiPyDownload]_. Please see :ref:`documentation:SVN` for 
 instructions of obtaining :term:`FiPy` with Subversion_.
 
 .. warning::
@@ -374,14 +389,11 @@ instructions of obtaining :term:`FiPy` with Subversion_.
    this issue automatically).
 
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
-.. |citeFiPyDownload| raw:: latex
-
-   \cite{FiPyDownload}
 
 Manual
 ======
 
-You can `download the latest manual`_ |citeFiPyGuide|. Alternatively,
+You can `download the latest manual`_ [FiPyGuide]_. Alternatively,
 it may be possible to build a fresh copy by issuing the following
 command in the base directory::
 
@@ -396,10 +408,6 @@ command in the base directory::
    variable.
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
-
-.. |citeFiPyGuide| raw:: latex
-
-   \cite{FiPyGuide}
 
 ------------
 Testing FiPy
@@ -490,11 +498,11 @@ examples.
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
-yourself with the excellent `Python tutorial`_ |citePythonTutorial| 
-or with `Dive Into Python`_ |citeDiveIntoPython|.
+yourself with the excellent `Python tutorial`_ [PythonTutorial]_ 
+or with `Dive Into Python`_ [DiveIntoPython]_.
 
 As you gain experience, you will want to see
-|FAQ-FlagsAndEnvironmentVariables| to learn about the flags and environment
+:ref:`FAQ-FlagsAndEnvironmentVariables` to learn about the flags and environment
 variables that modify :term:`FiPy`'s default behavior.
 
 -----------------
@@ -513,7 +521,7 @@ http://www.scipy.org/
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the :mod:`scipy.weave` module of the
 :term:`SciPy` package. `SciPy download instructions`_ 
-|citeSciPyDownload| are available. We recommend version 0.5.2 or greater.
+[SciPyDownload]_ are available. We recommend version 0.5.2 or greater.
 
 .. note:: 
 
@@ -521,9 +529,6 @@ judicious use of C language inlining, via the :mod:`scipy.weave` module of the
    throw errors if it is missing.
 
 .. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
-.. |citeSciPyDownload| raw:: latex
-
-   \cite{SciPyDownload}
 
 Gmsh
 ====
@@ -632,41 +637,3 @@ indicators, :term:`FiPy` will default to using :term:`PySparse` if it is present
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 
 .. include:: documentation/VERSION.txt
-
-.. |citeInstallingPythonModules| raw:: latex
-
-   \cite{InstallingPythonModules}
-
-.. |citePythonTutorial| raw:: latex
-
-   \cite{PythonTutorial}
-
-.. |citeDiveIntoPython| raw:: latex
-
-   \cite{DiveIntoPython}
-
-.. |latexFAQ-FlagsAndEnvironmentVariables| raw:: latex
-
-   FAQ~\ref{FAQ-FlagsAndEnvironmentVariables}
-
-.. |htmlFAQ-FlagsAndEnvironmentVariables| raw:: html
-
-   FAQ 6.6: "How do I change FiPy's default behavior?" of the <a href="download/fipy.pdf">Manual</a>
-
-.. |FAQ-FlagsAndEnvironmentVariables| replace:: |htmlFAQ-FlagsAndEnvironmentVariables| |latexFAQ-FlagsAndEnvironmentVariables|
-
-.. |outsideLinks| raw:: html
-
-    <div class="note">
-    <p class="admonition-title">Note</p>
-    By selecting the links on this page, you will be leaving NIST webspace.
-    We have provided these links to other web sites because they may have
-    information that would be of interest to you.  No inferences should be
-    drawn on account of other sites being referenced, or not, from this
-    page.  There may be other web sites that are more appropriate for your
-    purpose.  NIST does not necessarily endorse the views expressed, or
-    concur with the facts presented on these sites.  Further, NIST does not
-    endorse any commercial products that may be mentioned on these sites.
-    Please address comments about this page to <a class="reference"
-    href="mailto:fipy@nist.gov">fipy@nist.gov</a>.
-    </div>

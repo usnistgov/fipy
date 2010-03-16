@@ -36,7 +36,7 @@ This input file is a demonstration of the use of :term:`FiPy` for
 modeling copper superfill with leveler and accelerator
 additives. The material properties and experimental parameters
 used are roughly those that have been previously
-published~\cite{NIST:leveler:2005}.
+published [NIST:leveler:2005]_.
 
 To run this example from the base fipy directory type::
     

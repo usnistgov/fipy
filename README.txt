@@ -3,7 +3,7 @@ Overview
 ========
 
 :term:`FiPy` is an object oriented, partial differential equation (PDE) solver,
-written in Python_ |citePython|, based on a standard finite volume (FV)
+written in Python_ [Python]_, based on a standard finite volume (FV)
 approach.  The framework has been developed in the `Metallurgy Division`_
 and Center for Theoretical and Computational Materials Science (CTCMS_), in
 the Materials Science and Engineering Laboratory (MSEL_) at the National
@@ -19,12 +19,14 @@ provides a tool that is extensible, powerful and freely available. A
 significant advantage to Python_ is the existing suite of tools for
 array calculations, sparse matrices and data rendering. 
 
-The :term:`FiPy` framework includes terms for transient diffusion, convection and
-standard sources, enabling the solution of arbitrary combinations of
-coupled elliptic, hyperbolic and parabolic PDEs.  Currently implemented
-models include phase field |citePhaseField| treatments of polycrystalline,
-dendritic, and electrochemical phase transformations as well as a level set
-treatment of the electrodeposition process |citeCEAC|.
+The :term:`FiPy` framework includes terms for transient diffusion,
+convection and standard sources, enabling the solution of arbitrary
+combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
+implemented models include phase field
+[BoettingerReview:2002]_ [ChenReview:2002]_ [McFaddenReview:2002]_ treatments of
+polycrystalline, dendritic, and electrochemical phase transformations as
+well as a level set treatment of the electrodeposition process
+[NIST:damascene:2001]_.
 
 .. only:: latex
   
@@ -84,7 +86,7 @@ Support
 You can communicate with the :term:`FiPy` developers and with other users via our
 `mailing list`_ and we welcome you to use the `tracking
 system`_ for bugs, support requests, feature requests and
-patch submissions |citeMailingTracking|. We welcome collaborative efforts on this project.
+patch submissions [FiPyMailingList,FiPyBugTracker]_. We welcome collaborative efforts on this project.
 
 :term:`FiPy` is a member of MatForge_, a project of the `Materials Digital Library
 Pathway`_. This National Science Foundation funded service provides
@@ -179,20 +181,4 @@ or a
 .. _MatForge:             http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/
 
 .. include:: documentation/VERSION.txt
-
-.. |citePython| raw:: latex
-
-   \cite{Python}
-
-.. |citePhaseField| raw:: latex
-
-   \cite{BoettingerReview:2002,ChenReview:2002,McFaddenReview:2002}
-
-.. |citeCEAC| raw:: latex
-
-   \cite{NIST:damascene:2001}
-
-.. |citeMailingTracking| raw:: latex
-
-   \cite{FiPyMailingList,FiPyBugTracker}
 

@@ -4,10 +4,6 @@
 Simple Mac OS X Installation
 ============================
 
-.. contents::
-   :local:
-   :depth: 2
-
 We present four comparatively simple routes to installing :term:`FiPy` on `Mac OS
 X`_. The `Fink Installation`_ procedure is appropriate if you are already
 familiar with the Fink_ package manager. Either `EasyInstall`_ or

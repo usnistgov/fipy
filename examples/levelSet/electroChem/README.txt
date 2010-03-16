@@ -1,6 +1,6 @@
-================================
-Superconformal Electrodeposition
-================================
+=========================================
+Superconformal Electrodeposition Examples
+=========================================
 
 The Damascene Process
 ---------------------
@@ -36,7 +36,7 @@ The CEAC Mechanism
 This process has been demonstrated to depend critically on the
 inclusion of additives in the electrolyte.  Recent publications
 propose Curvature Enhanced Accelerator Coverage (CEAC) as the
-mechanism behind the superfilling process |citeDamascene|.  In this
+mechanism behind the superfilling process [NIST:damascene:2001]_.  In this
 mechanism, molecules that accelerate local metal deposition displace
 molecules that inhibit local metal deposition on the metal/electrolyte
 interface. For electrolytes that yield superconformal filling of fine
@@ -47,7 +47,7 @@ the increased rate of metal deposition along the bottom of the filling
 trench is the concurrent local increase of the accelerator coverage
 due to decreasing local surface area, which scales with the local
 curvature (hence the name of the mechanism). A good overview of this
-mechanism can be found in |citeMoffat|.
+mechanism can be found in [moffatInterface:2004]_.
 
 Using FiPy to model Superfill
 -----------------------------
@@ -77,26 +77,6 @@ of high surfactant concentration have an increased deposition rate.
    :alt: FiPy superfill
 
 .. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
-
-.. |citeMoffat| replace:: |htmlMoffat| |latexMoffat|
-
-.. |latexMoffat| raw:: latex
-
-   \cite{moffatInterface:2004}
-
-.. |htmlMoffat| raw:: html
-
-   <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.electrochem.org/publications/interface/winter2004/IF12-04-Pg46.pdf">Moffat et al</a>
-    
-.. |citeDamascene| replace:: |htmlDamascene| |latexDamascene|
-
-.. |latexDamascene| raw:: latex
-
-   \cite{NIST:damascene:2001}
-
-.. |htmlDamascene| raw:: html
-
-   <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://link.aps.org/abstract/PRL/v87/e016102">Josell et al</a>
 
 .. |latexSimpleTrenchSystem| raw:: latex
 

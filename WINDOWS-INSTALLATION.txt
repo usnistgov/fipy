@@ -4,10 +4,6 @@
 Simple Windows Installation
 ===========================
 
-.. contents::
-   :local:
-   :depth: 2
-
 These instructions are for the `Windows XP`_ and `Windows 2000`_
 platforms. Please see the more general :ref:`INSTALLATION` for detailed
 installation instructions.  These instructions are not the only way to

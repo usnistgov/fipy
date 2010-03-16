@@ -106,14 +106,10 @@ Any other tags will not generally be of interest to most users.
 
 
 For those who are interested in learning more about Subversion, the
-canonical manual is the `online Subversion Red Bean book`_
-|citeSubversionRedBean|.
+canonical manual is the `online Subversion Red Bean book`_ 
+[SubversionRedBean]_.
 
 .. include:: VERSION.txt
-
-.. |citeSubversionRedBean| raw:: latex
-
-   \cite{SubversionRedBean}
 
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 

@@ -3,6 +3,8 @@
 Frequently Asked Questions
 ==========================
 
+.. contents::
+
 How do I represent an equation in FiPy?
 ---------------------------------------
 
@@ -383,7 +385,7 @@ commercial software packages. The guidance in the
 `Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ 
 should be adaptable to other :class:`Viewer`\s.
 
-Why don't the :class:`Viewer`\s look the way I want?
+Why doesn't the :class:`Viewer` look the way I want?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :term:`FiPy`'s viewers are utilitarian. They're designed to let you see
@@ -895,6 +897,5 @@ What if my question isn't answered here?
 ----------------------------------------
     
 Please post your question to the
-`mailing list <http://www.ctcms.nist.gov/fipy/mail.html>`_
-\cite{FiPyMailingList} or
-`file a Tracker request <http://sourceforge.net/tracker/?group_id=118428>`_ \cite{FiPyBugTracker}.
+`mailing list <http://www.ctcms.nist.gov/fipy/mail.html>`_ [FiPyMailingList]_ 
+or `file a Tracker request <http://sourceforge.net/tracker/?group_id=118428>`_  [FiPyBugTracker]_.

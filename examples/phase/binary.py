@@ -46,7 +46,8 @@ As in :mod:`examples.phase.simple`, we will examine a 1D problem
 >>> mesh = Grid1D(dx=dx, nx=nx)
 
 The Helmholtz free energy functional can be written as the integral
-\cite{BoettingerReview:2002,McFaddenReview:2002,Wheeler:1992}
+[BoettingerReview:2002]_ [McFaddenReview:2002]_ [Wheeler:1992]_
+
 .. math::
     
    \mathcal{F}\left(\phi, C, T\right)

@@ -18,6 +18,7 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.append(os.path.abspath('utils'))
 sys.path.append(os.path.abspath('sphinxext'))
+sys.path.append(os.path.abspath('bibtex'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -43,7 +44,7 @@ source_suffix = '.txt'
 #source_encoding = 'utf-8'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = 'documentation/contents'
 
 # General information about the project.
 project = u'FiPy'
@@ -73,7 +74,11 @@ release = '2.0.2'
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['_build', 'FiPy.egg-info', 'documentation/_build', 'utils']
+exclude_trees = ['_build', 
+                 'FiPy.egg-info', 
+                 'documentation/_build', 
+                 'documentation/bibtex', 
+                 'utils']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -102,6 +107,14 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/cahnHilliard/index.txt',
                         'examples/flow/index.txt',
                         'examples/updating/index.txt']
+
+                        
+input_bib_path = os.path.join('manual', 'refs.bib')
+
+import bib2rst
+
+# bib2rst.convert_all_bib('manual', '../contrib/ext/bibtex/bibstuff')
+bib2rst.convert_only_cited('..', input_bib_path, source_suffix, 'bibtex/bibstuff')
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -151,7 +164,9 @@ html_last_updated_fmt = '%b %d, %Y'
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {}
+html_additional_pages = {
+    'index': 'indexcontent.html',
+}
 
 # If false, no module index is generated.
 #html_use_modindex = True
@@ -191,7 +206,11 @@ htmlhelp_basename = 'FiPydoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'FiPy.tex', u'FiPy Documentation',
+#   ('index', 'FiPy.tex', u'FiPy Documentation',
+#    u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
+  ('manual', 'FiPy.tex', u'FiPy Documentation',
+   u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
+  ('reference', 'FiPyReference.tex', u'FiPy Reference',
    u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
 ]
 
@@ -213,7 +232,8 @@ latex_preamble = r"""
 """
 
 # Documents to append as an appendix to all manuals.
-#latex_appendices = []
+latex_appendices = ['glossary',
+                    'references']
 
 # If false, no module index is generated.
 #latex_use_modindex = True
