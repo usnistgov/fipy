@@ -86,8 +86,8 @@ Python
 
 Python is pre-installed on `Mac OS X`_, but installation of other packages
 is much easier if you upgrade to the latest version of
-``python-2.4.X-XXXX-XX-XX.dmg`` from pythonmac_ (or possibly some variant on 
-``Universal-MacPython-2.4.X-XXXX-XX-XX.dmg``). Your existing
+:file:`python-2.{4.X-XXXX-XX-XX}.dmg`` from pythonmac_ (or possibly some variant on 
+:file:`Universal-MacPython-2.{4.X-XXXX-XX-XX}.dmg``). Your existing
 installation will not be harmed.
 
 .. note::
@@ -113,7 +113,7 @@ NumPy
 -----
 
 Download and install the latest version of 
-``numpy-X.XX-py2.4-macosx10.4.mpkg.zip`` from pythonmac_.
+:file:`numpy-{X.XX}-py2.4-macosx10.4.mpkg.zip` from pythonmac_.
 
 
 
@@ -131,7 +131,7 @@ wxPython
 ~~~~~~~~
 
 Download and install the latest version of
-``wxPythonX.X-osx-unicode-X.X.X.X-universal10.4-py2.4.dmg`` from
+:file:`wxPython{X.X}-osx-unicode-{X.X.X.X}-universal10.4-py2.4.dmg` from
 pythonmac_.
 
 
@@ -141,14 +141,14 @@ PySparse
 http://sourceforge.net/project/showfiles.php?group_id=101403
 
 Download and install the latest version of
-``pysparse-X.XX.XXX.macosx-10.4-py24.dmg``
+:file:`pysparse-{X.XX.XXX}.macosx-10.4-py24.dmg`
 
 FiPy
 ----
 
 http://www.ctcms.nist.gov/fipy/
 
-Download and unpack the source archive (``FiPy-x.y.tar.gz``).     
+Download and unpack the source archive (:file:`FiPy-{x.y}.tar.gz`).     
 
 From within the :term:`FiPy` directory, execute the command-line instruction::
 
@@ -202,12 +202,12 @@ X11
 
 Open the X11 application.
 
-Set your ``$DISPLAY`` environment variable to ``:0.0``.
+Set your :envvar:`DISPLAY` environment variable to ``:0.0``.
 
 .. note:: 
 
    If the X11 application is not already present in the
-   ``/Applications/Utilities/`` directory, it should be available as an
+   :file:`/Applications/Utilities/` directory, it should be available as an
    optional package on the OS installation media that came with your
    computer.
 
@@ -248,9 +248,9 @@ Execute the following commands from Terminal application (you can use
     $ fink --use-binary-dist install python
 
 Take note of the version of Python that gets installed (``python
---version``). Many other packages, indicated by a "``-pyXX``" suffix, require
-you substitute the Python version. E.g., Python 2.4 takes "``-py24``", Python
-2.5 takes "``-py25``", and so on::
+--version``). Many other packages, indicated by a ":samp:`-py{XX}`" suffix, require
+you substitute the Python version. E.g., Python 2.4 takes ":samp:`-py24`", Python
+2.5 takes ":samp:`-py25`", and so on::
 
     $ fink --use-binary-dist install matplotlib-pyXX
 
@@ -263,7 +263,7 @@ you substitute the Python version. E.g., Python 2.4 takes "``-py24``", Python
    
 .. note::
 
-   If the installation of matplotlib-pyXX fails for some reason, we 
+   If the installation of :samp:`matplotlib-py{XX}` fails for some reason, we 
    recommend you execute the ``install`` command again.
       
 A few changes are needed to allow matplotlib_ to run::
@@ -289,7 +289,7 @@ PySparse installation
 http://sourceforge.net/project/showfiles.php?group_id=101403
 
 Download and unpack the latest version of
-``pysparse-X.XX.XXX.tar.gz``
+:file:`pysparse-{X.XX.XXX}.tar.gz`
 
 From within the PySparse directory, execute::
 
