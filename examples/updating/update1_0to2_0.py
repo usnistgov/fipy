@@ -227,8 +227,8 @@ to indicate that we may not maintain the old syntax indefinitely.
    work, so you do not need to change them if you don't wish to, but we find our
    own scripts much easier to read without them. 
    
-   All of the :mod:`~fipy.numerix` module is now imported into the :mod:`fipy` namespace, so you
-   can call :mod:`~fipy.numerix` functions a number of different ways, including:
+   All of the :mod:`~fipy.tools.numerix` module is now imported into the :mod:`fipy` namespace, so you
+   can call :mod:`~fipy.tools.numerix` functions a number of different ways, including:
        
    >>> from fipy import *
    >>> y = exp(x)
