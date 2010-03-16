@@ -160,7 +160,7 @@ number of cases are interpreted below.
     Generally, anisotropy is not conveniently aligned along the coordinate
     axes; in these cases, it is necessary to apply a rotation matrix in
     order to calculate the correct tensor values, see
-    :ref:`sec:Examples:diffusion:anisotropy` for details.
+    :mod:`examples.diffusion.anisotropy` for details.
 
 What if the term isn't one of those?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -265,7 +265,7 @@ directly, in the manner of Equation~\eqref{eqn:num:tra}, as
 
     >>> TransientTerm(coeff = rho1) == rho2 * (xi - xi.getOld()) / timeStep
 
-This technique is used in :ref:`examples:phase:anisotropy`.
+This technique is used in :mod:`examples.phase.anisotropy`.
     
 What if my term involves the dependent variable, but not where |FiPy| puts it?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -316,10 +316,10 @@ The way to save your calculations depends on how you plan to make use of
 the data. If you want to save it for "restart" (so that you can continue
 or redirect a calculation from some intermediate stage), then you'll want
 to "pickle" the \Python{} data with the :mod:`dump` module. This is
-illustrated in :ref:`examples:phase:anisotropy`,
-:ref:`examples:phase:impingement:mesh40x1`,
-:ref:`examples:phase:impingement:mesh20x20`, and
-:ref:`examples:levelSet:electroChem:howToWriteAScript`.
+illustrated in :mod:`examples.phase.anisotropy`,
+:mod:`examples.phase.impingement.mesh40x1`,
+:mod:`examples.phase.impingement.mesh20x20`, and
+:mod:`examples.levelSet.electroChem.howToWriteAScript`.
    
 On the other hand, pickled |FiPy| data is of little use to anything
 besides \Python{} and |FiPy|. If you want to import your calculations into
@@ -327,7 +327,7 @@ another piece of software, whether to make publication-quality graphs or
 movies, or to perform some analysis, or as input to another stage of a
 multiscale model, then you can save your data as an :abbr:`ASCII` text
 file of tab-separated-values with a :class:`TSVViewer`. This is illustrated
-in :ref:`examples:diffusion:circle`.
+in :mod:`examples.diffusion.circle`.
    
 How do I save a plot image?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -398,7 +398,7 @@ want, and then issue supplemental commands for the underlying plotting
 package. The better option is to make a "subclass" of the |FiPy|
 :class:`Viewer` that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting |FiPy| do
-most of the heavy lifting. See :ref:`examples:phase:anisotropy` for an
+most of the heavy lifting. See :mod:`examples.phase.anisotropy` for an
 example of creating a custom \Matplotlib{} :class:`Viewer` class.
 
 .. _FAQ-IterationsTimestepsSweeps:
@@ -439,8 +439,8 @@ iterations
      in favor of :keyword:`iterations=` to make the role clearer.
 
   Solver iterations are changed from their defaults in
-  :ref:`examples:flow:stokesCavity` and
-  :ref:`examples:update0-1to1-0`.
+  :mod:`examples.flow.stokesCavity` and
+  :mod:`examples.update0-1to1-0`.
 
 sweeps
   This middle layer of repetition is important
@@ -493,9 +493,9 @@ sweeps
       ...     residual = eq.sweep(var=myVar, ...)
 
   Sweeps are used to achieve better solutions in
-  :ref:`examples:diffusion:mesh1D`, 
-  :ref:`examples:phase:simple`, 
-  :ref:`examples:phase:binary`, and :ref:`examples:flow:stokesCavity`.
+  :mod:`examples.diffusion.mesh1D`, 
+  :mod:`examples.phase.simple`, 
+  :mod:`examples.phase.binary`, and :mod:`examples.flow.stokesCavity`.
 
 timesteps
   This outermost layer of repetition is of most practical interest to
@@ -537,11 +537,11 @@ timesteps
 
   A majority of the examples in this manual illustrate time evolving
   behavior. Notably, boundary conditions are made a function of elapsed
-  time in :ref:`examples:diffusion:mesh1D`. The timestep is
+  time in :mod:`examples.diffusion.mesh1D`. The timestep is
   chosen based on the expected interfacial velocity in
-  :ref:`examples:phase:simple`. The timestep is gradually
+  :mod:`examples.phase.simple`. The timestep is gradually
   increased as the kinetics slow down in
-  :ref:`sec:Examples:cahnHilliard:mesh2D`.
+  :mod:`examples.cahnHilliard.mesh2D`.
 
 Finally, we can (and often do) combine all three layers of repetition:
 
@@ -616,7 +616,7 @@ on a given boundary edge with :math:`\vec{n}` pointing out of the boundary.
 The quantity :math:`\Gamma` represents the diffusion coefficient and :math:`\vec{u}`
 represents the convection coefficient for a general convection-diffusion
 equation of the type given in Eq.~\eqref{eqn:num:gen}. See
-:ref:`sec:Examples:convection:robin` for a usage case.
+:mod:`examples.convection.robin` for a usage case.
 
 .. _FAQ-anyBoundaryCondition:
 
@@ -702,7 +702,7 @@ conditions, consistent with an upwind convection scheme.
     ...        == DiffusionTerm(diffusionCoeff))
 
 As in the previous section, the coefficient values may need updating on the
-exterior faces between sweeps. See :ref:`sec:Examples:convection:source`
+exterior faces between sweeps. See :mod:`examples.convection.source`
 for an example of this usage.
 
 How do I apply a fixed gradient?
@@ -726,7 +726,7 @@ the form
     >>> FixedValue(value=phi.getFaceValue(), faces=myFaces)
 
 This is not an "implicit" boundary condition so would in general require
-sweeps to reach convergence. See :ref:`sec:Examples:convection:source`
+sweeps to reach convergence. See :mod:`examples.convection.source`
 for an example of this usage.
 In the case of a non-zero gradient one would need to employ the techniques in
 both :ref:`FAQ-anyBoundaryCondition`
@@ -766,8 +766,8 @@ when its called,
     >>> eqn.solve(..., boundaryConditions=BCs)
 
 Further demonstrations of spatially varying boundary condition can be found
-in :ref:`sec:Examples:diffusion:mesh20x20`
-and :ref:`sec:Examples:diffusion:circle`
+in :mod:`examples.diffusion.mesh20x20`
+and :mod:`examples.diffusion.circle`
 
 .. %    http://thread.gmane.org/gmane.comp.python.fipy/726
    %    http://thread.gmane.org/gmane.comp.python.fipy/846

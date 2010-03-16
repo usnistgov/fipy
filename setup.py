@@ -486,7 +486,7 @@ epydoc.cli.cli(["--latex", "--output", dir,
             os.chdir(savedir)
             
         if self.sphinx:
-            os.system("sphinx-build -b html -c documentation/ . documentation/_build/")
+            os.system("sphinx-build -P -b html -c documentation/ . documentation/_build/")
 
         if self.webpage:
             import tempfile

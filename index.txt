@@ -12,7 +12,7 @@ Contents:
    :maxdepth: 2
 
    documentation/introduction
-   documentation/examples
+   examples/README
 
 Indices and tables
 ==================
