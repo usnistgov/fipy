@@ -241,7 +241,7 @@ Build the distribution.
 
    C:\pythonXX\python setup.py build --compiler=mingw32 bdist --format=wininst
 
-.. include:: utils/include.txt
+.. include:: ../utils/include.txt
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
