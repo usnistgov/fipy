@@ -35,7 +35,7 @@
 r"""
 
 To run this example from the base FiPy directory, type
-:sample:`python examples/phase/simple/input.py` at the command line.  A viewer
+``python examples/phase/simple/input.py`` at the command line.  A viewer
 object should appear and, after being prompted to step through the different
 examples, the word ``finished`` in the terminal.
 
@@ -381,7 +381,7 @@ We choose the parameter values appropriate for nickel, given in
 >>> enthalpy = Lv * (T - Tm) / Tm # J / cm**3
     
 The parameters of the phase field model can be related to the surface
-energy :math:`\sigma` and the interfacial thickness :math:`\delta ` by
+energy :math:`\sigma` and the interfacial thickness :math:`\delta` by
 
 .. math::
     
