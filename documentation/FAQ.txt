@@ -1,0 +1,166 @@
+Frequently Asked Questions
+==========================
+
+.. contents::
+
+How do I represent an equation in |FiPy|?
+------------------------------------------
+
+As explained in :ref:`chap:Numerics`, the canonical
+governing equation that can be solved by |FiPy| for the dependent
+:class:`CellVariable` :math:`\phi` is
+
+.. math::
+   
+   \underbrace{
+     \frac{\partial (\rho \phi)}{\partial t}
+   }_{\text{transient}}
+   =
+   \underbrace{
+     \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+     \nabla \cdot \left( \vec{u} \phi \right)
+   }_{\text{convection}}
+   +
+   \underbrace{
+     \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+     \left[ \nabla \cdot \left( \Gamma_i \nabla \right) \right]^n \phi
+   }_{\text{diffusion}}
+   +
+   \underbrace{
+     \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
+     S_{\phi}
+   }_{\text{source}}
+   
+A physical problem can involve many different coupled
+governing equations, one for each variable.  Numerous specific
+examples are presented in Part :ref:`part:Examples`, but let us
+examine this general expression term-by-term:
+
+How do I represent a transient term :math:`\partial (\rho \phi) / \partial t`?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> TransientTerm(coeff = rho)
+    
+.. note::      
+
+   We have specified neither the variable :math:`\phi` nor the time
+   step.  Both are handled when we actually solve the equation.
+
+How do I represent a convection term :math:`\nabla \cdot \left( \vec{u} \phi \right)`?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> <Specific>ConvectionTerm(coeff = u, 
+    ...                          diffusionTerm = diffTerm)
+    
+where \verb|<Specific>| can be any of \verb|CentralDiff|,
+\verb|Exponential|, \verb|Hybrid|, \verb|PowerLaw|,
+\verb|Upwind|, \verb|ExplicitUpwind|, or \verb|VanLeer|.
+The differences between these convection schemes are described
+in Section :ref:`sec:NumericalSchemes`. The velocity coefficient 
+\verb|u| must be a rank-1 \Class{FaceVariable}, or a 
+constant vector in the form of a Python list or tuple, 
+\emph{e.g.} \verb|((1,), (2,))| for a vector in 2D.
+
+.. note::
+
+   As discussed in Section~\ref{sec:NumericalSchemes}, the
+   convection schemes need to calculate a P\'eclet number,
+   and therefore need to know about any diffusion term
+   used in the problem.  It is hoped that this dependency
+   can be automated in the future.
+
+.. warning::
+
+   \Class{VanLeerConvectionTerm} not mentioned and no discussion of
+   explicit forms.
+
+How do I represent a diffusion term $\nabla \cdot \left( \Gamma_1 \nabla \phi \right)$?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Either
+
+    >>> ImplicitDiffusionTerm(coeff = Gamma1)
+    
+or 
+
+    >>> ExplicitDiffusionTerm(coeff = Gamma1)
+    
+\Class{ExplicitDiffusionTerm} is provided only for illustrative purposes.
+\Class{ImplicitDiffusionTerm} is almost always preferred (\Class{DiffusionTerm} is a synonym for \Class{ImplicitDiffusionTerm} to reinforce this preference). It is
+theoretically possible to create an explicit diffusion term with
+
+    >>> (Gamma1 * phi.getFaceGrad()).getDivergence()
+
+Unfortunately, in this form, any boundary conditions on $\phi$ will not be
+accounted for.
+
+:label:`FAQ-higherOrderDiffusion`
+
+How do I represent a term $\nabla^4 \phi$ or $\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(  \Gamma_2 \nabla \phi\right) \right) \right) $ such as for  Cahn-Hilliard? 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+    >>> ImplicitDiffusionTerm(coeff = (Gamma1, Gamma2))
+
+The number of elements supplied for \verb|coeff| determines the
+order of the term.
+
+Is there a way to model an anisotropic diffusion process or more generally to represent the diffusion coefficient as a tensor so that the diffusion term takes the form $\partial_i \Gamma_{ij}\partial_j \phi$?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Terms of the form $\partial_i \Gamma_{ij}\partial_j \phi$ can
+be posed in \FiPy{} by using a list, tuple, rank 1 or rank 2
+\Class{FaceVariable} to represent a vector or tensor diffusion
+coefficient.  For example, if we wished to represent a
+diffusion term with an anisotropy ratio of 5 aligned along the
+x-coordinate axis, we could write the term as,
+
+    >>> DiffusionTerm([[[5, 0], [0, 1]]])
+
+which represents $5 \partial_x^2 + \partial_y^2$.  Notice that
+the tensor, written in the form of a list, is contained within
+a list. This is because the first index of the list refers to
+the order of the term not the first index of the tensor (see
+the FAQ, Chapter~\ref{FAQ-higherOrderDiffusion}
+``\titleref{FAQ-higherOrderDiffusion}''). This
+notation, although succinct can sometimes be confusing so a
+number of cases are interpreted below.
+
+        >>> DiffusionTerm([[5, 1]])
+
+    This represents the same term as the case examined above.
+    The vector notation is just a short-hand representation
+    for the diagonal of the tensor. Off-diagonals are assumed
+    to be zero.
+
+        >>> DiffusionTerm([5, 1])
+
+    This simply represents a fourth order isotropic diffusion
+    term of the form $5 \left( \partial_x^2 + \partial_y^2
+    \right)^2$.
+
+        >>> DiffusionTerm([[1, 0], [0, 1]])
+
+    Nominally, this should represent a fourth order diffusion
+    term of the form $\partial_x^2 \partial_y^2$, but \FiPy{}
+    does not currently support anisotropy for higher order
+    diffusion terms so this may well throw an error or give
+    anomalous results.
+  
+        >>> x, y = mesh.getCellCenters()
+        >>> DiffusionTerm([[[x**2, x * y], [-x * y, -y**2]]])
+
+    This represents an anisotropic diffusion coefficient that
+    varies spatially so that the term has the form 
+    $\partial_x (x^2 \partial_x + x y \partial_y)
+    + \partial_y (-x y \partial_x - y^2 \partial_y)
+    \equiv x \partial_x - y \partial_y + x^2 \partial_x^2 - y^2
+    \partial_y^2$.
+
+    Generally, anisotropy is not conveniently aligned
+    along the coordinate axes; in these cases, it is necessary
+    to apply a rotation matrix in order to calculate the
+    correct tensor values, see
+    Chapter~\ref{sec:Examples:diffusion:anisotropy}
+    ``\titleref{sec:Examples:diffusion:anisotropy}'' for
+    details.
+
