@@ -8,7 +8,7 @@ Frequently Asked Questions
    \minitoc[e]
 
 How do I represent an equation in |FiPy|?
-------------------------------------------
+-----------------------------------------
 
 As explained in :ref:`chap:Numerics`, the canonical
 governing equation that can be solved by |FiPy| for the dependent
@@ -112,7 +112,7 @@ Is there a way to model an anisotropic diffusion process or more generally to re
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Terms of the form :math:`\partial_i \Gamma_{ij}\partial_j \phi` can
-be posed in \FiPy{} by using a list, tuple, rank 1 or rank 2
+be posed in |FiPy| by using a list, tuple, rank 1 or rank 2
 \Class{FaceVariable} to represent a vector or tensor diffusion
 coefficient.  For example, if we wished to represent a
 diffusion term with an anisotropy ratio of 5 aligned along the
@@ -145,7 +145,7 @@ number of cases are interpreted below.
         >>> DiffusionTerm([[1, 0], [0, 1]])
 
     Nominally, this should represent a fourth order diffusion
-    term of the form :math:`\partial_x^2 \partial_y^2`, but \FiPy{}
+    term of the form :math:`\partial_x^2 \partial_y^2`, but |FiPy|
     does not currently support anisotropy for higher order
     diffusion terms so this may well throw an error or give
     anomalous results.
@@ -197,7 +197,7 @@ might be written as
     >>> 3 * kappa**2 + ImplicitSourceTerm(coeff=sin(theta))
     
 How do I represent a `...` term that \emph{doesn't} involve the dependent variable?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is important to realize that, even though an expression may
 superficially resemble one of those shown above, if the dependent variable
@@ -264,15 +264,15 @@ The time-rate-of change of an independent variable :math:`\xi`, such as in
    \frac{\partial (\rho_1 \phi)}{\partial t}
    = \frac{\partial (\rho_2 \xi)}{\partial t}
 
-does not have an abstract form in \FiPy{} and should be discretized
+does not have an abstract form in |FiPy| and should be discretized
 directly, in the manner of Equation~\eqref{eqn:num:tra}, as
 
     >>> TransientTerm(coeff = rho1) == rho2 * (xi - xi.getOld()) / timeStep
 
 This technique is used in Example~\ref{examples:phase:anisotropy}.
     
-What if my term involves the dependent variable, but not where \FiPy{} puts it?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What if my term involves the dependent variable, but not where |FiPy| puts it?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
 Frequently, viewing the term from a different perspective will allow it to
 be cast in one of the canonical forms. For example, the third term in
@@ -285,7 +285,7 @@ be cast in one of the canonical forms. For example, the third term in
 
 might be considered as the diffusion of the independent variable :math:`\xi` with
 a mobility :math:`D_2\phi` that is a function of the dependent variable :math:`\phi`.
-For \FiPy{}'s purposes, however, this term represents the convection of
+For |FiPy|'s purposes, however, this term represents the convection of
 :math:`\phi`, with a velocity :math:`D_2\nabla\xi`, due to the counter-diffusion of
 :math:`\xi`, so
 
@@ -325,8 +325,8 @@ illustrated in Examples~\ref{examples:phase:anisotropy},
 \ref{examples:phase:impingement:mesh20x20}, and
 \ref{examples:levelSet:electroChem:howToWriteAScript}.
    
-On the other hand, pickled \FiPy{} data is of little use to anything
-besides \Python{} and \FiPy{}. If you want to import your calculations into
+On the other hand, pickled |FiPy| data is of little use to anything
+besides \Python{} and |FiPy|. If you want to import your calculations into
 another piece of software, whether to make publication-quality graphs or
 movies, or to perform some analysis, or as input to another stage of a
 multiscale model, then you can save your data as an \textsc{ascii} text
@@ -383,7 +383,7 @@ backend," such as "``Agg``" or "``Cairo``." Backends are discussed at
 How do I make a movie?
 ~~~~~~~~~~~~~~~~~~~~~~
 
-\FiPy{} has no facilities for making movies. You will need to save
+|FiPy| has no facilities for making movies. You will need to save
 individual frames (see the previous question) and then stitch them together
 into a movie, using one of a variety of different free, shareware, or
 commercial software packages. The guidance in the
@@ -400,9 +400,9 @@ platforms than on others, we have tried to support a range of \Python{}
 plotters with a minimal common set of features. Many of these packages are
 capable of much more, however. Often, you can invoke the \Class{Viewer} you
 want, and then issue supplemental commands for the underlying plotting
-package. The better option is to make a "subclass" of the \FiPy{}
+package. The better option is to make a "subclass" of the |FiPy|
 \Class{Viewer} that comes closest to producing the image you want. You can
-then override just the behavior you wan to change, while letting \FiPy{} do
+then override just the behavior you wan to change, while letting |FiPy| do
 most of the heavy lifting. See \ref{examples:phase:anisotropy} for an
 example of creating a custom \Matplotlib{} \Class{Viewer} class.
 
@@ -413,20 +413,20 @@ Iterations, timesteps, and sweeps? Oh, my!
 
 Any non-linear solution of partial differential equations is an
 approximation. These approximations benefit from repetetive
-solution to achieve the best possible answer. In \FiPy{} (and in
+solution to achieve the best possible answer. In |FiPy| (and in
 many similar PDE solvers), there are three layers of repetition.
 
     iterations
       This is the lowest layer of repetition,
       which you'll generally need to spend the least time thinking
-      about. \FiPy{} solves PDEs by discretizing them into a set of
+      about. |FiPy| solves PDEs by discretizing them into a set of
       linear equations in matrix form, as explained in
       Sections~\ref{section:discretization} and
       \ref{section:linear-equations}. It is not always practical, or
       even possible, to exactly solve these matrix equations on a
-      computer. \FiPy{} thus employs "iterative solvers", which
+      computer. |FiPy| thus employs "iterative solvers", which
       make successive approximations until the linear equations have
-      been satisfactorily solved. \FiPy{} chooses a default number
+      been satisfactorily solved. |FiPy| chooses a default number
       of iterations and solution tolerance, which you will not
       generally need to change. If you do wish to change these
       defaults, you'll need to create a new \Class{Solver} object
@@ -563,7 +563,7 @@ Finally, we can (and often do) combine all three layers of repetition:
 Why the distinction between \Class{CellVariable} and \Class{FaceVariable} coefficients?  
 ---------------------------------------------------------------------------------------
 
-\FiPy{} solves field variables on the \Class{Cell} centers. Transient and
+|FiPy| solves field variables on the \Class{Cell} centers. Transient and
 source terms describe the change in the value of a field at the
 \Class{Cell} center, and so they take a \Class{CellVariable} coefficient.
 Diffusion and convection terms involve fluxes \emph{between} \Class{Cell}
@@ -573,7 +573,7 @@ and so they take a \Class{FaceVariable} coefficient.
 .. note::
     
    If you supply a \Class{CellVariable} ``var`` when a
-   \Class{FaceVariable} is expected, \FiPy{} will automatically
+   \Class{FaceVariable} is expected, |FiPy| will automatically
    substitute :meth:`.var.getArithmeticFaceValue()`.  This can have
    undesirable consequences, however. For one thing, the 
    arithmetic face average of a non-linear function is not the 
@@ -594,7 +594,7 @@ and so they take a \Class{FaceVariable} coefficient.
    
    If you experience problems (unstable or wrong results, or 
    excessively small timesteps), you may need to explicitly supply the 
-   desired \Class{FaceVariable} rather than letting \FiPy{} 
+   desired \Class{FaceVariable} rather than letting |FiPy| 
    assume one.
 
 How do I represent boundary conditions?
@@ -608,7 +608,7 @@ This is simply a Dirichlet boundary condition by another name.
 What does the \Class{FixedFlux} boundary condition actually represent?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In \FiPy{} a \Class{FixedFlux} boundary condition object represents the
+In |FiPy| a \Class{FixedFlux} boundary condition object represents the
 quantity 
 
 .. math::
@@ -672,7 +672,7 @@ How do I apply an outlet or inlet boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There is no good way to do this with the standard boundary conditions in
-\FiPy{} and thus one needs to use the method suggested above,
+|FiPy| and thus one needs to use the method suggested above,
 see~\ref{FAQ-anyBoundaryCondition} "\titleref{FAQ-anyBoundaryCondition}".
 Currently, boundary conditions for the \Class{ConvectionTerm} assume a
 \Class{FixedFlux} boundary condition with a ``value`` of 0. This is in
@@ -751,7 +751,7 @@ boundary conditions,
             \end{aligned}
         \right.
 
-where :math:`\vec{F}` represents the flux. The boundary conditions in \FiPy{} can
+where :math:`\vec{F}` represents the flux. The boundary conditions in |FiPy| can
 be written with the following code,
 
     >>> x, y = mesh.getFaceCenters()
@@ -792,7 +792,7 @@ What does this error message mean?
 
   "\texttt{ValueError: frames are not aligned}"
     This error most likely means that you have provided a
-    \Class{CellVariable} when \FiPy{} was expecting a \Class{FaceVariable}
+    \Class{CellVariable} when |FiPy| was expecting a \Class{FaceVariable}
     (or vice versa).
 
   ``\texttt{MA.MA.MAError: Cannot automatically
@@ -817,10 +817,10 @@ What does this error message mean?
 
 \label{FAQ-FlagsAndEnvironmentVariables}
 
-How do I change \FiPy{}'s default behavior?
+How do I change |FiPy|'s default behavior?
 -------------------------------------------
 
-\FiPy{} tries to make reasonable choices, based on what 
+|FiPy| tries to make reasonable choices, based on what 
 packages it finds installed, but there may be times that you 
 wish to override these behaviors. 
 
@@ -848,7 +848,7 @@ Environment Variables
 
 You can set any of the following environment variables in the 
 manner appropriate for your shell. If you are not running in 
-a shell (\emph{e.g.}, you are invoking \FiPy{} scripts from within IPython or 
+a shell (\emph{e.g.}, you are invoking |FiPy| scripts from within IPython or 
 IDLE), you can set these variables via the 
 \texttt{os.environ} dictionary, but you must do so before 
 importing anything from the \texttt{fipy} package.
@@ -884,7 +884,7 @@ importing anything from the \texttt{fipy} package.
 Why don't my scripts work anymore?
 ----------------------------------
 
-\FiPy{} has experienced two major API changes. The steps 
+|FiPy| has experienced two major API changes. The steps 
 necessary to upgrade older scripts are discussed in 
 Chapter~\ref{chap:UpdateFiPy}.
 
