@@ -93,11 +93,11 @@ class GammaNoiseVariable(NoiseVariable):
            >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
            1
 
-    .. image:: fipy/variables/gamma.jpg
+    .. image:: fipy/variables/gamma.*
       :scale: 25
       :align: center
 
-    .. image:: fipy/variables/gamma-histogram.pdf
+    .. image:: fipy/variables/gamma-histogram.*
       :scale: 25
       :align: center
 

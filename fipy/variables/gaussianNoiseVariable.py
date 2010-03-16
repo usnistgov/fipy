@@ -131,13 +131,13 @@ class GaussianNoiseVariable(NoiseVariable):
 
     Note that the noise exhibits larger amplitude in the small cells than in the large ones
 
-    .. image:: fipy/variables/gaussian.jpg
+    .. image:: fipy/variables/gaussian.*
       :scale: 25
       :align: center
 
     but that the root-volume-weighted histogram is Gaussian.
 
-    .. image:: fipy/variables/gauss-histogram.pdf
+    .. image:: fipy/variables/gauss-histogram.*
       :scale: 25
       :align: center
 

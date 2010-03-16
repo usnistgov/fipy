@@ -96,11 +96,11 @@ class BetaNoiseVariable(NoiseVariable):
            >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
            1
 
-    .. image:: fipy/variables/beta.jpg
+    .. image:: fipy/variables/beta.*
       :scale: 25
       :align: center
 
-    .. image:: fipy/variables/beta-histogram.pdf
+    .. image:: fipy/variables/beta-histogram.*
       :scale: 25
       :align: center
 

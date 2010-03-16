@@ -87,11 +87,11 @@ class ExponentialNoiseVariable(NoiseVariable):
            >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
            1
 
-    .. image:: fipy/variables/exp.jpg
+    .. image:: fipy/variables/exp.*
       :scale: 25
       :align: center
 
-    .. image:: fipy/variables/exp-histogram.pdf
+    .. image:: fipy/variables/exp-histogram.*
       :scale: 25
       :align: center
 
