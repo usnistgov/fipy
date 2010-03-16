@@ -1,37 +1,5 @@
 \minitoc[e]
     
-            \subsection{What if the term isn't one of those?}
-            Any term that cannot be written in one of the previous
-            forms is considered a source $S_{\phi}$. An explicit
-            source is written in Python essentially as it appears in
-            mathematical form, \emph{e.g.}, $3\kappa^2 + b \sin
-            \theta$ would be written
-            \begin{quote}
-\begin{verbatim}
->>> 3 * kappa**2 + b * sin(theta)
-\end{verbatim}
-            \end{quote}
-            
-            \begin{reSTadmonition}[Note]
-                Functions like \verb+sin()+ can be obtained from the
-                \EpydocDottedName{fipy.tools.numerix} module.
-                \begin{reSTadmonition}[Warning]
-                    Generally, things will not work as expected if the
-                    equivalent function is used from the \NumPy{} or \SciPy{}
-                    library.
-                \end{reSTadmonition}
-            \end{reSTadmonition}
-            
-            If, however, the source depends on the variable that is being solved for,
-            it can be advantageous to linearize the source and cast part of it as an
-            implicit source term, \emph{e.g.}, $3\kappa^2 + \phi \sin \theta$
-            might be written as
-            \begin{quote}
-\begin{verbatim}
->>> 3 * kappa**2 + ImplicitSourceTerm(coeff = sin(theta))
-\end{verbatim}
-            \end{quote}
-            
             \subsection{How do I represent a \dots{} term that 
             \emph{doesn't} involve the dependent variable?}
             It is important to realize that, even though an expression may

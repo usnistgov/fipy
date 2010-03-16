@@ -4,4 +4,4 @@
    ../README
    MAIL
    installationIndex
-   manual/FAQ
+   FAQ

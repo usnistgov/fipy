@@ -182,6 +182,7 @@ class build_docs (Command):
                     ('apis', None, "compile the programmer's reference"),
                     ('manual', None, "compile the manual"),
                     ('all', None, "compile both the LaTeX and HTML variants of the apis"),
+                    ('sphinx', None, "compile webpage using Sphinx"),
                     ('webpage', None, "compile the html for the web page"),
                     ('upload', None, "upload webpages, documentation, and distributions to CTCMS website"),
                     ('uploadwww', None, "upload webpages to CTCMS website"),
@@ -198,6 +199,7 @@ class build_docs (Command):
         self.webpage = 0
         self.upload = 0
         self.uploadwww = 0
+        self.sphinx = 0
     # initialize_options()
 
 
@@ -482,6 +484,9 @@ epydoc.cli.cli(["--latex", "--output", dir,
                 os.system("pdflatex reference")
 
             os.chdir(savedir)
+            
+        if self.sphinx:
+            os.system("sphinx-build -b html -c documentation/ . documentation/_build/")
 
         if self.webpage:
             import tempfile
