@@ -27,14 +27,9 @@ FV cells, i.e., functions equal to unity~\cite{mattiussi:1997}. Analogously,
 the the discretization of equations with the FVM reduces to the FDM on
 Cartesian grids.
 
-.. .. toctree::
-   :hidden:
+.. toctree::
 
    equation
    discret
    scheme
-
-.. include::   equation.txt
-.. include::   discret.txt
-.. include::   scheme.txt
 
