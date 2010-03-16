@@ -30,7 +30,6 @@ documentation/manual/epydoc.sty
 documentation/manual/faq.tex
 documentation/manual/fipy.bst
 documentation/manual/fipy.dbj
-documentation/manual/fipy.pdf
 documentation/manual/fipy.sty
 documentation/manual/fipy.tex
 documentation/manual/howtoread.tex
@@ -272,8 +271,10 @@ examples/levelSet/surfactant/test.py
 examples/meshing/__init__.py
 examples/meshing/inputGrid2D.py
 examples/meshing/sphere.gmsh
+examples/meshing/sphere.msh
 examples/meshing/sphere.py
 examples/meshing/test.py
+examples/meshing/tmp.py
 examples/phase/__init__.py
 examples/phase/anisotropy.py
 examples/phase/anisotropyOLD.gz
@@ -403,9 +404,10 @@ fipy/solvers/trilinos/preconditioners/__init__.py
 fipy/solvers/trilinos/preconditioners/domDecompPreconditioner.py
 fipy/solvers/trilinos/preconditioners/icPreconditioner.py
 fipy/solvers/trilinos/preconditioners/jacobiPreconditioner.py
+fipy/solvers/trilinos/preconditioners/multilevelDDMLPreconditioner.py
 fipy/solvers/trilinos/preconditioners/multilevelDDPreconditioner.py
-fipy/solvers/trilinos/preconditioners/multilevelSGSPreconditioner.py
-fipy/solvers/trilinos/preconditioners/multilevelSolverSmootherPreconditioner.py
+fipy/solvers/trilinos/preconditioners/multilevelNSSAPreconditioner.py
+fipy/solvers/trilinos/preconditioners/multilevelSAPreconditioner.py
 fipy/solvers/trilinos/preconditioners/preconditioner.py
 fipy/steppers/__init__.py
 fipy/steppers/pidStepper.py
@@ -426,6 +428,7 @@ fipy/terms/faceTerm.py
 fipy/terms/hybridConvectionTerm.py
 fipy/terms/implicitDiffusionTerm.py
 fipy/terms/implicitSourceTerm.py
+fipy/terms/mulTerm.py
 fipy/terms/nthOrderDiffusionTerm.py
 fipy/terms/powerLawConvectionTerm.py
 fipy/terms/sourceTerm.py

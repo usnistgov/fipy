@@ -55,7 +55,7 @@ class CentralDifferenceConvectionTerm(ConvectionTerm):
        main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
     """
     
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver, *args, **kwargs):
         """
         CentralDifferenceConvectionTerm produces a symmetric matrix.
         """

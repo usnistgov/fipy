@@ -51,7 +51,9 @@ class _Equation(Term):
         
         for type in self.orderedKeys:
             self.terms[type] = None
-	    
+
+        self.nonAdditiveTerms = []
+
 	Term.__init__(self)
 	
     def copy(self):
@@ -65,7 +67,13 @@ class _Equation(Term):
         return self.orderedKeys \
           + [k for k in self.terms.keys() if k not in self.orderedKeys]
 
-
+    def _getTerms(self):
+        terms = []
+        for key in self.orderedPlusOtherKeys():
+            terms += [self.terms[key]]
+        terms += self.nonAdditiveTerms
+        return terms
+        
     def _getDiffusiveGeomCoeff(self, mesh):
         if self.terms["DiffusionTerm"] is None:
             return None
@@ -79,8 +87,7 @@ class _Equation(Term):
         self.RHSvector = numerix.zeros((N,),'d')
         self.matrix = SparseMatrix(size=N)
 
-        for key in self.orderedPlusOtherKeys():
-            term = self.terms[key]
+        for term in self._getTerms():
             if term is not None:
                 termMatrix, termRHSvector = term._buildMatrix(var, SparseMatrix,
                                                               boundaryConditions, 
@@ -104,11 +111,10 @@ class _Equation(Term):
             
 	return (matrix, RHSvector)
         
-    def _getDefaultSolver(self, solver):
-        for key in self.orderedPlusOtherKeys():
-            term = self.terms[key]
+    def _getDefaultSolver(self, solver, *args, **kwargs):
+        for term in self._getTerms():
             if term is not None:
-                defaultsolver = term._getDefaultSolver(solver)
+                defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
                 if defaultsolver is not None:
                     return defaultsolver
                 
@@ -116,8 +122,7 @@ class _Equation(Term):
 
     def __repr__(self):
         reprs = []
-        for key in self.orderedPlusOtherKeys():
-            term = self.terms[key]
+        for term in self._getTerms():
             if term is not None:
                 reprs.append(repr(term))
                 
@@ -156,14 +161,20 @@ class _Equation(Term):
                     self += other.terms[key]
             else:
                 appended = False
+
                 for key in self.terms.keys():
+
                     if eval("isinstance(other, %s)" % key):
                         self._appendTerm(other, key)
                         appended = True
                         break
                         
                 if not appended:
-                    self.terms[other.__class__.__name__] = other
+                    if other._isAdditive():
+                        self.terms[other.__class__.__name__] = other
+                    else:
+
+                        self.nonAdditiveTerms += [other]
         
         return self
         

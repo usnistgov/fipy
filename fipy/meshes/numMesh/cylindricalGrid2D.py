@@ -49,7 +49,10 @@ class CylindricalGrid2D(Grid2D):
     first and then vertical faces.
     """
     def __init__(self, dx=1., dy=1., nx=None, ny=None, origin=((0.,), (0.,))):
-        self.origin = origin
+        scale = PhysicalField(value=1, unit=PhysicalField(value=dx).getUnit())
+        self.origin = PhysicalField(value=origin)
+        self.origin /= scale
+        
         Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny)
 
 

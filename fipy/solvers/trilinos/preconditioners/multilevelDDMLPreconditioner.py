@@ -5,8 +5,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "multilevelDDPreconditioner.py"
- #
+ #  FILE: "multilevelDDMLPreconditioner.py"
+ #                                    created: 06/25/07
+ #                                last update: 06/25/07
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,6 +32,13 @@
  # they have been modified.
  # ========================================================================
  #  
+ #  Description: 
+ # 
+ #  History
+ # 
+ #  modified   by  rev reason
+ #  ---------- --- --- -----------
+ #  2007-06-25 MLG 1.0 original
  # ###################################################################
  ##
 
@@ -39,10 +47,9 @@ __docformat__ = 'restructuredtext'
 from PyTrilinos import ML
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-class MultilevelDDPreconditioner(Preconditioner):
+class MultilevelDDMLPreconditioner(Preconditioner):
     """
-    Multilevel preconditioner for Trilinos solvers. A classical smoothed
-    aggregation-based 2-level domain decomposition.
+    Multilevel preconditioner for Trilinos solvers. 3-level algebraic domain decomposition.
     """
 
     def _applyToSolver(self, solver, matrix):
@@ -52,11 +59,12 @@ class MultilevelDDPreconditioner(Preconditioner):
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
 
         self.Prec.SetParameterList({"output": 0,
-                                    "max levels" : 2,
+                                    "max levels" : 3,
                                     "prec type" : "MGV",
                                     "increasing or decreasing" : "increasing",
                                     "aggregation: type" : "METIS",
-                                    "aggregation: local aggregates" : 1,
+                                    "aggregation: nodes per aggregate" : 512,
+                                    "aggregation: next-level aggregates per process" : 128,
                                     "aggregation: damping factor" : 4. / 3.,
                                     "eigen-analysis: type" : "power-method",
                                     "eigen-analysis: iterations" : 20,
