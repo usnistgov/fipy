@@ -151,8 +151,8 @@ If the problem is run interactively, we can view the result:
     ...     viewer = Viewer(vars=(var, analytical))
     ...     viewer.plot()
 
-.. image:: examples/diffusion/nthOrder/input4thOrder1D.pdf
-   :scale: 50
+.. image:: input4thOrder1D.*
+   :width: 90%
    :align: center
 
 """

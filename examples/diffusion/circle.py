@@ -237,7 +237,7 @@ Display the results if run as a script.
     ...     viewer.plot()
     ...     raw_input("Steady-state diffusion. Press <return> to proceed...")
 
-.. image:: circleSteadyState.pdf
+.. image:: circleSteadyState.*
    :width: 90%
    :align: center
 

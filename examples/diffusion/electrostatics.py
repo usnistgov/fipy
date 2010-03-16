@@ -206,7 +206,7 @@ and again view the result
     ...     viewer.plot()
     ...     raw_input("Press any key to continue...")
 
-.. image:: electrostatics/right.pdf
+.. image:: electrostatics/right.*
    :width: 90%
    :align: center
 
@@ -254,7 +254,7 @@ and once again view the result
     >>> if __name__ == '__main__':
     ...     viewer.plot()
 
-.. image:: electrostatics/left.pdf
+.. image:: electrostatics/left.*
    :width: 90%
    :align: center
 
