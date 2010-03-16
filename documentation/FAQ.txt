@@ -197,7 +197,7 @@ might be written as
     >>> 3 * kappa**2 + ImplicitSourceTerm(coeff=sin(theta))
     
 How do I represent a `...` term that *doesn't* involve the dependent variable?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is important to realize that, even though an expression may
 superficially resemble one of those shown above, if the dependent variable
@@ -221,8 +221,10 @@ which is written in Python as
 
     >>> (D2 * xi.getFaceGrad()).getDivergence()
 
+.. currentmodule:: cellVariable
+
 Higher order diffusive sources can be obtained by simply nesting the calls
-to :meth:`.getFaceGrad()` and :meth:`.getDivergence()`.
+to :meth:`.getFaceGrad` and :meth:`.getDivergence`.
 
 .. note::
 
@@ -336,9 +338,11 @@ in Example~\ref{examples:diffusion:circle}.
 How do I save a plot image?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. currentmodule:: viewer
+
 Some of the viewers have a button or other mechanism in the user interface
 for saving an image file. Also, you can supply an optional keyword
-:keyword:`filename` when you tell the viewer to :meth:`.plot()`, *e.g.*
+:keyword:`filename` when you tell the viewer to :meth:`.plot`, *e.g.*
 
     >>> viewer.plot(filename="myimage.ext")
 
@@ -477,10 +481,12 @@ many similar PDE solvers), there are three layers of repetition.
 
           >>> myVar.updateOld()
 
+      .. currentmodule:: term
+
       Finally, we will need to repeatedly solve the equation until 
       it gives a stable result. To clearly distinguish that a 
       single cycle will not truly "solve" the equation, we invoke 
-      a different method ":meth:`.sweep()`"\IndexFunction{sweep}:
+      a different method ":meth:`.sweep`"\IndexFunction{sweep}:
 
           >>> for sweep in range(sweeps):
           ...     eq.sweep(var=myVar, ...)
@@ -557,7 +563,7 @@ Finally, we can (and often do) combine all three layers of repetition:
     ...     elapsedTime += timeStep
 
 Why the distinction between :class:`CellVariable` and :class:`FaceVariable` coefficients?  
----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 
 |FiPy| solves field variables on the :class:`Cell` centers. Transient and
 source terms describe the change in the value of a field at the
@@ -570,7 +576,7 @@ and so they take a :class:`FaceVariable` coefficient.
     
    If you supply a :class:`CellVariable` ``var`` when a
    :class:`FaceVariable` is expected, |FiPy| will automatically
-   substitute :meth:`.var.getArithmeticFaceValue()`.  This can have
+   substitute :meth:`var.getArithmeticFaceValue`.  This can have
    undesirable consequences, however. For one thing, the 
    arithmetic face average of a non-linear function is not the 
    same as the same non-linear function of the average argument, 
@@ -620,7 +626,9 @@ Example~\ref{sec:Examples:convection:robin} for a usage case.
 \label{FAQ-anyBoundaryCondition}
 
 I can't get the :class:`FixedValue` or :class:`FixedFlux` boundary condition objects to work right. What do I do now?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. currentmodule:: faceVariable
 
 There have been a number of questions on the mailing list about boundary
 conditions and from the feedback it is clear that there are some
@@ -648,7 +656,7 @@ the exterior faces.
 The ``vectorValues`` quantity can be set to whatever value is required for
 the particular boundary condition. The variable ``boundarySource`` could
 be a variable that defines a relationship between other variables rather than
-a simple container object. To finish off, the :meth:`.boundarySource.getDivergence()` object
+a simple container object. To finish off, the :meth:`.boundarySource.getDivergence` object
 must be added to the regular equation
 
     >>> eqn = TransientTerm() + ConvectionTerm(convectionSource) = \
@@ -754,6 +762,8 @@ be written with the following code,
     >>> mask =  ((x < 0.5) | (y < 0.5))
     >>> BCs = [FixedFlux(value=0, faces=mesh.getExteriorFaces() & mask),
     ...        FixedValue(value=x * y, faces=mesh.getExteriorFaces() & ~mask)]
+
+.. currentmodule:: term
 
 The ``BCs`` list can then be passed to the equation's :meth:`.solve` method
 when its called,
