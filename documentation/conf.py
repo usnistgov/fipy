@@ -247,5 +247,9 @@ latex_appendices = ['documentation/manual/refs.bib_cited']
 
 pngmath_latex_preamble = latex_preamble
 
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
+# refer to Python, NumPy, SciPy, matplotlib, PySparse
+intersphinx_mapping = {'http://docs.python.org/': None,
+                       'http://docs.scipy.org/doc/numpy/': None,
+                       'http://docs.scipy.org/doc/scipy/reference/': None,
+                       'http://matplotlib.sourceforge.net/': None,
+                       'http://pysparse.sourceforge.net/': None}
