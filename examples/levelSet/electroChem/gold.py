@@ -94,7 +94,7 @@ where :math:`k_c` is the consumption coefficient
 slight taper, given by ``taperAngle``.
 
 If the MayaVi plotting software is
-installed (see :ref:`chap:Installation`) then a plot should
+installed (see :ref:`INSTALLATION`) then a plot should
 appear that is updated every 10 time steps and will eventually
 resemble the image below.
 

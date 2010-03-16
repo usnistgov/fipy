@@ -6,4 +6,10 @@ Glossary
 .. glossary::
 
    FiPy
-      The eponymous software package. See http://www.ctcms.nist.gov/fipy.
+      The eponymous software package. 
+      See http://www.ctcms.nist.gov/fipy.
+
+   Gmsh
+      A free and Open Source 3D (and 2D!) finite element grid generator. It
+      also has a CAD engine and post-processor that :term:`FiPy` does not
+      make use of. See http://www.geuz.org/gmsh.
