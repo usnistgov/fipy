@@ -60,10 +60,12 @@ div.sphinxsidebar h3, div.sphinxsidebar h4 {
     font-size:150%;
     font-style:normal;
     font-weight:normal;
+    margin: 0.3em 0 0em;
 }
 
-div.sphinxsidebar h4 {
+div.sphinxsidebarsection {
     border-top:1px solid #BEBEBE;
+    margin: 1em 0 -0.3em;
 }
 
 div.sphinxsidebar ul {
@@ -75,6 +77,10 @@ div.sphinxsidebar ul {
 
 div.sphinxsidebar ul ul {
     margin-left: 20px;
+}
+
+div.sphinxsidebar p {
+    margin: 0;
 }
 
 div.footer {
