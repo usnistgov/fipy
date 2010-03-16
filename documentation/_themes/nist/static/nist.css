@@ -8,6 +8,27 @@
  */
 
 @import url("basic.css");
+@import url("/ui/css/SpryMenuBarHorizontal.css");
+@import url("/ui/css/nist-styles.css");
+@import url("/ui/css/nist-subsite-overrides.css");
+@import url("/ui/css/live.css");
+
+
+
+/* 
+ * <link href="http://www.nist.gov/ui/css/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+ * <link href="http://www.nist.gov/ui/css/nist-styles.css" rel="stylesheet" type="text/css"  />
+ * <link href="http://www.nist.gov/ui/css/nist-subsite-overrides.css" rel="stylesheet" type="text/css" />
+ * <link href="http://www.nist.gov/ui/css/live.css" rel="stylesheet" type="text/css" media="screen" />
+ */
+
+/* 
+ * <link href="/ui/css/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+ * <link href="/ui/css/nist-styles.css" rel="stylesheet" type="text/css"  />
+ * <link href="/ui/css/nist-subsite-overrides.css" rel="stylesheet" type="text/css" />
+ * <link href="/ui/css/live.css" rel="stylesheet" type="text/css" media="screen" />
+ */
+
 
 /* -- page layout ----------------------------------------------------------- */
 
@@ -400,8 +421,15 @@ ul.simple {
     padding:0;
 }
 
-li.toctree-l1, li.toctree-l2, li.toctree-l3, li.toctree-l4, 
-li.toctree-l5, li.toctree-l6, li.toctree-l7, li.toctree-l8 {
+li {
     margin:0 0 2% 3%;
     padding:0;
 }
+
+/* 
+ * li.toctree-l1, li.toctree-l2, li.toctree-l3, li.toctree-l4, 
+ * li.toctree-l5, li.toctree-l6, li.toctree-l7, li.toctree-l8 {
+ *     margin:0 0 2% 3%;
+ *     padding:0;
+ * }
+ */
