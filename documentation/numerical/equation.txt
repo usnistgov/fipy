@@ -11,7 +11,7 @@ given a variable of interest :math:`\phi` such as species concentration,
 pH, or temperature, there exists an evolution equation of the form
 
 .. math::
-   :label: eqn:general-equation
+   :label: general-equation
 
    \frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)
 
@@ -27,7 +27,7 @@ A general conservation equation, solved using :term:`FiPy`, can include any
 combination of the following terms,
 
 .. math::
-   :label: eqn:num:gen
+   :label: num:gen
 
    \underbrace{
    \frac{\partial (\rho \phi)}{\partial t}
