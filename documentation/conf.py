@@ -116,7 +116,7 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/updating/index.txt']
 
                         
-input_bib_path = os.path.join('manual', 'refs.bib')
+input_bib_path = 'refs.bib'
 
 import bib2rst
 
@@ -216,9 +216,7 @@ htmlhelp_basename = 'FiPydoc'
 latex_documents = [
 #   ('index', 'FiPy.tex', u'FiPy Documentation',
 #    u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
-  ('documentation/manual', 'FiPy.tex', u'FiPy Documentation',
-   u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
-  ('documentation/reference', 'FiPyReference.tex', u'FiPy Reference',
+  ('documentation/manual', 'fipy.tex', u'FiPy Documentation',
    u'Jonathan E. Guyer, Daniel Wheeler \\& James A. Warren', 'manual'),
 ]
 
@@ -240,7 +238,7 @@ latex_preamble = r"""
 """
 
 # Documents to append as an appendix to all manuals.
-latex_appendices = ['documentation/manual/refs.bib_cited']
+latex_appendices = ['documentation/refs.bib_cited']
 
 # If false, no module index is generated.
 #latex_use_modindex = True

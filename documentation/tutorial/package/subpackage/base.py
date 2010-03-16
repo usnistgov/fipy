@@ -37,16 +37,16 @@
  ##
 
 """
-This module can be found in the file `fipy/package/base.py`.  You make it
+This module can be found in the file :file:`package/subpackage/base.py`.  You make it
 available to your script by either::
     
-    import fipy.package.base
+    import package.subpackage.base
     
-in which case you refer to it by its full name of `fipy.package.base`, or::
+in which case you refer to it by its full name of :mod:`package.subpackage.base`, or::
     
-    from fipy.package import base
+    from package.subpackage import base
     
-in which case you can refer simply to `base`.
+in which case you can refer simply to :mod:`~package.base`.
 """
 __docformat__ = 'restructuredtext'
 
@@ -54,19 +54,20 @@ class Base:
     """
     With very few exceptions, the name of a class will be the capitalized
     form of the module it resides in.  Depending on how you imported the
-    module above, you will refer to either `fipy.package.object.Object` or
-    `object.Object`.  Alternatively, you can use::
+    module above, you will refer to either :class:`package.subpackage.object.Object` or
+    :class:`object.Object`.  Alternatively, you can use::
         
-        from fipy.package.object import Object
+        from package.subpackage.object import Object
         
-    and then refer simply to `Object`. There is a shorthand notation::
+    and then refer simply to :class:`~package.subpackage.object.Object`. For
+    many classes, there is a shorthand notation::
         
         from fipy import Object
         
     but it is still experimental and does not work for all of the objects
     in FiPy.
 
-    Python_ is an object-oriented language and the FiPy framework
+    :term:`Python` is an object-oriented language and the FiPy framework
     is composed of objects or classes.  Knowledge of object-oriented
     programming (OOP) is not necessary to use either Python or
     FiPy, but a few concepts are useful.  OOP involves two main
@@ -100,40 +101,36 @@ class Base:
       exist to define the behavior of a family of objects, but rely on their
       descendants to actually provide that behavior.
       
-      Unlike many object-oriented languages, Python_ does not prevent the
+      Unlike many object-oriented languages, :term:`Python` does not prevent the
       creation of abstract objects, but we will include a notice like 
       
       .. attention:: This class is abstract. Always create one of its subclasses.
 
       for abstract classes which should be used for documentation but
       never actually created in a :term:`FiPy` script.
-      
-    .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
-
     """
+    def __init__(self):
+        pass
+        
     def method1(self):
         """
         This is one thing that you can instruct any object that derives from
-        `Base` to do, by calling::
-            
-            myObjectDerivedFromBase.method1()
+        :class:`Base` to do, by calling ``myObjectDerivedFromBase.``:meth:`method1`
         
         :Parameters:
           - `self`: this special argument refers to the object that is being created.
               
             .. attention::
                 
-               *self* is supplied automatically by the Python_ interpreter to all
+               *self* is supplied automatically by the :term:`Python` interpreter to all
                methods.  You don't need to (and should not) specify it yourself.
-               
-        .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
         """
         pass
         
     def method2(self):
         """
         This is another thing that you can instruct any object that derives from
-        `Base` to do.
+        :class:`Base` to do.
         """
         pass
         

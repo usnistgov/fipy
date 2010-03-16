@@ -18,5 +18,5 @@ FiPy Contents
    VKML
    ../DISCLAIMER
    manual
-   manual/refs.bib_cited
+   refs.bib_cited
 
