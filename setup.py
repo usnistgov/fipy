@@ -215,7 +215,7 @@ class build_docs(Command):
                              parser_name='restructuredtext',
                              writer_name='latex',
                              settings_overrides= {
-                                 'template': 'documentation/empty.tex'
+                                 'template': 'documentation/_tempaltes/empty.tex'
                              })
 
             savedir = os.getcwd()
