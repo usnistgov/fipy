@@ -178,23 +178,30 @@ class build_docs(Command):
     # name), and help string.
     user_options = [('pdf', None, "compile the PDF variant of the documentation"),
                     ('html', None, "compile the HTML variant of the documentation"),
+                    ('cathartic', None, "rewrite all the files (default is to only rewrite changed files)"),
                    ]
 
     def initialize_options (self):
         self.pdf = 0
         self.html = 0
+        self.cathartic = 0
 
     def finalize_options (self):
         pass
 
     def run (self):
         import sphinx
+        
+        sphinx_args = ['-c', 'documentation/', '.']
+        
+        if self.cathartic:
+            sphinx_args = ['-a', '-E'] + sphinx_args
 
         if self.html:
-            sphinx.main(['-a', '-E', '-b', 'html', '-c', 'documentation/', '.', 'documentation/_build/html/'])
+            sphinx.main(['sphinx-build', '-b', 'html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
-            sphinx.main(['-a', '-E', '-b', 'latex', '-c', 'documentation/', '.', 'documentation/_build/latex/'])
+            sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
             
             savedir = os.getcwd()
             
