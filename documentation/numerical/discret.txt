@@ -1,4 +1,5 @@
-\section{Finite Volume Method}
+Finite Volume Method
+--------------------
 
 To use the FVM, the solution domain must first be divided into
 non-overlapping polyhedral elements or cells.  A solution domain
@@ -17,7 +18,8 @@ CVs are either defined by the cells or are centered on the vertices.
  for all dimensions.}  \label{fig:meshcartoon} \end{center}
 \end{figure}
 
-\subsection{Cell Centered FVM (CC-FVM)}
+Cell Centered FVM (CC-FVM)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the CC-FVM the CVs are formed by the mesh cells with the cell
 center ``storing'' the average variable value in the CV, (see
@@ -33,7 +35,8 @@ the face center may not lie on the line joining the CV centers, which
 will lead to an error in the face interpolation. \FiPy{} currently
 only uses the CC-FVM.
 
-\subsection{Vertex Centered FVM (VC-FVM)}
+Vertex Centered FVM (VC-FVM)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the VC-FVM, the CV is centered around the vertices and the cells
 are divided into sub-control volumes that make up the main CVs (see
@@ -53,15 +56,17 @@ restrictions as the CC-FVM. \FiPy{} does not have a VC-FVM capability.
 \begin{center}
 %  \rotatebox{-90}{\resizebox{6cm}{!}{\includegraphics{numerical/vc-cc-fv.pdf}}}
  \includegraphics[width=6cm,angle=-90]{numerical/vc-cc-fv.pdf}
- \caption{CV structure for an unstructured mesh, (a) $\Omega_a$
- represents a vertex-based CV and (b) $\Omega_1$, $\Omega_2$,
- $\Omega_3$ and $\Omega_4$ represent cell centered CVs. }
+ \caption{CV structure for an unstructured mesh, (a) :math:`\Omega_a`
+ represents a vertex-based CV and (b) :math:`\Omega_1`, :math:`\Omega_2`,
+ :math:`\Omega_3` and :math:`\Omega_4` represent cell centered CVs. }
  \label{fig:vc-cc-fv}
 \end{center}
 \end{figure}
 
-\section{Discretization}
-\label{section:discretization}
+.. _section:discretization:
+
+Discretization
+--------------
 
 The first step in the discretization of Equation~\eqref{eqn:num:gen}
 using the CC-FVM is to integrate over a CV and then make appropriate
@@ -69,22 +74,23 @@ approximations for fluxes across the boundary of each CV.  In this
 section, each term in Equation~\eqref{eqn:num:gen} will be examined
 separately.
 
-\subsection{Transient Term}
+Transient Term
+~~~~~~~~~~~~~~
 
-For the transient term, the discretization of the integral \( \int_V
-\) over the volume of a CV is given by
+For the transient term, the discretization of the integral :math:`\int_V` over the volume of a CV is given by
 \begin{equation}
 \int_V \frac{\partial (\rho \phi)}{\partial t} dV
 \simeq
 \frac{(\rho_{P} \phi_{P} - \rho_{P}^\text{old} \phi_{P}^\text{old}) V_P}{\Delta t}
 \label{eqn:num:tra}
 \end{equation}
-where \( \phi_P \) represents the average value of \( \phi \) in a CV
-centered on a point \( P \) and the superscript ``$\text{old}$''
-represents the previous time-step value.  The value $V_P$ is the
-volume of the CV and $\Delta t$ is the time step size.
+where :math:`\phi_P` represents the average value of :math:`\phi` in a CV
+centered on a point :math:`P` and the superscript ``:math:`\text{old}`''
+represents the previous time-step value.  The value :math:`V_P` is the
+volume of the CV and :math:`\Delta t` is the time step size.
 
-\subsection{Convection Term}
+Convection Term
+~~~~~~~~~~~~~~~
 
 The discretization for the convection term is given by
 \begin{eqnarray}
@@ -94,21 +100,22 @@ The discretization for the convection term is given by
 \label{eqn:num:con}
 \end{eqnarray}
 where we have used the divergence theorem to transform the integral
-over the CV volume \( \int_V \) into an integral over the CV surface
-\( \int_S \).  The summation over the faces of a CV is denoted by
-$\sum_{f}$ and $A_f$ is the area of each face.  The vector $\vec{n}$
+over the CV volume :math:`\int_V` into an integral over the CV surface
+:math:`\int_S`.  The summation over the faces of a CV is denoted by
+:math:`\sum_{f}` and :math:`A_f` is the area of each face.  The vector :math:`\vec{n}`
 is the normal to the face pointing out of the CV into an adjacent CV
-centered on point \( A \).  When using a first order approximation,
-the value of $\phi_f$ must depend on the average value in adjacent
-cell $\phi_A$ and the average value in the cell of interest $\phi_P$,
+centered on point :math:`A`.  When using a first order approximation,
+the value of :math:`\phi_f` must depend on the average value in adjacent
+cell :math:`\phi_A` and the average value in the cell of interest :math:`\phi_P`,
 such that
 \begin{equation}
 \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A.
 \end{equation}
-The weighting factor $\alpha_f$ is determined by the convection
+The weighting factor :math:`\alpha_f` is determined by the convection
 scheme, described later in this chapter.
 
-\subsection{Diffusion Term}
+Diffusion Term
+~~~~~~~~~~~~~~
 
 The discretization for the diffusion term is given by
 \begin{eqnarray}
@@ -117,39 +124,42 @@ The discretization for the diffusion term is given by
 & \simeq & \sum_f \Gamma_f (\vec{n} \cdot \nabla\{\ldots\})_f A_f
 \label{eqn:num:dif}
 \end{eqnarray}
-$\{\ldots\}$ indicates recursive application of the specified 
-operation on \( \phi \), depending on 
+:math:`\{\ldots\}` indicates recursive application of the specified 
+operation on :math:`\phi`, depending on 
 the order of the diffusion term.
-The estimation for the flux, $(\vec{n} \cdot \nabla\{\ldots\})_f$, is
+The estimation for the flux, :math:`(\vec{n} \cdot \nabla\{\ldots\})_f`, is
 obtained via
 \begin{equation}
 (\vec{n} \cdot \nabla\{\ldots\})_f \simeq \frac{\{\ldots\}_A-\{\ldots\}_P}{d_{AP}}
 \end{equation}
-where the value of $d_{AP}$ is the distance between neighboring cell
+where the value of :math:`d_{AP}` is the distance between neighboring cell
 centers.  This estimate relies on the orthogonality of the mesh, and
 becomes increasingly inaccurate as the non-orthogonality increases.
 Correction terms have been derived to improve this error but are not
 currently included in \FiPy{}~\cite{croftphd}.
 
-\subsection{Source Term}
+Source Term
+~~~~~~~~~~~
 
 The discretization for the source term is given by, 
 \begin{equation}
 \int_V S_{\phi}\,dV \simeq S_\phi V_P.
 \label{eqn:num:sou}
 \end{equation}
-Including any negative dependence of $S_\phi$ on $\phi$ increases
+Including any negative dependence of :math:`S_\phi` on :math:`\phi` increases
 solution stability. The dependence can only be included in a linear
 manner so Equation~\eqref{eqn:num:sou} becomes
 \begin{equation}
 V_P (S_0 + S_1 \phi_P),
 \end{equation}
-where \( S_0 \) is the source which is independent of \( \phi \) and
-\( S_1 \) is the coeficient of the source which is linearly dependent
-on \( \phi \).
+where :math:`S_0` is the source which is independent of :math:`\phi` and
+:math:`S_1` is the coeficient of the source which is linearly dependent
+on :math:`\phi`.
 
-\section{Linear Equations}
-\label{section:linear-equations}
+.. _section:linear-equations:
+
+Linear Equations
+----------------
 
 The aim of the discretization is to reduce the continuous general
 equation to a set of discrete linear equations that can then be solved
@@ -192,7 +202,7 @@ F_f) - V_P S_1, \\
 a_{A} & = & ( 1 - \alpha_f ) F_f + D_f, \\
 b_P & = & V_P S_0 + \frac{\rho_P V_P \phi_P^\text{old}}{\Delta t}.
 \end{eqnarray}
-The face coefficients, $F_f$ and $D_f$, represent the convective strength
+The face coefficients, :math:`F_f` and :math:`D_f`, represent the convective strength
 and diffusive conductance respectively, and are given by
 \begin{eqnarray}
 F_f & = & A_f ( \vec{u} \cdot \vec{n} )_f, \\
