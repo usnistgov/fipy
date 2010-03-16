@@ -30,7 +30,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage', 
               'sphinx.ext.pngmath', 
               'sphinx.ext.ifconfig',
-              'sphinx.ext.autosummary']
+              'sphinx.ext.autosummary',
+              'numpydoc']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -96,7 +97,8 @@ pygments_style = 'sphinx'
 
 autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/convection/index.txt',
-                        'examples/phase/index.txt']
+                        'examples/phase/index.txt',
+                        'examples/levelSet/index.txt']
 
 # -- Options for HTML output ---------------------------------------------------
 
