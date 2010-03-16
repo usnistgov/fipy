@@ -219,7 +219,7 @@ which is written in Python as
 
 >>> (D2 * xi.getFaceGrad()).getDivergence()
 
-.. currentmodule:: cellVariable
+.. currentmodule:: fipy.variables.cellVariable
 
 Higher order diffusive sources can be obtained by simply nesting the calls
 to :meth:`~CellVariable.getFaceGrad` and 
@@ -267,7 +267,7 @@ The time-rate-of change of an independent variable :math:`\xi`, such as in
    = \frac{\partial (\rho_2 \xi)}{\partial t}
 
 does not have an abstract form in :term:`FiPy` and should be discretized
-directly, in the manner of Equation~\eqref{eqn:num:tra}, as
+directly, in the manner of Equation :eq:`num:tra`, as
 
 >>> TransientTerm(coeff = rho1) == rho2 * (xi - xi.getOld()) / timeStep
 
@@ -623,7 +623,7 @@ quantity
 on a given boundary edge with :math:`\vec{n}` pointing out of the boundary.
 The quantity :math:`\Gamma` represents the diffusion coefficient and :math:`\vec{u}`
 represents the convection coefficient for a general convection-diffusion
-equation of the type given in Eq.~\eqref{eqn:num:gen}. See
+equation of the type given in Eq. :eq:`num:gen`. See
 :mod:`examples.convection.robin` for a usage case.
 
 .. _FAQ-anyBoundaryCondition:
