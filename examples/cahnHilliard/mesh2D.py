@@ -43,97 +43,93 @@ Spinodal decomposition can be described by the "Cahn-Hilliard"
 equation (also known as
 "conserved Ginsberg-Landau" or "model B" of Hohenberg & Halperin)
 
-.. raw:: latex
+.. math::
 
-   $$\frac{\partial \phi}{\partial t}
-   = \nabla\cdot D \nabla\left( \frac{\partial f}{\partial \phi}   - \epsilon^2 \nabla^2 \phi\right).$$
+   \frac{\partial \phi}{\partial t}
+   = \nabla\cdot D \nabla\left( \frac{\partial f}{\partial \phi}   - \epsilon^2 \nabla^2 \phi\right).
 
-   where $\phi$ is a conserved order parameter, possibly representing 
-   alloy composition or spin.
-   The double-well free energy function $f = (a^2/2) \phi^2 (1 -
-   \phi)^2$ penalizes states with intermediate values of $\phi$
-   between 0 and 1. The gradient energy term $\epsilon^2 \nabla^2
-   \phi$, on the other hand, penalizes sharp changes of $\phi$.
-   These two competing effects result in the segregation
-   of $\phi$ into domains of 0 and 1, separated by abrupt, but
-   smooth, transitions. The parameters $a$ and $\epsilon$ determine the relative 
-   weighting of the two effects and $D$ is a rate constant.
+where :math:`\phi` is a conserved order parameter, possibly representing 
+alloy composition or spin.
+The double-well free energy function :math:`f = (a^2/2) \phi^2 (1 - \phi)^2` 
+penalizes states with intermediate values of :math:`\phi`
+between 0 and 1. The gradient energy term :math:`\epsilon^2 \nabla^2\phi`, 
+on the other hand, penalizes sharp changes of :math:`\phi`.
+These two competing effects result in the segregation
+of :math:`\phi` into domains of 0 and 1, separated by abrupt, but
+smooth, transitions. The parameters :math:`a` and :math:`\epsilon` determine the relative 
+weighting of the two effects and :math:`D` is a rate constant.
 
-We can simulate this process in FiPy with a simple script:
+We can simulate this process in |FiPy| with a simple script:
 
-    >>> from fipy import *
+>>> from fipy import *
 
-(Note that all of the functionality of NumPy is imported along with FiPy, although
-much is augmented for FiPy's needs.)
+(Note that all of the functionality of NumPy is imported along with |FiPy|, although
+much is augmented for |FiPy|\'s needs.)
 
-    >>> if __name__ == "__main__":
-    ...     nx = ny = 1000
-    ... else:
-    ...     nx = ny = 10
-    >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
-    >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
+>>> if __name__ == "__main__":
+...     nx = ny = 1000
+... else:
+...     nx = ny = 10
+>>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
+>>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 
-We start the problem with random fluctuations about $\phi = 1/2$
+We start the problem with random fluctuations about :math:`\phi = 1/2`
 
-    >>> phi.setValue(GaussianNoiseVariable(mesh=mesh,
-    ...                                    mean=0.5,
-    ...                                    variance=0.01))
+>>> phi.setValue(GaussianNoiseVariable(mesh=mesh,
+...                                    mean=0.5,
+...                                    variance=0.01))
 
-FiPy doesn't plot or output anything unless you tell it to:
+|FiPy| doesn't plot or output anything unless you tell it to:
 
-    >>> if __name__ == "__main__":
-    ...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
+>>> if __name__ == "__main__":
+...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
 
-For FiPy, we need to perform the partial derivative 
-
-.. raw:: latex
-
-   $\partial f/\partial \phi$ 
-   
+For |FiPy|, we need to perform the partial derivative 
+:math:`\partial f/\partial \phi`    
 manually and then put the equation in the canonical
 form by decomposing the spatial derivatives
-so that each `Term` is of a single, even order:
+so that each :class:`Term` is of a single, even order:
     
-.. raw:: latex
+.. math::
 
-   $$\frac{\partial \phi}{\partial t}
-    = \nabla\cdot D a^2 \left[ 1 - 6 \phi \left(1 - \phi\right)\right] \nabla \phi- \nabla\cdot D \nabla \epsilon^2 \nabla^2 \phi.$$
+   \frac{\partial \phi}{\partial t}
+    = \nabla\cdot D a^2 \left[ 1 - 6 \phi \left(1 - \phi\right)\right] \nabla \phi- \nabla\cdot D \nabla \epsilon^2 \nabla^2 \phi.
 
-FiPy would automatically interpolate
-`D * a**2 * (1 - 6 * phi * (1 - phi))`
-onto the `Face`\s, where the diffusive flux is calculated, but we obtain
+|FiPy| would automatically interpolate
+``D * a**2 * (1 - 6 * phi * (1 - phi))``
+onto the :class:`Face`\s, where the diffusive flux is calculated, but we obtain
 somewhat more accurate results by performing a linear interpolation from
-`phi` at `Cell` centers to `PHI` at `Face` centers.
+``phi`` at :class:`Cell` centers to ``PHI`` at :class:`Face` centers.
 Some problems benefit from non-linear interpolations, such as harmonic or
-geometric means, and FiPy makes it easy to obtain these, too.
+geometric means, and |FiPy| makes it easy to obtain these, too.
 
-    >>> PHI = phi.getArithmeticFaceValue()
-    >>> D = a = epsilon = 1.
-    >>> eq = (TransientTerm()
-    ...       == DiffusionTerm(coeff=D * a**2 * (1 - 6 * PHI * (1 - PHI)))
-    ...       - DiffusionTerm(coeff=(D, epsilon**2)))
+>>> PHI = phi.getArithmeticFaceValue()
+>>> D = a = epsilon = 1.
+>>> eq = (TransientTerm()
+...       == DiffusionTerm(coeff=D * a**2 * (1 - 6 * PHI * (1 - PHI)))
+...       - DiffusionTerm(coeff=(D, epsilon**2)))
 
 Because the evolution of a spinodal microstructure slows with time, we
 use exponentially increasing time steps to keep the simulation
-"interesting". The FiPy user always has direct control over the
+"interesting". The |FiPy| user always has direct control over the
 evolution of their problem.
 
-    >>> dexp = -5
-    >>> elapsed = 0.
-    >>> if __name__ == "__main__":
-    ...     duration = 1000.
-    ... else:
-    ...     duration = 1e-2
-    >>> while elapsed < duration:
-    ...     dt = min(100, exp(dexp))
-    ...     elapsed += dt
-    ...     dexp += 0.01
-    ...     eq.solve(phi, dt=dt)
-    ...     if __name__ == "__main__":
-    ...         viewer.plot()
+>>> dexp = -5
+>>> elapsed = 0.
+>>> if __name__ == "__main__":
+...     duration = 1000.
+... else:
+...     duration = 1e-2
+>>> while elapsed < duration:
+...     dt = min(100, exp(dexp))
+...     elapsed += dt
+...     dexp += 0.01
+...     eq.solve(phi, dt=dt)
+...     if __name__ == "__main__":
+...         viewer.plot()
 
-.. image:: examples/cahnHilliard/mesh2D.pdf
-   :scale: 150
+.. image:: mesh2D.*
+   :width: 90%
    :align: center
 
 """

@@ -98,7 +98,8 @@ pygments_style = 'sphinx'
 autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/convection/index.txt',
                         'examples/phase/index.txt',
-                        'examples/levelSet/index.txt']
+                        'examples/levelSet/index.txt',
+                        'examples/cahnHilliard/index.txt']
 
 # -- Options for HTML output ---------------------------------------------------
 

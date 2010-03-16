@@ -1,0 +1,9 @@
+----------------------
+Cahn Hilliard Examples
+----------------------
+
+.. autosummary::
+   :toctree: generated
+
+   examples.cahnHilliard.mesh2D
+   examples.cahnHilliard.sphere
