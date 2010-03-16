@@ -170,10 +170,8 @@ evaluation of the face gradient without the modular operators.
 ...     sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
 ...
 ...     return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
-...                ImplicitDiffusionTerm(diffusionCoeff) \
+...                DiffusionTerm(diffusionCoeff) \
 ...                + sourceCoeff
-
-.. index:: ImplicitDiffusionTerm
 
 >>> thetaEq = buildThetaEquation(phase, theta)
 

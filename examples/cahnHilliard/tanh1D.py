@@ -122,11 +122,9 @@ we create the Cahn-Hilliard equation:
 >>> faceVar = var.getArithmeticFaceValue()
 >>> freeEnergyDoubleDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
-.. index:: ImplicitDiffusionTerm, TransientTerm
-   
->>> diffTerm2 = ImplicitDiffusionTerm(
+>>> diffTerm2 = DiffusionTerm(
 ...     coeff=diffusionCoeff * freeEnergyDoubleDerivative)
->>> diffTerm4 = ImplicitDiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
+>>> diffTerm4 = DiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
 >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
 .. index:: LinearLUSolver

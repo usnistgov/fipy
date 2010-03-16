@@ -222,12 +222,10 @@ with a semi-implicit source just as in :mod:`examples.phase.simple` and
 >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
 >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
 
-.. index:: TransientTerm, ImplicitDiffusionTerm, ImplicitSourceTerm
-
 >>> phase.mobility = 1.
 >>> phase.gradientEnergy = 25
 >>> phase.equation = TransientTerm(coeff=1/phase.mobility) \
-...   == ImplicitDiffusionTerm(coeff=phase.gradientEnergy) \
+...   == DiffusionTerm(coeff=phase.gradientEnergy) \
 ...      + S0 + ImplicitSourceTerm(coeff = S1)
 
 We could construct the diffusion equations one-by-one, in the manner of
@@ -295,7 +293,7 @@ interstitial diffusion equations, we arrange in canonical form as before:
 ...                         / (1. + CkSum.getHarmonicFaceValue()))
 ...                         
 ...     Cj.equation = (TransientTerm()
-...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 -----
@@ -346,7 +344,7 @@ The canonical form of the substitutional diffusion equations is
 ...                         / (1. - CkSum.getHarmonicFaceValue()))
 ...                         
 ...     Cj.equation = (TransientTerm() 
-...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 -----

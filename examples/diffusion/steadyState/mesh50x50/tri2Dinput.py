@@ -46,7 +46,7 @@ being that the mesh size is given by
 
 The result is again tested in the same way:
 
-    >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
@@ -75,7 +75,7 @@ boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
                       FixedValue(mesh.getFacesRight(),valueRight))
 
 if __name__ == '__main__':
-    ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer = Viewer(vars = var)
     viewer.plot()
     raw_input("finished")

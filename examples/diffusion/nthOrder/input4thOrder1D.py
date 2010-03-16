@@ -34,7 +34,7 @@
 
 r"""
 
-This example uses the :class:`ImplicitDiffusionTerm` class to solve the equation
+This example uses the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` class to solve the equation
 
 .. math::
 
@@ -85,11 +85,9 @@ or
 
 We initialize the steady-state equation
     
-.. index:: ImplicitDiffusionTerm
-
->>> eq = ImplicitDiffusionTerm(coeff=(1, 1)) == 0
+>>> eq = DiffusionTerm(coeff=(1, 1)) == 0
     
-and use the :class:`LinearLUSolver` for stability. 
+and use the :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` for stability. 
 
 We perform one implicit timestep to achieve steady state
    

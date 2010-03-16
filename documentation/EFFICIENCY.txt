@@ -24,24 +24,24 @@ The raw CPU execution times for 10 time steps are presented in the
 following table. The run times are in seconds and the memory usage is
 in kilobytes. The Kobayashi code is given the heading of FORTRAN while
 :term:`FiPy` is run with and without inlining. The memory usage is for
-:term:`FiPy` simulations with the ``--inline``. The ``--no-cache`` flag is
+:term:`FiPy` simulations with the :option:`--inline`. The ``--no-cache`` flag is
 on in all cases for the following table.
 
-========== ============ ================== ============= ============= =============
- Elements   FiPy (s)     FiPy               FORTRAN (s)   FiPy          FORTRAN
-                         ``--inline`` (s)                 memory (KiB)  memory (KiB)
-========== ============ ================== ============= ============= =============
-    100       0.77        0.30              0.0009         39316          772
-    400       0.87        0.37              0.0031         39664          828
-   1600       1.4         0.65              0.017          40656         1044
-   6400       3.7         2.0               0.19           46124         1880
-  25600      19          10                 1.3            60840         5188
- 102400      79          43                 4.6           145820        18436
-========== ============ ================== ============= ============= =============
+========== ============ ======================= ============= ============= =============
+ Elements   FiPy (s)     FiPy                    FORTRAN (s)   FiPy          FORTRAN
+                         :option:`--inline` (s)                memory (KiB)  memory (KiB)
+========== ============ ======================= ============= ============= =============
+    100       0.77        0.30                   0.0009         39316          772
+    400       0.87        0.37                   0.0031         39664          828
+   1600       1.4         0.65                   0.017          40656         1044
+   6400       3.7         2.0                    0.19           46124         1880
+  25600      19          10                      1.3            60840         5188
+ 102400      79          43                      4.6           145820        18436
+========== ============ ======================= ============= ============= =============
 
 The plain :term:`Python` version of :term:`FiPy`, which uses ``Numeric`` for all
 array operations, is around 17 times slower than the FORTRAN
-code. Using the ``--inline`` flag, this penalty is reduced to about 9
+code. Using the :option:`--inline` flag, this penalty is reduced to about 9
 times slower.
 
 It is hoped that in future releases of :term:`FiPy` the process of C
@@ -61,17 +61,17 @@ rough guide. The FORTRAN memory usage is exact since memory is not
 allocated dynamically.
 
 
-Efficiency comparison between ``--no-cache`` and ``--cache`` flags
-==================================================================
+Efficiency comparison between :option:`--no-cache` and :option:`--cache` flags
+==============================================================================
 
 This table shows results for efficiency tests when using the caching
 flags. Examples with more variables involved in complex expressions
-show the largest improvement in memory usage. The ``--no-cache``
+show the largest improvement in memory usage. The :option:`--no-cache`
 option mainly prevents intermediate variables created due to binary
 operations from caching their values. This results in large memory
 gains while not effecting run times substantially. The table below is
-with ``--inline`` switched on and with 102400 elements for each case.
-The ``--no-cache`` flag is the default option.
+with :option:`--inline` switched on and with 102400 elements for each case.
+The :option:`--no-cache` flag is the default option.
 
 .. currentmodule:: examples
 

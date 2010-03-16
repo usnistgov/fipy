@@ -187,10 +187,8 @@ The phase equation can now be constructed.
 
 The temperature equation is built in the following way,
 
-.. index:: ImplicitDiffusionTerm
-
 >>> temperatureEq = TransientTerm() == \
-...                 ImplicitDiffusionTerm(tempDiffusionCoeff) + \
+...                 DiffusionTerm(tempDiffusionCoeff) + \
 ...                 (phase - phase.getOld()) / timeStepDuration
 
 If we are running this example interactively, we create viewers for

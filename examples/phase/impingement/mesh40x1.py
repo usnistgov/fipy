@@ -125,8 +125,8 @@ and is initially solid everywhere
 Because ``theta``
 is an :math:`S^1`-valued variable (i.e. it maps to the circle) and thus
 intrinsically has :math:`2\pi`-peridocity,
-we must use :class:`ModularVariable` instead of a :class:`CellVariable`. A
-:class:`ModularVariable` confines ``theta`` to
+we must use :class:`~fipy.variables.modularVariable.ModularVariable` instead of a :class:`~fipy.variables.cellVariable.CellVariable`. A
+:class:`~fipy.variables.modularVariable.ModularVariable` confines ``theta`` to
 :math:`-\pi < \theta \le \pi` by adding or subtracting :math:`2\pi` where
 necessary and by defining a new
 subtraction operator between two angles.
@@ -184,7 +184,7 @@ discretization of ``theta`` on the circle.
 >>> diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
 
 The source term requires the evaluation of the face gradient without
-the modular operator. A method of :class:`ModularVariable`, :meth:`getFaceGradNoMod`,
+the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
 evelautes the gradient without modular arithmetic.
 
 >>> thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
@@ -192,10 +192,8 @@ evelautes the gradient without modular arithmetic.
 
 Finally the ``theta`` equation can be constructed.
 
-.. index:: ImplicitDiffusionTerm
-
 >>> thetaEq = TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
-...           ImplicitDiffusionTerm(diffusionCoeff) \
+...           DiffusionTerm(diffusionCoeff) \
 ...           + sourceCoeff
 
 If the example is run interactively, we create viewers for the phase

@@ -59,7 +59,7 @@ This example solves the steady-state convection-diffusion equation as described 
 >>> diffCoeff = 1.
 >>> convCoeff = (-10.,)
 
->>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+>>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
 >>> eq.solve(var = var,

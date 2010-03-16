@@ -60,7 +60,7 @@ mesh with ``nx = 10`` and ``ny = 10``:
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,0.)
 
->>> eq = ImplicitDiffusionTerm(coeff=diffCoeff) + ExponentialConvectionTerm(coeff=convCoeff)
+>>> eq = DiffusionTerm(coeff=diffCoeff) + ExponentialConvectionTerm(coeff=convCoeff)
 
 >>> eq.solve(var = var,
 ...          boundaryConditions = boundaryConditions,

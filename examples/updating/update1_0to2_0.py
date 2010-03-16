@@ -279,12 +279,12 @@ to indicate that we may not maintain the old syntax indefinitely.
    Peclet number automatically, so the ``diffusionTerm`` argument is no longer required
 
    >>> eq = (TransientTerm()  
-   ...       == ImplicitDiffusionTerm(coeff=diffCoeff) 
+   ...       == DiffusionTerm(coeff=diffCoeff) 
    ...       + PowerLawConvectionTerm(coeff=convCoeff)) 
 
    instead of 
    
-   >>> diffTerm = ImplicitDiffusionTerm(coeff=diffCoeff) 
+   >>> diffTerm = DiffusionTerm(coeff=diffCoeff) 
    >>> eq = (TransientTerm() 
    ...       == diffTerm 
    ...       + PowerLawConvectionTerm(coeff=convCoeff, diffusionTerm=diffTerm)) 

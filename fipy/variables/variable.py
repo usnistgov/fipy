@@ -47,8 +47,8 @@ class Variable(object):
     """
     Lazily evaluated quantity with units. 
 
-    Using a :class:`Variable` in a mathematical expression will create an
-    automatic dependency :class:`Variable`, e.g.,
+    Using a :class:`~fipy.variables.variable.Variable` in a mathematical expression will create an
+    automatic dependency :class:`~fipy.variables.variable.Variable`, e.g.,
 
     >>> a = Variable(value=3)
     >>> b = 4 * a
@@ -57,8 +57,8 @@ class Variable(object):
     >>> b()
     12
         
-    Changes to the value of a :class:`Variable` will automatically trigger
-    changes in any dependent :class:`Variable` objects
+    Changes to the value of a :class:`~fipy.variables.variable.Variable` will automatically trigger
+    changes in any dependent :class:`~fipy.variables.variable.Variable` objects
 
     >>> a.setValue(5)
     >>> b

@@ -47,7 +47,7 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 >>> convCoeff = (10.,)
     
 We define a 2D cylindrical mesh representing an anulus. The mesh is a
-pseudo 1D mesh, but is a good test case for the :class:`CylindricalGrid2D`
+pseudo 1D mesh, but is a good test case for the :class:`~fipy.meshes.numMesh.cylindricalGrid2D.CylindricalGrid2D`
 mesh.
 
 .. index:: Grid1D
@@ -68,8 +68,6 @@ and impose the boundary conditions
    1& \text{at $r = r_1$,}
    \end{cases}
 
-.. index:: FixedValue
-
 >>> valueLeft = 0.
 >>> valueRight = 1.
 >>> boundaryConditions = (
@@ -78,24 +76,20 @@ and impose the boundary conditions
 ...     )
 
 The solution variable is initialized to ``valueLeft``:
-    
-.. index:: CellVariable
 
 >>> var = CellVariable(mesh=mesh, name = "variable")
 
-The equation is created with the :class:`DiffusionTerm` and
-:class:`ExponentialConvectionTerm`.
+The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
+:class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`.
 
-.. index:: DiffusionTerm, ExponentialConvectionTerm
-
->>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+>>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
    
 More details of the benefits and drawbacks of each type of convection
 term can be found in :ref:`sec:NumericalSchemes}`.
-Essentially, the :class:`ExponentialConvectionTerm` and :class:`PowerLawConvectionTerm` will
+Essentially, the :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm` and :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` will
 both handle most types of convection-diffusion cases, with the
-:class:`PowerLawConvectionTerm` being more efficient.
+:class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` being more efficient.
 
 We solve the equation
 

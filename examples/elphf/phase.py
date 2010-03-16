@@ -118,7 +118,7 @@ We'll have no substitutional species and no interstitial species in this first e
 ...     solvent -= component
 
 >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
-...     == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
+...     == DiffusionTerm(coeff = phase.gradientEnergy) \
 ...     - (permittivityPrime / 2.) \
 ...        * potential.getGrad().dot(potential.getGrad())
 

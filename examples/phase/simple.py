@@ -152,8 +152,6 @@ We treat the diffusion term
 :math:`\kappa_\phi \nabla^2\phi`
 implicitly, 
 
-.. index:: ImplicitDiffusionTerm
-
 .. note::
     
    "Diffusion" in :term:`FiPy` is not limited to the movement of atoms, but
@@ -177,7 +175,7 @@ The simplest approach is to add this source explicitly
 
 >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
 >>> S0 = mPhi * phase * (1 - phase)
->>> eq = S0 + ImplicitDiffusionTerm(coeff=kappa)
+>>> eq = S0 + DiffusionTerm(coeff=kappa)
     
 After solving this equation
 
@@ -208,7 +206,7 @@ transient term from Equation :eq:`eq-phase:simple`
 
 .. index:: TransientTerm
 
->>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=kappa) + S0
+>>> eq = TransientTerm() == DiffusionTerm(coeff=kappa) + S0
 
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
@@ -264,7 +262,7 @@ Kobayashi:
 
 >>> S0 = mPhi * phase * (mPhi > 0)
 >>> S1 = mPhi * ((mPhi < 0) - phase)
->>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 \
+>>> eq = DiffusionTerm(coeff=kappa) + S0 \
 ...   + ImplicitSourceTerm(coeff = S1)
     
 .. note:: Because ``mPhi`` is a variable field, the quantities ``(mPhi > 0)``
@@ -326,7 +324,7 @@ or
 >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
 >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
 >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
->>> eq = ImplicitDiffusionTerm(coeff=kappa) + S0 \
+>>> eq = DiffusionTerm(coeff=kappa) + S0 \
 ...   + ImplicitSourceTerm(coeff = S1)
     
 Using this scheme, where the coefficient of the implicit source term is
@@ -415,7 +413,7 @@ form of the source term shown above
 >>> dmPhidPhi = 2 * W - 30 * (1 - 2 * phase) * enthalpy
 >>> S1 = dmPhidPhi * phase * (1 - phase) + mPhi * (1 - 2 * phase)
 >>> S0 = mPhi * phase * (1 - phase) - S1 * phase
->>> eq = TransientTerm(coeff=1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
+>>> eq = TransientTerm(coeff=1/Mphi) == DiffusionTerm(coeff=kappa) \
 ...                         + S0 + ImplicitSourceTerm(coeff = S1)
 
 In order to separate the effect of forming the phase field interface

@@ -34,7 +34,7 @@
 
 r""" 
 
-This example demonstrates the use of the :class:`VanLeerConvectionTerm` as
+This example demonstrates the use of the :class:`~fipy.terms.vanLeerConvectionTerm.VanLeerConvectionTerm` as
 defined by http://www.gre.ac.uk/~physica/phy2.12/theory/node173.htm
 
 In this example a square wave is advected. The Van Leer discretization

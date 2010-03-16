@@ -164,7 +164,7 @@ and quench the entire simulation domain below the melting point
 
 In a real solidification process, dendritic branching is induced by small thermal
 fluctuations along an otherwise smooth surface, but the granularity of the
-:class:`Mesh` is enough "noise" in this case, so we don't need to explicitly
+:class:`~fipy.meshes.common.mesh.Mesh` is enough "noise" in this case, so we don't need to explicitly
 introduce randomness, the way we did in the Cahn-Hilliard problem.  
 
 FiPy's viewers are utilitarian, striving to let the user see *something*,

@@ -848,7 +848,7 @@ script you call from the command line
 
 .. cmdoption:: --PySparse
 
-   Forces the use of the \Pysparse{} solvers. This flag takes precedence
+   Forces the use of the :term:`PySparse` solvers. This flag takes precedence
    over the :envvar:`FIPY_SOLVERS` environment variable.
 
 .. cmdoption:: --Trilinos

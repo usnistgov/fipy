@@ -24,7 +24,7 @@ Alex Mont
 
 Katie Travis
     developed the automated 
-    ``--inline`` optimization code for ``Variable`` objects 
+    :option:`--inline` optimization code for ``Variable`` objects 
     while she was a SURF_ student from `Smith College`_.
   
 Max Gibiansky

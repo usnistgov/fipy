@@ -67,8 +67,6 @@ and impose the boundary conditions
    
 or
 
-.. index:: FixedValue
-
 >>> valueLeft = 0.
 >>> valueRight = 1.
 >>> boundaryConditions = (
@@ -77,26 +75,22 @@ or
 ...     )
 
 The solution variable is initialized to ``valueLeft``:
-    
-.. index:: CellVariable
 
 >>> var = CellVariable(mesh=mesh, name = "variable")
 
-The equation is created with the :class:`ImplicitDiffusionTerm` and
-:class:`ExponentialConvectionTerm`. The scheme used by the convection term
+The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
+:class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`. The scheme used by the convection term
 needs to calculate a Peclet number and thus the diffusion term
 instance must be passed to the convection term.
 
-.. index:: ImplicitDiffusionTerm, ExponentialConvectionTerm
-
->>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+>>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
    
 More details of the benefits and drawbacks of each type of convection
 term can be found in :ref:`sec:NumericalSchemes`.
-Essentially, the :class:`ExponentialConvectionTerm` and :class:`PowerLawConvectionTerm` will
+Essentially, the :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm` and :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` will
 both handle most types of convection-diffusion cases, with the
-:class:`PowerLawConvectionTerm` being more efficient.
+:class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` being more efficient.
 
 We solve the equation
 

@@ -85,9 +85,7 @@ The solution variable is initialized to ``valueLeft``:
 
 We define the convection-diffusion equation with source
 
-.. index:: ImplicitDiffusionTerm, ExponentialConvectionTerm
-
->>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+>>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff)
 ...       + sourceCoeff)
     

@@ -85,7 +85,7 @@ For :term:`FiPy`, we need to perform the partial derivative
 :math:`\partial f/\partial \phi`    
 manually and then put the equation in the canonical
 form by decomposing the spatial derivatives
-so that each :class:`Term` is of a single, even order:
+so that each :class:`~fipy.terms.term.Term` is of a single, even order:
     
 .. math::
 
@@ -94,9 +94,9 @@ so that each :class:`Term` is of a single, even order:
 
 :term:`FiPy` would automatically interpolate
 ``D * a**2 * (1 - 6 * phi * (1 - phi))``
-onto the :class:`Face`\s, where the diffusive flux is calculated, but we obtain
+onto the :class:`~fipy.meshes.numMesh.face.Face`\s, where the diffusive flux is calculated, but we obtain
 somewhat more accurate results by performing a linear interpolation from
-``phi`` at :class:`Cell` centers to ``PHI`` at :class:`Face` centers.
+``phi`` at :class:`~fipy.meshes.numMesh.cell.Cell` centers to ``PHI`` at :class:`~fipy.meshes.numMesh.face.Face` centers.
 Some problems benefit from non-linear interpolations, such as harmonic or
 geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 

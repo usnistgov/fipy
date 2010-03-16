@@ -53,17 +53,18 @@ What's new in version |VERSION|?
 
 The significant changes since version 1.2 are:
 
-- :class:`CellVariable` and :class:`FaceVariable` objects can hold values of any 
+- :class:`~fipy.variables.cellVariable.CellVariable` and :class:`~fipy.variables.faceVariable.FaceVariable` objects can hold values of any 
   rank.
 
-- Much simpler syntax for specifying :class:`Cells`\s for initial conditions and 
-  :class:`Face`\s for boundary conditions.
+- Much simpler syntax for specifying
+  :class:`~fipy.meshes.numMesh.cell.Cell`\s for initial conditions and
+  :class:`~fipy.meshes.numMesh.face.Face`\s for boundary conditions.
 
 - Automated determination of the Peclet number and partitioning of 
-  :class:`ImplicitSourceTerm` coefficients between the matrix diagonal and the
+  :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm` coefficients between the matrix diagonal and the
   right-hand-side-vector.
 
-- Simplified :class:`Viewer` syntax.
+- Simplified :class:`~fipy.viewers.viewer.Viewer` syntax.
 
 - Support for the `Trilinos solvers`_.
 

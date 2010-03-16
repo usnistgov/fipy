@@ -35,10 +35,9 @@
 r"""
 
 This example tests diffusion-convection for increasing Peclet numbers.
-This test case has been introduced because :class:`LinearCGSSolver` was not
-working with Peclet numbers over 1. :class:`LinearLUSolver` is now the default
-for :class:`ConvectionTerm`. For ``nx = 1000`` the :class:`LinearGMRESSolver` does not work,
-but the :class:`LinearScipyGMRESSolver` does work! Oh dear...
+This test case has been introduced because :class:`~fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver` was not
+working with Peclet numbers over 1. :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` is now the default
+for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :class:`~fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver` does not work.
 
 >>> from fipy import *
 
@@ -65,7 +64,7 @@ but the :class:`LinearScipyGMRESSolver` does work! Oh dear...
 ...     var[:] = valueLeft
 ...     diffCoeff = convCoeff * dx / peclet
 ...     eq = (TransientTerm(1e-4) 
-...           == ImplicitDiffusionTerm(coeff=diffCoeff)
+...           == DiffusionTerm(coeff=diffCoeff)
 ...           + PowerLawConvectionTerm(coeff=convCoeff))
 ...     eq.solve(var=var, boundaryConditions=boundaryConditions) 
 ...     x = mesh.getCellCenters()[0]

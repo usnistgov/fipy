@@ -36,7 +36,7 @@
 
 This example solves the steady-state convection-diffusion equation as described in
 mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses the
-:class:`PowerLawConvectionTerm` rather than the :class:`ExponentialConvectionTerm` instatiator.
+:class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` rather than the :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm` instatiator.
 
 >>> from fipy import *
 
@@ -59,7 +59,7 @@ mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses the
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,0.)
 
->>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
+>>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
 >>> eq.solve(var = var,

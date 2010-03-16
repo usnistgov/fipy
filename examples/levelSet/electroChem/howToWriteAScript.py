@@ -276,8 +276,8 @@ by an empirical function of overpotential,
 .. math::
     
    k = k_0 + k_3 \eta^3
-   
-The above equation is represented by the :class:`AdsorbingSurfactantEquation`
+   `
+The above equation is represented by the :class:`~fipy.models.levelSet.surfactant.adsorbingSurfactantEquation.AdsorbingSurfactantEquation`
 in :term:`FiPy`:
 
 >>> surfactantEquation = AdsorbingSurfactantEquation(
@@ -323,7 +323,7 @@ The following boundary condition applies at :math:`\phi = 0`,
     
    D \hat{n} \cdot \nabla c = \frac{v}{\Omega}.
    
-The :class:`MetalIonDiffusionEquation` is set up with the following commands.
+The :class:`~fipy.models.levelSet.electroChem.metalIonDiffusionEquation.MetalIonDiffusionEquation` is set up with the following commands.
 
 .. index:: FixedValue, buildMetalIonDiffusionEquation
 
@@ -337,7 +337,7 @@ The :class:`MetalIonDiffusionEquation` is set up with the following commands.
 
 >>> metalEquationBCs = FixedValue(faces=mesh.getFacesTop(), value=bulkMetalConcentration)
 
-The :class:`SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
+The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
 species with a source term for the jump from the bulk to an interface.
 The governing equation is given by,
 
@@ -365,7 +365,7 @@ at :math:`\phi = 0` is given by,
     
    D \hat{n} \cdot \nabla c = -k c (1 - \theta).
    
-The :class:`SurfactantBulkDiffusionEquation` is set up with the following commands.
+The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.SurfactantBulkDiffusionEquation` is set up with the following commands.
 
 .. index:: buildSurfactantBulkDiffusionEquation
 

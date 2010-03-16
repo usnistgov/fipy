@@ -71,7 +71,7 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 >>> convCoeff = (0., 10.)
 >>> sourceCoeff = 1.
 
->>> eq = (-sourceCoeff - ImplicitDiffusionTerm(coeff = diffCoeff)
+>>> eq = (-sourceCoeff - DiffusionTerm(coeff = diffCoeff)
 ...       - ExponentialConvectionTerm(coeff = convCoeff))
 
 >>> eq.solve(var = var,

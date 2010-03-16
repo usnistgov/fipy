@@ -124,10 +124,8 @@ interface that needs improvement.
 
 Build the Stokes equations.
 
-.. index:: ImplicitDiffusionTerm
-   
->>> xVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1,0])
->>> yVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0,1])
+>>> xVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1,0])
+>>> yVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0,1])
     
 In this example the SIMPLE algorithm is used to couple the
 pressure and momentum equations. Let us assume we have solved the
@@ -182,7 +180,7 @@ pressure correction equation can be written as,
 
 >>> ap = CellVariable(mesh=mesh)
 >>> coeff = mesh._getFaceAreas() * mesh._getCellDistances() / ap.getArithmeticFaceValue()
->>> pressureCorrectionEq = ImplicitDiffusionTerm(coeff=coeff) - velocity.getDivergence()
+>>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.getDivergence()
 
 Set up the no-slip boundary conditions
 

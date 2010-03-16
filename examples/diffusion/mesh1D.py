@@ -50,7 +50,7 @@ diffusivity and fixed value boundary conditions such that,
    \frac{\partial \phi}{\partial t} = D \nabla^2 \phi.
 
 The first step is to define a one dimensional domain with 50 solution
-points. The :class:`Grid1D` object represents a linear structured grid. The
+points. The :class:`~fipy.meshes.numMesh.grid1D.Grid1D` object represents a linear structured grid. The
 parameter ``dx`` refers to the grid spacing (set to unity here).
 
 >>> from fipy import *
@@ -60,7 +60,7 @@ parameter ``dx`` refers to the grid spacing (set to unity here).
 >>> mesh = Grid1D(nx = nx, dx = dx)
 
 :term:`FiPy` solves all equations at the centers of the cells of the mesh. We
-thus need a :class:`CellVariable` object to hold the values of the
+thus need a :class:`~fipy.variables.cellVariable.CellVariable` object to hold the values of the
 solution, with the initial condition :math:`\phi = 0` at :math:`t = 0`, 
 
 >>> phi = CellVariable(name="solution variable", 
@@ -98,7 +98,7 @@ and a set of faces over which they apply.
    conditions.
 
 For example, here the exterior faces on the left of the domain are
-extracted by ``mesh.getFacesLeft()``. A :class:`FixedValue` boundary condition is
+extracted by ``mesh``:meth:`~fipy.meshes.common.mesh.Mesh.getFacesLeft``. A :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary condition is
 created with these faces and a value (``valueLeft``). 
 
 >>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
@@ -205,9 +205,7 @@ both the left and right sides of the equation, this form is called
 difficult to program than the "explicit" form that we just used, but in
 :term:`FiPy`, all that is needed is to write
 
-.. index:: ImplicitDiffusionTerm
-
->>> eqI = TransientTerm() == ImplicitDiffusionTerm(coeff=D)
+>>> eqI = TransientTerm() == DiffusionTerm(coeff=D)
 
 reset the problem
 
@@ -280,7 +278,7 @@ of the fully implicit scheme to drive down the error
 As mentioned above, there is no stable limit to how large a time step can
 be taken for the implicit diffusion problem. In fact, if the time evolution
 of the problem is not interesting, it is possible to eliminate the time
-step altogether by omitting the :class:`TransientTerm`. The steady-state diffusion
+step altogether by omitting the :class:`~fipy.terms.transientTerm.TransientTerm`. The steady-state diffusion
 equation
 
 .. math::
@@ -289,8 +287,8 @@ equation
 
 is represented in :term:`FiPy` by
 
->>> ImplicitDiffusionTerm(coeff=D).solve(var=phi,
-...                                      boundaryConditions=BCs)
+>>> DiffusionTerm(coeff=D).solve(var=phi,
+...                              boundaryConditions=BCs)
 ...                                      
 
 >>> if __name__ == '__main__':
@@ -326,11 +324,11 @@ For example, to have
        0 &\text{on \( x = L \)} \\
    \end{cases}
 
-we will need to declare time :math:`t` as a :class:`Variable`
+we will need to declare time :math:`t` as a :class:`~fipy.variables.variable.Variable`
 
 >>> time = Variable()
 
-and then declare our boundary condition as a function of this :class:`Variable`
+and then declare our boundary condition as a function of this :class:`~fipy.variables.variable.Variable`
 
 >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=0.5 * (1 + sin(time))),
 ...        FixedValue(faces=mesh.getFacesRight(), value=0.))
@@ -380,8 +378,8 @@ number of cells in the mesh :math:`N_i` satisfies :math:`N_i = 4 i + 2`,
 where :math:`i` is an integer. The mesh we've been using thus far is
 satisfactory, with :math:`N_i = 50` and :math:`i = 12`.
    
-Because :term:`FiPy` considers diffusion to be a flux from one :class:`Cell` to the next,
-through the intervening :class:`Face`, we must define the non-uniform diffusion
+Because :term:`FiPy` considers diffusion to be a flux from one :class:`~fipy.meshes.numMesh.cell.Cell` to the next,
+through the intervening :class:`~fipy.meshes.numMesh.face.Face`, we must define the non-uniform diffusion
 coefficient on the mesh faces
 
 .. index:: FaceVariable
@@ -411,8 +409,8 @@ We re-initialize the solution variable
     
 and obtain the steady-state solution with one implicit solution step
 
->>> ImplicitDiffusionTerm(coeff = D).solve(var=phi, 
-...                                        boundaryConditions = BCs)
+>>> DiffusionTerm(coeff = D).solve(var=phi, 
+...                                boundaryConditions = BCs)
 
 The analytical solution is simply
 
@@ -497,7 +495,7 @@ Eq. :eq:`eq:diffusion:mesh1D:variableD`
 as
 
 >>> D0 = 1.
->>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
+>>> eq = TransientTerm() == DiffusionTerm(coeff=D0 * (1 - phi[0]))
 
 .. note::
     
@@ -574,7 +572,7 @@ drops about an order of magnitude with each additional sweep.
 Finally, we can increase the number of steps to approach equilibrium, or we
 can just solve for it directly
 
->>> eq = ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
+>>> eq = DiffusionTerm(coeff=D0 * (1 - phi[0]))
 
 >>> phi[0].setValue(valueRight)
 >>> res = 1e+10
@@ -617,7 +615,7 @@ remaining lines, leaving::
   
 ::
 
-     eq = ImplicitDiffusionTerm(coeff=D0 * (1 - phi[0]))
+     eq = DiffusionTerm(coeff=D0 * (1 - phi[0]))
      phi[0].setValue(valueRight)
      res = 1e+10
      while res > 1e-6:

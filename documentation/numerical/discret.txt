@@ -4,7 +4,7 @@ Finite Volume Method
 To use the FVM, the solution domain must first be divided into
 non-overlapping polyhedral elements or cells.  A solution domain
 divided in such a way is generally known as a mesh (as we will see, a
-:class:`Mesh` is also a :term:`FiPy` object).  A mesh consists of vertices,
+:class:`~fipy.meshes.common.mesh.Mesh` is also a :term:`FiPy` object).  A mesh consists of vertices,
 faces and cells (see Figure :ref:`fig:meshcartoon`).  In the FVM the
 variables of interest are averaged over control volumes (CVs).  The
 CVs are either defined by the cells or are centered on the vertices.

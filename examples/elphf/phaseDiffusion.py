@@ -119,7 +119,7 @@ and create the diffustion equations for the different species as in
 
 >>> def makeEquations(phase, substitutionals, interstitials):
 ...     phase.equation = TransientTerm(coeff = 1/phase.mobility) \
-...         == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
+...         == DiffusionTerm(coeff = phase.gradientEnergy) \
 ...         - (permitivityPrime / 2.) \
 ...             * potential.getGrad().dot(potential.getGrad())
 ...     enthalpy = solvent.standardPotential
@@ -156,7 +156,7 @@ and create the diffustion equations for the different species as in
 ...             (Cj.diffusivity / (1. - CkFaceSum))
 ...    
 ...         Cj.equation = (TransientTerm() 
-...                        == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+...                        == DiffusionTerm(coeff=Cj.diffusivity)
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
 ...
 ...     for Cj in interstitials:
@@ -170,7 +170,7 @@ and create the diffustion equations for the different species as in
 ...             * (phaseTransformation + electromigration)
 ...    
 ...         Cj.equation = (TransientTerm()
-...                        == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+...                        == DiffusionTerm(coeff=Cj.diffusivity)
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 >>> makeEquations(phase, substitutionals, interstitials)

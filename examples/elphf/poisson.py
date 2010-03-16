@@ -101,7 +101,7 @@ we must constrain the solution by fixing the potential at one point:
 >>> for Cj in interstitials + substitutionals:
 ...     charge += Cj * Cj.valence
 
->>> potential.equation = ImplicitDiffusionTerm(coeff = permittivity) \
+>>> potential.equation = DiffusionTerm(coeff = permittivity) \
 ...                      + charge == 0
 
 First, we obtain a uniform charge distribution by setting a uniform

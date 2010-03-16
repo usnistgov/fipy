@@ -35,7 +35,7 @@
 r"""
 
 This example creates four symmetric quadrilateral regions in a box.
-We start with a :class:`CellVariable` object that contains the following
+We start with a :class:`~fipy.variables.cellVariable.CellVariable` object that contains the following
 values:
 
 .. math::

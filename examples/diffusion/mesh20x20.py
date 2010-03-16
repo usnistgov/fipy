@@ -48,7 +48,7 @@ applying boundary condition patches.
 >>> L = dx * nx
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
-We create a :class:`CellVariable` and initialize it to zero:
+We create a :class:`~fipy.variables.cellVariable.CellVariable` and initialize it to zero:
     
 >>> phi = CellVariable(name = "solution variable",
 ...                    mesh = mesh,
@@ -57,10 +57,8 @@ We create a :class:`CellVariable` and initialize it to zero:
 and then create a diffusion equation.  This is solved by default with an
 iterative conjugate gradient solver.  
 
-.. index:: TransientTerm, ImplicitDiffusionTerm
-
 >>> D = 1.
->>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D)
+>>> eq = TransientTerm() == DiffusionTerm(coeff=D)
 
 We apply Dirichlet boundary conditions
 
@@ -117,8 +115,8 @@ We can test the value of the bottom-right corner cell.
 
 We can also solve the steady-state problem directly
 
->>> ImplicitDiffusionTerm().solve(var=phi, 
-...                               boundaryConditions = BCs)
+>>> DiffusionTerm().solve(var=phi, 
+...                       boundaryConditions = BCs)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 

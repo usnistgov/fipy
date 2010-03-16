@@ -256,9 +256,7 @@ Using the same gradient energy coefficient and phase field mobility
 
 we define the phase field equation
 
-.. index:: TransientTerm, ImplicitDiffusionTerm, ImplicitSourceTerm
-
->>> phaseEq = TransientTerm(1/Mphi) == ImplicitDiffusionTerm(coeff=kappa) \
+>>> phaseEq = TransientTerm(1/Mphi) == DiffusionTerm(coeff=kappa) \
 ...   + S0 + ImplicitSourceTerm(coeff=S1)
 
 -----
@@ -348,9 +346,9 @@ we can associate the mobility :math:`M_C` with the intrinsic diffusivity :math:`
    \right\}
    \right).
 
-The first term is clearly a :class:`DiffusionTerm`. The second is less
+The first term is clearly a :class:`~fipy.terms.diffusionTerm.DiffusionTerm`. The second is less
 obvious, but by factoring out :math:`C`, we can see that this is a
-:class:`ConvectionTerm` with a velocity
+:class:`~fipy.terms.convectionTerm.ConvectionTerm` with a velocity
 
 .. math::
     
@@ -387,7 +385,7 @@ or
 .. index:: PowerLawConvectionTerm
 
 >>> diffusionEq = (TransientTerm() 
-...                == ImplicitDiffusionTerm(coeff=D)
+...                == DiffusionTerm(coeff=D)
 ...                + PowerLawConvectionTerm(coeff=phaseTransformationVelocity))
 
 -----
@@ -514,9 +512,9 @@ field through ``phaseTransformationVelocity``, it is necessary sweep this
 non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep. Because of the
-:class:`ConvectionTerm`, the solution matrix for ``diffusionEq`` is asymmetric
-and cannot be solved by the default :class:`LinearPCGSolver`. Therefore, we use a
-:class:`LinearLUSolver` for this equation.
+:class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for ``diffusionEq`` is asymmetric
+and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver`. Therefore, we use a
+:class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` for this equation.
 
 .. index:: LinearLUSolver, solve, sweep
 
@@ -606,7 +604,7 @@ expected values.
    
 .. [#T] we are going to want to
    examine different temperatures in this example, so we declare :math:`T` 
-   as a :class:`Variable`
+   as a :class:`~fipy.variables.variable.Variable`
 
 
 """
