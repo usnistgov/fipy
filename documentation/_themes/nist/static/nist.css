@@ -8,10 +8,16 @@
  */
 
 @import url("basic.css");
-@import url("/ui/css/SpryMenuBarHorizontal.css");
-@import url("/ui/css/nist-styles.css");
-@import url("/ui/css/nist-subsite-overrides.css");
-@import url("/ui/css/live.css");
+/* 
+ * @import url("/ui/css/SpryMenuBarHorizontal.css");
+ * @import url("/ui/css/nist-styles.css");
+ * @import url("/ui/css/nist-subsite-overrides.css");
+ * @import url("/ui/css/live.css");
+ */
+@import url("http://www.nist.gov/ui/css/SpryMenuBarHorizontal.css");
+@import url("http://www.nist.gov/ui/css/nist-styles.css");
+@import url("http://www.nist.gov/ui/css/nist-subsite-overrides.css");
+@import url("http://www.nist.gov/ui/css/live.css");
 
 /* -- page layout ----------------------------------------------------------- */
 
@@ -32,7 +38,6 @@ div.body {
 
 div.related {
     display:block;
-    font-size:0.95em;
     padding:10px 0 19px 17px;
     width: auto;
 }
