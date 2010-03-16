@@ -16,9 +16,8 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.append(os.path.abspath('utils'))
 sys.path.append(os.path.abspath('sphinxext'))
-sys.path.append(os.path.abspath('bibtex'))
+sys.path.append(os.path.abspath('sphinxext/bibtex'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -82,8 +81,7 @@ unused_docs = ['documentation/RESOURCES',
 exclude_trees = ['_build', 
                  'FiPy.egg-info', 
                  'documentation/_build', 
-                 'documentation/bibtex', 
-                 'utils']
+                 'documentation/sphinxext']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
