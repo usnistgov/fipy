@@ -6,18 +6,12 @@
 Welcome to FiPy's documentation!
 ================================
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 
    documentation/introduction
    examples/README
-
-   documentation/glossary
-
-Indices and tables
-==================
+   documentation/GLOSSARY
 
 * :ref:`genindex`
 * :ref:`modindex`
