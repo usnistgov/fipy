@@ -156,7 +156,7 @@ viewers and the dimension of the mesh.
 
 In a semi-infinite domain, the analytical solution for this transient
 diffusion problem is given by
-:math:`\phi = 1 - \erf(x/2\sqrt{D t})`. If the \SciPy{} library is available,
+:math:`\phi = 1 - \erf(x/2\sqrt{D t})`. If the :term:`SciPy` library is available,
 the result is tested against the expected profile: 
 
 >>> x = mesh.getCellCenters()[0]

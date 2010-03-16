@@ -497,11 +497,6 @@ True
 .. image:: simple/dimensional.*
    :width: 90%
    :align: center
-
-.. :term:`FiPy` raw:: latex
-
-   \FiPy{}
-   
 """
 __docformat__ = 'restructuredtext'
 

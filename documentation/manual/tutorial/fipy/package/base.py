@@ -109,9 +109,6 @@ class Base:
       never actually created in a :term:`FiPy` script.
       
     .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
-    .. :term:`FiPy` raw:: latex
-        
-       \FiPy{}
 
     """
     def method1(self):

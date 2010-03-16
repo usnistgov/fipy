@@ -292,7 +292,7 @@ these issues automatically, so we could just write::
 
 Although the second syntax would essentially work as written, such an
 explicit implementation would be very slow. In order to take advantage
-of \FiPy{}'s implicit solvers, it is necessary to reduce
+of :term:`FiPy`'s implicit solvers, it is necessary to reduce
 Eq. :eq:`eq:phase:binary:diffusion` to the canonical form of
 Eq. :eq:`eqn:num:gen`, hence we must expand
 Eq. :eq:`eq:phase:binary:chemicalPotential` as

@@ -176,7 +176,7 @@ systems, which you can check by opening a terminal and typing
     >>> 
 
 If necessary, you can download_ and install it for your platform 
-[PythonDownload]_.
+<http://www.python.org/download>.
 
 .. note::
 
@@ -268,7 +268,8 @@ results. It displays both 1D X-Y type plots and 2D contour plots for
 structured data. It does not display unstructured 2D data or 3D data.
 It works on all common platforms and produces publication quality hard
 copies. Version 0.72.1 or higher is required. `Matplotlib installers
-for specific platforms`_ are available [MatplotlibDownload]_.
+for specific platforms`_ are available 
+<http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474>.
 
 .. note::
 
@@ -366,8 +367,8 @@ or 2D viewing.
 Obtaining FiPy
 --------------
 
-:term:`FiPy` is freely available for download via Subversion_ or as a `compressed
-archive`_ [FiPyDownload]_. Please see :ref:`documentation:SVN` for 
+:term:`FiPy` is freely available for download via Subversion_ or as a compressed
+archive from <http://www.ctcms.nist.gov/fipy/download>. Please see :ref:`documentation:SVN` for 
 instructions of obtaining :term:`FiPy` with Subversion_.
 
 .. warning::
@@ -382,7 +383,8 @@ instructions of obtaining :term:`FiPy` with Subversion_.
 Manual
 ======
 
-You can `download the latest manual`_ [FiPyGuide]_. Alternatively,
+You can `download the latest manual`_ from 
+<http://www.ctcms.nist.gov/fipy/download/fipy.pdf>. Alternatively,
 it may be possible to build a fresh copy by issuing the following
 command in the base directory::
 
@@ -510,7 +512,7 @@ http://www.scipy.org/
 Significantly improved performance has been achieved with the
 judicious use of C language inlining, via the :mod:`scipy.weave` module of the
 :term:`SciPy` package. `SciPy download instructions`_ 
-[SciPyDownload]_ are available. We recommend version 0.5.2 or greater.
+are available <http://www.scipy.org/Download>. We recommend version 0.5.2 or greater.
 
 .. note:: 
 

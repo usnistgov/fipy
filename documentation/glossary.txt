@@ -31,6 +31,9 @@ Glossary
       viewer available for 3D data. Other viewers are probably better for 1D
       or 2D viewing. 
 
+   MayaVi
+      The predecessor to :term:`Mayavi`. Yes, it's confusing.
+
    numarray
       An archaic predecessor to :term:`NumPy`.
 

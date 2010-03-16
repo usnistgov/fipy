@@ -115,8 +115,9 @@ Declare the variables.
 >>> xVelocity = CellVariable(mesh=mesh, name='X velocity')
 >>> yVelocity = CellVariable(mesh=mesh, name='Y velocity')
 
-The velocity is required as a rank-1 \Class{FaceVariable} for calculating
-the mass flux. This is a somewhat clumsy aspect of the :term:`FiPy`
+The velocity is required as a rank-1
+:class:`~fipy.variables.faceVariable.FaceVariable` for calculating the mass
+flux. This is a somewhat clumsy aspect of the :term:`FiPy`
 interface that needs improvement.
 
 >>> velocity = FaceVariable(mesh=mesh, rank=1)

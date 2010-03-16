@@ -66,8 +66,8 @@
 """
 Physical quantities with units.
 
-This module derives from `Konrad Hinsen`_'s PhysicalQuantity_
-[PhysicalQuantity]_.
+This module derives from `Konrad Hinsen`_'s :class:`PhysicalQuantity`
+<http://dirac.cnrs-orleans.fr/ScientificPython/ScientificPythonManual/Scientific.Physics.PhysicalQuantities-module.html>.
 
 This module provides a data type that represents a physical
 quantity together with its unit. It is possible to add and

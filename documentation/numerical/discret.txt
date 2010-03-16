@@ -187,7 +187,7 @@ scheme to solve. The iterative schemes available to :term:`FiPy` are
 currently encapsulated in the :term:`PySparse` suite of solvers
 and include most common solvers such as the conjugate gradient method
 and LU decomposition. There are plans to include other solver suites
-that are compatible with \Python{}.
+that are compatible with :term:`Python`.
 
 Combining Equations :eq:`num:tra`, :eq:`num:con`,
 :eq:`num:dif` and :eq:`num:sou`, the complete

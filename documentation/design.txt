@@ -195,11 +195,11 @@ inefficient.
 .. A discussion of efficiency issues can be found in
    :ref:`chap:Efficiency`.
 
-\Python{} Programming Language
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:term:`Python` Programming Language
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Acknowledging that several scripting languages offer a number, if not
-all, of the features described above, we have selected \Python{} for
+all, of the features described above, we have selected :term:`Python` for
 the implementation of :term:`FiPy`.  Python is
     
  * an interpreted language that combines remarkable power with very clear
@@ -209,21 +209,21 @@ the implementation of :term:`FiPy`.  Python is
     
  * fully object oriented,
     
- * distributed with powerful automated testing tools (\doctest{},
-   \unittest{}),
+ * distributed with powerful automated testing tools (:mod:`doctest`,
+   :mod:`unittest`),
 
  * actively used and extended by other scientists and
-   mathemeticians (\SciPy{}, \Numeric{}, \ScientificPython{}, \PySparse{}).
+   mathemeticians (:term:`SciPy`, :term:`NumPy`, :term:`ScientificPython`, :term:`PySparse`).
     
  * easily integrated with low-level languages such as C
-   (\weave{}, \blitz{}, \PyRex{}).
+   (:mod:`~scipy.weave`, :mod:`~scipy.blitz`, :term:`PyRex`).
 
 Implementation
 --------------
 
-The \Python{} classes that make up :term:`FiPy` are described in detail in
+The :term:`Python` classes that make up :term:`FiPy` are described in detail in
 :ref:`part:modules`, but we give a brief overview here. :term:`FiPy` is
-based around three fundamental \Python{} classes:
+based around three fundamental :term:`Python` classes:
 :class:`~fipy.meshes.numMesh.mesh.Mesh`,
 :class:`~fipy.variables.variable.Variable`, and
 :class:`~fipy.terms.term.Term`. Using the terminology of

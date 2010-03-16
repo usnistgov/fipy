@@ -103,7 +103,7 @@ the power law scheme,
    :class:`~fipy.terms.vanLeerConvectionTerm.VanLeerConvectionTerm` not
    mentioned and no discussion of explicit forms.
 
-All of the numerical schemes presented here are available in \FiPy{}
+All of the numerical schemes presented here are available in :term:`FiPy`
 and can be selected by the user.
 
 
