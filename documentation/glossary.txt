@@ -9,31 +9,13 @@ Glossary
       The eponymous software package. 
       See http://www.ctcms.nist.gov/fipy.
 
+   gist
+      Another name for :term:`Pygist`
+
    Gmsh
       A free and Open Source 3D (and 2D!) finite element grid generator. It
       also has a CAD engine and post-processor that :term:`FiPy` does not
       make use of. See http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.geuz.org/gmsh.
-
-   Python
-      The programming language that :term:`FiPy` (and your scripts) are
-      written in. See
-      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/.
-
-   NumPy
-      The :mod:`numpy` :term:`Python` package provides array arithmetic 
-      facilities. See
-      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy.
-
-   Numeric
-      An archaic predecessor to :term:`NumPy`.
-
-   numarray
-      An archaic predecessor to :term:`NumPy`.
-
-   PySparse
-      The :mod:`pysparse` :term:`Python` package provides sparse matrix
-      storage, solvers, and linear algebra routines. See
-      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net.
 
    Matplotlib
       :mod:`matplotlib` :term:`Python` package displays publication quality
@@ -42,6 +24,33 @@ Glossary
       It works on all common platforms and produces publication quality hard
       copies. See 
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net.
+
+   Mayavi
+      The :mod:`mayavi` Data Visualizer is a free, easy to use scientific data
+      visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
+      viewer available for 3D data. Other viewers are probably better for 1D
+      or 2D viewing. 
+
+   numarray
+      An archaic predecessor to :term:`NumPy`.
+
+   Numeric
+      An archaic predecessor to :term:`NumPy`.
+
+   NumPy
+      The :mod:`numpy` :term:`Python` package provides array arithmetic 
+      facilities. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy.
+
+   PySparse
+      The :mod:`pysparse` :term:`Python` package provides sparse matrix
+      storage, solvers, and linear algebra routines. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net.
+
+   Python
+      The programming language that :term:`FiPy` (and your scripts) are
+      written in. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/.
 
    Pygist
       The :term:`Pygist` package can be used to display simulation results. It
@@ -52,15 +61,6 @@ Glossary
       common platforms. :term:`Pygist` no longer seems to be under development, but
       is still recommended as a fast light weight alternative to
       :term:`Matplotlib`.
-
-   gist
-      Another name for :term:`Pygist`
-
-   Mayavi
-      The :mod:`mayavi` Data Visualizer is a free, easy to use scientific data
-      visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
-      viewer available for 3D data. Other viewers are probably better for 1D
-      or 2D viewing. 
 
    SciPy
       The :mod:`scipy` :term:`Python` pacakge provides a wide range of
