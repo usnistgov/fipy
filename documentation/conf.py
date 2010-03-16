@@ -166,13 +166,13 @@ html_last_updated_fmt = '%b %d, %Y'
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
-html_sidebars = {'index': ['index.html', 'searchbox.html', 'contact.html'],
+html_sidebars = {'index': ['indexsidebar.html', 'searchbox.html', 'contact.html'],
                  '**': ['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html', 'contact.html']}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
 html_additional_pages = {
-    'index': 'indexcontent.html',
+    'index': 'index.html',
 }
 
 # If false, no module index is generated.

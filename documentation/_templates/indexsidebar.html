@@ -1,28 +1,32 @@
-<h3>Download</h3>
-{% if version.endswith('(hg)') %}
-<p>This documentation is for version <b>{{ version }}</b>, which is
-  not released yet.</p>
-<p>You can use it from the
-  <a href="http://bitbucket.org/birkenfeld/sphinx/">Mercurial repo</a> or look for
-  released versions in the <a href="http://pypi.python.org/pypi/Sphinx">Python
-    Package Index</a>.</p>
-{% else %}
+<div class="sphinxsidebarsection" align="center">
+<p class="logo">
+<img alt="Cahn-Hilliard" width="90%" src="{{ 
+pathto('_static/examples/cahnHilliard/CH.png', 1) }}" class="logo"/><br />
+<i>Cahn-Hilliard</i>
+</p>
+<p class="logo">
+<img alt="Phase Field" width="90%" src="{{ 
+pathto('_static/examples/phase/anisotropy/dendrite.png', 1) }}" 
+class="logo"/><br />
+<i>Phase Field</i>
+</p>
+<p class="logo">
+<img alt="Level Set" width="90%" src="{{ 
+pathto('_static/examples/levelSet/electroChem/superfillImage.png', 1) }}" 
+class="logo"/><br />
+<i>Level Set</i>
+</p>
+</div>
+<div class="sphinxsidebarsection">
+<h3>Installation</h3>
 <p>Current version: <b>{{ version }}</b></p>
-<p>Get Sphinx from the <a href="http://pypi.python.org/pypi/Sphinx">Python Package
-Index</a>, or install it with:</p>
-<pre>easy_install -U Sphinx</pre>
-<p>Latest <a href="http://sphinx.pocoo.org/latest/">development version docs</a>
-are also available.</p>
-{% endif %}
-
+<p>FiPy has a number of prerequisites. Please follow the <a href="{{ 
+pathto('INSTALLATION') }}">installation instructions</a></p>
+</div>
+<div class="sphinxsidebarsection">
 <h3>Questions? Suggestions?</h3>
 
-<p>Join the <a href="http://groups.google.com/group/sphinx-dev">Google group</a>:</p>
-<form action="http://groups.google.com/group/sphinx-dev/boxsubscribe"
-      style="padding-left: 1em">
-  <input type="text" name="email" value="your@email"/>
-  <input type="submit" name="sub" value="Subscribe" />
-</form>
-<p>or come to the <tt>#python-docs</tt> channel on FreeNode.</p>
+<p>Join the <a href="{{ pathto('documentation/MAIL') }}">mailing list</a></p>
 <p>You can also open an issue at the
-  <a href="http://www.bitbucket.org/birkenfeld/sphinx/issues/">tracker</a>.</p>
+  <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/report">tracker</a>.</p>
+</div>
