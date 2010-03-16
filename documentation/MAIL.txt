@@ -35,6 +35,4 @@ fipy@nist.gov will appear in this publicly available archive_.
 
 .. _archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://dir.gmane.org/gmane.comp.python.fipy
 
-.. include:: ../utils/include.txt
-
 

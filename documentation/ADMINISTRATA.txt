@@ -241,8 +241,6 @@ Build the distribution.
 
    C:\pythonXX\python setup.py build --compiler=mingw32 bdist --format=wininst
 
-.. include:: ../utils/include.txt
-
 ===============================
 Converting a CVS Project to SVN
 ===============================

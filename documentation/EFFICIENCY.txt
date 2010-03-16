@@ -102,8 +102,6 @@ success with an iterative method.
   
 .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 
-.. include:: ../utils/include.txt
-
 .. |NIST| raw:: latex
 
    \NIST{}

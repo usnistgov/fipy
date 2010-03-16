@@ -1,0 +1,2 @@
+.. |VERSION| replace:: 2.0.3a1
+.. |SVNVERSION| replace:: 2_0_3a1

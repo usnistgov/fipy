@@ -8,10 +8,6 @@ Installation
    :local:
    :depth: 2
 
-.. raw:: latex
-
-   \minitoc[e]
-
 The :term:`FiPy` finite volume PDE solver relies on several third-party packages.
 It is *best to obtain and install those first*, before attempting to install
 :term:`FiPy`.
@@ -80,7 +76,7 @@ Python(x,y)
 http://www.pythonxy.com/
 
 Another comprehensive Python package installer for scientific applications,
-presently only available for Windows_. See |WINDOWS-INSTALLATION-txt| for
+presently only available for Windows_. See :ref:`WINDOWS-INSTALLATION` for
 more information.
 
 ----------
@@ -121,8 +117,8 @@ additional steps are necessary to install.
 
 .. note::
 
-   Simple instructions for `Mac OS X`_ users are in |MACOSX-INSTALLATION-txt|.
-   Simple instructions for Windows_ users are in |WINDOWS-INSTALLATION-txt|.
+   Simple instructions for `Mac OS X`_ users are in :ref:`MACOSX-INSTALLATION`.
+   Simple instructions for Windows_ users are in :ref:`WINDOWS-INSTALLATION`.
 
 The only elements of :term:`FiPy` that are likely to be platform-dependent
 are the viewers, but at least one viewer should work on each platform.
@@ -145,27 +141,6 @@ follow explicitly any instructions given in the respective packages'
 .. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
 .. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
 .. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
-
-.. |latexWINDOWSINSTALL| raw:: latex
-
-   Section~\ref{sec:WindowsInstallation} ``\titleref{sec:WindowsInstallation}''
-
-.. |htmlWINDOWSINSTALL| raw:: html
-
-   the <a href="windows-installation.html">Windows Installation Guide</a>
-
-.. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWSINSTALL| |latexWINDOWSINSTALL|
-
-.. |latexMACOSXINSTALL| raw:: latex
-
-   Section~\ref{sec:MacOSXInstallation} ``\titleref{sec:MacOSXInstallation}''
-
-.. |htmlMACOSXINSTALL| raw:: html
-
-   the <a href="macosx-installation.html">Mac OS X Installation Guide</a>
-
-
-.. |MACOSX-INSTALLATION-txt| replace:: |htmlMACOSXINSTALL| |latexMACOSXINSTALL|
 
 Required Packages
 =================
@@ -424,7 +399,7 @@ Obtaining FiPy
 --------------
 
 :term:`FiPy` is freely available for download via Subversion_ or as a `compressed
-archive`_ |citeFiPyDownload|. Please see |documentation:SVN.txt| for 
+archive`_ |citeFiPyDownload|. Please see :ref:`documentation:SVN` for 
 instructions of obtaining :term:`FiPy` with Subversion_.
 
 .. warning::
@@ -451,7 +426,7 @@ command in the base directory::
 .. note::
 
    This mechanism is intended primarily for the developers.  A
-   command-line pdfTeX installation and several |LaTeX| packages are
+   command-line pdfTeX installation and several LaTeX packages are
    required; particularly ``memoir.cls``.  You will also need to add
    ``~/path/to/fipy/utils`` to your ``PYTHONPATH`` environment
    variable.
@@ -483,7 +458,7 @@ tests with::
 A few tests will fail the first time as a result of the messages
 output in the course of caching the compiled inline code, but a repeat
 test should have no failures (although see "``repairing catalog by
-removing key``" in |the FAQ|).
+removing key``" in the :ref:`FAQ`).
 
 .. note::
 
@@ -517,22 +492,24 @@ that the :term:`FiPy` distribution directory is appended to your ``PYTHONPATH``
 environment variable (either "``.``" if you are working within the :term:`FiPy` 
 directory, or "``~/path/to/fipy``" if you are working in your own directory).
 
+.. _sec:UsingFiPy:
+
 ----------
 Using FiPy
 ----------
 
 To see examples of problems that :term:`FiPy` is capable of solving, you can run
-any of the scripts in |examples/|. 
+any of the scripts in :mod:`examples`. 
 
 .. note::
 
-   We strongly recommend you proceed through |examples/|, but at 
-   the very least work through |examples/diffusion/mesh1D-py| to understand 
+   We strongly recommend you proceed through :mod:`examples`, but at 
+   the very least work through :mod:`examples.diffusion.mesh1D` to understand 
    the notation and basic concepts of :term:`FiPy`.
 
 We exlusively use either the unix
 command line or IPython_ to interact with :term:`FiPy`. The commands in
-|examples/| are written with the assumption that they will be executed from
+:mod:`examples` are written with the assumption that they will be executed from
 the command line. For instance, from within the main :term:`FiPy` directory, you
 can type::
 
@@ -555,16 +532,6 @@ or with `Dive Into Python`_ |citeDiveIntoPython|.
 As you gain experience, you will want to see
 |FAQ-FlagsAndEnvironmentVariables| to learn about the flags and environment
 variables that modify :term:`FiPy`'s default behavior.
-
-.. |latexMesh1D-py| raw:: latex
-
-   Example~\ref{sec:Examples:diffusion:mesh1D} ``\titleref{sec:Examples:diffusion:mesh1D}''
-
-.. |htmlMesh1D-py| raw:: html
-
-   Example 7.1: "Module <code>examples.diffusion.mesh1D</code>" of the <a href="download/fipy.pdf">Manual</a>
-
-.. |examples/diffusion/mesh1D-py| replace:: |htmlMesh1D-py| |latexMesh1D-py|
 
 -----------------
 Optional Packages
@@ -719,14 +686,7 @@ indicators, :term:`FiPy` will default to using PySparse_ if it is present.
 .. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 
-.. include:: utils/include.txt
-
 .. include:: documentation/VERSION.txt
-
-.. |TeX| replace:: |latexTeX| |htmlTeX|
-.. |LaTeX| replace:: |latexLaTeX| |htmlLaTeX|
-.. |examples/| replace:: |htmlExamples/| |latexExamples/|
-.. |documentation:SVN.txt| replace:: |latexSVN.txt| |htmlSVN.txt|
 
 .. |citeInstallingPythonModules| raw:: latex
 
@@ -739,8 +699,6 @@ indicators, :term:`FiPy` will default to using PySparse_ if it is present.
 .. |citeDiveIntoPython| raw:: latex
 
    \cite{DiveIntoPython}
-
-.. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
 
 .. |latexFAQ-FlagsAndEnvironmentVariables| raw:: latex
 

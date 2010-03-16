@@ -50,8 +50,8 @@ What's new in version |VERSION|?
 .. warning::
 
    :term:`FiPy` 2 brings unavoidable syntax changes. Please see
-   :mod:`examples.update1_0to2_0` for guidance on the changes that you will need
-   to make to your :term:`FiPy` 1.x scripts.
+   :mod:`examples.updating.update1_0to2_0` for guidance on the changes that
+   you will need to make to your :term:`FiPy` 1.x scripts.
 
 The significant changes since version 1.2 are:
 
@@ -184,7 +184,6 @@ or a
 .. _Materials Digital Library Pathway: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl.org
 .. _MatForge:             http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/
 
-.. include:: utils/include.txt
 .. include:: documentation/VERSION.txt
 
 .. |citePython| raw:: latex

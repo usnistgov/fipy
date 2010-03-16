@@ -1,3 +1,5 @@
+.. _documentation:SVN:
+
 ---------
 SVN usage
 ---------
@@ -9,7 +11,7 @@ download various tagged revisions of :term:`FiPy` depending on your needs.
 
 .. attention:: 
 
-   Be sure to follow |INSTALLATION-txt| to obtain all the prerequisites for
+   Be sure to follow :ref:`INSTALLATION` to obtain all the prerequisites for
    :term:`FiPy`.
    
 SVN client
@@ -106,10 +108,6 @@ Any other tags will not generally be of interest to most users.
 For those who are interested in learning more about Subversion, the
 canonical manual is the `online Subversion Red Bean book`_
 |citeSubversionRedBean|.
-
-.. include:: ../utils/include.txt
-
-.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 
 .. include:: VERSION.txt
 

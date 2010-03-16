@@ -35,8 +35,6 @@ Max Gibiansky
     added support for anistropic diffusion coefficients while he was on 
     sabbatical from the `University of Maine`_.
 
-.. include:: ../utils/include.txt
-
 .. |MSEL| replace:: the `Materials Science and Engineering Laboratory`_
 .. |CTCMS| replace:: the `Center for Theoretical and Computational Materials Science`_
 .. |NIST| replace:: the `National Institute of Standards and Technology`_

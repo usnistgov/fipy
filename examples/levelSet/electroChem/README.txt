@@ -63,8 +63,8 @@ the existing suite of scripts do not meet the required needs.
 
 In general it is a good idea to obtain the Mayavi_ plotting package
 for which a specialized superfill viewer class has been created, see
-|INSTALLATION-txt|. The other standard viewers mentioned in
-|INSTALLATION-txt| are still adequate although they do not give such
+:ref:`INSTALLATION`. The other standard viewers mentioned in
+:ref:`INSTALLATION` are still adequate although they do not give such
 clear images that are tailored for the superfill problem.  The images
 below demonstrate the Mayavi_ viewing capability.  Each contour
 represents sequential positions of the interface and the color
@@ -75,8 +75,6 @@ of high surfactant concentration have an increased deposition rate.
    :scale: 50
    :align: left
    :alt: FiPy superfill
-
-.. include:: ../../../utils/include.txt
 
 .. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 
@@ -120,5 +118,4 @@ of high surfactant concentration have an increased deposition rate.
 
 .. |howToWriteAScript| replace:: |htmlHowToWriteAScript| |latexHowToWriteAScript|
 
-.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 

@@ -1,3 +1,5 @@
+.. _MACOSX-INSTALLATION:
+
 ============================
 Simple Mac OS X Installation
 ============================
@@ -12,7 +14,7 @@ familiar with the Fink_ package manager. Either `EasyInstall`_ or
 `Enthought Python Edition`_ will get :term:`FiPy` running in a minumum number of
 steps. The `Binary Installation`_ procedure is the next most expedient if
 you have never heard of Fink_ or if you are not comfortable with it. Please
-see the more general |INSTALLATION-txt| for detailed installation
+see the more general :ref:`INSTALLATION` for detailed installation
 instructions. These instructions are not the only ways to set up :term:`FiPy` on
 `Mac OS X`_ but represent the most expedient ways, from our experience, to
 have a usable installation up and running.
@@ -22,9 +24,6 @@ have a usable installation up and running.
    You must have an administrator account to install most of the following 
    packages.
 
-.. include:: utils/include.txt
-
-.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
 .. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://fink.sourceforge.net
 
@@ -413,8 +412,8 @@ Using FiPy on Mac OS X
 ======================
 
 We do a substantial amount of our :term:`FiPy` development on `Mac OS X`_, so you
-can assume that it is well-tested on this platform. See |Using FiPy| for 
-more information.
+can assume that it is well-tested on this platform. See :ref:`sec:UsingFiPy` 
+for more information.
 
 IDLE Environment
 ----------------
@@ -448,17 +447,6 @@ A matplotlib_ viewer should appear and the Python Shell should prompt you
 through a series of examples.
 
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
-
-.. |latexUsing FiPy| raw:: latex
-
-   \hyperlink{using-fipy}{Using \FiPy{}}
-   % Section~\ref{using-fipy}, ``\titleref{using-fipy}''
-
-.. |htmlUsing FiPy| raw:: html
-
-   <a href="installation.html#using-fipy">Using FiPy</a>
-
-.. |Using FiPy| replace:: |htmlUsing FiPy| |latexUsing FiPy|
 
 
 

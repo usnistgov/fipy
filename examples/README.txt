@@ -68,8 +68,6 @@ construct your own problem scripts, please `contact us`_.
    flow/index
    updating/index
 
-.. include:: ../utils/include.txt
-
 .. _Python:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _doctest:        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/doc/current/lib/module-doctest.html
 .. _contact us:     mailto:fipy@nist.gov

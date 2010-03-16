@@ -58,8 +58,6 @@ The only requirement to run VKML is to register (registration is 100% free)
 in the nanoHUB_.
 
 
-.. include:: ../utils/include.txt
-
 .. _Prof. R. Edwin Garcia:                    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bicephalous.ecn.purdue.edu/~edwin
 .. _Purdue University:                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.purdue.edu
 .. _Polycrystalline Growth and Coarsening:    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.nanohub.org/tools/vkmlpsgg/

@@ -3,10 +3,6 @@
 Frequently Asked Questions
 ==========================
 
-.. raw:: latex
-
-   \minitoc[e]
-
 How do I represent an equation in FiPy?
 ---------------------------------------
 
