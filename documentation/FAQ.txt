@@ -723,10 +723,11 @@ Neumann type boundary condition explicitly. Of course, it is often possible
 to use :class:`~fipy.boundaryConditions.fixedValue.FixedValue` or 
 :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary conditions to mimic a
 fixed gradient condition. In the case when there is no convection, one can
-simply use a :class:`~fipy.boundaryConditions.FixedFlux` condition and divide through by the diffusion
+simply use a :class:`~fipy.boundaryConditions.FixedFlux` condition and 
+multiply through by the diffusion
 coefficient to create the boundary condition,
 
->>> FixedFlux(value=gradient / diffusionCoeff, faces=myFaces)
+>>> FixedFlux(value=gradient * diffusionCoeff, faces=myFaces)
 
 where ``gradient`` is the value of the boundary gradient and
 ``myFaces`` are the faces over which the boundary condition applies.  If

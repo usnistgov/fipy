@@ -50,7 +50,7 @@ periodic wave wraps around the mesh.
 >>> newVar2 = var2.copy()
 
 >>> for step in range(steps):
-...	    eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
+...     eq1.solve(var = var1, dt = dt, solver = LinearLUSolver())
 ...     eq2.solve(var = var2, dt = dt, solver = LinearLUSolver())
 
 
