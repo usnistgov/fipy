@@ -45,9 +45,9 @@ To run this example from the base fipy directory type::
 at the command line. The results of the simulation will be displayed
 and the word ``finished`` in the terminal at the end of the
 simulation. The simulation will only run for 10 time steps. In order
-to alter the number of timesteps, the python function that
+to alter the number of timesteps, the Python function that
 encapsulates the system of equations must first be imported (at the
-python command line),
+Python command line),
 
 .. index:: runGold
 
