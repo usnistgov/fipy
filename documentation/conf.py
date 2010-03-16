@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'FiPy'
-copyright = u'2009, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
+copyright = u'2004-2010, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -73,7 +73,7 @@ release = '2.0.2'
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['_build']
+exclude_trees = ['_build', 'FiPy.egg-info', 'documentation/_build', 'utils']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -99,7 +99,8 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/convection/index.txt',
                         'examples/phase/index.txt',
                         'examples/levelSet/index.txt',
-                        'examples/cahnHilliard/index.txt']
+                        'examples/cahnHilliard/index.txt',
+                        'examples/flow/index.txt']
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -138,7 +139,7 @@ html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-#html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%b %d, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -162,6 +163,9 @@ html_static_path = ['_static']
 
 # If true, links to the reST sources are added to the pages.
 #html_show_sourcelink = True
+
+# If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
+html_show_copyright = False
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
@@ -199,7 +203,13 @@ latex_documents = [
 latex_use_parts = True
 
 # Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
+latex_preamble = r"""
+\usepackage[amssymb]{SIunits}
+
+\DeclareMathOperator{\erf}{erf}
+\providecommand{\abs}[1]{\lvert#1\rvert}
+
+"""
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []
@@ -207,6 +217,7 @@ latex_use_parts = True
 # If false, no module index is generated.
 #latex_use_modindex = True
 
+pngmath_latex_preamble = latex_preamble
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
