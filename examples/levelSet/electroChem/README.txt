@@ -49,10 +49,10 @@ due to decreasing local surface area, which scales with the local
 curvature (hence the name of the mechanism). A good overview of this
 mechanism can be found in |citeMoffat|.
 
-Using |FiPy| to model Superfill
--------------------------------
+Using FiPy to model Superfill
+-----------------------------
 
-Example |simpleTrenchSystem| provides a simple way to use |FiPy| to model the
+Example |simpleTrenchSystem| provides a simple way to use :term:`FiPy` to model the
 superfill process. The example includes a detailed description of the governing
 equations and feature geometry. It requires the user to import and execute a
 function at the python prompt.  The model parameters can be passed as arguments
@@ -77,8 +77,6 @@ of high surfactant concentration have an increased deposition rate.
    :alt: FiPy superfill
 
 .. include:: ../../../utils/include.txt
-
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
 .. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 

@@ -10,7 +10,7 @@ Examples
 These examples can be used in at least four ways:
 
 - Each example can be invoked individually to demonstrate an 
-  application of |FiPy|::
+  application of :term:`FiPy`::
 
     $ examples/something/input.py
 
@@ -68,7 +68,7 @@ construct your own problem scripts, please `contact us`_.
 
 .. include:: ../utils/include.txt
 
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+.. :term:`FiPy` replace:: |htmlFiPy| |latexFiPy|
 .. _Python:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _doctest:        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/doc/current/lib/module-doctest.html
 .. _contact us:     mailto:fipy@nist.gov

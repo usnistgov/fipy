@@ -2,7 +2,7 @@
 Overview
 ========
 
-|FiPy| is an object oriented, partial differential equation (PDE) solver,
+:term:`FiPy` is an object oriented, partial differential equation (PDE) solver,
 written in Python_ |citePython|, based on a standard finite volume (FV)
 approach.  The framework has been developed in the `Metallurgy Division`_
 and Center for Theoretical and Computational Materials Science (CTCMS_), in
@@ -19,7 +19,7 @@ provides a tool that is extensible, powerful and freely available. A
 significant advantage to Python_ is the existing suite of tools for
 array calculations, sparse matrices and data rendering. 
 
-The |FiPy| framework includes terms for transient diffusion, convection and
+The :term:`FiPy` framework includes terms for transient diffusion, convection and
 standard sources, enabling the solution of arbitrary combinations of
 coupled elliptic, hyperbolic and parabolic PDEs.  Currently implemented
 models include phase field |citePhaseField| treatments of polycrystalline,
@@ -30,7 +30,7 @@ treatment of the electrodeposition process |citeCEAC|.
   
    <!--
 
-The latest information about |FiPy| can be found at
+The latest information about :term:`FiPy` can be found at
 http://www.ctcms.nist.gov/fipy/.
 
 .. raw:: html
@@ -49,9 +49,9 @@ What's new in version |VERSION|?
 
 .. warning::
 
-   |FiPy| 2 brings unavoidable syntax changes. Please see
+   :term:`FiPy` 2 brings unavoidable syntax changes. Please see
    :mod:`examples.update1_0to2_0` for guidance on the changes that you will need
-   to make to your |FiPy| 1.x scripts.
+   to make to your :term:`FiPy` 1.x scripts.
 
 The significant changes since version 1.2 are:
 
@@ -78,7 +78,7 @@ Download and Installation
 -------------------------
 
 Please refer to :ref:`INSTALLATION` for details on download and
-installation. |FiPy| can be redistributed and/or modified
+installation. :term:`FiPy` can be redistributed and/or modified
 freely, provided that any derivative works bear some notice that they
 are derived from it, and any modified versions bear some notice that
 they have been modified.
@@ -87,12 +87,12 @@ they have been modified.
 Support
 -------
 
-You can communicate with the |FiPy| developers and with other users via our
+You can communicate with the :term:`FiPy` developers and with other users via our
 `mailing list`_ and we welcome you to use the `tracking
 system`_ for bugs, support requests, feature requests and
 patch submissions |citeMailingTracking|. We welcome collaborative efforts on this project.
 
-|FiPy| is a member of MatForge_, a project of the `Materials Digital Library
+:term:`FiPy` is a member of MatForge_, a project of the `Materials Digital Library
 Pathway`_. This National Science Foundation funded service provides
 management of our public source code repository, our bug tracking system, and
 a "wiki" space for public contributions of code snippets, discussions, and
@@ -102,8 +102,8 @@ tutorials.
 Conventions and Notation
 ------------------------
 
-|FiPy| is driven by Python_ script files than you can view or modify in any
-text editor.  |FiPy| sessions are invoked from a command-line shell, such
+:term:`FiPy` is driven by Python_ script files than you can view or modify in any
+text editor.  :term:`FiPy` sessions are invoked from a command-line shell, such
 as :command:`tcsh` or :command:`bash`.
 
 Throughout, text to be typed at the keyboard will appear ``like this``.
@@ -140,7 +140,7 @@ typed by you.
    text exactly as it appears in the examples.
 
 When references are made to file system paths, it is assumed that the
-current working directory is the |FiPy| distribution directory, refered to
+current working directory is the :term:`FiPy` distribution directory, refered to
 as the "base directory", such that::
 
     examples/diffusion/steadyState/mesh1D.py
@@ -186,8 +186,6 @@ or a
 
 .. include:: utils/include.txt
 .. include:: documentation/VERSION.txt
-
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
 .. |citePython| raw:: latex
 

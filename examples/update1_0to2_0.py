@@ -32,21 +32,21 @@
 
 r"""
 
-|FiPy| 2.0 introduces several syntax changes from |FiPy| 1.0. We appreciate that
+:term:`FiPy` 2.0 introduces several syntax changes from :term:`FiPy` 1.0. We appreciate that
 this is very inconvenient for our users, but we hope you'll agree that the new
 syntax is easier to read and easier to use. We assure you that this is not
 something we do casually; it has been over three years since our last
-incompatible change (when |FiPy| 1.0 superceded |FiPy| 0.1).
+incompatible change (when :term:`FiPy` 1.0 superceded :term:`FiPy` 0.1).
 
 All examples included with version 2.0 have been updated to use the new syntax,
-but any scripts you have written for |FiPy| 1.0 will need to be updated. A
-complete listing of the changes needed to take the |FiPy| examples scripts from
+but any scripts you have written for :term:`FiPy` 1.0 will need to be updated. A
+complete listing of the changes needed to take the :term:`FiPy` examples scripts from
 version 1.0 to version 2.0 can be found at
     
     http://www.matforge.org/fipy/wiki/upgrade1_0examplesTo2_0
     
 but we summarize the necessary changes here. If these tips are not sufficient to
-make your scripts compatible with |FiPy| 2.0, please don't hesitate to ask for
+make your scripts compatible with :term:`FiPy` 2.0, please don't hesitate to ask for
 help on the `mailing list`_.
 
 
@@ -60,7 +60,7 @@ The following items **must** be changed in your scripts
    
       >>> x = mesh.getCellCenters()[...,0]
        
-   This seemingly arbitrary change simplifies a great many things in |FiPy|, but
+   This seemingly arbitrary change simplifies a great many things in :term:`FiPy`, but
    the one most noticeable to the user is that you can now write
    
        >>> x, y = mesh.getCellCenters()
@@ -113,9 +113,9 @@ The following items **must** be changed in your scripts
       
           >>> phase.getFaceGrad()._take((1, 0), axis=1) * (-1, 1)
 
- * For internal reasons, |FiPy| now supports `CellVariable` and `FaceVariable`
+ * For internal reasons, :term:`FiPy` now supports `CellVariable` and `FaceVariable`
    objects that contain integers, but it is not meaningful to solve a PDE for an
-   integer field (|FiPy| should issue a warning if you try). As a result, when given,
+   integer field (:term:`FiPy` should issue a warning if you try). As a result, when given,
    initial values must be specified as floating-point values:
  
        >>> var = CellVariable(mesh=mesh, value=1.)
@@ -152,7 +152,7 @@ The following items **must** be changed in your scripts
 
    although it probably could have been done with a rather convoluted (and
    slow!) `filter` function passed to `where`. There no longer are any `filter`
-   methods used in |FiPy|. You now would write 
+   methods used in :term:`FiPy`. You now would write 
    
        >>> x, y = mesh.getCellCenters()
        >>> initialArray[(x < dx) | (x > (Lx - dx)) | (y < dy) | (y > (Ly - dy))] = 1.
@@ -198,10 +198,10 @@ The following items **must** be changed in your scripts
        >>> import Numeric
 
 The remaining changes are not **required**, but they make scripts easier to read
-and we recommend them. |FiPy| may issue a `DeprecationWarning` for some cases,
+and we recommend them. :term:`FiPy` may issue a `DeprecationWarning` for some cases,
 to indicate that we may not maintain the old syntax indefinitely.
 
- * All of the most commonly used classes and functions in |FiPy| are directly 
+ * All of the most commonly used classes and functions in :term:`FiPy` are directly 
    accessible in the `fipy` namespace. For brevity, our examples now start with
 
        >>> from fipy import *
@@ -237,7 +237,7 @@ to indicate that we may not maintain the old syntax indefinitely.
 
    .. note::
        
-      Internally, |FiPy| uses explicit imports, as is considered 
+      Internally, :term:`FiPy` uses explicit imports, as is considered 
       `best Python practice`_, but we feel that clarity trumps orthodoxy when it
       comes to the examples.
 
@@ -303,7 +303,7 @@ to indicate that we may not maintain the old syntax indefinitely.
 
  * `ImplicitDiffusionTerm` has been renamed to `DiffusionTerm`.
 
-.. |FiPy| raw:: latex
+.. :term:`FiPy` raw:: latex
 
    \FiPy{}
    

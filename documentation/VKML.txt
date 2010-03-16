@@ -2,10 +2,10 @@
 Virtual Kinetics of Materials Laboratory
 ========================================
 
-The VKML is a set of simple |FiPy| examples that
+The VKML is a set of simple :term:`FiPy` examples that
 simulate basic aspects of kinetics of materials through an interactive
 Graphical User Interface. The seminal development by Michael Waters and 
-`Prof. R. Edwin Garc’a`_ of `Purdue University`_ includes four examples:
+`Prof. R. Edwin Garcia`_ of `Purdue University`_ includes four examples:
 
  `Polycrystalline Growth and Coarsening`_
  
@@ -23,7 +23,7 @@ Graphical User Interface. The seminal development by Michael Waters and
    process, such as the thermal diffusivity and the strength of the surface
    tension anisotropy. Default values are physical but arbitrary. This
    model is based on the phase field method and an example shown in the
-   |FiPy| manual.
+   :term:`FiPy` manual.
 
  `Two-Dimensional Spinodal Decomposition`_ 
  
@@ -36,11 +36,11 @@ Graphical User Interface. The seminal development by Michael Waters and
    has the same functionality as the 2D version, but has an interactive
    Three-Dimensional viewer.
 
-These modules provide a Graphical User Interface to |FiPy|, and allow you to
+These modules provide a Graphical User Interface to :term:`FiPy`, and allow you to
 perform simulations directly through your web browser. This approach to
 computing removes the need to install the software on your local machine
 (unless you really want to), allows you to assess current and potential
-|FiPy| applications and instead you only need a web browser to access it and
+:term:`FiPy` applications and instead you only need a web browser to access it and
 run it. In other words, you can run these simulations (and simulations like
 this one) from a Windows machine, a Mac, or a Linux box, and you can also
 run the modules from Michigan, Boston, Japan, or England: from wherever you
@@ -60,9 +60,7 @@ in the nanoHUB_.
 
 .. include:: ../utils/include.txt
 
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
-
-.. _Prof. R. Edwin Garc’a:                    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bicephalous.ecn.purdue.edu/~edwin
+.. _Prof. R. Edwin Garcia:                    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bicephalous.ecn.purdue.edu/~edwin
 .. _Purdue University:                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.purdue.edu
 .. _Polycrystalline Growth and Coarsening:    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.nanohub.org/tools/vkmlpsgg/
 .. _Dendritic Growth:                         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.nanohub.org/tools/vkmlggs/

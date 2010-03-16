@@ -1,0 +1,9 @@
+.. _glossary:
+
+Glossary
+========
+
+.. glossary::
+
+   FiPy
+      The eponymous software package. See http://www.ctcms.nist.gov/fipy.

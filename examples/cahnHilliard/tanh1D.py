@@ -57,7 +57,7 @@ The Cahn-Hilliard equation can be rewritten in the following form,
 
 The above form of the equation makes the non-linearity part of the
 diffusion coefficient for the first term on the RHS. This is the correct
-way to express the equation to |FiPy|.
+way to express the equation to :term:`FiPy`.
     
 We solve the problem on a 1D mesh
 

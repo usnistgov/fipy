@@ -23,7 +23,7 @@ such diverse problems as determination of the electric potential in
 heart tissue, of fluid flow, stress evolution, and even the
 Schr\"odinger equation.
 
-A general conservation equation, solved using |FiPy|, can include any
+A general conservation equation, solved using :term:`FiPy`, can include any
 combination of the following terms,
 
 .. math::

@@ -106,10 +106,10 @@ class Base:
       .. attention:: This class is abstract. Always create one of its subclasses.
 
       for abstract classes which should be used for documentation but
-      never actually created in a |FiPy| script.
+      never actually created in a :term:`FiPy` script.
       
     .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
-    .. |FiPy| raw:: latex
+    .. :term:`FiPy` raw:: latex
         
        \FiPy{}
 

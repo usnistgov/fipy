@@ -156,7 +156,7 @@ implicitly,
 
 .. note::
     
-   "Diffusion" in |FiPy| is not limited to the movement of atoms, but
+   "Diffusion" in :term:`FiPy` is not limited to the movement of atoms, but
    rather refers to the spontaneous spreading of any quantity (e.g.,
    solute, temperature, or in this case "phase") by flow "down" the
    gradient of that quantity.
@@ -498,7 +498,7 @@ True
    :width: 90%
    :align: center
 
-.. |FiPy| raw:: latex
+.. :term:`FiPy` raw:: latex
 
    \FiPy{}
    

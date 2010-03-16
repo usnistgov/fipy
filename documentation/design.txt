@@ -2,15 +2,15 @@
 Design and Implementation
 =========================
 
-The goal of |FiPy| is to provide a highly customizable, open source
-code for modeling problems involving coupled sets of PDEs.  |FiPy|
+The goal of :term:`FiPy` is to provide a highly customizable, open source
+code for modeling problems involving coupled sets of PDEs.  :term:`FiPy`
 allows users to select and customize modules from within the
-framework.  |FiPy| has been developed to address model problems in
+framework.  :term:`FiPy` has been developed to address model problems in
 materials science such as poly-crystals, dendritic growth and
 electrochemical deposition.  These applications all contain various
 combinations of PDEs with differing forms in conjunction with other
 unusual physics (over varying length scales) and unique solution
-procedures.  The philosophy of |FiPy| is to enable customization
+procedures.  The philosophy of :term:`FiPy` is to enable customization
 while providing a library of efficient modules for common objects and
 data types.
 
@@ -20,20 +20,20 @@ Design
 Numerical Approach
 ~~~~~~~~~~~~~~~~~~
 
-The solution algorithms given in the |FiPy| examples involve combining
+The solution algorithms given in the :term:`FiPy` examples involve combining
 sets of PDEs while tracking an interface where the parameters of the
 problem change rapidly. The phase field method and the level set
 method are specialized techniques to handle the solution of
-PDEs in conjunction with a deforming interface. |FiPy| contains
+PDEs in conjunction with a deforming interface. :term:`FiPy` contains
 several examples of both methods.
 
-|FiPy| uses the well-known Finite Volume Method (FVM) to reduce the
+:term:`FiPy` uses the well-known Finite Volume Method (FVM) to reduce the
 model equations to a form tractable to linear solvers.
 
 Object Oriented Structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-|FiPy| is programmed in an object-oriented manner.  The benefit of
+:term:`FiPy` is programmed in an object-oriented manner.  The benefit of
 object oriented programming mainly lies in encapsulation and
 inheritance.  Encapsulation refers to the tight integration between
 certain pieces of data and methods that act on that data.
@@ -47,7 +47,7 @@ implementation and behavior are internal.
 Test Based Development
 ~~~~~~~~~~~~~~~~~~~~~~
 
-|FiPy| has been developed with a large number of test cases.  These
+:term:`FiPy` has been developed with a large number of test cases.  These
 test cases are in two categories.  The lower level tests operate on
 the core modules at the individual method level.  The aim is that
 every method within the core installation has a test case.  The high
@@ -74,10 +74,10 @@ and then either contribute back to the main source repository or
 freely distribute their new adapted version.  
 
 As a product of the National Institute of Standards and Technology,
-the |FiPy| framework is placed in the public domain as a matter of 
-U. S. Federal law. Furthermore, |FiPy| is built upon existing open source 
-tools. Others are free to use |FiPy| as they see fit and we welcome
-contributions to make |FiPy| better.
+the :term:`FiPy` framework is placed in the public domain as a matter of 
+U. S. Federal law. Furthermore, :term:`FiPy` is built upon existing open source 
+tools. Others are free to use :term:`FiPy` as they see fit and we welcome
+contributions to make :term:`FiPy` better.
 
 High-Level Scripting Language
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,7 +176,7 @@ giving scientific codes immediate access to a high-level scripting
 language designed by someone who actually knew what they were doing.
 
 We have chosen to go a step further and not just embed a full-fledged
-scripting language in the |FiPy| framework, but instead to design the
+scripting language in the :term:`FiPy` framework, but instead to design the
 framework from the ground up in a scripting language.  While runtime
 performance is unquestionably important, many scientific codes are run
 relatively little, in proportion to the time spent developing them.
@@ -186,7 +186,7 @@ Furthermore, there are a variety of mechanisms for diagnosing and
 optimizing those portions of a code that are actually time-critical,
 rather than attempting to optimize all of it by using a language that
 is more palatable to the computer than to the programmer.  Thus
-|FiPy|, rather than taking the approach of writing the fast numerical
+:term:`FiPy`, rather than taking the approach of writing the fast numerical
 code first and then dealing with the issue of user interaction,
 initially implements most modules in high-level scripting language and
 only translates to low-level compiled code those portions that prove
@@ -200,7 +200,7 @@ inefficient.
 
 Acknowledging that several scripting languages offer a number, if not
 all, of the features described above, we have selected \Python{} for
-the implementation of |FiPy|.  Python is
+the implementation of :term:`FiPy`.  Python is
     
  * an interpreted language that combines remarkable power with very clear
    syntax,
@@ -221,15 +221,15 @@ the implementation of |FiPy|.  Python is
 Implementation
 --------------
 
-The \Python{} classes that make up |FiPy| are described in detail in
+The \Python{} classes that make up :term:`FiPy` are described in detail in
 :doc:`documentation/reference`, but we give a brief overview here.
-|FiPy| is based around three fundamental \Python{} classes:
+:term:`FiPy` is based around three fundamental \Python{} classes:
 :class:`Mesh`, :class:`Variable`, and :class:`Term`. Using the
 terminology of :ref:`chap:Numerics`:
 
 A :class:`Mesh` object 
   represents the domain of interest.
-  |FiPy| contains many different specific mesh classes to describe
+  :term:`FiPy` contains many different specific mesh classes to describe
   different geometries.
 
 A :class:`Variable` object 
@@ -266,7 +266,7 @@ A :class:`Variable` object
 A :class:`Term` object 
   represents any of the terms in
   Equation :eq:`eqn:num:gen` or any linear combination of such
-  terms.  Early in the development of |FiPy|, a distinction was
+  terms.  Early in the development of :term:`FiPy`, a distinction was
   made between :class:`Equation` objects, which represented all of
   Equation :eq:`eqn:num:gen`, and :class:`Term` objects, which
   represented the individual terms in that equation.  The
@@ -277,14 +277,14 @@ A :class:`Term` object
   Equation :eq:`eqn:num:gen`.
     
 Beyond these three fundamental classes of :class:`Mesh`, 
-:class:`Variable`, and :class:`Term`, |FiPy| is composed of a
+:class:`Variable`, and :class:`Term`, :term:`FiPy` is composed of a
 number of related classes. 
 
 .. _fig:objects:
 
 .. figure:: objects.*
    
-   Primary object relationships in |FiPy|.
+   Primary object relationships in :term:`FiPy`.
 
 A :class:`Mesh` object is composed of :class:`Cell` objects.  Each
 :class:`Cell` is defined by its bounding :class:`Face` objects and each

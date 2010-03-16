@@ -6,14 +6,14 @@ Simple Mac OS X Installation
    :local:
    :depth: 2
 
-We present four comparatively simple routes to installing |FiPy| on `Mac OS
+We present four comparatively simple routes to installing :term:`FiPy` on `Mac OS
 X`_. The `Fink Installation`_ procedure is appropriate if you are already
 familiar with the Fink_ package manager. Either `EasyInstall`_ or
-`Enthought Python Edition`_ will get |FiPy| running in a minumum number of
+`Enthought Python Edition`_ will get :term:`FiPy` running in a minumum number of
 steps. The `Binary Installation`_ procedure is the next most expedient if
 you have never heard of Fink_ or if you are not comfortable with it. Please
 see the more general |INSTALLATION-txt| for detailed installation
-instructions. These instructions are not the only ways to set up |FiPy| on
+instructions. These instructions are not the only ways to set up :term:`FiPy` on
 `Mac OS X`_ but represent the most expedient ways, from our experience, to
 have a usable installation up and running.
 
@@ -40,7 +40,7 @@ http://peak.telecommunity.com/DevCenter/EasyInstall
    `Xcode Development Tools`_ before proceding.
 
 If Python_ and setuptools_ are already available, a minimally functional 
-installation of |FiPy| can be obtained by issuing the commands::
+installation of :term:`FiPy` can be obtained by issuing the commands::
 
     $ easy_install numpy
     $ easy_install matplotlib
@@ -62,7 +62,7 @@ for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and IPython_.
 
 .. attention::
 
-   PySparse_ and |FiPy| are not presently included in EPD, so you will need
+   PySparse_ and :term:`FiPy` are not presently included in EPD, so you will need
    to separately install them, either manually or via EasyInstall_.
 
 Binary Installation
@@ -72,7 +72,7 @@ Binary Installation
 
    Choose this method if you have never heard of Fink_ or if you are not
    comfortable with it for any reason. Binary installation is the fastest 
-   way to get |FiPy| up and running, but may offer less flexibility in the 
+   way to get :term:`FiPy` up and running, but may offer less flexibility in the 
    long run.
    
    .. note:: 
@@ -148,14 +148,14 @@ http://sourceforge.net/project/showfiles.php?group_id=101403
 Download and install the latest version of
 ``pysparse-X.XX.XXX.macosx-10.4-py24.dmg``
 
-|FiPy|
-------
+FiPy
+----
 
 http://www.ctcms.nist.gov/fipy/
 
 Download and unpack the source archive (``FiPy-x.y.tar.gz``).     
 
-From within the |FiPy| directory, execute the command-line instruction::
+From within the :term:`FiPy` directory, execute the command-line instruction::
 
     $ python setup.py build
     $ sudo python setup.py install
@@ -301,10 +301,10 @@ From within the PySparse directory, execute::
     $ python setup.py build
     $ sudo python setup.py install
 
-|FiPy| installation
--------------------
+FiPy installation
+-----------------
 
-Install |FiPy|_ packages as explained above.
+Install FiPy_ packages as explained above.
 
 .. note::
 
@@ -368,7 +368,7 @@ SciPy
 http://www.scipy.org/
 
 This is a very powerful set of tools that augments the capabilities of 
-|FiPy|. Although not required for using |FiPy|, some tests will fail if it 
+:term:`FiPy`. Although not required for using :term:`FiPy`, some tests will fail if it 
 is not present:
 
     * If you followed the `Binary Installation`_ procedure, there are a few 
@@ -391,7 +391,7 @@ is not present:
                 http://projects.scipy.org/pipermail/scipy-user/2007-January/010820.html
 
           - We *may* provide builds of SciPy from `our own site`_ if we 
-            conclude that we can better serve |FiPy| users that way.
+            conclude that we can better serve :term:`FiPy` users that way.
 
     * If you followed the `Fink Installation`_ procedure, then you should be
       able to type::
@@ -409,10 +409,10 @@ is not present:
       
    
    
-Using |FiPy| on Mac OS X
-========================
+Using FiPy on Mac OS X
+======================
 
-We do a substantial amount of our |FiPy| development on `Mac OS X`_, so you
+We do a substantial amount of our :term:`FiPy` development on `Mac OS X`_, so you
 can assume that it is well-tested on this platform. See |Using FiPy| for 
 more information.
 
@@ -448,7 +448,6 @@ A matplotlib_ viewer should appear and the Python Shell should prompt you
 through a series of examples.
 
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy| 
 
 .. |latexUsing FiPy| raw:: latex
 

@@ -33,7 +33,7 @@
 
 r"""
 This input file
-is a demonstration of the use of |FiPy|
+is a demonstration of the use of :term:`FiPy`
 for modeling electrodeposition using the CEAC mechanism. The
 material properties and experimental parameters used are roughly
 those that have been previously

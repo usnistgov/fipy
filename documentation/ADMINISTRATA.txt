@@ -243,8 +243,6 @@ Build the distribution.
 
 .. include:: ../utils/include.txt
 
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
-
 ===============================
 Converting a CVS Project to SVN
 ===============================

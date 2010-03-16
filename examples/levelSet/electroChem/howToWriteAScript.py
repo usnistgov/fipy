@@ -49,7 +49,7 @@ edit and run type::
 
     $ python setup.py copy_script --From examples/levelSet/electroChem/howToWriteAScript.py --To myScript.py
 
-in the base |FiPy| directory. The file :file:`myScript.py` will contain the
+in the base :term:`FiPy` directory. The file :file:`myScript.py` will contain the
 script.
 
 The following is an explicit explanation of the input commands
@@ -278,7 +278,7 @@ by an empirical function of overpotential,
    k = k_0 + k_3 \eta^3
    
 The above equation is represented by the :class:`AdsorbingSurfactantEquation`
-in |FiPy|:
+in :term:`FiPy`:
 
 >>> surfactantEquation = AdsorbingSurfactantEquation(
 ...     surfactantVar=catalystVar,

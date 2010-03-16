@@ -76,12 +76,12 @@ We start the problem with random fluctuations about
 ...                                    mean=0.5,
 ...                                    variance=0.01))
 
-|FiPy| doesn't plot or output anything unless you tell it to:
+:term:`FiPy` doesn't plot or output anything unless you tell it to:
 
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
 
-For |FiPy|, we need to perform the partial derivative 
+For :term:`FiPy`, we need to perform the partial derivative 
 :math:`\partial f/\partial \phi`    
 manually and then put the equation in the canonical
 form by decomposing the spatial derivatives
@@ -92,13 +92,13 @@ so that each :class:`Term` is of a single, even order:
    \frac{\partial \phi}{\partial t}
     = \nabla\cdot D a^2 \left[ 1 - 6 \phi \left(1 - \phi\right)\right] \nabla \phi- \nabla\cdot D \nabla \epsilon^2 \nabla^2 \phi.
 
-|FiPy| would automatically interpolate
+:term:`FiPy` would automatically interpolate
 ``D * a**2 * (1 - 6 * phi * (1 - phi))``
 onto the :class:`Face`\s, where the diffusive flux is calculated, but we obtain
 somewhat more accurate results by performing a linear interpolation from
 ``phi`` at :class:`Cell` centers to ``PHI`` at :class:`Face` centers.
 Some problems benefit from non-linear interpolations, such as harmonic or
-geometric means, and |FiPy| makes it easy to obtain these, too.
+geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 
 >>> PHI = phi.getArithmeticFaceValue()
 >>> D = a = epsilon = 1.
@@ -108,7 +108,7 @@ geometric means, and |FiPy| makes it easy to obtain these, too.
 
 Because the evolution of a spinodal microstructure slows with time, we
 use exponentially increasing time steps to keep the simulation
-"interesting". The |FiPy| user always has direct control over the
+"interesting". The :term:`FiPy` user always has direct control over the
 evolution of their problem.
 
 >>> dexp = -5

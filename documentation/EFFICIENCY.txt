@@ -3,32 +3,32 @@ Efficiency
 ==========
 
 This section will present results and discussion of efficiency
-evaluations with |FiPy|. Programming in Python_ allows greater
+evaluations with :term:`FiPy`. Programming in Python_ allows greater
 efficiency when designing and implementing new code, but it has some
 intrinsic inefficiencies during execution as compared with the C or
 FORTRAN programming languages. These inefficiencies can be minimized
 by translating sections of code that are used frequently into C.
 
-|FiPy| has been tested against an in-house phase field code, written
+:term:`FiPy` has been tested against an in-house phase field code, written
 at |NIST|, to model grain growth and subsequent impingement. This
 problem can be executed by running::
 
     $ examples/phase/impingement/mesh20x20.py \
     > --numberOfElements=10000 --numberOfSteps=1000
 
-from the base |FiPy| directory. The in-house code was written by Ryo
+from the base :term:`FiPy` directory. The in-house code was written by Ryo
 Kobayashi and is used to generate the results presented in
 |citeWarrenPolycrystal|.
 
 The raw CPU execution times for 10 time steps are presented in the
 following table. The run times are in seconds and the memory usage is
 in kilobytes. The Kobayashi code is given the heading of FORTRAN while
-|FiPy| is run with and without inlining. The memory usage is for
-|FiPy| simulations with the ``--inline``. The ``--no-cache`` flag is
+:term:`FiPy` is run with and without inlining. The memory usage is for
+:term:`FiPy` simulations with the ``--inline``. The ``--no-cache`` flag is
 on in all cases for the following table.
 
    ========== ============ ================== ============= ============= =============
-    Elements   |FiPy| (s)   |FiPy|             FORTRAN (s)   |FiPy|        FORTRAN
+    Elements   FiPy (s)     FiPy               FORTRAN (s)   FiPy          FORTRAN
                             ``--inline`` (s)                 memory (KiB)  memory (KiB)
    ========== ============ ================== ============= ============= =============
        100       0.77        0.30              0.0009         39316          772
@@ -39,12 +39,12 @@ on in all cases for the following table.
     102400      79          43                 4.6           145820        18436
    ========== ============ ================== ============= ============= =============
 
-The plain Python_ version of |FiPy|, which uses ``Numeric`` for all
+The plain Python_ version of :term:`FiPy`, which uses ``Numeric`` for all
 array operations, is around 17 times slower than the FORTRAN
 code. Using the ``--inline`` flag, this penalty is reduced to about 9
 times slower.
 
-It is hoped that in future releases of |FiPy| the process of C
+It is hoped that in future releases of :term:`FiPy` the process of C
 inlining for ``Variable`` objects will be automated. This may result
 in some efficiency gains, greater than we are seeing for this
 particular problem since all the ``Variable`` objects will be
@@ -53,7 +53,7 @@ operations could be up to 6 times faster at calculating its value when
 inlined.
 
 As presented in the above table, memory usage was also recorded for
-each |FiPy| simulation. From the table, once base memory usage is
+each :term:`FiPy` simulation. From the table, once base memory usage is
 subtracted, each cell requires approximately 1.4 kilobytes of memory.
 The measurement of the maximum memory spike is hard with dynamic
 memory allocation, so these figures should only be used as a very
@@ -103,8 +103,6 @@ success with an iterative method.
 .. _Python:               http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 
 .. include:: ../utils/include.txt
-
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
 .. |NIST| raw:: latex
 

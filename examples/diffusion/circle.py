@@ -57,7 +57,7 @@ for gmsh_, see the `gmsh manual`_.
 
 .. _gmsh manual: http://www.geuz.org/gmsh/doc/texinfo/gmsh.html
 
-The mesh created by gmsh_ is then imported into |FiPy| using the
+The mesh created by gmsh_ is then imported into :term:`FiPy` using the
 `GmshImporter2D` object.
    
 .. raw:: latex
@@ -241,7 +241,7 @@ Display the results if run as a script.
    :width: 90%
    :align: center
 
-.. |FiPy| raw:: latex
+.. :term:`FiPy` raw:: latex
 
    \FiPy{}
 """

@@ -12,9 +12,9 @@ Installation
 
    \minitoc[e]
 
-The |FiPy| finite volume PDE solver relies on several third-party packages.
+The :term:`FiPy` finite volume PDE solver relies on several third-party packages.
 It is *best to obtain and install those first*, before attempting to install
-|FiPy|.
+:term:`FiPy`.
 
 |outsideLinks|
 
@@ -38,7 +38,7 @@ Shortcuts
 ---------
 
 Detailed prerequisites and links are given below and in platform-specific 
-instructions, but for the courageous and the impatient, |FiPy| can be up 
+instructions, but for the courageous and the impatient, :term:`FiPy` can be up 
 and running quickly with one of the following methods.
 
 
@@ -48,7 +48,7 @@ EasyInstall
 http://peak.telecommunity.com/DevCenter/EasyInstall
 
 If Python_ and setuptools_ are already available, a minimally functional 
-installation of |FiPy| can be obtained by issuing the commands::
+installation of :term:`FiPy` can be obtained by issuing the commands::
 
     $ easy_install numpy
     $ easy_install matplotlib
@@ -71,7 +71,7 @@ Installers are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
 
 .. attention::
 
-   PySparse_ and |FiPy| are not presently included in EPD, so you will need
+   PySparse_ and :term:`FiPy` are not presently included in EPD, so you will need
    to separately install them, either manually or via EasyInstall_.
 
 Python(x,y)
@@ -89,7 +89,7 @@ Privileges
 
 If you do not have administrative privileges on your computer, or if for
 any reason you don't want to tamper with your existing Python_
-installation, most packages (including |FiPy|) will allow you to install to
+installation, most packages (including :term:`FiPy`) will allow you to install to
 an alternate location.  Instead of installing these packages with
 ``python setup.py install``,
 you would use
@@ -114,7 +114,7 @@ Prerequisites
 Operating System
 ================
 
-|FiPy| is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and 10.5 "Leopard",
+:term:`FiPy` is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and 10.5 "Leopard",
 `Debian Linux`_ 4.0 "etch", `Ubuntu Linux`_ 10.10, and `Windows XP`_. We
 welcome reports of compatibility with other systems, particularly if any
 additional steps are necessary to install.
@@ -124,7 +124,7 @@ additional steps are necessary to install.
    Simple instructions for `Mac OS X`_ users are in |MACOSX-INSTALLATION-txt|.
    Simple instructions for Windows_ users are in |WINDOWS-INSTALLATION-txt|.
 
-The only elements of |FiPy| that are likely to be platform-dependent
+The only elements of :term:`FiPy` that are likely to be platform-dependent
 are the viewers, but at least one viewer should work on each platform.
 All other aspects should function on any platform that has a recent
 Python_ installation.
@@ -172,7 +172,7 @@ Required Packages
 
 .. warning::
 
-   |FiPy| will not run if the following items are not installed.
+   :term:`FiPy` will not run if the following items are not installed.
 
 Python
 ------
@@ -183,7 +183,7 @@ Python
 
 http://www.python.org/
 
-|FiPy| is written in the Python_ language and requires a Python_
+:term:`FiPy` is written in the Python_ language and requires a Python_
 installation to run.  Python_ comes pre-installed on many operating
 systems, which you can check by opening a terminal and typing
 ``python``, *e.g.*::
@@ -199,7 +199,7 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   |FiPy| requires at least version 2.3 of Python_. |FiPy| has not yet
+   :term:`FiPy` requires at least version 2.3 of Python_. :term:`FiPy` has not yet
     been tested (and will almost certainly not work) with `Python 3.0`_.
 
 .. _Python:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
@@ -218,12 +218,12 @@ NumPy
 
 http://sourceforge.net/projects/numpy/
 
-Obtain and install the NumPy_ package. |FiPy| requires at least
+Obtain and install the NumPy_ package. :term:`FiPy` requires at least
 version 1.0 of NumPy_.
 
 .. attention::
 
-   |FiPy| no longer uses the older Numeric_ or numarray_ packages.
+   :term:`FiPy` no longer uses the older Numeric_ or numarray_ packages.
 
    .. raw:: latex
 
@@ -243,7 +243,7 @@ PySparse
 
 http://pysparse.sourceforge.net
 
-|FiPy| requires `Roman Geus`_' PySparse_ package.
+:term:`FiPy` requires `Roman Geus`_' PySparse_ package.
 
 You can `download the PySparse archive`_ or check it out via
 anonymous CVS download::
@@ -281,7 +281,7 @@ installers`_ are available.
 
 .. warning::
 
-   |FiPy| requires version 1.0 or higher of PySparse_.
+   :term:`FiPy` requires version 1.0 or higher of PySparse_.
 
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _PySparse: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
@@ -291,9 +291,9 @@ installers`_ are available.
 Viewers
 =======
 
-|FiPy| will work perfectly well without them, but at least one of the
-following packages will be required to view the results of |FiPy|
-calculations. |FiPy| will select the first viewer that is available
+:term:`FiPy` will work perfectly well without them, but at least one of the
+following packages will be required to view the results of :term:`FiPy`
+calculations. :term:`FiPy` will select the first viewer that is available
 from the list below.  If more than one is installed, specify a viewer
 by setting the ``FIPY_VIEWER`` environment variable to either
 "``gist``", "``gnuplot``" or "``matplotlib``".
@@ -367,7 +367,7 @@ Matplotlib_.
 .. warning:: 
 
    The facility to produce hard copies in Pygist_ does not work very well and
-   may crash the |FiPy| run. "``.eps``" and "``.cgm``" export seem to work.
+   may crash the :term:`FiPy` run. "``.eps``" and "``.cgm``" export seem to work.
 
 .. note::
 
@@ -395,20 +395,20 @@ MayaVi
 http://mayavi.sourceforge.net
 
 The `MayaVi 1`_ Data Visualizer is a free, easy to use scientific data
-visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
+visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
 viewer available for 3D data. Other viewers are probably better for 1D
 or 2D viewing. 
 
 .. warning::
 
-   |FiPy| can only use `MayaVi 1`_ to display 3D meshes consisting entirely
+   :term:`FiPy` can only use `MayaVi 1`_ to display 3D meshes consisting entirely
    of tetrahedrons or wedge elements. The ordering of vertices for other
    mesh types may not work.
 
 .. note::
 
    Is is also necessary to install the PyVTK_ package to use the
-   |FiPy| MayaVi_ viewers.
+   :term:`FiPy` MayaVi_ viewers.
 
 .. note::
 
@@ -419,19 +419,19 @@ or 2D viewing.
 .. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 .. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
 
-----------------
-Obtaining |FiPy|
-----------------
+--------------
+Obtaining FiPy
+--------------
 
-|FiPy| is freely available for download via Subversion_ or as a `compressed
+:term:`FiPy` is freely available for download via Subversion_ or as a `compressed
 archive`_ |citeFiPyDownload|. Please see |documentation:SVN.txt| for 
-instructions of obtaining |FiPy| with Subversion_.
+instructions of obtaining :term:`FiPy` with Subversion_.
 
 .. warning::
 
    Keep in mind that if you choose to download the `compressed
    archive`_ you will then need to preserve your changes when upgrades
-   to |FiPy| become available (upgrades via Subversion_ will handle
+   to :term:`FiPy` become available (upgrades via Subversion_ will handle
    this issue automatically).
 
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
@@ -462,11 +462,11 @@ command in the base directory::
 
    \cite{FiPyGuide}
 
---------------
-Testing |FiPy|
---------------
+------------
+Testing FiPy
+------------
 
-From the base directory, you can verify that |FiPy| works properly by
+From the base directory, you can verify that :term:`FiPy` works properly by
 executing::
 
     $ python setup.py test
@@ -487,7 +487,7 @@ removing key``" in |the FAQ|).
 
 .. note::
 
-   In order for Python_ to find the |FiPy| modules, you will need to ensure
+   In order for Python_ to find the :term:`FiPy` modules, you will need to ensure
    that the base directory is added to your ``PYTHONPATH`` environment
    variable, *e.g.*::
 
@@ -497,43 +497,43 @@ removing key``" in |the FAQ|).
 
        $ export PYTHONPATH=.:${PYTHONPATH}
 
------------------
-Installing |FiPy|
------------------
+---------------
+Installing FiPy
+---------------
 
-It is not necessary to formally install |FiPy|, but if you wish to do so
+It is not necessary to formally install :term:`FiPy`, but if you wish to do so
 and you are confident that all of the requisite packages have been
-installed properly and |FiPy| passes its tests, you can install it by
+installed properly and :term:`FiPy` passes its tests, you can install it by
 typing::
 
     $ python setup.py install
 
 at the command line.  Alternatively, you may choose not to formally install
-|FiPy| and to simply work within the base directory instead.  
+:term:`FiPy` and to simply work within the base directory instead.  
 
-If you choose to install, Python_ will find your |FiPy| modules 
+If you choose to install, Python_ will find your :term:`FiPy` modules 
 automatically. If you choose not to install, then you will need to ensure 
-that the |FiPy| distribution directory is appended to your ``PYTHONPATH`` 
-environment variable (either "``.``" if you are working within the |FiPy| 
+that the :term:`FiPy` distribution directory is appended to your ``PYTHONPATH`` 
+environment variable (either "``.``" if you are working within the :term:`FiPy` 
 directory, or "``~/path/to/fipy``" if you are working in your own directory).
 
-------------
-Using |FiPy|
-------------
+----------
+Using FiPy
+----------
 
-To see examples of problems that |FiPy| is capable of solving, you can run
+To see examples of problems that :term:`FiPy` is capable of solving, you can run
 any of the scripts in |examples/|. 
 
 .. note::
 
    We strongly recommend you proceed through |examples/|, but at 
    the very least work through |examples/diffusion/mesh1D-py| to understand 
-   the notation and basic concepts of |FiPy|.
+   the notation and basic concepts of :term:`FiPy`.
 
 We exlusively use either the unix
-command line or IPython_ to interact with |FiPy|. The commands in
+command line or IPython_ to interact with :term:`FiPy`. The commands in
 |examples/| are written with the assumption that they will be executed from
-the command line. For instance, from within the main |FiPy| directory, you
+the command line. For instance, from within the main :term:`FiPy` directory, you
 can type::
 
     $ python examples/diffusion/mesh1D.py
@@ -554,7 +554,7 @@ or with `Dive Into Python`_ |citeDiveIntoPython|.
 
 As you gain experience, you will want to see
 |FAQ-FlagsAndEnvironmentVariables| to learn about the flags and environment
-variables that modify |FiPy|'s default behavior.
+variables that modify :term:`FiPy`'s default behavior.
 
 .. |latexMesh1D-py| raw:: latex
 
@@ -572,7 +572,7 @@ Optional Packages
 
 .. note::
 
-   The following packages are not required to run |FiPy|, but they can be helpful.
+   The following packages are not required to run :term:`FiPy`, but they can be helpful.
 
 SciPy
 =====
@@ -644,7 +644,7 @@ difficult problems that PySparse_ cannot solve.
     
     Trilinos_ is a large software suite with its own set of prerequisites, and
     can be difficult to set up. It is not necessary for most problems, and is
-    NOT recommended in a basic install of |FiPy|.
+    NOT recommended in a basic install of :term:`FiPy`.
 
 Trilinos_ is built using the standard ``configure``, ``make`` and ``make
 install`` method. The best approach that we have found is as follows::
@@ -692,16 +692,16 @@ Trilinos_ solvers can be used to replace PySparse_ solvers. If both
 PySparse_ and Trilinos_ are present, useage can be controlled by setting
 the ``FIPY_SOLVERS`` environment variable to ``Trilinos`` or
 ``Pysparse``, or by passing a ``--Trilinos`` or ``--Pysparse`` flag to
-the |FiPy| script, overriding the environment. In the absence of these
-indicators, |FiPy| will default to using PySparse_ if it is present.
+the :term:`FiPy` script, overriding the environment. In the absence of these
+indicators, :term:`FiPy` will default to using PySparse_ if it is present.
 
 .. note:: 
 
-    Trilinos_ solvers frequently give intermediate output that |FiPy| cannot
+    Trilinos_ solvers frequently give intermediate output that :term:`FiPy` cannot
     suppress. The most commonly encountered messages are:
 
      ``Gen_Prolongator warning : Max eigen <= 0.0``:
-        which is not significant to |FiPy|.
+        which is not significant to :term:`FiPy`.
 
      ``Aztec status AZ_loss: loss of precision``:
         which indicates that there was some difficulty in solving the
@@ -730,7 +730,6 @@ indicators, |FiPy| will default to using PySparse_ if it is present.
 
 .. include:: documentation/VERSION.txt
 
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |TeX| replace:: |latexTeX| |htmlTeX|
 .. |LaTeX| replace:: |latexLaTeX| |htmlLaTeX|
 .. |examples/| replace:: |htmlExamples/| |latexExamples/|

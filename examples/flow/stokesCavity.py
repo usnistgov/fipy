@@ -57,7 +57,7 @@ material is Ferziger and Peri\'{c}~\cite{ferziger}. The
 solution has a high degree of error close to the corners of the
 domain for the pressure but does a reasonable job of predicting
 the velocities away from the boundaries. A number of aspects of
-|FiPy| need to be improved to have a first class flow
+:term:`FiPy` need to be improved to have a first class flow
 solver. These include, higher order spatial diffusion terms,
 proper wall boundary conditions, improved mass flux evaluation and
 extrapolation of cell values to the boundaries using gradients.
@@ -67,7 +67,7 @@ code on a 100 by 100 grid. The table shows the frequency of values
 that fall within the given error confidence bands. Dolfyn_ has the
 added features described above. When these features are switched off
 the results of Dolfyn_
-and |FiPy| are identical.
+and :term:`FiPy` are identical.
 
 .. _Dolfyn:    http://www.dolfyn.net/
 
@@ -116,7 +116,7 @@ Declare the variables.
 >>> yVelocity = CellVariable(mesh=mesh, name='Y velocity')
 
 The velocity is required as a rank-1 \Class{FaceVariable} for calculating
-the mass flux. This is a somewhat clumsy aspect of the |FiPy|
+the mass flux. This is a somewhat clumsy aspect of the :term:`FiPy`
 interface that needs improvement.
 
 >>> velocity = FaceVariable(mesh=mesh, rank=1)
@@ -176,7 +176,7 @@ obtain the pressure correction equation,
    
 In the
 discretized version of the above equation :math:`V_P / a_P` is
-approximated at the face by :math:`A_f d_{AP} / (a_P)_f`. In |FiPy| the
+approximated at the face by :math:`A_f d_{AP} / (a_P)_f`. In :term:`FiPy` the
 pressure correction equation can be written as, 
 
 >>> ap = CellVariable(mesh=mesh)

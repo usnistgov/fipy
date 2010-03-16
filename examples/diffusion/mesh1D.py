@@ -33,14 +33,14 @@
  ##
 
 r"""
-To run this example from the base |FiPy| directory, type::
+To run this example from the base :term:`FiPy` directory, type::
     
     $ examples/diffusion/mesh1D.py
     
 at the command line. Different stages of the example should be displayed,
 along with prompting messages in the terminal.
 
-This example takes the user through assembling a simple problem with |FiPy|.
+This example takes the user through assembling a simple problem with :term:`FiPy`.
 It describes different approaches to a 1D diffusion problem with constant
 diffusivity and fixed value boundary conditions such that,
 
@@ -59,7 +59,7 @@ parameter ``dx`` refers to the grid spacing (set to unity here).
 >>> dx = 1.
 >>> mesh = Grid1D(nx = nx, dx = dx)
 
-|FiPy| solves all equations at the centers of the cells of the mesh. We
+:term:`FiPy` solves all equations at the centers of the cells of the mesh. We
 thus need a :class:`CellVariable` object to hold the values of the
 solution, with the initial condition :math:`\phi = 0` at :math:`t = 0`, 
 
@@ -74,7 +74,7 @@ We'll let
 for now. 
 
 The set of boundary conditions are given to the equation as a Python
-:keyword:`tuple` or :keyword:`list` (the distinction is not generally important to |FiPy|).
+:keyword:`tuple` or :keyword:`list` (the distinction is not generally important to :term:`FiPy`).
 The boundary conditions 
 
 .. math::
@@ -121,7 +121,7 @@ something like::
               + (D * dt / dx**2) * (phi_old[j+1] - 2 * phi_old[j] + phi_old[j-1])
         time += dt
         
-plus additional code for the boundary conditions. In |FiPy|, you would write
+plus additional code for the boundary conditions. In :term:`FiPy`, you would write
 
 .. index:: ExplicitDiffusionTerm, TransientTerm
 
@@ -203,7 +203,7 @@ it is possible to take much larger time steps. Because ``phi_new`` appears on
 both the left and right sides of the equation, this form is called
 "implicit". In general, the "implicit" representation is much more
 difficult to program than the "explicit" form that we just used, but in
-|FiPy|, all that is needed is to write
+:term:`FiPy`, all that is needed is to write
 
 .. index:: ImplicitDiffusionTerm
 
@@ -245,7 +245,7 @@ timestep you can take for this particular problem), the solution is less
                      + (phi_old[j+1] - 2 * phi_old[j] + phi_old[j-1]))
     
 which is essentially an average of the explicit and implicit schemes from
-above. This can be rendered in |FiPy| as easily as
+above. This can be rendered in :term:`FiPy` as easily as
 
 >>> eqCN = eqX + eqI
 
@@ -287,7 +287,7 @@ equation
 
    D \nabla^2 \phi = 0
 
-is represented in |FiPy| by
+is represented in :term:`FiPy` by
 
 >>> ImplicitDiffusionTerm(coeff=D).solve(var=phi,
 ...                                      boundaryConditions=BCs)
@@ -380,7 +380,7 @@ number of cells in the mesh :math:`N_i` satisfies :math:`N_i = 4 i + 2`,
 where :math:`i` is an integer. The mesh we've been using thus far is
 satisfactory, with :math:`N_i = 50` and :math:`i = 12`.
    
-Because |FiPy| considers diffusion to be a flux from one :class:`Cell` to the next,
+Because :term:`FiPy` considers diffusion to be a flux from one :class:`Cell` to the next,
 through the intervening :class:`Face`, we must define the non-uniform diffusion
 coefficient on the mesh faces
 
@@ -459,7 +459,7 @@ the value of the variable, such that
 With such a non-linearity, it is generally necessary to "sweep" the
 solution to convergence. This means that each time step should be
 calculated over and over, using the result of the previous sweep to update
-the coefficients of the equation, without advancing in time. In |FiPy|, this
+the coefficients of the equation, without advancing in time. In :term:`FiPy`, this
 is accomplished by creating a solution variable that explicitly retains its
 "old" value by specifying ``hasOld`` when you create it. The variable does
 not move forward in time until it is explicity told to ``updateOld()``. In
@@ -642,10 +642,10 @@ like this from some `.../example.py` by typing::
 
 at the command line.
 
-Most of the |FiPy| examples will be a
+Most of the :term:`FiPy` examples will be a
 mixture of plain scripts and doctest documentation/tests.
 
-.. |FiPy| replace:: `FiPy`
+.. :term:`FiPy` replace:: `FiPy`
 """
 
 __docformat__ = 'restructuredtext'

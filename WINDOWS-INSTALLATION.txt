@@ -9,7 +9,7 @@ Simple Windows Installation
 These instructions are for the `Windows XP`_ and `Windows 2000`_
 platforms. Please see the more general |INSTALLATION-txt| for detailed
 installation instructions.  These instructions are not the only way to
-set up |FiPy| on a Windows_ OS but represent the most expedient way from
+set up :term:`FiPy` on a Windows_ OS but represent the most expedient way from
 our experience to have a usable installation up and running.
 
 .. include:: utils/include.txt
@@ -32,7 +32,7 @@ http://www.enthought.com
 
 We recommend the use of either `Enthought Python`_ or
 `Python(x,y)`_. These versions of Python_ have some of the prerequisite
-packages for |FiPy| already included. Download and install the latest
+packages for :term:`FiPy` already included. Download and install the latest
 version.
 
 .. _Python(x,y): http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.pythonxy.com
@@ -49,13 +49,13 @@ Download and install the latest version of PySparse for Windows_
 with the correct version of Python_ to match the `Python`_ installation.
 
 
-|FiPy|
-------
+FiPy
+----
 
 http://www.ctcms.nist.gov/fipy/download/
 
 Download and unpack the zip file (``FiPy-x.y.win32.zip``).  Run the
-|FiPy| installer ``FiPy-x.y.win32.exe``, which is in the base
+:term:`FiPy` installer ``FiPy-x.y.win32.exe``, which is in the base
 ``FiPy-x.y`` directory.
 
 Optional Packages
@@ -77,7 +77,7 @@ PyVTK
 http://www.ctcms.nist.gov/fipy/download/
 
 If you wish to use `MayaVi 1`_, PyVTK is a requirement.  Download and
-install the latest version from the |FiPy| `downloads page`_
+install the latest version from the :term:`FiPy` `downloads page`_
 (``PyVTK-x.y.z.win32.exe``).
 
 .. _downloads page: http://matforge.org/fipy/downloader
@@ -109,8 +109,8 @@ source in order for ``import mayavi`` to work at the command line.
 .. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 .. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
-Using |FiPy| on Windows
-=======================
+Using FiPy on Windows
+=====================
 
 A number of interactive python environments are available such as the
 IDLE_ and IPython_ environments. The following videos may be useful for
@@ -122,7 +122,7 @@ Testing
 -------
 
 If you have a working copy of the source, not an installed version of
-|FiPy|, you can run the tests using IPython_ from the base |FiPy|
+:term:`FiPy`, you can run the tests using IPython_ from the base :term:`FiPy`
 directory, by typing
 
     >>> run setup.py test 
@@ -132,12 +132,11 @@ in the IPython_ shell.
 Running Examples
 ----------------
 
-To run the |FiPy| examples in IPython_ simply use the `run` command:
+To run the :term:`FiPy` examples in IPython_ simply use the `run` command:
 
     >>> run examples/diffusion/mesh20x20.py
 
 .. _IDLE: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/idle/doc/idlemain.html
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. _IPython: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://ipython.scipy.org
 
 

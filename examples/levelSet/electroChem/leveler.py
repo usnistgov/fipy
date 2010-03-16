@@ -32,7 +32,7 @@
  ##
 
 r"""
-This input file is a demonstration of the use of |FiPy| for
+This input file is a demonstration of the use of :term:`FiPy` for
 modeling copper superfill with leveler and accelerator
 additives. The material properties and experimental parameters
 used are roughly those that have been previously
