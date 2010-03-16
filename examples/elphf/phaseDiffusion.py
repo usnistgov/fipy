@@ -229,7 +229,7 @@ iterating to equilibrium
     ...     if __name__ == '__main__':    
     ...         viewer.plot()
 
-.. image:: examples/elphf/phaseDiffusion/binary.pdf
+.. image:: phaseDiffusion/binary.*
    :scale: 50
    :align: center
 
@@ -317,7 +317,7 @@ and again iterate to equilibrium
     ...     if __name__ == '__main__':    
     ...         viewer.plot()
 
-.. image:: examples/elphf/phaseDiffusion/quaternary.pdf
+.. image:: phaseDiffusion/quaternary.*
    :scale: 50
    :align: center
 
@@ -424,7 +424,7 @@ and again iterate to equilibrium
     ...     if __name__ == '__main__':    
     ...         viewer.plot()
 
-.. image:: examples/elphf/phaseDiffusion/ternaryAndElectrons.pdf
+.. image:: phaseDiffusion/ternaryAndElectrons.*
    :scale: 50
    :align: center
 

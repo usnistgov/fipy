@@ -209,7 +209,7 @@ If we are running interactively, we plot the error
     ...                      value = analyticalArray),))
     ...     viewer.plot()
     
-.. image:: examples/elphf/phase/error.pdf
+.. image:: phase/error.*
    :scale: 50
    :align: center
 """
