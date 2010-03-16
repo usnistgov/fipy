@@ -164,7 +164,7 @@ Check out a clean copy of the desired release::
 
 Build the documentation and the web pages::
 
-    $ python setup.py build_docs --pdf --html
+    $ python setup.py build_docs --pdf --html --cathartic
 
 Build the compressed distribution::
 
