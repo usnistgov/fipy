@@ -99,14 +99,14 @@ installation, most packages (including :term:`FiPy`) will allow you to install t
 an alternate location.  Instead of installing these packages with
 ``python setup.py install``,
 you would use
-``python setup.py install --home=<dir>``,
-where ``<dir>`` is the desired installation directory (usually "``~``" to
+:samp:`python setup.py install --home={dir}`,
+where :samp:`{dir}` is the desired installation directory (usually "``~``" to
 indicate your home directory).  You will then need to append
-``<dir>/lib/python`` to your ``PYTHONPATH`` environment variable.  See the
+:file:`{dir}/lib/python` to your :envvar:`PYTHONPATH` environment variable.  See the
 `Alternate Installation`_ section of the Python_ document "`Installing
 Python Modules`_" [InstallingPythonModules]_ for more information, such
-as circumstances in which you should use ``--prefix`` instead of
-``--home``.
+as circumstances in which you should use :option:`--prefix` instead of
+:option:`--home`.
 
 .. _Alternate Installation: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/alt-install-windows.html
 
@@ -141,7 +141,7 @@ time and effort compared to configuring and building from source, although
 they frequently comprise somewhat older versions of the respective code.
 Whether building from source or using a prebuilt installer, please read and
 follow explicitly any instructions given in the respective packages'
-``README`` and ``INSTALLATION`` files.
+:file:`README` and :file:`INSTALLATION` files.
 
 .. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
@@ -230,13 +230,13 @@ installers`_ are available.
 
    If pysparse is installed in a local directory a further path may
    have to be added to the :envvar:`PYTHONPATH` environment variable. For
-   example, if
+   example, if::
 
        $ python setup.py install --home=/some/directory/some/where
 
-   then both /some/directory/some/where and
-   /some/directory/some/where/lib/python are required to be added to
-   the PYTHONPATH. e.g.
+   then both :file:`/some/directory/some/where` and
+   :file:`/some/directory/some/where/lib/python` are required to be added
+   to the :envvar:`PYTHONPATH`, e.g.::
 
        $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python
 
@@ -255,7 +255,7 @@ Viewers
 following packages will be required to view the results of :term:`FiPy`
 calculations. :term:`FiPy` will select the first viewer that is available
 from the list below.  If more than one is installed, specify a viewer
-by setting the ``FIPY_VIEWER`` environment variable to either
+by setting the :envvar:`FIPY_VIEWER` environment variable to either
 "``gist``", "``gnuplot``" or "``matplotlib``".
 
 Matplotlib
@@ -319,7 +319,7 @@ is still recommended as a fast light weight alternative to
 .. note::
 
    If you experience difficulty building the native :term:`Pygist` viewer on
-   `Mac OS X`_, you may wish to build the package with the ``--x11``
+   `Mac OS X`_, you may wish to build the package with the :option:`--x11`
    option described in its documentation.
 
 .. note::
@@ -328,7 +328,7 @@ is still recommended as a fast light weight alternative to
    "``work.gs``", when installed locally. You may need to set the 
    :envvar:`GISTPATH` environment variable to point to the directory containing 
    these files (you may find it as "``g/``" within the directory you 
-   specified for ``--home``). 
+   specified for :option:`--home`). 
 
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
 
@@ -392,8 +392,8 @@ command in the base directory::
 
    This mechanism is intended primarily for the developers.  A
    command-line pdfTeX installation and several LaTeX packages are
-   required; particularly ``memoir.cls``.  You will also need to add
-   ``~/path/to/fipy/utils`` to your ``PYTHONPATH`` environment
+   required; particularly :file:`memoir.cls`.  You will also need to add
+   :file:`{~/path/to/fipy}/utils` to your :envvar:`PYTHONPATH` environment
    variable.
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
@@ -424,7 +424,7 @@ removing key``" in the :ref:`FAQ`).
 .. note::
 
    In order for Python_ to find the :term:`FiPy` modules, you will need to ensure
-   that the base directory is added to your ``PYTHONPATH`` environment
+   that the base directory is added to your :envvar:`PYTHONPATH` environment
    variable, *e.g.*::
 
        $ setenv PYTHONPATH .:${PYTHONPATH}
@@ -572,20 +572,20 @@ in-depth documentation.
 .. note:: 
  
     Trilinos can be installed in a non-standard location by adding the
-    ``--prefix=$LOCAL_INSTALLATION_DIR`` flag to the configure step. If
+    :samp:`--prefix={$LOCAL_INSTALLATION_DIR}` flag to the configure step. If
     :term:`Trilinos` is installed in a nonstandard location, the path to the
     PyTrilinos site-packages directory should be added to the
     :envvar:`PYTHONPATH` environment variable; this should be of the form
-    ``$INSTALL_DIR/lib/$PYTHON_VERSION/site-packages/``. Also, the path
+    :file:`{$INSTALL_DIR}/lib/{$PYTHON_VERSION}/site-packages/`. Also, the path
     to the :term:`Trilinos` lib directory should be added to the
     :envvar:`LD_LIBRARY_PATH` (on Linux) or :envvar:`DYLD_LIBRARY_PATH` (on Mac OS
     X) environment variable; this should be of the form
-    ``$INSTALL_DIR/lib``.
+    :file:`{$INSTALL_DIR}/lib``.
 
 .. note::
 
     If swig is in a non-standard place use the
-    ``--with-swig=$PATH_TO_SWIG_EXECUTABLE`` flag with the configure
+    :samp:`--with-swig={$PATH_TO_SWIG_EXECUTABLE}` flag with the configure
     step.
 
 :term:`Trilinos` solvers can be used to replace :term:`PySparse` solvers. If both
