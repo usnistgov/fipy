@@ -193,7 +193,7 @@ only translates to low-level compiled code those portions that prove
 inefficient. 
 
 .. A discussion of efficiency issues can be found in
-   Chapter~\ref{chap:Efficiency}.
+   :ref:`chap:Efficiency`.
 
 \Python{} Programming Language
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -278,14 +278,14 @@ A :class:`Term` object
     
 Beyond these three fundamental classes of :class:`Mesh`, 
 :class:`Variable`, and :class:`Term`, |FiPy| is composed of a
-number of related classes. The relationships between these classes are shown in
-Figure~\ref{fig:objects}. 
-\begin{figure}[tbp]
-    \centering
-    \includegraphics[width=0.9\textwidth]{objects}
-    \caption{Primary object relationships in |FiPy|.}
-    \label{fig:objects}
-\end{figure}
+number of related classes. 
+
+.. _fig:objects:
+
+.. figure:: objects.*
+   
+   Primary object relationships in |FiPy|.
+
 A :class:`Mesh` object is composed of :class:`Cell` objects.  Each
 :class:`Cell` is defined by its bounding :class:`Face` objects and each
 :class:`Face` is defined by its bounding :class:`Vertex` objects.  A
