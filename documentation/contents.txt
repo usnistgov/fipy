@@ -10,7 +10,16 @@ FiPy Contents
 
    introduction
    ../examples/README
+   LICENSE
+   documentation/ADMINISTRATA
+   documentation/CREDITS
+   documentation/EFFICIENCY
+   documentation/RESOURCES
+   documentation/TALKS
+   documentation/TODOLIST
+   documentation/VERSION
+   documentation/VKML
    reference
    glossary
-   manual/refs.bib_cited.txt
+   manual/refs.bib_cited
    

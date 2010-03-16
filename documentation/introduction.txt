@@ -8,6 +8,6 @@ Introduction
    ../README
    MAIL
    ../INSTALLATION
-   numerical/numerical
+   numerical/index
    design
    FAQ
