@@ -174,11 +174,7 @@ We first step through the transient problem
     
    TSVViewer(vars=(phi, phi.getGrad())).plot(filename="myTSV.tsv")
 
-.. raw:: latex
-
-   \tabson[30]
-   {\tiny \verbatiminput{images/examples/diffusion/myTSV.tsv}}
-   \tabsoff
+.. literalinclude:: myTSV.tsv
    
 The values are listed at the `Cell` centers. Particularly for irregular
 meshes, no specific ordering should be relied upon. Vector quantities are
