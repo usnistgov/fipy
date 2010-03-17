@@ -35,135 +35,96 @@
 r"""
 This example first imposes a circular distance function:
 
-.. raw:: latex
+.. math::
 
-    $$ \phi \left( x, y \right) = \left[ \left( x - \frac{ L }{ 2 } \right)^2 + \left( y - \frac{ L }{ 2 } \right)^2 \right]^{1/2} - \frac{L}{4} $$ 
+   \phi \left( x, y \right) = \left[ \left( x - \frac{ L }{ 2 } \right)^2 + \left( y - \frac{ L }{ 2 } \right)^2 \right]^{1/2} - \frac{L}{4}
 
 The variable is advected with,
 
-.. raw:: latex
+.. math::
 
-    $$ \frac{ \partial \phi } { \partial t } + \vec{u} \cdot \nabla \phi = 0 $$
+   \frac{ \partial \phi } { \partial t } + \vec{u} \cdot \nabla \phi = 0
 
-The scheme used in the `_AdvectionTerm` preserves the `var` as a
-distance function.  The solution to this problem will be demonstrated
-in the following script. Firstly, setup the parameters.
+The scheme used in the
+:class:`~fipy.models.levelSet.advection.advectionTerm._AdvectionTerm` preserves
+the ``var`` as a distance function. The solution to this problem will be
+demonstrated in the following script. Firstly, setup the parameters.
 
-   >>> from fipy import *
+>>> from fipy import *
 
-   >>> L = 1.
-   >>> N = 25
-   >>> velocity = 1.
-   >>> cfl = 0.1
-   >>> velocity = 1.
-   >>> distanceToTravel = L / 10.
-   >>> radius = L / 4.
-   >>> dL = L / N   
-   >>> timeStepDuration = cfl * dL / velocity
-   >>> steps = int(distanceToTravel / dL / cfl)
+>>> L = 1.
+>>> N = 25
+>>> velocity = 1.
+>>> cfl = 0.1
+>>> velocity = 1.
+>>> distanceToTravel = L / 10.
+>>> radius = L / 4.
+>>> dL = L / N   
+>>> timeStepDuration = cfl * dL / velocity
+>>> steps = int(distanceToTravel / dL / cfl)
 
 Construct the mesh.
 
-.. raw:: latex
-
-   \IndexClass{Grid2D}
-
-..
-
-   >>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
+>>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
 
 Construct a `distanceVariable` object.
 
-.. raw:: latex
-
-   \IndexClass{DistanceVariable}
-
-..
-
-   >>> var = DistanceVariable(
-   ...     name = 'level set variable',
-   ...     mesh = mesh,
-   ...     value = 1.,
-   ...     hasOld = 1)
+>>> var = DistanceVariable(
+...     name = 'level set variable',
+...     mesh = mesh,
+...     value = 1.,
+...     hasOld = 1)
 
 Initialise the `distanceVariable` to be a circular distance function.
 
-.. raw:: latex
+>>> x, y = mesh.getCellCenters()
+>>> initialArray = sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
+>>> var.setValue(initialArray)
 
-   \IndexFunction{sqrt}
-
-..
-
-   >>> x, y = mesh.getCellCenters()
-   >>> initialArray = sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
-   >>> var.setValue(initialArray)
-
-The `advectionEquation` is constructed.
+The :class:`~fipy.models.levelSet.advection.advectionEquation.AdvectionEquation`
+is constructed.
    
-.. raw:: latex
-
-   \IndexFunction{buildAdvectionEquation}
-
-..
-
-   >>> advEqn = buildAdvectionEquation(
-   ...     advectionCoeff=velocity)
+>>> advEqn = buildAdvectionEquation(
+...     advectionCoeff=velocity)
 
 The problem can then be solved by executing a serious of time steps.
 
-.. raw:: latex
-
-   \IndexModule{viewers}
-
-..
-
-   >>> if __name__ == '__main__':
-   ...     viewer = Viewer(vars=var, datamin=-radius, datamax=radius)
-   ...     viewer.plot()
-   ...     for step in range(steps):
-   ...         var.updateOld()
-   ...         advEqn.solve(var, dt=timeStepDuration)
-   ...         viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=var, datamin=-radius, datamax=radius)
+...     viewer.plot()
+...     for step in range(steps):
+...         var.updateOld()
+...         advEqn.solve(var, dt=timeStepDuration)
+...         viewer.plot()
 
 The result can be tested with the following commands.
 
-.. raw:: latex
+>>> for step in range(steps):
+...     var.updateOld()
+...     advEqn.solve(var, dt=timeStepDuration)
+>>> x = array(mesh.getCellCenters()[0])
+>>> distanceTravelled = timeStepDuration * steps * velocity
+>>> answer = initialArray - distanceTravelled
+>>> answer = where(answer < 0., -1001., answer)
+>>> solution = where(answer < 0., -1001., array(var))
+>>> allclose(answer, solution, atol=4.7e-3)
+1
 
-   \IndexFunction{array}
-   \IndexFunction{where}
-   \IndexFunction{allclose}
-   
-..
+If the
+:class:`~fipy.models.levelSet.advection.advectionEquation.AdvectionEquation` is
+built with the
+:class:`~fipy.models.levelSet.advection.higherOrderAdvectionTerm._HigherOrderAdvectionTerm`
+the result is more accurate,
 
-   >>> for step in range(steps):
-   ...     var.updateOld()
-   ...     advEqn.solve(var, dt=timeStepDuration)
-   >>> x = array(mesh.getCellCenters()[0])
-   >>> distanceTravelled = timeStepDuration * steps * velocity
-   >>> answer = initialArray - distanceTravelled
-   >>> answer = where(answer < 0., -1001., answer)
-   >>> solution = where(answer < 0., -1001., array(var))
-   >>> allclose(answer, solution, atol=4.7e-3)
-   1
-
-If the `AdvectionEquation` is built with the `_HigherOrderAdvectionTerm` the result
-is more accurate,
-
-.. raw:: latex
-
-   \IndexFunction{buildHigherOrderAdvectionEquation}
-
-..
-
-   >>> var.setValue(initialArray)
-   >>> advEqn = buildHigherOrderAdvectionEquation(
-   ...     advectionCoeff = velocity)
-   >>> for step in range(steps):
-   ...     var.updateOld()
-   ...     advEqn.solve(var, dt=timeStepDuration)
-   >>> solution = where(answer < 0., -1001., array(var))
-   >>> allclose(answer, solution, atol=1.02e-3)
-   1
+>>> var.setValue(initialArray)
+>>> advEqn = buildHigherOrderAdvectionEquation(
+...     advectionCoeff = velocity)
+>>> for step in range(steps):
+...     var.updateOld()
+...     advEqn.solve(var, dt=timeStepDuration)
+>>> solution = where(answer < 0., -1001., array(var))
+>>> allclose(answer, solution, atol=1.02e-3)
+1
 
 """
 __docformat__ = 'restructuredtext'

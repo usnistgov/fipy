@@ -32,59 +32,59 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 This example represents an expanding circular interface with an initial
 coverage of surfactant. The rate of expansion is dependent on the
 coverage of surfactant, The governing equations are given by:
 
-.. raw:: latex
+.. math::
 
-    $$ \\dot{\\theta} = -\\frac{\\dot{r}}{r} \\theta $$
-    $$ \\dot{r} = k \\theta $$
+   \dot{\theta} &= -\frac{\dot{r}}{r} \theta \\
+   \dot{r} &= k \theta
 
 The solution for these set of equations is given by:
 
-.. raw:: latex
+.. math::
 
-    $$ r = \\sqrt{2 k r_0 \\theta_0 t + r_0^2} $$
-    $$ \\theta = \\frac{r_0 \\theta_0}{\\sqrt{2 k r_0 \\theta_0 t + r_0^2}} $$
+   r &= \sqrt{2 k r_0 \theta_0 t + r_0^2} \\
+   \theta &= \frac{r_0 \theta_0}{\sqrt{2 k r_0 \theta_0 t + r_0^2}}
     
 The following tests can be performed. First test for global
 conservation of surfactant:
 
-   >>> surfactantBefore = sum(surfactantVariable * mesh.getCellVolumes())
-   >>> totalTime = 0
-   >>> for step in range(steps):
-   ...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
-   ...     distanceVariable.extendVariable(velocity)
-   ...     timeStepDuration = cfl * dx / velocity.max()
-   ...     distanceVariable.updateOld()
-   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-   ...     surfactantEquation.solve(surfactantVariable)
-   ...     totalTime += timeStepDuration
-   >>> surfactantEquation.solve(surfactantVariable)
-   >>> surfactantAfter = sum(surfactantVariable * mesh.getCellVolumes())
-   >>> print surfactantBefore.allclose(surfactantAfter)
-   1
+>>> surfactantBefore = sum(surfactantVariable * mesh.getCellVolumes())
+>>> totalTime = 0
+>>> for step in range(steps):
+...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
+...     distanceVariable.extendVariable(velocity)
+...     timeStepDuration = cfl * dx / velocity.max()
+...     distanceVariable.updateOld()
+...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
+...     surfactantEquation.solve(surfactantVariable)
+...     totalTime += timeStepDuration
+>>> surfactantEquation.solve(surfactantVariable)
+>>> surfactantAfter = sum(surfactantVariable * mesh.getCellVolumes())
+>>> print surfactantBefore.allclose(surfactantAfter)
+1
 
 Next test for the correct local value of surfactant: 
 
-   >>> finalRadius = sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
-   >>> answer = initialSurfactantValue * initialRadius / finalRadius
-   >>> coverage = surfactantVariable.getInterfaceVar()
-   >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
-   >>> print sqrt(sum(error) / sum(error > 0)) < 0.04
-   1
+>>> finalRadius = sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
+>>> answer = initialSurfactantValue * initialRadius / finalRadius
+>>> coverage = surfactantVariable.getInterfaceVar()
+>>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
+>>> print sqrt(sum(error) / sum(error > 0)) < 0.04
+1
 
 Test for the correct position of the interface:
 
-   >>> x, y = mesh.getCellCenters()
-   >>> radius = sqrt((x - L / 2)**2 + (y - L / 2)**2)
-   >>> solution = radius - distanceVariable
-   >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
-   >>> print sqrt(sum(error) / sum(error > 0)) < 0.02
-   1
+>>> x, y = mesh.getCellCenters()
+>>> radius = sqrt((x - L / 2)**2 + (y - L / 2)**2)
+>>> solution = radius - distanceVariable
+>>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
+>>> print sqrt(sum(error) / sum(error > 0)) < 0.02
+1
 
 """
 __docformat__ = 'restructuredtext'

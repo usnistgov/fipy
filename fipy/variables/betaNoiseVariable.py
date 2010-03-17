@@ -45,62 +45,61 @@ class BetaNoiseVariable(NoiseVariable):
     Represents a beta distribution of random numbers with the probability
     distribution
     
-    .. raw:: latex
+    .. math::
     
-    
-       \[ x^{\alpha - 1}\frac{\beta^\alpha e^{-\beta x}}{\Gamma(\alpha)} \]
+       x^{\alpha - 1}\frac{\beta^\alpha e^{-\beta x}}{\Gamma(\alpha)}
        
-       with a shape parameter $\alpha$, a rate parameter $\beta$, and 
-       $\Gamma(z) = \int_0^\infty t^{z - 1}e^{-t}\,dt$.
+    with a shape parameter :math:`\alpha`, a rate parameter :math:`\beta`, and 
+    :math:`\Gamma(z) = \int_0^\infty t^{z - 1}e^{-t}\,dt`.
 
     We generate noise on a uniform cartesian mesh
            
-           >>> from fipy.variables.variable import Variable
-           >>> alpha = Variable()
-           >>> beta = Variable()
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> noise = BetaNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), alpha = alpha, beta = beta)
+    >>> from fipy.variables.variable import Variable
+    >>> alpha = Variable()
+    >>> beta = Variable()
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> noise = BetaNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), alpha = alpha, beta = beta)
            
     We histogram the root-volume-weighted noise distribution
     
-           >>> from fipy.variables.histogramVariable import HistogramVariable
-           >>> histogram = HistogramVariable(distribution = noise, dx = 0.01, nx = 100)
+    >>> from fipy.variables.histogramVariable import HistogramVariable
+    >>> histogram = HistogramVariable(distribution = noise, dx = 0.01, nx = 100)
            
     and compare to a Gaussian distribution
     
-           >>> from fipy.variables.cellVariable import CellVariable
-           >>> betadist = CellVariable(mesh = histogram.getMesh())
-           >>> x = histogram.getMesh().getCellCenters()[0]
-           
-           >>> if __name__ == '__main__':
-           ...     from fipy import Viewer
-           ...     viewer = Viewer(vars=noise, datamin=0, datamax=1)
-           ...     histoplot = Viewer(vars=(histogram, betadist), 
-           ...                        datamin=0, datamax=1.5)
-           
-           >>> from fipy.tools.numerix import arange, exp
-           >>> from scipy.special import gamma as Gamma
-           
-           >>> for a in arange(0.5,5,0.5):
-           ...     alpha.setValue(a)
-           ...     for b in arange(0.5,5,0.5):
-           ...         beta.setValue(b)
-           ...         betadist.setValue((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) 
-           ...                           * x**(alpha - 1) * (1 - x)**(beta - 1))
-           ...         if __name__ == '__main__':
-           ...             import sys
-           ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
-           ...             viewer.plot()
-           ...             histoplot.plot()
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> betadist = CellVariable(mesh = histogram.getMesh())
+    >>> x = histogram.getMesh().getCellCenters()[0]
+    
+    >>> if __name__ == '__main__':
+    ...     from fipy import Viewer
+    ...     viewer = Viewer(vars=noise, datamin=0, datamax=1)
+    ...     histoplot = Viewer(vars=(histogram, betadist), 
+    ...                        datamin=0, datamax=1.5)
+    
+    >>> from fipy.tools.numerix import arange, exp
+    >>> from scipy.special import gamma as Gamma
+    
+    >>> for a in arange(0.5,5,0.5):
+    ...     alpha.setValue(a)
+    ...     for b in arange(0.5,5,0.5):
+    ...         beta.setValue(b)
+    ...         betadist.setValue((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) 
+    ...                           * x**(alpha - 1) * (1 - x)**(beta - 1))
+    ...         if __name__ == '__main__':
+    ...             import sys
+    ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
+    ...             viewer.plot()
+    ...             histoplot.plot()
 
-           >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
-           1
+    >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
+    1
 
-    .. image:: fipy/variables/beta.jpg
+    .. image:: fipy/variables/beta.*
       :scale: 25
       :align: center
 
-    .. image:: fipy/variables/beta-histogram.pdf
+    .. image:: fipy/variables/beta-histogram.*
       :scale: 25
       :align: center
 
@@ -109,17 +108,8 @@ class BetaNoiseVariable(NoiseVariable):
         r"""
         :Parameters:
             - `mesh`: The mesh on which to define the noise.
-            - `alpha`: The parameter
-            
-              .. raw:: latex
-              
-                 $\alpha$.
-                 
-            - `beta`: The parameter
-            
-              .. raw:: latex
-              
-                 $\beta$.
+            - `alpha`: The parameter :math:`\alpha`.
+            - `beta`: The parameter :math:`\beta`.
                  
         """
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)

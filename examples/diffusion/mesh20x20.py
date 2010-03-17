@@ -37,127 +37,100 @@ r"""
 This example solves a diffusion problem and demonstrates the use of
 applying boundary condition patches.
 
-.. raw:: latex
+.. index:: Grid2D
 
-   \IndexClass{Grid2D}
+>>> from fipy import *
 
-..
+>>> nx = 20
+>>> ny = nx
+>>> dx = 1.
+>>> dy = dx
+>>> L = dx * nx
+>>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
+
+We create a :class:`~fipy.variables.cellVariable.CellVariable` and initialize it to zero:
     
-    >>> from fipy import *
-
-    >>> nx = 20
-    >>> ny = nx
-    >>> dx = 1.
-    >>> dy = dx
-    >>> L = dx * nx
-    >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
-
-We create a `CellVariable` and initialize it to zero:
-    
-.. raw:: latex
-
-   \IndexClass{CellVariable}
-
-..
-
-    >>> phi = CellVariable(name = "solution variable",
-    ...                    mesh = mesh,
-    ...                    value = 0.)
+>>> phi = CellVariable(name = "solution variable",
+...                    mesh = mesh,
+...                    value = 0.)
 
 and then create a diffusion equation.  This is solved by default with an
 iterative conjugate gradient solver.  
 
-.. raw:: latex
-
-   \IndexClass{TransientTerm}
-   \IndexClass{ImplicitDiffusionTerm}
-
-..
-
-    >>> D = 1.
-    >>> eq = TransientTerm() == ImplicitDiffusionTerm(coeff=D)
+>>> D = 1.
+>>> eq = TransientTerm() == DiffusionTerm(coeff=D)
 
 We apply Dirichlet boundary conditions
 
-    >>> valueTopLeft = 0
-    >>> valueBottomRight = 1
+>>> valueTopLeft = 0
+>>> valueBottomRight = 1
 
 to the top-left and bottom-right corners.  Neumann boundary conditions
 are automatically applied to the top-right and bottom-left corners.
 
-.. raw:: latex
+.. index:: FixedValue
 
-   \IndexClass{FixedValue}
+>>> x, y = mesh.getFaceCenters()
+>>> facesTopLeft = ((mesh.getFacesLeft() & (y > L / 2))
+...                 | (mesh.getFacesTop() & (x < L / 2)))
+>>> facesBottomRight = ((mesh.getFacesRight() & (y < L / 2))
+...                     | (mesh.getFacesBottom() & (x > L / 2)))
 
-..
+>>> BCs = (FixedValue(faces=facesTopLeft, value=valueTopLeft),
+...        FixedValue(faces=facesBottomRight, value=valueBottomRight))
 
-    >>> x, y = mesh.getFaceCenters()
-    >>> facesTopLeft = ((mesh.getFacesLeft() & (y > L / 2))
-    ...                 | (mesh.getFacesTop() & (x < L / 2)))
-    >>> facesBottomRight = ((mesh.getFacesRight() & (y < L / 2))
-    ...                     | (mesh.getFacesBottom() & (x > L / 2)))
-
-    >>> BCs = (FixedValue(faces=facesTopLeft, value=valueTopLeft),
-    ...        FixedValue(faces=facesBottomRight, value=valueBottomRight))
-    
 We create a viewer to see the results
 
-.. raw:: latex
+.. index::
+   module: fipy.viewers
 
-   \IndexModule{viewers}
-
-..
-
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=phi, datamin=0., datamax=1.)
-    ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=phi, datamin=0., datamax=1.)
+...     viewer.plot()
 
 and solve the equation by repeatedly looping in time:
 
-    >>> timeStepDuration = 10 * 0.9 * dx**2 / (2 * D)
-    >>> steps = 10
-    >>> for step in range(steps):
-    ...     eq.solve(var=phi,
-    ...              boundaryConditions=BCs,
-    ...              dt=timeStepDuration)
-    ...     if __name__ == '__main__':
-    ...         viewer.plot()
+>>> timeStepDuration = 10 * 0.9 * dx**2 / (2 * D)
+>>> steps = 10
+>>> for step in range(steps):
+...     eq.solve(var=phi,
+...              boundaryConditions=BCs,
+...              dt=timeStepDuration)
+...     if __name__ == '__main__':
+...         viewer.plot()
 
-.. image:: examples/diffusion/mesh20x20transient.pdf
-   :scale: 50
+.. image:: mesh20x20transient.*
+   :width: 90%
    :align: center
-
-..
 
 We can test the value of the bottom-right corner cell.
 
-    >>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
-    1
+>>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
+1
 
-    >>> if __name__ == '__main__':
-    ...     raw_input("Implicit transient diffusion. Press <return> to proceed...")
+>>> if __name__ == '__main__':
+...     raw_input("Implicit transient diffusion. Press <return> to proceed...")
 
 -----
 
 We can also solve the steady-state problem directly
 
-    >>> ImplicitDiffusionTerm().solve(var=phi, 
-    ...                               boundaryConditions = BCs)
-    >>> if __name__ == '__main__':
-    ...     viewer.plot()
+>>> DiffusionTerm().solve(var=phi, 
+...                       boundaryConditions = BCs)
+>>> if __name__ == '__main__':
+...     viewer.plot()
 
-.. image:: examples/diffusion/mesh20x20steadyState.pdf
-   :scale: 50
+.. image:: mesh20x20steadyState.*
+   :width: 90%
    :align: center
 
 and test the value of the bottom-right corner cell.
 
-    >>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
-    1
-    
-    >>> if __name__ == '__main__':
-    ...     raw_input("Implicit steady-state diffusion. Press <return> to proceed...")
+>>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
+1
 
+>>> if __name__ == '__main__':
+...     raw_input("Implicit steady-state diffusion. Press <return> to proceed...")
 """
 
 __docformat__ = 'restructuredtext'

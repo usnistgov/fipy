@@ -43,7 +43,7 @@ being that it uses a triangular mesh loaded in using the GmshImporter.
 
 The result is again tested in the same way:
 
-    >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     >>> Lx = 20
     >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
@@ -82,7 +82,7 @@ boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001
                       
 
 if __name__ == '__main__':
-    ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
     viewer = Viewer(vars = var)
     viewer.plot()
     varArray = array(var)

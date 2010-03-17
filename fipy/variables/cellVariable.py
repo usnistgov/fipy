@@ -188,19 +188,17 @@ class CellVariable(_MeshVariable):
         r"""
         Return the cell-volume-weighted average of the `CellVariable`:
             
-        .. raw:: latex
+        .. math::
         
-           \[ <\phi>_\text{vol} 
+           <\phi>_\text{vol} 
            = \frac{\sum_\text{cells} \phi_\text{cell} V_\text{cell}}
-               {\sum_\text{cells} V_\text{cell}} \]
+               {\sum_\text{cells} V_\text{cell}}
         
-        ..
-
-            >>> from fipy.meshes.grid2D import Grid2D
-            >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
-            >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
-            >>> print var.getCellVolumeAverage()
-            3.0
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
+        >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
+        >>> print var.getCellVolumeAverage()
+        3.0
         """
 
         if not hasattr(self, 'volumeAverage'):
@@ -211,24 +209,14 @@ class CellVariable(_MeshVariable):
 
     def getGrad(self):
         r"""
-        Return
-        
-        .. raw:: latex
-        
-           \( \nabla \phi \)
-           
-        as a rank-1 `CellVariable` (first-order gradient).
+        Return :math:`\nabla \phi` as a rank-1 `CellVariable` (first-order
+        gradient).
         """
         return self.getGaussGrad()
 
     def getGaussGrad(self):
         r"""
-        Return
-
-        .. raw:: latex
-
-            $ \frac{1}{V_P} \sum_f \vec{n} \phi_f A_f $
-
+        Return :math:`\frac{1}{V_P} \sum_f \vec{n} \phi_f A_f`
         as a rank-1 `CellVariable` (first-order gradient).
             
         """
@@ -240,31 +228,33 @@ class CellVariable(_MeshVariable):
 
     def getLeastSquaresGrad(self):
         r"""
-        Return
-
-        .. raw:: latex
-
-            $\nabla \phi$, which is determined by solving for $\nabla
-            \phi$ in the following matrix equation, $$ \nabla \phi \cdot \sum_f
-            d_{AP}^2 \vec{n}_{AP} \otimes \vec{n}_{AP} = \sum_f
-            d_{AP}^2 \left( \vec{n} \cdot \nabla \phi \right)_{AP} $$
-            The matrix equation is derived by minimizing the following
-            least squares sum, $$ F \left( \phi_x, \phi_y \right) =
-            \sqrt{\sum_f \left( d_{AP} \vec{n}_{AP} \cdot \nabla \phi
-            - d_{AP} \left( \vec{n}_{AP} \cdot \nabla \phi
-            \right)_{AP} \right)^2 } $$
+        Return :math:`\nabla \phi`, which is determined by solving for :math:`\nabla \phi`
+        in the following matrix equation, 
+        
+        .. math::
+            
+           \nabla \phi \cdot \sum_f d_{AP}^2 \vec{n}_{AP} \otimes \vec{n}_{AP} =
+           \sum_f d_{AP}^2 \left( \vec{n} \cdot \nabla \phi \right)_{AP}
+        
+        The matrix equation is derived by minimizing
+        the following least squares sum, 
+        
+        .. math:: 
+           
+           F \left( \phi_x, \phi_y \right) = \sqrt{\sum_f \left( d_{AP}
+           \vec{n}_{AP} \cdot \nabla \phi - d_{AP} \left( \vec{n}_{AP} \cdot
+           \nabla \phi \right)_{AP} \right)^2 }
 
         Tests
 
-            >>> from fipy import Grid2D
-            >>> print CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
-            [[8.0 8.0 24.0 24.0]
-             [1.2 2.0 1.2 2.0]]
+        >>> from fipy import Grid2D
+        >>> print CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
+        [[8.0 8.0 24.0 24.0]
+         [1.2 2.0 1.2 2.0]]
 
-            >>> from fipy import Grid1D
-            >>> print CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), value=(0, 1, 2)).getLeastSquaresGrad()
-            [[0.461538461538 0.8 1.2]]
-
+        >>> from fipy import Grid1D
+        >>> print CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), value=(0, 1, 2)).getLeastSquaresGrad()
+        [[0.461538461538 0.8 1.2]]
         """
 
         if not hasattr(self, 'leastSquaresGrad'):
@@ -279,34 +269,32 @@ class CellVariable(_MeshVariable):
         Returns a `FaceVariable` whose value corresponds to the arithmetic interpolation
         of the adjacent cells:
             
-        .. raw:: latex
+        .. math::
         
-           \[ \phi_f = (\phi_1 - \phi_2) \frac{d_{f2}}{d_{12}} + \phi_2 \]
+           \phi_f = (\phi_1 - \phi_2) \frac{d_{f2}}{d_{12}} + \phi_2
            
-        ..
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy import numerix
+        >>> mesh = Grid1D(dx = (1., 1.))
+        >>> var = CellVariable(mesh = mesh, value = (1, 2))
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
+        >>> answer = (var[1] - var[0]) * (0.5 / 1.) + var[0]
+        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
+        1
         
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> from fipy import numerix
-            >>> mesh = Grid1D(dx = (1., 1.))
-            >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-            >>> answer = (var[1] - var[0]) * (0.5 / 1.) + var[0]
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-            1
-            
-            >>> mesh = Grid1D(dx = (2., 4.))
-            >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-            >>> answer = (var[1] - var[0]) * (1.0 / 3.0) + var[0]
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-            1
+        >>> mesh = Grid1D(dx = (2., 4.))
+        >>> var = CellVariable(mesh = mesh, value = (1, 2))
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
+        >>> answer = (var[1] - var[0]) * (1.0 / 3.0) + var[0]
+        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
+        1
 
-            >>> mesh = Grid1D(dx = (10., 100.))
-            >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-            >>> answer = (var[1] - var[0]) * (5.0 / 55.0) + var[0]
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-            1
+        >>> mesh = Grid1D(dx = (10., 100.))
+        >>> var = CellVariable(mesh = mesh, value = (1, 2))
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
+        >>> answer = (var[1] - var[0]) * (5.0 / 55.0) + var[0]
+        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
+        1
         """
         if not hasattr(self, 'arithmeticFaceValue'):
             from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
@@ -322,24 +310,21 @@ class CellVariable(_MeshVariable):
         the absolute values of the adjacent cells. If the values are
         of opposite sign then the result is zero:
             
-        .. raw:: latex
+        .. math::
         
-           \[ \phi_f = \begin{cases}
-                             \phi_1& \text{when $|\phi_1| \le |\phi_2|$},\\
-                             \phi_2& \text{when $|\phi_2| < |\phi_1|$},\\
-                             0 & \text{when $\phi1 \phi2 < 0$}
-                       \end{cases} \]
+           \phi_f = \begin{cases}
+                          \phi_1& \text{when $|\phi_1| \le |\phi_2|$},\\
+                          \phi_2& \text{when $|\phi_2| < |\phi_1|$},\\
+                          0 & \text{when $\phi1 \phi2 < 0$}
+                    \end{cases}
                        
-        ..
-
-           >>> from fipy import *
-           >>> print CellVariable(mesh=Grid1D(nx=2), value=(1, 2)).getMinmodFaceValue()
-           [1 1 2]
-           >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, -2)).getMinmodFaceValue()
-           [-1 -1 -2]
-           >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, 2)).getMinmodFaceValue()
-           [-1  0  2]
-        
+        >>> from fipy import *
+        >>> print CellVariable(mesh=Grid1D(nx=2), value=(1, 2)).getMinmodFaceValue()
+        [1 1 2]
+        >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, -2)).getMinmodFaceValue()
+        [-1 -1 -2]
+        >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, 2)).getMinmodFaceValue()
+        [-1  0  2]
         """
         if not hasattr(self, 'minmodFaceValue'):
             from minmodCellToFaceVariable import _MinmodCellToFaceVariable
@@ -352,34 +337,32 @@ class CellVariable(_MeshVariable):
         Returns a `FaceVariable` whose value corresponds to the harmonic interpolation
         of the adjacent cells:
             
-        .. raw:: latex
+        .. math::
         
-           \[ \phi_f = \frac{\phi_1 \phi_2}{(\phi_2 - \phi_1) \frac{d_{f2}}{d_{12}} + \phi_1} \]
+           \phi_f = \frac{\phi_1 \phi_2}{(\phi_2 - \phi_1) \frac{d_{f2}}{d_{12}} + \phi_1}
            
-        ..
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy import numerix
+        >>> mesh = Grid1D(dx = (1., 1.))
+        >>> var = CellVariable(mesh = mesh, value = (1, 2))
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (0.5 / 1.) + var[0])
+        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
+        1
         
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> from fipy import numerix
-            >>> mesh = Grid1D(dx = (1., 1.))
-            >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
-            >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (0.5 / 1.) + var[0])
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-            1
-            
-            >>> mesh = Grid1D(dx = (2., 4.))
-            >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()][0]
-            >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (1.0 / 3.0) + var[0])
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-            1
+        >>> mesh = Grid1D(dx = (2., 4.))
+        >>> var = CellVariable(mesh = mesh, value = (1, 2))
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()][0]
+        >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (1.0 / 3.0) + var[0])
+        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
+        1
 
-            >>> mesh = Grid1D(dx = (10., 100.))
-            >>> var = CellVariable(mesh = mesh, value = (1, 2))
-            >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()][0]
-            >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (5.0 / 55.0) + var[0])
-            >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-            1
+        >>> mesh = Grid1D(dx = (10., 100.))
+        >>> var = CellVariable(mesh = mesh, value = (1, 2))
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()][0]
+        >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (5.0 / 55.0) + var[0])
+        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
+        1
         """
         if not hasattr(self, 'harmonicFaceValue'):
             from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
@@ -389,13 +372,8 @@ class CellVariable(_MeshVariable):
 
     def getFaceGrad(self):
         r"""
-        Return
-        
-        .. raw:: latex
-        
-           \( \nabla \phi \)
-           
-        as a rank-1 `FaceVariable` using differencing for the normal direction(second-order gradient).
+        Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using differencing
+        for the normal direction(second-order gradient).
         """
         if not hasattr(self, 'faceGrad'):
             from faceGradVariable import _FaceGradVariable
@@ -405,13 +383,8 @@ class CellVariable(_MeshVariable):
 
     def getFaceGradAverage(self):
         r"""
-        Return
-        
-        .. raw:: latex
-        
-           \( \nabla \phi \)
-           
-        as a rank-1 `FaceVariable` using averaging for the normal direction(second-order gradient)
+        Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using averaging
+        for the normal direction(second-order gradient)
         """
         return self.getGrad().getArithmeticFaceValue()
 
@@ -423,29 +396,28 @@ class CellVariable(_MeshVariable):
         Combinations of `CellVariable's` should also return old
         values.
 
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 2)
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> var1 = CellVariable(mesh = mesh, value = (2, 3), hasOld = 1)
-            >>> var2 = CellVariable(mesh = mesh, value = (3, 4))
-            >>> v = var1 * var2
-            >>> print v
-            [ 6 12]
-            >>> var1.setValue((3,2))
-            >>> print v
-            [9 8]
-            >>> print v.getOld()
-            [ 6 12]
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> mesh = Grid1D(nx = 2)
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> var1 = CellVariable(mesh = mesh, value = (2, 3), hasOld = 1)
+        >>> var2 = CellVariable(mesh = mesh, value = (3, 4))
+        >>> v = var1 * var2
+        >>> print v
+        [ 6 12]
+        >>> var1.setValue((3,2))
+        >>> print v
+        [9 8]
+        >>> print v.getOld()
+        [ 6 12]
 
         The following small test is to correct for a bug when the
         operator does not just use variables.
 
-            >>> v1 = var1 * 3
-            >>> print v1
-            [9 6]
-            >>> print v1.getOld()
-            [6 9]
-            
+        >>> v1 = var1 * 3
+        >>> print v1
+        [9 6]
+        >>> print v1.getOld()
+        [6 9]
         """
         if self.old is None:
             return self

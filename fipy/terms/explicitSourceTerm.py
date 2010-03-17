@@ -41,11 +41,11 @@ class _ExplicitSourceTerm(SourceTerm):
 
     The `_ExplicitSourceTerm` discretisation is given by
 
-    .. raw:: latex
+    .. math::
 
-       $$ \int_V S \,dV \simeq S_P V_P $$ where $S$ is the
-
-    `coeff` value. This source is added to the RHS vector and
+       \int_V S \,dV \simeq S_P V_P 
+       
+    where :math:`S` is the `coeff` value. This source is added to the RHS vector and
     does not contribute to the solution matrix.
 
     """

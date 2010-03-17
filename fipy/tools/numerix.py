@@ -315,34 +315,26 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
 
 def arccos(arr):
     r"""
-    Inverse cosine of
+    Inverse cosine of :math:`x`, :math:`\cos^{-1} x`
     
-    .. raw:: latex
-    
-       $x$, $\cos^{-1} x$
-       
-    ..
-    
-        >>> print tostring(arccos(0.0), precision=3)
-        1.571
-         
-        >>> isnan(arccos(2.0))
-        True
-    
-        >>> print tostring(arccos(array((0,0.5,1.0))), precision=3)
-        [ 1.571  1.047  0.   ]
-        >>> from fipy.variables.variable import Variable
-        >>> arccos(Variable(value=(0,0.5,1.0)))
-        numerix.arccos(Variable(value=array([ 0. ,  0.5,  1. ])))
+    >>> print tostring(arccos(0.0), precision=3)
+    1.571
+     
+    >>> isnan(arccos(2.0))
+    True
+
+    >>> print tostring(arccos(array((0,0.5,1.0))), precision=3)
+    [ 1.571  1.047  0.   ]
+    >>> from fipy.variables.variable import Variable
+    >>> arccos(Variable(value=(0,0.5,1.0)))
+    numerix.arccos(Variable(value=array([ 0. ,  0.5,  1. ])))
         
     .. attention:: 
         
        the next should really return radians, but doesn't
        
-    ..
-       
-        >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3)
-        [ 1.571  1.047  0.   ]
+    >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3)
+    [ 1.571  1.047  0.   ]
         
     """
     if _isPhysical(arr):
@@ -354,27 +346,21 @@ def arccos(arr):
 
 def arccosh(arr):
     r"""
-    Inverse hyperbolic cosine of
+    Inverse hyperbolic cosine of :math:`x`, :math:`\cosh^{-1} x`
     
-    .. raw:: latex
-    
-       $x$, $\cosh^{-1} x$
-       
-    ..
-    
-        >>> print arccosh(1.0)
-        0.0
+    >>> print arccosh(1.0)
+    0.0
 
-        >>> isnan(arccosh(0.0))
-        True
-    
-        >>> print tostring(arccosh(array((1,2,3))), precision=3)
-        [ 0.     1.317  1.763]
-        >>> from fipy.variables.variable import Variable
-        >>> arccosh(Variable(value=(1,2,3)))
-        numerix.arccosh(Variable(value=array([1, 2, 3])))
-        >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
-        [ 0.     1.317  1.763]
+    >>> isnan(arccosh(0.0))
+    True
+
+    >>> print tostring(arccosh(array((1,2,3))), precision=3)
+    [ 0.     1.317  1.763]
+    >>> from fipy.variables.variable import Variable
+    >>> arccosh(Variable(value=(1,2,3)))
+    numerix.arccosh(Variable(value=array([1, 2, 3])))
+    >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
+    [ 0.     1.317  1.763]
     """
     if _isPhysical(arr):
         return arr.arccosh()
@@ -385,34 +371,26 @@ def arccosh(arr):
 
 def arcsin(arr):
     r"""
-    Inverse sine of
+    Inverse sine of :math:`x`, :math:`\sin^{-1} x`
     
-    .. raw:: latex
-    
-       $x$, $\sin^{-1} x$
-       
-    ..
-    
-        >>> print tostring(arcsin(1.0), precision=3)
-        1.571
-         
-        >>> isnan(arcsin(2.0))
-        True
+    >>> print tostring(arcsin(1.0), precision=3)
+    1.571
+     
+    >>> isnan(arcsin(2.0))
+    True
 
-        >>> print tostring(arcsin(array((0,0.5,1.0))), precision=3)
-        [ 0.     0.524  1.571]
-        >>> from fipy.variables.variable import Variable
-        >>> arcsin(Variable(value=(0,0.5,1.0)))
-        numerix.arcsin(Variable(value=array([ 0. ,  0.5,  1. ])))
+    >>> print tostring(arcsin(array((0,0.5,1.0))), precision=3)
+    [ 0.     0.524  1.571]
+    >>> from fipy.variables.variable import Variable
+    >>> arcsin(Variable(value=(0,0.5,1.0)))
+    numerix.arcsin(Variable(value=array([ 0. ,  0.5,  1. ])))
         
     .. attention:: 
         
        the next should really return radians, but doesn't
        
-    ..
-        
-        >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
-        [ 0.     0.524  1.571]
+    >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
+    [ 0.     0.524  1.571]
     """
     if _isPhysical(arr):
         return arr.arcsin()
@@ -423,23 +401,17 @@ def arcsin(arr):
 
 def arcsinh(arr):
     r"""
-    Inverse hyperbolic sine of
-    
-    .. raw:: latex
-    
-       $x$, $\sinh^{-1} x$
-       
-    ..
+    Inverse hyperbolic sine of :math:`x`, :math:`\sinh^{-1} x`
 
-        >>> print tostring(arcsinh(1.0), precision=3)
-        0.881
-        >>> print tostring(arcsinh(array((1,2,3))), precision=3)
-        [ 0.881  1.444  1.818]
-        >>> from fipy.variables.variable import Variable
-        >>> arcsinh(Variable(value=(1,2,3)))
-        numerix.arcsinh(Variable(value=array([1, 2, 3])))
-        >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
-        [ 0.881  1.444  1.818]
+    >>> print tostring(arcsinh(1.0), precision=3)
+    0.881
+    >>> print tostring(arcsinh(array((1,2,3))), precision=3)
+    [ 0.881  1.444  1.818]
+    >>> from fipy.variables.variable import Variable
+    >>> arcsinh(Variable(value=(1,2,3)))
+    numerix.arcsinh(Variable(value=array([1, 2, 3])))
+    >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
+    [ 0.881  1.444  1.818]
     """
     if _isPhysical(arr):
         return arr.arcsinh()
@@ -450,30 +422,22 @@ def arcsinh(arr):
 
 def arctan(arr):
     r"""
-    Inverse tangent of
+    Inverse tangent of :math:`x`, :math:`\tan^{-1} x`
+
+    >>> print tostring(arctan(1.0), precision=3)
+    0.785
+    >>> print tostring(arctan(array((0,0.5,1.0))), precision=3)
+    [ 0.     0.464  0.785]
+    >>> from fipy.variables.variable import Variable
+    >>> arctan(Variable(value=(0,0.5,1.0)))
+    numerix.arctan(Variable(value=array([ 0. ,  0.5,  1. ])))
     
-    .. raw:: latex
-    
-       $x$, $\tan^{-1} x$
-       
-    ..
-    
-        >>> print tostring(arctan(1.0), precision=3)
-        0.785
-        >>> print tostring(arctan(array((0,0.5,1.0))), precision=3)
-        [ 0.     0.464  0.785]
-        >>> from fipy.variables.variable import Variable
-        >>> arctan(Variable(value=(0,0.5,1.0)))
-        numerix.arctan(Variable(value=array([ 0. ,  0.5,  1. ])))
-        
     .. attention:: 
         
        the next should really return radians, but doesn't
        
-    ..
-    
-        >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
-        [ 0.     0.464  0.785]
+    >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
+    [ 0.     0.464  0.785]
     """
     if _isPhysical(arr):
         return arr.arctan()
@@ -484,30 +448,22 @@ def arctan(arr):
                 
 def arctan2(arr, other):
     r"""
-    Inverse tangent of a ratio
-    
-    .. raw:: latex
-    
-       $x/y$, $\tan^{-1} \frac{x}{y}$
-       
-    ..
+    Inverse tangent of a ratio :math:`x/y`, :math:`\tan^{-1} \frac{x}{y}`
 
-        >>> print tostring(arctan2(3.0, 3.0), precision=3)
-        0.785
-        >>> print tostring(arctan2(array((0, 1, 2)), 2), precision=3)
-        [ 0.     0.464  0.785]
-        >>> from fipy.variables.variable import Variable
-        >>> arctan2(Variable(value=(0, 1, 2)), 2)
-        (numerix.arctan2(Variable(value=array([0, 1, 2])), 2))
+    >>> print tostring(arctan2(3.0, 3.0), precision=3)
+    0.785
+    >>> print tostring(arctan2(array((0, 1, 2)), 2), precision=3)
+    [ 0.     0.464  0.785]
+    >>> from fipy.variables.variable import Variable
+    >>> arctan2(Variable(value=(0, 1, 2)), 2)
+    (numerix.arctan2(Variable(value=array([0, 1, 2])), 2))
         
     .. attention:: 
         
        the next should really return radians, but doesn't
        
-    ..
-
-        >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
-        [ 0.     0.464  0.785]
+    >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
+    [ 0.     0.464  0.785]
     """
     if _isPhysical(arr):
         return arr.arctan2(other)
@@ -523,23 +479,17 @@ def arctan2(arr, other):
         
 def arctanh(arr):
     r"""
-    Inverse hyperbolic tangent of
-    
-    .. raw:: latex
-    
-       $x$, $\tanh^{-1} x$
-       
-    ..
-    
-        >>> print tostring(arctanh(0.5), precision=3)
-        0.549
-        >>> print tostring(arctanh(array((0,0.25,0.5))), precision=3)
-        [ 0.     0.255  0.549]
-        >>> from fipy.variables.variable import Variable
-        >>> arctanh(Variable(value=(0,0.25,0.5)))
-        numerix.arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
-        >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
-        [ 0.     0.255  0.549]
+    Inverse hyperbolic tangent of :math:`x`, :math:`\tanh^{-1} x`
+
+    >>> print tostring(arctanh(0.5), precision=3)
+    0.549
+    >>> print tostring(arctanh(array((0,0.25,0.5))), precision=3)
+    [ 0.     0.255  0.549]
+    >>> from fipy.variables.variable import Variable
+    >>> arctanh(Variable(value=(0,0.25,0.5)))
+    numerix.arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
+    >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
+    [ 0.     0.255  0.549]
     """
     if _isPhysical(arr):
         return arr.arctanh()
@@ -550,23 +500,17 @@ def arctanh(arr):
         
 def cos(arr):
     r"""
-    Cosine of
-    
-    .. raw:: latex
-    
-       $x$, $\cos x$
-       
-    ..
+    Cosine of :math:`x`, :math:`\cos x`
 
-        >>> print allclose(cos(2*pi/6), 0.5)
-        True
-        >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision=3, suppress_small=1)
-        [ 1.   0.5  0. ]
-        >>> from fipy.variables.variable import Variable
-        >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad"))
-        numerix.cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
-        >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
-        [ 1.   0.5  0. ]
+    >>> print allclose(cos(2*pi/6), 0.5)
+    True
+    >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision=3, suppress_small=1)
+    [ 1.   0.5  0. ]
+    >>> from fipy.variables.variable import Variable
+    >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad"))
+    numerix.cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
+    >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
+    [ 1.   0.5  0. ]
     """
     if _isPhysical(arr):
         return arr.cos()
@@ -577,23 +521,17 @@ def cos(arr):
 
 def cosh(arr):
     r"""
-    Hyperbolic cosine of
-    
-    .. raw:: latex
-    
-       $x$, $\cosh x$
-       
-    ..
+    Hyperbolic cosine of :math:`x`, :math:`\cosh x`
 
-        >>> print cosh(0)
-        1.0
-        >>> print tostring(cosh(array((0,1,2))), precision=3)
-        [ 1.     1.543  3.762]
-        >>> from fipy.variables.variable import Variable
-        >>> cosh(Variable(value=(0,1,2)))
-        numerix.cosh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
-        [ 1.     1.543  3.762]
+    >>> print cosh(0)
+    1.0
+    >>> print tostring(cosh(array((0,1,2))), precision=3)
+    [ 1.     1.543  3.762]
+    >>> from fipy.variables.variable import Variable
+    >>> cosh(Variable(value=(0,1,2)))
+    numerix.cosh(Variable(value=array([0, 1, 2])))
+    >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
+    [ 1.     1.543  3.762]
     """
     if _isPhysical(arr):
         return arr.cosh()
@@ -604,23 +542,17 @@ def cosh(arr):
 
 def tan(arr):
     r"""
-    Tangent of
-    
-    .. raw:: latex
-    
-       $x$, $\tan x$
-       
-    ..
+    Tangent of :math:`x`, :math:`\tan x`
 
-        >>> print tostring(tan(pi/3), precision=3)
-        1.732
-        >>> print tostring(tan(array((0,pi/3,2*pi/3))), precision=3)
-        [ 0.     1.732 -1.732]
-        >>> from fipy.variables.variable import Variable
-        >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad"))
-        numerix.tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
-        >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
-        [ 0.     1.732 -1.732]
+    >>> print tostring(tan(pi/3), precision=3)
+    1.732
+    >>> print tostring(tan(array((0,pi/3,2*pi/3))), precision=3)
+    [ 0.     1.732 -1.732]
+    >>> from fipy.variables.variable import Variable
+    >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad"))
+    numerix.tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
+    >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
+    [ 0.     1.732 -1.732]
     """
     if _isPhysical(arr):
         return arr.tan()
@@ -631,23 +563,17 @@ def tan(arr):
 
 def tanh(arr):
     r"""
-    Hyperbolic tangent of
-    
-    .. raw:: latex
-    
-       $x$, $\tanh x$
-       
-    ..
+    Hyperbolic tangent of :math:`x`, :math:`\tanh x`
 
-        >>> print tostring(tanh(1), precision=3)
-        0.762
-        >>> print tostring(tanh(array((0,1,2))), precision=3)
-        [ 0.     0.762  0.964]
-        >>> from fipy.variables.variable import Variable
-        >>> tanh(Variable(value=(0,1,2)))
-        numerix.tanh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
-        [ 0.     0.762  0.964]
+    >>> print tostring(tanh(1), precision=3)
+    0.762
+    >>> print tostring(tanh(array((0,1,2))), precision=3)
+    [ 0.     0.762  0.964]
+    >>> from fipy.variables.variable import Variable
+    >>> tanh(Variable(value=(0,1,2)))
+    numerix.tanh(Variable(value=array([0, 1, 2])))
+    >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
+    [ 0.     0.762  0.964]
     """
     if _isPhysical(arr):
         return arr.tanh()
@@ -658,23 +584,17 @@ def tanh(arr):
 
 def log10(arr):
     r"""
-    Base-10 logarithm of
-    
-    .. raw:: latex
-    
-       $x$, $\log_{10} x$
-       
-    ..
+    Base-10 logarithm of :math:`x`, :math:`\log_{10} x`
 
-        >>> print log10(10)
-        1.0
-        >>> print log10(array((0.1,1,10)))
-        [-1.  0.  1.]
-        >>> from fipy.variables.variable import Variable
-        >>> log10(Variable(value=(0.1,1,10)))
-        numerix.log10(Variable(value=array([  0.1,   1. ,  10. ])))
-        >>> print log10(Variable(value=(0.1,1,10)))
-        [-1.  0.  1.]
+    >>> print log10(10)
+    1.0
+    >>> print log10(array((0.1,1,10)))
+    [-1.  0.  1.]
+    >>> from fipy.variables.variable import Variable
+    >>> log10(Variable(value=(0.1,1,10)))
+    numerix.log10(Variable(value=array([  0.1,   1. ,  10. ])))
+    >>> print log10(Variable(value=(0.1,1,10)))
+    [-1.  0.  1.]
     """
     if _isPhysical(arr):
         return arr.log10()
@@ -685,23 +605,17 @@ def log10(arr):
 
 def sin(arr):
     r"""
-    Sine of
-    
-    .. raw:: latex
-    
-       $x$, $\sin x$
-       
-    ..
+    Sine of :math:`x`, :math:`\sin x`
 
-        >>> print sin(pi/6)
-        0.5
-        >>> print sin(array((0,pi/6,pi/2)))
-        [ 0.   0.5  1. ]
-        >>> from fipy.variables.variable import Variable
-        >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
-        numerix.sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
-        >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
-        [ 0.   0.5  1. ]
+    >>> print sin(pi/6)
+    0.5
+    >>> print sin(array((0,pi/6,pi/2)))
+    [ 0.   0.5  1. ]
+    >>> from fipy.variables.variable import Variable
+    >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+    numerix.sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
+    >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+    [ 0.   0.5  1. ]
     """
     if _isPhysical(arr):
         return arr.sin()
@@ -712,23 +626,17 @@ def sin(arr):
 
 def sinh(arr):
     r"""
-    Hyperbolic sine of
-    
-    .. raw:: latex
-    
-       $x$, $\sinh x$
-       
-    ..
+    Hyperbolic sine of :math:`x`, :math:`\sinh x`
 
-        >>> print sinh(0)
-        0.0
-        >>> print tostring(sinh(array((0,1,2))), precision=3)
-        [ 0.     1.175  3.627]
-        >>> from fipy.variables.variable import Variable
-        >>> sinh(Variable(value=(0,1,2)))
-        numerix.sinh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
-        [ 0.     1.175  3.627]
+    >>> print sinh(0)
+    0.0
+    >>> print tostring(sinh(array((0,1,2))), precision=3)
+    [ 0.     1.175  3.627]
+    >>> from fipy.variables.variable import Variable
+    >>> sinh(Variable(value=(0,1,2)))
+    numerix.sinh(Variable(value=array([0, 1, 2])))
+    >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
+    [ 0.     1.175  3.627]
     """
     if _isPhysical(arr):
         return arr.sinh()
@@ -739,24 +647,17 @@ def sinh(arr):
 
 def sqrt(arr):
     r"""
-    Square root of
-    
-    .. raw:: latex
-    
-       $x$, $\sqrt{x}$
-       
-    ..
+    Square root of :math:`x`, :math:`\sqrt{x}`
 
-        >>> print tostring(sqrt(2), precision=3)
-        1.414
-        >>> print tostring(sqrt(array((1,2,3))), precision=3)
-        [ 1.     1.414  1.732]
-        >>> from fipy.variables.variable import Variable
-        >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
-        numerix.sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
-        >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
-        [ 1.     1.414  1.732] m
-
+    >>> print tostring(sqrt(2), precision=3)
+    1.414
+    >>> print tostring(sqrt(array((1,2,3))), precision=3)
+    [ 1.     1.414  1.732]
+    >>> from fipy.variables.variable import Variable
+    >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
+    numerix.sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
+    >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
+    [ 1.     1.414  1.732] m
     """
     if _isPhysical(arr):
         return arr.sqrt()
@@ -767,24 +668,17 @@ def sqrt(arr):
 
 def floor(arr):
     r"""
-    The largest integer
-    
-    .. raw:: latex
-    
-       $\le x$, $\lfloor x \rfloor$
-       
-    ..
+    The largest integer :math:`\le x`, :math:`\lfloor x \rfloor`
 
-        >>> print floor(2.3)
-        2.0
-        >>> print floor(array((-1.5,2,2.5)))
-        [-2.  2.  2.]
-        >>> from fipy.variables.variable import Variable
-        >>> floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
-        numerix.floor(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-        >>> print floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
-        [-2.  2.  2.] m**2
-
+    >>> print floor(2.3)
+    2.0
+    >>> print floor(array((-1.5,2,2.5)))
+    [-2.  2.  2.]
+    >>> from fipy.variables.variable import Variable
+    >>> floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+    numerix.floor(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
+    >>> print floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+    [-2.  2.  2.] m**2
     """
     if _isPhysical(arr):
         return arr.floor()
@@ -795,24 +689,17 @@ def floor(arr):
 
 def ceil(arr):
     r"""
-    The largest integer
-    
-    .. raw:: latex
-    
-       $\ge x$, $\lceil x \rceil$
+    The largest integer :math:`\ge x`, :math:`\lceil x \rceil`
        
-    ..
-
-        >>> print ceil(2.3)
-        3.0
-        >>> print ceil(array((-1.5,2,2.5)))
-        [-1.  2.  3.]
-        >>> from fipy.variables.variable import Variable
-        >>> ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
-        numerix.ceil(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-        >>> print ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
-        [-1.  2.  3.] m**2
-
+    >>> print ceil(2.3)
+    3.0
+    >>> print ceil(array((-1.5,2,2.5)))
+    [-1.  2.  3.]
+    >>> from fipy.variables.variable import Variable
+    >>> ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+    numerix.ceil(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
+    >>> print ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+    [-1.  2.  3.] m**2
     """
     if _isPhysical(arr):
         return arr.ceil()
@@ -832,14 +719,7 @@ def sign(arr):
 
 def exp(arr):
     r"""
-    Natural exponent of
-    
-    .. raw:: latex
-    
-       $x$, $e^x$
-       
-    ..
-
+    Natural exponent of :math:`x`, :math:`e^x`
     """
     if _isPhysical(arr):
         return arr.exp()
@@ -851,23 +731,17 @@ def exp(arr):
 
 def log(arr):
     r"""
-    Natural logarithm of
-    
-    .. raw:: latex
-    
-       $x$, $\ln x \equiv \log_e x$
-       
-    ..
+    Natural logarithm of :math:`x`, :math:`\ln x \equiv \log_e x`
 
-        >>> print tostring(log(10), precision=3)
-        2.303
-        >>> print tostring(log(array((0.1,1,10))), precision=3)
-        [-2.303  0.     2.303]
-        >>> from fipy.variables.variable import Variable
-        >>> log(Variable(value=(0.1,1,10)))
-        numerix.log(Variable(value=array([  0.1,   1. ,  10. ])))
-        >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
-        [-2.303  0.     2.303]
+    >>> print tostring(log(10), precision=3)
+    2.303
+    >>> print tostring(log(array((0.1,1,10))), precision=3)
+    [-2.303  0.     2.303]
+    >>> from fipy.variables.variable import Variable
+    >>> log(Variable(value=(0.1,1,10)))
+    numerix.log(Variable(value=array([  0.1,   1. ,  10. ])))
+    >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
+    [-2.303  0.     2.303]
     """
     if _isPhysical(arr):
         return arr.log()
@@ -878,25 +752,18 @@ def log(arr):
 
 def conjugate(arr):
     r"""
-    Complex conjugate of
-    
-    .. raw:: latex
-    
-       $z = x + i y$, $z^\star = x - i y$
+    Complex conjugate of :math:`z = x + i y`, :math:`z^\star = x - i y`
        
-    ..
-
-        >>> print conjugate(3 + 4j) == 3 - 4j
-        True
-        >>> print allclose(conjugate(array((3 + 4j, -2j, 10))), (3 - 4j, 2j, 10))
-        1
-        >>> from fipy.variables.variable import Variable
-        >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
-        >>> print var.getUnit()
-        <PhysicalUnit ohm>
-        >>> print allclose(var.getNumericValue(), (3 - 4j, 2j, 10))
-        1
-        
+    >>> print conjugate(3 + 4j) == 3 - 4j
+    True
+    >>> print allclose(conjugate(array((3 + 4j, -2j, 10))), (3 - 4j, 2j, 10))
+    1
+    >>> from fipy.variables.variable import Variable
+    >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
+    >>> print var.getUnit()
+    <PhysicalUnit ohm>
+    >>> print allclose(var.getNumericValue(), (3 - 4j, 2j, 10))
+    1
     """
     if _isPhysical(arr):
         return arr.conjugate()
@@ -918,33 +785,31 @@ def dot(a1, a2, axis=0):
     return array of vector dot-products of v1 and v2
     for arrays a1 and a2 of vectors v1 and v2
     
-    We can't use Numeric.dot on an array of vectors
+    We can't use :func:`numpy.dot` on an array of vectors
 
     Test that Variables are returned as Variables.
 
-       >>> from fipy.meshes.grid2D import Grid2D
-       >>> mesh = Grid2D(nx=2, ny=1)
-       >>> from fipy.variables.cellVariable import CellVariable
-       >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
-       >>> v2 = array(((0,1),(2, 3)))
-       >>> dot(v1, v2)._getVariableClass()
-       <class 'fipy.variables.cellVariable.CellVariable'>
-       >>> dot(v2, v1)._getVariableClass()
-       <class 'fipy.variables.cellVariable.CellVariable'>
-       >>> print rank(dot(v2, v1))
-       0
-       >>> print dot(v1, v2)
-       [ 4 10]
-       >>> dot(v1, v1)._getVariableClass()
-       <class 'fipy.variables.cellVariable.CellVariable'>
-       >>> print dot(v1, v1)
-       [ 4 10]
-       >>> type(dot(v2, v2))
-       <type 'numpy.ndarray'>
-       >>> print dot(v2, v2)
-       [ 4 10]
-       
-    
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(nx=2, ny=1)
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
+    >>> v2 = array(((0,1),(2, 3)))
+    >>> dot(v1, v2)._getVariableClass()
+    <class 'fipy.variables.cellVariable.CellVariable'>
+    >>> dot(v2, v1)._getVariableClass()
+    <class 'fipy.variables.cellVariable.CellVariable'>
+    >>> print rank(dot(v2, v1))
+    0
+    >>> print dot(v1, v2)
+    [ 4 10]
+    >>> dot(v1, v1)._getVariableClass()
+    <class 'fipy.variables.cellVariable.CellVariable'>
+    >>> print dot(v1, v1)
+    [ 4 10]
+    >>> type(dot(v2, v2))
+    <type 'numpy.ndarray'>
+    >>> print dot(v2, v2)
+    [ 4 10]
     """
 
     ## have to check MA since MA's have dot() method!!!
@@ -1049,10 +914,10 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     Tests whether or not `first` and `second` are equal, subect to the given
     relative and absolute tolerances, such that::
         
-        | first - second | < atol + rtol * | second |
+       |first - second| < atol + rtol * |second|
         
-    This means essentially that both elements are small compared to `atol` or
-    their difference divided by `second`'s value is small compared to `rtol`.
+    This means essentially that both elements are small compared to ``atol`` or
+    their difference divided by ``second``'s value is small compared to ``rtol``.
     """
     if _isPhysical(first):
         return first.allclose(other=second, atol=atol, rtol=rtol)
@@ -1066,10 +931,10 @@ def isclose(first, second, rtol=1.e-5, atol=1.e-8):
     Returns which elements of `first` and `second` are equal, subect to the given
     relative and absolute tolerances, such that::
         
-        | first - second | < atol + rtol * | second |
-        
-    This means essentially that both elements are small compared to `atol` or
-    their difference divided by `second`'s value is small compared to `rtol`.
+        |first - second| < atol + rtol * |second|
+
+    This means essentially that both elements are small compared to ``atol`` or
+    their difference divided by ``second``'s value is small compared to ``rtol``.
     """
     return abs(first - second) < atol + rtol * abs(second)
 
@@ -1417,10 +1282,8 @@ def L1norm(arr):
       - `arr`: The `array` to evaluate.
       
     :Returns: 
-      .. raw:: latex
-
-         $\|\mathtt{arr}\|_1 = \sum_{j=1}^{n} |\mathtt{arr}_j|$ is the
-         $L^1$-norm of $\mathtt{arr}$.
+      :math:`\|\mathtt{arr}\|_1 = \sum_{j=1}^{n} |\mathtt{arr}_j|` is the
+      :math:`L^1`-norm of :math:`\mathtt{arr}`.
     """
     return add.reduce(abs(arr))
     
@@ -1430,10 +1293,8 @@ def L2norm(arr):
       - `arr`: The `array` to evaluate.
       
     :Returns: 
-      .. raw:: latex
-
-         $\|\mathtt{arr}\|_2 = \sqrt{\sum_{j=1}^{n} |\mathtt{arr}_j|^2}$ is
-         the $L^2$-norm of $\mathtt{arr}$.
+      :math:`\|\mathtt{arr}\|_2 = \sqrt{\sum_{j=1}^{n} |\mathtt{arr}_j|^2}` is
+      the :math:`L^2`-norm of :math:`\mathtt{arr}`.
     """
     return sqrt(add.reduce(arr**2))
     
@@ -1443,11 +1304,9 @@ def LINFnorm(arr):
       - `arr`: The `array` to evaluate.
       
     :Returns: 
-      .. raw:: latex
-
-         $\|\mathtt{arr}\|_\infty = [\sum_{j=1}^{n}
-         |\mathtt{arr}_j|^\infty]^\infty = \over{\max}{j}
-         |\mathtt{arr}_j|$ is the $L^\infty$-norm of $\mathtt{arr}$.
+      :math:`\|\mathtt{arr}\|_\infty = [\sum_{j=1}^{n}
+      |\mathtt{arr}_j|^\infty]^\infty = \over{\max}{j} |\mathtt{arr}_j|` is the
+      :math:`L^\infty`-norm of :math:`\mathtt{arr}`.
     """
     return max(abs(arr))
 

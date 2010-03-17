@@ -24,7 +24,7 @@ Alex Mont
 
 Katie Travis
     developed the automated 
-    ``--inline`` optimization code for ``Variable`` objects 
+    :option:`--inline` optimization code for ``Variable`` objects 
     while she was a SURF_ student from `Smith College`_.
   
 Max Gibiansky
@@ -34,10 +34,6 @@ Max Gibiansky
 `Andrew Reeve`_
     added support for anistropic diffusion coefficients while he was on 
     sabbatical from the `University of Maine`_.
-
-.. include:: ../utils/include.txt
-
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
 .. |MSEL| replace:: the `Materials Science and Engineering Laboratory`_
 .. |CTCMS| replace:: the `Center for Theoretical and Computational Materials Science`_

@@ -44,7 +44,29 @@ from fipy.tools import parser
 from fipy.tools import inline
 
 class Variable(object):
-    
+    """
+    Lazily evaluated quantity with units. 
+
+    Using a :class:`~fipy.variables.variable.Variable` in a mathematical expression will create an
+    automatic dependency :class:`~fipy.variables.variable.Variable`, e.g.,
+
+    >>> a = Variable(value=3)
+    >>> b = 4 * a
+    >>> b
+    (Variable(value=3) * 4)
+    >>> b()
+    12
+        
+    Changes to the value of a :class:`~fipy.variables.variable.Variable` will automatically trigger
+    changes in any dependent :class:`~fipy.variables.variable.Variable` objects
+
+    >>> a.setValue(5)
+    >>> b
+    (Variable(value=5) * 4)
+    >>> b()
+    20
+    """
+
     _cacheAlways = (os.getenv("FIPY_CACHE") is not None) or False
     if parser.parse("--no-cache", action="store_true"):
         _cacheAlways = False
@@ -52,30 +74,6 @@ class Variable(object):
         _cacheAlways = True
 
     _cacheNever = False
-    
-    """
-    Lazily evaluated quantity with units. 
-    
-    Using a `Variable` in a mathematical expression will create an automatic
-    dependency `Variable`, e.g.,
-    
-        >>> a = Variable(value=3)
-        >>> b = 4 * a
-        >>> b
-        (Variable(value=3) * 4)
-        >>> b()
-        12
-        
-    Changes to the value of a `Variable` will automatically trigger changes in
-    any dependent `Variable` objects
-    
-        >>> a.setValue(5)
-        >>> b
-        (Variable(value=5) * 4)
-        >>> b()
-        20
-        
-    """
     
     def __new__(cls, *args, **kwds):
         return object.__new__(cls)
