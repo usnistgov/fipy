@@ -2,7 +2,10 @@ include *.txt
 # include MANIFEST MANIFEST.in *.txt
 
 recursive-include documentation *.txt
-recursive-include documentation/_build/html *.html *.css *.gif *.png
+recursive-exclude examples *.png *.pdf
+recursive-exclude fipy *.png *.pdf
+
+# recursive-include documentation/_build/html *.html *.css *.gif *.png
 include documentation/_build/latex/fipy.pdf
 
 recursive-include examples *.py *.msh *.gz
