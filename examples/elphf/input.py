@@ -175,7 +175,7 @@ We again create the phase equation as in ``examples.elphf.phase.input1D``
     >>> mesh.setScale(1)
 
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
-    ...     == ImplicitDiffusionTerm(coeff = phase.gradientEnergy) \
+    ...     == DiffusionTerm(coeff = phase.gradientEnergy) \
     ...     - (permitivityPrime / 2.) * potential.getGrad().dot(potential.getGrad())
 
 We linearize the source term in the same way as in `example.phase.simple.input1D`.
@@ -216,7 +216,7 @@ and we create the diffustion equation for the solute as in
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     Cj.equation = (TransientTerm()
-    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    == DiffusionTerm(coeff=Cj.diffusivity)
     ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
     
     >>> for Cj in interstitials:
@@ -231,7 +231,7 @@ and we create the diffustion equation for the solute as in
     ...         (phaseTransformation + electromigration)
     ...
     ...     Cj.equation = (TransientTerm()
-    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    == DiffusionTerm(coeff=Cj.diffusivity)
     ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 And Poisson's equation
@@ -240,7 +240,7 @@ And Poisson's equation
     >>> for Cj in interstitials + substitutionals:
     ...     charge += Cj * Cj.valence
 
-    >>> potential.equation = ImplicitDiffusionTerm(coeff = permittivity) + charge == 0
+    >>> potential.equation = DiffusionTerm(coeff = permittivity) + charge == 0
 
 If running interactively, we create viewers to display the results
 

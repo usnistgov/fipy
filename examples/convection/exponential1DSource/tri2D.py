@@ -32,69 +32,67 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 This example solves the steady-state convection-diffusion equation as described in
-`./examples/diffusion/convection/exponential1D/mesh1D.py` but uses a constant source
+:mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses a constant source
 value such that,
 
-.. raw:: latex
+.. math::
 
-    $$ S_c = 1. $$
+   S_c = 1.
 
-Here the axes are reversed (`nx = 1`, `ny = 1000`) and
+Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 
-.. raw:: latex
+.. math::
 
-    $$ \\vec{u} = (0, 10) $$
+   \vec{u} = (0, 10)
 
-.. 
+>>> from fipy import *
 
-    >>> from fipy import *
+>>> L = 10.
+>>> nx = 1
+>>> ny = 1000
+>>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
 
-    >>> L = 10.
-    >>> nx = 1
-    >>> ny = 1000
-    >>> mesh = Tri2D(dx = L / ny, dy = L / ny, nx = nx, ny = ny)
-    
-    >>> valueBottom = 0.
-    >>> valueTop = 1.
+>>> valueBottom = 0.
+>>> valueTop = 1.
 
-    >>> var = CellVariable(name = "concentration",
-    ...                    mesh = mesh,
-    ...                    value = valueBottom)
+>>> var = CellVariable(name = "concentration",
+...                    mesh = mesh,
+...                    value = valueBottom)
 
-    >>> boundaryConditions = (
-    ...     FixedValue(mesh.getFacesBottom(), valueBottom),
-    ...     FixedValue(mesh.getFacesTop(), valueTop),
-    ... )
+>>> boundaryConditions = (
+...     FixedValue(mesh.getFacesBottom(), valueBottom),
+...     FixedValue(mesh.getFacesTop(), valueTop),
+... )
 
-    >>> diffCoeff = 1.
-    >>> convCoeff = (0., 10.)
-    >>> sourceCoeff = 1.
+>>> diffCoeff = 1.
+>>> convCoeff = (0., 10.)
+>>> sourceCoeff = 1.
 
-    >>> eq = (-sourceCoeff - ImplicitDiffusionTerm(coeff = diffCoeff)
-    ...       - ExponentialConvectionTerm(coeff = convCoeff))
+>>> eq = (-sourceCoeff - DiffusionTerm(coeff = diffCoeff)
+...       - ExponentialConvectionTerm(coeff = convCoeff))
 
-    >>> eq.solve(var = var,
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
+>>> eq.solve(var = var,
+...          boundaryConditions = boundaryConditions,
+...          solver = LinearLUSolver(tolerance = 1.e-15, iterations = 2000))
 
 The analytical solution test for this problem is given by:
 
-    >>> axis = 1
-    >>> y = mesh.getCellCenters()[axis]
-    >>> AA = -sourceCoeff * y / convCoeff[axis]
-    >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
-    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
-    >>> analyticalArray = AA + BB * CC / DD
-    >>> print var.allclose(analyticalArray, atol = 1e-5) 
-    1
-    
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars = var)
-    ...     viewer.plot()
+>>> axis = 1
+>>> y = mesh.getCellCenters()[axis]
+>>> AA = -sourceCoeff * y / convCoeff[axis]
+>>> BB = 1. + sourceCoeff * L / convCoeff[axis]
+>>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
+>>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> analyticalArray = AA + BB * CC / DD
+>>> print var.allclose(analyticalArray, atol = 1e-5) 
+1
+
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars = var)
+...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
 

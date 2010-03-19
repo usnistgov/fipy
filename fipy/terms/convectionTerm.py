@@ -97,7 +97,7 @@ class ConvectionTerm(FaceTerm):
         
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
-          - `diffusionTerm` : ** deprecated **. The Peclet number is calculated automatically.
+          - `diffusionTerm` : **deprecated**. The Peclet number is calculated automatically.
         """
         if self.__class__ is ConvectionTerm:
             raise NotImplementedError, "can't instantiate abstract base class"

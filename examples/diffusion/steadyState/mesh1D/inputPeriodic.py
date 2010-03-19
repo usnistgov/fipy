@@ -64,7 +64,7 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
 A `TransientTerm` is used to provide some fixed point, otherwise the
 solver has no fixed value and can become unstable.
     
-    >>> eq = TransientTerm(coeff = 1e-7) - ImplicitDiffusionTerm()
+    >>> eq = TransientTerm(coeff = 1e-7) - DiffusionTerm()
     >>> eq.solve(var = var)
 
     >>> if __name__ == '__main__':

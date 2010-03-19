@@ -37,16 +37,16 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.transientTerm import TransientTerm
 from advectionTerm import _AdvectionTerm
 
-def buildAdvectionEquation(advectionCoeff = None,
-                           advectionTerm = None):
+def buildAdvectionEquation(advectionCoeff=None,
+                           advectionTerm=None):
     r"""
 
     The `buildAdvectionEquation` function constructs and returns an
     advection equation. The advection equation is given by:
 
-    .. raw:: latex
+    .. math::
 
-        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0.$$
+       \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0.
 
     This solution method for the `_AdvectionTerm` is set up specifically to
     evolve `var` while preserving `var` as a distance function. This
@@ -54,7 +54,7 @@ def buildAdvectionEquation(advectionCoeff = None,
     object. Further details of the numerical method can be found in "Level
     Set Methods and Fast Marching Methods" by J.A. Sethian, Cambridge
     University Press, 1999. Testing for the advection equation is in
-    `examples.levelSet.advection`
+    :mod:`examples.levelSet.advection`
 
     :Parameters:
       - `advectionCoeff`: The coeff to pass to the `advectionTerm`.

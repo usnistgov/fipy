@@ -66,8 +66,8 @@
 """
 Physical quantities with units.
 
-This module derives from `Konrad Hinsen`_'s PhysicalQuantity_
-|citePhysicalQuantity|.
+This module derives from `Konrad Hinsen`_'s :class:`PhysicalQuantity`
+<http://dirac.cnrs-orleans.fr/ScientificPython/ScientificPythonManual/Scientific.Physics.PhysicalQuantities-module.html>.
 
 This module provides a data type that represents a physical
 quantity together with its unit. It is possible to add and
@@ -90,10 +90,6 @@ recommended values from CODATA_. Other conversion factors
 
 .. _Konrad Hinsen:                              mailto:hinsen@cnrs-orleans.fr
 .. _PhysicalQuantity:                           http://starship.python.net/~hinsen/ScientificPython/ScientificPythonManual/Scientific_31.html
-.. |citePhysicalQuantity| raw:: latex
-
-   \cite{PhysicalQuantity}
-   
 .. _CODATA:                                     http://www.codata.org/
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """

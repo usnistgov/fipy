@@ -46,152 +46,152 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     The `_HigherOrderAdvectionTerm` object constructs the `b` vector contribution for
     the advection term given by
 
-    .. raw:: latex
+    .. math::
     
-        $$ u | \nabla \phi | $$
+       u \abs{\nabla \phi}
 
     from the advection equation given by:
 
-    .. raw:: latex
+    .. math::
 
-        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0$$
+       \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding as in the standard
     `_AdvectionTerm`. The higher order terms are incorperated as follows.
     The formula used here is given by:
 
-    .. raw:: latex
+    .. math::
 
-        $$ u_P | \nabla \phi |_P = \max \left( u_P , 0 \right) \left[  \sum_A \min \left( D_{AP}, 0 \right)^2 \right]^{1/2} +  \min \left( u_P , 0 \right) \left[  \sum_A \max \left( D_{AP}, 0 \right)^2 \right]^{1/2} $$
+       u_P \abs{\nabla \phi}_P = \max \left( u_P , 0 \right) \left[  \sum_A \min \left( D_{AP}, 0 \right)^2 \right]^{1/2} +  \min \left( u_P , 0 \right) \left[  \sum_A \max \left( D_{AP}, 0 \right)^2 \right]^{1/2}
 
     where,
 
-    .. raw:: latex
+    .. math::
 
-        $$ D_{AP} = \frac{ \phi_A - \phi_P } { d_{AP}} - \frac{ d_{AP} } {2} m \left(L_A, L_P \right) $$
+       D_{AP} = \frac{ \phi_A - \phi_P } { d_{AP}} - \frac{ d_{AP} } {2} m \left(L_A, L_P \right)
 
     and
 
-    .. raw:: latex
+    .. math::
 
-        $$ m\left(x, y\right) = x \;\; \text{if} \;\; |x| \le |y| \;\; xy \ge 0 $$
-        $$ m\left(x, y\right) = y \;\; \text{if} \;\; |x| > |y|   \;\; xy \ge 0 $$
-        $$ m\left(x, y\right) = 0 \;\; \text{if} \;\; xy < 0 $$
+       m\left(x, y\right) &= x \qquad \text{if $\abs{x} \le \abs{y} \forall xy \ge 0$} \\
+       m\left(x, y\right) &= y \qquad \text{if $\abs{x} > \abs{y} \forall xy \ge 0$} \\
+       m\left(x, y\right) &= 0 \qquad \text{if $xy < 0$}
     
     also,
 
-    .. raw:: latex
+    .. math::
 
-        $$ L_A = \frac{\phi_{AA} + \phi_P - 2 \phi_A}{d_{AP}^2} $$
-        $$ L_P = \frac{\phi_{A} + \phi_{PP} - 2 \phi_P}{d_{AP}^2} $$
+       L_A &= \frac{\phi_{AA} + \phi_P - 2 \phi_A}{d_{AP}^2} \\
+       L_P &= \frac{\phi_{A} + \phi_{PP} - 2 \phi_P}{d_{AP}^2}
 
     Here are some simple test cases for this problem:
 
-        >>> from fipy.meshes.grid1D import Grid1D
-        >>> from fipy.solvers import *
-        >>> SparseMatrix = LinearPCGSolver()._getMatrixClass()
-        >>> mesh = Grid1D(dx = 1., nx = 3) 
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.solvers import *
+    >>> SparseMatrix = LinearPCGSolver()._getMatrixClass()
+    >>> mesh = Grid1D(dx = 1., nx = 3) 
    
     Trivial test:
 
-        >>> from fipy.variables.cellVariable import CellVariable
-        >>> coeff = CellVariable(mesh = mesh, value = numerix.zeros(3, 'd'))
-        >>> L, b = _HigherOrderAdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix)
-        >>> numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
-        1
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.zeros(3, 'd'))
+    >>> L, b = _HigherOrderAdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix)
+    >>> numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
+    1
    
     Less trivial test:
 
-        >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3))
-        >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
-        >>> numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
-        1
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3))
+    >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
+    1
 
     Even less trivial
 
-        >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3)) 
-        >>> L, b = _HigherOrderAdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix)
-        >>> numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
-        1
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3)) 
+    >>> L, b = _HigherOrderAdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix)
+    >>> numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
+    1
 
     Another trivial test case (more trivial than a trivial test case
     standing on a harpsichord singing 'trivial test cases are here again')
 
-       >>> vel = numerix.array((-1, 2, -3))
-       >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1))) 
-       >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-       >>> numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
-       1
+    >>> vel = numerix.array((-1, 2, -3))
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1))) 
+    >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
+    1
 
     Somewhat less trivial test case:
 
-        >>> from fipy.meshes.grid2D import Grid2D
-        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
-        >>> vel = numerix.array((3, -5, -6, -3))
-        >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3 , 1, 6, 7)))
-        >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-        >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
-        >>> numerix.allclose(b, answer, atol = 1e-10)
-        1
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+    >>> vel = numerix.array((3, -5, -6, -3))
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3 , 1, 6, 7)))
+    >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
+    >>> numerix.allclose(b, answer, atol = 1e-10)
+    1
 
     For the above test cases the `_HigherOrderAdvectionTerm` gives the
     same result as the `_AdvectionTerm`. The following test imposes a quadratic
     field. The higher order term can resolve this field correctly.
 
-    .. raw:: latex
+    .. math::
 
-        $$ \phi = x^2 $$
+       \phi = x^2
 
-    The returned vector `b` should have the value:
+    The returned vector ``b`` should have the value:
 
-    .. raw:: latex
+    .. math::
 
-        $$ -|\nabla \phi| = -\left|\frac{\partial \phi}{\partial x}\right| = - 2 |x| $$
+       -\abs{\nabla \phi} = -\left|\frac{\partial \phi}{\partial x}\right| = - 2 \abs{x}
 
     Build the test case in the following way,
 
-        >>> mesh = Grid1D(dx = 1., nx = 5)
-        >>> vel = 1.
-        >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[0]**2)
-        >>> L, b = _AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> mesh = Grid1D(dx = 1., nx = 5)
+    >>> vel = 1.
+    >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[0]**2)
+    >>> L, b = _AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
         
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
 
-        >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
-        0
+    >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
+    0
 
     The higher order term is spot on.
 
-        >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-        >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
-        1
+    >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
+    1
 
     The `_HigherOrderAdvectionTerm` will also resolve a circular field with
     more accuracy,
 
-    .. raw:: latex
+    .. math::
 
-        $$ \phi = \left( x^2 + y^2 \right)^{1/2} $$
+       \phi = \left( x^2 + y^2 \right)^{1/2}
 
     Build the test case in the following way,
 
-        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
-        >>> vel = 1.
-        >>> x, y = mesh.getCellCenters()
-        >>> r = numerix.sqrt(x**2 + y**2)
-        >>> coeff = CellVariable(mesh = mesh, value = r)
-        >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
-        >>> error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print error.max()
-        0.123105625618
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
+    >>> vel = 1.
+    >>> x, y = mesh.getCellCenters()
+    >>> r = numerix.sqrt(x**2 + y**2)
+    >>> coeff = CellVariable(mesh = mesh, value = r)
+    >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
+    >>> print error.max()
+    0.123105625618
 
     The maximum error is large (about 12 %) for the first order advection.
 
-        >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
-        >>> error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
-        >>> print error.max()
-        0.0201715476597
+    >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> error = numerix.reshape(numerix.reshape(b, (10,10))[2:-2,2:-2] + 1, (36,))
+    >>> print error.max()
+    0.0201715476597
 
     The maximum error is 2 % when using a higher order contribution.
 
