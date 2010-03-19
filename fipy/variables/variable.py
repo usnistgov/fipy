@@ -53,7 +53,7 @@ class Variable(object):
     >>> a = Variable(value=3)
     >>> b = 4 * a
     >>> b
-    (Variable(value=3) * 4)
+    (Variable(value=array(3)) * 4)
     >>> b()
     12
         
@@ -62,7 +62,7 @@ class Variable(object):
 
     >>> a.setValue(5)
     >>> b
-    (Variable(value=5) * 4)
+    (Variable(value=array(5)) * 4)
     >>> b()
     20
     """
