@@ -43,13 +43,12 @@ class GammaNoiseVariable(NoiseVariable):
     Represents a gamma distribution of random numbers with the probability
     distribution
     
-    .. raw:: latex
+    .. math::
     
-    
-       \[ x^{\alpha - 1}\frac{\beta^\alpha e^{-\beta x}}{\Gamma(\alpha)} \]
+       x^{\alpha - 1}\frac{\beta^\alpha e^{-\beta x}}{\Gamma(\alpha)}
        
-       with a shape parameter $\alpha$, a rate parameter $\beta$, and 
-       $\Gamma(z) = \int_0^\infty t^{z - 1}e^{-t}\,dt$.
+    with a shape parameter :math:`\alpha`, a rate parameter :math:`\beta`, and 
+    :math:`\Gamma(z) = \int_0^\infty t^{z - 1}e^{-t}\,dt`.
 
     We generate noise on a uniform cartesian mesh
            
@@ -93,11 +92,11 @@ class GammaNoiseVariable(NoiseVariable):
            >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
            1
 
-    .. image:: fipy/variables/gamma.jpg
+    .. image:: fipy/variables/gamma.*
       :scale: 25
       :align: center
 
-    .. image:: fipy/variables/gamma-histogram.pdf
+    .. image:: fipy/variables/gamma-histogram.*
       :scale: 25
       :align: center
 
@@ -106,17 +105,8 @@ class GammaNoiseVariable(NoiseVariable):
         r"""
         :Parameters:
             - `mesh`: The mesh on which to define the noise.
-            - `shape`: The shape parameter,
-            
-              .. raw:: latex
-              
-                 $\alpha$.
-                 
-            - `rate`: The rate or inverse scale parameter,
-            
-              .. raw:: latex
-              
-                 $\beta$.
+            - `shape`: The shape parameter, :math:`\alpha`.
+            - `rate`: The rate or inverse scale parameter, :math:`\beta`.
                  
         """
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)

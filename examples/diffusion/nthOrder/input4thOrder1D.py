@@ -34,127 +34,96 @@
 
 r"""
 
-This example uses the `ImplicitDiffusionTerm` class to solve the equation
+This example uses the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` class to solve the equation
 
-.. raw:: latex
+.. math::
 
-    $$ \frac{\partial^4 \phi}{\partial x^4} = 0 $$
+   \frac{\partial^4 \phi}{\partial x^4} = 0
 
 on a 1D mesh of length
 
-    >>> L = 1000.
+>>> L = 1000.
     
 We create an appropriate mesh
 
-.. raw:: latex
+.. index:: Grid1D
 
-   \IndexClass{Grid1D}
+>>> from fipy import *
 
-..
-
-    >>> from fipy import *
-
-    >>> nx = 1000
-    >>> dx = L / nx
-    >>> mesh = Grid1D(dx=dx, nx=nx)
+>>> nx = 1000
+>>> dx = L / nx
+>>> mesh = Grid1D(dx=dx, nx=nx)
 
 and initialize the solution variable to 0
 
-.. raw:: latex
+.. index:: CellVariable
 
-   \IndexClass{CellVariable}
-
-..
-
-    >>> var = CellVariable(mesh=mesh, name='solution variable')
+>>> var = CellVariable(mesh=mesh, name='solution variable')
     
 For this problem, we impose the boundary conditions:
 
-.. raw:: latex
+.. math::
 
-    \begin{alignat*}{2}
-    \phi &= \alpha_1 &\quad& \text{at $x = 0$} \\
-    \frac{\partial \phi}{\partial x} &= \alpha_2 && \text{at $x = L$} \\
-    \frac{\partial^2 \phi}{\partial x^2} &= \alpha_3 && \text{at $x = 0$} \\
-    \frac{\partial^3 \phi}{\partial x^3} &= \alpha_4 && \text{at $x = L$.}
-    \end{alignat*}
+   \phi &= \alpha_1 \quad \text{at $x = 0$} \\
+   \frac{\partial \phi}{\partial x} &= \alpha_2 \quad \text{at $x = L$} \\
+   \frac{\partial^2 \phi}{\partial x^2} &= \alpha_3 \quad \text{at $x = 0$} \\
+   \frac{\partial^3 \phi}{\partial x^3} &= \alpha_4 \quad \text{at $x = L$.}
     
 or
 
-    >>> alpha1 = 2.
-    >>> alpha2 = 1.
-    >>> alpha3 = 4.
-    >>> alpha4 = -3.
+>>> alpha1 = 2.
+>>> alpha2 = 1.
+>>> alpha3 = 4.
+>>> alpha4 = -3.
     
-.. raw:: latex
+.. index:: FixedValue, FixedFlux, NthOrderBoundaryCondition
 
-   \IndexClass{FixedValue}
-   \IndexClass{FixedFlux}
-   \IndexClass{NthOrderBoundaryCondition}
-
-..
-    
-    >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=alpha1),
-    ...        FixedFlux(faces=mesh.getFacesRight(), value=alpha2),
-    ...        NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
-    ...        NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=alpha4, order=3))
+>>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=alpha1),
+...        FixedFlux(faces=mesh.getFacesRight(), value=alpha2),
+...        NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
+...        NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=alpha4, order=3))
 
 We initialize the steady-state equation
     
-.. raw:: latex
-
-   \IndexClass{ImplicitDiffusionTerm}
-
-..
-
-    >>> eq = ImplicitDiffusionTerm(coeff=(1, 1)) == 0
+>>> eq = DiffusionTerm(coeff=(1, 1)) == 0
     
-and use the `LinearLUSolver` for stability. 
-
-.. raw:: latex
-
-   \IndexClass{LinearLUSolver}
-
-..
+and use the :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` for stability. 
 
 We perform one implicit timestep to achieve steady state
 
     
-    >>> eq.solve(var=var,
-    ...          boundaryConditions=BCs,
-    ...          solver=DefaultAsymmetricSolver())
+>>> eq.solve(var=var,
+...          boundaryConditions=BCs,
+...          solver=DefaultAsymmetricSolver())
 
 The analytical solution is:
 
-.. raw:: latex
+.. math::
 
-   $$ \phi = \frac{ \alpha_4 }{6} x^3 + \frac{ \alpha_3 }{2} x^2 
-   + \left( \alpha_2 - \frac{ \alpha_4 }{2} L^2  - \alpha_3 L \right) x + \alpha_1 $$
+   \phi = \frac{ \alpha_4 }{6} x^3 + \frac{ \alpha_3 }{2} x^2 
+   + \left( \alpha_2 - \frac{ \alpha_4 }{2} L^2  - \alpha_3 L \right) x + \alpha_1
 
 or
 
-    >>> analytical = CellVariable(mesh=mesh, name='analytical value')
-    >>> x = mesh.getCellCenters()[0]
-    >>> analytical.setValue(alpha4 / 6. * x**3 + alpha3 / 2. * x**2 + \
-    ...                     (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1)
+>>> analytical = CellVariable(mesh=mesh, name='analytical value')
+>>> x = mesh.getCellCenters()[0]
+>>> analytical.setValue(alpha4 / 6. * x**3 + alpha3 / 2. * x**2 + \
+...                     (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1)
 
-    >>> print var.allclose(analytical, rtol=1e-4)
-    1
+>>> print var.allclose(analytical, rtol=1e-4)
+1
 
 If the problem is run interactively, we can view the result:
     
-.. raw:: latex
+.. index::
+   module: fipy.viewers
 
-   \IndexModule{viewers}
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=(var, analytical))
+...     viewer.plot()
 
-..
-
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=(var, analytical))
-    ...     viewer.plot()
-
-.. image:: examples/diffusion/nthOrder/input4thOrder1D.pdf
-   :scale: 50
+.. image:: input4thOrder1D.*
+   :width: 90%
    :align: center
 
 """

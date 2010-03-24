@@ -1,16 +1,18 @@
---------
+.. _part:examples:
+
+========
 Examples
---------
+========
 
 .. note::
 
-   Any given "Module example.something.input" can be found in the file
-   "``examples/something/input.py``".
+   Any given module ":mod:`example.something.input`" can be found in the
+   file ":file:`examples/something/input.py`".
 
 These examples can be used in at least four ways:
 
 - Each example can be invoked individually to demonstrate an 
-  application of |FiPy|::
+  application of :term:`FiPy`::
 
     $ examples/something/input.py
 
@@ -51,13 +53,22 @@ These examples can be used in at least four ways:
 
      
 In addition to those presented in this manual, there are dozens of other
-files in the ``examples/`` directory (all with "``input``" in their title),
-that demonstrate other uses of FiPy.  If these examples do not help you
-construct your own problem scripts, please `contact us`_.
+files in the :file:`examples/` directory, that demonstrate other uses of FiPy.
+If these examples do not help you construct your own problem scripts,
+please `contact us`_.
 
-.. include:: ../utils/include.txt
+.. toctree::
+   :maxdepth: 2
 
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+   diffusion/index
+   convection/index
+   phase/index
+   levelSet/index
+   cahnHilliard/index
+   flow/index
+   updating/index
+
+
 .. _Python:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
 .. _doctest:        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/doc/current/lib/module-doctest.html
 .. _contact us:     mailto:fipy@nist.gov

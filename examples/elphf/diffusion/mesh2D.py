@@ -127,7 +127,7 @@ We create one diffusion equation for each substitutional component
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     Cj.equation = (TransientTerm()
-    ...                    == ImplicitDiffusionTerm(coeff=Cj.diffusivity)
+    ...                    == DiffusionTerm(coeff=Cj.diffusivity)
     ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
 If we are running interactively, we create a viewer to see the results 

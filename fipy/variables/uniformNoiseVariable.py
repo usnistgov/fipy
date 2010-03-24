@@ -63,11 +63,11 @@ class UniformNoiseVariable(NoiseVariable):
         ...         viewer.plot()
         ...         histoplot.plot()
 
-    .. image:: fipy/variables/uniform.jpg
+    .. image:: fipy/variables/uniform.*
        :scale: 25
        :align: center
 
-    .. image:: fipy/variables/uni-histogram.pdf
+    .. image:: fipy/variables/uni-histogram.*
        :scale: 25
        :align: center
     """

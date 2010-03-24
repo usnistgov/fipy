@@ -154,10 +154,10 @@ class Solver:
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            return numerix.sqrt(numerix.sum(self._calcResidualVector()**2))
+            return numerix.L2norm(self._calcResidualVector())
 
     def _calcRHSNorm(self):
-        return numerix.sqrt(numerix.sum(self.RHSvector**2))
+        return numerix.L2norm(self.RHSvector)
         
     _warningList = (ScalarQuantityOutOfRangeWarning,
                     StagnatedSolverWarning,

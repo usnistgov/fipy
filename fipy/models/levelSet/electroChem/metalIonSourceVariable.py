@@ -39,32 +39,30 @@ from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 
 class _MetalIonSourceVariable(CellVariable):
-    """
-
+    r"""
     The `_MetalIonSourceVariable` object evaluates the source
     coefficient for the `MetalIonEquation`. The source only exists
     on the cells in front of the interface and simulates the loss
     of material from bulk diffusion as the interface advances. The
     source is given by,
 
-    .. raw:: latex
+    .. math::
 
-        $$ D \\hat{n} \\cdot \\nabla c = \\frac{v(c)}{\\Omega} \;\; \\text{at} \;\; \\phi = 0$$ 
+       D \hat{n} \cdot \nabla c = \frac{v(c)}{\Omega} \qquad \text{at $\phi = 0$}
 
     Here is a test,
 
-       >>> from fipy.meshes.grid2D import Grid2D
-       >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
-       >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
-       >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
-       >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
-       >>> depositionRate = CellVariable(mesh=mesh, value=(1, 1, 1, 1))
-       >>> arr = _MetalIonSourceVariable(ionVar, distance, depositionRate, 1)
-       >>> sqrt = numerix.sqrt(2)
-       >>> ans = CellVariable(mesh=mesh, value=(0, 1 / sqrt, 1 / sqrt, 0))
-       >>> print numerix.allclose(arr, ans)
-       True
-
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+    >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
+    >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
+    >>> depositionRate = CellVariable(mesh=mesh, value=(1, 1, 1, 1))
+    >>> arr = _MetalIonSourceVariable(ionVar, distance, depositionRate, 1)
+    >>> sqrt = numerix.sqrt(2)
+    >>> ans = CellVariable(mesh=mesh, value=(0, 1 / sqrt, 1 / sqrt, 0))
+    >>> print numerix.allclose(arr, ans)
+    True
     """
     def __init__(self, ionVar = None, distanceVar = None, depositionRate = None, metalIonMolarVolume = None):
         """

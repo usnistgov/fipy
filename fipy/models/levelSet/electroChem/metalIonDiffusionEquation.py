@@ -54,73 +54,75 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     species with a source term at the electrolyte interface. The governing
     equation is given by,
 
-    .. raw:: latex
+    .. math::
 
-        $$ \frac{\partial c}{\partial t} = \nabla \cdot D \nabla  c $$
+       \frac{\partial c}{\partial t} = \nabla \cdot D \nabla  c
 
     where,
 
-    .. raw:: latex
+    .. math::
 
-        $$ D = D_c \;\; \text{when} \;\; \phi > 0 $$
-        $$ D = 0   \;\; \text{when} \;\; \phi \le 0 $$
+       D = \begin{cases}
+           D_c & \text{when $\phi > 0$} \\
+           0  & \text{when $\phi \le 0$}
+       \end{cases}
 
     The velocity of the interface generally has a linear dependence on ion
     concentration. The following boundary condition applies at the zero
     level set,
 
-    .. raw:: latex
+    .. math::
 
-        $$ D \hat{n} \cdot \nabla c = \frac{v(c)}{\Omega} \;\; \text{at} \;\; \phi = 0$$ 
+       D \hat{n} \cdot \nabla c = \frac{v(c)}{\Omega} \qquad \text{at $phi = 0$}
 
     where
 
-    .. raw:: latex
+    .. math::
 
-        $$ v(c) = c V_0 $$
+       v(c) = c V_0
 
     The test case below is for a 1D steady state problem. The solution is
     given by:
 
-    .. raw:: latex
+    .. math::
 
-        $$ c(x) = \frac{c^{\infty}}{\Omega D / V_0 + L}\left(x - L\right) + c^{\infty} $$
+       c(x) = \frac{c^{\infty}}{\Omega D / V_0 + L}\left(x - L\right) + c^{\infty}
 
     This is the test case,
 
-       >>> from fipy.meshes.grid1D import Grid1D
-       >>> nx = 11
-       >>> dx = 1.
-       >>> from fipy.tools import serial
-       >>> mesh = Grid1D(nx = nx, dx = dx, parallelModule=serial)
-       >>> x, = mesh.getCellCenters()
-       >>> from fipy.variables.cellVariable import CellVariable
-       >>> ionVar = CellVariable(mesh = mesh, value = 1.)
-       >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
-       ...     import DistanceVariable
-       >>> disVar = DistanceVariable(mesh = mesh, 
-       ...                           value = (x - 0.5) - 0.99,
-       ...                           hasOld = 1)
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> nx = 11
+    >>> dx = 1.
+    >>> from fipy.tools import serial
+    >>> mesh = Grid1D(nx = nx, dx = dx, parallelModule=serial)
+    >>> x, = mesh.getCellCenters()
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> ionVar = CellVariable(mesh = mesh, value = 1.)
+    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+    ...     import DistanceVariable
+    >>> disVar = DistanceVariable(mesh = mesh, 
+    ...                           value = (x - 0.5) - 0.99,
+    ...                           hasOld = 1)
 
-       >>> v = 1.
-       >>> diffusion = 1.
-       >>> omega = 1.
-       >>> cinf = 1.
-       >>> from fipy.boundaryConditions.fixedValue import FixedValue
-       >>> eqn = buildMetalIonDiffusionEquation(ionVar = ionVar,
-       ...                                      distanceVar = disVar,
-       ...                                      depositionRate = v * ionVar,
-       ...                                      diffusionCoeff = diffusion,
-       ...                                      metalIonMolarVolume = omega)
-       >>> bc = (FixedValue(mesh.getFacesRight(), cinf),)
-       >>> for i in range(10):
-       ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
-       >>> L = (nx - 1) * dx - dx / 2
-       >>> gradient = cinf / (omega * diffusion / v + L)
-       >>> answer = gradient * (x - L - dx * 3 / 2) + cinf
-       >>> answer[x < dx] = 1
-       >>> print ionVar.allclose(answer)
-       1
+    >>> v = 1.
+    >>> diffusion = 1.
+    >>> omega = 1.
+    >>> cinf = 1.
+    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+    >>> eqn = buildMetalIonDiffusionEquation(ionVar = ionVar,
+    ...                                      distanceVar = disVar,
+    ...                                      depositionRate = v * ionVar,
+    ...                                      diffusionCoeff = diffusion,
+    ...                                      metalIonMolarVolume = omega)
+    >>> bc = (FixedValue(mesh.getFacesRight(), cinf),)
+    >>> for i in range(10):
+    ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
+    >>> L = (nx - 1) * dx - dx / 2
+    >>> gradient = cinf / (omega * diffusion / v + L)
+    >>> answer = gradient * (x - L - dx * 3 / 2) + cinf
+    >>> answer[x < dx] = 1
+    >>> print ionVar.allclose(answer)
+    1
 
     :Parameters:
       - `ionVar`: The metal ion concentration variable.

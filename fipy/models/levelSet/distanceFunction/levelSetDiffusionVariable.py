@@ -39,28 +39,27 @@ from fipy.tools import inline
 from fipy.tools import numerix
 
 class _LevelSetDiffusionVariable(_CellToFaceVariable):
-    """
-
+    r"""
     This variable sets it's face value to zero if either of the
     surrounding cell values are zero else it uses the value of the
     diffusion coefficient. The diffusion coefficient is given by,
 
-    .. raw:: latex
+    .. math::
 
-        $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
-        $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
+        D = \begin{cases}
+            D_c & \text{when $\phi > 0$} \\
+            0  & \text{when $\phi \le 0$}
 
     Here is a simple 1D test case:
 
-       >>> from fipy.meshes.grid2D import Grid2D
-       >>> mesh = Grid2D(dx = 1., nx = 3)
-       >>> from fipy.variables.cellVariable import CellVariable
-       >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
-       >>> from fipy.variables.faceVariable import FaceVariable
-       >>> answer = FaceVariable(mesh=mesh, value=(0,1,1,0,1,1,0,0,1,1))
-       >>> print _LevelSetDiffusionVariable(var, 1).allclose(answer)
-       True
-
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = 1., nx = 3)
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
+    >>> from fipy.variables.faceVariable import FaceVariable
+    >>> answer = FaceVariable(mesh=mesh, value=(0,1,1,0,1,1,0,0,1,1))
+    >>> print _LevelSetDiffusionVariable(var, 1).allclose(answer)
+    True
     """
     def __init__(self, distanceVariable = None, diffusionCoeff = None):
         """

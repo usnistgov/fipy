@@ -1,4 +1,4 @@
-class Parallel:
+class Parallel(object):
     try:
 
         try:
@@ -14,9 +14,10 @@ class Parallel:
         procID = 0
         Nproc = 1
 
-class Serial:
+class Serial(object):
     procID = 0
     Nproc = 1
+
 
 parallel = Parallel()
 serial = Serial()
@@ -25,3 +26,5 @@ import numerix
 import vector
 from dimensions.physicalField import PhysicalField
 from numerix import *
+from vitals import Vitals
+

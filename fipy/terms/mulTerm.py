@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "diffusionTerm.py"
- #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 6/23/09 {4:14:19 PM} 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,14 +86,14 @@ class _MulTerm(Term):
 
         return (matcoeff * L, self.coeff * b)
 
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver, *args, **kwargs):
 
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
         from fipy.solvers import DefaultAsymmetricSolver
-        return solver or DefaultAsymmetricSolver()
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
 
     def __repr__(self):
         """

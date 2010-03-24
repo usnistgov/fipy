@@ -38,36 +38,31 @@ In this example, a phase equation is solved in one dimension with a
 missorientation between two solid domains. 
 The phase equation is given by:
 
-.. raw:: latex
+.. math::
 
-    $$ \tau_{\phi} \frac{\partial \phi}{\partial t} 
-    = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
-    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2 $$
+   \tau_{\phi} \frac{\partial \phi}{\partial t} 
+   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+   - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2
 
 where
 
-.. raw:: latex
+.. math::
 
-    $$ m_1(\phi, T) = \phi - \frac{1}{2} - T \phi ( 1 - \phi ) $$
+   m_1(\phi, T) = \phi - \frac{1}{2} - T \phi ( 1 - \phi )
 
 The initial conditions are:
 
-.. raw:: latex
+.. math::
 
-    \begin{align*}
-    \phi &= 1 \qquad \forall x \\
-    \theta &= \begin{cases}
-    1 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 > (L / 4)^2$} \\
-    0 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 \le (L / 4)^2$}
-    \end{cases} \\
-    T &= 1 \qquad \forall x
-    \end{align*}
+   \phi &= 1 \qquad \forall x \\
+   \theta &= \begin{cases}
+   1 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 > (L / 4)^2$} \\
+   0 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 \le (L / 4)^2$}
+   \end{cases} \\
+   T &= 1 \qquad \forall x
     
 and boundary conditions
-
-.. raw:: latex
-
-    $\phi = 1$ for $x = 0$ and $x = L$.
+:math:`\phi = 1` for :math:`x = 0` and :math:`x = L`.
 
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
@@ -76,22 +71,21 @@ and boundary conditions
    
 Here the phase equation is solved with an explicit technique.
 
-The solution is allowed to evolve for `steps = 100` time steps.
+The solution is allowed to evolve for ``steps = 100`` time steps.
 
-   >>> for step in range(steps):
-   ...     phase.updateOld()
-   ...     phaseEq.solve(phase, dt = timeStepDuration)
+>>> for step in range(steps):
+...     phase.updateOld()
+...     phaseEq.solve(phase, dt = timeStepDuration)
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
-modeling. The following code opens the file `circle.gz` extracts the
-data and compares it with the `theta` variable.
+modeling. The following code opens the file :file:`circle.gz` extracts the
+data and compares it with the ``theta`` variable.
 
-   >>> import os
-   >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
-   >>> print phase.allclose(testData)
-   1
-   
+>>> import os
+>>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
+>>> print phase.allclose(testData)
+1
 """
 __docformat__ = 'restructuredtext'
 

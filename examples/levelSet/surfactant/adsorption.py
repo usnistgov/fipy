@@ -37,72 +37,64 @@ r"""
 This example tests 1D adsorption onto an interface and subsequent
 depletion from the bulk. The governing equations are given by,
 
-.. raw:: latex
+.. math::
 
-    $$ c_t = D c_{xx} $$
-
-.. raw:: latex
-
-    $$ D c_x = \Gamma k c (1 - \theta) \;\; \text{at} \;\; x = 0 $$
-
-and
-
-.. raw:: latex
-
-    $$ c = c^{\infty} \;\; \text{at} \;\; x = L $$
+   c_t &= D c_{xx} \\
+   D c_x &= \Gamma k c (1 - \theta) \qquad\text{at $x = 0$} \\
+   \intertext{and}
+   c $= c^{\infty} \qquad\text{at $x = L$}
 
 and on the interface
 
-.. raw:: latex
+.. math::
 
-    $$ D c_x = -k c (1 - \theta) \;\; \text{at} \;\; x = 0$$
+   D c_x = -k c (1 - \theta) \qquad\text{at $x = 0$}
 
-There is a dimensionless number, M, that goverens whether the system
-is in an interface limited (M>>1) or diffusion limited (M<<1)
-regime. There are analytical solutions for both regimes. The
-dimensionless number is given by:
+There is a dimensionless number :math:`M` that governs whether the system is in
+an interface limited (:math:`M \gg 1`) or diffusion limited (:math:`M \ll 1`)
+regime. There are analytical solutions for both regimes. The dimensionless
+number is given by:
 
-.. raw:: latex
+.. math
 
-    $$ M = \frac{D}{L^2 k cinf} $$
-
+   M = \frac{D}{L^2 k cinf}.
 
 The test solution provided here is for the case of interface limited
 kinetics. The analytical solutions are given by,
 
-.. raw:: latex
+.. math::
 
-    $$ -D \ln \left( 1 - \theta \right) + k L \Gamma_0 \theta = \frac{k D c^{\infty} t}{\Gamma_0} $$
+   -D \ln \left( 1 - \theta \right) + k L \Gamma_0 \theta = \frac{k D c^{\infty} t}{\Gamma_0}
 
 and
 
-.. raw:: latex
+.. math::
 
-    $$ c(x) = \frac{c^{\infty} \left[ k \Gamma_0 (1 - \theta) x / D \right]}{1 + k \Gamma_0 (1 - \theta) L / D$$
+   c(x) = \frac{c^{\infty} \left[ k \Gamma_0 (1 - \theta) x / D \right]}{1 + k \Gamma_0 (1 - \theta) L / D
 
 Make sure the dimensionless parameter is large enough
 
-   >>> (diffusion / cinf / L / L / rateConstant) > 100
-   True
-   
+>>> (diffusion / cinf / L / L / rateConstant) > 100
+True
+
 Start time steping:
 
-   >>> currentTime = 0.
-   >>> for i in range(totalTimeSteps):
-   ...     surfactantVar.updateOld()
-   ...     bulkVar.updateOld()
-   ...     surfEqn.solve(surfactantVar, dt = dt)
-   ...     bulkEqn.solve(bulkVar, dt = dt, boundaryConditions = bcs)
-   ...     currentTime += dt
+>>> currentTime = 0.
+>>> for i in range(totalTimeSteps):
+...     surfactantVar.updateOld()
+...     bulkVar.updateOld()
+...     surfEqn.solve(surfactantVar, dt = dt)
+...     bulkEqn.solve(bulkVar, dt = dt, boundaryConditions = bcs)
+...     currentTime += dt
 
 Compare the analaytical and numerical results:
 
-   >>> theta = surfactantVar.getInterfaceVar()[1]
+>>> theta = surfactantVar.getInterfaceVar()[1]
 
-   >>> allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
-   1
-   >>> allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
-   1
+>>> allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
+1
+>>> allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
+1
 
 
 """

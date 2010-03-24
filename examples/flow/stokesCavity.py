@@ -36,247 +36,236 @@ r"""
 This example is an implementation of a rudimentary Stokes solver. It
 solves the Navier-Stokes equation in the viscous limit,
 
-.. raw:: latex
+.. math::
 
-    $$ \nabla \mu \cdot \nabla \vec{u} = \nabla p $$ and the
-    continuity equation, $$ \nabla \cdot \vec{u} = 0 $$ where $
-    \vec{u} $ is the fluid velocity, $ p $ is the pressure and $\mu$
-    is the viscosity.  The domain in this example is a square cavity
-    of unit dimensions with a moving lid of unit speed.  This example
-    uses the SIMPLE algorithm with Rhie-Chow interpolation to solve
-    the pressure-momentum coupling. Some of the details of the
-    algorithm will be highlighted below but a good reference for this
-    material is Ferziger and Peri\'{c}~\cite{ferziger}. The
-    solution has a high degree of error close to the corners of the
-    domain for the pressure but does a reasonable job of predicting
-    the velocities away from the boundaries. A number of aspects of
-    \FiPy{} need to be improved to have a first class flow
-    solver. These include, higher order spatial diffusion terms,
-    proper wall boundary conditions, improved mass flux evaluation and
-    extrapolation of cell values to the boundaries using gradients.
+   \nabla \mu \cdot \nabla \vec{u} = \nabla p
+   
+and the
+continuity equation,
+
+.. math::
+    
+   \nabla \cdot \vec{u} = 0 
+   
+where :math:`\vec{u}` is the fluid velocity, :math:`p` is the pressure and :math:`\mu`
+is the viscosity.  The domain in this example is a square cavity
+of unit dimensions with a moving lid of unit speed.  This example
+uses the SIMPLE algorithm with Rhie-Chow interpolation to solve
+the pressure-momentum coupling. Some of the details of the
+algorithm will be highlighted below but a good reference for this
+material is Ferziger and Peric [ferziger]_. The 
+solution has a high degree of error close to the corners of the
+domain for the pressure but does a reasonable job of predicting
+the velocities away from the boundaries. A number of aspects of
+:term:`FiPy` need to be improved to have a first class flow
+solver. These include, higher order spatial diffusion terms,
+proper wall boundary conditions, improved mass flux evaluation and
+extrapolation of cell values to the boundaries using gradients.
 
 In the table below a comparison is made with the Dolfyn_ open source
 code on a 100 by 100 grid. The table shows the frequency of values
 that fall within the given error confidence bands. Dolfyn_ has the
 added features described above. When these features are switched off
 the results of Dolfyn_
-    
+and :term:`FiPy` are identical.
+
 .. _Dolfyn:    http://www.dolfyn.net/
 
-.. raw:: latex
+.. tabularcolumns:: r|rrr
+    
+=====================  =====================  =====================  ===================
+\% frequency of cells  x-velocity error (\%)  y-velocity error (\%)  pressure error (\%)
+=====================  =====================  =====================  ===================
+90                     :math:`<0.1`           :math:`< 0.1`          :math:`< 5`        
+5                      0.1 to 0.6             0.1 to 0.3             5 to 11            
+4                      0.6 to 7               0.3 to 4               11 to 35           
+1                      7 to 96                4 to 80                35 to 179          
+0                      :math:`> 96`           :math:`> 80`           :math:`> 179`      
+=====================  =====================  =====================  ===================
 
-    and \FiPy{} are identical.
 
-    \begin{tabular}{r|rrr}
-    \hline
-    \% frequency of cells & x-velocity error (\%) & y-velocity error (\%) & pressure error (\%) \\
-    \hline
-    90                    & $<$ 0.1               & $<$ 0.1               & $<$ 5               \\
-    5                     & 0.1 to 0.6             & 0.1 to 0.3             & 5 to 11              \\
-    4                     & 0.6 to 7               & 0.3 to 4               & 11 to 35             \\
-    1                     & 7 to 96                & 4 to 80                & 35 to 179            \\
-    0                     & $>$ 96                & $>$ 80                & $>$ 179             \\
-    \hline
-    %\caption{The frequency of cell values in \FiPy{} that are within the given error confidence.}
-    \end{tabular}
 
-    To start,
+To start, some parameters are declared.
 
-some parameters are declared.
+>>> from fipy import *
 
-    >>> from fipy import *
-
-    >>> L = 1.0
-    >>> N = 50
-    >>> dL = L / N
-    >>> viscosity = 1.
-    >>> pressureRelaxation = 0.2
-    >>> velocityRelaxation = 0.5
-    >>> if __name__ == '__main__':
-    ...     sweeps = 300
-    ... else:
-    ...     sweeps = 5
+>>> L = 1.0
+>>> N = 50
+>>> dL = L / N
+>>> viscosity = 1.
+>>> pressureRelaxation = 0.2
+>>> velocityRelaxation = 0.5
+>>> if __name__ == '__main__':
+...     sweeps = 300
+... else:
+...     sweeps = 5
 
 Build the mesh.
 
-.. raw:: latex
-
-   \IndexClass{Grid2D}
+.. index:: Grid2D
    
-..
-
-    >>> mesh = Grid2D(nx=N, ny=N, dx=dL, dy=dL)
+>>> mesh = Grid2D(nx=N, ny=N, dx=dL, dy=dL)
 
 Declare the variables.
 
-.. raw:: latex
-
-   \IndexClass{CellVariable}
+.. index:: CellVariable
    
-..
+>>> pressure = CellVariable(mesh=mesh, name='pressure')
+>>> pressureCorrection = CellVariable(mesh=mesh)
+>>> xVelocity = CellVariable(mesh=mesh, name='X velocity')
+>>> yVelocity = CellVariable(mesh=mesh, name='Y velocity')
 
-    >>> pressure = CellVariable(mesh=mesh, name='pressure')
-    >>> pressureCorrection = CellVariable(mesh=mesh)
-    >>> xVelocity = CellVariable(mesh=mesh, name='X velocity')
-    >>> yVelocity = CellVariable(mesh=mesh, name='Y velocity')
+The velocity is required as a rank-1
+:class:`~fipy.variables.faceVariable.FaceVariable` for calculating the mass
+flux. This is a somewhat clumsy aspect of the :term:`FiPy`
+interface that needs improvement.
 
-.. raw:: latex
-
-   The velocity is required as a rank-1 \Class{FaceVariable} for calculating
-   the mass flux. This is a somewhat clumsy aspect of the \FiPy{}
-   interface that needs improvement.
-
-..
-
-    >>> velocity = FaceVariable(mesh=mesh, rank=1)
+>>> velocity = FaceVariable(mesh=mesh, rank=1)
 
 Build the Stokes equations.
 
-.. raw:: latex
-
-   \IndexClass{ImplicitDiffusionTerm}
-   
-..
-
-    >>> xVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1,0])
-    >>> yVelocityEq = ImplicitDiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0,1])
+>>> xVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1,0])
+>>> yVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0,1])
     
-.. raw:: latex
+In this example the SIMPLE algorithm is used to couple the
+pressure and momentum equations. Let us assume we have solved the
+discretized momentum equations using a guessed pressure field
+:math:`p^{\ast}` to obtain a velocity field :math:`\vec{u}^{\ast}`. We would
+like to somehow correct these initial fields to satisfy both the
+discretized momentum and continuity equations. We now try to
+correct these initial fields with a correction such that 
+:math:`\vec{u} = \vec{u}^{\ast} + \vec{u}'` and :math:`p = p^{\ast} + p'`, where
+:math:`\vec{u}` and :math:`p` now satisfy the momentum and continuity
+equations. Substituting the exact solution into the equations we
+obtain, 
 
-    In this example the SIMPLE algorithm is used to couple the
-    pressure and momentum equations. Let us assume we have solved the
-    discretized momentum equations using a guessed pressure field
-    $p^{\ast}$ to obtain a velocity field $\vec{u}^{\ast}$. We would
-    like to somehow correct these initial fields to satisfy both the
-    discretized momentum and continuity equations. We now try to
-    correct these initial fields with a correction such that $\vec{u}
-    = \vec{u}^{\ast} + \vec{u}'$ and $p = p^{\ast} + p'$, where
-    $\vec{u}$ and $p$ now satisfy the momentum and continuity
-    equations. Substituting the exact solution into the equations we
-    obtain, $$ \nabla \mu \cdot \nabla \vec{u}' = \vec{p}' $$ and $$
-    \nabla \cdot \vec{u}^{\ast} + \nabla \cdot \vec{u}' = 0 $$ We now
-    use the discretized form of the equations to write the velocity
-    correction in terms of the pressure correction. The discretized
-    form of the above equation is, $$ a_P \vec{u}'_P = \sum_f a_A
-    \vec{u}'_A - V_P (\nabla p')_P $$ where notation from
-    section~\ref{section:linear-equations} is used. The SIMPLE
-    algorithm drops the second term in the above equation to leave, $$
-    \vec{u}'_{P} = - \frac{ V_P (\nabla p')_P }{ a_P } $$ By
-    substituting the above expression into the continuity equations we
-    obtain the pressure correction equation, $$ \nabla \frac{V_P}{a_P}
-    \cdot \nabla p' = \nabla \cdot \vec{u}^{\ast} $$ In the
-    discretized version of the above equation $V_P / a_P$ is
-    approximated at the face by $A_f d_{AP} / (a_P)_f.$ In \FiPy{} the
-    pressure correction equation can be written as, 
+.. math:: 
+    
+   \nabla \mu \cdot \nabla \vec{u}' = \vec{p}' 
+   
+and 
 
-..   
+.. math::
+   
+   \nabla \cdot \vec{u}^{\ast} + \nabla \cdot \vec{u}' = 0 
+   
+We now
+use the discretized form of the equations to write the velocity
+correction in terms of the pressure correction. The discretized
+form of the above equation is, 
 
-    >>> ap = CellVariable(mesh=mesh)
-    >>> coeff = mesh._getFaceAreas() * mesh._getCellDistances() / ap.getArithmeticFaceValue()
-    >>> pressureCorrectionEq = ImplicitDiffusionTerm(coeff=coeff) - velocity.getDivergence()
+.. math:: 
+    
+   a_P \vec{u}'_P = \sum_f a_A \vec{u}'_A - V_P (\nabla p')_P
+   
+where notation from :ref:`section:linear-equations` is used. The SIMPLE
+algorithm drops the second term in the above equation to leave, 
+
+.. math::
+    
+   \vec{u}'_{P} = - \frac{ V_P (\nabla p')_P }{ a_P }
+   
+By
+substituting the above expression into the continuity equations we
+obtain the pressure correction equation, 
+
+.. math::
+    
+   \nabla \frac{V_P}{a_P} \cdot \nabla p' = \nabla \cdot \vec{u}^{\ast}
+   
+In the
+discretized version of the above equation :math:`V_P / a_P` is
+approximated at the face by :math:`A_f d_{AP} / (a_P)_f`. In :term:`FiPy` the
+pressure correction equation can be written as, 
+
+>>> ap = CellVariable(mesh=mesh)
+>>> coeff = mesh._getFaceAreas() * mesh._getCellDistances() / ap.getArithmeticFaceValue()
+>>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.getDivergence()
 
 Set up the no-slip boundary conditions
 
-.. raw:: latex
-
-   \IndexClass{FixedValue}
+.. index:: FixedValue
    
-..
-
-    >>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),
-    ...        FixedValue(faces=mesh.getFacesRight(), value=0),
-    ...        FixedValue(faces=mesh.getFacesBottom(), value=0),)
-    >>> bcsX = bcs + (FixedValue(faces=mesh.getFacesTop(), value=1),)
-    >>> bcsY = bcs + (FixedValue(faces=mesh.getFacesTop(), value=0),)
+>>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),
+...        FixedValue(faces=mesh.getFacesRight(), value=0),
+...        FixedValue(faces=mesh.getFacesBottom(), value=0),)
+>>> bcsX = bcs + (FixedValue(faces=mesh.getFacesTop(), value=1),)
+>>> bcsY = bcs + (FixedValue(faces=mesh.getFacesTop(), value=0),)
 
 Set up the viewers,
 
-.. raw:: latex
-
-   \IndexModule{viewers}
+.. index::
+   :module: fipy.viewers
    
-..
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=(pressure, xVelocity, yVelocity, velocity))
 
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=(pressure, xVelocity, yVelocity, velocity))
-
-Below, we iterate for a set number of sweeps. We use the `sweep()`
-method instead of `solve()` because we require the residual for
-output.  We also use the `cacheMatrix()`, `getMatrix()`,
-`cacheRHSvector()` and `getRHSvector()` because both the matrix and
+Below, we iterate for a set number of sweeps. We use the :meth:`sweep`
+method instead of :meth:`solve` because we require the residual for
+output.  We also use the :meth:`cacheMatrix`, :meth:`getMatrix`,
+:meth:`cacheRHSvector` and :meth:`getRHSvector` because both the matrix and
 RHS vector are required by the SIMPLE algorithm. Additionally, the
-`sweep()` method is passed an `underRelaxation` factor to relax the
-solution. This argument cannot be passed to `solve()`.
+:meth:`sweep` method is passed an ``underRelaxation`` factor to relax the
+solution. This argument cannot be passed to :meth:`solve`.
 
-.. raw:: latex
-
-    \IndexFunction{sweep}
-    \IndexFunction{cacheMatrix}
-    \IndexFunction{getMatrix}
-    \IndexFunction{cacheRHSvector}
-    \IndexFunction{getRHSvector}
+.. index:: sweep, cacheMatrix, getMatrix, cacheRHSvector, getRHSvector
    
-..
+>>> for sweep in range(sweeps):
+...
+...     ## solve the Stokes equations to get starred values
+...     xVelocityEq.cacheMatrix()
+...     xres = xVelocityEq.sweep(var=xVelocity,
+...                              boundaryConditions=bcsX,
+...                              underRelaxation=velocityRelaxation)
+...     xmat = xVelocityEq.getMatrix()
+...
+...     yres = yVelocityEq.sweep(var=yVelocity,
+...                              boundaryConditions=bcsY,
+...                              underRelaxation=velocityRelaxation)
+...
+...     ## update the ap coefficient from the matrix diagonal
+...     ap[:] = -xmat.takeDiagonal()
+...
+...     ## update the face velocities based on starred values
+...     velocity[0] = xVelocity.getArithmeticFaceValue()
+...     velocity[1] = yVelocity.getArithmeticFaceValue()
+...     velocity[..., mesh.getExteriorFaces().getValue()] = 0.
+...
+...     ## solve the pressure correction equation
+...     pressureCorrectionEq.cacheRHSvector()
+...     pres = pressureCorrectionEq.sweep(var=pressureCorrection)
+...     rhs = pressureCorrectionEq.getRHSvector()
+...
+...     ## update the pressure using the corrected value but hold one cell fixed
+...     pressure.setValue(pressure + pressureRelaxation * \
+...                                            (pressureCorrection - pressureCorrection.getGlobalValue()[0]))
+...     ## update the velocity using the corrected pressure
+...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
+...                                                ap * mesh.getCellVolumes())
+...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[1] / \
+...                                                ap * mesh.getCellVolumes())
+...
+...     if __name__ == '__main__':
+...         if sweep%1 == 0:
+...             print 'sweep:',sweep,', x residual:',xres, \
+...                                  ', y residual',yres, \
+...                                  ', p residual:',pres, \
+...                                  ', continuity:',max(abs(rhs))
+...
+...             viewer.plot()
 
-    >>> for sweep in range(sweeps):
-    ...
-    ...     ## solve the Stokes equations to get starred values
-    ...     xVelocityEq.cacheMatrix()
-    ...     xres = xVelocityEq.sweep(var=xVelocity,
-    ...                              boundaryConditions=bcsX,
-    ...                              underRelaxation=velocityRelaxation)
-    ...     xmat = xVelocityEq.getMatrix()
-    ...
-    ...     yres = yVelocityEq.sweep(var=yVelocity,
-    ...                              boundaryConditions=bcsY,
-    ...                              underRelaxation=velocityRelaxation)
-    ...
-    ...     ## update the ap coefficient from the matrix diagonal
-    ...     ap[:] = -xmat.takeDiagonal()
-    ...
-    ...     ## update the face velocities based on starred values
-    ...     velocity[0] = xVelocity.getArithmeticFaceValue()
-    ...     velocity[1] = yVelocity.getArithmeticFaceValue()
-    ...     velocity[..., mesh.getExteriorFaces().getValue()] = 0.
-    ...
-    ...     ## solve the pressure correction equation
-    ...     pressureCorrectionEq.cacheRHSvector()
-    ...     pres = pressureCorrectionEq.sweep(var=pressureCorrection)
-    ...     rhs = pressureCorrectionEq.getRHSvector()
-    ...
-    ...     ## update the pressure using the corrected value but hold one cell fixed
-    ...     pressure.setValue(pressure + pressureRelaxation * \
-    ...                                            (pressureCorrection - pressureCorrection.getGlobalValue()[0]))
-    ...     ## update the velocity using the corrected pressure
-    ...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
-    ...                                                ap * mesh.getCellVolumes())
-    ...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[1] / \
-    ...                                                ap * mesh.getCellVolumes())
-    ...
-    ...     if __name__ == '__main__':
-    ...         if sweep%1 == 0:
-    ...             print 'sweep:',sweep,', x residual:',xres, \
-    ...                                  ', y residual',yres, \
-    ...                                  ', p residual:',pres, \
-    ...                                  ', continuity:',max(abs(rhs))
-    ...
-    ...             viewer.plot()
-
-.. image:: examples/flow/cavity.pdf
-   :scale: 40
+.. image:: cavity.*
+   :width: 90%
    :align: center
 
 Test values in the last cell.
 
-..
-
-    >>> print numerix.allclose(pressure.getGlobalValue()[...,-1], 145.233883763)
-    1
-    >>> print numerix.allclose(xVelocity.getGlobalValue()[...,-1], 0.24964673696)
-    1
-    >>> print numerix.allclose(yVelocity.getGlobalValue()[...,-1], -0.164498041783)
-    1
-
+>>> print numerix.allclose(pressure.getGlobalValue()[...,-1], 145.233883763)
+1
+>>> print numerix.allclose(xVelocity.getGlobalValue()[...,-1], 0.24964673696)
+1
+>>> print numerix.allclose(yVelocity.getGlobalValue()[...,-1], -0.164498041783)
+1
 """
 __docformat__ = 'restructuredtext'
 

@@ -106,7 +106,7 @@ class Term:
             raw_input()
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        solver = self._getDefaultSolver(solver) or solver or DefaultSolver()
+        solver = self.getDefaultSolver(solver)
 
         self.__buildMatrix(var, solver, boundaryConditions, dt)
         return solver
@@ -156,7 +156,7 @@ class Term:
 
     def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
-        Builds and the `Term`'s linear system once. This method
+        Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
         under-relaxation.
 
@@ -246,9 +246,12 @@ class Term:
 
         return self.RHSvector
     
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver, *args, **kwargs):
         return None
         
+    def getDefaultSolver(self, solver=None, *args, **kwargs):
+        return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
+                         
     def _otherIsZero(self, other):
         if (type(other) is type(0) or type(other) is type(0.)) and other == 0:
             return True

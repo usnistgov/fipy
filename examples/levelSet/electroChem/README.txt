@@ -1,6 +1,6 @@
-================================
-Superconformal Electrodeposition
-================================
+=========================================
+Superconformal Electrodeposition Examples
+=========================================
 
 The Damascene Process
 ---------------------
@@ -25,7 +25,7 @@ deposition from an electrolyte containing PEG-SPS-Cl. Preferential
 metal deposition at the bottom of the trenches followed by bump
 formation above the filled trenches is evident.
 
-.. image:: examples/levelSet/electroChem/experimentalSuperfill.png
+.. image:: experimentalSuperfill.*
    :scale: 50
    :align: center
    :alt: experimental superfill
@@ -36,7 +36,7 @@ The CEAC Mechanism
 This process has been demonstrated to depend critically on the
 inclusion of additives in the electrolyte.  Recent publications
 propose Curvature Enhanced Accelerator Coverage (CEAC) as the
-mechanism behind the superfilling process |citeDamascene|.  In this
+mechanism behind the superfilling process [NIST:damascene:2001]_.  In this
 mechanism, molecules that accelerate local metal deposition displace
 molecules that inhibit local metal deposition on the metal/electrolyte
 interface. For electrolytes that yield superconformal filling of fine
@@ -47,12 +47,12 @@ the increased rate of metal deposition along the bottom of the filling
 trench is the concurrent local increase of the accelerator coverage
 due to decreasing local surface area, which scales with the local
 curvature (hence the name of the mechanism). A good overview of this
-mechanism can be found in |citeMoffat|.
+mechanism can be found in [moffatInterface:2004]_.
 
-Using |FiPy| to model Superfill
--------------------------------
+Using FiPy to model Superfill
+-----------------------------
 
-Example |simpleTrenchSystem| provides a simple way to use |FiPy| to model the
+Example |simpleTrenchSystem| provides a simple way to use :term:`FiPy` to model the
 superfill process. The example includes a detailed description of the governing
 equations and feature geometry. It requires the user to import and execute a
 function at the python prompt.  The model parameters can be passed as arguments
@@ -63,44 +63,20 @@ the existing suite of scripts do not meet the required needs.
 
 In general it is a good idea to obtain the Mayavi_ plotting package
 for which a specialized superfill viewer class has been created, see
-|INSTALLATION-txt|. The other standard viewers mentioned in
-|INSTALLATION-txt| are still adequate although they do not give such
+:ref:`INSTALLATION`. The other standard viewers mentioned in
+:ref:`INSTALLATION` are still adequate although they do not give such
 clear images that are tailored for the superfill problem.  The images
 below demonstrate the Mayavi_ viewing capability.  Each contour
 represents sequential positions of the interface and the color
 represents the concentration of accelerator as a surfactant. The areas
 of high surfactant concentration have an increased deposition rate.
 
-.. image:: examples/levelSet/electroChem/superfillImage.png
+.. image:: superfillImage.*
    :scale: 50
    :align: left
    :alt: FiPy superfill
 
-.. include:: ../../../utils/include.txt
-
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
-
 .. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
-
-.. |citeMoffat| replace:: |htmlMoffat| |latexMoffat|
-
-.. |latexMoffat| raw:: latex
-
-   \cite{moffatInterface:2004}
-
-.. |htmlMoffat| raw:: html
-
-   <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.electrochem.org/publications/interface/winter2004/IF12-04-Pg46.pdf">Moffat et al</a>
-    
-.. |citeDamascene| replace:: |htmlDamascene| |latexDamascene|
-
-.. |latexDamascene| raw:: latex
-
-   \cite{NIST:damascene:2001}
-
-.. |htmlDamascene| raw:: html
-
-   <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://link.aps.org/abstract/PRL/v87/e016102">Josell et al</a>
 
 .. |latexSimpleTrenchSystem| raw:: latex
 
@@ -122,5 +98,4 @@ of high surfactant concentration have an increased deposition rate.
 
 .. |howToWriteAScript| replace:: |htmlHowToWriteAScript| |latexHowToWriteAScript|
 
-.. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
 

@@ -119,9 +119,8 @@ Find the initial revision number for the branch (IRN) and the latest revision nu
 Now merge n.m.q changes back to main trunk::
 
     $ cd ../trunk
-    $ svn diff -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
     $ svn merge -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
-    $ svn ci -m "merged version n.m.q"    
+    $ svn ci -m "merged version n.m.q, source:branches/${BRANCH}@${IRN}:${LRN} to source:trunk@${LRN}"
 
 Make new fix q+1 to n.m::
 
@@ -140,17 +139,16 @@ Find the previous revision number for the branch (PRN) and the latest revision n
 Again, merge n.m.q+1 changes back to main trunk::
 
     $ cd ../trunk
-    $ svn diff -r${PRN}:{LRN} $FIPYROOT/branches/$BRANCH
-    $ svn merge -r${PRN}:{LRN} $FIPYROOT/branches/$BRANCH
-    $ svn ci -m "merged version n.m.q+1"
+    $ svn merge -r${PRN}:${LRN} $FIPYROOT/branches/$BRANCH
+    $ svn ci -m "merged version n.m.q+1, source:branches/${BRANCH}@${PRN}:${LRN} to source:trunk@${LRN}"
 
 ================
 Making a Release
 ================
 
-Change the version number in `setup.py`
+Change the version number in :file:`setup.py`
 
-Check items in TODOLIST.txt
+Check items in the tickets_.
 
 Check out a clean copy of the desired release::
 
@@ -160,11 +158,11 @@ Check out a clean copy of the desired release::
 .. attention::
 
    If Bitten_ doesn't show all green boxes for this release, make sure to
-   add appropriate notes in README.txt or INSTALLATION.txt!
+   add appropriate notes in :file:`README.txt` or :file:`INSTALLATION.txt`!
 
 Build the documentation and the web pages::
 
-    $ python setup.py build_docs --manual --latex --webpage
+    $ python setup.py build_docs --pdf --html --cathartic
 
 Build the compressed distribution::
 
@@ -176,7 +174,7 @@ Build a windows executable installer::
     $ rm MANIFEST
     $ python setup.py bdist --formats=wininst
 
-Combine the windows installer and examples into one archive.
+Combine the windows installer and examples into one archive::
 
     $ rm MANIFEST
     $ FIPY_VERSION=XXX
@@ -190,10 +188,10 @@ Combine the windows installer and examples into one archive.
 
 Tag the repository as appropriate (see `SVN practices`_ above).
 
-Upload the build products and documentation from `dist/` to MatForge and 
+Upload the build products and documentation from :file:`dist/` to MatForge and 
 the web site to CTCMS:
 
-    $ python setup.py build_docs --upload --uploadwww
+    $ python setup.py upload --pdf --html --tarball --winzip
 
 .. note::
 
@@ -205,23 +203,20 @@ the web site to CTCMS:
 
      * http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit
      * http://matforge.org/fipy/wiki/FiPyManual?action=edit
-     * http://matforge.org/fipy/wiki/FiPyReference?action=edit
 
 .. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
-Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
+Make an announcement to `fipy@nist.gov`_
 
-.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
+Build (``python setup.py bdist --formats=wininst``) a Windows `PyVTK`_
+executable and upload to download page.
 
-Make an announcement to `mailto:fipy@nist.gov`_
-
-.. fipy@nist.gov: mailto:fipy@nist.gov
-
-Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
-
-.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
+.. _tickets: http://matforge.org/fipy/report
+.. _Bitten: http://matforge.org/fipy/build
+.. _fipy@nist.gov: mailto:fipy@nist.gov
+.. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
 
 ==========================================
 Making a Windows Distribution for Pysparse
@@ -244,10 +239,6 @@ Set the PATH to use MINGW's tools.
 Build the distribution.
 
    C:\pythonXX\python setup.py build --compiler=mingw32 bdist --format=wininst
-
-.. include:: utils/include.txt
-
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
 ===============================
 Converting a CVS Project to SVN

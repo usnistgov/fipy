@@ -170,401 +170,127 @@ except ImportError, e:
 
 
 
-class build_docs (Command):
+class build_docs(Command):
 
-    description = "build the FiPy api documentation"
+    description = "build the FiPy documentation"
 
     # List of option tuples: long name, short name (None if no short
     # name), and help string.
-    user_options = [('latex', None, "compile the LaTeX variant of the apis"),
-                    ('html', None, "compile the HTML variant of the apis"),
-                    ('guide', None, "compile the user guide"),
-                    ('apis', None, "compile the programmer's reference"),
-                    ('manual', None, "compile the manual"),
-                    ('all', None, "compile both the LaTeX and HTML variants of the apis"),
-                    ('webpage', None, "compile the html for the web page"),
-                    ('upload', None, "upload webpages, documentation, and distributions to CTCMS website"),
-                    ('uploadwww', None, "upload webpages to CTCMS website"),
+    user_options = [('pdf', None, "compile the PDF variant of the documentation"),
+                    ('html', None, "compile the HTML variant of the documentation"),
+                    ('cathartic', None, "rewrite all the files (default is to only rewrite changed files)"),
                    ]
 
-
     def initialize_options (self):
-        self.latex = 0
+        self.pdf = 0
         self.html = 0
-        self.guide = 0
-        self.apis = 0
-        self.manual = 0
-        self.all = 0
-        self.webpage = 0
-        self.upload = 0
-        self.uploadwww = 0
-    # initialize_options()
-
+        self.cathartic = 0
 
     def finalize_options (self):
-        if self.all:
-            self.latex = 1
-            self.manual = 1
-            self.webpage = 1
-            
-        if self.manual:
-            self.guide = 1
-            self.apis = 1
-            
-    # finalize_options()
-
-    def _initializeDirectory(self, dir, type = 'latex'):
-        dir = os.path.join(dir, type)
-        
-        try:
-            for root, dirs, files in os.walk(dir, topdown=False): 
-                for name in files: 
-                    os.remove(os.path.join(root, name)) 
-                for name in dirs: 
-                    os.rmdir(os.path.join(root, name)) 
-            os.rmdir(dir)
-        except:
-            pass
-            
-        os.makedirs(dir)
-        
-    def _epydocFiles(self, module, dir = None, type = 'pdflatex'):
-        dir = os.path.join(dir, type)
-        
-        import epydoc.cli
-        epydoc.cli.cli(["--%s" % type, "--output", dir, 
-                        "--no-private", "--show-imports", 
-                        "--name", "FiPy", 
-                        module])
-
-    def _buildTeXAPIs(self):
-        dir = os.path.join('documentation', 'manual', 'api')
-        self._initializeDirectory(dir = dir, type = 'latex')
-        dir = os.path.join(dir, 'latex')
-        
-        import epydoc.cli
-        epydoc.cli.cli(["--latex", "--output", dir, 
-                        "--graph=classtree", "--inheritance=listed", 
-                        "--no-private", "--show-imports", 
-                        "fipy/"])
-        
-        savedir = os.getcwd()
-        try:
-            
-            os.chdir(os.path.join('documentation','manual', 'api','latex'))
-            old = open('api.tex', 'r')
-            new = open('api-rev.tex', 'w')
-            
-            new.write("""% This file is created automatically by:
-% 	python setup.py build_docs --latex
-
-""")
-            
-            import re
-            
-            mainModule = re.compile(r"^\\include{((fipy\.[^.-]*)-module)}")
-            subModule = re.compile(r"^\\include{((fipy(\.[^.-]*)+)-module)}")
-
-            for line in old:
-                mainMatch = mainModule.match(line)
-                subMatch = subModule.match(line)
-
-                def stringInModule(s, name):
-                    module = open(name, 'r')
-                    functionLine = re.compile(s)
-                    flag = False
-                    for l in module:
-                        if functionLine.search(l):
-                            flag = True
-                            break
-                            
-                    module.close()
-                    
-                    return flag
-
-
-                if mainMatch:
-                    moduleName = mainMatch.group(1) + ".tex"
-                    if (stringInModule(r"\\section{Package", moduleName)
-                        and not stringInModule("no chapter heading", moduleName)):
-                        module = open(moduleName, 'r')
-                        lines = []
-                        
-                        for l in module:
-                            l = re.sub(r'\\section', r'\\chapter', l)
-                            l = re.sub(r'\\subsection', r'\\section', l)
-                            l = re.sub(r'\\subsubsection', r'\\subsection', l)
-                            lines.append(l)
-                            
-                        module.close()
-                        module = open(moduleName, 'w')
-                        module.writelines(lines)
-                        module.close()
-
-                    if not stringInModule(r"\\section{(Functions|Variables|Class)", moduleName):
-                        new.write("\\input{%s}\n" % mainMatch.group(1))
-                    else:
-                        new.write(line)
-                elif subMatch:
-                    ## epydoc tends to prattle on and on with empty module pages, so 
-                    ## we eliminate all but those that actually contain something relevant.
-                    moduleName = subMatch.group(1) + ".tex"
-                    if not stringInModule(r"\\(sub)?section{(Functions|Variables|Class)", moduleName):
-                        new.write("\\input{%s}\n" % subMatch.group(1))
-                    else:
-                        new.write(line)
-
-            new.close()
-            old.close()
-        except Exception, e:
-            print e
-        
-        os.chdir(savedir)
-        
-    def _translateTextFiles(self, source_dir = '.', destination_dir = '.', files = [], writer = None, settings = {}, ext = '.tex'):
-        from docutils import core
-
-        for file in files:
-
-            destination_path = os.path.join(destination_dir, string.lower(file) + ext)
-            try:
-                os.makedirs(os.path.dirname(destination_path))
-            except:
-                pass
-            source_path = os.path.join(source_dir, file + '.txt')
-
-            core.publish_file(source_path= source_path,
-                              destination_path = destination_path,
-                              reader_name = 'standalone',
-                              parser_name = 'restructuredtext',
-                              writer = writer,
-                              settings_overrides = settings)
-                              
-            translated = open(destination_path, 'r')
-            lines = []
-            
-            for line in translated:
-                import re
-                line = re.sub(r'\\tableofcontents', r'% this automatically generated line conflicts with minitoc\r% \\tableofcontents', line)
-                lines.append(line)
-                
-            translated.close()
-            translated = open(destination_path, 'w')
-            translated.writelines(lines)
-            translated.close()
-
-            # mark modification time of output file as mod time of reST file
-            os.utime(destination_path, (os.path.getatime(source_path), os.path.getmtime(source_path)))
+        pass
 
     def run (self):
-        f = open(os.path.join('documentation','VERSION.txt'), 'w')
-        f.write('.. |VERSION| replace:: ' + self.distribution.metadata.get_version())
-        f.close()
-
-        mainRestructuredTextFiles = {'article': 
-                                         ['INSTALLATION',
-                                          'README',
-                                          'LICENSE',
-                                          'DISCLAIMER',
-                                          'examples/README'], 
-                                     'startlower': 
-                                         ['WINDOWS-INSTALLATION',
-                                          'MACOSX-INSTALLATION',
-                                          'examples/levelSet/electroChem/README']}
-                                         
-                                     
-        secondaryRestructuredTextFiles = {'article': 
-                                              ['CREDITS',
-                                               'TALKS',
-                                               'TODOLIST',
-                                               'SVN',
-                                               'EFFICIENCY',
-                                               'VKML'],
-                                          'startlower': 
-                                              ['MAIL']}
-
-        if self.latex:
-            if self.apis:
-                self._buildTeXAPIs()
-                
-            if self.guide:
-                dir = os.path.join('documentation', 'manual', 'examples')
-                self._initializeDirectory(dir = dir, type = 'latex')
-                dir = os.path.join(dir, 'latex')
-                               
-                import epydoc.cli
-                epydoc.cli.cli(["--latex", "--output", dir, 
-                                "--no-private", "--show-imports", 
-                                "examples/"])
+        import sphinx
+        
+        sphinx_args = ['-c', 'documentation/', '.']
+        
+        if self.cathartic:
+            sphinx_args = ['-a', '-E'] + sphinx_args
 
         if self.html:
-            dir = os.path.join('documentation', 'manual', 'api')
-            self._initializeDirectory(dir = dir, type = 'html')
-            self._epydocFiles(module = 'fipy/', dir = dir, type = 'html')
+            sphinx.main(['sphinx-build', '-b', 'html'] + sphinx_args + ['documentation/_build/html/'])
 
-        if self.apis:
-            # build the package/module/class example documentation
+        if self.pdf:
+            sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
             
-            dir = os.path.join('documentation', 'manual', 'tutorial')
-            self._initializeDirectory(dir = dir, type = 'latex')
-            dir = os.path.join(dir, 'latex')
-##             self._initializeDirectory(dir = dir, type = 'pdflatex')
-##             dir = os.path.join(dir, 'pdflatex')
-
-            # to avoid a collision between the real fipy namespace
-            # and the fictional fipy namespace we use for the illustration
-            # we build the example documentation in a sub-process
-            # from which we delete the "real" fipy namespace
+            outdir = os.path.join('documentation', '_build', 'latex')
             
-            exec("""
-import sys
-if sys.modules.has_key('fipy'):
-    del sys.modules['fipy']
-    
-if sys.modules.has_key('epydoc.uid'):
-    sys.modules['epydoc.uid']._object_uids = {}
-    sys.modules['epydoc.uid']._variable_uids = {}
-    sys.modules['epydoc.uid']._name_to_uid = {}
+            from docutils.core import publish_file
+            from docutils.writers.latex2e import Writer as LaTeXWriter
 
-import epydoc.cli
-epydoc.cli.cli(["--latex", "--output", dir, 
-                "--graph=classtree", 
-                "--no-private", "--show-imports", 
-                "documentation/manual/tutorial/fipy/"])
-""")
+            for xtra in ("LICENSE", "DISCLAIMER"):
+                publish_file(source_path="%s.txt" % xtra,
+                             destination_path=os.path.join(outdir, "%s.tex" % xtra),
+                             reader_name='standalone',
+                             parser_name='restructuredtext',
+                             writer_name='latex',
+                             settings_overrides= {
+                                 'template': 'documentation/_templates/empty.tex'
+                             })
 
-        if self.guide or self.apis:
             savedir = os.getcwd()
             
-            os.chdir(os.path.join('documentation','manual'))
+            os.chdir(outdir)
                 
-            f = open('version.tex', 'w')
-            f.write("% This file is created automatically by:\n")
-            f.write("% 	python setup.py build_docs --manual\n\n")
-            f.write("\\newcommand{\\Version}{" + self.distribution.metadata.get_version() + "}\n")
-            f.close()
-            
-            from utils.includedLaTeXWriter import IncludedLaTeXWriter
-            
-            for key in mainRestructuredTextFiles.keys():
-                self._translateTextFiles(files = mainRestructuredTextFiles[key],
-                                         source_dir = '../..',
-                                         writer = IncludedLaTeXWriter(),
-                                         settings ={'use_latex_toc': True,
-                                                    'footnote_references': 'superscript',
-                                                    'table_style': 'nolines',
-                                                    'documentclass': key,
-                                                    'reference_label': "ref*"})
-
-            for key in mainRestructuredTextFiles.keys():
-                self._translateTextFiles(files = secondaryRestructuredTextFiles[key],
-                                         source_dir = '..',
-                                         writer = IncludedLaTeXWriter(),
-                                         settings ={'use_latex_toc': True,
-                                                    'footnote_references': 'superscript',
-                                                    'table_style': 'booktabs',
-                                                    'documentclass': key,
-                                                    'reference_label': "ref*"})
-
-            if self.guide:
-                os.system("pdflatex fipy")
-                os.system("bibtex fipy")
-                os.system("makeindex fipy")
-                os.system("pdflatex fipy")
-                os.system("pdflatex fipy")
+            os.system("pdflatex fipy")
+            os.system("pdflatex fipy")
+            os.system("pdflatex fipy")
+            os.system("makeindex -s python.ist fipy")
+            os.system("makeindex -s python.ist modfipy")
+            os.system("pdflatex fipy")
+            os.system("pdflatex fipy")
                 
-            if self.apis:
-                os.system("pdflatex reference")
-                os.system("bibtex reference")
-                os.system("makeindex reference")
-                os.system("pdflatex reference")
-                os.system("pdflatex reference")
-
             os.chdir(savedir)
-
-        if self.webpage:
-            import tempfile
-            tmp = tempfile.mkdtemp()
-            dir = os.path.join('documentation', 'www')
-
-            from utils.includedHTMLWriter import IncludedHTMLWriter
             
-            print "main files"
-            for key in mainRestructuredTextFiles.keys():
-                self._translateTextFiles(files = mainRestructuredTextFiles[key],
-                                         destination_dir = tmp,
-                                         writer = IncludedHTMLWriter(),
-                                         settings = {'initial_header_level' : 3,
-                                                     'xml_declaration' : 0},
-                                         ext = '.html')
+class upload_products(Command):
+    description = "upload FiPy compressed archives to website(s)"
+    
+    user_options = [('pdf', None, "upload the PDF variant of the documentation"),
+                    ('html', None, "upload the HTML variant of the documentation"),
+                    ('tarball', None, "upload the .tar.gz source distribution"),
+                    ('winzip', None, "upload the .win32.zip distribution"),
+                   ]
 
-            print "secondary files"
-            for key in secondaryRestructuredTextFiles.keys():
-                self._translateTextFiles(files = secondaryRestructuredTextFiles[key],
-                                         source_dir = "documentation",
-                                         destination_dir = tmp,
-                                         writer = IncludedHTMLWriter(),
-                                         settings = {'initial_header_level' : 3,
-                                                     'xml_declaration' : 0},
-                                         ext = '.html')
+    def initialize_options (self):
+        self.pdf = 0
+        self.html = 0
+        self.tarball = 0
+        self.winzip = 0
 
-            import shutil
-            for f in ['menu.html', 'meta.html', 'logo.html', 'extra.html']:
-                shutil.copyfile(os.path.join(dir, f), os.path.join(tmp, f))
-            shutil.move(os.path.join(tmp, 'readme.html'), os.path.join(tmp, 'index.html'))
-            shutil.move(os.path.join(tmp, 'examples', 'levelSet', 'electroChem', 'readme.html'), os.path.join(tmp, 'electrochem.html'))
+    def finalize_options (self):
+        pass
+
+    def run(self):
+        if self.pdf:
+            print "setting permissions of manual..."
+            os.system('chmod -R g+w documentation/_build/latex/fipy.pdf')
             
-            print "merging files"
-            os.system("/Library/WebServer/Documents/CSS/ctcmsWeb.py %s %s" % (tmp, dir))
+            print "linking manual to `dist/`..."
+            os.system('mkdir dist/')
+            os.system('ln -f documentation/_build/latex/fipy.pdf dist/fipy-%s.pdf'%self.distribution.metadata.get_version())
             
-            print "removing directories"
-            for root, dirs, files in os.walk(tmp, topdown=False): 
-                for name in files: 
-                    os.remove(os.path.join(root, name)) 
-                for name in dirs: 
-                    os.rmdir(os.path.join(root, name)) 
-
-        if self.uploadwww:
-                 
+        if self.html:
             print "setting group and ownership of web pages..."
-            os.system('chmod -R g+w documentation/www/')
+            os.system('chmod -R g+w documentation/_build/html/')
             
             print "uploading web pages..."
             # The -t flag (implicit in -a) is suddenly causing problems
             # os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
-            os.system('rsync -rlpgoDLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
+            os.system('rsync -rlpgoDLC -e ssh %s %s'%('documentation/_build/html/', os.environ['FIPY_WWWHOST']))
 
             print "activating web pages..."
             os.system(os.environ['FIPY_WWWACTIVATE'])
-            
-        if self.upload:
-            print "setting permissions of manuals..."
-            os.system('chmod -R g+w documentation/manual/fipy.pdf')
-            os.system('chmod -R g+w documentation/manual/reference.pdf')
-            
-            print "linking manuals to `dist/`..."
-            os.system('mkdir dist/')
-            os.system('ln -f documentation/manual/fipy.pdf dist/fipy-%s.pdf'%self.distribution.metadata.get_version())
-            os.system('ln -f documentation/manual/reference.pdf dist/reference-%s.pdf'%self.distribution.metadata.get_version())
-            
-            for name in ('.tar.gz', '.win32.zip'):
-                file = 'dist/FiPy-%s%s'%(self.distribution.metadata.get_version(), name)
-                print "setting permissions for %s ..."%file
-                os.system('chmod -R g+w %s'%file)
 
+        if self.tarball:
+            file = 'dist/FiPy-%s.tar.gz' % self.distribution.metadata.get_version()
+            print "setting permissions for %s ..." % file
+            os.system('chmod -R g+w %s' % file)
+
+        if self.winzip:
+            file = 'dist/FiPy-%s.win32.zip' % self.distribution.metadata.get_version()
+            print "setting permissions for %s ..." % file
+            os.system('chmod -R g+w %s' % file)
+
+        if self.pdf or self.tarball or self.winzip:
             print "build products in `dist/` must be manually uploaded to MatForge"
             import webbrowser
             webbrowser.open("http://matforge.org/fipy/admin/general/downloader", autoraise=False)
             
             print "please update the current links, as appropriate"
-            webbrowser.open("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit", autoraise=False)
-            webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
-            webbrowser.open("http://matforge.org/fipy/wiki/FiPyReference?action=edit", autoraise=False)
-            
-
-
-                
-    # run()
+            if self.tarball or self.winzip:
+                webbrowser.open("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit", autoraise=False)
+            if self.pdf:
+                webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
 
 class copy_script(Command):
     description = "copy an example script into a new editable file"
@@ -742,7 +468,7 @@ except IOError, e:
 #         },
 
 dist = setup(	name = "FiPy",
-        version = "2.0.2", 
+        version = "2.0.3", 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
@@ -751,6 +477,7 @@ dist = setup(	name = "FiPy",
         long_description = long_description,
         cmdclass = {
             'build_docs':build_docs,
+            'upload':upload_products,
             'test':test,
             'unittest':unittest,
             'copy_script': copy_script,

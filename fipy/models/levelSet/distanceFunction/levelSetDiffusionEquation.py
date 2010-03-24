@@ -50,16 +50,18 @@ def _buildLevelSetDiffusionEquation(ionVar = None,
     only transported in the electrolyte. The governing equation is given
     by,
 
-    .. raw:: latex
+    .. math::
 
-        $$ \\frac{\\partial c}{\\partial t} = \\nabla \\cdot D \\nabla  c $$
+       \frac{\partial c}{\partial t} = \nabla \cdot D \nabla  c
 
     where,
 
-    .. raw:: latex
+    .. math::
 
-        $$ D = D_c \\;\\; \\text{when} \\;\\; \\phi > 0 $$
-        $$ D = 0   \\;\\; \\text{when} \\;\\; \\phi \\le 0 $$
+       D &= \begin{cases}
+           D_c & \text{when $\phi > 0$} \\
+           0 & \text{when $\phi \le 0$}
+      \end{cases}
 
     :Parameters:    
       - `ionVar` : The species concentration variable.    
