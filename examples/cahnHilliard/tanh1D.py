@@ -127,16 +127,20 @@ we create the Cahn-Hilliard equation:
 >>> diffTerm4 = DiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
 >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
-.. index:: LinearLUSolver
+.. index:: LinearLUSolver, DefaultSolver
    
->>> solver = LinearLUSolver(tolerance=1e-15, iterations=100)
+>>> import fipy.solvers.solver
+>>> if fipy.solvers.solver == 'pysparse':
+...     solver = LinearLUSolver(tolerance=1e-15, iterations=100)
+... else:
+...     solver = DefaultSolver()
 
 The solution to this 1D problem over an infinite domain is given by,
 
 .. math::
 
    \phi(x) = \frac{1}{1 + \exp{\left(-\frac{a}{\epsilon} x \right)}}
-   
+
 or
 
 .. index:: sqrt, exp

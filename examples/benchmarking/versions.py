@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 
 ## 
- # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
- #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -33,45 +30,51 @@
  # ###################################################################
  ##
 
-__docformat__ = 'restructuredtext'
+import os
+import re
+import shutil
+from subprocess import Popen, PIPE
+import tempfile
 
-import sys
+import pysvn
 
-from pysparse import precon
-from pysparse import itsolvers
+client = pysvn.Client()
 
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+# svn manipulations on the working copy in-place are dangerous
 
-class LinearPCGSolver(PysparseSolver):
-    """
+info = client.info('.')
+dir = tempfile.mkdtemp()
+
+env = os.environ.copy()
+env['PYTHONPATH'] = dir
+
+try:
+    client.checkout(info.url, dir)
+
+    scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
+
+    reCPU = re.compile("cpu time: (%s) s / step / cell" % scanf_e)
+    reRSZ = re.compile("max resident memory: (%s) B / cell" % scanf_e)
+    reVSZ = re.compile("max virtual memory: (%s) B / cell" % scanf_e)
+
+    for entry in client.log(info.url):
+        client.update(dir, revision=entry.revision)
+        
+        p = Popen(["python", 
+                   os.path.join(os.path.dirname(__file__), 
+                                "benchmarker.py")], 
+                  stdout=PIPE, 
+                  stderr=PIPE, 
+                  env=env)
+
+        r = "".join(p.communicate()[0])
+        
+        cpu = reCPU.search(r, re.MULTILINE)
+        rsz = reRSZ.search(r, re.MULTILINE)
+        vsz = reVSZ.search(r, re.MULTILINE)
+        
+        print entry.revision.number, cpu.group(1), rsz.group(1), vsz.group(1)
+except Exception, e:
+    print e
     
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning.  The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
-
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
-
-    .. _PySparse: http://pysparse.sourceforge.net
-    
-    """
-     
-    def _solve_(self, L, x, b):
-##      print 'L:',L
-##      print 'x:',x
-##      print 'b:',b
-##      raw_input('end output')
-    
-        A = L._getMatrix().to_sss()
-
-        Assor=precon.ssor(A)
-
-        info, iter, relres = itsolvers.pcg(A, b, x, self.tolerance, self.iterations, Assor)
-##        print info, iter, relres
-
-        self._raiseWarning(info, iter, relres)
-            
-    def _canSolveAsymmetric(self):
-        return False
-                
+shutil.rmtree(dir)

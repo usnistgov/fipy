@@ -127,7 +127,7 @@ We create one diffusion equation for each substitutional component
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
-If we are running interactively, we create a viewer to see the results 
+If we are running interactively, we create a viewer to see the results
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=[solvent] + substitutionals,
@@ -136,15 +136,12 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
->>> solver = LinearLUSolver()
-
 >>> for i in range(40):
 ...     for Cj in substitutionals:
 ...         Cj.updateOld()
 ...     for Cj in substitutionals:
 ...         Cj.equation.solve(var = Cj, 
-...                           dt = 10000,
-...                           solver = solver)
+...                           dt = 10000.)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 

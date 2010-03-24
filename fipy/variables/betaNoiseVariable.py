@@ -116,9 +116,9 @@ class BetaNoiseVariable(NoiseVariable):
         self.alpha = self._requires(alpha)
         self.beta = self._requires(beta)
     
-    def _calcValue(self):
+    def random(self):
         return random.beta(a = self.alpha, b = self.beta, 
-                           size = [self.getMesh().getNumberOfCells()])
+                           size = [self.getMesh().globalNumberOfCells])
 
 def _test(): 
     import doctest

@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
- # ########################################################################
- # FiPy - a finite volume PDE solver in Python
+## 
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
  # 
- # FILE: "benchmarker.py"
- #
- # Author: Jonathan Guyer <guyer@nist.gov>
- # Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #   mail: NIST
- #    www: <http://www.ctcms.nist.gov/fipy/>
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #    mail: NIST
+ #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
  # This software was developed at the National Institute of Standards
@@ -23,69 +22,131 @@
  # appreciate acknowledgement if the software is used.
  # 
  # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are 
+ # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
- # ########################################################################
+ #  
+ # ###################################################################
  ##
 
-import time
+import os
+import sys
+import re
+from tempfile import mkstemp
+from subprocess import Popen, PIPE
+from textwrap import dedent
 
 from fipy.tools.parser import parse
+from fipy.tools.numerix import sqrt
+from fipy.tests import doctestPlus
 
-class Benchmarker:
-    def __init__(self):
-        self.measureMemory = parse('--measureMemory', action = 'store_true', default=False)
-        self.sampleTime = parse('--sampleTime', action = 'store', type = 'float', default = 1)
-        
-        self.keys = ['mesh', 'variables', 'terms', 'solver', 'BCs', 'solve']
-        
-        self.times = {}
-        for key in self.keys:
-            self.times[key] = 0
+import examples.phase.anisotropy
 
-        if self.measureMemory:
-            from fipy.tools.memoryLogger import MemoryLogger
-            self.logger = MemoryLogger(sampleTime = self.sampleTime)
-            self.memories = {}
-            self.logger.start()
-##             time.sleep(3)
-            self.memories['baseline'] = self.logger.stop()
-            for key in self.keys:
-                self.memories[key] = self.memories['baseline']
+numberOfElements = parse('--numberOfElements', action='store',
+                         type='int', default=10000)
+N = int(sqrt(numberOfElements))
 
-        self.t0 = time.clock()
+steps = parse('--numberOfSteps', action='store',
+              type='int', default=20)
+
+start = parse('--startingStep', action='store',
+              type='int', default=0)
+
+cpu0 = parse('--cpuBaseLine', action='store',
+              type='float', default=0.)
+              
+args = tuple(sys.argv[1:])
+
+dir = os.path.dirname(__file__)
+
+script = doctestPlus._getScript("examples.phase.anisotropy")
+
+script = script.replace("__main__", 
+                        "__DONT_RUN_THIS__")
+                        
+script = script.replace("nx = ny = 20", 
+                        "nx = ny = %d" % N)
+
+script = script.replace("steps = 10", 
+                        "steps = %d" % steps)
+
+fd, path = mkstemp(".py")
+os.write(fd, script)
+os.close(fd)
+
+cputime_RE = re.compile("(\d+:)?(\d+):(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?")
+
+def monitor(p):
+    def cputimestring2secs(str):
+        m = cputime_RE.match(str)
         
-        
-    def start(self):
-        if self.measureMemory:
-            self.logger.start()
+        secs = 60 * int(m.group(2)) + float(m.group(3))
+        if m.group(1) is not None:
+            secs += 3600 * int(m.group(1))
             
-        self.t1 = time.clock()
+        return secs
+        
+    rsz = vsz = cpu = -1
+    while p.poll() is None:
+        try:
+            r = Popen(("ps", "-p", str(p.pid), "-o" "rsz,vsz,cputime"),
+                      stdout=PIPE,
+                      env=os.environ).communicate()[0]
 
-    def stop(self, name):
-        self.times[name] = time.clock() - self.t1
-        if self.measureMemory:
-            self.memories[name] = self.logger.stop()
-            
-    def report(self, numberOfElements=1, steps=1):
-        self.times['total'] = time.clock() - self.t0
+            ps = r.splitlines()[1].split()
+            rsz = max(rsz, int(ps[0]) * 1024)
+            vsz = max(vsz, int(ps[1]) * 1024)
+            cpu = max(cpu, cputimestring2secs(ps[2]))
+        except:
+            break
+        
+    return rsz, vsz, cpu
+    
+if start is not 0:
+    old = '''
+          for i in range(steps):
+          '''
+    new = '''
+          mesh_tmp, phase_tmp, dT_tmp = dump.read("%s/anisotropy-%d.dmp.gz")
+          phase.setValue(phase_tmp.getValue())
+          dT.setValue(dT_tmp.getValue())
+          for i in range(steps):
+          ''' % (dir, start)
+    script = script.replace(dedent(old), dedent(new)) 
 
-        output = []
-        maxMemory = -1
-        for key in self.keys:
-            if self.measureMemory:
-                memory = self.memories[key] - self.memories['baseline']
-                output += [str(memory)]
-                maxMemory = max(maxMemory, memory)
-            else:
-                output += [str(self.times[key])]
-                
-        if self.measureMemory:
-            output += [str(maxMemory), str(float(maxMemory) / numberOfElements)]
-        else:
-            output += [str(self.times['total']), str(self.times['solve'] / steps / numberOfElements)]
+old = '''\
+      #    \cite{WarrenPolycrystal}.
+      '''
+new = '''\
+      #    \cite{WarrenPolycrystal}.
+      
+      dump.write((mesh, phase, dT), "%s/anisotropy-%%d.dmp.gz" %% (steps + %d))
+      ''' % (dir, start)
+script = script.replace(dedent(old), dedent(new))
 
-        return "\t".join(output)
+f = open(path, "w")
+f.write(script)
+f.close()
+
+p = Popen(("python", path) + args, stdout=PIPE)
+
+rsz, vsz, cpu = monitor(p)
+
+for l in p.stdout:
+    print l.rstrip()
+
+print "-" * 79
+
+if steps == 0:
+    print "           cpu time: %.9f s / step / cell" % cpu
+    print "max resident memory: %.2f B / cell" % float(rsz)
+    print " max virtual memory: %.2f B / cell" % float(vsz)
+else:
+    print "           cpu time: %.9f s / step / cell" % ((cpu - cpu0) / steps / N**2)
+    print "max resident memory: %.2f B / cell" % (float(rsz) / N**2)
+    print " max virtual memory: %.2f B / cell" % (float(vsz) / N**2)
+
+os.remove(path)
+
+

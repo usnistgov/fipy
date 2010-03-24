@@ -40,7 +40,7 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
-from fipy.solvers import LinearLUSolver
+from fipy.solvers import DefaultAsymmetricSolver
 
 from fipy.tools import numerix
 
@@ -150,10 +150,10 @@ class ConvectionTerm(FaceTerm):
         return self.stencil
 
     def _getDefaultSolver(self, solver, *args, **kwargs):        
-        if solver and not solver._canSolveAssymetric():
+        if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
-        return solver or LinearLUSolver(*args, **kwargs)
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
 
     def _verifyCoeffType(self, var):
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \

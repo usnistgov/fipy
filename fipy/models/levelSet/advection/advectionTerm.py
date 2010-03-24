@@ -66,6 +66,7 @@ class _AdvectionTerm(Term):
 
     >>> from fipy.meshes.grid1D import Grid1D
     >>> from fipy.solvers import *
+    >>> from fipy.tools import parallel
     >>> SparseMatrix = LinearLUSolver()._getMatrixClass()
     >>> mesh = Grid1D(dx = 1., nx = 3) 
     >>> from fipy.variables.cellVariable import CellVariable
@@ -74,22 +75,22 @@ class _AdvectionTerm(Term):
 
     >>> var = CellVariable(value = numerix.zeros(3, 'd'), mesh = mesh)
     >>> L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
-    >>> numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
-    1
+    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
+    True
    
     Less trivial test:
 
     >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
     >>> L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
-    >>> numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
-    1
+    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
+    True
 
     Even less trivial
 
     >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
     >>> L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
-    >>> numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
-    1
+    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
+    True
 
     Another trivial test case (more trivial than a trivial test case
     standing on a harpsichord singing 'trivial test cases are here again')
@@ -97,8 +98,8 @@ class _AdvectionTerm(Term):
     >>> vel = numerix.array((-1, 2, -3))
     >>> var = CellVariable(value = numerix.array((4,6,1)), mesh = mesh)
     >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
-    >>> numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
-    1
+    >>> print parallel.procID > 0 or numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
+    True
 
     Somewhat less trivial test case:
 
@@ -108,9 +109,8 @@ class _AdvectionTerm(Term):
     >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
     >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
     >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
-    >>> numerix.allclose(b, answer, atol = 1e-10)
-    1
-
+    >>> print parallel.procID > 0 or numerix.allclose(b, answer, atol = 1e-10)
+    True
     """
     def __init__(self, coeff = None):
         Term.__init__(self)
@@ -129,19 +129,22 @@ class _AdvectionTerm(Term):
         cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
         cellToCellIDs = mesh._getCellToCellIDs()
 
-        cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
+        if NCells > 0:
+            cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
 
-        adjacentValues = numerix.take(oldArray, cellToCellIDs)
+            adjacentValues = numerix.take(oldArray, cellToCellIDs)
 
-        differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
-        differences = MA.filled(differences, 0)
-        
-        minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
-        maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
+            differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
+            differences = MA.filled(differences, 0)
+            
+            minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
+            maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
 
-        coeff = numerix.array(self._getGeomCoeff(mesh))
+            coeff = numerix.array(self._getGeomCoeff(mesh))
 
-        coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
+            coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
+        else:
+            coeffXdiffereneces = 0.
 
         return (SparseMatrix(size = NCells), -coeffXdiffereneces * mesh.getCellVolumes())
         
@@ -149,12 +152,19 @@ class _AdvectionTerm(Term):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
-        if solver and not solver._canSolveAssymetric():
+        if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
-        from fipy.solvers import LinearLUSolver
-        return solver or LinearLUSolver(*args, **kwargs)
+        import fipy.solvers.solver
+        if fipy.solvers.solver == 'trilinos':
+            from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+            from fipy.solvers.trilinos.linearGMRESSolver import LinearGMRESSolver
+            return solver or LinearGMRESSolver(precon=JacobiPreconditioner(), *args, **kwargs)
+        else:
+            from fipy.solvers import DefaultAsymmetricSolver
+            return solver or DefaultAsymmetricSolver(*args, **kwargs)
+
 
 
 def _test(): 

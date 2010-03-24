@@ -138,10 +138,12 @@ Build the mesh:
 .. index:: Grid2D
 
 >>> from fipy import *
+>>> from fipy import serial
 >>> mesh = Grid2D(dx=cellSize,
 ...               dy=cellSize,
 ...               nx=xCells,
-...               ny=yCells)
+...               ny=yCells,
+...               parallelModule=serial)
 
 A ``distanceVariable`` object,
 :math:`\phi`, is  required to store  the  position of the interface.
@@ -434,7 +436,7 @@ is calculated with the CFL number and the maximum extension velocity.
 ...                         boundaryConditions=metalEquationBCs)
 ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
 ...                                   boundaryConditions=catalystBCs)
-
+   
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
@@ -444,6 +446,7 @@ to tell if something has changed or been broken.
 >>> import os
 >>> filepath = os.path.join(os.path.split(__file__)[0], 
 ...                         "simpleTrenchSystem.gz")
+
 >>> print catalystVar.allclose(loadtxt(filepath), rtol=1e-4)
 1
 

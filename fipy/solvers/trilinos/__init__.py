@@ -33,6 +33,8 @@ from linearBicgstabSolver import LinearBicgstabSolver
 
 from trilinosMLTest import TrilinosMLTest
 
-DefaultSolver = LinearLUSolver
+DefaultSolver = LinearGMRESSolver
+DefaultAsymmetricSolver = LinearGMRESSolver
+
 
 

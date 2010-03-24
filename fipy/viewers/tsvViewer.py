@@ -157,11 +157,15 @@ class TSVViewer(_Viewer):
         """
         if filename is not None:
             import os
-            if os.path.splitext(filename)[1] == ".gz":
-                import gzip
-                f = gzip.GzipFile(filename = filename, mode = 'w', fileobj = None)
+            from fipy.tools import parallel
+            if parallel.procID == 0:
+                if os.path.splitext(filename)[1] == ".gz":
+                    import gzip
+                    f = gzip.GzipFile(filename = filename, mode = 'w', fileobj = None)
+                else:
+                    f = open(filename, "w")
             else:
-                f = open(filename, "w")
+                f = open(os.devnull, mode='w')
         else:
             f = sys.stdout
         
@@ -191,22 +195,22 @@ class TSVViewer(_Viewer):
         faceVars = [var for var in self.vars if isinstance(var, FaceVariable)]
         
         if len(cellVars) > 0:
-            values = mesh.getCellCenters()
+            values = mesh.getCellCenters().getGlobalValue()
             for var in self.vars:
                 if isinstance(var, CellVariable) and var.getRank() == 1:
-                    values = numerix.concatenate((values, numerix.array(var)))
+                    values = numerix.concatenate((values, numerix.array(var.getGlobalValue())))
                 else:
-                    values = numerix.concatenate((values, (numerix.array(var),)))
+                    values = numerix.concatenate((values, (numerix.array(var.getGlobalValue()),)))
                     
             self._plot(values, f, dim)
 
         if len(faceVars) > 0:
-            values = mesh.getFaceCenters()
+            values = mesh.getFaceCenters().getGlobalValue()
             for var in self.vars:
                 if isinstance(var, FaceVariable) and var.getRank() == 1:
-                    values = numerix.concatenate((values, numerix.array(var)))
+                    values = numerix.concatenate((values, numerix.array(var.getGlobalValue())))
                 else:
-                    values = numerix.concatenate((values, (numerix.array(var),)))
+                    values = numerix.concatenate((values, (numerix.array(var.getGlobalValue()),)))
                     
             self._plot(values, f, dim)
 

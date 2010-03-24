@@ -39,11 +39,10 @@ __docformat__ = 'restructuredtext'
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 
-        
 class CellVariable(_MeshVariable):
     """
     Represents the field of values of a variable on a `Mesh`.
-    
+
     A `CellVariable` can be ``pickled`` to persistent storage (disk) for later use:
         
         >>> from fipy.meshes.grid2D import Grid2D
@@ -61,7 +60,7 @@ class CellVariable(_MeshVariable):
         1
         
     """
-    
+
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
         _MeshVariable.__init__(self, mesh=mesh, name=name, value=value, 
                                rank=rank, elementshape=elementshape, unit=unit)
@@ -84,8 +83,8 @@ class CellVariable(_MeshVariable):
             >>> b = c.getOld() + 3
             >>> print b
             [2]
-            >>> b.getsctype()
-            <type 'numpy.int32'>
+            >>> b.getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            True
             
         replacing with the same thing is no problem
         
@@ -135,7 +134,23 @@ class CellVariable(_MeshVariable):
                                               name=self.name + "_old", 
                                               value=self.getValue(),
                                               hasOld=False)
-            
+                
+    def _getGlobalNumberOfElements(self):
+        return self.mesh.globalNumberOfCells
+        
+    def _getGlobalOverlappingIDs(self):
+        return self.mesh._getGlobalOverlappingCellIDs()
+
+    def _getLocalNonOverlappingIDs(self):
+        return self.mesh._getLocalNonOverlappingCellIDs()
+
+    def getGlobalValue(self):
+        return self._getGlobalValue(self.mesh._getLocalNonOverlappingCellIDs(), 
+                                    self.mesh._getGlobalNonOverlappingCellIDs())
+
+    def setValue(self, value, unit = None, where = None):
+        _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
+
     def __call__(self, points=None, order=0, nearestCellIDs=None):
         r"""
         Interpolates the CellVariable to a set of points using a
@@ -163,10 +178,10 @@ class CellVariable(_MeshVariable):
             >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
             >>> x, y = m0.getCellCenters()
             >>> v0 = CellVariable(mesh=m0, value=x * y)
-            >>> print v0(m1.getCellCenters())
+            >>> print v0(m1.getCellCenters().getGlobalValue())
             [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
               0.75  0.75  2.25  2.25]
-            >>> print v0(m1.getCellCenters(), order=1)
+            >>> print v0(m1.getCellCenters().getGlobalValue(), order=1)
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 
@@ -177,12 +192,14 @@ class CellVariable(_MeshVariable):
                 nearestCellIDs = self.getMesh()._getNearestCellID(points)
 
             if order == 0:
-                return self[..., nearestCellIDs]
+                return self.getGlobalValue()[..., nearestCellIDs]
 
             elif order == 1:
                 ##cellID = self.getMesh()._getNearestCellID(points)
 ##                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().getCellCenters()[...,cellID], self.getGrad()[...,cellID])
-                return self[..., nearestCellIDs] + numerix.dot(points - self.getMesh().getCellCenters()[...,nearestCellIDs], self.getGrad()[...,nearestCellIDs])
+                return (self.getGlobalValue()[..., nearestCellIDs] 
+                        + numerix.dot(points - self.getMesh().getCellCenters().getGlobalValue()[...,nearestCellIDs], 
+                                      self.getGrad().getGlobalValue()[...,nearestCellIDs]))
 
             else:
                 raise ValueError, 'order should be either 0 or 1'
@@ -201,6 +218,7 @@ class CellVariable(_MeshVariable):
                {\sum_\text{cells} V_\text{cell}}
         
         >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
         >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
         >>> print var.getCellVolumeAverage()
@@ -254,13 +272,16 @@ class CellVariable(_MeshVariable):
         Tests
 
         >>> from fipy import Grid2D
-        >>> print CellVariable(mesh=Grid2D(nx=2, ny=2, dx=0.1, dy=2.0), value=(0,1,3,6)).getLeastSquaresGrad()
-        [[8.0 8.0 24.0 24.0]
-         [1.2 2.0 1.2 2.0]]
+        >>> m = Grid2D(nx=2, ny=2, dx=0.1, dy=2.0)
+        >>> print numerix.allclose(CellVariable(mesh=m, value=(0,1,3,6)).getLeastSquaresGrad().getGlobalValue(), \
+        ...                                     [[8.0, 8.0, 24.0, 24.0],
+        ...                                      [1.2, 2.0, 1.2, 2.0]])
+        True
 
         >>> from fipy import Grid1D
-        >>> print CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), value=(0, 1, 2)).getLeastSquaresGrad()
-        [[0.461538461538 0.8 1.2]]
+        >>> print numerix.allclose(CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), 
+        ...                                     value=(0, 1, 2)).getLeastSquaresGrad().getGlobalValue(), [[0.461538461538, 0.8, 1.2]])
+        True
         """
 
         if not hasattr(self, 'leastSquaresGrad'):
@@ -282,25 +303,27 @@ class CellVariable(_MeshVariable):
         >>> from fipy.meshes.grid1D import Grid1D
         >>> from fipy import numerix
         >>> mesh = Grid1D(dx = (1., 1.))
-        >>> var = CellVariable(mesh = mesh, value = (1, 2))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-        >>> answer = (var[1] - var[0]) * (0.5 / 1.) + var[0]
-        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-        1
+        >>> L = 1
+        >>> R = 2
+        >>> var = CellVariable(mesh = mesh, value = (L, R))
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> answer = (R - L) * (0.5 / 1.) + L
+        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        True
         
         >>> mesh = Grid1D(dx = (2., 4.))
-        >>> var = CellVariable(mesh = mesh, value = (1, 2))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-        >>> answer = (var[1] - var[0]) * (1.0 / 3.0) + var[0]
-        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-        1
+        >>> var = CellVariable(mesh = mesh, value = (L, R))
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> answer = (R - L) * (1.0 / 3.0) + L
+        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        True
 
         >>> mesh = Grid1D(dx = (10., 100.))
-        >>> var = CellVariable(mesh = mesh, value = (1, 2))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()][0]
-        >>> answer = (var[1] - var[0]) * (5.0 / 55.0) + var[0]
-        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-        1
+        >>> var = CellVariable(mesh = mesh, value = (L, R))
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> answer = (R - L) * (5.0 / 55.0) + L
+        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        True
         """
         if not hasattr(self, 'arithmeticFaceValue'):
             from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
@@ -350,25 +373,27 @@ class CellVariable(_MeshVariable):
         >>> from fipy.meshes.grid1D import Grid1D
         >>> from fipy import numerix
         >>> mesh = Grid1D(dx = (1., 1.))
-        >>> var = CellVariable(mesh = mesh, value = (1, 2))
+        >>> L = 1
+        >>> R = 2
+        >>> var = CellVariable(mesh = mesh, value = (L, R))
         >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
-        >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (0.5 / 1.) + var[0])
-        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-        1
+        >>> answer = L * R / ((R - L) * (0.5 / 1.) + L)
+        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        True
         
         >>> mesh = Grid1D(dx = (2., 4.))
-        >>> var = CellVariable(mesh = mesh, value = (1, 2))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()][0]
-        >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (1.0 / 3.0) + var[0])
-        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-        1
+        >>> var = CellVariable(mesh = mesh, value = (L, R))
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> answer = L * R / ((R - L) * (1.0 / 3.0) + L)
+        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        True
 
         >>> mesh = Grid1D(dx = (10., 100.))
-        >>> var = CellVariable(mesh = mesh, value = (1, 2))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()][0]
-        >>> answer = var[0] * var[1] / ((var[1] - var[0]) * (5.0 / 55.0) + var[0])
-        >>> numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)()
-        1
+        >>> var = CellVariable(mesh = mesh, value = (L, R))
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> answer = L * R / ((R - L) * (5.0 / 55.0) + L)
+        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        True
         """
         if not hasattr(self, 'harmonicFaceValue'):
             from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
@@ -470,7 +495,7 @@ class CellVariable(_MeshVariable):
         return {
             'mesh' : self.mesh,
             'name' : self.name,
-            'value' : self.getValue(),
+            'value' : self.getGlobalValue(),
             'unit' : self.getUnit(),
             'old' : self.old
         }

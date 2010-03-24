@@ -101,7 +101,7 @@ class Mesh2D(Mesh):
         return newmesh
 
     def _concatenate(self, other, smallNumber):
-        return Mesh2D(**self._getAddedMeshValues(other, smallNumber))
+        return Mesh2D(**self._getAddedMeshValues(other._getConcatenableMesh(), smallNumber))
 
     def _getOrderedCellVertexIDs(self):
         from fipy.tools.numerix import take
@@ -113,7 +113,7 @@ class Mesh2D(Mesh):
         cellVertexIDs = MA.where(self.cellToFaceOrientations.ravel() > 0,
                              cellVertexIDs0, cellVertexIDs1)
 
-        cellVertexIDs = MA.reshape(cellVertexIDs, (NFac, -1))
+        cellVertexIDs = numerix.reshape(cellVertexIDs, (NFac, -1))
         return cellVertexIDs
     
     def _getNonOrthogonality(self):
@@ -123,7 +123,7 @@ class Mesh2D(Mesh):
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) ## what we put in for the "fill" doesn't matter because only exterior faces have anything masked, and exterior faces have their displacement vectors set to zero.
         ## if it's an exterior face, make the "displacement vector" equal to zero so the cross product will be zero.
     
-        faceDisplacementVectors = numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)), 0.0, numerix.take(self.getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[1, :]) - numerix.take(self.getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[0, :])).swapaxes(0,1)
+        faceDisplacementVectors = numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)), 0.0, numerix.take(self._getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[1, :]) - numerix.take(self._getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[0, :])).swapaxes(0,1)
         faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1, :]) - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
         faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
         faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self.faceAreas
@@ -312,8 +312,8 @@ class Mesh2D(Mesh):
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2., 3.*dx+dx/3., 3.*dx+dx/3.),
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2., 2.*dy/3., 4.*dy/3.)))
-            >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            True
                                               
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., 
             ...                                          dy / 2., dy / 2., dy / 2., 
@@ -437,8 +437,8 @@ class Mesh2D(Mesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
-            1
+            >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            True
 
             
 

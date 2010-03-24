@@ -56,9 +56,10 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
     >>> mesh = Grid2D(dx = 1., nx = 3)
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
-    >>> arr = numerix.array(_LevelSetDiffusionVariable(var, 1))
-    >>> numerix.allclose(arr, (0,1,1,0,1,1,0,0,1,1))
-    1
+    >>> from fipy.variables.faceVariable import FaceVariable
+    >>> answer = FaceVariable(mesh=mesh, value=(0,1,1,0,1,1,0,0,1,1))
+    >>> print _LevelSetDiffusionVariable(var, 1).allclose(answer)
+    True
     """
     def __init__(self, distanceVariable = None, diffusionCoeff = None):
         """
@@ -100,7 +101,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
 	val = val,
 	id1 = id1, id2 = id2,
         diffusionCoeff = self.diffusionCoeff,
-	ni = len(self.mesh.getFaces())
+	ni = self.mesh._getNumberOfFaces()
 	)
  
         return self._makeValue(value = val)

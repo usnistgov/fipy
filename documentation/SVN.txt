@@ -65,7 +65,7 @@ for FiPy are:
 ``tags/version-x_y``
     designates a released version x.y. Any released
     version of FiPy will be designated with a fixed tag: The current
-    version of FiPy is |VERSION|, found in "tags/version-|SVNVERSION|".
+    version of FiPy is |version|.
 
 ``branches/version-x_y``
     designates a line of development based on a previously released version
@@ -108,8 +108,6 @@ Any other tags will not generally be of interest to most users.
 For those who are interested in learning more about Subversion, the
 canonical manual is the `online Subversion Red Bean book`_ 
 [SubversionRedBean]_.
-
-.. include:: VERSION.txt
 
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 

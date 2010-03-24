@@ -214,14 +214,9 @@ documentation/tutorial/package/subpackage/object.py
 examples/README.txt
 examples/__init__.py
 examples/test.py
-examples/benchmarking/__init__.py
-examples/benchmarking/anisotropy.py
 examples/benchmarking/benchmarker.py
-examples/benchmarking/cahnHilliard.py
-examples/benchmarking/mesh.py
-examples/benchmarking/phaseImpingement.py
-examples/benchmarking/superfill.py
-examples/benchmarking/transientPulse.py
+examples/benchmarking/steps.py
+examples/benchmarking/versions.py
 examples/cahnHilliard/__init__.py
 examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D.py
@@ -534,6 +529,7 @@ fipy/tests/lateImportTest.py
 fipy/tests/testBase.py
 fipy/tests/testProgram.py
 fipy/tools/__init__.py
+fipy/tools/debug.py
 fipy/tools/dump.py
 fipy/tools/inline.py
 fipy/tools/memoryLeak.py

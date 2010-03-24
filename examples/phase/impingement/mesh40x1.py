@@ -232,6 +232,7 @@ extracts the data and compares it with the ``theta`` variable.
 
 >>> import os
 >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
+>>> testData = CellVariable(mesh=mesh, value=testData)
 >>> print theta.allclose(testData)
 1
 """
