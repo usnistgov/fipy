@@ -692,13 +692,13 @@ class Mesh(_CommonMesh):
 
     def __getstate__(self):
         dict = {
-            'vertexCoords' : self.vertexCoords,            
+            'vertexCoords' : self.vertexCoords *  self.scale['length'],            
             'faceVertexIDs' : self.faceVertexIDs,
             'cellFaceIDs' : self.cellFaceIDs }
         return dict
 
     def __setstate__(self, dict):
-        Mesh.__init__(self, dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
+        Mesh.__init__(self, **dict)
 ##        self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
      
     def _test(self):

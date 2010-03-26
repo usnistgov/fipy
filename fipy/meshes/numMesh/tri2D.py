@@ -188,14 +188,14 @@ class Tri2D(Mesh2D):
 
     def __getstate__(self):
         return {
-            'dx' : self.dx,            
-            'dy' : self.dy,
+            'dx' : self.dx * self.scale['length'],
+            'dy' : self.dy * self.scale['length'],
             'nx' : self.nx,
             'ny' : self.ny
         }
 
     def __setstate__(self, dict):
-        self.__init__(dx = dict['dx'], dy = dict['dy'], nx = dict['nx'], ny = dict['ny'])
+        self.__init__(**dict)
 
         
     def _test(self):
