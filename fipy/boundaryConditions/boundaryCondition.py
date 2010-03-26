@@ -58,7 +58,11 @@ class BoundaryCondition:
 
             >>> from fipy.meshes.grid1D import Grid1D
             >>> mesh = Grid1D(nx = 2)
-            >>> bc = __BoundaryCondition(mesh.getInteriorFaces(), 0)
+            >>> from fipy.tools import parallel
+            >>> if parallel.procID == 0:
+            ...     bc = __BoundaryCondition(mesh.getInteriorFaces(), 0)
+            ... else:
+            ...     raise IndexError("Face list has interior faces")
             Traceback (most recent call last):
                 ...
             IndexError: Face list has interior faces

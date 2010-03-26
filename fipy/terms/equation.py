@@ -111,10 +111,10 @@ class _Equation(Term):
             
 	return (matrix, RHSvector)
         
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver, *args, **kwargs):
         for term in self._getTerms():
             if term is not None:
-                defaultsolver = term._getDefaultSolver(solver)
+                defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
                 if defaultsolver is not None:
                     return defaultsolver
                 

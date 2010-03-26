@@ -56,8 +56,8 @@ class LinearLUSolver(PysparseSolver):
     .. _PySparse: http://pysparse.sourceforge.net
     
     """
-
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None):
+    
+    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None, maxIterations=10):
         """
         Creates a `LinearLUSolver`.
 
@@ -68,10 +68,12 @@ class LinearLUSolver(PysparseSolver):
             For large systems a number of iterations is generally required.
 
         """
+
+        iterations = min(iterations, maxIterations)
         
         PysparseSolver.__init__(self, tolerance = tolerance, iterations=iterations, steps = steps, precon = precon)
 
-    def _solve(self, L, x, b):
+    def _solve_(self, L, x, b):
         diag = L.takeDiagonal()
         maxdiag = max(numerix.absolute(diag))
 

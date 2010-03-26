@@ -40,13 +40,14 @@ class ExplicitDiffusionTerm(DiffusionTerm):
     r"""
     The discretization for the `ExplicitDiffusionTerm` is given by
 
-    .. raw:: latex
+    .. math::
 
-       $$ \int_V \nabla \cdot (\Gamma\nabla\phi) dV \simeq \sum_f \Gamma_f
-       \frac{\phi_A^\text{old}-\phi_P^\text{old}}{d_{AP}} A_f $$ where $\phi_A^\text{old}$ and
-       $\phi_P^\text{old}$ are the old values of the variable. The term is
-       added to the RHS vector and makes no contribution to
-       the solution matrix.
+       \int_V \nabla \cdot (\Gamma\nabla\phi) dV \simeq \sum_f \Gamma_f
+       \frac{\phi_A^\text{old}-\phi_P^\text{old}}{d_{AP}} A_f
+       
+    where :math:`\phi_A^\text{old}` and :math:`\phi_P^\text{old}` are the old values of the
+    variable. The term is added to the RHS vector and makes no contribution to
+    the solution matrix.
 
     """
     

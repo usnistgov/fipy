@@ -1,0 +1,161 @@
+{% extends "basic/layout.html" %}
+{# put the sidebar before the body #}
+{% block sidebar1 %}{{ sidebar() }}{% endblock %}
+{% block sidebar2 %}{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" src="http://www.nist.gov/commonspot/javascript/browser-all.js"></script>
+<script type="text/javascript" src="http://www.nist.gov/js/spry/SpryDOMUtils.js"></script>
+<script type="text/javascript" src="http://www.nist.gov/js/spry/SpryMenuBar.js"></script>
+<script type="text/javascript" src="http://www.nist.gov/js/spry/menu_bar.js"></script>
+{{ super() }}
+{% endblock %}
+{% set reldelim1 = ' &gt;' %}
+{% block rootrellink %}
+        <li><a href="http://www.nist.gov/">NIST Home</a>{{ reldelim1 }}</li>
+        <li><a href="http://www.nist.gov/msel/">MSEL</a>{{ reldelim1 }}</li>
+        <li><a href="http://www.nist.gov/msel/ctcms/">CTCMS</a>{{ reldelim1 }}</li>
+        <li><a href="{{ pathto('index') }}"><img src="{{ pathto('_static/fipy.png', 1) }}" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        FiPy</a>{{ reldelim1 }}</li>
+{% endblock %}
+{% block relbar1 %}
+    <a name="__topdoc__"></a><script type="text/javascript" src="http://www.nist.gov/commonspot/javascript/browser-all.js"></script><script src="http://www.nist.gov/commonspot/pagemode/always-include-common.js" type="text/javascript"></script><script src="http://www.nist.gov/commonspot/pagemode/always-include-moz.js" type="text/javascript"></script><div id="base-template-wrapper" class="msel">
+            <div id="header-wrapper">
+    <div id="meta-navigation-wrapper">	
+            <a href="http://www.nist.gov/index.cfm">
+                    <img src="http://www.nist.gov/ui/images/NIST_logo.gif" alt="NIST logo" />
+            </a>
+            <div id="meta-navigation-links">
+
+                    <div class="pipelistBold">
+                            <ul>
+                                    <li><a href="http://www.time.gov/">NIST Time</a></li>
+                                    <li><a href="http://www.nist.gov/">NIST Home</a></li>
+                                    <li><a href="http://www.nist.gov/public_affairs/nandyou.htm">About NIST</a></li>
+                                    <li><a href="http://www.nist.gov/public_affairs/contact.htm">Contact Us</a></li>
+                                    <li><a href="http://www.nist.gov/public_affairs/siteindex.htm">A-Z Site Index</a></li>
+
+                            </ul>
+                    </div>
+            </div>
+        
+        
+        
+    <form
+    method="get"
+    action="http://www.nist.gov/searchresults/search-results.cfm"
+    name="GoogleSearchForm"
+    id="meta-search-form"
+    class="meta-search-form">
+    <input
+    type="text"
+    name="q"
+    size="25"
+    maxlength="255"
+    value=""
+    class="meta-search-form-input" />
+    <input type="submit" name="btng" value="Search" class="meta-search-form-button" id="searchButton" />
+    <input type="hidden" name="num" value="10" />
+    <input type="hidden" name="sortType" value="L" />
+    <input type="hidden" name="scopeType" value="0" />
+    <input type="hidden" name="datefrom" value="" />
+    <input type="hidden" name="dateto" value="" />
+    </form>
+
+        
+    </div>
+    <div id="banner-graphic-wrapper">
+            <span id="banner-graphic-wrapper-text">
+                    Materials Science and Engineering Laboratory 
+                            &mdash; 
+            </span>
+    </div>
+            <div class="pipelist" id="navigation-wrapper">
+
+
+                    <ul id="MenuBar1" class="MenuBarHorizontal">
+                            <li><a class="MenuBarItemSubmenu fix-arrow-padding-right" href="/msel/about-msel.cfm">About MSEL</a>
+                                    <ul>
+                                            <li><a href="/msel/about-msel.cfm">What we do</a></li>
+                                            <li><a href="/msel/organization.cfm">Organization</a></li>
+
+                                            <li><a href="/msel/divisions.cfm">Divisions</a></li>
+                                            <li><a href="/msel/staff.cfm">Staff Directory</a></li>
+                                            <li><a href="/msel/working-with-msel.cfm">Working with MSEL</a></li>
+                                            <li><a href="/msel/employment.cfm">Research Opportunities</a></li>
+                                            <li><a href="/msel/contact-us.cfm">Contact us</a></li>
+                                    </ul>
+
+                            </li>
+                            <li><a href="http://www.msel.nist.gov/publications/publications.cgi">Publications</a></li>
+                            <li><a class="MenuBarItemSubmenu fix-arrow-padding-right" href="/msel/topics.cfm">Topic/Subject Areas</a>
+                                    <ul>
+                                            <li><a href="/msel/biomaterials.cfm">Biomaterials</a></li>
+                                            <li><a href="/msel/ceramics.cfm">Ceramics</a></li>
+                                            <li><a href="/msel/hybrid-materials.cfm">Hybrid Materials</a></li>
+
+                                            <li><a href="/msel/metals.cfm">Metals</a></li>
+                                            <li><a href="/msel/nanomaterials.cfm">Nanomaterials</a></li>
+                                            <li><a href="/msel/polymers.cfm">Polymers</a></li>
+                                            <li><a href="/msel/semiconductors.cfm">Semiconductors</a></li>
+                                            <li><a href="/msel/topics.cfm">All Topics</a></li>
+                                    </ul>
+
+                            </li>	
+                            <li><a class="MenuBarItemSubmenu fix-arrow-padding-right" href="#">Products/Services</a>
+                                    <ul>
+                                            <li><a href="http://ts.nist.gov/measurementservices/referencematerials/index.cfm">Standard Reference Materials</a></li>
+                                            <li><a href="/msel/materials-data.cfm">Materials Databases</a></li>
+                                            <li><a href="http://www.nist.gov/public_affairs/practiceguides/practiceguides.htm">Recommended Practice Guides</a></li>
+                                            <li><a href="/msel/events.cfm">Workshops & Conferences</a></li>
+
+                                            <li><a href="/msel/ctcms/index.cfm">CTCMS</a></li>
+                                            <li><a href="/msel/polymers/combi.cfm">NIST Combinatorial Methods Center</a></li>
+                                    </ul>
+                            </li>
+                            <li><a href="/msel/news.cfm">News/Multimedia</a></li>
+                            <li><a href="/msel/projects.cfm">Programs/Projects</a></li>
+                            <li><a href="/msel/facilities.cfm">Facilities</a></li>
+
+                    </ul>
+                    
+            </div>
+    </div>
+    </div>
+    <div class="msel">
+{{ super() }}
+    </div>
+{% endblock %}
+{% block relbar2 %}{% endblock %}
+{% block document %}
+    <div class="msel">
+    {{ super() }}
+    </div>
+{% endblock %}
+{% block sidebarlogo %}
+<!-- AddThis Button BEGIN -->
+<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pub=usnistgov"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0" align="right" /></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pub=usnistgov"></script>
+<!-- AddThis Button END -->  
+{{ super() }}
+<b>FiPy: A Finite Volume PDE Solver Using Python</b><br />
+Version {{ release }}
+{% endblock %}
+{% block footer %}
+    <div class="footer msel">
+    <p>The National Institute of Standards and Technology (NIST) is an agency of the U.S. Commerce Department.</p>
+    <p>
+    <a href="http://www.nist.gov/public_affairs/privacy.htm">Privacy policy / security notice / accessibility statement</a> / 
+    <a href="http://www.nist.gov/public_affairs/disclaim.htm">Disclaimer</a> / 
+    <a href="http://www.nist.gov/admin/foia/foia.htm">Freedom of Information Act (FOIA)</a> / 
+    <a href="http://www.nist.gov/director/civil/nofearpolicy.htm">No Fear Act Policy</a> /
+    <br />
+
+    <a href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ExpectMore.gov">ExpectMore.gov (performance of federal programs)</a> / 
+    <a href="http://www.nist.gov/director/quality_standards.htm">NIST Information Quality Standards</a>
+    </p>
+    <p>
+    Last updated: {{ last_updated|e }} |
+    Contact: <a href="mailto:webmaster@ctcms.nist.gov" class="bold"> <span class="all-caps">Ctcms</span> Webmaster</a>
+    </p>
+    </div>
+{% endblock %}

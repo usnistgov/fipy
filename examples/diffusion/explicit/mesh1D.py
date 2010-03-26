@@ -35,85 +35,77 @@
 r"""
 
 This input file again solves a 1D diffusion problem as in
-``examples/diffusion/steadyState/mesh1D.py``,     
+:mod:`examples.diffusion.steadyState.mesh1D`,     
 the difference being that this transient example is solved explicitly.
 
 We create a 1D mesh:
     
-    >>> from fipy import *
+>>> from fipy import *
 
-    >>> nx = 100
-    >>> dx = 1.
-    >>> mesh = Grid1D(dx = dx, nx = nx)
+>>> nx = 100
+>>> dx = 1.
+>>> mesh = Grid1D(dx = dx, nx = nx)
 
-and we initialize a `CellVariable` to `initialValue`:
+and we initialize a :class:`~fipy.variables.cellVariable.CellVariable` to
+``initialValue``:
     
-    >>> valueLeft = 0.
-    >>> initialValue = 1.
-    >>> var = CellVariable(
-    ...     name = "concentration",
-    ...     mesh = mesh,
-    ...     value = initialValue)
+>>> valueLeft = 0.
+>>> initialValue = 1.
+>>> var = CellVariable(
+...     name = "concentration",
+...     mesh = mesh,
+...     value = initialValue)
 
 The transient diffusion equation 
 
-.. raw:: latex
+.. math::
 
-   $$ \frac{\partial \phi}{\partial t} = \nabla \cdot (D \nabla \phi) $$
+   \frac{\partial \phi}{\partial t} = \nabla \cdot (D \nabla \phi)
 
-is represented by a `TransientTerm` and an `ExplicitDiffusionTerm`.
+is represented by a :class:`~fipy.terms.transientTerm.TransientTerm` and an
+:class:`~fipy.terms.explicitDiffusionTerm.ExplicitDiffusionTerm`.
 
-We take the diffusion coefficient 
-
-.. raw:: latex
-
-   $D = 1$
+We take the diffusion coefficient :math:`D = 1`
    
-..
-
-   >>> diffusionCoeff = 1.
+>>> diffusionCoeff = 1.
     
 We build the equation:
 
-    >>> eq = TransientTerm() == ExplicitDiffusionTerm(coeff = diffusionCoeff)
+>>> eq = TransientTerm() == ExplicitDiffusionTerm(coeff = diffusionCoeff)
     
 and the boundary conditions:
     
-    >>> boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),)
+>>> boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),)
 
 In this case, many steps have to be taken to reach equilibrium.  A loop is
 required to execute the necessary time steps:
     
-    >>> timeStepDuration = 0.1
-    >>> steps = 100
-    >>> for step in range(steps):
-    ...     var.updateOld()     
-    ...     eq.solve(var = var, boundaryConditions = boundaryConditions,
-    ...                         dt = timeStepDuration)
+>>> timeStepDuration = 0.1
+>>> steps = 100
+>>> for step in range(steps):
+...     var.updateOld()     
+...     eq.solve(var = var, boundaryConditions = boundaryConditions,
+...                         dt = timeStepDuration)
 
 The analytical solution for this transient diffusion problem is given
-by
-
-.. raw:: latex
-
-   $\phi = \erf(x/2\sqrt{D t})$.
+by :math:`\phi = \erf(x/2\sqrt{D t})`.
    
 The result is tested against the expected profile:
     
-    >>> Lx = nx * dx
-    >>> x = mesh.getCellCenters()[0]
-    >>> t = timeStepDuration * steps
-    >>> epsi = x / sqrt(t * diffusionCoeff)
-    >>> from scipy.special import erf
-    >>> analyticalArray = erf(epsi/2)
-    >>> print var.allclose(analyticalArray, atol = 2e-3)
-    1
+>>> Lx = nx * dx
+>>> x = mesh.getCellCenters()[0]
+>>> t = timeStepDuration * steps
+>>> epsi = x / sqrt(t * diffusionCoeff)
+>>> from scipy.special import erf
+>>> analyticalArray = erf(epsi/2)
+>>> print var.allclose(analyticalArray, atol = 2e-3)
+1
     
 If the problem is run interactively, we can view the result:
-    
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars = (var,))
-    ...     viewer.plot()
+
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars = (var,))
+...     viewer.plot()
 """
  
 __docformat__ = 'restructuredtext'

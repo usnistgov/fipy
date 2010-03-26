@@ -61,7 +61,7 @@ if __name__ == '__main__':
                            mesh = mesh,
                            value = valueLeft)
 
-        ImplicitDiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
+        DiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
                                                                  FixedValue(mesh.getFacesRight(), valueRight)))
 
         varArray = array(var)

@@ -40,6 +40,8 @@ import cPickle
 import os
 import gzip
 
+from fipy.tools import parallel
+
 # TODO: add test to show that round trip pickle of mesh doesn't work properly
 # FIXME: pickle fails to work properly on numpy 1.1 (run gapFillMesh.py)
 def write(data, filename = None, extension = ''):
@@ -56,20 +58,27 @@ def write(data, filename = None, extension = ''):
     Test to check pickling and unpickling.
 
         >>> from fipy.meshes.grid1D import Grid1D
-        >>> f, tempfile = write(Grid1D(nx = 2))
-        >>> mesh = read(tempfile, f)
-        >>> print mesh.getNumberOfCells()
-        2
+        >>> old = Grid1D(nx = 2)
+        >>> f, tempfile = write(old)
+        >>> new = read(tempfile, f)
+        >>> print old.getNumberOfCells() == new.getNumberOfCells()
+        True
         
     """
-    if filename is None:
-        import tempfile
-        (f, _filename) =  tempfile.mkstemp(extension)
+    if parallel.procID == 0:
+        if filename is None:
+            import tempfile
+            (f, _filename) =  tempfile.mkstemp(extension)
+        else:
+            (f, _filename) = (None, filename)
+        fileStream = gzip.GzipFile(filename = _filename, mode = 'w', fileobj = None)
     else:
-        _filename = filename
-    fileStream = gzip.GzipFile(filename = _filename, mode = 'w', fileobj = None)
+        fileStream = open(os.devnull, mode='w')
+        (f, _filename) = (None, os.devnull)
+        
     cPickle.dump(data, fileStream, 0)
     fileStream.close()
+        
     if filename is None:
         return (f, _filename)
 
@@ -83,13 +92,22 @@ def read(filename, fileobject = None):
       - `fileobject`: Used to remove temporary files
       
     """
-    fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
-    data = cPickle.load(fileStream)
-    fileStream.close()
-    if fileobject is not None:
-        os.close(fileobject)
-        os.remove(filename)
-    return data
+    if parallel.procID == 0:
+        fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
+        data = fileStream.read()
+        fileStream.close()
+        if fileobject is not None:
+            os.close(fileobject)
+            os.remove(filename)
+    else:
+        data = None
+        
+    if parallel.Nproc > 1:
+        from mpi4py import MPI
+        comm = MPI.COMM_WORLD
+        data = comm.bcast(data, root=0)
+
+    return cPickle.loads(data)
 
 def _test(): 
     import doctest

@@ -74,16 +74,18 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
     species with a source term for the jump from the bulk to an interface.
     The governing equation is given by,
 
-    .. raw:: latex
+    .. math::
 
-        $$ \frac{\partial c}{\partial t} = \nabla \cdot D \nabla  c $$
+       \frac{\partial c}{\partial t} = \nabla \cdot D \nabla  c
 
     where,
 
-    .. raw:: latex
+    .. math::
 
-        $$ D = D_c \;\; \text{when} \;\; \phi > 0 $$
-        $$ D = 0   \;\; \text{when} \;\; \phi \le 0 $$
+       D = \begin{cases}
+           D_c & \text{when $\phi > 0$} \\
+           0  & \text{when $\phi \le 0$}
+       \end{cases}
 
     The jump condition at the interface is defined by Langmuir
     adsorption. Langmuir adsorption essentially states that the ability for
@@ -91,9 +93,9 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
     the concentration in the electrolyte, available site density and a
     jump coefficient. The boundary condition at the interface is given by
 
-    .. raw:: latex
+    .. math::
 
-        $$ D \hat{n} \cdot \nabla c = -k c (1 - \theta) \;\; \text{at} \;\; \phi = 0.$$
+       D \hat{n} \cdot \nabla c = -k c (1 - \theta) \qquad \text{at $\phi = 0$}.
         
     :Parameters:
       - `bulkVar`: The bulk surfactant concentration variable.

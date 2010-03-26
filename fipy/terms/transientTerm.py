@@ -40,60 +40,62 @@ class TransientTerm(CellTerm):
     r"""
     The `TransientTerm` represents
     
-    .. raw:: latex
+    .. math::
 
-       \[ \int_V \frac{\partial (\rho \phi)}{\partial t} dV \simeq
-       \frac{(\rho_{P} \phi_{P} - \rho_{P}^\text{old} \phi_P^\text{old}) V_P}{\Delta t} \]
-       where $\rho$ is the
-
-    `coeff` value.
+       \int_V \frac{\partial (\rho \phi)}{\partial t} dV \simeq
+       \frac{(\rho_{P} \phi_{P} - \rho_{P}^\text{old} \phi_P^\text{old}) V_P}{\Delta t}
+       
+    where :math:`\rho` is the `coeff` value.
 
     The following test case verifies that variable coefficients and
     old coefficient values work correctly. We will solve the
     following equation
 
-    .. raw:: latex
+    .. math::
 
-        $$ \frac{ \partial \phi^2 } { \partial t } = k. $$ The analytic solution is given by
-        $$ \phi = \sqrt{ \phi_0^2 + k t }, $$ where $\phi_0$
-
-    is the initial value.
-
-       >>> phi0 = 1.
-       >>> k = 1.
-       >>> dt = 1.
-       >>> relaxationFactor = 1.5
-       >>> steps = 2
-       >>> sweeps = 8
+       \frac{ \partial \phi^2 } { \partial t } = k.
        
-       >>> from fipy.meshes.grid1D import Grid1D
-       >>> mesh = Grid1D(nx = 1)
-       >>> from fipy.variables.cellVariable import CellVariable
-       >>> var = CellVariable(mesh = mesh, value = phi0, hasOld = 1)
-       >>> from fipy.terms.transientTerm import TransientTerm
-       >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+    The analytic solution is given by
+    
+    .. math::
+        
+       \phi = \sqrt{ \phi_0^2 + k t },
+       
+    where :math:`\phi_0` is the initial value.
+
+    >>> phi0 = 1.
+    >>> k = 1.
+    >>> dt = 1.
+    >>> relaxationFactor = 1.5
+    >>> steps = 2
+    >>> sweeps = 8
+    
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> mesh = Grid1D(nx = 1)
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> var = CellVariable(mesh = mesh, value = phi0, hasOld = 1)
+    >>> from fipy.terms.transientTerm import TransientTerm
+    >>> from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 
     Relaxation, given by `relaxationFactor`, is required for a
     converged solution.
        
-       >>> eq = TransientTerm(var) == ImplicitSourceTerm(-relaxationFactor) \
-       ...                            + var * relaxationFactor + k 
+    >>> eq = TransientTerm(var) == ImplicitSourceTerm(-relaxationFactor) \
+    ...                            + var * relaxationFactor + k 
 
     A number of sweeps at each time step are required to let the
     relaxation take effect.
     
-       >>> for step in range(steps):
-       ...     var.updateOld()
-       ...     for sweep in range(sweeps):
-       ...         eq.solve(var, dt = dt)
+    >>> for step in range(steps):
+    ...     var.updateOld()
+    ...     for sweep in range(sweeps):
+    ...         eq.solve(var, dt = dt)
 
     Compare the final result with the analytical solution.
     
-       >>> from fipy.tools import numerix
-       >>> print var.allclose(numerix.sqrt(k * dt * steps + phi0**2))
-       1
-       
-       
+    >>> from fipy.tools import numerix
+    >>> print var.allclose(numerix.sqrt(k * dt * steps + phi0**2))
+    1
     """
 
     def _getWeight(self, mesh):

@@ -1,0 +1,21 @@
+=================================
+:mod:`fipy` Package Documentation
+=================================
+
+.. toctree::
+   :maxdepth: 4
+
+   tutorial/index
+   ../fipy/generated/boundaryConditions
+   ../fipy/generated/meshes
+   ../fipy/generated/models
+   ../fipy/generated/solvers
+   ../fipy/generated/steppers
+   ../fipy/generated/terms
+   ../fipy/generated/test
+   ../fipy/generated/tests
+   ../fipy/generated/tools
+   ../fipy/generated/variables
+   ../fipy/generated/viewers
+
+..   ../fipy/generated/modules

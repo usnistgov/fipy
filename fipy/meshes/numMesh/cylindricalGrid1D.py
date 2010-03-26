@@ -38,12 +38,12 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
+from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.meshes.numMesh.grid1D import Grid1D
 
 class CylindricalGrid1D(Grid1D):
     """
-    Creates a 1D cyliondrical grid mesh.
+    Creates a 1D cylindrical grid mesh.
     
         >>> mesh = CylindricalGrid1D(nx = 3)
         >>> print mesh.getCellCenters()
@@ -59,12 +59,39 @@ class CylindricalGrid1D(Grid1D):
         IndexError: nx != len(dx)
 
     """
-    def __init__(self, dx=1., nx=None):
-        Grid1D.__init__(self, dx=dx, nx=nx)
+    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2):
+        scale = PhysicalField(value=1, unit=PhysicalField(value=dx).getUnit())
+        self.origin = PhysicalField(value=origin)
+        self.origin /= scale
+    
+        Grid1D.__init__(self, dx=dx, nx=nx, overlap=overlap)
+
+        self.args['origin'] = origin
 
     def _calcFaceAreas(self):
         self.faceAreas = self.getFaceCenters()[0]
 
+    def _calcCellVolumes(self):
+        Grid1D._calcCellVolumes(self)
+        self.cellVolumes *= self.scale['length'] * self.cellCenters[0]
+        
+    def _translate(self, vector):
+        return CylindricalGrid1D(dx=self.args['dx'], nx=self.args['nx'], 
+                                 origin=numerix.array(self.args['origin']) + vector, overlap=self.args['overlap'])
+                                     
+    def __mul__(self, factor):
+        return CylindricalGrid1D(dx=self.args['dx'] * factor, nx=self.args['nx'], 
+                                 origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
+
+    def getVertexCoords(self):
+        return self.vertexCoords + self.origin
+
+    def getCellCenters(self):
+        return Grid1D.getCellCenters(self) + self.origin
+
+    def getFaceCenters(self):
+        return self.faceCenters + self.origin
+    
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

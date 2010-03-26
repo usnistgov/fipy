@@ -62,30 +62,31 @@ class _ConvectionCoeff(FaceVariable):
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = 1., dy = 1.)
            >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
            >>> distanceVar = DistanceVariable(mesh, value = (-.5, .5, 1.5))
-           >>> answer = numerix.zeros((2, mesh._getNumberOfFaces()),'d')
+           >>> ## answer = numerix.zeros((2, mesh._getNumberOfFaces()),'d')
+           >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).getGlobalValue()
            >>> answer[0,7] = -1
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar), answer)
-           1
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
+           True
 
         Change the dimensions:
 
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .25)
            >>> distanceVar = DistanceVariable(mesh, value = (-.25, .25, .75))
            >>> answer[0,7] = -.5
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar), answer)
-           1
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
+           True
 
         Two dimensional example:
 
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
            >>> distanceVar = DistanceVariable(mesh, value = (-1.5, -.5, -.5, .5))
-           >>> answer = numerix.zeros((2,mesh._getNumberOfFaces()),'d')
+            >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).getGlobalValue()
            >>> answer[1,2] = -.5
            >>> answer[1,3] = -1
            >>> answer[0,7] = -.5
            >>> answer[0,10] = -1
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar), answer)
-           1
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
+           True
 
         Larger grid:
 
@@ -93,13 +94,13 @@ class _ConvectionCoeff(FaceVariable):
            >>> distanceVar = DistanceVariable(mesh, value = (1.5, .5 , 1.5,
            ...                                           .5 , -.5, .5 ,
            ...                                           1.5, .5 , 1.5))
-           >>> answer = numerix.zeros((2,mesh._getNumberOfFaces()), 'd')
+            >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).getGlobalValue()
            >>> answer[1,4] = .25
            >>> answer[1,7] = -.25
            >>> answer[0,17] = .25
            >>> answer[0,18] = -.25
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar), answer)
-           1
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
+           True
            
         """
         
