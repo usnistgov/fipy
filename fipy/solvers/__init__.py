@@ -1,4 +1,6 @@
+import os
 import sys
+
 from solver import SolverConvergenceWarning, \
      PreconditionerWarning, \
      ScalarQuantityOutOfRangeWarning, \
@@ -8,28 +10,34 @@ from solver import SolverConvergenceWarning, \
      IllConditionedPreconditionerWarning, \
      MaximumIterationWarning
 
-# First check for command-line arguments
-if '--Trilinos' in sys.argv[1:]:
-    from fipy.solvers.trilinos import *
-elif '--Pysparse' in sys.argv[1:]:
-    from fipy.solvers.pysparse import *
+args = [s.lower() for s in sys.argv[1:]]
+
+# any command-line specified solver takes precedence over environment variables
+if '--trilinos' in args:
+    solver = "trilinos"
+elif '--pysparse' in args:
+    solver = "pysparse"
+elif os.environ.has_key('FIPY_SOLVERS'):
+    solver = os.environ['FIPY_SOLVERS'].lower()
 else:
-    import os
-    # Next, check for an environment variable telling us which solver to use
-    if os.environ.has_key('FIPY_SOLVERS'):
-        if os.environ['FIPY_SOLVERS'].lower() == 'pysparse':
-            from fipy.solvers.pysparse import *
-        elif os.environ['FIPY_SOLVERS'].lower() == 'trilinos':
+    solver = None
+    
+if solver == "pysparse":
+    from fipy.solvers.pysparse import *
+elif solver == "trilinos":
+    from fipy.solvers.trilinos import *
+elif solver is None:
+    # If no argument or environment variable, try importing them and seeing
+    # what works
+    try: 
+        from fipy.solvers.pysparse import *
+        solver = "pysparse"
+    except:
+        try:
             from fipy.solvers.trilinos import *
-        else:
-            raise ImportError, 'Unknown solver package %s' % os.environ['FIPY_SOLVERS']
-    else:
-        # If no argument or environment variable, try importing them and seeing
-        # what works
-        try: 
-            from fipy.solvers.pysparse import *
+            solver = "trilinos"
         except:
-            try:
-                from fipy.solvers.trilinos import *
-            except:
-                raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
+            raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
+else:
+    raise ImportError, 'Unknown solver package %s' % solver
+

@@ -34,122 +34,96 @@
 
 r"""
 
-Like ``examples/diffusion/convection/exponential1D/mesh1D.py``
+Like :mod:`examples.diffusion.convection.exponential1D.mesh1D`
 this example solves a steady-state convection-diffusion equation, but adds a constant source, 
+:math:`S_0 = 1`, such that
 
-.. raw:: latex
+.. math::
+    
+   \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) + S_0 = 0.
 
-     $S_0 = 1$, such that
-
-     $$ \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) + S_0 = 0. $$
-
-..
-
-    >>> diffCoeff = 1.
-    >>> convCoeff = (10.,)
-    >>> sourceCoeff = 1.
+>>> diffCoeff = 1.
+>>> convCoeff = (10.,)
+>>> sourceCoeff = 1.
 
 We define a 1D mesh
 
-.. raw:: latex
+.. index:: Grid1D
 
-   \IndexClass{Grid1D}
+>>> from fipy import *
 
-..
-
-    >>> from fipy import *
-
-    >>> nx = 1000
-    >>> L = 10.
-    >>> mesh = Grid1D(dx=L / 1000, nx=nx)
+>>> nx = 1000
+>>> L = 10.
+>>> mesh = Grid1D(dx=L / 1000, nx=nx)
 
 and impose the boundary conditions
 
-.. raw:: latex
+.. math::
 
-   $$ \phi = \begin{cases}
+   \phi = \begin{cases}
    0& \text{at $x = 0$,} \\
    1& \text{at $x = L$,}
-   \end{cases} $$ 
-   or
-   \IndexClass{FixedValue}
+   \end{cases}
    
-..
+or
 
-    >>> valueLeft = 0.
-    >>> valueRight = 1.
-    >>> boundaryConditions = (
-    ...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-    ...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-    ...     )
+.. index:: FixedValue
+   
+>>> valueLeft = 0.
+>>> valueRight = 1.
+>>> boundaryConditions = (
+...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
+...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
+...     )
 
-The solution variable is initialized to `valueLeft`:
+The solution variable is initialized to ``valueLeft``:
     
-.. raw:: latex
+.. index:: CellVariable
 
-   \IndexClass{CellVariable}
-
-..
-
-    >>> var = CellVariable(name="variable", mesh=mesh)
+>>> var = CellVariable(name="variable", mesh=mesh)
 
 
 We define the convection-diffusion equation with source
 
-.. raw:: latex
-
-   \IndexClass{ImplicitDiffusionTerm}
-   \IndexClass{ExponentialConvectionTerm}
-
-..
-
-    >>> eq = (ImplicitDiffusionTerm(coeff=diffCoeff)
-    ...       + ExponentialConvectionTerm(coeff=convCoeff)
-    ...       + sourceCoeff)
+>>> eq = (DiffusionTerm(coeff=diffCoeff)
+...       + ExponentialConvectionTerm(coeff=convCoeff)
+...       + sourceCoeff)
     
-.. raw:: latex
-
-   \IndexClass{LinearLUSolver}
-
-..
+.. index:: DefaultAsymmetricSolver
     
-    >>> eq.solve(var = var, 
-    ...          boundaryConditions = boundaryConditions,
-    ...          solver = LinearLUSolver(tolerance = 1.e-15))
+>>> eq.solve(var=var, 
+...          boundaryConditions=boundaryConditions,
+...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))
     
 and test the solution against the analytical result:
     
-.. raw:: latex
+.. math::
 
-   $$ \phi = -\frac{S_0 x}{u_x} 
-   + \left(1 + \frac{S_0 x}{u_x}\right)\frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)} $$
-   or
-   \IndexFunction{exp}
+   \phi = -\frac{S_0 x}{u_x} 
+   + \left(1 + \frac{S_0 x}{u_x}\right)\frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)}
+   
+or
 
-..
+.. index:: exp
 
-    >>> axis = 0
-    >>> x = mesh.getCellCenters()[axis]
-    >>> AA = -sourceCoeff * x / convCoeff[axis]
-    >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
-    >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
-    >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
-    >>> analyticalArray = AA + BB * CC / DD
-    >>> print var.allclose(analyticalArray, rtol=1e-4, atol=1e-4)
-    1
+>>> axis = 0
+>>> x = mesh.getCellCenters()[axis]
+>>> AA = -sourceCoeff * x / convCoeff[axis]
+>>> BB = 1. + sourceCoeff * L / convCoeff[axis]
+>>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
+>>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> analyticalArray = AA + BB * CC / DD
+>>> print var.allclose(analyticalArray, rtol=1e-4, atol=1e-4)
+1
          
 If the problem is run interactively, we can view the result:
 
-.. raw:: latex
+.. index:: 
+   module: viewers
 
-   \IndexModule{viewers}
-
-..
-
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=var)
-    ...     viewer.plot()
-
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=var)
+...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'
 

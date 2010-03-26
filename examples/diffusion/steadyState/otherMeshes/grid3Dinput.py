@@ -38,10 +38,10 @@
 """
 Test case for the Grid3D.
  
-   >>> ImplicitDiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-   >>> ImplicitDiffusionTerm().solve(var2, boundaryConditions = boundaryConditions2)
-   >>> a = array(var)
-   >>> b = array(var2)
+   >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+   >>> DiffusionTerm().solve(var2, boundaryConditions = boundaryConditions2)
+   >>> a = array(var.getGlobalValue())
+   >>> b = array(var2.getGlobalValue())
    >>> c = ravel(array((b, b, b)))
    >>> print allclose(a, c)
    1
@@ -91,7 +91,7 @@ boundaryConditions2 = (FixedValue(mesh2.getFacesLeft(),valueLeftRight),
                        FixedValue(mesh2.getFacesTop(),valueBottomTop),
                        FixedValue(mesh2.getFacesBottom(),valueBottomTop))
 
-eqn = ImplicitDiffusionTerm()  
+eqn = DiffusionTerm()  
 
 if __name__ == '__main__':
     eqn.solve(var2, boundaryConditions = boundaryConditions2)

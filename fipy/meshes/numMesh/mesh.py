@@ -103,18 +103,19 @@ class Mesh(_CommonMesh):
            >>> from fipy.meshes.numMesh.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
-           >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
-           ...                                   [7, 8, 10, 11],
-           ...                                   [2, 3, 4, 5],
-           ...                                   [6, 7, 9, 10]]).flatten().all()
+           >>> from fipy.tools import parallel
+           >>> print parallel.procID != 0 or (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           ...                                                           [7, 8, 10, 11],
+           ...                                                           [2, 3, 4, 5],
+           ...                                                           [6, 7, 9, 10]]).flatten().all()
            True
 
            >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
-           >>> print (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
-           ...                                   [7, 6, 10, 9],
-           ...                                   [2, 3, 4, 5],
-           ...                                   [6, 7, 9, 10]]).flatten().all()
+           >>> print parallel.procID != 0 or (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           ...                                                           [7, 6, 10, 9],
+           ...                                                           [2, 3, 4, 5],
+           ...                                                           [6, 7, 9, 10]]).flatten().all()
            True
 
         """
@@ -209,7 +210,7 @@ class Mesh(_CommonMesh):
                 diff = numerix.array(diff)
                 if (sum(diff ** 2) < smallNumber):
                     vertexCorrelates[j] = i
-        if (vertexCorrelates == {}):
+        if (self._getNumberOfVertices() > 0 and other._getNumberOfVertices() > 0 and vertexCorrelates == {}):
             raise MeshAdditionError, "Vertices are not aligned"
 
         
@@ -239,7 +240,7 @@ class Mesh(_CommonMesh):
                 for j in range(selfNumFaces):
                     if (self._equalExceptOrder(currFace, self.faceVertexIDs[...,j])):
                         faceCorrelates[i] = j
-        if(faceCorrelates == {}):
+        if (self._getNumberOfFaces() > 0 and other._getNumberOfFaces() > 0 and faceCorrelates == {}):
             raise MeshAdditionError, "Faces are not aligned"
         
         faceIndicesToAdd = ()
@@ -311,9 +312,15 @@ class Mesh(_CommonMesh):
         return newmesh
 
     def _calcTopology(self):
-        self.dim = len(self.vertexCoords[...,0])
-        self.numberOfFaces = self.faceVertexIDs.shape[-1]
-        self.numberOfCells = self.cellFaceIDs.shape[-1]
+        self.dim = self.vertexCoords.shape[0]
+        if not hasattr(self, "numberOfFaces"):
+            self.numberOfFaces = self.faceVertexIDs.shape[-1]
+        if not hasattr(self, "numberOfCells"):
+            self.numberOfCells = self.cellFaceIDs.shape[-1]
+        if not hasattr(self, "globalNumberOfCells"):
+            self.globalNumberOfCells = self.numberOfCells
+        if not hasattr(self, "globalNumberOfFaces"):
+            self.globalNumberOfFaces = self.numberOfFaces
         self._calcFaceCellIDs()
         
         _CommonMesh._calcTopology(self)
@@ -414,7 +421,8 @@ class Mesh(_CommonMesh):
         Used by the `Grid` meshes.
         """
         x = numerix.zeros((n + 1), 'd')
-        x[1:] = d
+        if n > 0:
+            x[1:] = d
         return numerix.add.accumulate(x)
 
     """get Topology methods"""
@@ -440,16 +448,8 @@ class Mesh(_CommonMesh):
     def getFaceCellIDs(self):
         return self.faceCellIDs
 
-    def _getFaces(self):
-        return numerix.arange(self.numberOfFaces)
-
-    def _getCellsByID(self, ids = None):
-        if ids is None:
-            ids = range(self.numberOfCells) 
-        return numerix.array([Cell(self, ID) for ID in ids])
-    
     def _getMaxFacesPerCell(self):
-        return len(self.cellFaceIDs[...,0])
+        return self.cellFaceIDs.shape[0]
 
     """Geometry methods"""
 
@@ -536,6 +536,7 @@ class Mesh(_CommonMesh):
     def _calcFaceToCellDistances(self):
         tmp = MA.repeat(self.faceCenters[...,numerix.NewAxis,:], 2, 1)
         # array -= masked_array screws up masking for on numpy 1.1
+
         tmp = tmp - numerix.take(self.cellCenters, self.faceCellIDs, axis=1)
         self.cellToFaceDistanceVectors = tmp
         self.faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,0))
@@ -578,7 +579,10 @@ class Mesh(_CommonMesh):
                                  self._getMaxFacesPerCell(), 
                                  axis=0)
         direction = (cellFaceCellIDs == cellIDs) * 2 - 1
-        self.cellNormals =  direction[numerix.newaxis, ...] * cellNormals
+        if self._getMaxFacesPerCell() > 0:
+            self.cellNormals =  direction[numerix.newaxis, ...] * cellNormals
+        else:
+            self.cellNormals = cellNormals
                          
     """get geometry methods"""
 
@@ -597,7 +601,7 @@ class Mesh(_CommonMesh):
         cellFaceVertices = numerix.take(self.faceVertexIDs, self.cellFaceIDs, axis=1)
 
         ## get a sorted list of vertices for each cell 
-        cellVertexIDs = cellFaceVertices.reshape((-1, self.getNumberOfCells()))
+        cellVertexIDs = numerix.reshape(cellFaceVertices, (-1, self.getNumberOfCells()))
         cellVertexIDs = MA.sort(cellVertexIDs, axis=0, fill_value=-1)
 
         cellVertexIDs = MA.sort(MA.concatenate((cellVertexIDs[-1, numerix.newaxis], 
@@ -607,7 +611,10 @@ class Mesh(_CommonMesh):
                                 axis=0, fill_value=-1)
         
         ## resize the array to remove extra masked values
-        length = min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis=0))
+        if cellVertexIDs.shape[-1] == 0:
+            length = 0
+        else:
+            length = min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis=0))
         return cellVertexIDs[length:][::-1]
 
 ## Below is an ordered version of _getCellVertexIDs()
@@ -685,13 +692,13 @@ class Mesh(_CommonMesh):
 
     def __getstate__(self):
         dict = {
-            'vertexCoords' : self.vertexCoords,            
+            'vertexCoords' : self.vertexCoords *  self.scale['length'],            
             'faceVertexIDs' : self.faceVertexIDs,
             'cellFaceIDs' : self.cellFaceIDs }
         return dict
 
     def __setstate__(self, dict):
-        Mesh.__init__(self, dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
+        Mesh.__init__(self, **dict)
 ##        self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
      
     def _test(self):
@@ -773,8 +780,8 @@ class Mesh(_CommonMesh):
             >>> cellCenters = numerix.array(((dx/2., dx+dx/3.),
             ...                              (dy/2.,    dy/3.),
             ...                              (dz/2.,    dz/2.)))
-            >>> numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            True
                                               
             >>> d1 = numerix.sqrt((dx / 3.)**2 + (dy / 6.)**2)
             >>> d2 = numerix.sqrt((dx / 6.)**2 + (dy / 3.)**2)
@@ -782,8 +789,8 @@ class Mesh(_CommonMesh):
             >>> d4 = numerix.sqrt((5 * dx / 6.)**2 + (dy / 6.)**2)
             >>> faceToCellDistances = MA.masked_values(((dz / 2., dz / 2., dx / 2., dx / 2., dy / 2., dy / 2., dz / 2., dz / 2., d2, d3),
             ...                                         (     -1,      -1,      -1,      d1,      -1,      -1,      -1,      -1, -1, -1)), -1)
-            >>> numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            True
                                               
             >>> cellDistances = numerix.array((dz / 2., dz / 2., dx / 2.,
             ...                                d4,
@@ -897,8 +904,8 @@ class Mesh(_CommonMesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
-            1
+            >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            True
 
             >>> dx = 1.
             >>> dy = 1.
@@ -909,10 +916,12 @@ class Mesh(_CommonMesh):
             >>> from fipy.meshes.tri2D import Tri2D
             >>> triMesh = Tri2D(dx, dy, nx, 1) + [[dx*nx], [0]]
             >>> bigMesh = gridMesh + triMesh
-            >>> volumes = numerix.ones(bigMesh.getNumberOfCells(), 'd')
-            >>> volumes[20:] = 0.25
-            >>> numerix.allclose(bigMesh.getCellVolumes(), volumes)
-            1
+            >>> x, y = bigMesh.getCellCenters()
+            >>> from fipy.variables.cellVariable import CellVariable
+            >>> volumes = CellVariable(mesh=bigMesh, value=1.)
+            >>> volumes[x > dx * nx] = 0.25
+            >>> print numerix.allclose(bigMesh.getCellVolumes(), volumes)
+            True
             
         """
 

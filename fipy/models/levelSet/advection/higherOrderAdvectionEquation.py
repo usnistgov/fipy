@@ -44,9 +44,9 @@ def buildHigherOrderAdvectionEquation(advectionCoeff = None):
     advection equation that uses the `_HigherOrderAdvectionTerm`. The
     advection equation is given by,
 
-    .. raw:: latex
+    .. math::
 
-        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0. $$
+       \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0.
 
     :Parameters:
       - `advectionCoeff`: The `coeff` to pass to the `_HigherOrderAdvectionTerm`

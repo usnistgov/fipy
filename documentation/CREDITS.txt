@@ -24,7 +24,7 @@ Alex Mont
 
 Katie Travis
     developed the automated 
-    ``--inline`` optimization code for ``Variable`` objects 
+    :option:`--inline` optimization code for ``Variable`` objects 
     while she was a SURF_ student from `Smith College`_.
   
 Max Gibiansky
@@ -35,9 +35,14 @@ Max Gibiansky
     added support for anistropic diffusion coefficients while he was on 
     sabbatical from the `University of Maine`_.
 
-.. include:: ../utils/include.txt
+Olivia Buzek
+    worked on adding Trilinos_ parallel computations while she was a SURF_ student
+    from the `University of Maryland`_
 
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
+Daniel Stiles
+    worked on adding Trilinos_ parallel computations while he was
+    a student at `Montgomery Blair High School`_.
+
 
 .. |MSEL| replace:: the `Materials Science and Engineering Laboratory`_
 .. |CTCMS| replace:: the `Center for Theoretical and Computational Materials Science`_
@@ -53,6 +58,7 @@ Max Gibiansky
 .. _Smith College:                                                 http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.smith.edu/
 .. _Harvey Mudd College:                                           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.hmc.edu/
 .. _University of Maine:                                           
+.. _University of Maryland:                                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.maryland.edu/
 
 .. _Trilinos:                                                      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 

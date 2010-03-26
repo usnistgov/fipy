@@ -35,7 +35,7 @@ class GapFillMesh(Mesh2D):
 
         >>> import fipy.tools.dump as dump
         >>> (f, filename) = dump.write(mesh)
-        >>> mesh = dump.read(filename, f)        
+        >>> mesh = dump.read(filename, f)
         >>> mesh.getNumberOfCells() - len(mesh.getCellIDsAboveFineRegion())
         90
 
@@ -51,7 +51,7 @@ class GapFillMesh(Mesh2D):
 
     Evaluate the result:
        
-        >>> centers = mesh.getCellCenters()[1].copy() ## the copy makes the array contigous for inlining
+        >>> centers = mesh.getCellCenters()[1].copy() ## the copy makes the array contiguous for inlining
         >>> localErrors = (centers - var)**2 / centers**2
         >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
         >>> argmax = numerix.argmax(localErrors)
@@ -94,19 +94,24 @@ class GapFillMesh(Mesh2D):
         self.actualDomainHeight = self.actualFineRegionHeight + transitionRegionHeight + numberOfBoundaryLayerCells * actualDomainWidth
         
         ## Build the fine region mesh.
-        self.fineMesh = Grid2D(nx = nx, ny = ny, dx = cellSize, dy = cellSize)
+        from fipy.tools import serial
+        self.fineMesh = Grid2D(nx = nx, ny = ny, dx = cellSize, dy = cellSize, parallelModule=serial)
 
         ## Build the transition mesh and displace.
         transitionMesh = self.buildTransitionMesh(nx, transitionRegionHeight, cellSize) + ((0,), (self.actualFineRegionHeight,))
 
         ## Build the boundary layer mesh.
+
+        from fipy.tools import serial
         boundaryLayerMesh = Grid2D(dx = actualDomainWidth,
                                    dy = actualDomainWidth,
                                    nx = 1,
-                                   ny = numberOfBoundaryLayerCells) + ((0,), (self.actualFineRegionHeight + transitionRegionHeight,))
+                                   ny = numberOfBoundaryLayerCells,
+                                   parallelModule=serial) + ((0,), (self.actualFineRegionHeight + transitionRegionHeight,),)
 
         ## Add the meshes together.
         mesh = self.fineMesh._concatenate(transitionMesh, self.epsilon)
+
         mesh = mesh._concatenate(boundaryLayerMesh, self.epsilon)
 
         ## Initialize the mesh.
@@ -170,7 +175,6 @@ class TrenchMesh(GapFillMesh):
     trench region and recasts then for the general `GapFillMesh`.
 
     The following test case tests for diffusion across the domain.
-
 
 
 

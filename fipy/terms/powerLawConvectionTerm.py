@@ -42,17 +42,16 @@ from fipy.tools import numerix
 
 class PowerLawConvectionTerm(ConvectionTerm):
     r"""
-    The discretization for the `PowerLawConvectionTerm` is given by
+    The discretization for this :class:`~fipy.terms.term.Term` is given by
 
-    .. raw:: latex
+    .. math::
     
-       $$ \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
-       \cdot \vec{u})_f \phi_f A_f $$
+       \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
+       \cdot \vec{u})_f \phi_f A_f
 
-       where $ \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A $ and
-       $\alpha_f$ is calculated using the power law scheme.
-       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
-       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
+    where :math:`\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A` and
+    :math:`\alpha_f` is calculated using the power law scheme.
+    For further details see :ref:`sec:NumericalSchemes`.
     """    
     class _Alpha(FaceVariable):
 	def __init__(self, P):
@@ -69,8 +68,8 @@ class PowerLawConvectionTerm(ConvectionTerm):
                 >>> from fipy.variables.faceVariable import FaceVariable
                 >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
                 >>> alpha = PowerLawConvectionTerm._Alpha(P)
-                >>> print numerix.allclose(alpha, (0.5, 1, 0.5, 0.5))
-                1
+                >>> print numerix.allclose(alpha, [ 0.5,  1.,   0.5 , 0.5])
+                True
                 
             """
             
@@ -115,7 +114,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		}
 	    """,
 	    alpha = alpha, eps = eps, P = P,
-	    ni = len(self.mesh.getFaces())
+	    ni = self.mesh._getNumberOfFaces()
 	    )
 
             return self._makeValue(value = alpha)

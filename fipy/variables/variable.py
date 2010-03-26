@@ -44,7 +44,29 @@ from fipy.tools import parser
 from fipy.tools import inline
 
 class Variable(object):
-    
+    """
+    Lazily evaluated quantity with units. 
+
+    Using a :class:`~fipy.variables.variable.Variable` in a mathematical expression will create an
+    automatic dependency :class:`~fipy.variables.variable.Variable`, e.g.,
+
+    >>> a = Variable(value=3)
+    >>> b = 4 * a
+    >>> b
+    (Variable(value=array(3)) * 4)
+    >>> b()
+    12
+        
+    Changes to the value of a :class:`~fipy.variables.variable.Variable` will automatically trigger
+    changes in any dependent :class:`~fipy.variables.variable.Variable` objects
+
+    >>> a.setValue(5)
+    >>> b
+    (Variable(value=array(5)) * 4)
+    >>> b()
+    20
+    """
+
     _cacheAlways = (os.getenv("FIPY_CACHE") is not None) or False
     if parser.parse("--no-cache", action="store_true"):
         _cacheAlways = False
@@ -52,30 +74,6 @@ class Variable(object):
         _cacheAlways = True
 
     _cacheNever = False
-    
-    """
-    Lazily evaluated quantity with units. 
-    
-    Using a `Variable` in a mathematical expression will create an automatic
-    dependency `Variable`, e.g.,
-    
-        >>> a = Variable(value=3)
-        >>> b = 4 * a
-        >>> b
-        (Variable(value=3) * 4)
-        >>> b()
-        12
-        
-    Changes to the value of a `Variable` will automatically trigger changes in
-    any dependent `Variable` objects
-    
-        >>> a.setValue(5)
-        >>> b
-        (Variable(value=5) * 4)
-        >>> b()
-        20
-        
-    """
     
     def __new__(cls, *args, **kwds):
         return object.__new__(cls)
@@ -105,12 +103,10 @@ class Variable(object):
         self.subscribedVariables = []
 
         if isinstance(value, Variable):
-            name = value.name
             value = value.getValue()
             if hasattr(value, 'copy'):
                 value = value.copy()
             unit = None
-            array = None
             
         self._setValue(value=value, unit=unit, array=array)
         
@@ -643,12 +639,12 @@ class Variable(object):
 
         Returns the Numpy sctype of the underlying array.
 
-            >>> Variable(1).getsctype()
-            <type 'numpy.int32'>
-            >>> Variable(1.).getsctype()
-            <type 'numpy.float64'>
-            >>> Variable((1,1.)).getsctype()
-            <type 'numpy.float64'>
+            >>> Variable(1).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            True
+            >>> Variable(1.).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            True
+            >>> Variable((1,1.)).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            True
             
         """
         
@@ -1100,22 +1096,21 @@ class Variable(object):
         """
         This test case has been added due to a weird bug that was appearing.
 
-            >>> a = Variable(value=(0, 0, 1, 1))
-            >>> b = Variable(value=(0, 1, 0, 1))
-            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
-            True
-            >>> print a & b
-            [0 0 0 1]
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx=4)
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
-            >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
-            True
-            >>> print a & b
-            [0 0 0 1]
-
+        >>> a = Variable(value=(0, 0, 1, 1))
+        >>> b = Variable(value=(0, 1, 0, 1))
+        >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+        True
+        >>> print a & b
+        [0 0 0 1]
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> mesh = Grid1D(nx=4)
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
+        >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
+        >>> print numerix.allequal((a == 0) & (b == 1), [False,  True, False, False])
+        True
+        >>> print a & b
+        [0 0 0 1]
         """
         return self._BinaryOperatorVariable(lambda a,b: a & b, other, canInline=False)
 
@@ -1123,22 +1118,21 @@ class Variable(object):
         """
         This test case has been added due to a weird bug that was appearing.
 
-            >>> a = Variable(value=(0, 0, 1, 1))
-            >>> b = Variable(value=(0, 1, 0, 1))
-            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
-            True
-            >>> print a | b
-            [0 1 1 1]
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx=4)
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
-            >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
-            True
-            >>> print a | b
-            [0 1 1 1]
-            
+        >>> a = Variable(value=(0, 0, 1, 1))
+        >>> b = Variable(value=(0, 1, 0, 1))
+        >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+        True
+        >>> print a | b
+        [0 1 1 1]
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> mesh = Grid1D(nx=4)
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
+        >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
+        >>> print numerix.allequal((a == 0) | (b == 1), [True,  True, False, True])
+        True
+        >>> print a | b
+        [0 1 1 1]
         """
         return self._BinaryOperatorVariable(lambda a,b: a | b, other, canInline=False)
 
@@ -1165,23 +1159,23 @@ class Variable(object):
         """
         return bool(self.getValue())
     
-    def any(self, axis=None, out=None):
+    def any(self, axis=None):
         """
             >>> print Variable(value=0).any()
             0
             >>> print Variable(value=(0, 0, 1, 1)).any()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis, out=out))
+        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis))
 
-    def all(self, axis=None, out=None):
+    def all(self, axis=None):
         """
             >>> print Variable(value=(0, 0, 1, 1)).all()
             0
             >>> print Variable(value=(1, 1, 1, 1)).all()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis, out=out))
+        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis))
 
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))
@@ -1344,49 +1338,6 @@ class Variable(object):
     def take(self, ids, axis=0):
         return numerix.take(self.getValue(), ids, axis)
 
-    def _take(self, ids, axis=0):
-        """
-        
-        Same as take() but returns a `Variable` subclass.  This function
-        has not yet been implemented as a binary operator but is a
-        unary operator.  As a unary operator it has to return the same
-        shape as the `Variable` it is acting on.  This is not a
-        particular useful implementation of take as it stands. It is
-        good for axis permutations.
-        
-
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx=1, ny=1)
-           >>> from fipy.variables.faceVariable import FaceVariable
-           >>> var = FaceVariable(value=((1, 2, 3, 4), (2, 3, 4, 5)), mesh=mesh, rank=1)
-           >>> v10 = var._take((1, 0), axis=0)
-           >>> print v10
-           [[2 3 4 5]
-            [1 2 3 4]]
-           >>> var[0, 3] = 1
-           >>> print v10
-           [[2 3 4 5]
-            [1 2 3 1]]
-           >>> isinstance(var, FaceVariable)
-           True
-           >>> print var.getRank()
-           1
-           >>> v0 = var._take((0,))
-           Traceback (most recent call last):
-              ...
-           IndexError: _take() must take ids that return a Variable of the same shape
-           
-        """
-
-        ## Binary operator doesn't work because ids is turned into a _Constant Variable
-        ## which contains floats and not integers. Numeric.take needs integers for ids.
-        ## return self._BinaryOperatorVariable(lambda a, b: numerix.take(a, b, axis=axis), ids) 
-
-        if numerix.take(self.getValue(), ids, axis=axis).shape == self.shape:
-            return self._UnaryOperatorVariable(lambda a: numerix.take(a, ids, axis=axis), canInline=False)
-        else:
-            raise IndexError, '_take() must take ids that return a Variable of the same shape'
-            
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
         """
            >>> var = Variable((1, 1))

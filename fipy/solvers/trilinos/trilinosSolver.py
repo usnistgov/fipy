@@ -37,6 +37,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.solvers.solver import Solver
 from fipy.tools.trilinosMatrix import _TrilinosMatrix
+from fipy.tools.pysparseMatrix import _PysparseMatrix
 from fipy.tools.trilinosMatrix import _numpyToTrilinosVector
 from fipy.tools.trilinosMatrix import _trilinosToNumpyVector
 
@@ -57,76 +58,104 @@ class TrilinosSolver(Solver):
         else:
             Solver.__init__(self, *args, **kwargs)
             
-    def _makeTrilinosMatrix(self, L):
-        """ 
-        Takes in a Pysparse matrix and returns an Epetra.CrsMatrix . 
-        Slow, but works.
-        """
-        # This should no longer ever be called, except for debugging!
-        import warnings
-        warnings.warn("Incorrect matrix type - got Pysparse matrix, expected Trilinos matrix! The conversion is extremely slow and should never be necessary!", UserWarning, stacklevel=2)
+    def _storeMatrix(self, var, matrix, RHSvector):
+        self.var = var
+        self.matrix = matrix
+        self.RHSvector = RHSvector
         
-        Comm = Epetra.PyComm() 
-        if(Comm.NumProc() > 1):
-            raise NotImplemented, "Cannot convert from Pysparse to Trilinos matrix in parallel."
-
-        m,n = L._getMatrix().shape 
-
-        Map = Epetra.Map(m, 0, Comm)
-
-        #A = Epetra.FECrsMatrix(Epetra.Copy, Map, n)
-        #A.InsertGlobalValues(\
-        #                Epetra.IntSerialDenseVector(range(0,m)),\
-        #                Epetra.IntSerialDenseVector(range(0,n)),\
-        #                Epetra.SerialDenseMatrix(L.getNumpyArray()))
-        # Replaced with writing to/reading from matrixmarket format temporary file
+    def _buildGlobalMatrix(self):
         
-        import tempfile
-        import os
-
-        filename = tempfile.mktemp(suffix=".mm")
-        L._getMatrix().export_mtx(filename)
-        (ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
-        
-        # File on disk replaced with pipe (NOT REPLACED - NOT WORKING EFFICIENTLY)
-        #os.mkfifo(filename)
-        #pid = os.fork()     
-        #
-        #if(pid == 0):
-        #    L._getMatrix().export_mtx(filename)
-        #    import sys
-        #    sys.exit(0)
-        #
-        #(ierr, A) = EpetraExt.MatrixMarketFileToCrsMatrix(filename, Map)
-        #
-        #os.waitpid(pid, 0)
-        
-        os.remove(filename)
-
-        return A
-
-    def _solve(self, L, x, b):
-
-        if not isinstance(L, _TrilinosMatrix):
-            A = self._makeTrilinosMatrix(L)
-        else:
-            A = L._getDistributedMatrix()
-##            A.GlobalAssemble()
-
-        A.FillComplete()
-        A.OptimizeStorage()
-
-        LHS = _numpyToTrilinosVector(x, A.RowMap())
-        RHS = _numpyToTrilinosVector(b, A.RowMap())
-
-        
-        out = self._applyTrilinosSolver(A, LHS, RHS)
-        x[:] = _trilinosToNumpyVector(LHS)
-
-        return out
+        matrix = self.matrix
+        RHSvector = self.RHSvector
     
-    def _getMatrixClass(self):
-        return _TrilinosMatrix
+        mesh = self.var.getMesh()
+        comm = Epetra.PyComm()
+        
+        globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
+        globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
+        localNonOverlappingCellIDs = mesh._getLocalNonOverlappingCellIDs()
+        localOverlappingCellIDs = mesh._getLocalOverlappingCellIDs()
+        
+        self.nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
+        self.nonOverlappingVector = Epetra.Vector(self.nonOverlappingMap, 
+                                                  self.var[localNonOverlappingCellIDs])
+        
+        self.nonOverlappingRHSvector = Epetra.Vector(self.nonOverlappingMap, 
+                                                     RHSvector[localNonOverlappingCellIDs])
 
-    def _applyTrilinosSolver(self):
-        raise NotImplementedError
+        self.globalMatrix = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, -1)
+
+        localNonOverlappingCellIDsMask = numerix.zeros(len(localOverlappingCellIDs), 'int')
+        localNonOverlappingCellIDsMask[localNonOverlappingCellIDs] = 1
+        A = matrix.matrix.copy()
+        A.delete_rows(localNonOverlappingCellIDsMask)
+
+        values, irow, jcol = A.find()
+        
+        globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDs[irow]
+        if hasattr(globalNonOverlappingCellIDsIrow, 'astype') and \
+               globalNonOverlappingCellIDsIrow.dtype.name == 'int64':
+            globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDsIrow.astype('int32')
+
+        globalOverlappingCellIDsJcol = globalOverlappingCellIDs[jcol]
+        if hasattr(globalOverlappingCellIDsJcol, 'astype') and \
+               globalOverlappingCellIDsJcol.dtype.name == 'int64':
+            globalOverlappingCellIDsJcol = globalOverlappingCellIDsJcol.astype('int32')
+        
+        
+        self.globalMatrix.InsertGlobalValues(globalNonOverlappingCellIDsIrow, 
+                                             globalOverlappingCellIDsJcol, 
+                                             values)
+        
+        self.globalMatrix.FillComplete()
+        self.globalMatrix.OptimizeStorage()
+        
+        self.overlappingMap =  Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
+        self.overlappingVector = Epetra.Vector(self.overlappingMap, self.var)
+
+
+    def _solve(self):
+
+        if not hasattr(self, 'globalMatrix'):
+            self._buildGlobalMatrix()
+        
+        self._solve_(self.globalMatrix, 
+                     self.nonOverlappingVector, 
+                     self.nonOverlappingRHSvector)
+
+        self.overlappingVector.Import(self.nonOverlappingVector, 
+                                      Epetra.Import(self.overlappingMap, 
+                                                    self.nonOverlappingMap), 
+                                      Epetra.Insert)
+        
+        self.var.setValue(self.overlappingVector)
+
+        del self.globalMatrix
+        del self.matrix
+        del self.RHSvector
+        del self.var
+            
+    def _getMatrixClass(self):
+        # an ugly expediency (I blame Wheeler)
+        return _PysparseMatrix
+
+    def _calcResidualVector(self, residualFn=None):
+        if residualFn is not None:
+            return residualFn(self.var, self.matrix, self.RHSvector)
+        else:
+            if not hasattr(self, 'globalMatrix'):
+                self._buildGlobalMatrix()
+            residual = Epetra.Vector(self.nonOverlappingMap)                
+            self.globalMatrix.Multiply(False, self.nonOverlappingVector, residual)
+            residual -= self.nonOverlappingRHSvector
+          
+            return residual
+
+    def _calcResidual(self, residualFn=None):
+        if residualFn is not None:
+            return residualFn(self.var, self.matrix, self.RHSvector)
+        else:
+            return self._calcResidualVector().Norm2()
+        
+    def _calcRHSNorm(self):
+        return self.nonOverlappingRHSvector.Norm2()

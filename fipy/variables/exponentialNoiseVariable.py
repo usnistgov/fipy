@@ -43,55 +43,55 @@ class ExponentialNoiseVariable(NoiseVariable):
     Represents an exponential distribution of random numbers with the probability
     distribution
     
-    .. raw:: latex
+    .. math::
     
-       \[ \mu^{-1} e^{-\frac{x}{\mu}} \]
+       \mu^{-1} e^{-\frac{x}{\mu}}
        
-       with a mean parameter $\mu$.
+    with a mean parameter :math:`\mu`.
 
     We generate noise on a uniform cartesian mesh
            
-           >>> from fipy.variables.variable import Variable
-           >>> mean = Variable()
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> noise = ExponentialNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), mean = mean)
+    >>> from fipy.variables.variable import Variable
+    >>> mean = Variable()
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> noise = ExponentialNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), mean = mean)
            
     We histogram the root-volume-weighted noise distribution
     
-           >>> from fipy.variables.histogramVariable import HistogramVariable
-           >>> histogram = HistogramVariable(distribution = noise, dx = 0.1, nx = 100)
+    >>> from fipy.variables.histogramVariable import HistogramVariable
+    >>> histogram = HistogramVariable(distribution = noise, dx = 0.1, nx = 100)
            
     and compare to a Gaussian distribution
     
-           >>> from fipy.variables.cellVariable import CellVariable
-           >>> expdist = CellVariable(mesh = histogram.getMesh())
-           >>> x = histogram.getMesh().getCellCenters()[0]
-           
-           >>> if __name__ == '__main__':
-           ...     from fipy import Viewer
-           ...     viewer = Viewer(vars=noise, datamin=0, datamax=5)
-           ...     histoplot = Viewer(vars=(histogram, expdist), 
-           ...                        datamin=0, datamax=1.5)
-           
-           >>> from fipy.tools.numerix import arange, exp
-           
-           >>> for mu in arange(0.5,3,0.5):
-           ...     mean.setValue(mu)
-           ...     expdist.setValue((1/mean)*exp(-x/mean))
-           ...     if __name__ == '__main__':
-           ...         import sys
-           ...         print >>sys.stderr, "mean: %g" % mean
-           ...         viewer.plot()
-           ...         histoplot.plot()
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> expdist = CellVariable(mesh = histogram.getMesh())
+    >>> x = histogram.getMesh().getCellCenters()[0]
+    
+    >>> if __name__ == '__main__':
+    ...     from fipy import Viewer
+    ...     viewer = Viewer(vars=noise, datamin=0, datamax=5)
+    ...     histoplot = Viewer(vars=(histogram, expdist), 
+    ...                        datamin=0, datamax=1.5)
+    
+    >>> from fipy.tools.numerix import arange, exp
+    
+    >>> for mu in arange(0.5,3,0.5):
+    ...     mean.setValue(mu)
+    ...     expdist.setValue((1/mean)*exp(-x/mean))
+    ...     if __name__ == '__main__':
+    ...         import sys
+    ...         print >>sys.stderr, "mean: %g" % mean
+    ...         viewer.plot()
+    ...         histoplot.plot()
 
-           >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
-           1
+    >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
+    1
 
-    .. image:: fipy/variables/exp.jpg
+    .. image:: fipy/variables/exp.*
       :scale: 25
       :align: center
 
-    .. image:: fipy/variables/exp-histogram.pdf
+    .. image:: fipy/variables/exp-histogram.*
       :scale: 25
       :align: center
 
@@ -100,18 +100,14 @@ class ExponentialNoiseVariable(NoiseVariable):
         r"""
         :Parameters:
             - `mesh`: The mesh on which to define the noise.
-            - `mean`: The mean of the distribution
-            
-              .. raw:: latex
-              
-                 $\mu$.
+            - `mean`: The mean of the distribution :math:`\mu`.
         """
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
         self.mean = self._requires(mean)
     
-    def _calcValue(self):
+    def random(self):
         return random.exponential(scale = self.mean, 
-                                  size = [self.getMesh().getNumberOfCells()])
+                                  size = [self.getMesh().globalNumberOfCells])
 
 def _test(): 
     import doctest

@@ -35,12 +35,11 @@
 """
 
 This input file again solves a 1D diffusion problem as in
-`./examples/diffusion/steadyState/mesh1D.py`. The difference in
-this example is that the solution method is explicit. The equation
-used is the `ExplicitDiffusionEquation`. In this case many steps have
-to be taken to reach equilibrum. The `timeStepDuration` parameter
-specifies the size of each time step and `steps` is the number of time
-steps.
+`./examples/diffusion/steadyState/mesh1D.py`. The difference in this example is
+that the solution method is explicit. The equation used is the
+`ExplicitDiffusionEquation`. In this case many steps have to be taken to reach
+equilibrum. The `timeStepDuration` parameter specifies the size of each time step
+and `steps` is the number of time steps.
 
     >>> dx = 1.
     >>> dy = 1.
@@ -60,8 +59,6 @@ The result is again tested in the same way:
 
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[0]
-    >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> ##print var.allclose(analyticalArray, rtol = 1e-3, atol = 1e-3)
     >>> print var.allclose(answer, rtol = 1e-8)
     1
 
@@ -86,8 +83,7 @@ var = CellVariable(
 
 eq = TransientTerm() == ExplicitDiffusionTerm()
 
-solver = LinearLUSolver(tolerance = 1.e-6, iterations = 100)
-
+solver = DefaultSolver(tolerance=1e-6, iterations=1000)
 boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
                     FixedValue(mesh.getFacesRight(),valueRight))
 

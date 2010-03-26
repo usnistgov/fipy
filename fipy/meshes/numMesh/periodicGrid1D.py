@@ -38,42 +38,71 @@ Peridoic 1D Mesh
 __docformat__ = 'restructuredtext'
 
 from grid1D import Grid1D
+from fipy.tools import numerix
 
 class PeriodicGrid1D(Grid1D):
     """
     
         >>> from fipy import numerix
+        >>> from fipy.tools import parallel
 
     Creates a Periodic grid mesh.
         
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
+
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(numerix.nonzero(mesh.getExteriorFaces())[0], 
+        ...                            [3]))
+        True
+
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(mesh.getFaceCellIDs().filled(-999),
+        ...                            [[2, 0, 1, 2],
+        ...                             [0, 1, 2, -999]]))
+        True
+
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(mesh._getCellDistances(),
+        ...                            [ 2., 1.5, 2.5, 1.5]))
+        True
+
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(mesh._getCellToCellDistances(),
+        ...                            [[ 2.,   1.5,  2.5],
+        ...                             [ 1.5,  2.5,  2. ]]))
+        True
         
-        >>> print numerix.nonzero(mesh.getExteriorFaces())[0]
-        [3]
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(mesh._getFaceNormals(),
+        ...                            [[ 1.,  1.,  1.,  1.]]))
+        True
 
-        >>> print mesh.getFaceCellIDs()
-        [[2 0 1 2]
-         [0 1 2 --]]
-
-        >>> print mesh._getCellDistances()
-        [ 2.   1.5  2.5  1.5]
-
-        >>> print mesh._getCellToCellDistances()
-        [[ 2.   1.5  2.5]
-         [ 1.5  2.5  2. ]]
-
-        >>> print mesh._getFaceNormals()
-        [[ 1.  1.  1.  1.]]
-
-        >>> print mesh._getCellVertexIDs()
-        [[1 2 2]
-         [0 1 0]]
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(mesh._getCellVertexIDs(),
+        ...                            [[1, 2, 2],
+        ...                             [0, 1, 0]]))
+        True
     """
     def __init__(self, dx = 1., nx = None):
         Grid1D.__init__(self, dx = dx, nx = nx)
         from fipy.tools import numerix
-        self._connectFaces(numerix.nonzero(self.getFacesLeft()), 
-                           numerix.nonzero(self.getFacesRight()))
+
+        if self.occupiedNodes == 1:
+            self._connectFaces(numerix.nonzero(self.getFacesLeft()),
+                               numerix.nonzero(self.getFacesRight()))
+
+    def _getOverlap(self, overlap, procID, occupiedNodes):
+        self.occupiedNodes = occupiedNodes
+        if occupiedNodes == 1:
+            return Grid1D._getOverlap(self, overlap, procID, occupiedNodes)
+        else:
+            return {'left': overlap, 'right': overlap}
+        
+    def _getGlobalOverlappingCellIDs(self):
+        return Grid1D._getGlobalOverlappingCellIDs(self) % self.args['nx']
+
+    def getCellCenters(self):
+        return Grid1D.getCellCenters(self) % numerix.sum(self.globalNumberOfCells * self.args['dx'])
 
 def _test():
     import doctest
