@@ -56,10 +56,10 @@ class LinearJORSolver(PysparseSolver):
           - `relaxation`: The relaxation.
           
         """
-        Solver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+        PysparseSolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
         self.relaxation = relaxation
         
-    def _solve(self, L, x, b):
+    def _solve_(self, L, x, b):
 
         d = L.takeDiagonal()
         D = _SparseMatrix(len(d))

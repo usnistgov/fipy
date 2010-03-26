@@ -48,8 +48,9 @@ def _BinaryOperatorVariable(operatorClass=None):
         >>> for v in vs:
         ...     (f, n) = dump.write(v * v)
         ...     tmp += [dump.read(n)]
-        ...     os.close(f)
-        ...     os.remove(n)
+        ...     if f is not None: 
+        ...         os.close(f)
+        ...         os.remove(n)
         >>> for v in tmp:
         ...     print v.__class__
         <class 'fipy.variables.cellVariable.CellVariable'>
@@ -57,7 +58,7 @@ def _BinaryOperatorVariable(operatorClass=None):
         <class 'fipy.variables.variable.Variable'>
         >>> print tmp[0].allclose(4.)
         True
-        >>> print numerix.allclose(tmp[1], [9., 9.])
+        >>> print tmp[1].allclose(9.)
         True
         >>> print tmp[2].allclose(16)
         True
@@ -88,7 +89,10 @@ def _BinaryOperatorVariable(operatorClass=None):
                 
         def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
             self.id = id
-            return "(" + operatorClass._getRepresentation(self, style=style, argDict=argDict, id=id, freshen=freshen) + ")"
+            if (style == "__repr__") and hasattr(self, 'name') and len(self.name) > 0:
+                return self.name
+            else:
+                return "(" + operatorClass._getRepresentation(self, style=style, argDict=argDict, id=id, freshen=freshen) + ")"
 
         def __reduce__(self):
             """

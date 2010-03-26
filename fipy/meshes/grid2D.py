@@ -31,15 +31,21 @@
  #  
  # ###################################################################
  ##
+from fipy.tools import parallel
 
-
-def Grid2D(dx = 1., dy = 1., nx = None, ny = None):
+def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2, parallelModule=parallel):
     from numMesh import uniformGrid2D
     from numMesh import grid2D
 
     from fipy.tools import numerix
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
-        return uniformGrid2D.UniformGrid2D(dx = dx, dy = dy, 
-                                           nx = nx or 1, ny = ny or 1)
+        if nx is None:
+            nx = 1
+        if ny is None:
+            ny = 1
+        return uniformGrid2D.UniformGrid2D(dx=dx, dy=dy, 
+                                           nx=nx, ny=ny,
+                                           overlap=overlap,
+                                           parallelModule=parallelModule)
     else:
-        return grid2D.Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+        return grid2D.Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, parallelModule=parallelModule)

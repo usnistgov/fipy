@@ -66,8 +66,8 @@
 """
 Physical quantities with units.
 
-This module derives from `Konrad Hinsen`_'s PhysicalQuantity_
-|citePhysicalQuantity|.
+This module derives from `Konrad Hinsen`_'s :class:`PhysicalQuantity`
+<http://dirac.cnrs-orleans.fr/ScientificPython/ScientificPythonManual/Scientific.Physics.PhysicalQuantities-module.html>.
 
 This module provides a data type that represents a physical
 quantity together with its unit. It is possible to add and
@@ -90,10 +90,6 @@ recommended values from CODATA_. Other conversion factors
 
 .. _Konrad Hinsen:                              mailto:hinsen@cnrs-orleans.fr
 .. _PhysicalQuantity:                           http://starship.python.net/~hinsen/ScientificPython/ScientificPythonManual/Scientific_31.html
-.. |citePhysicalQuantity| raw:: latex
-
-   \cite{PhysicalQuantity}
-   
 .. _CODATA:                                     http://www.codata.org/
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
@@ -655,19 +651,19 @@ class PhysicalField(object):
              [ 0.06981317  0.08726646]]
 
          
-        If the array is not dimensionless, the numerical value in the current
+        If the array is not dimensionless, the numerical value in its base
         units is returned.
         
-            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m"))
-            array([[ 2.,  3.],
-                   [ 4.,  5.]])
+            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"mm"))
+            array([[ 0.002,  0.003],
+                   [ 0.004,  0.005]])
         
         .. _Numeric: http://www.numpy.org
         """
         if self.unit.isAngle():
             value = self.inRadians()
         else:
-            value = self.value
+            value = self.inSIUnits().value
             
         return numerix.array(value, t)
         
@@ -904,12 +900,12 @@ class PhysicalField(object):
 
         Returns the Numpy sctype of the underlying array.
 
-            >>> PhysicalField(1, 'm').getsctype()
-            <type 'numpy.int32'>
-            >>> PhysicalField(1., 'm').getsctype()
-            <type 'numpy.float64'>
-            >>> PhysicalField((1,1.), 'm').getsctype()
-            <type 'numpy.float64'>
+            >>> PhysicalField(1, 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            True
+            >>> PhysicalField(1., 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            True
+            >>> PhysicalField((1,1.), 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            True
             
         """
         

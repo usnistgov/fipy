@@ -38,17 +38,16 @@ from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
 
 class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
     r"""
-    The discretization for the `ExplicitUpwindConvectionTerm` is given by
+    The discretization for this :class:`~fipy.terms.term.Term` is given by
 
-    .. raw:: latex
+    .. math::
     
-       $$ \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
-       \cdot \vec{u})_f \phi_f A_f $$
+       \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
+       \cdot \vec{u})_f \phi_f A_f
 
-       where $ \phi_f=\alpha_f \phi_P^\text{old} +(1-\alpha_f)\phi_A^\text{old} $ and
-       $\alpha_f$ is calculated using the upwind scheme.
-       For further details see ``\nameref{FiPy-sec:NumericalSchemes}'' in the
-       main \FiPy{} guide\cite[\S~\ref{FiPy-sec:NumericalSchemes}]{FiPyGuide}.
+    where :math:`\phi_f=\alpha_f \phi_P^\text{old} +(1-\alpha_f)\phi_A^\text{old}` and
+    :math:`\alpha_f` is calculated using the upwind scheme.
+    For further details see :ref:`sec:NumericalSchemes`.
     """
 
     def _getWeight(self, mesh, equation=None):
@@ -59,7 +58,7 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
 
         return weight
         
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver, *args, **kwargs):
         """
         ExplicitUpwindConvectionTerm only affects the b-vector, leaving a symmetric matrix.
         """

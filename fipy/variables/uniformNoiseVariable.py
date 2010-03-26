@@ -43,31 +43,31 @@ class UniformNoiseVariable(NoiseVariable):
     
     We generate noise on a uniform cartesian mesh
     
-        >>> from fipy.meshes.grid2D import Grid2D
-        >>> noise = UniformNoiseVariable(mesh = Grid2D(nx = 100, ny = 100))
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> noise = UniformNoiseVariable(mesh=Grid2D(nx=100, ny=100))
         
     and histogram the noise
         
-        >>> from fipy.variables.histogramVariable import HistogramVariable
-        >>> histogram = HistogramVariable(distribution = noise, dx = 0.01, nx = 120, offset = -.1)
-        
-        >>> if __name__ == '__main__':
-        ...     from fipy import viewers
-        ...     viewer = Viewer(vars=noise, 
-        ...                     datamin=0, datamax=1)
-        ...     histoplot = Viewer(vars=histogram)
-        
-        >>> for i in range(10):
-        ...     noise.scramble()
-        ...     if __name__ == '__main__':
-        ...         viewer.plot()
-        ...         histoplot.plot()
+    >>> from fipy.variables.histogramVariable import HistogramVariable
+    >>> histogram = HistogramVariable(distribution=noise, dx=0.01, nx=120, offset=-.1)
+    
+    >>> if __name__ == '__main__':
+    ...     from fipy import Viewer
+    ...     viewer = Viewer(vars=noise, 
+    ...                     datamin=0, datamax=1)
+    ...     histoplot = Viewer(vars=histogram)
+    
+    >>> for i in range(10):
+    ...     noise.scramble()
+    ...     if __name__ == '__main__':
+    ...         viewer.plot()
+    ...         histoplot.plot()
 
-    .. image:: fipy/variables/uniform.jpg
+    .. image:: fipy/variables/uniform.*
        :scale: 25
        :align: center
 
-    .. image:: fipy/variables/uni-histogram.pdf
+    .. image:: fipy/variables/uni-histogram.*
        :scale: 25
        :align: center
     """
@@ -82,9 +82,9 @@ class UniformNoiseVariable(NoiseVariable):
         self.maximum = maximum
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
     
-    def _calcValue(self):
+    def random(self):
         return random.uniform(self.minimum, self.maximum,
-                              shape = [self.getMesh().getNumberOfCells()])
+                              size=[self.getMesh().globalNumberOfCells])
 
 def _test(): 
     import doctest

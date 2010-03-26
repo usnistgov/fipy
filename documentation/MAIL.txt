@@ -1,8 +1,8 @@
-============
+------------
 Mailing List
-============
+------------
 
-In order to discuss |FiPy| with other users and with the developers, 
+In order to discuss :term:`FiPy` with other users and with the developers, 
 we encourage you to sign up for the mailing list by sending a
 `subscription email <mailto:listproc@nist.gov?&body=subscribe%20fipy%20!!!YOUR%20NAME%20HERE!!!>`__:
 
@@ -34,9 +34,5 @@ fipy@nist.gov will appear in this publicly available archive_.
 .. _GMANE:    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gmane.org/
 
 .. _archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://dir.gmane.org/gmane.comp.python.fipy
-
-.. include:: ../utils/include.txt
-
-.. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 
 

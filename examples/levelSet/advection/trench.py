@@ -32,80 +32,79 @@
  # ###################################################################
  ##
 
-"""
+r"""
 
 This example creates a trench with the following zero level set:
 
-.. raw:: latex
+.. math
 
-    $$ \\phi \\left( x, y \\right) = 0 \;\; \\text{when} \;\; y = L_y / 5 \\text{and} x \ge L_x / 2 $$
-    $$ \\phi \\left( x, y \\right) = 0 \;\; \\text{when} \;\; L_y / 5 \le y \le 3 Ly / 5  \\text{and} x = L_x / 2 $$
-    $$ \\phi \\left( x, y \\right) = 0 \;\; \\text{when} \;\; y = 3 Ly / 5  \\text{and} x \le L_x / 2 $$
+   \phi \left( x, y \right) = 0 & \text{when $y = L_y / 5$ and $x \ge L_x / 2$} \\
+   \phi \left( x, y \right) = 0 & \text{when $L_y / 5 \le y \le 3 Ly / 5$ and $x = L_x / 2$$} \\
+   \phi \left( x, y \right) = 0 & \text{when $y = 3 Ly / 5$ and $x \le L_x / 2$}
 
-..
+>>> from fipy import *
 
-    >>> from fipy import *
+>>> height = 0.5
+>>> Lx = 0.4
+>>> Ly = 1.
+>>> dx = 0.01
+>>> velocity = 1.
+>>> cfl = 0.1
 
-    >>> height = 0.5
-    >>> Lx = 0.4
-    >>> Ly = 1.
-    >>> dx = 0.01
-    >>> velocity = 1.
-    >>> cfl = 0.1
+>>> nx = int(Lx / dx)
+>>> ny = int(Ly / dx)
+>>> timeStepDuration = cfl * dx / velocity
+>>> steps = 200
 
-    >>> nx = int(Lx / dx)
-    >>> ny = int(Ly / dx)
-    >>> timeStepDuration = cfl * dx / velocity
-    >>> steps = 200
+>>> from fipy.tools import serial
+>>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, parallelModule=serial)
 
-    >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
+>>> var = DistanceVariable(name = 'level set variable',
+...                        mesh = mesh,
+...                        value = -1.,
+...                        hasOld = 1
+...                        )
 
-    >>> var = DistanceVariable(name = 'level set variable',
-    ...                        mesh = mesh,
-    ...                        value = -1.,
-    ...                        hasOld = 1
-    ...                        )
+>>> x, y = mesh.getCellCenters()
+>>> var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
 
-    >>> x, y = mesh.getCellCenters()
-    >>> var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
+>>> var.calcDistanceFunction()
 
-    >>> var.calcDistanceFunction()
-
-    >>> advEqn = buildAdvectionEquation(velocity)
+>>> advEqn = buildAdvectionEquation(velocity)
 
 The trench is then advected with a unit velocity. The following test can be made
 for the initial position of the interface:
 
-   >>> r1 =  -sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
-   >>> r2 =  sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
-   >>> d = zeros((len(x),3), 'd')
-   >>> d[:,0] = where(x >= Lx / 2, y - Ly / 5, r1)
-   >>> d[:,1] = where(x <= Lx / 2, y - 3 * Ly / 5, r2)
-   >>> d[:,2] = where(logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
-   >>> argmins = argmin(absolute(d), axis = 1)
-   >>> answer = take(d.ravel(), arange(len(argmins))*3 + argmins)
-   >>> print var.allclose(answer, atol = 1e-1)
-   1
+>>> r1 =  -sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
+>>> r2 =  sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
+>>> d = zeros((len(x),3), 'd')
+>>> d[:,0] = where(x >= Lx / 2, y - Ly / 5, r1)
+>>> d[:,1] = where(x <= Lx / 2, y - 3 * Ly / 5, r2)
+>>> d[:,2] = where(logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
+>>> argmins = argmin(absolute(d), axis = 1)
+>>> answer = take(d.ravel(), arange(len(argmins))*3 + argmins)
+>>> print var.allclose(answer, atol = 1e-1)
+1
 
 Advect the interface and check the position.
 
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=var, datamin=-0.1, datamax=0.1)
-    ...     
-    ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=var, datamin=-0.1, datamax=0.1)
+...     
+...     viewer.plot()
 
-    >>> for step in range(steps):
-    ...     var.updateOld()
-    ...     advEqn.solve(var, dt = timeStepDuration)
-    ...     if __name__ == '__main__':
-    ...         viewer.plot()
+>>> for step in range(steps):
+...     var.updateOld()
+...     advEqn.solve(var, dt = timeStepDuration)
+...     if __name__ == '__main__':
+...         viewer.plot()
 
-   >>> distanceMoved = timeStepDuration * steps * velocity
-   >>> answer = answer - distanceMoved
-   >>> answer = where(answer < 0., 0., answer)
-   >>> var.setValue(where(var < 0., 0., var))
-   >>> print var.allclose(answer, atol = 1e-1)
-   1
+>>> distanceMoved = timeStepDuration * steps * velocity
+>>> answer = answer - distanceMoved
+>>> answer = where(answer < 0., 0., answer)
+>>> var.setValue(where(var < 0., 0., var))
+>>> print var.allclose(answer, atol = 1e-1)
+1
 
 """
 __docformat__ = 'restructuredtext'

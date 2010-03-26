@@ -44,20 +44,17 @@ from fipy.tools import numerix
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import numerix
 from fipy.tools import vector
+from fipy.variables.variable import Variable
 
 class FixedValue(BoundaryCondition):
     r"""
-    
     The `FixedValue` boundary condition adds a contribution, equivalent to a
     fixed value (Dirichlet condition), to the equation's RHS vector and
-    coefficient matrix.  The contributions are given by
-
-    .. raw:: latex
-
-        $ -\mathtt{value} * G_{\text{face}} $ for the RHS vector and $
-        G_{\text{face}} $ for the coefficient matrix.  The parameter $
-        G_{\text{face}} $ represents the term's geometric coefficient, which
-        depends on the type of term and the mesh geometry.
+    coefficient matrix. The contributions are given by :math:`-\mathtt{value}
+    \times G_{\text{face}}` for the RHS vector and :math:`G_{\text{face}}` for
+    the coefficient matrix. The parameter :math:`G_{\text{face}}` represents the
+    term's geometric coefficient, which depends on the type of term and the mesh
+    geometry.
 
     Contributions are only added to entries corresponding to the
     specified faces.
@@ -68,14 +65,14 @@ class FixedValue(BoundaryCondition):
         """Set boundary equal to value.
         
         A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
-        Term's (**L**, **b**) matrices.
+        Term's (:math:`\mathsf{L}`, :math:`\mathsf{b}`) matrices.
         
         :Parameters:
           - `SparseMatrix`: Sparse matrix class to use
           - `Ncells`:       Size of matrices
-          - `MaxFaces`:     bandwidth of **L**
+          - `MaxFaces`:     bandwidth of :math:`\mathsf{L}`
           - `coeff`:        contribution to adjacent cell diagonal and 
-            **b**-vector by this exterior face
+            :math:`\mathsf{b}`-vector by this exterior face
         """
         faces = self.faces.getValue()
         
@@ -93,6 +90,8 @@ class FixedValue(BoundaryCondition):
         bb = numerix.zeros((Ncells,),'d')
 
         value = self._getValue()
+        if isinstance(value, Variable):
+            value = value.getValue()
         if value.shape == faces.shape:
             value = value[faces]
             

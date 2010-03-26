@@ -96,7 +96,7 @@ class FixedFlux(BoundaryCondition):
            >>> from fipy import *
            >>> m = Grid1D(nx = 10)
            >>> v = FaceVariable(mesh=m)
-           >>> bc = FixedFlux(value=v[-1], faces=m.getFacesRight())
+           >>> bc = FixedFlux(value=v.getGlobalValue()[-1], faces=m.getFacesRight())
            >>> len(bc.contribution) == len(bc.adjacentCellIDs)
            True
            >>> bc = FixedFlux(value=v, faces=m.getFacesRight())

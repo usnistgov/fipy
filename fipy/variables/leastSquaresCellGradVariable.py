@@ -68,7 +68,7 @@ class _LeastSquaresCellGradVariable(CellVariable):
 
         mat = numerix.sum(mat, axis=2)
 
-        vec = numerix.sum((neighborValue - value) * cellDistanceNormals, axis=1)
+        vec = numerix.array(numerix.sum((neighborValue - value) * cellDistanceNormals, axis=1))
 
         if D == 1:
             vec[0] = vec[0] / mat[0, 0]
