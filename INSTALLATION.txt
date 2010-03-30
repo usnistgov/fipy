@@ -47,25 +47,6 @@ Detailed prerequisites and links are given below and in
 impatient, :term:`FiPy` can be up and running quickly with one of the
 following methods.
 
-
-EasyInstall
-===========
-
-http://peak.telecommunity.com/DevCenter/EasyInstall
-
-If Python_ and setuptools_ are already available, a minimally functional 
-installation of :term:`FiPy` can be obtained by issuing the commands::
-
-    $ easy_install numpy
-    $ easy_install matplotlib
-    $ easy_install pysparse
-    $ easy_install fipy
-    
-Some of the `Optional Packages`_ may also be available via
-``easy_install``, but not all are.
-
-.. _setuptools: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi/setuptools
-
 Enthought Python Edition
 ========================
 

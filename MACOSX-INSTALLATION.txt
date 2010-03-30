@@ -23,30 +23,6 @@ have a usable installation up and running.
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
 .. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://fink.sourceforge.net
 
-EasyInstall
-===========
-
-http://peak.telecommunity.com/DevCenter/EasyInstall
-
-.. note::
-
-   Several packages installed with `easy_install` will need be
-   automatically compiled, which requires that you install the 
-   `Xcode Development Tools`_ before proceding.
-
-If Python_ and setuptools_ are already available, a minimally functional 
-installation of :term:`FiPy` can be obtained by issuing the commands::
-
-    $ easy_install numpy
-    $ easy_install matplotlib
-    $ easy_install pysparse
-    $ easy_install fipy
-    
-Some of the `Optional Packages`_ may also be available via
-``easy_install``, but not all are.
-
-.. _setuptools: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi/setuptools
-
 Enthought Python Edition
 ========================
 
