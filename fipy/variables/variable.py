@@ -970,6 +970,16 @@ class Variable(object):
         fabs = abs
         return self._UnaryOperatorVariable(lambda a: fabs(a))
 
+    def __invert__(self):
+        """
+        Returns logical "not" of the `Variable`
+        
+            >>> a = Variable(value=True)
+            >>> print ~a
+            False
+        """
+        return self._UnaryOperatorVariable(lambda a: ~a)
+
     def __lt__(self,other):
         """
         Test if a `Variable` is less than another quantity
