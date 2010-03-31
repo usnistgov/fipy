@@ -87,7 +87,7 @@ We can now create a :class:`~fipy.viewers.viewer.Viewer` to see the mesh
 ...         viewer.plotMesh()
 ...         raw_input("Irregular circular mesh. Press <return> to proceed...")
 ...     except:
-...         print "Unable to create a viewer for an irregular mesh (try Gist2DViewer or Matplotlib2DViewer)"
+...         print "Unable to create a viewer for an irregular mesh (try Gist2DViewer, Matplotlib2DViewer, or MayaviViewer)"
 
 .. image:: circleMesh.*
    :width: 90%

@@ -28,6 +28,7 @@ except:
 
 from multiViewer import MultiViewer
 from tsvViewer import TSVViewer
+from vtkViewer import VTKViewer
 
 
 # what about vector variables?
@@ -35,13 +36,13 @@ from tsvViewer import TSVViewer
 class MeshDimensionError(IndexError):
     pass
 
-def Viewer(vars, title = None, limits={}, **kwlimits):
+def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     r"""Generic function for creating a `Viewer`. 
     
     The `Viewer` factory will search the module tree and return an instance of
     the first `Viewer` it finds that supports the dimensions of `vars`. Setting
     the '`FIPY_VIEWER`' environment variable to either '`gist`', '`gnuplot`',
-    '`matplotlib`', or '`tsv`' will specify the viewer.
+    '`matplotlib`', '`tsv`', or '`vtk`' will specify the viewer.
        
     The `kwlimits` or `limits` parameters can be used to constrain the view. For example::
             
@@ -64,6 +65,8 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
         displayed at the top of the `Viewer` window
       limits : dict
         a (deprecated) alternative to limit keyword arguments
+      FIPY_VIEWER
+        a specific viewer to attempt (possibly multiple times for multiple variables)
       xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
         displayed range of data. A 1D `Viewer` will only use `xmin` and
         `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
@@ -76,10 +79,8 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
         vars = [vars]
     vars = list(vars)
     
-    if os.environ.has_key('FIPY_VIEWER'):
+    if FIPY_VIEWER is None and os.environ.has_key('FIPY_VIEWER'):
         FIPY_VIEWER = os.environ['FIPY_VIEWER']
-    else:
-        FIPY_VIEWER = None
 
     if FIPY_VIEWER == "dummy":
         from viewer import _Viewer
@@ -116,9 +117,9 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
             raise ImportError, "`%s` viewer not found" % FIPY_VIEWER
         else:
             raise ImportError, "No viewers found"
-        
+    
     if len(vars) > 0:
-        raise ImportError, "Failed to import a viewer: %s" % str(errors)        
+        raise ImportError, "Failed to import a viewer: %s" % str(errors)
             
     if len(viewers) > 1:
         return MultiViewer(viewers = viewers)

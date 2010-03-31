@@ -46,12 +46,6 @@ Binary Installation
    way to get :term:`FiPy` up and running, but may offer less flexibility in the 
    long run.
    
-   .. note:: 
-   
-      If you wish to view 3D models, the MayaVi_ viewer is required, which
-      is best installed via Fink_, so you should follow the `Fink
-      Installation`_ instructions.
-
 Pre-built binaries for many of the required packages are available at 
 http://pythonmac.org/packages/py24-fat/.
 
@@ -313,24 +307,22 @@ points to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 MayaVi
 ------
 
-`MayaVi 1`_ is a requirement if you wish to view 3D problems or improve the
-viewing capabilities of the superfill examples. This is one package that is
-probably much easier to install via Fink_ than by hand. You might attempt
-to follow the instructions at
-http://mayavi.sourceforge.net/mwiki/BuildingVTKOnOSX but they are quite out
-of date and did not work for us.
+.. raw:: latex
+
+   \IndexSoftware{MayaVi}
+
+http://code.enthought.com/projects/mayavi/
+
+`MayaVi 2`_ is a requirement if you wish to view 3D problems or improve the
+viewing capabilities of the superfill examples. The standard instructions
+for either installing with `Enthought Python Distribution`_ or installing
+manually work fine.
 
 If you have already followed the `Fink Installation`_ instructions, then 
-you can go to the command line and type::
+you should be able to go to the command line and type::
 
-    $ sudo apt-get install mayavi-pyXX
+    $ sudo apt-get install mayavi2-pyXX
     
-.. note::
-
-   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
-   `MayaVi 2`_ as soon as possible.
-
-.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 .. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
 SciPy

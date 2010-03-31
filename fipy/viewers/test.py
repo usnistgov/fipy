@@ -39,7 +39,9 @@ from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportDocTestSuite(docTestModuleNames = (
+    return _LateImportDocTestSuite(testModuleNames = (
+        'vtkViewer.test',),
+                                   docTestModuleNames = (
         'tsvViewer',
         ), base = __name__)
     

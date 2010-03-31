@@ -304,35 +304,25 @@ is still recommended as a fast light weight alternative to
 
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
 
-MayaVi
+Mayavi
 ------
 
-http://mayavi.sourceforge.net
+http://code.enthought.com/projects/mayavi/
 
-The `MayaVi 1`_ Data Visualizer is a free, easy to use scientific data
+The `Mayavi 2`_ Data Visualizer is a free, easy to use scientific data
 visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
 viewer available for 3D data. Other viewers are probably better for 1D
 or 2D viewing. 
 
-.. warning::
-
-   :term:`FiPy` can only use `MayaVi 1`_ to display 3D meshes consisting entirely
-   of tetrahedrons or wedge elements. The ordering of vertices for other
-   mesh types may not work.
+.. note::
+   
+   `Mayavi 2`_ is packaged for Ubuntu and Debian linux. Using the packaged versions makes installion much easier.
 
 .. note::
 
-   Is is also necessary to install the PyVTK_ package to use the
-   :term:`FiPy` MayaVi_ viewers.
+   MayaVi 1 is no longer supported.
 
-.. note::
-
-   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
-   `MayaVi 2`_ as soon as possible.
-
-.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
-.. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
-.. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
+.. _Mayavi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
 --------------
 Obtaining FiPy

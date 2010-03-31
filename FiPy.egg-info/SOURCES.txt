@@ -7,6 +7,7 @@ MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
 ez_setup.py
+mayaviStreamDump.txt
 setup.py
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
@@ -122,6 +123,7 @@ examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D.py
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
+examples/cahnHilliard/sphereDaemon.py
 examples/cahnHilliard/tanh1D.py
 examples/cahnHilliard/test.py
 examples/cahnHilliard/generated/.gitignore
@@ -510,5 +512,16 @@ fipy/viewers/matplotlibViewer/matplotlibVectorViewer.py
 fipy/viewers/matplotlibViewer/matplotlibViewer.py
 fipy/viewers/matplotlibViewer/test.py
 fipy/viewers/mayaviViewer/__init__.py
-fipy/viewers/mayaviViewer/mayaviViewer.py
+fipy/viewers/mayaviViewer/mayaviClient.py
+fipy/viewers/mayaviViewer/mayaviDaemon.py
+<<<<<<< .working
 fipy/viewers/mayaviViewer/test.py
+fipy/viewers/vtkViewer/__init__.py
+fipy/viewers/vtkViewer/vtkCellViewer.py
+fipy/viewers/vtkViewer/vtkFaceViewer.py
+fipy/viewers/vtkViewer/vtkViewer.py
+utils/__init__.py
+utils/include.txt
+utils/includedHTMLWriter.py
+utils/includedLaTeXWriter.py=======
+fipy/viewers/mayaviViewer/test.py>>>>>>> .merge-right.r3512

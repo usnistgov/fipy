@@ -76,10 +76,20 @@ We start the problem with random fluctuations about
 ...                                    mean=0.5,
 ...                                    variance=0.01))
 
-:term:`FiPy` doesn't plot or output anything unless you tell it to:
+:term:`FiPy` doesn't plot or output anything unless you tell it to: If
+:class:`~fipy.viewers.mayavViewer.mayaviClient.MayaviClient` is available, we
+can customize the view with a sublcass of
+:class:`~fipy.viewers.mayavViewer.mayaviDaemon.MayaviDaemon`.
 
 >>> if __name__ == "__main__":
-...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
+...     try:
+...         viewer = MayaviClient(vars=phi, 
+...                               datamin=0., datamax=1.,
+...                               daemon_file="examples/cahnHilliard/sphereDaemon.py")
+...     except:
+...         viewer = Viewer(vars=phi, 
+...                         datamin=0., datamax=1., 
+...                         xmin=-2.5, zmax=2.5)
 
 For :term:`FiPy`, we need to perform the partial derivative 
 :math:`\partial f/\partial \phi`    
