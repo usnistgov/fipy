@@ -970,7 +970,7 @@ class Mesh(_CommonMesh):
         
         num = len(points)
         counts = numerix.array([1] * num)[..., numerix.newaxis]
-        cells = self._getFaces()[..., numerix.newaxis]
+        cells = numerix.arange(self._getNumberOfFaces())[..., numerix.newaxis]
         cells = numerix.concatenate((counts, cells), axis=1)
         cell_types = numerix.array([tvtk.Vertex().cell_type]*num)
         cell_array = tvtk.CellArray()
