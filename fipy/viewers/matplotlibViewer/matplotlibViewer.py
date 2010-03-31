@@ -82,8 +82,7 @@ class _MatplotlibViewer(_Viewer):
         fig = pylab.figure(figsize=(w, h))
         self.id = fig.number
         
-        if self.title is not "":
-            pylab.title(self.title)
+        pylab.title(self.title)
         
     def plot(self, filename = None):
         import pylab
