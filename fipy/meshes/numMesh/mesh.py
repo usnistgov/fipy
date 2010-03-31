@@ -936,7 +936,7 @@ class Mesh(_CommonMesh):
         from fipy.tools import numerix
         if type(cvi) is numerix.ma.masked_array:
             counts = cvi.count(axis=1)[:,None]
-            cells = numerix.concatenate((counts,cvi),axis=1).compressed()
+            cells = numerix.ma.concatenate((counts,cvi),axis=1).compressed()
         else:
             counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
             cells = numerix.concatenate((counts,cvi),axis=1).flatten()
