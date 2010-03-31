@@ -84,6 +84,11 @@ Glossary
       See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/.
 
+   Sphinx
+      The tools used to generate the :term:`FiPy` documentation.
+      See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sphinx.pocoo.org/.
+
    Trilinos
       This package proives sparse matrix storage, solvers, and
       preconditioners, and can be used instead of :term:`PySparse`.

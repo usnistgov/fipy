@@ -47,8 +47,8 @@ Detailed prerequisites and links are given below and in
 impatient, :term:`FiPy` can be up and running quickly with one of the
 following methods.
 
-Enthought Python Edition
-========================
+Enthought Python Distribution
+=============================
 
 http://www.enthought.com/epd
 
@@ -59,7 +59,7 @@ Installers are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
 .. attention::
 
    :term:`PySparse` and :term:`FiPy` are not presently included in EPD, so you will need
-   to separately install them, either manually or via EasyInstall_.
+   to separately install them manually.
 
 Python(x,y)
 ===========
@@ -215,6 +215,11 @@ installers`_ are available.
 .. warning::
 
    :term:`FiPy` requires version 1.0 or higher of :term:`PySparse`.
+
+.. attention::
+
+   In order to solve in parallel, both :term:`PySparse` and 
+   :term:`Trilinos` are required.
 
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
@@ -505,7 +510,13 @@ http://trilinos.sandia.gov
 
 :term:`Trilinos` provides solvers and preconditioners, and can be used instead of
 :term:`PySparse`. :term:`Trilinos` preconditioning allows for iterative solutions to some
-difficult problems that :term:`PySparse` cannot solve.
+difficult problems that :term:`PySparse` cannot solve, and it enables
+solving on parallel nodes.
+
+.. attention::
+
+   In order to solve in parallel, both :term:`PySparse` and 
+   :term:`Trilinos` are required.
 
 .. attention:: 
     
