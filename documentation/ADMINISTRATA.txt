@@ -2,7 +2,7 @@
 SVN practices
 =============
 
-Refer to SVN.txt for the current tagging conventions.
+Refer to :ref:`documentation:SVN` for the current tagging conventions.
 
 --------
 Branches
@@ -34,16 +34,16 @@ merge from trunk::
     $ cd ../trunk
     $ svn update
 
-Set `$LRN` based on the updated revision of trunk
+Set ``$LRN`` based on the updated revision of trunk::
 
     $ LRN=...
 
     $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
     
-Look for "`merged trunk changes r${IRN}:${LRN} to ${BRANCH}`" or 
-"`merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}`" and set `IRN` 
-to `${LRN}` from log message, otherwise to the revision at which the branch 
-was created.
+Look for ":samp:`merged trunk changes r{IRN}:{LRN} to {BRANCH}`" or
+":samp:`merged log:trunk@{IRN}:{LRN} to source:branches/{BRANCH}`" and set
+``IRN`` to :samp:`{LRN}` from the log message, otherwise to the revision at
+which the branch was created::
 
     $ IRN=...
 
@@ -53,7 +53,7 @@ Merge updated state of trunk to the branch::
     $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
     $ svn diff
 
-Resolve any conflicts
+Resolve any conflicts::
 
     $ python setup.py test
     $ svn ci -m "merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}@${LRN}"
@@ -64,24 +64,24 @@ Refactoring complete: merge branch to the trunk
 First, follow the instructions for 
 `Merging changes from trunk to the branch`_.
 
-Find the `HEAD` revision number::
+Find the ``HEAD`` revision number::
 
     $ cd trunk
     $ svn update
     $ HRN=...
 
-Merge the branch `HEAD` to trunk::
+Merge the branch ``HEAD`` to trunk::
 
     $ svn merge ${FIPYROOT}/trunk@${HRN} \
                 ${FIPYROOT}/branches/${BRANCH}@${HRN}
     $ svn diff
 
-Resolve any conflicts
+Resolve any conflicts::
 
     $ python setup.py test
     $ svn ci -m "merged source:branches/${BRANCH}@${HRN} to source:trunk@${HRN}"
 
-When completely done with the branch
+When completely done with the branch::
 
     $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk" \
         ${FIPYROOT}/branches/${BRANCH}
@@ -110,7 +110,8 @@ Fix the code::
     $ svn ci -m "fix n.m.q"
     $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/version-n_m_q
 
-Find the initial revision number for the branch (IRN) and the latest revision number (LRN)::
+Find the initial revision number for the branch (``IRN``) and the latest 
+revision number (``LRN``)::
 
     $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
     $ IRN=..
@@ -130,7 +131,8 @@ Fix the code::
 
     $ svn ci -m "fix version n.m.q+1"
 
-Find the previous revision number for the branch (PRN) and the latest revision number (LRN)::
+Find the previous revision number for the branch (``PRN``) and the latest 
+revision number (``LRN``)::
 
     $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
     $ PRN=..
@@ -189,7 +191,7 @@ Combine the windows installer and examples into one archive::
 Tag the repository as appropriate (see `SVN practices`_ above).
 
 Upload the build products and documentation from :file:`dist/` to MatForge and 
-the web site to CTCMS:
+the web site to CTCMS ::
 
     $ python setup.py upload --pdf --html --tarball --winzip
 
@@ -311,21 +313,21 @@ Obtain cvs2svn_
 
 
 Make a copy of the portion of the CVS repository governing the project in 
-question
+question::
 
     $ PROJECT=MyProjectInCVS
     $ mkdir cvs2svnSandbox
     $ cd cvs2svnSandbox
     $ cp -r /path/to/cvs/repository/${PROJECT} ${PROJECT}
 
-Convert the CVS project repository copy into an SVN repository dump file
+Convert the CVS project repository copy into an SVN repository dump file::
 
     $ mkdir ${PROJECT}/CVSROOT
     $ cvs2svn --dump-only ${PROJECT}
 
-You should now have a file `cvs2svn-dump` in your working directory.
+You should now have a file :file:`cvs2svn-dump` in your working directory.
 
-If necessary, create an SVN repository
+If necessary, create an SVN repository::
 
     $ svnadmin create --fs-type fsfs /path/to/svn/repos
 
@@ -333,24 +335,24 @@ If necessary, create an SVN repository
    repository.
 
 Make sure that the new repository has appropriate group permissions (this is
-still a bit fuzzy for me)
+still a bit fuzzy for me)::
 
     $ chgrp -R $GROUP /path/to/svn/repos
     $ chmod -R g+w /path/to/svn/repos
 
-Add a stub for the new project
+Add a stub for the new project::
 
     $ svn mkdir file:///path/to/svn/repos/${PROJECT} -m "added ${PROJECT} directory"
 
-Import the converted project repository into SVN
+Import the converted project repository into SVN::
 
     $ svnadmin --parent-dir $PROJECT load /path/to/svn/repos < cvs2svn-dump
 
-You can now test a checkout
+You can now test a checkout::
 
-    $ svn checkout svn+ssh://MACHINE.IP.ADDR/path/to/svn/repos/${PROJECT}/trunk SVNTEST
+   $ svn checkout svn+ssh://MACHINE.IP.ADDR/path/to/svn/repos/${PROJECT}/trunk SVNTEST
 
-At this point, you can get rid of all of the conversion materials
+At this point, you can get rid of all of the conversion materials::
 
     $ cd ..
     $ rm -rf cvs2svnSandbox
