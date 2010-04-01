@@ -349,22 +349,21 @@ instructions of obtaining :term:`FiPy` with Subversion_.
 Manual
 ======
 
-You can `download the latest manual`_ from 
-<http://www.ctcms.nist.gov/fipy/download/fipy.pdf>. Alternatively,
+You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you 
+can `download the latest manual`_ from 
+<http://matforge.org/fipy/wiki/FiPyManual>. Alternatively,
 it may be possible to build a fresh copy by issuing the following
 command in the base directory::
 
-    $ python setup.py build_docs --latex --manual
+    $ python setup.py build_docs --pdf --html
 
 .. note::
 
-   This mechanism is intended primarily for the developers.  A
-   command-line pdfTeX installation and several LaTeX packages are
-   required; particularly :file:`memoir.cls`.  You will also need to add
-   :file:`{~/path/to/fipy}/utils` to your :envvar:`PYTHONPATH` environment
-   variable.
+   This mechanism is intended primarily for the developers. At a minimum, 
+   you will need a development version of `Sphinx 1.0
+   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites.
 
-.. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
+.. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
 
 ------------
 Testing FiPy
