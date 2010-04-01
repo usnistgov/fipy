@@ -23,10 +23,16 @@ to this list.
   *Journal of Applied Physics* **106** (3) pp. 034912 (2009),
   `doi:10.1063/1.3190607 <http://dx.doi.org/10.1063/1.3190607>`_.
 
-* J. A. Warren, T. Pusztai, L. Kšrnyei & L. Gr‡n‡sy,
+* J. A. Warren, T. Pusztai, L. |Kornyei| & L. |Granasy|,
   "Phase field approach to heterogeneous crystal nucleation in alloys,"
   *Physical Review B* **79** 014204 (2009),
   `doi:10.1103/PhysRevB.79.014204 <http://dx.doi.org/10.1103/PhysRevB.79.014204>`_.
+
+* T. P. Moffat, D. Wheeler, S.-K. Kim & D. Josell,
+  "Curvature enhanced adsorbate coverage mechanism for bottom-up 
+  superfilling and bump control in damascene processing,"
+  *Electrochimica Acta* **53** (1) pp. 145-154 (2007),
+  `doi:10.1016/j.electacta.2007.03.025 <http://dx.doi.org/10.1016/j.electacta.2007.03.025>`_.
 
 * W. J. Boettinger, J. E. Guyer, C. E. Campbell, G. B. McFadden,
   "Computation of the Kirkendall velocity and displacement fields in a 
@@ -42,7 +48,7 @@ to this list.
   *Computing in Science & Engineering* **9** (4) pp. 50-60 (2007), 
   `doi:10.1109/MCSE.2007.74 <http://dx.doi.org/doi:10.1109/MCSE.2007.74>`_.
 
-* L. Gr‡n‡sy, T. Pusztai, D. Saylor & J. A. Warren,
+* L. |Granasy|, T. Pusztai, D. Saylor & J. A. Warren,
   "Phase Field Theory of Heterogeneous Crystal Nucleation,"
   *Physical Review Letters* **98**  035703 (2007)
   `10.1103/PhysRevLett.98.035703 <http://dx.doi.org/10.1103/PhysRevLett.98.035703>`_.
@@ -52,6 +58,16 @@ to this list.
   Radiation," 
   *Journal de Physique IV France* **137** pp. 317-320 (2006),
   `doi:10.1051/jp4:2006137061 <http://dx.doi.org/10.1051/jp4:2006137061>`_.
+
+* T. P. Moffat, D. Wheeler, S. K. Kim & D. Josell,
+  "Curvature enhanced adsorbate coverage model for electrodeposition,"
+  *Journal of The Electrochemical Society* **153** (2) pp. C127-C132 (2006),
+  `10.1149/1.2165580 <http://dx.doi.org/10.1149/1.2165580>`_.
+
+* D. Josell, D. Wheeler & T. P. Moffat,
+  "Gold superfill in submicrometer trenches: Experiment and prediction,"
+  *Journal of The Electrochemical Society* **153** (1) pp. C11-C18 (2006),
+  `10.1149/1.2128765 <http://dx.doi.org/10.1149/1.2128765>`_.
 
 
 Presentations
@@ -102,3 +118,6 @@ Other invited talks about FiPy:
 .. _A Finite Volume PDE Solver Using Python (FiPy) : http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/pycon/dc2004/papers/28/fipy.pdf
 .. _PyCon2004:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/pycon/dc2004/
 .. _2009 Python for Scientific Computing Conference: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://conference.scipy.org/SciPy2009/
+
+.. |Granasy| unicode:: Gr U+00E1 n U+00E1 sy
+.. |Kornyei| unicode:: K U+00F6 rnyei
