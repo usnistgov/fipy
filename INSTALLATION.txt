@@ -379,16 +379,6 @@ Depending on the packages you chose to install in `Optional Packages`_,
 be sure to set the appropriate environment variables.  You can expect a few
 errors if you did not install all of the recommended packages.
 
-If you chose to install the :mod:`scipy.weave` package, you should rerun the
-tests with::
-
-    $ python setup.py test --inline
-
-A few tests will fail the first time as a result of the messages
-output in the course of caching the compiled inline code, but a repeat
-test should have no failures (although see "``repairing catalog by
-removing key``" in the :ref:`FAQ`).
-
 .. note::
 
    In order for Python_ to find the :term:`FiPy` modules, you will need to ensure
@@ -400,6 +390,28 @@ removing key``" in the :ref:`FAQ`).
    or::
 
        $ export PYTHONPATH=.:${PYTHONPATH}
+
+If you chose to install the :mod:`scipy.weave` package, you should rerun the
+tests with::
+
+    $ python setup.py test --inline
+
+A few tests will fail the first time as a result of the messages
+output in the course of caching the compiled inline code, but a repeat
+test should have no failures (although see "``repairing catalog by
+removing key``" in the :ref:`FAQ`).
+
+If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests 
+on multiple processor cores with::
+
+    $ mpirun -np {# of processors} python setup.py test
+
+.. note::
+   
+   When running in parallel, there are two expected test failures in
+   :mod:`examples.elphf.diffusion.mesh1D` and in
+   :mod:`examples.diffusion.nthOrder.input4thOrder-line`. These failures are problems
+   with those particular tests, not with the parallel mechanism itself.
 
 ---------------
 Installing FiPy
