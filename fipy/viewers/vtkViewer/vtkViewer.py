@@ -99,10 +99,13 @@ class _VTKViewer(_Viewer):
     def plot(self, filename=None):
         data = self._getData()
 
+        from fipy.tools import numerix
+        
         for var in self.vars:
             name, rank, value = self._nameRankValue(var)
                 
-            data.get_array(name).to_array()[:] = value
+            if not (numerix.array(value.shape) == 0).any():
+                data.get_array(name).to_array()[:] = value
 
         from enthought.tvtk.misc import write_data
         write_data(self.dataset, filename)
