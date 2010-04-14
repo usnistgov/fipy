@@ -35,7 +35,7 @@ import pylab
 from matplotlib import ticker
 from scipy.io import mmio
 
-from fipy.tools.numerix import arange, array, compress, log, log10, nan, nanmax, nanmin, sign, where, zeros, maximum, minimum
+from fipy.tools.numerix import arange, array, compress, isnan, log, log10, nan, nanmax, nanmin, sign, where, zeros, maximum, minimum
 
 class SignedLogFormatter(ticker.LogFormatter):
     """
@@ -233,8 +233,8 @@ class MatplotlibSparseMatrixViewer:
             log = False
             
         if log:
-            zMin = min(min(min(nanmin(zPlus), nanmin(zMinus)), nanmin(bPlus)), nanmin(bMinus))
-            zMax = max(max(max(nanmax(zPlus), nanmax(zMinus)), nanmax(bPlus)), nanmax(bMinus))
+            zMin = nanmin((nanmin(zPlus), nanmin(zMinus), nanmin(bPlus), nanmin(bMinus)))
+            zMax = nanmax((nanmax(zPlus), nanmax(zMinus), nanmax(bPlus), nanmax(bMinus)))
 ##             zThreshold = 0.5 # (zMax - zMin) / 5.
             
             zMin -= 0.5
@@ -253,8 +253,10 @@ class MatplotlibSparseMatrixViewer:
                 zRange = nanmax(zPlus) + 1
 
             z = where(z > 0, zPlus, -zMinus)
+            z = where(isnan(z), 0., z)
             b = where(b > 0, bPlus, -bMinus)
-            
+            b = where(isnan(b), 0., b)
+
             fmt = SignedLogFormatter(threshold=zMin)
             loc = SignedLogLocator(threshold=zMin)
             
