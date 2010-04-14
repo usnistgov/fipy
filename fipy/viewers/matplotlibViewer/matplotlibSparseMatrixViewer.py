@@ -192,7 +192,6 @@ class MatplotlibSparseMatrixViewer:
         
         pylab.title(self.title)
         
-
     def plot(self, matrix, RHSvector, log='auto'):
         import tempfile
         import os
@@ -279,8 +278,6 @@ class MatplotlibSparseMatrixViewer:
         pylab.figure(self.id)
         pylab.clf()
 
-        pylab.title(self.title)
-
         pylab.delaxes()
         ax1 = pylab.axes([self.margin, self.margin, self.width, self.width])
         
@@ -304,5 +301,7 @@ class MatplotlibSparseMatrixViewer:
         pylab.axis([-0.5, N - 0.5, N - 0.5, -0.5])
 
         pylab.colorbar(format=fmt, ticks=loc)
+
+        pylab.title(self.title)
 
         pylab.draw()
