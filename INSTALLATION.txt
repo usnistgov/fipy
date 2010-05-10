@@ -624,6 +624,17 @@ indicators, :term:`FiPy` will default to using :term:`PySparse` if it is present
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
 
+mpi4py
+======
+
+http://mpi4py.scipy.org/
+
+For :ref:`PARALLEL`, :term:`FiPy` needs ``mpi4py``, in addition 
+to both :term:`Trilinos` and :term:`PySparse`. This should be obtainable 
+with::
+
+    $ easy_install mpi4py
+
 ------------------------------
 Platform-Specific Instructions
 ------------------------------
