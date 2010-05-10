@@ -48,7 +48,6 @@ documentation/_build/html/_sources/documentation/CREDITS.txt
 documentation/_build/html/_sources/documentation/EFFICIENCY.txt
 documentation/_build/html/_sources/documentation/FAQ.txt
 documentation/_build/html/_sources/documentation/MAIL.txt
-documentation/_build/html/_sources/documentation/PARALLEL.txt
 documentation/_build/html/_sources/documentation/PUBLICATIONS.txt
 documentation/_build/html/_sources/documentation/SVN.txt
 documentation/_build/html/_sources/documentation/VKML.txt
@@ -221,7 +220,6 @@ examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D.py
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
-examples/cahnHilliard/sphereDaemon.py
 examples/cahnHilliard/tanh1D.py
 examples/cahnHilliard/test.py
 examples/cahnHilliard/generated/.gitignore
