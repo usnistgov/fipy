@@ -58,6 +58,12 @@ class CylindricalGrid1D(Grid1D):
         ...
         IndexError: nx != len(dx)
 
+        >>> mesh = CylindricalGrid1D(nx=2, dx=(1., 2.)) + ((1.,),)
+        >>> print mesh.getCellCenters()
+        [[ 1.5  3. ]]
+        >>> print mesh.getCellVolumes()
+        [ 1.5  6. ]
+        
     """
     def __init__(self, dx=1., nx=None, origin=(0,), overlap=2):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).getUnit())
@@ -68,13 +74,18 @@ class CylindricalGrid1D(Grid1D):
 
         self.args['origin'] = origin
 
+
+    def _calcFaceCenters(self):
+        Grid1D._calcFaceCenters(self)
+        self.faceCenters += self.origin
+        
     def _calcFaceAreas(self):
         self.faceAreas = self.getFaceCenters()[0]
 
     def _calcCellVolumes(self):
         Grid1D._calcCellVolumes(self)
-        self.cellVolumes *= self.scale['length'] * self.cellCenters[0]
-        
+        self.cellVolumes = self.cellVolumes / 2.
+
     def _translate(self, vector):
         return CylindricalGrid1D(dx=self.args['dx'], nx=self.args['nx'], 
                                  origin=numerix.array(self.args['origin']) + vector, overlap=self.args['overlap'])
@@ -86,12 +97,6 @@ class CylindricalGrid1D(Grid1D):
     def getVertexCoords(self):
         return self.vertexCoords + self.origin
 
-    def getCellCenters(self):
-        return Grid1D.getCellCenters(self) + self.origin
-
-    def getFaceCenters(self):
-        return self.faceCenters + self.origin
-    
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
