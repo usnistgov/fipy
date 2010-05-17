@@ -35,6 +35,11 @@ from vtkViewer import VTKViewer
 
 class MeshDimensionError(IndexError):
     pass
+    
+from viewer import _Viewer
+class DummyViewer(_Viewer):
+    def plot(self, filename=None):
+        pass
 
 def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     r"""Generic function for creating a `Viewer`. 
@@ -83,8 +88,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         FIPY_VIEWER = os.environ['FIPY_VIEWER']
 
     if FIPY_VIEWER == "dummy":
-        from viewer import _Viewer
-        return _Viewer(vars=vars)
+        return DummyViewer(vars=vars)
 
     errors = []
 
