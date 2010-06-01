@@ -47,7 +47,9 @@ class LinearPCGSolver(PysparseSolver):
     
     The `LinearPCGSolver` solves a linear system of equations using the
     preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning.  The PCG method solves systems with
+    over-relaxation (SSOR) preconditioning by default. Alternatively,
+    Jacobi preconditioning can be specified through `precon`.
+    The PCG method solves systems with
     a symmetric positive definite coefficient matrix.
 
     The `LinearPCGSolver` is a wrapper class for the the PySparse_
@@ -62,12 +64,13 @@ class LinearPCGSolver(PysparseSolver):
 ##      print 'x:',x
 ##      print 'b:',b
 ##      raw_input('end output')
-    
-        A = L._getMatrix().to_sss()
 
-        Assor=precon.ssor(A)
+        A = L._getMatrix()
 
-        info, iter, relres = itsolvers.pcg(A, b, x, self.tolerance, self.iterations, Assor)
+        P, A = self._setupPreconditioner(A, precon.ssor)
+        
+        info, iter, relres = itsolvers.pcg(A, b, x, self.tolerance, 
+                                           self.iterations, P)
 ##        print info, iter, relres
 
         self._raiseWarning(info, iter, relres)
