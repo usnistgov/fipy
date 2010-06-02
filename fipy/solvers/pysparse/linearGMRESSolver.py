@@ -61,7 +61,5 @@ class LinearGMRESSolver(PysparseSolver):
         """
         self.preconditioner = precon
         PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
-    
-    def _solve_(self, L, x, b):
-        PysparseSolver._solveWithPrecondition(self, itsolvers.gmres, L, x, b)
+        self.solveFnc = itsolvers.gmres
 

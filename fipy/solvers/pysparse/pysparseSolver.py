@@ -55,7 +55,12 @@ class PysparseSolver(Solver):
     def _getMatrixClass(self):
         return _PysparseMatrix
 
-    def _solveWithPrecondition(self, solver, L, x, b):
+    def _solve_(self, L, x, b):
+        """
+        `_solve_` is only for use by solvers which may use
+        preconditioning. If you are writing a solver which
+        doesn't use preconditioning, this must be overridden.
+        """
         A = L._getMatrix()
 
         if self.preconditioner is None:
@@ -63,8 +68,8 @@ class PysparseSolver(Solver):
         else:
             P, A = self.preconditioner._applyToMatrix(A)
 
-        info, iter, relres = solver(A, b, x, self.tolerance, 
-                                             self.iterations, P)
+        info, iter, relres = self.solveFnc(A, b, x, self.tolerance, 
+                                           self.iterations, P)
         
         self._raiseWarning(info, iter, relres)
          

@@ -63,7 +63,5 @@ class LinearCGSSolver(PysparseSolver):
         import warnings
         warnings.warn("The PySparse CGS solver may return incorrect results for some matrices", UserWarning)
         PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
-        
-    def _solve_(self, L, x, b):
-        PysparseSolver._solveWithPrecondition(self, itsolvers.cgs, L, x, b)
+        self.solveFnc = itsolvers.cgs
 
