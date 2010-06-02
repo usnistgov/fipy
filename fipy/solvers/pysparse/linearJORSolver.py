@@ -45,10 +45,7 @@ class LinearJORSolver(PysparseSolver):
     non-symmetric coefficient matrix.
 
     """
-    def __init__(self, tolerance=1e-10, 
-                       iterations=1000, 
-                       steps=None, 
-                       relaxation = 1.0): 
+    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, relaxation = 1.0, precon=None):
         """
         The `Solver` class should not be invoked directly.
 
@@ -59,10 +56,7 @@ class LinearJORSolver(PysparseSolver):
           - `relaxation`: The relaxation.
           
         """
-        PysparseSolver.__init__(self, tolerance=tolerance, 
-                                      iterations=iterations, 
-                                      steps=steps, 
-                                      precon=precon)
+        PysparseSolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
         self.relaxation = relaxation
         
     def _solve_(self, L, x, b):
