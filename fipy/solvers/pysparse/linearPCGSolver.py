@@ -37,9 +37,9 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from pysparse import precon
 from pysparse import itsolvers
 
+from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
 class LinearPCGSolver(PysparseSolver):
@@ -58,22 +58,15 @@ class LinearPCGSolver(PysparseSolver):
     .. _PySparse: http://pysparse.sourceforge.net
     
     """
-     
+    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
+        """
+        :Parameters:
+          - `precon`: Preconditioner to use
+        """
+        PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
+ 
     def _solve_(self, L, x, b):
-##      print 'L:',L
-##      print 'x:',x
-##      print 'b:',b
-##      raw_input('end output')
-
-        A = L._getMatrix()
-
-        P, A = self._setupPreconditioner(A, precon.ssor)
-        
-        info, iter, relres = itsolvers.pcg(A, b, x, self.tolerance, 
-                                           self.iterations, P)
-##        print info, iter, relres
-
-        self._raiseWarning(info, iter, relres)
+        PysparseSolver._solveWithPrecondition(self, itsolvers.pcg, L, x, b)
             
     def _canSolveAsymmetric(self):
         return False

@@ -54,4 +54,18 @@ class PysparseSolver(Solver):
 
     def _getMatrixClass(self):
         return _PysparseMatrix
+
+    def _solveWithPrecondition(self, solver, L, x, b):
+        A = L._getMatrix()
+
+        if self.preconditioner is None:
+            P = None
+        else:
+            P, A = self.preconditioner._applyToMatrix(A)
+
+        info, iter, relres = solver(A, b, x, self.tolerance, 
+                                             self.iterations, P)
+        
+        self._raiseWarning(info, iter, relres)
+         
         
