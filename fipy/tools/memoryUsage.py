@@ -85,3 +85,8 @@ def _stacksize(since=0.0):
     '''Return stack size in bytes.
     '''
     return _VmB('VmStk:') - since
+
+def _peak(since=0.0):
+    '''Return stack size in bytes.
+    '''
+    return _VmB('VmPeak:') - since
