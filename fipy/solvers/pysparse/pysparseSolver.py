@@ -47,29 +47,11 @@ class PysparseSolver(Solver):
     """
     def __init__(self, *args, **kwargs):
         if self.__class__ is PysparseSolver:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError, \
+                  "can't instantiate abstract base class"
             
         Solver.__init__(self, *args, **kwargs)
 
     def _getMatrixClass(self):
         return _PysparseMatrix
-    
         
-    def _setupPreconditioner(self, A, defaultPrecon=precon.ssor):
-        """
-        Internal function for setting up a PySparse preconditioner.
-        Returns the preconditioning matrix, `P`, and the resulting
-        `A` matrix.
-        """
-        if self.preconditioner is None:
-            self.preconditioner = defaultPrecon
-
-        if self.preconditioner.__name__ == "ssor":
-            A = A.to_sss()
-            P = self.preconditioner(A)
-        else:
-            P = self.preconditioner(A)
-            A = A.to_csr()
-
-        return P, A
-         
