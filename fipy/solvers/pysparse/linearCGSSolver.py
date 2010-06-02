@@ -53,8 +53,10 @@ class LinearCGSSolver(PysparseSolver):
 
     .. _PySparse: http://pysparse.sourceforge.net
 
-    
     """
+
+    solveFnc = itsolvers.cgs
+
     def __init__(self, precon=None, *args, **kwargs):
         """
         :Parameters:
@@ -63,5 +65,4 @@ class LinearCGSSolver(PysparseSolver):
         import warnings
         warnings.warn("The PySparse CGS solver may return incorrect results for some matrices", UserWarning)
         PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.cgs
 
