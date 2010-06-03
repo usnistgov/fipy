@@ -47,8 +47,8 @@ Detailed prerequisites and links are given below and in
 impatient, :term:`FiPy` can be up and running quickly with one of the
 following methods.
 
-Enthought Python Edition
-========================
+Enthought Python Distribution
+=============================
 
 http://www.enthought.com/epd
 
@@ -59,7 +59,7 @@ Installers are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
 .. attention::
 
    :term:`PySparse` and :term:`FiPy` are not presently included in EPD, so you will need
-   to separately install them, either manually or via EasyInstall_.
+   to separately install them manually.
 
 Python(x,y)
 ===========
@@ -216,6 +216,11 @@ installers`_ are available.
 
    :term:`FiPy` requires version 1.0 or higher of :term:`PySparse`.
 
+.. attention::
+
+   In order to solve in parallel, both :term:`PySparse` and 
+   :term:`Trilinos` are required.
+
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
 .. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
@@ -344,22 +349,21 @@ instructions of obtaining :term:`FiPy` with Subversion_.
 Manual
 ======
 
-You can `download the latest manual`_ from 
-<http://www.ctcms.nist.gov/fipy/download/fipy.pdf>. Alternatively,
+You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you 
+can `download the latest manual`_ from 
+<http://matforge.org/fipy/wiki/FiPyManual>. Alternatively,
 it may be possible to build a fresh copy by issuing the following
 command in the base directory::
 
-    $ python setup.py build_docs --latex --manual
+    $ python setup.py build_docs --pdf --html
 
 .. note::
 
-   This mechanism is intended primarily for the developers.  A
-   command-line pdfTeX installation and several LaTeX packages are
-   required; particularly :file:`memoir.cls`.  You will also need to add
-   :file:`{~/path/to/fipy}/utils` to your :envvar:`PYTHONPATH` environment
-   variable.
+   This mechanism is intended primarily for the developers. At a minimum, 
+   you will need a development version of `Sphinx 1.0
+   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites.
 
-.. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
+.. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
 
 ------------
 Testing FiPy
@@ -374,16 +378,6 @@ Depending on the packages you chose to install in `Optional Packages`_,
 be sure to set the appropriate environment variables.  You can expect a few
 errors if you did not install all of the recommended packages.
 
-If you chose to install the :mod:`scipy.weave` package, you should rerun the
-tests with::
-
-    $ python setup.py test --inline
-
-A few tests will fail the first time as a result of the messages
-output in the course of caching the compiled inline code, but a repeat
-test should have no failures (although see "``repairing catalog by
-removing key``" in the :ref:`FAQ`).
-
 .. note::
 
    In order for Python_ to find the :term:`FiPy` modules, you will need to ensure
@@ -395,6 +389,28 @@ removing key``" in the :ref:`FAQ`).
    or::
 
        $ export PYTHONPATH=.:${PYTHONPATH}
+
+If you chose to install the :mod:`scipy.weave` package, you should rerun the
+tests with::
+
+    $ python setup.py test --inline
+
+A few tests will fail the first time as a result of the messages
+output in the course of caching the compiled inline code, but a repeat
+test should have no failures (although see "``repairing catalog by
+removing key``" in the :ref:`FAQ`).
+
+If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests 
+on multiple processor cores with::
+
+    $ mpirun -np {# of processors} python setup.py test
+
+.. note::
+   
+   When running in parallel, there are two expected test failures in
+   :mod:`examples.elphf.diffusion.mesh1D` and in
+   :mod:`examples.diffusion.nthOrder.input4thOrder-line`. These failures are problems
+   with those particular tests, not with the parallel mechanism itself.
 
 ---------------
 Installing FiPy
@@ -505,7 +521,13 @@ http://trilinos.sandia.gov
 
 :term:`Trilinos` provides solvers and preconditioners, and can be used instead of
 :term:`PySparse`. :term:`Trilinos` preconditioning allows for iterative solutions to some
-difficult problems that :term:`PySparse` cannot solve.
+difficult problems that :term:`PySparse` cannot solve, and it enables
+solving on parallel nodes.
+
+.. attention::
+
+   In order to solve in parallel, both :term:`PySparse` and 
+   :term:`Trilinos` are required.
 
 .. attention:: 
     
@@ -601,6 +623,17 @@ indicators, :term:`FiPy` will default to using :term:`PySparse` if it is present
         forced the solver to stop before reaching an adequate solution.
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
+
+mpi4py
+======
+
+http://mpi4py.scipy.org/
+
+For :ref:`PARALLEL`, :term:`FiPy` needs ``mpi4py``, in addition 
+to both :term:`Trilinos` and :term:`PySparse`. This should be obtainable 
+with::
+
+    $ easy_install mpi4py
 
 ------------------------------
 Platform-Specific Instructions

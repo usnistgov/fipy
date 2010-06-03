@@ -954,7 +954,8 @@ class Mesh(_CommonMesh):
         ug = tvtk.UnstructuredGrid(points=points)
         
         offset = numerix.cumsum(counts[:,0]+1)
-        offset -= offset[0]
+        if len(offset) > 0:
+            offset -= offset[0]
         ug.set_cells(cell_types, offset, cell_array)
 
         return ug
@@ -978,7 +979,8 @@ class Mesh(_CommonMesh):
 
         counts = numerix.array([1] * num)
         offset = numerix.cumsum(counts+1)
-        offset -= offset[0]
+        if len(offset) > 0:
+            offset -= offset[0]
         ug.set_cells(cell_types, offset, cell_array)
 
         return ug

@@ -150,6 +150,11 @@ class _MeshVariable(Variable):
 
     def _getLocalNonOverlappingIDs(self):
         pass
+        
+    def getGlobalValue(self):
+        """Concatenate and return values from all processors
+        """
+        pass
 
     def _getGlobalValue(self, localIDs, globalIDs):
         from fipy.tools import parallel

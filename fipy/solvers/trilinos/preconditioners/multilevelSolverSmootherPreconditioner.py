@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
 ## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "memoryLeak.py"
+ #  FILE: "multilevelSolverSmootherPreconditioner.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -30,63 +32,35 @@
  # ========================================================================
  #  
  # ###################################################################
- 
-"""
+ ##
 
-This python script is ripped from
-http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/286222/index_txt
+__docformat__ = 'restructuredtext'
 
-"""
+from PyTrilinos import ML
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
+class MultilevelSolverSmootherPreconditioner(Preconditioner):
+    """
+    Multilevel preconditioner for Trilinos solvers using Aztec solvers
+    as smoothers.
+    
+    """
+    def __init__(self, levels=10):
+        """
+        Initialize the multilevel preconditioner
 
-import os
+        - `levels`: Maximum number of levels
+        """
+        self.levels = levels
 
-_proc_status = '/proc/%d/status' % os.getpid()
+    def _applyToSolver(self, solver, matrix):
+        if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
+            return
+        
+        self.Prec = ML.MultiLevelPreconditioner(matrix, False)
+        self.Prec.SetParameterList({"output": 0, "smoother: type" : "Aztec", "smoother: Aztec as solver" : True})
+        self.Prec.ComputePreconditioner()
+        solver.SetPrecOperator(self.Prec)
+        
 
-_scale = {'kB': 1024.0, 'mB': 1024.0*1024.0,
-          'KB': 1024.0, 'MB': 1024.0*1024.0}
-
-def _VmB(VmKey, pid = None):
-    '''Private.
-    '''
-    global _proc_status, _scale
-    if pid is not None:
-        _proc_status = '/proc/%d/status' % pid
-
-     # get pseudo file  /proc/<pid>/status
-    try:
-        t = open(_proc_status)
-        v = t.read()
-        t.close()
-    except:
-        return 0.0  # non-Linux?
-     # get VmKey line e.g. 'VmRSS:  9999  kB\n ...'
-    i = v.index(VmKey)
-    v = v[i:].split(None, 3)  # whitespace
-    if len(v) < 3:
-        return 0.0  # invalid format?
-     # convert Vm value to bytes
-    return float(v[1]) * _scale[v[2]]
-
-
-def _memory(since=0.0, pid = None):
-    '''Return memory usage in bytes.
-    '''
-    return _VmB('VmSize:', pid) - since
-
-
-def _resident(since=0.0):
-    '''Return resident memory usage in bytes.
-    '''
-    return _VmB('VmRSS:') - since
-
-
-def _stacksize(since=0.0):
-    '''Return stack size in bytes.
-    '''
-    return _VmB('VmStk:') - since
-
-def _peak(since=0.0):
-    '''Return stack size in bytes.
-    '''
-    return _VmB('VmPeak:') - since
+        

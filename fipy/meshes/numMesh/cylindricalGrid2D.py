@@ -266,6 +266,15 @@ class CylindricalGrid2D(Grid2D):
 
             >>> print numerix.allclose(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             True
+
+            >>> mesh = CylindricalGrid2D(dx=(1., 2.), dy=(1.,)) + ((1.,),(0.,))
+            >>> print mesh.getCellCenters()
+            [[ 1.5  3. ]
+             [ 0.5  0.5]]
+            >>> print mesh.getCellVolumes()
+            [ 1.5  6. ]
+
+            
         """
 
 def _test():
