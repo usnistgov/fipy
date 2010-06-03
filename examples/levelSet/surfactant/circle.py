@@ -32,44 +32,44 @@
  # ###################################################################
  ##
 
-"""
+r"""
 This example first imposes a circular distance function:
 
-.. raw:: latex
+.. math::
 
-    $$ \\phi \\left( x, y \\right) = \\left[ \\left( x - \\frac{ L }{ 2 } \\right)^2 + \\left( y - \\frac{ L }{ 2 } \\right)^2 \\right]^{1/2} - \\frac{L}{4} $$ 
+   \phi \left( x, y \right) = \left[ \left( x - \frac{ L }{ 2 } \right)^2 + \left( y - \frac{ L }{ 2 } \right)^2 \right]^{1/2} - \frac{L}{4}
 
 then the variable is advected with,
 
-.. raw:: latex
+.. math::
 
-    $$ \\frac{ \\partial \\phi } { \\partial t } + \\vec{u} \\cdot \\nabla \\phi = 0 $$
+   \frac{ \partial \phi } { \partial t } + \vec{u} \cdot \nabla \phi = 0
 
 Also a surfactant is present of the interface, governed by the equation:
 
-.. raw:: latex
+.. math::
 
-    $$ \\frac{d \\theta}{d t} = J v \\theta $$
+   \frac{d \theta}{d t} = J v \theta
 
 The result can be tested with the following code:
 
 
-   >>> surfactantBefore = sum(surfactantVariable * mesh.getCellVolumes())
-   >>> for step in range(steps):
-   ...     surfactantVariable.updateOld()
-   ...     distanceVariable.updateOld()
-   ...     surfactantEquation.solve(surfactantVariable)
-   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-   >>> surfactantEquation.solve(surfactantVariable)
-   >>> surfactantAfter = sum(surfactantVariable * mesh.getCellVolumes())
-   >>> print surfactantBefore.allclose(surfactantAfter)
-   1
-   >>> areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
-   >>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
-   >>> coverage = surfactantVariable * mesh.getCellVolumes() / areas
-   >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
-   >>> print sqrt(sum(error) / sum(error > 0))
-   0.00813776069241
+>>> surfactantBefore = sum(surfactantVariable * mesh.getCellVolumes())
+>>> for step in range(steps):
+...     surfactantVariable.updateOld()
+...     distanceVariable.updateOld()
+...     surfactantEquation.solve(surfactantVariable)
+...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
+>>> surfactantEquation.solve(surfactantVariable)
+>>> surfactantAfter = sum(surfactantVariable * mesh.getCellVolumes())
+>>> print surfactantBefore.allclose(surfactantAfter)
+1
+>>> areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
+>>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
+>>> coverage = surfactantVariable * mesh.getCellVolumes() / areas
+>>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
+>>> print sqrt(sum(error) / sum(error > 0))
+0.00813776069241
 
 """
 __docformat__ = 'restructuredtext'

@@ -98,11 +98,11 @@ PIP2PITP = PN / (PN / params['kappam'] + PN.getCellVolumeAverage() / params['kap
 
 P3spCoeff = params['lambda3'] * (TMVar + params['zeta3T'])
 P3scCoeff = params['chi3'] * KMVar * (PIP2PITP / (1 + KMVar / params['kappa3']) + params['zeta3PITP']) + params['zeta3']
-P3Eq = TransientTerm() - ImplicitDiffusionTerm(params['diffusionCoeff']) - P3scCoeff + ImplicitSourceTerm(P3spCoeff)
+P3Eq = TransientTerm() - DiffusionTerm(params['diffusionCoeff']) - P3scCoeff + ImplicitSourceTerm(P3spCoeff)
 
 P2scCoeff = scCoeff = params['chi2'] + params['lambda3'] * params['zeta3T'] * P3Var
 P2spCoeff = params['lambda2'] * (TMVar + params['zeta2T'])
-P2Eq = TransientTerm() - ImplicitDiffusionTerm(params['diffusionCoeff']) - P2scCoeff + ImplicitSourceTerm(P2spCoeff)
+P2Eq = TransientTerm() - DiffusionTerm(params['diffusionCoeff']) - P2scCoeff + ImplicitSourceTerm(P2spCoeff)
 
 KCscCoeff = params['alphaKstar'] * params['lambdaK'] * (KMVar / (1 + PN / params['kappaK'])).getCellVolumeAverage()
 KCspCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar)

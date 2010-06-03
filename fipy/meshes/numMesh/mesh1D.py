@@ -55,7 +55,8 @@ class Mesh1D(Mesh):
         self.faceNormals = numerix.array((numerix.ones(self.numberOfFaces, 'd'),))
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
-        self.faceNormals[...,0] = -self.faceNormals[...,0]
+        if self.numberOfFaces > 0:
+            self.faceNormals[...,0] = -self.faceNormals[...,0]
 
     def _calcFaceTangents(self):
         self.faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
@@ -80,3 +81,8 @@ class Mesh1D(Mesh):
 
     def _isOrthogonal(self):
         return True
+        
+    def _getVTKCellType(self):
+        from enthought.tvtk.api import tvtk
+        return tvtk.Line().cell_type
+
