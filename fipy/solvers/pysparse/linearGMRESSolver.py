@@ -34,7 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from pysparse import precon
+from fipy.solvers.pysparse.preconditioners import JacobiPreconditioner
 from pysparse import itsolvers
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
@@ -53,14 +53,13 @@ class LinearGMRESSolver(PysparseSolver):
     .. _PySparse: http://pysparse.sourceforge.net
     
     """
-    
-    def _solve_(self, L, x, b):
 
-        A = L._getMatrix().to_csr()
-        
-        Assor=precon.jacobi(L._getMatrix())
-        
-        info, iter, relres = itsolvers.gmres(A, b, x, self.tolerance, self.iterations, Assor)
-        
-        self._raiseWarning(info, iter, relres)
+    solveFnc = itsolvers.gmres
+
+    def __init__(self, precon=JacobiPreconditioner(), *args, **kwargs):
+        """
+        :Parameters:
+          - `precon`: Preconditioner to use
+        """
+        PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
 

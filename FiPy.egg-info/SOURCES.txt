@@ -24,7 +24,6 @@ documentation/PUBLICATIONS.txt
 documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TODOLIST.txt
-documentation/VERSION.txt
 documentation/VKML.txt
 documentation/conf.py
 documentation/contents.txt
@@ -251,10 +250,8 @@ examples/levelSet/surfactant/test.py
 examples/meshing/__init__.py
 examples/meshing/inputGrid2D.py
 examples/meshing/sphere.gmsh
-examples/meshing/sphere.msh
 examples/meshing/sphere.py
 examples/meshing/test.py
-examples/meshing/tmp.py
 examples/phase/__init__.py
 examples/phase/anisotropy.py
 examples/phase/anisotropyOLD.gz
@@ -384,6 +381,10 @@ fipy/solvers/pysparse/linearJORSolver.py
 fipy/solvers/pysparse/linearLUSolver.py
 fipy/solvers/pysparse/linearPCGSolver.py
 fipy/solvers/pysparse/pysparseSolver.py
+fipy/solvers/pysparse/preconditioners/__init__.py
+fipy/solvers/pysparse/preconditioners/jacobiPreconditioner.py
+fipy/solvers/pysparse/preconditioners/preconditioner.py
+fipy/solvers/pysparse/preconditioners/ssorPreconditioner.py
 fipy/solvers/trilinos/__init__.py
 fipy/solvers/trilinos/linearBicgstabSolver.py
 fipy/solvers/trilinos/linearCGSSolver.py

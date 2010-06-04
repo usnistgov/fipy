@@ -17,8 +17,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection and is in the public domain.  FiPy is an experimental # system.  NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
@@ -36,7 +35,6 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from pysparse import precon
 from pysparse import itsolvers
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
@@ -55,28 +53,16 @@ class LinearCGSSolver(PysparseSolver):
 
     .. _PySparse: http://pysparse.sourceforge.net
 
-    
     """
-    def __init__(self, *args, **kwargs):
+
+    solveFnc = itsolvers.cgs
+
+    def __init__(self, precon=None, *args, **kwargs):
+        """
+        :Parameters:
+          - `precon`: Preconditioner to use
+        """
         import warnings
         warnings.warn("The PySparse CGS solver may return incorrect results for some matrices", UserWarning)
-        PysparseSolver.__init__(self, *args, **kwargs)
-        
-    def _solve_(self, L, x, b):
-
-##      print "L: ", L
-##      print "b: ", b
-##      print "x: ", x
-        
-        A = L._getMatrix().to_csr()
-
-        info, iter, relres = itsolvers.cgs(A, b, x, self.tolerance, self.iterations)
-        
-##      print info, iter, relres
-        
-##      y = x.copy()
-##      L.matvec(x,y)
-##      print "L * x: ", y
-        
-        self._raiseWarning(info, iter, relres)
+        PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
 

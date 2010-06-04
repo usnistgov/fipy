@@ -37,6 +37,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools.pysparseMatrix import _PysparseMatrix
 from fipy.solvers.solver import Solver
+from pysparse import precon
 
 class PysparseSolver(Solver):
     """
@@ -46,9 +47,30 @@ class PysparseSolver(Solver):
     """
     def __init__(self, *args, **kwargs):
         if self.__class__ is PysparseSolver:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError, \
+                  "can't instantiate abstract base class"
             
         Solver.__init__(self, *args, **kwargs)
 
     def _getMatrixClass(self):
         return _PysparseMatrix
+
+    def _solve_(self, L, x, b):
+        """
+        `_solve_` is only for use by solvers which may use
+        preconditioning. If you are writing a solver which
+        doesn't use preconditioning, this must be overridden.
+        """
+        A = L._getMatrix()
+
+        if self.preconditioner is None:
+            P = None
+        else:
+            P, A = self.preconditioner._applyToMatrix(A)
+
+        info, iter, relres = self.solveFnc(A, b, x, self.tolerance, 
+                                           self.iterations, P)
+        
+        self._raiseWarning(info, iter, relres)
+         
+        

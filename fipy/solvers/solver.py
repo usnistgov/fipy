@@ -115,10 +115,6 @@ class Solver:
         else:
             self.iterations = iterations
 
-        if precon is not None:
-            import warnings
-            warnings.warn("This solver (%s) does not support user-specified preconditioners. That functionality is only available in some Trilinos solvers." % self.__repr__(), UserWarning, stacklevel=2)
-
         self.preconditioner = precon
 	
     def _storeMatrix(self, var, matrix, RHSvector):

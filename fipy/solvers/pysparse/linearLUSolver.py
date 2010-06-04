@@ -36,7 +36,6 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from pysparse import precon
 from pysparse import itsolvers
 from pysparse import superlu
 
@@ -57,7 +56,8 @@ class LinearLUSolver(PysparseSolver):
     
     """
     
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None, maxIterations=10):
+    def __init__(self, tolerance=1e-10, iterations=10, steps=None,
+                       maxIterations=10):
         """
         Creates a `LinearLUSolver`.
 
@@ -71,7 +71,8 @@ class LinearLUSolver(PysparseSolver):
 
         iterations = min(iterations, maxIterations)
         
-        PysparseSolver.__init__(self, tolerance = tolerance, iterations=iterations, steps = steps, precon = precon)
+        PysparseSolver.__init__(self, tolerance = tolerance, 
+                                      iterations=iterations, steps = steps)
 
     def _solve_(self, L, x, b):
         diag = L.takeDiagonal()
