@@ -201,6 +201,9 @@ class _DataGetter:
         cellFaceIDs = self._calcCellFaceIDs()
 
         self.inFile.close()
+        print vertexCoords
+        print faceVertexIDs
+        print cellFaceIDs
 
         return {
             'vertexCoords': vertexCoords,
@@ -243,15 +246,18 @@ class _DataGetter:
             raise IndexError, "Number of nodes (%d) does not match number promised (%d)" % (numVertices, len(nodeLines[1:]))
 
         vertexCoords = []
+        # can be replaced with a call to numpy.genfromtxt
         for node, i in zip(nodeLines[1:], range(len(nodeLines[1:]))):
             nodeInfo = node.split()
             nodeToVertexIDdict[int(nodeInfo[0])] = i
             vertexCoords.append([float(n) for n in nodeInfo[1:]])
 
         vertexCoords = numerix.array(vertexCoords, 'd')
+        # -----------------------------------------------
         
         maxNode = max(nodeToVertexIDdict.keys())
         nodeToVertexIDs = numerix.zeros((maxNode + 1,))
+        # for each first entry in nodeline
         for i in nodeToVertexIDdict.keys():
             nodeToVertexIDs[i] = nodeToVertexIDdict[i]
         self.nodeToVertexIDs = nodeToVertexIDs
@@ -316,13 +322,15 @@ class _DataGetter:
 
     def _calcBaseFaceVertexIDs(self):
         
+        # cellVertexIDs -> array containing vertex indices for each cell
         cellVertexIDs = self.cellVertexIDs
-    ## compute the face vertex IDs.
+        ## compute the face vertex IDs.
         ### this assumes triangular grid
         #cellFaceVertexIDs = numerix.ones((self.dimensions, self.dimensions + 1, self.numCells))
         cellFaceVertexIDs = numerix.ones((self.dimensions,len(cellVertexIDs), self.numCells))
         cellFaceVertexIDs = -1 * cellFaceVertexIDs
 
+        # tetrahedrons
         if (self.dimensions == 3):
             cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:3]
             cellFaceVertexIDs[:, 1, :] = numerix.concatenate((cellVertexIDs[:2], cellVertexIDs[3:]), axis = 0)
@@ -331,10 +339,13 @@ class _DataGetter:
         elif (self.dimensions == 2):#define face with vertex pairs
             ###This isn't very general.
             ###Would be nice to allow cells with different number of faces. 
+
+            # triangles
             if len(cellVertexIDs)==3:
                 cellFaceVertexIDs[:, 0, :] = cellVertexIDs[:2]
                 cellFaceVertexIDs[:, 1, :] = numerix.concatenate((cellVertexIDs[2:], cellVertexIDs[:1]), axis = 0)
                 cellFaceVertexIDs[:, 2, :] = cellVertexIDs[1:]
+            # quadrangles 
             elif len(cellVertexIDs)==4:
                 cellFaceVertexIDs[:, 0, :] = cellVertexIDs[0:2]
                 cellFaceVertexIDs[:, 1, :] = cellVertexIDs[1:3]
@@ -365,10 +376,17 @@ class _DataGetter:
 
         currIndex = 0
 
+        # i in range(numCells * numVerticesInFace)
+        # for every possible face
         for i in range(self.baseFaceVertexIDs.shape[-1]):
+            # extract a face (in terms of vertices)
+            # NB: listI, J are same face, just differently ordered
             listI = self.baseFaceVertexIDs[:,i]
             listJ = self.unsortedBaseIDs[:,i]
 
+             # if face hasn't been recorded, insert into hashtable with arbitrary,
+             # unique index
+             # KEY IS SORTED
             key = ' '.join([str(i) for i in listI])
             if(not (self.faceStrToFaceIDs.has_key(key))):
                 self.faceStrToFaceIDs[key] = currIndex
@@ -377,6 +395,7 @@ class _DataGetter:
                 currIndex = currIndex + 1
         numFaces = currIndex
         faceVertexIDs = numerix.zeros((self.dimensions, numFaces))
+        # punchline: throw each unique face into an array 
         for i in faceStrToFaceIDsUnsorted.keys():
             faceVertexIDs[:, faceStrToFaceIDsUnsorted[i]] = [int(x) for x in i.split(' ')]
 
