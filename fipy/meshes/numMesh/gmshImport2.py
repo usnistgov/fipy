@@ -23,24 +23,22 @@ class MshFile:
         TODO: Use tempfiles.
         """
         
-        self.coordDimensions = coordDimensions or dimension
-        self.dimension       = dimension
-        self.filename        = self._parseFilename(filename)
-        # 2 -> triangle, 3 -> quadrangle, 4 -> tetrahedron
-        self.acceptedShapes  = (2, 3, 4)
+        self.coordDimensions  = coordDimensions or dimension
+        self.dimension        = dimension
+        self.filename         = self._parseFilename(filename)
+        self.numFacesForShape = {2: 3, # triangle:   3 sides
+                                 3: 4, # quadrangle: 4 sides
+                                 4: 4} # tet:        4 sides
 
         f = open(self.filename, "r") # open the msh file
 
         # five lines of muck here allow the other methods to be
-        # free of side-effects
+        # free of side-effects.
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
         self.nodesFilename = self._isolateData("Nodes", f)
         self.elemsFilename = self._isolateData("Elements", f)
         self.vertexCoords, self.vertexMap = self._vertexCoordsAndMap()
-        self.verticesOfCells = self._parseElements(self.vertexMap)
-        self.faces, self.cells = self._deriveFacesAndCells(
-                                   self.verticesOfCells
-                                 )
+        self.facesToV, self.cellsToF  = self._parseElements(self.vertexMap)
 
     def _parseFilename(self, fname):
         """
@@ -67,7 +65,6 @@ class MshFile:
             os.close(f)
 
             return mshFile
-                      
 
     def _getMetaData(self, f):
         """
@@ -75,16 +72,14 @@ class MshFile:
         order.
         """
         while "$MeshFormat" not in f.readline(): continue
-        return [int(x) for x in f.readline().split()]
+        metaData = f.readline().split()
+        f.seek(0)
+        return [float(x) for x in metaData]
 
     def _isolateData(self, title, f):
         """
         Gets all data between $[title] and $End[title], writes
         it out to its own file.
-
-        Very, very duct-tapey since it doesn't attempt to detect
-        the beginning of a section; it will assume `title` is 
-        the first section in `lines`.
         """
         newFilename = "%s.%s" % (self.filename, title)
         newF = open(newFilename, "w")
@@ -124,19 +119,30 @@ class MshFile:
 
     def _parseElements(self, vertexMap):
         """
-        Extracts and returns which nodes makeup which cells in
-        the following format (example of triangular cells):
-
-            cell0             celln
-              -------      ------
-                    |      |
-        vertexIdx [ 0 ... 101 ]
-        vertexIdx | 1 ... 102 |
-        vertexIdx [ 2 ... 0   ]
-
-        .. note:: A ``vertexIdx'' is an index for `vertexCoords`.
+        Parses $Elements portion to build `facesToVertices` and `cellsToFaces`
+        arrays.
         """
-        cellsToVertIDs = [] # will generate matrix described above
+        def _extractFaces(faceLen, facesPerCell, cell):
+            """
+            Given `cell`, a cell in terms of vertices, returns an array of
+            `facesPerCell` faces of length `faceLen` in terms of vertices.
+            """
+            faces = []
+            for i in range(facesPerCell):
+                aFace = []
+                for j in range(faceLen):
+                    aVertex = (i + j) % len(cell) # we may wrap
+                    aFace.append(int(cell[aVertex]))
+                faces.append(aFace)
+            return faces
+
+        def makeExtractFacesFnc(faceLen, facesPerCell):
+            """ Wrapper for `_extractFaces`. """
+            return lambda c: _extractFaces(faceLen, facesPerCell, c)
+
+        def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
+
+        cellsToVertIDs = []
         elsFile = open(self.elemsFilename, "r")
         els     = elsFile.readlines()
 
@@ -145,76 +151,48 @@ class MshFile:
             elemType     = currLineInts[1]
             numTags      = currLineInts[2]
 
-            if elemType in self.acceptedShapes:
-                cellsToVertIDs.append(
-                    currLineInts[(3+numTags):] # 3 col. precede the tags
-                )
+            if elemType in self.numFacesForShape.keys():
+                # 3 columns precede the tags
+                cellsToVertIDs.append(currLineInts[(3+numTags):])
             else:
                 continue # shape not recognized
 
         elsFile.close()
 
-        # transpose and then map vertex IDs to `vertexCoords` indices
-        return vertexMap[np.array(cellsToVertIDs).transpose()]
+        # translate gmsh vertex IDs to vertexCoords indices
+        cellsToVertices = vertexMap[np.array(cellsToVertIDs, dtype=int)]
 
-    def _deriveFacesAndCells(self, verticesOfCells):
-        """
-        Returns two numpy arrays:
-            `noDups`: faces in terms of vertices,
-            `cellsToFaces`: cells in terms of faces.
+        faceLength      = self.dimension # number of vertices in a face
+        numCells        = len(cellsToVertices)
+        facesPerCell    = self.numFacesForShape[elemType]
+        facesFromCell   = makeExtractFacesFnc(faceLength, facesPerCell)
+        currNumFaces    = 0
 
-        Unfortunately, it is most convenient to do this all 
-        within one function.
-        """
-        numCells             = verticesOfCells.shape[-1]
-        numVerticesInElement = len(verticesOfCells)
-        cellFaceVertexIDs    = np.ones((self.dimension,
-                                        numVerticesInElement,
-                                        numCells)) * -1
+        cellsToFaces    = np.empty((numCells, facesPerCell), dtype=int)
+        facesDict       = {}
+        uniqueFaces     = []
 
-        # build permutation matrix of valid faces
-        for i in range(numVerticesInElement):
-            cellFaceVertexIDs[:,i,:] = np.delete(verticesOfCells, i, 0)
+        # we now build, explicitly, `cellsToFaces` and `uniqueFaces`,
+        # the latter will result in `facesToVertices`.
+        for cellIdx in range(numCells):
+            cell  = cellsToVertices[cellIdx]
+            faces = facesFromCell(cell)
 
-        # reshape, sort so we can kill duplicates
-        # NB: `sortedFaces` is the in the same ``order'' as
-        # `cellFaceVertexIDs`, some of the pairs are just flipped
-        cellFaceVertexIDs = cellFaceVertexIDs.reshape((self.dimension, -1))
-        sortedFaces       = np.sort(cellFaceVertexIDs, axis=0)
+            for faceIdx in range(facesPerCell):
+                currFace = faces[faceIdx]
+                keyStr   = ' '.join([str(x) for x in sorted(currFace)])
 
-        # filter duplicates with a hashmap while building `facesIdxMap`,
-        # a mapping from indices into `cellFaceVertexIDs` to indices
-        # into a new, all-unique array.
-        # ----------------------------------------------------------
-        l = sortedFaces.swapaxes(0,1).tolist() # arrange faces in pairs
-        faceStrToIndex = {}
-        facesIdxMap    = np.empty(len(l)).astype(int)
-        numUniqueFaces = 0
+                if facesDict.has_key(keyStr):
+                    cellsToFaces[cellIdx][faceIdx] = facesDict[keyStr]
+                else: # new face
+                    facesDict[keyStr] = currNumFaces
+                    cellsToFaces[cellIdx][faceIdx] = currNumFaces
+                    uniqueFaces.append(currFace)
+                    currNumFaces += 1
 
-        for i in range(len(l)):
-            keyStr = ','.join([str(int(x)) for x in l[i]])
-            if faceStrToIndex.has_key(keyStr): # duplicate
-                facesIdxMap[i] = faceStrToIndex[keyStr] # refer to idx
-            else: # not a duplicate
-                faceStrToIndex[keyStr] = numUniqueFaces # establish idx
-                facesIdxMap[i] = numUniqueFaces
-                numUniqueFaces += 1
-        # ----------------------------------------------------------
+        facesToVertices = np.array(uniqueFaces, dtype=int)
 
-        # build all-unique numpy array
-        noDups = np.empty((numUniqueFaces, self.dimension)).astype(int)
-        for k in faceStrToIndex.keys():
-            aFace = [int(x) for x in k.split(',')]
-            noDups[faceStrToIndex[k]] = np.array(aFace)
-
-        # finally, we build the cells from noDups-face indices
-        numFacesPerCell = len(facesIdxMap[::numCells])
-        cellsToFaces = np.empty((numCells, numFacesPerCell)).astype(int)
-        for i in range(numCells):
-            cellsToFaces[i] = facesIdxMap[i::numCells]
-
-        # orient faces, cells for `Mesh` constructor
-        return noDups.swapaxes(0,1), cellsToFaces.swapaxes(0,1)[::-1]
+        return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces)
 
 class GmshImporter2D(mesh2D.Mesh2D):
     """
@@ -222,11 +200,8 @@ class GmshImporter2D(mesh2D.Mesh2D):
     def __init__(self, mshData, coordDimensions=2):
         mshFile = MshFile(mshData, 2)
         verts   = mshFile.vertexCoords
-        faces   = mshFile.faces
-        cells   = mshFile.cells
-        print verts
-        print faces
-        print cells
+        faces   = mshFile.facesToV
+        cells   = mshFile.cellsToF
         mesh2D.Mesh2D.__init__(self, vertexCoords=verts,
                                      faceVertexIDs=faces,
                                      cellFaceIDs=cells)
