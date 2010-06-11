@@ -1,5 +1,5 @@
 r"""
-Does not support gmsh versions <= 2.
+Does not support gmsh versions < 2.
 """
 from fipy.tools import numerix as np
 import mesh

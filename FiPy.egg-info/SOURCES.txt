@@ -321,6 +321,7 @@ fipy/meshes/numMesh/cylindricalUniformGrid2D.py
 fipy/meshes/numMesh/face.py
 fipy/meshes/numMesh/gmshExport.py
 fipy/meshes/numMesh/gmshImport.py
+fipy/meshes/numMesh/gmshImportAlex.py
 fipy/meshes/numMesh/grid1D.py
 fipy/meshes/numMesh/grid2D.py
 fipy/meshes/numMesh/grid3D.py
