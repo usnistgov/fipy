@@ -11,7 +11,7 @@ class MshFile:
     Class responsible for parsing a Gmsh file and then readying
     its contents for use by a `Mesh` constructor.
     """
-    def __init__(self, filename, dimension, coordDimensions=None):
+    def __init__(self, filename, dimensions, coordDimensions=None):
         """
         Isolates relevant data into two files, stores in 
         `self.nodesFilename` for $Nodes,
@@ -19,14 +19,14 @@ class MshFile:
 
         :Parameters:
           - `filename`: a string indicating gmsh output file
-          - `dimension`: an integer indicating dimension of mesh
+          - `dimensions`: an integer indicating dimension of mesh
           - `coordDimension`: an integer indicating dimension of shapes
 
         TODO: Use tempfiles.
         """
         
-        self.coordDimensions  = coordDimensions or dimension
-        self.dimension        = dimension
+        self.coordDimensions  = coordDimensions or dimensions
+        self.dimensions       = dimensions
         self.filename         = self._parseFilename(filename)
         self.numFacesForShape = {2: 3, # triangle:   3 sides
                                  3: 4, # quadrangle: 4 sides
@@ -130,7 +130,7 @@ class MshFile:
         vertexToIdx[vertexIDs] = np.arange(len(vertexIDs))
 
         # transpose for FiPy, truncate for dimension
-        return vertexCoords.transpose()[:self.dimension], vertexToIdx
+        return vertexCoords.transpose()[:self.coordDimensions], vertexToIdx
 
     def _parseElements(self, vertexMap):
         """
@@ -179,7 +179,7 @@ class MshFile:
         cellsToVertices = vertexMap[np.array(cellsToVertIDs, dtype=int)]
 
         # a few scalers 
-        faceLength      = self.dimension # number of vertices in a face
+        faceLength      = self.dimensions # number of vertices in a face
         numCells        = len(cellsToVertices)
         facesPerCell    = self.numFacesForShape[elemType]
         currNumFaces    = 0
@@ -217,7 +217,7 @@ class GmshImporter2D(mesh2D.Mesh2D):
     """
     """
     def __init__(self, arg, coordDimensions=2):
-        mshFile = MshFile(arg, dimension=2)
+        mshFile = MshFile(arg, dimensions=2, coordDimensions=coordDimensions)
         verts   = mshFile.vertexCoords
         faces   = mshFile.facesToV
         cells   = mshFile.cellsToF
@@ -225,8 +225,7 @@ class GmshImporter2D(mesh2D.Mesh2D):
                                      faceVertexIDs=faces,
                                      cellFaceIDs=cells)
     def getCellVolumes(self):
-        return abs(mesh.Mesh.getCellVolumes(self))
-
+        return abs(mesh2D.Mesh2D.getCellVolumes(self))
 
 class GmshImporter2DIn3DSpace(GmshImporter2D):
     def __init__(self, arg):
@@ -234,7 +233,7 @@ class GmshImporter2DIn3DSpace(GmshImporter2D):
 
 class GmshImporter3D(mesh.Mesh):
     def __init__(self, arg):
-        mshFile = MshFile(arg, dimension=3)
+        mshFile = MshFile(arg, dimensions=3)
         verts   = mshFile.vertexCoords
         faces   = mshFile.facesToV
         cells   = mshFile.cellsToF
