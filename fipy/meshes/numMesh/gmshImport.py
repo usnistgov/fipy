@@ -5,6 +5,7 @@ from fipy.tools import numerix as np
 import mesh
 import mesh2D
 import os
+import tempfile
 
 class MshFile:
     """
@@ -21,8 +22,6 @@ class MshFile:
           - `filename`: a string indicating gmsh output file
           - `dimensions`: an integer indicating dimension of mesh
           - `coordDimension`: an integer indicating dimension of shapes
-
-        TODO: Use tempfiles.
         """
         
         self.coordDimensions  = coordDimensions or dimensions
@@ -39,8 +38,12 @@ class MshFile:
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
         self.nodesFilename = self._isolateData("Nodes", f)
         self.elemsFilename = self._isolateData("Elements", f)
+
         self.vertexCoords, self.vertexMap = self._vertexCoordsAndMap()
         self.facesToV, self.cellsToF  = self._parseElements(self.vertexMap)
+
+        os.system("rm %s" % self.nodesFilename)
+        os.system("rm %s" % self.elemsFilename)
 
     def _parseFilename(self, fname):
         """
@@ -52,7 +55,6 @@ class MshFile:
         if '.msh' in lowerFname:
             return fname
         else:
-            import tempfile
             if '.geo' in lowerFname or '.gmsh' in lowerFname:
                 geoFile = fname
             else: # fname must be a full script, not a file
@@ -83,7 +85,8 @@ class MshFile:
         Gets all data between $[title] and $End[title], writes
         it out to its own file.
         """
-        newFilename = "%s.%s" % (self.filename, title)
+        (newF, newFilename) = tempfile.mkstemp(".msh.%s", title)
+        os.close(newF)
         newF = open(newFilename, "w")
 
         # seek to section header
@@ -178,7 +181,8 @@ class MshFile:
         # translate gmsh vertex IDs to vertexCoords indices
         cellsToVertices = vertexMap[np.array(cellsToVertIDs, dtype=int)]
 
-        # a few scalers 
+        # a few scalers
+        # ASSUMPTION: all elements are of the same shape
         faceLength      = self.dimensions # number of vertices in a face
         numCells        = len(cellsToVertices)
         facesPerCell    = self.numFacesForShape[elemType]
@@ -217,13 +221,14 @@ class GmshImporter2D(mesh2D.Mesh2D):
     """
     """
     def __init__(self, arg, coordDimensions=2):
-        mshFile = MshFile(arg, dimensions=2, coordDimensions=coordDimensions)
-        verts   = mshFile.vertexCoords
-        faces   = mshFile.facesToV
-        cells   = mshFile.cellsToF
-        mesh2D.Mesh2D.__init__(self, vertexCoords=verts,
-                                     faceVertexIDs=faces,
-                                     cellFaceIDs=cells)
+        self.mshFile = MshFile(arg, dimensions=2, 
+                               coordDimensions=coordDimensions)
+        self.verts   = self.mshFile.vertexCoords
+        self.faces   = self.mshFile.facesToV
+        self.cells   = self.mshFile.cellsToF
+        mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
+                                     faceVertexIDs=self.faces,
+                                     cellFaceIDs=self.cells)
     def getCellVolumes(self):
         return abs(mesh2D.Mesh2D.getCellVolumes(self))
 
@@ -233,11 +238,11 @@ class GmshImporter2DIn3DSpace(GmshImporter2D):
 
 class GmshImporter3D(mesh.Mesh):
     def __init__(self, arg):
-        mshFile = MshFile(arg, dimensions=3)
-        verts   = mshFile.vertexCoords
-        faces   = mshFile.facesToV
-        cells   = mshFile.cellsToF
-        mesh.Mesh.__init__(self, vertexCoords=verts,
-                                 faceVertexIDs=faces,
-                                 cellFaceIDs=cells)
+        self.mshFile = MshFile(arg, dimensions=3)
+        self.verts   = self.mshFile.vertexCoords
+        self.faces   = self.mshFile.facesToV
+        self.cells   = self.mshFile.cellsToF
+        mesh.Mesh.__init__(self, vertexCoords=self.verts,
+                                 faceVertexIDs=self.faces,
+                                 cellFaceIDs=self.cells)
     
