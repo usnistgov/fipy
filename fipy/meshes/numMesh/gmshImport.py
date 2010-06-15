@@ -15,8 +15,8 @@ class MshFile:
     def __init__(self, filename, dimensions, coordDimensions=None):
         """
         Isolates relevant data into two files, stores in 
-        `self.nodesFilename` for $Nodes,
-        `self.elemsFilename` for $Elements.
+        `self.nodesFile` for $Nodes,
+        `self.elemsFile` for $Elements.
 
         :Parameters:
           - `filename`: a string indicating gmsh output file
@@ -36,14 +36,11 @@ class MshFile:
         # five lines of muck here allow most of the other methods to be
         # free of side-effects.
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
-        self.nodesFilename = self._isolateData("Nodes", f)
-        self.elemsFilename = self._isolateData("Elements", f)
+        self.nodesFile = self._isolateData("Nodes", f)
+        self.elemsFile = self._isolateData("Elements", f)
 
         self.vertexCoords, self.vertexMap = self._vertexCoordsAndMap()
         self.facesToV, self.cellsToF  = self._parseElements(self.vertexMap)
-
-        os.system("rm %s" % self.nodesFilename)
-        os.system("rm %s" % self.elemsFilename)
 
     def _parseFilename(self, fname):
         """
@@ -85,9 +82,7 @@ class MshFile:
         Gets all data between $[title] and $End[title], writes
         it out to its own file.
         """
-        (newF, newFilename) = tempfile.mkstemp(".msh.%s", title)
-        os.close(newF)
-        newF = open(newFilename, "w")
+        newF = tempfile.TemporaryFile()
 
         # seek to section header
         self._seekForHeader(title, f)
@@ -98,8 +93,8 @@ class MshFile:
             if ("$End%s" % title) not in line: newF.write(line) 
             else: break
 
-        f.seek(0); newF.close() # restore file position, close up
-        return newFilename
+        f.seek(0); newF.seek(0) # restore file positions
+        return newF
 
     def _seekForHeader(self, title, f):
         """
@@ -124,7 +119,9 @@ class MshFile:
         largest vertexID obtained from the gmesh file. This mapping
         array is subsequently used to transform element information.
         """
-        gen = np.genfromtxt(fname=self.nodesFilename, skiprows=1)
+        gen = np.genfromtxt(fname=self.nodesFile, skiprows=1)
+        self.nodesFile.close()
+
         vertexCoords = gen[:, 1:] # strip out column 0
         vertexIDs    = gen[:, :1].flatten().astype(int)
         
@@ -161,8 +158,7 @@ class MshFile:
         def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
 
         cellsToVertIDs = []
-        elsFile = open(self.elemsFilename, "r")
-        els     = elsFile.readlines()
+        els            = self.elemsFile.readlines()
 
         # read in Elements data from gmsh
         for element in els[1:]: # skip number-of-elems line
@@ -176,7 +172,7 @@ class MshFile:
             else:
                 continue # shape not recognized
 
-        elsFile.close()
+        self.elemsFile.close() # tempfile trashed
 
         # translate gmsh vertex IDs to vertexCoords indices
         cellsToVertices = vertexMap[np.array(cellsToVertIDs, dtype=int)]
