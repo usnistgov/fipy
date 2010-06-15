@@ -73,9 +73,8 @@ demonstrates how to create the required mesh.
     >>> var = CellVariable(mesh=mesh, value=x * y * z, name="x*y*z")
 
     >>> if __name__ == '__main__':
-    ...     #viewer = Viewer(vars=var)
-    ...     #viewer.plot()
-    ...     pass
+    ...     viewer = Viewer(vars=var)
+    ...     viewer.plot()
 
    >>> max(numerix.sqrt(x**2 + y**2 + z**2)) < 5.3
    True
