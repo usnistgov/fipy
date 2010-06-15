@@ -63,10 +63,15 @@ class MshFile:
         
         self.coordDimensions  = coordDimensions or dimensions
         self.dimensions       = dimensions
-        self.filename         = self._parseFilename(filename)
-        self.numFacesForShape = {2: 3, # triangle:   3 sides
-                                 3: 4, # quadrangle: 4 sides
-                                 4: 4} # tet:        4 sides
+        gmshFlags             = "-%d -v 0 -format msh" % dimensions
+        self.filename         = self._parseFilename(filename, gmshFlags)
+
+        # we need a conditional here so we don't pick up 2D shapes in 3D
+        if dimensions == 2: 
+            self.numFacesForShape = {2: 3, # triangle:   3 sides
+                                     3: 4} # quadrangle: 4 sides
+        else: # 3D
+            self.numFacesForShape = {4: 4} # tet:        4 sides
 
         f = open(self.filename, "r") # open the msh file
 
@@ -79,7 +84,7 @@ class MshFile:
         self.vertexCoords, self.vertexMap = self._vertexCoordsAndMap()
         self.facesToV, self.cellsToF  = self._parseElements(self.vertexMap)
 
-    def _parseFilename(self, fname, gmshFlags="-2 -v 0 -format msh"):
+    def _parseFilename(self, fname, gmshFlags):
         """
         If we're being passed a .msh file, leave it be. Otherwise,
         we've gotta compile a .msh file from either (i) a .geo file, 
