@@ -1,7 +1,44 @@
+#!/usr/bin/env python
+ 
+## -*-Pyth-*-
+# ###################################################################
+#  FiPy - a finite volume PDE solver in Python
+#
+#  FILE: "gmshImport.py"
+#
+#  Author: James O'Beirne <james.obeirne@nist.gov>
+#  Author: Jonathan Guyer <guyer@nist.gov>
+#  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+#  Author: James Warren   <jwarren@nist.gov>
+#    mail: NIST
+#     www: http://www.ctcms.nist.gov/fipy/
+# 
+# ========================================================================
+# This document was prepared at the National Institute of Standards
+# and Technology by employees of the Federal Government in the course
+# of their official duties.  Pursuant to title 17 Section 105 of the
+# United States Code this document is not subject to copyright
+# protection and is in the public domain.  gmshExport.py
+# is an experimental work.  NIST assumes no responsibility whatsoever
+# for its use by other parties, and makes no guarantees, expressed
+# or implied, about its quality, reliability, or any other characteristic.
+# We would appreciate acknowledgement if the document is used.
+#
+# This document can be redistributed and/or modified freely
+# provided that any derivative works bear some notice that they are
+# derived from it, and any modified versions bear some notice that
+# they have been modified.
+# ========================================================================
+#  See the file "license.terms" for information on usage and
+#  redistribution
+#  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+# 
+# ###################################################################
+##
+
 r"""
-Does not support gmsh versions < 2.
 """
-from fipy.tools import numerix as np
+from fipy.tools import numerix as nx
 import mesh
 import mesh2D
 import os
@@ -11,6 +48,8 @@ class MshFile:
     """
     Class responsible for parsing a Gmsh file and then readying
     its contents for use by a `Mesh` constructor.
+
+    Does not support gmsh versions < 2.
     """
     def __init__(self, filename, dimensions, coordDimensions=None):
         """
@@ -42,7 +81,7 @@ class MshFile:
         self.vertexCoords, self.vertexMap = self._vertexCoordsAndMap()
         self.facesToV, self.cellsToF  = self._parseElements(self.vertexMap)
 
-    def _parseFilename(self, fname):
+    def _parseFilename(self, fname, gmshFlags="-2 -v 0 -format msh"):
         """
         If we're being passed a .msh file, leave it be. Otherwise,
         we've gotta compile a .msh file from either (i) a .geo file, 
@@ -61,8 +100,8 @@ class MshFile:
                 file.close(); os.close(f)
 
             (f, mshFile) = tempfile.mkstemp('.msh')
-            os.system('gmsh %s -2 -v 0 -format msh -o %s' \
-                      % (geoFile, mshFile))
+            os.system('gmsh %s %s -o %s' \
+                      % (geoFile, gmshFlags, mshFile))
             os.close(f)
 
             return mshFile
@@ -112,22 +151,22 @@ class MshFile:
     def _vertexCoordsAndMap(self):
         """
         Extract vertex coordinates and mapping information from
-        np.genfromtxt-friendly file, generated in `_isolateData`.
+        nx.genfromtxt-friendly file, generated in `_isolateData`.
 
         Returns both the vertex coordinates and the mapping information.
         Mapping information is stored in a 1xn array where n is the
         largest vertexID obtained from the gmesh file. This mapping
         array is subsequently used to transform element information.
         """
-        gen = np.genfromtxt(fname=self.nodesFile, skiprows=1)
+        gen = nx.genfromtxt(fname=self.nodesFile, skiprows=1)
         self.nodesFile.close()
 
         vertexCoords = gen[:, 1:] # strip out column 0
         vertexIDs    = gen[:, :1].flatten().astype(int)
         
         # `vertexToIdx`: gmsh-vertex ID -> `vertexCoords` index
-        vertexToIdx = np.empty(vertexIDs.max() + 1)
-        vertexToIdx[vertexIDs] = np.arange(len(vertexIDs))
+        vertexToIdx = nx.empty(vertexIDs.max() + 1)
+        vertexToIdx[vertexIDs] = nx.arange(len(vertexIDs))
 
         # transpose for FiPy, truncate for dimension
         return vertexCoords.transpose()[:self.coordDimensions], vertexToIdx
@@ -175,7 +214,7 @@ class MshFile:
         self.elemsFile.close() # tempfile trashed
 
         # translate gmsh vertex IDs to vertexCoords indices
-        cellsToVertices = vertexMap[np.array(cellsToVertIDs, dtype=int)]
+        cellsToVertices = vertexMap[nx.array(cellsToVertIDs, dtype=int)]
 
         # a few scalers
         # ASSUMPTION: all elements are of the same shape
@@ -185,7 +224,7 @@ class MshFile:
         currNumFaces    = 0
 
         # a few data structures and a function
-        cellsToFaces    = np.empty((numCells, facesPerCell), dtype=int)
+        cellsToFaces    = nx.empty((numCells, facesPerCell), dtype=int)
         facesDict       = {}
         uniqueFaces     = []
         facesFromCell   = makeExtractFacesFnc(faceLength, facesPerCell)
@@ -209,9 +248,29 @@ class MshFile:
                     uniqueFaces.append(currFace)
                     currNumFaces += 1
 
-        facesToVertices = np.array(uniqueFaces, dtype=int)
+        facesToVertices = nx.array(uniqueFaces, dtype=int)
 
         return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces)
+
+class PartitionedMshFile(MshFile):
+    """
+    Reads (or builds) a MSH file,  builds `numParts` pairs of Node and Element 
+    files, inserts ghost nodes, then feeds 
+    """
+    def __init__(self, filename, 
+                       dimensions, 
+                       coordDimensions=None,
+                       numParts=10):
+        self.coordDimensions = coordDimensions or dimensions
+        self.dimensions      = dimensions
+        gmshFlags            = "-2 -v 0 -part %d -format msh" % numParts
+        self.filename        = self._parseFilename(filename, gmshFlags=gmshFlags)
+
+        self.version, self.fileType, self.dataSize = self._getMetaData(f)
+        self.nodesFile = self._isolateData("Nodes", f)
+        self.elemsFile = self._isolateData("Elements", f)
+
+
 
 class GmshImporter2D(mesh2D.Mesh2D):
     """
