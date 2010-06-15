@@ -103,6 +103,4 @@ if __name__ == '__main__':
 
     NOViewer.plot()
     raw_input("finished")
-    print var.allclose(analyticalArray, atol = 0.025)
-    print max(mesh._getNonOrthogonality()) < 0.51
 
