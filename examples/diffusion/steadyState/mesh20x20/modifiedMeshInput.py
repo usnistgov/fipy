@@ -83,8 +83,8 @@ boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001
 
 if __name__ == '__main__':
     DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    # viewer = Viewer(vars = var)
-    # viewer.plot()
+    viewer = Viewer(vars = var)
+    viewer.plot()
     varArray = array(var)
     x = mesh.getCellCenters()[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
@@ -92,17 +92,17 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = "absolute error",
                    mesh = mesh,
                    value = abs(errorArray))
-    # errorViewer = Viewer(vars = errorVar)
-    # errorViewer.plot()
+    errorViewer = Viewer(vars = errorVar)
+    errorViewer.plot()
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
                                value = mesh._getNonOrthogonality())
-    # NOViewer = Viewer(vars = NonOrthoVar)
+    NOViewer = Viewer(vars = NonOrthoVar)
 
 
-    # NOViewer.plot()
-    # raw_input("finished")
+    NOViewer.plot()
+    raw_input("finished")
     print var.allclose(analyticalArray, atol = 0.025)
     print max(mesh._getNonOrthogonality()) < 0.51
 
