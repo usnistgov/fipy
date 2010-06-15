@@ -238,12 +238,15 @@ class MayaviDaemon(Mayavi):
         """Override this to do something else if needed.
         """
         if source is not None:
+            source.scene.disable_render = True
+            source.scene.anti_aliasing_frames = 0
             # Force the reader to re-read the file.
             source.reader.modified()
             source.update()
             # Propagate the changes in the pipeline.
             source.data_changed = True
-        
+            source.scene.disable_render = False
+
     def setup_source(self, fname):
         """Given a VTK file name `fname`, this creates a mayavi2 reader
         for it and adds it to the pipeline.  It returns the reader
