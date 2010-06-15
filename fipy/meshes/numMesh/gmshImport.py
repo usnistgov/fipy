@@ -36,8 +36,6 @@
 # ###################################################################
 ##
 
-r"""
-"""
 from fipy.tools import numerix as nx
 import mesh
 import mesh2D
@@ -251,26 +249,6 @@ class MshFile:
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
         return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces)
-
-class PartitionedMshFile(MshFile):
-    """
-    Reads (or builds) a MSH file,  builds `numParts` pairs of Node and Element 
-    files, inserts ghost nodes, then feeds 
-    """
-    def __init__(self, filename, 
-                       dimensions, 
-                       coordDimensions=None,
-                       numParts=10):
-        self.coordDimensions = coordDimensions or dimensions
-        self.dimensions      = dimensions
-        gmshFlags            = "-2 -v 0 -part %d -format msh" % numParts
-        self.filename        = self._parseFilename(filename, gmshFlags=gmshFlags)
-
-        self.version, self.fileType, self.dataSize = self._getMetaData(f)
-        self.nodesFile = self._isolateData("Nodes", f)
-        self.elemsFile = self._isolateData("Elements", f)
-
-
 
 class GmshImporter2D(mesh2D.Mesh2D):
     """
