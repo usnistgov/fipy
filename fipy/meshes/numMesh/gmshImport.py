@@ -170,7 +170,7 @@ class MshFile:
         vertexIDs    = gen[:, :1].flatten().astype(int)
         
         # `vertexToIdx`: gmsh-vertex ID -> `vertexCoords` index
-        vertexToIdx = nx.empty(vertexIDs.max() + 1)
+        vertexToIdx = nx.empty(vertexIDs.max() + 1, dtype=int)
         vertexToIdx[vertexIDs] = nx.arange(len(vertexIDs))
 
         # transpose for FiPy, truncate for dimension
@@ -201,8 +201,11 @@ class MshFile:
 
         def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
 
+        # shapeTypes:  cellsToVertIDs index -> shape type id
         cellsToVertIDs = []
         els            = self.elemsFile.readlines()
+        shapeTypes     = nx.empty(len(els), dtype=int)
+        numCells       = 0
 
         # read in Elements data from gmsh
         for element in els[1:]: # skip number-of-elems line
@@ -211,36 +214,48 @@ class MshFile:
             numTags      = currLineInts[2]
 
             if elemType in self.numFacesForShape.keys():
-                # 3 columns precede the tags
-                cellsToVertIDs.append(currLineInts[(3+numTags):])
+                # translate gmsh vertex IDs to vertexCoords indices
+                # NB: 3 columns precede the tags
+                vertIndices = vertexMap[nx.array(currLineInts[(3+numTags):])]
+                cellsToVertIDs.append(vertIndices)
+
+                shapeTypes[numCells] = elemType # record shape type
+                numCells += 1
             else:
                 continue # shape not recognized
 
         self.elemsFile.close() # tempfile trashed
 
-        # translate gmsh vertex IDs to vertexCoords indices
-        cellsToVertices = vertexMap[nx.array(cellsToVertIDs, dtype=int)]
+        # strip out the extra padding in shapeTypes
+        shapeTypes = nx.delete(shapeTypes,  nx.s_[numCells:])
+        allShapes  = nx.unique(shapeTypes).tolist()
+        maxFaces   = max([self.numFacesForShape[x] for x in allShapes])
 
         # a few scalers
         # ASSUMPTION: all elements are of the same shape
         faceLength      = self.dimensions # number of vertices in a face
-        numCells        = len(cellsToVertices)
-        facesPerCell    = self.numFacesForShape[elemType]
         currNumFaces    = 0
 
-        # a few data structures and a function
-        cellsToFaces    = nx.empty((numCells, facesPerCell), dtype=int)
+        # a few data structures and a function dictionary
+        cellsToFaces    = nx.ones((numCells, maxFaces)) * -1
         facesDict       = {}
         uniqueFaces     = []
-        facesFromCell   = makeExtractFacesFnc(faceLength, facesPerCell)
+        facesFromCell   = {}
+
+        # fill out facesFromCell with face-building functions per shape types
+        for type in shapeTypes:
+            facesFromCell[type] = makeExtractFacesFnc(
+                                    faceLength,
+                                    self.numFacesForShape[type])
 
         # we now build, explicitly, `cellsToFaces` and `uniqueFaces`,
         # the latter will result in `facesToVertices`.
         for cellIdx in range(numCells):
-            cell  = cellsToVertices[cellIdx]
-            faces = facesFromCell(cell)
+            cell  = cellsToVertIDs[cellIdx]
+            # extract faces based on shapeType of cell
+            faces = facesFromCell[shapeTypes[cellIdx]](cell)
 
-            for faceIdx in range(facesPerCell):
+            for faceIdx in range(len(faces)):
                 currFace = faces[faceIdx]
                 keyStr   = ' '.join([str(x) for x in sorted(currFace)])
                 # NB: currFace is sorted for the key as to spot duplicates
