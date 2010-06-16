@@ -36,6 +36,8 @@
 # ###################################################################
 ##
 
+__docformat__ = 'restructuredtext'
+
 from fipy.tools import numerix as nx
 import mesh
 import mesh2D
@@ -267,12 +269,131 @@ class GmshImporter2D(mesh2D.Mesh2D):
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
+
     def getCellVolumes(self):
         return abs(mesh2D.Mesh2D.getCellVolumes(self))
+
+    def _test(self):
+        """
+        First, we'll test GmshImporter2D on a small circle with triangular
+        cells.
+
+        >>> circ = GmshImporter2D('''
+        ... cellSize = 1; 
+        ... radius   = 0.25; 
+        ... Point(1) = {0, 0, 0, cellSize}; 
+        ... Point(2) = {-radius, 0, 0, cellSize}; 
+        ... Point(3) = {0, radius, 0, cellSize}; 
+        ... Point(4) = {radius, 0, 0, cellSize}; 
+        ... Point(5) = {0, -radius, 0, cellSize}; 
+        ... Circle(6) = {2, 1, 3}; 
+        ... Circle(7) = {3, 1, 4}; 
+        ... Circle(8) = {4, 1, 5}; 
+        ... Circle(9) = {5, 1, 2}; 
+        ... Line Loop(10) = {6, 7, 8, 9}; 
+        ... Plane Surface(11) = {10}; 
+        ... ''')
+
+        >>> print circ.getVertexCoords()
+        [[ 0.         -0.25        0.          0.25        0.         -0.1767767
+           0.1767767   0.1767767  -0.1767767  -0.0654061   0.08758673 -0.0379699 ]
+         [ 0.          0.          0.25        0.         -0.25        0.1767767
+           0.1767767  -0.1767767  -0.1767767   0.0654061   0.03383883 -0.08405141]]
+
+        >>> print circ._getCellFaceIDs()
+        [[ 2  1  7 10  6 13 15 14 13 19 21 17]
+         [ 1  4  6  9 12 11 10 16 16 18 20 20]
+         [ 0  3  5  8 11  4 14  2 17  5  8 19]]
+
+        >>> print circ.getCellVolumes()[0] > 0
+        True
+
+        Now we'll test GmshImporter2D again, but on a rectangle.
+
+        >>> rect = GmshImporter2D('''
+        ... cellSize = 0.5;
+        ... radius   = 10;
+        ... Point(2) = {-radius, radius, 0, cellSize};
+        ... Point(3) = {radius, radius, 0, cellSize};
+        ... Point(4) = {radius, -radius, 0, cellSize};
+        ... Point(5) = {-radius, -radius, 0, cellSize};
+        ... Line(6) = {2, 3};
+        ... Line(7) = {3, 4};
+        ... Line(8) = {4, 5};
+        ... Line(9) = {5, 2};
+        ... Line Loop(10) = {6, 7, 8, 9};
+        ... Plane Surface(11) = {10};
+        ... ''')
+
+        >>> print rect.getCellVolumes()[0] > 0
+        True
+
+        >>> print rect._getFaceVertexIDs()
+        [[ 274  270  187 ..., 1008 1008   27]
+         [ 187  274  270 ...,   26   27   26]]
+
+        >>> print rect.getFaceCenters()
+        [[ -8.05265841  -7.98540272  -7.79914904 ...,   1.84932005   2.10573031
+            2.05128205]
+         [ -8.93930664  -8.62975505  -8.83201622 ...,   9.67912179   9.67912179
+           10.        ]]
+        """
 
 class GmshImporter2DIn3DSpace(GmshImporter2D):
     def __init__(self, arg):
         GmshImporter2D.__init__(self, arg, coordDimensions=3)
+    def _test(self):
+        """
+        Stolen from the cahnHilliard sphere example.
+
+        >>> sphere = GmshImporter2DIn3DSpace('''
+        ... radius = 5.0;
+        ... cellSize = 0.3;
+        ...
+        ... // create inner 1/8 shell
+        ... Point(1) = {0, 0, 0, cellSize};
+        ... Point(2) = {-radius, 0, 0, cellSize};
+        ... Point(3) = {0, radius, 0, cellSize};
+        ... Point(4) = {0, 0, radius, cellSize};
+        ... Circle(1) = {2, 1, 3};
+        ... Circle(2) = {4, 1, 2};
+        ... Circle(3) = {4, 1, 3};
+        ... Line Loop(1) = {1, -3, 2} ;
+        ... Ruled Surface(1) = {1};
+        ...
+        ... // create remaining 7/8 inner shells
+        ... t1[] = Rotate {{0,0,1},{0,0,0},Pi/2}
+        ... {Duplicata{Surface{1};}};
+        ... t2[] = Rotate {{0,0,1},{0,0,0},Pi}
+        ... {Duplicata{Surface{1};}};
+        ... t3[] = Rotate {{0,0,1},{0,0,0},Pi*3/2}
+        ... {Duplicata{Surface{1};}};
+        ... t4[] = Rotate {{0,1,0},{0,0,0},-Pi/2}
+        ... {Duplicata{Surface{1};}};
+        ... t5[] = Rotate {{0,0,1},{0,0,0},Pi/2}
+        ... {Duplicata{Surface{t4[0]};}};
+        ... t6[] = Rotate {{0,0,1},{0,0,0},Pi}
+        ... {Duplicata{Surface{t4[0]};}};
+        ... t7[] = Rotate {{0,0,1},{0,0,0},Pi*3/2}
+        ... {Duplicata{Surface{t4[0]};}};
+        ...
+        ... // create entire inner and outer shell
+        ... Surface
+        ... Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
+        ... ''').extrude(extrudeFunc=lambda r: 1.1 * r)
+
+        >>> print sphere.getCellVolumes()[0] > 0
+        True
+
+        >>> print sphere.getCellCenters()
+        [[-0.45068562 -0.45090581 -2.55590575 ...,  0.3046376   0.06084868
+           0.12198487]
+         [ 0.0875831   5.22669204  4.5798818  ...,  4.96201041  4.95750553
+           4.90984865]
+         [ 5.22670396  0.0874828   0.11050056 ..., -1.67683932 -1.71977404
+          -1.85052202]]
+
+        """
 
 class GmshImporter3D(mesh.Mesh):
     def __init__(self, arg):
@@ -283,4 +404,76 @@ class GmshImporter3D(mesh.Mesh):
         mesh.Mesh.__init__(self, vertexCoords=self.verts,
                                  faceVertexIDs=self.faces,
                                  cellFaceIDs=self.cells)
+
+    def _test(self):
+        """
+        >>> prism = GmshImporter3D('''
+        ... cellSize = 0.5;
+        ... Len = 2;
+        ... Hei = 1;
+        ... Wid = 1;
+        ...
+        ... Point(1) = {0, 0, 0, cellSize};
+        ... Point(2) = {0, 0, Wid, cellSize};
+        ... Point(3) = {0, Hei, Wid, cellSize};
+        ... Point(4) = {0, Hei, 0, cellSize};
+        ...
+        ... Point(5) = {Len, 0, 0, cellSize};
+        ... Point(6) = {Len, 0, Wid, cellSize};
+        ... Point(7) = {Len, Hei, Wid, cellSize};
+        ... Point(8) = {Len, Hei, 0, cellSize};
+        ...
+        ... Line(9)  = {1, 2};
+        ... Line(10) = {2, 3};
+        ... Line(11) = {3, 4};
+        ... Line(12) = {4, 1};
+        ...
+        ... Line(13) = {5, 6};
+        ... Line(14) = {6, 7};
+        ... Line(15) = {7, 8};
+        ... Line(16) = {8, 5};
+        ...
+        ... Line(17) = {1, 5};
+        ... Line(18) = {2, 6};
+        ... Line(19) = {3, 7};
+        ... Line(20) = {4, 8};
+        ...
+        ... Line Loop(21) = {9, 10, 11, 12};
+        ... Line Loop(22) = {13, 14, 15, 16};
+        ... Line Loop(23) = {17, -16, -20, 12};
+        ... Line Loop(24) = {13, -18, -9, 17};
+        ... Line Loop(25) = {18, 14, -19, -10};
+        ... Line Loop(26) = {-19, 11, 20, -15};
+        ...
+        ... Plane Surface(27) = {21};
+        ... Plane Surface(28) = {22};
+        ... Plane Surface(29) = {23};
+        ... Plane Surface(30) = {24};
+        ... Plane Surface(31) = {25};
+        ... Plane Surface(32) = {26};
+        ...
+        ... Surface Loop(33) = {27, 28, 29, 30, 31, 32};
+        ...
+        ... Volume(34) = {33};
+        ... ''')
+
+        >>> print prism.getCellVolumes()[0] > 0
+        True
+
+        >>> print prism.getCellVolumes()
+        [ 0.08333333  0.05555556  0.05555556  0.05555556  0.05555556  0.05555556
+          0.02777778  0.02777778  0.02777778  0.05555556  0.05555556  0.02777778
+          0.05555556  0.05555556  0.08333333  0.05555556  0.05555556  0.02777778
+          0.02777778  0.05555556  0.05555556  0.05555556  0.05555556  0.05555556
+          0.05555556  0.05555556  0.05555556  0.08333333  0.05555556  0.02777778
+          0.02777778  0.05555556  0.05555556  0.05555556  0.02777778  0.08333333
+          0.02777778  0.02777778  0.05555556  0.02777778]
+        >>>
+        """
     
+def _test():
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
