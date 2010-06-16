@@ -195,10 +195,6 @@ class MshFile:
                 faces.append(aFace)
             return faces
 
-        def makeExtractFacesFnc(faceLen, facesPerCell):
-            """ Wrapper for `_extractFaces`. """
-            return lambda c: _extractFaces(faceLen, facesPerCell, c)
-
         def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
 
         # shapeTypes:  cellsToVertIDs index -> shape type id
@@ -240,25 +236,18 @@ class MshFile:
         cellsToFaces     = nx.ones((numCells, maxFaces)) * -1
         facesDict        = {}
         uniqueFaces      = []
-        facesFromCellFnc = {}
-
-        # fill out facesFromCellFnc with face-building functions per shape types
-        for type in shapeTypes:
-            facesFromCellFnc[type] = makeExtractFacesFnc(
-                                    faceLength,
-                                    self.numFacesForShape[type])
 
         # we now build, explicitly, `cellsToFaces` and `uniqueFaces`,
         # the latter will result in `facesToVertices`.
         for cellIdx in range(numCells):
-            cell  = cellsToVertIDs[cellIdx]
-            # extract faces based on shapeType of cell
-            faces = facesFromCellFnc[shapeTypes[cellIdx]](cell)
+            cell         = cellsToVertIDs[cellIdx]
+            facesPerCell = self.numFacesForShape[shapeTypes[cellIdx]]
+            faces        = _extractFaces(faceLength, facesPerCell, cell)
 
-            for faceIdx in range(len(faces)):
+            for faceIdx in range(facesPerCell):
+                # NB: currFace is sorted for the key to spot duplicates
                 currFace = faces[faceIdx]
                 keyStr   = ' '.join([str(x) for x in sorted(currFace)])
-                # NB: currFace is sorted for the key as to spot duplicates
 
                 if facesDict.has_key(keyStr):
                     cellsToFaces[cellIdx][faceIdx] = facesDict[keyStr]
@@ -272,9 +261,7 @@ class MshFile:
 
         return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces)
 
-class GmshImporter2D(mesh2D.Mesh2D):
-    """
-    """
+class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2):
         self.mshFile = MshFile(arg, dimensions=2, 
                                coordDimensions=coordDimensions)
@@ -376,9 +363,9 @@ class GmshImporter2D(mesh2D.Mesh2D):
         True
         """
 
-class GmshImporter2DIn3DSpace(GmshImporter2D):
+class Gmsh2DIn3DSpace(Gmsh2D):
     def __init__(self, arg):
-        GmshImporter2D.__init__(self, arg, coordDimensions=3)
+        Gmsh2D.__init__(self, arg, coordDimensions=3)
     def _test(self):
         """
         Stolen from the cahnHilliard sphere example.
@@ -432,7 +419,7 @@ class GmshImporter2DIn3DSpace(GmshImporter2D):
 
         """
 
-class GmshImporter3D(mesh.Mesh):
+class Gmsh3D(mesh.Mesh):
     def __init__(self, arg):
         self.mshFile = MshFile(arg, dimensions=3)
         self.verts   = self.mshFile.vertexCoords
@@ -507,6 +494,26 @@ class GmshImporter3D(mesh.Mesh):
           0.02777778  0.02777778  0.05555556  0.02777778]
         >>>
         """
+
+def deprecation(message):
+    import warnings
+    warnings.warn(message, DeprecationWarning)
+
+class GmshImporter2D(Gmsh2D):
+    deprecation("GmshImport2D will be replaced by Gmsh2D in future versions.")
+    def __init__(self, arg, coordDimensions=2):
+        Gmsh2D.__init__(self, arg, coordDimensions=coordDimensions)
+
+class GmshImporter2DIn3DSpace(Gmsh2DIn3DSpace):
+    deprecation("GmshImport2DIn3DSpace will be replaced by " + \
+                "Gmsh2DIn3DSpace in future versions.")
+    def __init__(self, arg):
+        Gmsh2DIn3DSpace.__init__(self, arg)
+
+class GmshImporter3D(Gmsh3D):
+    deprecation("GmshImport3D will be replaced by Gmsh3D in future versions.")
+    def __init__(self, arg):
+        Gmsh3D.__init__(self, arg)
     
 def _test():
     import doctest
