@@ -226,25 +226,25 @@ class MshFile:
 
         self.elemsFile.close() # tempfile trashed
 
-        # strip out the extra padding in shapeTypes
+        # strip out the extra padding in `shapeTypes`
         shapeTypes = nx.delete(shapeTypes,  nx.s_[numCells:])
+
         allShapes  = nx.unique(shapeTypes).tolist()
         maxFaces   = max([self.numFacesForShape[x] for x in allShapes])
 
         # a few scalers
-        # ASSUMPTION: all elements are of the same shape
-        faceLength      = self.dimensions # number of vertices in a face
+        faceLength      = self.dimensions
         currNumFaces    = 0
 
         # a few data structures and a function dictionary
-        cellsToFaces    = nx.ones((numCells, maxFaces)) * -1
-        facesDict       = {}
-        uniqueFaces     = []
-        facesFromCell   = {}
+        cellsToFaces     = nx.ones((numCells, maxFaces)) * -1
+        facesDict        = {}
+        uniqueFaces      = []
+        facesFromCellFnc = {}
 
-        # fill out facesFromCell with face-building functions per shape types
+        # fill out facesFromCellFnc with face-building functions per shape types
         for type in shapeTypes:
-            facesFromCell[type] = makeExtractFacesFnc(
+            facesFromCellFnc[type] = makeExtractFacesFnc(
                                     faceLength,
                                     self.numFacesForShape[type])
 
@@ -253,7 +253,7 @@ class MshFile:
         for cellIdx in range(numCells):
             cell  = cellsToVertIDs[cellIdx]
             # extract faces based on shapeType of cell
-            faces = facesFromCell[shapeTypes[cellIdx]](cell)
+            faces = facesFromCellFnc[shapeTypes[cellIdx]](cell)
 
             for faceIdx in range(len(faces)):
                 currFace = faces[faceIdx]
@@ -352,6 +352,28 @@ class GmshImporter2D(mesh2D.Mesh2D):
             2.05128205]
          [ -8.93930664  -8.62975505  -8.83201622 ...,   9.67912179   9.67912179
            10.        ]]
+
+        Testing multiple shape types within a mesh;
+
+        >>> circle = GmshImporter2D('''
+        ... cellSize = 0.05;
+        ... radius = 1;
+        ... Point(1) = {0, 0, 0, cellSize};
+        ... Point(2) = {-radius, 0, 0, cellSize};
+        ... Point(3) = {0, radius, 0, cellSize};
+        ... Point(4) = {radius, 0, 0, cellSize};
+        ... Point(5) = {0, -radius, 0, cellSize};
+        ... Circle(6) = {2, 1, 3};
+        ... Circle(7) = {3, 1, 4};
+        ... Circle(8) = {4, 1, 5};
+        ... Circle(9) = {5, 1, 2};
+        ... Line Loop(10) = {6, 7, 8, 9};
+        ... Plane Surface(11) = {10};
+        ... Recombine Surface{11};
+        ... ''')
+
+        >>> print circle.getCellVolumes()[0] > 0
+        True
         """
 
 class GmshImporter2DIn3DSpace(GmshImporter2D):
