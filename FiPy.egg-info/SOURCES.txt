@@ -301,7 +301,6 @@ fipy/meshes/__init__.py
 fipy/meshes/cylindricalGrid1D.py
 fipy/meshes/cylindricalGrid2D.py
 fipy/meshes/gmshExport.py
-fipy/meshes/gmshImport.py
 fipy/meshes/grid1D.py
 fipy/meshes/grid2D.py
 fipy/meshes/grid3D.py

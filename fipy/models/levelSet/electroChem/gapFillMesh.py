@@ -5,7 +5,7 @@
 The `GapFillMesh` object glues 3 meshes together to form a composite
 mesh. The first mesh is a `Grid2D` object that is fine and deals with
 the area around the trench or via. The second mesh is a
-`GmshImporter2D` object that forms a transition mesh from a fine to a
+`Gmsh2D` object that forms a transition mesh from a fine to a
 course region. The third mesh is another `Grid2D` object that forms
 the boundary layer. This region consists of very large elements and is
 only used for the diffusion in the boundary layer.
@@ -14,7 +14,7 @@ only used for the diffusion in the boundary layer.
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.numMesh.gmshImport import GmshImporter2D
+from fipy.meshes.numMesh.gmshImport import Gmsh2D
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 import os
@@ -146,7 +146,7 @@ class GapFillMesh(Mesh2D):
         ## including extra point with height extraPointHeight due to new gmsh 2.0 issue, see thread
         ## http://www.geuz.org/pipermail/gmsh/2007/002465.html
 
-        return GmshImporter2D('cellsize = ' + str(fakeCellSize) + """ ;
+        return Gmsh2D('cellsize = ' + str(fakeCellSize) + """ ;
         height = """ + str(height) + """ ;
         spacing = """ + str(nx * cellSize) + """ ;
         extraPointHeight = """ + str(100. * height) + """ ;

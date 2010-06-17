@@ -39,7 +39,7 @@
 
 This input file again solves a 1D diffusion problem as in
 `./examples/diffusion/steadyState/mesh1D/input.py`. The difference
-being that it uses a triangular mesh loaded in using the GmshImporter.
+being that it uses a triangular mesh loaded in using gmshImport.
 
 The result is again tested in the same way:
 
@@ -67,7 +67,7 @@ valueLeft = 0.
 valueRight = 1.
 
 import os.path
-mesh = GmshImporter2D("""
+mesh = Gmsh2D("""
     cellSize = 0.5;
 
     Point(2) = {0, 0, 0, cellSize};

@@ -40,7 +40,7 @@ demonstrates how to create the required mesh.
 
     >>> from fipy import *
 
-    >>> mesh = GmshImporter2DIn3DSpace('''
+    >>> mesh = Gmsh2DIn3DSpace('''
     ...     radius = 5.0;
     ...     cellSize = 0.3;
     ...     

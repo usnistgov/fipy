@@ -53,7 +53,7 @@ The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
 :class:`~fipy.meshes.numMesh.gmshImporter.GmshImporter2D` object.
 
 >>> from fipy import *
->>> mesh = GmshImporter2D('''
+>>> mesh = Gmsh2D('''
 ...                       cellSize = %(cellSize)g;
 ...                       radius = %(radius)g;
 ...                       Point(1) = {0, 0, 0, cellSize};
