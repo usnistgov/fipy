@@ -280,7 +280,7 @@ class Gmsh2D(mesh2D.Mesh2D):
         First, we'll test GmshImporter2D on a small circle with triangular
         cells.
 
-        >>> circ = GmshImporter2D('''
+        >>> circ = Gmsh2D('''
         ... cellSize = 1; 
         ... radius   = 0.25; 
         ... Point(1) = {0, 0, 0, cellSize}; 
@@ -312,7 +312,7 @@ class Gmsh2D(mesh2D.Mesh2D):
 
         Now we'll test GmshImporter2D again, but on a rectangle.
 
-        >>> rect = GmshImporter2D('''
+        >>> rect = Gmsh2D('''
         ... cellSize = 0.5;
         ... radius   = 10;
         ... Point(2) = {-radius, radius, 0, cellSize};
@@ -342,7 +342,7 @@ class Gmsh2D(mesh2D.Mesh2D):
 
         Testing multiple shape types within a mesh;
 
-        >>> circle = GmshImporter2D('''
+        >>> circle = Gmsh2D('''
         ... cellSize = 0.05;
         ... radius = 1;
         ... Point(1) = {0, 0, 0, cellSize};
@@ -370,7 +370,7 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         """
         Stolen from the cahnHilliard sphere example.
 
-        >>> sphere = GmshImporter2DIn3DSpace('''
+        >>> sphere = Gmsh2DIn3DSpace('''
         ... radius = 5.0;
         ... cellSize = 0.3;
         ...
@@ -431,7 +431,7 @@ class Gmsh3D(mesh.Mesh):
 
     def _test(self):
         """
-        >>> prism = GmshImporter3D('''
+        >>> prism = Gmsh3D('''
         ... cellSize = 0.5;
         ... Len = 2;
         ... Hei = 1;
