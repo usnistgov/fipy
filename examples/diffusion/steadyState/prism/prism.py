@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "ttri2Dinput.py"
+ #  FILE: "modifiedMeshInput.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -32,9 +32,6 @@
  # ###################################################################
  ##
 
-##from fipy.tools.profiler.profiler import Profiler
-##from fipy.tools.profiler.profiler import calibrate_profiler
-
 """
 
 This input file again solves a 1D diffusion problem as in
@@ -50,9 +47,6 @@ The result is again tested in the same way:
     >>> print var.allclose(analyticalArray, atol = 0.025)
     1
 
-    >>> max(mesh._getNonOrthogonality()) < 0.51
-    True
-
 Note that this test case will only work if you run it by running the
 main FiPy test suite. If you run it directly from the directory it is
 in it will not be able to find the mesh file.
@@ -67,26 +61,61 @@ valueLeft = 0.
 valueRight = 1.
 
 import os.path
-mesh = GmshImporter2D("""
+mesh = Gmsh3D("""
     cellSize = 0.5;
+    Len = 20;
+    Hei = 1;
+    Wid = 1;
 
-    Point(2) = {0, 0, 0, cellSize};
-    Point(3) = {20, 0, 0, cellSize};
-    Point(4) = {20, 20, 0, cellSize};
-    Point(5) = {0, 20, 0, cellSize};
+    // first rectangle
+    Point(1) = {0, 0, 0, cellSize};
+    Point(2) = {0, 0, Wid, cellSize};
+    Point(3) = {0, Hei, Wid, cellSize};
+    Point(4) = {0, Hei, 0, cellSize};
 
-    Line(6) = {2, 3};
-    Line(7) = {3, 4};
-    Line(8) = {4, 5};
-    Line(9) = {5, 2};
+    // second rectangle
+    Point(5) = {Len, 0, 0, cellSize};
+    Point(6) = {Len, 0, Wid, cellSize};
+    Point(7) = {Len, Hei, Wid, cellSize};
+    Point(8) = {Len, Hei, 0, cellSize};
 
-    Line Loop(10) = {6, 7, 8, 9};
+    // lines joining first rect
+    Line(9)  = {1, 2};
+    Line(10) = {2, 3};
+    Line(11) = {3, 4};
+    Line(12) = {4, 1};
 
-    Plane Surface(11) = {10};
+    // lines joining second rect
+    Line(13) = {5, 6};
+    Line(14) = {6, 7};
+    Line(15) = {7, 8};
+    Line(16) = {8, 5};
+
+    // lines between the two "end caps"
+    Line(17) = {1, 5};
+    Line(18) = {2, 6};
+    Line(19) = {3, 7};
+    Line(20) = {4, 8};
+
+    // lines around each side
+    Line Loop(21) = {9, 10, 11, 12};
+    Line Loop(22) = {13, 14, 15, 16};
+    Line Loop(23) = {17, -16, -20, 12};
+    Line Loop(24) = {13, -18, -9, 17};
+    Line Loop(25) = {18, 14, -19, -10};
+    Line Loop(26) = {-19, 11, 20, -15};
+
+    Plane Surface(27) = {21};
+    Plane Surface(28) = {22};
+    Plane Surface(29) = {23};
+    Plane Surface(30) = {24};
+    Plane Surface(31) = {25};
+    Plane Surface(32) = {26};
+
+    Surface Loop(33) = {27, 28, 29, 30, 31, 32};
+
+    Volume(34) = {33};
 """)
-
-
-##    "%s/%s" % (sys.__dict__['path'][0], "examples/diffusion/steadyState/mesh20x20/modifiedMesh.msh"))
 
 var = CellVariable(name = "solution variable",
                    mesh = mesh,
@@ -96,12 +125,9 @@ exteriorFaces = mesh.getExteriorFaces()
 xFace = mesh.getFaceCenters()[0]
 boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001), valueLeft),
                       FixedValue(exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001), valueRight))
-                      
 
 if __name__ == '__main__':
     DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-    viewer = Viewer(vars = var)
-    viewer.plot()
     varArray = array(var)
     x = mesh.getCellCenters()[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
@@ -109,15 +135,4 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = "absolute error",
                    mesh = mesh,
                    value = abs(errorArray))
-    errorViewer = Viewer(vars = errorVar)
-    errorViewer.plot()
-
-    NonOrthoVar = CellVariable(name = "non-orthogonality",
-                               mesh = mesh,
-                               value = mesh._getNonOrthogonality())
-    NOViewer = Viewer(vars = NonOrthoVar)
-
-
-    NOViewer.plot()
-    raw_input("finished")
 

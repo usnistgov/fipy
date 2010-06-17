@@ -126,6 +126,7 @@ examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D.py
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
+examples/cahnHilliard/sphereDaemon.py
 examples/cahnHilliard/tanh1D.py
 examples/cahnHilliard/test.py
 examples/cahnHilliard/generated/.gitignore
@@ -167,6 +168,7 @@ examples/diffusion/__init__.py
 examples/diffusion/anisotropy.msh
 examples/diffusion/anisotropy.py
 examples/diffusion/circle.py
+examples/diffusion/circleQuad.py
 examples/diffusion/electrostatics.py
 examples/diffusion/index.txt
 examples/diffusion/mesh1D.py
@@ -191,10 +193,8 @@ examples/diffusion/steadyState/mesh1D/inputPeriodic.py
 examples/diffusion/steadyState/mesh1D/tri2Dinput.py
 examples/diffusion/steadyState/mesh20x20/__init__.py
 examples/diffusion/steadyState/mesh20x20/gmshinput.py
-examples/diffusion/steadyState/mesh20x20/modifiedMesh.msh
 examples/diffusion/steadyState/mesh20x20/modifiedMeshInput.py
 examples/diffusion/steadyState/mesh20x20/orthoerror.py
-examples/diffusion/steadyState/mesh20x20/testCaseMesh.msh
 examples/diffusion/steadyState/mesh20x20/tri2Dinput.py
 examples/diffusion/steadyState/mesh50x50/__init__.py
 examples/diffusion/steadyState/mesh50x50/input.py
@@ -202,6 +202,7 @@ examples/diffusion/steadyState/mesh50x50/tri2Dinput.py
 examples/diffusion/steadyState/otherMeshes/__init__.py
 examples/diffusion/steadyState/otherMeshes/cubicalProblem.py
 examples/diffusion/steadyState/otherMeshes/grid3Dinput.py
+examples/diffusion/steadyState/prism/prism.py
 examples/elphf/README.tex
 examples/elphf/__init__.py
 examples/elphf/input.py
