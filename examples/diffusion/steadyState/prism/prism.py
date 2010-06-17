@@ -32,9 +32,6 @@
  # ###################################################################
  ##
 
-##from fipy.tools.profiler.profiler import Profiler
-##from fipy.tools.profiler.profiler import calibrate_profiler
-
 """
 
 This input file again solves a 1D diffusion problem as in
@@ -64,7 +61,7 @@ valueLeft = 0.
 valueRight = 1.
 
 import os.path
-mesh = GmshImporter3D("""
+mesh = Gmsh3D("""
     cellSize = 0.5;
     Len = 20;
     Hei = 1;
@@ -138,6 +135,4 @@ if __name__ == '__main__':
     errorVar = CellVariable(name = "absolute error",
                    mesh = mesh,
                    value = abs(errorArray))
-
-    print var.allclose(analyticalArray, atol = 0.025)
 
