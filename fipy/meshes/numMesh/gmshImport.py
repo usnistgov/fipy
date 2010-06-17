@@ -497,7 +497,7 @@ class Gmsh3D(mesh.Mesh):
 
 def deprecation(old, new):
     import warnings
-    warnings.warn("%s has been replaced by %s.", 
+    warnings.warn("%s has been replaced by %s." % (old, new), 
                   DeprecationWarning, stacklevel=3)
 
 class GmshImporter2D(Gmsh2D):
