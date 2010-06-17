@@ -495,24 +495,24 @@ class Gmsh3D(mesh.Mesh):
         >>>
         """
 
-def deprecation(message):
+def deprecation(old, new):
     import warnings
-    warnings.warn(message, DeprecationWarning)
+    warnings.warn("%s has been replaced by %s.", 
+                  DeprecationWarning, stacklevel=3)
 
 class GmshImporter2D(Gmsh2D):
-    deprecation("GmshImport2D will be replaced by Gmsh2D in future versions.")
     def __init__(self, arg, coordDimensions=2):
+        deprecation("GmshImporter2D", "Gmsh2D")
         Gmsh2D.__init__(self, arg, coordDimensions=coordDimensions)
 
 class GmshImporter2DIn3DSpace(Gmsh2DIn3DSpace):
-    deprecation("GmshImport2DIn3DSpace will be replaced by " + \
-                "Gmsh2DIn3DSpace in future versions.")
     def __init__(self, arg):
+        deprecation("GmshImporter2DIn3DSpace", "Gmsh2DIn3DSpace")
         Gmsh2DIn3DSpace.__init__(self, arg)
 
 class GmshImporter3D(Gmsh3D):
-    deprecation("GmshImport3D will be replaced by Gmsh3D in future versions.")
     def __init__(self, arg):
+        deprecation("GmshImporter3D", "Gmsh3D")
         Gmsh3D.__init__(self, arg)
     
 def _test():
