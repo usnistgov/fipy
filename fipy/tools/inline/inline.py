@@ -1,7 +1,7 @@
 import inspect
 
 from fipy.tools import numerix
-from fipy.tools.inline import inlineFlagOn
+from fipy.tools.inline import inlineFlagOn, inlineCommentOn
 
 def _optionalInline(inlineFn, pythonFn, *args):
     if inlineFlagOn:
@@ -20,42 +20,38 @@ def _getframeinfo(level, context=1):
     return (frame,) + inspect.getframeinfo(frame, context=context)
 
 def _rawCodeComment(code, level=2):
-    finfo = _getframeinfo(level=level)
-    
-    # note: 
-    # don't use #line because it actually makes it harder 
-    # to find the offending code in both the C++ source and in the Python
-    #line %d "%s"
-    
-    return '''
+    if inlineCommentOn:
+        finfo = _getframeinfo(level=level)
+        
+        # note: 
+        # don't use #line because it actually makes it harder 
+        # to find the offending code in both the C++ source and in the Python
+        #line %d "%s"
+        
+        return '''
 /* 
     %s:%d
 
     %s 
 */
 ''' % (finfo[1], finfo[2] - len(code.splitlines()), finfo[3])
+    else:
+        return ""
 
-def _operatorVariableComment(canInline=True, level=3):
-    if canInline and inlineFlagOn:
-        finfo = _getframeinfo(level=level)
-
-        # note: 
-        # don't use #line because it actually makes it harder 
-        # to find the offending code in both the C++ source and in the Python
-        #line %d "%s"
-        
-        if finfo[4] is not None:
-            code = "\n".join(finfo[4])
-        else:
-            code = ""
-            
-        return '''
-/* 
+def _operatorVariableComment(canInline=True, level=2):
+    if canInline and inlineFlagOn and inlineCommentOn:
+        comment = ""
+        for finfo in inspect.getouterframes(inspect.currentframe())[level:]:
+                if finfo[4] is not None:
+                    code = "\n".join(finfo[4])
+                else:
+                    code = ""
+                    
+                comment += '''
 %s:%d
 
-%s
- */
-        ''' % (finfo[1], finfo[2], code)
+%s''' % (finfo[1], finfo[2], code)
+        return "/*" + comment + "*/"
     else:
         return ""
 

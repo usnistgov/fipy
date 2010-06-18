@@ -52,10 +52,10 @@ def _OperatorVariableClass(baseClass=None):
             
             self.dontCacheMe()
             
+            self.comment = inlineComment
+            
         def copy(self):
             return baseClass.copy(self)
-
-            self.comment = inlineComment
 
         def _calcValue(self):
             if not self.canInline:

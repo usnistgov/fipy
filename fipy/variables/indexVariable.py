@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 12/7/07 {3:06:25 PM}
+ #                                 last update: 11/15/08 {5:55:35 PM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -40,6 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.variable import Variable
 from fipy.tools import numerix
+from fipy.tools.inline import inline
 
 def _IndexVariable(index):
     if isinstance(index, tuple) or isinstance(index, list):
@@ -161,19 +162,25 @@ class _IndexVariable_(Variable):
         from fipy.variables.meshVariable import _MeshVariable
 
         unit = other.getUnit()
+#         canInline=unit.isDimensionless() and not self._isMasked()
+        canInline=False
+        
+        inlineComment=inline._operatorVariableComment(canInline=canInline)
         if issubclass(binOp, _MeshVariable):
             return binOp(op=op, 
                          var=[self, other], 
                          mesh=mesh,
                          opShape=opShape, 
-                         canInline=unit.isDimensionless(), 
-                         unit=unit)
+                         canInline=canInline, 
+                         unit=unit,
+                         inlineComment=inlineComment)
         else:
             return binOp(op=op, 
                          var=[self, other], 
                          opShape=opShape, 
-                         canInline=unit.isDimensionless(), 
-                         unit=unit)
+                         canInline=canInline, 
+                         unit=unit,
+                         inlineComment=inlineComment)
 
 
     def _meshOperatorClass(self, opShape):
