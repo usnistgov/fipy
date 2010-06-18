@@ -107,7 +107,7 @@ def _MAput(a, indices, values, mode='raise'):
     d = a.raw_data()
     ind = MA.filled(indices)
     v = MA.filled(values)
-    MA.numeric.put (d, ind, v)
+    NUMERIX.put(d, ind, v)
     m = MA.getmask(a)
     if m is not MA.nomask:
         MA.numeric.put(a.raw_mask(), ind, 0)
@@ -1032,7 +1032,7 @@ def take(a, indices, axis=None, fill_value=None):
         taken = indices._takefrom(a, axis=axis)
     elif _isPhysical(a):
         taken = a.take(indices, axis=axis)   
-    elif isinstance(indices, MA.array):
+    elif isinstance(indices, MA.masked_array):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.
 

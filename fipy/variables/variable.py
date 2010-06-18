@@ -1637,7 +1637,7 @@ class Variable(object):
         return self._UnaryOperatorVariable(lambda a: numerix.MA.getmaskarray(a), canInline=False)
 
     def filled(self, fill_value=None):
-        return self._UnaryOperatorVariable(lambda a: numerix.MA.filled(a, value=fill_value), canInline=False)
+        return self._UnaryOperatorVariable(lambda a: numerix.MA.filled(a, fill_value), canInline=False)
 
     def flatten(self): #, order='C'):
         return self._UnaryOperatorVariable(lambda a: a.flatten(), #order), 
