@@ -31,11 +31,13 @@
 import math
 
 import pylab
+# from pylab import ticker
+from matplotlib import ticker
 from scipy.io import mmio
 
 from fipy.tools.numerix import arange, array, compress, log, log10, nan, nanmax, nanmin, sign, where, zeros
 
-class SignedLogFormatter(pylab.ticker.LogFormatter):
+class SignedLogFormatter(ticker.LogFormatter):
     """
     Format values for log axis;
 
@@ -53,8 +55,8 @@ class SignedLogFormatter(pylab.ticker.LogFormatter):
 
     def __call__(self, x, pos=None):
         'Return the format for tick val x at position pos'
-        self.verify_intervals()
-        d = abs(self.viewInterval.span())
+        vmin, vmax = self.axis.get_view_interval()
+        d = abs(vmax - vmin)
         b=self._base
         # only label the decades
         sgn = sign(x)
@@ -95,7 +97,7 @@ class SignedLogFormatter(pylab.ticker.LogFormatter):
             
         return s
     
-class SignedLogLocator(pylab.ticker.LogLocator):
+class SignedLogLocator(ticker.LogLocator):
     """
     Determine the tick locations for "log" axes that express both positive and
     negative values
@@ -105,7 +107,7 @@ class SignedLogLocator(pylab.ticker.LogLocator):
         """
         place ticks on the location= base**i*subs[j]
         """
-        pylab.ticker.LogLocator.__init__(self, base, subs)
+        ticker.LogLocator.__init__(self, base, subs)
         self.numticks = 7
         self.threshold = threshold
 
@@ -114,10 +116,9 @@ class SignedLogLocator(pylab.ticker.LogLocator):
 
     def __call__(self):
         'Return the locations of the ticks'
-        self.verify_intervals()
         b=self._base
 
-        vmin, vmax = self.viewInterval.get_bounds()
+        vmin, vmax = self.axis.get_view_interval()
 
         if vmax<vmin:
             vmin, vmax = vmax, vmin
@@ -259,7 +260,7 @@ class MatplotlibSparseMatrixViewer:
         pylab.title(self.title)
 
         scat = pylab.scatter(x, y, c=z, 
-                             vmin=-zRange, vmax=zRange, faceted=False, 
+                             vmin=-zRange, vmax=zRange, edgecolors='none', 
                              cmap=pylab.get_cmap('RdBu'), marker='s', s=size)
                     
         pylab.axis([-0.5, N - 0.5, N - 0.5, -0.5])

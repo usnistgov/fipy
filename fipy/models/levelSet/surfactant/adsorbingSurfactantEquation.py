@@ -40,7 +40,7 @@ from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.solvers import *
+from fipy.solvers import LinearLUSolver, LinearPCGSolver
 
 class _CellInterfaceFlagVariable(CellVariable):
     def __init__(self, distanceVar):
@@ -331,7 +331,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
                 
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPGSSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            
@@ -348,7 +348,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. 
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation

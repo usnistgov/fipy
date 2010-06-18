@@ -281,7 +281,7 @@ class Variable(object):
             >>> a = Variable(value="1 m")
             >>> a.setUnit("m**2/s")
             >>> print a
-            1 m**2/s
+            1.0 m**2/s
         """
         if self.value is None:
             self.getValue()
@@ -1189,6 +1189,9 @@ class Variable(object):
     def __float__(self):
         return float(self.getValue())
         
+    def __int__(self):
+        return int(self.getValue())
+        
     def __nonzero__(self):
         """
             >>> print bool(Variable(value=0))
@@ -1583,20 +1586,14 @@ class Variable(object):
            1
            >>> print var.allclose((1,))
            1
-           >>> print var.allclose((1,1,1))
-           Traceback (most recent call last):
-               ...
-           ValueError: shape mismatch: objects cannot be broadcast to a single shape
 
         The following test is to check that the system does not run
         out of memory.
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
-           >>> print var.allclose(numerix.ones(10001))
-           Traceback (most recent call last):
-               ...
-           ValueError: shape mismatch: objects cannot be broadcast to a single shape
+           >>> print var.allclose(numerix.zeros(10000))
+           False
            
         """
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)

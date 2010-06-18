@@ -54,12 +54,7 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
     def _getWeight(self, mesh, equation=None):
         weight = UpwindConvectionTerm._getWeight(self, mesh, equation=equation)
         if 'implicit' in weight.keys():
-            weight['explicit'] = {
-                'cell 1 diag'    : weight['implicit']['cell 1 offdiag'],
-                'cell 1 offdiag' : weight['implicit']['cell 1 diag'],
-                'cell 2 diag'    : weight['implicit']['cell 2 offdiag'],
-                'cell 2 offdiag' : weight['implicit']['cell 2 diag']
-            }
+            weight['explicit'] = weight['implicit']
             del weight['implicit']
 
         return weight

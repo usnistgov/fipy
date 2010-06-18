@@ -338,16 +338,15 @@ MayaVi
 
 http://mayavi.sourceforge.net
 
-The MayaVi_ Data Visualizer is a free, easy to use scientific data
+The `MayaVi 1`_ Data Visualizer is a free, easy to use scientific data
 visualizer.  It displays 1D, 2D and 3D data. It is the only |FiPy|
 viewer available for 3D data. Other viewers are probably better for 1D
-or 2D viewing. The `Enthon for Windows`_ version of python is
-recommended for Windows_ users who wish to use MayaVi_.
+or 2D viewing. 
 
 .. warning::
 
-   MayaVi_ can only display 3D meshes consisting entirely of
-   tetrahedrons or wedge elements. The ordering of vertices for other
+   |FiPy| can only use `MayaVi 1`_ to display 3D meshes consisting entirely
+   of tetrahedrons or wedge elements. The ordering of vertices for other
    mesh types may not work.
 
 .. note::
@@ -355,161 +354,14 @@ recommended for Windows_ users who wish to use MayaVi_.
    Is is also necessary to install the PyVTK_ package to use the
    |FiPy| MayaVi_ viewers.
 
-.. _MayaVi: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. note::
+
+   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
+   `MayaVi 2`_ as soon as possible.
+
+.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 .. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
-.. _Enthon for Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.enthought.com/python/
-
-Optional Packages
-====================
-
-.. note::
-
-   The following packages are not required to run |FiPy|, but they can be helpful.
-
-SciPy
------
-
-.. raw:: latex
-
-   \IndexSoftware{SciPy}
-
-http://www.scipy.org/
-
-Significantly improved performance has been achieved with the
-judicious use of C language inlining, via the weave_ module of the
-SciPy_ package. `SciPy download instructions`_ 
-|citeSciPyDownload| are available. We recommend version 0.5.2 or greater.
-
-.. note:: 
-
-   A handful of test cases use functions from the SciPy_ library and will
-   throw errors if it is missing.
-
-.. _weave: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/weave/
-.. _SciPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/
-.. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
-.. |citeSciPyDownload| raw:: latex
-
-   \cite{SciPyDownload}
-
-gmsh
-----
-
-.. raw:: latex
-
-   \IndexSoftware{gmsh}
-
-http://www.geuz.org/gmsh/
-
-It is possible to create irregular meshes with this package.
-
-.. note::
-
-   The `Mac OS X`_ distribution of gmsh provides a nice graphical tool, but
-   is structured a bit differently than on other platforms.  To access the
-   underlying shell tool, create a shell alias called ``gmsh`` that
-   corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
-
-Trilinos
---------
-
-.. raw:: latex
-
-    \IndexSoftware{Trilinos}
-    
-http://trilinos.sandia.gov
-
-Trilinos_ provides solvers and preconditioners, and can be used instead of
-PySparse_. Trilinos_ preconditioning allows for iterative solutions to some
-difficult problems that PySparse_ cannot solve. |FiPy| can only work with
-Trilinos_ version 7.0.9 or higher.
-
-.. attention:: 
-    
-    Trilinos_ is a large software suite with its own set of prerequisites, and
-    can be difficult to set up. It is not necessary for most problems, and is
-    NOT recommended in a basic install of |FiPy|.
-
-
-For use with |FiPy|, Trilinos_ must be configured with the following packages
-enabled: Epetra, EpetraExt, AztecOO, PyTrilinos, ML, Ifpack, Amesos. It may
-also be necessary to enable Galeri for Trilinos_ to compile properly.
-
-.. attention:: 
-
-    As of Trilinos_ 7.0.9, Trilinos_ can be set up by creating a build
-    directory in the base directory of the Trilinos_ source tree::
-
-        cd trilinos-7.0.9/ ; mkdir BUILD_DIR ; cd BUILD_DIR
-
-    and then running::
-    
-        ../configure --enable-epetra --enable-epetraext --enable-aztecoo \
-          --enable-pytrilinos  --enable-ml --enable-ifpack --enable-amesos \
-          --enable-galeri
-
-    before running ``make`` and ``make install``. 
-
-    Depending on your platform, other options may be helpful or necessary;
-    see ``../configure --help``, the Trilinos_ user guide available from
-    http://trilinos.sandia.gov/documentation.html, or
-    http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more in-depth
-    documentation.
-
-.. note::
-    
-    Trilinos_ documentation suggests, on 32-bit PC platforms with the GCC
-    compilers, configuring with ``CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5
-    -funroll-all-loops -malign-double"`` for best performance. This gives
-    significant benefits. Use of aggressive optimization settings on other
-    platforms is also recommended.
-
-.. note:: 
-    
-    If Trilinos_ is installed in a nonstandard location, the path to the
-    PyTrilinos site-packages directory should be added to the ``PYTHONPATH``
-    environment variable; this should be of the form
-    ``$INSTALL_DIR/lib/$PYTHON_VERSION/site-packages/``. Also, the path to
-    the Trilinos_ lib directory should be added to the ``LD_LIBRARY_PATH`` (on
-    Linux) or ``DYLD_LIBRARY_PATH`` (on Mac OS X) environment variable; this
-    should be of the form ``$INSTALL_DIR/lib``.
-
-
-Trilinos_ solvers can be replace PySparse_ solvers. If both PySparse_ and
-Trilinos_ are present, which one is used can be controlled by setting the
-``FIPY_SOLVERS`` environment variable to ``Trilinos`` or ``Pysparse``, or by
-passing a ``--Trilinos`` or ``--Pysparse`` flag to the |FiPy| script,
-overriding the environment. In the absence of these indicators, |FiPy| will
-default to using PySparse_ if it is present.
-
-.. warning:: 
-
-    Trilinos_ solvers frequently give intermediate output that |FiPy| cannot
-    suppress. The most commonly encountered messages are:
-
-    "``Gen_Prolongator warning : Max eigen <= 0.0``", which is not
-    significant to |FiPy|;
-
-    "``Aztec status AZ_loss: loss of precision``", which indicates that there
-    was some difficulty in solving the problem to the requested tolerance due
-    to precision limitations, but usually does not prevent the solver from
-    finding an adequate solution;
-
-    "``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``", which
-    indicates that GMRES is having trouble with the problem, and may indicate
-    that trying a different solver or preconditioner may give more accurate
-    results if GMRES fails;
-
-    "``Aztec status AZ_breakdown: numerical breakdown``", which usually
-    indicates serious problems solving the equation which forced the solver
-    to stop before reaching an adequate solution. Different solvers,
-    different preconditioners, or a less restrictive tolerance may help.
-
-Trilinos_ allows using a variety of preconditioners. An example of passing a
-Trilinos_ preconditioner to a solver can be seen in
-``examples/diffusion/nthOrder/input4thOrder-line.py``.
-
-.. _Trilinos: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 
 ----------------
 Obtaining |FiPy|
@@ -601,13 +453,6 @@ removing key``" in |the FAQ|).
 
        $ export PYTHONPATH=.:${PYTHONPATH}
 
-.. attention::
-
-   You can expect three test failures in 
-   ``fipy.variables.variable.Variable.__array__`` with the message::
-
-       ValueError: setting an array element with a sequence.
-       
 -----------------
 Installing |FiPy|
 -----------------
@@ -658,6 +503,153 @@ knowledge of Python syntax is required.  We recommend you familiarize
 yourself with the excellent `Python tutorial`_ |citePythonTutorial| 
 or with `Dive Into Python`_ |citeDiveIntoPython|.
 
+
+-----------------
+Optional Packages
+-----------------
+
+.. note::
+
+   The following packages are not required to run |FiPy|, but they can be helpful.
+
+SciPy
+=====
+
+.. raw:: latex
+
+   \IndexSoftware{SciPy}
+
+http://www.scipy.org/
+
+Significantly improved performance has been achieved with the
+judicious use of C language inlining, via the weave_ module of the
+SciPy_ package. `SciPy download instructions`_ 
+|citeSciPyDownload| are available. We recommend version 0.5.2 or greater.
+
+.. note:: 
+
+   A handful of test cases use functions from the SciPy_ library and will
+   throw errors if it is missing.
+
+.. _weave: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/documentation/weave/
+.. _SciPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/
+.. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
+.. |citeSciPyDownload| raw:: latex
+
+   \cite{SciPyDownload}
+
+gmsh
+====
+
+.. raw:: latex
+
+   \IndexSoftware{gmsh}
+
+http://www.geuz.org/gmsh/
+
+It is possible to create irregular meshes with this package.
+
+.. note::
+
+   The `Mac OS X`_ distribution of gmsh provides a nice graphical tool, but
+   is structured a bit differently than on other platforms.  To access the
+   underlying shell tool, create a shell alias called ``gmsh`` that
+   corresponds to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
+
+Trilinos
+========
+
+.. raw:: latex
+
+    \IndexSoftware{Trilinos}
+    
+http://trilinos.sandia.gov
+
+Trilinos_ provides solvers and preconditioners, and can be used instead of
+PySparse_. Trilinos_ preconditioning allows for iterative solutions to some
+difficult problems that PySparse_ cannot solve.
+
+.. attention:: 
+    
+    Trilinos_ is a large software suite with its own set of prerequisites, and
+    can be difficult to set up. It is not necessary for most problems, and is
+    NOT recommended in a basic install of |FiPy|.
+
+Trilinos_ is built using the standard ``configure``, ``make`` and ``make
+install`` method. The best approach that we have found is as follows:
+
+ * ``cd trilinos-X.Y/``
+
+ * ``mkdir BUILD_DIR``
+
+ * ``cd BUILD_DIR``
+
+ * Configure::
+
+      ../configure CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5 -funroll-all-loops \
+      -malign-double" --enable-epetra --enable-aztecoo --enable-pytrilinos \
+      --enable-ml --enable-ifpack --enable-amesos --with-gnumake --enable-galeri
+
+ * ``make``
+
+ * ``make install``
+
+Depending on your platform, other options may be helpful or necessary;
+see ``../configure --help``, the Trilinos_ user guide available from
+http://trilinos.sandia.gov/documentation.html, or
+http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more
+in-depth documentation.
+
+.. note:: 
+ 
+    Trilinos can be installed in a non-standard location by adding the
+    ``--prefix=$LOCAL_INSTALLATION_DIR`` flag to the configure step. If
+    Trilinos_ is installed in a nonstandard location, the path to the
+    PyTrilinos site-packages directory should be added to the
+    ``PYTHONPATH`` environment variable; this should be of the form
+    ``$INSTALL_DIR/lib/$PYTHON_VERSION/site-packages/``. Also, the path
+    to the Trilinos_ lib directory should be added to the
+    ``LD_LIBRARY_PATH`` (on Linux) or ``DYLD_LIBRARY_PATH`` (on Mac OS
+    X) environment variable; this should be of the form
+    ``$INSTALL_DIR/lib``.
+
+.. note::
+
+    If swig is in a non-standard place use the
+    ``--with-swig=$PATH_TO_SWIG_EXECUTABLE`` flag with the configure
+    step.
+
+Trilinos_ solvers can be used to replace PySparse_ solvers. If both
+PySparse_ and Trilinos_ are present, useage can be controlled by setting
+the ``FIPY_SOLVERS`` environment variable to ``Trilinos`` or
+``Pysparse``, or by passing a ``--Trilinos`` or ``--Pysparse`` flag to
+the |FiPy| script, overriding the environment. In the absence of these
+indicators, |FiPy| will default to using PySparse_ if it is present.
+
+.. warning:: 
+
+    Trilinos_ solvers frequently give intermediate output that |FiPy| cannot
+    suppress. The most commonly encountered messages are:
+
+    "``Gen_Prolongator warning : Max eigen <= 0.0``", which is not
+    significant to |FiPy|;
+
+    "``Aztec status AZ_loss: loss of precision``", which indicates that there
+    was some difficulty in solving the problem to the requested tolerance due
+    to precision limitations, but usually does not prevent the solver from
+    finding an adequate solution;
+
+    "``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``", which
+    indicates that GMRES is having trouble with the problem, and may indicate
+    that trying a different solver or preconditioner may give more accurate
+    results if GMRES fails;
+
+    "``Aztec status AZ_breakdown: numerical breakdown``", which usually
+    indicates serious problems solving the equation which forced the solver
+    to stop before reaching an adequate solution. Different solvers,
+    different preconditioners, or a less restrictive tolerance may help.
+
+.. _Trilinos: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 .. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
 .. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser

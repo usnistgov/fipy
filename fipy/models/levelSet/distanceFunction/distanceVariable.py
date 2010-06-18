@@ -343,7 +343,7 @@ class DistanceVariable(CellVariable):
             evaluatedFlag[...,id] = 1
 
 
-            for adjID in MA.filled(cellToCellIDs[...,id].getValue(), value = -1):
+            for adjID in MA.filled(cellToCellIDs[...,id].getValue(), -1):
                 if adjID != -1:
                     if not evaluatedFlag[...,adjID]:
                         self.value[...,adjID], extensionVariable[...,adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
@@ -478,7 +478,7 @@ class DistanceVariable(CellVariable):
            1.57984690073
            
         """        
-        normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), value=0))
+        normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), 0))
         areas = self.mesh._getCellAreaProjections().filled(0).getValue()
         return numerix.sum(abs(numerix.dot(normals, areas)), axis=0)
 ##         normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), value=0))
@@ -575,7 +575,7 @@ class DistanceVariable(CellVariable):
         flag = MA.filled(numerix.take(self._getInterfaceFlag(), 
                                       self.cellFaceIDs, 
                                       axis=-1), 
-                         value=0)
+                         0)
 
         flag = numerix.sum(flag, axis=0)
         

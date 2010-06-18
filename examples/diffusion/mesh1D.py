@@ -170,30 +170,6 @@ We limit our steps to 90% of that value for good measure
     >>> timeStepDuration = 0.9 * dx**2 / (2 * D)
     >>> steps = 100
 
-In a semi-infinite domain, the analytical solution for this transient
-diffusion problem is given by
-
-.. raw:: latex
-
-   $\phi = 1 - \erf(x/2\sqrt{D t})$. If the \SciPy{} library is available,
-   the result is tested against the expected profile: 
-   \IndexFunction{sqrt}
-
-..
-
-    >>> x = mesh.getCellCenters()[0]
-    >>> t = timeStepDuration * steps
-
-    >>> phiAnalytical = CellVariable(name="analytical value",
-    ...                              mesh=mesh)
-
-    >>> try:
-    ...     from scipy.special import erf
-    ...     phiAnalytical.setValue(1 - erf(x / (2 * sqrt(D * t))))
-    ... except ImportError:
-    ...     print "The SciPy library is not available to test the solution to \
-    ... the transient diffusion equation"
-
 If we're running interactively, we'll want to view the result, but not if
 this example is being run automatically as a test. We accomplish this by
 having Python check if this script is the "`__main__`" script, which will
@@ -208,10 +184,34 @@ viewers and the dimension of the mesh.
 
 ..
 
+    >>> phiAnalytical = CellVariable(name="analytical value",
+    ...                              mesh=mesh)
+
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars=(phi, phiAnalytical),
     ...                     limits={'datamin': 0., 'datamax': 1.})
     ...     viewer.plot()
+
+In a semi-infinite domain, the analytical solution for this transient
+diffusion problem is given by
+
+.. raw:: latex
+
+   $\phi = 1 - \erf(x/2\sqrt{D t})$. If the \SciPy{} library is available,
+   the result is tested against the expected profile: 
+   \IndexFunction{sqrt}
+
+..
+
+    >>> x = mesh.getCellCenters()[0]
+    >>> t = timeStepDuration * steps
+
+    >>> try:
+    ...     from scipy.special import erf
+    ...     phiAnalytical.setValue(1 - erf(x / (2 * sqrt(D * t))))
+    ... except ImportError:
+    ...     print "The SciPy library is not available to test the solution to \
+    ... the transient diffusion equation"
 
 We then solve the equation by repeatedly looping in time:
 

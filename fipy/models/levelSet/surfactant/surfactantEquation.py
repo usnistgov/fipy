@@ -39,7 +39,7 @@ from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from convectionCoeff import _ConvectionCoeff
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.solvers import *
+from fipy.solvers import LinearLUSolver
 
 class SurfactantEquation:
     """
@@ -68,21 +68,17 @@ class SurfactantEquation:
         self.bc = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
         self.eq = transientTerm - convectionTerm
 
-    def solve(self, var, boundaryConditions = (), solver=None, dt = 1.):
+    def solve(self, var, boundaryConditions = (), solver=LinearLUSolver(), dt = 1.):
         """
         Builds and solves the `SurfactantEquation`'s linear system once.
                 
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearLUSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
 
         """
-
-        if solver is None:
-            solver= LinearLUSolver()
-
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
@@ -99,7 +95,7 @@ class SurfactantEquation:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation

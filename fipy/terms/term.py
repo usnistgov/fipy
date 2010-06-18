@@ -40,7 +40,7 @@ from fipy.tools import numerix
 
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.solvers import *
+from fipy.solvers import DefaultSolver
 
 class Term:
     """
@@ -65,6 +65,9 @@ class Term:
         self._cacheRHSvector = False
         self.RHSvector = None
         self._diagonalSign = Variable(value=1)
+        
+    def copy(self):
+        return self.__class__(self.coeff)
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
         raise NotImplementedError
@@ -147,7 +150,7 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearGMRESSolver` for Trilinos.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
 
@@ -166,7 +169,7 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearGMRESSolver` for Trilinos.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
@@ -199,7 +202,7 @@ class Term:
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
@@ -214,6 +217,39 @@ class Term:
         residualFn = residualFn or self._calcResidualVector
         
         return residualFn(var, matrix, RHSvector)
+
+    def residualVectorAndNorm(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, normFn=None):
+        r"""
+        Builds the `Term`'s linear system once. This method
+        also recalculates and returns the residual as well as applying
+        under-relaxation.
+
+        :Parameters:
+
+           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
+           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+           - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
+
+        """
+        solver, matrix, RHSvector = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+
+        if underRelaxation is not None:
+            matrix, RHSvector = self._applyUnderRelaxation(matrix, var, RHSvector, underRelaxation)
+
+        vector = self._calcResidualVector(var, matrix, RHSvector)
+        
+        L2norm = numerix.L2norm(vector)
+        RHSL2norm = numerix.L2norm(RHSvector)
+        
+#         if RHSL2norm != 0:
+#             L2norm /= RHSL2norm 
+#         else:
+#             print "b is zero!!!"
+
+        return vector, L2norm
 
     def _verifyCoeffType(self, var):
         pass

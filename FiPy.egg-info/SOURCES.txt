@@ -73,6 +73,7 @@ documentation/manual/images/examples/levelSet/electroChem/inputSimpleTrenchSyste
 documentation/manual/images/examples/levelSet/electroChem/leveler.pdf
 documentation/manual/images/examples/levelSet/electroChem/schematicOfEquations.pdf
 documentation/manual/images/examples/levelSet/electroChem/superfillImage.pdf
+documentation/manual/images/examples/phase/anisotropy.pdf
 documentation/manual/images/examples/phase/quaternary.pdf
 documentation/manual/images/examples/phase/binary/moving.pdf
 documentation/manual/images/examples/phase/binary/stationary.pdf
@@ -147,6 +148,7 @@ examples/chemotaxis/test.py
 examples/convection/__init__.py
 examples/convection/peclet.py
 examples/convection/robin.py
+examples/convection/source.py
 examples/convection/test.py
 examples/convection/advection/__init__.py
 examples/convection/advection/explicitUpwind.py
@@ -347,6 +349,7 @@ fipy/models/levelSet/electroChem/test.py
 fipy/models/levelSet/surfactant/__init__.py
 fipy/models/levelSet/surfactant/adsorbingSurfactantEquation.py
 fipy/models/levelSet/surfactant/convectionCoeff.py
+fipy/models/levelSet/surfactant/lines.py
 fipy/models/levelSet/surfactant/matplotlibSurfactantViewer.py
 fipy/models/levelSet/surfactant/mayaviSurfactantViewer.py
 fipy/models/levelSet/surfactant/surfactantBulkDiffusionEquation.py
@@ -492,7 +495,6 @@ fipy/viewers/matplotlibViewer/matplotlibVectorViewer.py
 fipy/viewers/matplotlibViewer/matplotlibViewer.py
 fipy/viewers/matplotlibViewer/test.py
 fipy/viewers/mayaviViewer/__init__.py
-fipy/viewers/mayaviViewer/lines.py
 fipy/viewers/mayaviViewer/mayaviViewer.py
 fipy/viewers/mayaviViewer/test.py
 utils/__init__.py

@@ -40,7 +40,7 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
-from fipy.solvers import *
+from fipy.solvers import LinearLUSolver
 
 from fipy.tools import numerix
 
@@ -128,7 +128,7 @@ class ConvectionTerm(FaceTerm):
 
         if self.stencil is None:
 
-            small = 1e-20
+            small = -1e-20
             
             if equation is None:
                 diffCoeff = small
@@ -137,8 +137,8 @@ class ConvectionTerm(FaceTerm):
                 if diffCoeff is None:
                     diffCoeff = small
                 else:
-                    diffCoeff = diffCoeff * (diffCoeff != 0.) + small * (diffCoeff == 0.)
-                    
+                    diffCoeff = (diffCoeff == 0) * small + diffCoeff
+
             alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
