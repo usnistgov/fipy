@@ -42,7 +42,7 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
     def _calcValuePy(self, alpha, id1, id2):
         cell1 = numerix.take(self.var, id1, axis=-1).getValue()
         cell2 = numerix.take(self.var, id2, axis=-1).getValue()
-        return (cell1 - cell2) * numerix.array(alpha) + cell2
+        return (cell2 - cell1) * numerix.array(alpha) + cell1
         
     def _calcValueIn(self, alpha, id1, id2):
         val = self._getArray().copy()
@@ -52,7 +52,7 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
             int ID2 = ITEM(id2, i, NULL);
             double cell1 = ITEM(var, ID1, vec);
             double cell2 = ITEM(var, ID2, vec);
-            ITEM(val, i, vec) = (cell1 - cell2) * ITEM(alpha, i, NULL) + cell2;
+            ITEM(val, i, vec) = (cell2 - cell1) * ITEM(alpha, i, NULL) + cell1;
         """,
         var = self.var.getNumericValue(),
         val = val, 

@@ -180,8 +180,11 @@ Combine the windows installer and examples into one archive.
 
     $ rm MANIFEST
     $ FIPY_VERSION=XXX
-    $ ln -s dist/FiPy-${FIPY_VERSION}.win32.exe .
-    $ python setup.py sdist --template=MANIFEST-WINDOWS.in --dist-dir=dist-windows --no-defaults --formats=zip
+    $ ln dist/FiPy-${FIPY_VERSION}.win32.exe .
+    $ cp MANIFEST.in MANIFEST.in.bkup
+    $ cp MANIFEST-WINDOWS.in MANIFEST.in
+    $ python setup.py sdist --dist-dir=dist-windows --formats=zip
+    $ cp MANIFEST.in.bkup MANIFEST.in
     $ unlink FiPy-${FIPY_VERSION}.win32.exe
     $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
 
@@ -208,9 +211,17 @@ the web site to CTCMS:
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
+Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
+
+.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
+
 Make an announcement to `mailto:fipy@nist.gov`_
 
 .. fipy@nist.gov: mailto:fipy@nist.gov
+
+Build (python setup.py bdist --formats=wininst) a Windows `PyVTK`_ executable and upload to download page.
+
+.. PyVTK: http://cens.ioc.ee/projects/pyvtk/
 
 ==========================================
 Making a Windows Distribution for Pysparse

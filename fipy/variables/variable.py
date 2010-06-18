@@ -177,11 +177,11 @@ class Variable(object):
             >>> print numerix.array(v)
             [2 3]
         
-        A dimensional `Variable` will convert to the numeric value in the current units
+        A dimensional `Variable` will convert to the numeric value in its base units
     
-            >>> v = Variable(value=[2,3], unit="m")
+            >>> v = Variable(value=[2,3], unit="mm")
             >>> numerix.array(v)
-            array([2, 3])
+            array([ 0.002,  0.003])
 
         Convert a list of 1 element Variables to an array
 
@@ -727,6 +727,10 @@ class Variable(object):
             self.requiredVariables.append(var)
             var._requiredBy(self)
             self._markStale()
+        else:
+            from fipy.variables.constant import _Constant
+            var = _Constant(value=var)
+            
         return var
             
     def _requiredBy(self, var):
@@ -1007,6 +1011,16 @@ class Variable(object):
         fabs = abs
         return self._UnaryOperatorVariable(lambda a: fabs(a))
 
+    def __invert__(self):
+        """
+        Returns logical "not" of the `Variable`
+        
+            >>> a = Variable(value=True)
+            >>> print ~a
+            False
+        """
+        return self._UnaryOperatorVariable(lambda a: ~a)
+
     def __lt__(self,other):
         """
         Test if a `Variable` is less than another quantity
@@ -1119,8 +1133,8 @@ class Variable(object):
 
             >>> a = Variable(value=(0, 0, 1, 1))
             >>> b = Variable(value=(0, 1, 0, 1))
-            >>> numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
-            1
+            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            True
             >>> print a & b
             [0 0 0 1]
             >>> from fipy.meshes.grid1D import Grid1D
@@ -1128,8 +1142,8 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
-            1
+            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+            True
             >>> print a & b
             [0 0 0 1]
 
@@ -1142,8 +1156,8 @@ class Variable(object):
 
             >>> a = Variable(value=(0, 0, 1, 1))
             >>> b = Variable(value=(0, 1, 0, 1))
-            >>> numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
-            1
+            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            True
             >>> print a | b
             [0 1 1 1]
             >>> from fipy.meshes.grid1D import Grid1D
@@ -1151,8 +1165,8 @@ class Variable(object):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
             >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
-            1
+            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+            True
             >>> print a | b
             [0 1 1 1]
             

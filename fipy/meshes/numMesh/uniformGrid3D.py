@@ -453,9 +453,10 @@ class UniformGrid3D(Grid3D):
         YZcen[2] = (indices[2] + 0.5) * self.dz
 
         return FaceVariable(mesh=self,
-                            value=numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                            value=(numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)), 
                                                        numerix.reshape(XZcen.swapaxes(1,3), (3, self.numberOfXZFaces)),
-                                                       numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1),
+                                                       numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+                                   + self.origin),
                             rank=1)
                                     
     def _getCellVertexIDs(self):

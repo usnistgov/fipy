@@ -111,7 +111,7 @@ As in `examples.phase.simple.input`, we will examine a 1D problem
    
    The free energy density \( f(\phi, C, T) \) can be constructed in many
    different ways. One approach is to construct free energy densities for
-   each of the pure compoonents, as functions of phase, \emph{e.g.}
+   each of the pure components, as functions of phase, \emph{e.g.}
    \[
        f_A(\phi, T) = p(\phi) f_A^S(T)
        + \left(1 - p(\phi)\right) f_A^L(T) + \frac{W_A}{2} g(\phi)
@@ -200,7 +200,7 @@ such as those shown in `examples.phase.simple.input`
    \begin{align}
        \frac{\partial f}{\partial \phi}
        &= (1-C) \frac{\partial f_A}{\partial \phi} 
-       + C \frac{\partial f_A}{\partial \phi} \nonumber \\
+       + C \frac{\partial f_B}{\partial \phi} \nonumber \\
        &= \left\{
            (1-C) \frac{L_A\left(T - T_M^A\right)}{T_M^A}
            + C \frac{L_B\left(T - T_M^B\right)}{T_M^B} 
