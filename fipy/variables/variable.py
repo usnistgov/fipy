@@ -724,7 +724,8 @@ class Variable(object):
             self.requiredVariables.append(var)
             var._requiredBy(self)
             self._markStale()
-        else:
+        elif var is not None and var is not Ellipsis:
+            # FIXME: this seems kind of crude
             from fipy.variables.constant import _Constant
             var = _Constant(value=var)
             
