@@ -59,7 +59,8 @@ class Mesh1D(Mesh):
         self.faceNormals = FaceVariable(mesh=self, value=1., rank=1)
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
-        self.faceNormals[...,0] *= -1
+        if self.numberOfFaces > 0:
+            self.faceNormals[...,0] *= -1
 
     def _calcFaceTangents(self):
         self.faceTangents1 = FaceVariable(mesh=self, value=0., rank=1)

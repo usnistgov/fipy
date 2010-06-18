@@ -58,12 +58,19 @@ class FaceVariable(_MeshVariable):
             
         return _MeshVariable._getArithmeticBaseClass(self, other)
 
+    def getGlobalValue(self):
+        return self._getGlobalValue(self.mesh._getLocalNonOverlappingFaceIDs(), 
+                                    self.mesh._getGlobalNonOverlappingFaceIDs())
+
+    def setValue(self, value, unit = None, where = None):
+        _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
+
     def getDivergence(self):
         """
             >>> from fipy.meshes.grid2D import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=3, ny=2)
-            >>> var = CellVariable(mesh=mesh, value=range(mesh.getNumberOfCells()))
+            >>> var = CellVariable(mesh=mesh, value=range(3*2))
             >>> print var.getFaceGrad().getDivergence()
             [ 4.  3.  2. -2. -3. -4.]
             
@@ -73,6 +80,9 @@ class FaceVariable(_MeshVariable):
             self.divergence = _AddOverFacesVariable(self.dot(self.getMesh()._getOrientedAreaProjections()))
             
         return self.divergence
+
+    def _getGlobalNumberOfElements(self):
+        return self.mesh.globalNumberOfFaces
         
     def _getArithmeticVertexValue(self):
         if not hasattr(self, 'arithmeticVertexValue'):
@@ -82,6 +92,12 @@ class FaceVariable(_MeshVariable):
         return self.arithmeticVertexValue
 
     
+    def _getGlobalOverlappingIDs(self):
+        return self.mesh._getGlobalOverlappingFaceIDs()
+        
+    def _getLocalNonOverlappingIDs(self):
+        return self.mesh._getLocalNonOverlappingFaceIDs()
+
 def _test(): 
     import doctest
     return doctest.testmod()

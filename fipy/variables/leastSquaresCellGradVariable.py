@@ -71,7 +71,7 @@ class _LeastSquaresCellGradVariable(CellVariable):
 
         mat = numerix.sum(mat, axis=2)
 
-        vec = numerix.sum((neighborValue - value) * cellDistanceNormals, axis=1)
+        vec = numerix.array(numerix.sum((neighborValue - value) * cellDistanceNormals, axis=1))
         from fipy.variables.variable import Variable
         if isinstance(vec, Variable):
             vec = vec.copy()

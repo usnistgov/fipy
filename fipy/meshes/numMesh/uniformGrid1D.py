@@ -42,6 +42,7 @@ from fipy.tools.numerix import MA
 from fipy.meshes.numMesh.grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
+from fipy.tools import parallel
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
@@ -56,20 +57,37 @@ class UniformGrid1D(Grid1D):
         [[ 0.5  1.5  2.5]]
          
     """
-    def __init__(self, dx = 1., nx = 1, origin = (0,)):
+    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, parallelModule=parallel):
+        origin = numerix.array(origin)
+        
+        self.args = {
+            'dx': dx, 
+            'nx': nx, 
+            'origin': origin, 
+            'overlap': overlap
+        }
+        
         self.dim = 1
         
-        self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        self.dx = PhysicalField(value=dx)
+        scale = PhysicalField(value=1, unit=self.dx.getUnit())
         self.dx /= scale
         
-        self.origin = PhysicalField(value = origin)
-        self.origin /= scale
+        nx = int(nx)
         
-        self.nx = int(nx)
+        (self.nx,
+         self.overlap,
+         self.offset) = self._calcParallelGridInfo(nx, overlap, parallelModule)
+        
+        self.origin = PhysicalField(value=origin)
+        self.origin /= scale
+        self.origin += self.offset * self.dx
         
         self.numberOfVertices = self.nx + 1
-        self.numberOfFaces = self.nx + 1
+        if self.nx == 0:
+            self.numberOfFaces = 0
+        else:
+            self.numberOfFaces = self.nx + 1
         self.numberOfCells = self.nx
         
         self.exteriorFaces = self.getFacesLeft() | self.getFacesRight()
@@ -80,13 +98,19 @@ class UniformGrid1D(Grid1D):
             'volume': 1.
         }
         
-        self.setScale(value = scale)
+        self.setScale(value=scale)
         
     def _translate(self, vector):
-        return UniformGrid1D(dx = self.dx, nx = self.nx, origin = self.origin + vector)
+        return UniformGrid1D(dx=self.dx, 
+                             nx=self.args['nx'], 
+                             origin=self.args['origin'] + numerix.array(vector),
+                             overlap=self.args['overlap'])
 
     def __mul__(self, factor):
-        return UniformGrid1D(dx = self.dx * factor, nx = self.nx, origin = self.origin * factor)
+        return UniformGrid1D(dx=self.dx * factor,
+                             nx=self.args['nx'],
+                             origin=self.args['origin'] * factor,
+                             overlap=self.args['overlap'])
 
     def _getConcatenableMesh(self):
         from fipy.meshes.numMesh.mesh1D import Mesh1D
@@ -97,16 +121,22 @@ class UniformGrid1D(Grid1D):
     def _concatenate(self, other, smallNumber):
         """
         Following test was added due to a bug in adding Meshes.
-        
-            >>> a = UniformGrid1D(nx=10) + 10
-            >>> print a.getCellCenters()[0,0]
-            10.5
+
+            >>> a = UniformGrid1D(nx=10) + (10,)
+            >>> print a.getCellCenters()
+            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
             >>> b = 10 + UniformGrid1D(nx=10)
-            >>> print b.getCellCenters()[0,0]
-            10.5
-            >>> c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
-            >>> print c.getCellCenters()[0,-1]
-            19.5
+            >>> print b.getCellCenters()
+            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
+            
+            >>> from fipy.tools import parallel
+            >>> if parallel.Nproc == 1:
+            ...     c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
+            >>> print (parallel.Nproc > 1 
+            ...        or numerix.allclose(c.getCellCenters()[0],
+            ...                            [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
+            ...                            12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]))
+            True
             
         """
         return self._getConcatenableMesh()._concatenate(other = other, smallNumber = smallNumber)
@@ -128,29 +158,33 @@ class UniformGrid1D(Grid1D):
             
     def _getCellFaceOrientations(self):
         orientations = CellVariable(mesh=self, value=1., elementshape=(2,))
-        orientations[0] *= -1
-        orientations[0,0] = 1
+        if self.numberOfCells > 0:
+            orientations[0] *= -1
+            orientations[0,0] = 1
         return orientations
         
     def _getAdjacentCellIDs(self):
         c1 = numerix.arange(self.numberOfFaces)
         ids = numerix.array((c1 - 1, c1))
-        ids[0,0] = ids[1,0]
-        ids[1,-1] = ids[0,-1]
+        if self.numberOfFaces > 0:
+            ids[0,0] = ids[1,0]
+            ids[1,-1] = ids[0,-1]
         return (FaceVariable(mesh=self, value=ids[0]), 
                 FaceVariable(mesh=self, value=ids[1]))
 
     def _getCellToCellIDs(self):
         c1 = numerix.arange(self.numberOfCells)
         ids = MA.array((c1 - 1, c1 + 1))
-        ids[0,0] = MA.masked
-        ids[1,-1] = MA.masked
+        if self.numberOfCells > 0:
+            ids[0,0] = MA.masked
+            ids[1,-1] = MA.masked
         return CellVariable(mesh=self, value=ids)
 
     def _getCellToCellIDsFilled(self):
         ids = self._getCellToCellIDs().filled().copy()
-        ids[0,0] = 0
-        ids[1,-1] = self.numberOfCells - 1
+        if self.numberOfCells > 0:
+            ids[0,0] = 0
+            ids[1,-1] = self.numberOfCells - 1
         return ids
         
     def _getMaxFacesPerCell(self):
@@ -164,9 +198,10 @@ class UniformGrid1D(Grid1D):
     def getFaceCellIDs(self):
         c1 = numerix.arange(self.numberOfFaces)
         ids = MA.array((c1 - 1, c1))
-        ids[0,0] = ids[1,0]
-        ids[1,0] = MA.masked
-        ids[1,-1] = MA.masked
+        if self.numberOfFaces > 0:
+            ids[0,0] = ids[1,0]
+            ids[1,0] = MA.masked
+            ids[1,-1] = MA.masked
         return FaceVariable(mesh=self, value=ids, elementshape=(2,))
 
 ##     get geometry methods
@@ -180,7 +215,8 @@ class UniformGrid1D(Grid1D):
         faceNormals = FaceVariable(mesh=self, value=1., rank=1)
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
-        faceNormals[...,0] *= -1
+        if self.numberOfFaces > 0:
+            faceNormals[...,0] *= -1
         return faceNormals
 
     def _getFaceCellToCellNormals(self):
@@ -189,7 +225,7 @@ class UniformGrid1D(Grid1D):
     def getCellVolumes(self):
         return CellVariable(mesh=self, value=self.dx)
 
-    def getCellCenters(self):
+    def _getCellCenters(self):
         return CellVariable(mesh=self,
                             value=((numerix.arange(self.numberOfCells)[numerix.NewAxis, ...] + 0.5) 
                                    * self.dx + self.origin) * self.scale['length'],
@@ -198,14 +234,16 @@ class UniformGrid1D(Grid1D):
     def _getCellDistances(self):
         distances = FaceVariable(mesh=self, value=0.)
         distances[1:-1] = self.dx
-        distances[0] = self.dx / 2.
-        distances[-1] = self.dx / 2.
+        if len(distances) > 0:
+            distances[0] = self.dx / 2.
+            distances[-1] = self.dx / 2.
         return distances
 
     def _getFaceToCellDistanceRatio(self):
         distances = FaceVariable(mesh=self, value=0.5)
-        distances[0] = 1
-        distances[-1] = 1
+        if len(distances) > 0:
+            distances[0] = 1
+            distances[-1] = 1
         return distances
 
     def _getOrientedAreaProjections(self):
@@ -229,13 +267,15 @@ class UniformGrid1D(Grid1D):
     def _getCellToCellDistances(self):
         distances = MA.zeros((2, self.numberOfCells), 'd')
         distances[:] = self.dx
-        distances[0,0] = self.dx / 2.
-        distances[1,-1] = self.dx / 2.
+        if self.numberOfCells > 0:
+            distances[0,0] = self.dx / 2.
+            distances[1,-1] = self.dx / 2.
         return CellVariable(mesh=self, value=distances, elementshape=(2,))
 
     def _getCellNormals(self):
         normals = CellVariable(mesh=self, value=1., elementshape=(1,2))
-        normals[:,0] = -1
+        if self.numberOfCells > 0:
+            normals[:,0] = -1
         return normals
 
     def _getCellAreas(self):
@@ -275,13 +315,17 @@ class UniformGrid1D(Grid1D):
            [1]
            >>> m0 = Grid1D(nx=2, dx=1.)
            >>> m1 = Grid1D(nx=4, dx=.5)
-           >>> print m0._getNearestCellID(m1.getCellCenters())
+           >>> print m0._getNearestCellID(m1.getCellCenters().getGlobalValue())
            [0 0 1 1]
            
         """
-        x0, = self.getCellCenters()[...,0]        
+        nx = self.globalNumberOfCells
+        
+        if nx == 0:
+            return numerix.arange(0)
+            
+        x0, = self.getCellCenters().getGlobalValue()[...,0]        
         xi, = points
-        nx, = self.getShape()
         dx = self.dx
         
         i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')

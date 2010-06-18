@@ -40,6 +40,7 @@ from fipy.meshes.numMesh.mesh import Mesh
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
+from fipy.tools import parallel
 
 class Grid3D(Mesh):
     """
@@ -57,16 +58,24 @@ class Grid3D(Mesh):
 
     Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
     """
-    def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None):
-        self.nx = nx
-        self.ny = ny
-        self.nz = nz
+    def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, parallelModule=parallel):
+        
+        self.args = {
+            'dx': dx, 
+            'dy': dy,
+            'dz' :dz,
+            'nx': nx, 
+            'ny': ny,
+            'nz': nz,
+            'overlap': overlap,
+            'parallelModule': parallelModule
+        }
         
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
         
-        self.nx = self._calcNumPts(d = self.dx, n = nx, axis = "x")
+        nx = self._calcNumPts(d = self.dx, n = nx, axis = "x")
         
         self.dy = PhysicalField(value = dy)
         if self.dy.getUnit().isDimensionless():
@@ -74,7 +83,7 @@ class Grid3D(Mesh):
         else:
             self.dy /= scale
 
-        self.ny = self._calcNumPts(d = self.dy, n = ny, axis = "y")
+        ny = self._calcNumPts(d = self.dy, n = ny, axis = "y")
         
         self.dz = PhysicalField(value = dz)
         if self.dz.getUnit().isDimensionless():
@@ -82,31 +91,106 @@ class Grid3D(Mesh):
         else:
             self.dz /= scale
         
-        self.nz = self._calcNumPts(d = self.dz, n = nz, axis = "z")
+        nz = self._calcNumPts(d = self.dz, n = nz, axis = "z")
+
+        (self.nx,
+         self.ny,
+         self.nz,
+         self.overlap,
+         self.offset) = self._calcParallelGridInfo(nx, ny, nz, overlap, parallelModule)
+
+        if numerix.getShape(self.dx) is not ():
+            Xoffset = numerix.sum(self.dx[0:self.offset[0]])
+            self.dx = self.dx[self.offset[0]:self.offset[0] + self.nx]
+        else:
+            Xoffset = 0
+
+        if numerix.getShape(self.dy) is not ():
+            Yoffset =  numerix.sum(self.dy[0:self.offset[1]])
+            self.dy = self.dy[self.offset[1]:self.offset[1] + self.ny]
+        else:
+            Yoffset = 0
+
+        if numerix.getShape(self.dy) is not ():
+            Zoffset =  numerix.sum(self.dz[0:self.offset[2]])
+            self.dz = self.dz[self.offset[2]:self.offset[2] + self.nz]
+        else:
+            Zoffset = 0
+
+        if self.nx == 0 or self.ny == 0 or self.nz == 0:
+            self.nx = 0
+            self.ny = 0
+            self.nz = 0
+
+        if self.nx == 0 or self.ny == 0 or self.nz == 0:
+            self.numberOfHorizontalRows = 0
+            self.numberOfVerticalColumns = 0
+            self.numberOfLayersDeep = 0
+        else:
+            self.numberOfHorizontalRows = (self.ny + 1)
+            self.numberOfVerticalColumns = (self.nx + 1)
+            self.numberOfLayersDeep = (self.nz + 1)
+            
+        self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns * self.numberOfLayersDeep
         
-        self.numberOfVertices = (self.nx + 1) * (self.ny + 1) * (self.nz + 1)
-        
-        vertices = self._createVertices()
+        vertices = self._createVertices() + ((Xoffset,), (Yoffset,), (Zoffset,))
         faces = self._createFaces()
         cells = self._createCells()
         Mesh.__init__(self, vertices, faces, cells)
         
         self.setScale(value = scale)
+
+    def _calcParallelGridInfo(self, nx, ny, nz, overlap, parallelModule):
         
+        procID = parallelModule.procID
+        Nproc = parallelModule.Nproc
+
+        overlap = min(overlap, nz)
+        cellsPerNode = max(int(nz / Nproc), overlap)
+        occupiedNodes = min(int(nz / (cellsPerNode or 1)), Nproc)
+            
+        overlap = {
+            'left': 0,
+            'right': 0,
+            'bottom' : 0,
+            'top' : 0,
+            'front': overlap * (procID > 0) * (procID < occupiedNodes),
+            'back': overlap * (procID < occupiedNodes - 1)
+        }
+        
+        offset = (0,
+                  0,
+                  min(procID, occupiedNodes-1) * cellsPerNode - overlap['front'])
+                
+        local_nx = nx
+        local_ny = ny
+        local_nz = cellsPerNode * (procID < occupiedNodes)
+        
+        if procID == occupiedNodes - 1:
+            local_nz += (nz - cellsPerNode * occupiedNodes)
+        local_nz = local_nz + overlap['front'] + overlap['back']
+        
+        self.globalNumberOfCells = nx * ny * nz
+        self.globalNumberOfFaces = nx * nz * (ny + 1) + ny * nz * (nx + 1) + nx * ny * (nz + 1)
+        
+        return local_nx, local_ny, local_nz, overlap, offset
+
     def __repr__(self):
         return "%s(dx=%s, dy=%s, dz=%s, nx=%d, ny=%d, nz=%d)" \
-            % (self.__class__.__name__, `self.dx`, `self.dy`, `self.dz`, self.nx, self.ny, self.nz)
+            % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), str(self.args["dz"]), 
+               self.args["nx"], self.args["ny"], self.args["nz"])
 
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
         x = numerix.resize(x, (self.numberOfVertices,))
         
         y = self._calcVertexCoordinates(self.dy, self.ny)
-        y = numerix.repeat(y, self.nx + 1)
+        y = numerix.repeat(y, self.numberOfVerticalColumns)
         y = numerix.resize(y, (self.numberOfVertices,))
         
-        z = self._calcVertexCoordinates(d = self.dz, n = self.nz)
-        z = numerix.repeat(z, (self.nx + 1) * (self.ny + 1))
+        z = self._calcVertexCoordinates(self.dz, self.nz)
+        z = numerix.repeat(z, self.numberOfHorizontalRows * self.numberOfVerticalColumns)
+        z = numerix.resize(z, (self.numberOfVertices,))
         
         return numerix.array((x, y, z))
     
@@ -255,23 +339,53 @@ class Grid3D(Mesh):
 
     def _isOrthogonal(self):
         return True
+
+    def _getGlobalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
         
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange((self.offset[2] + self.overlap['front']) * self.nx * self.ny, 
+                              (self.offset[2] + self.nz - self.overlap['back']) * self.nx * self.ny)
+
+    def _getGlobalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        
+        return numerix.arange(self.offset[2] * self.nx * self.ny, (self.offset[2] + self.nz) * self.nx * self.ny)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.overlap['front'] * self.nx * self.ny, 
+                              (self.nz - self.overlap['back']) * self.nx * self.ny)
+
+    def _getLocalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(0, self.ny * self.nx * self.nz)
+       
 ## pickling
 
     def __getstate__(self):
-        dict = {
-            'dx' : self.dx,            
-            'dy' : self.dy,
-            'dz' : self.dz,
-            'nx' : self.nx,
-            'ny' : self.ny,
-            'nz' : self.nz
-            }
-        return dict
+        return self.args
 
     def __setstate__(self, dict):
-        self.__init__(dx = dict['dx'], dy = dict['dy'], dz = dict['dz'], nx = dict['nx'], ny = dict['ny'], nz = dict['nz'])
-
+        self.__init__(**dict)
 
     def _test(self):
         """
@@ -286,11 +400,13 @@ class Grid3D(Mesh):
             >>> nz = 1
             
             >>> mesh = Grid3D(nx = nx, ny = ny, nz = nz, dx = dx, dy = dy, dz = dz)
-            
-            >>> print mesh._getAdjacentCellIDs()[0]
-            [0 1 2 3 4 5 0 1 2 3 4 5 0 1 2 0 1 2 3 4 5 0 0 1 2 3 3 4 5]
-            >>> print mesh._getAdjacentCellIDs()[1]
-            [0 1 2 3 4 5 0 1 2 3 4 5 0 1 2 3 4 5 3 4 5 0 1 2 2 3 4 5 5]
+
+            >>> adjacentCellIDs = (numerix.array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 0,
+            ...                               1, 2, 3, 4, 5, 0, 0, 1, 2, 3, 3, 4, 5]),
+            ...                numerix.array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3,
+            ...                               4, 5, 3, 4, 5, 0, 1, 2, 2, 3, 4, 5, 5]))
+            >>> print parallel.procID > 0 or numerix.allequal(mesh._getAdjacentCellIDs(), adjacentCellIDs)
+            True
 
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 
             ...                            0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
@@ -300,15 +416,15 @@ class Grid3D(Mesh):
             ...                            1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.)))
             >>> vertices *= numerix.array([[dx], [dy], [dz]])
             
-            >>> numerix.allequal(vertices, mesh._createVertices())
-            1
+            >>> print parallel.procID > 0 or numerix.allequal(vertices, mesh._createVertices())
+            True
         
             >>> faces = numerix.array(((0, 1, 2, 4,  5,  6, 12, 13, 14, 16, 17, 18,  0,  1,  2,  4,  5,  6,  8,  9, 10,  0,  1,  2,  3,  4,  5,  6,  7),
             ...                        (1, 2, 3, 5,  6,  7, 13, 14, 15, 17, 18, 19,  1,  2,  3,  5,  6,  7,  9, 10, 11,  4,  5,  6,  7,  8,  9, 10, 11),
             ...                        (5, 6, 7, 9, 10, 11, 17, 18, 19, 21, 22, 23, 13, 14, 15, 17, 18, 19, 21, 22, 23, 16, 17, 18, 19, 20, 21, 22, 23),
             ...                        (4, 5, 6, 8,  9, 10, 16, 17, 18, 20, 21, 22, 12, 13, 14, 16, 17, 18, 20, 21, 22, 12, 13, 14, 15, 16, 17, 18, 19)))
-            >>> numerix.allequal(faces, mesh._createFaces())
-            1
+            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces())
+            True
 
             >>> cells = numerix.array(((21, 22, 23, 25, 26, 27),
             ...                        (22, 23, 24, 26, 27, 28),
@@ -316,24 +432,24 @@ class Grid3D(Mesh):
             ...                        (15, 16, 17, 18, 19, 20),
             ...                        ( 0,  1,  2,  3,  4,  5),
             ...                        ( 6,  7,  8,  9, 10, 11)))
-            >>> numerix.allequal(cells, mesh._createCells())
-            1
+            >>> print parallel.procID > 0 or numerix.allequal(cells, mesh._createCells())
+            True
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
-            >>> print numerix.allequal(externalFaces, 
-            ...                        numerix.nonzero(mesh.getExteriorFaces()))
-            1
+            >>> print parallel.procID > 0 or numerix.allequal(externalFaces, 
+            ...                              numerix.nonzero(mesh.getExteriorFaces()))
+            True
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
-            >>> print numerix.allequal(internalFaces, 
-            ...                        numerix.nonzero(mesh.getInteriorFaces()))
-            1
+            >>> print parallel.procID > 0 or  numerix.allequal(internalFaces, 
+            ...                               numerix.nonzero(mesh.getInteriorFaces()))
+            True
 
             >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values((( 0,  1,  2,  3,  4,  5,  0,  1,  2,  3,  4,  5,  0,  1,  2,  0, 1, 2,  3,  4,  5,  0, 0, 1,  2,  3, 3, 4,  5),
             ...                                 (-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  3, 4, 5, -1, -1, -1, -1, 1, 2, -1, -1, 4, 5, -1)), -1)
-            >>> print numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
-            1
+            >>> print parallel.procID > 0 or numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
+            True
             
             >>> xy = dx * dy
             >>> xz = dx * dz
@@ -341,20 +457,19 @@ class Grid3D(Mesh):
             >>> faceAreas = numerix.array((xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy,
             ...                            xz, xz, xz, xz, xz, xz, xz, xz, xz,
             ...                            yz, yz, yz, yz, yz, yz, yz, yz))
-            >>> print numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            True
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:] + faceCoords[...,2,:] + faceCoords[...,3,:]) / 4.
-            >>> print numerix.allclose(faceCenters, mesh.getFaceCenters(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> faceNormals = numerix.array((( 0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0,  0,  0,  0, 0, 0, 0, 0, 0, 0, -1, 1, 1, 1, -1, 1, 1, 1),
             ...                              ( 0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, -1, -1, -1, 1, 1, 1, 1, 1, 1,  0, 0, 0, 0,  0, 0, 0, 0),
             ...                              (-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1,  0,  0,  0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0)))
-            >>> numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> cellToFaceOrientations = numerix.array(((1, -1, -1, 1, -1, -1),
             ...                                         (1, 1, 1, 1, 1, 1),
@@ -362,87 +477,79 @@ class Grid3D(Mesh):
             ...                                         (1, 1, 1, 1, 1, 1),
             ...                                         (1, 1, 1, 1, 1, 1),
             ...                                         (1, 1, 1, 1, 1, 1)))
-            >>> print numerix.allequal(cellToFaceOrientations, 
-            ...                        mesh._getCellFaceOrientations())
-            1
+            >>> print parallel.procID > 0 or numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
+            True
                                              
             >>> cellVolumes = numerix.array((dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz))
-            >>> print numerix.allclose(cellVolumes, mesh.getCellVolumes(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2.,    dx/2., 3.*dx/2., 5.*dx/2.),
             ...                              (dy/2.,    dy/2.,    dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2.),
             ...                              (dz/2.,    dz/2.,    dz/2.,    dz/2.,    dz/2.,    dz/2.)))
-            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            True
                                               
             >>> faceToCellDistances = MA.masked_values(((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2),
             ...                                         (  -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1, dy/2, dy/2, dy/2,   -1,   -1,   -1,   -1, dx/2, dx/2,   -1,   -1, dx/2,   -1)), -1) 
-            >>> print numerix.allclose(faceToCellDistances, 
-            ...                        mesh._getFaceToCellDistances(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
             1
                                               
             >>> cellDistances = numerix.array((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2,
             ...                                dy/2, dy/2, dy/2, dy, dy, dy, dy/2, dy/2, dy/2,
             ...                                dx/2, dx, dx, dx/2, dx/2, dx, dx, dx/2))
-            >>> print numerix.allclose(cellDistances, mesh._getCellDistances(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
+            True
             
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> print numerix.allclose(faceToCellDistanceRatios, 
-            ...                        mesh._getFaceToCellDistanceRatio(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> print numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> tangents1 = numerix.array(((1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> tangents2 = numerix.array(((0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)))
-            >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            True
 
-            >>> print mesh._getCellToCellIDs()
-            [[-- 0 1 -- 3 4]
-             [1 2 -- 4 5 --]
-             [-- -- -- 0 1 2]
-             [3 4 5 -- -- --]
-             [-- -- -- -- -- --]
-             [-- -- -- -- -- --]]
+            >>> cellToCellIDs = MA.masked_values(((-1, 0, 1, -1, 3, 4),
+            ...                                   (1, 2, -1, 4, 5, -1),
+            ...                                   (-1, -1, -1, 0, 1, 2),
+            ...                                   (3, 4, 5, -1, -1, -1),
+            ...                                   (-1, -1, -1, -1, -1, -1),
+            ...                                   (-1, -1, -1, -1, -1, -1)), -1)
+            >>> print parallel.procID > 0 or numerix.allequal(mesh._getCellToCellIDs(), cellToCellIDs)
+            True
 
-            >>> print mesh._getCellToCellIDsFilled()
-            [[0 0 1 3 3 4]
-             [1 2 2 4 5 5]
-             [0 1 2 0 1 2]
-             [3 4 5 3 4 5]
-             [0 1 2 3 4 5]
-             [0 1 2 3 4 5]]
+            >>> cellToCellIDsFilled = numerix.array(((0, 0, 1, 3, 3, 4),
+            ...                                      (1, 2, 2, 4, 5, 5),
+            ...                                      (0, 1, 2, 0, 1, 2),
+            ...                                      (3, 4, 5, 3, 4, 5),
+            ...                                      (0, 1, 2, 3, 4, 5),
+            ...                                      (0, 1, 2, 3, 4, 5)))            
+            >>> print parallel.procID > 0 or numerix.allequal(mesh._getCellToCellIDsFilled(), cellToCellIDsFilled)
+            True
 
-            >>> cellToCellDistances = numerix.take(cellDistances, cells, axis=-1)
-            >>> print numerix.allclose(cellToCellDistances, 
-            ...                        mesh._getCellToCellDistances(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> cellToCellDistances = numerix.take(cellDistances, cells)
+            >>> print parallel.procID > 0 or numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> interiorCellIDs = numerix.array(())
             >>> print numerix.allequal(interiorCellIDs, mesh._getInteriorCellIDs())
-            1
+            True
 
             >>> exteriorCellIDs = numerix.array((0, 1, 2, 3, 4, 5))
-            >>> print numerix.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
-            1
+            >>> print parallel.procID > 0 or numerix.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
+            True
 
             >>> cellNormals = numerix.array((((-1, -1, -1, -1, -1, -1),
             ...                               ( 1,  1,  1,  1,  1,  1),
@@ -462,9 +569,8 @@ class Grid3D(Mesh):
             ...                               ( 0,  0,  0,  0,  0,  0),
             ...                               (-1, -1, -1, -1, -1, -1),
             ...                               ( 1,  1,  1,  1,  1,  1))))
-            >>> print numerix.allclose(cellNormals, mesh._getCellNormals(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> cellAreaProjections = numerix.array((((-yz, -yz, -yz, -yz, -yz, -yz),
             ...                                       ( yz,  yz,  yz,  yz,  yz,  yz),
@@ -484,10 +590,8 @@ class Grid3D(Mesh):
             ...                                       (  0,   0,   0,   0,   0,   0),
             ...                                       (-xy, -xy, -xy, -xy, -xy, -xy),
             ...                                       ( xy,  xy,  xy,  xy,  xy,  xy))))
-            >>> print numerix.allclose(cellAreaProjections, 
-            ...                        mesh._getCellAreaProjections(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> cellVertexIDs = numerix.array((17, 16, 13, 12, 5, 4, 1, 0))
             >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
@@ -495,22 +599,21 @@ class Grid3D(Mesh):
             >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
 
 
-            >>> print numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
-            1
+            >>> print parallel.procID > 0 or numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            True
 
             >>> from fipy.tools import dump
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.getCellCenters(), 
-            ...                        unpickledMesh.getCellCenters())
-            1
+            >>> print numerix.allclose(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            True
 
             The following test was for a bug when dx, dy or dz are arrays.
             The _calcFaceAreas() method was commented out to fix this.
 
             >>> Grid3D(nx=2., ny=2., nz=2., dx=(1., 2.), dy=(1., 2.), dz=(1., 2.))
-            Grid3D(dx=array([ 1.,  2.]), dy=(1.0, 2.0), dz=(1.0, 2.0), nx=2, ny=2, nz=2)
+            Grid3D(dx=(1.0, 2.0), dy=(1.0, 2.0), dz=(1.0, 2.0), nx=2, ny=2, nz=2)
         """
 
 def _test():

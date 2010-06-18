@@ -514,14 +514,14 @@ non-linear problem to convergence. We use the "residual" of the equations
 equations) as a test for how long to sweep. Because of the
 :class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for ``diffusionEq`` is asymmetric
 and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver`. Therefore, we use a
-:class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` for this equation.
+:class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
 
-.. index:: LinearLUSolver, solve, sweep
+.. index:: DefaultAsymmetricSolver, solve, sweep
 
-We now use the ":meth:`sweep`" method instead of ":meth:`solve`" because we
+We now use the ":meth:`~fipy.terms.Term.sweep`" method instead of ":meth:`~fipy.terms.Term.solve`" because we
 require the residual.
 
->>> solver = LinearLUSolver(tolerance=1e-10)
+>>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
@@ -541,10 +541,11 @@ require the residual.
 We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
 
->>> print Cs.allclose(C[0], atol=2e-4)
-1
->>> print Cl.allclose(C[nx-1], atol=2e-4)
-1
+>>> X = mesh.getFaceCenters()[0]
+>>> print Cs.allclose(C.getFaceValue()[X==0], atol=2e-4)
+True
+>>> print Cl.allclose(C.getFaceValue()[X==L], atol=2e-4)
+True
 
 and that the phase fraction remains unchanged
 

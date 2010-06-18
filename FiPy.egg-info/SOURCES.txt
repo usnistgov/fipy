@@ -48,17 +48,8 @@ documentation/tutorial/index.txt
 examples/README.txt
 examples/__init__.py
 examples/test.py
-examples/benchmarking/__init__.py
-examples/benchmarking/anisotropy.py
 examples/benchmarking/benchmarker.py
-examples/benchmarking/cahnHilliard.py
-examples/benchmarking/mesh.py
-examples/benchmarking/phaseImpingement.py
-examples/benchmarking/size.py
 examples/benchmarking/steps.py
-examples/benchmarking/superfill.py
-examples/benchmarking/transientPulse.py
-examples/benchmarking/utils.py
 examples/benchmarking/versions.py
 examples/cahnHilliard/__init__.py
 examples/cahnHilliard/mesh2D.py

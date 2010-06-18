@@ -75,7 +75,7 @@ class UpwindConvectionTerm(ConvectionTerm):
                 }
             """,
             alpha = alpha, P = P,
-            ni = len(self.mesh.getFaces())
+            ni = self.mesh._getNumberOfFaces()
             )
 
             return self._makeValue(value = alpha)

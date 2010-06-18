@@ -106,7 +106,7 @@ class Mesh2D(Mesh):
         return newmesh
 
     def _concatenate(self, other, smallNumber):
-        return Mesh2D(**self._getAddedMeshValues(other, smallNumber))
+        return Mesh2D(**self._getAddedMeshValues(other._getConcatenableMesh(), smallNumber))
 
     def _getOrderedCellVertexIDs(self):
         cellVertexIDs = self._getFaceVertexIDs()[..., self._getCellFaceIDs()]
@@ -313,9 +313,8 @@ class Mesh2D(Mesh):
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2., 3.*dx+dx/3., 3.*dx+dx/3.),
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2., 2.*dy/3., 4.*dy/3.)))
-            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), 
-            ...                        atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            True
                                               
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., 
             ...                                          dy / 2., dy / 2., dy / 2., 
@@ -454,7 +453,7 @@ class Mesh2D(Mesh):
             >>> unpickledMesh = dump.read(filename, f)
 
             >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
-            1
+            True
 
             
 

@@ -39,41 +39,42 @@ One can then solve the same problem as in
 mesh and no boundary conditions. The periodic mesh is used to simulate
 periodic boundary conditions.
 
-    >>> from fipy import *
+>>> from fipy import *
 
-    >>> nx = 50
-    >>> dx = 1.
-    >>> mesh = PeriodicGrid1D(nx = nx, dx = dx)
+>>> nx = 50
+>>> dx = 1.
+>>> mesh = PeriodicGrid1D(nx = nx, dx = dx)
 
 The variable is initially a line varying form `valueLeft` to `valueRight`.
 
-    >>> valueLeft = 0
-    >>> valueRight = 1
-    >>> x = mesh.getCellCenters()[0]
-    >>> Lx = nx * dx
-    >>> initialArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> var = CellVariable(name = "solution variable", mesh = mesh,
-    ...                                                value = initialArray)
+>>> valueLeft = 0
+>>> valueRight = 1
+>>> x = mesh.getCellCenters()[0]
 
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=var, datamin=0., datamax=1.)
-    ...     viewer.plot()
-    ...     raw_input("press key to continue")
+>>> Lx = nx * dx
+>>> initialArray = valueLeft + (valueRight - valueLeft) * x / Lx
+>>> var = CellVariable(name = "solution variable", mesh = mesh,
+...                                                value = initialArray)
+
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=var, datamin=0., datamax=1.)
+...     viewer.plot()
+...     raw_input("press key to continue")
     
 
 A `TransientTerm` is used to provide some fixed point, otherwise the
 solver has no fixed value and can become unstable.
     
-    >>> eq = TransientTerm(coeff = 1e-7) - DiffusionTerm()
-    >>> eq.solve(var = var)
+>>> eq = TransientTerm(coeff=1e-8) - DiffusionTerm()
+>>> eq.solve(var=var)
 
-    >>> if __name__ == '__main__':
-    ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer.plot()
 
 The result of the calculation will be the average value over the domain.
 
-   >>> var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5).getValue()
-   1
+>>> print var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5)
+1
    
 """
 

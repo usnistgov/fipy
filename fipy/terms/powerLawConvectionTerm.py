@@ -68,8 +68,8 @@ class PowerLawConvectionTerm(ConvectionTerm):
                 >>> from fipy.variables.faceVariable import FaceVariable
                 >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
                 >>> alpha = PowerLawConvectionTerm._Alpha(P)
-                >>> print numerix.allclose(alpha, (0.5, 1, 0.5, 0.5))
-                1
+                >>> print numerix.allclose(alpha, [ 0.5,  1.,   0.5 , 0.5])
+                True
                 
             """
             
@@ -114,7 +114,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		}
 	    """,
 	    alpha = alpha, eps = eps, P = P,
-	    ni = len(self.mesh.getFaces())
+	    ni = self.mesh._getNumberOfFaces()
 	    )
 
             return self._makeValue(value = alpha)

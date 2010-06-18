@@ -39,7 +39,7 @@ from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from convectionCoeff import _ConvectionCoeff
 from fipy.boundaryConditions.fixedValue import FixedValue
-from fipy.solvers import LinearLUSolver
+from fipy.solvers import DefaultAsymmetricSolver
 
 class SurfactantEquation:
     """
@@ -68,7 +68,7 @@ class SurfactantEquation:
         self.bc = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
         self.eq = transientTerm - convectionTerm
 
-    def solve(self, var, boundaryConditions = (), solver=LinearLUSolver(), dt = 1.):
+    def solve(self, var, boundaryConditions = (), solver=DefaultAsymmetricSolver(), dt = 1.):
         """
         Builds and solves the `SurfactantEquation`'s linear system once.
                 
@@ -86,7 +86,7 @@ class SurfactantEquation:
                       boundaryConditions = self.bc + boundaryConditions,
                       solver = solver)
 
-    def sweep(self, var, solver=LinearLUSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var, solver=DefaultAsymmetricSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying

@@ -58,7 +58,10 @@ script. Firstly, setup the parameters.
 
 Construct the mesh.
 
->>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
+.. index:: Grid2D
+
+>>> from fipy.tools import serial
+>>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, parallelModule=serial)
 
 Construct a `distanceVariable` object.
 
@@ -93,8 +96,9 @@ The result can be tested with the following commands.
 >>> v3 = evalCell(m1,  m1,  dx, dy)[1]
 >>> v4 = evalCell(v3, dY, dx, dy)[1]
 >>> v5 = evalCell(dX, v3, dx, dy)[1]
->>> MASK = -1000
->>> trialValues = MA.masked_values((
+>>> MASK = -1000.
+>>> trialValues = CellVariable(mesh=mesh, value= \
+...     numerix.array((   
 ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
 ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
 ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
@@ -105,11 +109,11 @@ The result can be tested with the following commands.
 ...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
 ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
 ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
-...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 
-...     MASK)
->>> print var.allclose(trialValues)
-1
-   
+...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 'd'))
+
+>>> var[numerix.array(trialValues == MASK)] = MASK
+>>> print numerix.allclose(var, trialValues)
+True
 """
 __docformat__ = 'restructuredtext'
 

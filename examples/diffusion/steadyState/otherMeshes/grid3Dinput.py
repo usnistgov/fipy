@@ -40,8 +40,8 @@ Test case for the Grid3D.
  
    >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
    >>> DiffusionTerm().solve(var2, boundaryConditions = boundaryConditions2)
-   >>> a = array(var)
-   >>> b = array(var2)
+   >>> a = array(var.getGlobalValue())
+   >>> b = array(var2.getGlobalValue())
    >>> c = ravel(array((b, b, b)))
    >>> print allclose(a, c)
    1

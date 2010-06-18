@@ -90,12 +90,20 @@ class Mesh:
         
         The two `Mesh` objects must be properly aligned in order to concatenate them
         
-            >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,)))
+            >>> from fipy.tools import parallel
+            >>> from fipy.meshes.numMesh.mesh import MeshAdditionError
+            >>> if parallel.Nproc == 1:
+            ...     addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
+            ... else:
+            ...     raise MeshAdditionError("Vertices are not aligned")
             Traceback (most recent call last):
             ...
             MeshAdditionError: Vertices are not aligned
 
-            >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
+            >>> if parallel.Nproc == 1:
+            ...     addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
+            ... else:
+            ...     raise MeshAdditionError("Faces are not aligned")
             Traceback (most recent call last):
             ...
             MeshAdditionError: Faces are not aligned
@@ -113,17 +121,22 @@ class Mesh:
             >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
             >>> triMesh = triMesh + ((2,), (0,))
             >>> triAddedMesh = baseMesh + triMesh
-            >>> print triAddedMesh.getCellCenters()
-            [[ 0.5         1.5         0.5         1.5         2.83333333  3.83333333
-               2.5         3.5         2.16666667  3.16666667  2.5         3.5       ]
-             [ 0.5         0.5         1.5         1.5         0.5         0.5
-               0.83333333  0.83333333  0.5         0.5         0.16666667  0.16666667]]
+            >>> cellCenters = [[0.5, 1.5, 0.5, 1.5, 2.83333333,  3.83333333,
+            ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+            ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
+            ...                 0.5, 0.5, 0.16666667, 0.16666667]]
+            >>> print numerix.allclose(triAddedMesh.getCellCenters(),
+            ...                        cellCenters)
+            True
 
         but their faces must still align properly
         
             >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
             >>> triMesh = triMesh + ((2,), (0,))
-            >>> triAddedMesh = baseMesh + triMesh
+            >>> if parallel.Nproc == 1:
+            ...     triAddedMesh = baseMesh + triMesh
+            ... else:
+            ...     raise MeshAdditionError("Faces are not aligned")            
             Traceback (most recent call last):
             ...
             MeshAdditionError: Faces are not aligned
@@ -286,42 +299,157 @@ class Mesh:
     def getDim(self):
         return self.dim
 
-    def _getCellsByID(self, ids = None):
-        pass
-            
-    def getCells(self, ids=None):
+    def _getGlobalNonOverlappingCellIDs(self):
         """
-        Return `Cell` objects of `Mesh`.
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
 
-           >>> from fipy import Grid2D
-           >>> m = Grid2D(nx=2, ny=2)
-           >>> x, y = m.getCellCenters()
-           >>> print m.getCells()[x < 1]
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0)
-            Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
-           >>> print m.getCells(ids=(0, 2))
-           [Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=0)
-            Cell(mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=2), id=2)]
+        E.g., would return [0, 1, 4, 5] for mesh A
 
-        """
-        return self._getCellsByID(ids)
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
         
-    def _getFaces(self):
-        pass
-    
-    def getFaces(self):
+        .. note:: Trivial except for parallel meshes
         """
-        Return `Face` objects of `Mesh`.
+        return numerix.arange(self.numberOfCells)
 
-           >>> from fipy import Grid2D
-           >>> m = Grid2D(nx=2, ny=2)
-           >>> x, y = m.getFaceCenters()
-           >>> print m.getFaces()[x < 1]
-           [0 2 4 6 9]
-
+    def _getGlobalOverlappingCellIDs(self):
         """
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=self._getFaces())
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfCells)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfCells)
+
+    def _getLocalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfCells)
+
+    def _getGlobalNonOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5, 8, 9, 12, 13, 14, 17, 18, 19]
+        for mesh A
+
+            A   ||   B
+        --8---9---10--11--
+       17   18  19  20   21
+        --4---5----6---7--
+       12   13  14  15   16
+        --0---1----2---3--
+                ||
+                
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfFaces)
+
+    def _getGlobalOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 
+        14, 15, 17, 18, 19, 20] for mesh A
+
+            A   ||   B
+        --8---9---10--11--
+       17   18  19  20   21
+        --4---5----6---7--
+       12   13  14  15   16
+        --0---1----2---3--
+                ||
+                
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfFaces)
+
+    def _getLocalNonOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
+        for mesh A
+
+            A   ||   B
+        --6---7-----7---8--
+       13   14 15/14 15   16
+        --3---4-----4---5--
+        9   10 11/10 11   12
+        --0---1-----1---2--
+                ||
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfFaces)
+
+    def _getLocalOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 
+        12, 13, 14, 15, 16] for mesh A
+
+            A   ||   B
+        --6---7----8------
+       13   14  15  16   |
+        --3---4----5------
+        9   10  11  12   |
+        --0---1----2------
+                ||
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfFaces)
 
     def getFacesLeft(self):
         """
@@ -330,18 +458,19 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print ((21, 25)
-            ...        == numerix.nonzero(mesh.getFacesLeft())[0]).all()
-            1
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or ((21, 25)
+            ...                               == numerix.nonzero(mesh.getFacesLeft())[0]).all()
+            True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print ((9, 13)
-            ...        == numerix.nonzero(mesh.getFacesLeft())[0]).all()
-            1
+            >>> print parallel.procID > 0 or ((9, 13)
+            ...                               == numerix.nonzero(mesh.getFacesLeft())[0]).all()
+            True
 
         """
         x = self.getFaceCenters()[0]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == min(x))
+        return FaceVariable(mesh=self, value=x == _madmin(x))
 
     def getFacesRight(self):
         """
@@ -350,18 +479,19 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print ((24, 28)
-            ...        == numerix.nonzero(mesh.getFacesRight())[0]).all()
-            1
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print ((12, 16)
-            ...        == numerix.nonzero(mesh.getFacesRight())[0]).all()
-            1
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or ((24, 28)
+            ...                               == numerix.nonzero(mesh.getFacesRight())[0]).all()
+            True
+            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)    
+            >>> print parallel.procID > 0 or ((12, 16)
+            ...                               == numerix.nonzero(mesh.getFacesRight())[0]).all()
+            True
             
         """
-        x = self.getFaceCenters()[0]        
+        x = self.getFaceCenters()[0]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == max(x))
+        return FaceVariable(mesh=self, value=x == _madmax(x))
 
     def getFacesBottom(self):
         """
@@ -370,18 +500,19 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print ((12, 13, 14)
-            ...        == numerix.nonzero(mesh.getFacesBottom())[0]).all()
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or ((12, 13, 14)
+            ...                               == numerix.nonzero(mesh.getFacesBottom())[0]).all()
             1
             >>> x, y, z = mesh.getFaceCenters()
-            >>> print ((12, 13)
-            ...        == numerix.nonzero(mesh.getFacesBottom() & (x < 1))[0]).all()
+            >>> print parallel.procID > 0 or ((12, 13)
+            ...                               == numerix.nonzero(mesh.getFacesBottom() & (x < 1))[0]).all()
             1
             
         """
-        y = self.getFaceCenters()[1]        
+        y = self.getFaceCenters()[1]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == min(y))
+        return FaceVariable(mesh=self, value=y == _madmin(y))
 
     getFacesDown = getFacesBottom
 
@@ -392,18 +523,19 @@ class Mesh:
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print ((18, 19, 20)
-            ...        == numerix.nonzero(mesh.getFacesTop())[0]).all()
-            1
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or ((18, 19, 20)
+            ...                               == numerix.nonzero(mesh.getFacesTop())[0]).all()
+            True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print ((6, 7, 8)
-            ...        == numerix.nonzero(mesh.getFacesTop())[0]).all()
-            1
+            >>> print parallel.procID > 0 or ((6, 7, 8)
+            ...                               == numerix.nonzero(mesh.getFacesTop())[0]).all()
+            True
             
         """
-        y = self.getFaceCenters()[1]        
+        y = self.getFaceCenters()[1]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == max(y))
+        return FaceVariable(mesh=self, value=y == _madmax(y))
 
     getFacesUp = getFacesTop
 
@@ -414,14 +546,15 @@ class Mesh:
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print ((6, 7, 8, 9, 10, 11)
-            ...        == numerix.nonzero(mesh.getFacesBack())[0]).all()
-            1
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or ((6, 7, 8, 9, 10, 11)
+            ...                               == numerix.nonzero(mesh.getFacesBack())[0]).all()
+            True
 
         """
-        z = self.getFaceCenters()[2]        
+        z = self.getFaceCenters()[2] 
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == max(z))
+        return FaceVariable(mesh=self, value=z == _madmax(z))
 
     def getFacesFront(self):
         """
@@ -430,14 +563,15 @@ class Mesh:
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print ((0, 1, 2, 3, 4, 5)
-            ...        == numerix.nonzero(mesh.getFacesFront())[0]).all()
-            1
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or ((0, 1, 2, 3, 4, 5)
+            ...                               == numerix.nonzero(mesh.getFacesFront())[0]).all()
+            True
 
         """
-        z = self.getFaceCenters()[2]        
+        z = self.getFaceCenters()[2]
         from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == min(z))
+        return FaceVariable(mesh=self, value=z == _madmin(z))
     
     def _getMaxFacesPerCell(self):
         pass
@@ -529,8 +663,12 @@ class Mesh:
     def getCellVolumes(self):
         return self.scaledCellVolumes
 
-    def getCellCenters(self):
+    def _getCellCenters(self):
         return self.scaledCellCenters
+        
+    def getCellCenters(self):
+        from fipy.variables.cellVariable import CellVariable
+        return CellVariable(mesh=self, value=self._getCellCenters(), rank=1)
 
     def _getFaceToCellDistances(self):
         return self.scaledFaceToCellDistances
@@ -615,16 +753,20 @@ class Mesh:
            >>> from fipy import *
            >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
            >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-           >>> print m0._getNearestCellID(m1.getCellCenters())
+           >>> print m0._getNearestCellID(m1.getCellCenters().getGlobalValue())
            [4 5 7 8]
            
         """
-        points = numerix.resize(points, (self.getNumberOfCells(), len(points), len(points[0]))).swapaxes(0,1)
+        if self.globalNumberOfCells == 0:
+            return numerix.arange(0)
+            
+        points = numerix.resize(points, (self.globalNumberOfCells, len(points), len(points[0]))).swapaxes(0,1)
 
+        centers = self.getCellCenters().getGlobalValue()[...,numerix.newaxis]
         try:
-            tmp = self.getCellCenters()[...,numerix.newaxis] - points
+            tmp = centers - points
         except TypeError:
-            tmp = self.getCellCenters()[...,numerix.newaxis] - PhysicalField(points)
+            tmp = centers - PhysicalField(points)
         return numerix.argmin(numerix.dot(tmp, tmp, axis = 0), axis=0)
         
     def _subscribe(self, var):
@@ -661,7 +803,17 @@ class Mesh:
 ## ##     def __setstate__(self, dict):
 ## ##         self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
         
-                      
+def _madmin(x):
+    if len(x) == 0:
+        return 0
+    else:
+        return min(x)
+        
+def _madmax(x):
+    if len(x) == 0:
+        return 0
+    else:
+        return max(x)
     
 def _test():
     import doctest

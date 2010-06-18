@@ -238,7 +238,7 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...
 ...     ## update the pressure using the corrected value but hold one cell fixed
 ...     pressure.setValue(pressure + pressureRelaxation * \
-...                                            (pressureCorrection - pressureCorrection[0]))
+...                                            (pressureCorrection - pressureCorrection.getGlobalValue()[0]))
 ...     ## update the velocity using the corrected pressure
 ...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
 ...                                                ap * mesh.getCellVolumes())
@@ -260,13 +260,12 @@ solution. This argument cannot be passed to :meth:`solve`.
 
 Test values in the last cell.
 
->>> print pressure[...,-1].allclose(145.233883763)
+>>> print numerix.allclose(pressure.getGlobalValue()[...,-1], 145.233883763)
 1
->>> print xVelocity[...,-1].allclose(0.24964673696)
+>>> print numerix.allclose(xVelocity.getGlobalValue()[...,-1], 0.24964673696)
 1
->>> print yVelocity[...,-1].allclose(-0.164498041783)
+>>> print numerix.allclose(yVelocity.getGlobalValue()[...,-1], -0.164498041783)
 1
-
 """
 __docformat__ = 'restructuredtext'
 

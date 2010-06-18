@@ -198,10 +198,12 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     xCells = int(trenchSpacing / 2 / cellSize)
 
+    from fipy.tools import serial
     mesh = Grid2D(dx = cellSize,
                   dy = cellSize,
                   nx = xCells,
-                  ny = yCells)
+                  ny = yCells,
+                  parallelModule=serial)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 
@@ -316,7 +318,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         distanceVar.extendVariable(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
-        advectionEquation.solve(distanceVar, dt = dt) 
+        advectionEquation.solve(distanceVar, dt = dt)
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt, 
                             boundaryConditions = metalEquationBCs)

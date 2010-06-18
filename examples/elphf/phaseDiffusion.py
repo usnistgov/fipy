@@ -206,8 +206,6 @@ If running interactively, we create viewers to display the results
 This problem does not have an analytical solution, so after
 iterating to equilibrium
 
->>> solver = LinearLUSolver()
-
 >>> dt = 10000
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
@@ -215,8 +213,7 @@ iterating to equilibrium
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
 ...         field.equation.solve(var = field, 
-...                              dt = dt,
-...                              solver = solver)
+...                              dt = dt)
 ...     if __name__ == '__main__':    
 ...         viewer.plot()
 
@@ -226,15 +223,13 @@ iterating to equilibrium
 
 we confirm that the far-field phases have remained separated
 
->>> ends = take(phase, (0,-1))
->>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+>>> allclose(phase(((0.,L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
 1
     
 and that the solute concentration field has appropriately segregated into 
 solute-rich and solute-poor phases.
 
->>> ends = take(substitutionals[0], (0,-1))
->>> print allclose(ends, (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
+>>> print allclose(substitutionals[0](((0.,L),)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
 1
 
 The same system of equations can model a quaternary substitutional system as 
@@ -298,8 +293,7 @@ and again iterate to equilibrium
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
 ...         field.equation.solve(var = field, 
-...                              dt = dt,
-...                              solver = solver)
+...                              dt = dt)
 ...     if __name__ == '__main__':    
 ...         viewer.plot()
 
@@ -309,21 +303,17 @@ and again iterate to equilibrium
 
 We confirm that the far-field phases have remained separated
 
->>> ends = take(phase, (0,-1))
->>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+>>> allclose(phase(((0., L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
 1
     
 and that the concentration fields have appropriately segregated into 
 their respective phases
 
->>> ends = take(substitutionals[0], (0,-1))
->>> allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+>>> allclose(substitutionals[0](((0., L),)), (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
 1
->>> ends = take(substitutionals[1], (0,-1))
->>> allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+>>> allclose(substitutionals[1](((0., L),)), (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
 1
->>> ends = take(substitutionals[2], (0,-1))
->>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+>>> allclose(substitutionals[2](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
 1
 
 Finally, we can represent a system that contains both substitutional and 
@@ -393,8 +383,7 @@ and again iterate to equilibrium
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
 ...         field.equation.solve(var = field, 
-...                              dt = dt,
-...                              solver = solver)
+...                              dt = dt)
 ...     if __name__ == '__main__':    
 ...         viewer.plot()
 
@@ -404,21 +393,17 @@ and again iterate to equilibrium
 
 We once more confirm that the far-field phases have remained separated
 
->>> ends = take(phase, (0,-1))
->>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+>>> allclose(phase(((0., L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
 1
     
 and that the concentration fields have appropriately segregated into 
 their respective phases
 
->>> ends = take(interstitials[0], (0,-1))
->>> allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+>>> allclose(interstitials[0](((0., L),)), (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
 1
->>> ends = take(substitutionals[0], (0,-1))
->>> allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+>>> allclose(substitutionals[0](((0., L),)), (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
 1
->>> ends = take(substitutionals[1], (0,-1))
->>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+>>> allclose(substitutionals[1](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
 1
 """
 __docformat__ = 'restructuredtext'

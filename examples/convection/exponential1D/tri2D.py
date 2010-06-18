@@ -64,14 +64,14 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 ... )
 
 >>> diffCoeff = 1.
->>> convCoeff = (0., 10.)
+>>> convCoeff = array(((0.,), (10.,)))
 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
 >>> eq.solve(var = var,
-...          boundaryConditions = boundaryConditions)
-
+...          boundaryConditions = boundaryConditions,
+...          solver=DefaultAsymmetricSolver(iterations=10000))
 
 The analytical solution test for this problem is given by:
 
@@ -80,6 +80,7 @@ The analytical solution test for this problem is given by:
 >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
 >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
+
 >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 
 1
 

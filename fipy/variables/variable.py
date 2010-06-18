@@ -53,7 +53,7 @@ class Variable(object):
     >>> a = Variable(value=3)
     >>> b = 4 * a
     >>> b
-    (Variable(value=3) * 4)
+    (Variable(value=array(3)) * 4)
     >>> b()
     12
         
@@ -62,7 +62,7 @@ class Variable(object):
 
     >>> a.setValue(5)
     >>> b
-    (Variable(value=5) * 4)
+    (Variable(value=array(5)) * 4)
     >>> b()
     20
     """
@@ -109,7 +109,6 @@ class Variable(object):
             name = name or value.name
             value = value._copyValue()
             unit = None
-            array = None
             
         if _bootstrap:
             self.value = value
@@ -678,12 +677,12 @@ class Variable(object):
 
         Returns the Numpy sctype of the underlying array.
 
-            >>> Variable(1).getsctype()
-            <type 'numpy.int32'>
-            >>> Variable(1.).getsctype()
-            <type 'numpy.float64'>
-            >>> Variable((1,1.)).getsctype()
-            <type 'numpy.float64'>
+            >>> Variable(1).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            True
+            >>> Variable(1.).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            True
+            >>> Variable((1,1.)).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            True
             
         """
         
@@ -1129,22 +1128,21 @@ class Variable(object):
         """
         This test case has been added due to a weird bug that was appearing.
 
-            >>> a = Variable(value=(0, 0, 1, 1))
-            >>> b = Variable(value=(0, 1, 0, 1))
-            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
-            True
-            >>> print a & b
-            [0 0 0 1]
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx=4)
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
-            >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
-            True
-            >>> print a & b
-            [0 0 0 1]
-
+        >>> a = Variable(value=(0, 0, 1, 1))
+        >>> b = Variable(value=(0, 1, 0, 1))
+        >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+        True
+        >>> print a & b
+        [0 0 0 1]
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> mesh = Grid1D(nx=4)
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
+        >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
+        >>> print numerix.allequal((a == 0) & (b == 1), [False,  True, False, False])
+        True
+        >>> print a & b
+        [0 0 0 1]
         """
         return self._BinaryOperatorVariable(lambda a,b: a & b, other, canInline=False)
 
@@ -1152,22 +1150,21 @@ class Variable(object):
         """
         This test case has been added due to a weird bug that was appearing.
 
-            >>> a = Variable(value=(0, 0, 1, 1))
-            >>> b = Variable(value=(0, 1, 0, 1))
-            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
-            True
-            >>> print a | b
-            [0 1 1 1]
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx=4)
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
-            >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-            >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
-            True
-            >>> print a | b
-            [0 1 1 1]
-            
+        >>> a = Variable(value=(0, 0, 1, 1))
+        >>> b = Variable(value=(0, 1, 0, 1))
+        >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+        True
+        >>> print a | b
+        [0 1 1 1]
+        >>> from fipy.meshes.grid1D import Grid1D
+        >>> mesh = Grid1D(nx=4)
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
+        >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
+        >>> print numerix.allequal((a == 0) | (b == 1), [True,  True, False, True])
+        True
+        >>> print a | b
+        [0 1 1 1]
         """
         return self._BinaryOperatorVariable(lambda a,b: a | b, other, canInline=False)
 
@@ -1219,23 +1216,23 @@ class Variable(object):
         """
         return bool(self.getValue())
     
-    def any(self, axis=None, out=None):
+    def any(self, axis=None):
         """
             >>> print Variable(value=0).any()
             0
             >>> print Variable(value=(0, 0, 1, 1)).any()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis, out=out))
+        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis))
 
-    def all(self, axis=None, out=None):
+    def all(self, axis=None):
         """
             >>> print Variable(value=(0, 0, 1, 1)).all()
             0
             >>> print Variable(value=(1, 1, 1, 1)).all()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis, out=out))
+        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis))
 
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))

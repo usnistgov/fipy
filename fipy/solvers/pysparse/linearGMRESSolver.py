@@ -54,7 +54,7 @@ class LinearGMRESSolver(PysparseSolver):
     
     """
     
-    def _solve(self, L, x, b):
+    def _solve_(self, L, x, b):
 
         A = L._getMatrix().to_csr()
         

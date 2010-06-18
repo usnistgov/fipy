@@ -93,12 +93,15 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
     def _getLimit(self, key):
         limit = _MatplotlibViewer._getLimit(self, key)
         if limit is None:
-            if 'xmin' in key or 'ymin' in key:
-                limit = 0
-            elif 'xmax' in key:
-                limit = float(self.vars[0].getMesh().getPhysicalShape()[0])
+            X, Y = self.vars[0].getMesh().getFaceCenters()
+            if 'xmin' in key:
+                limit = float(min(X))
+            elif 'ymin' in key:
+                limit = float(min(Y))
+            if 'xmax' in key:
+                limit = float(max(X))
             elif 'ymax' in key:
-                limit = float(self.vars[0].getMesh().getPhysicalShape()[1])
+                limit = float(max(Y))
         return limit
         
     def _getSuitableVars(self, vars):

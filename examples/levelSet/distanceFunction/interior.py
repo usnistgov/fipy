@@ -79,7 +79,8 @@ ny = 5
 Lx = nx * dx
 Ly = ny * dy
 
-mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
+from fipy.tools import serial
+mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny, parallelModule=serial)
 
 var = DistanceVariable(
     name = 'level set variable',

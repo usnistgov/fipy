@@ -72,3 +72,27 @@ class NoiseVariable(CellVariable):
         """
         self._markStale()
         
+    def random(self):
+        pass
+        
+    def parallelRandom(self):
+        from fipy.tools import parallel
+        if parallel.procID == 0:
+            return self.random()
+        else:
+            return None
+        
+    def _calcValue(self):
+        from fipy.tools import parallel
+
+        rnd = self.parallelRandom()
+        
+        if parallel.Nproc > 1:
+            from mpi4py import MPI
+            comm = MPI.COMM_WORLD
+            rnd = comm.bcast(rnd, root=0)
+            
+            return rnd[self.getMesh()._getGlobalOverlappingCellIDs()]
+        else:
+            return rnd
+

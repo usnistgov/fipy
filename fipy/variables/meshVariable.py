@@ -36,7 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
-from fipy.tools import numerix
+from fipy.tools import numerix, parallel
 
 class _MeshVariable(Variable):
     """
@@ -61,9 +61,11 @@ class _MeshVariable(Variable):
             attempting validation. (only useful during unpickling and `Mesh` creation). 
             Default: `False`
         """
+        self.mesh = mesh
         if _bootstrap:
             array = value
         else:
+            value = self._globalToLocalValue(value)
             if value is None:
                 array = None
     ##         else:
@@ -93,7 +95,7 @@ class _MeshVariable(Variable):
 
                 value = value._copyValue()
             elif isinstance(value, numerix.ndarray) or numerix.MA.isMaskedArray(value):
-                if value.shape[-1] == self._getShapeFromMesh(mesh)[-1]:
+                if value.shape != () and value.shape[-1] == self._getShapeFromMesh(mesh)[-1]:
                     if elementshape is not None and elementshape != value.shape[:-1]:
                         raise ValueError, "'elementshape' != shape of elements of 'value'"
 
@@ -131,7 +133,6 @@ class _MeshVariable(Variable):
     ##         if isinstance(value, _MeshVariable):
     ##             mesh = mesh or value.mesh
             
-        self.mesh = mesh
         self.mesh._subscribe(self)
 
         Variable.__init__(self, name=name, value=value, unit=unit, 
@@ -148,15 +149,64 @@ class _MeshVariable(Variable):
                                         name=self.name, 
                                         value=self)
 
+    def _globalToLocalValue(self, value):
+        if value is not None:
+            if not isinstance(value, Variable):
+                value = _Constant(value)
+            valueShape = value.getShape()
+            if valueShape is not () and valueShape[-1] == self._getGlobalNumberOfElements():
+                if valueShape[-1] != 0:
+                    # workaround for NumPy:ticket:1171
+                    value = value[..., self._getGlobalOverlappingIDs()]
+                    
+            value = value.getValue()
+        return value
+        
+    def _getGlobalNumberOfElements(self):
+        pass
+        
+    def _getGlobalOverlappingIDs(self):
+        pass
+
+    def _getLocalNonOverlappingIDs(self):
+        pass
+
+    def _getGlobalValue(self, localIDs, globalIDs):
+        from fipy.tools import parallel
+        localValue = self.getValue()
+        if parallel.Nproc > 1:
+            from mpi4py import MPI
+            comm = MPI.COMM_WORLD
+            if localValue.shape[-1] != 0:
+                localValue = localValue[..., localIDs]
+            globalIDs = numerix.concatenate(comm.allgather(globalIDs))
+            
+            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,), 
+                                        dtype=numerix.obj2sctype(localValue))
+            globalValue[..., globalIDs] = numerix.concatenate(comm.allgather(localValue), axis=-1)
+            
+            return globalValue
+        else:
+            return localValue
+
+                            
     def getMesh(self):
         return self.mesh
         
+    def __str__(self):
+        return str(self.getGlobalValue())
+        
     def __repr__(self):
-        s = Variable.__repr__(self)
-        if hasattr(self, "name") and len(self.name) == 0:
-            s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
-        return s
-
+        if hasattr(self, 'name') and len(self.name) > 0:
+            return self.name
+        else:
+            s = self.__class__.__name__ + '('
+            s += 'value=' + `self.getGlobalValue()`
+            s += ')'
+            if len(self.name) == 0:
+                s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
+            return s
+        
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this `MeshVariable` type, given a particular mesh.
@@ -171,14 +221,15 @@ class _MeshVariable(Variable):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=2, ny=3)
             >>> var = CellVariable(mesh=mesh)
-            >>> var.shape
-            (6,)
-            >>> var.getArithmeticFaceValue().shape
-            (17,)
-            >>> var.getGrad().shape
-            (2, 6)
-            >>> var.getFaceGrad().shape
-            (2, 17)
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal(var.shape, (6,))
+            True
+            >>> print parallel.procID > 0 or numerix.allequal(var.getArithmeticFaceValue().shape, (17,))
+            True
+            >>> print parallel.procID > 0 or numerix.allequal(var.getGrad().shape, (2, 6))
+            True
+            >>> print parallel.procID > 0 or numerix.allequal(var.getFaceGrad().shape, (2, 17))
+            True
         """
         return (Variable.getShape(self) 
                 or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
@@ -323,6 +374,121 @@ class _MeshVariable(Variable):
         """
         return Variable.rcross(other, self, axis=0)
         
+    def _maxminparallel_(self, a, axis, default, fn, fnParallel):
+        a = a[self._getLocalNonOverlappingIDs()]
+        
+        if numerix.multiply.reduce(a.shape) == 0:
+            if axis is None:
+                opShape = ()
+            else:
+                opShape=self.shape[:axis] + self.shape[axis+1:]
+                
+            if len(opShape) == 0:
+                nodeVal = default
+            else:
+                nodeVal = numerix.empty(opShape)
+                nodeVal[:] = default
+        else:
+            nodeVal = fn(axis=axis)
+        
+        return fnParallel(nodeVal)
+
+    def max(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def maxParallel(a):
+                return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
+                                             fn=a.max, fnParallel=Epetra.PyComm().MaxAll)
+                
+            return self._axisOperator(opname="maxVar", 
+                                      op=maxParallel, 
+                                      axis=axis)
+        else:
+            return Variable.max(self, axis=axis)
+                                  
+    def min(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def minParallel(a):
+                return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
+                                             fn=a.min, fnParallel=Epetra.PyComm().MinAll)
+                
+            return self._axisOperator(opname="minVar", 
+                                      op=minParallel, 
+                                      axis=axis)
+        else:
+            return Variable.min(self, axis=axis)
+
+    def all(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from mpi4py import MPI
+            def allParallel(a):
+                a = a[self._getLocalNonOverlappingIDs()]
+                return MPI.COMM_WORLD.allreduce(a.all(axis=axis), op=MPI.LAND)
+                
+            return self._axisOperator(opname="allVar", 
+                                      op=allParallel, 
+                                      axis=axis)
+        else:
+            return Variable.all(self, axis=axis)
+
+    def any(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from mpi4py import MPI
+            def anyParallel(a):
+                a = a[self._getLocalNonOverlappingIDs()]
+                return MPI.COMM_WORLD.allreduce(a.any(axis=axis), op=MPI.LOR)
+                
+            return self._axisOperator(opname="anyVar", 
+                                      op=anyParallel, 
+                                      axis=axis)
+        else:
+            return Variable.any(self, axis=axis)
+
+    def sum(self, axis=None):
+        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+            from PyTrilinos import Epetra
+            def sumParallel(a):
+                a = a[self._getLocalNonOverlappingIDs()]
+                return Epetra.PyComm().SumAll(a.sum(axis=axis))
+                
+            return self._axisOperator(opname="sumVar", 
+                                      op=sumParallel, 
+                                      axis=axis)
+        else:
+            return Variable.sum(self, axis=axis)
+
+    def allclose(self, other, rtol=1.e-5, atol=1.e-8):
+         if parallel.Nproc > 1:
+             from mpi4py import MPI
+             def allcloseParallel(a, b):
+                 return MPI.COMM_WORLD.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=MPI.LAND)
+
+             operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
+             return self._BinaryOperatorVariable(allcloseParallel,
+                                                 other, 
+                                                 operatorClass=operatorClass,
+                                                 opShape=(),
+                                                 canInline=False)            
+         else:
+             return Variable.allclose(self, other, rtol=rtol, atol=atol)
+
+    def allequal(self, other):
+         if parallel.Nproc > 1:
+             from mpi4py import MPI
+             def allequalParallel(a, b):
+                 return MPI.COMM_WORLD.allreduce(numerix.allequal(a, b), op=MPI.LAND)
+
+             operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
+             return self._BinaryOperatorVariable(allequalParallel,
+                                                 other, 
+                                                 operatorClass=operatorClass,
+                                                 opShape=(),
+                                                 canInline=False)            
+         else:
+             return Variable.allequal(self, other)
+
+
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
         Determine the shape of the result, the base class of the result, and (if
@@ -334,6 +500,13 @@ class _MeshVariable(Variable):
         dimension of `other` is exactly the `Mesh` dimension, do what the user
         probably "meant" and project `other` onto the `Mesh`.
         """
+        if other is not None:
+            otherShape = numerix.getShape(other)
+            if (not isinstance(other, _MeshVariable) 
+                and otherShape is not () 
+                and otherShape[-1] == self._getGlobalNumberOfElements()):
+                other = self._getVariableClass()(value=other, mesh=self.getMesh())
+
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
         
         from fipy.variables.indexVariable import _IndexVariable_
@@ -408,7 +581,7 @@ class _MeshVariable(Variable):
         `_MeshVariable`, otherwise we get back a `_MeshVariable` of the same
         class, but lower rank.
         """
-        if axis is None or axis == len(self.shape) or axis == -1:
+        if axis is None or axis == len(self.shape) - 1 or axis == -1:
             return Variable._OperatorVariableClass(self, baseClass=Variable)
         else:
             return self._OperatorVariableClass()
@@ -458,6 +631,7 @@ def _testDot(self):
         ...                                  [6, 7]]])[..., newaxis])
 
         >>> def P(a):
+        ...     a = a.getGlobalValue()
         ...     print a[...,0], a.shape
         
         >>> P(v1.dot(v2))

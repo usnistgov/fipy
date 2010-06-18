@@ -192,6 +192,23 @@ def reshape(arr, shape):
     lenghts of all the axes is constant (the total number of elements does not
     change).
     """
+    if -1 in shape:
+        # e.g., NUMERIX.reshape(a, (-1, N)) fails if N == 0
+        oldShape = array(getShape(arr))
+        oldShape[oldShape == 0] = 1
+
+        if hasattr(shape, 'index'):
+            index = shape.index(-1)
+        else:
+            index = list(shape).index(-1)
+            
+        left = shape[:index]
+        right = shape[index+1:]
+        newShape = array(left + right)
+        newShape[newShape == 0] = 1
+        
+        shape = left + (oldShape.prod() / newShape.prod(),) + right
+        
     if _isPhysical(arr):
         return arr.reshape(shape)
     elif type(arr) is type(array((0))):
@@ -841,7 +858,7 @@ def dot(a1, a2, axis=0, omit=()):
     >>> mesh = Grid2D(nx=2, ny=1)
     >>> from fipy.variables.cellVariable import CellVariable
     >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
-    >>> v2 = array(((0,1),(2, 3)))
+    >>> v2 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
     >>> dot(v1, v2)._getVariableClass()
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> dot(v2, v1)._getVariableClass()
@@ -854,9 +871,10 @@ def dot(a1, a2, axis=0, omit=()):
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> print dot(v1, v1)
     [ 4 10]
-    >>> type(dot(v2, v2))
+    >>> v3 = array(((0,1),(2,3)))
+    >>> type(dot(v3, v3))
     <type 'numpy.ndarray'>
-    >>> print dot(v2, v2)
+    >>> print dot(v3, v3)
     [ 4 10]
     """
 
