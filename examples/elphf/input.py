@@ -257,7 +257,7 @@ If running interactively, we create viewers to display the results
 Again, this problem does not have an analytical solution, so after
 iterating to equilibrium
 
-    >>> solver = LinearCGSSolver(tolerance = 1e-3)
+    >>> solver = LinearLUSolver(tolerance = 1e-3)
 
     >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
 

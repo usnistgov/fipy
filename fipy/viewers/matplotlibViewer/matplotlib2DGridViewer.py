@@ -102,15 +102,14 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         return limit
         
     def _getSuitableVars(self, vars):
-##         from fipy.viewers import MeshDimensionError
-##         raise MeshDimensionError, "I'm just being pissy"
         from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-          if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable))]
+          if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable)
+              and var.getRank() == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "The mesh must be a UniformGrid2D instance"
+            raise MeshDimensionError, "Matplotlib2DGridViewer can only display a rank-0 CellVariable with a UniformGrid2D mesh"
         # this viewer can only display one variable
         return [vars[0]]
         

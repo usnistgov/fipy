@@ -392,7 +392,7 @@ class _MeshVariable(Variable):
     def getRank(self):
         return len(self.shape) - 1
         
-    def setValue(self, value, unit = None, array = None, where = None):
+    def setValue(self, value, unit = None, where = None):
         if where is not None:
             shape = numerix.getShape(where)
             if shape != self.shape \
@@ -400,7 +400,7 @@ class _MeshVariable(Variable):
                 for dim in self.elementshape:
                     where = numerix.repeat(where[numerix.newaxis, ...], repeats=dim, axis=0)
         
-        return Variable.setValue(self, value=value, unit=unit, array=array, where=where)
+        return Variable.setValue(self, value=value, unit=unit, where=where)
 
     def _axisClass(self, axis):
         """

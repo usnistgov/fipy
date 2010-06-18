@@ -33,7 +33,6 @@
  ##
 
 
-
 import glob
 import os
 import sys
@@ -59,6 +58,7 @@ def _TestClass(base):
         # name), and help string.
         user_options = base.user_options + [
             ('inline', None, "run FiPy with inline compilation enabled"),
+            ('pythoncompiled=', None, "directory in which to put weave's work product"),
             ('Trilinos', None, "run FiPy using Trilinos solvers"),
             ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
             ('all', None, "run all non-interactive FiPy tests (default)"),
@@ -81,6 +81,7 @@ def _TestClass(base):
             self.viewers = False
             
             self.inline = False
+            self.pythoncompiled = None
             self.cache = False
             self.no_cache = True
             self.Trilinos = False
@@ -126,7 +127,7 @@ def _TestClass(base):
                 
         def run_tests(self):
             import sys
-            if '--Trilinos' in sys.argv[1:]:
+            if self.Trilinos:
                 try:
                     ## The import scipy statement is added to allow
                     ## the --Trilinos tests to run without throwing a
@@ -142,12 +143,16 @@ def _TestClass(base):
                     print >>sys.stderr, "!!! Trilinos library is not installed"
                     return
 
-            if '--inline' in sys.argv[1:]:
+            if self.inline:
                 try:
                     from scipy import weave
                 except ImportError, a:
                     print >>sys.stderr, "!!! weave library is not installed"
                     return
+                    
+            if self.pythoncompiled is not None:
+                import os
+                os.environ['PYTHONCOMPILED'] = self.pythoncompiled
 
             base.run_tests(self)
 

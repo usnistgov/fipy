@@ -218,7 +218,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     distanceVar = DistanceVariable(
         name = 'distance variable',
         mesh = mesh,
-        value = -1,
+        value = -1.,
         narrowBandWidth = narrowBandWidth,
         hasOld = 1)
 
@@ -228,7 +228,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     sideWidth = (trenchSpacing - trenchWidth) / 2
 
     x, y = mesh.getCellCenters()
-    distanceVar.setValue(1, where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
+    distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
@@ -326,12 +326,12 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         distanceVar.extendVariable(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
-        advectionEquation.solve(distanceVar, dt = dt, solver=LinearCGSSolver()) 
+        advectionEquation.solve(distanceVar, dt = dt, solver=LinearLUSolver()) 
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt, 
-                            boundaryConditions = metalEquationBCs, solver=LinearCGSSolver())
+                            boundaryConditions = metalEquationBCs, solver=LinearLUSolver())
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                                   boundaryConditions = catalystBCs, solver=LinearCGSSolver())
+                                   boundaryConditions = catalystBCs, solver=LinearLUSolver())
 
     try:
         import os

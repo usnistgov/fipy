@@ -57,7 +57,11 @@ class LinearCGSSolver(PysparseSolver):
 
     
     """
-    
+    def __init__(self, *args, **kwargs):
+        import warnings
+        warnings.warn("The PySparse CGS solver may return incorrect results for some matrices", UserWarning)
+        PysparseSolver.__init__(self, *args, **kwargs)
+        
     def _solve(self, L, x, b):
 
 ##      print "L: ", L

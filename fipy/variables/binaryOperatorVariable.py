@@ -48,9 +48,8 @@ def _BinaryOperatorVariable(operatorClass=None):
         >>> for v in vs:
         ...     (f, n) = dump.write(v * v)
         ...     tmp += [dump.read(n)]
+        ...     os.close(f)
         ...     os.remove(n)
-        ...     if sys.platform != 'win32':
-        ...         os.close(f)
         >>> for v in tmp:
         ...     print v.__class__
         <class 'fipy.variables.cellVariable.CellVariable'>

@@ -73,7 +73,7 @@ if __name__ == '__main__':
         eq.solve(var,
                  dt = timeStepDuration,
                  boundaryConditions = boundaryConditions,
-                 solver = LinearCGSSolver(tolerance = 1.e-15, steps = 2000))
+                 solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000))
         viewer.plot()
     viewer.plot()
     raw_input('finished')

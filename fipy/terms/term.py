@@ -88,7 +88,11 @@ class Term:
 ##        return abs(self._calcResidualVector(var, matrix, RHSvector)).max()
 
     def __buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
-
+        if numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float']:
+            import warnings
+            warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
+                          UserWarning, stacklevel=4)
+        
         self._verifyCoeffType(var)
         
         if numerix.getShape(dt) != ():

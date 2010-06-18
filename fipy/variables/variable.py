@@ -146,14 +146,29 @@ class Variable(object):
 
            >>> from scipy.special import gamma as Gamma
            >>> print type(Gamma(Variable([1.0, 2.0])))
-           <type 'numpy.ndarray'>
+           <class 'fipy.variables.unaryOperatorVariable.unOp'>
 
         """
-        if context is not None and len(context[1])==2:
-            return NotImplemented
-        else:
-            return arr
+        result = arr
+        
+        if context is not None:
+            from fipy.variables.constant import _Constant
+            (func, args, _) = context
+            def __makeVariable(v):
+                if not isinstance(v, Variable):
+                    v = _Constant(v)
+                return v
+            args = [__makeVariable(arg) for arg in args]
 
+            if len(args) == 1:
+                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape)
+            elif len(args) == 2:
+                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape)
+            else:
+                result = NotImplemented
+
+        return result
+        
     def __array__(self, t=None):
         """
         Attempt to convert the `Variable` to a numerix `array` object
@@ -162,14 +177,11 @@ class Variable(object):
             >>> print numerix.array(v)
             [2 3]
         
-        It is an error to convert a dimensional `Variable` to a 
-        Numeric `array`
+        A dimensional `Variable` will convert to the numeric value in the current units
     
             >>> v = Variable(value=[2,3], unit="m")
             >>> numerix.array(v)
-            Traceback (most recent call last):
-                ...
-            TypeError: Numeric array value must be dimensionless
+            array([2, 3])
 
         Convert a list of 1 element Variables to an array
 
@@ -256,11 +268,29 @@ class Variable(object):
     def getUnit(self):
         """
         Return the unit object of `self`.
+        
             >>> Variable(value="1 m").getUnit()
             <PhysicalUnit m>
         """
         return self._extractUnit(self.getValue())
         
+    def setUnit(self, unit):
+        """
+        Change the unit object of `self` to `unit`
+        
+            >>> a = Variable(value="1 m")
+            >>> a.setUnit("m**2/s")
+            >>> print a
+            1 m**2/s
+        """
+        if self.value is None:
+            self.getValue()
+
+        if isinstance(self.value, physicalField.PhysicalField):
+            self.value.setUnit(unit)
+        else:
+            self.value = physicalField.PhysicalField(value=self.value, unit=unit)
+
     def inBaseUnits(self):
         """
         Return the value of the `Variable` with all units reduced to 
@@ -432,6 +462,12 @@ class Variable(object):
     def _putto(self, a, value):
         return numerix.put(a, self.getValue(), value)
             
+    def itemset(self, value):
+        if self.value is None:
+            self.getValue()
+        self.value.itemset(value)
+        self._markFresh()
+        
     def put(self, indices, value):
         selfvalue = self.getValue()
 ##         if self.value is None:
@@ -510,8 +546,12 @@ class Variable(object):
 ## MaskedArray doesn't have a copy() method.
 ## Needs better fix
 ## !!!!!!!!!!!!!!!!!!!!!
-##         if hasattr(value, 'iscontiguous') and not value.iscontiguous():
+##         if (inline.inlineFlagOn 
+##            and hasattr(value, 'iscontiguous') and not value.iscontiguous()):
 ##             value = value.copy()
+            
+        if isinstance(value, Variable):
+            value = value.getValue()
             
         PF = physicalField.PhysicalField
 
@@ -540,7 +580,7 @@ class Variable(object):
             
         return value
 
-    def setValue(self, value, unit=None, array=None, where=None):
+    def setValue(self, value, unit=None, where=None):
         """
         Set the value of the Variable. Can take a masked array.
 
@@ -571,9 +611,8 @@ class Variable(object):
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
             
         """
-
         if where is not None:
-            tmp = numerix.zeros(numerix.getShape(where), numerix.getTypecode(value))
+            tmp = numerix.empty(numerix.getShape(where), self.getsctype())
             tmp[:] = value
             tmp = numerix.where(where, tmp, self.getValue())
         else:
@@ -582,7 +621,13 @@ class Variable(object):
             else:
                 tmp = value
 
-        self._setValue(value=tmp, unit=unit, array=array)
+        value = self._makeValue(value=tmp, unit=unit, array=None)
+
+        if numerix.getShape(self.value) == ():
+            self.value.itemset(value)
+        else:
+            self.value[:] = value
+            
         self._markFresh()
         
     def _setNumericValue(self, value):
@@ -630,25 +675,25 @@ class Variable(object):
             
     shape = property(fget=lambda self: self.getShape(), doc="Tuple of array dimensions.")
 
-    def getTypecode(self):
+    def getsctype(self, default=None):
         """
 
-        Returns the Numpy typecode of the underlying array.
+        Returns the Numpy sctype of the underlying array.
 
-            >>> Variable(1).getTypecode()
-            'l'
-            >>> Variable(1.).getTypecode()
-            'd'
-            >>> Variable((1,1.)).getTypecode()
-            'd'
+            >>> Variable(1).getsctype()
+            <type 'numpy.int32'>
+            >>> Variable(1.).getsctype()
+            <type 'numpy.float64'>
+            >>> Variable((1,1.)).getsctype()
+            <type 'numpy.float64'>
             
         """
         
         if not hasattr(self, 'typecode'):
-            self.typecode = numerix.getTypecode(self.getValue())
+            self.typecode = numerix.obj2sctype(rep=self.getNumericValue(), default=default)
         
         return self.typecode
-
+    
     def _calcValue(self):
         return self.value
         
@@ -764,13 +809,13 @@ class Variable(object):
             self.canInline = False
             argDict['result'] = self.getValue()
             self.canInline = True
-            self.typecode = numerix.getTypecode(argDict['result'])
+            self.typecode = numerix.obj2sctype(argDict['result'])
         else:
             if self.value is None:
-                if self.getTypecode() == '?':
-                    argDict['result'] = numerix.empty(dim, 'b')
+                if self.getsctype() == numerix.bool_:
+                    argDict['result'] = numerix.empty(dim, numerix.int8)
                 else:
-                    argDict['result'] = numerix.empty(dim, self.getTypecode())
+                    argDict['result'] = numerix.empty(dim, self.getsctype())
             else:
                 argDict['result'] = self.value
 

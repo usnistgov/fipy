@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
+from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 class BoundaryCondition:
@@ -67,7 +68,9 @@ class BoundaryCondition:
             raise NotImplementedError, "can't instantiate abstract base class"
         
         self.faces = faces
-        self.value = PhysicalField(value)
+        if not (isinstance(value, PhysicalField) or isinstance(value, Variable)):
+            value = PhysicalField(value)
+        self.value = value
         
         if not (self.faces | self.faces.getMesh().getExteriorFaces() 
                 == self.faces.getMesh().getExteriorFaces()).getValue().all():

@@ -253,10 +253,10 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
     distanceVar = DistanceVariable(
         name = 'distance variable',
         mesh = mesh,
-        value = -1,
+        value = -1.,
         narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, where=mesh.getElectrolyteMask())
+    distanceVar.setValue(1., where=mesh.getElectrolyteMask())
     
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
     levelerVar = SurfactantVariable(
@@ -336,7 +336,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         diffusionCoeff = metalDiffusionCoefficient,
         metalIonMolarVolume = atomicVolume)
 
-    metalEquationBCs = FixedValue(mesh.getTopFaces(), bulkMetalConcentration)
+    metalEquationBCs = FixedValue(mesh.getFacesTop(), bulkMetalConcentration)
 
     bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkAcceleratorVar,
@@ -347,7 +347,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         rateConstant = kAccelerator * siteDensity)
 
     bulkAcceleratorEquationBCs = (FixedValue(
-        mesh.getTopFaces(),
+        mesh.getFacesTop(),
         bulkAcceleratorConcentration),)
 
     bulkLevelerEquation = buildSurfactantBulkDiffusionEquation(
@@ -358,7 +358,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         rateConstant = kLeveler * siteDensity)
 
     bulkLevelerEquationBCs =  (FixedValue(
-        mesh.getTopFaces(),
+        mesh.getFacesTop(),
         bulkLevelerConcentration),)
 
     eqnTuple = ( (advectionEquation, distanceVar, (), None),
@@ -410,13 +410,9 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
 
         totalTime += dt
 
-    try:
-        import os
-        data = loadtxt(os.path.splitext(__file__)[0] + '.gz')
-        N = mesh.getFineMesh().getNumberOfCells()
-        return allclose(data[:N], levelerVar[:N], rtol = 1e-3, atol=max(data)/10000.0).getValue()
-    except:
-        return 0
+    point = ((1.25e-08,), (3.125e-07,))
+    value = 2.02815779e-08
+    return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
     
 if __name__ == '__main__':
     runLeveler()

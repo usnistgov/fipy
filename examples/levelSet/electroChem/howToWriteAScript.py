@@ -184,7 +184,7 @@ function
    >>> distanceVar = DistanceVariable(
    ...    name='distance variable',
    ...    mesh= mesh,
-   ...    value=-1,
+   ...    value=-1.,
    ...    narrowBandWidth=narrowBandWidth,
    ...    hasOld=1)
 
@@ -197,9 +197,9 @@ region will be negative.
    >>> sideWidth = (trenchSpacing - trenchWidth) / 2
    
    >>> x, y = mesh.getCellCenters()
-   >>> distanceVar.setValue(1, where=(y > trenchHeight) 
-   ...                               | ((y > bottomHeight) 
-   ...                                  & (x < xCells * cellSize - sideWidth)))
+   >>> distanceVar.setValue(1., where=(y > trenchHeight) 
+   ...                                 | ((y > bottomHeight) 
+   ...                                    & (x < xCells * cellSize - sideWidth)))
 
    >>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10)
 
@@ -472,12 +472,12 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
-   ...     advectionEquation.solve(distanceVar, dt=dt, solver=LinearCGSSolver())
+   ...     advectionEquation.solve(distanceVar, dt=dt, solver=LinearLUSolver())
    ...     surfactantEquation.solve(catalystVar, dt=dt)
    ...     metalEquation.solve(var=metalVar, dt=dt,
-   ...                         boundaryConditions=metalEquationBCs, solver=LinearCGSSolver())
+   ...                         boundaryConditions=metalEquationBCs, solver=LinearLUSolver())
    ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
-   ...                                   boundaryConditions=catalystBCs, solver=LinearCGSSolver())
+   ...                                   boundaryConditions=catalystBCs, solver=LinearLUSolver())
 
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way

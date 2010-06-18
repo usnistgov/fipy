@@ -30,7 +30,7 @@
  #  
  # ###################################################################
  ##
-
+ 
 r"""
 This input file
 
@@ -149,10 +149,10 @@ def runGold(faradaysConstant=9.6e4,
     distanceVar = DistanceVariable(
        name = 'distance variable',
        mesh = mesh,
-       value = -1,
+       value = -1.,
        narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1, where=mesh.getElectrolyteMask())
+    distanceVar.setValue(1., where=mesh.getElectrolyteMask())
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
     catalystVar = SurfactantVariable(
@@ -193,7 +193,7 @@ def runGold(faradaysConstant=9.6e4,
         diffusionCoeff = metalDiffusion,
         metalIonMolarVolume = molarVolume)
 
-    metalEquationBCs = FixedValue(mesh.getTopFaces(), metalConcentration)
+    metalEquationBCs = FixedValue(mesh.getFacesTop(), metalConcentration)
 
     if displayViewers:
 
@@ -253,13 +253,9 @@ def runGold(faradaysConstant=9.6e4,
                     
         step += 1
 
-    try:
-        import os
-        data = loadtxt(os.path.splitext(__file__)[0] + '.gz')
-        n = mesh.getFineMesh().getNumberOfCells()
-        print allclose(catalystVar[:n], data[:n], atol=1.0)
-    except:
-        return 0
+    point = ((5e-09,), (1.15e-07,))
+    value = 1.45346701e-09
+    return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
     
 if __name__ == '__main__':
 ##     runGold(numberOfSteps = 10, cellSize = 1e-7, displayViewers=False)

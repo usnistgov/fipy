@@ -194,7 +194,7 @@ Ensure that Fink_ is installed and up to date for your OS.
 unstable tree
 ~~~~~~~~~~~~~
 
-Follow the directions at http://fink.sourceforge.net/faq/usage-fink.php#unstable
+Follow the directions at http://www.finkproject.org/faq/usage-fink.php#unstable
 
 .. note::
 
@@ -212,8 +212,14 @@ Remaining Fink packages
 Execute the following commands from Terminal application (you can use 
 ``xterm`` or any other terminal application of your choosing)::
 
-    $ sudo apt-get install python
-    $ fink --use-binary-dist install matplotlib-py24
+    $ fink --use-binary-dist install python
+
+Take note of the version of Python that gets installed (`python
+--version`). Many other packages, indicated by a "`-pyXX`" suffix, require
+you substitute the Python version. E.g., Python 2.4 takes "`-py24`", Python
+2.5 takes "`-py25`", and so on.
+
+    $ fink --use-binary-dist install matplotlib-pyXX
 
 .. attention::
 
@@ -224,7 +230,7 @@ Execute the following commands from Terminal application (you can use
    
 .. note::
 
-   If the installation of matplotlib-py24 fails for some reason, we 
+   If the installation of matplotlib-pyXX fails for some reason, we 
    recommend you execute the ``install`` command again.
       
 A few changes are needed to allow matplotlib_ to run::
@@ -240,7 +246,7 @@ You may now choose to either edit the "backend" configuration in
     
 or you can install wxPython with::
 
-    $ fink --use-binary-dist install wxpython-py24
+    $ fink --use-binary-dist install wxpython-pyXX
     
 (the second choice takes awhile, as it needs to build things).
 
@@ -306,7 +312,7 @@ out of date and did not work for us.
 If you have already followed the `Fink Installation`_ instructions, then 
 you can go to the command line and type::
 
-    $ sudo apt-get install mayavi-py24
+    $ sudo apt-get install mayavi-pyXX
     
 .. note::
 
@@ -346,7 +352,7 @@ is not present:
     * If you followed the `Fink Installation`_ procedure, then you should be
       able to type::
 
-          $ sudo apt-get install scipy-py24
+          $ sudo apt-get install scipy-pyXX
 
 
 .. _ScipySuperpack: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trichech.us/?page_id=4

@@ -74,14 +74,14 @@ class SurfactantEquation:
                 
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearCGSSolver`.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearLUSolver`.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
 
         """
 
         if solver is None:
-            solver= LinearCGSSolver()
+            solver= LinearLUSolver()
 
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
@@ -90,7 +90,7 @@ class SurfactantEquation:
                       boundaryConditions = self.bc + boundaryConditions,
                       solver = solver)
 
-    def sweep(self, var, solver=LinearCGSSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var, solver=LinearLUSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
