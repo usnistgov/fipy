@@ -110,7 +110,7 @@ def _MAput(a, indices, values, mode='raise'):
     NUMERIX.put(d, ind, v)
     m = MA.getmask(a)
     if m is not MA.nomask:
-        MA.numeric.put(a.raw_mask(), ind, 0)
+        NUMERIX.put(a.mask, ind, 0)
             
 def getUnit(arr):
     if hasattr(arr, "getUnit") and callable(arr.getUnit):
