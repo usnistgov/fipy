@@ -413,20 +413,8 @@ Obtaining |FiPy|
 ----------------
 
 |FiPy| is freely available for download via Subversion_ or as a `compressed
-archive`_ |citeFiPyDownload|. To obtain |FiPy| via anonymous Subversion,
-issue the following command::
-
-    $ svn checkout http://matforge.org/svn/fipy/tags/CURRENT
-
-This will download a fairly stable version of |FiPy| (somewhere
-between version |VERSION| and HEAD). If you prefer, you can download
-|FiPy| version |VERSION| (recommended) with::
-
-    $ svn checkout http://matforge.org/svn/fipy/tags/STABLE
-
-Further information about Subversion_ can be found in
-|documentation:SVN.txt| and in the `online Subversion Red Bean book`_
-|citeSubversionRedBean|.
+archive`_ |citeFiPyDownload|. Please see |documentation:SVN.txt| for 
+instructions of obtaining |FiPy| with Subversion_.
 
 .. warning::
 
@@ -757,10 +745,6 @@ indicators, |FiPy| will default to using PySparse_ if it is present.
 .. |LaTeX| replace:: |latexLaTeX| |htmlLaTeX|
 .. |examples/| replace:: |htmlExamples/| |latexExamples/|
 .. |documentation:SVN.txt| replace:: |latexSVN.txt| |htmlSVN.txt|
-
-.. |citeSubversionRedBean| raw:: latex
-
-   \cite{SubversionRedBean}
 
 .. |citeInstallingPythonModules| raw:: latex
 

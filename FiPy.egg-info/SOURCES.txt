@@ -431,6 +431,7 @@ fipy/tools/sparseMatrix.py
 fipy/tools/test.py
 fipy/tools/trilinosMatrix.py
 fipy/tools/vector.py
+fipy/tools/vitals.py
 fipy/tools/dimensions/DictWithDefault.py
 fipy/tools/dimensions/LICENSE
 fipy/tools/dimensions/NumberDict.py
