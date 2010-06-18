@@ -34,13 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
 
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
-
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 class UpwindConvectionTerm(ConvectionTerm):
     r"""

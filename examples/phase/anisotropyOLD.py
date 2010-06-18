@@ -240,8 +240,8 @@ the phase and temperature fields
 
     >>> if __name__ == '__main__':
     ...     phaseViewer = Viewer(vars=phase)
-    ...     temperatureViewer = Viewer(vars=temperature,
-    ...                                limits={'datamin': -0.5, 'datamax': 0.5})
+    ...     temperatureViewer = Viewer(vars=temperature, 
+    ...                                datamin=-0.5, datamax=0.5)
     ...     phaseViewer.plot()
     ...     temperatureViewer.plot()
 

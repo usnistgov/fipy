@@ -36,7 +36,7 @@
 
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
-from fipy.tools.inline import inline
+from fipy.tools import inline
 
 class _FaceGradVariable(FaceVariable):
     def __init__(self, var):

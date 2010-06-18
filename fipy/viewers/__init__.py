@@ -50,7 +50,7 @@ def Viewer(vars, title = None, limits={}, **kwlimits):
     or::
         
         Viewer(vars=some1Dvar, 
-               limits = {'xmin': 0.5, 'xmax': None, 'datamax': 3})
+               limits={'xmin': 0.5, 'xmax': None, 'datamax': 3})
         
     will return a viewer that displays a line plot from an `x` value
     of 0.5 up to the largest `x` value in the dataset. The data values

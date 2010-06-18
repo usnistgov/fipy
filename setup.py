@@ -251,81 +251,73 @@ class build_docs (Command):
         savedir = os.getcwd()
         try:
             
-            os.chdir(os.path.join('documentation','manual'))
-#             f = open('api.tex', 'w')
-            f = open(os.path.join('api','latex', 'api-rev.tex'), 'w')
-            f.write("% This file is created automatically by:\n")
-            f.write("% 	python setup.py build_docs --latex\n\n")
-            for root, dirs, files in os.walk(os.path.join('api','latex'), topdown=True):
-                
-                if 'api.tex' in files:
-                    files.remove('api.tex')
+            os.chdir(os.path.join('documentation','manual', 'api','latex'))
+            old = open('api.tex', 'r')
+            new = open('api-rev.tex', 'w')
+            
+            new.write("""% This file is created automatically by:
+% 	python setup.py build_docs --latex
 
-                if 'api-rev.tex' in files:
-                    files.remove('api-rev.tex')
+""")
+            
+            import re
+            
+            mainModule = re.compile(r"^\\include{((fipy\.[^.-]*)-module)}")
+            subModule = re.compile(r"^\\include{((fipy(\.[^.-]*)+)-module)}")
 
-                if 'fipy-module.tex' in files:
-                    files.remove('fipy-module.tex')
+            for line in old:
+                mainMatch = mainModule.match(line)
+                subMatch = subModule.match(line)
 
-                
-                ## Added because linux does not sort files in the same order
-                files.sort()
-                
-                import re
-                mainModule = re.compile(r"(fipy\.[^.-]*)-module\.tex")
-                subModule = re.compile(r"(fipy(\.[^.-]*)+)-module\.tex")
-                for name in files:
-                    mainMatch = mainModule.match(name)
-                    subMatch = subModule.match(name)
-
+                def stringInModule(s, name):
+                    module = open(name, 'r')
+                    functionLine = re.compile(s)
+                    flag = False
+                    for l in module:
+                        if functionLine.search(l):
+                            flag = True
+                            break
+                            
+                    module.close()
                     
-                    def stringInModule(s):
-                        module = open(os.path.join(root, name))
-                        functionLine = re.compile(s)
-                        flag = False
-                        for line in module:
-                            if functionLine.search(line):
-                                flag = True
-                                break
-                                
-                        module.close()
-                        
-                        return flag
+                    return flag
 
-                    if mainMatch and stringInModule(r"\\section{Package") \
-                       and not stringInModule(r"no chapter heading"):
-                        module = open(os.path.join(root, name), 'r')
+
+                if mainMatch:
+                    moduleName = mainMatch.group(1) + ".tex"
+                    if (stringInModule(r"\\section{Package", moduleName)
+                        and not stringInModule("no chapter heading", moduleName)):
+                        module = open(moduleName, 'r')
                         lines = []
                         
-                        for line in module:
-                            
-                            line = re.sub(r'\\section', r'\\chapter', line)
-                            line = re.sub(r'\\subsection', r'\\section', line)
-                            line = re.sub(r'\\subsubsection', r'\\subsection', line)
-                            lines.append(line)
+                        for l in module:
+                            l = re.sub(r'\\section', r'\\chapter', l)
+                            l = re.sub(r'\\subsection', r'\\section', l)
+                            l = re.sub(r'\\subsubsection', r'\\subsection', l)
+                            lines.append(l)
                             
                         module.close()
-                        module = open(os.path.join(root, name), 'w')
+                        module = open(moduleName, 'w')
                         module.writelines(lines)
                         module.close()
-                           
-                        if not stringInModule(r"\\section{(Functions|Variables|Class)"):
-                            f.write("\\chapter{Package \\EpydocDottedName{" + subMatch.group(1) + "}}\n")
 
-                    if subMatch:
-                        ## epydoc tends to prattle on and on with empty module pages, so 
-                        ## we eliminate all but those that actually contain something relevant.
-                        if not stringInModule(r"\\(sub)?section{(Functions|Variables|Class)"):
-                            continue
-                        
-                    split = os.path.splitext(name)
-                    if split[1] == ".tex":
-                        f.write("\\input{" + os.path.splitext(name)[0] + "}\n\\newpage\n")
-#                         f.write("\\input{" + os.path.join(root, os.path.splitext(name)[0]) + "}\n\\newpage\n")
+                    if not stringInModule(r"\\section{(Functions|Variables|Class)", moduleName):
+                        new.write("\\input{%s}\n" % mainMatch.group(1))
+                    else:
+                        new.write(line)
+                elif subMatch:
+                    ## epydoc tends to prattle on and on with empty module pages, so 
+                    ## we eliminate all but those that actually contain something relevant.
+                    moduleName = subMatch.group(1) + ".tex"
+                    if not stringInModule(r"\\(sub)?section{(Functions|Variables|Class)", moduleName):
+                        new.write("\\input{%s}\n" % subMatch.group(1))
+                    else:
+                        new.write(line)
 
-            f.close()
-        except:
-            pass
+            new.close()
+            old.close()
+        except Exception, e:
+            print e
         
         os.chdir(savedir)
         
@@ -461,7 +453,8 @@ epydoc.cli.cli(["--latex", "--output", dir,
                                          settings ={'use_latex_toc': True,
                                                     'footnote_references': 'superscript',
                                                     'table_style': 'nolines',
-                                                    'documentclass': key})
+                                                    'documentclass': key,
+                                                    'reference_label': "ref*"})
 
             for key in mainRestructuredTextFiles.keys():
                 self._translateTextFiles(files = secondaryRestructuredTextFiles[key],
@@ -470,7 +463,8 @@ epydoc.cli.cli(["--latex", "--output", dir,
                                          settings ={'use_latex_toc': True,
                                                     'footnote_references': 'superscript',
                                                     'table_style': 'booktabs',
-                                                    'documentclass': key})
+                                                    'documentclass': key,
+                                                    'reference_label': "ref*"})
 
             if self.guide:
                 os.system("pdflatex fipy")
@@ -530,33 +524,9 @@ epydoc.cli.cli(["--latex", "--output", dir,
                 for name in dirs: 
                     os.rmdir(os.path.join(root, name)) 
 
-        if self.upload:
-
-            print "setting group and ownership of manuals..."
-            os.system('chgrp -R pfm documentation/manual/fipy.pdf')
-            os.system('chmod -R g+w documentation/manual/reference.pdf')
-            os.system('chmod -R g+w documentation/manual/reference.pdf')
-            os.system('chgrp -R pfm documentation/manual/fipy.pdf')
-            
-            print "linking manuals to website..."
-            os.system('mkdir documentation/www/download/')
-            os.system('ln -sf ../../manual/fipy.pdf documentation/www/download/fipy-%s.pdf'%self.distribution.metadata.get_version())
-            os.system('ln -sf ../../manual/reference.pdf documentation/www/download/reference-%s.pdf'%self.distribution.metadata.get_version())
-            
-            for name in ('.tar.gz', '.win32.zip'):
-                file = 'dist/FiPy-%s%s'%(self.distribution.metadata.get_version(), name)
-                print "setting group and ownership for %s ..."%file
-                os.system('chmod -R g+w %s'%file)
-                os.system('chgrp -R pfm %s'%file)
-
-                print "linking %s to website ..."%file
-                os.system('ln -sf ../../../%s documentation/www/download/'%file)
-                
-
-        if self.upload or self.uploadwww:
+        if self.uploadwww:
                  
             print "setting group and ownership of web pages..."
-            os.system('chgrp -R pfm documentation/www/')
             os.system('chmod -R g+w documentation/www/')
             
             print "uploading web pages..."
@@ -566,6 +536,32 @@ epydoc.cli.cli(["--latex", "--output", dir,
 
             print "activating web pages..."
             os.system(os.environ['FIPY_WWWACTIVATE'])
+            
+        if self.upload:
+            print "setting permissions of manuals..."
+            os.system('chmod -R g+w documentation/manual/fipy.pdf')
+            os.system('chmod -R g+w documentation/manual/reference.pdf')
+            
+            print "linking manuals to `dist/`..."
+            os.system('mkdir dist/')
+            os.system('ln -f documentation/manual/fipy.pdf dist/fipy-%s.pdf'%self.distribution.metadata.get_version())
+            os.system('ln -f documentation/manual/reference.pdf dist/reference-%s.pdf'%self.distribution.metadata.get_version())
+            
+            for name in ('.tar.gz', '.win32.zip'):
+                file = 'dist/FiPy-%s%s'%(self.distribution.metadata.get_version(), name)
+                print "setting permissions for %s ..."%file
+                os.system('chmod -R g+w %s'%file)
+
+            print "build products in `dist/` must be manually uploaded to MatForge"
+            import webbrowser
+            webbrowser.open("http://matforge.org/fipy/admin/general/downloader", autoraise=False)
+            
+            print "please update the current links, as appropriate"
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit", autoraise=False)
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
+            webbrowser.open("http://matforge.org/fipy/wiki/FiPyReference?action=edit", autoraise=False)
+            
+
 
                 
     # run()
@@ -729,7 +725,7 @@ except IOError, e:
         
 try:
     f = open('LICENSE.txt', 'r') 
-    license = '\n' + f.read() + '\n'
+    license = '\n' + ''.join([' '*8 + l for l in f])
     f.close()
 except IOError, e:
     license = ''
@@ -746,7 +742,7 @@ except IOError, e:
 #         },
 
 dist = setup(	name = "FiPy",
-        version = "2.0a1", 
+        version = "2.0", 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",

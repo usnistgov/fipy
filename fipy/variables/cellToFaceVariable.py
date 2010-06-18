@@ -35,7 +35,8 @@
  ##
 
 from fipy.variables.faceVariable import FaceVariable
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 class _CellToFaceVariable(FaceVariable):
     def __init__(self, var):

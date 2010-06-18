@@ -163,12 +163,12 @@ class _Viewer:
         import inspect
         raw_input = inspect.currentframe().f_back.f_globals.get('raw_input', __builtins__['raw_input'])
         
-        opinion = raw_input(self.__class__.__name__ + ": " + prompt)
-        if len(opinion.strip()) > 0:
+        opinion = raw_input(self.__class__.__name__ + ": " + prompt).strip()
+        if len(opinion) > 0:
             extensions = ", ".join(self._validFileExtensions())
             if len(extensions) > 0:
                 extensions = " (%s)" % extensions
-            snapshot = raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions)
+            snapshot = raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions).strip()
             self.plot(snapshot)
             print opinion
               
@@ -179,9 +179,9 @@ class _Viewer:
             >>> mesh = Grid1D(nx=100)
             >>> x, = mesh.getCellCenters()
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
-            >>> k = Variable(name="k", value=0)
+            >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=(sin(k * xVar), cos(k * xVar / pi)), 
-            ...                 limits= {'xmin': 10, 'xmax': 90}, 
+            ...                 limits={'xmin': 10, 'xmax': 90}, 
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="%(viewer)s test")
             >>> for kval in numerix.arange(0,0.3,0.03):
@@ -197,9 +197,9 @@ class _Viewer:
             >>> mesh = %(mesh)s
             >>> x, y = mesh.getCellCenters()
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k", value=0)
+            >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar), 
-            ...                 limits= {'ymin': 0.1, 'ymax': 0.9}, 
+            ...                 limits={'ymin': 0.1, 'ymax': 0.9}, 
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="%(viewer)s test")
             >>> for kval in range(10):
@@ -227,7 +227,7 @@ class _Viewer:
             >>> mesh = %(mesh)s
             >>> x, y = mesh.getCellCenters()
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k", value=0)
+            >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar).getGrad(), 
             ...                 title="%(viewer)s test")
             >>> for kval in range(10):
@@ -263,9 +263,9 @@ class _Viewer:
             >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
             >>> x, y, z = mesh.getCellCenters()
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
-            >>> k = Variable(name="k", value=0)
+            >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 
-            ...                     limits= {'ymin': 0.1, 'ymax': 0.9}, 
+            ...                     limits={'ymin': 0.1, 'ymax': 0.9}, 
             ...                     datamin=-0.9, datamax=2.0,
             ...                     title="%(viewer)s test")
             >>> for kval in range(10):

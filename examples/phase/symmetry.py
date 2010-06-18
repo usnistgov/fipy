@@ -75,8 +75,7 @@ First set the values as given in the above equation:
     >>> var.setValue(x * y)
 
     >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars = var, 
-    ...                     limits = {'datamin': 0, 'datamax': L * L / 4.})
+    ...     viewer = Viewer(vars=var, datamin=0, datamax=L * L / 4.)
     ...     viewer.plot()
 
 then extract the bottom left quadrant of cells:

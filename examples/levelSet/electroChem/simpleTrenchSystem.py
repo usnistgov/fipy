@@ -297,10 +297,10 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, limits = { 'datamax' : 0.5, 'datamin' : 0.0 }, smooth = 1, title = 'catalyst coverage')
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
             viewer = MultiViewer(viewers=(
-                Viewer(distanceVar, limits = { 'datamin' :-1e-9 , 'datamax' : 1e-9 }),
+                Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
                 Viewer(catalystVar.getInterfaceVar())))
     else:
         viewer = None
@@ -326,20 +326,23 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         distanceVar.extendVariable(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
-        advectionEquation.solve(distanceVar, dt = dt, solver=LinearLUSolver()) 
+        advectionEquation.solve(distanceVar, dt = dt) 
         surfactantEquation.solve(catalystVar, dt = dt)
         metalEquation.solve(metalVar, dt = dt, 
-                            boundaryConditions = metalEquationBCs, solver=LinearLUSolver())
+                            boundaryConditions = metalEquationBCs)
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                                   boundaryConditions = catalystBCs, solver=LinearLUSolver())
+                                   boundaryConditions = catalystBCs)
 
     try:
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
         
         print catalystVar.allclose(loadtxt(filepath), rtol = 1e-4)
+
     except:
         return 0
+
+__all__ = ["runSimpleTrenchSystem"]
 
 if __name__ == '__main__':
     runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)

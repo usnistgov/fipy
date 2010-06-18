@@ -250,11 +250,9 @@ and orientation variables.
 ..
 
     >>> if __name__ == '__main__':
-    ...     phaseViewer = Viewer(vars=phase, 
-    ...                          limits={'datamin': 0., 'datamax': 1.})
+    ...     phaseViewer = Viewer(vars=phase, datamin=0., datamax=1.)
     ...     thetaProductViewer = Viewer(vars=theta,
-    ...                                 limits={'datamin': -pi, 
-    ...                                         'datamax': pi})
+    ...                                 datamin=-pi, datamax=pi)
     ...     phaseViewer.plot()
     ...     thetaProductViewer.plot()
 

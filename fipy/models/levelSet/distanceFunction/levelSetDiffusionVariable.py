@@ -34,10 +34,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 class _LevelSetDiffusionVariable(_CellToFaceVariable):
     """

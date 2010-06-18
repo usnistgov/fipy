@@ -34,10 +34,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
 from fipy.terms.term import Term
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 from fipy.tools.sparseMatrix import _SparseMatrix
 

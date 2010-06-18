@@ -2,13 +2,9 @@
  % ###################################################################
  %  FiPy - a finite volume PDE solver in Python
  % 
- %  FILE: "fipy.tex"
- %                                    created: 4/1/04 {2:58:37 PM} 
- %                                last update: 11/23/08 {12:15:41 AM} 
- %  Author: Jonathan Guyer
- %  E-mail: guyer@nist.gov
- %  Author: Daniel Wheeler
- %  E-mail: daniel.wheeler@nist.gov
+ %  Author: Jonathan Guyer <guyer@nist.gov>
+ %  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ %  Author: James Warren <jwarren@nist.gov>
  %    mail: NIST
  %     www: http://ctcms.nist.gov
  %  
@@ -40,21 +36,10 @@
 % \documentclass[letterpaper]{book}
 \usepackage{xr-hyper}
 
-\usepackage[tocAsPDFchapter,index]{fipy}
+\usepackage[tocAsPDFchapter,index,bookmarksdepth=subsection]{fipy}
 
 
-\externaldocument[API-]{reference}
-
-% \usepackage{mdwlist}
-% \newenvironment{faq}{%
-%     \begin{basedescript}{%
-%         \setlength\labelwidth\textwidth%
-%         \desclabelstyle{\multilinelabel}%
-%         \renewcommand{\makelabel}[1]{\bfseries##1\newline}%
-%     }%
-% }{%
-%     \end{basedescript}%
-% }
+\externaldocument[API-]{reference}[http://matforge.org/fipy/wiki/FiPyManual]
 
 \usepackage{moreverb}
 
@@ -222,12 +207,12 @@ and the Center for Theoretical and Computational Materials Science
 
 % Efficiency
 
-\chapter{Efficiency}
-\label{chap:Efficiency}
+%\chapter{Efficiency}
+%\label{chap:Efficiency}
 
-\inputencoding{latin1}
+%\inputencoding{latin1}
 
-\input efficiency
+%\input efficiency
 
 \chapter{Frequently Asked Questions}
 \label{chap:FAQ}
@@ -265,10 +250,13 @@ and the Center for Theoretical and Computational Materials Science
 \input{examples/latex/examples.diffusion.mesh1D-module}
 \label{sec:Examples:diffusion:mesh1D}
 \input{examples/latex/examples.diffusion.mesh20x20-module}
+\label{sec:Examples:diffusion:mesh20x20}
 \input{examples/latex/examples.diffusion.circle-module}
+\label{sec:Examples:diffusion:circle}
 \input{examples/latex/examples.diffusion.electrostatics-module}
 \input{examples/latex/examples.diffusion.nthOrder.input4thOrder1D-module}
 \input{examples/latex/examples.diffusion.anisotropy-module}
+\label{sec:Examples:diffusion:anisotropy}
 
 \chapter{Convection Examples}
 
@@ -276,6 +264,10 @@ and the Center for Theoretical and Computational Materials Science
 \input{examples/latex/examples.convection.exponential1DSource.mesh1D-module}
 % \newpage
 \input{examples/latex/examples.convection.robin-module}
+\label{sec:Examples:convection:robin}
+
+\input{examples/latex/examples.convection.source-module}
+\label{sec:Examples:convection:source}
 % \newpage
 % \input{examples/latex/examples.convection.exponential2D.mesh2D-module}
 % \newpage
@@ -346,15 +338,18 @@ book~\cite{levelSetBook}.
 \chapter{Cahn-Hilliard Examples}
 
 \input{examples/latex/examples.cahnHilliard.mesh2D-module}
+\label{sec:Examples:cahnHilliard:mesh2D}
+\input{examples/latex/examples.cahnHilliard.sphere-module}
 % \newpage
 
 \chapter{Fluid Flow Examples}
 
 \input{examples/latex/examples.flow.stokesCavity-module}
 
-\chapter{Converting from \FiPy{}~0.1 to \FiPy{}~1.0}
-\label{chap:Update0.1to1.0}
+\chapter{Converting from older versions of \FiPy}
+\label{chap:UpdateFiPy}
 
+\input{examples/latex/examples.update1_0to2_0-module}
 \input{examples/latex/examples.update0_1to1_0-module}
 
 \settocdepth{all} 
@@ -367,23 +362,28 @@ book~\cite{levelSetBook}.
 
 \fussy
 
-% \bibliographystyle{unsrt_no_title}
+\nobibintoc
+\phantomsection
+\addcontentsline{toc}{part}{\bibname}%
 \bibliographystyle{fipy}
 \bibliography{refs}
 
 \sloppy
 \raggedright
+
+\noindexintoc
+\phantomsection
+\addcontentsline{toc}{part}{\indexname}%
 \printindex
 
 \fussy
-
 
 \appendix 
 
 % Credits
 
 \chapter*{Contributors}
-% \addstarredpart{Contributors} 
+\phantomsection
 \addcontentsline{toc}{part}{Contributors} 
 \label{chap:Contributors}
 

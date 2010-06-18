@@ -62,7 +62,8 @@ var = CellVariable(mesh=mesh, value=x * y * z)
 
 if __name__ == '__main__':
 
-    viewer = MayaviViewer(vars = var, limits= {'datamin' : min(x * y * z), 'datamax' : max(x * y * z)})
+    viewer = MayaviViewer(vars = var, 
+                          datamin=min(x * y * z), datamax=max(x * y * z))
     
     viewer.plot()
 

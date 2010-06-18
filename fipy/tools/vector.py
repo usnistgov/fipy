@@ -61,10 +61,10 @@ def _putAddPy(vector, ids, additionVector, mask=False):
             for id, value in [(ids[i], additionVector[...,i]) for i in range(len(ids))]:
                 vector[...,id] += value
 
-
-### !!! THIS NEEDS WORK !!! ###
+## FIXME: inline version doesn't account for all of the conditions that Python 
+## version does.
 def _putAddIn(vector, ids, additionVector):
-    from fipy.tools.inline import inline
+    from fipy.tools import inline
     inline._runInline("""
         int ID = ids[i];
 	vector[ID] += additionVector[i];
@@ -76,7 +76,7 @@ def putAdd(vector, ids, additionVector):
     """ This is a temporary replacement for Numeric.put as it was not doing
     what we thought it was doing.
     """
-    from fipy.tools.inline import inline
+    from fipy.tools import inline
     inline._optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
 def prune(array, shift, start=0, axis=0):

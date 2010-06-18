@@ -106,8 +106,7 @@ We can now create a viewer to see the mesh
     >>> viewer = None
     >>> if __name__ == '__main__':
     ...     try:
-    ...         viewer = Viewer(vars=phi,
-    ...                         limits={'datamin': -1, 'datamax': 1.})
+    ...         viewer = Viewer(vars=phi, datamin=-1, datamax=1.)
     ...         viewer.plotMesh()
     ...         raw_input("Irregular circular mesh. Press <return> to proceed...")
     ...     except:

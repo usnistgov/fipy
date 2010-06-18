@@ -22,7 +22,7 @@ documentation/SVN.txt
 documentation/TALKS.txt
 documentation/TODOLIST.txt
 documentation/VKML.txt
-documentation/figures/NIST_right2line.pdf
+documentation/figures/nistident_flright_vec.pdf
 documentation/logo/logo.tex
 documentation/manual/docutils-emulation.sty
 documentation/manual/epydoc.sty
@@ -40,6 +40,7 @@ documentation/manual/images/objects.pdf
 documentation/manual/images/examples/cahnHilliard/mesh2D-early.pdf
 documentation/manual/images/examples/cahnHilliard/mesh2D-late.pdf
 documentation/manual/images/examples/cahnHilliard/mesh2D-mid.pdf
+documentation/manual/images/examples/cahnHilliard/mesh2D.pdf
 documentation/manual/images/examples/cahnHilliard/mesh3D.py
 documentation/manual/images/examples/cahnHilliard/sphere.pdf
 documentation/manual/images/examples/diffusion/circleMesh.pdf
@@ -126,6 +127,7 @@ examples/README.txt
 examples/__init__.py
 examples/test.py
 examples/update0_1to1_0.py
+examples/update1_0to2_0.py
 examples/benchmarking/__init__.py
 examples/benchmarking/anisotropy.py
 examples/benchmarking/benchmarker.py
@@ -378,9 +380,10 @@ fipy/solvers/trilinos/preconditioners/__init__.py
 fipy/solvers/trilinos/preconditioners/domDecompPreconditioner.py
 fipy/solvers/trilinos/preconditioners/icPreconditioner.py
 fipy/solvers/trilinos/preconditioners/jacobiPreconditioner.py
+fipy/solvers/trilinos/preconditioners/multilevelDDMLPreconditioner.py
 fipy/solvers/trilinos/preconditioners/multilevelDDPreconditioner.py
-fipy/solvers/trilinos/preconditioners/multilevelSGSPreconditioner.py
-fipy/solvers/trilinos/preconditioners/multilevelSolverSmootherPreconditioner.py
+fipy/solvers/trilinos/preconditioners/multilevelNSSAPreconditioner.py
+fipy/solvers/trilinos/preconditioners/multilevelSAPreconditioner.py
 fipy/solvers/trilinos/preconditioners/preconditioner.py
 fipy/steppers/__init__.py
 fipy/steppers/pidStepper.py
@@ -401,6 +404,7 @@ fipy/terms/faceTerm.py
 fipy/terms/hybridConvectionTerm.py
 fipy/terms/implicitDiffusionTerm.py
 fipy/terms/implicitSourceTerm.py
+fipy/terms/mulTerm.py
 fipy/terms/nthOrderDiffusionTerm.py
 fipy/terms/powerLawConvectionTerm.py
 fipy/terms/sourceTerm.py
@@ -416,6 +420,7 @@ fipy/tests/testBase.py
 fipy/tests/testProgram.py
 fipy/tools/__init__.py
 fipy/tools/dump.py
+fipy/tools/inline.py
 fipy/tools/memoryLeak.py
 fipy/tools/memoryLogger.py
 fipy/tools/memoryUsage.py
@@ -431,8 +436,6 @@ fipy/tools/dimensions/LICENSE
 fipy/tools/dimensions/NumberDict.py
 fipy/tools/dimensions/__init__.py
 fipy/tools/dimensions/physicalField.py
-fipy/tools/inline/__init__.py
-fipy/tools/inline/inline.py
 fipy/variables/__init__.py
 fipy/variables/addOverFacesVariable.py
 fipy/variables/arithmeticCellToFaceVariable.py
@@ -446,6 +449,7 @@ fipy/variables/exponentialNoiseVariable.py
 fipy/variables/faceGradVariable.py
 fipy/variables/faceToVertexVariable.py
 fipy/variables/faceVariable.py
+fipy/variables/fixedBCFaceGradVariable.py
 fipy/variables/gammaNoiseVariable.py
 fipy/variables/gaussCellGradVariable.py
 fipy/variables/gaussianNoiseVariable.py
@@ -462,6 +466,7 @@ fipy/variables/modPhysicalField.py
 fipy/variables/modularVariable.py
 fipy/variables/noiseVariable.py
 fipy/variables/operatorVariable.py
+fipy/variables/scharfetterGummelFaceVariable.py
 fipy/variables/test.py
 fipy/variables/unaryOperatorVariable.py
 fipy/variables/uniformNoiseVariable.py

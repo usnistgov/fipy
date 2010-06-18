@@ -33,9 +33,7 @@
  ##
 
 from fipy.tools import numerix
-
-from fipy.tools import numerix
-import fipy.tools.inline.inline as inline
+from fipy.tools import inline
 from fipy.variables.cellVariable import CellVariable
 
 class _AddOverFacesVariable(CellVariable):
@@ -52,7 +50,8 @@ class _AddOverFacesVariable(CellVariable):
         
         contributions = numerix.take(self.faceVariable, ids, axis=-1)
 
-        return numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0) / self.mesh.getCellVolumes()
+        # FIXME: numerix.MA.filled casts away dimensions
+        return numerix.MA.filled(numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0)) / self.mesh.getCellVolumes()
         
     def _calcValueIn(self):
 

@@ -69,7 +69,7 @@ def _OperatorVariableClass(baseClass=None):
             if not self.canInline:
                 return self._calcValuePy()
             else:
-                from fipy.tools.inline import inline
+                from fipy.tools import inline
                 return inline._optionalInline(self._calcValueIn, self._calcValuePy)
 
         def _calcValueIn(self):

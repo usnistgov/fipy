@@ -35,8 +35,7 @@
  ##
 
 from fipy.tools import numerix
-
-from fipy.tools.inline import inline
+from fipy.tools import inline
 from fipy.variables.arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
 
 class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):

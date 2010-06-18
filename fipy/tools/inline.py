@@ -1,10 +1,18 @@
 import inspect
+import os
+import sys
 
 from fipy.tools import numerix
-from fipy.tools.inline import inlineFlagOn, inlineCommentOn
+
+if '--inline' in sys.argv[1:]:
+    doInline = True
+else:
+    doInline = os.environ.has_key('FIPY_INLINE')
+    
+inlineFrameComment = os.environ.has_key('FIPY_INLINE_COMMENT')
 
 def _optionalInline(inlineFn, pythonFn, *args):
-    if inlineFlagOn:
+    if doInline:
         return inlineFn(*args)
     else:
         return pythonFn(*args)
@@ -20,7 +28,7 @@ def _getframeinfo(level, context=1):
     return (frame,) + inspect.getframeinfo(frame, context=context)
 
 def _rawCodeComment(code, level=2):
-    if inlineCommentOn:
+    if inlineFrameComment:
         finfo = _getframeinfo(level=level)
         
         # note: 
@@ -34,24 +42,31 @@ def _rawCodeComment(code, level=2):
 
     %s 
 */
-''' % (finfo[1], finfo[2] - len(code.splitlines()), finfo[3])
+        ''' % (finfo[1], finfo[2] - len(code.splitlines()), finfo[3])
     else:
         return ""
 
-def _operatorVariableComment(canInline=True, level=2):
-    if canInline and inlineFlagOn and inlineCommentOn:
-        comment = ""
-        for finfo in inspect.getouterframes(inspect.currentframe())[level:]:
-                if finfo[4] is not None:
-                    code = "\n".join(finfo[4])
-                else:
-                    code = ""
-                    
-                comment += '''
+def _operatorVariableComment(canInline=True, level=3):
+    if canInline and doInline and inlineFrameComment:
+        finfo = _getframeinfo(level=level)
+
+        # note: 
+        # don't use #line because it actually makes it harder 
+        # to find the offending code in both the C++ source and in the Python
+        #line %d "%s"
+        
+        if finfo[4] is not None:
+            code = "\n".join(finfo[4])
+        else:
+            code = ""
+            
+        return '''
+/* 
 %s:%d
 
-%s''' % (finfo[1], finfo[2], code)
-        return "/*" + comment + "*/"
+%s
+ */
+        ''' % (finfo[1], finfo[2], code)
     else:
         return ""
 

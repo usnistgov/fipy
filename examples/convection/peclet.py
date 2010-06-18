@@ -36,8 +36,8 @@ r"""
 
 This example tests diffusion-convection for increasing Peclet numbers.
 This test case has been introduced because `LinearCGSSolver` was not
-working with Peclet numbers over 1. LinearLUSOlver is now the default
-for ConvectionTerm. For `nx = 1000` the Linear GMRESSOLVER does not work,
+working with Peclet numbers over 1. LinearLUSolver is now the default
+for ConvectionTerm. For `nx = 1000` the LinearGMRESSolver does not work,
 but the LinearScipyGMRESSolver does work! Oh dear...
 
     >>> from fipy import *

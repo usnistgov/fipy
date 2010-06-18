@@ -435,7 +435,7 @@ If we're running interactively, we create a viewer
     ...     viewer = Viewer(vars=([phase]
     ...                           + interstitials + substitutionals
     ...                           + [solvent]),
-    ...                     limits={'datamin': 0, 'datamax': 1})
+    ...                     datamin=0, datamax=1)
     ...     viewer.plot()
 
 and again iterate to equilibrium

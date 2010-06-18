@@ -8,6 +8,7 @@
 \DeclareOptionX{hyperlink}{\PassOptionsToPackage{hyperlink}{examples/latex/epydoc-base}}
 \DeclareOptionX{title}[]{\PassOptionsToPackage{title={#1}}{examples/latex/epydoc-base}}
 \DeclareOptionX{creator}[]{\PassOptionsToPackage{creator={#1}}{examples/latex/epydoc-base}}
+\DeclareOptionX{bookmarksdepth}[\toclevel]{\PassOptionsToPackage{bookmarksdepth={#1}}{examples/latex/epydoc-base}}
 
 % Put Part as topmost level in PDF bookmarks
 \def\tocPDFlevel{-1}
@@ -23,20 +24,6 @@
 \RequirePackage{longtable}
 
 \RequirePackage{crop}
-
-% \tocotherhead{part}
-% \renewcommand{\bibsection}{% 
-% \part{\bibname} 
-% \prebibhook}
-
-\renewcommand{\bibsection}{% 
-\chapter*{\bibname} 
-\bibmark 
-\ifnobibintoc\else 
-\phantomsection 
-\addcontentsline{toc}{part}{\bibname} 
-\fi 
-\prebibhook}
 
 \setlength{\columnsep}{35pt}
 
@@ -129,6 +116,8 @@
 
 \newcommand{\@SoftwareURL}[2]{\href{#2}{\@Software{#1}}\IndexSoftware{#1}}
 
+\newcommand{\NumPy}{\@SoftwareURL{NumPy}{http://www.numpy.org/}}
+
 \newcommand{\SciPy}{\@SoftwareURL{SciPy}{http://www.scipy.org/}}
 
 \newcommand{\PyRex}{\@SoftwareURL{PyRex}{http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/}}
@@ -147,6 +136,8 @@
 \newcommand{\MayaVi}{\@SoftwareURL{MayaVi}{http://mayavi.sourceforge.net}}
 
 \newcommand{\PySparse}{\@SoftwareURL{PySparse}{http://people.web.psi.ch/geus/pyfemax/pysparse.html}}
+
+\newcommand{\Trilinos}{\@SoftwareURL{Trilinos}{http://trilinos.sandia.gov}}
 
 \newcommand{\ScientificPython}{\@SoftwareURL{Scientific Python}{http://starship.python.net/~hinsen/ScientificPython/}}
 
@@ -505,7 +496,7 @@
 \newcommand{\logo}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}
 
 \newsavebox{\NISTbox}
-\sbox{\NISTbox}{\includegraphics[trim=5 2 5 5,scale=1.5]{NIST_right2line}}
+\sbox{\NISTbox}{\includegraphics[trim=5 2 5 5,scale=1.]{nistident_flright_vec}}
 
 \input{version}
 

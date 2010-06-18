@@ -35,7 +35,7 @@ import pylab
 from matplotlib import ticker
 from scipy.io import mmio
 
-from fipy.tools.numerix import arange, array, compress, log, log10, nan, nanmax, nanmin, sign, where, zeros
+from fipy.tools.numerix import arange, array, compress, log, log10, nan, nanmax, nanmin, sign, where, zeros, maximum, minimum
 
 class SignedLogFormatter(ticker.LogFormatter):
     """
@@ -181,14 +181,19 @@ class MatplotlibSparseMatrixViewer:
     def __init__(self, title="Sparsity"):
         self.title = title
         
+        self.margin = 0.1
+        self.width = 0.8
+        self.aspect = 1.3
+
         pylab.ion()
         
-        fig = pylab.figure(figsize=[pylab.rcParams['figure.figsize'][0] * 1.3, pylab.rcParams['figure.figsize'][1]])
+        fig = pylab.figure(figsize=[pylab.rcParams['figure.figsize'][0] * self.aspect, pylab.rcParams['figure.figsize'][1]])
         self.id = fig.number
         
         pylab.title(self.title)
+        
 
-    def plot(self, matrix, log='auto'):
+    def plot(self, matrix, RHSvector, log='auto'):
         import tempfile
         import os
         
@@ -205,21 +210,31 @@ class MatplotlibSparseMatrixViewer:
         x = c.col
         z = c.data
         
+        b = RHSvector
+        
         if len(z) == 0:
             y = zeros((1,))
             x = zeros((1,))
             z = zeros((1,))
 
-        if log == 'auto' and log10(max(z) - min(z)) > 2:
+        zPlus = where(z > 0, log10(z), nan)
+        zMinus = where(z < 0, log10(-z), nan)
+        bPlus = where(b > 0, log10(b), nan)
+        bMinus = where(b < 0, log10(-b), nan)
+
+        if (log == True
+            or (log == 'auto' 
+                and (max(zPlus) - min(zPlus) > 2
+                     or max(zMinus) - min(zMinus) > 2
+                     or max(bPlus) - min(bPlus) > 2
+                     or max(bMinus) - min(bMinus) > 2))):
             log = True
         else:
             log = False
             
         if log:
-            zPlus = where(z > 0, log10(z), nan)
-            zMinus = where(z < 0, log10(-z), nan)
-            zMin = min(nanmin(zPlus), nanmin(zMinus))
-            zMax = max(nanmax(zPlus), nanmax(zMinus))
+            zMin = min(min(min(nanmin(zPlus), nanmin(zMinus)), nanmin(bPlus)), nanmin(bMinus))
+            zMax = max(max(max(nanmax(zPlus), nanmax(zMinus)), nanmax(bPlus)), nanmax(bMinus))
 ##             zThreshold = 0.5 # (zMax - zMin) / 5.
             
             zMin -= 0.5
@@ -230,23 +245,28 @@ class MatplotlibSparseMatrixViewer:
             
             zPlus -= zMin
             zMinus -= zMin
+            bPlus -= zMin
+            bMinus -= zMin
             zRange = zMax - zMin
             
+            if zRange == 0:
+                zRange = nanmax(zPlus) + 1
+
             z = where(z > 0, zPlus, -zMinus)
+            b = where(b > 0, bPlus, -bMinus)
             
             fmt = SignedLogFormatter(threshold=zMin)
             loc = SignedLogLocator(threshold=zMin)
             
         else:
-            zPlus = where(z > 0, z, nan)
-            zMinus = where(z < 0, -z, nan)
-            zRange = max(nanmax(zPlus), nanmax(zMinus))
+            zRange = max(max(abs(z)), max(abs(b)))
         
+            if zRange == 0:
+                zRange = 1
+
             fmt = None
             loc = None
             
-        if zRange == 0:
-            zRange = nanmax(zPlus) + 1
 
         N = matrix._getShape()[0]
         saveSize = pylab.rcParams['figure.figsize']
@@ -259,13 +279,28 @@ class MatplotlibSparseMatrixViewer:
 
         pylab.title(self.title)
 
-        scat = pylab.scatter(x, y, c=z, 
-                             vmin=-zRange, vmax=zRange, edgecolors='none', 
-                             cmap=pylab.get_cmap('RdBu'), marker='s', s=size)
-                    
+        pylab.delaxes()
+        ax1 = pylab.axes([self.margin, self.margin, self.width, self.width])
+        
+        Mscat = pylab.scatter(x, y, c=z, 
+                              vmin=-zRange, vmax=zRange, edgecolors='none', 
+                              cmap=pylab.get_cmap('RdBu'), marker='s', s=size)
+                             
+        ax2 = pylab.axes([self.width + self.margin, self.margin, (self.width / self.aspect) / N, self.width], 
+                         sharey=ax1)
+
+        bscat = pylab.scatter(zeros((N,)), arange(N), c=b, 
+                              vmin=-zRange, vmax=zRange, edgecolors='none', 
+                              cmap=pylab.get_cmap('RdBu'), marker='s', s=size)
+
+        pylab.setp((ax2.get_xticklabels(),
+                    ax2.get_yticklabels(),
+                    ax2.get_xticklines(),
+                    ax2.get_yticklines()), visible=False)
+        
+        pylab.axes(ax1)
         pylab.axis([-0.5, N - 0.5, N - 0.5, -0.5])
 
-                
         pylab.colorbar(format=fmt, ticks=loc)
 
         pylab.draw()

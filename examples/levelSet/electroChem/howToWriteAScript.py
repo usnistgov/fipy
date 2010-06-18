@@ -38,7 +38,7 @@ r"""
     \label{howToWriteAScript} This input file demonstrates how to
     create a new superfill script if the existing suite of scripts do
     not meet the required needs. It provides the functionality of
-    Example~\ref{simpleTrenchSytem}.
+    Example~\ref{simpleTrenchSystem}.
 
 To run this example from the base fipy directory type::
     
@@ -472,12 +472,12 @@ is calculated with the CFL number and the maximum extension velocity.
    ...     bulkCatalystVar.updateOld()
    ...     distanceVar.extendVariable(extensionVelocityVariable)
    ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
-   ...     advectionEquation.solve(distanceVar, dt=dt, solver=LinearLUSolver())
+   ...     advectionEquation.solve(distanceVar, dt=dt)
    ...     surfactantEquation.solve(catalystVar, dt=dt)
    ...     metalEquation.solve(var=metalVar, dt=dt,
-   ...                         boundaryConditions=metalEquationBCs, solver=LinearLUSolver())
+   ...                         boundaryConditions=metalEquationBCs)
    ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
-   ...                                   boundaryConditions=catalystBCs, solver=LinearLUSolver())
+   ...                                   boundaryConditions=catalystBCs)
 
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way

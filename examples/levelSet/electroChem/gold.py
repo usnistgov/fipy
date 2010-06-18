@@ -76,7 +76,7 @@ more complex mesh.
     \IndexSoftware{gmsh}
 
     There are a few differences between the gold superfill model presented
-    in this example and Example~\ref{inputSimpleTrench}. Most default
+    in this example and Example~\ref{simpleTrenchSystem}. Most default
     values have changed to account for a different metal ion (gold)
     and catalyst (lead). In this system the catalyst is not present in
     the electrolyte but instead has a non-zero initial coverage. Thus
@@ -201,12 +201,11 @@ def runGold(faradaysConstant=9.6e4,
             
             viewer = MayaviSurfactantViewer(distanceVar, 
                                             catalystVar.getInterfaceVar(), 
-                                            zoomFactor = 1e6, 
-                                            limits = { 
-                                              'datamax' : 1.0, 
-                                              'datamin' : 0.0 
-                                            }, smooth = 1, 
-                                            title = 'catalyst coverage', 
+                                            zoomFactor=1e6, 
+                                            datamax=1.0, 
+                                            datamin=0.0 
+                                            smooth=1, 
+                                            title='catalyst coverage', 
                                             animate=True)
             
         except:
@@ -220,7 +219,7 @@ def runGold(faradaysConstant=9.6e4,
                     return array(self.var[:self.mesh.getNumberOfCells()])
 
             viewer = MultiViewer(viewers=(
-                Viewer(PlotVariable(var = distanceVar), limits = {'datamax' : 1e-9, 'datamin' : -1e-9}),
+                Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
                 Viewer(PlotVariable(var = catalystVar.getInterfaceVar()))))
     else:
         viewer = None
@@ -249,7 +248,7 @@ def runGold(faradaysConstant=9.6e4,
         advectionEquation.solve(distanceVar, dt = dt)
         catalystSurfactantEquation.solve(catalystVar, dt = dt)
 
-        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt, solver=LinearPCGSolver())
+        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
                     
         step += 1
 
@@ -257,6 +256,8 @@ def runGold(faradaysConstant=9.6e4,
     value = 1.45346701e-09
     return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
     
+__all__ = ["runGold"]
+
 if __name__ == '__main__':
 ##     runGold(numberOfSteps = 10, cellSize = 1e-7, displayViewers=False)
     runGold(numberOfSteps = 300, cellSize = 0.05e-7)

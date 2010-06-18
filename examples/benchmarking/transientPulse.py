@@ -32,7 +32,7 @@ if __name__ == "__main__":
     bench.stop('terms')
 
     ## from fipy import viewers
-    ## viewer = Viewer(vars = C, limits = {'datamin': 0, 'datamax': 1})
+    ## viewer = Viewer(vars = C, datamin=0, datamax=1)
     ## viewer.plot()
     ## raw_input("initial")
 

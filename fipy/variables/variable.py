@@ -41,7 +41,7 @@ import inspect
 from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
-from fipy.tools.inline import inline
+from fipy.tools import inline
 
 class Variable(object):
     
@@ -546,7 +546,7 @@ class Variable(object):
 ## MaskedArray doesn't have a copy() method.
 ## Needs better fix
 ## !!!!!!!!!!!!!!!!!!!!!
-##         if (inline.inlineFlagOn 
+##         if (inline.doInline 
 ##            and hasattr(value, 'iscontiguous') and not value.iscontiguous()):
 ##             value = value.copy()
             
@@ -766,7 +766,7 @@ class Variable(object):
             [ 1.  1.  1.  1.]
         """
     
-        from fipy.tools.inline import inline
+        from fipy.tools import inline
         argDict = {}
         string = self._getCstring(argDict=argDict, freshen=True) + ';'
         
@@ -964,7 +964,11 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: b-a, other)
             
     def __mul__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: a*b, other)
+        from fipy.terms.term import Term
+        if isinstance(other, Term):
+            return other * self
+        else:
+            return self._BinaryOperatorVariable(lambda a,b: a*b, other)
 
     __rmul__ = __mul__
             

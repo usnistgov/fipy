@@ -43,19 +43,35 @@ Even if you don't read manuals...
 
 ...please read |INSTALLATION-txt| and |the FAQ|. 
 
------------------------------------
-What's new in version |VERSION|
------------------------------------
+--------------------------------
+What's new in version |VERSION|?
+--------------------------------
 
-The significant changes since version 1.1 are:
+.. warning::
 
-- ``--inline`` automatically generates C code from ``Variable`` expressions.
+   |FiPy| 2 brings unavoidable syntax changes. Please see
+   |examples.update1_0to2_0| for guidance on the changes that you will need
+   to make to your |FiPy| 1.x scripts.
 
-- |FiPy| has been updated to use the Python_ NumPy_ module. |FiPy| no
-  longer works with the older Numeric_ module.
+The significant changes since version 1.2 are:
 
-.. _NumPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
-.. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
+- ``CellVariable`` and ``FaceVariable`` objects can hold values of any 
+  rank.
+
+- Much simpler syntax for specifying ``Cells`` for initial conditions and 
+  ``Faces`` for boundary conditions.
+
+- Automated determination of the Peclet number and partitioning of 
+  ``ImplicitSourceTerm`` coefficients between the matrix diagonal and the
+  right-hand-side-vector.
+
+- Simplified ``Viewer`` syntax.
+
+- Support for the `Trilinos solvers`_.
+
+- Support for anisotropic diffusion coefficients.
+
+.. _Trilinos solvers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 
 -------------------------
 Download and Installation
@@ -171,9 +187,10 @@ or a
 
 .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
 .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
-.. |EFFICIENCY-txt| replace:: |htmlEFFICIENCY| |latexEFFICIENCY|
 .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
 .. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
+
+.. |examples.update1_0to2_0| replace:: |html1to2| |latex1to2|
 
 .. |citePython| raw:: latex
 

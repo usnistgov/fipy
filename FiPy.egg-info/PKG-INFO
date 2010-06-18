@@ -1,39 +1,38 @@
 Metadata-Version: 1.0
 Name: FiPy
-Version: 2.0a1
+Version: 2.0
 Summary: A finite volume PDE solver in Python
 Home-page: http://www.ctcms.nist.gov/fipy/
 Author: Jonathan Guyer, Daniel Wheeler, & Jim Warren
 Author-email: fipy@nist.gov
 License: 
-------------
-Terms of Use
-------------
-
-This software was developed at the `National Institute of Standards
-and Technology`_ by employees of the Federal Government in the course
-of their official duties.  Pursuant to `title 17 section 105`_ of the
-United States Code this software is not subject to copyright
-protection and is in the public domain.  |FiPy| is an experimental
-system.  NIST_ assumes no responsibility whatsoever for its use by
-other parties, and makes no guarantees, expressed or implied, about
-its quality, reliability, or any other characteristic.  We would
-appreciate acknowledgement if the software is used.
-
-This software can be redistributed and/or modified freely
-provided that any derivative works bear some notice that they are
-derived from it, and any modified versions bear some notice that
-they have been modified.
-
-
-.. _National Institute of Standards and Technology: http://www.nist.gov/
-.. _NIST:                 http://www.nist.gov/
-.. _title 17 section 105: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://uscode.house.gov/uscode-cgi/fastweb.exe?getdoc%2Buscview%2Bt17t20%2B9%2B0%2B%2B
-
-.. include:: utils/include.txt
-
-.. |FiPy| replace:: |latexFiPy| |htmlFiPy|
-
+        ------------
+        Terms of Use
+        ------------
+        
+        This software was developed at the `National Institute of Standards
+        and Technology`_ by employees of the Federal Government in the course
+        of their official duties.  Pursuant to `title 17 section 105`_ of the
+        United States Code this software is not subject to copyright
+        protection and is in the public domain.  |FiPy| is an experimental
+        system.  NIST_ assumes no responsibility whatsoever for its use by
+        other parties, and makes no guarantees, expressed or implied, about
+        its quality, reliability, or any other characteristic.  We would
+        appreciate acknowledgement if the software is used.
+        
+        This software can be redistributed and/or modified freely
+        provided that any derivative works bear some notice that they are
+        derived from it, and any modified versions bear some notice that
+        they have been modified.
+        
+        
+        .. _National Institute of Standards and Technology: http://www.nist.gov/
+        .. _NIST:                 http://www.nist.gov/
+        .. _title 17 section 105: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://uscode.house.gov/uscode-cgi/fastweb.exe?getdoc%2Buscview%2Bt17t20%2B9%2B0%2B%2B
+        
+        .. include:: utils/include.txt
+        
+        .. |FiPy| replace:: |latexFiPy| |htmlFiPy|
 Description: 
         ========
         Overview
@@ -80,19 +79,35 @@ Description:
         
         ...please read |INSTALLATION-txt| and |the FAQ|.
         
-        -----------------------------------
-        What's new in version |VERSION|
-        -----------------------------------
+        --------------------------------
+        What's new in version |VERSION|?
+        --------------------------------
         
-        The significant changes since version 1.1 are:
+        .. warning::
         
-        - ``--inline`` automatically generates C code from ``Variable`` expressions.
+        |FiPy| 2 brings unavoidable syntax changes. Please see
+        |examples.update1_0to2_0| for guidance on the changes that you will need
+        to make to your |FiPy| 1.x scripts.
         
-        - |FiPy| has been updated to use the Python_ NumPy_ module. |FiPy| no
-        longer works with the older Numeric_ module.
+        The significant changes since version 1.2 are:
         
-        .. _NumPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
-        .. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
+        - ``CellVariable`` and ``FaceVariable`` objects can hold values of any
+        rank.
+        
+        - Much simpler syntax for specifying ``Cells`` for initial conditions and
+        ``Faces`` for boundary conditions.
+        
+        - Automated determination of the Peclet number and partitioning of
+        ``ImplicitSourceTerm`` coefficients between the matrix diagonal and the
+        right-hand-side-vector.
+        
+        - Simplified ``Viewer`` syntax.
+        
+        - Support for the `Trilinos solvers`_.
+        
+        - Support for anisotropic diffusion coefficients.
+        
+        .. _Trilinos solvers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
         
         -------------------------
         Download and Installation
@@ -208,9 +223,10 @@ Description:
         
         .. |FiPy| replace:: |htmlFiPy| |latexFiPy|
         .. |INSTALLATION-txt| replace:: |htmlINSTALL| |latexINSTALL|
-        .. |EFFICIENCY-txt| replace:: |htmlEFFICIENCY| |latexEFFICIENCY|
         .. |the FAQ| replace:: |htmlFAQ| |latexFAQ|
         .. |WINDOWS-INSTALLATION-txt| replace:: |htmlWINDOWS-INSTALLATION| |latexWINDOWS-INSTALLATION|
+        
+        .. |examples.update1_0to2_0| replace:: |html1to2| |latex1to2|
         
         .. |citePython| raw:: latex
         

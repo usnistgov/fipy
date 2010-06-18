@@ -71,11 +71,10 @@ class GammaNoiseVariable(NoiseVariable):
            >>> x = histogram.getMesh().getCellCenters()[0]
            
            >>> if __name__ == '__main__':
-           ...     from fipy import viewers
-           ...     viewer = Viewer(vars = noise, 
-           ...                     limits = {'datamin': 0, 'datamax': 30})
-           ...     histoplot = Viewer(vars = (histogram, gammadist), 
-           ...                        limits = {'datamin': 0, 'datamax': 1})
+           ...     from fipy import Viewer
+           ...     viewer = Viewer(vars=noise, datamin=0, datamax=30)
+           ...     histoplot = Viewer(vars=(histogram, gammadist), 
+           ...                        datamin=0, datamax=1)
            
            >>> from fipy.tools.numerix import arange, exp
            >>> from scipy.special import gamma as Gamma

@@ -132,17 +132,10 @@ evolution of their problem.
     ...     if __name__ == "__main__":
     ...         viewer.plot()
 
-.. image:: examples/cahnHilliard/mesh2D-early.pdf
-   :scale: 20
-   :align: left
-
-.. image:: examples/cahnHilliard/mesh2D-mid.pdf
-   :scale: 20
+.. image:: examples/cahnHilliard/mesh2D.pdf
+   :scale: 150
    :align: center
-   
-.. image:: examples/cahnHilliard/mesh2D-late.pdf
-   :scale: 20
-   :align: right
+
 """
 __docformat__ = 'restructuredtext'
 

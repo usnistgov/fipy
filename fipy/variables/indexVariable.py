@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 11/15/08 {5:55:35 PM}
+ #                                 last update: 6/18/10 {9:23:07 AM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -40,7 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.variable import Variable
 from fipy.tools import numerix
-from fipy.tools.inline import inline
+from fipy.tools import inline
 
 def _IndexVariable(index):
     if isinstance(index, tuple) or isinstance(index, list):

@@ -61,7 +61,8 @@ class FixedFlux(BoundaryCondition):
             
         """
         BoundaryCondition.__init__(self,faces,value)
-        self.contribution = self.value * self.faces.getMesh()._getFaceAreas()
+        ## The extra index [self.faces.getValue()] makes self.contribution the same length as self.adjacentCellIDs
+        self.contribution = (self.value * self.faces.getMesh()._getFaceAreas())[self.faces.getValue()]
         
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Leave **L** unchanged and add gradient to **b**
@@ -87,4 +88,25 @@ class FixedFlux(BoundaryCondition):
         else:
             return BoundaryCondition._getDerivative(self, order)
 
+    def _test(self):
+        """
+        The following tests check that self.contributions is the same length as
+        self.adjacentCellIDs.
 
+           >>> from fipy import *
+           >>> m = Grid1D(nx = 10)
+           >>> v = FaceVariable(mesh=m)
+           >>> bc = FixedFlux(value=v[-1], faces=m.getFacesRight())
+           >>> len(bc.contribution) == len(bc.adjacentCellIDs)
+           True
+           >>> bc = FixedFlux(value=v, faces=m.getFacesRight())
+           >>> len(bc.contribution) == len(bc.adjacentCellIDs)
+           True
+        """
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test()

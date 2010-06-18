@@ -34,10 +34,9 @@
  # ###################################################################
  ##
 
-from fipy.tools import numerix
-
 from fipy.variables.faceGradVariable import _FaceGradVariable
-from fipy.tools.inline import inline
+from fipy.tools import inline
+from fipy.tools import numerix
 
 class _ModFaceGradVariable(_FaceGradVariable):
     def __init__(self, var, modIn):
