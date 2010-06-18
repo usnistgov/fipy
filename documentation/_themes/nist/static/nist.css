@@ -1,0 +1,331 @@
+/*
+ * nist.css_t
+ * ~~~~~~~~~~~~~~~
+ *
+ * NIST stylesheet -- nist theme.  Originally created by
+ * Jonathan Guyer for FiPy.
+ *
+ */
+
+@import url("basic.css");
+/* 
+ * @import url("/ui/css/SpryMenuBarHorizontal.css");
+ * @import url("/ui/css/nist-styles.css");
+ * @import url("/ui/css/nist-subsite-overrides.css");
+ * @import url("/ui/css/live.css");
+ */
+@import url("http://www.nist.gov/ui/css/SpryMenuBarHorizontal.css");
+@import url("http://www.nist.gov/ui/css/nist-styles.css");
+@import url("http://www.nist.gov/ui/css/nist-subsite-overrides.css");
+@import url("http://www.nist.gov/ui/css/live.css");
+
+/* -- page layout ----------------------------------------------------------- */
+
+div.bodywrapper {
+    margin: 0 240px 0 0;
+    border-right: 1px solid #ccc;
+    padding-left:5px;
+}
+
+div.bodywrapper h1 {
+    line-height:1.1em;
+}
+
+div.body {
+    margin: 0;
+    padding: 0 20px 20px 20px;
+}
+
+div.related {
+    display:block;
+    padding:10px 0 19px 17px;
+    width: auto;
+}
+
+div.related li {
+    margin: 0;
+    padding: 0;
+}
+
+div.sphinxsidebarwrapper {
+    padding: 0;
+}
+
+div.sphinxsidebar {
+    margin: 0;
+    padding: 0.5em 15px 15px 0;
+    width: 210px;
+    float: right;
+    font-size: 1em;
+    text-align: left;
+}
+
+div.sphinxsidebar h3, div.sphinxsidebar h4 {
+    color: gray;
+    font-size:150%;
+    font-style:normal;
+    font-weight:normal;
+    margin: 0.3em 0 0em;
+}
+
+div.sphinxsidebar h3 a, div.sphinxsidebar h4 a {
+    color:gray;
+    text-decoration: underline;
+}
+
+div.sphinxsidebar h3 a:hover, div.sphinxsidebar h4 a:hover {
+    color: black;
+}
+
+div.sphinxsidebarsection {
+    border-top:1px solid #BEBEBE;
+    margin: 1em 0 -0.3em;
+}
+
+div.sphinxsidebar ul {
+    padding-left: 1.5em;
+    margin-top: 7px;
+    padding: 0;
+    line-height: 130%;
+}
+
+div.sphinxsidebar ul ul {
+    margin-left: 20px;
+}
+
+div.sphinxsidebar p {
+    margin: 0;
+}
+
+div.footer {
+    border-top:1px solid #BEBEBE;
+    margin:10px 0 10px 24px;
+    padding:10px 0px 10px 0px;
+    clear: both;
+    font-size:0.95em;
+    text-align: left;
+    width: 95%;
+}
+
+div.footer a {
+    color: #86989B;
+}
+
+div.footer p {
+    padding:0 0 10px;
+}
+
+/* -- body styles ----------------------------------------------------------- */
+
+p {    
+    margin: 0.8em 0 0.5em 0;
+}
+
+a {
+    color: #CA7900;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2491CF;
+}
+
+h1 {
+    margin: 0;
+    padding: 0.7em 0 0.3em 0;
+}
+
+h2 {
+    margin: 1.3em 0 0.2em 0;
+    font-weight: normal;
+    padding: 0;
+    color: gray;
+    background-color: white;
+}
+
+h3 {
+    margin: 1em 0 -0.3em 0;
+    font-size: 1.2em;
+}
+
+div.body h1 a, div.body h2 a, div.body h3 a, div.body h4 a, div.body h5 a, div.body h6 a {
+    color: black!important;
+}
+
+div.body h2 a {
+    color: gray!important;
+    text-decoration: underline!important;
+}
+
+div.body h2 a:hover {
+    color: black!important;
+}
+
+h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor {
+    display: none;
+    margin: 0 0 0 0.3em;
+    padding: 0 0.2em 0 0.2em;
+    color: #aaa!important;
+}
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor,
+h5:hover a.anchor, h6:hover a.anchor {
+    display: inline;
+}
+
+h1 a.anchor:hover, h2 a.anchor:hover, h3 a.anchor:hover, h4 a.anchor:hover,
+h5 a.anchor:hover, h6 a.anchor:hover {
+    color: #777;
+    background-color: #eee;
+}
+
+a.headerlink {
+    color: #c60f0f!important;
+    font-size: 1em;
+    margin-left: 6px;
+    padding: 0 4px 0 4px;
+    text-decoration: none!important;
+}
+
+a.headerlink:hover {
+    background-color: #ccc;
+    color: white!important;
+}
+
+cite, code, tt {
+    font-family: 'Consolas', 'Deja Vu Sans Mono',
+                 'Bitstream Vera Sans Mono', monospace;
+    font-size: 0.95em;
+    letter-spacing: 0.01em;
+}
+
+tt {
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+
+tt.descname, tt.descclassname, tt.xref {
+    border: 0;
+}
+
+hr {
+    border: 1px solid #abc;
+    margin: 2em;
+}
+
+a tt {
+    border: 0;
+    color: #4070A0;
+}
+
+a tt:hover {
+    color: #2491CF;
+}
+
+pre {
+    font-family: 'Consolas', 'Deja Vu Sans Mono',
+                 'Bitstream Vera Sans Mono', monospace;
+    font-size: 0.95em;
+    letter-spacing: 0.015em;
+    line-height: 120%;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+}
+
+pre a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+td.linenos pre {
+    padding: 0.5em 0;
+}
+
+div.quotebar {
+    background-color: #f8f8f8;
+    max-width: 250px;
+    float: right;
+    padding: 2px 7px;
+    border: 1px solid #ccc;
+}
+
+div.topic {
+    background-color: #f8f8f8;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0 -0.5em 0 -0.5em;
+}
+
+table td, table th {
+    padding: 0.2em 0.5em 0.2em 0.5em;
+}
+
+div.admonition, div.warning {
+    font-size: 0.9em;
+    margin: 1em 0 1em 0;
+    border: 1px solid #86989B;
+    background-color: #f7f7f7;
+    padding: 0;
+}
+
+div.admonition p, div.warning p {
+    margin: 0.5em 1em 0.5em 1em;
+    padding: 0;
+}
+
+div.admonition pre, div.warning pre {
+    margin: 0.4em 1em 0.4em 1em;
+}
+
+div.admonition p.admonition-title,
+div.warning p.admonition-title {
+    margin: 0;
+    padding: 0.1em 0 0.1em 0.5em;
+    color: white;
+    border-bottom: 1px solid #86989B;
+    font-weight: bold;
+    background-color: #AFC1C4;
+}
+
+div.warning {
+    border: 1px solid #940000;
+}
+
+div.warning p.admonition-title {
+    background-color: #CF0000;
+    border-bottom-color: #940000;
+}
+
+div.admonition ul, div.admonition ol,
+div.warning ul, div.warning ol {
+    margin: 0.1em 0.5em 0.5em 3em;
+    padding: 0;
+}
+
+div.versioninfo {
+    margin: 1em 0 0 0;
+    border: 1px solid #ccc;
+    background-color: #DDEAF0;
+    padding: 8px;
+    line-height: 1.3em;
+    font-size: 0.9em;
+}
+
+ol.simple, ul.simple {
+    margin-bottom:1em;
+}
+
+ul.simple {
+    list-style-type:disc;
+    margin:0 0 2% 3%;
+    padding:0;
+}
+
+li {
+    margin:0 0 2% 3%;
+    padding:0;
+}

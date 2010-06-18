@@ -133,7 +133,7 @@ class Term:
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
 
 
-        solver = self._getDefaultSolver(solver) or solver or DefaultSolver()
+        solver = self.getDefaultSolver(solver)
 
         matrix, RHSvector = self.__buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         return (solver, matrix, RHSvector)
@@ -302,9 +302,12 @@ class Term:
         RHSVector += (1 - underRelaxation) * matrix.takeDiagonal() * numerix.array(var)
         return matrix, RHSVector
 
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver, *args, **kwargs):
         return None
         
+    def getDefaultSolver(self, solver=None, *args, **kwargs):
+        return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
+                         
     def _otherIsZero(self, other):
         if (type(other) is type(0) or type(other) is type(0.)) and other == 0:
             return True

@@ -36,226 +36,172 @@ r"""
 The Poisson equation is a particular example of the steady-state diffusion
 equation. We examine a few cases in one dimension.
 
-.. raw:: latex
+>>> from fipy import *
 
-   \IndexClass{Grid1D}
+>>> nx = 200
+>>> dx = 0.01
+>>> L = nx * dx
+>>> mesh = Grid1D(dx = dx, nx = nx)
 
-..
+Given the electrostatic potential :math:`\phi`,
 
-    >>> from fipy import *
+>>> potential = CellVariable(mesh=mesh, name='potential', value=0.)
 
-    >>> nx = 200
-    >>> dx = 0.01
-    >>> L = nx * dx
-    >>> mesh = Grid1D(dx = dx, nx = nx)
+the permittivity :math:`\epsilon`,
 
-.. raw:: latex
-
-   Given the electrostatic potential $\phi$,
-   \IndexClass{CellVariable}
+>>> permittivity = 1
    
-..
-
-    >>> potential = CellVariable(mesh=mesh, name='potential', value=0.)
-
-.. raw:: latex
-
-   the permittivity $\epsilon$,
-
-..
-
-    >>> permittivity = 1
+the concentration :math:`C_j` of the :math:`j^\text{th}` component with valence
+:math:`z_j` (we consider only a single component :math:`C_\text{e}^{-}` with
+valence with :math:`z_{\text{e}^{-}} = -1`)
    
-.. raw:: latex
+>>> electrons = CellVariable(mesh=mesh, name='e-')
+>>> electrons.valence = -1
 
-   the concentration $C_j$ of the $j^\text{th}$ component with valence
-   $z_j$ (we consider only a single component \( C_\text{e}^{-} \) with
-   valence with $z_{\text{e}^{-}} = -1$)
-   
-..
+and the charge density :math:`\rho`,
 
-    >>> electrons = CellVariable(mesh=mesh, name='e-')
-    >>> electrons.valence = -1
-
-.. raw:: latex
-
-   and the charge density $\rho$,
-
-..
-
-    >>> charge = electrons * electrons.valence
-    >>> charge.name = "charge"
+>>> charge = electrons * electrons.valence
+>>> charge.name = "charge"
 
 The dimensionless Poisson equation is
 
-.. raw:: latex
+.. math::
 
-   \begin{equation*}
    \nabla\cdot\left(\epsilon\nabla\phi\right) = -\rho = -\sum_{j=1}^n z_j C_j
-   \end{equation*}
-   \IndexClass{ImplicitDiffusionTerm}
-
-..
-
-    >>> potential.equation = ImplicitDiffusionTerm(coeff = permittivity) \
-    ...                      + charge == 0
+   
+>>> potential.equation = (DiffusionTerm(coeff = permittivity) 
+...                       + charge == 0)
 
 Because this equation admits an infinite number of potential profiles,
 we must constrain the solution by fixing the potential at one point:
     
-.. raw:: latex
-
-   \IndexClass{FixedValue}
-
-..
-
-    >>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),)
+>>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0),)
 
 First, we obtain a uniform charge distribution by setting a uniform concentration
-of electrons
-
-.. raw:: latex
-
-   $C_{\text{e}^{-}} = 1$.
+of electrons :math:`C_{\text{e}^{-}} = 1`.
    
-..
-
-    >>> electrons.setValue(1.)
+>>> electrons.setValue(1.)
 
 and we solve for the electrostatic potential
 
-    >>> potential.equation.solve(var=potential, 
-    ...                          boundaryConditions=bcs)
+>>> potential.equation.solve(var=potential, 
+...                          boundaryConditions=bcs)
    
 This problem has the analytical solution
 
-.. raw:: latex
+.. math::
 
-   $$\psi(x) = \frac{x^2}{2} - 2x$$
+   \psi(x) = \frac{x^2}{2} - 2x
 
-..
-
-    >>> x = mesh.getCellCenters()[0]
-    >>> analytical = CellVariable(mesh=mesh, name="analytical solution", 
-    ...                           value=(x**2)/2 - 2*x)
+>>> x = mesh.getCellCenters()[0]
+>>> analytical = CellVariable(mesh=mesh, name="analytical solution", 
+...                           value=(x**2)/2 - 2*x)
 
 which has been satisifactorily obtained
 
-    >>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
-    1
+>>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
+1
 
 If we are running the example interactively, we view the result
 
-.. raw:: latex
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=(charge, potential, analytical))
+...     viewer.plot()
+...     raw_input("Press any key to continue...")
 
-   \IndexModule{viewers}
-
-..
-
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars=(charge, potential, analytical))
-    ...     viewer.plot()
-    ...     raw_input("Press any key to continue...")
-
-.. image:: examples/diffusion/electrostatics/uniform.pdf
-   :scale: 50
+.. image:: electrostatics/uniform.*
+   :width: 90%
    :align: center
     
 Next, we segregate all of the electrons to right side of the domain
 
-.. raw:: latex
+.. math::
 
-   $$ C_{\text{e}^{-}} =
+   C_{\text{e}^{-}} =
    \begin{cases}
        0& \text{for $x \le L/2$,} \\
        1& \text{for $x > L/2$.}
-   \end{cases} $$
+   \end{cases}
     
-..
-
-    >>> x = mesh.getCellCenters()[0]
-    >>> electrons.setValue(0.)
-    >>> electrons.setValue(1., where=x > L / 2.)
+>>> x = mesh.getCellCenters()[0]
+>>> electrons.setValue(0.)
+>>> electrons.setValue(1., where=x > L / 2.)
 
 and again solve for the electrostatic potential
 
-    >>> potential.equation.solve(var=potential, 
-    ...                          boundaryConditions=bcs)
-    
+>>> potential.equation.solve(var=potential, 
+...                          boundaryConditions=bcs)
+
 which now has the analytical solution
 
-.. raw:: latex
+.. math::
 
-   $$\psi(x) =
+   \psi(x) =
    \begin{cases}
        -x& \text{for $x \le L/2$,} \\
        \frac{(x-1)^2}{2} - x& \text{for $x > L/2$.}
-   \end{cases} $$
+   \end{cases}
 
-..
-    
-    >>> analytical.setValue(-x)
-    >>> analytical.setValue(((x-1)**2)/2 - x, where=x > L/2)
+>>> analytical.setValue(-x)
+>>> analytical.setValue(((x-1)**2)/2 - x, where=x > L/2)
 
-    >>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
-    1
+>>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
+1
     
 and again view the result
 
-    >>> if __name__ == '__main__':
-    ...     viewer.plot()
-    ...     raw_input("Press any key to continue...")
+>>> if __name__ == '__main__':
+...     viewer.plot()
+...     raw_input("Press any key to continue...")
 
-.. image:: examples/diffusion/electrostatics/right.pdf
-   :scale: 50
+.. image:: electrostatics/right.*
+   :width: 90%
    :align: center
 
 Finally, we segregate all of the electrons to the left side of the
 domain
 
-.. raw:: latex
+.. math::
 
-   $$ C_{\text{e}^{-}} =
+   C_{\text{e}^{-}} =
    \begin{cases}
        1& \text{for $x \le L/2$,} \\
        0& \text{for $x > L/2$.}
-   \end{cases} $$
+   \end{cases}
     
-..
-
-    >>> electrons.setValue(1.)
-    >>> electrons.setValue(0., where=x > L / 2.)
+>>> electrons.setValue(1.)
+>>> electrons.setValue(0., where=x > L / 2.)
 
 and again solve for the electrostatic potential
 
-    >>> potential.equation.solve(var=potential, 
-    ...                          boundaryConditions=bcs)
+>>> potential.equation.solve(var=potential, 
+...                          boundaryConditions=bcs)
     
 which has the analytical solution
 
-.. raw:: latex
+.. math::
 
-   $$\psi(x) =
+   \psi(x) =
    \begin{cases}
        \frac{x^2}{2} - x& \text{for $x \le L/2$,} \\
        -\frac{1}{2}& \text{for $x > L/2$.}
-   \end{cases} $$
+   \end{cases}
 
 We again verify that the correct equilibrium is attained
     
-    >>> analytical.setValue((x**2)/2 - x)
-    >>> analytical.setValue(-0.5, where=x > L / 2)
+>>> analytical.setValue((x**2)/2 - x)
+>>> analytical.setValue(-0.5, where=x > L / 2)
 
-    >>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
-    1
+>>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
+1
     
 and once again view the result
 
-    >>> if __name__ == '__main__':
-    ...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewer.plot()
 
-.. image:: examples/diffusion/electrostatics/left.pdf
-   :scale: 50
+.. image:: electrostatics/left.*
+   :width: 90%
    :align: center
 
 """

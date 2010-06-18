@@ -97,7 +97,7 @@ class ConvectionTerm(FaceTerm):
         
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
-          - `diffusionTerm` : ** deprecated **. The Peclet number is calculated automatically.
+          - `diffusionTerm` : **deprecated**. The Peclet number is calculated automatically.
         """
         if self.__class__ is ConvectionTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
@@ -149,11 +149,11 @@ class ConvectionTerm(FaceTerm):
 
         return self.stencil
 
-    def _getDefaultSolver(self, solver):        
+    def _getDefaultSolver(self, solver, *args, **kwargs):        
         if solver and not solver._canSolveAssymetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
-        return solver or LinearLUSolver()
+        return solver or LinearLUSolver(*args, **kwargs)
 
     def _verifyCoeffType(self, var):
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \

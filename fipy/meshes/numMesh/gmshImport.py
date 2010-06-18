@@ -70,13 +70,13 @@ non-orthogonality. The results are shown below.
 
 Results for 20x20 mesh:
 
-.. image:: fipy/meshes/numMesh/orthoerrorgraph.pdf
+.. image:: fipy/meshes/numMesh/orthoerrorgraph.*
    :height: 100px
    :width: 200px
 
 Results for 10x10 mesh:
 
-.. image:: fipy/meshes/numMesh/orthoerrorcoarsegraph.pdf
+.. image:: fipy/meshes/numMesh/orthoerrorcoarsegraph.*
     :height: 100px
     :width: 200px
 

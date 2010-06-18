@@ -58,7 +58,7 @@ mesh = Grid1D(dx = dx, nx = nx)
 
 var = CellVariable(mesh = mesh)
 
-eq = ImplicitDiffusionTerm((1.0, 1.0))
+eq = DiffusionTerm((1.0, 1.0))
 
 BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
        NthOrderBoundaryCondition(mesh.getFacesRight(), Lx, 0),

@@ -45,71 +45,71 @@ class _AdvectionTerm(Term):
     The `_AdvectionTerm` object constructs the b vector contribution
     for the advection term given by
 
-    .. raw:: latex
+    .. math::
 
-        $$ u | \nabla \phi | $$
+       u \abs{\nabla \phi}
 
     from the advection equation given by:
 
-    .. raw:: latex
+    .. math::
 
-        $$ \frac{\partial \phi}{\partial t} + u | \nabla \phi | = 0$$
+       \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding.
     The formula used here is given by:
 
-    .. raw:: latex
+    .. math::
 
-        $$ u_P | \nabla \phi |_P = \max \left( u_P , 0 \right) \left[  \sum_A \min \left( \frac{ \phi_A - \phi_P } { d_{AP}}, 0 \right)^2 \right]^{1/2} +  \min \left( u_P , 0 \right) \left[  \sum_A \max \left( \frac{ \phi_A - \phi_P } { d_{AP}}, 0 \right)^2 \right]^{1/2} $$
+       u_P \abs{\nabla \phi}_P = \max \left( u_P , 0 \right) \left[  \sum_A \min \left( \frac{ \phi_A - \phi_P } { d_{AP}}, 0 \right)^2 \right]^{1/2} +  \min \left( u_P , 0 \right) \left[  \sum_A \max \left( \frac{ \phi_A - \phi_P } { d_{AP}}, 0 \right)^2 \right]^{1/2}
 
     Here are some simple test cases for this problem:
 
-        >>> from fipy.meshes.grid1D import Grid1D
-        >>> from fipy.solvers import *
-        >>> SparseMatrix = LinearLUSolver()._getMatrixClass()
-        >>> mesh = Grid1D(dx = 1., nx = 3) 
-        >>> from fipy.variables.cellVariable import CellVariable
+    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.solvers import *
+    >>> SparseMatrix = LinearLUSolver()._getMatrixClass()
+    >>> mesh = Grid1D(dx = 1., nx = 3) 
+    >>> from fipy.variables.cellVariable import CellVariable
    
     Trivial test:
 
-        >>> var = CellVariable(value = numerix.zeros(3, 'd'), mesh = mesh)
-        >>> L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
-        >>> print numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
-        1
+    >>> var = CellVariable(value = numerix.zeros(3, 'd'), mesh = mesh)
+    >>> L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
+    >>> numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
+    1
    
     Less trivial test:
 
-        >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
-        >>> L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
-        >>> print numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
-        1
+    >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
+    >>> L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
+    >>> numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
+    1
 
     Even less trivial
 
-        >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
-        >>> L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
-        >>> print numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
-        1
+    >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
+    >>> L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
+    >>> numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
+    1
 
     Another trivial test case (more trivial than a trivial test case
     standing on a harpsichord singing 'trivial test cases are here again')
 
-        >>> vel = numerix.array((-1, 2, -3))
-        >>> var = CellVariable(value = numerix.array((4,6,1)), mesh = mesh)
-        >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
-        >>> print numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
-        1
+    >>> vel = numerix.array((-1, 2, -3))
+    >>> var = CellVariable(value = numerix.array((4,6,1)), mesh = mesh)
+    >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
+    >>> numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
+    1
 
     Somewhat less trivial test case:
 
-        >>> from fipy.meshes.grid2D import Grid2D
-        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
-        >>> vel = numerix.array((3, -5, -6, -3))
-        >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
-        >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
-        >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
-        >>> print numerix.allclose(b, answer, atol = 1e-10)
-        1
+    >>> from fipy.meshes.grid2D import Grid2D
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+    >>> vel = numerix.array((3, -5, -6, -3))
+    >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
+    >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
+    >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
+    >>> numerix.allclose(b, answer, atol = 1e-10)
+    1
 
     """
     def __init__(self, coeff = None):
@@ -149,13 +149,13 @@ class _AdvectionTerm(Term):
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
 
-    def _getDefaultSolver(self, solver):        
+    def _getDefaultSolver(self, solver, *args, **kwargs):
         if solver and not solver._canSolveAssymetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
         from fipy.solvers import LinearLUSolver
-        return solver or LinearLUSolver()
+        return solver or LinearLUSolver(*args, **kwargs)
 
 
 def _test(): 

@@ -6,7 +6,7 @@
  # 
  #  FILE: "diffusionTerm.py"
  #                                    created: 11/13/03 {11:39:03 AM} 
- #                                last update: 7/16/08 {11:19:56 AM} 
+ #                                last update: 3/3/10 {1:57:30 PM} 
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -87,14 +87,14 @@ class _MulTerm(Term):
 
         return (matcoeff * L, self.coeff * b)
 
-    def _getDefaultSolver(self, solver):
+    def _getDefaultSolver(self, solver, *args, **kwargs):
 
         if solver and not solver._canSolveAssymetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
 
         from fipy.solvers import LinearLUSolver
-        return solver or LinearLUSolver()
+        return solver or LinearLUSolver(*args, **kwargs)
 
     def __repr__(self):
         """

@@ -1,11 +1,14 @@
 include *.txt
 
 recursive-include examples *.py *.msh *.gz *.txt
+recursive-include fipy *.msh
 include FiPy-*.win32.exe
 
 recursive-include documentation/ *.txt
-recursive-include documentation/www/ *.html *.css *.gif *.png
-include documentation/manual/reference.pdf
-include documentation/manual/fipy.pdf
+recursive-exclude examples *.png *.pdf
+recursive-exclude fipy *.png *.pdf
+
+# recursive-include documentation/_build/html *.html *.css *.gif *.png
+include documentation/_build/latex/fipy.pdf
 
 exclude MANIFEST.in
