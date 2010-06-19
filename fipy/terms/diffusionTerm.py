@@ -196,7 +196,7 @@ class DiffusionTerm(Term):
                 if rank > 0:
                     shape = numerix.getShape(coeff)
                     if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
-                        raise IndexError, 'diffusion coefficent tensor index error'          
+                        raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'          
 
                 rotationTensor = self._getRotationTensor(mesh)
                 rotationTensor[:,0] = rotationTensor[:,0] / mesh._getCellDistances()
