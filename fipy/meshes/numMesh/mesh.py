@@ -61,10 +61,18 @@ class Mesh(_CommonMesh):
     def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs):
         """faceVertexIds and cellFacesIds must be padded with minus ones."""
 
+        from fipy.variables.variable import Variable
         from fipy.variables.vertexVariable import _VertexVariable
         from fipy.variables.faceVariable import FaceVariable
         from fipy.variables.cellVariable import CellVariable
         
+        if isinstance(vertexCoords, Variable):
+            vertexCoords = vertexCoords._copyValue()
+        if isinstance(faceVertexIDs, Variable):
+            faceVertexIDs = faceVertexIDs._copyValue()
+        if isinstance(cellFaceIDs, Variable):
+            cellFaceIDs = cellFaceIDs._copyValue()
+            
         self.vertexCoords = _VertexVariable(mesh=self, value=vertexCoords, 
                                             _bootstrap=True)
         self.faceVertexIDs = FaceVariable(mesh=self, 
