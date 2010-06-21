@@ -248,8 +248,8 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print numerix.allclose(mesh.getCellCenters(), unpickledMesh.getCellCenters())
             True
             
-            >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],
-            ...                  [ 1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11]]
+            >>> faceVertexIDs = [[ 1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11], 
+            ...                  [ 0, 1, 2, 4, 5, 6, 8,  9, 10, 0, 1, 2, 3, 4, 5,  6,  7]] 
             >>> print parallel.procID > 0 or numerix.allequal(mesh._getFaceVertexIDs(), faceVertexIDs)
             True
 
