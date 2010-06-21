@@ -199,7 +199,7 @@ def runGold(faradaysConstant=9.6e4,
                                             catalystVar.getInterfaceVar(), 
                                             zoomFactor=1e6, 
                                             datamax=1.0, 
-                                            datamin=0.0 
+                                            datamin=0.0,
                                             smooth=1, 
                                             title='catalyst coverage', 
                                             animate=True)
