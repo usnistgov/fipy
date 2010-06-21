@@ -10,10 +10,10 @@ ez_setup.py
 setup.py
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
-FiPy.egg-info/SOURCES.txt.edited
 FiPy.egg-info/dependency_links.txt
 FiPy.egg-info/entry_points.txt
 FiPy.egg-info/top_level.txt
+documentation/.gitignore
 documentation/ADMINISTRATA.txt
 documentation/API.txt
 documentation/CREDITS.txt
@@ -25,11 +25,16 @@ documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TODOLIST.txt
 documentation/VKML.txt
+documentation/conf.py
 documentation/contents.txt
 documentation/design.txt
+documentation/fipy.bst
 documentation/glossary.txt
 documentation/introduction.txt
 documentation/manual.txt
+documentation/objects.pdf
+documentation/objects.png
+documentation/refs.bib
 documentation/_static/favicon.ico
 documentation/_static/fipy.bib
 documentation/_static/fipy.png
@@ -108,6 +113,7 @@ documentation/tutorial/package/subpackage/base.py
 documentation/tutorial/package/subpackage/object.py
 examples/README.txt
 examples/__init__.py
+examples/parallel.py
 examples/test.py
 examples/benchmarking/__init__.py
 examples/benchmarking/benchmarker.py
@@ -116,6 +122,7 @@ examples/benchmarking/steps.py
 examples/benchmarking/utils.py
 examples/benchmarking/versions.py
 examples/cahnHilliard/__init__.py
+examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D.py
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
@@ -127,7 +134,9 @@ examples/chemotaxis/input.py
 examples/chemotaxis/input2D.py
 examples/chemotaxis/parameters.py
 examples/chemotaxis/test.py
+examples/convection/.gitignore
 examples/convection/__init__.py
+examples/convection/index.txt
 examples/convection/peclet.py
 examples/convection/robin.py
 examples/convection/source.py
@@ -159,6 +168,7 @@ examples/diffusion/anisotropy.msh
 examples/diffusion/anisotropy.py
 examples/diffusion/circle.py
 examples/diffusion/electrostatics.py
+examples/diffusion/index.txt
 examples/diffusion/mesh1D.py
 examples/diffusion/mesh20x20.py
 examples/diffusion/test.py
@@ -204,10 +214,12 @@ examples/elphf/diffusion/mesh1D.py
 examples/elphf/diffusion/mesh1Ddimensional.py
 examples/elphf/diffusion/mesh2D.py
 examples/flow/__init__.py
+examples/flow/index.txt
 examples/flow/stokesCavity.py
 examples/flow/test.py
 examples/flow/generated/.gitignore
 examples/levelSet/__init__.py
+examples/levelSet/index.txt
 examples/levelSet/test.py
 examples/levelSet/advection/__init__.py
 examples/levelSet/advection/circle.py
@@ -248,6 +260,7 @@ examples/phase/anisotropy.py
 examples/phase/anisotropyOLD.gz
 examples/phase/anisotropyOLD.py
 examples/phase/binary.py
+examples/phase/index.txt
 examples/phase/quaternary.py
 examples/phase/simple.py
 examples/phase/symmetry.py
@@ -363,6 +376,10 @@ fipy/solvers/pysparse/linearJORSolver.py
 fipy/solvers/pysparse/linearLUSolver.py
 fipy/solvers/pysparse/linearPCGSolver.py
 fipy/solvers/pysparse/pysparseSolver.py
+fipy/solvers/pysparse/preconditioners/__init__.py
+fipy/solvers/pysparse/preconditioners/jacobiPreconditioner.py
+fipy/solvers/pysparse/preconditioners/preconditioner.py
+fipy/solvers/pysparse/preconditioners/ssorPreconditioner.py
 fipy/solvers/trilinos/__init__.py
 fipy/solvers/trilinos/linearBicgstabSolver.py
 fipy/solvers/trilinos/linearCGSSolver.py
@@ -380,6 +397,8 @@ fipy/solvers/trilinos/preconditioners/multilevelDDMLPreconditioner.py
 fipy/solvers/trilinos/preconditioners/multilevelDDPreconditioner.py
 fipy/solvers/trilinos/preconditioners/multilevelNSSAPreconditioner.py
 fipy/solvers/trilinos/preconditioners/multilevelSAPreconditioner.py
+fipy/solvers/trilinos/preconditioners/multilevelSGSPreconditioner.py
+fipy/solvers/trilinos/preconditioners/multilevelSolverSmootherPreconditioner.py
 fipy/solvers/trilinos/preconditioners/preconditioner.py
 fipy/steppers/__init__.py
 fipy/steppers/pidStepper.py

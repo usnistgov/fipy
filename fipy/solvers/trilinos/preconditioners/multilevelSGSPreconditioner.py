@@ -5,11 +5,12 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
+ #  FILE: "multilevelSGSPreconditioner.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -35,39 +36,30 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
+from PyTrilinos import ML
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
-from pysparse import itsolvers
-
-from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
-
-class LinearPCGSolver(PysparseSolver):
+class MultilevelSGSPreconditioner(Preconditioner):
     """
-    
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning by default. Alternatively,
-    Jacobi preconditioning can be specified through `precon`.
-    The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
-
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
-
-    .. _PySparse: http://pysparse.sourceforge.net
+    Multilevel preconditioner for Trilinos solvers using Symmetric Gauss-Seidel smoothing.
     
     """
-
-    solveFnc = itsolvers.pcg
-
-    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
+    def __init__(self, levels=10):
         """
-        :Parameters:
-          - `precon`: Preconditioner to use
+        Initialize the multilevel preconditioner
+
+        - `levels`: Maximum number of levels
         """
-        PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
-            
-    def _canSolveAsymmetric(self):
-        return False
-                
+        self.levels = levels
+
+    def _applyToSolver(self, solver, matrix):
+        if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
+            return
+        
+        self.Prec = ML.MultiLevelPreconditioner(matrix, False)
+        self.Prec.SetParameterList({"output": 0, "smoother: type" : "symmetric Gauss-Seidel"})
+        self.Prec.ComputePreconditioner()
+        solver.SetPrecOperator(self.Prec)
+        
+
+        

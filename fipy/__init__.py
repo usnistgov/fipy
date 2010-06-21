@@ -46,6 +46,9 @@ from variables import *
 from viewers import *
 from models import *
 
+# fipy needs to export raw_input whether or not parallel
+raw_input = raw_input
+
 try:
     from PyTrilinos import Epetra
     

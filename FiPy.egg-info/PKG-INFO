@@ -234,6 +234,12 @@ Description:
         
         :term:`Trilinos` *must* be compiled with MPI support.
         
+        .. attention::
+        
+        :term:`FiPy` requires `mpi4py <http://mpi4py.scipy.org/>`_ to work in parallel::
+        
+        $ easy_install mpi4py
+        
         .. note::
         
         A design wart presently *also* requires that :term:`PySparse` be
@@ -247,6 +253,27 @@ Description:
         instead of::
         
         $ python myScript.py
+        
+        * To confirm that :term:`FiPy` and :term:`Trilinos` are properly
+        configured to solve in parallel, you can execute
+        
+        .. code-block:: python
+        
+        from fipy import parallel, Grid1D
+        mesh = Grid1D(nx=10)
+        print "%d cells on processor %d of %d" \
+        % (mesh.getNumberOfCells(), parallel.procID, parallel.Nproc)
+        
+        (available as :file:`examples/parallel.py`) to check that :term:`FiPy` is
+        distributing a mesh across processes as expected. E.g.::
+        
+        $ mpirun -np 3 python examples/parallel.py
+        
+        should print out::
+        
+        5 cells on processor 0 of 3
+        7 cells on processor 1 of 3
+        6 cells on processor 2 of 3
         
         A complete list of the changes to FiPy's examples needed for parallel
         can be found at

@@ -96,7 +96,7 @@ class _Equation(Term):
                 if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
                     and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
                     self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
-                    self._viewer.plot(matrix=termMatrix)
+                    self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector)
                     raw_input()
 
                 self.matrix += termMatrix
