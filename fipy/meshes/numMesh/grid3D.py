@@ -176,9 +176,9 @@ class Grid3D(Mesh):
         return local_nx, local_ny, local_nz, overlap, offset
 
     def __repr__(self):
-        return "%s(dx=%s, dy=%s, dz=%s, nx=%d, ny=%d, nz=%d)" \
-            % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), str(self.args["dz"]), 
-               self.args["nx"], self.args["ny"], self.args["nz"])
+        args = ["%s=%s" % (d, str(self.args[d])) for d in ("dx", "dy", "dz")]
+        args += ["%s=%d" % (n, self.args[n]) for n in ("nx", "ny", "nz") if self.args[n] is not None]
+        return self.__class__.__name__ + "(" + ", ".join(args) + ")"
 
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)

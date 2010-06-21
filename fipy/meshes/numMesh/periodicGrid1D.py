@@ -99,7 +99,11 @@ class PeriodicGrid1D(Grid1D):
             return {'left': overlap, 'right': overlap}
         
     def _getGlobalOverlappingCellIDs(self):
-        return Grid1D._getGlobalOverlappingCellIDs(self) % self.args['nx']
+        if self.args['nx'] is None:
+            nx = len(self.args['dx'])
+        else:
+            nx = self.args['nx']
+        return Grid1D._getGlobalOverlappingCellIDs(self) % nx
 
     def getCellCenters(self):
         return Grid1D.getCellCenters(self) % numerix.sum(self.globalNumberOfCells * self.args['dx'])
