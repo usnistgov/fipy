@@ -47,27 +47,8 @@ Detailed prerequisites and links are given below and in
 impatient, :term:`FiPy` can be up and running quickly with one of the
 following methods.
 
-
-EasyInstall
-===========
-
-http://peak.telecommunity.com/DevCenter/EasyInstall
-
-If Python_ and setuptools_ are already available, a minimally functional 
-installation of :term:`FiPy` can be obtained by issuing the commands::
-
-    $ easy_install numpy
-    $ easy_install matplotlib
-    $ easy_install pysparse
-    $ easy_install fipy
-    
-Some of the `Optional Packages`_ may also be available via
-``easy_install``, but not all are.
-
-.. _setuptools: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi/setuptools
-
-Enthought Python Edition
-========================
+Enthought Python Distribution
+=============================
 
 http://www.enthought.com/epd
 
@@ -78,7 +59,7 @@ Installers are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
 .. attention::
 
    :term:`PySparse` and :term:`FiPy` are not presently included in EPD, so you will need
-   to separately install them, either manually or via EasyInstall_.
+   to separately install them manually.
 
 Python(x,y)
 ===========
@@ -235,6 +216,11 @@ installers`_ are available.
 
    :term:`FiPy` requires version 1.0 or higher of :term:`PySparse`.
 
+.. attention::
+
+   In order to solve in parallel, both :term:`PySparse` and 
+   :term:`Trilinos` are required.
+
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
 .. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
@@ -323,35 +309,25 @@ is still recommended as a fast light weight alternative to
 
 .. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
 
-MayaVi
+Mayavi
 ------
 
-http://mayavi.sourceforge.net
+http://code.enthought.com/projects/mayavi/
 
-The `MayaVi 1`_ Data Visualizer is a free, easy to use scientific data
+The `Mayavi 2`_ Data Visualizer is a free, easy to use scientific data
 visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
 viewer available for 3D data. Other viewers are probably better for 1D
 or 2D viewing. 
 
-.. warning::
-
-   :term:`FiPy` can only use `MayaVi 1`_ to display 3D meshes consisting entirely
-   of tetrahedrons or wedge elements. The ordering of vertices for other
-   mesh types may not work.
+.. note::
+   
+   `Mayavi 2`_ is packaged for Ubuntu and Debian linux. Using the packaged versions makes installion much easier.
 
 .. note::
 
-   Is is also necessary to install the PyVTK_ package to use the
-   :term:`FiPy` MayaVi_ viewers.
+   MayaVi 1 is no longer supported.
 
-.. note::
-
-   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
-   `MayaVi 2`_ as soon as possible.
-
-.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
-.. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
-.. _PyVTK: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://cens.ioc.ee/projects/pyvtk/
+.. _Mayavi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
 --------------
 Obtaining FiPy
@@ -534,7 +510,13 @@ http://trilinos.sandia.gov
 
 :term:`Trilinos` provides solvers and preconditioners, and can be used instead of
 :term:`PySparse`. :term:`Trilinos` preconditioning allows for iterative solutions to some
-difficult problems that :term:`PySparse` cannot solve.
+difficult problems that :term:`PySparse` cannot solve, and it enables
+solving on parallel nodes.
+
+.. attention::
+
+   In order to solve in parallel, both :term:`PySparse` and 
+   :term:`Trilinos` are required.
 
 .. attention:: 
     

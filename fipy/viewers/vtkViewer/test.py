@@ -38,8 +38,9 @@ from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportDocTestSuite(interactiveDocTestModuleNames=(
-        'mayaviClient',
+    return _LateImportDocTestSuite(docTestModuleNames=(
+        'vtkCellViewer',
+        'vtkFaceViewer'
     ), base = __name__)
     
 if __name__ == '__main__':

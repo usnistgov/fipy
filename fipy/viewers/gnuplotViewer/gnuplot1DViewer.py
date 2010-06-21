@@ -69,12 +69,19 @@ class Gnuplot1DViewer(_GnuplotViewer):
         tupleOfGnuplotData = ()
 
         import Gnuplot
+        import re
+        m = re.match(r"\d+.\d+", Gnuplot.__version__)
+        if m is None or float(m.group(0)) < 1.8:
+            raise ImportError("Gnuplot.py version 1.8 or newer is required.")
+            
         for var in self.vars:
-            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.getMesh().getCellCenters()[0]),
+            # Python 2.6 made 'with' a keyward (deprecation warnings have been issued since 2.5)
+            # this was addressed in Gnuplot.py in r299, in 2007
+            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.getMesh().getCellCenters()[0]), 
                                                 numerix.array(var.getValue()),
                                                 title=var.getName(),
-                                                with='lines'),)
-
+                                                with_='lines'),)
+                              
         apply(self.g.plot, tupleOfGnuplotData)
     
 if __name__ == "__main__": 

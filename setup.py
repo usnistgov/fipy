@@ -468,7 +468,7 @@ except IOError, e:
 #         },
 
 dist = setup(	name = "FiPy",
-        version = "2.0.3", 
+        version = "2.1", 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
@@ -490,7 +490,7 @@ dist = setup(	name = "FiPy",
             gist = fipy.viewers.gistViewer:GistViewer
             gnuplot = fipy.viewers.gnuplotViewer:GnuplotViewer
             matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
-            mayavi = fipy.viewers.mayaviViewer:MayaviViewer
+            mayavi = fipy.viewers.mayaviViewer:MayaviClient
         """,
         classifiers = [
             'Development Status :: 5 - Production/Stable',

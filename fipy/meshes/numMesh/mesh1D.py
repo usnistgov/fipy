@@ -85,3 +85,8 @@ class Mesh1D(Mesh):
 
     def _isOrthogonal(self):
         return True
+        
+    def _getVTKCellType(self):
+        from enthought.tvtk.api import tvtk
+        return tvtk.Line().cell_type
+

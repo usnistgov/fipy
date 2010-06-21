@@ -1,0 +1,99 @@
+.. _glossary:
+
+Glossary
+--------
+
+.. glossary::
+
+   FiPy
+      The eponymous software package. 
+      See http://www.ctcms.nist.gov/fipy.
+
+   gist
+      Another name for :term:`Pygist`.
+
+   gnuplot
+      A popular open-source plotting program.
+      See http://gnuplot.sorceforge.net/.
+
+   Gmsh
+      A free and Open Source 3D (and 2D!) finite element grid generator. It
+      also has a CAD engine and post-processor that :term:`FiPy` does not
+      make use of. See http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.geuz.org/gmsh.
+
+   Matplotlib
+      :mod:`matplotlib` :term:`Python` package displays publication quality
+      results. It displays both 1D X-Y type plots and 2D contour plots for
+      structured data. It does not display unstructured 2D data or 3D data.
+      It works on all common platforms and produces publication quality hard
+      copies. See 
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matplotlib.sourceforge.net.
+
+   Mayavi
+      The :mod:`mayavi` Data Visualizer is a free, easy to use scientific data
+      visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
+      viewer available for 3D data. Other viewers are probably better for 1D
+      or 2D viewing. 
+
+   MayaVi
+      The predecessor to :term:`Mayavi`. Yes, it's confusing.
+
+   numarray
+      An archaic predecessor to :term:`NumPy`.
+
+   Numeric
+      An archaic predecessor to :term:`NumPy`.
+
+   NumPy
+      The :mod:`numpy` :term:`Python` package provides array arithmetic 
+      facilities. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy.
+
+   Pygist
+      The :term:`Pygist` package can be used to display simulation results. It
+      displays both 1D X-Y type plots and 2D contour plots for both
+      structured and unstructured data. It does not display 3D
+      data. Although stated as working on Windows, it does not seem to do a
+      good job of rendering on this platform. :term:`Pygist` works fine on other
+      common platforms. :term:`Pygist` no longer seems to be under development, but
+      is still recommended as a fast light weight alternative to
+      :term:`Matplotlib`.
+
+   Pyrex
+      A mechanism for mixing C and Python code.
+      See http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/.
+
+   PySparse
+      The :mod:`pysparse` :term:`Python` package provides sparse matrix
+      storage, solvers, and linear algebra routines. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net.
+
+   Python
+      The programming language that :term:`FiPy` (and your scripts) are
+      written in. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/.
+
+   ScientificPython
+      A collection of useful utilities for scientists. See 
+      http://dirac.cnrs-orleans.fr/plone/software/scientificpython.
+
+   SciPy
+      The :mod:`scipy` :term:`Python` pacakge provides a wide range of
+      scientific and mathematical operations. :term:`FiPy` can use
+      :mod:`scipy.weave` for enhanced performance with C language inlinine.
+      See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/.
+
+   Sphinx
+      The tools used to generate the :term:`FiPy` documentation.
+      See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sphinx.pocoo.org/.
+
+   Trilinos
+      This package proives sparse matrix storage, solvers, and
+      preconditioners, and can be used instead of :term:`PySparse`.
+      :term:`Trilinos` preconditioning allows for iterative solutions to
+      some difficult problems that :term:`PySparse` cannot solve. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov.
+
+

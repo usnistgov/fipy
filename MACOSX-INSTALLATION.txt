@@ -6,8 +6,8 @@ Simple Mac OS X Installation
 
 We present four comparatively simple routes to installing :term:`FiPy` on `Mac OS
 X`_. The `Fink Installation`_ procedure is appropriate if you are already
-familiar with the Fink_ package manager. Either `EasyInstall`_ or
-`Enthought Python Edition`_ will get :term:`FiPy` running in a minumum number of
+familiar with the Fink_ package manager. 
+`Enthought Python Distribution`_ will get :term:`FiPy` running in a minumum number of
 steps. The `Binary Installation`_ procedure is the next most expedient if
 you have never heard of Fink_ or if you are not comfortable with it. Please
 see the more general :ref:`INSTALLATION` for detailed installation
@@ -23,32 +23,8 @@ have a usable installation up and running.
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
 .. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://fink.sourceforge.net
 
-EasyInstall
-===========
-
-http://peak.telecommunity.com/DevCenter/EasyInstall
-
-.. note::
-
-   Several packages installed with `easy_install` will need be
-   automatically compiled, which requires that you install the 
-   `Xcode Development Tools`_ before proceding.
-
-If Python_ and setuptools_ are already available, a minimally functional 
-installation of :term:`FiPy` can be obtained by issuing the commands::
-
-    $ easy_install numpy
-    $ easy_install matplotlib
-    $ easy_install pysparse
-    $ easy_install fipy
-    
-Some of the `Optional Packages`_ may also be available via
-``easy_install``, but not all are.
-
-.. _setuptools: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi/setuptools
-
-Enthought Python Edition
-========================
+Enthought Python Distribution
+=============================
 
 http://www.enthought.com/epd
 
@@ -58,7 +34,7 @@ for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and IPython_.
 .. attention::
 
    PySparse_ and :term:`FiPy` are not presently included in EPD, so you will need
-   to separately install them, either manually or via EasyInstall_.
+   to separately install them manually.
 
 Binary Installation
 ===================
@@ -70,12 +46,6 @@ Binary Installation
    way to get :term:`FiPy` up and running, but may offer less flexibility in the 
    long run.
    
-   .. note:: 
-   
-      If you wish to view 3D models, the MayaVi_ viewer is required, which
-      is best installed via Fink_, so you should follow the `Fink
-      Installation`_ instructions.
-
 Pre-built binaries for many of the required packages are available at 
 http://pythonmac.org/packages/py24-fat/.
 
@@ -334,27 +304,21 @@ points to ``<Gmsh path>/Gmsh.app/Contents/MacOS/Gmsh``.
 
    This is a required package for superfill examples.
 
-MayaVi
+Mayavi
 ------
 
-`MayaVi 1`_ is a requirement if you wish to view 3D problems or improve the
-viewing capabilities of the superfill examples. This is one package that is
-probably much easier to install via Fink_ than by hand. You might attempt
-to follow the instructions at
-http://mayavi.sourceforge.net/mwiki/BuildingVTKOnOSX but they are quite out
-of date and did not work for us.
+http://code.enthought.com/projects/mayavi/
+
+`Mayavi 2`_ is a requirement if you wish to view 3D problems or improve the
+viewing capabilities of the superfill examples. The standard instructions
+for either installing with `Enthought Python Distribution`_ or installing
+manually work fine.
 
 If you have already followed the `Fink Installation`_ instructions, then 
-you can go to the command line and type::
+you should be able to go to the command line and type::
 
-    $ sudo apt-get install mayavi-pyXX
+    $ sudo apt-get install mayavi2-pyXX
     
-.. note::
-
-   `MayaVi 1`_ is outdated and we hope to have compatilibiltiy with
-   `MayaVi 2`_ as soon as possible.
-
-.. _MayaVi 1: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 .. _MayaVi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
 SciPy

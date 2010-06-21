@@ -152,6 +152,11 @@ class CellVariable(_MeshVariable):
         return self.mesh._getLocalNonOverlappingCellIDs()
 
     def getGlobalValue(self):
+        """Concatenate and return values from all processors
+        
+        When running on a single processor, the result is identical to
+        :meth:`~fipy.variables.variable.Variable.getValue`.
+        """
         return self._getGlobalValue(self.mesh._getLocalNonOverlappingCellIDs(), 
                                     self.mesh._getGlobalNonOverlappingCellIDs())
 

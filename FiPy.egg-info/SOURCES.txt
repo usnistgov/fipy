@@ -10,6 +10,7 @@ ez_setup.py
 setup.py
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
+FiPy.egg-info/SOURCES.txt.edited
 FiPy.egg-info/dependency_links.txt
 FiPy.egg-info/entry_points.txt
 FiPy.egg-info/top_level.txt
@@ -108,8 +109,11 @@ documentation/tutorial/package/subpackage/object.py
 examples/README.txt
 examples/__init__.py
 examples/test.py
+examples/benchmarking/__init__.py
 examples/benchmarking/benchmarker.py
+examples/benchmarking/size.py
 examples/benchmarking/steps.py
+examples/benchmarking/utils.py
 examples/benchmarking/versions.py
 examples/cahnHilliard/__init__.py
 examples/cahnHilliard/mesh2D.py
@@ -496,7 +500,6 @@ fipy/viewers/matplotlibViewer/test.py
 fipy/viewers/mayaviViewer/__init__.py
 fipy/viewers/mayaviViewer/mayaviClient.py
 fipy/viewers/mayaviViewer/mayaviDaemon.py
-fipy/viewers/mayaviViewer/mayaviViewer.py
 fipy/viewers/mayaviViewer/test.py
 fipy/viewers/vtkViewer/__init__.py
 fipy/viewers/vtkViewer/test.py
