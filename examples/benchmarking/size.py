@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "cellToFaceVariable.py"
- #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -28,31 +26,49 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  # ###################################################################
  ##
 
-from fipy.variables.faceVariable import FaceVariable
-from fipy.tools import inline
-from fipy.tools import numerix
+import os
+import sys
+import re
+from subprocess import Popen, PIPE
 
-class _CellToFaceVariable(FaceVariable):
-    def __init__(self, var):
-        FaceVariable.__init__(self, mesh=var.getMesh(), elementshape=var.shape[:-1])
-        self.var = self._requires(var)
-
-    def _calcValue(self):
-        alpha = self.mesh._getFaceToCellDistanceRatio()
-        id1, id2 = self.mesh._getAdjacentCellIDs()
-        return inline._optionalInline(self._calcValueIn, self._calcValuePy, alpha, id1, id2)
-
-    def __getstate__(self):
-        return {
-            'var': self.var
-        }
+from fipy import numerix
         
-    def __setstate__(self, dict):
-        self.__init__(**dict)
+from fipy.tools.parser import parse
+
+from utils import monitor
+
+steps = parse('--numberOfSteps', action='store',
+              type='int', default=20)
+
+benchmarker = os.path.join(os.path.dirname(__file__), 
+                           "benchmarker.py")
+
+args = sys.argv[1:]
+
+print "size\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)"
+
+for size in numerix.arange(2,6.5,0.5):
+    p = Popen(["python", benchmarker] + args 
+              + ["--numberOfElements=%d" % int(10**size),
+                 "--numberOfSteps=0"], 
+              stdout=PIPE,
+              stderr=PIPE)
+
+    cpu0, rsz0, vsz0 = monitor(p)
+
+    p = Popen(["python", benchmarker, 
+               "--numberOfElements=%d" % int(10**size),
+               "--numberOfSteps=%d" % steps,
+               "--cpuBaseLine=%f" % cpu0] + args, 
+              stdout=PIPE,
+              stderr=PIPE)
+
+    cpu, rsz, vsz = monitor(p)
+
+    print "%d\t%g\t%g\t%g" % (10**size, cpu, rsz, vsz)
+
 

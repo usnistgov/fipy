@@ -44,10 +44,10 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
         cell2 = numerix.take(self.var, id2, axis=-1)
         value = ((cell2 - cell1) * alpha + cell1)
         eps = 1e-20
-        value = numerix.where(value == 0., eps, value)
+        value = (value == 0.) * eps + (value != 0.) * value
         cell1Xcell2 = cell1 * cell2
-        value = numerix.where((value > eps) | (value < -eps), cell1Xcell2 / value, 0.)
-        value = numerix.where(cell1Xcell2 < 0., 0., value)
+        value = ((value > eps) | (value < -eps)) * cell1Xcell2 / value
+        value = (cell1Xcell2 >= 0.) * value
 
         return value
         

@@ -35,6 +35,15 @@ Max Gibiansky
     added support for anistropic diffusion coefficients while he was on 
     sabbatical from the `University of Maine`_.
 
+Olivia Buzek
+    worked on adding Trilinos_ parallel computations while she was a SURF_ student
+    from the `University of Maryland`_
+
+Daniel Stiles
+    worked on adding Trilinos_ parallel computations while he was
+    a student at `Montgomery Blair High School`_.
+
+
 .. |MSEL| replace:: the `Materials Science and Engineering Laboratory`_
 .. |CTCMS| replace:: the `Center for Theoretical and Computational Materials Science`_
 .. |NIST| replace:: the `National Institute of Standards and Technology`_
@@ -49,6 +58,7 @@ Max Gibiansky
 .. _Smith College:                                                 http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.smith.edu/
 .. _Harvey Mudd College:                                           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.hmc.edu/
 .. _University of Maine:                                           
+.. _University of Maryland:                                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.maryland.edu/
 
 .. _Trilinos:                                                      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 
