@@ -1,0 +1,9 @@
+-------------------
+Fluid Flow Examples
+-------------------
+
+.. autosummary::
+   :toctree: generated
+
+   examples.flow.stokesCavity
+
