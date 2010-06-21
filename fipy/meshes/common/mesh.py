@@ -451,6 +451,78 @@ class Mesh:
         """
         return numerix.arange(self.numberOfFaces)
 
+    def _getGlobalNonOverlappingVertexIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 2, 5, 6, 7, 10, 11, 13] for mesh A
+
+            A        B
+       10--11---12--13---14
+        |   |   ||   |   |
+        5---6---7----8---9
+        |   |   ||   |   |
+        0---1---2----3---4
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self._getNumberOfVertices())
+
+    def _getGlobalOverlappingVertexIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13] for mesh A
+
+            A        B
+       10--11---12--13---14
+        |   |   ||   |   |
+        5---6---7----8---9
+        |   |   ||   |   |
+        0---1---2----3---4
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self._getNumberOfVertices())
+
+    def _getLocalNonOverlappingVertexIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6, 8, 9, 10] for mesh A
+
+            A        B
+        8---9--10/9--10--11
+        |   |   ||   |   |
+        4---5---6/5--6---7
+        |   |   ||   |   |
+        0---1---2/1--2---3
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self._getNumberOfVertices())
+
+    def _getLocalOverlappingVertexIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] for mesh A
+
+            A        B
+        8---9---10---11---
+        |   |   ||   |   |
+        4---5---6----7----
+        |   |   ||   |   |
+        0---1---2----3----
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self._getNumberOfVertices())
+
     def getFacesLeft(self):
         """
         Return face on left boundary of Grid1D as list with the

@@ -1,10 +1,11 @@
+#!/usr/bin/env python
+
 ## -*-Pyth-*-
  # #############################################################################
  # FiPy - a finite volume PDE solver in Python
  # 
  # FILE: "vertexVariable.py"
- #                                     created: 5/2/07 {10:05:56 PM}
- #                                 last update: 11/20/07 {6:15:48 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -53,6 +54,10 @@ class _VertexVariable(_MeshVariable):
             return _VertexVariable
             
         return _MeshVariable._getArithmeticBaseClass(self, other)
+
+    def getGlobalValue(self):
+        return self._getGlobalValue(self.mesh._getLocalNonOverlappingVertexIDs(), 
+                                    self.mesh._getGlobalNonOverlappingVertexIDs())
 
     def _getArithmeticFaceValue(self):
         if not hasattr(self, 'arithmeticFaceValue'):
