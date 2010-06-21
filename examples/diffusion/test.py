@@ -48,6 +48,7 @@ def _suite():
                                        'mesh1D',
                                        'mesh20x20',
                                        'circle',
+                                       'circleQuad',
                                        'electrostatics',
                                        'variable',
                                        'anisotropy',

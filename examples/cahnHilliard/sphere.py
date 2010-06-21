@@ -40,7 +40,7 @@ may occur on vesicles (http://www.youtube.com/watch?v=kDsFP67_ZSE).
 The only difference from :mod:`examples.cahnHilliard.mesh2D` is the
 declaration of ``mesh``.
 
->>> mesh = GmshImporter2DIn3DSpace('''
+>>> mesh = Gmsh2DIn3DSpace('''
 ...     radius = 5.0;
 ...     cellSize = 0.3;
 ...     

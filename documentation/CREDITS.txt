@@ -23,12 +23,12 @@ Alex Mont
     he was a student at `Montgomery Blair High School`_.
 
 Katie Travis
-    developed the automated 
-    :option:`--inline` optimization code for ``Variable`` objects 
-    while she was a SURF_ student from `Smith College`_.
+    developed the automated :option:`--inline` optimization code for
+    :class:`~fipy.variables.variable.Variable` objects while she was a
+    SURF_ student from `Smith College`_.
   
 Max Gibiansky
-    added support for the Trilinos_ solvers while he was a SURF_ student
+    added support for the :term:`Trilinos` solvers while he was a SURF_ student
     from `Harvey Mudd College`_
 
 `Andrew Reeve`_
@@ -36,12 +36,13 @@ Max Gibiansky
     sabbatical from the `University of Maine`_.
 
 Olivia Buzek
-    worked on adding Trilinos_ parallel computations while she was a SURF_ student
+    worked on adding :term:`Trilinos` parallel computations while she was a SURF_ student
     from the `University of Maryland`_
 
 Daniel Stiles
-    worked on adding Trilinos_ parallel computations while he was
-    a student at `Montgomery Blair High School`_.
+    worked on adding :term:`Trilinos` parallel computations and
+    :term:`Mayavi` 2 while he was a student at `Montgomery Blair High
+    School`_.
 
 
 .. |MSEL| replace:: the `Materials Science and Engineering Laboratory`_
@@ -59,8 +60,6 @@ Daniel Stiles
 .. _Harvey Mudd College:                                           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.hmc.edu/
 .. _University of Maine:                                           
 .. _University of Maryland:                                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.maryland.edu/
-
-.. _Trilinos:                                                      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler

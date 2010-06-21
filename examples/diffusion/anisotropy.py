@@ -84,7 +84,7 @@ mass.
 
 Import a mesh previously created using :term:`Gmsh`.
 
->>> mesh = GmshImporter2D(os.path.splitext(__file__)[0] + '.msh')
+>>> mesh = Gmsh2D(os.path.splitext(__file__)[0] + '.msh')
 
 Set the center most cell to have a value.
 
