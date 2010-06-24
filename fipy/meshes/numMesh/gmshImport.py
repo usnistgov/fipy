@@ -39,6 +39,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix as nx
+from fipy.tools import parallel
 import mesh
 import mesh2D
 import os
@@ -63,10 +64,10 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.coordDimensions  = coordDimensions or dimensions
-        self.dimensions       = dimensions
-        gmshFlags             = "-%d -v 0 -format msh" % dimensions
-        self.filename         = self._parseFilename(filename, gmshFlags)
+        self.coordDimensions = coordDimensions or dimensions
+        self.dimensions      = dimensions
+        gmshFlags            = self._prepareGmshFlags()
+        self.filename        = self._parseFilename(filename, gmshFlags)
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
@@ -77,15 +78,48 @@ class MshFile:
 
         f = open(self.filename, "r") # open the msh file
 
-        # five lines of muck here allow most of the other methods to be
-        # free of side-effects.
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
 
-        self.vertexCoords, self.vertexMap = self._vertexCoordsAndMap()
-        self.facesToV, self.cellsToF  = self._parseElements(self.vertexMap)
+        self.vertexCoords, \
+        self.facesToV, \
+        self.cellsToF = self._buildMeshInformation()
 
+    def _buildMeshInformation(self):
+        """
+        Removed from __init__ to decouple order of mesh building. We'll
+        override this when we subclass `MshFile` in `PartedMshFile`, and
+        we'll build up the mesh in a different order so we don't have to
+        keep all of the vertices around in memory.
+
+        This may be harder to follow than the original equivalent, but I 
+        think the gained modularity will pay off.
+        """
+        vertexCoords, vertexMap = self._vertexCoordsAndMap()
+
+        cellsToVertGmshIDs, \
+        shapeTypes, \
+        numCells = self._parseElementFile()
+
+        # translate Gmsh IDs to vertexCoord indices
+        cellsToVertIDs = self._translateVertIDToIdx(cellsToVertGmshIDs,
+                                                    vertexMap)
+        # strip out the extra padding in `shapeTypes`
+        shapeTypes = nx.delete(shapeTypes,  nx.s_[numCells:])
+         
+        facesToV, cellsToF = self._deriveCellsAndFaces(cellsToVertIDs,
+                                                       shapeTypes,
+                                                       numCells)
+        return vertexCoords, facesToV, cellsToF
+ 
+    def _prepareGmshFlags(self):
+        """
+        Another separation from __init__ for the purposes of redefinition
+        in `PartedMshFile`.
+        """
+        return "-%d -v 0 -format msh" % self.dimensions
+ 
     def _parseFilename(self, fname, gmshFlags):
         """
         If we're being passed a .msh file, leave it be. Otherwise,
@@ -127,8 +161,6 @@ class MshFile:
         it out to its own file.
         """
         newF = tempfile.TemporaryFile()
-
-        # seek to section header
         self._seekForHeader(title, f)
         
         # extract the actual data within section
@@ -151,7 +183,7 @@ class MshFile:
                 raise EOFError("No `%s' header found!" % title)
                 break
             elif (("$%s" % title) not in line): continue
-            else: break 
+            else: break # found header
 
     def _vertexCoordsAndMap(self):
         """
@@ -161,8 +193,9 @@ class MshFile:
         Returns both the vertex coordinates and the mapping information.
         Mapping information is stored in a 1xn array where n is the
         largest vertexID obtained from the gmesh file. This mapping
-        array is subsequently used to transform element information.
+        array is later used to transform element information.
         """
+        # dtype
         gen = nx.genfromtxt(fname=self.nodesFile, skiprows=1)
         self.nodesFile.close()
 
@@ -176,73 +209,30 @@ class MshFile:
         # transpose for FiPy, truncate for dimension
         return vertexCoords.transpose()[:self.coordDimensions], vertexToIdx
 
-    def _parseElements(self, vertexMap):
+    def _deriveCellsAndFaces(self, cellsToVertIDs, shapeTypes, numCells):
         """
-        Parses $Elements portion to build `facesToVertices` and `cellsToFaces`
-        arrays.
+        Uses element information obtained from `_parseElementFile` to deliver
+        `facesToVertices` and `cellsToFaces`.
         """
-        def _extractFaces(faceLen, facesPerCell, cell):
-            """
-            Given `cell`, a cell in terms of vertices, returns an array of
-            `facesPerCell` faces of length `faceLen` in terms of vertices.
-            """
-            faces = []
-            for i in range(facesPerCell):
-                aFace = []
-                for j in range(faceLen):
-                    aVertex = (i + j) % len(cell) # we may wrap
-                    aFace.append(int(cell[aVertex]))
-                faces.append(aFace)
-            return faces
 
         def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
-
-        # shapeTypes:  cellsToVertIDs index -> shape type id
-        cellsToVertIDs = []
-        els            = self.elemsFile.readlines()
-        shapeTypes     = nx.empty(len(els), dtype=int)
-        numCells       = 0
-
-        # read in Elements data from gmsh
-        for element in els[1:]: # skip number-of-elems line
-            currLineInts = [int(x) for x in element.split()]
-            elemType     = currLineInts[1]
-            numTags      = currLineInts[2]
-
-            if elemType in self.numFacesForShape.keys():
-                # translate gmsh vertex IDs to vertexCoords indices
-                # NB: 3 columns precede the tags
-                vertIndices = vertexMap[nx.array(currLineInts[(3+numTags):])]
-                cellsToVertIDs.append(vertIndices)
-
-                shapeTypes[numCells] = elemType # record shape type
-                numCells += 1
-            else:
-                continue # shape not recognized
-
-        self.elemsFile.close() # tempfile trashed
-
-        # strip out the extra padding in `shapeTypes`
-        shapeTypes = nx.delete(shapeTypes,  nx.s_[numCells:])
 
         allShapes  = nx.unique(shapeTypes).tolist()
         maxFaces   = max([self.numFacesForShape[x] for x in allShapes])
 
-        # a few scalers
-        faceLength      = self.dimensions
-        currNumFaces    = 0
+        # `cellsToFaces` must be padded with -1; see mesh.py
+        faceLength   = self.dimensions
+        currNumFaces = 0
+        cellsToFaces = nx.ones((numCells, maxFaces)) * -1
+        facesDict    = {}
+        uniqueFaces  = []
 
-        # a few data structures and a function dictionary
-        cellsToFaces     = nx.ones((numCells, maxFaces)) * -1
-        facesDict        = {}
-        uniqueFaces      = []
-
-        # we now build, explicitly, `cellsToFaces` and `uniqueFaces`,
+        # we now build `cellsToFaces` and `uniqueFaces`,
         # the latter will result in `facesToVertices`.
         for cellIdx in range(numCells):
             cell         = cellsToVertIDs[cellIdx]
             facesPerCell = self.numFacesForShape[shapeTypes[cellIdx]]
-            faces        = _extractFaces(faceLength, facesPerCell, cell)
+            faces        = self._extractFaces(faceLength, facesPerCell, cell)
 
             for faceIdx in range(facesPerCell):
                 # NB: currFace is sorted for the key to spot duplicates
@@ -260,6 +250,166 @@ class MshFile:
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
         return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces)
+ 
+    def _parseElementFile(self):
+        """
+        Returns `cellsToVertIDs`, which maps cells to Gmsh-given IDs;
+                `shapeTypes`, which maps each cell to a shapeType;
+                `numCells`, the number of cells to be processed.
+        """
+        
+        # shapeTypes:  cellsToVertIDs index -> shape type id
+        els            = self.elemsFile.readlines()
+        cellsToVertIDs = []
+        shapeTypes     = nx.empty(len(els), dtype=int)
+        numCells       = 0
+
+        # read in Elements data from gmsh
+        for element in els[1:]: # skip number-of-elems line
+            currLineInts = [int(x) for x in element.split()]
+            elemType     = currLineInts[1]
+            numTags      = currLineInts[2]
+
+            if elemType in self.numFacesForShape.keys():
+                # NB: 3 columns precede the tags
+                cellsToVertIDs.append(currLineInts[(3+numTags):])
+                shapeTypes[numCells] = elemType # record shape type
+                numCells += 1
+            else:
+                continue # shape not recognized
+
+        self.elemsFile.close() # tempfile trashed
+
+        return cellsToVertIDs, shapeTypes, numCells
+                                                     
+    def _translateVertIDToIdx(self, cellsToVertIDs, vertexMap):
+        """
+        Translates cellToIds from Gmsh output IDs to `vertexCoords`
+        indices.
+        """
+        cellsToVertIdxs = []
+
+        # translate gmsh vertex IDs to vertexCoords indices
+        for cell in cellsToVertIDs:
+            vertIndices = vertexMap[nx.array(cell)]
+            cellsToVertIdxs.append(vertIndices)
+
+        return cellsToVertIdxs
+     
+    def _extractFaces(self, faceLen, facesPerCell, cell):
+        """
+        Given `cell`, a cell in terms of vertices, returns an array of
+        `facesPerCell` faces of length `faceLen` in terms of vertices.
+        """
+        faces = []
+        for i in range(facesPerCell):
+            aFace = []
+            for j in range(faceLen):
+                aVertex = (i + j) % len(cell) # we may wrap
+                aFace.append(int(cell[aVertex]))
+            faces.append(aFace)
+        return faces
+         
+class PartedMshFile(MshFile):
+    """
+    Gmsh version must be >= 2.5.
+
+    Same `__init__` as `MshFile`. `_buildMeshInformation` fulfills same
+    contract as parent's version.
+    """
+    def _buildMeshInformation(self):
+        cellDataDict, ghostCellDataDict = self._parseElementFile()
+        
+    def _vertexCoordsAndMap(self):
+        pass
+
+    def _prepareGmshFlags(self):
+        return "-%d -v 0 -part %d -format msh" % (self.dimensions,
+                                                  parallel.Nproc)
+
+    def _parseElementFile(self):
+        """
+        Returns two dicts, the first for non-ghost cells and the second for
+        ghost cells. Each dict contains 
+            "verts": A cellToVertID Python array,
+            "shapes": A shapeTypes Python array,
+            "num": A scalar, number of cells
+            "idmap": A Python array which maps vertexCoords idx -> global ID
+
+        It's pretty nasty.
+        """
+        def _addCell(cellArr, currLine, shapeTs, elT, IDmap, IDoff):
+            """
+            Bookkeeping for cells. Declared as own function for generality.
+            Curried later in ghost/non-ghost specific lambdas.
+            Just full of side-effects. Sorry, Abelson/Sussman.
+            """
+            cellArr.append(currLine[(numTags+3):])
+            shapeTs.append(elT)
+            IDmap.append(currLine[0] - IDoff)
+
+        cellsToVertIDs  = []
+        gCellsToVertIDs = [] # ghosts
+        shapeTypes      = []
+        gShapeTypes     = [] # ghosts, again
+        numCells        = 0
+        numGhostCells   = 0
+        vertIDMap       = [] # vertexCoords idx -> gmsh ID (global ID)
+        ghostVertIDMap  = [] # vertexCoords idx -> gmsh ID (global ID)
+        IDOffset        = -1 # this will be subtractd from gmsh ID to obtain
+                             # global ID
+
+        #pid             = parallel.procID
+        pid             = 3 # for testing
+
+        # thank god Python doesn't do closures like Lisp. Curry, curry, curry.
+        addCell      = lambda c,e: _addCell(cellsToVertIDs, c,
+                                            shapeTypes, e, 
+                                            vertIDMap, IDOffset)
+        addGhostCell = lambda c,e: _addCell(gCellsToVertIDs, c,
+                                            gShapeTypes, e, 
+                                            ghostVertIDMap, IDOffset)
+
+        self.elemsFile.readline() # skip number of elements
+        # the following iteration construct doesn't read self.elemsFile 
+        # into memory in its entirety; I checked with strace
+        for el in self.elemsFile:
+            currLineInts = [int(x) for x in el.split()]
+            elemType     = currLineInts[1]
+
+            if elemType in self.numFacesForShape.keys():
+                if IDOffset == -1: # if first valid shape
+                    IDOffset = currLineInts[0] # establish offset
+
+                numTags   = currLineInts[2]
+                partID    = currLineInts[3+numTags-1]
+
+                if partID == pid: # el is in this processor's partition
+                    addCell(currLineInts, elemType)
+                    numCells += 1
+                elif partID < 0:  # el is a boundary cell
+                    realPartID = currLineInts[3+numTags-2]
+                    # ...current partID is actually ghost cell ID
+
+                    if (partID * -1) == pid: # el is a ghost cell for this part.
+                        addGhostCell(currLineInts, elemType)
+                        numGhostCells += 1
+                    elif realPartID == pid: # a boundary cell in this part.
+                        addCell(currLineInts, elemType)
+                        numCells += 1
+
+        self.elemsFile.close() # tempfile trashed
+
+        # first dict is non-ghost, second is ghost
+        return {'verts':  cellsToVertIDs, 
+                'shapes': shapeTypes, 
+                'num':    numCells,
+                'idmap':  vertIDMap}, \
+               {'verts':  gCellsToVertIDs, 
+                'shapes': gShapeTypes, 
+                'num':    numGhostCells,
+                'idmap':  ghostVertIDMap}
+
 
 class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2):
@@ -366,6 +516,7 @@ class Gmsh2D(mesh2D.Mesh2D):
 class Gmsh2DIn3DSpace(Gmsh2D):
     def __init__(self, arg):
         Gmsh2D.__init__(self, arg, coordDimensions=3)
+
     def _test(self):
         """
         Stolen from the cahnHilliard sphere example.
