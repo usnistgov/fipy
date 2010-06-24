@@ -82,12 +82,10 @@ class MshFile:
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
 
-        self.vertexCoords, \
-        self.facesToV, \
-        self.cellsToF = self._buildMeshInformation()
-
-    def _buildMeshInformation(self):
+    def buildMeshData(self):
         """
+        Returns vertexCoords, facesToVertexIDs, cellsToFaceIDs.
+
         Removed from __init__ to decouple order of mesh building. We'll
         override this when we subclass `MshFile` in `PartedMshFile`, and
         we'll build up the mesh in a different order so we don't have to
@@ -285,7 +283,9 @@ class MshFile:
     def _translateVertIDToIdx(self, cellsToVertIDs, vertexMap):
         """
         Translates cellToIds from Gmsh output IDs to `vertexCoords`
-        indices.
+        indices. 
+        
+        NB: Takes in Python array, outputs numpy array.
         """
         cellsToVertIdxs = []
 
@@ -317,7 +317,7 @@ class PartedMshFile(MshFile):
     Same `__init__` as `MshFile`. `_buildMeshInformation` fulfills same
     contract as parent's version.
     """
-    def _buildMeshInformation(self):
+    def buildMeshData(self):
         cellDataDict, ghostCellDataDict = self._parseElementFile()
         
     def _vertexCoordsAndMap(self):
@@ -415,9 +415,9 @@ class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2):
         self.mshFile = MshFile(arg, dimensions=2, 
                                coordDimensions=coordDimensions)
-        self.verts   = self.mshFile.vertexCoords
-        self.faces   = self.mshFile.facesToV
-        self.cells   = self.mshFile.cellsToF
+        self.verts, \
+        self.faces, \
+        self.cells = self.mshFile.buildMeshData()
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
@@ -573,9 +573,9 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 class Gmsh3D(mesh.Mesh):
     def __init__(self, arg):
         self.mshFile = MshFile(arg, dimensions=3)
-        self.verts   = self.mshFile.vertexCoords
-        self.faces   = self.mshFile.facesToV
-        self.cells   = self.mshFile.cellsToF
+        self.verts, \
+        self.faces, \
+        self.cells = self.mshFile.buildMeshData()
         mesh.Mesh.__init__(self, vertexCoords=self.verts,
                                  faceVertexIDs=self.faces,
                                  cellFaceIDs=self.cells)
