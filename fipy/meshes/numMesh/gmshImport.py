@@ -88,8 +88,8 @@ class MshFile:
 
         Removed from __init__ to decouple order of mesh building. We'll
         override this when we subclass `MshFile` in `PartedMshFile`, and
-        we'll build up the mesh in a different order so we don't have to
-        keep all of the vertices around in memory.
+        we'll build up the mesh in a different order so we can keep as
+        little around in memory as possible.
 
         This may be harder to follow than the original equivalent, but I 
         think the gained modularity will pay off.
@@ -314,14 +314,75 @@ class PartedMshFile(MshFile):
     """
     Gmsh version must be >= 2.5.
 
-    Same `__init__` as `MshFile`. `_buildMeshInformation` fulfills same
-    contract as parent's version.
+    Punchline is in `buildMeshData`. 
     """
     def buildMeshData(self):
-        cellDataDict, ghostCellDataDict = self._parseElementFile()
+        """
+        0. Build cellsToVertices
+        1. Recover needed vertexCoords and mapping from file using 
+           cellsToVertices
+        2. Build cellsToVertIDs proper from vertexCoords and vertex map
+        3. Build faces
+        4. Build cellsToFaces
+        """
+     
+        cellDataDict, ghostDataDict = self._parseElementFile()
         
-    def _vertexCoordsAndMap(self):
-        pass
+        cellsToGmshVerts = cellDataDict['verts']  + ghostDataDict['verts']
+        numCellsTotal    = cellDataDict['num']    + ghostDataDict['num']
+        allShapeTypes    = cellDataDict['shapes'] + ghostDataDict['shapes']
+        allShapeTypes    = nx.array(allShapeTypes)
+        allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
+
+        vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
+
+        # translate Gmsh IDs to `vertexCoord` indices
+        cellsToVertIDs = self._translateVertIDToIdx(cellsToGmshVerts,
+                                                    vertIDtoIdx)
+
+        facesToV, cellsToF = self._deriveCellsAndFaces(cellsToVertIDs,
+                                                       allShapeTypes,
+                                                       numCellsTotal)
+        return vertexCoords, facesToV, cellsToF
+
+    def _vertexCoordsAndMap(self, cellsToGmshVerts):
+        """
+        Returns `vertexCoords` and mapping from Gmsh ID to `vertexCoords`
+        indices (same as in MshFile). 
+        
+        Unlike parent, doesn't use genfromtxt
+        because we want to avoid loading the entire msh file into memory.
+        """
+        allVerts     = [v for c in cellsToGmshVerts for v in c] # flatten
+        allVerts     = nx.unique(nx.array(allVerts, dtype=int)) # remove dups
+        allVerts     = nx.sort(allVerts)
+        maxVertIdx   = allVerts[-1] + 1 # add one to offset zero
+        vertGIDtoIdx = nx.ones(maxVertIdx) * -1 # gmsh ID -> vertexCoords idx
+        vertexCoords = nx.empty((len(allVerts), self.coordDimensions))
+        nodeCount    = 0
+
+        # establish map. This works because allVerts is a sorted set.
+        vertGIDtoIdx[allVerts] = nx.arange(len(allVerts))
+
+        self.nodesFile.readline() # skip number of nodes
+
+        # now we walk through node file with a sorted unique list of vertices
+        # in hand. When we encounter 0th element in `allVerts`, save it 
+        # to `vertexCoords` then pop its ID off `allVerts`.
+        for node in self.nodesFile:
+            line   = node.split()
+            nodeID = int(line[0])
+
+            if nodeID == allVerts[0]:
+                newVert = [float(x) for x in line[1:self.coordDimensions+1]]
+                vertexCoords[nodeCount,:] = nx.array(newVert)
+                nodeCount += 1
+                allVerts = allVerts[1:]
+
+            if len(allVerts) == 0: break
+
+        # transpose for FiPy
+        return vertexCoords.transpose(), vertGIDtoIdx
 
     def _prepareGmshFlags(self):
         return "-%d -v 0 -part %d -format msh" % (self.dimensions,
@@ -336,7 +397,11 @@ class PartedMshFile(MshFile):
             "num": A scalar, number of cells
             "idmap": A Python array which maps vertexCoords idx -> global ID
 
-        It's pretty nasty.
+        It's pretty nasty. 
+        
+        However, all nastiness concerning ghost cell
+        calculation is consolidated here: if we were ever to need to CALCULATE
+        GHOST CELLS OURSELVES, the only code we'd have to change is in here.
         """
         def _addCell(cellArr, currLine, shapeTs, elT, IDmap, IDoff):
             """
@@ -354,8 +419,8 @@ class PartedMshFile(MshFile):
         gShapeTypes     = [] # ghosts, again
         numCells        = 0
         numGhostCells   = 0
-        vertIDMap       = [] # vertexCoords idx -> gmsh ID (global ID)
-        ghostVertIDMap  = [] # vertexCoords idx -> gmsh ID (global ID)
+        cellIDMap       = [] # vertexCoords idx -> gmsh ID (global ID)
+        ghostCellIDMap  = [] # vertexCoords idx -> gmsh ID (global ID)
         IDOffset        = -1 # this will be subtractd from gmsh ID to obtain
                              # global ID
 
@@ -365,10 +430,10 @@ class PartedMshFile(MshFile):
         # thank god Python doesn't do closures like Lisp. Curry, curry, curry.
         addCell      = lambda c,e: _addCell(cellsToVertIDs, c,
                                             shapeTypes, e, 
-                                            vertIDMap, IDOffset)
+                                            cellIDMap, IDOffset)
         addGhostCell = lambda c,e: _addCell(gCellsToVertIDs, c,
                                             gShapeTypes, e, 
-                                            ghostVertIDMap, IDOffset)
+                                            ghostCellIDMap, IDOffset)
 
         self.elemsFile.readline() # skip number of elements
         # the following iteration construct doesn't read self.elemsFile 
@@ -381,35 +446,33 @@ class PartedMshFile(MshFile):
                 if IDOffset == -1: # if first valid shape
                     IDOffset = currLineInts[0] # establish offset
 
-                numTags   = currLineInts[2]
-                partID    = currLineInts[3+numTags-1]
+                numTags = currLineInts[2]
+                tags    = currLineInts[3:(3+numTags)]
+                tags.reverse() # any ghost cell IDs come first, then part ID
 
-                if partID == pid: # el is in this processor's partition
+                # parse the partition tags 
+                if tags[0] < 0: # if this is someone's ghost cell
+                    while tags[0] < 0 and tags: # while we have ghost IDs
+                        if (tags[0] * -1) == pid: 
+                            addGhostCell(currLineInts, elemType)
+                            numGhostCells += 1
+                            break   
+                        tags.pop(0) # try the next ID
+                if tags[0] == pid: # el is in this processor's partition
                     addCell(currLineInts, elemType)
                     numCells += 1
-                elif partID < 0:  # el is a boundary cell
-                    realPartID = currLineInts[3+numTags-2]
-                    # ...current partID is actually ghost cell ID
-
-                    if (partID * -1) == pid: # el is a ghost cell for this part.
-                        addGhostCell(currLineInts, elemType)
-                        numGhostCells += 1
-                    elif realPartID == pid: # a boundary cell in this part.
-                        addCell(currLineInts, elemType)
-                        numCells += 1
-
+                
         self.elemsFile.close() # tempfile trashed
 
         # first dict is non-ghost, second is ghost
         return {'verts':  cellsToVertIDs, 
                 'shapes': shapeTypes, 
                 'num':    numCells,
-                'idmap':  vertIDMap}, \
+                'idmap':  cellIDMap}, \
                {'verts':  gCellsToVertIDs, 
                 'shapes': gShapeTypes, 
                 'num':    numGhostCells,
-                'idmap':  ghostVertIDMap}
-
+                'idmap':  ghostCellIDMap}
 
 class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2):
