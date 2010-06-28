@@ -122,7 +122,7 @@ class CellTerm(Term):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
         N = len(var)
         b = numerix.zeros((N),'d')
-        L = SparseMatrix(size=N)
+        L = SparseMatrix(mesh=var.getMesh())
         
         # The sign of the matrix diagonal doesn't seem likely to change
         # after initialization, but who knows?

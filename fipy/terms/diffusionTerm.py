@@ -217,7 +217,7 @@ class DiffusionTerm(Term):
         
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
-        coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
+        coefficientMatrix = SparseMatrix(mesh=mesh, bandwidth = mesh._getMaxFacesPerCell())
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
@@ -276,7 +276,7 @@ class DiffusionTerm(Term):
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()
-            volMatrix = SparseMatrix(size = N, bandwidth = 1)
+            volMatrix = SparseMatrix(mesh=var.getMesh(), bandwidth = 1)
             
             volMatrix.addAtDiagonal(1. / mesh.getCellVolumes() )
             lowerOrderL = volMatrix * lowerOrderL
@@ -351,7 +351,7 @@ class DiffusionTerm(Term):
 
         else:
             
-            L = SparseMatrix(size = N)
+            L = SparseMatrix(mesh=mesh)
             L.addAtDiagonal(mesh.getCellVolumes())
             b = numerix.zeros((N),'d')
             

@@ -85,7 +85,7 @@ class _Equation(Term):
 
         N = len(var)
         self.RHSvector = numerix.zeros((N,),'d')
-        self.matrix = SparseMatrix(size=N)
+        self.matrix = SparseMatrix(mesh=var.getMesh())
 
         for term in self._getTerms():
             if term is not None:

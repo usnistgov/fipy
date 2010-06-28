@@ -83,29 +83,7 @@ class TrilinosSolver(Solver):
         self.nonOverlappingRHSvector = Epetra.Vector(self.nonOverlappingMap, 
                                                      RHSvector[localNonOverlappingCellIDs])
 
-        self.globalMatrix = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, -1)
-
-        localNonOverlappingCellIDsMask = numerix.zeros(len(localOverlappingCellIDs), 'int')
-        localNonOverlappingCellIDsMask[localNonOverlappingCellIDs] = 1
-        A = matrix.matrix.copy()
-        A.delete_rows(localNonOverlappingCellIDsMask)
-
-        values, irow, jcol = A.find()
-        
-        globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDs[irow]
-        if hasattr(globalNonOverlappingCellIDsIrow, 'astype') and \
-               globalNonOverlappingCellIDsIrow.dtype.name == 'int64':
-            globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDsIrow.astype('int32')
-
-        globalOverlappingCellIDsJcol = globalOverlappingCellIDs[jcol]
-        if hasattr(globalOverlappingCellIDsJcol, 'astype') and \
-               globalOverlappingCellIDsJcol.dtype.name == 'int64':
-            globalOverlappingCellIDsJcol = globalOverlappingCellIDsJcol.astype('int32')
-        
-        
-        self.globalMatrix.InsertGlobalValues(globalNonOverlappingCellIDsIrow, 
-                                             globalOverlappingCellIDsJcol, 
-                                             values)
+        self.globalMatrix = matrix.matrix
         
         self.globalMatrix.FillComplete()
         self.globalMatrix.OptimizeStorage()
@@ -136,8 +114,7 @@ class TrilinosSolver(Solver):
         del self.var
             
     def _getMatrixClass(self):
-        # an ugly expediency (I blame Wheeler)
-        return _PysparseMatrix
+        return _TrilinosMatrix
 
     def _calcResidualVector(self, residualFn=None):
         if residualFn is not None:

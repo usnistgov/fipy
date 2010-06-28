@@ -68,7 +68,7 @@ class _CollectedDiffusionTerm(DiffusionTerm):
         
         N = len(var)
         RHSvector = numerix.zeros((N,),'d')
-        matrix = SparseMatrix(size=N)
+        matrix = SparseMatrix(mesh=var.getMesh())
 
         for term in self.orders:
             if term is not None:

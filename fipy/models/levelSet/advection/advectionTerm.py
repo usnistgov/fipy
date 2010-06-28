@@ -146,7 +146,7 @@ class _AdvectionTerm(Term):
         else:
             coeffXdiffereneces = 0.
 
-        return (SparseMatrix(size = NCells), -coeffXdiffereneces * mesh.getCellVolumes())
+        return (SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.getCellVolumes())
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
