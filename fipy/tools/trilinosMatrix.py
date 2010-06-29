@@ -538,13 +538,14 @@ def _trilinosToNumpyVector(v):
         return numerix.array(PersonalV)
         
 class _TrilinosMatrix(_TrilinosMatrixBase):
-    def __init__(self, size, bandwidth=0, sizeHint=None):
+    def __init__(self, size, bandwidth=0, sizeHint=None, map=None):
         """Creates a `_TrilinosMatrix`.
 
         :Parameters:
           - `size`: The size N for an N by N matrix. 
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: ???
+          - `map`: The Epetra `Map` for the rows that this processor holds
         """
         comm = Epetra.PyComm()
         if sizeHint is not None and bandwidth == 0:
@@ -552,12 +553,13 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
         else:
             bandwidth = bandwidth
             
-        # Matrix building gets done on one processor - it gets the map for
-        # all the rows
-        if comm.MyPID() == 0:
-            map = Epetra.Map(size, range(0, size), 0, comm)
-        else: 
-            map = Epetra.Map(size, [], 0, comm)
+        if map is None:
+            # Matrix building gets done on one processor - it gets the map for
+            # all the rows
+            if comm.MyPID() == 0:
+                map = Epetra.Map(size, range(0, size), 0, comm)
+            else: 
+                map = Epetra.Map(size, [], 0, comm)
 
         matrix = Epetra.CrsMatrix(Epetra.Copy, map, bandwidth*3/2)
 
@@ -577,7 +579,15 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: ???
         """
-        _TrilinosMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint)
+        comm = Epetra.PyComm()
+        globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
+        nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
+        
+        _TrilinosMatrix.__init__(self, 
+                                 size=mesh.getNumberOfCells(), 
+                                 bandwidth=bandwidth, 
+                                 sizeHint=sizeHint, 
+                                 map=nonOverlappingMap)
         
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """
