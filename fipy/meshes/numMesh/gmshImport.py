@@ -164,7 +164,8 @@ class MshFile:
         # extract the actual data within section
         while True:
             line = f.readline()
-            if ("$End%s" % title) not in line: newF.write(line) 
+            if ("$End%s" % title) not in line: 
+                newF.write(line) 
             else: break
 
         f.seek(0); newF.seek(0) # restore file positions
@@ -324,11 +325,14 @@ class PartedMshFile(MshFile):
         2. Build cellsToVertIDs proper from vertexCoords and vertex map
         3. Build faces
         4. Build cellsToFaces
+
+        Returns vertexCoords, facesToVertexID, cellsToFaceID, 
+                cellGlobalIDMap, ghostCellGlobalIDMap.
         """
      
         cellDataDict, ghostDataDict = self._parseElementFile()
         
-        cellsToGmshVerts = cellDataDict['verts']  + ghostDataDict['verts']
+        cellsToGmshVerts = cellDataDict['cells']  + ghostDataDict['cells']
         numCellsTotal    = cellDataDict['num']    + ghostDataDict['num']
         allShapeTypes    = cellDataDict['shapes'] + ghostDataDict['shapes']
         allShapeTypes    = nx.array(allShapeTypes)
@@ -343,7 +347,13 @@ class PartedMshFile(MshFile):
         facesToV, cellsToF = self._deriveCellsAndFaces(cellsToVertIDs,
                                                        allShapeTypes,
                                                        numCellsTotal)
-        return vertexCoords, facesToV, cellsToF
+        print "Length of vertexCoords: ",len(vertexCoords[0])
+        print "Length of facesToV: ",len(facesToV[0])
+        print "Length of cellsToF: ",len(cellsToF[0])
+        print "Length of idmap: ",len(cellDataDict['idmap'])
+        print "Length of g-idmap: ",len(ghostDataDict['idmap'])
+        return vertexCoords, facesToV, cellsToF, \
+               cellDataDict['idmap'], ghostDataDict['idmap']
 
     def _vertexCoordsAndMap(self, cellsToGmshVerts):
         """
@@ -385,6 +395,7 @@ class PartedMshFile(MshFile):
         return vertexCoords.transpose(), vertGIDtoIdx
 
     def _prepareGmshFlags(self):
+        print "Nproc=",parallel.Nproc
         return "-%d -v 0 -part %d -format msh" % (self.dimensions,
                                                   parallel.Nproc)
 
@@ -392,7 +403,7 @@ class PartedMshFile(MshFile):
         """
         Returns two dicts, the first for non-ghost cells and the second for
         ghost cells. Each dict contains 
-            "verts": A cellToVertID Python array,
+            "cells": A cellToVertID Python array,
             "shapes": A shapeTypes Python array,
             "num": A scalar, number of cells
             "idmap": A Python array which maps vertexCoords idx -> global ID
@@ -423,9 +434,7 @@ class PartedMshFile(MshFile):
         ghostCellIDMap  = [] # vertexCoords idx -> gmsh ID (global ID)
         IDOffset        = -1 # this will be subtractd from gmsh ID to obtain
                              # global ID
-
-        #pid             = parallel.procID
-        pid             = 3 # for testing
+        pid             = parallel.procID + 1
 
         # thank god Python doesn't do closures like Lisp. Curry, curry, curry.
         addCell      = lambda c,e: _addCell(cellsToVertIDs, c,
@@ -465,28 +474,125 @@ class PartedMshFile(MshFile):
         self.elemsFile.close() # tempfile trashed
 
         # first dict is non-ghost, second is ghost
-        return {'verts':  cellsToVertIDs, 
+        return {'cells':  cellsToVertIDs, 
                 'shapes': shapeTypes, 
                 'num':    numCells,
                 'idmap':  cellIDMap}, \
-               {'verts':  gCellsToVertIDs, 
+               {'cells':  gCellsToVertIDs, 
                 'shapes': gShapeTypes, 
                 'num':    numGhostCells,
                 'idmap':  ghostCellIDMap}
 
 class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2):
-        self.mshFile = MshFile(arg, dimensions=2, 
-                               coordDimensions=coordDimensions)
-        self.verts, \
-        self.faces, \
-        self.cells = self.mshFile.buildMeshData()
+        if parallel.Nproc == 1:
+            self.mshFile = MshFile(arg, dimensions=2, 
+                                   coordDimensions=coordDimensions)
+            self.verts, \
+            self.faces, \
+            self.cells = self.mshFile.buildMeshData()
+        elif parallel.Nproc > 1:
+            self.mshFile = PartedMshFile(arg, dimensions=2, 
+                                         coordDimensions=coordDimensions)
+            self.verts, \
+            self.faces, \
+            self.cells, \
+            self.cellGlobalIDs, \
+            self.gCellGlobalIDs = self.mshFile.buildMeshData()
+
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
 
-    def getCellVolumes(self):
-        return abs(mesh2D.Mesh2D.getCellVolumes(self))
+    def _getGlobalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        if parallel.Nproc == 1:
+            return mesh2D.Mesh2D._getGlobalNonOverlappingCellIDs(self)
+        else:
+            print "global nonoverlapping cell ids:"
+            print "On ", parallel.procID
+            return self.cellGlobalIDs
+
+    def _getGlobalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        if parallel.Nproc == 1:
+            return mesh2D.Mesh2D._getGlobalOverlappingCellIDs(self)
+        else:
+            print "global overlapping cell ids:"
+            print "On ", parallel.procID
+            print
+            return self.cellGlobalIDs + self.gCellGlobalIDs
+
+    def _getLocalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        if parallel.Nproc == 1:
+            return mesh2D.Mesh2D._getLocalNonOverlappingCellIDs(self)
+        else:
+            return numerix.arange(len(self.cellGlobalIDs))
+
+    def _getLocalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        if parallel.Nproc == 1:
+            return mesh2D.Mesh2D._getLocalOverlappingCellIDs(self)
+        else:
+            return numerix.arange(len(self.cellGlobalIDs) +
+                                  len(self.gCellGlobalIDs))
 
     def _test(self):
         """
@@ -508,17 +614,6 @@ class Gmsh2D(mesh2D.Mesh2D):
         ... Line Loop(10) = {6, 7, 8, 9}; 
         ... Plane Surface(11) = {10}; 
         ... ''')
-
-        >>> print circ.getVertexCoords()
-        [[ 0.         -0.25        0.          0.25        0.         -0.1767767
-           0.1767767   0.1767767  -0.1767767  -0.0654061   0.08758673 -0.0379699 ]
-         [ 0.          0.          0.25        0.         -0.25        0.1767767
-           0.1767767  -0.1767767  -0.1767767   0.0654061   0.03383883 -0.08405141]]
-
-        >>> print circ._getCellFaceIDs()
-        [[ 2  1  7 10  6 13 15 14 13 19 21 17]
-         [ 1  4  6  9 12 11 10 16 16 18 20 20]
-         [ 0  3  5  8 11  4 14  2 17  5  8 19]]
 
         >>> print circ.getCellVolumes()[0] > 0
         True
@@ -542,16 +637,6 @@ class Gmsh2D(mesh2D.Mesh2D):
 
         >>> print rect.getCellVolumes()[0] > 0
         True
-
-        >>> print rect._getFaceVertexIDs()
-        [[ 274  270  187 ..., 1008 1008   27]
-         [ 187  274  270 ...,   26   27   26]]
-
-        >>> print rect.getFaceCenters()
-        [[ -8.05265841  -7.98540272  -7.79914904 ...,   1.84932005   2.10573031
-            2.05128205]
-         [ -8.93930664  -8.62975505  -8.83201622 ...,   9.67912179   9.67912179
-           10.        ]]
 
         Testing multiple shape types within a mesh;
 
@@ -623,14 +708,6 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         >>> print sphere.getCellVolumes()[0] > 0
         True
 
-        >>> print sphere.getCellCenters()
-        [[-0.45068562 -0.45090581 -2.55590575 ...,  0.3046376   0.06084868
-           0.12198487]
-         [ 0.0875831   5.22669204  4.5798818  ...,  4.96201041  4.95750553
-           4.90984865]
-         [ 5.22670396  0.0874828   0.11050056 ..., -1.67683932 -1.71977404
-          -1.85052202]]
-
         """
 
 class Gmsh3D(mesh.Mesh):
@@ -697,16 +774,6 @@ class Gmsh3D(mesh.Mesh):
 
         >>> print prism.getCellVolumes()[0] > 0
         True
-
-        >>> print prism.getCellVolumes()
-        [ 0.08333333  0.05555556  0.05555556  0.05555556  0.05555556  0.05555556
-          0.02777778  0.02777778  0.02777778  0.05555556  0.05555556  0.02777778
-          0.05555556  0.05555556  0.08333333  0.05555556  0.05555556  0.02777778
-          0.02777778  0.05555556  0.05555556  0.05555556  0.05555556  0.05555556
-          0.05555556  0.05555556  0.05555556  0.08333333  0.05555556  0.02777778
-          0.02777778  0.05555556  0.05555556  0.05555556  0.02777778  0.08333333
-          0.02777778  0.02777778  0.05555556  0.02777778]
-        >>>
         """
 
 def deprecation(old, new):
