@@ -189,12 +189,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
         Add two sparse matrices. The nonempty spots of one of them must be a 
         subset of the nonempty spots of the other one.
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L = _TrilinosMatrix(mesh=mesh)
+            >>> L = _TrilinosMatrix(size=3)
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt([0,0,0], [0,1,2], [0,1,2])
-            >>> print L + _TrilinosIdentityMatrix(mesh=mesh)
+            >>> print L + _TrilinosIdentityMatrix(size=3)
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
              2.500000      ---     1.000000  
@@ -225,11 +223,9 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix.
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L1 = _TrilinosMatrix(mesh=mesh)
+            >>> L1 = _TrilinosMatrix(size=3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
-            >>> L2 = _TrilinosIdentityMatrix(mesh=mesh)
+            >>> L2 = _TrilinosIdentityMatrix(size=3)
             >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
             
             >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
@@ -316,9 +312,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L = _TrilinosMatrix(mesh=mesh)
+            >>> L = _TrilinosMatrix(size=3)
             >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> print L
                 ---    10.000000   3.000000  
@@ -379,9 +373,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L = _TrilinosMatrix(mesh=mesh)
+            >>> L = _TrilinosMatrix(size=3)
             >>> L.putDiagonal((3.,10.,numerix.pi))
             >>> print L
              3.000000      ---        ---    
@@ -426,9 +418,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L = _TrilinosMatrix(mesh=mesh)
+            >>> L = _TrilinosMatrix(size=3)
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt((1.73,2.2,8.4,3.9,1.23), (1,2,0,0,1), (2,2,0,0,2))
             >>> print L
@@ -548,16 +538,14 @@ def _trilinosToNumpyVector(v):
         return numerix.array(PersonalV)
         
 class _TrilinosMatrix(_TrilinosMatrixBase):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+    def __init__(self, size, bandwidth=0, sizeHint=None):
         """Creates a `_TrilinosMatrix`.
 
         :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `size`: The size N for an N by N matrix. 
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: ???
         """
-        size = mesh.getNumberOfCells()
-        
         comm = Epetra.PyComm()
         if sizeHint is not None and bandwidth == 0:
             bandwidth = (sizeHint + size - 1) / size 
@@ -580,26 +568,49 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
         
         _TrilinosMatrixBase.__init__(self, matrix=matrix, map=map, bandwidth=bandwidth)
 
+class _TrilinosMeshMatrix(_TrilinosMatrix):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+        """Creates a `_TrilinosMatrix` associated with a `Mesh`
+
+        :Parameters:
+          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `bandwidth`: The proposed band width of the matrix.
+          - `sizeHint`: ???
+        """
+        _TrilinosMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint)
+        
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """
     Represents a sparse identity matrix for Trilinos.
     """
-    def __init__(self, mesh):
+    def __init__(self, size):
         """
         Create a sparse matrix with '1' in the diagonal
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> print _TrilinosIdentityMatrix(mesh=mesh)
+            >>> print _TrilinosIdentityMatrix(size=3)
              1.000000      ---        ---    
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _TrilinosMatrix.__init__(self, mesh=mesh, bandwidth=1)
-        size = mesh.getNumberOfCells()
+        _TrilinosMatrix.__init__(self, size=size, bandwidth=1)
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
         
+class _TrilinosIdentityMeshMatrix(_TrilinosIdentityMatrix):
+    def __init__(self, mesh):
+        """
+        Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        
+            >>> from fipy import Grid1D
+            >>> mesh = Grid1D(nx=3)
+            >>> print _TrilinosIdentityMeshMatrix(mesh=mesh)
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
+        """
+        _TrilinosIdentityMatrix.__init__(self, size=mesh.getNumberOfCells())
+
+
 def _test(): 
     import doctest
     return doctest.testmod()

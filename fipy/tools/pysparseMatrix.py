@@ -88,11 +88,9 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Add two sparse matrices
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L = _PysparseMatrix(mesh=mesh)
+            >>> L = _PysparseMatrix(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> print L + _PysparseIdentityMatrix(mesh=mesh)
+            >>> print L + _PysparseIdentityMatrix(size=3)
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
              2.500000      ---     1.000000  
@@ -131,11 +129,9 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L1 = _PysparseMatrix(mesh=mesh)
+            >>> L1 = _PysparseMatrix(size=3)
             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> L2 = _PysparseIdentityMatrix(mesh=mesh)
+            >>> L2 = _PysparseIdentityMatrix(size=3)
             >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
             
             >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
@@ -191,9 +187,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L = _PysparseMatrix(mesh=mesh)
+            >>> L = _PysparseMatrix(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L
                 ---    10.000000   3.000000  
@@ -206,9 +200,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L = _PysparseMatrix(mesh=mesh)
+            >>> L = _PysparseMatrix(size=3)
             >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print L
              3.000000      ---        ---    
@@ -242,9 +234,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> L = _PysparseMatrix(mesh=mesh)
+            >>> L = _PysparseMatrix(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
             >>> print L
@@ -291,38 +281,59 @@ class _PysparseMatrix(_PysparseMatrixBase):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+    def __init__(self, size, bandwidth=0, sizeHint=None):
         """Creates a `_PysparseMatrix`.
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
         """
-        size = mesh.getNumberOfCells()
         sizeHint = sizeHint or size * bandwidth
         _PysparseMatrixBase.__init__(self, matrix=spmatrix.ll_mat(size, size, sizeHint), bandwidth=bandwidth)
 
+class _PysparseMeshMatrix(_PysparseMatrix):
+    
+    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+        """Creates a `_PysparseMatrix` associated with a `Mesh`.
+
+        :Parameters:
+          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `bandwidth`: The proposed band width of the matrix.
+        """
+        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint)
 
 class _PysparseIdentityMatrix(_PysparseMatrix):
     """
     Represents a sparse identity matrix for pysparse.
     """
-    def __init__(self, mesh):
+    def __init__(self, size):
         """
         Create a sparse matrix with '1' in the diagonal
         
-            >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
-            >>> print _PysparseIdentityMatrix(mesh=mesh)
+            >>> print _PysparseIdentityMatrix(size=3)
              1.000000      ---        ---    
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PysparseMatrix.__init__(self, mesh=mesh, bandwidth = 1)
-        size = mesh.getNumberOfCells()
+        _PysparseMatrix.__init__(self, size=size, bandwidth = 1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
         
+class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
+    def __init__(self, mesh):
+        """
+        Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        
+            >>> from fipy import Grid1D
+            >>> mesh = Grid1D(nx=3)
+            >>> print _PysparseIdentityMeshMatrix(mesh=mesh)
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
+        """
+        _PysparseIdentityMatrix.__init__(self, size=mesh.getNumberOfCells())
+
+
 def _test(): 
     import doctest
     return doctest.testmod()

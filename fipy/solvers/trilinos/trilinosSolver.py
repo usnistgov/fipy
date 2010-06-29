@@ -39,7 +39,7 @@ from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
 from fipy.solvers.solver import Solver
-from fipy.tools.trilinosMatrix import _TrilinosMatrix
+from fipy.tools.trilinosMatrix import _TrilinosMeshMatrix
 from fipy.tools import numerix
 
 class TrilinosSolver(Solver):
@@ -110,7 +110,7 @@ class TrilinosSolver(Solver):
         del self.var
             
     def _getMatrixClass(self):
-        return _TrilinosMatrix
+        return _TrilinosMeshMatrix
 
     def _calcResidualVector(self, residualFn=None):
         if residualFn is not None:
