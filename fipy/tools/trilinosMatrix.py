@@ -265,7 +265,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         N = self._getMatrix().NumGlobalRows()
 
-        if isinstance(other, _TrilinosMatrix):
+        if isinstance(other, _TrilinosMatrixBase):
             if isinstance(other._getMatrix(), Epetra.RowMatrix):
             
                 if not self._getMatrix().Filled():
