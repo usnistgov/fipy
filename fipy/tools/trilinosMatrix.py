@@ -71,7 +71,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
-    def __init__(self, matrix, map=None, bandwidth=None):
+    def __init__(self, matrix, bandwidth=None, map=None):
         """
         :Parameters:
           - `matrix`: The starting `Epetra.CrsMatrix` if there is one.

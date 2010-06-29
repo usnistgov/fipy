@@ -40,7 +40,7 @@ from fipy.tools import numerix
 
 from fipy.tools.sparseMatrix import _SparseMatrix
 
-class _PysparseMatrix(_SparseMatrix):
+class _PysparseMatrixBase(_SparseMatrix):
     
     """
     _PysparseMatrix class wrapper for pysparse.
@@ -49,35 +49,27 @@ class _PysparseMatrix(_SparseMatrix):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, mesh=None, bandwidth = 0, matrix = None, sizeHint = None):
-        """
-        Creates a `_PysparseMatrix`.
+    def __init__(self, matrix, bandwidth=0):
+        """Creates a `_PysparseMatrixBase`.
 
         :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `matrix`: The starting `spmatrix` 
           - `bandwidth`: The proposed band width of the matrix.
-          - `matrix`: The starting `spmatrix` id there is one.
-
         """
-        if matrix != None:
-            self.matrix = matrix
-        else:
-            size = mesh.getNumberOfCells()
-            sizeHint = sizeHint or size * bandwidth
-            self.matrix = spmatrix.ll_mat(size, size, sizeHint)
+        self.matrix = matrix
 
     def _getMatrix(self):
         return self.matrix
     
     def copy(self):
-        return _PysparseMatrix(matrix = self.matrix.copy())
+        return _PysparseMatrixBase(matrix=self.matrix.copy())
         
     def __getitem__(self, index):
         m = self.matrix[index]
         if type(m) is type(0) or type(m) is type(0.):
             return m
         else:
-            return _PysparseMatrix(matrix = m)
+            return _PysparseMatrixBase(matrix=m)
 
     def __iadd__(self, other):
             return self._iadd(self._getMatrix(), other)
@@ -90,7 +82,7 @@ class _PysparseMatrix(_SparseMatrix):
     def _add(self, other, sign = 1):
         L = self.matrix.copy()
         self._iadd(L, other, sign)
-        return _PysparseMatrix(matrix = L)
+        return _PysparseMatrixBase(matrix=L)
 
     def __add__(self, other):
         """
@@ -121,7 +113,7 @@ class _PysparseMatrix(_SparseMatrix):
         else:
             L = self.matrix.copy()
             L.shift(1, other._getMatrix())
-            return _PysparseMatrix(matrix = L)
+            return _PysparseMatrixBase(matrix=L)
         
     def __sub__(self, other):
 
@@ -130,7 +122,7 @@ class _PysparseMatrix(_SparseMatrix):
         else:
             L = self.matrix.copy()
             L.shift(-1, other._getMatrix())
-            return _PysparseMatrix(matrix = L)
+            return _PysparseMatrixBase(matrix=L)
 
     def __isub__(self, other):
             return self._iadd(self._getMatrix(), other, -1)
@@ -169,14 +161,14 @@ class _PysparseMatrix(_SparseMatrix):
         """
         N = self.matrix.shape[0]
 
-        if isinstance(other, _PysparseMatrix):
-            return _PysparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+        if isinstance(other, _PysparseMatrixBase):
+            return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
         else:
             shape = numerix.shape(other)
             if shape == ():
                 L = spmatrix.ll_mat(N, N, N)
                 L.put(other * numerix.ones(N))
-                return _PysparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, L))
+                return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
                 y = other.copy()
                 self.matrix.matvec(other, y)
@@ -290,6 +282,26 @@ class _PysparseMatrix(_SparseMatrix):
         """
         self.matrix.export_mtx(filename)
     
+class _PysparseMatrix(_PysparseMatrixBase):
+    
+    """
+    _PysparseMatrix class wrapper for pysparse.
+    _PysparseMatrix is always NxN.
+    Allows basic python operations __add__, __sub__ etc.
+    Facilitate matrix populating in an easy way.
+    """
+
+    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+        """Creates a `_PysparseMatrix`.
+
+        :Parameters:
+          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `bandwidth`: The proposed band width of the matrix.
+        """
+        size = mesh.getNumberOfCells()
+        sizeHint = sizeHint or size * bandwidth
+        _PysparseMatrixBase.__init__(self, matrix=spmatrix.ll_mat(size, size, sizeHint), bandwidth=bandwidth)
+
 
 class _PysparseIdentityMatrix(_PysparseMatrix):
     """
