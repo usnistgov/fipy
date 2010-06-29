@@ -71,14 +71,18 @@ class _TrilinosMatrixBase(_SparseMatrix):
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
-    def __init__(self, matrix, bandwidth=None):
+    def __init__(self, matrix, map=None, bandwidth=None):
         """
         :Parameters:
           - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
           - `bandwidth`: The proposed band width of the matrix.
         """
         self.matrix = matrix
-        self.map = matrix.RowMap()
+        if map is None:
+            self.map = matrix.RowMap()
+        else:
+            self.map = map
+        
         self.comm = matrix.Comm()
         if bandwidth is None:
             self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() -1 ) 
@@ -574,7 +578,7 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
         # FillComplete is called, and according to the Trilinos devs the
         # performance boost will be worth it.
         
-        _TrilinosMatrixBase.__init__(self, matrix=matrix, bandwidth=bandwidth)
+        _TrilinosMatrixBase.__init__(self, matrix=matrix, map=map, bandwidth=bandwidth)
 
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """
