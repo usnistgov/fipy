@@ -35,15 +35,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.solver import Solver
-from fipy.tools.trilinosMatrix import _TrilinosMatrix
-from fipy.tools.pysparseMatrix import _PysparseMatrix
-from fipy.tools.trilinosMatrix import _numpyToTrilinosVector
-from fipy.tools.trilinosMatrix import _trilinosToNumpyVector
-
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
+from fipy.solvers.solver import Solver
+from fipy.tools.trilinosMatrix import _TrilinosMatrix
 from fipy.tools import numerix
 
 class TrilinosSolver(Solver):

@@ -64,53 +64,27 @@ from fipy.tools import numerix
 # extremely inefficient filters to filter out unnecessary elements on each
 # processor.
 
-class _TrilinosMatrix(_SparseMatrix):
+class _TrilinosMatrixBase(_SparseMatrix):
+    """_TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
     
-    """
-    _TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
     _TrilinosMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
-
-    def __init__(self, mesh=None, bandwidth=0, matrix=None, sizeHint = None):
+    def __init__(self, matrix, bandwidth=None):
         """
-        Creates a `_TrilinosMatrix`.
-
         :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
-          - `bandwidth`: The proposed band width of the matrix.
           - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
-
+          - `bandwidth`: The proposed band width of the matrix.
         """
-
-        if matrix != None:
-            self.matrix = matrix
-            self.map = matrix.RowMap()
-            self.comm = matrix.Comm()
-            self.bandwidth = (matrix.NumGlobalNonzeros() + matrix.NumGlobalRows()-1)/matrix.NumGlobalRows()
+        self.matrix = matrix
+        self.map = matrix.RowMap()
+        self.comm = matrix.Comm()
+        if bandwidth is None:
+            self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() -1 ) 
+                              / matrix.NumGlobalRows())
         else:
-            size = mesh.getNumberOfCells()
-            
-            self.comm = Epetra.PyComm()
-            if sizeHint is not None and bandwidth == 0:
-                self.bandwidth = (sizeHint + size - 1)/size 
-            else:
-                self.bandwidth = bandwidth
-                
-            # Matrix building gets done on one processor - it gets the map for
-            # all the rows
-            if self.comm.MyPID()==0:
-                self.map = Epetra.Map(size, range(0, size), 0, self.comm)
-            else: 
-                self.map = Epetra.Map(size, [], 0, self.comm)
-
-            self.matrix = Epetra.CrsMatrix(Epetra.Copy, self.map, self.bandwidth*3/2)
-
-            # Leave extra bandwidth, to handle multiple insertions into the
-            # same spot. It's memory-inefficient, but it'll get cleaned up when
-            # FillComplete is called, and according to the Trilinos devs the
-            # performance boost will be worth it.
+            self.bandwidth = bandwidth
 
     def _getMatrix(self):
         return self.matrix
@@ -123,7 +97,7 @@ class _TrilinosMatrix(_SparseMatrix):
         if not self._getMatrix().Filled():
             self._getMatrix().FillComplete()
 
-        return _TrilinosMatrix(matrix = Epetra.CrsMatrix(self.matrix))
+        return _TrilinosMatrixBase(matrix=Epetra.CrsMatrix(self.matrix))
             
         
     def __getitem__(self, index):
@@ -299,7 +273,7 @@ class _TrilinosMatrix(_SparseMatrix):
                 result = Epetra.CrsMatrix(Epetra.Copy, self.map, 0)
 
                 EpetraExt.Multiply(self._getMatrix(), False, other._getMatrix(), False, result)
-                return _TrilinosMatrix(matrix = result)
+                return _TrilinosMatrixBase(matrix=result)
             else:
                 raise TypeError
                 
@@ -569,6 +543,39 @@ def _trilinosToNumpyVector(v):
 
         return numerix.array(PersonalV)
         
+class _TrilinosMatrix(_TrilinosMatrixBase):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+        """Creates a `_TrilinosMatrix`.
+
+        :Parameters:
+          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `bandwidth`: The proposed band width of the matrix.
+          - `sizeHint`: ???
+        """
+        size = mesh.getNumberOfCells()
+        
+        comm = Epetra.PyComm()
+        if sizeHint is not None and bandwidth == 0:
+            bandwidth = (sizeHint + size - 1) / size 
+        else:
+            bandwidth = bandwidth
+            
+        # Matrix building gets done on one processor - it gets the map for
+        # all the rows
+        if comm.MyPID() == 0:
+            map = Epetra.Map(size, range(0, size), 0, comm)
+        else: 
+            map = Epetra.Map(size, [], 0, comm)
+
+        matrix = Epetra.CrsMatrix(Epetra.Copy, map, bandwidth*3/2)
+
+        # Leave extra bandwidth, to handle multiple insertions into the
+        # same spot. It's memory-inefficient, but it'll get cleaned up when
+        # FillComplete is called, and according to the Trilinos devs the
+        # performance boost will be worth it.
+        
+        _TrilinosMatrixBase.__init__(self, matrix=matrix, bandwidth=bandwidth)
+
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """
     Represents a sparse identity matrix for Trilinos.
@@ -584,7 +591,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _TrilinosMatrix.__init__(self, mesh=mesh, bandwidth = 1)
+        _TrilinosMatrix.__init__(self, mesh=mesh, bandwidth=1)
         size = mesh.getNumberOfCells()
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
