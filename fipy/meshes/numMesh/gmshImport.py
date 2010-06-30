@@ -482,7 +482,7 @@ class PartedMshFile(MshFile):
 
                 # parse the partition tags 
                 if tags[0] < 0: # if this is someone's ghost cell
-                    while tags[0] < 0 and tags: # while we have ghost IDs
+                    while tags[0] < 0: # while we have ghost IDs
                         if (tags[0] * -1) == pid: 
                             addGhostCell(currLineInts, elemType)
                             numGhostCells += 1
