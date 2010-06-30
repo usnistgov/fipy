@@ -484,6 +484,9 @@ class PartedMshFile(MshFile):
                 'idmap':  ghostCellIDMap}
 
 class Gmsh2D(mesh2D.Mesh2D):
+    def _isOrthogonal(self):
+        return True
+
     def __init__(self, arg, coordDimensions=2):
         if parallel.Nproc == 1:
             self.mshFile = MshFile(arg, dimensions=2, 
@@ -523,9 +526,12 @@ class Gmsh2D(mesh2D.Mesh2D):
         if parallel.Nproc == 1:
             return mesh2D.Mesh2D._getGlobalNonOverlappingCellIDs(self)
         else:
+            print
             print "global nonoverlapping cell ids:"
             print "On ", parallel.procID
-            return self.cellGlobalIDs
+            print "Length: ", len(nx.array(self.cellGlobalIDs))
+            print
+            return nx.array(self.cellGlobalIDs)
 
     def _getGlobalOverlappingCellIDs(self):
         """
@@ -546,10 +552,13 @@ class Gmsh2D(mesh2D.Mesh2D):
         if parallel.Nproc == 1:
             return mesh2D.Mesh2D._getGlobalOverlappingCellIDs(self)
         else:
+            print
             print "global overlapping cell ids:"
             print "On ", parallel.procID
+            print "Length: ", len(nx.array(self.cellGlobalIDs +
+                                  self.gCellGlobalIDs))
             print
-            return self.cellGlobalIDs + self.gCellGlobalIDs
+            return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
 
     def _getLocalNonOverlappingCellIDs(self):
         """
@@ -570,7 +579,7 @@ class Gmsh2D(mesh2D.Mesh2D):
         if parallel.Nproc == 1:
             return mesh2D.Mesh2D._getLocalNonOverlappingCellIDs(self)
         else:
-            return numerix.arange(len(self.cellGlobalIDs))
+            return nx.arange(len(self.cellGlobalIDs))
 
     def _getLocalOverlappingCellIDs(self):
         """
@@ -591,8 +600,8 @@ class Gmsh2D(mesh2D.Mesh2D):
         if parallel.Nproc == 1:
             return mesh2D.Mesh2D._getLocalOverlappingCellIDs(self)
         else:
-            return numerix.arange(len(self.cellGlobalIDs) +
-                                  len(self.gCellGlobalIDs))
+            return nx.arange(len(self.cellGlobalIDs) 
+                             + len(self.gCellGlobalIDs))
 
     def _test(self):
         """
