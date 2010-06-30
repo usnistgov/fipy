@@ -429,41 +429,38 @@ class PartedMshFile(MshFile):
             "num": A scalar, number of cells
             "idmap": A Python array which maps vertexCoords idx -> global ID
 
-        It's pretty nasty. 
-        
-        However, all nastiness concerning ghost cell
+        All nastiness concerning ghost cell
         calculation is consolidated here: if we were ever to need to CALCULATE
         GHOST CELLS OURSELVES, the only code we'd have to change is in here.
         """
-        def _addCell(cellArr, currLine, shapeTs, elT, IDmap, IDoff):
+        def _addCell(cellDict, currLine, elT, IDoff):
             """
             Bookkeeping for cells. Declared as own function for generality.
             Curried later in ghost/non-ghost specific lambdas.
             Just full of side-effects. Sorry, Abelson/Sussman.
             """
-            cellArr.append(currLine[(numTags+3):])
-            shapeTs.append(elT)
-            IDmap.append(currLine[0] - IDoff)
+            cellDict['cells'].append(currLine[(numTags+3):])
+            cellDict['shapes'].append(elT)
+            cellDict['idmap'].append(currLine[0] - IDoff)
+            cellDict['num'] += 1
 
-        cellsToVertIDs  = []
-        gCellsToVertIDs = [] # ghosts
-        shapeTypes      = []
-        gShapeTypes     = [] # ghosts, again
-        numCells        = 0
-        numGhostCells   = 0
-        cellIDMap       = [] # vertexCoords idx -> gmsh ID (global ID)
-        ghostCellIDMap  = [] # vertexCoords idx -> gmsh ID (global ID)
+        cellsData  = {'cells':  [],
+                      'shapes': [],
+                      'num':     0,
+                      'idmap':  []} # vertexCoords idx -> gmsh ID (global ID)
+
+        ghostsData = {'cells':  [],
+                      'shapes': [],
+                      'num':     0,
+                      'idmap':  []} # vertexCoords idx -> gmsh ID (global ID)
+
         IDOffset        = -1 # this will be subtractd from gmsh ID to obtain
                              # global ID
         pid             = parallel.procID + 1
 
         # thank god Python doesn't do closures like Lisp. Curry, curry, curry.
-        addCell      = lambda c,e: _addCell(cellsToVertIDs, c,
-                                            shapeTypes, e, 
-                                            cellIDMap, IDOffset)
-        addGhostCell = lambda c,e: _addCell(gCellsToVertIDs, c,
-                                            gShapeTypes, e, 
-                                            ghostCellIDMap, IDOffset)
+        addCell      = lambda c,e: _addCell(cellsData, c, e, IDOffset)
+        addGhostCell = lambda c,e: _addCell(ghostsData, c, e, IDOffset)
 
         self.elemsFile.readline() # skip number of elements
         # the following iteration construct doesn't read self.elemsFile 
@@ -485,24 +482,15 @@ class PartedMshFile(MshFile):
                     while tags[0] < 0: # while we have ghost IDs
                         if (tags[0] * -1) == pid: 
                             addGhostCell(currLineInts, elemType)
-                            numGhostCells += 1
                             break   
                         tags.pop(0) # try the next ID
                 if tags[0] == pid: # el is in this processor's partition
                     addCell(currLineInts, elemType)
-                    numCells += 1
                 
         self.elemsFile.close() # tempfile trashed
 
         # first dict is non-ghost, second is ghost
-        return {'cells':  cellsToVertIDs, 
-                'shapes': shapeTypes, 
-                'num':    numCells,
-                'idmap':  cellIDMap}, \
-               {'cells':  gCellsToVertIDs, 
-                'shapes': gShapeTypes, 
-                'num':    numGhostCells,
-                'idmap':  ghostCellIDMap}
+        return cellsData, ghostsData
 
 class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2):
