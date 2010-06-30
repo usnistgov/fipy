@@ -433,15 +433,15 @@ class PartedMshFile(MshFile):
         calculation is consolidated here: if we were ever to need to CALCULATE
         GHOST CELLS OURSELVES, the only code we'd have to change is in here.
         """
-        def _addCell(cellDict, currLine, elT, IDoff):
+        def _addCell(cellDict, currLine, elType, IDoffset):
             """
             Bookkeeping for cells. Declared as own function for generality.
             Curried later in ghost/non-ghost specific lambdas.
             Just full of side-effects. Sorry, Abelson/Sussman.
             """
             cellDict['cells'].append(currLine[(numTags+3):])
-            cellDict['shapes'].append(elT)
-            cellDict['idmap'].append(currLine[0] - IDoff)
+            cellDict['shapes'].append(elType)
+            cellDict['idmap'].append(currLine[0] - IDoffset)
             cellDict['num'] += 1
 
         cellsData  = {'cells':  [],
@@ -458,7 +458,6 @@ class PartedMshFile(MshFile):
                              # global ID
         pid             = parallel.procID + 1
 
-        # thank god Python doesn't do closures like Lisp. Curry, curry, curry.
         addCell      = lambda c,e: _addCell(cellsData, c, e, IDOffset)
         addGhostCell = lambda c,e: _addCell(ghostsData, c, e, IDOffset)
 
@@ -477,7 +476,6 @@ class PartedMshFile(MshFile):
                 tags    = currLineInts[3:(3+numTags)]
                 tags.reverse() # any ghost cell IDs come first, then part ID
 
-                # parse the partition tags 
                 if tags[0] < 0: # if this is someone's ghost cell
                     while tags[0] < 0: # while we have ghost IDs
                         if (tags[0] * -1) == pid: 
@@ -489,7 +487,6 @@ class PartedMshFile(MshFile):
                 
         self.elemsFile.close() # tempfile trashed
 
-        # first dict is non-ghost, second is ghost
         return cellsData, ghostsData
 
 class Gmsh2D(mesh2D.Mesh2D):
