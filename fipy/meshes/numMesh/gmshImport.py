@@ -338,7 +338,7 @@ class PartedMshFile(MshFile):
         MshFile.__init__(self, filename, dimensions,
                          coordDimensions=coordDimensions)
 
-    def _checkGmshVersion(self, minVersion=2.5):
+    def _checkGmshVersion(self):
         """
         Enforces gmsh version to be >= 2.5.
         """
@@ -374,11 +374,6 @@ class PartedMshFile(MshFile):
         facesToV, cellsToF = self._deriveCellsAndFaces(cellsToVertIDs,
                                                        allShapeTypes,
                                                        numCellsTotal)
-        print "Length of vertexCoords: ",len(vertexCoords[0])
-        print "Length of facesToV: ",len(facesToV[0])
-        print "Length of cellsToF: ",len(cellsToF[0])
-        print "Length of idmap: ",len(cellDataDict['idmap'])
-        print "Length of g-idmap: ",len(ghostDataDict['idmap'])
         return vertexCoords, facesToV, cellsToF, \
                cellDataDict['idmap'], ghostDataDict['idmap']
 
@@ -422,7 +417,6 @@ class PartedMshFile(MshFile):
         return vertexCoords.transpose(), vertGIDtoIdx
 
     def _prepareGmshFlags(self):
-        print "Nproc=",parallel.Nproc
         return "-%d -v 0 -part %d -format msh" % (self.dimensions,
                                                   parallel.Nproc)
 
@@ -526,10 +520,13 @@ class Gmsh2D(mesh2D.Mesh2D):
             self.cells, \
             self.cellGlobalIDs, \
             self.gCellGlobalIDs = self.mshFile.buildMeshData()
+            self.globalNumberOfCells = parallel.sumAll(len(self.cells))
+            self.globalNumberOfFaces = parallel.sumAll(len(self.faces))
 
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
+
 
     def _isOrthogonal(self):
         return True
@@ -553,11 +550,6 @@ class Gmsh2D(mesh2D.Mesh2D):
         if parallel.Nproc == 1:
             return mesh2D.Mesh2D._getGlobalNonOverlappingCellIDs(self)
         else:
-            print
-            print "global nonoverlapping cell ids:"
-            print "On ", parallel.procID
-            print "Length: ", len(nx.array(self.cellGlobalIDs))
-            print
             return nx.array(self.cellGlobalIDs)
 
     def _getGlobalOverlappingCellIDs(self):
@@ -579,12 +571,6 @@ class Gmsh2D(mesh2D.Mesh2D):
         if parallel.Nproc == 1:
             return mesh2D.Mesh2D._getGlobalOverlappingCellIDs(self)
         else:
-            print
-            print "global overlapping cell ids:"
-            print "On ", parallel.procID
-            print "Length: ", len(nx.array(self.cellGlobalIDs +
-                                  self.gCellGlobalIDs))
-            print
             return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
 
     def _getLocalNonOverlappingCellIDs(self):
