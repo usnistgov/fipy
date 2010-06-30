@@ -218,7 +218,13 @@ class DiffusionTerm(Term):
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
         coefficientMatrix = SparseMatrix(mesh=mesh, bandwidth = mesh._getMaxFacesPerCell())
+        from fipy.tools.debug import PRINT
+        PRINT(self.__class__, "fresh...")
+        PRINT(self.__class__, coefficientMatrix.matrix)
+        PRINT(self.__class__, "coefficientMatrix.addAtDiagonal...")
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
+        PRINT(self.__class__, "coefficientMatrix.addAtDiagonal done")
+        PRINT(self.__class__, coefficientMatrix.matrix)
         del interiorCoeff
         
         interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
@@ -226,18 +232,28 @@ class DiffusionTerm(Term):
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
 
         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
+        PRINT(self.__class__, "coefficientMatrix.addAt 1...")
         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[0], interiorFaceCellIDs[1])
+        PRINT(self.__class__, "coefficientMatrix.addAt 1 done")
+        PRINT(self.__class__, coefficientMatrix.matrix)
         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
+        PRINT(self.__class__, "coefficientMatrix.addAt 2...")
         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[1], interiorFaceCellIDs[0])
+        PRINT(self.__class__, "coefficientMatrix.addAt 2 done")
+        PRINT(self.__class__, coefficientMatrix.matrix)
         
         return coefficientMatrix
         
     def _bcAdd(self, coefficientMatrix, boundaryB, LLbb):
+        from fipy.tools.debug import PRINT
+        PRINT(self.__class__, "coefficientMatrix += LLbb[0]...")
         coefficientMatrix += LLbb[0]
+        PRINT(self.__class__, "coefficientMatrix += LLbb[0] done")
         boundaryB += LLbb[1]
         
     def _doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
-        [self._bcAdd(coefficientMatrix, boundaryB, boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)) for boundaryCondition in higherOrderBCs]
+        for boundaryCondition in higherOrderBCs:
+            self._bcAdd(coefficientMatrix, boundaryB, boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs))
             
         return coefficientMatrix, boundaryB
 
@@ -260,6 +276,9 @@ class DiffusionTerm(Term):
             return Term.__add__(self, other)
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., equation=None):
+        from fipy.tools.debug import PRINT
+        PRINT(self.__class__, "in _buildMatrix")
+        
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -340,8 +359,12 @@ class DiffusionTerm(Term):
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
             del lowerOrderBCs
 
+            PRINT(self.__class__, "_doBCs...")
+
             L, b = self._doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
                                self._getCoefficientMatrix(SparseMatrix, mesh, self.coeffDict['cell 1 diag']), numerix.zeros(N,'d'))
+
+            PRINT(self.__class__, "_doBCs done")
 
             if hasattr(self, 'anisotropySource'):
                 b -= self.anisotropySource

@@ -77,7 +77,11 @@ class FixedValue(BoundaryCondition):
         faces = self.faces.getValue()
         
         LL = SparseMatrix(mesh=self.faces.getMesh(), sizeHint = len(self.faces))
+        from fipy.tools.debug import PRINT
+        PRINT(self.__class__, LL.matrix)
         LL.addAt(coeff['cell 1 diag'][faces], self.adjacentCellIDs, self.adjacentCellIDs)
+        PRINT(self.__class__, "addAt done")
+        PRINT(self.__class__, LL.matrix)
 
         ## The following has been commented out because
         ## FixedValue's _buildMatrix() method is called for

@@ -89,18 +89,33 @@ class _Equation(Term):
 
         for term in self._getTerms():
             if term is not None:
+                from fipy.tools.debug import PRINT
+                PRINT(term.__class__, "building...")
+
                 termMatrix, termRHSvector = term._buildMatrix(var, SparseMatrix,
                                                               boundaryConditions, 
                                                               dt, self)
+                PRINT(term.__class__, "built")
 
+                PRINT(term.__class__, termMatrix.matrix)
+                PRINT(term.__class__, termRHSvector)
+                PRINT(term.__class__.__name__ + " Map", termMatrix.matrix.Map())
+                PRINT(term.__class__.__name__ + " globalOverlappingCellIDs", var.getMesh()._getGlobalOverlappingCellIDs())
+                PRINT(term.__class__.__name__ + " ColMap", termMatrix.matrix.ColMap())
+                termMatrix.matrix.FillComplete()
+                PRINT(term.__class__.__name__ + " Filled ColMap", termMatrix.matrix.ColMap())
+                
                 if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
                     and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
                     self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
                     self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector)
                     raw_input()
 
+                PRINT(term.__class__, "self.matrix += termMatrix...")
                 self.matrix += termMatrix
+                PRINT(term.__class__, "self.matrix += termMatrix done")
                 self.RHSvector += termRHSvector
+                PRINT(term.__class__, "self.RHSvector += termRHSvector done")
 	
         matrix = self.matrix
         RHSvector = self.RHSvector

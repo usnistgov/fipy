@@ -61,9 +61,6 @@ class TrilinosSolver(Solver):
         
     def _buildGlobalMatrix(self):
         
-        matrix = self.matrix
-        RHSvector = self.RHSvector
-    
         mesh = self.var.getMesh()
         comm = Epetra.PyComm()
         
@@ -77,9 +74,9 @@ class TrilinosSolver(Solver):
                                                   self.var[localNonOverlappingCellIDs])
         
         self.nonOverlappingRHSvector = Epetra.Vector(self.nonOverlappingMap, 
-                                                     RHSvector[localNonOverlappingCellIDs])
+                                                     self.RHSvector[localNonOverlappingCellIDs])
 
-        self.globalMatrix = matrix.matrix
+        self.globalMatrix = self.matrix.matrix
         
         self.globalMatrix.FillComplete()
         self.globalMatrix.OptimizeStorage()

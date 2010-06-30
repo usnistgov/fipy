@@ -55,7 +55,7 @@ parameter ``dx`` refers to the grid spacing (set to unity here).
 
 >>> from fipy import *
 
->>> nx = 50
+>>> nx = 5
 >>> dx = 1.
 >>> mesh = Grid1D(nx = nx, dx = dx)
 
@@ -171,12 +171,12 @@ the result is tested against the expected profile:
 
 We then solve the equation by repeatedly looping in time:
 
->>> for step in range(steps):
-...     eqX.solve(var=phi,
-...               boundaryConditions=BCs,
-...               dt=timeStepDuration)
-...     if __name__ == '__main__':
-...         viewer.plot()
+>>> # for step in range(steps):
+... #     eqX.solve(var=phi,
+... #               boundaryConditions=BCs,
+... #               dt=timeStepDuration)
+... #     if __name__ == '__main__':
+... #         viewer.plot()
 
 >>> print phi.allclose(phiAnalytical, atol = 7e-4)
 1
@@ -214,7 +214,8 @@ reset the problem
 and rerun with much larger time steps
 
 >>> timeStepDuration *= 10
->>> steps /= 10
+>>> # steps /= 10
+>>> steps = 1
 >>> for step in range(steps):
 ...     eqI.solve(var=phi,
 ...               boundaryConditions=BCs,
