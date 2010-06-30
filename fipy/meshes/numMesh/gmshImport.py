@@ -79,6 +79,7 @@ class MshFile:
         f = open(self.filename, "r") # open the msh file
 
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
+        self._checkGmshVersion()
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
 
@@ -153,6 +154,22 @@ class MshFile:
         f.seek(0)
         return [float(x) for x in metaData]
 
+    def _checkGmshVersion(self, minVersion=2):
+        """
+        Enforces gmsh version to be >= 2.
+        """
+        import subprocess as subp
+        import re
+        verStr = subp.Popen("gmsh --version", 
+                            stderr=subp.PIPE, shell=True).stderr.readline()
+        m = re.search(r'\d+.\d+', verStr)
+
+        if m and m.group(0) >= minVersion:
+            return
+        else:
+            errStr = "Gmsh version must be >= %f."
+            raise EnvironmentError(errStr % minVersion)
+     
     def _isolateData(self, title, f):
         """
         Gets all data between $[title] and $End[title], writes
@@ -317,6 +334,16 @@ class PartedMshFile(MshFile):
 
     Punchline is in `buildMeshData`. 
     """
+    def __init__(self, filename, dimensions, coordDimensions=None):
+        MshFile.__init__(self, filename, dimensions,
+                         coordDimensions=coordDimensions)
+
+    def _checkGmshVersion(self, minVersion=2.5):
+        """
+        Enforces gmsh version to be >= 2.5.
+        """
+        MshFile._checkGmshVersion(self, minVersion=2.5)
+
     def buildMeshData(self):
         """
         0. Build cellsToVertices
@@ -484,9 +511,6 @@ class PartedMshFile(MshFile):
                 'idmap':  ghostCellIDMap}
 
 class Gmsh2D(mesh2D.Mesh2D):
-    def _isOrthogonal(self):
-        return True
-
     def __init__(self, arg, coordDimensions=2):
         if parallel.Nproc == 1:
             self.mshFile = MshFile(arg, dimensions=2, 
@@ -506,6 +530,9 @@ class Gmsh2D(mesh2D.Mesh2D):
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
+
+    def _isOrthogonal(self):
+        return True
 
     def _getGlobalNonOverlappingCellIDs(self):
         """
