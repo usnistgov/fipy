@@ -143,14 +143,13 @@ class GaussianNoiseVariable(NoiseVariable):
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
 
     def parallelRandom(self):
-        from fipy.tools import parallel
 
         if hasattr(self.variance, 'getGlobalValue'):
             variance = self.variance.getGlobalValue()
         else:
             variance = self.variance
 
-        if parallel.procID == 0:
+        if self.getMesh().parallelModule.procID == 0:
             return random.normal(self.mean, sqrt(variance),
                                  size = [self.getMesh().globalNumberOfCells])
         else:

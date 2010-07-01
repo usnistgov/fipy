@@ -47,6 +47,8 @@ from fipy.meshes.numMesh.cell import Cell
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 
+from fipy.tools import serial
+
 class MeshAdditionError(Exception):
     pass
     
@@ -58,13 +60,14 @@ class Mesh(_CommonMesh):
         This is built for a non-mixed element mesh.
     """
 
-    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs):
+    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, parallelModule=serial):
         """faceVertexIds and cellFacesIds must be padded with minus ones."""
 
         self.vertexCoords = vertexCoords
         self.faceVertexIDs = MA.masked_values(faceVertexIDs, -1)
         self.cellFaceIDs = MA.masked_values(cellFaceIDs, -1)
-
+        self.parallelModule = parallelModule
+        
         _CommonMesh.__init__(self)
         
     """Topology methods"""

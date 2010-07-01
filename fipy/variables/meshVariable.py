@@ -36,7 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
-from fipy.tools import numerix, parallel
+from fipy.tools import numerix
 
 class _MeshVariable(Variable):
     """
@@ -157,9 +157,8 @@ class _MeshVariable(Variable):
         pass
 
     def _getGlobalValue(self, localIDs, globalIDs):
-        from fipy.tools import parallel
         localValue = self.getValue()
-        if parallel.Nproc > 1:
+        if self.getMesh().parallelModule.Nproc > 1:
             from mpi4py import MPI
             comm = MPI.COMM_WORLD
             if localValue.shape[-1] != 0:
@@ -328,7 +327,7 @@ class _MeshVariable(Variable):
         return fnParallel(nodeVal)
 
     def max(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             from PyTrilinos import Epetra
             def maxParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
@@ -341,7 +340,7 @@ class _MeshVariable(Variable):
             return Variable.max(self, axis=axis)
                                   
     def min(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             from PyTrilinos import Epetra
             def minParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
@@ -354,7 +353,7 @@ class _MeshVariable(Variable):
             return Variable.min(self, axis=axis)
 
     def all(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             from mpi4py import MPI
             def allParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
@@ -367,7 +366,7 @@ class _MeshVariable(Variable):
             return Variable.all(self, axis=axis)
 
     def any(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             from mpi4py import MPI
             def anyParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
@@ -380,7 +379,7 @@ class _MeshVariable(Variable):
             return Variable.any(self, axis=axis)
 
     def sum(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             from PyTrilinos import Epetra
             def sumParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
@@ -393,7 +392,7 @@ class _MeshVariable(Variable):
             return Variable.sum(self, axis=axis)
 
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
-         if parallel.Nproc > 1:
+         if self.getMesh().parallelModule.Nproc > 1:
              from mpi4py import MPI
              def allcloseParallel(a, b):
                  return MPI.COMM_WORLD.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=MPI.LAND)
@@ -408,7 +407,7 @@ class _MeshVariable(Variable):
              return Variable.allclose(self, other, rtol=rtol, atol=atol)
 
     def allequal(self, other):
-         if parallel.Nproc > 1:
+         if self.getMesh().parallelModule.Nproc > 1:
              from mpi4py import MPI
              def allequalParallel(a, b):
                  return MPI.COMM_WORLD.allreduce(numerix.allequal(a, b), op=MPI.LAND)

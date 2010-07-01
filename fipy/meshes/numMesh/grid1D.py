@@ -89,7 +89,7 @@ class Grid1D(Mesh1D):
         faces = self._createFaces()
         self.numberOfFaces = len(faces[0])
         cells = self._createCells()
-        Mesh1D.__init__(self, vertices, faces, cells)
+        Mesh1D.__init__(self, vertices, faces, cells, parallelModule=parallelModule)
         
         self.setScale(value = scale)
 
