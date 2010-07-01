@@ -557,7 +557,7 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
         """
         comm = Epetra.PyComm()
         if sizeHint is not None and bandwidth == 0:
-            bandwidth = (sizeHint + size - 1) / size 
+            bandwidth = (sizeHint + size - 1) / (size or 1) 
         else:
             bandwidth = bandwidth
             
