@@ -345,9 +345,9 @@ class _TrilinosMatrixBase(_SparseMatrix):
 #             return
 
         if self._getMatrix().Filled():
-            if self._getMatrix().ReplaceMyValues(id1, id2, vector) != 0:
+            if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
                 import warnings
-                warnings.warn("ReplaceMyValues returned error code in put", 
+                warnings.warn("ReplaceGlobalValues returned error code in put", 
                                UserWarning, stacklevel=2)
                 # Possible different algorithm, to guarantee success:
                 # 
@@ -366,13 +366,13 @@ class _TrilinosMatrixBase(_SparseMatrix):
             # This guarantees that it will actually replace the values that are there,
             # if there are any
             if self._getMatrix().NumGlobalNonzeros() == 0:
-                self._getMatrix().InsertMyValues(id1, id2, vector)
+                self._getMatrix().InsertGlobalValues(id1, id2, vector)
             else:
-                self._getMatrix().InsertMyValues(id1, id2, numerix.zeros(len(vector)))
+                self._getMatrix().InsertGlobalValues(id1, id2, numerix.zeros(len(vector)))
                 self._getMatrix().FillComplete()
-                if self._getMatrix().ReplaceMyValues(id1, id2, vector) != 0:
+                if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings
-                    warnings.warn("ReplaceMyValues returned error code in put", 
+                    warnings.warn("ReplaceGlobalValues returned error code in put", 
                                    UserWarning, stacklevel=2)
                     # Possible different algorithm, to guarantee that it does not fail:
                     # 
@@ -457,10 +457,49 @@ class _TrilinosMatrixBase(_SparseMatrix):
         if hasattr(id2, 'astype') and id2.dtype.name == 'int64':
             id2 = id2.astype('int32')
 
+        from fipy.tools.debug import PRINT
+        PRINT(self.__class__.__name__ + " addAt id1", id1)
+        PRINT(self.__class__.__name__ + " addAt id2", id2)
+        PRINT(self.__class__.__name__ + " addAt vector", vector)
+        PRINT(self.__class__.__name__ + " addAt matrix before", self._getMatrix())
         if not self._getMatrix().Filled():
-            self._getMatrix().InsertMyValues(id1, id2, vector)
+            PRINT(self.__class__.__name__ + " addAt", "not Filled")
+            
+#             Comm = Epetra.PyComm() 
+#             if Comm.NumProc() != 2:
+#                 raise Exception, "Must run w/ two processors"
+#             if Comm.MyPID() == 0: 
+#                 MyGlobalElements = [0, 1, 2]
+#                 MyInsertElements = MyGlobalElements + [3, 4]
+#                 MyValues = [3.3 * i for i in MyInsertElements]
+#             else: 
+#                 MyGlobalElements = [3, 4, 5, 6]
+#                 MyInsertElements = [1, 2] + MyGlobalElements
+#                 MyValues = [4.3 * i for i in MyInsertElements]
+# 
+#             Map = Epetra.Map(-1, MyGlobalElements, 0, Comm)
+#             # print Map 
+# 
+#             A = Epetra.CrsMatrix(Epetra.Copy,Map,3)
+# 
+# 
+#             PRINT(self.__class__.__name__ + " id1 really", repr(id1))
+#             PRINT(self.__class__.__name__ + " id2 really", repr(id2))
+#             PRINT(self.__class__.__name__ + " MyInsertElements", repr(MyInsertElements))
+# 
+#             self.matrix = A
+#             self._getMatrix().InsertGlobalValues(MyInsertElements, MyInsertElements, vector)
+            self._getMatrix().InsertGlobalValues(id1, id2, vector)
+
+            # A.InsertGlobalValues(MyGlobalElements, MyGlobalElements, MyGlobalElements)
+#             A.InsertGlobalValues(MyInsertElements, MyInsertElements, MyValues)
+
+#             PRINT(self.__class__.__name__ + " thrashing madly A", A.Map())
+#             PRINT(self.__class__.__name__ + " thrashing madly self", self._getMatrix().Map())
+
         else:
-            if self._getMatrix().SumIntoMyValues(id1, id2, vector) != 0:
+            PRINT(self.__class__.__name__ + " addAt", "Filled")
+            if self._getMatrix().SumIntoGlobalValues(id1, id2, vector) != 0:
                 import warnings
                 warnings.warn("Summing into unfilled matrix returned error code",
                                UserWarning, stacklevel=2)
@@ -474,6 +513,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 # Would incur performance costs, and since FiPy does not use 
                 # this function in such a way as would generate these errors,
                 # I have not implemented the change.
+        PRINT(self.__class__.__name__ + " addAt matrix after", self._getMatrix())
 
 
     def addAtDiagonal(self, vector):
@@ -611,8 +651,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
         globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
         nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
-        overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
-#         overlappingMap = None
+#         overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
+        overlappingMap = None
 #         overlappingMap = nonOverlappingMap
         
         _TrilinosMatrix.__init__(self, 
@@ -623,20 +663,53 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                                  overlappingMap=overlappingMap)
                                  
     def put(self, vector, id1, id2):
-#         localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
-#         vector = vector[localNonOverlappingCellIDs]
-#         id1 = id1[localNonOverlappingCellIDs]
-#         id2 = id2[localNonOverlappingCellIDs]
+        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+        from fipy.tools.debug import PRINT
+        PRINT(self.__class__.__name__ + " put globalOverlappingCellIDs", globalOverlappingCellIDs)
+        PRINT(self.__class__.__name__ + " put vector", vector)
+        PRINT(self.__class__.__name__ + " put id1 old", id1)
+        id1 = globalOverlappingCellIDs[id1]
+        PRINT(self.__class__.__name__ + " put id1 new", id1)
+        PRINT(self.__class__.__name__ + " put id2 old", id2)
+        id2 = globalOverlappingCellIDs[id2]
+        PRINT(self.__class__.__name__ + " put id2 new", id2)
     
         _TrilinosMatrix.put(self, vector=vector, id1=id1, id2=id2)
         
+        PRINT(self.__class__.__name__ + " put after", self.matrix)
+
     def addAt(self, vector, id1, id2):
-#         localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
-#         vector = vector[localNonOverlappingCellIDs]
-#         id1 = id1[localNonOverlappingCellIDs]
-#         id2 = id2[localNonOverlappingCellIDs]
+        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+        globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
+        
+        from fipy.tools.debug import PRINT
+        PRINT(self.__class__.__name__ + " addAt globalOverlappingCellIDs", globalOverlappingCellIDs)
+        PRINT(self.__class__.__name__ + " addAt vector", vector)
+        PRINT(self.__class__.__name__ + " addAt id1 old", id1)
+        id1 = globalOverlappingCellIDs[id1]
+        PRINT(self.__class__.__name__ + " addAt id1 new", id1)
+        PRINT(self.__class__.__name__ + " addAt id2 old", id2)
+        id2 = globalOverlappingCellIDs[id2]
+        PRINT(self.__class__.__name__ + " addAt id2 new", id2)
+        
+        
+        mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 
+        id1 = id1[mask]
+        id2 = id2[mask]
+        vector = vector[mask]
+
+        PRINT(self.__class__.__name__ + " addAt id1 masked", id1)
+        PRINT(self.__class__.__name__ + " addAt id2 masked", id1)
+        PRINT(self.__class__.__name__ + " addAt id1 masked", id1)
+
+#         Comm = Epetra.PyComm() 
+#         Map = Epetra.Map(-1, list(self.mesh._getGlobalNonOverlappingCellIDs()), 0, Comm)
+#         self.matrix = Epetra.CrsMatrix(Epetra.Copy, Map, 3)
 
         _TrilinosMatrix.addAt(self, vector=vector, id1=id1, id2=id2)
+        
+        PRINT(self.__class__.__name__ + " addAt after", self.matrix)
+
 
         
 class _TrilinosIdentityMatrix(_TrilinosMatrix):

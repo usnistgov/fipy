@@ -55,7 +55,7 @@ parameter ``dx`` refers to the grid spacing (set to unity here).
 
 >>> from fipy import *
 
->>> nx = 5
+>>> nx = 7
 >>> dx = 1.
 >>> mesh = Grid1D(nx = nx, dx = dx)
 
