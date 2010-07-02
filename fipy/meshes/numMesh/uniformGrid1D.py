@@ -95,6 +95,7 @@ class UniformGrid1D(Grid1D):
         }
         
         self.setScale(value=scale)
+        self.parallelModule = parallelModule
         
     def _translate(self, vector):
         return UniformGrid1D(dx=self.dx, 

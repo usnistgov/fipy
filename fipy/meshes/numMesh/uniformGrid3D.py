@@ -135,7 +135,8 @@ class UniformGrid3D(Grid3D):
         }
 
         self.setScale(value = scale)
-
+        self.parallelModule = parallelModule
+        
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
                               dy = self.args['dy'], ny = self.args['ny'],

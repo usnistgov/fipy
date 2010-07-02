@@ -155,10 +155,13 @@ class TSVViewer(_Viewer):
           filename
             If not `None`, the name of a file to save the image into.
         """
+
+        mesh = self.vars[0].getMesh()
+        dim = mesh.getDim()
+        
         if filename is not None:
             import os
-            from fipy.tools import parallel
-            if parallel.procID == 0:
+            if mesh.parallelModule.procID == 0:
                 if os.path.splitext(filename)[1] == ".gz":
                     import gzip
                     f = gzip.GzipFile(filename = filename, mode = 'w', fileobj = None)
@@ -172,10 +175,7 @@ class TSVViewer(_Viewer):
         if self.title and len(self.title) > 0:
             f.write(self.title)
             f.write("\n")
-            
-        mesh = self.vars[0].getMesh()
-        dim = mesh.getDim()
-        
+                    
         headings = []
         for index in range(dim):
             headings.extend(self._axis[index])

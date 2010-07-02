@@ -76,8 +76,8 @@ class NoiseVariable(CellVariable):
         pass
         
     def parallelRandom(self):
-        from fipy.tools import parallel
-        if parallel.procID == 0:
+
+        if self.getMesh().parallelModule.procID == 0:
             return self.random()
         else:
             return None

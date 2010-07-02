@@ -113,6 +113,7 @@ class UniformGrid2D(Grid2D):
         }
 
         self.setScale(value = scale)
+        self.parallelModule = parallelModule
         
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
