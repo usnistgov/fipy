@@ -555,13 +555,13 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
           - `sizeHint`: ???
           - `map`: The Epetra `Map` for the rows that this processor holds
         """
-        comm = Epetra.PyComm()
         if sizeHint is not None and bandwidth == 0:
             bandwidth = (sizeHint + size - 1) / (size or 1) 
         else:
             bandwidth = bandwidth
             
         if nonOverlappingMap is None:
+            comm = Epetra.PyComm()
             # Matrix building gets done on one processor - it gets the map for
             # all the rows
             if comm.MyPID() == 0:
@@ -596,7 +596,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         """
         self.mesh = mesh
         
-        comm = Epetra.PyComm()
+        comm = mesh.parallelModule.epetra_comm
         globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
         globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
         nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
@@ -698,7 +698,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     nonoverlapping_result = Epetra.Vector(self.nonOverlappingMap)
                     self._getMatrix().Multiply(False, other, nonoverlapping_result)
                 
-                    comm = Epetra.PyComm()
+                    comm = self.mesh.parallelModule.epetra_comm
                     overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
 
                     overlapping_result = Epetra.Vector(overlappingMap)

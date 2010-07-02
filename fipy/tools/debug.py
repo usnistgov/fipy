@@ -1,8 +1,6 @@
 def PRINT(label, arg="", stall=True):
     import sys
     from fipy import parallel
-    from mpi4py import MPI
-    comm = MPI.COMM_WORLD
     import time
     
     for procID in range(parallel.Nproc):
@@ -11,7 +9,7 @@ def PRINT(label, arg="", stall=True):
         sys.stderr.flush()
         if stall:
             time.sleep(0.1)
-            comm.Barrier()
+            parallel.Barrier()
 
     if stall:
-        comm.Barrier()
+        parallel.Barrier()

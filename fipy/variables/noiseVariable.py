@@ -88,9 +88,7 @@ class NoiseVariable(CellVariable):
         rnd = self.parallelRandom()
         
         if parallel.Nproc > 1:
-            from mpi4py import MPI
-            comm = MPI.COMM_WORLD
-            rnd = comm.bcast(rnd, root=0)
+            rnd = parallel.bcast(rnd, root=0)
             
             return rnd[self.getMesh()._getGlobalOverlappingCellIDs()]
         else:

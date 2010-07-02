@@ -49,22 +49,16 @@ from models import *
 # fipy needs to export raw_input whether or not parallel
 raw_input = raw_input
 
-try:
-    from PyTrilinos import Epetra
-    
-    if Epetra.PyComm().NumProc() > 1:
-        raw_input_original = raw_input
-        def mpi_raw_input(prompt=""):
-            import sys
-            Epetra.PyComm().Barrier()
+if parallel.Nproc > 1:
+    raw_input_original = raw_input
+    def mpi_raw_input(prompt=""):
+        import sys
+        parallel.comm.Barrier()
+        sys.stdout.flush()
+        if parallel.procID == 0:
+            sys.stdout.write(prompt)
             sys.stdout.flush()
-            if Epetra.PyComm().MyPID() == 0:
-                sys.stdout.write(prompt)
-                sys.stdout.flush()
-                return sys.stdin.readline()
-            else:
-                return ""
-        raw_input = mpi_raw_input
-
-except ImportError:
-    pass
+            return sys.stdin.readline()
+        else:
+            return ""
+    raw_input = mpi_raw_input

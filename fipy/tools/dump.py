@@ -105,9 +105,7 @@ def read(filename, fileobject = None, parallelModule=parallel):
         data = None
         
     if parallelModule.Nproc > 1:
-        from mpi4py import MPI
-        comm = MPI.COMM_WORLD
-        data = comm.bcast(data, root=0)
+        data = parallelModule.bcast(data, root=0)
 
     return cPickle.loads(data)
 

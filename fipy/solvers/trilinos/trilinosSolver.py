@@ -62,7 +62,7 @@ class TrilinosSolver(Solver):
     def _buildGlobalMatrix(self):
         
         mesh = self.var.getMesh()
-        comm = Epetra.PyComm()
+        comm = mesh.parallelModule.epetra_comm
         
         globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
         globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
