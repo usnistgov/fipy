@@ -325,7 +325,8 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
         Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
         
             >>> from fipy import Grid1D
-            >>> mesh = Grid1D(nx=3)
+            >>> from fipy.tools import serial
+            >>> mesh = Grid1D(nx=3, parallelModule=serial)
             >>> print _PysparseIdentityMeshMatrix(mesh=mesh)
              1.000000      ---        ---    
                 ---     1.000000      ---    
