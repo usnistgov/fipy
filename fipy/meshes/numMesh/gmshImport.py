@@ -512,10 +512,6 @@ class Gmsh2D(mesh2D.Mesh2D):
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
 
-
-    def _isOrthogonal(self):
-        return True
-
     def _getGlobalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
