@@ -48,9 +48,15 @@ import tempfile
 class MshFile:
     """
     Class responsible for parsing a Gmsh file and then readying
-    its contents for use by a `Mesh` constructor.
+    its contents for use by a `Mesh` constructor. 
+    
+    Can handle a partitioned mesh based on `parallel.Nproc`. If partitioning,
+    the msh file must either be previously partitioned with the number of
+    partitions matching `Nproc`, or the mesh must be specified with a geo file
+    or multiline string.
 
-    Does not support gmsh versions < 2.
+    Does not support gmsh versions < 2. If partitioning, gmsh
+    version must be >= 2.5.
     """
     def __init__(self, filename, dimensions, coordDimensions=None):
         """
@@ -64,6 +70,7 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
+        self.minVersion      = 2.0 if parallel.Nproc < 2 else 2.5
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
         gmshFlags            = self._prepareGmshFlags()
@@ -83,42 +90,6 @@ class MshFile:
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
 
-    def buildMeshData(self):
-        """
-        Returns vertexCoords, facesToVertexIDs, cellsToFaceIDs.
-
-        Removed from __init__ to decouple order of mesh building. We'll
-        override this when we subclass `MshFile` in `PartedMshFile`, and
-        we'll build up the mesh in a different order so we can keep as
-        little around in memory as possible.
-
-        This may be harder to follow than the original equivalent, but I 
-        think the gained modularity will pay off.
-        """
-        vertexCoords, vertexMap = self._vertexCoordsAndMap()
-
-        cellsToVertGmshIDs, \
-        shapeTypes, \
-        numCells = self._parseElementFile()
-
-        # translate Gmsh IDs to vertexCoord indices
-        cellsToVertIDs = self._translateVertIDToIdx(cellsToVertGmshIDs,
-                                                    vertexMap)
-        # strip out the extra padding in `shapeTypes`
-        shapeTypes = nx.delete(shapeTypes,  nx.s_[numCells:])
-         
-        facesToV, cellsToF = self._deriveCellsAndFaces(cellsToVertIDs,
-                                                       shapeTypes,
-                                                       numCells)
-        return vertexCoords, facesToV, cellsToF
- 
-    def _prepareGmshFlags(self):
-        """
-        Another separation from __init__ for the purposes of redefinition
-        in `PartedMshFile`.
-        """
-        return "-%d -v 0 -format msh" % self.dimensions
- 
     def _parseFilename(self, fname, gmshFlags):
         """
         If we're being passed a .msh file, leave it be. Otherwise,
@@ -154,9 +125,9 @@ class MshFile:
         f.seek(0)
         return [float(x) for x in metaData]
 
-    def _checkGmshVersion(self, minVersion=2):
+    def _checkGmshVersion(self):
         """
-        Enforces gmsh version to be >= 2.
+        Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
         """
         import subprocess as subp
         import re
@@ -164,11 +135,11 @@ class MshFile:
                             stderr=subp.PIPE, shell=True).stderr.readline()
         m = re.search(r'\d+.\d+', verStr)
 
-        if m and m.group(0) >= minVersion:
+        if m and m.group(0) >= self.minVersion:
             return
         else:
             errStr = "Gmsh version must be >= %f."
-            raise EnvironmentError(errStr % minVersion)
+            raise EnvironmentError(errStr % self.minVersion)
      
     def _isolateData(self, title, f):
         """
@@ -200,30 +171,6 @@ class MshFile:
                 break
             elif (("$%s" % title) not in line): continue
             else: break # found header
-
-    def _vertexCoordsAndMap(self):
-        """
-        Extract vertex coordinates and mapping information from
-        nx.genfromtxt-friendly file, generated in `_isolateData`.
-
-        Returns both the vertex coordinates and the mapping information.
-        Mapping information is stored in a 1xn array where n is the
-        largest vertexID obtained from the gmesh file. This mapping
-        array is later used to transform element information.
-        """
-        # dtype
-        gen = nx.genfromtxt(fname=self.nodesFile, skiprows=1)
-        self.nodesFile.close()
-
-        vertexCoords = gen[:, 1:] # strip out column 0
-        vertexIDs    = gen[:, :1].flatten().astype(int)
-        
-        # `vertexToIdx`: gmsh-vertex ID -> `vertexCoords` index
-        vertexToIdx = nx.empty(vertexIDs.max() + 1, dtype=int)
-        vertexToIdx[vertexIDs] = nx.arange(len(vertexIDs))
-
-        # transpose for FiPy, truncate for dimension
-        return vertexCoords.transpose()[:self.coordDimensions], vertexToIdx
 
     def _deriveCellsAndFaces(self, cellsToVertIDs, shapeTypes, numCells):
         """
@@ -267,37 +214,6 @@ class MshFile:
 
         return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces)
  
-    def _parseElementFile(self):
-        """
-        Returns `cellsToVertIDs`, which maps cells to Gmsh-given IDs;
-                `shapeTypes`, which maps each cell to a shapeType;
-                `numCells`, the number of cells to be processed.
-        """
-        
-        # shapeTypes:  cellsToVertIDs index -> shape type id
-        els            = self.elemsFile.readlines()
-        cellsToVertIDs = []
-        shapeTypes     = nx.empty(len(els), dtype=int)
-        numCells       = 0
-
-        # read in Elements data from gmsh
-        for element in els[1:]: # skip number-of-elems line
-            currLineInts = [int(x) for x in element.split()]
-            elemType     = currLineInts[1]
-            numTags      = currLineInts[2]
-
-            if elemType in self.numFacesForShape.keys():
-                # NB: 3 columns precede the tags
-                cellsToVertIDs.append(currLineInts[(3+numTags):])
-                shapeTypes[numCells] = elemType # record shape type
-                numCells += 1
-            else:
-                continue # shape not recognized
-
-        self.elemsFile.close() # tempfile trashed
-
-        return cellsToVertIDs, shapeTypes, numCells
-                                                     
     def _translateVertIDToIdx(self, cellsToVertIDs, vertexMap):
         """
         Translates cellToIds from Gmsh output IDs to `vertexCoords`
@@ -327,22 +243,6 @@ class MshFile:
                 aFace.append(int(cell[aVertex]))
             faces.append(aFace)
         return faces
-         
-class PartedMshFile(MshFile):
-    """
-    Gmsh version must be >= 2.5.
-
-    Punchline is in `buildMeshData`. 
-    """
-    def __init__(self, filename, dimensions, coordDimensions=None):
-        MshFile.__init__(self, filename, dimensions,
-                         coordDimensions=coordDimensions)
-
-    def _checkGmshVersion(self):
-        """
-        Enforces gmsh version to be >= 2.5.
-        """
-        MshFile._checkGmshVersion(self, minVersion=2.5)
 
     def buildMeshData(self):
         """
@@ -422,7 +322,7 @@ class PartedMshFile(MshFile):
 
     def _parseElementFile(self):
         """
-        Returns two dicts, the first for non-ghost cells and the second for
+        Return two dicts, the first for non-ghost cells and the second for
         ghost cells. Each dict contains 
             "cells": A cellToVertID Python array,
             "shapes": A shapeTypes Python array,
@@ -462,27 +362,28 @@ class PartedMshFile(MshFile):
         addGhostCell = lambda c,e: _addCell(ghostsData, c, e, IDOffset)
 
         self.elemsFile.readline() # skip number of elements
-        # the following iteration construct doesn't read self.elemsFile 
-        # into memory in its entirety; I checked with strace
         for el in self.elemsFile:
             currLineInts = [int(x) for x in el.split()]
             elemType     = currLineInts[1]
 
             if elemType in self.numFacesForShape.keys():
                 if IDOffset == -1: # if first valid shape
-                    IDOffset = currLineInts[0] # establish offset
+                    IDOffset = currLineInts[0]
 
                 numTags = currLineInts[2]
                 tags    = currLineInts[3:(3+numTags)]
-                tags.reverse() # any ghost cell IDs come first, then part ID
+                # if we're collecting ghost cells
+                if parallel.Nproc > 1: 
+                    tags.reverse() # any ghost cell IDs come first, then part ID
 
-                if tags[0] < 0: # if this is someone's ghost cell
-                    while tags[0] < 0: # while we have ghost IDs
-                        if (tags[0] * -1) == pid: 
-                            addGhostCell(currLineInts, elemType)
-                            break   
-                        tags.pop(0) # try the next ID
-                if tags[0] == pid: # el is in this processor's partition
+                    if tags[0] < 0: # if this is someone's ghost cell
+                        while tags[0] < 0: # while we have ghost IDs
+                            if (tags[0] * -1) == pid: 
+                                addGhostCell(currLineInts, elemType)
+                                break   
+                            tags.pop(0) # try the next ID
+                # el is in this processor's partition OR we collect all cells
+                if (parallel.Nproc == 1) or (tags[0] == pid):
                     addCell(currLineInts, elemType)
                 
         self.elemsFile.close() # tempfile trashed
@@ -491,20 +392,15 @@ class PartedMshFile(MshFile):
 
 class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2):
-        if parallel.Nproc == 1:
-            self.mshFile = MshFile(arg, dimensions=2, 
-                                   coordDimensions=coordDimensions)
-            self.verts, \
-            self.faces, \
-            self.cells = self.mshFile.buildMeshData()
-        elif parallel.Nproc > 1:
-            self.mshFile = PartedMshFile(arg, dimensions=2, 
-                                         coordDimensions=coordDimensions)
-            self.verts, \
-            self.faces, \
-            self.cells, \
-            self.cellGlobalIDs, \
-            self.gCellGlobalIDs = self.mshFile.buildMeshData()
+        self.mshFile = MshFile(arg, dimensions=2, 
+                               coordDimensions=coordDimensions)
+        self.verts, \
+        self.faces, \
+        self.cells, \
+        self.cellGlobalIDs, \
+        self.gCellGlobalIDs = self.mshFile.buildMeshData()
+
+        if parallel.Nproc > 1:
             self.globalNumberOfCells = parallel.sumAll(len(self.cells))
             self.globalNumberOfFaces = parallel.sumAll(len(self.faces))
 
@@ -716,9 +612,13 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 class Gmsh3D(mesh.Mesh):
     def __init__(self, arg):
         self.mshFile = MshFile(arg, dimensions=3)
+
         self.verts, \
         self.faces, \
-        self.cells = self.mshFile.buildMeshData()
+        self.cells, \
+        self.cellGlobalIDs, \
+        self.gCellGlobalIDs = self.mshFile.buildMeshData()
+         
         mesh.Mesh.__init__(self, vertexCoords=self.verts,
                                  faceVertexIDs=self.faces,
                                  cellFaceIDs=self.cells)
