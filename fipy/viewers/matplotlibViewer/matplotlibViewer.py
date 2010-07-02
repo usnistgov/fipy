@@ -46,8 +46,60 @@ class _MatplotlibViewer(_Viewer):
     The `_MatplotlibViewer` is the base class for the viewers that use the
     Matplotlib_ python plotting package.
 
-    .. _Matplotlib: http://matplotlib.sourceforge.net/
+    It is possible to view different `Variable`s against different Matplotlib_ `Axes
+    
+    >>> from matplotlib import pylab
+    >>> from fipy import *
+    >>> # from fipy import Variable, Grid1D, CellVariable, MatplotlibViewer, Grid2D, Tri2D, MultiViewer, sin, cos, pi
 
+    >>> fig = pylab.figure()
+
+    >>> ax1 = pylab.subplot((221))
+    >>> ax2 = pylab.subplot((223))
+    >>> ax3 = pylab.subplot((224))
+
+    >>> k = Variable(name="k", value=0.)
+
+    >>> mesh1 = Grid1D(nx=100)
+    >>> x, = mesh1.getCellCenters()
+    >>> xVar = CellVariable(mesh=mesh1, name="x", value=x)
+    >>> viewer1 = MatplotlibViewer(vars=(sin(0.1 * k * xVar), cos(0.1 * k * xVar / pi)), 
+    ...                            limits={'xmin': 10, 'xmax': 90}, 
+    ...                            datamin=-0.9, datamax=2.0,
+    ...                            title="Grid1D test",
+    ...                            axes=ax1,
+    ...                            legend=None)
+                                
+    >>> mesh2 = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
+    >>> x, y = mesh2.getCellCenters()
+    >>> xyVar = CellVariable(mesh=mesh2, name="x y", value=x * y)
+    >>> viewer2 = MatplotlibViewer(vars=sin(k * xyVar), 
+    ...                            limits={'ymin': 0.1, 'ymax': 0.9}, 
+    ...                            datamin=-0.9, datamax=2.0,
+    ...                            title="Grid2D test",
+    ...                            axes=ax2,
+    ...                            colorbar=None)
+
+    >>> mesh3 = (Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+    ...          + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
+    ...             + ((0.5,), (0.2,))))
+    >>> x, y = mesh3.getCellCenters()
+    >>> xyVar = CellVariable(mesh=mesh3, name="x y", value=x * y)
+    >>> viewer3 = MatplotlibViewer(vars=sin(k * xyVar), 
+    ...                            limits={'ymin': 0.1, 'ymax': 0.9}, 
+    ...                            datamin=-0.9, datamax=2.0,
+    ...                            title="Irregular 2D test",
+    ...                            axes=ax3,
+    ...                            cmap = pylab.cm.OrRd)
+
+    >>> viewer = MultiViewer(viewers=(viewer1, viewer2, viewer3))
+    >>> for kval in range(10):
+    ...     k.setValue(kval)
+    ...     viewer.plot()
+
+    >>> viewer._promptForOpinion()
+
+    .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
         
     def __init__(self, vars, title=None, figaspect=1.0, cmap=None, colorbar=None, axes=None, **kwlimits):
@@ -161,3 +213,8 @@ class _ColorBar:
         self._cb.norm = matplotlib.colors.normalize(vmin=vmin, vmax=vmax)
         self._cb.cmap = self.viewer.cmap
         self._cb.draw_all()
+        
+if __name__ == "__main__": 
+    import fipy.tests.doctestPlus
+    fipy.tests.doctestPlus.execButNoTest()
+
