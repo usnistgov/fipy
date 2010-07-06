@@ -60,13 +60,13 @@ class Mesh(_CommonMesh):
         This is built for a non-mixed element mesh.
     """
 
-    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, parallelModule=serial):
+    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial):
         """faceVertexIds and cellFacesIds must be padded with minus ones."""
 
         self.vertexCoords = vertexCoords
         self.faceVertexIDs = MA.masked_values(faceVertexIDs, -1)
         self.cellFaceIDs = MA.masked_values(cellFaceIDs, -1)
-        self.parallelModule = parallelModule
+        self.communicator = communicator
         
         _CommonMesh.__init__(self)
         

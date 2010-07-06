@@ -161,7 +161,7 @@ class TSVViewer(_Viewer):
         
         if filename is not None:
             import os
-            if mesh.parallelModule.procID == 0:
+            if mesh.communicator.procID == 0:
                 if os.path.splitext(filename)[1] == ".gz":
                     import gzip
                     f = gzip.GzipFile(filename = filename, mode = 'w', fileobj = None)

@@ -77,7 +77,7 @@ class NoiseVariable(CellVariable):
         
     def parallelRandom(self):
 
-        if self.getMesh().parallelModule.procID == 0:
+        if self.getMesh().communicator.procID == 0:
             return self.random()
         else:
             return None

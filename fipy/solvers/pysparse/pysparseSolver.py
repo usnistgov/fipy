@@ -55,7 +55,7 @@ class PysparseSolver(Solver):
 
     def _solve(self):
 
-        if self.var.getMesh().parallelModule.Nproc > 1:
+        if self.var.getMesh().communicator.Nproc > 1:
             raise Exception("PySparse solvers cannot be used with multiple processors")
         
         array = self.var.getNumericValue()

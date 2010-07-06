@@ -596,7 +596,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         """
         self.mesh = mesh
         
-        comm = mesh.parallelModule.epetra_comm
+        comm = mesh.communicator.epetra_comm
         globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
         globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
         nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
@@ -698,7 +698,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     nonoverlapping_result = Epetra.Vector(self.nonOverlappingMap)
                     self._getMatrix().Multiply(False, other, nonoverlapping_result)
                 
-                    comm = self.mesh.parallelModule.epetra_comm
+                    comm = self.mesh.communicator.epetra_comm
                     overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
 
                     overlapping_result = Epetra.Vector(overlappingMap)

@@ -95,7 +95,7 @@ class GapFillMesh(Mesh2D):
         
         ## Build the fine region mesh.
         from fipy.tools import serial
-        self.fineMesh = Grid2D(nx = nx, ny = ny, dx = cellSize, dy = cellSize, parallelModule=serial)
+        self.fineMesh = Grid2D(nx = nx, ny = ny, dx = cellSize, dy = cellSize, communicator=serial)
 
         ## Build the transition mesh and displace.
         transitionMesh = self.buildTransitionMesh(nx, transitionRegionHeight, cellSize) + ((0,), (self.actualFineRegionHeight,))
@@ -107,7 +107,7 @@ class GapFillMesh(Mesh2D):
                                    dy = actualDomainWidth,
                                    nx = 1,
                                    ny = numberOfBoundaryLayerCells,
-                                   parallelModule=serial) + ((0,), (self.actualFineRegionHeight + transitionRegionHeight,),)
+                                   communicator=serial) + ((0,), (self.actualFineRegionHeight + transitionRegionHeight,),)
 
         ## Add the meshes together.
         mesh = self.fineMesh._concatenate(transitionMesh, self.epsilon)

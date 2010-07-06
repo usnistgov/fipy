@@ -149,7 +149,7 @@ class GaussianNoiseVariable(NoiseVariable):
         else:
             variance = self.variance
 
-        if self.getMesh().parallelModule.procID == 0:
+        if self.getMesh().communicator.procID == 0:
             return random.normal(self.mean, sqrt(variance),
                                  size = [self.getMesh().globalNumberOfCells])
         else:

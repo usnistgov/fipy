@@ -158,14 +158,14 @@ class _MeshVariable(Variable):
 
     def _getGlobalValue(self, localIDs, globalIDs):
         localValue = self.getValue()
-        if self.getMesh().parallelModule.Nproc > 1:
+        if self.getMesh().communicator.Nproc > 1:
             if localValue.shape[-1] != 0:
                 localValue = localValue[..., localIDs]
-            globalIDs = numerix.concatenate(self.getMesh().parallelModule.allgather(globalIDs))
+            globalIDs = numerix.concatenate(self.getMesh().communicator.allgather(globalIDs))
             
             globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,), 
                                         dtype=numerix.obj2sctype(localValue))
-            globalValue[..., globalIDs] = numerix.concatenate(self.getMesh().parallelModule.allgather(localValue), axis=-1)
+            globalValue[..., globalIDs] = numerix.concatenate(self.getMesh().communicator.allgather(localValue), axis=-1)
             
             return globalValue
         else:
@@ -325,10 +325,10 @@ class _MeshVariable(Variable):
         return fnParallel(nodeVal)
 
     def max(self, axis=None):
-        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def maxParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
-                                             fn=a.max, fnParallel=self.getMesh().parallelModule.epetra_comm.MaxAll)
+                                             fn=a.max, fnParallel=self.getMesh().communicator.epetra_comm.MaxAll)
                 
             return self._axisOperator(opname="maxVar", 
                                       op=maxParallel, 
@@ -337,10 +337,10 @@ class _MeshVariable(Variable):
             return Variable.max(self, axis=axis)
                                   
     def min(self, axis=None):
-        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def minParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
-                                             fn=a.min, fnParallel=self.getMesh().parallelModule.epetra_comm.MinAll)
+                                             fn=a.min, fnParallel=self.getMesh().communicator.epetra_comm.MinAll)
                 
             return self._axisOperator(opname="minVar", 
                                       op=minParallel, 
@@ -349,10 +349,10 @@ class _MeshVariable(Variable):
             return Variable.min(self, axis=axis)
 
     def all(self, axis=None):
-        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def allParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
-                return self.getMesh().parallelModule.all(a, axis=axis)
+                return self.getMesh().communicator.all(a, axis=axis)
                 
             return self._axisOperator(opname="allVar", 
                                       op=allParallel, 
@@ -361,10 +361,10 @@ class _MeshVariable(Variable):
             return Variable.all(self, axis=axis)
 
     def any(self, axis=None):
-        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def anyParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
-                return self.getMesh().parallelModule.any(a, axis=axis)
+                return self.getMesh().communicator.any(a, axis=axis)
                 
             return self._axisOperator(opname="anyVar", 
                                       op=anyParallel, 
@@ -373,10 +373,10 @@ class _MeshVariable(Variable):
             return Variable.any(self, axis=axis)
 
     def sum(self, axis=None):
-        if self.getMesh().parallelModule.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def sumParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
-                return self.getMesh().parallelModule.sum(a, axis=axis)
+                return self.getMesh().communicator.sum(a, axis=axis)
                 
             return self._axisOperator(opname="sumVar", 
                                       op=sumParallel, 
@@ -385,9 +385,9 @@ class _MeshVariable(Variable):
             return Variable.sum(self, axis=axis)
 
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
-         if self.getMesh().parallelModule.Nproc > 1:
+         if self.getMesh().communicator.Nproc > 1:
              def allcloseParallel(a, b):
-                 return self.getMesh().parallelModule.allclose(a, b, rtol=rtol, atol=atol)
+                 return self.getMesh().communicator.allclose(a, b, rtol=rtol, atol=atol)
 
              operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
              return self._BinaryOperatorVariable(allcloseParallel,
@@ -399,9 +399,9 @@ class _MeshVariable(Variable):
              return Variable.allclose(self, other, rtol=rtol, atol=atol)
 
     def allequal(self, other):
-         if self.getMesh().parallelModule.Nproc > 1:
+         if self.getMesh().communicator.Nproc > 1:
              def allequalParallel(a, b):
-                 return self.getMesh().parallelModule.allequal(a, b)
+                 return self.getMesh().communicator.allequal(a, b)
 
              operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
              return self._BinaryOperatorVariable(allequalParallel,

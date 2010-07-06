@@ -34,7 +34,7 @@
 
 from fipy.tools import parallel
 
-def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, parallelModule=parallel):
+def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
     from numMesh import uniformGrid3D
     from numMesh import grid3D
 
@@ -50,7 +50,7 @@ def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2
             nz = 1
         return uniformGrid3D.UniformGrid3D(dx = dx, dy = dy, dz = dz,
                                            nx = nx or 1, ny = ny or 1, nz = nz or 1,
-                                           overlap=overlap, parallelModule=parallelModule)
+                                           overlap=overlap, communicator=communicator)
     else:
         return grid3D.Grid3D(dx = dx, dy = dy, dz = dz, nx = nx, ny = ny, nz = nz,
-                             overlap=overlap, parallelModule=parallelModule)
+                             overlap=overlap, communicator=communicator)

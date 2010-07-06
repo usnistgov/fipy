@@ -326,7 +326,7 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
         
             >>> from fipy import Grid1D
             >>> from fipy.tools import serial
-            >>> mesh = Grid1D(nx=3, parallelModule=serial)
+            >>> mesh = Grid1D(nx=3, communicator=serial)
             >>> print _PysparseIdentityMeshMatrix(mesh=mesh)
              1.000000      ---        ---    
                 ---     1.000000      ---    
