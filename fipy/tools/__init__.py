@@ -49,6 +49,13 @@ try:
         def sum(self, a, axis=None):
             return self.epetra_comm.SumAll(a.sum(axis=axis))
             
+        def __getstate__(self):
+            return {'dummy': 0}
+            
+        def __setstate__(self, dict):
+            self.__init__(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_WORLD)
+            
+            
     class SerialCommWrapper(CommWrapper):
         @property
         def procID(self):
@@ -57,6 +64,10 @@ try:
         @property
         def Nproc(self):
             return 1
+            
+        def __setstate__(self, dict):
+            self.__init__(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_SELF)
+
 
     parallel = CommWrapper(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_WORLD)
     serial = SerialCommWrapper(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_SELF)
