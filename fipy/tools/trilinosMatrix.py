@@ -333,6 +333,11 @@ class _TrilinosMatrixBase(_SparseMatrix):
 #         if(self.comm.MyPID() > 0):
 #             return
 
+        if id1.dtype.name == 'int64':
+            id1 = id1.astype('int32')
+        if id2.dtype.name == 'int64':
+            id2 = id1.astype('int32')
+
         if self._getMatrix().Filled():
             if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
                 import warnings
@@ -421,7 +426,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
         result = Epetra.Vector(self.nonOverlappingMap)
         self._getMatrix().ExtractDiagonalCopy(result)
-        return _trilinosToNumpyVector(result)
+        
+        return result
     
     def addAt(self, vector, id1, id2):
         """
@@ -612,6 +618,18 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                                  overlappingMap=overlappingMap)
                                  
     def _globalNonOverlapping(self, vector, id1, id2):
+        """Transforms and subsets local overlapping values and coordinates to global non-overlapping
+        
+        :Parameters:
+          - `vector`: The overlapping values to insert.
+          - `id1`: The local overlapping row indices.
+          - `id2`: The local overlapping colun indices.
+          
+        :Returns: 
+          Tuple of (non-overlapping vector, 
+                    global non-overlapping row indices, 
+                    global non-overlapping column indices)
+        """
         globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
         globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
         
@@ -633,6 +651,22 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
         _TrilinosMatrix.addAt(self, vector=vector, id1=id1, id2=id2)
         
+    def takeDiagonal(self):
+        nonoverlapping_result = _TrilinosMatrix.takeDiagonal(self)
+        
+        comm = self.mesh.communicator.epetra_comm
+        
+        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+        overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
+
+        overlapping_result = Epetra.Vector(overlappingMap)
+        overlapping_result.Import(nonoverlapping_result, 
+                                  Epetra.Import(overlappingMap, 
+                                                self.nonOverlappingMap), 
+                                  Epetra.Insert)
+
+        return overlapping_result
+
     def __mul__(self, other):
         """
         Multiply a sparse matrix by another sparse matrix.
