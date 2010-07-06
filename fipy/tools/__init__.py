@@ -25,6 +25,9 @@ try:
         def Nproc(self):
             return self.epetra_comm.NumProc()
             
+        def Barrier(self):
+            self.epetra_comm.Barrier()
+            
         def all(self, a, axis=None):
             return self.mpi4py_comm.allreduce(a.all(axis=axis), op=MPI.LAND)
 
@@ -45,10 +48,18 @@ try:
             
         def sum(self, a, axis=None):
             return self.epetra_comm.SumAll(a.sum(axis=axis))
-
+            
+    class SerialCommWrapper(CommWrapper):
+        @property
+        def procID(self):
+            return 0
+            
+        @property
+        def Nproc(self):
+            return 1
 
     parallel = CommWrapper(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_WORLD)
-    serial = CommWrapper(epetra_comm=Epetra.SerialComm(), mpi4py_comm=MPI.COMM_SELF)
+    serial = SerialCommWrapper(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_SELF)
 
 except ImportError:
     class DummyComm(object):
@@ -88,8 +99,6 @@ except ImportError:
             
         def sum(self, a, axis=None):
             return a.sum(axis=axis)
-
-
             
     parallel = DummyComm()
     serial = DummyComm()

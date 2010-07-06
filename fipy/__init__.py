@@ -53,7 +53,7 @@ if parallel.Nproc > 1:
     raw_input_original = raw_input
     def mpi_raw_input(prompt=""):
         import sys
-        parallel.comm.Barrier()
+        parallel.Barrier()
         sys.stdout.flush()
         if parallel.procID == 0:
             sys.stdout.write(prompt)
