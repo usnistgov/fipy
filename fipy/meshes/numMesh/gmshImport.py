@@ -58,7 +58,10 @@ class MshFile:
     Does not support gmsh versions < 2. If partitioning, gmsh
     version must be >= 2.5.
     """
-    def __init__(self, filename, dimensions, coordDimensions=None):
+    def __init__(self, filename, 
+                       dimensions, 
+                       coordDimensions=None,
+                       parallel=parallel):
         """
         Isolates relevant data into two files, stores in 
         `self.nodesFile` for $Nodes,
@@ -391,9 +394,11 @@ class MshFile:
         return cellsData, ghostsData
 
 class Gmsh2D(mesh2D.Mesh2D):
-    def __init__(self, arg, coordDimensions=2):
-        self.mshFile = MshFile(arg, dimensions=2, 
-                               coordDimensions=coordDimensions)
+    def __init__(self, arg, coordDimensions=2, parallelModule=parallel):
+        self.mshFile = MshFile(arg, 
+                               dimensions=2, 
+                               coordDimensions=coordDimensions,
+                               parallel=parallelModule)
         self.verts, \
         self.faces, \
         self.cells, \
