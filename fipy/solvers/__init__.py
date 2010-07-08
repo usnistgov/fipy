@@ -30,6 +30,10 @@ elif solver is None:
     # If no argument or environment variable, try importing them and seeing
     # what works
     try: 
+        from fipy.tools import parallel
+        if parallel.Nproc > 1:
+            raise Exception("PySparse solvers cannot be used with multiple processors")
+
         from fipy.solvers.pysparse import *
         solver = "pysparse"
     except:
