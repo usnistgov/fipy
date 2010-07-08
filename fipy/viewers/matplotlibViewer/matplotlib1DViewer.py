@@ -48,7 +48,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
     
     __doc__ += _MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
     
-    def __init__(self, vars, title=None, xlog=False, ylog=False, limits={}, **kwlimits):
+    def __init__(self, vars, title=None, xlog=False, ylog=False, limits={}, legend='upper left', axes=None, **kwlimits):
         """
         
         :Parameters:
@@ -66,29 +66,34 @@ class Matplotlib1DViewer(_MatplotlibViewer):
             displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
             (*ymin* and *ymax* are synonyms for *datamin* and *datamax*).
+          legend
+            place a legend at the specified position, if not `None`
+          axes
+            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
     
         import pylab
         
         if xlog and ylog:
-            self.lines = [pylab.loglog(*datum) for datum in self._getData()]
+            self.lines = [self.axes.loglog(*datum) for datum in self._getData()]
         elif xlog:
-            self.lines = [pylab.semilogx(*datum) for datum in self._getData()]
+            self.lines = [self.axes.semilogx(*datum) for datum in self._getData()]
         elif ylog:
-            self.lines = [pylab.semilogy(*datum) for datum in self._getData()]
+            self.lines = [self.axes.semilogy(*datum) for datum in self._getData()]
         else:
-            self.lines = [pylab.plot(*datum) for datum in self._getData()]
+            self.lines = [self.axes.plot(*datum) for datum in self._getData()]
 
-        pylab.legend([var.getName() for var in self.vars])
+        if legend is not None:
+            self.axes.legend([var.getName() for var in self.vars], loc=legend)
 
-        pylab.xlim(xmin = self._getLimit('xmin'),
-                   xmax = self._getLimit('xmax'))
+        self.axes.set_xlim(xmin=self._getLimit('xmin'),
+                           xmax=self._getLimit('xmax'))
 
         ymin = self._getLimit(('datamin', 'ymin'))
         ymax = self._getLimit(('datamax', 'ymax'))
-        pylab.ylim(ymin=ymin, ymax=ymax)
+        self.axes.set_ylim(ymin=ymin, ymax=ymax)
 
         if ymax is None or ymin is None:
             import warnings
@@ -112,8 +117,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
                                      datamin=self._getLimit(('datamin', 'ymin')), 
                                      datamax=self._getLimit(('datamax', 'ymax')))
 
-        import pylab                       
-        pylab.ylim(ymin=ymin, ymax=ymax)
+        self.axes.set_ylim(ymin=ymin, ymax=ymax)
 
         for line, datum in zip(self.lines, self._getData()):
             line[0].set_xdata(datum[0])

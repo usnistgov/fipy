@@ -61,8 +61,9 @@ class CylindricalGrid1D(Grid1D):
         >>> mesh = CylindricalGrid1D(nx=2, dx=(1., 2.)) + ((1.,),)
         >>> print mesh.getCellCenters()
         [[ 1.5  3. ]]
-        >>> print mesh.getCellVolumes()
-        [ 1.5  6. ]
+        >>> from fipy.tools import parallel
+        >>> print parallel.procID > 0  or numerix.allclose(mesh.getCellVolumes(), (1.5, 6))
+        True
         
     """
     def __init__(self, dx=1., nx=None, origin=(0,), overlap=2):

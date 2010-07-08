@@ -37,7 +37,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import _MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer, _ColorBar
 
 class Matplotlib2DViewer(_MatplotlibViewer):
     """
@@ -50,7 +50,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
     
     __doc__ += _MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
-    def __init__(self, vars, title=None, limits={}, cmap=None, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar=True, axes=None, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
         
 
@@ -62,17 +62,20 @@ class Matplotlib2DViewer(_MatplotlibViewer):
           limits : dict
             a (deprecated) alternative to limit keyword arguments
           cmap
-            the colormap. Defaults to `pylab.cm.jet`
+            the colormap. Defaults to `matplotlib.cm.jet`
           xmin, xmax, ymin, ymax, datamin, datamax
             displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
-
+          colorbar
+            plot a colorbar in specified orientation if not `None`
+          axes
+            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, figaspect=1. / 1.3, **kwlimits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, figaspect=1. / 1.3, 
+                                   cmap=cmap, colorbar=colorbar, axes=axes, 
+                                   **kwlimits)
 
-        self.colorbar = None
-        
         self.mesh = self.vars[0].getMesh()
         
         vertexIDs = self.mesh._getOrderedCellVertexIDs()
@@ -91,21 +94,16 @@ class Matplotlib2DViewer(_MatplotlibViewer):
                 y = y.compressed()
             polys.append(zip(x,y))
 
-        import pylab
         import matplotlib
-
-        fig = pylab.figure(self.id)
-
-        ax = fig.get_axes()[0]
 
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
         self.collection.set_linewidth(0.5)
         try:
-            ax.add_patch(self.collection)
+            self.axes.add_patch(self.collection)
         except:
             # PolyCollection not child of PatchCollection in matplotlib 0.98
-            ax.add_collection(self.collection)
+            self.axes.add_collection(self.collection)
 
         if self._getLimit('xmin') is None:
             xmin = xCoords.min()
@@ -127,29 +125,9 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         else:
             ymax = self._getLimit('ymax')
 
-        pylab.axis((xmin, xmax, ymin, ymax))
+        self.axes.set_xlim(xmin=xmin, xmax=xmax)
+        self.axes.set_ylim(ymin=ymin, ymax=ymax)
 
-        cbax, kw = matplotlib.colorbar.make_axes(ax, orientation='vertical')
-        
-        # Set the colormap and norm to correspond to the data for which
-        # the colorbar will be used.
-        if cmap is None:
-            self.cmap = matplotlib.cm.jet
-        else:
-            self.cmap = cmap
-            
-        norm = matplotlib.colors.normalize(vmin=-1, vmax=1)
-        
-        # ColorbarBase derives from ScalarMappable and puts a colorbar
-        # in a specified axes, so it has everything needed for a
-        # standalone colorbar.  There are many more kwargs, but the
-        # following gives a basic continuous colorbar with ticks
-        # and labels.
-        self.cb = matplotlib.colorbar.ColorbarBase(cbax, cmap=self.cmap,
-                                                   norm=norm,
-                                                   orientation='vertical')
-        self.cb.set_label(self.vars[0].name)
-        
         self._plot()
         
     def _getSuitableVars(self, vars):
@@ -190,9 +168,8 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         self.collection.set_facecolors(rgba)
         self.collection.set_edgecolors(rgba)
 
-        self.cb.norm = matplotlib.colors.normalize(vmin=zmin, vmax=zmax)
-        self.cb.cmap = self.cmap
-        self.cb.draw_all()
+        if self.colorbar is not None:
+            self.colorbar.plot(vmin=zmin, vmax=zmax)
         
 ##        pylab.xlim(xmin=self._getLimit('xmin'),
 ##                   xmax=self._getLimit('xmax'))
