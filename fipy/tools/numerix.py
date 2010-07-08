@@ -1572,6 +1572,76 @@ def _broadcastShape(shape1, shape2):
     shape1, shape2, broadcastshape = _broadcastShapes(shape1, shape2)
     return broadcastshape
     
+if not has_attr(NUMERIX, "in1d"):
+    # this handy function was introduced at some point (but it's not in 1.4.1)
+    # we define if necessary
+    
+    def in1d(ar1, ar2, assume_unique=False):
+        """
+        Test whether each element of a 1D array is also present in a second array.
+
+        Returns a boolean array the same length as `ar1` that is True
+        where an element of `ar1` is in `ar2` and False otherwise.
+
+        Parameters
+        ----------
+        ar1 : array_like, shape (M,)
+            Input array.
+        ar2 : array_like
+            The values against which to test each value of `ar1`.
+        assume_unique : bool, optional
+            If True, the input arrays are both assumed to be unique, which
+            can speed up the calculation.  Default is False.
+
+        Returns
+        -------
+        mask : ndarray of bools, shape(M,)
+            The values `ar1[mask]` are in `ar2`.
+
+        See Also
+        --------
+        numpy.lib.arraysetops : Module with a number of other functions for
+                                performing set operations on arrays.
+
+        Notes
+        -----
+        `in1d` can be considered as an element-wise function version of the
+        python keyword `in`, for 1D sequences. ``in1d(a, b)`` is roughly
+        equivalent to ``np.array([item in b for item in a])``.
+
+        .. versionadded:: NOT 1.4.0 !!!!
+
+        Examples
+        --------
+        >>> test = np.array([0, 1, 2, 5, 0])
+        >>> states = [0, 2]
+        >>> mask = np.in1d(test, states)
+        >>> mask
+        array([ True, False,  True, False,  True], dtype=bool)
+        >>> test[mask]
+        array([0, 2, 0])
+
+        """
+        if not assume_unique:
+            ar1, rev_idx = np.unique(ar1, return_inverse=True)
+            ar2 = np.unique(ar2)
+
+        ar = np.concatenate( (ar1, ar2) )
+        # We need this to be a stable sort, so always use 'mergesort'
+        # here. The values from the first array should always come before
+        # the values from the second array.
+        order = ar.argsort(kind='mergesort')
+        sar = ar[order]
+        equal_adj = (sar[1:] == sar[:-1])
+        flag = np.concatenate( (equal_adj, [False] ) )
+        indx = order.argsort(kind='mergesort')[:len( ar1 )]
+
+        if assume_unique:
+            return flag[indx]
+        else:
+            return flag[indx][rev_idx]
+
+    
 def _test(): 
     import doctest
     return doctest.testmod()
