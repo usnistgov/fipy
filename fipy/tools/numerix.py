@@ -1572,7 +1572,7 @@ def _broadcastShape(shape1, shape2):
     shape1, shape2, broadcastshape = _broadcastShapes(shape1, shape2)
     return broadcastshape
     
-if not has_attr(NUMERIX, "in1d"):
+if not hasattr(NUMERIX, "in1d"):
     # this handy function was introduced at some point (but it's not in 1.4.1)
     # we define if necessary
     
