@@ -55,6 +55,8 @@ try:
         def __setstate__(self, dict):
             self.__init__(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_WORLD)
             
+        def Norm2(self, vec):
+            return vec.Norm2()
             
     class SerialCommWrapper(CommWrapper):
         @property
@@ -67,6 +69,11 @@ try:
             
         def __setstate__(self, dict):
             self.__init__(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_SELF)
+
+        def Norm2(self, vec):
+            from fipy.tools import numerix
+            
+            return numerix.L2norm(vec)
 
 
     parallel = CommWrapper(epetra_comm=Epetra.PyComm(), mpi4py_comm=MPI.COMM_WORLD)
@@ -110,6 +117,12 @@ except ImportError:
             
         def sum(self, a, axis=None):
             return a.sum(axis=axis)
+            
+        def Norm2(self, vec):
+            from fipy.tools import numerix
+            
+            return numerix.L2norm(vec)
+
             
     parallel = DummyComm()
     serial = DummyComm()

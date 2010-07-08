@@ -125,7 +125,8 @@ class TrilinosSolver(Solver):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            return self._calcResidualVector().Norm2()
+            comm = self.var.getMesh().communicator
+            return comm.Norm2(self._calcResidualVector())
         
     def _calcRHSNorm(self):
         return self.nonOverlappingRHSvector.Norm2()
