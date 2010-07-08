@@ -1613,9 +1613,9 @@ if not hasattr(NUMERIX, "in1d"):
 
         Examples
         --------
-        >>> test = np.array([0, 1, 2, 5, 0])
+        >>> test = NUMERIX.array([0, 1, 2, 5, 0])
         >>> states = [0, 2]
-        >>> mask = np.in1d(test, states)
+        >>> mask = in1d(test, states)
         >>> mask
         array([ True, False,  True, False,  True], dtype=bool)
         >>> test[mask]
@@ -1623,17 +1623,22 @@ if not hasattr(NUMERIX, "in1d"):
 
         """
         if not assume_unique:
-            ar1, rev_idx = np.unique(ar1, return_inverse=True)
-            ar2 = np.unique(ar2)
 
-        ar = np.concatenate( (ar1, ar2) )
+            try:
+                ar1, rev_idx = NUMERIX.unique(ar1, return_inverse=True)
+            except TypeError:
+                ar1, rev_idx = NUMERIX.unique1d(ar1, return_inverse=True)
+
+            ar2 = NUMERIX.unique(ar2)
+
+        ar = NUMERIX.concatenate( (ar1, ar2) )
         # We need this to be a stable sort, so always use 'mergesort'
         # here. The values from the first array should always come before
         # the values from the second array.
         order = ar.argsort(kind='mergesort')
         sar = ar[order]
         equal_adj = (sar[1:] == sar[:-1])
-        flag = np.concatenate( (equal_adj, [False] ) )
+        flag = NUMERIX.concatenate( (equal_adj, [False] ) )
         indx = order.argsort(kind='mergesort')[:len( ar1 )]
 
         if assume_unique:
