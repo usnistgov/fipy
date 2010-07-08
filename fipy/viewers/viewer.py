@@ -161,11 +161,33 @@ class _Viewer:
     _saved_stdout = sys.stdout
 
     @staticmethod
-    def _doctest_raw_input(prompt):
+    def _serial_doctest_raw_input(prompt):
+        """Replacement for `raw_input()` that works in doctests
+        """
         _Viewer._saved_stdout.write("\n")
         _Viewer._saved_stdout.write(prompt)
         _Viewer._saved_stdout.flush()
         return sys.stdin.readline()
+
+    @staticmethod
+    def _doctest_raw_input(prompt):
+        """Replacement for `raw_input()` that works in doctests
+        
+        This routine attempts to be savvy about running in parallel.
+        """
+        try:
+            from PyTrilinos import Epetra
+            Epetra.PyComm().Barrier()
+            _Viewer._saved_stdout.flush()
+            if Epetra.PyComm().MyPID() == 0:
+                txt = _Viewer._serial_doctest_raw_input(prompt)
+            else:
+                txt = ""
+            Epetra.PyComm().Barrier()
+        except ImportError:
+            txt = _Viewer._serial_doctest_raw_input(prompt)
+        return txt
+
 
     def _promptForOpinion(self, prompt="Describe any problems with this figure or hit Return: "):
         # This method is usually invoked from a test, which can have a weird
