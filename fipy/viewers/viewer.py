@@ -36,6 +36,8 @@
 
 __docformat__ = 'restructuredtext'
 
+import sys
+
 class _Viewer:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -156,19 +158,48 @@ class _Viewer:
     def _validFileExtensions(self):
         return []
     
+    _saved_stdout = sys.stdout
+
+    @staticmethod
+    def _serial_doctest_raw_input(prompt):
+        """Replacement for `raw_input()` that works in doctests
+        """
+        _Viewer._saved_stdout.write("\n")
+        _Viewer._saved_stdout.write(prompt)
+        _Viewer._saved_stdout.flush()
+        return sys.stdin.readline()
+
+    @staticmethod
+    def _doctest_raw_input(prompt):
+        """Replacement for `raw_input()` that works in doctests
+        
+        This routine attempts to be savvy about running in parallel.
+        """
+        try:
+            from PyTrilinos import Epetra
+            Epetra.PyComm().Barrier()
+            _Viewer._saved_stdout.flush()
+            if Epetra.PyComm().MyPID() == 0:
+                txt = _Viewer._serial_doctest_raw_input(prompt)
+            else:
+                txt = ""
+            Epetra.PyComm().Barrier()
+        except ImportError:
+            txt = _Viewer._serial_doctest_raw_input(prompt)
+        return txt
+
+
     def _promptForOpinion(self, prompt="Describe any problems with this figure or hit Return: "):
         # This method is usually invoked from a test, which can have a weird
-        # state; In particular, it may have a special `raw_input` to allow user
+        # state; In particular, it may have a special `raw_input` to prevent user
         # interaction during the test.
-        import inspect
-        raw_input = inspect.currentframe().f_back.f_globals.get('raw_input', __builtins__['raw_input'])
         
-        opinion = raw_input(self.__class__.__name__ + ": " + prompt).strip()
+        opinion = self._doctest_raw_input(self.__class__.__name__ + ": " + prompt).strip()
         if len(opinion) > 0:
             extensions = ", ".join(self._validFileExtensions())
             if len(extensions) > 0:
                 extensions = " (%s)" % extensions
-            snapshot = raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions).strip()
+            snapshot = self._doctest_raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions).strip()
             self.plot(snapshot)
             print opinion
               

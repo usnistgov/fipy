@@ -38,7 +38,8 @@ from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportDocTestSuite(interactiveDocTestModuleNames=(
+    return _LateImportDocTestSuite(docTestModuleNames=(
+        'matplotlibViewer',
         'matplotlib1DViewer',
         'matplotlib2DViewer',
         'matplotlib2DGridViewer',

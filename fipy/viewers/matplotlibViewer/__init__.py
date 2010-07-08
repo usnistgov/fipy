@@ -8,7 +8,7 @@ from matplotlibVectorViewer import MatplotlibVectorViewer
 
 __all__ = ["MatplotlibViewer", "Matplotlib1DViewer", "Matplotlib2DGridViewer", "Matplotlib2DGridContourViewer", "Matplotlib2DViewer", "MatplotlibVectorViewer"]
 
-def MatplotlibViewer(vars, title=None, limits={}, **kwlimits):
+def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar=None, axes=None, **kwlimits):
     """Generic function for creating a `MatplotlibViewer`. 
     
     The `MatplotlibViewer` factory will search the module tree and return an
@@ -27,7 +27,12 @@ def MatplotlibViewer(vars, title=None, limits={}, **kwlimits):
         `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
         viewers will use `datamin` and `datamax`. Any limit set to a
         (default) value of `None` will autoscale.
-
+      cmap
+        the colormap. Defaults to `matplotlib.cm.jet`
+      colorbar
+        plot a colorbar in specified orientation if not `None`
+      axes
+        if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
     """
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
@@ -37,18 +42,18 @@ def MatplotlibViewer(vars, title=None, limits={}, **kwlimits):
     from fipy.viewers import MeshDimensionError
     
     try:
-        return Matplotlib1DViewer(vars=vars, title=title, **kwlimits)
+        return Matplotlib1DViewer(vars=vars, title=title, axes=axes, **kwlimits)
     except MeshDimensionError:
         try:
             from matplotlib2DGridViewer import Matplotlib2DGridViewer
-            return Matplotlib2DGridViewer(vars=vars, title=title, **kwlimits)
+            return Matplotlib2DGridViewer(vars=vars, title=title, cmap=cmap, colorbar=colorbar, axes=axes, **kwlimits)
         except MeshDimensionError:
             try:
                 from matplotlib2DViewer import Matplotlib2DViewer
-                return Matplotlib2DViewer(vars=vars, title=title, **kwlimits)
+                return Matplotlib2DViewer(vars=vars, title=title, cmap=cmap, colorbar=colorbar, axes=axes, **kwlimits)
             except MeshDimensionError:
                 from matplotlibVectorViewer import MatplotlibVectorViewer
-                return MatplotlibVectorViewer(vars=vars, title=title, **kwlimits)
+                return MatplotlibVectorViewer(vars=vars, title=title, axes=axes, **kwlimits)
 
 def make(*args, **kwargs):
     """
