@@ -81,7 +81,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
                                       cmap=self.cmap)
                    
         if title is None:                          
-            self.axes.title(self.vars[0].getName())
+            self.axes.set_title(self.vars[0].getName())
 
     def _getLimit(self, key):
         limit = _MatplotlibViewer._getLimit(self, key)
