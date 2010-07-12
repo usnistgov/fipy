@@ -39,8 +39,8 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames=(
-        'vtkCellViewer',
-        'vtkFaceViewer'
+        #'vtkCellViewer',
+        #'vtkFaceViewer'
     ), base = __name__)
     
 if __name__ == '__main__':
