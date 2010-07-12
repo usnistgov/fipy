@@ -73,7 +73,8 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.minVersion      = 2.0 if parallel.Nproc < 2 else 2.5
+        self.parallel        = parallel
+        self.minVersion      = 2.0 if self.parallel.Nproc < 2 else 2.5
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
         gmshFlags            = self._prepareGmshFlags()
@@ -86,8 +87,11 @@ class MshFile:
         else: # 3D
             self.numFacesForShape = {4: 4} # tet:        4 sides
 
+        print "Opening msh file..."
         f = open(self.filename, "r") # open the msh file
+        print "Opened msh file..."
 
+        print "getting metadata"
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
         self._checkGmshVersion()
         self.nodesFile = self._isolateData("Nodes", f)
@@ -134,6 +138,11 @@ class MshFile:
         """
         import subprocess as subp
         import re
+
+        if self.parallel.Nproc > 1:
+            from PyTrilinos import Epetra
+            Epetra.PyComm().Barrier() # blocking m-m-m-magic
+
         verStr = subp.Popen("gmsh --version", 
                             stderr=subp.PIPE, shell=True).stderr.readline()
         m = re.search(r'\d+.\d+', verStr)
@@ -260,15 +269,20 @@ class MshFile:
                 cellGlobalIDMap, ghostCellGlobalIDMap.
         """
      
+        print "parsing elements"
         cellDataDict, ghostDataDict = self._parseElementFile()
         
+        print "done parsing els"
         cellsToGmshVerts = cellDataDict['cells']  + ghostDataDict['cells']
         numCellsTotal    = cellDataDict['num']    + ghostDataDict['num']
         allShapeTypes    = cellDataDict['shapes'] + ghostDataDict['shapes']
         allShapeTypes    = nx.array(allShapeTypes)
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
+        print "done with cellDataDict manipulations"
 
+        print "recovering vertex coords..."
         vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
+        print "recovered vertex coords"
 
         # translate Gmsh IDs to `vertexCoord` indices
         cellsToVertIDs = self._translateVertIDToIdx(cellsToGmshVerts,
@@ -295,16 +309,19 @@ class MshFile:
         vertGIDtoIdx = nx.ones(maxVertIdx) * -1 # gmsh ID -> vertexCoords idx
         vertexCoords = nx.empty((len(allVerts), self.coordDimensions))
         nodeCount    = 0
+        print "    through beginning"
 
         # establish map. This works because allVerts is a sorted set.
         vertGIDtoIdx[allVerts] = nx.arange(len(allVerts))
+        print "    established map"
 
         self.nodesFile.readline() # skip number of nodes
 
         # now we walk through node file with a sorted unique list of vertices
         # in hand. When we encounter 0th element in `allVerts`, save it 
         # to `vertexCoords` then pop its ID off `allVerts`.
-        for node in self.nodesFile:
+        node = self.nodesFile.readline()
+        while node != "":
             line   = node.split()
             nodeID = int(line[0])
 
@@ -315,13 +332,15 @@ class MshFile:
                 allVerts = allVerts[1:]
 
             if len(allVerts) == 0: break
+            node = self.nodesFile.readline()
 
+        print "    %s DONE DONE DONE." % os.getenv("SHOST")
         # transpose for FiPy
         return vertexCoords.transpose(), vertGIDtoIdx
 
     def _prepareGmshFlags(self):
         return "-%d -v 0 -part %d -format msh" % (self.dimensions,
-                                                  parallel.Nproc)
+                                                  self.parallel.Nproc)
 
     def _parseElementFile(self):
         """
@@ -359,7 +378,7 @@ class MshFile:
 
         IDOffset        = -1 # this will be subtractd from gmsh ID to obtain
                              # global ID
-        pid             = parallel.procID + 1
+        pid             = self.parallel.procID + 1
 
         addCell      = lambda c,e: _addCell(cellsData, c, e, IDOffset)
         addGhostCell = lambda c,e: _addCell(ghostsData, c, e, IDOffset)
@@ -376,7 +395,7 @@ class MshFile:
                 numTags = currLineInts[2]
                 tags    = currLineInts[3:(3+numTags)]
                 # if we're collecting ghost cells
-                if parallel.Nproc > 1: 
+                if self.parallel.Nproc > 1: 
                     tags.reverse() # any ghost cell IDs come first, then part ID
 
                     if tags[0] < 0: # if this is someone's ghost cell
@@ -386,7 +405,7 @@ class MshFile:
                                 break   
                             tags.pop(0) # try the next ID
                 # el is in this processor's partition OR we collect all cells
-                if (parallel.Nproc == 1) or (tags[0] == pid):
+                if (self.parallel.Nproc == 1) or (tags[0] == pid):
                     addCell(currLineInts, elemType)
                 
         self.elemsFile.close() # tempfile trashed
@@ -395,23 +414,37 @@ class MshFile:
 
 class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2, parallelModule=parallel):
-        self.mshFile = MshFile(arg, 
-                               dimensions=2, 
-                               coordDimensions=coordDimensions,
-                               parallel=parallelModule)
+        from PyTrilinos import Epetra
+        self.parallel = parallelModule
+        self.mshFile  = MshFile(arg, 
+                                dimensions=2, 
+                                coordDimensions=coordDimensions,
+                                parallel=parallelModule)
         self.verts, \
         self.faces, \
         self.cells, \
         self.cellGlobalIDs, \
         self.gCellGlobalIDs = self.mshFile.buildMeshData()
+        # print "Max cell ID: %d" % max(self.cellGlobalIDs)
+        # print "cellGlobalIDs len: %d" % len(self.cellGlobalIDs)
 
-        if parallel.Nproc > 1:
-            self.globalNumberOfCells = parallel.sumAll(len(self.cells))
-            self.globalNumberOfFaces = parallel.sumAll(len(self.faces))
+        for i in self.cellGlobalIDs:
+            if i in self.gCellGlobalIDs:
+                print "OVERLAP between cells and ghosts!"
+
+        if self.parallel.Nproc > 1:
+            hostname = os.environ["SHOST"]
+            # print "PID %s on %s is waiting on others." % (self.parallel.procID, hostname)
+            self.globalNumberOfCells = self.sumAll(len(self.cellGlobalIDs))
+            print "I'm solving with %d cells total." % self.globalNumberOfCells
+            print
 
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
+    def sumAll(self, pyObj):
+        from PyTrilinos import Epetra
+        return Epetra.PyComm().SumAll(pyObj)
 
     def _getGlobalNonOverlappingCellIDs(self):
         """
@@ -429,7 +462,7 @@ class Gmsh2D(mesh2D.Mesh2D):
         
         .. note:: Trivial except for parallel meshes
         """ 
-        if parallel.Nproc == 1:
+        if self.parallel.Nproc == 1:
             return mesh2D.Mesh2D._getGlobalNonOverlappingCellIDs(self)
         else:
             return nx.array(self.cellGlobalIDs)
@@ -450,7 +483,7 @@ class Gmsh2D(mesh2D.Mesh2D):
         
         .. note:: Trivial except for parallel meshes
         """ 
-        if parallel.Nproc == 1:
+        if self.parallel.Nproc == 1:
             return mesh2D.Mesh2D._getGlobalOverlappingCellIDs(self)
         else:
             return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
@@ -471,7 +504,7 @@ class Gmsh2D(mesh2D.Mesh2D):
         
         .. note:: Trivial except for parallel meshes
         """
-        if parallel.Nproc == 1:
+        if self.parallel.Nproc == 1:
             return mesh2D.Mesh2D._getLocalNonOverlappingCellIDs(self)
         else:
             return nx.arange(len(self.cellGlobalIDs))
@@ -492,12 +525,12 @@ class Gmsh2D(mesh2D.Mesh2D):
         
         .. note:: Trivial except for parallel meshes
         """
-        if parallel.Nproc == 1:
+        if self.parallel.Nproc == 1:
             return mesh2D.Mesh2D._getLocalOverlappingCellIDs(self)
         else:
             return nx.arange(len(self.cellGlobalIDs) 
                              + len(self.gCellGlobalIDs))
-
+    
     def _test(self):
         """
         First, we'll test GmshImporter2D on a small circle with triangular
@@ -615,8 +648,11 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         """
 
 class Gmsh3D(mesh.Mesh):
-    def __init__(self, arg):
-        self.mshFile = MshFile(arg, dimensions=3)
+    def __init__(self, arg, parallelModule=parallel):
+        self.parallel = parallelModule
+        self.mshFile  = MshFile(arg, 
+                                dimensions=3, 
+                                parallel=parallelModule)
 
         self.verts, \
         self.faces, \
@@ -628,6 +664,99 @@ class Gmsh3D(mesh.Mesh):
                                  faceVertexIDs=self.faces,
                                  cellFaceIDs=self.cells)
 
+        if self.parallel.Nproc > 1:
+            self.globalNumberOfCells = self.sumAll(len(self.cells))
+            self.globalNumberOfFaces = self.sumAll(len(self.faces))
+
+    def sumAll(self, pyObj):
+        from PyTrilinos import Epetra
+        return Epetra.PyComm().SumAll(pyObj)
+
+    def _getGlobalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        if self.parallel.Nproc == 1:
+            return NotImplementedError
+        else:
+            return nx.array(self.cellGlobalIDs)
+
+    def _getGlobalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        if self.parallel.Nproc == 1:
+            raise NotImplementedError
+        else:
+            return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        if self.parallel.Nproc == 1:
+            raise NotImplementedError
+        else:
+            return nx.arange(len(self.cellGlobalIDs))
+
+    def _getLocalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        if self.parallel.Nproc == 1:
+            raise NotImplementedError
+        else:
+            return nx.arange(len(self.cellGlobalIDs) 
+                             + len(self.gCellGlobalIDs))
+     
     def _test(self):
         """
         >>> prism = Gmsh3D('''
