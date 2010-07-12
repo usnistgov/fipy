@@ -87,11 +87,11 @@ class MshFile:
         else: # 3D
             self.numFacesForShape = {4: 4} # tet:        4 sides
 
-        print "Opening msh file..."
+        # print "Opening msh file..."
         f = open(self.filename, "r") # open the msh file
-        print "Opened msh file..."
+        # print "Opened msh file..."
 
-        print "getting metadata"
+        # print "getting metadata"
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
         self._checkGmshVersion()
         self.nodesFile = self._isolateData("Nodes", f)
@@ -269,20 +269,20 @@ class MshFile:
                 cellGlobalIDMap, ghostCellGlobalIDMap.
         """
      
-        print "parsing elements"
+        # print "parsing elements"
         cellDataDict, ghostDataDict = self._parseElementFile()
         
-        print "done parsing els"
+        # print "done parsing els"
         cellsToGmshVerts = cellDataDict['cells']  + ghostDataDict['cells']
         numCellsTotal    = cellDataDict['num']    + ghostDataDict['num']
         allShapeTypes    = cellDataDict['shapes'] + ghostDataDict['shapes']
         allShapeTypes    = nx.array(allShapeTypes)
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
-        print "done with cellDataDict manipulations"
+        # print "done with cellDataDict manipulations"
 
-        print "recovering vertex coords..."
+        # print "recovering vertex coords..."
         vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
-        print "recovered vertex coords"
+        # print "recovered vertex coords"
 
         # translate Gmsh IDs to `vertexCoord` indices
         cellsToVertIDs = self._translateVertIDToIdx(cellsToGmshVerts,
@@ -309,11 +309,11 @@ class MshFile:
         vertGIDtoIdx = nx.ones(maxVertIdx) * -1 # gmsh ID -> vertexCoords idx
         vertexCoords = nx.empty((len(allVerts), self.coordDimensions))
         nodeCount    = 0
-        print "    through beginning"
+        # print "    through beginning"
 
         # establish map. This works because allVerts is a sorted set.
         vertGIDtoIdx[allVerts] = nx.arange(len(allVerts))
-        print "    established map"
+        # print "    established map"
 
         self.nodesFile.readline() # skip number of nodes
 
@@ -334,7 +334,7 @@ class MshFile:
             if len(allVerts) == 0: break
             node = self.nodesFile.readline()
 
-        print "    %s DONE DONE DONE." % os.getenv("SHOST")
+        # print "    %s DONE DONE DONE." % os.getenv("SHOST")
         # transpose for FiPy
         return vertexCoords.transpose(), vertGIDtoIdx
 
@@ -428,16 +428,16 @@ class Gmsh2D(mesh2D.Mesh2D):
         # print "Max cell ID: %d" % max(self.cellGlobalIDs)
         # print "cellGlobalIDs len: %d" % len(self.cellGlobalIDs)
 
-        for i in self.cellGlobalIDs:
-            if i in self.gCellGlobalIDs:
-                print "OVERLAP between cells and ghosts!"
+        # for i in self.cellGlobalIDs:
+            # if i in self.gCellGlobalIDs:
+                # print "OVERLAP between cells and ghosts!"
 
         if self.parallel.Nproc > 1:
             hostname = os.environ["SHOST"]
             # print "PID %s on %s is waiting on others." % (self.parallel.procID, hostname)
             self.globalNumberOfCells = self.sumAll(len(self.cellGlobalIDs))
-            print "I'm solving with %d cells total." % self.globalNumberOfCells
-            print
+            # print "I'm solving with %d cells total." % self.globalNumberOfCells
+            # print
 
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
