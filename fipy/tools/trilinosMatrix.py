@@ -363,7 +363,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 self._getMatrix().InsertGlobalValues(id1, id2, vector)
             else:
                 self._getMatrix().InsertGlobalValues(id1, id2, numerix.zeros(len(vector)))
-                self._getMatrix().FillComplete()
+                if not self._getMatrix().Filled():
+                    self._getMatrix().FillComplete()
                 if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings
                     warnings.warn("ReplaceGlobalValues returned error code in put", 
@@ -485,7 +486,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Exports the matrix to a Matrix Market file of the given filename.
         """
-        self.matrix.FillComplete()
+        if not self.matrix.Filled():
+            self.matrix.FillComplete()
         EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     def getNumpyArray(self):

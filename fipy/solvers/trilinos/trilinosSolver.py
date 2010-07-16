@@ -78,7 +78,8 @@ class TrilinosSolver(Solver):
 
         self.globalMatrix = self.matrix.matrix
         
-        self.globalMatrix.FillComplete()
+        if not self.globalMatrix.Filled():
+            self.globalMatrix.FillComplete()
         self.globalMatrix.OptimizeStorage()
         
         self.overlappingMap =  Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
