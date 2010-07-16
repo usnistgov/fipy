@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 ## 
- # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "pysparseSolver.py"
+ #  FILE: "test.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -33,34 +32,15 @@
  # ###################################################################
  ##
 
-__docformat__ = 'restructuredtext'
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
+import fipy.tests.testProgram
 
-from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-from fipy.solvers.solver import Solver
+def _suite():
+    theSuite = _LateImportDocTestSuite(docTestModuleNames = (
+            'pysparseMatrix',
+        ), base = __name__)
 
-class PysparseSolver(Solver):
-    """
-    The base `pysparseSolver` class.
+    return theSuite
     
-    .. attention:: This class is abstract. Always create one of its subclasses.
-    """
-    def __init__(self, *args, **kwargs):
-        if self.__class__ is PysparseSolver:
-            raise NotImplementedError, "can't instantiate abstract base class"
-            
-        Solver.__init__(self, *args, **kwargs)
-
-    def _getMatrixClass(self):
-        return _PysparseMeshMatrix
-
-    def _solve(self):
-
-        if self.var.getMesh().communicator.Nproc > 1:
-            raise Exception("PySparse solvers cannot be used with multiple processors")
-        
-        array = self.var.getNumericValue()
-        self._solve_(self.matrix, array, self.RHSvector)
-        factor = self.var.getUnit().factor
-        if factor != 1:
-            array /= self.var.getUnit().factor
-        self.var[:] = array 
+if __name__ == '__main__':
+    fipy.tests.testProgram.main(defaultTest='_suite')

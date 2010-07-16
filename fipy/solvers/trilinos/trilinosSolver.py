@@ -39,7 +39,7 @@ from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
 from fipy.solvers.solver import Solver
-from fipy.tools.trilinosMatrix import _TrilinosMeshMatrix
+from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
 from fipy.tools import numerix
 
 class TrilinosSolver(Solver):

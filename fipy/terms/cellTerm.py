@@ -38,7 +38,7 @@ from fipy.terms.term import Term
 from fipy.tools import inline
 from fipy.tools import numerix
 
-from fipy.tools.sparseMatrix import _SparseMatrix
+from fipy.matrices.sparseMatrix import _SparseMatrix
 
 class CellTerm(Term):
     """

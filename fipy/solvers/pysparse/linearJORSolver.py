@@ -35,7 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
-from fipy.tools.pysparseMatrix import _PysparseMatrix
+from fipy.matrices.pysparseMatrix import _PysparseMatrix
 
 class LinearJORSolver(PysparseSolver):
     """

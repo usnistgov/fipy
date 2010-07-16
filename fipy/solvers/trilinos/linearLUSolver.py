@@ -38,8 +38,8 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-from fipy.tools.trilinosMatrix import _trilinosToNumpyVector
-from fipy.tools.trilinosMatrix import _numpyToTrilinosVector
+from fipy.matrices.trilinosMatrix import _trilinosToNumpyVector
+from fipy.matrices.trilinosMatrix import _numpyToTrilinosVector
 
 from fipy.tools import numerix
 

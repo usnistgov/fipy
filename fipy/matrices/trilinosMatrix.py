@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
-from fipy.tools.sparseMatrix import _SparseMatrix
+from fipy.matrices.sparseMatrix import _SparseMatrix
 from fipy.tools import numerix
 
 # Current inadequacies of the matrix class:

@@ -38,7 +38,7 @@ from pysparse import spmatrix
 from fipy.tools import numerix
 
 
-from fipy.tools.sparseMatrix import _SparseMatrix
+from fipy.matrices.sparseMatrix import _SparseMatrix
 
 class _PysparseMatrixBase(_SparseMatrix):
     

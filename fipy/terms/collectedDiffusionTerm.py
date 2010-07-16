@@ -64,7 +64,7 @@ class _CollectedDiffusionTerm(DiffusionTerm):
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
         from fipy.tools import numerix
-        from fipy.tools.sparseMatrix import _SparseMatrix
+        from fipy.matrices.sparseMatrix import _SparseMatrix
         
         N = len(var)
         RHSvector = numerix.zeros((N,),'d')
