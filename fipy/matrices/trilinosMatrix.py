@@ -514,6 +514,11 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
             return DistMatrix
 
+    def finalize(self):
+        if not self.matrix.Filled():
+            self.matrix.FillComplete()
+        self.matrix.OptimizeStorage()
+
 def _numpyToTrilinosVector(v, map):
     """
     Takes a numpy vector and return an equivalent Trilinos vector, distributed
@@ -608,9 +613,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
         globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
         nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
-#         overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
-        overlappingMap = None
-#         overlappingMap = nonOverlappingMap
+        overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
         
         _TrilinosMatrix.__init__(self, 
                                  size=mesh.getNumberOfCells(), 
@@ -618,6 +621,9 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                                  sizeHint=sizeHint, 
                                  nonOverlappingMap=nonOverlappingMap,
                                  overlappingMap=overlappingMap)
+                                 
+    def asTrilinosMeshMatrix(self):
+        return self
                                  
     def _globalNonOverlapping(self, vector, id1, id2):
         """Transforms and subsets local overlapping values and coordinates to global non-overlapping

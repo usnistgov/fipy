@@ -57,6 +57,7 @@ class _PysparseMatrixBase(_SparseMatrix):
           - `bandwidth`: The proposed band width of the matrix.
         """
         self.matrix = matrix
+        self.bandwidth = bandwidth
 
     def _getMatrix(self):
         return self.matrix
@@ -300,7 +301,30 @@ class _PysparseMeshMatrix(_PysparseMatrix):
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
         """
+        self.mesh = mesh
         _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint)
+        
+    def asTrilinosMeshMatrix(self):
+        from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
+        matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
+        
+        localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
+        localOverlappingCellIDs = mesh._getLocalOverlappingCellIDs()
+        localNonOverlappingCellIDsMask = numerix.zeros(len(localOverlappingCellIDs), 'bool')
+        localNonOverlappingCellIDsMask[localNonOverlappingCellIDs] = True
+        
+        A = self.matrix.copy()
+        A.delete_rows(localNonOverlappingCellIDsMask)
+        values, irow, jcol = A.find()
+        
+        globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
+        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+        
+        matrix.addAt(values, 
+                     numerix.asanyarray(globalNonOverlappingCellIDs[irow], dtype='int32'), 
+                     numerix.asanyarray(globalOverlappingCellIDs[jcol], dtype='int32'))
+        
+        return matrix
 
 class _PysparseIdentityMatrix(_PysparseMatrix):
     """

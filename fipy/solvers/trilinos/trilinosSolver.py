@@ -59,53 +59,43 @@ class TrilinosSolver(Solver):
         self.matrix = matrix
         self.RHSvector = RHSvector
         
-    def _buildGlobalMatrix(self):
+    def _buildGlobalMatrixAndVectors(self):
+        self.globalMatrix = self.matrix.asTrilinosMeshMatrix()
+        self.globalMatrix.finalize()
         
         mesh = self.var.getMesh()
-        comm = mesh.communicator.epetra_comm
-        
-        globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
-        globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
         localNonOverlappingCellIDs = mesh._getLocalNonOverlappingCellIDs()
-        localOverlappingCellIDs = mesh._getLocalOverlappingCellIDs()
-        
-        self.nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
-        self.nonOverlappingVector = Epetra.Vector(self.nonOverlappingMap, 
+
+        self.nonOverlappingVector = Epetra.Vector(self.globalMatrix.nonOverlappingMap, 
                                                   self.var[localNonOverlappingCellIDs])
-        
-        self.nonOverlappingRHSvector = Epetra.Vector(self.nonOverlappingMap, 
+
+        self.nonOverlappingRHSvector = Epetra.Vector(self.globalMatrix.nonOverlappingMap, 
                                                      self.RHSvector[localNonOverlappingCellIDs])
 
-        self.globalMatrix = self.matrix.matrix
+        self.overlappingVector = Epetra.Vector(self.globalMatrix.overlappingMap, self.var)
         
-        if not self.globalMatrix.Filled():
-            self.globalMatrix.FillComplete()
-        self.globalMatrix.OptimizeStorage()
-        
-        self.overlappingMap =  Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
-        self.overlappingVector = Epetra.Vector(self.overlappingMap, self.var)
-
-
     def _solve(self):
-
         if not hasattr(self, 'globalMatrix'):
-            self._buildGlobalMatrix()
-        
-        self._solve_(self.globalMatrix, 
+            self._buildGlobalMatrixAndVectors()
+
+        self._solve_(self.globalMatrix.matrix, 
                      self.nonOverlappingVector, 
                      self.nonOverlappingRHSvector)
 
         self.overlappingVector.Import(self.nonOverlappingVector, 
-                                      Epetra.Import(self.overlappingMap, 
-                                                    self.nonOverlappingMap), 
+                                      Epetra.Import(self.globalMatrix.overlappingMap, 
+                                                    self.globalMatrix.nonOverlappingMap), 
                                       Epetra.Insert)
         
         self.var.setValue(self.overlappingVector)
 
         del self.globalMatrix
+        del self.nonOverlappingVector
+        del self.nonOverlappingRHSvector
+        del self.overlappingVector
+        del self.var
         del self.matrix
         del self.RHSvector
-        del self.var
             
     def _getMatrixClass(self):
         return _TrilinosMeshMatrix
@@ -115,12 +105,9 @@ class TrilinosSolver(Solver):
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
             if not hasattr(self, 'globalMatrix'):
-                self._buildGlobalMatrix()
-            residual = Epetra.Vector(self.nonOverlappingMap)                
-            self.globalMatrix.Multiply(False, self.nonOverlappingVector, residual)
-            residual -= self.nonOverlappingRHSvector
-          
-            return residual
+                self._buildGlobalMatrixAndVectors()
+                
+            return self.globalMatrix * self.nonOverlappingVector - self.nonOverlappingRHSvector
 
     def _calcResidual(self, residualFn=None):
         if residualFn is not None:
