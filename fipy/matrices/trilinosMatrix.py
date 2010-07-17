@@ -631,7 +631,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         :Parameters:
           - `vector`: The overlapping values to insert.
           - `id1`: The local overlapping row indices.
-          - `id2`: The local overlapping colun indices.
+          - `id2`: The local overlapping column indices.
           
         :Returns: 
           Tuple of (non-overlapping vector, 
@@ -751,7 +751,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
 
                     return overlapping_result
                 else:
-                    raise TypeError
+                    raise TypeError("%s: %s != (%d,)" % (self.__class__, str(shape), N))
 
         
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
