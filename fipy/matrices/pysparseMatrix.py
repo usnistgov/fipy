@@ -309,21 +309,16 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
         
         localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
-        localOverlappingCellIDs = mesh._getLocalOverlappingCellIDs()
-        localNonOverlappingCellIDsMask = numerix.zeros(len(localOverlappingCellIDs), 'bool')
+        localOverlappingCellIDs = self.mesh._getLocalOverlappingCellIDs()
+        localNonOverlappingCellIDsMask = numerix.zeros(len(localOverlappingCellIDs), 'int')
         localNonOverlappingCellIDsMask[localNonOverlappingCellIDs] = True
         
         A = self.matrix.copy()
         A.delete_rows(localNonOverlappingCellIDsMask)
         values, irow, jcol = A.find()
         
-        globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
-        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
-        
-        matrix.addAt(values, 
-                     numerix.asanyarray(globalNonOverlappingCellIDs[irow], dtype='int32'), 
-                     numerix.asanyarray(globalOverlappingCellIDs[jcol], dtype='int32'))
-        
+        matrix.addAt(values, irow, jcol)
+
         return matrix
 
 class _PysparseIdentityMatrix(_PysparseMatrix):
