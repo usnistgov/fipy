@@ -39,6 +39,7 @@ from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
 from fipy.solvers.solver import Solver
+from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
 from fipy.tools import numerix
 
@@ -73,7 +74,7 @@ class TrilinosSolver(Solver):
                                                      self.RHSvector[localNonOverlappingCellIDs])
 
         self.overlappingVector = Epetra.Vector(self.globalMatrix.overlappingMap, self.var)
-        
+
     def _solve(self):
         if not hasattr(self, 'globalMatrix'):
             self._buildGlobalMatrixAndVectors()
@@ -98,7 +99,7 @@ class TrilinosSolver(Solver):
         del self.RHSvector
             
     def _getMatrixClass(self):
-        return _TrilinosMeshMatrix
+        return _PysparseMeshMatrix
 
     def _calcResidualVector(self, residualFn=None):
         if residualFn is not None:
@@ -107,8 +108,15 @@ class TrilinosSolver(Solver):
             if not hasattr(self, 'globalMatrix'):
                 self._buildGlobalMatrixAndVectors()
                 
-            return self.globalMatrix * self.nonOverlappingVector - self.nonOverlappingRHSvector
-
+            # If A is an Epetra.Vector with map M
+            # and B is an Epetra.Vector with map M
+            # and C = A - B
+            # then C is an Epetra.Vector with *no map* !!!?!?!
+            residual = self.globalMatrix * self.nonOverlappingVector
+            residual -= self.nonOverlappingRHSvector
+            
+            return residual
+            
     def _calcResidual(self, residualFn=None):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
