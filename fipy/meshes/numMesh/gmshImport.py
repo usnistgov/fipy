@@ -61,6 +61,8 @@ class MshFile:
 
     Does not support gmsh versions < 2. If partitioning, gmsh
     version must be >= 2.5.
+
+    TODO: Refactor face extraction functions.
     """
     def __init__(self, filename, 
                        dimensions, 
@@ -94,6 +96,11 @@ class MshFile:
         else: # 3D
             self.numFacesForShape = {4: 4, # tet:        4 sides
                                      5: 6} # hexahedron: 6 sides
+
+        self.faceLenForShape = {2: 2, # triangle:   2 verts per face
+                                3: 2, # quadrangle: 2 verts per face
+                                4: 3, # tet:        3 verts per face
+                                5: 4} # hexahedron: 4 verts per face
 
         # print "Opening msh file..."
         f = open(self.filename, "r") # open the msh file
@@ -204,7 +211,6 @@ class MshFile:
         maxFaces   = max([self.numFacesForShape[x] for x in allShapes])
 
         # `cellsToFaces` must be padded with -1; see mesh.py
-        faceLength   = self.dimensions
         currNumFaces = 0
         cellsToFaces = nx.ones((numCells, maxFaces)) * -1
         facesDict    = {}
@@ -213,9 +219,15 @@ class MshFile:
         # we now build `cellsToFaces` and `uniqueFaces`,
         # the latter will result in `facesToVertices`.
         for cellIdx in range(numCells):
+            shapeType    = shapeTypes[cellIdx]
+            faceLength   = self.faceLenForShape[shapeType]
             cell         = cellsToVertIDs[cellIdx]
-            facesPerCell = self.numFacesForShape[shapeTypes[cellIdx]]
-            faces        = self._extractFaces(faceLength, facesPerCell, cell)
+            facesPerCell = self.numFacesForShape[shapeType]
+
+            if shapeType == 5: # we need to special case for hexahedron
+                faces = self._extractHexahedronFaces(cell)
+            else:
+                faces = self._extractFaces(faceLength, facesPerCell, cell)
 
             for faceIdx in range(facesPerCell):
                 # NB: currFace is sorted for the key to spot duplicates
@@ -262,6 +274,30 @@ class MshFile:
                 aVertex = (i + j) % len(cell) # we may wrap
                 aFace.append(int(cell[aVertex]))
             faces.append(aFace)
+        return faces
+
+    def _extractHexahedronFaces(self, cell):
+        """
+        SPECIAL CASE: return faces for a hexahedron cell.
+        """
+        def orderingToFace(vertList):
+            aFace = []
+            for i in vertList:
+                aFace.append(int(cell[i]))
+            return aFace
+
+        # six orderings for six faces
+        faces = []
+        orderings = [[0, 1, 2, 3], # ordering of vertices gleaned from
+                     [4, 5, 6, 7], # a one-cube Grid3D example
+                     [0, 1, 5, 4],
+                     [3, 2, 6, 7],
+                     [0, 3, 7, 4],
+                     [1, 2, 6, 5]]
+
+        for o in orderings:
+            faces.append(orderingToFace(o))
+
         return faces
 
     def buildMeshData(self):
@@ -432,7 +468,6 @@ class Gmsh2D(mesh2D.Mesh2D):
         self.cellGlobalIDs, \
         self.gCellGlobalIDs = self.mshFile.buildMeshData()
 
-        print "procID: ", parallel.procID, len(self.cellGlobalIDs)
         # print "Max cell ID: %d" % max(self.cellGlobalIDs)
         # print "cellGlobalIDs len: %d" % len(self.cellGlobalIDs)
 
