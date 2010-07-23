@@ -282,7 +282,7 @@ class _PysparseMatrix(_PysparseMatrixBase):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size, bandwidth=0, sizeHint=None):
+    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None):
         """Creates a `_PysparseMatrix`.
 
         :Parameters:
@@ -290,11 +290,13 @@ class _PysparseMatrix(_PysparseMatrixBase):
           - `bandwidth`: The proposed band width of the matrix.
         """
         sizeHint = sizeHint or size * bandwidth
-        _PysparseMatrixBase.__init__(self, matrix=spmatrix.ll_mat(size, size, sizeHint), bandwidth=bandwidth)
+        if matrix is None:
+            matrix = spmatrix.ll_mat(size, size, sizeHint)
+        _PysparseMatrixBase.__init__(self, matrix=matrix, bandwidth=bandwidth)
 
 class _PysparseMeshMatrix(_PysparseMatrix):
     
-    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None):
         """Creates a `_PysparseMatrix` associated with a `Mesh`.
 
         :Parameters:
@@ -302,7 +304,14 @@ class _PysparseMeshMatrix(_PysparseMatrix):
           - `bandwidth`: The proposed band width of the matrix.
         """
         self.mesh = mesh
-        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint)
+        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
+        
+    def __mul__(self, other):
+        if isinstance(other, _PysparseMeshMatrix):
+            return _PysparseMeshMatrix(mesh=self.mesh, 
+                                       matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+        else:
+            return _PysparseMatrix.__mul__(self, other)
         
     def asTrilinosMeshMatrix(self):
         from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
