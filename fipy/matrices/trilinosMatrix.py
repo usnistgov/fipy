@@ -730,9 +730,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     other = Epetra.Vector(self.nonOverlappingMap, 
                                           other[localNonOverlappingCellIDs])
 
-                shape = numerix.shape(other)
-
-                if shape == (N,) or True:
+                if other.Map().SameAs(self.matrix.RowMap()):
 
                     nonoverlapping_result = Epetra.Vector(self.nonOverlappingMap)
                     
