@@ -202,109 +202,102 @@ class Mesh(_CommonMesh):
         ## check dimensions
         if(self.vertexCoords.shape[0] != other.vertexCoords.shape[0]):
             raise MeshAdditionError, "Dimensions do not match"
+            
         ## compute vertex correlates
-        vertexCorrelates = {}
-        for i in range(selfNumVertices):
-            for j in range(otherNumVertices):
-                diff = self.vertexCoords[...,i] - other.vertexCoords[...,j]
-                diff = numerix.array(diff)
-                if (sum(diff ** 2) < smallNumber):
-                    vertexCorrelates[j] = i
-        if (self._getNumberOfVertices() > 0 and other._getNumberOfVertices() > 0 and vertexCorrelates == {}):
-            raise MeshAdditionError, "Vertices are not aligned"
 
+        ## only try to match exterior (X) vertices
+        self_Xvertices = numerix.unique(self._getFaceVertexIDs().filled()[..., self.getExteriorFaces().getValue()].flatten())
+        other_Xvertices = numerix.unique(other._getFaceVertexIDs().filled()[..., other.getExteriorFaces().getValue()].flatten())
+
+        self_XvertexCoords = self.vertexCoords[..., self_Xvertices]
+        other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
         
-         
+        # lifted from Mesh._getNearestCellID()
+        other_vertexCoordMap = numerix.resize(other_XvertexCoords, 
+                                              (self_XvertexCoords.shape[-1], 
+                                               other_XvertexCoords.shape[0], 
+                                               other_XvertexCoords.shape[-1])).swapaxes(0,1)
+        tmp = self_XvertexCoords[..., numerix.newaxis] - other_vertexCoordMap
+        closest = numerix.argmin(numerix.dot(tmp, tmp), axis=0)
+        
+        # just because they're closest, doesn't mean they're close
+        tmp = self_XvertexCoords[..., closest] - other_XvertexCoords
+        distance = numerix.sqrtDot(tmp, tmp)
+        # only want vertex pairs that are 100x closer than the smallest 
+        # cell-to-cell distance
+        close = distance < 1e-2 * min(self._getCellToCellDistances().min(), 
+                                      other._getCellToCellDistances().min())
+        vertexCorrelates = numerix.array((self_Xvertices[closest[close]],
+                                          other_Xvertices[close]))
+        
+        # warn if meshes don't touch, but allow it
+        if (self._getNumberOfVertices() > 0 
+            and other._getNumberOfVertices() > 0 
+            and vertexCorrelates.shape[-1] == 0):
+            import warnings
+            warnings.warn("Vertices are not aligned", UserWarning, stacklevel=3)
+
         ## compute face correlates
-        faceCorrelates = {}
-        for i in range(otherNumFaces):
-##          Seems to be overwriting other.faceVertexIDs with new numpy
-##            currFace = other.faceVertexIDs[i]
-##            currFace = other.faceVertexIDs[...,i].copy()
-##          Changed this again as numpy 1.0.4 seems to have no copy method for
-##          masked arrays.
-            try:
-                currFace = other.faceVertexIDs[...,i].copy()
-            except:
-                currFace = MA.array(other.faceVertexIDs[...,i], mask=MA.getmask(other.faceVertexIDs[...,i]))
 
-            keepGoing = 1
-            currIndex = 0 
-            for item in currFace:
-                if(vertexCorrelates.has_key(item)):
-                    currFace[currIndex] = vertexCorrelates[item]
-                    currIndex = currIndex + 1
-                else:
-                    keepGoing = 0
-            if(keepGoing == 1):
-                for j in range(selfNumFaces):
-                    if (self._equalExceptOrder(currFace, self.faceVertexIDs[...,j])):
-                        faceCorrelates[i] = j
-        if (self._getNumberOfFaces() > 0 and other._getNumberOfFaces() > 0 and faceCorrelates == {}):
-            raise MeshAdditionError, "Faces are not aligned"
+        IDs = self.faceVertexIDs
+        # want Faces for which all faceVertexIDs are in vertexCorrelates
+        self_matchingFaces = numerix.in1d(IDs, 
+                                          vertexCorrelates[0]).reshape(IDs.shape).all(axis=0).nonzero()[0]
+        # sort each self's Face's vertexIDs for canonical comparison
+        self_faceVertexIDs = numerix.sort(IDs[..., self_matchingFaces], axis=0)
+        # sort self's Faces for comparison
+        self_sort = numerix.lexsort(self_faceVertexIDs[::-1])
+        self_faceVertexIDs = self_faceVertexIDs[..., self_sort]
+        self_matchingFaces = self_matchingFaces[..., self_sort]
         
-        faceIndicesToAdd = ()
-        for i in range(otherNumFaces):
-            if(not faceCorrelates.has_key(i)):
-                faceIndicesToAdd = faceIndicesToAdd + (i,)
-        vertexIndicesToAdd = ()
-        for i in range(otherNumVertices):
-            if(not vertexCorrelates.has_key(i)):
-                vertexIndicesToAdd = vertexIndicesToAdd + (i,)
+        IDs = other.faceVertexIDs
+        # want Faces for which all faceVertexIDs are in vertexCorrelates
+        other_matchingFaces = numerix.in1d(IDs, 
+                                           vertexCorrelates[1]).reshape(IDs.shape).all(axis=0).nonzero()[0]
+#         vertex_map = numerix.arange(otherNumVertices)
+#         vertex_map[vertexCorrelates[1]] = vertexCorrelates[0]
 
-        ##compute the full face and vertex correlation list
-        a = selfNumFaces
-        for i in faceIndicesToAdd:
-            faceCorrelates[i] = a
-            a = a + 1
-        b = selfNumVertices
-        for i in vertexIndicesToAdd:
-            vertexCorrelates[i] = b
-            b = b + 1
+        # map other's Vertex IDs to new Vertex IDs, 
+        # accounting for overlaps with self's Vertex IDs
+        vertex_map = numerix.empty(otherNumVertices, dtype=int)
+        verticesToAdd = numerix.delete(numerix.arange(otherNumVertices), vertexCorrelates[1])
+        vertex_map[verticesToAdd] = numerix.arange(otherNumVertices - len(vertexCorrelates[1])) + selfNumVertices
+        vertex_map[vertexCorrelates[1]] = vertexCorrelates[0]
+        other_faceVertexIDs = vertex_map[IDs[..., other_matchingFaces]]
+        
+        # sort each of other's Face's vertexIDs for canonical comparison
+        other_faceVertexIDs = numerix.sort(other_faceVertexIDs, axis=0)
+        # sort other's Faces for comparison
+        other_sort = numerix.lexsort(other_faceVertexIDs[::-1])
+        other_faceVertexIDs = other_faceVertexIDs[..., other_sort]
+        other_matchingFaces = other_matchingFaces[..., other_sort]
 
-        ## compute what the cells are that we need to add
-        cellsToAdd = numerix.ones((self.cellFaceIDs.shape[0], other.cellFaceIDs.shape[-1]))
-        cellsToAdd = -1 * cellsToAdd
+        # each list should contain only the Faces that correspond,
+        # with other's vertexIDs mapped onto self's vertexIDs
+        # with Face vertexIDs sorted and Faces sorted the same way
+        # therefore: these arrays of faceVertexIDs should be identical
+        if (self_faceVertexIDs != other_faceVertexIDs).any():
+            raise MeshAdditionError, "Vertices are a aligned but Faces are not?!"
+            
+        faceCorrelates = numerix.array((self_matchingFaces,
+                                        other_matchingFaces))
 
-        for j in range(other.cellFaceIDs.shape[-1]):
-            for i in range(other.cellFaceIDs.shape[0]):
-                cellsToAdd[i, j] = faceCorrelates[other.cellFaceIDs[i, j]]
-
-        cellsToAdd = MA.masked_values(cellsToAdd, -1)
-
-
-        ## compute what the faces are that we need to add
-        facesToAdd = numerix.take(other.faceVertexIDs, faceIndicesToAdd, axis=1)
-
-        for j in range(facesToAdd.shape[-1]):
-            for i in range(facesToAdd.shape[0]):
-                facesToAdd[i, j] = vertexCorrelates[facesToAdd[i, j]]
-
-        ## compute what the vertices are that we need to add
-        verticesToAdd = numerix.take(other.vertexCoords, vertexIndicesToAdd, axis=1)
-
+        # map other's Face IDs to new Face IDs, 
+        # accounting for overlaps with self's Face IDs
+        face_map = numerix.empty(otherNumFaces, dtype=int)
+        facesToAdd = numerix.delete(numerix.arange(otherNumFaces), faceCorrelates[1])
+        face_map[facesToAdd] = numerix.arange(otherNumFaces - len(faceCorrelates[1])) + selfNumFaces
+        face_map[faceCorrelates[1]] = faceCorrelates[0]
+        
+        # concatenate everything and return
         return {
-            'vertexCoords': numerix.concatenate((self.vertexCoords, verticesToAdd), axis=1), 
-            'faceVertexIDs': numerix.concatenate((self.faceVertexIDs, facesToAdd), axis=1), 
-            'cellFaceIDs': MA.concatenate((self.cellFaceIDs, cellsToAdd), axis=1)
+            'vertexCoords': numerix.concatenate((self.vertexCoords, 
+                                                 other.vertexCoords[..., verticesToAdd]), axis=1), 
+            'faceVertexIDs': numerix.concatenate((self.faceVertexIDs, 
+                                                  vertex_map[other.faceVertexIDs[..., facesToAdd]]), axis=1), 
+            'cellFaceIDs': MA.concatenate((self.cellFaceIDs, 
+                                           face_map[other.cellFaceIDs]), axis=1)
             }
-
-    def _equalExceptOrder(self, first, second):
-        """Determines if two lists contain the same set of elements, although they may be in different orders. Does not work if one list contains duplicates of an element.
-        """
-        res = 0
- 
-        if (len(first) == len(second)):
-            res = 1
-        for i in first:
-            isthisin = 0
-            for j in second:
-                if (i == j):
-                    isthisin = 1
-            if(isthisin == 0):
-                res = 0
-        return res
-    
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
