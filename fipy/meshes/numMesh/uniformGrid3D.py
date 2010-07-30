@@ -157,9 +157,6 @@ class UniformGrid3D(Grid3D):
         del args['origin']
         return Grid3D(**args) + origin
 
-    def _concatenate(self, other, smallNumber):
-        return self._getConcatenableMesh()._concatenate(other = other, smallNumber = smallNumber)
-        
 ##     get topology methods
 
 ##         from common/mesh

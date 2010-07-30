@@ -71,7 +71,7 @@ class Mesh(_CommonMesh):
 
     def __add__(self, other):
         if(isinstance(other, Mesh)):
-            return self._concatenate(other, smallNumber = 1e-15)
+            return self._concatenate(other)
         else:
             return self._translate(other)
 
@@ -86,8 +86,13 @@ class Mesh(_CommonMesh):
 
     __rmul__ = __mul__
 
-    def _concatenate(self, other, smallNumber):
-        return Mesh(**self._getAddedMeshValues(other, smallNumber))
+    @property
+    def _concatenatedClass(self):
+        return Mesh
+        
+    def _concatenate(self, other, resolution=1e-2):
+        return self._concatenatedClass(**self._getAddedMeshValues(other=other, 
+                                                                  resolution=resolution))
 
     def _connectFaces(self, faces0, faces1):
         """
@@ -188,28 +193,36 @@ class Mesh(_CommonMesh):
     def _getConcatenableMesh(self):
         return self
         
-    def _getAddedMeshValues(self, other, smallNumber):
-        """
-        Returns a `dictionary` with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs.
-        """
+    def _getAddedMeshValues(self, other, resolution=1e-2):
+        """Calculate the parameters to define a concatenation of `other` with `self`
+        
+        :Parameters:
+          - `other`: The :class:`~fipy.meshes.numMesh.Mesh` to concatenate with `self`
+          - `resolution`: How close vertices have to be (relative to the smallest 
+            cell-to-cell distance in either mesh) to be considered the same
 
+        :Returns:
+          A `dict` with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs.
+        """
+        
+        selfc = self._getConcatenableMesh()
         other = other._getConcatenableMesh()
 
-        selfNumFaces = self.faceVertexIDs.shape[-1]
-        selfNumVertices = self.vertexCoords.shape[-1]
+        selfNumFaces = selfc.faceVertexIDs.shape[-1]
+        selfNumVertices = selfc.vertexCoords.shape[-1]
         otherNumFaces = other.faceVertexIDs.shape[-1]
         otherNumVertices = other.vertexCoords.shape[-1]
         ## check dimensions
-        if(self.vertexCoords.shape[0] != other.vertexCoords.shape[0]):
+        if(selfc.vertexCoords.shape[0] != other.vertexCoords.shape[0]):
             raise MeshAdditionError, "Dimensions do not match"
             
         ## compute vertex correlates
 
         ## only try to match exterior (X) vertices
-        self_Xvertices = numerix.unique(self._getFaceVertexIDs().filled()[..., self.getExteriorFaces().getValue()].flatten())
+        self_Xvertices = numerix.unique(selfc._getFaceVertexIDs().filled()[..., selfc.getExteriorFaces().getValue()].flatten())
         other_Xvertices = numerix.unique(other._getFaceVertexIDs().filled()[..., other.getExteriorFaces().getValue()].flatten())
 
-        self_XvertexCoords = self.vertexCoords[..., self_Xvertices]
+        self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
         other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
         
         # lifted from Mesh._getNearestCellID()
@@ -225,22 +238,22 @@ class Mesh(_CommonMesh):
         distance = numerix.sqrtDot(tmp, tmp)
         # only want vertex pairs that are 100x closer than the smallest 
         # cell-to-cell distance
-        close = distance < 1e-2 * min(self._getCellToCellDistances().min(), 
-                                      other._getCellToCellDistances().min())
+        close = distance < resolution * min(selfc._getCellToCellDistances().min(), 
+                                            other._getCellToCellDistances().min())
         vertexCorrelates = numerix.array((self_Xvertices[closest[close]],
                                           other_Xvertices[close]))
         
         # warn if meshes don't touch, but allow it
-        if (self._getNumberOfVertices() > 0 
+        if (selfc._getNumberOfVertices() > 0 
             and other._getNumberOfVertices() > 0 
             and vertexCorrelates.shape[-1] == 0):
             import warnings
-            warnings.warn("Vertices are not aligned", UserWarning, stacklevel=3)
+            warnings.warn("Vertices are not aligned", UserWarning, stacklevel=4)
 
         ## compute face correlates
 
         # ensure that both sets of faceVertexIDs have the same maximum number of (masked) elements
-        self_faceVertexIDs = self.faceVertexIDs
+        self_faceVertexIDs = selfc.faceVertexIDs
         other_faceVertexIDs = other.faceVertexIDs
 
         diff = self_faceVertexIDs.shape[0] - other_faceVertexIDs.shape[0]
@@ -309,11 +322,11 @@ class Mesh(_CommonMesh):
                                         other_matchingFaces))
 
         # warn if meshes don't touch, but allow it
-        if (self._getNumberOfFaces() > 0 
+        if (selfc._getNumberOfFaces() > 0 
             and other._getNumberOfFaces() > 0 
             and faceCorrelates.shape[-1] == 0):
             import warnings
-            warnings.warn("Faces are not aligned", UserWarning, stacklevel=3)
+            warnings.warn("Faces are not aligned", UserWarning, stacklevel=4)
 
         # map other's Face IDs to new Face IDs, 
         # accounting for overlaps with self's Face IDs
@@ -325,7 +338,7 @@ class Mesh(_CommonMesh):
         other_faceVertexIDs = vertex_map[other.faceVertexIDs[..., facesToAdd]]
         
         # ensure that both sets of cellFaceIDs have the same maximum number of (masked) elements
-        self_cellFaceIDs = self.cellFaceIDs
+        self_cellFaceIDs = selfc.cellFaceIDs
         other_cellFaceIDs = face_map[other.cellFaceIDs]
         diff = self_cellFaceIDs.shape[0] - other_cellFaceIDs.shape[0]
         if diff > 0:
@@ -343,7 +356,7 @@ class Mesh(_CommonMesh):
 
         # concatenate everything and return
         return {
-            'vertexCoords': numerix.concatenate((self.vertexCoords, 
+            'vertexCoords': numerix.concatenate((selfc.vertexCoords, 
                                                  other.vertexCoords[..., verticesToAdd]), axis=1), 
             'faceVertexIDs': numerix.concatenate((self_faceVertexIDs, 
                                                   other_faceVertexIDs), axis=1), 
@@ -968,6 +981,25 @@ class Mesh(_CommonMesh):
             >>> print numerix.allclose(bigMesh.getCellVolumes(), volumes)
             True
             
+            Following test was added due to a bug in adding UniformGrids.
+
+            >>> from fipy.meshes.numMesh.uniformGrid1D import UniformGrid1D
+            >>> a = UniformGrid1D(nx=10) + (10,)
+            >>> print a.getCellCenters()
+            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
+            >>> b = 10 + UniformGrid1D(nx=10)
+            >>> print b.getCellCenters()
+            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
+            
+            >>> from fipy.tools import parallel
+            >>> if parallel.Nproc == 1:
+            ...     c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
+            >>> print (parallel.Nproc > 1 
+            ...        or numerix.allclose(c.getCellCenters()[0],
+            ...                            [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
+            ...                            12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]))
+            True
+
         """
 
     def _getVTKCellType(self):
