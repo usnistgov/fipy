@@ -239,18 +239,32 @@ class Mesh(_CommonMesh):
 
         ## compute face correlates
 
-        # want self's Faces for which all faceVertexIDs are in vertexCorrelates
-        IDs = self.faceVertexIDs
-        self_matchingFaces = numerix.in1d(IDs, 
-                                          vertexCorrelates[0]).reshape(IDs.shape).all(axis=0).nonzero()[0]
-        if self_matchingFaces.shape[-1] == 0:
-            self_faceHash = numerix.empty(self_matchingFaces.shape[:-1] + (0,), dtype="str")
-        else:
-            # sort each of self's Face's vertexIDs for canonical comparison
-            self_faceHash = numerix.sort(IDs[..., self_matchingFaces], axis=0)
-            # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
-            self_faceHash = numerix.apply_along_axis(str, axis=0, arr=self_faceHash)
+        # ensure that both sets of faceVertexIDs have the same maximum number of (masked) elements
+        self_faceVertexIDs = self.faceVertexIDs
+        other_faceVertexIDs = other.faceVertexIDs
 
+        diff = self_faceVertexIDs.shape[0] - other_faceVertexIDs.shape[0]
+        if diff > 0:
+            other_faceVertexIDs = numerix.append(other_faceVertexIDs, 
+                                                 -1 * numerix.ones((diff,) 
+                                                                   + other_faceVertexIDs.shape[1:]),
+                                                 axis=0)
+            other_faceVertexIDs = MA.masked_values(other_faceVertexIDs, -1)
+        elif diff < 0:
+            self_faceVertexIDs = numerix.append(self_faceVertexIDs, 
+                                                -1 * numerix.ones((-diff,) 
+                                                                  + self_faceVertexIDs.shape[1:]),
+                                                axis=0)
+            self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
+
+        # want self's Faces for which all faceVertexIDs are in vertexCorrelates
+        self_matchingFaces = numerix.in1d(self_faceVertexIDs, 
+                                          vertexCorrelates[0]).reshape(self_faceVertexIDs.shape).all(axis=0).nonzero()[0]
+
+        # want other's Faces for which all faceVertexIDs are in vertexCorrelates
+        other_matchingFaces = numerix.in1d(other_faceVertexIDs, 
+                                           vertexCorrelates[1]).reshape(other_faceVertexIDs.shape).all(axis=0).nonzero()[0]
+                                           
         # map other's Vertex IDs to new Vertex IDs, 
         # accounting for overlaps with self's Vertex IDs
         vertex_map = numerix.empty(otherNumVertices, dtype=int)
@@ -258,17 +272,23 @@ class Mesh(_CommonMesh):
         vertex_map[verticesToAdd] = numerix.arange(otherNumVertices - len(vertexCorrelates[1])) + selfNumVertices
         vertex_map[vertexCorrelates[1]] = vertexCorrelates[0]
 
-        # want other's Faces for which all faceVertexIDs are in vertexCorrelates
-        IDs = other.faceVertexIDs
-        other_matchingFaces = numerix.in1d(IDs, 
-                                           vertexCorrelates[1]).reshape(IDs.shape).all(axis=0).nonzero()[0]
-        other_faceVertexIDs = vertex_map[IDs[..., other_matchingFaces]]
+        # calculate hashes of faceVertexIDs for comparing Faces
         
+        if self_matchingFaces.shape[-1] == 0:
+            self_faceHash = numerix.empty(self_matchingFaces.shape[:-1] + (0,), dtype="str")
+        else:
+            # sort each of self's Face's vertexIDs for canonical comparison
+            self_faceHash = numerix.sort(self_faceVertexIDs[..., self_matchingFaces], axis=0)
+            # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
+            self_faceHash = numerix.apply_along_axis(str, axis=0, arr=self_faceHash)
+
         if other_matchingFaces.shape[-1] == 0:
             other_faceHash = numerix.empty(other_matchingFaces.shape[:-1] + (0,), dtype="str")
         else:
+            # convert each of other's Face's vertexIDs to new IDs
+            other_faceHash = vertex_map[other_faceVertexIDs[..., other_matchingFaces]]
             # sort each of other's Face's vertexIDs for canonical comparison
-            other_faceHash = numerix.sort(vertex_map[IDs[..., other_matchingFaces]], axis=0)
+            other_faceHash = numerix.sort(other_faceHash, axis=0)
             # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
             other_faceHash = numerix.apply_along_axis(str, axis=0, arr=other_faceHash)
 
@@ -294,23 +314,8 @@ class Mesh(_CommonMesh):
         face_map[facesToAdd] = numerix.arange(otherNumFaces - len(faceCorrelates[1])) + selfNumFaces
         face_map[faceCorrelates[1]] = faceCorrelates[0]
         
-        # ensure that both sets of faceVertexIDs have the same maximum number of (masked) elements
-        self_faceVertexIDs = self.faceVertexIDs
         other_faceVertexIDs = vertex_map[other.faceVertexIDs[..., facesToAdd]]
-        diff = self_faceVertexIDs.shape[0] - other_faceVertexIDs.shape[0]
-        if diff > 0:
-            other_faceVertexIDs = numerix.append(other_faceVertexIDs, 
-                                                 -1 * numerix.ones((diff,) 
-                                                                   + other_faceVertexIDs.shape[1:]),
-                                                 axis=0)
-            other_faceVertexIDs = MA.masked_values(other_faceVertexIDs, -1)
-        elif diff < 0:
-            self_faceVertexIDs = numerix.append(self_faceVertexIDs, 
-                                                -1 * numerix.ones((-diff,) 
-                                                                  + self_faceVertexIDs.shape[1:]),
-                                                axis=0)
-            self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
-
+        
         # ensure that both sets of cellFaceIDs have the same maximum number of (masked) elements
         self_cellFaceIDs = self.cellFaceIDs
         other_cellFaceIDs = face_map[other.cellFaceIDs]
@@ -328,7 +333,6 @@ class Mesh(_CommonMesh):
                                               axis=0)
             self_cellFaceIDs = MA.masked_values(self_cellFaceIDs, -1)
 
-        
         # concatenate everything and return
         return {
             'vertexCoords': numerix.concatenate((self.vertexCoords, 
