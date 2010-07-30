@@ -281,6 +281,10 @@ class Mesh(_CommonMesh):
             self_faceHash = numerix.sort(self_faceVertexIDs[..., self_matchingFaces], axis=0)
             # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
             self_faceHash = numerix.apply_along_axis(str, axis=0, arr=self_faceHash)
+            
+        face_sort = numerix.argsort(self_faceHash)
+        self_faceHash = self_faceHash[face_sort]
+        self_matchingFaces = self_matchingFaces[face_sort]
 
         if other_matchingFaces.shape[-1] == 0:
             other_faceHash = numerix.empty(other_matchingFaces.shape[:-1] + (0,), dtype="str")
@@ -291,6 +295,10 @@ class Mesh(_CommonMesh):
             other_faceHash = numerix.sort(other_faceHash, axis=0)
             # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
             other_faceHash = numerix.apply_along_axis(str, axis=0, arr=other_faceHash)
+
+        face_sort = numerix.argsort(other_faceHash)
+        other_faceHash = other_faceHash[face_sort]
+        other_matchingFaces = other_matchingFaces[face_sort]
 
         self_matchingFaces = self_matchingFaces[numerix.in1d(self_faceHash, 
                                                              other_faceHash)]
