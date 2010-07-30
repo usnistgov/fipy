@@ -110,9 +110,7 @@ class GapFillMesh(Mesh2D):
                                    parallelModule=serial) + ((0,), (self.actualFineRegionHeight + transitionRegionHeight,),)
 
         ## Add the meshes together.
-        mesh = self.fineMesh._concatenate(transitionMesh, resolution=self.epsilon)
-
-        mesh = mesh._concatenate(boundaryLayerMesh, resolution=self.epsilon)
+        mesh = self.fineMesh + transitionMesh + boundaryLayerMesh
 
         ## Initialize the mesh.
         dict = mesh.__getstate__()

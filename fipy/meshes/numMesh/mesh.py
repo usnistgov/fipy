@@ -69,9 +69,13 @@ class Mesh(_CommonMesh):
         
     """Topology methods"""
 
+    @property
+    def _concatenatedClass(self):
+        return Mesh
+        
     def __add__(self, other):
         if(isinstance(other, Mesh)):
-            return self._concatenate(other)
+            return self._concatenatedClass(**self._getAddedMeshValues(other=other))
         else:
             return self._translate(other)
 
@@ -85,14 +89,6 @@ class Mesh(_CommonMesh):
         return newmesh
 
     __rmul__ = __mul__
-
-    @property
-    def _concatenatedClass(self):
-        return Mesh
-        
-    def _concatenate(self, other, resolution=1e-2):
-        return self._concatenatedClass(**self._getAddedMeshValues(other=other, 
-                                                                  resolution=resolution))
 
     def _connectFaces(self, faces0, faces1):
         """
