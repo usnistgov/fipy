@@ -631,8 +631,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         """
         globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
         globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
-        
-        id1 = globalNonOverlappingCellIDs[id1]
+
+        id1 = globalOverlappingCellIDs[id1]
         id2 = globalOverlappingCellIDs[id2]
 
         mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 

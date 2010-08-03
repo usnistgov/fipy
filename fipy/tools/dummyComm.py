@@ -45,4 +45,6 @@ class DummyComm(SerialCommWrapper):
      
     def sum(self, a, axis=None):
         return a.sum(axis=axis)
-     
+
+    def __setstate__(self, dict):
+        self.__init__()

@@ -39,8 +39,6 @@ from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
 from fipy.solvers.solver import Solver
-from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
 from fipy.tools import numerix
 
 class TrilinosSolver(Solver):
@@ -99,7 +97,8 @@ class TrilinosSolver(Solver):
         del self.RHSvector
             
     def _getMatrixClass(self):
-        return _PysparseMeshMatrix
+        from fipy.solvers import _MeshMatrix
+        return _MeshMatrix
 
     def _calcResidualVector(self, residualFn=None):
         if residualFn is not None:
