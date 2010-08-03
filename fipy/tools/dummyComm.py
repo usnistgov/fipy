@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "dummyCommWrapper.py"
+ #  FILE: "dummyComm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
