@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "__init__.py"
+ #  FILE: "dummyCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,38 +34,15 @@
  # ###################################################################
  ##
 
-try:
-    import scipy
-except:
-    pass
+from fipy.tools.serialCommWrapper import SerialCommWrapper
 
-try:
-    from PyTrilinos import Epetra
-    from fipy.tools.commWrapper import CommWrapper
-
-    parallel = CommWrapper(Epetra=Epetra)
-
-    if parallel.Nproc > 1:
-
-        try:
-            from mpi4py import MPI
-            from fipy.tools.mpi4pyCommWrapper import Mpi4pyCommWrapper
-            parallel = Mpi4pyCommWrapper(Epetra=Epetra, MPI=MPI)
-        except ImportError:
-            raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos in parallel. Try installing using 'easy_install mpi4py'.")
-
-    from fipy.tools.serialCommWrapper import SerialCommWrapper
-    serial = SerialCommWrapper(Epetra=Epetra)
-
-except ImportError:
-    from fipy.tools.dummyComm import DummyComm
-    parallel = DummyComm()
-    serial = DummyComm()
-
-import dump
-import numerix
-import vector
-from dimensions.physicalField import PhysicalField
-from numerix import *
-from vitals import Vitals
-
+class DummyComm(SerialCommWrapper):
+    def __init__(self):
+        pass
+    
+    def Barrier(self):
+        pass
+     
+    def sum(self, a, axis=None):
+        return a.sum(axis=axis)
+     

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "__init__.py"
+ #  FILE: "commWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,38 +34,61 @@
  # ###################################################################
  ##
 
-try:
-    import scipy
-except:
-    pass
+class CommWrapper(object):
+    """MPI Communicator wrapper
+    
+    Encapsulates capabilities needed for Epetra. Some capabilities are not parallel.
+    
+    """
+    
+    def __init__(self, Epetra=None):
+        self.epetra_comm = Epetra.PyComm()
+        
+    @property
+    def procID(self):
+        return self.epetra_comm.MyPID()
+        
+    @property
+    def Nproc(self):
+        return self.epetra_comm.NumProc()
+        
+    def Barrier(self):
+        self.epetra_comm.Barrier()
 
-try:
-    from PyTrilinos import Epetra
-    from fipy.tools.commWrapper import CommWrapper
+    def all(self, a, axis=None):
+        return a.all(axis=axis)
 
-    parallel = CommWrapper(Epetra=Epetra)
+    def any(self, a, axis=None):
+        return a.any(axis=axis)
 
-    if parallel.Nproc > 1:
+    def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
+        return numerix.allclose(a, b, rtol=rtol, atol=atol)
+     
+    def allequal(self, a, b):
+        return numerix.allequal(a, b)
+     
+    def bcast(self, obj=None, root=0):
+        return obj
+     
+    def allgather(self, sendobj=None, recvobj=None):
+        if recvobj is not None:
+            recvobj[:] = sendobj
+        else:
+            recvobj = sendobj
+         
+        return recvobj
+                    
+    def sum(self, a, axis=None):
+        return self.epetra_comm.SumAll(a.sum(axis=axis))
+        
+    def __getstate__(self):
+        return {'dummy': 0}
+        
+    def __setstate__(self, dict):
+        from PyTrilinos import Epetra
+        self.__init__(Epetra=Epetra)
+        
+    def Norm2(self, vec):
+        return vec.Norm2()
 
-        try:
-            from mpi4py import MPI
-            from fipy.tools.mpi4pyCommWrapper import Mpi4pyCommWrapper
-            parallel = Mpi4pyCommWrapper(Epetra=Epetra, MPI=MPI)
-        except ImportError:
-            raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos in parallel. Try installing using 'easy_install mpi4py'.")
-
-    from fipy.tools.serialCommWrapper import SerialCommWrapper
-    serial = SerialCommWrapper(Epetra=Epetra)
-
-except ImportError:
-    from fipy.tools.dummyComm import DummyComm
-    parallel = DummyComm()
-    serial = DummyComm()
-
-import dump
-import numerix
-import vector
-from dimensions.physicalField import PhysicalField
-from numerix import *
-from vitals import Vitals
 

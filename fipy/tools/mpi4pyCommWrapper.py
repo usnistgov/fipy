@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "__init__.py"
+ #  FILE: "mpi4pyCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,38 +34,40 @@
  # ###################################################################
  ##
 
-try:
-    import scipy
-except:
-    pass
+from fipy.tools.commWrapper import CommWrapper
+from fipy.tools import numerix
 
-try:
-    from PyTrilinos import Epetra
-    from fipy.tools.commWrapper import CommWrapper
+class Mpi4pyCommWrapper(CommWrapper):
+    """MPI Communicator wrapper
+    
+    Encapsulates capabilities needed for both Epetra and mpi4py.
+    
+    """
+    
+    def __init__(self, Epetra, MPI):
+        self.MPI = MPI
+        self.mpi4py_comm = self.MPI.COMM_WORLD
+        CommWrapper.__init__(self, Epetra)
+        
+    def __setstate__(self, dict):
+        from PyTrilinos import Epetra
+        from mpi4py import MPI
+        self.__init__(Epetra=Epetra, MPI=MPI)
+        
+    def all(self, a, axis=None):
+        return self.mpi4py_comm.allreduce(a.all(axis=axis), op=self.MPI.LAND)
 
-    parallel = CommWrapper(Epetra=Epetra)
+    def any(self, a, axis=None):
+        return self.mpi4py_comm.allreduce(a.any(axis=axis), op=self.MPI.LOR)
 
-    if parallel.Nproc > 1:
+    def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
+        return self.mpi4py_comm.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=self.MPI.LAND)
 
-        try:
-            from mpi4py import MPI
-            from fipy.tools.mpi4pyCommWrapper import Mpi4pyCommWrapper
-            parallel = Mpi4pyCommWrapper(Epetra=Epetra, MPI=MPI)
-        except ImportError:
-            raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos in parallel. Try installing using 'easy_install mpi4py'.")
+    def allequal(self, a, b):
+        return self.mpi4py_comm.allreduce(numerix.allequal(a, b), op=self.MPI.LAND)
 
-    from fipy.tools.serialCommWrapper import SerialCommWrapper
-    serial = SerialCommWrapper(Epetra=Epetra)
+    def bcast(self, obj=None, root=0):
+        return self.mpi4py_comm.bcast(obj=obj, root=root)
 
-except ImportError:
-    from fipy.tools.dummyComm import DummyComm
-    parallel = DummyComm()
-    serial = DummyComm()
-
-import dump
-import numerix
-import vector
-from dimensions.physicalField import PhysicalField
-from numerix import *
-from vitals import Vitals
-
+    def allgather(self, sendobj=None, recvobj=None):
+        return self.mpi4py_comm.allgather(sendobj=sendobj, recvobj=recvobj)

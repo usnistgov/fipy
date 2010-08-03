@@ -45,10 +45,3 @@ elif solver is None:
 else:
     raise ImportError, 'Unknown solver package %s' % solver
 
-if solver == "trilinos":
-    try:
-        from mpi4py import MPI
-    except:
-        raise ImportError, "Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos. Try installing using 'easy_install mpi4py'."
-        
-        
