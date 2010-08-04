@@ -8,7 +8,7 @@ from matplotlibVectorViewer import MatplotlibVectorViewer
 
 __all__ = ["MatplotlibViewer", "Matplotlib1DViewer", "Matplotlib2DGridViewer", "Matplotlib2DGridContourViewer", "Matplotlib2DViewer", "MatplotlibVectorViewer"]
 
-def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar=None, axes=None, **kwlimits):
+def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
     """Generic function for creating a `MatplotlibViewer`. 
     
     The `MatplotlibViewer` factory will search the module tree and return an
