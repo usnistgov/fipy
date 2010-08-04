@@ -67,10 +67,10 @@ class Grid2D(Mesh2D):
         nx = self._calcNumPts(d=self.dx, n=nx, axis="x")
         
         self.dy = PhysicalField(value = dy)
-        if self.dy.getUnit().isDimensionless():
-            self.dy = dy
-        else:
-            self.dy /= scale
+#         if self.dy.getUnit().isDimensionless():
+#             self.dy = dy
+#         else:
+        self.dy /= scale
             
         ny = self._calcNumPts(d=self.dy, n=ny, axis="y")
         
@@ -143,9 +143,9 @@ class Grid2D(Mesh2D):
         return local_nx, local_ny, overlap, offset
 
     def __repr__(self):
-        return "%s(dx=%s, dy=%s, nx=%d, ny=%d)" \
+        return "%s(dx=%s, dy=%s, nx=%s, ny=%s)" \
             % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), 
-               self.args["nx"], self.args["ny"])
+               str(self.args["nx"]), str(self.args["ny"]))
             
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)

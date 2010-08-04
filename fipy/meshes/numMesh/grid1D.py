@@ -121,7 +121,10 @@ class Grid1D(Mesh1D):
         return local_nx, overlap, offset
 
     def __repr__(self):
-        return "%s(dx=%s, nx=%d)" % (self.__class__.__name__, str(self.args["dx"]), self.args["nx"])
+        if self.args["nx"] is None:
+            return "%s(dx=%s)" % (self.__class__.__name__, str(self.args["dx"]))
+        else:
+            return "%s(dx=%s, nx=%d)" % (self.__class__.__name__, str(self.args["dx"]), self.args["nx"])
 
 
     def _createVertices(self):
