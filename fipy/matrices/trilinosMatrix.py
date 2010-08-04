@@ -276,7 +276,9 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 result = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, 0)
 
                 EpetraExt.Multiply(self._getMatrix(), False, other._getMatrix(), False, result)
-                return _TrilinosMatrixBase(matrix=result)
+                copy = self.copy()
+                copy.matrix = result
+                return copy
             else:
                 raise TypeError
                 
@@ -612,6 +614,12 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                                  sizeHint=sizeHint, 
                                  nonOverlappingMap=nonOverlappingMap,
                                  overlappingMap=overlappingMap)
+
+    def copy(self):
+        tmp = _TrilinosMatrix.copy(self)
+        copy = self.__class__(mesh=self.mesh, bandwidth=self.bandwidth)
+        copy.matrix = tmp.matrix
+        return copy
                                  
     def asTrilinosMeshMatrix(self):
         return self
