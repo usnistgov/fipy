@@ -316,12 +316,7 @@ class _PysparseMeshMatrix(_PysparseMatrix):
     def asTrilinosMeshMatrix(self):
         from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
         matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
-        
-        localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
-        localOverlappingCellIDs = self.mesh._getLocalOverlappingCellIDs()
-        localNonOverlappingCellIDsMask = numerix.zeros(len(localOverlappingCellIDs), 'int')
-        localNonOverlappingCellIDsMask[localNonOverlappingCellIDs] = True
-        
+                
         A = self.matrix.copy()
         values, irow, jcol = A.find()
         
