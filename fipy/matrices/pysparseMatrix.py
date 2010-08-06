@@ -323,7 +323,6 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         localNonOverlappingCellIDsMask[localNonOverlappingCellIDs] = True
         
         A = self.matrix.copy()
-        A.delete_rows(localNonOverlappingCellIDsMask)
         values, irow, jcol = A.find()
         
         matrix.addAt(values, irow, jcol)
