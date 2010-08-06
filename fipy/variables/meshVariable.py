@@ -118,6 +118,8 @@ class _MeshVariable(Variable):
                 dtype = numerix.obj2sctype(value.value)
             else:
                 dtype = numerix.obj2sctype(value)
+            #print "meshvariable elshape: ",self.elementshape
+            #print "meshvariable _getShapeFromMesh: ",self._getShapeFromMesh(mesh)
             array = numerix.zeros(self.elementshape 
                                   + self._getShapeFromMesh(mesh),
                                   dtype)

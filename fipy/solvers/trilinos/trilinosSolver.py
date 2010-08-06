@@ -123,10 +123,7 @@ class TrilinosSolver(Solver):
                      self.nonOverlappingVector, 
                      self.nonOverlappingRHSvector)
 
-        self.overlappingVector.Import(self.nonOverlappingVector, 
-                                      Epetra.Import(self.overlappingMap, 
-                                                    self.nonOverlappingMap), 
-                                      Epetra.Insert)
+        self.epetraImport()
         
         self.var.setValue(self.overlappingVector)
 
@@ -134,7 +131,15 @@ class TrilinosSolver(Solver):
         del self.matrix
         del self.RHSvector
         del self.var
-            
+
+    def epetraImport(self):
+        """For the purpose of measuring interprocess communication time; not to
+        be merged to trunk."""
+        self.overlappingVector.Import(self.nonOverlappingVector, 
+                                      Epetra.Import(self.overlappingMap, 
+                                                    self.nonOverlappingMap), 
+                                      Epetra.Insert)
+             
     def _getMatrixClass(self):
         # an ugly expediency (I blame Wheeler)
         return _PysparseMatrix
