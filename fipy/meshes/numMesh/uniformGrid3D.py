@@ -58,7 +58,7 @@ class UniformGrid3D(Grid3D):
 
     Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
     """
-    def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, origin = [[0], [0], [0]], overlap=2, parallelModule=parallel):
+    def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, origin = [[0], [0], [0]], overlap=2, communicator=parallel):
         self.args = {
             'dx': dx, 
             'dy': dy,
@@ -68,7 +68,7 @@ class UniformGrid3D(Grid3D):
             'nz': nz,
             'origin': origin,
             'overlap': overlap,
-            'parallelModule': parallelModule
+            'communicator': communicator
         }
         
         self.dim = 3
@@ -99,7 +99,7 @@ class UniformGrid3D(Grid3D):
          self.ny,
          self.nz,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, nz, overlap, parallelModule)
+         self.offset) = self._calcParallelGridInfo(nx, ny, nz, overlap, communicator)
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
@@ -135,7 +135,8 @@ class UniformGrid3D(Grid3D):
         }
 
         self.setScale(value = scale)
-
+        self.communicator = communicator
+        
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
                               dy = self.args['dy'], ny = self.args['ny'],
@@ -153,7 +154,7 @@ class UniformGrid3D(Grid3D):
         args = self.args.copy()
         origin = args['origin']
         from fipy.tools import serial
-        args['parallelModule'] = serial
+        args['communicator'] = serial
         del args['origin']
         return Grid3D(**args) + origin
 

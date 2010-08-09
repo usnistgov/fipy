@@ -81,7 +81,7 @@ class _MulTerm(Term):
         if len(numerix.shape(self.coeff)) == 0:
             matcoeff = float(self.coeff)
         else:
-            matcoeff = SparseMatrix(size=len(var), bandwidth=1)
+            matcoeff = SparseMatrix(mesh=var.getMesh(), bandwidth=1)
             matcoeff.addAtDiagonal(self.coeff)
 
         return (matcoeff * L, self.coeff * b)

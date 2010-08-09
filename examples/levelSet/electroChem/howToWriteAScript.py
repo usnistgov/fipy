@@ -143,7 +143,7 @@ Build the mesh:
 ...               dy=cellSize,
 ...               nx=xCells,
 ...               ny=yCells,
-...               parallelModule=serial)
+...               communicator=serial)
 
 A ``distanceVariable`` object,
 :math:`\phi`, is  required to store  the  position of the interface.

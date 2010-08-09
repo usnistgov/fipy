@@ -60,7 +60,7 @@ class Grid1D(Mesh1D):
         IndexError: nx != len(dx)
 
     """
-    def __init__(self, dx=1., nx=None, overlap=2, parallelModule=parallel):
+    def __init__(self, dx=1., nx=None, overlap=2, communicator=parallel):
         self.args = {
             'dx': dx, 
             'nx': nx, 
@@ -76,7 +76,7 @@ class Grid1D(Mesh1D):
 
         (self.nx,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, overlap, parallelModule)
+         self.offset) = self._calcParallelGridInfo(nx, overlap, communicator)
 
         if numerix.getShape(self.dx) is not ():
             Xoffset = numerix.sum(self.dx[0:self.offset])
@@ -89,7 +89,7 @@ class Grid1D(Mesh1D):
         faces = self._createFaces()
         self.numberOfFaces = len(faces[0])
         cells = self._createCells()
-        Mesh1D.__init__(self, vertices, faces, cells)
+        Mesh1D.__init__(self, vertices, faces, cells, communicator=communicator)
         
         self.setScale(value = scale)
 
@@ -97,10 +97,10 @@ class Grid1D(Mesh1D):
         return {'left': overlap * (procID > 0) * (procID < occupiedNodes),
                 'right': overlap * (procID < occupiedNodes - 1)}
         
-    def _calcParallelGridInfo(self, nx, overlap, parallelModule):
+    def _calcParallelGridInfo(self, nx, overlap, communicator):
 
-        procID = parallelModule.procID
-        Nproc = parallelModule.Nproc
+        procID = communicator.procID
+        Nproc = communicator.Nproc
         
         overlap = min(overlap, nx)
         cellsPerNode = max(int(nx / Nproc), overlap)

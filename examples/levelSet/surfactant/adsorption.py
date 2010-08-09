@@ -117,7 +117,7 @@ dt = 0.001
 
 dx = L / (nx - 1.5)
 from fipy.tools import serial
-mesh = Grid1D(nx = nx, dx = dx, parallelModule=serial)
+mesh = Grid1D(nx = nx, dx = dx, communicator=serial)
 
 ## build the distance variable
 

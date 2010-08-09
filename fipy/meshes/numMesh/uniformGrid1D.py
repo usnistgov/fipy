@@ -53,7 +53,7 @@ class UniformGrid1D(Grid1D):
         [[ 0.5  1.5  2.5]]
          
     """
-    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, parallelModule=parallel):
+    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, communicator=parallel):
         origin = numerix.array(origin)
         
         self.args = {
@@ -73,7 +73,7 @@ class UniformGrid1D(Grid1D):
         
         (self.nx,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, overlap, parallelModule)
+         self.offset) = self._calcParallelGridInfo(nx, overlap, communicator)
         
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
@@ -95,6 +95,7 @@ class UniformGrid1D(Grid1D):
         }
         
         self.setScale(value=scale)
+        self.communicator = communicator
         
     def _translate(self, vector):
         return UniformGrid1D(dx=self.dx, 

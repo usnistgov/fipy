@@ -35,7 +35,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.pysparseMatrix import _PysparseMatrix
+from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.solver import Solver
 
 class PysparseSolver(Solver):
@@ -51,4 +51,16 @@ class PysparseSolver(Solver):
         Solver.__init__(self, *args, **kwargs)
 
     def _getMatrixClass(self):
-        return _PysparseMatrix
+        return _PysparseMeshMatrix
+
+    def _solve(self):
+
+        if self.var.getMesh().communicator.Nproc > 1:
+            raise Exception("PySparse solvers cannot be used with multiple processors")
+        
+        array = self.var.getNumericValue()
+        self._solve_(self.matrix, array, self.RHSvector)
+        factor = self.var.getUnit().factor
+        if factor != 1:
+            array /= self.var.getUnit().factor
+        self.var[:] = array 

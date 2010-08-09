@@ -2,9 +2,9 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  FiPy - Python-based phase field solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "testSuite.py"
+ #  FILE: "commWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,42 +34,61 @@
  # ###################################################################
  ##
 
-import unittest
+class CommWrapper(object):
+    """MPI Communicator wrapper
+    
+    Encapsulates capabilities needed for Epetra. Some capabilities are not parallel.
+    
+    """
+    
+    def __init__(self, Epetra=None):
+        self.epetra_comm = Epetra.PyComm()
+        
+    @property
+    def procID(self):
+        return self.epetra_comm.MyPID()
+        
+    @property
+    def Nproc(self):
+        return self.epetra_comm.NumProc()
+        
+    def Barrier(self):
+        self.epetra_comm.Barrier()
 
-class _TestProgram(unittest.TestProgram):
-    def parseArgs(self, argv):
-        import getopt
-##      inline = 0
-##        numMesh = 0
-        try:
-            options, args = getopt.getopt(argv[1:], 'hHvq',
-                                          ['help','verbose','quiet','inline', 'Trilinos', 'Pysparse', 'pysparse', 'trilinos', 'no-pysparse'])
-            for opt, value in options:
-                if opt in ('-h','-H','--help'):
-                    self.usageExit()
-                if opt in ('-q','--quiet'):
-                    self.verbosity = 0
-                if opt in ('-v','--verbose'):
-                    self.verbosity = 2
-##              if opt in ('--inline',):
-##                  inline = 1
-##                if opt in ('--numMesh',):
-##                    numMesh = 1
-            if len(args) == 0 and self.defaultTest is None:
-                self.test = self.testLoader.loadTestsFromModule(self.module)
-                return
-            if len(args) > 0:
-                self.testNames = args
-            else:
-                self.testNames = (self.defaultTest,)
-            self.createTests()
-##            print argv
-##            raw_input()
-##          if inline:
-##              argv[1:] = ['--inline']
-##            if numMesh:
-##                argv[1:] = ['--numMesh']
-        except getopt.error, msg:
-            self.usageExit(msg)
+    def all(self, a, axis=None):
+        return a.all(axis=axis)
 
-main = _TestProgram
+    def any(self, a, axis=None):
+        return a.any(axis=axis)
+
+    def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
+        return numerix.allclose(a, b, rtol=rtol, atol=atol)
+     
+    def allequal(self, a, b):
+        return numerix.allequal(a, b)
+     
+    def bcast(self, obj=None, root=0):
+        return obj
+     
+    def allgather(self, sendobj=None, recvobj=None):
+        if recvobj is not None:
+            recvobj[:] = sendobj
+        else:
+            recvobj = sendobj
+         
+        return recvobj
+                    
+    def sum(self, a, axis=None):
+        return self.epetra_comm.SumAll(a.sum(axis=axis))
+        
+    def __getstate__(self):
+        return {'dummy': 0}
+        
+    def __setstate__(self, dict):
+        from PyTrilinos import Epetra
+        self.__init__(Epetra=Epetra)
+        
+    def Norm2(self, vec):
+        return vec.Norm2()
+
+
