@@ -92,20 +92,13 @@ def read(filename, fileobject = None):
       - `fileobject`: Used to remove temporary files
       
     """
-    if parallel.procID == 0:
-        fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
-        data = fileStream.read()
-        fileStream.close()
-        if fileobject is not None:
-            os.close(fileobject)
-            os.remove(filename)
-    else:
-        data = None
-        
-    if parallel.Nproc > 1:
-        from mpi4py import MPI
-        comm = MPI.COMM_WORLD
-        data = comm.bcast(data, root=0)
+
+    fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
+    data = fileStream.read()
+    fileStream.close()
+    if fileobject is not None:
+        os.close(fileobject)
+        os.remove(filename)
 
     return cPickle.loads(data)
 
