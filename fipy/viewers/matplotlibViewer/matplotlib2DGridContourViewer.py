@@ -50,7 +50,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
     __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
 
 
-    def __init__(self, vars, title=None, limits={}, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
         
         :Parameters:
@@ -63,19 +63,19 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
           xmin, xmax, ymin, ymax, datamin, datamax
             displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
+          cmap
+            the colormap. Defaults to `matplotlib.cm.jet`
+          colorbar
+            plot a colorbar in specified orientation if not `None`
+          axes
+            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, 
+                                   cmap=cmap, colorbar=colorbar, axes=axes, 
+                                   **kwlimits)
         
-        self.colorbar = None
         self._plot()
-        
-        import pylab
-        # colorbar will not automatically update
-        # http://sourceforge.net/mailarchive/forum.php?thread_id=10159140&forum_id=33405
-        ##from fipy.tools.numerix import array
-        ##self.colorbar = pylab.colorbar(array(self.vars[0]))
-        self.colorbar = pylab.colorbar()
         
     def _getSuitableVars(self, vars):
         from fipy.meshes.numMesh.grid2D import Grid2D
@@ -115,16 +115,17 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
         else:
             V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + zmin
 
-        import pylab
-        pylab.jet()
+        self.axes.contourf(X, Y, Z, V, cmap=self.cmap)
 
-        pylab.contourf(X, Y, Z, V)
+        self.axes.set_xlim(xmin=self._getLimit('xmin'),
+                           xmax=self._getLimit('xmax'))
 
-        pylab.xlim(xmin=self._getLimit('xmin'),
-                   xmax=self._getLimit('xmax'))
+        self.axes.set_ylim(ymin=self._getLimit('ymin'),
+                           ymax=self._getLimit('ymax'))
+                   
+        if self.colorbar is not None:
+            self.colorbar.plot(vmin=zmin, vmax=zmax)
 
-        pylab.ylim(ymin=self._getLimit('ymin'),
-                   ymax=self._getLimit('ymax'))
                    
 def _test():
     from fipy.viewers.viewer import _test2D

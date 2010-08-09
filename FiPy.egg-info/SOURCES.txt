@@ -442,7 +442,7 @@ fipy/tests/testProgram.py
 fipy/tools/__init__.py
 fipy/tools/commWrapper.py
 fipy/tools/debug.py
-fipy/tools/dummyCommWrapper.py
+fipy/tools/dummyComm.py
 fipy/tools/dump.py
 fipy/tools/inline.py
 fipy/tools/memoryLeak.py
@@ -453,7 +453,6 @@ fipy/tools/numerix.py
 fipy/tools/parser.py
 fipy/tools/serialCommWrapper.py
 fipy/tools/test.py
-fipy/tools/trilinosMatrix.py
 fipy/tools/vector.py
 fipy/tools/vitals.py
 fipy/tools/dimensions/DictWithDefault.py

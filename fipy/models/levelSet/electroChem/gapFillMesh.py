@@ -90,7 +90,7 @@ class GapFillMesh(Mesh2D):
         self.actualFineRegionHeight = ny * self.cellSize
         actualDomainWidth = nx * self.cellSize
         numberOfBoundaryLayerCells = int((desiredDomainHeight - self.actualFineRegionHeight - transitionRegionHeight) / actualDomainWidth)
-        self.epsilon = self.cellSize * 1e-10
+        self.epsilon = 1e-10
         self.actualDomainHeight = self.actualFineRegionHeight + transitionRegionHeight + numberOfBoundaryLayerCells * actualDomainWidth
         
         ## Build the fine region mesh.
@@ -110,9 +110,7 @@ class GapFillMesh(Mesh2D):
                                    communicator=serial) + ((0,), (self.actualFineRegionHeight + transitionRegionHeight,),)
 
         ## Add the meshes together.
-        mesh = self.fineMesh._concatenate(transitionMesh, self.epsilon)
-
-        mesh = mesh._concatenate(boundaryLayerMesh, self.epsilon)
+        mesh = self.fineMesh + transitionMesh + boundaryLayerMesh
 
         ## Initialize the mesh.
         dict = mesh.__getstate__()

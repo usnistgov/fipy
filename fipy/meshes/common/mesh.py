@@ -88,25 +88,19 @@ class Mesh:
             [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
              [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
         
-        The two `Mesh` objects must be properly aligned in order to concatenate them
+        The two `Mesh` objects need not be properly aligned in order to concatenate them
+        but the resulting mesh may not have the intended connectivity
         
-            >>> from fipy.tools import parallel
             >>> from fipy.meshes.numMesh.mesh import MeshAdditionError
-            >>> if parallel.Nproc == 1:
-            ...     addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
-            ... else:
-            ...     raise MeshAdditionError("Vertices are not aligned")
-            Traceback (most recent call last):
-            ...
-            MeshAdditionError: Vertices are not aligned
+            >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
+            >>> print addedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
-            >>> if parallel.Nproc == 1:
-            ...     addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
-            ... else:
-            ...     raise MeshAdditionError("Faces are not aligned")
-            Traceback (most recent call last):
-            ...
-            MeshAdditionError: Faces are not aligned
+            >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
+            >>> print addedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
+             [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
 
         No provision is made to avoid or consolidate overlapping `Mesh` objects
         
@@ -129,17 +123,19 @@ class Mesh:
             ...                        cellCenters)
             True
 
-        but their faces must still align properly
+        again, their faces need not align, but the mesh may not have 
+        the desired connectivity
         
             >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
             >>> triMesh = triMesh + ((2,), (0,))
-            >>> if parallel.Nproc == 1:
-            ...     triAddedMesh = baseMesh + triMesh
-            ... else:
-            ...     raise MeshAdditionError("Faces are not aligned")            
-            Traceback (most recent call last):
-            ...
-            MeshAdditionError: Faces are not aligned
+            >>> triAddedMesh = baseMesh + triMesh
+            >>> cellCenters = [[ 0.5, 1.5, 0.5, 1.5, 2.83333333, 3.83333333,
+            ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+            ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
+            ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
+            >>> print numerix.allclose(triAddedMesh.getCellCenters(),
+            ...                        cellCenters)
+            True
 
         `Mesh` concatenation is not limited to 2D meshes
         

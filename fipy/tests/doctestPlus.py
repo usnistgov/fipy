@@ -78,40 +78,14 @@ class _LateImportDocTestCase(_LateImportTestCase):
     def _getTestSuite(self, module):
         return doctest.DocTestSuite(module)
 
-class _LateImportInteractiveDocTestCase(_LateImportDocTestCase):
-    _saved_stdout = sys.stdout
-
-    def raw_input(prompt):
-        _LateImportInteractiveDocTestCase._saved_stdout.write("\n")
-        _LateImportInteractiveDocTestCase._saved_stdout.write(prompt)
-        _LateImportInteractiveDocTestCase._saved_stdout.flush()
-        return sys.stdin.readline()
-    raw_input = staticmethod(raw_input)
-
-    def _getTestSuite(self, module):
-    	if sys.version_info >= (2, 4):
-            extraglobs = {}
-            extraglobs['raw_input'] = self.raw_input
-            extraglobs['real_raw_input'] = raw_input
-            return doctest.DocTestSuite(module, extraglobs=extraglobs)
-        else:
-            module.__dict__['raw_input'] = self.raw_input
-            module.__dict__['real_raw_input'] = raw_input
-            return doctest.DocTestSuite(module)
-    
 class _LateImportDocTestSuite(_LateImportTestSuite):
     def __init__(self, testModuleNames=(), 
-                 docTestModuleNames=(), interactiveDocTestModuleNames=(), 
+                 docTestModuleNames=(), 
                  base='__main__'):
         _LateImportTestSuite.__init__(self, testModuleNames = testModuleNames, base = base)
         self._addDocTestModules(moduleNames=docTestModuleNames, base=base)
-        self._addInteractiveDocTestModules(moduleNames=interactiveDocTestModuleNames, base=base)
     
     def _addDocTestModules(self, moduleNames=(), base='__main__'):
         for moduleName in moduleNames:
             self._addTestModule(moduleName=moduleName, base=base, testClass=_LateImportDocTestCase)
-
-    def _addInteractiveDocTestModules(self, moduleNames=(), base='__main__'):
-        for moduleName in moduleNames:
-            self._addTestModule(moduleName=moduleName, base=base, testClass=_LateImportInteractiveDocTestCase)
 
