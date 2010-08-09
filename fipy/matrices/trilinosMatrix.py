@@ -58,11 +58,6 @@ from fipy.tools import numerix
 # None of these situations currently come up in FiPy; tests do not reveal any of 
 # the warnings that guard for those, and all tests pass. Because of the way
 # FiPy constructs its matrices, I do not anticipate any of these occurring. 
-#
-# 4) Parallelization - currently matrix builds everything on processor 0, to be
-# redistributed later. As of now, cannot be done better without putting in
-# extremely inefficient filters to filter out unnecessary elements on each
-# processor.
 
 class _TrilinosMatrixBase(_SparseMatrix):
     """_TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
@@ -325,10 +320,6 @@ class _TrilinosMatrixBase(_SparseMatrix):
              2.500000      ---        ---    
         """
 
-        # Currently, all matrix building gets done on processor 0
-#         if(self.comm.MyPID() > 0):
-#             return
-
         if id1.dtype.name == 'int64':
             id1 = id1.astype('int32')
         if id2.dtype.name == 'int64':
@@ -438,10 +429,6 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-
-        # Currently, all matrix building gets done on processor 0
-#         if(self.comm.MyPID() > 0):
-#             return
 
         ## This was added as it seems that trilinos does not like int64 arrays
         if hasattr(id1, 'astype') and id1.dtype.name == 'int64':
