@@ -33,7 +33,7 @@
  ##
 from fipy.tools import parallel
 
-def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2, parallelModule=parallel):
+def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
     from numMesh import uniformGrid2D
     from numMesh import grid2D
 
@@ -46,6 +46,6 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2, parallelModule=parallel):
         return uniformGrid2D.UniformGrid2D(dx=dx, dy=dy, 
                                            nx=nx, ny=ny,
                                            overlap=overlap,
-                                           parallelModule=parallelModule)
+                                           communicator=communicator)
     else:
-        return grid2D.Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, parallelModule=parallelModule)
+        return grid2D.Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)

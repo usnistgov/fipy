@@ -203,7 +203,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                   dy = cellSize,
                   nx = xCells,
                   ny = yCells,
-                  parallelModule=serial)
+                  communicator=serial)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 

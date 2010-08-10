@@ -35,15 +35,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.solver import Solver
-from fipy.tools.trilinosMatrix import _TrilinosMatrix
-from fipy.tools.pysparseMatrix import _PysparseMatrix
-from fipy.tools.trilinosMatrix import _numpyToTrilinosVector
-from fipy.tools.trilinosMatrix import _trilinosToNumpyVector
-
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
+from fipy.solvers.solver import Solver
 from fipy.tools import numerix
 
 class TrilinosSolver(Solver):
@@ -63,99 +58,70 @@ class TrilinosSolver(Solver):
         self.matrix = matrix
         self.RHSvector = RHSvector
         
-    def _buildGlobalMatrix(self):
+    def _buildGlobalMatrixAndVectors(self):
+        self.globalMatrix = self.matrix.asTrilinosMeshMatrix()
+        self.globalMatrix.finalize()
         
-        matrix = self.matrix
-        RHSvector = self.RHSvector
-    
         mesh = self.var.getMesh()
-        comm = Epetra.PyComm()
-        
-        globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
-        globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
         localNonOverlappingCellIDs = mesh._getLocalNonOverlappingCellIDs()
-        localOverlappingCellIDs = mesh._getLocalOverlappingCellIDs()
-        
-        self.nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
-        self.nonOverlappingVector = Epetra.Vector(self.nonOverlappingMap, 
+
+        self.nonOverlappingVector = Epetra.Vector(self.globalMatrix.nonOverlappingMap, 
                                                   self.var[localNonOverlappingCellIDs])
-        
-        self.nonOverlappingRHSvector = Epetra.Vector(self.nonOverlappingMap, 
-                                                     RHSvector[localNonOverlappingCellIDs])
 
-        self.globalMatrix = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, -1)
+        self.nonOverlappingRHSvector = Epetra.Vector(self.globalMatrix.nonOverlappingMap, 
+                                                     self.RHSvector[localNonOverlappingCellIDs])
 
-        localNonOverlappingCellIDsMask = numerix.zeros(len(localOverlappingCellIDs), 'int')
-        localNonOverlappingCellIDsMask[localNonOverlappingCellIDs] = 1
-        A = matrix.matrix.copy()
-        A.delete_rows(localNonOverlappingCellIDsMask)
-
-        values, irow, jcol = A.find()
-        
-        globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDs[irow]
-        if hasattr(globalNonOverlappingCellIDsIrow, 'astype') and \
-               globalNonOverlappingCellIDsIrow.dtype.name == 'int64':
-            globalNonOverlappingCellIDsIrow = globalNonOverlappingCellIDsIrow.astype('int32')
-
-        globalOverlappingCellIDsJcol = globalOverlappingCellIDs[jcol]
-        if hasattr(globalOverlappingCellIDsJcol, 'astype') and \
-               globalOverlappingCellIDsJcol.dtype.name == 'int64':
-            globalOverlappingCellIDsJcol = globalOverlappingCellIDsJcol.astype('int32')
-        
-        
-        self.globalMatrix.InsertGlobalValues(globalNonOverlappingCellIDsIrow, 
-                                             globalOverlappingCellIDsJcol, 
-                                             values)
-        
-        self.globalMatrix.FillComplete()
-        self.globalMatrix.OptimizeStorage()
-        
-        self.overlappingMap =  Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
-        self.overlappingVector = Epetra.Vector(self.overlappingMap, self.var)
-
+        self.overlappingVector = Epetra.Vector(self.globalMatrix.overlappingMap, self.var)
 
     def _solve(self):
-
         if not hasattr(self, 'globalMatrix'):
-            self._buildGlobalMatrix()
-        
-        self._solve_(self.globalMatrix, 
+            self._buildGlobalMatrixAndVectors()
+
+        self._solve_(self.globalMatrix.matrix, 
                      self.nonOverlappingVector, 
                      self.nonOverlappingRHSvector)
 
         self.overlappingVector.Import(self.nonOverlappingVector, 
-                                      Epetra.Import(self.overlappingMap, 
-                                                    self.nonOverlappingMap), 
+                                      Epetra.Import(self.globalMatrix.overlappingMap, 
+                                                    self.globalMatrix.nonOverlappingMap), 
                                       Epetra.Insert)
         
         self.var.setValue(self.overlappingVector)
 
         del self.globalMatrix
+        del self.nonOverlappingVector
+        del self.nonOverlappingRHSvector
+        del self.overlappingVector
+        del self.var
         del self.matrix
         del self.RHSvector
-        del self.var
             
     def _getMatrixClass(self):
-        # an ugly expediency (I blame Wheeler)
-        return _PysparseMatrix
+        from fipy.solvers import _MeshMatrix
+        return _MeshMatrix
 
     def _calcResidualVector(self, residualFn=None):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
             if not hasattr(self, 'globalMatrix'):
-                self._buildGlobalMatrix()
-            residual = Epetra.Vector(self.nonOverlappingMap)                
-            self.globalMatrix.Multiply(False, self.nonOverlappingVector, residual)
+                self._buildGlobalMatrixAndVectors()
+                
+            # If A is an Epetra.Vector with map M
+            # and B is an Epetra.Vector with map M
+            # and C = A - B
+            # then C is an Epetra.Vector with *no map* !!!?!?!
+            residual = self.globalMatrix * self.nonOverlappingVector
             residual -= self.nonOverlappingRHSvector
-          
+            
             return residual
-
+            
     def _calcResidual(self, residualFn=None):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            return self._calcResidualVector().Norm2()
+            comm = self.var.getMesh().communicator
+            return comm.Norm2(self._calcResidualVector())
         
     def _calcRHSNorm(self):
         return self.nonOverlappingRHSvector.Norm2()

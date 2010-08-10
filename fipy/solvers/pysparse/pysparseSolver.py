@@ -35,7 +35,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.pysparseMatrix import _PysparseMatrix
+from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.solver import Solver
 from pysparse import precon
 
@@ -53,7 +53,7 @@ class PysparseSolver(Solver):
         Solver.__init__(self, *args, **kwargs)
 
     def _getMatrixClass(self):
-        return _PysparseMatrix
+        return _PysparseMeshMatrix
 
     def _solve_(self, L, x, b):
         """
@@ -61,6 +61,7 @@ class PysparseSolver(Solver):
         preconditioning. If you are writing a solver which
         doesn't use preconditioning, this must be overridden.
         """
+
         A = L._getMatrix()
 
         if self.preconditioner is None:
@@ -73,4 +74,14 @@ class PysparseSolver(Solver):
         
         self._raiseWarning(info, iter, relres)
          
+    def _solve(self):
+
+        if self.var.getMesh().communicator.Nproc > 1:
+            raise Exception("PySparse solvers cannot be used with multiple processors")
         
+        array = self.var.getNumericValue()
+        self._solve_(self.matrix, array, self.RHSvector)
+        factor = self.var.getUnit().factor
+        if factor != 1:
+            array /= self.var.getUnit().factor
+        self.var[:] = array 

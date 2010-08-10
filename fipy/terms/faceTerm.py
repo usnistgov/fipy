@@ -154,7 +154,7 @@ class FaceTerm(Term):
         
         N = len(var)
         b = numerix.zeros((N),'d')
-        L = SparseMatrix(size = N)
+        L = SparseMatrix(mesh=mesh)
 
         if equation is not None:
             from fipy.tools.numerix import sign, add

@@ -38,9 +38,9 @@ from pysparse import spmatrix
 from fipy.tools import numerix
 
 
-from fipy.tools.sparseMatrix import _SparseMatrix
+from fipy.matrices.sparseMatrix import _SparseMatrix
 
-class _PysparseMatrix(_SparseMatrix):
+class _PysparseMatrixBase(_SparseMatrix):
     
     """
     _PysparseMatrix class wrapper for pysparse.
@@ -49,34 +49,28 @@ class _PysparseMatrix(_SparseMatrix):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size = None, bandwidth = 0, matrix = None, sizeHint = None):
-        """
-        Creates a `_PysparseMatrix`.
+    def __init__(self, matrix, bandwidth=0):
+        """Creates a `_PysparseMatrixBase`.
 
         :Parameters:
-          - `size`: The size N for an N by N matrix.
+          - `matrix`: The starting `spmatrix` 
           - `bandwidth`: The proposed band width of the matrix.
-          - `matrix`: The starting `spmatrix` id there is one.
-
         """
-        if matrix != None:
-            self.matrix = matrix
-        else:
-            sizeHint = sizeHint or size * bandwidth
-            self.matrix = spmatrix.ll_mat(size, size, sizeHint)
+        self.matrix = matrix
+        self.bandwidth = bandwidth
 
     def _getMatrix(self):
         return self.matrix
     
     def copy(self):
-        return _PysparseMatrix(matrix = self.matrix.copy())
+        return _PysparseMatrixBase(matrix=self.matrix.copy())
         
     def __getitem__(self, index):
         m = self.matrix[index]
         if type(m) is type(0) or type(m) is type(0.):
             return m
         else:
-            return _PysparseMatrix(matrix = m)
+            return _PysparseMatrixBase(matrix=m)
 
     def __iadd__(self, other):
             return self._iadd(self._getMatrix(), other)
@@ -89,15 +83,15 @@ class _PysparseMatrix(_SparseMatrix):
     def _add(self, other, sign = 1):
         L = self.matrix.copy()
         self._iadd(L, other, sign)
-        return _PysparseMatrix(matrix = L)
+        return _PysparseMatrixBase(matrix=L)
 
     def __add__(self, other):
         """
         Add two sparse matrices
         
-            >>> L = _PysparseMatrix(size = 3)
+            >>> L = _PysparseMatrix(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> print L + _PysparseIdentityMatrix(3)
+            >>> print L + _PysparseIdentityMatrix(size=3)
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
              2.500000      ---     1.000000  
@@ -118,7 +112,7 @@ class _PysparseMatrix(_SparseMatrix):
         else:
             L = self.matrix.copy()
             L.shift(1, other._getMatrix())
-            return _PysparseMatrix(matrix = L)
+            return _PysparseMatrixBase(matrix=L)
         
     def __sub__(self, other):
 
@@ -127,7 +121,7 @@ class _PysparseMatrix(_SparseMatrix):
         else:
             L = self.matrix.copy()
             L.shift(-1, other._getMatrix())
-            return _PysparseMatrix(matrix = L)
+            return _PysparseMatrixBase(matrix=L)
 
     def __isub__(self, other):
             return self._iadd(self._getMatrix(), other, -1)
@@ -136,9 +130,9 @@ class _PysparseMatrix(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix
         
-            >>> L1 = _PysparseMatrix(size = 3)
+            >>> L1 = _PysparseMatrix(size=3)
             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> L2 = _PysparseIdentityMatrix(size = 3)
+            >>> L2 = _PysparseIdentityMatrix(size=3)
             >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
             
             >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
@@ -164,14 +158,14 @@ class _PysparseMatrix(_SparseMatrix):
         """
         N = self.matrix.shape[0]
 
-        if isinstance(other, _PysparseMatrix):
-            return _PysparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+        if isinstance(other, _PysparseMatrixBase):
+            return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
         else:
             shape = numerix.shape(other)
             if shape == ():
                 L = spmatrix.ll_mat(N, N, N)
                 L.put(other * numerix.ones(N))
-                return _PysparseMatrix(matrix = spmatrix.matrixmultiply(self.matrix, L))
+                return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
                 y = other.copy()
                 self.matrix.matvec(other, y)
@@ -194,7 +188,7 @@ class _PysparseMatrix(_SparseMatrix):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
-            >>> L = _PysparseMatrix(size = 3)
+            >>> L = _PysparseMatrix(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L
                 ---    10.000000   3.000000  
@@ -207,7 +201,7 @@ class _PysparseMatrix(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
         
-            >>> L = _PysparseMatrix(size = 3)
+            >>> L = _PysparseMatrix(size=3)
             >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print L
              3.000000      ---        ---    
@@ -241,7 +235,7 @@ class _PysparseMatrix(_SparseMatrix):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
-            >>> L = _PysparseMatrix(size = 3)
+            >>> L = _PysparseMatrix(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
             >>> print L
@@ -279,6 +273,56 @@ class _PysparseMatrix(_SparseMatrix):
         """
         self.matrix.export_mtx(filename)
     
+class _PysparseMatrix(_PysparseMatrixBase):
+    
+    """
+    _PysparseMatrix class wrapper for pysparse.
+    _PysparseMatrix is always NxN.
+    Allows basic python operations __add__, __sub__ etc.
+    Facilitate matrix populating in an easy way.
+    """
+
+    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None):
+        """Creates a `_PysparseMatrix`.
+
+        :Parameters:
+          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `bandwidth`: The proposed band width of the matrix.
+        """
+        sizeHint = sizeHint or size * bandwidth
+        if matrix is None:
+            matrix = spmatrix.ll_mat(size, size, sizeHint)
+        _PysparseMatrixBase.__init__(self, matrix=matrix, bandwidth=bandwidth)
+
+class _PysparseMeshMatrix(_PysparseMatrix):
+    
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None):
+        """Creates a `_PysparseMatrix` associated with a `Mesh`.
+
+        :Parameters:
+          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `bandwidth`: The proposed band width of the matrix.
+        """
+        self.mesh = mesh
+        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
+        
+    def __mul__(self, other):
+        if isinstance(other, _PysparseMeshMatrix):
+            return _PysparseMeshMatrix(mesh=self.mesh, 
+                                       matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+        else:
+            return _PysparseMatrix.__mul__(self, other)
+        
+    def asTrilinosMeshMatrix(self):
+        from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
+        matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
+                
+        A = self.matrix.copy()
+        values, irow, jcol = A.find()
+        
+        matrix.addAt(values, irow, jcol)
+
+        return matrix
 
 class _PysparseIdentityMatrix(_PysparseMatrix):
     """
@@ -288,15 +332,31 @@ class _PysparseIdentityMatrix(_PysparseMatrix):
         """
         Create a sparse matrix with '1' in the diagonal
         
-            >>> print _PysparseIdentityMatrix(size = 3)
+            >>> print _PysparseIdentityMatrix(size=3)
              1.000000      ---        ---    
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PysparseMatrix.__init__(self, size = size, bandwidth = 1)
+        _PysparseMatrix.__init__(self, size=size, bandwidth = 1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
         
+class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
+    def __init__(self, mesh):
+        """
+        Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        
+            >>> from fipy import Grid1D
+            >>> from fipy.tools import serial
+            >>> mesh = Grid1D(nx=3, communicator=serial)
+            >>> print _PysparseIdentityMeshMatrix(mesh=mesh)
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
+        """
+        _PysparseIdentityMatrix.__init__(self, size=mesh.getNumberOfCells())
+
+
 def _test(): 
     import doctest
     return doctest.testmod()

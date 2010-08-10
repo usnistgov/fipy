@@ -35,7 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
-from fipy.tools.sparseMatrix import _SparseMatrix
+from fipy.matrices.pysparseMatrix import _PysparseMatrix
 
 class LinearJORSolver(PysparseSolver):
     """
@@ -64,7 +64,7 @@ class LinearJORSolver(PysparseSolver):
     def _solve_(self, L, x, b):
 
         d = L.takeDiagonal()
-        D = _SparseMatrix(len(d))
+        D = _PysparseMatrix(size=len(d))
         D.putDiagonal(d)
 
         LU = L - D

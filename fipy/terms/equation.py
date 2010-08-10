@@ -85,14 +85,14 @@ class _Equation(Term):
 
         N = len(var)
         self.RHSvector = numerix.zeros((N,),'d')
-        self.matrix = SparseMatrix(size=N)
+        self.matrix = SparseMatrix(mesh=var.getMesh())
 
         for term in self._getTerms():
             if term is not None:
                 termMatrix, termRHSvector = term._buildMatrix(var, SparseMatrix,
                                                               boundaryConditions, 
                                                               dt, self)
-
+                
                 if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
                     and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
                     self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)

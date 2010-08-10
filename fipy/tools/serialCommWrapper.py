@@ -2,9 +2,9 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  FiPy - Python-based phase field solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "grid3D.py"
+ #  FILE: "serialCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -28,29 +28,24 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  # ###################################################################
  ##
 
-from fipy.tools import parallel
+from fipy.tools.commWrapper import CommWrapper
 
-def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
-    from numMesh import uniformGrid3D
-    from numMesh import grid3D
+class SerialCommWrapper(CommWrapper):
+    @property
+    def procID(self):
+        return 0
+       
+    @property
+    def Nproc(self):
+        return 1
+       
+    def Norm2(self, vec):
+        from fipy.tools import numerix
+        return numerix.L2norm(vec)
 
-    from fipy.tools import numerix
-    if numerix.getShape(dx) == () \
-      and numerix.getShape(dy) == () \
-      and numerix.getShape(dz) == ():
-        if nx is None:
-            nx = 1
-        if ny is None:
-            ny = 1
-        if nz is None:
-            nz = 1
-        return uniformGrid3D.UniformGrid3D(dx = dx, dy = dy, dz = dz,
-                                           nx = nx or 1, ny = ny or 1, nz = nz or 1,
-                                           overlap=overlap, communicator=communicator)
-    else:
-        return grid3D.Grid3D(dx = dx, dy = dy, dz = dz, nx = nx, ny = ny, nz = nz,
-                             overlap=overlap, communicator=communicator)

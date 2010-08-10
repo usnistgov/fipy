@@ -126,6 +126,7 @@ We create one diffusion equation for each substitutional component
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
+...     Cj.solver = DefaultAsymmetricSolver(precon=None, iterations=3200)
 
 If we are running interactively, we create a viewer to see the results
 
@@ -140,18 +141,19 @@ Now, we iterate the problem to equilibrium, plotting as we go
 ...     for Cj in substitutionals:
 ...         Cj.updateOld()
 ...     for Cj in substitutionals:
-...         Cj.equation.solve(var = Cj, 
-...                           dt = 10000.)
+...         Cj.equation.solve(var=Cj, 
+...                           dt=10000.,
+...                           solver=Cj.solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
 
->>> substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
-1
->>> substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
-1
+>>> print substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7)
+True
+>>> print substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7)
+True
 """
 __docformat__ = 'restructuredtext'
 

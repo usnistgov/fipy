@@ -61,7 +61,7 @@ Construct the mesh.
 .. index:: Grid2D
 
 >>> from fipy.tools import serial
->>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, parallelModule=serial)
+>>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=serial)
 
 Construct a `distanceVariable` object.
 
