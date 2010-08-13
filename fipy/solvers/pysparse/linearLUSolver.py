@@ -66,6 +66,7 @@ class LinearLUSolver(PysparseSolver):
           - `iterations`: The number of LU decompositions to perform.
           - `steps`: A deprecated name for `iterations`.
             For large systems a number of iterations is generally required.
+          - `precon`: not used but maintains a common interface.
 
         """
 
