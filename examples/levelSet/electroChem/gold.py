@@ -42,19 +42,12 @@ To run this example from the base fipy directory type::
     
     $ python examples/levelSet/electroChem/gold.py
 
-at the command line. The results of the simulation will be displayed
-and the word ``finished`` in the terminal at the end of the
-simulation. The simulation will only run for 10 time steps. In order
-to alter the number of timesteps, the Python function that
-encapsulates the system of equations must first be imported (at the
-Python command line),
+at the command line. The results of the simulation will be displayed and the word
+``finished`` in the terminal at the end of the simulation. The simulation will
+only run for 10 time steps. To run with a different number of time steps change
+the ``numberOfSteps`` argument as follows,
 
 .. index:: runGold
-
->>> from examples.levelSet.electroChem.gold import runGold
-
-and then the function can be run with a different number of time steps
-with the ``numberOfSteps`` argument as follows,
 
 >>> runGold(numberOfSteps=10, displayViewers=False)
 1
