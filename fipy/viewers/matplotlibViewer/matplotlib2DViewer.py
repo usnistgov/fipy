@@ -105,25 +105,10 @@ class Matplotlib2DViewer(_MatplotlibViewer):
             # PolyCollection not child of PatchCollection in matplotlib 0.98
             self.axes.add_collection(self.collection)
 
-        if self._getLimit('xmin') is None:
-            xmin = xCoords.min()
-        else:
-            xmin = self._getLimit('xmin')
-
-        if self._getLimit('xmax') is None:
-            xmax = xCoords.max()
-        else:
-            xmax = self._getLimit('xmax')
-
-        if self._getLimit('ymin') is None:
-            ymin = yCoords.min()
-        else:
-            ymin = self._getLimit('ymin')
-
-        if self._getLimit('ymax') is None:
-            ymax = yCoords.max()
-        else:
-            ymax = self._getLimit('ymax')
+        xmin = self._getLimit('xmin', default=xCoords.min())
+        xmax = self._getLimit('xmax', default=xCoords.max())
+        ymin = self._getLimit('ymin', default=yCoords.min())
+        ymax = self._getLimit('ymax', default=yCoords.max())
 
         self.axes.set_xlim(xmin=xmin, xmax=xmax)
         self.axes.set_ylim(ymin=ymin, ymax=ymax)

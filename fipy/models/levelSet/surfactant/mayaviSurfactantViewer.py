@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/2/08 {5:10:42 PM}
+ #                                last update: 8/13/10 {2:22:25 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -248,13 +248,8 @@ class MayaviSurfactantViewer(_Viewer):
         slh.range_on_var.set(1)
         slh.v_range_on_var.set(1)
         
-        xmax = self._getLimit('datamax')
-        if xmax is None:
-            xmax = self.surfactantVar.max()
-            
-        xmin = self._getLimit('datamin')
-        if xmin is None:
-            xmin = self.surfactantVar.min()
+        xmax = self._getLimit('datamax', default=self.surfactantVar.max())
+        xmin = self._getLimit('datamin', default=self.surfactantVar.min())
 
         slh.range_var.set((xmin, xmax))
         slh.set_range_var()
