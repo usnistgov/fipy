@@ -42,19 +42,12 @@ To run this example from the base fipy directory type::
     
     $ python examples/levelSet/electroChem/leveler.py
 
-at the command line. The results of the simulation will be displayed
-and the word ``finished`` in the terminal at the end of the
-simulation. The simulation will only run for 200 time steps. In order
-to alter the number of timesteps, the python function that
-encapsulates the system of equations must first be imported (at the
-python command line),
+at the command line. The results of the simulation will be displayed and the word
+``finished`` in the terminal at the end of the simulation. The simulation will
+only run for 200 time steps. To run with a different number of time steps change
+the ``numberOfSteps`` argument as follows,
 
 .. index:: runLeveler
-
->>> from examples.levelSet.electroChem.leveler import runLeveler
-
-and then the function can be executed with a different number of time
-steps by changing the ``numberOfSteps`` argument as follows,
 
 >>> runLeveler(numberOfSteps=10, displayViewers=False, cellSize=0.25e-7)
 1
