@@ -91,7 +91,10 @@ class Gist2DViewer(_GistViewer):
         gist.gridxy(self.grid)
 
         if self.limits != None:
-            gist.limits(self._getLimit('xmin'), self._getLimit('xmax'), self._getLimit('ymin'), self._getLimit('ymax'))
+            gist.limits(self._getLimit('xmin'), 
+                        self._getLimit('xmax'), 
+                        self._getLimit('ymin'), 
+                        self._getLimit('ymax'))
 
     def plot(self, filename = None):
         """

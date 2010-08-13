@@ -96,7 +96,7 @@ class _Viewer:
         self.limits.update(limits)
         self.limits.update(kwlimits)
         
-    def _getLimit(self, keys):
+    def _getLimit(self, keys, default=None):
         """
         Return the limit associated with the first available key in `keys`
         
@@ -110,7 +110,7 @@ class _Viewer:
         """
         if not (isinstance(keys, list) or isinstance(keys, tuple)):
             keys = (keys,)
-        limit = None
+        limit = default
         for key in keys:
             limit = self.limits.get(key, limit)
             if limit is not None:
