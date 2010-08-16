@@ -79,6 +79,10 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         output = Solver.Iterate(self.iterations, self.tolerance)
 
+        if self.preconditioner is not None:
+            if hasattr(self.preconditioner, 'Prec'):
+                del self.preconditioner.Prec
+            
         status = Solver.GetAztecStatus()
 
 ##         from fipy.tools.debug import PRINT        
