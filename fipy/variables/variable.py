@@ -476,8 +476,51 @@ class Variable(object):
             self._markFresh()
         else:
             value = self.value
-            
+
+        if hasattr(self, 'constraints'):
+            for constraintValue, mask in self.constraints:
+                value[mask] = constraintValue
+
         return value
+            
+
+    def constrain(self, value, where=None):
+        """
+        Constrain the `Variable` to have a `value` at an index or mask location specified by `where`.
+
+        >>> v = Variable((0,1,2,3))
+        >>> v.constrain(2, numerix.array((True, False, False, False)))
+        >>> print v
+        [2 1 2 3]
+        >>> v[:] = 10
+        >>> print v
+        [ 2 10 10 10]
+        >>> v.constrain(5, numerix.array((False, False, True, False)))
+        >>> print v
+        [ 2 10  5 10]
+        >>> v[:] = 6
+        >>> print v
+        [2 6 5 6]
+        >>> v.constrain(8)
+        >>> print v
+        [8 8 8 8]
+        >>> v[:] = 10
+        >>> print v
+        [8 8 8 8]
+        >>> del v.constraints[2]
+        >>> print v
+        [2 8 5 8]
+        
+        :Parameters:
+          - `value`: the value of the constraint
+          - `where`: the constraint mask or index specifying the location of the constraint
+
+        """
+
+        if not hasattr(self, 'constraints'):
+            self.constraints = []
+
+        self.constraints.append([value, where])
 
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
@@ -1250,7 +1293,7 @@ class Variable(object):
 
     def arctan2(self, other):
         return self._BinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
-                
+        
     def dot(self, other, opShape=None, operatorClass=None, axis=0):
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
