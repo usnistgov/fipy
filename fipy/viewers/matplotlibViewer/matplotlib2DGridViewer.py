@@ -83,8 +83,8 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         if title is None:                          
             self.axes.set_title(self.vars[0].getName())
 
-    def _getLimit(self, key):
-        limit = _MatplotlibViewer._getLimit(self, key)
+    def _getLimit(self, key, default=None):
+        limit = _MatplotlibViewer._getLimit(self, key, default=default)
         if limit is None:
             X, Y = self.vars[0].getMesh().getFaceCenters()
             if 'xmin' in key:
@@ -121,7 +121,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
                                                datamin=datamin, 
                                                datamax=datamax)
 
-            self.image.clim(vmax=datamax, vmin=datamin)
+            self.image.set_clim(vmax=datamax, vmin=datamin)
 
         self.image.set_data(self._getData())
         

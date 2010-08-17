@@ -42,12 +42,13 @@ from fipy.tools import numerix as nx
 from fipy.tools import parallel
 import mesh
 import mesh2D
+import sys
 import os
 import tempfile
 
 def parprint(str):
     if parallel.procID == 0:
-        print str
+        print >> sys.stderr, str
 
 class MshFile:
     """
@@ -323,6 +324,7 @@ class MshFile:
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
 
         parprint("Recovering coords.")
+        parprint("numcells %d" % numCellsTotal)
         vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
 
         # translate Gmsh IDs to `vertexCoord` indices
@@ -333,6 +335,7 @@ class MshFile:
         facesToV, cellsToF = self._deriveCellsAndFaces(cellsToVertIDs,
                                                        allShapeTypes,
                                                        numCellsTotal)
+        parprint("Done with cells and faces.")
         return vertexCoords, facesToV, cellsToF, \
                cellDataDict['idmap'], ghostDataDict['idmap']
 
@@ -475,16 +478,19 @@ class Gmsh2D(mesh2D.Mesh2D):
             # if i in self.gCellGlobalIDs:
                 # print "OVERLAP between cells and ghosts!"
 
+        print >> sys.stderr, "number of procs", self.parallel.Nproc
         if self.parallel.Nproc > 1:
-            # hostname = os.environ["SHOST"]
-            # print "PID %s on %s is waiting on others." % (self.parallel.procID, hostname)
+            parprint("  In par condition")
+            hostname = os.environ["SHOST"]
+            parprint("  PID %s on %s is waiting on others." % (self.parallel.procID, hostname))
             self.globalNumberOfCells = self.sumAll(len(self.cellGlobalIDs))
-            # print "I'm solving with %d cells total." % self.globalNumberOfCells
-            # print
+            parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
+            parprint("  Got global number of cells")
 
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
+        parprint("Exiting Gmsh2D")
 
     def sumAll(self, pyObj):
         from PyTrilinos import Epetra

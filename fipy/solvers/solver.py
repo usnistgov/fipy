@@ -123,12 +123,7 @@ class Solver:
         self.RHSvector = RHSvector
 
     def _solve(self):
-        array = self.var.getNumericValue()
-        self._solve_(self.matrix, array, self.RHSvector)
-        factor = self.var.getUnit().factor
-        if factor != 1:
-            array /= self.var.getUnit().factor
-        self.var[:] = array 
+        raise NotImplementedError
         
     def _solve_(self, L, x, b):
         raise NotImplementedError

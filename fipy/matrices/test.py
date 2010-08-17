@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
  # ###################################################################
- #  FiPy - Python-based phase field solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "grid3D.py"
+ #  FILE: "test.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -32,25 +32,15 @@
  # ###################################################################
  ##
 
-from fipy.tools import parallel
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
+import fipy.tests.testProgram
 
-def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
-    from numMesh import uniformGrid3D
-    from numMesh import grid3D
+def _suite():
+    theSuite = _LateImportDocTestSuite(docTestModuleNames = (
+            'pysparseMatrix',
+        ), base = __name__)
 
-    from fipy.tools import numerix
-    if numerix.getShape(dx) == () \
-      and numerix.getShape(dy) == () \
-      and numerix.getShape(dz) == ():
-        if nx is None:
-            nx = 1
-        if ny is None:
-            ny = 1
-        if nz is None:
-            nz = 1
-        return uniformGrid3D.UniformGrid3D(dx = dx, dy = dy, dz = dz,
-                                           nx = nx or 1, ny = ny or 1, nz = nz or 1,
-                                           overlap=overlap, communicator=communicator)
-    else:
-        return grid3D.Grid3D(dx = dx, dy = dy, dz = dz, nx = nx, ny = ny, nz = nz,
-                             overlap=overlap, communicator=communicator)
+    return theSuite
+    
+if __name__ == '__main__':
+    fipy.tests.testProgram.main(defaultTest='_suite')

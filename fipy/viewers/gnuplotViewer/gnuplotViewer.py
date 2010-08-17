@@ -83,12 +83,8 @@ class _GnuplotViewer(_Viewer):
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
 
-    def _getLimit(self, key):
-        limit = _Viewer._getLimit(self, key)
-        if limit is None:
-            return ''
-        else:
-            return str(limit)
+    def _getLimit(self, key, default=''):
+        return str(_Viewer._getLimit(self, key, default=default))
 
     def plot(self, filename = None):
         pairs = (('x', 'x'), ('y', 'y'), ('z', 'z'), ('cb', 'data'))

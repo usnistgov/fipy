@@ -57,7 +57,7 @@ This example creates a trench with the following zero level set:
 >>> steps = 200
 
 >>> from fipy.tools import serial
->>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, parallelModule=serial)
+>>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, communicator=serial)
 
 >>> var = DistanceVariable(name = 'level set variable',
 ...                        mesh = mesh,

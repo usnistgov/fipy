@@ -49,7 +49,7 @@ class Grid2D(Mesh2D):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, parallelModule=parallel):
+    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
         
         self.args = {
             'dx': dx, 
@@ -57,7 +57,7 @@ class Grid2D(Mesh2D):
             'nx': nx, 
             'ny': ny, 
             'overlap': overlap,
-            'parallelModule': parallelModule
+            'communicator': communicator
         }
 
         self.dx = PhysicalField(value = dx)
@@ -67,17 +67,17 @@ class Grid2D(Mesh2D):
         nx = self._calcNumPts(d=self.dx, n=nx, axis="x")
         
         self.dy = PhysicalField(value = dy)
-        if self.dy.getUnit().isDimensionless():
-            self.dy = dy
-        else:
-            self.dy /= scale
+#         if self.dy.getUnit().isDimensionless():
+#             self.dy = dy
+#         else:
+        self.dy /= scale
             
         ny = self._calcNumPts(d=self.dy, n=ny, axis="y")
         
         (self.nx,
          self.ny,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, parallelModule)
+         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, communicator)
 
         if numerix.getShape(self.dx) is not ():
             Xoffset = numerix.sum(self.dx[0:self.offset[0]])
@@ -108,14 +108,14 @@ class Grid2D(Mesh2D):
         faces = self._createFaces()
         self.numberOfFaces = len(faces[0])
         cells = self._createCells()
-        Mesh2D.__init__(self, vertices, faces, cells)
+        Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator)
         
         self.setScale(value = scale)
 
-    def _calcParallelGridInfo(self, nx, ny, overlap, parallelModule):
+    def _calcParallelGridInfo(self, nx, ny, overlap, communicator):
         
-        procID = parallelModule.procID
-        Nproc = parallelModule.Nproc
+        procID = communicator.procID
+        Nproc = communicator.Nproc
 
         overlap = min(overlap, ny)
         cellsPerNode = max(int(ny / Nproc), overlap)
@@ -143,9 +143,9 @@ class Grid2D(Mesh2D):
         return local_nx, local_ny, overlap, offset
 
     def __repr__(self):
-        return "%s(dx=%s, dy=%s, nx=%d, ny=%d)" \
+        return "%s(dx=%s, dy=%s, nx=%s, ny=%s)" \
             % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), 
-               self.args["nx"], self.args["ny"])
+               str(self.args["nx"]), str(self.args["ny"]))
             
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)

@@ -61,7 +61,7 @@ class DistanceVariable(CellVariable):
 
     >>> from fipy.meshes.grid1D import Grid1D
     >>> from fipy.tools import serial
-    >>> mesh = Grid1D(dx = .5, nx = 8, parallelModule=serial)
+    >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serial)
     >>> from distanceVariable import DistanceVariable
     >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
     >>> var.calcDistanceFunction()
@@ -72,7 +72,7 @@ class DistanceVariable(CellVariable):
     A 1D test case with very small dimensions.
 
     >>> dx = 1e-10
-    >>> mesh = Grid1D(dx = dx, nx = 8, parallelModule=serial)
+    >>> mesh = Grid1D(dx = dx, nx = 8, communicator=serial)
     >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
     >>> var.calcDistanceFunction()
     >>> answer = numerix.arange(8) * dx - 3.5 * dx

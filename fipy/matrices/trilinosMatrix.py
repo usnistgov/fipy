@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
-from fipy.tools.sparseMatrix import _SparseMatrix
+from fipy.matrices.sparseMatrix import _SparseMatrix
 from fipy.tools import numerix
 
 # Current inadequacies of the matrix class:
@@ -58,57 +58,34 @@ from fipy.tools import numerix
 # None of these situations currently come up in FiPy; tests do not reveal any of 
 # the warnings that guard for those, and all tests pass. Because of the way
 # FiPy constructs its matrices, I do not anticipate any of these occurring. 
-#
-# 4) Parallelization - currently matrix builds everything on processor 0, to be
-# redistributed later. As of now, cannot be done better without putting in
-# extremely inefficient filters to filter out unnecessary elements on each
-# processor.
 
-class _TrilinosMatrix(_SparseMatrix):
+class _TrilinosMatrixBase(_SparseMatrix):
+    """_TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
     
-    """
-    _TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
     _TrilinosMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
-
-    def __init__(self, size = None, bandwidth = 0, matrix = None, sizeHint = None):
+    def __init__(self, matrix, bandwidth=None, nonOverlappingMap=None, overlappingMap=None):
         """
-        Creates a `_TrilinosMatrix`.
-
         :Parameters:
-          - `size`: The size N for an N by N matrix.
-          - `bandwidth`: The proposed band width of the matrix.
           - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
-
+          - `bandwidth`: The proposed band width of the matrix.
         """
-
-        if matrix != None:
-            self.matrix = matrix
-            self.map = matrix.RowMap()
-            self.comm = matrix.Comm()
-            self.bandwidth = (matrix.NumGlobalNonzeros() + matrix.NumGlobalRows()-1)/matrix.NumGlobalRows()
+        self.matrix = matrix
+        if nonOverlappingMap is None:
+            self.nonOverlappingMap = matrix.RowMap()
         else:
-            self.comm = Epetra.PyComm()
-            if sizeHint is not None and bandwidth == 0:
-                self.bandwidth = (sizeHint + size - 1)/size 
-            else:
-                self.bandwidth = bandwidth
-                
-            # Matrix building gets done on one processor - it gets the map for
-            # all the rows
-            if self.comm.MyPID()==0:
-                self.map = Epetra.Map(size, range(0, size), 0, self.comm)
-            else: 
-                self.map = Epetra.Map(size, [], 0, self.comm)
-
-            self.matrix = Epetra.CrsMatrix(Epetra.Copy, self.map, self.bandwidth*3/2)
-
-            # Leave extra bandwidth, to handle multiple insertions into the
-            # same spot. It's memory-inefficient, but it'll get cleaned up when
-            # FillComplete is called, and according to the Trilinos devs the
-            # performance boost will be worth it.
+            self.nonOverlappingMap = nonOverlappingMap
+            
+        self.overlappingMap = overlappingMap
+        
+        self.comm = matrix.Comm()
+        if bandwidth is None:
+            self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() -1 ) 
+                              / matrix.NumGlobalRows())
+        else:
+            self.bandwidth = bandwidth
 
     def _getMatrix(self):
         return self.matrix
@@ -121,7 +98,7 @@ class _TrilinosMatrix(_SparseMatrix):
         if not self._getMatrix().Filled():
             self._getMatrix().FillComplete()
 
-        return _TrilinosMatrix(matrix = Epetra.CrsMatrix(self.matrix))
+        return _TrilinosMatrixBase(matrix=Epetra.CrsMatrix(self.matrix))
             
         
     def __getitem__(self, index):
@@ -162,7 +139,7 @@ class _TrilinosMatrix(_SparseMatrix):
                 tempBandwidth = other._getMatrix().NumGlobalNonzeros() \
                                  /self._getMatrix().NumGlobalRows()+1
 
-                tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.map, tempBandwidth)
+                tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, tempBandwidth)
                 
                 if EpetraExt.Add(other._getMatrix(), False, 1, tempMatrix, 1) != 0:
                     import warnings
@@ -181,6 +158,7 @@ class _TrilinosMatrix(_SparseMatrix):
                     import warnings
                     warnings.warn("EpetraExt.Add returned error code in __iadd__",
                                    UserWarning, stacklevel=2)
+
         return self
 
    
@@ -209,10 +187,10 @@ class _TrilinosMatrix(_SparseMatrix):
         Add two sparse matrices. The nonempty spots of one of them must be a 
         subset of the nonempty spots of the other one.
         
-            >>> L = _TrilinosMatrix(size = 3)
+            >>> L = _TrilinosMatrix(size=3)
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt([0,0,0], [0,1,2], [0,1,2])
-            >>> print L + _TrilinosIdentityMatrix(3)
+            >>> print L + _TrilinosIdentityMatrix(size=3)
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
              2.500000      ---     1.000000  
@@ -243,9 +221,9 @@ class _TrilinosMatrix(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix.
         
-            >>> L1 = _TrilinosMatrix(size = 3)
+            >>> L1 = _TrilinosMatrix(size=3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
-            >>> L2 = _TrilinosIdentityMatrix(size = 3)
+            >>> L2 = _TrilinosIdentityMatrix(size=3)
             >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
             
             >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
@@ -279,9 +257,9 @@ class _TrilinosMatrix(_SparseMatrix):
 
             
         """
-        N = self._getMatrix().NumGlobalRows()
+        N = self._getMatrix().NumMyCols()
 
-        if isinstance(other, _TrilinosMatrix):
+        if isinstance(other, _TrilinosMatrixBase):
             if isinstance(other._getMatrix(), Epetra.RowMatrix):
             
                 if not self._getMatrix().Filled():
@@ -290,10 +268,12 @@ class _TrilinosMatrix(_SparseMatrix):
                 if not other._getMatrix().Filled():
                     other._getMatrix().FillComplete()
 
-                result = Epetra.CrsMatrix(Epetra.Copy, self.map, 0)
+                result = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, 0)
 
                 EpetraExt.Multiply(self._getMatrix(), False, other._getMatrix(), False, result)
-                return _TrilinosMatrix(matrix = result)
+                copy = self.copy()
+                copy.matrix = result
+                return copy
             else:
                 raise TypeError
                 
@@ -308,8 +288,8 @@ class _TrilinosMatrix(_SparseMatrix):
                 if not self._getMatrix().Filled():
                     self._getMatrix().FillComplete()
 
-                y = _numpyToTrilinosVector(other, self.map)
-                result = Epetra.Vector(self.map)
+                y = _numpyToTrilinosVector(other, self.nonOverlappingMap)
+                result = Epetra.Vector(self.nonOverlappingMap)
                 self._getMatrix().Multiply(False, y, result)
                 return _trilinosToNumpyVector(result)
             else:
@@ -318,7 +298,7 @@ class _TrilinosMatrix(_SparseMatrix):
     def __rmul__(self, other):
         if type(numerix.ones(1)) == type(other):
             y = Epetra.Vector(other)
-            result = Epetra.Vector(self.map)
+            result = Epetra.Vector(self.nonOverlappingMap)
             self._getMatrix().Multiply(True, y, result)
             return _trilinosToNumpyVector(result)
         else:
@@ -332,7 +312,7 @@ class _TrilinosMatrix(_SparseMatrix):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
-            >>> L = _TrilinosMatrix(size = 3)
+            >>> L = _TrilinosMatrix(size=3)
             >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> print L
                 ---    10.000000   3.000000  
@@ -340,9 +320,10 @@ class _TrilinosMatrix(_SparseMatrix):
              2.500000      ---        ---    
         """
 
-        # Currently, all matrix building gets done on processor 0
-        if(self.comm.MyPID() > 0):
-            return
+        if id1.dtype.name == 'int64':
+            id1 = id1.astype('int32')
+        if id2.dtype.name == 'int64':
+            id2 = id1.astype('int32')
 
         if self._getMatrix().Filled():
             if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
@@ -369,7 +350,8 @@ class _TrilinosMatrix(_SparseMatrix):
                 self._getMatrix().InsertGlobalValues(id1, id2, vector)
             else:
                 self._getMatrix().InsertGlobalValues(id1, id2, numerix.zeros(len(vector)))
-                self._getMatrix().FillComplete()
+                if not self._getMatrix().Filled():
+                    self._getMatrix().FillComplete()
                 if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings
                     warnings.warn("ReplaceGlobalValues returned error code in put", 
@@ -393,7 +375,7 @@ class _TrilinosMatrix(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
         
-            >>> L = _TrilinosMatrix(size = 3)
+            >>> L = _TrilinosMatrix(size=3)
             >>> L.putDiagonal((3.,10.,numerix.pi))
             >>> print L
              3.000000      ---        ---    
@@ -430,15 +412,16 @@ class _TrilinosMatrix(_SparseMatrix):
         if not self._getMatrix().Filled():
             self._getMatrix().FillComplete()
 
-        result = Epetra.Vector(self.map)
+        result = Epetra.Vector(self.nonOverlappingMap)
         self._getMatrix().ExtractDiagonalCopy(result)
-        return _trilinosToNumpyVector(result)
+        
+        return result
     
     def addAt(self, vector, id1, id2):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
-            >>> L = _TrilinosMatrix(size = 3)
+            >>> L = _TrilinosMatrix(size=3)
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt((1.73,2.2,8.4,3.9,1.23), (1,2,0,0,1), (2,2,0,0,2))
             >>> print L
@@ -446,10 +429,6 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-
-        # Currently, all matrix building gets done on processor 0
-        if(self.comm.MyPID() > 0):
-            return
 
         ## This was added as it seems that trilinos does not like int64 arrays
         if hasattr(id1, 'astype') and id1.dtype.name == 'int64':
@@ -462,7 +441,7 @@ class _TrilinosMatrix(_SparseMatrix):
         else:
             if self._getMatrix().SumIntoGlobalValues(id1, id2, vector) != 0:
                 import warnings
-                warnings.warn("Summing into filled matrix returned error code",
+                warnings.warn("Summing into unfilled matrix returned error code",
                                UserWarning, stacklevel=2)
                 # Possible change to this part of the code to do the following:
                 #
@@ -478,8 +457,8 @@ class _TrilinosMatrix(_SparseMatrix):
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getMatrix().GetGlobalRows())
-            tmp = numerix.zeros((self._getMatrix().GetGlobalRows(),), 'd')
+            ids = numerix.arange(self._getMatrix().GetMyRows())
+            tmp = numerix.zeros((self._getMatrix().GetMyRows(),), 'd')
             tmp[:] = vector
             self.addAt(tmp, ids, ids)
         else:
@@ -490,8 +469,8 @@ class _TrilinosMatrix(_SparseMatrix):
         """
         Exports the matrix to a Matrix Market file of the given filename.
         """
-        self.matrix.GlobalAssemble()
-        self.matrix.FillComplete()
+        if not self.matrix.Filled():
+            self.matrix.FillComplete()
         EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     def getNumpyArray(self):
@@ -510,13 +489,18 @@ class _TrilinosMatrix(_SparseMatrix):
             totalElements = self.matrix.NumGlobalRows()
 
             DistributedMap = Epetra.Map(totalElements, 0, self.comm)
-            RootToDist = Epetra.Import(DistributedMap, self.map)
+            RootToDist = Epetra.Import(DistributedMap, self.nonOverlappingMap)
 
             DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, self.bandwidth*3/2)
 
             DistMatrix.Import(self.matrix, RootToDist, Epetra.Insert)
 
             return DistMatrix
+
+    def finalize(self):
+        if not self.matrix.Filled():
+            self.matrix.FillComplete()
+        self.matrix.OptimizeStorage()
 
 def _numpyToTrilinosVector(v, map):
     """
@@ -557,6 +541,209 @@ def _trilinosToNumpyVector(v):
 
         return numerix.array(PersonalV)
         
+class _TrilinosMatrix(_TrilinosMatrixBase):
+    def __init__(self, size, bandwidth=0, sizeHint=None, nonOverlappingMap=None, overlappingMap=None):
+        """Creates a `_TrilinosMatrix`.
+
+        :Parameters:
+          - `size`: The size N for an N by N matrix. 
+          - `bandwidth`: The proposed band width of the matrix.
+          - `sizeHint`: ???
+          - `map`: The Epetra `Map` for the rows that this processor holds
+        """
+        if sizeHint is not None and bandwidth == 0:
+            bandwidth = (sizeHint + size - 1) / (size or 1) 
+        else:
+            bandwidth = bandwidth
+            
+        if nonOverlappingMap is None:
+            comm = Epetra.PyComm()
+            # Matrix building gets done on one processor - it gets the map for
+            # all the rows
+            if comm.MyPID() == 0:
+                nonOverlappingMap = Epetra.Map(size, range(0, size), 0, comm)
+            else: 
+                nonOverlappingMap = Epetra.Map(size, [], 0, comm)
+
+        matrix = Epetra.CrsMatrix(Epetra.Copy, nonOverlappingMap, bandwidth*3/2)
+
+        # Leave extra bandwidth, to handle multiple insertions into the
+        # same spot. It's memory-inefficient, but it'll get cleaned up when
+        # FillComplete is called, and according to the Trilinos devs the
+        # performance boost will be worth it.
+        
+        _TrilinosMatrixBase.__init__(self, 
+                                     matrix=matrix, 
+                                     nonOverlappingMap=nonOverlappingMap, 
+                                     overlappingMap=overlappingMap, 
+                                     bandwidth=bandwidth)
+
+class _TrilinosMeshMatrix(_TrilinosMatrix):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+        """Creates a `_TrilinosMatrix` associated with a `Mesh`
+
+        :Parameters:
+          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `bandwidth`: The proposed band width of the matrix.
+          - `sizeHint`: ???
+        """
+        self.mesh = mesh
+        
+        comm = mesh.communicator.epetra_comm
+        globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
+        globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
+        nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
+        overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
+        
+        _TrilinosMatrix.__init__(self, 
+                                 size=mesh.getNumberOfCells(), 
+                                 bandwidth=bandwidth, 
+                                 sizeHint=sizeHint, 
+                                 nonOverlappingMap=nonOverlappingMap,
+                                 overlappingMap=overlappingMap)
+
+    def copy(self):
+        tmp = _TrilinosMatrix.copy(self)
+        copy = self.__class__(mesh=self.mesh, bandwidth=self.bandwidth)
+        copy.matrix = tmp.matrix
+        return copy
+                                 
+    def asTrilinosMeshMatrix(self):
+        return self
+                                 
+    def _globalNonOverlapping(self, vector, id1, id2):
+        """Transforms and subsets local overlapping values and coordinates to global non-overlapping
+        
+        :Parameters:
+          - `vector`: The overlapping values to insert.
+          - `id1`: The local overlapping row indices.
+          - `id2`: The local overlapping column indices.
+          
+        :Returns: 
+          Tuple of (non-overlapping vector, 
+                    global non-overlapping row indices, 
+                    global non-overlapping column indices)
+        """
+        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+        globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
+
+        id1 = globalOverlappingCellIDs[id1]
+        id2 = globalOverlappingCellIDs[id2]
+
+        mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 
+        id1 = id1[mask]
+        id2 = id2[mask]
+        vector = vector[mask]
+        
+        return (vector, id1, id2)
+
+    def put(self, vector, id1, id2):
+        vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
+        _TrilinosMatrix.put(self, vector=vector, id1=id1, id2=id2)
+
+    def addAt(self, vector, id1, id2):
+        vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
+        _TrilinosMatrix.addAt(self, vector=vector, id1=id1, id2=id2)
+        
+    def takeDiagonal(self):
+        nonoverlapping_result = _TrilinosMatrix.takeDiagonal(self)
+        
+        comm = self.mesh.communicator.epetra_comm
+        
+        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+        overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
+
+        overlapping_result = Epetra.Vector(overlappingMap)
+        overlapping_result.Import(nonoverlapping_result, 
+                                  Epetra.Import(overlappingMap, 
+                                                self.nonOverlappingMap), 
+                                  Epetra.Insert)
+
+        return overlapping_result
+
+    def __mul__(self, other):
+        """
+        Multiply a sparse matrix by another sparse matrix.
+        
+            >>> L1 = _TrilinosMatrix(size=3)
+            >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
+            >>> L2 = _TrilinosIdentityMatrix(size=3)
+            >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
+            
+            >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
+            ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
+            ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
+
+            >>> for i in range(0,3):
+            ...     for j in range(0,3):
+            ...         numerix.allclose(((L1*L2)[i,j],), tmp[i,j])
+            True
+            True
+            True
+            True
+            True
+            True
+            True
+            True
+            True
+
+        or a sparse matrix by a vector
+
+            >>> tmp = numerix.array((29., 6.28318531, 2.5))       
+            >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
+            1
+            
+        or a vector by a sparse matrix
+
+            >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
+            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
+            1
+
+            
+        """
+        if not self._getMatrix().Filled():
+            self._getMatrix().FillComplete()
+
+        N = self._getMatrix().NumMyCols()
+
+        if isinstance(other, _TrilinosMatrixBase):
+            return _TrilinosMatrix.__mul__(self, other=other)
+        else:
+            shape = numerix.shape(other)
+            if shape == ():
+                result = self.copy()
+                result._getMatrix().Scale(other)
+                return result
+            else:
+                if isinstance(other, Epetra.Vector):
+                    other_map = other.Map()
+                else:
+                    other_map = self.overlappingMap
+
+                if other_map.SameAs(self.overlappingMap):
+                    localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
+                    other = Epetra.Vector(self.nonOverlappingMap, 
+                                          other[localNonOverlappingCellIDs])
+
+                if other.Map().SameAs(self.matrix.RowMap()):
+
+                    nonoverlapping_result = Epetra.Vector(self.nonOverlappingMap)
+                    
+                    self._getMatrix().Multiply(False, other, nonoverlapping_result)
+                
+                    if other_map.SameAs(self.overlappingMap):
+                        overlapping_result = Epetra.Vector(self.overlappingMap)
+                        overlapping_result.Import(nonoverlapping_result, 
+                                                  Epetra.Import(self.overlappingMap, 
+                                                                self.nonOverlappingMap), 
+                                                  Epetra.Insert)
+
+                        return overlapping_result
+                    else:
+                        return nonoverlapping_result
+                else:
+                    raise TypeError("%s: %s != (%d,)" % (self.__class__, str(shape), N))
+
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """
     Represents a sparse identity matrix for Trilinos.
@@ -565,15 +752,33 @@ class _TrilinosIdentityMatrix(_TrilinosMatrix):
         """
         Create a sparse matrix with '1' in the diagonal
         
-            >>> print _TrilinosIdentityMatrix(size = 3)
+            >>> print _TrilinosIdentityMatrix(size=3)
              1.000000      ---        ---    
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _TrilinosMatrix.__init__(self, size = size, bandwidth = 1)
+        _TrilinosMatrix.__init__(self, size=size, bandwidth=1)
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
         
+class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
+    def __init__(self, mesh):
+        """
+        Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        
+            >>> from fipy import Grid1D
+            >>> mesh = Grid1D(nx=3)
+            >>> print _TrilinosIdentityMeshMatrix(mesh=mesh)
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
+        """
+        _TrilinosMeshMatrix.__init__(self, mesh=mesh, bandwidth=1)
+        size = mesh.getNumberOfCells()
+        ids = numerix.arange(size)
+        self.addAt(numerix.ones(size), ids, ids)
+
+
 def _test(): 
     import doctest
     return doctest.testmod()

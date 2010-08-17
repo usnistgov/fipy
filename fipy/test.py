@@ -41,6 +41,7 @@ def _suite():
         'models.test',
         'terms.test',
         'tools.test',
+        'matrices.test',
         'meshes.test',
         'variables.test',
         'viewers.test',

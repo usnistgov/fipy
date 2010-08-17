@@ -38,7 +38,7 @@ from fipy.terms.term import Term
 from fipy.tools import inline
 from fipy.tools import numerix
 
-from fipy.tools.sparseMatrix import _SparseMatrix
+from fipy.matrices.sparseMatrix import _SparseMatrix
 
 class CellTerm(Term):
     """
@@ -122,7 +122,7 @@ class CellTerm(Term):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
         N = len(var)
         b = numerix.zeros((N),'d')
-        L = SparseMatrix(size=N)
+        L = SparseMatrix(mesh=var.getMesh())
         
         # The sign of the matrix diagonal doesn't seem likely to change
         # after initialization, but who knows?

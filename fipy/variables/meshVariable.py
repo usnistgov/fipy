@@ -36,7 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
-from fipy.tools import numerix, parallel
+from fipy.tools import numerix
 
 class _MeshVariable(Variable):
     """
@@ -159,18 +159,15 @@ class _MeshVariable(Variable):
         pass
 
     def _getGlobalValue(self, localIDs, globalIDs):
-        from fipy.tools import parallel
         localValue = self.getValue()
-        if parallel.Nproc > 1:
-            from mpi4py import MPI
-            comm = MPI.COMM_WORLD
+        if self.getMesh().communicator.Nproc > 1:
             if localValue.shape[-1] != 0:
                 localValue = localValue[..., localIDs]
-            globalIDs = numerix.concatenate(comm.allgather(globalIDs))
+            globalIDs = numerix.concatenate(self.getMesh().communicator.allgather(globalIDs))
             
             globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,), 
                                         dtype=numerix.obj2sctype(localValue))
-            globalValue[..., globalIDs] = numerix.concatenate(comm.allgather(localValue), axis=-1)
+            globalValue[..., globalIDs] = numerix.concatenate(self.getMesh().communicator.allgather(localValue), axis=-1)
             
             return globalValue
         else:
@@ -330,11 +327,10 @@ class _MeshVariable(Variable):
         return fnParallel(nodeVal)
 
     def max(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
-            from PyTrilinos import Epetra
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def maxParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
-                                             fn=a.max, fnParallel=Epetra.PyComm().MaxAll)
+                                             fn=a.max, fnParallel=self.getMesh().communicator.epetra_comm.MaxAll)
                 
             return self._axisOperator(opname="maxVar", 
                                       op=maxParallel, 
@@ -343,11 +339,10 @@ class _MeshVariable(Variable):
             return Variable.max(self, axis=axis)
                                   
     def min(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
-            from PyTrilinos import Epetra
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def minParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
-                                             fn=a.min, fnParallel=Epetra.PyComm().MinAll)
+                                             fn=a.min, fnParallel=self.getMesh().communicator.epetra_comm.MinAll)
                 
             return self._axisOperator(opname="minVar", 
                                       op=minParallel, 
@@ -356,11 +351,10 @@ class _MeshVariable(Variable):
             return Variable.min(self, axis=axis)
 
     def all(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
-            from mpi4py import MPI
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def allParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
-                return MPI.COMM_WORLD.allreduce(a.all(axis=axis), op=MPI.LAND)
+                return self.getMesh().communicator.all(a, axis=axis)
                 
             return self._axisOperator(opname="allVar", 
                                       op=allParallel, 
@@ -369,11 +363,10 @@ class _MeshVariable(Variable):
             return Variable.all(self, axis=axis)
 
     def any(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
-            from mpi4py import MPI
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def anyParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
-                return MPI.COMM_WORLD.allreduce(a.any(axis=axis), op=MPI.LOR)
+                return self.getMesh().communicator.any(a, axis=axis)
                 
             return self._axisOperator(opname="anyVar", 
                                       op=anyParallel, 
@@ -382,11 +375,10 @@ class _MeshVariable(Variable):
             return Variable.any(self, axis=axis)
 
     def sum(self, axis=None):
-        if parallel.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
-            from PyTrilinos import Epetra
+        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
             def sumParallel(a):
                 a = a[self._getLocalNonOverlappingIDs()]
-                return Epetra.PyComm().SumAll(a.sum(axis=axis))
+                return self.getMesh().communicator.sum(a, axis=axis)
                 
             return self._axisOperator(opname="sumVar", 
                                       op=sumParallel, 
@@ -395,10 +387,9 @@ class _MeshVariable(Variable):
             return Variable.sum(self, axis=axis)
 
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
-         if parallel.Nproc > 1:
-             from mpi4py import MPI
+         if self.getMesh().communicator.Nproc > 1:
              def allcloseParallel(a, b):
-                 return MPI.COMM_WORLD.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=MPI.LAND)
+                 return self.getMesh().communicator.allclose(a, b, rtol=rtol, atol=atol)
 
              operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
              return self._BinaryOperatorVariable(allcloseParallel,
@@ -410,10 +401,9 @@ class _MeshVariable(Variable):
              return Variable.allclose(self, other, rtol=rtol, atol=atol)
 
     def allequal(self, other):
-         if parallel.Nproc > 1:
-             from mpi4py import MPI
+         if self.getMesh().communicator.Nproc > 1:
              def allequalParallel(a, b):
-                 return MPI.COMM_WORLD.allreduce(numerix.allequal(a, b), op=MPI.LAND)
+                 return self.getMesh().communicator.allequal(a, b)
 
              operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
              return self._BinaryOperatorVariable(allequalParallel,

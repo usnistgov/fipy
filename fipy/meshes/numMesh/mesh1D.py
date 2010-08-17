@@ -76,8 +76,9 @@ class Mesh1D(Mesh):
         newmesh = Mesh1D(newCoords, numerix.array(self.faceVertexIDs), numerix.array(self.cellFaceIDs))
         return newmesh
 
-    def _concatenate(self, other, smallNumber):
-        return Mesh1D(**self._getAddedMeshValues(other, smallNumber))
+    @property
+    def _concatenatedClass(self):
+        return Mesh1D
 
     def _isOrthogonal(self):
         return True

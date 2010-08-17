@@ -44,7 +44,7 @@ from fipy.tools import parallel
 
 # TODO: add test to show that round trip pickle of mesh doesn't work properly
 # FIXME: pickle fails to work properly on numpy 1.1 (run gapFillMesh.py)
-def write(data, filename = None, extension = ''):
+def write(data, filename = None, extension = '', communicator=parallel):
     """
     Pickle an object and write it to a file. Wrapper for
     `cPickle.dump()`.
@@ -54,6 +54,7 @@ def write(data, filename = None, extension = ''):
       - `filename`: The name of the file to place the pickled object. If `filename` is `None`
         then a temporary file will be used and the file object and file name will be returned as a tuple
       - `extension`: Used if filename is not given.
+      - `communicator`: Object with `procID` and `Nproc` attributes.
 
     Test to check pickling and unpickling.
 
@@ -65,7 +66,7 @@ def write(data, filename = None, extension = ''):
         True
         
     """
-    if parallel.procID == 0:
+    if communicator.procID == 0:
         if filename is None:
             import tempfile
             (f, _filename) =  tempfile.mkstemp(extension)
@@ -82,7 +83,7 @@ def write(data, filename = None, extension = ''):
     if filename is None:
         return (f, _filename)
 
-def read(filename, fileobject = None):
+def read(filename, fileobject = None, communicator=parallel):
     """
     Read a pickled object from a file. Returns the unpickled object.
     Wrapper for `cPickle.load()`.
@@ -90,9 +91,10 @@ def read(filename, fileobject = None):
     :Parameters:
       - `filename`: The name of the file to unpickle the object from.
       - `fileobject`: Used to remove temporary files
+      - `communicator`: Object with `procID` and `Nproc` attributes.
       
     """
-    if parallel.procID == 0:
+    if communicator.procID == 0:
         fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
         data = fileStream.read()
         fileStream.close()
@@ -102,10 +104,8 @@ def read(filename, fileobject = None):
     else:
         data = None
         
-    if parallel.Nproc > 1:
-        from mpi4py import MPI
-        comm = MPI.COMM_WORLD
-        data = comm.bcast(data, root=0)
+    if communicator.Nproc > 1:
+        data = communicator.bcast(data, root=0)
 
     return cPickle.loads(data)
 
