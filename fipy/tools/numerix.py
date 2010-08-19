@@ -81,10 +81,10 @@ except ImportError:
     from numpy import ma as MA
     numpy_version = 'new'
 
-def zeros(a, t='l'):
-    return NUMERIX.zeros(a, t)
-def ones(a, t='l'):
-    return NUMERIX.ones(a, t)
+def zeros(a, dtype='l'):
+    return NUMERIX.zeros(a, dtype)
+def ones(a, dtype='l'):
+    return NUMERIX.ones(a, dtype)
 
     
 
