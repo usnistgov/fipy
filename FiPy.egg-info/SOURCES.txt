@@ -168,17 +168,12 @@ examples/convection/powerLaw1D/tri2D.py
 examples/diffusion/__init__.py
 examples/diffusion/anisotropy.msh
 examples/diffusion/anisotropy.py
-examples/diffusion/bigrect.msh
-examples/diffusion/circle.msh
 examples/diffusion/circle.py
-examples/diffusion/circleQuad-one.msh
 examples/diffusion/circleQuad.py
-examples/diffusion/circlequad-parted.msh
 examples/diffusion/electrostatics.py
 examples/diffusion/index.txt
 examples/diffusion/mesh1D.py
 examples/diffusion/mesh20x20.py
-examples/diffusion/rect-parted.msh
 examples/diffusion/test.py
 examples/diffusion/variable.py
 examples/diffusion/explicit/__init__.py
@@ -338,7 +333,6 @@ fipy/meshes/numMesh/grid3D.py
 fipy/meshes/numMesh/mesh.py
 fipy/meshes/numMesh/mesh1D.py
 fipy/meshes/numMesh/mesh2D.py
-fipy/meshes/numMesh/parallelMesh.py
 fipy/meshes/numMesh/periodicGrid1D.py
 fipy/meshes/numMesh/periodicGrid2D.py
 fipy/meshes/numMesh/skewedGrid2D.py

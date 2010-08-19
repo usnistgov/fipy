@@ -81,14 +81,22 @@ class MshFile:
         """
         
         self.parallel        = parallel
-        if self.parallel.Nproc < 2:
-            self.minVersion      = 2.0
-        else:
-            self.minVersion      = 2.5
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
         gmshFlags            = self._prepareGmshFlags()
         self.filename        = self._parseFilename(filename, gmshFlags)
+
+        if self._getGmshVersion() < 2.0:
+            errStr = "Gmsh version must be >= 2.0."
+            raise EnvironmentError(errStr)
+        if self.parallel.Nproc > 1:
+            if self._getGmshVersion() < 2.5:
+                import warnings
+                from fipy.tools import serial
+                warnstr = "Cannot partition with Gmsh version < 2.5. " \
+                           + "Reverting to serial."
+                warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
+                self.parallel = serial
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
@@ -148,26 +156,24 @@ class MshFile:
         f.seek(0)
         return [float(x) for x in metaData]
 
-    def _checkGmshVersion(self):
+    def _getGmshVersion(self):
         """
         Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
         """
         import subprocess as subp
         import re
 
-        if self.parallel.Nproc > 1:
-            from PyTrilinos import Epetra
-            Epetra.PyComm().Barrier() # blocking m-m-m-magic
-
         verStr = subp.Popen("gmsh --version", 
                             stderr=subp.PIPE, shell=True).stderr.readline()
         m = re.search(r'\d+.\d+', verStr)
 
-        if m and m.group(0) >= self.minVersion:
-            return
-        else:
-            errStr = "Gmsh version must be >= %f."
-            raise EnvironmentError(errStr % self.minVersion)
+        ## if m and m.group(0) >= self.minVersion:
+        ##     return
+        ## else:
+        ##     errStr = "Gmsh version must be >= %f."
+        ##     raise EnvironmentError(errStr % self.minVersion)
+        if m:
+            return float(m.group(0))
      
     def _isolateData(self, title, f):
         """
@@ -480,9 +486,6 @@ class Gmsh2D(mesh2D.Mesh2D):
 
         print >> sys.stderr, "number of procs", self.parallel.Nproc
         if self.parallel.Nproc > 1:
-            parprint("  In par condition")
-            hostname = os.environ["SHOST"]
-            parprint("  PID %s on %s is waiting on others." % (self.parallel.procID, hostname))
             self.globalNumberOfCells = self.sumAll(len(self.cellGlobalIDs))
             parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
             parprint("  Got global number of cells")
