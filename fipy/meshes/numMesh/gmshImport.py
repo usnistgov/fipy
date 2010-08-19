@@ -167,11 +167,6 @@ class MshFile:
                             stderr=subp.PIPE, shell=True).stderr.readline()
         m = re.search(r'\d+.\d+', verStr)
 
-        ## if m and m.group(0) >= self.minVersion:
-        ##     return
-        ## else:
-        ##     errStr = "Gmsh version must be >= %f."
-        ##     raise EnvironmentError(errStr % self.minVersion)
         if m:
             return float(m.group(0))
      
