@@ -39,7 +39,7 @@ from fipy.tools import numerix
 from fipy.terms.term import Term
 from fipy.tools import numerix
 
-class DiffusionTerm(Term):
+class _DiffusionTerm(Term):
 
     r"""
     This term represents a higher order diffusion term. The order of the term is determined
@@ -584,7 +584,24 @@ class DiffusionTerm(Term):
         """
         pass
 
-class DiffusionTermNoCorrection(DiffusionTerm):
+class DiffusionTerm(_DiffusionTerm):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1. , equation=None):
+        if not hasattr(self, 'diffusionAndBCTerm'):
+
+            from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+            from fipy.variables.faceVariable import FaceVariable
+
+            normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()).dot(self.nthCoeff)
+            constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / var.getMesh()._getCellDistances()
+
+            self.diffusionAndBCTerm = _DiffusionTerm(self.coeff) +  \
+                                      (var.getFaceGrad().getConstraintMask() * normalsDotCoeff * var.getFaceGrad()).getDivergence() - \
+                                      ImplicitSourceTerm(constrainedNormalsDotCoeffOverdAP.getDivergence()) + \
+                                      (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence()
+                
+        return self.diffusionAndBCTerm._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+        
+class DiffusionTermNoCorrection(_DiffusionTerm):
     def _getNormals(self, mesh):
         return mesh._getFaceNormals()
 

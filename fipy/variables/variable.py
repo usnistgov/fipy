@@ -522,6 +522,13 @@ class Variable(object):
 
         self.constraints.append([value, where])
 
+    def getConstraintMask(self):
+        returnMask = numerix.zeros(numerix.shape(self)[-1], dtype=numerix.bool_)
+        if hasattr(self, 'constraints'):
+            for value, mask in self.constraints:
+                returnMask = returnMask | mask
+        return returnMask
+        
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
         
