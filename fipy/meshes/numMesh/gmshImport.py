@@ -163,12 +163,14 @@ class MshFile:
         import subprocess as subp
         import re
 
-        verStr = subp.Popen("gmsh --version", 
-                            stderr=subp.PIPE, shell=True).stderr.readline()
+        verStr = "".join(subp.Popen("gmsh --version", 
+                            stderr=subp.PIPE, shell=True).stderr.readlines())
         m = re.search(r'\d+.\d+', verStr)
 
         if m:
             return float(m.group(0))
+        else:
+            return 0
      
     def _isolateData(self, title, f):
         """
