@@ -479,7 +479,10 @@ class Variable(object):
 
         if hasattr(self, 'constraints'):
             for constraintValue, mask in self.constraints:
-                value[...,numerix.array(mask)] = constraintValue
+                if mask is None:
+                    value[:] = constraintValue
+                else:
+                    value[...,numerix.array(mask)] = constraintValue
 
         return value
             
