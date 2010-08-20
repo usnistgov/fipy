@@ -87,8 +87,8 @@ Using the boundary condition at :math:`x=0` this flux should be equal to
 equal to :math:`C \left( 1 \right)` fixes the edge derivative on both the
 convection and diffusion terms to be zero.
 
->>> BCs = (FixedFlux(faces=mesh.getFacesLeft(), value=-P),
-...        FixedValue(faces=mesh.getFacesRight(), value=C.getFaceValue()))
+>>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=C.getFaceValue()))
+>>> C.getFaceGrad().constrain(P, mesh.getFacesLeft())
 
 >>> eq = PowerLawConvectionTerm((P,)) == \
 ...      DiffusionTerm() - ImplicitSourceTerm(D)

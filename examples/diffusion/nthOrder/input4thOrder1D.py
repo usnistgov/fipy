@@ -76,12 +76,12 @@ or
 >>> alpha3 = 4.
 >>> alpha4 = -3.
     
-.. index:: FixedValue, FixedFlux, NthOrderBoundaryCondition
+.. index:: FixedValue, NthOrderBoundaryCondition
 
 >>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=alpha1),
-...        FixedFlux(faces=mesh.getFacesRight(), value=alpha2),
 ...        NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
 ...        NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=alpha4, order=3))
+>>> var.getFaceGrad().constrain(alpha2, mesh.getFacesRight())
 
 We initialize the steady-state equation
     
@@ -91,7 +91,6 @@ and use the :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` for st
 
 We perform one implicit timestep to achieve steady state
 
-    
 >>> eq.solve(var=var,
 ...          boundaryConditions=BCs,
 ...          solver=DefaultAsymmetricSolver())

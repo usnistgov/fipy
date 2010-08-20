@@ -107,7 +107,7 @@ created with these faces and a value (``valueLeft``).
 .. note::
     
    If no boundary conditions are specified on exterior faces, the default
-   boundary condition is ``FixedFlux(faces=someFaces, value=0.)``, equivalent to
+   boundary condition is equivalent to a zero gradient, equivalent to
    :math:`\vec{n} \cdot \nabla \phi \rvert_\text{someFaces} = 0`.
 
 If you have ever tried to numerically solve
@@ -398,16 +398,15 @@ to the left and a fixed flux of
     
 to the right:
 
-.. index:: FixedFlux
-
->>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-...        FixedFlux(faces=mesh.getFacesRight(), value=fluxRight))
+>>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),)
+>>> phi.getFaceGrad().constrain(fluxRight, mesh.getFacesRight())
 
 We re-initialize the solution variable
     
 >>> phi.setValue(0)
     
 and obtain the steady-state solution with one implicit solution step
+
 
 >>> DiffusionTerm(coeff = D).solve(var=phi, 
 ...                                boundaryConditions = BCs)

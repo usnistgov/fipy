@@ -74,8 +74,8 @@ diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
 x = mesh.getFaceCenters()[0]
 diffCoeff.setValue(0.1, where=(L/4. <= x) & (x < 3. * L / 4.))
 
-boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
-                    FixedFlux(mesh.getFacesRight(),fluxRight))
+boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),)
+var.getFaceGrad().constrain(1., mesh.getFacesRight())
 
 if __name__ == '__main__':
     DiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
