@@ -69,7 +69,7 @@ class CellVariable(_MeshVariable):
             self.old = self.copy()
         else:
             self.old = None
-            
+
     def _getVariableClass(self):
         return CellVariable
         
@@ -334,6 +334,9 @@ class CellVariable(_MeshVariable):
             from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
             self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
+        if hasattr(self, 'faceConstraints'):
+            self.arithmeticFaceValue.applyConstraints(self.faceConstriants)
+            
         return self.arithmeticFaceValue
 
     getFaceValue = getArithmeticFaceValue
@@ -363,6 +366,9 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, 'minmodFaceValue'):
             from minmodCellToFaceVariable import _MinmodCellToFaceVariable
             self.minmodFaceValue = _MinmodCellToFaceVariable(self)
+
+        if hasattr(self, 'faceConstraints'):
+            self.minmodFaceValue.applyConstraints(self.faceConstriants)
 
         return self.minmodFaceValue
 
@@ -404,6 +410,9 @@ class CellVariable(_MeshVariable):
             from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
             self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
 
+        if hasattr(self, 'faceConstraints'):
+            self.harmonicFaceValue.applyConstraints(self.faceConstriants)
+
         return self.harmonicFaceValue
 
     def getFaceGrad(self):
@@ -414,6 +423,9 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, 'faceGrad'):
             from faceGradVariable import _FaceGradVariable
             self.faceGrad = _FaceGradVariable(self)
+
+        if hasattr(self, 'faceConstraints'):
+            self.minmodFaceValue.applyConstraints(self.faceConstriants)
 
         return self.faceGrad
 
@@ -523,6 +535,15 @@ class CellVariable(_MeshVariable):
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())
 
+    def constrain(value, where=None):
+        if numerix.shape(where)[-1] == self.mesh.getNumberOfFaces():
+            
+            if hasattr(self, 'faceConstraints'):
+                self.faceConstraints = []
+            self.faceConstraints.append([value, where])
+        else:
+            _MeshVariable.constrain(value, where)
+            
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.getCellCenters())

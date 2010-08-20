@@ -486,7 +486,6 @@ class Variable(object):
 
         return value
             
-
     def constrain(self, value, where=None):
         """
         Constrain the `Variable` to have a `value` at an index or mask location specified by `where`.
@@ -531,6 +530,10 @@ class Variable(object):
             for value, mask in self.constraints:
                 returnMask = returnMask | numerix.array(mask)
         return returnMask
+
+    def applyConstraints(constraints):
+        for value, mask in constraints:
+            self.constrain(value, mask)
         
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
