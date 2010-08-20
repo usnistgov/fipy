@@ -479,7 +479,7 @@ class Variable(object):
 
         if hasattr(self, 'constraints'):
             for constraintValue, mask in self.constraints:
-                value[mask] = constraintValue
+                value[...,numerix.array(mask)] = constraintValue
 
         return value
             
@@ -526,7 +526,7 @@ class Variable(object):
         returnMask = numerix.zeros(numerix.shape(self)[-1], dtype=numerix.bool_)
         if hasattr(self, 'constraints'):
             for value, mask in self.constraints:
-                returnMask = returnMask | mask
+                returnMask = returnMask | numerix.array(mask)
         return returnMask
         
     def _isCached(self):

@@ -440,9 +440,7 @@ class _DiffusionTerm(Term):
 
         Test, 2nd order, 1 dimension, fixed flux 3, fixed value of 4
 
-        >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
         >>> from fipy.boundaryConditions.fixedValue import FixedValue
-        >>> bcLeft = FixedFlux(mesh.getFacesLeft(), 3.)
         >>> bcRight = FixedValue(mesh.getFacesRight(), 4.)
         >>> term = DiffusionTerm(coeff = (1.,))
         >>> coeff = term._getGeomCoeff(mesh)
@@ -451,9 +449,11 @@ class _DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), 
+        >>> var=CellVariable(mesh=mesh)
+        >>> var.getFaceGrad().constrain(3., mesh.getFacesLeft())
+        >>> L,b = term._buildMatrix(var=var, 
         ...                         SparseMatrix=SparseMatrix ,
-        ...                         boundaryConditions=(bcLeft, bcRight))
+        ...                         boundaryConditions=(bcRight,))
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -3.))) or procID != 0
@@ -464,7 +464,6 @@ class _DiffusionTerm(Term):
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvatures 0,
         x = 2, fixed value 1, fixed curvature 0
 
-        >>> bcLeft1 = FixedFlux(mesh.getFacesLeft(), 3.)
         >>> from fipy.boundaryConditions.nthOrderBoundaryCondition \
         ...     import NthOrderBoundaryCondition
         >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2)
@@ -477,9 +476,11 @@ class _DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), SparseMatrix=SparseMatrix,
-        ...                         boundaryConditions = (bcLeft1, bcLeft2, 
-        ...                                               bcRight1, bcRight2))
+        >>> var = CellVariable(mesh=mesh)
+        >>> var.getFaceGrad().constrain(3., mesh.getFacesLeft())
+        >>> L,b = term._buildMatrix(var=var, SparseMatrix=SparseMatrix,
+        ...                         boundaryConditions=(bcLeft2, 
+        ...                                             bcRight1, bcRight2))
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        (( 4., -6.), 
         ...                         (-4., 10.))) or procID != 0
@@ -490,7 +491,6 @@ class _DiffusionTerm(Term):
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvature 2,
         x = 2, fixed value 4, fixed 3rd order -1
 
-        >>> bcLeft1 = FixedFlux(mesh.getFacesLeft(), 3.)
         >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 2., 2)
         >>> bcRight1 = FixedValue(mesh.getFacesRight(), 4.)
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
@@ -501,9 +501,11 @@ class _DiffusionTerm(Term):
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+        >>> var = CellVariable(mesh=mesh)
+        >>> var.getFaceGrad().constrain(3., mesh.getFacesLeft())
+        >>> L,b = term._buildMatrix(var=var,
         ...                         SparseMatrix=SparseMatrix,
-        ...                         boundaryConditions = (bcLeft1, bcLeft2, 
+        ...                         boundaryConditions = (bcLeft2, 
         ...                                               bcRight1, bcRight2))
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-4.,  6.), 
@@ -518,7 +520,6 @@ class _DiffusionTerm(Term):
         >>> mesh = Grid1D(dx = .5, nx = 2)
         >>> bcLeft1 = FixedValue(mesh.getFacesLeft(), 0.)
         >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 1., 2)
-        >>> bcRight1 = FixedFlux(mesh.getFacesRight(), 1.)
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
         >>> term = DiffusionTerm(coeff = (1., 1.))
         >>> coeff = term._getGeomCoeff(mesh)
@@ -527,10 +528,12 @@ class _DiffusionTerm(Term):
         ...                        (( 2., -2.), 
         ...                         (-2.,  2.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var = CellVariable(mesh = mesh), 
+        >>> var = CellVariable(mesh=mesh)
+        >>> var.getFaceGrad().constrain(1., mesh.getFacesRight())
+        >>> L,b = term._buildMatrix(var=var, 
         ...                         SparseMatrix=SparseMatrix,
         ...                         boundaryConditions = (bcLeft1, bcLeft2, 
-        ...                                               bcRight1, bcRight2))
+        ...                                               bcRight2))
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        (( 80., -32.),
         ...                         (-32.,  16.))) or procID != 0
@@ -594,10 +597,14 @@ class DiffusionTerm(_DiffusionTerm):
             normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()).dot(self.nthCoeff)
             constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / var.getMesh()._getCellDistances()
 
-            self.diffusionAndBCTerm = _DiffusionTerm(self.coeff) +  \
-                                      (var.getFaceGrad().getConstraintMask() * normalsDotCoeff * var.getFaceGrad()).getDivergence() - \
-                                      ImplicitSourceTerm(constrainedNormalsDotCoeffOverdAP.getDivergence()) + \
-                                      (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence()
+
+            if self.order == 2:
+                self.diffusionAndBCTerm = _DiffusionTerm(self.coeff) +  \
+                                          (var.getFaceGrad().getConstraintMask() * normalsDotCoeff * var.getFaceGrad()).getDivergence() - \
+                                          ImplicitSourceTerm(constrainedNormalsDotCoeffOverdAP.getDivergence()) + \
+                                          (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence()
+            else:
+                self.diffusionAndBCTerm = _DiffusionTerm(self.coeff)
                 
         return self.diffusionAndBCTerm._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
         
