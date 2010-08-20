@@ -531,7 +531,7 @@ class Variable(object):
                 returnMask = returnMask | numerix.array(mask)
         return returnMask
 
-    def applyConstraints(constraints):
+    def applyConstraints(self, constraints):
         for value, mask in constraints:
             self.constrain(value, mask)
         

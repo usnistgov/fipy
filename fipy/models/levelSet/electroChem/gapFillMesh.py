@@ -45,8 +45,8 @@ class GapFillMesh(Mesh2D):
         >>> from fipy.terms.diffusionTerm import DiffusionTerm
         >>> eq = DiffusionTerm()
         
-        >>> var.getFaceValue().constrain(0., mesh.getFacesBottom())
-        >>> var.getFaceValue().constrain(domainHeight, mesh.getFacesTop())
+        >>> var.constrain(0., mesh.getFacesBottom())
+        >>> var.constrain(domainHeight, mesh.getFacesTop())
         
         >>> eq.solve(var)
 
@@ -201,8 +201,8 @@ class TrenchMesh(GapFillMesh):
         >>> from fipy.terms.diffusionTerm import DiffusionTerm
         >>> eq = DiffusionTerm()
         
-        >>> var.getFaceValue().constrain(0., mesh.getFacesBottom())
-        >>> var.getFaceValue().constrain(domainHeight, mesh.getFacesTop())
+        >>> var.constrain(0., mesh.getFacesBottom())
+        >>> var.constrain(domainHeight, mesh.getFacesTop())
         
         >>> eq.solve(var)
 

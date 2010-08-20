@@ -129,8 +129,8 @@ class _MulTerm(Term):
            >>> v = CellVariable(mesh=m, value=1.)
            >>> eqn = DiffusionTerm() / v - 1
 
-           >>> v.getFaceValue().constrain(0.,  m.getFacesLeft())
-           >>> v.getFaceValue().constrain(1.,  m.getFacesRight())
+           >>> v.constrain(0.,  m.getFacesLeft())
+           >>> v.constrain(1.,  m.getFacesRight())
 
            >>> res = 1.
            >>> sweep = 0

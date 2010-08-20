@@ -335,7 +335,7 @@ class CellVariable(_MeshVariable):
             self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
         if hasattr(self, 'faceConstraints'):
-            self.arithmeticFaceValue.applyConstraints(self.faceConstriants)
+            self.arithmeticFaceValue.applyConstraints(self.faceConstraints)
             
         return self.arithmeticFaceValue
 
@@ -368,7 +368,7 @@ class CellVariable(_MeshVariable):
             self.minmodFaceValue = _MinmodCellToFaceVariable(self)
 
         if hasattr(self, 'faceConstraints'):
-            self.minmodFaceValue.applyConstraints(self.faceConstriants)
+            self.minmodFaceValue.applyConstraints(self.faceConstraints)
 
         return self.minmodFaceValue
 
@@ -411,7 +411,7 @@ class CellVariable(_MeshVariable):
             self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
 
         if hasattr(self, 'faceConstraints'):
-            self.harmonicFaceValue.applyConstraints(self.faceConstriants)
+            self.harmonicFaceValue.applyConstraints(self.faceConstraints)
 
         return self.harmonicFaceValue
 
@@ -423,9 +423,6 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, 'faceGrad'):
             from faceGradVariable import _FaceGradVariable
             self.faceGrad = _FaceGradVariable(self)
-
-        if hasattr(self, 'faceConstraints'):
-            self.minmodFaceValue.applyConstraints(self.faceConstriants)
 
         return self.faceGrad
 
@@ -535,10 +532,10 @@ class CellVariable(_MeshVariable):
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())
 
-    def constrain(value, where=None):
-        if numerix.shape(where)[-1] == self.mesh.getNumberOfFaces():
+    def constrain(self, value, where=None):
+        if numerix.shape(where)[-1] == self.mesh._getNumberOfFaces():
             
-            if hasattr(self, 'faceConstraints'):
+            if not hasattr(self, 'faceConstraints'):
                 self.faceConstraints = []
             self.faceConstraints.append([value, where])
         else:

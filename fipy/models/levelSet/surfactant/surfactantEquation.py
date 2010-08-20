@@ -80,7 +80,7 @@ class SurfactantEquation:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
-        var.getFaceValue().constrain(0, var.getMesh().getExteriorFaces())
+        var.constrain(0, var.getMesh().getExteriorFaces())
 
         self.eq.solve(var,
                       boundaryConditions=boundaryConditions,
@@ -105,6 +105,6 @@ class SurfactantEquation:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
-        var.getFaceValue().constrain(0, var.getMesh().getExteriorFaces())
+        var.constrain(0, var.getMesh().getExteriorFaces())
 
         return self.eq.sweep(var, solver=solver, boundaryConditions=boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn)

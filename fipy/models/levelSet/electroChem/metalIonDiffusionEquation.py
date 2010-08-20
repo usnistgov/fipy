@@ -115,7 +115,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     ...                                      diffusionCoeff = diffusion,
     ...                                      metalIonMolarVolume = omega)
 
-    >>> ionVar.getFaceValue().constrain(cinf, mesh.getFacesRight())
+    >>> ionVar.constrain(cinf, mesh.getFacesRight())
     
     >>> for i in range(10):
     ...     eqn.solve(ionVar, dt = 1000)
