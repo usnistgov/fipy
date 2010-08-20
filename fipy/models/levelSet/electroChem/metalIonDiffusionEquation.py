@@ -108,15 +108,18 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> diffusion = 1.
     >>> omega = 1.
     >>> cinf = 1.
-    >>> from fipy.boundaryConditions.fixedValue import FixedValue
+
     >>> eqn = buildMetalIonDiffusionEquation(ionVar = ionVar,
     ...                                      distanceVar = disVar,
     ...                                      depositionRate = v * ionVar,
     ...                                      diffusionCoeff = diffusion,
     ...                                      metalIonMolarVolume = omega)
-    >>> bc = (FixedValue(mesh.getFacesRight(), cinf),)
+
+    >>> ionVar.getFaceValue().constrain(cinf, mesh.getFacesRight())
+    
     >>> for i in range(10):
-    ...     eqn.solve(ionVar, dt = 1000, boundaryConditions = bc)
+    ...     eqn.solve(ionVar, dt = 1000)
+
     >>> L = (nx - 1) * dx - dx / 2
     >>> gradient = cinf / (omega * diffusion / v + L)
     >>> answer = gradient * (x - L - dx * 3 / 2) + cinf

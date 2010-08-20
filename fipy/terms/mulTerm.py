@@ -128,8 +128,10 @@ class _MulTerm(Term):
            >>> m = Grid1D(nx=nx, dx=L / nx)
            >>> v = CellVariable(mesh=m, value=1.)
            >>> eqn = DiffusionTerm() / v - 1
-           >>> BCs = (FixedValue(faces=m.getFacesLeft(), value=0.),
-           ...        FixedValue(faces=m.getFacesRight(), value=1.))
+
+           >>> v.getFaceValue().constrain(0.,  m.getFacesLeft())
+           >>> v.getFaceValue().constrain(1.,  m.getFacesRight())
+
            >>> res = 1.
            >>> sweep = 0
            >>> while res > 1e-8 and sweep < 100:
