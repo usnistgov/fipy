@@ -135,7 +135,7 @@ class _MulTerm(Term):
            >>> res = 1.
            >>> sweep = 0
            >>> while res > 1e-8 and sweep < 100:
-           ...     res = eqn.sweep(v, boundaryConditions=BCs)
+           ...     res = eqn.sweep(v)
            ...     sweep += 1
            >>> x = m.getCellCenters()[0]
            >>> answer = (numerix.exp(x) - numerix.exp(-x)) / (numerix.exp(L) - numerix.exp(-L))
@@ -144,13 +144,13 @@ class _MulTerm(Term):
 
            >>> v.setValue(0.)
            >>> eqn = DiffusionTerm(0.2) * 5. - 5. * ImplicitSourceTerm(0.2)
-           >>> eqn.solve(v, boundaryConditions=BCs)
+           >>> eqn.solve(v)
            >>> print numerix.allclose(v, answer, rtol=2e-5)
            True
 
            >>> v.setValue(0.)
            >>> eqn = 2. * (DiffusionTerm(1.) - ImplicitSourceTerm(.5)) - DiffusionTerm(1.)
-           >>> eqn.solve(v, boundaryConditions=BCs)
+           >>> eqn.solve(v)
            >>> print numerix.allclose(v, answer, rtol=2e-5)
            True
         """
