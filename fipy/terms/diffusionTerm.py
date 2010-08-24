@@ -598,20 +598,22 @@ class DiffusionTerm(_DiffusionTerm):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1. , equation=None):
         if not hasattr(self, 'diffusionAndBCTerm'):
 
-            from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-            from fipy.variables.faceVariable import FaceVariable
+            self.diffusionAndBCTerm = _DiffusionTerm(self.coeff)
 
-            normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()) * self.nthCoeff
-            constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / var.getMesh()._getCellDistances()
-
-            if self.order == 2:    
-                self.diffusionAndBCTerm = _DiffusionTerm(self.coeff) +  \
-                                          (var.getFaceGrad().getConstraintMask() * normalsDotCoeff * var.getFaceGrad()).getDivergence() - \
-                                          ImplicitSourceTerm(constrainedNormalsDotCoeffOverdAP.getDivergence()) + \
-                                          (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence()
-            else:
-                self.diffusionAndBCTerm = _DiffusionTerm(self.coeff)
+            if self.order == 2:
                 
+                from fipy.variables.faceVariable import FaceVariable
+                normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()) * self.nthCoeff
+
+                if var.getFaceGrad().getConstraintMask() is not None:
+                    self.diffusionAndBCTerm += (var.getFaceGrad().getConstraintMask() * normalsDotCoeff * var.getFaceGrad()).getDivergence()
+
+                if var.getArithmeticFaceValue().getConstraintMask() is not None:
+                    from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+                    constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / var.getMesh()._getCellDistances()
+                    self.diffusionAndBCTerm += (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence() - \
+                                               ImplicitSourceTerm(constrainedNormalsDotCoeffOverdAP.getDivergence())
+                    
         return self.diffusionAndBCTerm._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
 
 class DiffusionTermNoCorrection(DiffusionTerm):
