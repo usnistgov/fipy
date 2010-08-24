@@ -55,7 +55,7 @@ A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
     ...     var.updateOld()
-    ...     eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
+    ...     eqn.solve(var, dt=timeStepDuration)
     
 The result is again tested in the same way:
 
@@ -93,9 +93,9 @@ eqn = TransientTerm() == ExplicitDiffusionTerm()
 exteriorFaces = bigMesh.getExteriorFaces()
 xFace = bigMesh.getFaceCenters()[0]
 
-boundaryConditions=(FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001), valueLeft),
-                    FixedValue(exteriorFaces & ((xFace - (dx * nx)) ** 2 < 0.000000000000001), (valueLeft + valueRight) * 0.5),
-                    FixedValue(exteriorFaces & ((xFace - (2 * dx * nx)) ** 2 < 0.000000000000001), valueRight))
+var.constrain(valueLeft, exteriorFaces & (xFace ** 2 < 0.000000000000001))
+var.constrain((valueLeft + valueRight) * 0.5, exteriorFaces & ((xFace - (dx * nx)) ** 2 < 0.000000000000001))
+var.constrain(valueRight, exteriorFaces & ((xFace - (2 * dx * nx)) ** 2 < 0.000000000000001))
 
 answer = array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.19644866e-16,
         5.39556276e-14,  1.55308505e-11,  2.94461712e-09,  3.63798469e-07,
@@ -117,7 +117,7 @@ if __name__ == '__main__':
     viewer = Viewer(vars = var)
     for step in range(steps):
         var.updateOld()        
-        eqn.solve(var, boundaryConditions = boundaryConditions, dt = timeStepDuration)
+        eqn.solve(var, dt=timeStepDuration)
         if(not (step % 100)):
             print (step / 100)
     print var

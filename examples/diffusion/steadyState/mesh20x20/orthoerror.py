@@ -61,8 +61,10 @@ if __name__ == '__main__':
                            mesh = mesh,
                            value = valueLeft)
 
-        DiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(), valueLeft),
-                                                                 FixedValue(mesh.getFacesRight(), valueRight)))
+        var.constrain(valueLeft, mesh.getFacesLeft())
+        var.constrain(valueRight, mesh.getFacesRight())
+
+        DiffusionTerm().solve(var)
 
         varArray = array(var)
         x = mesh.getCellCenters()[0]

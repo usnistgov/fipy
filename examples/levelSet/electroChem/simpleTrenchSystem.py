@@ -268,7 +268,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         metalIonMolarVolume = molarVolume,
     )
 
-    metalEquationBCs = FixedValue(mesh.getFacesTop(), metalConcentration)
+    metalVar.constrain(metalConcentration, mesh.getFacesTop())
 
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
@@ -278,7 +278,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         rateConstant = rateConstant0 * siteDensity
     )
 
-    catalystBCs = FixedValue(mesh.getFacesTop(), catalystConcentration)
+    bulkCatalystVar.constrain(catalystConcentration, mesh.getFacesTop())
 
     if displayViewers:
         try:
@@ -313,10 +313,9 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
         advectionEquation.solve(distanceVar, dt = dt)
         surfactantEquation.solve(catalystVar, dt = dt)
-        metalEquation.solve(metalVar, dt = dt, 
-                            boundaryConditions = metalEquationBCs)
-        bulkCatalystEquation.solve(bulkCatalystVar, dt = dt,
-                                   boundaryConditions = catalystBCs)
+        metalEquation.solve(metalVar, dt = dt) 
+        bulkCatalystEquation.solve(bulkCatalystVar, dt = dt)
+
 
     try:
         import os

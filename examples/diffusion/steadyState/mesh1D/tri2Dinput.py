@@ -50,7 +50,7 @@ However, the `mesh` is a `Tri2D` object rather than a `Grid2D` object.
 Here, one time step is executed to implicitly find the steady state
 solution.
 
-    >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    >>> DiffusionTerm().solve(var)
 
 To test the solution, the analytical result is required. The `x`
 coordinates from the mesh are gathered and the length of the domain,
@@ -82,10 +82,11 @@ valueLeft = 0.
 valueRight = 1.
 var = CellVariable(name = "solution-variable", mesh = mesh, value = valueLeft)
 
-boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft), FixedValue(mesh.getFacesRight(),valueRight))
+var.constrain(valueLeft, mesh.getFacesLeft())
+var.constrain(valueRight, mesh.getFacesRight())
 
 if __name__ == '__main__':
-    DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    DiffusionTerm().solve(var)
     viewer = Viewer(vars=var)
     viewer.plot()
     x = mesh.getCellCenters()[0]

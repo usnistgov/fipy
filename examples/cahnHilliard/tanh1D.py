@@ -103,13 +103,14 @@ and
    
 or
 
-.. index:: FixedValue, NthOrderBoundaryCondition
+.. index:: NthOrderBoundaryCondition
       
 >>> BCs = (
-...     FixedValue(faces=mesh.getFacesRight(), value=1),
-...     FixedValue(faces=mesh.getFacesLeft(), value=.5),
 ...     NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=0, order=2),
 ...     NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=0, order=2))
+
+>>> var.constrain(1, mesh.getFacesRight())
+>>> var.constrain(.5, mesh.getFacesLeft())
 
 Using
 

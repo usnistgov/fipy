@@ -76,12 +76,12 @@ or
 >>> alpha3 = 4.
 >>> alpha4 = -3.
     
-.. index:: FixedValue, NthOrderBoundaryCondition
+.. index:: NthOrderBoundaryCondition
 
->>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=alpha1),
-...        NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
+>>> BCs = (NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
 ...        NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=alpha4, order=3))
 >>> var.getFaceGrad().constrain(alpha2, mesh.getFacesRight())
+>>> var.constrain(alpha1, mesh.getFacesLeft())
 
 We initialize the steady-state equation
     

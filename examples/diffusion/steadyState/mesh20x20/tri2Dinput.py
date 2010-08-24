@@ -36,7 +36,7 @@
 
 This input file again solves a 2D diffusion problem on a triangular mesh.
 
-    >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    >>> DiffusionTerm().solve(var)
 
 The result is again tested in the same way:
 
@@ -64,11 +64,11 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
-                      FixedValue(mesh.getFacesRight(),valueRight))
+var.constrain(valueLeft, mesh.getFacesLeft())
+var.constrain(valueRight, mesh.getFacesRight())
 
 if __name__ == '__main__':
-    DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    DiffusionTerm().solve(var)
     viewer = Viewer(vars = var)
     viewer.plot()
     raw_input("finished")

@@ -75,7 +75,7 @@ We build the equation:
     
 and the boundary conditions:
     
->>> boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),)
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
 
 In this case, many steps have to be taken to reach equilibrium.  A loop is
 required to execute the necessary time steps:
@@ -84,8 +84,7 @@ required to execute the necessary time steps:
 >>> steps = 100
 >>> for step in range(steps):
 ...     var.updateOld()     
-...     eq.solve(var = var, boundaryConditions = boundaryConditions,
-...                         dt = timeStepDuration)
+...     eq.solve(var=var, dt=timeStepDuration)
 
 The analytical solution for this transient diffusion problem is given
 by :math:`\phi = \erf(x/2\sqrt{D t})`.

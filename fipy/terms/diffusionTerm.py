@@ -169,7 +169,10 @@ class _DiffusionTerm(Term):
 
         if not hasattr(self, 'anisotropySource'):
             if len(coeff) > 1:
-                gradients = var.getGrad().getHarmonicFaceValue().dot(self._getRotationTensor(mesh))
+                varNoConstraints = var.copy()
+                if hasattr(varNoConstraints, 'constraints'):
+                    del varNoConstraints.constraints
+                gradients = varNoConstraints.getGrad().getHarmonicFaceValue().dot(self._getRotationTensor(mesh))
                 from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
                 self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.getCellVolumes()
 
@@ -187,7 +190,6 @@ class _DiffusionTerm(Term):
 
             if rank == 0 and self._treatMeshAsOrthogonal(mesh):
                 tmpBop = (coeff * mesh._getFaceAreas() / mesh._getCellDistances())[numerix.newaxis, :]
-
             else:
 
                 if rank == 1 or rank == 0:
@@ -590,7 +592,7 @@ class _DiffusionTerm(Term):
             0.70710678   0.70710678  -1.41421356]]
 
         """
-        pass
+        pass            
 
 class DiffusionTerm(_DiffusionTerm):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1. , equation=None):
@@ -599,11 +601,10 @@ class DiffusionTerm(_DiffusionTerm):
             from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
             from fipy.variables.faceVariable import FaceVariable
 
-            normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()).dot(self.nthCoeff)
+            normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()) * self.nthCoeff
             constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / var.getMesh()._getCellDistances()
 
-
-            if self.order == 2:
+            if self.order == 2:    
                 self.diffusionAndBCTerm = _DiffusionTerm(self.coeff) +  \
                                           (var.getFaceGrad().getConstraintMask() * normalsDotCoeff * var.getFaceGrad()).getDivergence() - \
                                           ImplicitSourceTerm(constrainedNormalsDotCoeffOverdAP.getDivergence()) + \
@@ -612,13 +613,14 @@ class DiffusionTerm(_DiffusionTerm):
                 self.diffusionAndBCTerm = _DiffusionTerm(self.coeff)
                 
         return self.diffusionAndBCTerm._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
-        
+
 class DiffusionTermNoCorrection(DiffusionTerm):
     def _getNormals(self, mesh):
         return mesh._getFaceNormals()
 
     def _treatMeshAsOrthogonal(self, mesh):
         return True
+
         
 def _test(): 
     import doctest
