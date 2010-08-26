@@ -46,9 +46,12 @@ import sys
 import os
 import tempfile
 
+DEBUG = 0
+
 def parprint(str):
-    if parallel.procID == 0:
-        print >> sys.stderr, str
+    if DEBUG:
+        if parallel.procID == 0:
+            print >> sys.stderr, str
 
 class MshFile:
     """
@@ -70,9 +73,9 @@ class MshFile:
                        coordDimensions=None,
                        parallel=parallel):
         """
-        Isolates relevant data into two files, stores in 
+        Isolate relevant data into two files, store in 
         `self.nodesFile` for $Nodes,
-        `self.elemsFile` for $Elements.
+        `self.elemsFile` for $Elements. 
 
         :Parameters:
           - `filename`: a string indicating gmsh output file
@@ -122,18 +125,9 @@ class MshFile:
                                 4: 3, # tet:        3 verts per face
                                 5: 4} # hexahedron: 4 verts per face
 
-        # print "Opening msh file..."
         f = open(self.filename, "r") # open the msh file
-        # print "Opened msh file..."
 
-        mshStuff = f.readlines()
-        with open("mshstuff.dat", "w") as g:
-            g.writelines(mshStuff)
-        f.seek(0)
-
-        # print "getting metadata"
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
-        # self._checkGmshVersion()
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
 
@@ -184,13 +178,9 @@ class MshFile:
         verStr = "\n".join(subp.Popen("gmsh --version", 
             stderr=subp.PIPE, shell=True).stderr.readlines())
 
-        print >> sys.stderr, "verstr: ", verStr
-
         m = re.search(r'\d+.\d+', verStr)
-        print m
 
         if m:
-            print >> sys.stderr, "gmsh version: %f" % float(m.group(0))
             return float(m.group(0))
         else:
             return 0
@@ -481,7 +471,6 @@ class MshFile:
 
 class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, arg, coordDimensions=2, parallelModule=parallel):
-        from PyTrilinos import Epetra
         self.parallel = parallelModule
         self.mshFile  = MshFile(arg, 
                                 dimensions=2, 
@@ -500,9 +489,8 @@ class Gmsh2D(mesh2D.Mesh2D):
             # if i in self.gCellGlobalIDs:
                 # print "OVERLAP between cells and ghosts!"
 
-        print >> sys.stderr, "number of procs", self.parallel.Nproc
         if self.parallel.Nproc > 1:
-            self.globalNumberOfCells = self.sumAll(len(self.cellGlobalIDs))
+            self.globalNumberOfCells = self.parallel.sumAll(len(self.cellGlobalIDs))
             parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
             parprint("  Got global number of cells")
 
@@ -510,10 +498,6 @@ class Gmsh2D(mesh2D.Mesh2D):
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
         parprint("Exiting Gmsh2D")
-
-    def sumAll(self, pyObj):
-        from PyTrilinos import Epetra
-        return Epetra.PyComm().SumAll(pyObj)
 
     def _getGlobalNonOverlappingCellIDs(self):
         """
@@ -721,11 +705,7 @@ class Gmsh3D(mesh.Mesh):
                                  cellFaceIDs=self.cells)
 
         if self.parallel.Nproc > 1:
-            self.globalNumberOfCells = self.sumAll(len(self.cellGlobalIDs))
-
-    def sumAll(self, pyObj):
-        from PyTrilinos import Epetra
-        return Epetra.PyComm().SumAll(pyObj)
+            self.globalNumberOfCells = self.parallel.sumAll(len(self.cellGlobalIDs))
 
     def _getGlobalNonOverlappingCellIDs(self):
         """
