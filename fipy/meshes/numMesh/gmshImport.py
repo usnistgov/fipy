@@ -157,13 +157,9 @@ class MshFile:
                 file.close(); os.close(f)
 
             (f, mshFile) = tempfile.mkstemp('.msh')
-            print "gmsh %s %s -o %s" % (geoFile, gmshFlags, mshFile)
             gmshout = subp.Popen("gmsh %s %s -o %s" \
                       % (geoFile, gmshFlags, mshFile),
                       stdout=subp.PIPE, shell=True).stdout.readlines()
-            print gmshout
-            print mshFile
-            raw_input()
             os.close(f)
 
             return mshFile
