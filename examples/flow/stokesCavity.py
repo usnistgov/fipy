@@ -237,12 +237,11 @@ Now, set up the no-slip boundary conditions
 
 .. index:: FixedValue
    
->>> bcs = (FixedValue(faces=mesh.getFacesLeft(), value=0.),
-...        FixedValue(faces=mesh.getFacesRight(), value=0.),
-...        FixedValue(faces=mesh.getFacesBottom(), value=0.),)
->>> bcsX = bcs + (FixedValue(faces=mesh.getFacesTop(), value=U ),)
->>> bcsY = bcs + (FixedValue(faces=mesh.getFacesTop(), value=0.),)
->>> bcsPC = (FixedValue(faces=mesh.getFacesLeft() & (mesh.getFaceCenters()[1]<0.9*dL), value=0.),)
+>>> xVelocity.constrain(0., mesh.getFacesRight() | mesh.getFacesLeft() | mesh.getFacesBottom())
+>>> xVelocity.constrain(U, mesh.getFacesTop())
+>>> yVelocity.constrain(0., mesh.getExteriorFaces())
+>>> X, Y = mesh.getFaceCenters()
+>>> pressureCorrection.constrain(0., mesh.getFacesLeft() & (Y < dL))
 
 Set up the viewers,
 
@@ -261,12 +260,6 @@ RHS vector are required by the SIMPLE algorithm. Additionally, the
 :meth:`sweep` method is passed an ``underRelaxation`` factor to relax the
 solution. This argument cannot be passed to :meth:`solve`.
 
-
-Should one want to use a different solver for the pressure correction, then 
-that can be easily done by activatin solverpc.
-
->>> solverpc = DefaultAsymmetricSolver(tolerance=1e-7)
-
 .. index:: sweep, cacheMatrix, getMatrix, cacheRHSvector, getRHSvector
    
 >>> for sweep in range(sweeps):
@@ -274,12 +267,10 @@ that can be easily done by activatin solverpc.
 ...     ## solve the Stokes equations to get starred values
 ...     xVelocityEq.cacheMatrix()
 ...     xres = xVelocityEq.sweep(var=xVelocity,
-...                              boundaryConditions=bcsX,
 ...                              underRelaxation=velocityRelaxation)
 ...     xmat = xVelocityEq.getMatrix()
 ...
 ...     yres = yVelocityEq.sweep(var=yVelocity,
-...                              boundaryConditions=bcsY,
 ...                              underRelaxation=velocityRelaxation)
 ...
 ...     ## update the ap coefficient from the matrix diagonal
@@ -287,8 +278,6 @@ that can be easily done by activatin solverpc.
 ...
 ...     ## update the face velocities based on starred values with the 
 ...     ## Rhie-Chow correction. 
-...     xvface = xVelocity.getArithmeticFaceValue()
-...     yvface = yVelocity.getArithmeticFaceValue()
 ...     ## cell pressure gradient
 ...     presgrad = pressure.getGrad()
 ...     ## face pressure gradient
@@ -306,10 +295,7 @@ that can be easily done by activatin solverpc.
 ...     ## solve the pressure correction equation
 ...     pressureCorrectionEq.cacheRHSvector()
 ...     ## left bottom point must remain at pressure 0, so no correction
-...     pres = pressureCorrectionEq.sweep(var=pressureCorrection, 
-...                                       boundaryConditions=bcsPC,
-...                                       #solver=solverpc
-...                                       )
+...     pres = pressureCorrectionEq.sweep(var=pressureCorrection)
 ...     rhs = pressureCorrectionEq.getRHSvector()
 ...
 ...     ## update the pressure using the corrected value
@@ -341,6 +327,7 @@ Test values in the last cell.
 1
 >>> print numerix.allclose(yVelocity.getGlobalValue()[...,-1], -0.150290488304)
 1
+
 """
 __docformat__ = 'restructuredtext'
 
