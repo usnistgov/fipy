@@ -83,20 +83,31 @@ class MshFile:
         self.parallel        = parallel
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
-        gmshFlags            = self._prepareGmshFlags()
-        self.filename        = self._parseFilename(filename, gmshFlags)
 
-        if self._getGmshVersion() < 2.0:
+        # much special-casing based on gmsh version
+        gmshVersion = self._getGmshVersion()
+        if gmshVersion < 2.0:
             errStr = "Gmsh version must be >= 2.0."
             raise EnvironmentError(errStr)
         if self.parallel.Nproc > 1:
-            if self._getGmshVersion() < 2.5:
+            if gmshVersion < 2.5:
                 import warnings
                 from fipy.tools import serial
                 warnstr = "Cannot partition with Gmsh version < 2.5. " \
                            + "Reverting to serial."
                 warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
                 self.parallel = serial
+
+                gmshFlags = "-%d" % (self.dimensions)
+            else: # gmsh version is adequate for partitioning
+                gmshFlags = "-%d -part %d" % (self.dimensions,
+                                              self.parallel.Nproc)
+        else: # we're running serial
+            gmshFlags = "-%d" % (self.dimensions)
+        
+        gmshFlags += " -format msh"
+
+        self.filename = self._parseFilename(filename, gmshFlags)
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
@@ -115,6 +126,11 @@ class MshFile:
         f = open(self.filename, "r") # open the msh file
         # print "Opened msh file..."
 
+        mshStuff = f.readlines()
+        with open("mshstuff.dat", "w") as g:
+            g.writelines(mshStuff)
+        f.seek(0)
+
         # print "getting metadata"
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
         # self._checkGmshVersion()
@@ -127,6 +143,7 @@ class MshFile:
         we've gotta compile a .msh file from either (i) a .geo file, 
         or (ii) a gmsh script passed as a string.
         """
+        import subprocess as subp
         lowerFname = fname.lower()
         if '.msh' in lowerFname:
             return fname
@@ -140,8 +157,13 @@ class MshFile:
                 file.close(); os.close(f)
 
             (f, mshFile) = tempfile.mkstemp('.msh')
-            os.system('gmsh %s %s -o %s' \
-                      % (geoFile, gmshFlags, mshFile))
+            print "gmsh %s %s -o %s" % (geoFile, gmshFlags, mshFile)
+            gmshout = subp.Popen("gmsh %s %s -o %s" \
+                      % (geoFile, gmshFlags, mshFile),
+                      stdout=subp.PIPE, shell=True).stdout.readlines()
+            print gmshout
+            print mshFile
+            raw_input()
             os.close(f)
 
             return mshFile
@@ -163,11 +185,16 @@ class MshFile:
         import subprocess as subp
         import re
 
-        verStr = "".join(subp.Popen("gmsh --version", 
-                            stderr=subp.PIPE, shell=True).stderr.readlines())
+        verStr = "\n".join(subp.Popen("gmsh --version", 
+            stderr=subp.PIPE, shell=True).stderr.readlines())
+
+        print >> sys.stderr, "verstr: ", verStr
+
         m = re.search(r'\d+.\d+', verStr)
+        print m
 
         if m:
+            print >> sys.stderr, "gmsh version: %f" % float(m.group(0))
             return float(m.group(0))
         else:
             return 0
@@ -384,10 +411,6 @@ class MshFile:
         # transpose for FiPy
         transCoords = vertexCoords.swapaxes(0,1)
         return transCoords, vertGIDtoIdx
-
-    def _prepareGmshFlags(self):
-        return "-%d -v 0 -part %d -format msh" % (self.dimensions,
-                                                  self.parallel.Nproc)
 
     def _parseElementFile(self):
         """
