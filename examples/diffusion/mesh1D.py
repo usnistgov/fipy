@@ -97,12 +97,14 @@ and a set of faces over which they apply.
    Only faces around the exterior of the mesh can be used for boundary
    conditions.
 
-For example, here the exterior faces on the left of the domain are
-extracted by ``mesh``:meth:`~fipy.meshes.common.mesh.Mesh.getFacesLeft``. A :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary condition is
-created with these faces and a value (``valueLeft``). 
+For example, here the exterior faces on the left of the domain are extracted by
+``mesh``:meth:`~fipy.meshes.common.mesh.Mesh.getFacesLeft``. The boundary
+conditions is applied using
+``phi``:meth:`~fipy.variables.variable.Variable.constrain`` with tthese faces and
+a value (``valueLeft``).
 
->>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-...        FixedValue(faces=mesh.getFacesLeft(), value=valueLeft))
+>>> phi.constrain(valueRight, mesh.getFacesRight())
+>>> phi.constrain(valueLeft, mesh.getFacesLeft())
 
 .. note::
     
@@ -173,7 +175,6 @@ We then solve the equation by repeatedly looping in time:
 
 >>> for step in range(steps):
 ...     eqX.solve(var=phi,
-...               boundaryConditions=BCs,
 ...               dt=timeStepDuration)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
@@ -217,7 +218,6 @@ and rerun with much larger time steps
 >>> steps /= 10
 >>> for step in range(steps):
 ...     eqI.solve(var=phi,
-...               boundaryConditions=BCs,
 ...               dt=timeStepDuration)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
@@ -257,12 +257,10 @@ of the fully implicit scheme to drive down the error
 
 >>> for step in range(steps - 1):
 ...     eqCN.solve(var=phi,
-...                boundaryConditions=BCs,
 ...                dt=timeStepDuration)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 >>> eqI.solve(var=phi,
-...           boundaryConditions=BCs,
 ...           dt=timeStepDuration)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
@@ -287,9 +285,7 @@ equation
 
 is represented in :term:`FiPy` by
 
->>> DiffusionTerm(coeff=D).solve(var=phi,
-...                              boundaryConditions=BCs)
-...                                      
+>>> DiffusionTerm(coeff=D).solve(var=phi)
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
@@ -330,8 +326,12 @@ we will need to declare time :math:`t` as a :class:`~fipy.variables.variable.Var
 
 and then declare our boundary condition as a function of this :class:`~fipy.variables.variable.Variable`
 
->>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=0.5 * (1 + sin(time))),
-...        FixedValue(faces=mesh.getFacesRight(), value=0.))
+>>> del phi.faceConstraints
+>>> valueLeft = 0.5 * (1 + sin(time))
+>>> phi.constrain(valueLeft, mesh.getFacesLeft())
+>>> phi.constrain(0., mesh.getFacesRight())
+
+>>> eqI = TransientTerm() == DiffusionTerm(coeff=D)
 
 When we update ``time`` at each timestep, the left-hand boundary
 condition will automatically update,
@@ -339,7 +339,7 @@ condition will automatically update,
 >>> dt = .1
 >>> while time() < 15:
 ...     time.setValue(time() + dt)
-...     eqI.solve(var=phi, dt=dt, boundaryConditions=BCs)
+...     eqI.solve(var=phi, dt=dt)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
@@ -398,8 +398,9 @@ to the left and a fixed flux of
     
 to the right:
 
->>> BCs = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),)
+>>> phi = CellVariable(mesh=mesh)
 >>> phi.getFaceGrad().constrain(fluxRight, mesh.getFacesRight())
+>>> phi.constrain(valueLeft, mesh.getFacesLeft())
 
 We re-initialize the solution variable
     
@@ -407,9 +408,7 @@ We re-initialize the solution variable
     
 and obtain the steady-state solution with one implicit solution step
 
-
->>> DiffusionTerm(coeff = D).solve(var=phi, 
-...                                boundaryConditions = BCs)
+>>> DiffusionTerm(coeff = D).solve(var=phi)
 
 The analytical solution is simply
 
@@ -504,8 +503,8 @@ as
 We apply the same boundary conditions that we used for the uniform
 diffusivity cases
 
->>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-...        FixedValue(faces=mesh.getFacesLeft(), value=valueLeft))
+>>> phi[0].constrain(valueRight, mesh.getFacesRight())
+>>> phi[0].constrain(valueLeft, mesh.getFacesLeft())
 
 Although this problem does not have an exact transient solution, it
 can be solved in steady-state, with
@@ -545,7 +544,6 @@ sweeps.
 ...         # but "sweep" many times per time step
 ...         for sweep in range(sweeps):
 ...             res = eq.sweep(var=phi[0],
-...                            boundaryConditions=BCs,
 ...                            dt=timeStepDuration)
 ...         if __name__ == '__main__':
 ...             viewer.plot()
@@ -577,7 +575,6 @@ can just solve for it directly
 >>> res = 1e+10
 >>> while res > 1e-6:
 ...     res = eq.sweep(var=phi[0],
-...                    boundaryConditions=BCs,
 ...                    dt=timeStepDuration)
 
 
@@ -619,7 +616,6 @@ remaining lines, leaving::
      res = 1e+10
      while res > 1e-6:
          res = eq.sweep(var=phi[0],
-                        boundaryConditions=BCs,
                         dt=timeStepDuration)
 
      print phi[0].allclose(phiAnalytical, atol = 1e-1)

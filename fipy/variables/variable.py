@@ -482,8 +482,11 @@ class Variable(object):
                 if mask is None:
                     value[:] = constraintValue
                 else:
-                    value[...,numerix.array(mask)] = constraintValue
-
+                    mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
+                    if len(numerix.getShape(value)) == 1:
+                        value[:] = numerix.where(mask, constraintValue, value)
+                    else:
+                        value[..., mask] = constraintValue
         return value
             
     def constrain(self, value, where=None):

@@ -39,7 +39,7 @@ This example is a 1D steady state diffusion test case as in
 number of cells set to `nx = 10`.
 
 A simple analytical answer can be used to test the result:
-   >>> DiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
+   >>> DiffusionTerm(coeff = diffCoeff).solve(var)
    >>> x = mesh.getCellCenters()[0]
    >>> values = where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = where(x < L / 4., x, values)
@@ -74,11 +74,11 @@ diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
 x = mesh.getFaceCenters()[0]
 diffCoeff.setValue(0.1, where=(L/4. <= x) & (x < 3. * L / 4.))
 
-boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),)
 var.getFaceGrad().constrain(1., mesh.getFacesRight())
+var.constrain(valueLeft, mesh.getFacesLeft())
 
 if __name__ == '__main__':
-    DiffusionTerm(coeff = diffCoeff).solve(var, boundaryConditions = boundaryConditions)
+    DiffusionTerm(coeff = diffCoeff).solve(var)
     viewer = Viewer(vars = var)
     viewer.plot()
     raw_input('finished')

@@ -107,11 +107,7 @@ The following line extracts the :math:`x` coordinate values on the exterior
 faces. These are used as the boundary condition fixed values.
 
 >>> X, Y = mesh.getFaceCenters()
-
-.. index:
-   object: fipy.boundaryConditions.fixedValue.FixedValue
-    
->>> BCs = (FixedValue(faces=mesh.getExteriorFaces(), value=X),)
+>>> phi.constrain(X, mesh.getExteriorFaces())
 
 We first step through the transient problem
 
@@ -119,7 +115,6 @@ We first step through the transient problem
 >>> steps = 10
 >>> for step in range(steps):
 ...     eq.solve(var=phi,
-...              boundaryConditions=BCs,
 ...              dt=timeStepDuration)
 ...     if viewer is not None:
 ...         viewer.plot()
@@ -184,8 +179,7 @@ vertical positions
 As in the earlier examples, we can also directly solve the steady-state
 diffusion problem.
 
->>> DiffusionTerm(coeff=D).solve(var=phi,
-...                              boundaryConditions=BCs)
+>>> DiffusionTerm(coeff=D).solve(var=phi)
                                                     
 The values at the elements should be equal to their `x` coordinate
 
