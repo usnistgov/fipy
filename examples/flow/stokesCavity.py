@@ -235,8 +235,6 @@ terms
 And set up the velocity with this formula in the SIMPLE loop. 
 Now, set up the no-slip boundary conditions
 
-.. index:: FixedValue
-   
 >>> xVelocity.constrain(0., mesh.getFacesRight() | mesh.getFacesLeft() | mesh.getFacesBottom())
 >>> xVelocity.constrain(U, mesh.getFacesTop())
 >>> yVelocity.constrain(0., mesh.getExteriorFaces())
