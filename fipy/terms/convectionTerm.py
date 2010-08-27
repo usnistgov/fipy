@@ -174,8 +174,12 @@ class ConvectionTerm(FaceTerm):
         self._buildMatrix = types.MethodType(FaceTerm._buildMatrix, self)
 
         weight = self._getWeight(var.getMesh(), equation)
-        alpha = weight['implicit']['cell 1 diag']
 
+        if weight.has_key('implicit'):
+            alpha = weight['implicit']['cell 1 diag']
+        else:
+            alpha = 0.0
+            
         normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()) * self.coeff
         extNormalsDotCoeff = var.getMesh().getExteriorFaces() * normalsDotCoeff
 
