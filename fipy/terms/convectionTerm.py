@@ -168,6 +168,23 @@ class ConvectionTerm(FaceTerm):
         else:
             return FaceTerm.__add__(self, other)
 
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+
+        import types
+        self._buildMatrix = types.MethodType(FaceTerm._buildMatrix, self)
+
+        weight = self._getWeight(var.getMesh(), equation)
+        alpha = weight['implicit']['cell 1 diag']
+
+        normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()) * self.coeff
+        extNormalsDotCoeff = var.getMesh().getExteriorFaces() * normalsDotCoeff
+
+        from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+        self += ImplicitSourceTerm((alpha * self.coeff).getDivergence()) 
+        self +=  ((1 - alpha) * var.getArithmeticFaceValue() * extNormalsDotCoeff).getDivergence()
+
+        return self._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+        
 class __ConvectionTerm(ConvectionTerm): 
     """
     Dummy subclass for tests
