@@ -54,12 +54,10 @@ class LinearGMRESSolver(PysparseSolver):
     
     """
 
-    solveFnc = itsolvers.gmres
-
     def __init__(self, precon=JacobiPreconditioner(), *args, **kwargs):
         """
         :Parameters:
           - `precon`: Preconditioner to use
         """
         PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
-
+        self.solveFnc = itsolvers.gmres
