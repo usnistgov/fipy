@@ -66,7 +66,7 @@ declaration of ``mesh``.
 ...     
 ...     // create entire inner and outer shell
 ...     Surface Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
-... ''').extrude(extrudeFunc=lambda r: 1.1 * r)
+... ''', order=2).extrude(extrudeFunc=lambda r: 1.1 * r)
 >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 
 We start the problem with random fluctuations about 

@@ -40,6 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix as nx
 from fipy.tools import parallel
+from fipy.tools import serial
 import mesh
 import mesh2D
 import sys
@@ -71,7 +72,8 @@ class MshFile:
     def __init__(self, filename, 
                        dimensions, 
                        coordDimensions=None,
-                       parallel=parallel):
+                       commModule=parallel,
+                       order=1):
         """
         Isolate relevant data into two files, store in 
         `self.nodesFile` for $Nodes,
@@ -83,7 +85,7 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.parallel        = parallel
+        self.commModule        = parallel if order < 2 else serial
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
 
@@ -92,19 +94,18 @@ class MshFile:
         if gmshVersion < 2.0:
             errStr = "Gmsh version must be >= 2.0."
             raise EnvironmentError(errStr)
-        if self.parallel.Nproc > 1:
+        if self.commModule.Nproc > 1:
             if gmshVersion < 2.5:
                 import warnings
-                from fipy.tools import serial
                 warnstr = "Cannot partition with Gmsh version < 2.5. " \
                            + "Reverting to serial."
                 warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
-                self.parallel = serial
+                self.commModule = serial
 
                 gmshFlags = "-%d" % (self.dimensions)
             else: # gmsh version is adequate for partitioning
                 gmshFlags = "-%d -part %d" % (self.dimensions,
-                                              self.parallel.Nproc)
+                                              self.commModule.Nproc)
         else: # we're running serial
             gmshFlags = "-%d" % (self.dimensions)
         
@@ -435,7 +436,7 @@ class MshFile:
 
         IDOffset        = -1 # this will be subtractd from gmsh ID to obtain
                              # global ID
-        pid             = self.parallel.procID + 1
+        pid             = self.commModule.procID + 1
 
         addCell      = lambda c,e: _addCell(cellsData, c, e, IDOffset)
         addGhostCell = lambda c,e: _addCell(ghostsData, c, e, IDOffset)
@@ -452,7 +453,7 @@ class MshFile:
                 numTags = currLineInts[2]
                 tags    = currLineInts[3:(3+numTags)]
                 # if we're collecting ghost cells
-                if self.parallel.Nproc > 1: 
+                if self.commModule.Nproc > 1: 
                     tags.reverse() # any ghost cell IDs come first, then part ID
 
                     if tags[0] < 0: # if this is someone's ghost cell
@@ -462,7 +463,7 @@ class MshFile:
                                 break   
                             tags.pop(0) # try the next ID
                 # el is in this processor's partition OR we collect all cells
-                if (self.parallel.Nproc == 1) or (tags[0] == pid):
+                if (self.commModule.Nproc == 1) or (tags[0] == pid):
                     addCell(currLineInts, elemType)
                 
         self.elemsFile.close() # tempfile trashed
@@ -470,27 +471,25 @@ class MshFile:
         return cellsData, ghostsData
 
 class Gmsh2D(mesh2D.Mesh2D):
-    def __init__(self, arg, coordDimensions=2, parallelModule=parallel):
-        self.parallel = parallelModule
+    def __init__(self, 
+                 arg, 
+                 coordDimensions=2, 
+                 commModule=parallel, 
+                 order=1):
+        self.commModule = commModule 
         self.mshFile  = MshFile(arg, 
                                 dimensions=2, 
                                 coordDimensions=coordDimensions,
-                                parallel=parallelModule)
+                                commModule=commModule,
+                                order=order)
         self.verts, \
         self.faces, \
         self.cells, \
         self.cellGlobalIDs, \
         self.gCellGlobalIDs = self.mshFile.buildMeshData()
 
-        # print "Max cell ID: %d" % max(self.cellGlobalIDs)
-        # print "cellGlobalIDs len: %d" % len(self.cellGlobalIDs)
-
-        # for i in self.cellGlobalIDs:
-            # if i in self.gCellGlobalIDs:
-                # print "OVERLAP between cells and ghosts!"
-
-        if self.parallel.Nproc > 1:
-            self.globalNumberOfCells = self.parallel.sumAll(len(self.cellGlobalIDs))
+        if self.commModule.Nproc > 1:
+            self.globalNumberOfCells = self.commModule.sumAll(len(self.cellGlobalIDs))
             parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
             parprint("  Got global number of cells")
 
@@ -640,8 +639,8 @@ class Gmsh2D(mesh2D.Mesh2D):
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
-    def __init__(self, arg):
-        Gmsh2D.__init__(self, arg, coordDimensions=3)
+    def __init__(self, arg, order=1):
+        Gmsh2D.__init__(self, arg, coordDimensions=3, order=order)
 
     def _test(self):
         """
@@ -689,11 +688,12 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         """
 
 class Gmsh3D(mesh.Mesh):
-    def __init__(self, arg, parallelModule=parallel):
-        self.parallel = parallelModule
+    def __init__(self, arg, commModule=parallel, order=1):
+        self.commModule = commModule
         self.mshFile  = MshFile(arg, 
                                 dimensions=3, 
-                                parallel=parallelModule)
+                                commModule=commModule,
+                                order=order)
 
         self.verts, \
         self.faces, \
@@ -704,8 +704,8 @@ class Gmsh3D(mesh.Mesh):
                                  faceVertexIDs=self.faces,
                                  cellFaceIDs=self.cells)
 
-        if self.parallel.Nproc > 1:
-            self.globalNumberOfCells = self.parallel.sumAll(len(self.cellGlobalIDs))
+        if self.commModule.Nproc > 1:
+            self.globalNumberOfCells = self.commModule.sumAll(len(self.cellGlobalIDs))
 
     def _getGlobalNonOverlappingCellIDs(self):
         """
