@@ -85,7 +85,7 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.commModule        = parallel if order < 2 else serial
+        self.commModule      = parallel if order < 2 else serial
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
 
