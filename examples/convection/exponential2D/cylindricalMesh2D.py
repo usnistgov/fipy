@@ -44,7 +44,7 @@ given by:
 with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 
 >>> diffCoeff = 1.
->>> convCoeff = (10.,)
+>>> convCoeff = ((10.,),(0.,))
     
 We define a 2D cylindrical mesh representing an anulus. The mesh is a
 pseudo 1D mesh, but is a good test case for the :class:`~fipy.meshes.numMesh.cylindricalGrid2D.CylindricalGrid2D`
@@ -58,7 +58,13 @@ mesh.
 >>> r1 = 2.
 >>> nr = 100
 >>> mesh = CylindricalGrid2D(dr=(r1 - r0) / nr, dz=1., nr=nr, nz=1) + ((r0,),)
-    
+
+The solution variable is initialized to ``valueLeft``:
+
+>>> valueLeft = 0.
+>>> valueRight = 1.
+>>> var = CellVariable(mesh=mesh, name = "variable")
+
 and impose the boundary conditions
 
 .. math::
@@ -68,16 +74,10 @@ and impose the boundary conditions
    1& \text{at $r = r_1$,}
    \end{cases}
 
->>> valueLeft = 0.
->>> valueRight = 1.
->>> boundaryConditions = (
-...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-...     )
+with
 
-The solution variable is initialized to ``valueLeft``:
-
->>> var = CellVariable(mesh=mesh, name = "variable")
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`.
@@ -93,7 +93,7 @@ both handle most types of convection-diffusion cases, with the
 
 We solve the equation
 
->>> eq.solve(var=var, boundaryConditions=boundaryConditions)
+>>> eq.solve(var=var)
    
 and test the solution against the analytical result
 
@@ -108,10 +108,11 @@ or
 >>> axis = 0
 >>> try:
 ...     from scipy.special import expi
+...     U = convCoeff[0][0]
 ...     r = mesh.getCellCenters()[axis]
-...     AA = exp(convCoeff[axis] / diffCoeff * (r1 - r))
-...     BB = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r / diffCoeff)
-...     CC = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r1 / diffCoeff)
+...     AA = exp(U / diffCoeff * (r1 - r))
+...     BB = expi(U * r0 / diffCoeff) - expi(U * r / diffCoeff)
+...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff)
 ...     analyticalArray = AA * BB / CC
 ... except ImportError:
 ...     print "The SciPy library is unavailable. It is required for testing purposes."

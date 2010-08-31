@@ -51,10 +51,8 @@ This example solves the steady-state convection-diffusion equation as described 
 ...                    mesh = mesh,
 ...                    value = valueLeft)
 
->>> boundaryConditions = (
-...     FixedValue(mesh.getFacesLeft(), valueLeft),
-...     FixedValue(mesh.getFacesRight(), valueRight),
-... )
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,0.)
@@ -62,8 +60,7 @@ This example solves the steady-state convection-diffusion equation as described 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
->>> eq.solve(var = var,
-...          boundaryConditions = boundaryConditions)
+>>> eq.solve(var = var)
     
 The analytical solution test for this problem is given by:
 
