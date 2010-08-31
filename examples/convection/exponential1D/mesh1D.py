@@ -56,6 +56,13 @@ We define a 1D mesh
 >>> nx = 10
 >>> mesh = Grid1D(dx=L / nx, nx=nx)
 
+>>> valueLeft = 0.
+>>> valueRight = 1.
+
+The solution variable is initialized to ``valueLeft``:
+
+>>> var = CellVariable(mesh=mesh, name = "variable")
+
 and impose the boundary conditions
 
 .. math::
@@ -64,19 +71,11 @@ and impose the boundary conditions
    0& \text{at $x = 0$,} \\
    1& \text{at $x = L$,}
    \end{cases}
-   
-or
 
->>> valueLeft = 0.
->>> valueRight = 1.
->>> boundaryConditions = (
-...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-...     )
+with
 
-The solution variable is initialized to ``valueLeft``:
-
->>> var = CellVariable(mesh=mesh, name = "variable")
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`. The scheme used by the convection term
@@ -85,7 +84,7 @@ instance must be passed to the convection term.
 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
-   
+
 More details of the benefits and drawbacks of each type of convection
 term can be found in :ref:`sec:NumericalSchemes`.
 Essentially, the :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm` and :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` will
@@ -94,7 +93,7 @@ both handle most types of convection-diffusion cases, with the
 
 We solve the equation
 
->>> eq.solve(var=var, boundaryConditions=boundaryConditions)
+>>> eq.solve(var=var)
    
 and test the solution against the analytical result
 

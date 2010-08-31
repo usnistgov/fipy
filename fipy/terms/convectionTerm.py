@@ -119,7 +119,7 @@ class ConvectionTerm(FaceTerm):
     def _calcGeomCoeff(self, mesh):
         if not isinstance(self.coeff, FaceVariable):
             self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
-        
+
         projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
         
         return projectedCoefficients.sum(0)
@@ -170,24 +170,22 @@ class ConvectionTerm(FaceTerm):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
 
-        import types
-        self._buildMatrix = types.MethodType(FaceTerm._buildMatrix, self)
+        L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
 
-        weight = self._getWeight(var.getMesh(), equation)
+        mesh = var.getMesh()
+        weight = self._getWeight(mesh, equation)
 
         if weight.has_key('implicit'):
             alpha = weight['implicit']['cell 1 diag']
         else:
             alpha = 0.0
-            
-        normalsDotCoeff = FaceVariable(mesh=var.getMesh(), rank=1, value=var.getMesh()._getOrientedFaceNormals()) * self.coeff
-        extNormalsDotCoeff = var.getMesh().getExteriorFaces() * normalsDotCoeff
 
-        from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-        self += ImplicitSourceTerm((alpha * self.coeff).getDivergence()) 
-        self +=  ((1 - alpha) * var.getArithmeticFaceValue() * extNormalsDotCoeff).getDivergence()
+        exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
 
-        return self._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+        L.addAtDiagonal((alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes())
+        b -=  ((1 - alpha) * var.getArithmeticFaceValue() * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+
+        return (L, b)
         
 class __ConvectionTerm(ConvectionTerm): 
     """

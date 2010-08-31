@@ -58,10 +58,8 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 ...                    mesh = mesh,
 ...                    value = valueBottom)
 
->>> boundaryConditions = (
-...     FixedValue(mesh.getFacesBottom(), valueBottom),
-...     FixedValue(mesh.getFacesTop(), valueTop),
-... )
+>>> var.constrain(valueBottom, mesh.getFacesBottom())
+>>> var.constrain(valueTop, mesh.getFacesTop())
 
 >>> diffCoeff = 1.
 >>> convCoeff = array(((0.,), (10.,)))
@@ -70,7 +68,6 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
 >>> eq.solve(var = var,
-...          boundaryConditions = boundaryConditions,
 ...          solver=DefaultAsymmetricSolver(iterations=10000))
 
 The analytical solution test for this problem is given by:
