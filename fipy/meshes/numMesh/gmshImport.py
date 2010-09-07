@@ -85,9 +85,11 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.commModule      = parallel if order < 2 else serial
+        self.commModule      = commModule or (parallel if order < 2 else serial)
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
+
+        parprint("comm module: %s" % self.commModule)
 
         # much special-casing based on gmsh version
         gmshVersion = self._getGmshVersion()
@@ -155,6 +157,7 @@ class MshFile:
             gmshout = subp.Popen("gmsh %s %s -o %s" \
                       % (geoFile, gmshFlags, mshFile),
                       stdout=subp.PIPE, shell=True).stdout.readlines()
+            parprint("gmsh out: %s" % gmshout)
             os.close(f)
 
             return mshFile
@@ -341,6 +344,8 @@ class MshFile:
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
 
         parprint("Recovering coords.")
+        parprint("cell data dict")
+        parprint(cellDataDict)
         parprint("numcells %d" % numCellsTotal)
         vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
 
