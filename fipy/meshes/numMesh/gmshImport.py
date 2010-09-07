@@ -85,11 +85,15 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.commModule      = commModule or (parallel if order < 2 else serial)
+        self.commModule      = commModule
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
 
-        parprint("comm module: %s" % self.commModule)
+        if order > 1:
+            self.commModule = serial
+
+        if self.commModule == serial:
+            parprint("SERIAL!")
 
         # much special-casing based on gmsh version
         gmshVersion = self._getGmshVersion()
@@ -344,8 +348,6 @@ class MshFile:
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
 
         parprint("Recovering coords.")
-        parprint("cell data dict")
-        parprint(cellDataDict)
         parprint("numcells %d" % numCellsTotal)
         vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
 
@@ -644,8 +646,12 @@ class Gmsh2D(mesh2D.Mesh2D):
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
-    def __init__(self, arg, order=1):
-        Gmsh2D.__init__(self, arg, coordDimensions=3, order=order)
+    def __init__(self, arg, commModule=parallel, order=1):
+        Gmsh2D.__init__(self, 
+                        arg, 
+                        coordDimensions=3, 
+                        commModule=commModule,
+                        order=order)
 
     def _test(self):
         """
