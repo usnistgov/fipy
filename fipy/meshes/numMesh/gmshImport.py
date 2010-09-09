@@ -179,6 +179,9 @@ class MshFile:
     def _getGmshVersion(self):
         """
         Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
+        
+        We can't trust the generated msh file for the correct version number, so
+        we have to retrieve it from the gmsh binary.
         """
         import subprocess as subp
         import re
