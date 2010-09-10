@@ -44,7 +44,7 @@ The result is again tested in the same way:
     >>> Lx = 20
     >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> print var.allclose(analyticalArray, atol = 0.026)
+    >>> print var.allclose(analyticalArray, atol = 0.027)
     1
 
 Note that this test case will only work if you run it by running the

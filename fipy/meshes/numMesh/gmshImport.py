@@ -39,23 +39,45 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix as nx
+from fipy.tools import parallel
+from fipy.tools import serial
 import mesh
 import mesh2D
+import sys
 import os
 import tempfile
+
+DEBUG = 0
+
+def parprint(str):
+    if DEBUG:
+        if parallel.procID == 0:
+            print >> sys.stderr, str
 
 class MshFile:
     """
     Class responsible for parsing a Gmsh file and then readying
-    its contents for use by a `Mesh` constructor.
+    its contents for use by a `Mesh` constructor. 
+    
+    Can handle a partitioned mesh based on `parallel.Nproc`. If partitioning,
+    the msh file must either be previously partitioned with the number of
+    partitions matching `Nproc`, or the mesh must be specified with a geo file
+    or multiline string.
 
-    Does not support gmsh versions < 2.
+    Does not support gmsh versions < 2. If partitioning, gmsh
+    version must be >= 2.5.
+
+    TODO: Refactor face extraction functions.
     """
-    def __init__(self, filename, dimensions, coordDimensions=None):
+    def __init__(self, filename, 
+                       dimensions, 
+                       coordDimensions=None,
+                       commModule=parallel,
+                       order=1):
         """
-        Isolates relevant data into two files, stores in 
+        Isolate relevant data into two files, store in 
         `self.nodesFile` for $Nodes,
-        `self.elemsFile` for $Elements.
+        `self.elemsFile` for $Elements. 
 
         :Parameters:
           - `filename`: a string indicating gmsh output file
@@ -63,28 +85,58 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.coordDimensions  = coordDimensions or dimensions
-        self.dimensions       = dimensions
-        gmshFlags             = "-%d -v 0 -format msh" % dimensions
-        self.filename         = self._parseFilename(filename, gmshFlags)
+        self.commModule      = commModule
+        self.coordDimensions = coordDimensions or dimensions
+        self.dimensions      = dimensions
+
+        if order > 1:
+            self.commModule = serial
+
+        if self.commModule == serial:
+            parprint("SERIAL!")
+
+        # much special-casing based on gmsh version
+        gmshVersion = self._getGmshVersion()
+        if gmshVersion < 2.0:
+            errStr = "Gmsh version must be >= 2.0."
+            raise EnvironmentError(errStr)
+        if self.commModule.Nproc > 1:
+            if gmshVersion < 2.5:
+                import warnings
+                warnstr = "Cannot partition with Gmsh version < 2.5. " \
+                           + "Reverting to serial."
+                warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
+                self.commModule = serial
+
+                gmshFlags = "-%d" % (self.dimensions)
+            else: # gmsh version is adequate for partitioning
+                gmshFlags = "-%d -part %d" % (self.dimensions,
+                                              self.commModule.Nproc)
+        else: # we're running serial
+            gmshFlags = "-%d" % (self.dimensions)
+        
+        gmshFlags += " -format msh"
+
+        self.filename = self._parseFilename(filename, gmshFlags)
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
             self.numFacesForShape = {2: 3, # triangle:   3 sides
                                      3: 4} # quadrangle: 4 sides
         else: # 3D
-            self.numFacesForShape = {4: 4} # tet:        4 sides
+            self.numFacesForShape = {4: 4, # tet:        4 sides
+                                     5: 6} # hexahedron: 6 sides
+
+        self.faceLenForShape = {2: 2, # triangle:   2 verts per face
+                                3: 2, # quadrangle: 2 verts per face
+                                4: 3, # tet:        3 verts per face
+                                5: 4} # hexahedron: 4 verts per face
 
         f = open(self.filename, "r") # open the msh file
 
-        # five lines of muck here allow most of the other methods to be
-        # free of side-effects.
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
-
-        self.vertexCoords, self.vertexMap = self._vertexCoordsAndMap()
-        self.facesToV, self.cellsToF  = self._parseElements(self.vertexMap)
 
     def _parseFilename(self, fname, gmshFlags):
         """
@@ -92,6 +144,7 @@ class MshFile:
         we've gotta compile a .msh file from either (i) a .geo file, 
         or (ii) a gmsh script passed as a string.
         """
+        import subprocess as subp
         lowerFname = fname.lower()
         if '.msh' in lowerFname:
             return fname
@@ -105,8 +158,10 @@ class MshFile:
                 file.close(); os.close(f)
 
             (f, mshFile) = tempfile.mkstemp('.msh')
-            os.system('gmsh %s %s -o %s' \
-                      % (geoFile, gmshFlags, mshFile))
+            gmshout = subp.Popen("gmsh %s %s -o %s" \
+                      % (geoFile, gmshFlags, mshFile),
+                      stdout=subp.PIPE, shell=True).stdout.readlines()
+            parprint("gmsh out: %s" % gmshout)
             os.close(f)
 
             return mshFile
@@ -121,20 +176,39 @@ class MshFile:
         f.seek(0)
         return [float(x) for x in metaData]
 
+    def _getGmshVersion(self):
+        """
+        Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
+        
+        We can't trust the generated msh file for the correct version number, so
+        we have to retrieve it from the gmsh binary.
+        """
+        import subprocess as subp
+        import re
+
+        verStr = "\n".join(subp.Popen("gmsh --version", 
+            stderr=subp.PIPE, shell=True).stderr.readlines())
+
+        m = re.search(r'\d+.\d+', verStr)
+
+        if m:
+            return float(m.group(0))
+        else:
+            return 0
+     
     def _isolateData(self, title, f):
         """
         Gets all data between $[title] and $End[title], writes
         it out to its own file.
         """
         newF = tempfile.TemporaryFile()
-
-        # seek to section header
         self._seekForHeader(title, f)
         
         # extract the actual data within section
         while True:
             line = f.readline()
-            if ("$End%s" % title) not in line: newF.write(line) 
+            if ("$End%s" % title) not in line: 
+                newF.write(line) 
             else: break
 
         f.seek(0); newF.seek(0) # restore file positions
@@ -151,98 +225,37 @@ class MshFile:
                 raise EOFError("No `%s' header found!" % title)
                 break
             elif (("$%s" % title) not in line): continue
-            else: break 
+            else: break # found header
 
-    def _vertexCoordsAndMap(self):
+    def _deriveCellsAndFaces(self, cellsToVertIDs, shapeTypes, numCells):
         """
-        Extract vertex coordinates and mapping information from
-        nx.genfromtxt-friendly file, generated in `_isolateData`.
-
-        Returns both the vertex coordinates and the mapping information.
-        Mapping information is stored in a 1xn array where n is the
-        largest vertexID obtained from the gmesh file. This mapping
-        array is subsequently used to transform element information.
+        Uses element information obtained from `_parseElementFile` to deliver
+        `facesToVertices` and `cellsToFaces`.
         """
-        gen = nx.genfromtxt(fname=self.nodesFile, skiprows=1)
-        self.nodesFile.close()
-
-        vertexCoords = gen[:, 1:] # strip out column 0
-        vertexIDs    = gen[:, :1].flatten().astype(int)
-        
-        # `vertexToIdx`: gmsh-vertex ID -> `vertexCoords` index
-        vertexToIdx = nx.empty(vertexIDs.max() + 1, dtype=int)
-        vertexToIdx[vertexIDs] = nx.arange(len(vertexIDs))
-
-        # transpose for FiPy, truncate for dimension
-        return vertexCoords.transpose()[:self.coordDimensions], vertexToIdx
-
-    def _parseElements(self, vertexMap):
-        """
-        Parses $Elements portion to build `facesToVertices` and `cellsToFaces`
-        arrays.
-        """
-        def _extractFaces(faceLen, facesPerCell, cell):
-            """
-            Given `cell`, a cell in terms of vertices, returns an array of
-            `facesPerCell` faces of length `faceLen` in terms of vertices.
-            """
-            faces = []
-            for i in range(facesPerCell):
-                aFace = []
-                for j in range(faceLen):
-                    aVertex = (i + j) % len(cell) # we may wrap
-                    aFace.append(int(cell[aVertex]))
-                faces.append(aFace)
-            return faces
 
         def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
-
-        # shapeTypes:  cellsToVertIDs index -> shape type id
-        cellsToVertIDs = []
-        els            = self.elemsFile.readlines()
-        shapeTypes     = nx.empty(len(els), dtype=int)
-        numCells       = 0
-
-        # read in Elements data from gmsh
-        for element in els[1:]: # skip number-of-elems line
-            currLineInts = [int(x) for x in element.split()]
-            elemType     = currLineInts[1]
-            numTags      = currLineInts[2]
-
-            if elemType in self.numFacesForShape.keys():
-                # translate gmsh vertex IDs to vertexCoords indices
-                # NB: 3 columns precede the tags
-                vertIndices = vertexMap[nx.array(currLineInts[(3+numTags):])]
-                cellsToVertIDs.append(vertIndices)
-
-                shapeTypes[numCells] = elemType # record shape type
-                numCells += 1
-            else:
-                continue # shape not recognized
-
-        self.elemsFile.close() # tempfile trashed
-
-        # strip out the extra padding in `shapeTypes`
-        shapeTypes = nx.delete(shapeTypes,  nx.s_[numCells:])
 
         allShapes  = nx.unique(shapeTypes).tolist()
         maxFaces   = max([self.numFacesForShape[x] for x in allShapes])
 
-        # a few scalers
-        faceLength      = self.dimensions
-        currNumFaces    = 0
+        # `cellsToFaces` must be padded with -1; see mesh.py
+        currNumFaces = 0
+        cellsToFaces = nx.ones((numCells, maxFaces)) * -1
+        facesDict    = {}
+        uniqueFaces  = []
 
-        # a few data structures and a function dictionary
-        cellsToFaces     = nx.ones((numCells, maxFaces)) * -1
-        facesDict        = {}
-        uniqueFaces      = []
-
-        # we now build, explicitly, `cellsToFaces` and `uniqueFaces`,
+        # we now build `cellsToFaces` and `uniqueFaces`,
         # the latter will result in `facesToVertices`.
         for cellIdx in range(numCells):
+            shapeType    = shapeTypes[cellIdx]
+            faceLength   = self.faceLenForShape[shapeType]
             cell         = cellsToVertIDs[cellIdx]
-            facesPerCell = self.numFacesForShape[shapeTypes[cellIdx]]
-            faces        = _extractFaces(faceLength, facesPerCell, cell)
+            facesPerCell = self.numFacesForShape[shapeType]
+
+            if shapeType == 5: # we need to special case for hexahedron
+                faces = self._extractHexahedronFaces(cell)
+            else:
+                faces = self._extractFaces(faceLength, facesPerCell, cell)
 
             for faceIdx in range(facesPerCell):
                 # NB: currFace is sorted for the key to spot duplicates
@@ -260,21 +273,314 @@ class MshFile:
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
         return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces)
+ 
+    def _translateVertIDToIdx(self, cellsToVertIDs, vertexMap):
+        """
+        Translates cellToIds from Gmsh output IDs to `vertexCoords`
+        indices. 
+        
+        NB: Takes in Python array, outputs numpy array.
+        """
+        cellsToVertIdxs = []
+
+        # translate gmsh vertex IDs to vertexCoords indices
+        for cell in cellsToVertIDs:
+            vertIndices = vertexMap[nx.array(cell)]
+            cellsToVertIdxs.append(vertIndices)
+
+        return cellsToVertIdxs
+     
+    def _extractFaces(self, faceLen, facesPerCell, cell):
+        """
+        Given `cell`, a cell in terms of vertices, returns an array of
+        `facesPerCell` faces of length `faceLen` in terms of vertices.
+        """
+        faces = []
+        for i in range(facesPerCell):
+            aFace = []
+            for j in range(faceLen):
+                aVertex = (i + j) % len(cell) # we may wrap
+                aFace.append(int(cell[aVertex]))
+            faces.append(aFace)
+        return faces
+
+    def _extractHexahedronFaces(self, cell):
+        """
+        SPECIAL CASE: return faces for a hexahedron cell.
+        """
+        def orderingToFace(vertList):
+            aFace = []
+            for i in vertList:
+                aFace.append(int(cell[i]))
+            return aFace
+
+        # six orderings for six faces
+        faces = []
+        orderings = [[0, 1, 2, 3], # ordering of vertices gleaned from
+                     [4, 5, 6, 7], # a one-cube Grid3D example
+                     [0, 1, 5, 4],
+                     [3, 2, 6, 7],
+                     [0, 3, 7, 4],
+                     [1, 2, 6, 5]]
+
+        for o in orderings:
+            faces.append(orderingToFace(o))
+
+        return faces
+
+    def buildMeshData(self):
+        """
+        0. Build cellsToVertices
+        1. Recover needed vertexCoords and mapping from file using 
+           cellsToVertices
+        2. Build cellsToVertIDs proper from vertexCoords and vertex map
+        3. Build faces
+        4. Build cellsToFaces
+
+        Returns vertexCoords, facesToVertexID, cellsToFaceID, 
+                cellGlobalIDMap, ghostCellGlobalIDMap.
+        """
+     
+        parprint("Parsing elements.")
+        cellDataDict, ghostDataDict = self._parseElementFile()
+        
+        cellsToGmshVerts = cellDataDict['cells']  + ghostDataDict['cells']
+        numCellsTotal    = cellDataDict['num']    + ghostDataDict['num']
+        allShapeTypes    = cellDataDict['shapes'] + ghostDataDict['shapes']
+        allShapeTypes    = nx.array(allShapeTypes)
+        allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
+
+        parprint("Recovering coords.")
+        parprint("numcells %d" % numCellsTotal)
+        vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
+
+        # translate Gmsh IDs to `vertexCoord` indices
+        cellsToVertIDs = self._translateVertIDToIdx(cellsToGmshVerts,
+                                                    vertIDtoIdx)
+
+        parprint("Building cells and faces.")
+        facesToV, cellsToF = self._deriveCellsAndFaces(cellsToVertIDs,
+                                                       allShapeTypes,
+                                                       numCellsTotal)
+        parprint("Done with cells and faces.")
+        return vertexCoords, facesToV, cellsToF, \
+               cellDataDict['idmap'], ghostDataDict['idmap']
+
+    def _vertexCoordsAndMap(self, cellsToGmshVerts):
+        """
+        Returns `vertexCoords` and mapping from Gmsh ID to `vertexCoords`
+        indices (same as in MshFile). 
+        
+        Unlike parent, doesn't use genfromtxt
+        because we want to avoid loading the entire msh file into memory.
+        """
+        allVerts     = [v for c in cellsToGmshVerts for v in c] # flatten
+        allVerts     = nx.unique(nx.array(allVerts, dtype=int)) # remove dups
+        allVerts     = nx.sort(allVerts)
+        maxVertIdx   = allVerts[-1] + 1 # add one to offset zero
+        vertGIDtoIdx = nx.ones(maxVertIdx) * -1 # gmsh ID -> vertexCoords idx
+        vertexCoords = nx.empty((len(allVerts), self.coordDimensions))
+        nodeCount    = 0
+
+        # establish map. This works because allVerts is a sorted set.
+        vertGIDtoIdx[allVerts] = nx.arange(len(allVerts))
+
+        self.nodesFile.readline() # skip number of nodes
+
+        # now we walk through node file with a sorted unique list of vertices
+        # in hand. When we encounter 0th element in `allVerts`, save it 
+        # to `vertexCoords` then pop its ID off `allVerts`.
+        node = self.nodesFile.readline()
+        while node != "":
+            line   = node.split()
+            nodeID = int(line[0])
+
+            if nodeID == allVerts[nodeCount]:
+                newVert = [float(x) for x in line[1:self.coordDimensions+1]]
+                vertexCoords[nodeCount,:] = nx.array(newVert)
+                nodeCount += 1
+
+            if len(allVerts) == nodeCount: 
+                break
+
+            node = self.nodesFile.readline()
+
+        # transpose for FiPy
+        transCoords = vertexCoords.swapaxes(0,1)
+        return transCoords, vertGIDtoIdx
+
+    def _parseElementFile(self):
+        """
+        Return two dicts, the first for non-ghost cells and the second for
+        ghost cells. Each dict contains 
+            "cells": A cellToVertID Python array,
+            "shapes": A shapeTypes Python array,
+            "num": A scalar, number of cells
+            "idmap": A Python array which maps vertexCoords idx -> global ID
+
+        All nastiness concerning ghost cell
+        calculation is consolidated here: if we were ever to need to CALCULATE
+        GHOST CELLS OURSELVES, the only code we'd have to change is in here.
+        """
+        def _addCell(cellDict, currLine, elType, IDoffset):
+            """
+            Bookkeeping for cells. Declared as own function for generality.
+            Curried later in ghost/non-ghost specific lambdas.
+            Just full of side-effects. Sorry, Abelson/Sussman.
+            """
+            cellDict['cells'].append(currLine[(numTags+3):])
+            cellDict['shapes'].append(elType)
+            cellDict['idmap'].append(currLine[0] - IDoffset)
+            cellDict['num'] += 1
+
+        seenParts  = [] # to make sure Nproc/mshfile are using same num. proc.
+        cellsData  = {'cells':  [],
+                      'shapes': [],
+                      'num':     0,
+                      'idmap':  []} # vertexCoords idx -> gmsh ID (global ID)
+
+        ghostsData = {'cells':  [],
+                      'shapes': [],
+                      'num':     0,
+                      'idmap':  []} # vertexCoords idx -> gmsh ID (global ID)
+
+        IDOffset        = -1 # this will be subtractd from gmsh ID to obtain
+                             # global ID
+        pid             = self.commModule.procID + 1
+
+        addCell      = lambda c,e: _addCell(cellsData, c, e, IDOffset)
+        addGhostCell = lambda c,e: _addCell(ghostsData, c, e, IDOffset)
+
+        self.elemsFile.readline() # skip number of elements
+        for el in self.elemsFile:
+            currLineInts = [int(x) for x in el.split()]
+            elemType     = currLineInts[1]
+
+            if elemType in self.numFacesForShape.keys():
+                if IDOffset == -1: # if first valid shape
+                    IDOffset = currLineInts[0]
+
+                numTags = currLineInts[2]
+                tags    = currLineInts[3:(3+numTags)]
+                # if we're collecting ghost cells
+                if self.commModule.Nproc > 1: 
+                    tags.reverse() # any ghost cell IDs come first, then part ID
+
+                    if tags[0] < 0: # if this is someone's ghost cell
+                        while tags[0] < 0: # while we have ghost IDs
+                            if (tags[0] * -1) == pid: 
+                                addGhostCell(currLineInts, elemType)
+                                break   
+                            tags.pop(0) # try the next ID
+                # el is in this processor's partition OR we collect all cells
+                if (self.commModule.Nproc == 1) or (tags[0] == pid):
+                    addCell(currLineInts, elemType)
+                
+        self.elemsFile.close() # tempfile trashed
+
+        return cellsData, ghostsData
 
 class Gmsh2D(mesh2D.Mesh2D):
-    def __init__(self, arg, coordDimensions=2):
-        self.mshFile = MshFile(arg, dimensions=2, 
-                               coordDimensions=coordDimensions)
-        self.verts   = self.mshFile.vertexCoords
-        self.faces   = self.mshFile.facesToV
-        self.cells   = self.mshFile.cellsToF
+    def __init__(self, 
+                 arg, 
+                 coordDimensions=2, 
+                 commModule=parallel, 
+                 order=1):
+        self.commModule = commModule 
+        self.mshFile  = MshFile(arg, 
+                                dimensions=2, 
+                                coordDimensions=coordDimensions,
+                                commModule=commModule,
+                                order=order)
+        self.verts, \
+        self.faces, \
+        self.cells, \
+        self.cellGlobalIDs, \
+        self.gCellGlobalIDs = self.mshFile.buildMeshData()
+
+        if self.commModule.Nproc > 1:
+            self.globalNumberOfCells = self.commModule.sumAll(len(self.cellGlobalIDs))
+            parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
+            parprint("  Got global number of cells")
+
         mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
+        parprint("Exiting Gmsh2D")
 
-    def getCellVolumes(self):
-        return abs(mesh2D.Mesh2D.getCellVolumes(self))
+    def _getGlobalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
 
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        return nx.array(self.cellGlobalIDs)
+
+    def _getGlobalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(len(self.cellGlobalIDs))
+
+    def _getLocalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(len(self.cellGlobalIDs) 
+                         + len(self.gCellGlobalIDs))
+    
     def _test(self):
         """
         First, we'll test GmshImporter2D on a small circle with triangular
@@ -343,8 +649,13 @@ class Gmsh2D(mesh2D.Mesh2D):
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
-    def __init__(self, arg):
-        Gmsh2D.__init__(self, arg, coordDimensions=3)
+    def __init__(self, arg, commModule=parallel, order=1):
+        Gmsh2D.__init__(self, 
+                        arg, 
+                        coordDimensions=3, 
+                        commModule=commModule,
+                        order=order)
+
     def _test(self):
         """
         Stolen from the cahnHilliard sphere example.
@@ -391,15 +702,98 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         """
 
 class Gmsh3D(mesh.Mesh):
-    def __init__(self, arg):
-        self.mshFile = MshFile(arg, dimensions=3)
-        self.verts   = self.mshFile.vertexCoords
-        self.faces   = self.mshFile.facesToV
-        self.cells   = self.mshFile.cellsToF
+    def __init__(self, arg, commModule=parallel, order=1):
+        self.commModule = commModule
+        self.mshFile  = MshFile(arg, 
+                                dimensions=3, 
+                                commModule=commModule,
+                                order=order)
+
+        self.verts, \
+        self.faces, \
+        self.cells, \
+        self.cellGlobalIDs, \
+        self.gCellGlobalIDs = self.mshFile.buildMeshData()
         mesh.Mesh.__init__(self, vertexCoords=self.verts,
                                  faceVertexIDs=self.faces,
                                  cellFaceIDs=self.cells)
 
+        if self.commModule.Nproc > 1:
+            self.globalNumberOfCells = self.commModule.sumAll(len(self.cellGlobalIDs))
+
+    def _getGlobalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        return nx.array(self.cellGlobalIDs)
+
+    def _getGlobalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(len(self.cellGlobalIDs))
+
+    def _getLocalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(len(self.cellGlobalIDs) 
+                         + len(self.gCellGlobalIDs))
+     
     def _test(self):
         """
         >>> prism = Gmsh3D('''

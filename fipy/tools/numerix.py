@@ -82,6 +82,7 @@ except ImportError:
     numpy_version = 'new'
 
 def zeros(a, t='l'):
+    # print a, t
     return NUMERIX.zeros(a, t)
 def ones(a, t='l'):
     return NUMERIX.ones(a, t)
