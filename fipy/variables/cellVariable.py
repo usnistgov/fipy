@@ -540,6 +540,9 @@ class CellVariable(_MeshVariable):
             self.faceConstraints.append([value, where])
         else:
             _MeshVariable.constrain(value, where)
+
+    def constrainFaceGrad(self, value, where=None):
+        self.getFaceGrad().constrain(value, where)
             
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):

@@ -74,8 +74,8 @@ where
 >>> D = 2.0
 >>> P = 3.0
 
->>> C.getFaceGrad().constrain(P - P * C.getFaceValue(), mesh.getFacesLeft())
->>> C.getFaceGrad().constrain(0, mesh.getFacesRight())
+>>> C.constrainFaceGrad(P - P * C.getFaceValue(), mesh.getFacesLeft())
+>>> C.constrainFaceGrad(0, mesh.getFacesRight())
 
 >>> eq = PowerLawConvectionTerm((P,)) == \
 ...      DiffusionTerm() - ImplicitSourceTerm(D)

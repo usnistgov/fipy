@@ -80,7 +80,7 @@ or
 
 >>> BCs = (NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
 ...        NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=alpha4, order=3))
->>> var.getFaceGrad().constrain(alpha2, mesh.getFacesRight())
+>>> var.constrainFaceGrad(alpha2, mesh.getFacesRight())
 >>> var.constrain(alpha1, mesh.getFacesLeft())
 
 We initialize the steady-state equation
