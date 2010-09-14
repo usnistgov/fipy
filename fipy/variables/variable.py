@@ -483,10 +483,18 @@ class Variable(object):
                     value[:] = constraintValue
                 else:
                     mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
+                                             
                     if len(numerix.getShape(value)) == 1:
                         value[:] = numerix.where(mask, constraintValue, value)
                     else:
-                        value[..., mask] = constraintValue
+                        
+                        try:
+                            value[..., mask] = constraintValue
+                        except ValueError:
+                            value[:] = numerix.where(numerix.resize(mask, numerix.shape(value)),
+                                                     numerix.resize(constraintValue, numerix.shape(value)),
+                                                     value)
+                            
         return value
             
     def constrain(self, value, where=None):

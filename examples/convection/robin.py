@@ -74,21 +74,8 @@ where
 >>> D = 2.0
 >>> P = 3.0
 
-From the main equation, the flux into the domain at :math:`x=0` is given
-by
-
-.. math::
-    
-   \frac{\partial C}{\partial x}
-    - P C
-
-Using the boundary condition at :math:`x=0` this flux should be equal to
-:math:`-P`. Setting the :math:`x=1` boundary condition to be a fixed value
-equal to :math:`C \left( 1 \right)` fixes the edge derivative on both the
-convection and diffusion terms to be zero.
-
->>> BCs = (FixedValue(faces=mesh.getFacesRight(), value=C.getFaceValue()))
->>> C.getFaceGrad().constrain(P, mesh.getFacesLeft())
+>>> C.getFaceGrad().constrain(P - P * C.getFaceValue(), mesh.getFacesLeft())
+>>> C.getFaceGrad().constrain(0, mesh.getFacesRight())
 
 >>> eq = PowerLawConvectionTerm((P,)) == \
 ...      DiffusionTerm() - ImplicitSourceTerm(D)
@@ -102,11 +89,12 @@ convection and diffusion terms to be zero.
 ...             ((P + A)**2*exp(A / 2)- (P - A)**2 * exp(-A / 2)))
 
 >>> if __name__ == '__main__':
+...     C.name = 'C'
 ...     viewer = Viewer(vars=(C, CAnalytical))
 
 >>> res = 1e+10
 >>> while res > 1e-5:
-...     res = eq.sweep(var=C, boundaryConditions=BCs)
+...     res = eq.sweep(var=C)##, boundaryConditions=BCs)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
