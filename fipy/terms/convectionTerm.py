@@ -119,7 +119,7 @@ class ConvectionTerm(FaceTerm):
     def _calcGeomCoeff(self, mesh):
         if not isinstance(self.coeff, FaceVariable):
             self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
-        
+
         projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
         
         return projectedCoefficients.sum(0)
@@ -168,6 +168,30 @@ class ConvectionTerm(FaceTerm):
         else:
             return FaceTerm.__add__(self, other)
 
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+
+        L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+
+        if not hasattr(self,  'constraintB'):
+
+            mesh = var.getMesh()
+            weight = self._getWeight(mesh, equation)
+
+            if weight.has_key('implicit'):
+                alpha = weight['implicit']['cell 1 diag']
+            else:
+                alpha = 0.0
+
+            exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
+
+            self.constraintL = (alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+            self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+
+        L.addAtDiagonal(self.constraintL)
+        b += self.constraintB
+
+        return (L, b)
+        
 class __ConvectionTerm(ConvectionTerm): 
     """
     Dummy subclass for tests

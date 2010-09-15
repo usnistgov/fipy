@@ -69,7 +69,7 @@ class CellVariable(_MeshVariable):
             self.old = self.copy()
         else:
             self.old = None
-            
+
     def _getVariableClass(self):
         return CellVariable
         
@@ -334,6 +334,9 @@ class CellVariable(_MeshVariable):
             from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
             self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
+        if hasattr(self, 'faceConstraints'):
+            self.arithmeticFaceValue.applyConstraints(self.faceConstraints)
+            
         return self.arithmeticFaceValue
 
     getFaceValue = getArithmeticFaceValue
@@ -363,6 +366,9 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, 'minmodFaceValue'):
             from minmodCellToFaceVariable import _MinmodCellToFaceVariable
             self.minmodFaceValue = _MinmodCellToFaceVariable(self)
+
+        if hasattr(self, 'faceConstraints'):
+            self.minmodFaceValue.applyConstraints(self.faceConstraints)
 
         return self.minmodFaceValue
 
@@ -403,6 +409,9 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, 'harmonicFaceValue'):
             from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
             self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
+
+        if hasattr(self, 'faceConstraints'):
+            self.harmonicFaceValue.applyConstraints(self.faceConstraints)
 
         return self.harmonicFaceValue
 
@@ -523,6 +532,18 @@ class CellVariable(_MeshVariable):
         if self.old is not None:
             self.old.setValue(dict['old'].getValue())
 
+    def constrain(self, value, where=None):
+        if numerix.shape(where)[-1] == self.mesh._getNumberOfFaces():
+            
+            if not hasattr(self, 'faceConstraints'):
+                self.faceConstraints = []
+            self.faceConstraints.append([value, where])
+        else:
+            _MeshVariable.constrain(value, where)
+
+    def constrainFaceGrad(self, value, where=None):
+        self.getFaceGrad().constrain(value, where)
+            
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.getCellCenters())

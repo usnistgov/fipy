@@ -38,7 +38,6 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from convectionCoeff import _ConvectionCoeff
-from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.solvers import DefaultAsymmetricSolver
 
 class SurfactantEquation:
@@ -65,7 +64,6 @@ class SurfactantEquation:
 
         convectionTerm = ExplicitUpwindConvectionTerm(_ConvectionCoeff(distanceVar))
 
-        self.bc = (FixedValue(distanceVar.getMesh().getExteriorFaces(), 0),)
         self.eq = transientTerm - convectionTerm
 
     def solve(self, var, boundaryConditions = (), solver=DefaultAsymmetricSolver(), dt = 1.):
@@ -82,8 +80,10 @@ class SurfactantEquation:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
+        var.constrain(0, var.getMesh().getExteriorFaces())
+
         self.eq.solve(var,
-                      boundaryConditions = self.bc + boundaryConditions,
+                      boundaryConditions=boundaryConditions,
                       solver = solver)
 
     def sweep(self, var, solver=DefaultAsymmetricSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
@@ -105,4 +105,6 @@ class SurfactantEquation:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
-        return self.eq.sweep(var, solver=solver, boundaryConditions=self.bc + boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn)
+        var.constrain(0, var.getMesh().getExteriorFaces())
+
+        return self.eq.sweep(var, solver=solver, boundaryConditions=boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn)

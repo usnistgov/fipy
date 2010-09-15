@@ -53,7 +53,7 @@ and `steps` is the number of time steps.
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
-    ...     eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
+    ...     eq.solve(var, solver=solver, dt=timeStepDuration)
     
 The result is again tested in the same way:
 
@@ -84,8 +84,9 @@ var = CellVariable(
 eq = TransientTerm() == ExplicitDiffusionTerm()
 
 solver = DefaultSolver(tolerance=1e-6, iterations=1000)
-boundaryConditions=(FixedValue(mesh.getFacesLeft(),valueLeft),
-                    FixedValue(mesh.getFacesRight(),valueRight))
+
+var.constrain(valueLeft, mesh.getFacesLeft())
+var.constrain(valueRight, mesh.getFacesRight())
 
 answer = array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
                           0.00000000e+00,  0.00000000e+00,  1.58508452e-07,  6.84325019e-04,
@@ -102,7 +103,7 @@ if __name__ == '__main__':
     steps = 1000
     
     for step in range(steps):
-        eq.solve(var, solver = solver, boundaryConditions = boundaryConditions, dt = timeStepDuration)
+        eq.solve(var, solver = solver, dt = timeStepDuration)
     print var
     viewer = Viewer(vars = var)
     viewer.plot()

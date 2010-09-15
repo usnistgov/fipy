@@ -7,6 +7,8 @@ MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
 ez_setup.py
+height.txt
+memory.txt
 setup.py
 stdeb.cfg
 FiPy.egg-info/PKG-INFO
@@ -25,6 +27,7 @@ documentation/PUBLICATIONS.txt
 documentation/RESOURCES.txt
 documentation/SVN.txt
 documentation/TODOLIST.txt
+documentation/VERSION.txt
 documentation/VKML.txt
 documentation/conf.py
 documentation/contents.txt
@@ -36,6 +39,7 @@ documentation/manual.txt
 documentation/objects.pdf
 documentation/objects.png
 documentation/refs.bib
+documentation/refs.bib_cited.txt
 documentation/_static/favicon.ico
 documentation/_static/fipy.bib
 documentation/_static/fipy.png
@@ -252,8 +256,10 @@ examples/levelSet/surfactant/test.py
 examples/meshing/__init__.py
 examples/meshing/inputGrid2D.py
 examples/meshing/sphere.gmsh
+examples/meshing/sphere.msh
 examples/meshing/sphere.py
 examples/meshing/test.py
+examples/meshing/tmp.py
 examples/phase/__init__.py
 examples/phase/anisotropy.py
 examples/phase/anisotropyOLD.gz

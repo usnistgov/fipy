@@ -84,7 +84,7 @@ Start time steping:
 ...     surfactantVar.updateOld()
 ...     bulkVar.updateOld()
 ...     surfEqn.solve(surfactantVar, dt = dt)
-...     bulkEqn.solve(bulkVar, dt = dt, boundaryConditions = bcs)
+...     bulkEqn.solve(bulkVar, dt = dt)
 ...     currentTime += dt
 
 Compare the analaytical and numerical results:
@@ -138,7 +138,7 @@ bulkEqn = buildSurfactantBulkDiffusionEquation(bulkVar,
                                           diffusionCoeff = diffusion,
                                           rateConstant = rateConstant * siteDensity)
 
-bcs = (FixedValue(mesh.getFacesRight(), cinf),)
+bulkVar.constrain(cinf, mesh.getFacesRight())
 
 ## Build the surfactant equation
 
@@ -181,7 +181,7 @@ if __name__ == "__main__":
         surfactantVar.updateOld()
         bulkVar.updateOld()
         surfEqn.solve(surfactantVar, dt = dt)
-        bulkEqn.solve(bulkVar, dt = dt, boundaryConditions = bcs)
+        bulkEqn.solve(bulkVar, dt = dt)
         currentTime += dt
 
     raw_input("finished")

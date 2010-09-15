@@ -95,7 +95,7 @@ multiple interstitial species:
 Because Poisson's equation admits an infinite number of potential profiles,
 we must constrain the solution by fixing the potential at one point:
     
->>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
+>>> potential.constrain(0., mesh.getFacesLeft())
 
 >>> charge = 0.
 >>> for Cj in interstitials + substitutionals:
@@ -111,8 +111,7 @@ concentration of electrons :math:`C_{\text{e}^{-}} = 1`.
 
 and we solve for the electrostatic potential
 
->>> potential.equation.solve(var = potential, 
-...                          boundaryConditions = bcs)
+>>> potential.equation.solve(var = potential)
    
 This problem has the analytical solution
 
@@ -151,8 +150,7 @@ Next, we segregate all of the electrons to right side of the domain
 
 and again solve for the electrostatic potential
 
->>> potential.equation.solve(var = potential, 
-...                          boundaryConditions = bcs)
+>>> potential.equation.solve(var = potential)
     
 which now has the analytical solution
 
@@ -192,8 +190,7 @@ Finally, we segregate all of the electrons to left side of the domain
 
 and again solve for the electrostatic potential
 
->>> potential.equation.solve(var = potential, 
-...                          boundaryConditions = bcs)
+>>> potential.equation.solve(var = potential)
     
 which has the analytical solution
 

@@ -43,7 +43,7 @@ being that it uses a triangular mesh loaded in using gmshImport.
 
 The result is again tested in the same way:
 
-    >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    >>> DiffusionTerm().solve(var)
     >>> Lx = 20
     >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
@@ -85,21 +85,18 @@ mesh = Gmsh2D("""
     Plane Surface(11) = {10};
 """)
 
-
-##    "%s/%s" % (sys.__dict__['path'][0], "examples/diffusion/steadyState/mesh20x20/modifiedMesh.msh"))
-
 var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-exteriorFaces = mesh.getExteriorFaces()
-xFace = mesh.getFaceCenters()[0]
-boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001), valueLeft),
-                      FixedValue(exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001), valueRight))
-                      
+var.constrain(valueLeft, mesh.getFacesLeft())
+var.constrain(valueRight, mesh.getFacesRight())
 
 if __name__ == '__main__':
-    DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+
+
+    DiffusionTerm().solve(var)
+
     viewer = Viewer(vars = var)
     viewer.plot()
     varArray = array(var)

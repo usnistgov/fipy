@@ -70,13 +70,12 @@ var = CellVariable(name = "variable",
 
 ## viewer.plot()
 
-DiffusionTerm().solve(var, boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueSides),
-                                                 FixedValue(mesh.getFacesRight(),valueSides),
-                                                 FixedValue(mesh.getFacesTop(),valueSides),
-                                                 FixedValue(mesh.getFacesBottom(),valueSides),
-                                                 FixedValue(mesh.getFacesFront(),valueFront),
-                                                 FixedValue(mesh.getFacesBack(),valueBack),
-                                                 ))
+var.constrain(valueSides, mesh.getFacesLeft())
+var.constrain(valueSides, mesh.getFacesRight())
+var.constrain(valueSides, mesh.getFacesTop())
+var.constrain(valueSides, mesh.getFacesBottom())
+var.constrain(valueFront, mesh.getFacesFront())
+var.constrain(valueBack, mesh.getFacesBack())
 
 ## viewer.plot()
 

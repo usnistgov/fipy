@@ -38,8 +38,8 @@
 """
 Test case for the Grid3D.
  
-   >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
-   >>> DiffusionTerm().solve(var2, boundaryConditions = boundaryConditions2)
+   >>> DiffusionTerm().solve(var)
+   >>> DiffusionTerm().solve(var2)
    >>> a = array(var.getGlobalValue())
    >>> b = array(var2.getGlobalValue())
    >>> c = ravel(array((b, b, b)))
@@ -67,11 +67,11 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueBottomTop)
 
-boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeftRight),
-                      FixedValue(mesh.getFacesRight(),valueLeftRight),
-                      FixedValue(mesh.getFacesTop(),valueBottomTop),
-                      FixedValue(mesh.getFacesBottom(),valueBottomTop))
-                      
+var.constrain(valueLeftRight, mesh.getFacesLeft())
+var.constrain(valueLeftRight, mesh.getFacesRight())
+var.constrain(valueBottomTop, mesh.getFacesTop())
+var.constrain(valueBottomTop, mesh.getFacesBottom())
+
 #do the 2D problem for comparison
 
 nx = 10
@@ -86,15 +86,15 @@ var2 = CellVariable(name = "solution variable 2D",
                     mesh = mesh2,
                     value = valueBottomTop)
 
-boundaryConditions2 = (FixedValue(mesh2.getFacesLeft(),valueLeftRight),
-                       FixedValue(mesh2.getFacesRight(),valueLeftRight),
-                       FixedValue(mesh2.getFacesTop(),valueBottomTop),
-                       FixedValue(mesh2.getFacesBottom(),valueBottomTop))
+var2.constrain(valueLeftRight, mesh2.getFacesLeft())
+var2.constrain(valueLeftRight, mesh2.getFacesRight())
+var2.constrain(valueBottomTop, mesh2.getFacesTop())
+var2.constrain(valueBottomTop, mesh2.getFacesBottom())
 
 eqn = DiffusionTerm()  
 
 if __name__ == '__main__':
-    eqn.solve(var2, boundaryConditions = boundaryConditions2)
+    eqn.solve(var2)
     viewer = Viewer(var2)
     viewer.plot()
     raw_input("finished")

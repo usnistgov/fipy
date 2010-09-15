@@ -64,13 +64,13 @@ a test against the analytical result.
 ...     viewer.plot()
 ...     raw_input("press key to continue")
 
->>> BCs = [FixedValue(faces=mesh.getFacesLeft(), value=phi0)]
+>>> phi.constrain(phi0, mesh.getFacesLeft())
 
 The ``RHSBC`` variable acts like an outflow boundary condition when applied as a source term.
 
 >>> RHSBC = (((1,),) * mesh.getFacesRight()).getDivergence()
 >>> eq = PowerLawConvectionTerm((1,)) + ImplicitSourceTerm(alpha + RHSBC)
->>> eq.solve(phi, boundaryConditions=BCs)
+>>> eq.solve(phi)
 >>> print numerix.allclose(phi, phi0 * exp(-alpha * mesh.getCellCenters()[0]), atol=1e-3)
 True
 

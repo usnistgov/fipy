@@ -51,8 +51,8 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 
 >>> var = CellVariable(name = "solution variable", mesh=mesh, value=valueLeft)
 
->>> boundaryConditions = (FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-...                       FixedValue(faces=mesh.getFacesRight(), value=valueRight))
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)
@@ -66,7 +66,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...     eq = (TransientTerm(1e-4) 
 ...           == DiffusionTerm(coeff=diffCoeff)
 ...           + PowerLawConvectionTerm(coeff=convCoeff))
-...     eq.solve(var=var, boundaryConditions=boundaryConditions) 
+...     eq.solve(var=var)
 ...     x = mesh.getCellCenters()[0]
 ...     arg0 = -convCoeff * x / diffCoeff
 ...     arg0 = where(arg0 < -200, -200, arg0)

@@ -258,7 +258,7 @@ iterating to equilibrium
 
     >>> solver = LinearLUSolver(tolerance = 1e-3)
 
-    >>> bcs = (FixedValue(faces = mesh.getFacesLeft(), value = 0),)
+    >>> potential.constrain(0., mesh.getFacesLeft())
 
     >>> phase.residual = CellVariable(mesh = mesh)
     >>> potential.residual = CellVariable(mesh = mesh)
@@ -296,7 +296,7 @@ iterating to equilibrium
     ...             residual = max(phase.equation.residual.max(), residual)
     ...             phase.residual[:] = phase.equation.residual
     ...    
-    ...             potential.equation.solve(var = potential, dt = dt, boundaryConditions = bcs)
+    ...             potential.equation.solve(var = potential, dt = dt)
     ...             # print potential.name, potential.equation.residual.max()
     ...             residual = max(potential.equation.residual.max(), residual)
     ...             potential.residual[:] = potential.equation.residual

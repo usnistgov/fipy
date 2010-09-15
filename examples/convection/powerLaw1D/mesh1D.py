@@ -52,10 +52,8 @@ uses the :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` rath
 ...                    mesh = mesh,
 ...                    value = valueLeft)
 
->>> boundaryConditions = (
-...     FixedValue(mesh.getFacesLeft(), valueLeft),
-...     FixedValue(mesh.getFacesRight(), valueRight),
-... )
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,)
@@ -63,9 +61,7 @@ uses the :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` rath
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + PowerLawConvectionTerm(coeff=convCoeff))
 
->>> eq.solve(var = var,
-...          boundaryConditions = boundaryConditions)
-
+>>> eq.solve(var = var)
 
 We test the solution against the analytical result:
 

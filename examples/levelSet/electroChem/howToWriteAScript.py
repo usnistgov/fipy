@@ -328,7 +328,7 @@ The following boundary condition applies at :math:`\phi = 0`,
    
 The :class:`~fipy.models.levelSet.electroChem.metalIonDiffusionEquation.MetalIonDiffusionEquation` is set up with the following commands.
 
-.. index:: FixedValue, buildMetalIonDiffusionEquation
+.. index:: buildMetalIonDiffusionEquation
 
 >>> metalEquation = buildMetalIonDiffusionEquation(
 ...     ionVar=metalVar,
@@ -338,7 +338,7 @@ The :class:`~fipy.models.levelSet.electroChem.metalIonDiffusionEquation.MetalIon
 ...     metalIonMolarVolume=molarVolume,
 ... )
 
->>> metalEquationBCs = FixedValue(faces=mesh.getFacesTop(), value=bulkMetalConcentration)
+>>> metalVar.constrain(bulkMetalConcentration, mesh.getFacesTop())
 
 The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
 species with a source term for the jump from the bulk to an interface.
@@ -380,8 +380,8 @@ The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.Sur
 ...     rateConstant=rateConstant0 * siteDensity
 ... )
 
->>> catalystBCs = FixedValue(faces=mesh.getFacesTop(), value=catalystConcentration)
-   
+>>> bulkCatalystVar.constrain(catalystConcentration, mesh.getFacesTop())
+
 If running interactively, create viewers.
 
 .. index:: MayaviSurfactantViewer
@@ -432,10 +432,8 @@ is calculated with the CFL number and the maximum extension velocity.
 ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
 ...     advectionEquation.solve(distanceVar, dt=dt)
 ...     surfactantEquation.solve(catalystVar, dt=dt)
-...     metalEquation.solve(var=metalVar, dt=dt,
-...                         boundaryConditions=metalEquationBCs)
-...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt,
-...                                   boundaryConditions=catalystBCs)
+...     metalEquation.solve(var=metalVar, dt=dt)
+...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt)
    
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way

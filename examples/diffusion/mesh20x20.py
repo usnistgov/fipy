@@ -68,16 +68,14 @@ We apply Dirichlet boundary conditions
 to the top-left and bottom-right corners.  Neumann boundary conditions
 are automatically applied to the top-right and bottom-left corners.
 
-.. index:: FixedValue
-
 >>> x, y = mesh.getFaceCenters()
 >>> facesTopLeft = ((mesh.getFacesLeft() & (y > L / 2))
 ...                 | (mesh.getFacesTop() & (x < L / 2)))
 >>> facesBottomRight = ((mesh.getFacesRight() & (y < L / 2))
 ...                     | (mesh.getFacesBottom() & (x > L / 2)))
 
->>> BCs = (FixedValue(faces=facesTopLeft, value=valueTopLeft),
-...        FixedValue(faces=facesBottomRight, value=valueBottomRight))
+>>> phi.constrain(valueTopLeft, facesTopLeft)
+>>> phi.constrain(valueBottomRight, facesBottomRight)
 
 We create a viewer to see the results
 
@@ -94,7 +92,6 @@ and solve the equation by repeatedly looping in time:
 >>> steps = 10
 >>> for step in range(steps):
 ...     eq.solve(var=phi,
-...              boundaryConditions=BCs,
 ...              dt=timeStepDuration)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
@@ -115,8 +112,7 @@ We can test the value of the bottom-right corner cell.
 
 We can also solve the steady-state problem directly
 
->>> DiffusionTerm().solve(var=phi, 
-...                       boundaryConditions = BCs)
+>>> DiffusionTerm().solve(var=phi)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 
