@@ -19,6 +19,7 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 import os
 from fipy.tools import numerix
+from fipy.tools import serial
 
 class GapFillMesh(Mesh2D):
     """
@@ -159,7 +160,7 @@ class GapFillMesh(Mesh2D):
         Line(7) = {4, 3} ;
         Line(8) = {3, 1} ;
         Line Loop(9) = {5, 6, 7, 8} ;
-        Plane Surface(10) = {9} ; """)
+        Plane Surface(10) = {9} ; """, commModule=serial)
     
     def getCellIDsAboveFineRegion(self):
         return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)[0]
