@@ -172,18 +172,23 @@ class ConvectionTerm(FaceTerm):
 
         L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
 
-        mesh = var.getMesh()
-        weight = self._getWeight(mesh, equation)
+        if not hasattr(self,  'constraintB'):
 
-        if weight.has_key('implicit'):
-            alpha = weight['implicit']['cell 1 diag']
-        else:
-            alpha = 0.0
+            mesh = var.getMesh()
+            weight = self._getWeight(mesh, equation)
 
-        exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
+            if weight.has_key('implicit'):
+                alpha = weight['implicit']['cell 1 diag']
+            else:
+                alpha = 0.0
 
-        L.addAtDiagonal((alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes())
-        b -=  ((1 - alpha) * var.getArithmeticFaceValue() * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+            exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
+
+            self.constraintL = (alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+            self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+
+        L.addAtDiagonal(self.constraintL)
+        b += self.constraintB
 
         return (L, b)
         

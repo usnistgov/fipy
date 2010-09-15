@@ -268,18 +268,26 @@ class DiffusionTerm(Term):
         L, b = self.__buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
         
         if self.order == 2:
-            mesh = var.getMesh()
-            from fipy.variables.faceVariable import FaceVariable
-            normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
+            if not hasattr(self, 'constraintB'):
+            
+                mesh = var.getMesh()
+                from fipy.variables.faceVariable import FaceVariable
+                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
 
-            if var.getFaceGrad().getConstraintMask() is not None:
-                b -= (var.getFaceGrad().getConstraintMask() * normalsDotCoeff * var.getFaceGrad()).getDivergence() * mesh.getCellVolumes()
+                self.constraintB = 0
+                self.constraintL = 0
 
-            if var.getArithmeticFaceValue().getConstraintMask() is not None:
-                constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / mesh._getCellDistances()
-                b -= (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence() * mesh.getCellVolumes()
-                L.addAtDiagonal(-constrainedNormalsDotCoeffOverdAP.getDivergence() * mesh.getCellVolumes())
-                    
+                if var.getFaceGrad().getConstraintMask() is not None:
+                    self.constraintB -= (var.getFaceGrad().getConstraintMask() * normalsDotCoeff * var.getFaceGrad()).getDivergence() * mesh.getCellVolumes()
+
+                if var.getArithmeticFaceValue().getConstraintMask() is not None:
+                    constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / mesh._getCellDistances()
+                    self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence() * mesh.getCellVolumes()
+                    self.constraintL -= constrainedNormalsDotCoeffOverdAP.getDivergence() * mesh.getCellVolumes()
+
+            L.addAtDiagonal(self.constraintL)
+            b += self.constraintB
+
         return (L, b)
 
     def __buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., equation=None):
