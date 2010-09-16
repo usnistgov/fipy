@@ -543,6 +543,8 @@ class CellVariable(_MeshVariable):
             >>> v.constrainFaceGrad(1., where=m.getFacesRight())
             >>> print v.getFaceGrad()
             [[ 1.  1.  1.  1.]]
+            >>> print v.getFaceValue()
+            [ 0.   1.   2.   2.5]
             
         """
 
