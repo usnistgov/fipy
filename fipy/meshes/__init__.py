@@ -9,6 +9,8 @@ from numMesh.gmshImport import GmshImporter2D
 from numMesh.gmshImport import GmshImporter2DIn3DSpace
 from numMesh.gmshImport import GmshImporter3D
 from numMesh.gmshImport import Gmsh2D
+from numMesh.gmshImport import GmshGrid2D
+from numMesh.gmshImport import GmshGrid3D
 from numMesh.gmshImport import Gmsh2DIn3DSpace
 from numMesh.gmshImport import Gmsh3D
 from cylindricalGrid1D import CylindricalGrid1D
