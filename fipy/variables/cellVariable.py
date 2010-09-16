@@ -539,7 +539,7 @@ class CellVariable(_MeshVariable):
             >>> from fipy import *
             >>> m = Grid1D(nx=3)
             >>> v = CellVariable(mesh=m, value=m.getCellCenters()[0])
-            >>> v.constrain(0., m.getFacesLeft())
+            >>> v.constrain(0., where=m.getFacesLeft())
             >>> v.constrainFaceGrad(1., where=m.getFacesRight())
             >>> print v.getFaceGrad()
             [[ 1.  1.  1.  1.]]
