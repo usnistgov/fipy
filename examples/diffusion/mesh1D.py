@@ -399,7 +399,7 @@ to the left and a fixed flux of
 to the right:
 
 >>> phi = CellVariable(mesh=mesh)
->>> phi.constrainFaceGrad(fluxRight, mesh.getFacesRight())
+>>> phi.getFaceGrad().constrain(fluxRight, mesh.getFacesRight())
 >>> phi.constrain(valueLeft, mesh.getFacesLeft())
 
 We re-initialize the solution variable

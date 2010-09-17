@@ -540,7 +540,7 @@ class CellVariable(_MeshVariable):
             >>> m = Grid1D(nx=3)
             >>> v = CellVariable(mesh=m, value=m.getCellCenters()[0])
             >>> v.constrain(0., where=m.getFacesLeft())
-            >>> v.constrainFaceGrad(1., where=m.getFacesRight())
+            >>> v.getFaceGrad().constrain(1., where=m.getFacesRight())
             >>> print v.getFaceGrad()
             [[ 1.  1.  1.  1.]]
             >>> print v.getFaceValue()
@@ -556,9 +556,6 @@ class CellVariable(_MeshVariable):
         else:
             _MeshVariable.constrain(value, where)
 
-    def constrainFaceGrad(self, value, where=None):
-        self.getFaceGrad().constrain(value, where)
-            
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.getCellCenters())
