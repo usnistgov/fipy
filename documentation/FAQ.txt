@@ -614,6 +614,8 @@ use
 
 >>> var.constrain(2., where=mesh.getFacesTop())
 
+.. note:: The old equivalent :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary condition is now deprecated.
+
 How do I apply a (Neumann) fixed gradient boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -642,6 +644,8 @@ then create an equation with an extra term to account for the exterior flux,
 
 where `exteriorFlux` is a rank 1
 :class:`~fipy.variables.faceVariable.FaceVariable`.
+
+.. note:: The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary condition is now deprecated.
 
 How do I apply an outlet or inlet boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
