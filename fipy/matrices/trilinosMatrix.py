@@ -461,7 +461,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
             if hasattr(self._getMatrix(), 'GetMyRows'):
                 Nrows = self._getMatrix().GetMyRows()
             else:
-                Nrows = self._getMatrix().NumGlobalRows()
+                Nrows = self._getMatrix().NumMyRows()
             
             ids = numerix.arange(Nrows)
             tmp = numerix.zeros((Nrows,), 'd')
