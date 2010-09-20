@@ -485,11 +485,12 @@ class Variable(object):
                     if not hasattr(mask, 'dtype') or mask.dtype != bool:
                         mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
 
-                    if numerix.shape(constraintValue) == ():
-                        value[...,mask] = constraintValue
-                    else:
-                        value[...,mask] = constraintValue[...,mask]
-                            
+                    if 0 not in value.shape:
+                        if numerix.shape(constraintValue) == ():
+                            value[...,mask] = constraintValue
+                        else:
+                            value[...,mask] = constraintValue[...,mask]
+
         return value
             
     def constrain(self, value, where=None):
