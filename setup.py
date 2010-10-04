@@ -130,6 +130,17 @@ def _TestClass(base):
 
             if self.test_args and noSuiteOrModule:
                 self.test_suite = "dummy"
+
+
+        def printPackageInfo(self):
+            
+            for pkg in ['fipy', 'numpy', 'pysparse', 'PyTrilinos', 'scipy', 'matplotlib', 'gist', 'mayavi', 'mpi4py']:
+                
+                try:
+                    mod = __import__(pkg)
+                    print pkg,'version',mod.__version__
+                except ImportError, exc:
+                    print pkg,'is not installed'
                 
         def run_tests(self):
             import sys
@@ -159,6 +170,8 @@ def _TestClass(base):
             if self.pythoncompiled is not None:
                 import os
                 os.environ['PYTHONCOMPILED'] = self.pythoncompiled
+
+            self.printPackageInfo()
 
             base.run_tests(self)
 
@@ -473,8 +486,29 @@ except IOError, e:
 #             ],
 #         },
 
+def getRevisionNumber(revision='-none'):
+    try:
+        import pysvn
+        ## pysvn is preferable here
+        revision = pysvn.Client().info('.').revision.number
+    except ImportError, exc:
+        import subprocess
+        token = 'Revision: '
+        for info in subprocess.Popen("svn info", stdout=subprocess.PIPE, shell=True).stdout.readlines():
+            if token in info:
+                revision = int(info.strip(token))
+                
+    return str(revision)
+                
+        
+RELEASE = False
+version = '2.2'
+
+if not RELEASE:
+    version += '-dev' + getRevisionNumber()
+
 dist = setup(	name = "FiPy",
-        version = "2.1", 
+        version = version, 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
