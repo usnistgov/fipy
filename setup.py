@@ -486,26 +486,50 @@ except IOError, e:
 #             ],
 #         },
 
-def getRevisionNumber(revision='-none'):
-    try:
-        import pysvn
-        ## pysvn is preferable here
-        revision = pysvn.Client().info('.').revision.number
-    except ImportError, exc:
+##Hacked from numpy
+def svn_version():
+    def _minimal_ext_cmd(cmd):
+        # construct minimal environment
+        env = {}
+        for k in ['SYSTEMROOT', 'PATH']:
+            v = os.environ.get(k)
+            if v is not None:
+                env[k] = v
+        # LANGUAGE is used on win32
+        env['LANGUAGE'] = 'C'
+        env['LANG'] = 'C'
+        env['LC_ALL'] = 'C'
         import subprocess
-        token = 'Revision: '
-        for info in subprocess.Popen("svn info", stdout=subprocess.PIPE, shell=True).stdout.readlines():
-            if token in info:
-                revision = int(info.strip(token))
-                
-    return str(revision)
-                
+        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
+        return out
+
+    try:
+        out = _minimal_ext_cmd(['svn', 'info'])
+    except OSError:
+        print(" --- Could not run svn info --- ")
+        return ""
+
+    import re
+    r = re.compile('Revision: ([0-9]+)')
+    svnver = ""
+
+    out = out.decode()
+
+    for line in out.split('\n'):
+        m = r.match(line.strip())
+        if m:
+            svnver = m.group(1)
+
+    if not svnver:
+        print("Error while parsing svn version")
+
+    return svnver
         
 RELEASE = False
 version = '2.2'
 
 if not RELEASE:
-    version += '-dev' + getRevisionNumber()
+    version += '-dev' + svn_version()
 
 dist = setup(	name = "FiPy",
         version = version, 
