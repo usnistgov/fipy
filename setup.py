@@ -524,15 +524,14 @@ def svn_version():
         print("Error while parsing svn version")
 
     return svnver
-        
-RELEASE = False
-version = '2.2'
 
-if not RELEASE:
-    version += '-dev' + svn_version()
+def getVersion(version, release=False):
+    if not release:
+        version += '-dev' + svn_version()
+    return version
 
 dist = setup(	name = "FiPy",
-        version = version, 
+        version = getVersion(version='2.2', release=False), 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
