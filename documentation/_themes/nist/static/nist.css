@@ -8,16 +8,10 @@
  */
 
 @import url("basic.css");
-/* 
- * @import url("/ui/css/SpryMenuBarHorizontal.css");
- * @import url("/ui/css/nist-styles.css");
- * @import url("/ui/css/nist-subsite-overrides.css");
- * @import url("/ui/css/live.css");
- */
-@import url("http://www.nist.gov/ui/css/SpryMenuBarHorizontal.css");
-@import url("http://www.nist.gov/ui/css/nist-styles.css");
-@import url("http://www.nist.gov/ui/css/nist-subsite-overrides.css");
-@import url("http://www.nist.gov/ui/css/live.css");
+@import url("http://www.nist.gov/style/SpryMenuBarHorizontal.css");
+@import url("http://www.nist.gov/style/nist-styles.css");
+@import url("http://www.nist.gov/style/nist-subsite-overrides.css");
+@import url("http://www.nist.gov/style/live.css");
 
 /* -- page layout ----------------------------------------------------------- */
 

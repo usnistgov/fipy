@@ -284,7 +284,7 @@ latex_elements = {
     
     \authoraddress{Metallurgy Division \\
     and the Center for Theoretical and Computational Materials Science \\
-    Materials Science and Engineering Laboratory}
+    Material Measurement Laboratory}
     
     \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
     

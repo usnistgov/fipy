@@ -3,7 +3,7 @@
 written in :term:`Python`, based on a standard finite volume (FV)
 approach.  The framework has been developed in the `Metallurgy Division`_
 and Center for Theoretical and Computational Materials Science (CTCMS_), in
-the Materials Science and Engineering Laboratory (MSEL_) at the National
+the Material Measurement Laboratory (MML_) at the National
 Institute of Standards and Technology (NIST_).
 
 The solution of coupled sets of PDEs is ubiquitous to the numerical
@@ -23,7 +23,7 @@ models include phase field |citePhaseField| treatments of polycrystalline,
 dendritic, and electrochemical phase transformations as well as a level set
 treatment of the electrodeposition process |citeCEAC|.
 
-.. _MSEL:                 http://www.msel.nist.gov/
+.. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/
 .. _Metallurgy Division:  http://www.metallurgy.nist.gov/
 .. _NIST:                 http://www.nist.gov/
