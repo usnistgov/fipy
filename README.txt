@@ -49,6 +49,13 @@ The relatively small change in version number belies significant advances
 in :term:`FiPy` capabilities. This release did not receive a "full" version
 increment because it is completely (er... [#almost]_) compatible with older scripts.
 
+The significant changes since version 2.1 are:
+
+- :class:`~fipy.viewers.matplotlibViewer.MatplotlibViewer` can display 
+  into an existing set of Matplotlib axes.
+
+- :term:`PySparse` and :term:`Trilinos` are now completely independent.
+
 The significant changes since version 2.0.2 are:
 
 - :term:`FiPy` can use :term:`Trilinos` for `solving in parallel`_.
@@ -64,16 +71,10 @@ The significant changes since version 2.0.2 are:
 
 Tickets fixed in this release::
 
-    171	update the mayavi viewer to use  mayavi 2
-    286	'matplotlib: list index out of range' when no title given, but only sometimes
-    197	~binOp doesn't work on branches/version-2_0
-    194	`easy_install` instructions for MacOSX are broken
-    192	broken setuptools url with python 2.6
-    184	The FiPy webpage seems to be broken on Internet Explorer
-    168	Switch documentation to use `:math:` directive
-    198	FiPy2.0.2 LinearJORSolver.__init__  calls Solver rather than PysparseSolver
-    199	`gmshExport.exportAsMesh()` doesn't work
-    195	broken arithmetic face to cell distance calculations
+   293 How to tell if parallel is configured properly?
+   294 bug problem with CylindricalGrid1D
+   295 dummy viewer results in "NotImplementedError: can't instantiate abstract base class"
+   243 Concatenated `Mesh` garbled by `dump.write`/`read`
 
 .. warning::
 
