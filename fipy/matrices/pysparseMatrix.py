@@ -49,15 +49,13 @@ class _PysparseMatrixBase(_SparseMatrix):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, matrix, bandwidth=0):
+    def __init__(self, matrix):
         """Creates a `_PysparseMatrixBase`.
 
         :Parameters:
           - `matrix`: The starting `spmatrix` 
-          - `bandwidth`: The proposed band width of the matrix.
         """
         self.matrix = matrix
-        self.bandwidth = bandwidth
 
     def _getMatrix(self):
         return self.matrix
@@ -292,7 +290,7 @@ class _PysparseMatrix(_PysparseMatrixBase):
         sizeHint = sizeHint or size * bandwidth
         if matrix is None:
             matrix = spmatrix.ll_mat(size, size, sizeHint)
-        _PysparseMatrixBase.__init__(self, matrix=matrix, bandwidth=bandwidth)
+        _PysparseMatrixBase.__init__(self, matrix=matrix)
 
 class _PysparseMeshMatrix(_PysparseMatrix):
     
@@ -315,10 +313,11 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         
     def asTrilinosMeshMatrix(self):
         from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
-        matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
-                
+        
         A = self.matrix.copy()
         values, irow, jcol = A.find()
+
+        matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=int(numerix.ceil(float(len(values)) / float(A.shape[0]))))
         
         matrix.addAt(values, irow, jcol)
 
