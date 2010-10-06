@@ -72,7 +72,7 @@ class MshFile:
     def __init__(self, filename, 
                        dimensions, 
                        coordDimensions=None,
-                       commModule=parallel,
+                       communicator=parallel,
                        order=1):
         """
         Isolate relevant data into two files, store in 
@@ -85,14 +85,14 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.commModule      = commModule
+        self.communicator      = communicator
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
 
         if order > 1:
-            self.commModule = serial
+            self.communicator = serial
 
-        if self.commModule == serial:
+        if self.communicator == serial:
             parprint("SERIAL!")
 
         # much special-casing based on gmsh version
@@ -100,18 +100,18 @@ class MshFile:
         if gmshVersion < 2.0:
             errStr = "Gmsh version must be >= 2.0."
             raise EnvironmentError(errStr)
-        if self.commModule.Nproc > 1:
+        if self.communicator.Nproc > 1:
             if gmshVersion < 2.5:
                 import warnings
                 warnstr = "Cannot partition with Gmsh version < 2.5. " \
                            + "Reverting to serial."
                 warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
-                self.commModule = serial
+                self.communicator = serial
 
                 gmshFlags = "-%d" % (self.dimensions)
             else: # gmsh version is adequate for partitioning
                 gmshFlags = "-%d -part %d" % (self.dimensions,
-                                              self.commModule.Nproc)
+                                              self.communicator.Nproc)
         else: # we're running serial
             gmshFlags = "-%d" % (self.dimensions)
         
@@ -446,7 +446,7 @@ class MshFile:
 
         IDOffset        = -1 # this will be subtractd from gmsh ID to obtain
                              # global ID
-        pid             = self.commModule.procID + 1
+        pid             = self.communicator.procID + 1
 
         addCell      = lambda c,e: _addCell(cellsData, c, e, IDOffset)
         addGhostCell = lambda c,e: _addCell(ghostsData, c, e, IDOffset)
@@ -463,7 +463,7 @@ class MshFile:
                 numTags = currLineInts[2]
                 tags    = currLineInts[3:(3+numTags)]
                 # if we're collecting ghost cells
-                if self.commModule.Nproc > 1: 
+                if self.communicator.Nproc > 1: 
                     tags.reverse() # any ghost cell IDs come first, then part ID
 
                     if tags[0] < 0: # if this is someone's ghost cell
@@ -473,7 +473,7 @@ class MshFile:
                                 break   
                             tags.pop(0) # try the next ID
                 # el is in this processor's partition OR we collect all cells
-                if (self.commModule.Nproc == 1) or (tags[0] == pid):
+                if (self.communicator.Nproc == 1) or (tags[0] == pid):
                     addCell(currLineInts, elemType)
                 
         self.elemsFile.close() # tempfile trashed
@@ -484,13 +484,13 @@ class Gmsh2D(mesh2D.Mesh2D):
     def __init__(self, 
                  arg, 
                  coordDimensions=2, 
-                 commModule=parallel, 
+                 communicator=parallel, 
                  order=1):
-        self.commModule = commModule 
+        self.communicator = communicator 
         self.mshFile  = MshFile(arg, 
                                 dimensions=2, 
                                 coordDimensions=coordDimensions,
-                                commModule=commModule,
+                                communicator=communicator,
                                 order=order)
         self.verts, \
         self.faces, \
@@ -498,8 +498,8 @@ class Gmsh2D(mesh2D.Mesh2D):
         self.cellGlobalIDs, \
         self.gCellGlobalIDs = self.mshFile.buildMeshData()
 
-        if self.commModule.Nproc > 1:
-            self.globalNumberOfCells = self.commModule.sumAll(len(self.cellGlobalIDs))
+        if self.communicator.Nproc > 1:
+            self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
             parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
             parprint("  Got global number of cells")
 
@@ -649,11 +649,11 @@ class Gmsh2D(mesh2D.Mesh2D):
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
-    def __init__(self, arg, commModule=parallel, order=1):
+    def __init__(self, arg, communicator=parallel, order=1):
         Gmsh2D.__init__(self, 
                         arg, 
                         coordDimensions=3, 
-                        commModule=commModule,
+                        communicator=communicator,
                         order=order)
 
     def _test(self):
@@ -702,11 +702,11 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         """
 
 class Gmsh3D(mesh.Mesh):
-    def __init__(self, arg, commModule=parallel, order=1):
-        self.commModule = commModule
+    def __init__(self, arg, communicator=parallel, order=1):
+        self.communicator = communicator
         self.mshFile  = MshFile(arg, 
                                 dimensions=3, 
-                                commModule=commModule,
+                                communicator=communicator,
                                 order=order)
 
         self.verts, \
@@ -718,8 +718,8 @@ class Gmsh3D(mesh.Mesh):
                                  faceVertexIDs=self.faces,
                                  cellFaceIDs=self.cells)
 
-        if self.commModule.Nproc > 1:
-            self.globalNumberOfCells = self.commModule.sumAll(len(self.cellGlobalIDs))
+        if self.communicator.Nproc > 1:
+            self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
 
     def _getGlobalNonOverlappingCellIDs(self):
         """
@@ -850,6 +850,137 @@ class Gmsh3D(mesh.Mesh):
         True
         """
 
+class GmshGrid2D(Gmsh2D):
+    """Should serve as a drop-in replacement for Grid2D."""
+    def __init__(self, dx=1., dy=1., nx=1, ny=None, 
+                 coordDimensions=2, communicator=parallel, order=1):
+        self.dx = dx
+        self.dy = dy or dx
+        self.nx = nx
+        self.ny = ny or nx
+
+        arg = self._makeGridGeo(self.dx, self.dy, self.nx, self.ny)
+
+        Gmsh2D.__init__(self, arg, coordDimensions, communicator, order)
+    
+    def _getMeshSpacing(self):
+        return nx.array((self.dx,self.dy))[...,nx.newaxis]
+
+    def _makeGridGeo(self, dx, dy, nx, ny):
+        height = ny * dy
+        width  = nx * dx
+        numLayers = int(ny / dy)
+
+        # kludge: must offset cellSize by `eps` to work properly
+        eps = float(dx)/(nx * 10) 
+
+        return """
+            ny       = %(ny)g;
+            nx       = %(nx)g;
+            cellSize = %(dx)g - %(eps)g;
+            height   = %(height)g;
+            width    = %(width)g;
+
+            Point(1) = {0, 0, 0, cellSize};
+            Point(2) = {width, 0, 0, cellSize};
+            Line(3) = {1, 2};
+            Extrude{0, height, 0} {
+                    Line{3}; Layers{ ny }; Recombine;
+            }
+            """ % locals()   
+
+    def _test(self):
+        """
+        Here we do some rudimentary comparisons between GmshGrid and Grid, just
+        to ensure they're performing similarly.
+
+        >>> from fipy import *
+
+        >>> yogmsh = GmshGrid2D(dx=5, dy=5, nx=5, ny=5, communicator=serial)
+
+        >>> yogrid = Grid2D(dx=5, dy=5, nx=5, ny=5, communicator=serial)
+
+        >>> numerix.allclose(yogmsh._getFaceAreas(), yogrid._getFaceAreas())
+        True
+
+        >>> numerix.allclose(yogmsh._getFaceAreas(), yogrid._getFaceAreas())
+        True
+
+        >>> yogmsh.getCellCenters().value.size == yogrid.getCellCenters().value.size
+        True
+        """
+
+
+class GmshGrid3D(Gmsh3D):
+    """Should serve as a drop-in replacement for Grid3D."""
+    def __init__(self, dx=1., dy=1., dz=1., nx=1, ny=None, nz=None,
+                 communicator=parallel, order=1):
+        self.dx = dx
+        self.dy = dy or dx
+        self.dz = dz or dx
+
+        self.nx = nx
+        self.ny = ny or nx
+        self.nz = nz or nx
+
+        arg = self._makeGridGeo(self.dx, self.dy, self.dz,
+                                self.nx, self.ny, self.nz)
+
+        Gmsh3D.__init__(self, arg, communicator=communicator, order=order)
+    
+    def _getMeshSpacing(self):
+        return nx.array((self.dx,self.dy,self.dz))[...,nx.newaxis]
+ 
+    def _makeGridGeo(self, dx, dy, dz, nx, ny, nz):
+        height = ny * dy
+        width  = nx * dx
+        depth  = nz * dz
+
+        eps = float(dx)/(nx * 10)
+        
+        return """
+            ny       = %(ny)g;
+            nx       = %(nx)g;
+            nz       = %(nz)g;
+            cellSize = %(dx)g - %(eps)g;
+            height   = %(height)g;
+            width    = %(width)g;
+            depth    = %(depth)g;
+
+            Point(1) = {0, 0, 0, cellSize};
+            Point(2) = {width, 0, 0, cellSize};
+            Line(3) = {1, 2};
+            out[] = Extrude{0, height, 0} {
+                Line{3}; Layers{ ny }; Recombine;
+            };
+            Extrude{0, 0, depth} {
+                Surface{ out[1] }; Layers{ nz }; Recombine;
+            }
+            """ % locals()   
+
+    def _test(self):
+        """
+        Here we do some rudimentary comparisons between GmshGrid and Grid, just
+        to ensure they're performing similarly.
+
+        >>> from fipy import *
+
+        >>> yogmsh = GmshGrid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
+        ...                     communicator=serial)
+
+        >>> yogrid = Grid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
+        ...                 communicator=serial)
+
+        >>> yogmsh.getCellCenters().value.size == yogrid.getCellCenters().value.size
+        True
+
+        >>> numerix.allclose(yogmsh._getFaceAreas(), yogrid._getFaceAreas())
+        True
+
+        >>> numerix.allclose(yogmsh._getFaceAreas(), yogrid._getFaceAreas())
+        True
+        """
+ 
 def deprecation(old, new):
     import warnings
     warnings.warn("%s has been replaced by %s." % (old, new), 

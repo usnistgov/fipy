@@ -200,11 +200,11 @@ Combine the windows installer and examples into one archive::
 Debian
 ------
 
-Make sure stdeb_ is installed.
+Make sure stdeb_ and debhelper_ are installed.
 
-   $ cd CLEAN
-   $ python setup.py --command-packages=stdeb.command bdist_deb
-   $ mv deb_dist/python-fipy_${FIPY_VERSION}-1_all.deb dist/python-fipy_${FIPY_VERSION}-1_all.deb
+    $ cd CLEAN
+    $ python setup.py --command-packages=stdeb.command bdist_deb
+    $ mv deb_dist/python-fipy_${FIPY_VERSION}-1_all.deb dist/python-fipy_${FIPY_VERSION}-1_all.deb
 
 ------
 Upload
@@ -242,6 +242,7 @@ executable and upload to download page.
 .. _fipy@nist.gov: mailto:fipy@nist.gov
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
 .. _stdeb: http://github.com/astraw/stdeb
+.. _debhelper: http://kitenet.net/~joey/code/debhelper/
 
 ==========================================
 Making a Windows Distribution for Pysparse

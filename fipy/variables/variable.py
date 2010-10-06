@@ -482,19 +482,15 @@ class Variable(object):
                 if mask is None:
                     value[:] = constraintValue
                 else:
-                    mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
-                                             
-                    if len(numerix.getShape(value)) == 1:
-                        value[:] = numerix.where(mask, constraintValue, value)
-                    else:
-                        
+                    if not hasattr(mask, 'dtype') or mask.dtype != bool:
+                        mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
+
+                    if 0 not in value.shape:
                         try:
-                            value[..., mask] = constraintValue
-                        except ValueError:
-                            value[:] = numerix.where(numerix.resize(mask, numerix.shape(value)),
-                                                     numerix.resize(constraintValue, numerix.shape(value)),
-                                                     value)
-                            
+                            value[...,mask] = constraintValue
+                        except:
+                            value[...,mask] = constraintValue[...,mask]
+
         return value
             
     def constrain(self, value, where=None):
@@ -523,6 +519,16 @@ class Variable(object):
         >>> del v.constraints[2]
         >>> print v
         [2 8 5 8]
+
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> x, y = m.getCellCenters()
+        >>> v = CellVariable(mesh=m, rank=1, value=(x, y))
+        >>> v.constrain(((0.,), (-1.,)), where=m.getFacesLeft())
+        >>> print v.getFaceValue()
+        [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.   1.   1.5  0.   1.   1.5]
+         [ 0.5  0.5  1.   1.   1.5  1.5 -1.   0.5  0.5 -1.   1.5  1.5]]
         
         :Parameters:
           - `value`: the value of the constraint

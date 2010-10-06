@@ -210,7 +210,15 @@ __docformat__ = 'restructuredtext'
 
 from fipy import *
 
-def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, rateConstant=0.00026, initialAcceleratorCoverage=0.0, levelerDiffusionCoefficient=5e-10, numberOfSteps=400, displayRate=10, displayViewers=True):
+def runLeveler(kLeveler=0.018, 
+               bulkLevelerConcentration=0.02, 
+               cellSize=0.1e-7, 
+               rateConstant=0.00026, 
+               initialAcceleratorCoverage=0.0, 
+               levelerDiffusionCoefficient=5e-10, 
+               numberOfSteps=400, 
+               displayRate=10, 
+               displayViewers=False):
 
     
     kLevelerConsumption = 0.0005

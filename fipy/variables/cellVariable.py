@@ -533,6 +533,21 @@ class CellVariable(_MeshVariable):
             self.old.setValue(dict['old'].getValue())
 
     def constrain(self, value, where=None):
+        r"""
+        Constrains the `CellVariable` to `value` at a location specified by `where`. 
+
+            >>> from fipy import *
+            >>> m = Grid1D(nx=3)
+            >>> v = CellVariable(mesh=m, value=m.getCellCenters()[0])
+            >>> v.constrain(0., where=m.getFacesLeft())
+            >>> v.getFaceGrad().constrain(1., where=m.getFacesRight())
+            >>> print v.getFaceGrad()
+            [[ 1.  1.  1.  1.]]
+            >>> print v.getFaceValue()
+            [ 0.   1.   2.   2.5]
+            
+        """
+
         if numerix.shape(where)[-1] == self.mesh._getNumberOfFaces():
             
             if not hasattr(self, 'faceConstraints'):
@@ -541,9 +556,6 @@ class CellVariable(_MeshVariable):
         else:
             _MeshVariable.constrain(value, where)
 
-    def constrainFaceGrad(self, value, where=None):
-        self.getFaceGrad().constrain(value, where)
-            
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.getCellCenters())

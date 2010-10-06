@@ -457,8 +457,14 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getMatrix().GetMyRows())
-            tmp = numerix.zeros((self._getMatrix().GetMyRows(),), 'd')
+
+            if hasattr(self._getMatrix(), 'GetMyRows'):
+                Nrows = self._getMatrix().GetMyRows()
+            else:
+                Nrows = self._getMatrix().NumMyRows()
+            
+            ids = numerix.arange(Nrows)
+            tmp = numerix.zeros((Nrows,), 'd')
             tmp[:] = vector
             self.addAt(tmp, ids, ids)
         else:
