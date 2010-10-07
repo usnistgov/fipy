@@ -72,12 +72,12 @@ __docformat__ = 'restructuredtext'
 USE_CUDA = 1
 
 if USE_CUDA:
-    import pycuda.gpuarray as gpuarr
-    import pycuda.driver as cuda
-    import pycuda.cumath as cumath
-    import pycuda.autoinit
+    import GPUArray as NUMERIX
+    from GPUArray import *
+else:
+    import numpy as NUMERIX
+    from numpy import *
 
-import numpy as NUMERIX
 from numpy.core import umath
 from numpy import newaxis as NewAxis
 from numpy import oldnumeric
@@ -89,64 +89,14 @@ except ImportError:
     from numpy import ma as MA
     numpy_version = 'new'
 
-class roundTripFromGPU(object):
-    """Decorator to apply to any function for which GPUArray doesn't have an
-    analogue.
-
-    Assumes first argument of function is an array.
-
-    If the incoming array is a GPUArray, extract its value from the graphics
-    card, make the modification using Numpy functions, and then communicate it
-    back out to the card."""
-
-    def __init__(self, func):
-        self.func = func
-
-    def __call__(self, *args, **kwargs):
-        """Extract numpy array from gpu, feed that into `self.func`, then obtain
-        the result to put back on the gpu."""
-        if isinstance(args[0], gpuarr.GPUArray):
-            arr = args[0]
-            numArr = arr.get()
-            newArgs = (numArr,) + args[1:] # strip out GPUArray
-            result = self.func(*newArgs, **kwargs)
-            if result is not None:
-                return gpuarr.t0_gpu(result)
-            else:
-                return gpuarr.to_gpu(numArr)
-
-class incomingGPUArrToNumpyArr(object):
-    """Decorator which converts an incoming GPUArray to a numpy array.
-    
-    Assumes that the first argument to the function is an array."""
-
-    def __init__(self, func):
-        self.func = func
-
-    def __call__(self, *args, **kwargs):
-        if isinstance(args[0], gpuarr.GPUArray):
-            arr = args[0]
-            numArr = arr.get()
-            newArgs = (numArr,) + args[1:]
-            return self.func(*newArgs, **kwargs)
-
 def zeros(a, dtype='l'):
-    if USE_CUDA:
-        return gpuarr.zeros(a, dtype)
-    else:
-        return NUMERIX.zeros(a, dtype)
+    return NUMERIX.zeros(a, dtype)
 
 def ones(a, dtype='l'):
-    if USE_CUDA:
-        return gpuarr.zeros(a, dtype) + 1
-    else:
-        return NUMERIX.ones(a, dtype)    
+    return NUMERIX.ones(a, dtype)    
 
 def array(*args, **kwargs):
-    if USE_CUDA:
-        return gpuarr.to_gpu(NUMERIX.array(*args, **kwargs))
-    else:
-        return NUMERIX.array(*args, **kwargs)
+    return NUMERIX.array(*args, **kwargs)
 
 def _isPhysical(arr):
     """
@@ -197,9 +147,7 @@ def put(arr, ids, values):
     
     """
 
-    if _isPhysical(arr):
-        arr.put(ids, values)
-    elif MA.isMaskedArray(arr):
+    if MA.isMaskedArray(arr):
         if NUMERIX.sometrue(MA.getmaskarray(ids)):
             if numpy_version == 'old':
                 pvalues = MA.array(values, mask=MA.getmaskarray(ids))
@@ -210,16 +158,11 @@ def put(arr, ids, values):
             MA.put(arr, ids, values)
     elif MA.isMaskedArray(ids):
         NUMERIX.put(arr, ids.compressed(), MA.array(values, mask=MA.getmaskarray(ids)).compressed())
+    elif hasattr(arr, "put"):
+        arr.put(ids, values)
     else:
-        # must round-trip modification to GPU; GPUArray has no put method
-        if isinstance(arr, gpuarr.GPUArray): 
-            numArr = arr.get()
-            NUMERIX.put(numArr, ids, values)
-            arr.set(numArr)
-        else:
-            NUMERIX.put(arr, ids, values)
+        NUMERIX.put(arr, ids, values)
         
-@roundTripFromGPU
 def reshape(arr, shape):
     """
     Change the shape of `arr` to `shape`, as long as the product of all the
@@ -243,9 +186,9 @@ def reshape(arr, shape):
         
         shape = left + (oldShape.prod() / newShape.prod(),) + right
         
-    if _isPhysical(arr):
+    if hasattr(arr, "reshape"):
         return arr.reshape(shape)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.reshape(arr, tuple(shape))
     elif type(arr) is type(MA.array((0))):
         return MA.reshape(arr, shape)
@@ -272,14 +215,13 @@ def getShape(arr):
     """
     if hasattr(arr, "shape"):
         return arr.shape
-    elif type(arr) in (type(()), type([])):
+    elif type(arr) in (tuple, list):
         return (len(arr),)
-    elif type(arr) in (type(1), type(1.)):
+    elif type(arr) in (int, float):
         return ()
     else:
         raise AttributeError, "No attribute 'shape'"
 
-@incomingGPUArrToNumpyArr
 def rank(a):
     """
     Get the rank of sequence a (the number of dimensions, not a matrix rank)
@@ -301,33 +243,28 @@ def sum(arr, axis=0):
     """
     The sum of all the elements of `arr` along the specified axis.
     """
+    # TODO: hasattr instead
     if _isPhysical(arr):
         return arr.sum(axis)
+    elif hasattr(arr, "sum"):
+        return arr.sum()
     elif type(arr) is type(MA.array((0))):
         return MA.sum(arr, axis)
     else:  
-        if isinstance(arr, gpuarr.GPUArray):
-            return gpuarr.sum(arr) # TODO: this neglects `axis` argument
-        else:
-            return NUMERIX.sum(arr, axis)
+        return NUMERIX.sum(arr, axis)
         
 def isFloat(arr):
-    if isinstance(arr, NUMERIX.ndarray):
+    if isinstance(arr, NUMERIX.ndarray) or isinstance(arr, NUMERIX.GPUArray):
         return NUMERIX.issubclass_(arr.dtype.type, float)
-    elif isinstance(arr, gpuarr.GPUArray):
-        return issubclass(arr.dtype.type, NUMERIX.float)
     else:
         return NUMERIX.issubclass_(arr.__class__, float)
 
 def isInt(arr):
-    if isinstance(arr, NUMERIX.ndarray):
+    if isinstance(arr, NUMERIX.ndarray) or isinstance(arr, NUMERIX.GPUArray):
         return NUMERIX.issubclass_(arr.dtype.type, int)
-    elif isinstance(arr, gpuarr.GPUArray):
-        return issubclass(arr.dtype.type, NUMERIX.int)
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
     
-@incomingGPUArrToNumpyArr
 def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separator=' ', array_output=0):
     r"""
     Returns a textual representation of a number or field of numbers.  Each
@@ -372,6 +309,9 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
           
     
     """
+
+    if isinstance(arr, NUMERIX.GPUArray):
+        arr = arr.get()
 
     if _isPhysical(arr):
         return arr.tostring(max_line_width=max_line_width, 
@@ -430,16 +370,15 @@ def arccos(arr):
     [ 1.571  1.047  0.   ]
         
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "arccos"):
         return arr.arccos()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.arccos(arr)
     elif isinstance(arr, gpuarr.GPUArray):
         return cumath.acos(arr)
     else:
         return umath.arccos(arr)
 
-@roundTripFromGPU
 def arccosh(arr):
     r"""
     Inverse hyperbolic cosine of :math:`x`, :math:`\cosh^{-1} x`
@@ -458,9 +397,9 @@ def arccosh(arr):
     >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
     [ 0.     1.317  1.763]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "arccosh"):
         return arr.arccosh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.arccosh(arr)
     else:
         return umath.arccosh(arr)
@@ -488,16 +427,15 @@ def arcsin(arr):
     >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
     [ 0.     0.524  1.571]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "arcsin"):
         return arr.arcsin()
     elif isinstance(arr, gpuarr.GPUArray):
         return cumath.asin(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.arcsin(arr)
     else:
         return umath.arcsin(arr)
 
-@roundTripFromGPU
 def arcsinh(arr):
     r"""
     Inverse hyperbolic sine of :math:`x`, :math:`\sinh^{-1} x`
@@ -512,9 +450,9 @@ def arcsinh(arr):
     >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
     [ 0.881  1.444  1.818]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "arcsinh"):
         return arr.arcsinh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.arcsinh(arr)
     else:
         return umath.arcsinh(arr)
@@ -538,16 +476,13 @@ def arctan(arr):
     >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
     [ 0.     0.464  0.785]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "arctan"):
         return arr.arctan()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.atan(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.arctan(arr)
     else:
         return umath.arctan(arr)
                 
-@roundTripFromGPU
 def arctan2(arr, other):
     r"""
     Inverse tangent of a ratio :math:`x/y`, :math:`\tan^{-1} \frac{x}{y}`
@@ -567,19 +502,18 @@ def arctan2(arr, other):
     >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
     [ 0.     0.464  0.785]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "arctan2"):
         return arr.arctan2(other)
     elif _isPhysical(other):
         from fipy.tools.dimensions import physicalField
 
         return physicalField.PhysicalField(value=arr, unit="rad").arctan2(other)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.arctan2(arr,other)
     else:
         return umath.arctan2(arr,other)
         
         
-@roundTripFromGPU
 def arctanh(arr):
     r"""
     Inverse hyperbolic tangent of :math:`x`, :math:`\tanh^{-1} x`
@@ -594,9 +528,9 @@ def arctanh(arr):
     >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
     [ 0.     0.255  0.549]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "arctanh"):
         return arr.arctanh()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.arctanh(arr)
     else:
         return umath.arctanh(arr)
@@ -615,11 +549,9 @@ def cos(arr):
     >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
     [ 1.   0.5  0. ]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "cos"):
         return arr.cos()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.cos(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.cos(arr)
     else:
         return umath.cos(arr)
@@ -638,11 +570,9 @@ def cosh(arr):
     >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
     [ 1.     1.543  3.762]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "cosh"):
         return arr.cosh()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.cosh(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.cosh(arr)
     else:
         return umath.cosh(arr)
@@ -661,11 +591,9 @@ def tan(arr):
     >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
     [ 0.     1.732 -1.732]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "tan"):
         return arr.tan()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.tan(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.tan(arr)
     else:
         return umath.tan(arr)
@@ -684,11 +612,9 @@ def tanh(arr):
     >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
     [ 0.     0.762  0.964]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "tanh"):
         return arr.tanh()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.tanh(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.tanh(arr)
     else:
         return umath.tanh(arr)
@@ -707,11 +633,9 @@ def log10(arr):
     >>> print log10(Variable(value=(0.1,1,10)))
     [-1.  0.  1.]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "log10"):
         return arr.log10()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.log10(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.log10(arr)
     else:
         return umath.log10(arr)
@@ -730,11 +654,9 @@ def sin(arr):
     >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
     [ 0.   0.5  1. ]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "sin"):
         return arr.sin()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.sin(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.sin(arr)
     else:
         return umath.sin(arr)
@@ -753,11 +675,9 @@ def sinh(arr):
     >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
     [ 0.     1.175  3.627]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "sinh"):
         return arr.sinh()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.sinh(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.sinh(arr)
     else:
         return umath.sinh(arr)
@@ -776,11 +696,9 @@ def sqrt(arr):
     >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
     [ 1.     1.414  1.732] m
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "sqrt"):
         return arr.sqrt()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.sqrt(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.sqrt(arr)
     else:
         return umath.sqrt(arr)
@@ -799,11 +717,9 @@ def floor(arr):
     >>> print floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
     [-2.  2.  2.] m**2
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "floor"):
         return arr.floor()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.floor(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.floor(arr)
     else:
         return umath.floor(arr)
@@ -822,21 +738,18 @@ def ceil(arr):
     >>> print ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
     [-1.  2.  3.] m**2
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "ceil"):
         return arr.ceil()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.ceil(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.ceil(arr)
     else:
         return umath.ceil(arr)
 
 
-@roundTripFromGPU
 def sign(arr):
-    if _isPhysical(arr):
+    if hasattr(arr, "sign"):
         return arr.sign()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.sign(arr)
     else:
         return umath.sign(arr)
@@ -845,11 +758,9 @@ def exp(arr):
     r"""
     Natural exponent of :math:`x`, :math:`e^x`
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "exp"):
         return arr.exp()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.exp(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.exp(arr)
     else:
         return umath.exp(arr)
@@ -869,11 +780,9 @@ def log(arr):
     >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
     [-2.303  0.     2.303]
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "log"):
         return arr.log()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return cumath.log(arr)
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.log(arr)
     else:
         return umath.log(arr)
@@ -893,11 +802,9 @@ def conjugate(arr):
     >>> print allclose(var.getNumericValue(), (3 - 4j, 2j, 10))
     1
     """
-    if _isPhysical(arr):
+    if hasattr(arr, "conjugate"):
         return arr.conjugate()
-    elif isinstance(arr, gpuarr.GPUArray):
-        return arr.conj()
-    elif type(arr) is type(array((0))):
+    elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.conjugate(arr)
     else:
         return umath.conjugate(arr)
@@ -910,6 +817,7 @@ def conjugate(arr):
 #                       #
 #########################
 
+# TODO: refactor for variable arity
 def dot(a1, a2, axis=0):
     """
     return array of vector dot-products of v1 and v2
@@ -952,8 +860,6 @@ def dot(a1, a2, axis=0):
         # dot() is not commutative with tensors, but if there's no
         # rdot(), what else can we do? Just throw an error?
         return a2.dot(a1)
-    elif isinstance(a1, gpuarr.GPUArray) and isinstance(a2, gpuarr.GPUArray):
-        return gpuarr.dot(a1, a3)
     else:
         return sum(a1*a2, axis)
 
@@ -968,8 +874,8 @@ def sqrtDot(a1, a2):
     ## We can't use Numeric.dot on an array of vectors
 ##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
 ##    return fipy.tools.array.sqrt(fipy.tools.array.sum((a1*a2)[:],1))
-    if isinstance(a1, gpuarr.GPUArray) and isinstance(a2, gpuarr.GPUArray):
-        return cumath.sqrt(gpuarr.dot(a1, a3))
+    if hasattr(a1, "sqrtDot"):
+        return a1.sqrtDot(a2)
     else:
         return inline._optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
 
@@ -1037,9 +943,11 @@ def allequal(first, second):
     Returns `true` if every element of `first` is equal to the corresponding
     element of `second`.
     """
-    if isinstance(a1, gpuarr.GPUArray) and isinstance(a2, gpuarr.GPUArray):
+    if isinstance(first, NUMERIX.GPUArray): 
         first  = first.get()
+    if isinstance(a2, NUMERIX.GPUArray):
         second = second.get()
+
     if _isPhysical(first):
         return first.allequal(second)
     elif _isPhysical(second):
@@ -1057,8 +965,9 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     This means essentially that both elements are small compared to ``atol`` or
     their difference divided by ``second``'s value is small compared to ``rtol``.
     """
-    if isinstance(a1, gpuarr.GPUArray) and isinstance(a2, gpuarr.GPUArray):
+    if isinstance(first, NUMERIX.GPUArray): 
         first  = first.get()
+    if isinstance(a2, NUMERIX.GPUArray):
         second = second.get()
 
     if _isPhysical(first):
@@ -1078,8 +987,9 @@ def isclose(first, second, rtol=1.e-5, atol=1.e-8):
     This means essentially that both elements are small compared to ``atol`` or
     their difference divided by ``second``'s value is small compared to ``rtol``.
     """
-    if isinstance(a1, gpuarr.GPUArray) and isinstance(a2, gpuarr.GPUArray):
+    if isinstance(first, NUMERIX.GPUArray): 
         first  = first.get()
+    if isinstance(a2, NUMERIX.GPUArray):
         second = second.get()
     return abs(first - second) < atol + rtol * abs(second)
 
@@ -1090,12 +1000,12 @@ def take(a, indices, axis=0, fill_value=None):
            
     if _isPhysical(a):
         taken = a.take(indices, axis=axis)   
+    elif hasattr(a, "take"):
+        taken = a.take(indices, axis=axis)   
     elif type(indices) is type(MA.array((0))):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.
         ##
-        if isinstance(a, gpuarr.GPUArray):
-            a = a.get()
         taken = MA.take(a, MA.filled(indices, 0), axis=axis)
         
         mask = MA.getmask(indices)
@@ -1114,14 +1024,8 @@ def take(a, indices, axis=0, fill_value=None):
                 # numpy 1.1 returns normal array when masked array is filled
                 taken = taken.filled()
 
-        if isinstance(a, gpuarr.GPUArray):
-            taken = gpuarr.to_gpu(taken)
-
-    elif type(a) in (type(array((0))), type(()), type([])):
-        if isinstance(a, gpuarr.GPUArray):
-            taken = gpuarr.take(a, indices)
-        else:
-            taken = NUMERIX.take(a, indices, axis=axis)
+    elif type(a) in (NUMERIX.ndarray, tuple, list):
+        taken = NUMERIX.take(a, indices, axis=axis)
     elif type(a) is type(MA.array((0))):
         taken = MA.take(a, indices, axis=axis)
     else:
@@ -1429,7 +1333,6 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
             X.shape = origShape 
 
     
-@incomingGPUArrToNumpyArr
 def L1norm(arr):
     r"""
     :Parameters:
@@ -1439,9 +1342,11 @@ def L1norm(arr):
       :math:`\|\mathtt{arr}\|_1 = \sum_{j=1}^{n} |\mathtt{arr}_j|` is the
       :math:`L^1`-norm of :math:`\mathtt{arr}`.
     """
+    # TODO
+    if isinstance(arr, NUMERIX.GPUArray):
+        arr = arr.get()
     return add.reduce(abs(arr))
     
-@incomingGPUArrToNumpyArr
 def L2norm(arr):
     r"""
     :Parameters:
@@ -1451,9 +1356,11 @@ def L2norm(arr):
       :math:`\|\mathtt{arr}\|_2 = \sqrt{\sum_{j=1}^{n} |\mathtt{arr}_j|^2}` is
       the :math:`L^2`-norm of :math:`\mathtt{arr}`.
     """
+    # TODO
+    if isinstance(arr, NUMERIX.GPUArray):
+        arr = arr.get()
     return sqrt(add.reduce(arr**2))
     
-@incomingGPUArrToNumpyArr
 def LINFnorm(arr):
     r"""
     :Parameters:
@@ -1464,6 +1371,9 @@ def LINFnorm(arr):
       |\mathtt{arr}_j|^\infty]^\infty = \over{\max}{j} |\mathtt{arr}_j|` is the
       :math:`L^\infty`-norm of :math:`\mathtt{arr}`.
     """
+    # TODO
+    if isinstance(arr, NUMERIX.GPUArray):
+        arr = arr.get()
     return max(abs(arr))
 
 def _compressIndexSubspaces(index, i, broadcastshape = ()):
