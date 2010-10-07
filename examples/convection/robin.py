@@ -94,7 +94,7 @@ where
 
 >>> res = 1e+10
 >>> while res > 1e-5:
-...     res = eq.sweep(var=C)##, boundaryConditions=BCs)
+...     res = eq.sweep(var=C)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 

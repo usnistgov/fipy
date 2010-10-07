@@ -65,6 +65,8 @@ a test against the analytical result.
 ...     raw_input("press key to continue")
 
 >>> phi.constrain(phi0, mesh.getFacesLeft())
+>>> ## fake outflow condition
+>>> phi.getFaceGrad().constrain(0, mesh.getFacesRight())
 
 >>> eq = PowerLawConvectionTerm((1,)) + ImplicitSourceTerm(alpha)
 >>> eq.solve(phi)

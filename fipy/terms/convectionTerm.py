@@ -172,10 +172,21 @@ class ConvectionTerm(FaceTerm):
 
         L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
 
-        if len(boundaryConditions) == 0:
+        if not hasattr(self,  'constraintB'):
 
-            if not hasattr(self,  'constraintB'):
+            constraintMaskFG = var.getFaceGrad().getConstraintMask()
+            constraintMaskFV = var.getArithmeticFaceValue().getConstraintMask()
 
+            if constraintMaskFG is not None and constraintMaskFV is not None:
+                constraintMask = constraintMaskFG | constraintMaskFV
+            elif constraintMaskFG is not None:
+                constraintMask = constraintMaskFG
+            elif constraintMaskFV is not None:
+                constraintMask = constraintMaskFV
+            else:
+                constraintMask = None
+
+            if constraintMask is not None:
                 mesh = var.getMesh()
                 weight = self._getWeight(mesh, equation)
 
@@ -186,11 +197,14 @@ class ConvectionTerm(FaceTerm):
 
                 exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
 
-                self.constraintL = (alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
-                self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+                self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+                self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+            else:
+                self.constraintL = 0
+                self.constraintB = 0
 
-            L.addAtDiagonal(self.constraintL)
-            b += self.constraintB
+        L.addAtDiagonal(self.constraintL)
+        b += self.constraintB
 
         return (L, b)
         
