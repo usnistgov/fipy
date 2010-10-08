@@ -36,7 +36,6 @@
  ##
 
 """
-
 The functions provided in ths module replace the `Numeric` module.
 The functions work with `Variables`, arrays or numbers. For example,
 create a `Variable`.
@@ -69,15 +68,16 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 
 __docformat__ = 'restructuredtext'
 
-USE_CUDA = 1
+import sys
 
-if USE_CUDA:
+if "--gpu" in sys.argv[1:]:
     import GPUArray as NUMERIX
     from GPUArray import *
 else:
     import numpy as NUMERIX
     from numpy import *
 
+import GPUArray as gpuarr
 from numpy.core import umath
 from numpy import newaxis as NewAxis
 from numpy import oldnumeric
@@ -89,10 +89,10 @@ except ImportError:
     from numpy import ma as MA
     numpy_version = 'new'
 
-def zeros(a, dtype='l'):
+def zeros(a, dtype=None):
     return NUMERIX.zeros(a, dtype)
 
-def ones(a, dtype='l'):
+def ones(a, dtype=None):
     return NUMERIX.ones(a, dtype)    
 
 def array(*args, **kwargs):
@@ -187,7 +187,7 @@ def reshape(arr, shape):
         shape = left + (oldShape.prod() / newShape.prod(),) + right
         
     if hasattr(arr, "reshape"):
-        return arr.reshape(shape)
+        return arr.reshape(tuple(shape))
     elif type(arr) is NUMERIX.ndarray:
         return NUMERIX.reshape(arr, tuple(shape))
     elif type(arr) is type(MA.array((0))):
@@ -254,13 +254,13 @@ def sum(arr, axis=0):
         return NUMERIX.sum(arr, axis)
         
 def isFloat(arr):
-    if isinstance(arr, NUMERIX.ndarray) or isinstance(arr, NUMERIX.GPUArray):
+    if isinstance(arr, NUMERIX.ndarray) or isinstance(arr, gpuarr.GPUArray):
         return NUMERIX.issubclass_(arr.dtype.type, float)
     else:
         return NUMERIX.issubclass_(arr.__class__, float)
 
 def isInt(arr):
-    if isinstance(arr, NUMERIX.ndarray) or isinstance(arr, NUMERIX.GPUArray):
+    if isinstance(arr, NUMERIX.ndarray) or isinstance(arr, gpuarr.GPUArray):
         return NUMERIX.issubclass_(arr.dtype.type, int)
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
@@ -310,7 +310,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
     
     """
 
-    if isinstance(arr, NUMERIX.GPUArray):
+    if isinstance(arr, gpuarr.GPUArray):
         arr = arr.get()
 
     if _isPhysical(arr):
@@ -861,7 +861,7 @@ def dot(a1, a2, axis=0):
         # rdot(), what else can we do? Just throw an error?
         return a2.dot(a1)
     else:
-        return sum(a1*a2, axis)
+        return NUMERIX.dot(a1, a2)
 
 def sqrtDot(a1, a2):
     """Return array of square roots of vector dot-products
@@ -943,9 +943,9 @@ def allequal(first, second):
     Returns `true` if every element of `first` is equal to the corresponding
     element of `second`.
     """
-    if isinstance(first, NUMERIX.GPUArray): 
+    if isinstance(first, gpuarr.GPUArray): 
         first  = first.get()
-    if isinstance(a2, NUMERIX.GPUArray):
+    if isinstance(a2, gpuarr.GPUArray):
         second = second.get()
 
     if _isPhysical(first):
@@ -965,9 +965,9 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     This means essentially that both elements are small compared to ``atol`` or
     their difference divided by ``second``'s value is small compared to ``rtol``.
     """
-    if isinstance(first, NUMERIX.GPUArray): 
+    if isinstance(first, gpuarr.GPUArray): 
         first  = first.get()
-    if isinstance(a2, NUMERIX.GPUArray):
+    if isinstance(second, gpuarr.GPUArray):
         second = second.get()
 
     if _isPhysical(first):
@@ -987,9 +987,9 @@ def isclose(first, second, rtol=1.e-5, atol=1.e-8):
     This means essentially that both elements are small compared to ``atol`` or
     their difference divided by ``second``'s value is small compared to ``rtol``.
     """
-    if isinstance(first, NUMERIX.GPUArray): 
+    if isinstance(first, gpuarr.GPUArray): 
         first  = first.get()
-    if isinstance(a2, NUMERIX.GPUArray):
+    if isinstance(a2, gpuarr.GPUArray):
         second = second.get()
     return abs(first - second) < atol + rtol * abs(second)
 
@@ -1343,7 +1343,7 @@ def L1norm(arr):
       :math:`L^1`-norm of :math:`\mathtt{arr}`.
     """
     # TODO
-    if isinstance(arr, NUMERIX.GPUArray):
+    if isinstance(arr, gpuarr.GPUArray):
         arr = arr.get()
     return add.reduce(abs(arr))
     
@@ -1357,7 +1357,7 @@ def L2norm(arr):
       the :math:`L^2`-norm of :math:`\mathtt{arr}`.
     """
     # TODO
-    if isinstance(arr, NUMERIX.GPUArray):
+    if isinstance(arr, gpuarr.GPUArray):
         arr = arr.get()
     return sqrt(add.reduce(arr**2))
     
@@ -1372,7 +1372,7 @@ def LINFnorm(arr):
       :math:`L^\infty`-norm of :math:`\mathtt{arr}`.
     """
     # TODO
-    if isinstance(arr, NUMERIX.GPUArray):
+    if isinstance(arr, gpuarr.GPUArray):
         arr = arr.get()
     return max(abs(arr))
 
@@ -1696,8 +1696,302 @@ if not hasattr(NUMERIX, "in1d"):
 
     
 def _test(): 
+    """
+    Since we now have more than one underlying array class that could be in use
+    (`pycuda.gpuarray` or `numpy.ndarray`), we must ensure that the interfaces
+    perform very similarly.
+
+    The following tests are ripped off from the ``Tentative NumPy Tutorial.''
+
+    Basic array properties: 
+
+        >>> a = arange(10).reshape(2,5)
+        >>> a
+        array([[0, 1, 2, 3, 4],
+               [5, 6, 7, 8, 9]])
+        >>> a.dtype.name
+        'int64'
+        >>> a.ndim
+        2
+        >>> a.size
+        10
+        >>> a.itemsize
+        8
+        >>> a.shape
+        (2, 5)
+        >>> a = array( [2,3,4] )
+        >>> a
+        array([2, 3, 4])
+        >>> b = array( [ (1.5,2,3), (4,5,6) ] )
+        >>> b
+        array([[ 1.5,  2. ,  3. ],
+               [ 4. ,  5. ,  6. ]])
+        >>> b.ndim
+        2
+        >>> b.shape
+        (2, 3)
+        >>> b.dtype
+        dtype('float64')
+        >>> b.itemsize
+        8
+        >>> c = array( [ [1,2], [3,4] ], dtype=complex )
+        >>> c
+        array([[ 1.+0.j,  2.+0.j],
+               [ 3.+0.j,  4.+0.j]])
+        >>> zeros( (3,4) )
+        array([[ 0.,  0.,  0.,  0.],
+               [ 0.,  0.,  0.,  0.],
+               [ 0.,  0.,  0.,  0.]])
+        >>> ones( (2,3,4), dtype=int32 )
+        array([[[1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1]],
+        <BLANKLINE>
+               [[1, 1, 1, 1],
+                [1, 1, 1, 1],
+                [1, 1, 1, 1]]], dtype=int32)
+        >>> arange( 10, 30, 5 )
+        array([10, 15, 20, 25])
+        >>> arange( 0, 2, 0.3 )
+        array([ 0. ,  0.3,  0.6,  0.9,  1.2,  1.5,  1.8])
+        >>> b = arange(12).reshape(4,3)
+        >>> b
+        array([[ 0,  1,  2],
+               [ 3,  4,  5],
+               [ 6,  7,  8],
+               [ 9, 10, 11]])
+        >>> c = arange(24).reshape(2,3,4)
+        >>> c
+        array([[[ 0,  1,  2,  3],
+                [ 4,  5,  6,  7],
+                [ 8,  9, 10, 11]],
+        <BLANKLINE>
+               [[12, 13, 14, 15],
+                [16, 17, 18, 19],
+                [20, 21, 22, 23]]])
+        >>> print arange(10000)
+        [   0    1    2 ..., 9997 9998 9999]
+        >>> ar = arange(10000).reshape(100,100)
+        >>> ar[1,0:3]
+        array([100, 101, 102])
+        >>> ar[1,80:83]
+        array([180, 181, 182])
+        >>> ar[9,80:83]
+        array([980, 981, 982])
+        >>> a = array( [20,30,40,50] )
+        >>> b = arange( 4 )
+
+    Arithmetic operations: 
+
+        >>> a-b
+        array([20, 29, 38, 47])
+        >>> b**2
+        array([0, 1, 4, 9])
+        >>> 10*sin(a)
+        array([ 9.12945251, -9.88031624,  7.4511316 , -2.62374854])
+        >>> a<35
+        array([ True,  True, False, False], dtype=bool)
+        >>> A = array( [[1,1], [0,1]] )
+        >>> B = array( [[2,0], [3,4]] )
+        >>> A*B
+        array([[2, 0],
+               [0, 4]])
+        >>> dot(A,B)
+        array([[5, 4],
+               [3, 4]])
+        >>> a = ones(3, dtype=int32)
+        >>> a.sum()
+        3
+        >>> a.min()
+        1
+        >>> a.max()
+        1
+
+    Slicing and indexing: 
+
+        >>> a = arange(10)**3
+        >>> a
+        array([  0,   1,   8,  27,  64, 125, 216, 343, 512, 729])
+        >>> a[2]
+        8
+        >>> a[2:5]
+        array([ 8, 27, 64])
+        >>> a[:6:2] = -1000
+        >>> a
+        array([-1000,     1, -1000,    27, -1000,   125,   216,   343,   512,   729])
+        >>> a[::-1]
+        array([  729,   512,   343,   216,   125, -1000,    27, -1000,     1, -1000])
+        >>> for i in a:
+        ...     print i**(1/3.),
+        ...
+        nan 1.0 nan 3.0 nan 5.0 6.0 7.0 8.0 9.0
+        >>> c = array( [ [[  0,  1,  2],
+        ... [ 10, 12, 13]],
+        ... [[100,101,102],[110,112,113]] ] )
+        >>> c.shape
+        (2, 2, 3)
+        >>> c[1,...]
+        array([[100, 101, 102],
+               [110, 112, 113]])
+        >>> c[...,2]
+        array([[  2,  13],
+               [102, 113]])
+
+    Shaping:
+
+        >>> a = floor(10*ones((3,4)))
+        >>> a
+        array([[ 10.,  10.,  10.,  10.],
+               [ 10.,  10.,  10.,  10.],
+               [ 10.,  10.,  10.,  10.]])
+        >>> a = arange(12)
+        >>> b = a
+        >>> b is a
+        True
+        >>> b.shape = 3,4
+        >>> a.shape
+        (3, 4)
+        >>> s = a[:,1:3]
+        >>> s[:] = 10
+        >>> a
+        array([[ 0, 10, 10,  3],
+               [ 4, 10, 10,  7],
+               [ 8, 10, 10, 11]])
+        >>> B = arange(3)
+        >>> B
+        array([0, 1, 2])
+        >>> exp(B)
+        array([ 1.        ,  2.71828183,  7.3890561 ])
+        >>> sqrt(B)
+        array([ 0.        ,  1.        ,  1.41421356])
+        >>> C = array([2., -1., 4.])
+        >>> add(B, C)
+        array([ 2.,  0.,  6.])
+
+    Fancy indexing:
+
+        >>> a = arange(12)**2
+        >>> i = array( [ 1,1,3,8,5 ] )
+        >>> a[i]
+        array([ 1,  1,  9, 64, 25])
+        >>> j = array( [ [ 3, 4], [ 9, 7 ] ] )
+        >>> a[j]
+        array([[ 9, 16],
+               [81, 49]])
+        >>> a = arange(12).reshape(3,4)
+        >>> a
+        array([[ 0,  1,  2,  3],
+               [ 4,  5,  6,  7],
+               [ 8,  9, 10, 11]])
+        >>> i = array( [ [0,1],
+        ... [1,2] ] )
+        >>> j = array( [ [2,1],
+        ... [3,3] ] )
+        >>> a[i,j]
+        array([[ 2,  5],
+               [ 7, 11]])
+        >>> a[i,2]
+        array([[ 2,  6],
+               [ 6, 10]])
+        >>> a[:,j]
+        array([[[ 2,  1],
+                [ 3,  3]],
+        <BLANKLINE>
+               [[ 6,  5],
+                [ 7,  7]],
+        <BLANKLINE>
+               [[10,  9],
+                [11, 11]]])
+        >>> l = [i,j]
+        >>> a[l]
+        array([[ 2,  5],
+               [ 7, 11]])
+        >>> s = array( [i,j] )
+        >>> a[s]
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        IndexError: index (3) out of range (0<=index<2) in dimension 0
+        >>> a[tuple(s)]
+        array([[ 2,  5],
+               [ 7, 11]])
+        >>> a = arange(5)
+        >>> a
+        array([0, 1, 2, 3, 4])
+        >>> a[[1,3,4]] = 0
+        >>> a
+        array([0, 0, 2, 0, 0])
+        >>> a = arange(5)
+        >>> a[[0,0,2]]=[1,2,3]
+        >>> a
+        array([2, 1, 3, 3, 4])
+        >>> a = arange(5)
+        >>> a[[0,0,2]]+=1
+        >>> a
+        array([1, 1, 3, 3, 4])
+        >>> a = arange(12).reshape(3,4)
+        >>> b = a > 4
+        >>> b
+        array([[False, False, False, False],
+               [False,  True,  True,  True],
+               [ True,  True,  True,  True]], dtype=bool)
+        >>> a[b]
+        array([ 5,  6,  7,  8,  9, 10, 11])
+        >>> a[b] = 0
+        >>> a
+        array([[0, 1, 2, 3],
+               [4, 0, 0, 0],
+               [0, 0, 0, 0]])
+        >>> a = arange(12).reshape(3,4)
+        >>> b1 = array([False,True,True])
+        >>> b2 = array([True,False,True,False])
+        >>> a[b1,:]
+        array([[ 4,  5,  6,  7],
+               [ 8,  9, 10, 11]])
+        >>> a[b1]
+        array([[ 4,  5,  6,  7],
+               [ 8,  9, 10, 11]])
+        >>> a[:,b2]
+        array([[ 0,  2],
+               [ 4,  6],
+               [ 8, 10]])
+        >>> a[b1,b2]
+        array([ 4, 10])
+        >>> a = array([2,3,4,5])
+        >>> b = array([8,5,4])
+        >>>
+        >>> c = array([5,4,6,8,3])
+        >>> ax,bx,cx = ix_(a,b,c)
+        >>> ax.shape, bx.shape, cx.shape
+        ((4, 1, 1), (1, 3, 1), (1, 1, 5))
+        >>> result = ax+bx*cx
+        >>> result
+        array([[[42, 34, 50, 66, 26],
+                [27, 22, 32, 42, 17],
+                [22, 18, 26, 34, 14]],
+        <BLANKLINE>
+               [[43, 35, 51, 67, 27],
+                [28, 23, 33, 43, 18],
+                [23, 19, 27, 35, 15]],
+        <BLANKLINE>
+               [[44, 36, 52, 68, 28],
+                [29, 24, 34, 44, 19],
+                [24, 20, 28, 36, 16]],
+        <BLANKLINE>
+               [[45, 37, 53, 69, 29],
+                [30, 25, 35, 45, 20],
+                [25, 21, 29, 37, 17]]])
+        >>> result[3,2,4]
+        17
+        >>> a[3]+b[2]*c[4] == 17
+        True
+    """
+    # import doctest
+    # return doctest.testmod()
+
+def _onlyTestNumpy():
     import doctest
-    return doctest.testmod()
+    return doctest.run_docstring_examples(_test, globals())
     
 if __name__ == "__main__":
-    _test() 
+    # _test() 
+    _onlyTestNumpy()

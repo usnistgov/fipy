@@ -40,10 +40,12 @@ import pycuda.driver as cuda
 import pycuda.cumath as cumath
 import pycuda.autoinit
 import numpy
+from functools import wraps
 from numpy import * # this module sits atop numpy
 
 # Decorators
 # ----------
+
 
 def incomingGPUArrToNumpyArr(method):
     """Decorator which converts an incoming GPUArray to a numpy array. To be
@@ -53,7 +55,7 @@ def incomingGPUArrToNumpyArr(method):
         assert isinstance(self, GPUArray), \
                 "Must be operating on a GPUArray method."
         return method(self.get(), *args, **kwargs)
-    return wrapped
+    return wraps(method)(wrapped) # preserve method's signature
 
 def ensureArgsOnGPU(method):
     """Decorator which ensures that every argument is a GPUArray. If an argument
@@ -62,37 +64,32 @@ def ensureArgsOnGPU(method):
     def wrapped(self, *args, **kwargs):
         newArgs = [a if isinstance(a, GPUArray) else array(a) for a in args]
         return method(self, *newArgs, **kwargs)
-    return wrapped
+    return wraps(method)(wrapped)
 
-def roundTripFromGPU(method, argsToNumpy=False):
+def roundTripFromGPU(modifySelf=False):
     """Decorator to apply to any function for which GPUArray doesn't have an
-    analogue.
-
+    analogue. 
     Assumes first argument of function is a `GPUArray`.
 
     If the incoming array is a GPUArray, extract its value from the graphics
     card, make the modification using Numpy functions, and then communicate it
-    back out to the card."""
-     
-    def wrapped(self, *args, **kwargs):
-        assert isinstance(self, GPUArray), \
-                "Must be operating on a GPUArray method."
-        result = method(self.get(), *args, **kwargs)
-        print "\n-------------"
-        print "round trip:"
-        print "  incoming self type: ", type(self)
-        print "  incoming self shape: ", self.shape
-        print "  incoming self.get type: ", type(self.get())
-        print "  incoming self.get shape: ", self.get().shape
-        if not result.flags.contiguous:
-            result = result.copy()
-        print "  result type: ", type(result)
-        print "  result shape: ", result.shape
-        print "  outgoing self type: ", type(array(result))
-        print "  outgoing self shape: ", array(result).shape
-        print "-------------\n"
-        return array(result)
-    return wrapped
+    back out to the card. If `modifySelf` is True, modify `self` instead of
+    returning a modified copy of `self`."""
+
+    def withDecArgs(method):
+        def wrapped(self, *args, **kwargs):
+            assert isinstance(self, GPUArray), \
+                    "Must be operating on a GPUArray method."
+            result = method(self.get(), *args, **kwargs)
+            if not result.flags.contiguous:
+                result = result.copy()
+            if modifySelf:
+                self.set(result)
+                return None
+            else:
+                return array(result)
+        return wraps(method)(wrapped)
+    return withDecArgs
  
 # GPUArray Class
 # --------------
@@ -100,43 +97,65 @@ def roundTripFromGPU(method, argsToNumpy=False):
 class GPUArray(gpuarr.GPUArray):
     """FiPy's very own rip-off of PyCuda's GPUArray class."""
 
-    @roundTripFromGPU
-    def reshape(self, shape):
-        return numpy.reshape(self, tuple(shape))
+    def __init__(self, *args, **kwargs):
+
+        super(GPUArray, self).__init__(*args, **kwargs)
+
+        self.itemsize = self.dtype.itemsize
+
+
+    @incomingGPUArrToNumpyArr
+    def getNdim(self):
+        return self.ndim
+
+    ndim = property(getNdim)
+
+    @roundTripFromGPU()
+    def reshape(self, *shape):
+        return self.reshape(tuple(shape))
 
     @incomingGPUArrToNumpyArr
     def getRank(self):
         return numpy.rank(self)
 
-    def sum(self):
-        return gpuarr.sum(self)
+    @incomingGPUArrToNumpyArr
+    def max(self):
+        return self.max()
 
-    @roundTripFromGPU
+    @incomingGPUArrToNumpyArr
+    def min(self):
+        return self.min()
+
+    @incomingGPUArrToNumpyArr
+    def sum(self):
+        return self.sum()
+
+    @roundTripFromGPU()
     def put(self, ids, values):
         return numpy.put(self, ids, values)
 
     def arccos(self):
         return cumath.acos(self)
 
-    @roundTripFromGPU
+    @roundTripFromGPU()
     def arccosh(self):
         return numpy.arccosh(self)
 
     def arcsin(self):
         return cumath.asin(self)
 
-    @roundTripFromGPU
+    @roundTripFromGPU()
     def arcsinh(self):
         return numpy.archsinh(self)
 
     def arctan(self):
         return cumath.atan(self)
 
-    @roundTripFromGPU
+    @roundTripFromGPU()
     def arctan2(self, other):
         return numpy.arctan2(self, other)
 
-    @roundTripFromGPU
+    @roundTripFromGPU()
     def arctanh(self):
         return numpy.arctanh(self)
 
@@ -170,7 +189,7 @@ class GPUArray(gpuarr.GPUArray):
     def ceil(self):
         return cumath.ceil(self)
 
-    @roundTripFromGPU
+    @roundTripFromGPU()
     def sign(self):
         return numpy.sign(self)
 
@@ -186,7 +205,7 @@ class GPUArray(gpuarr.GPUArray):
     def take(self, indices):
         return array(gpuarr.take(self, indices))
 
-    @roundTripFromGPU
+    @roundTripFromGPU()
     def swapaxes(self, a, b):
         """
         >>> gpua = array([[1, 2, 3], [4, 5, 6]])
@@ -203,13 +222,15 @@ class GPUArray(gpuarr.GPUArray):
         #return array(tempArr.swapaxes(*args))
         return numpy.swapaxes(self, a, b)
     
-    @ensureArgsOnGPU
+     # TODO: is the FiPy conventional ``dot'' correct?
+    @roundTripFromGPU()
     def dot(self, *others):
         """Compute the scalar product with variable arity."""
-        sum = gpuarr.dot(self, others[0])
+        c = numpy.sum(self*others[0], axis=0)
         for o in others[1:]:
-            sum = gpuarr.dot(sum, o)
-        return sum
+            c = numpy.sum(c*o, axis=0)
+
+        return c
 
     @ensureArgsOnGPU
     def sqrtDot(self, *others):
@@ -230,31 +251,16 @@ class GPUArray(gpuarr.GPUArray):
         else:
             return super(GPUArray, self).__getitem__(idx)
 
-    @roundTripFromGPU
+    @roundTripFromGPU()
     def _numpyIdx(self, idx):
         """Used when `self` is indexed with a `numpy.ndarray`."""
         return self[idx]
 
-    @roundTripFromGPU
+    @roundTripFromGPU(modifySelf=True)
     def __setitem__(self, idx, value):
-        print "-------------\n"
-        print "in setitem"
-        print "value: \n", value
-        print "value type: ", type(value)
         if isinstance(value, GPUArray):
-            print "getting value..."
             value = value.get()
         self[idx] = value
-        print "self dtype:", self.dtype
-        print "self type:", type(self)
-        print "self shape:", self.shape
-        print "result: \n", self[idx]
-        print "\n-------------"
-        return self
-
-    @roundTripFromGPU
-    def __setslice__(self, i, j, value):
-        self[i:j] = value
         return self
 
     def __mul__(self, other):
@@ -288,22 +294,25 @@ def array(arr, *args, **kwargs):
 
     return newArr
 
-def zeros(shape, dtype='f'):
+def zeros(shape, dtype=None):
     """Return a `GPUArray` full of zeros."""
     newArr = GPUArray(shape, dtype=dtype)
     newArr.fill(0)
 
     return newArr
 
-def ones(shape, dtype='f'):
+def ones(shape, dtype=None):
     """Return a `GPUArray` full of ones."""
     newArr = GPUArray(shape, dtype=dtype)
     newArr.fill(1)
 
     return newArr
 
-def empty(shape, dtype='f'):
+def empty(shape, dtype=None):
     return array(numpy.empty(shape, dtype=dtype))
+
+def arange(*args, **kwargs):
+    return array(numpy.arange(*args, **kwargs))
 
 def issubclass_(arrType, type):
     return issubclass(arrType, type)
