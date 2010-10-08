@@ -624,15 +624,20 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     global non-overlapping row indices, 
                     global non-overlapping column indices)
         """
-        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
-        globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
+        if not hasattr(self, 'pattern'):
+            globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+            globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
+            
+            id1 = globalOverlappingCellIDs[id1]
+            id2 = globalOverlappingCellIDs[id2]
+            
+            mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 
+            id1 = id1[mask]
+            id2 = id2[mask]
+            self.pattern = id1, id2, mask
 
-        id1 = globalOverlappingCellIDs[id1]
-        id2 = globalOverlappingCellIDs[id2]
-
-        mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 
-        id1 = id1[mask]
-        id2 = id2[mask]
+        id1, id2, mask = self.pattern
+        
         vector = vector[mask]
         
         return (vector, id1, id2)

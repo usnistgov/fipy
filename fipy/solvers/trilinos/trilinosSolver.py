@@ -59,7 +59,11 @@ class TrilinosSolver(Solver):
         self.RHSvector = RHSvector
         
     def _buildGlobalMatrixAndVectors(self):
-        self.globalMatrix = self.matrix.asTrilinosMeshMatrix()
+        if not hasattr(self, 'globalMatrix'):
+            self.globalMatrix = None
+            
+        self.globalMatrix = self.matrix.asTrilinosMeshMatrix(self.globalMatrix)
+        
         self.globalMatrix.finalize()
         
         mesh = self.var.getMesh()
@@ -74,7 +78,7 @@ class TrilinosSolver(Solver):
         self.overlappingVector = Epetra.Vector(self.globalMatrix.overlappingMap, self.var)
 
     def _solve(self):
-        if not hasattr(self, 'globalMatrix'):
+        if not hasattr(self, 'globalMatrix') or not hasattr(self.globalMatrix, 'matrix'):
             self._buildGlobalMatrixAndVectors()
 
         self._solve_(self.globalMatrix.matrix, 
@@ -88,7 +92,7 @@ class TrilinosSolver(Solver):
         
         self.var.setValue(self.overlappingVector)
 
-        del self.globalMatrix
+        del self.globalMatrix.matrix
         del self.nonOverlappingVector
         del self.nonOverlappingRHSvector
         del self.overlappingVector
@@ -104,7 +108,7 @@ class TrilinosSolver(Solver):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            if not hasattr(self, 'globalMatrix'):
+            if not hasattr(self, 'globalMatrix') or not hasattr(self.globalMatrix, 'matrix'):
                 self._buildGlobalMatrixAndVectors()
                 
             # If A is an Epetra.Vector with map M

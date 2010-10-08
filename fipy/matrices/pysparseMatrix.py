@@ -311,18 +311,22 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         else:
             return _PysparseMatrix.__mul__(self, other)
         
-    def asTrilinosMeshMatrix(self):
+    def asTrilinosMeshMatrix(self, matrix=None):
         from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
         
         A = self.matrix.copy()
         values, irow, jcol = A.find()
-
-        matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=int(numerix.ceil(float(len(values)) / float(A.shape[0]))))
+        
+        newMatrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=int(numerix.ceil(float(len(values)) / float(A.shape[0]))))
+        if matrix is None:
+            matrix = newMatrix
+        else:
+            matrix.matrix = newMatrix.matrix
         
         matrix.addAt(values, irow, jcol)
 
         return matrix
-
+    
 class _PysparseIdentityMatrix(_PysparseMatrix):
     """
     Represents a sparse identity matrix for pysparse.
