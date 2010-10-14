@@ -311,22 +311,37 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         else:
             return _PysparseMatrix.__mul__(self, other)
         
-    def asTrilinosMeshMatrix(self, matrix=None):
-        from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
+    def asTrilinosMeshMatrix(self):
+        """Transforms a pysparse matrix into a trilinos matrix and maintains the
+        trilinos matrix as an attribute.
         
+        :Returns: 
+          The trilinos matrix.
+
+        """
+
         A = self.matrix.copy()
         values, irow, jcol = A.find()
         
-        newMatrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=int(numerix.ceil(float(len(values)) / float(A.shape[0]))))
-        if matrix is None:
-            matrix = newMatrix
-        else:
-            matrix.matrix = newMatrix.matrix
-        
-        matrix.addAt(values, irow, jcol)
+        if not hasattr(self, 'trilinosMatrix'):
+            print 'got here'
+            from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
+            self.trilinosMatrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=int(numerix.ceil(float(len(values)) / float(A.shape[0])))) 
 
-        return matrix
-    
+        self.trilinosMatrix.addAt(values, irow, jcol)
+        self.trilinosMatrix.finalize()
+
+        return self.trilinosMatrix
+        
+    def flush(self):
+        """
+        Deletes the copy of the pysparse matrix held and calls `self.trilinosMatrix.flush()` if necessary.
+        """
+        del self.matrix
+        if hasattr(self, 'trilinosMatrix'):
+            pysparseStoreZeros = True
+            self.trilinosMatrix.flush(cacheStencil=pysparseStoreZeros)
+
 class _PysparseIdentityMatrix(_PysparseMatrix):
     """
     Represents a sparse identity matrix for pysparse.
