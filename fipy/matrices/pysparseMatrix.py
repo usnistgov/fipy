@@ -161,7 +161,8 @@ class _PysparseMatrixBase(_SparseMatrix):
         else:
             shape = numerix.shape(other)
             if shape == ():
-                L = spmatrix.ll_mat(N, N, N)
+                storeZeros = True
+                L = spmatrix.ll_mat(N, N, N, storeZeros)
                 L.put(other * numerix.ones(N))
                 return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
@@ -280,7 +281,7 @@ class _PysparseMatrix(_PysparseMatrixBase):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseMatrix`.
 
         :Parameters:
@@ -289,12 +290,12 @@ class _PysparseMatrix(_PysparseMatrixBase):
         """
         sizeHint = sizeHint or size * bandwidth
         if matrix is None:
-            matrix = spmatrix.ll_mat(size, size, sizeHint)
+            matrix = spmatrix.ll_mat(size, size, sizeHint, storeZeros)
         _PysparseMatrixBase.__init__(self, matrix=matrix)
 
 class _PysparseMeshMatrix(_PysparseMatrix):
     
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseMatrix` associated with a `Mesh`.
 
         :Parameters:
@@ -302,7 +303,7 @@ class _PysparseMeshMatrix(_PysparseMatrix):
           - `bandwidth`: The proposed band width of the matrix.
         """
         self.mesh = mesh
-        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
+        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
         
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):
@@ -324,7 +325,6 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         values, irow, jcol = A.find()
         
         if not hasattr(self, 'trilinosMatrix'):
-            print 'got here'
             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
             self.trilinosMatrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=int(numerix.ceil(float(len(values)) / float(A.shape[0])))) 
 
