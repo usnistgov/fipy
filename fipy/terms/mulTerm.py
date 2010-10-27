@@ -55,17 +55,18 @@ class _MulTerm(Term):
 
     uniqueID = 0
 
-    def __init__(self, coeff=1., term=None):
+    def __init__(self, coeff=1., term=None, var=None):
         """
         Create a `_MulTerm`.
 
         :Parameters:
           - `coeff`: Float` or `CellVariable`.
           - `term`: A subclass of `Term`
-          
+          - `var`: The `Variable` for which this `Term` is implicit.
+
         """
 
-        Term.__init__(self, coeff=coeff)
+        Term.__init__(self, coeff=coeff, var=var)
         self.term = term
 
         self.uniqueID += 1

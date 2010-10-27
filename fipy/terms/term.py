@@ -46,19 +46,21 @@ class Term:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.):
+    def __init__(self, coeff=1., var=None):
         """
         Create a `Term`.
 
         :Parameters:
           - `coeff`: The coefficient for the term. A `CellVariable` or number.
             `FaceVariable` objects are also acceptable for diffusion or convection terms.
+          - `var`: The `Variable` for which this `Term` is implicit.
 
         """  
         if self.__class__ is Term:
             raise NotImplementedError, "can't instantiate abstract base class"
             
         self.coeff = coeff
+        self.var = var
         self.geomCoeff = None
         self._cacheMatrix = False
         self.matrix = None
@@ -66,13 +68,29 @@ class Term:
         self.RHSvector = None
         self._diagonalSign = Variable(value=1)
         
-    def copy(self):
-        return self.__class__(self.coeff)
+        import sys
+        print >>sys.stdout, self, self.var
         
+    def copy(self):
+        return self.__class__(coeff=self.coeff, var=self.var)
+
+    def _checkAndBuildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
+        var = self._checkVariable(var=var)
+        return (var,) + self._buildMatrix(var, SparseMatrix, boundaryConditions, dt, equation=equation)
+
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
         raise NotImplementedError
+        
+    def _checkVariable(self, var):
+        if self.var is None: 
+            if var is None:
+                raise Exception("Term solved for unknown Variable")
+        else:
+            if var is None:
+                var = self.var
+            elif var is not self.var:
+                raise Exception("Term solved for wrong Variable")
 
-    def __buildMatrix(self, var, solver, boundaryConditions, dt):
         if numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float']:
             import warnings
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
@@ -80,6 +98,21 @@ class Term:
         
         self._verifyCoeffType(var)
         
+        return var
+        
+    def _setDiagonalSign(self, equation):
+        # The sign of the matrix diagonal doesn't seem likely to change
+        # after initialization, but who knows?
+        if equation is None or equation.matrix == 0:
+            self._diagonalSign.setValue(1)
+        else:
+            from fipy.tools.numerix import sign, add
+            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
+
+    def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
+            
+        solver = self.getDefaultSolver(solver)
+
         if numerix.getShape(dt) != ():
             raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
         dt = float(dt)
@@ -95,7 +128,7 @@ class Term:
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
+        var, matrix, RHSvector = self._checkAndBuildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
@@ -104,14 +137,10 @@ class Term:
             self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
             from fipy import raw_input
             raw_input()
-
-    def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        solver = self.getDefaultSolver(solver)
-
-        self.__buildMatrix(var, solver, boundaryConditions, dt)
+            
         return solver
     
-    def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
+    def solve(self, var=None, solver=None, boundaryConditions=(), dt=1.):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         does not return the residual. It should be used when the
@@ -130,7 +159,7 @@ class Term:
         
         solver._solve()
 
-    def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var=None, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -154,7 +183,7 @@ class Term:
 
         return residual
 
-    def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def justResidualVector(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -175,7 +204,7 @@ class Term:
 
         return solver._calcResidualVector(residualFn=residualFn)
 
-    def residualVectorAndNorm(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def residualVectorAndNorm(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -420,7 +449,10 @@ class Term:
            __Term(coeff=123.456)
 
         """
-        return "%s(coeff=%s)" % (self.__class__.__name__, repr(self.coeff))
+        if self.var is None:
+            return "%s(coeff=%s)" % (self.__class__.__name__, repr(self.coeff))
+        else:
+            return "%s(coeff=%s, var=%s)" % (self.__class__.__name__, repr(self.coeff), repr(self.var))
 
     def _calcGeomCoeff(self, mesh):
         return None

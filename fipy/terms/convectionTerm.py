@@ -48,7 +48,7 @@ class ConvectionTerm(FaceTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.0, diffusionTerm=None):
+    def __init__(self, coeff=1.0, diffusionTerm=None, var=None):
         """
         Create a `ConvectionTerm` object.
         
@@ -98,6 +98,7 @@ class ConvectionTerm(FaceTerm):
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
           - `diffusionTerm` : **deprecated**. The Peclet number is calculated automatically.
+          - `var` : The `Variable` for which this `Term` is implicit.
         """
         if self.__class__ is ConvectionTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
@@ -114,7 +115,7 @@ class ConvectionTerm(FaceTerm):
         if isinstance(coeff, CellVariable):
             coeff = coeff.getArithmeticFaceValue()
 
-        FaceTerm.__init__(self, coeff = coeff)
+        FaceTerm.__init__(self, coeff=coeff, var=var)
         
     def _calcGeomCoeff(self, mesh):
         if not isinstance(self.coeff, FaceVariable):

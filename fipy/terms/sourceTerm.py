@@ -40,10 +40,10 @@ class SourceTerm(CellTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff = 0.):
+    def __init__(self, coeff=0., var=None):
         if self.__class__ is SourceTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
-	CellTerm.__init__(self, coeff = coeff) 
+	CellTerm.__init__(self, coeff=coeff, var=var) 
 	
     def _calcGeomCoeff(self, mesh):
 	return self.coeff * mesh.getCellVolumes()

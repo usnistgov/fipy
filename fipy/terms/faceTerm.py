@@ -43,11 +43,11 @@ class FaceTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.):
+    def __init__(self, coeff=1., var=None):
         if self.__class__ is FaceTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
             
-        Term.__init__(self, coeff=coeff)
+        Term.__init__(self, coeff=coeff, var=var)
         self.coeffMatrix = None
             
     def _getCoeffMatrix(self, mesh, weight):
@@ -156,12 +156,8 @@ class FaceTerm(Term):
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=mesh)
 
-        if equation is not None:
-            from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
-        else:
-            self._diagonalSign.setValue(1)
-
+        self._setDiagonalSign(equation)
+        
         weight = self._getWeight(mesh, equation=equation)
 
         if weight.has_key('implicit'):

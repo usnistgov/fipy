@@ -67,13 +67,14 @@ class DiffusionTerm(Term):
 
     """
 
-    def __init__(self, coeff = (1.,)):
+    def __init__(self, coeff = (1.,), var=None):
         """
         Create a `DiffusionTerm`.
 
         :Parameters:
           - `coeff`: `Tuple` or `list` of `FaceVariables` or numbers.
-          
+          - `var`: The `Variable` for which this `Term` is implicit.
+
         """
         if type(coeff) not in (type(()), type([])):
             coeff = (coeff,)
@@ -95,10 +96,10 @@ class DiffusionTerm(Term):
         else:
             self.nthCoeff = None
 
-        Term.__init__(self, coeff = coeff)
+        Term.__init__(self, coeff=coeff, var=var)
         
         if self.order > 0:
-            self.lowerOrderDiffusionTerm = DiffusionTerm(coeff = coeff[1:])
+            self.lowerOrderDiffusionTerm = DiffusionTerm(coeff=coeff[1:], var=var)
         
     def __neg__(self):
         """
@@ -113,7 +114,7 @@ class DiffusionTerm(Term):
         """
         negatedCoeff = list(self.coeff)
         negatedCoeff[0] = -negatedCoeff[0]
-        return self.__class__(coeff = negatedCoeff)
+        return self.__class__(coeff=negatedCoeff, var=self.var)
             
     def _getBoundaryConditions(self, boundaryConditions):
         higherOrderBCs = []
@@ -254,7 +255,7 @@ class DiffusionTerm(Term):
                 if self.order == 0:
                     return self
                 elif self.order == 2:
-                    return self.__class__(coeff=self.coeff[0] + other.coeff[0])
+                    return self.__class__(coeff=self.coeff[0] + other.coeff[0], var=self.var)
             else:
                 term = _CollectedDiffusionTerm()
                 term += self
@@ -265,7 +266,7 @@ class DiffusionTerm(Term):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1. , equation=None):
 
-        L, b = self.__buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+        L, b = self._buildRecursiveMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
         
         if self.order == 2:
             if not hasattr(self, 'constraintB'):
@@ -291,7 +292,7 @@ class DiffusionTerm(Term):
 
         return (L, b)
 
-    def __buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., equation=None):
+    def _buildRecursiveMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., equation=None):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()

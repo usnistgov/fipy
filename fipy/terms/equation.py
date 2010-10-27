@@ -80,18 +80,17 @@ class _Equation(Term):
         else:
             return self.terms["DiffusionTerm"]._getGeomCoeff(mesh)[0]
         
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions, dt, equation=None):
+    def _checkAndBuildMatrix(self, var, SparseMatrix,  boundaryConditions, dt, equation=None):
         from fipy.tools import numerix
 
-        N = len(var)
-        self.RHSvector = numerix.zeros((N,),'d')
-        self.matrix = SparseMatrix(mesh=var.getMesh())
+        self.RHSvector = 0
+        self.matrix = 0
 
         for term in self._getTerms():
             if term is not None:
-                termMatrix, termRHSvector = term._buildMatrix(var, SparseMatrix,
-                                                              boundaryConditions, 
-                                                              dt, self)
+                var, termMatrix, termRHSvector = term._checkAndBuildMatrix(var, SparseMatrix,
+                                                                           boundaryConditions, 
+                                                                           dt, self)
                 
                 if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
                     and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
@@ -99,6 +98,8 @@ class _Equation(Term):
                     self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector)
                     raw_input()
 
+                raise Exception("debug")
+                
                 self.matrix += termMatrix
                 self.RHSvector += termRHSvector
 	
@@ -109,7 +110,7 @@ class _Equation(Term):
         if not self._cacheRHSvector:
             self.RHSvector = None
             
-	return (matrix, RHSvector)
+	return (var, matrix, RHSvector)
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
         for term in self._getTerms():
