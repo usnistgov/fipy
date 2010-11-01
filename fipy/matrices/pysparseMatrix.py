@@ -161,8 +161,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         else:
             shape = numerix.shape(other)
             if shape == ():
-                storeZeros = False
-                L = spmatrix.ll_mat(N, N, N, storeZeros)
+                L = spmatrix.ll_mat(N, N, N)
                 L.put(other * numerix.ones(N))
                 return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
@@ -281,26 +280,35 @@ class _PysparseMatrix(_PysparseMatrixBase):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=False):
+    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseMatrix`.
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
+          - `storeZeros`: Instructs pysparse to store zero values if possible.
+          
         """
         sizeHint = sizeHint or size * bandwidth
         if matrix is None:
-            matrix = spmatrix.ll_mat(size, size, sizeHint, storeZeros)
+            tmpMatrix = spmatrix.ll_mat(1, 1, 1)
+            if hasattr(tmpMatrix, 'storeZeros'):
+                matrix = spmatrix.ll_mat(size, size, sizeHint, storeZeros)
+            else:
+                matrix = spmatrix.ll_mat(size, size, sizeHint)
+                
         _PysparseMatrixBase.__init__(self, matrix=matrix)
 
 class _PysparseMeshMatrix(_PysparseMatrix):
     
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, storeZeros=False):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseMatrix` associated with a `Mesh`.
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
+          - `storeZeros`: Instructs pysparse to store zero values if possible.
+          
         """
         self.mesh = mesh
         _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
@@ -339,8 +347,11 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         """
     
         if hasattr(self, 'trilinosMatrix'):
-            self.trilinosMatrix.flush(cacheStencil=self.matrix.storeZeros)
-
+            if hasattr(self.matrix, 'storeZeros'):
+                self.trilinosMatrix.flush(cacheStencil=self.matrix.storeZeros)
+            else:
+                self.trilinosMatrix.flush(cacheStencil=False)
+                
         if (not hasattr(self, 'cache')) or (self.cache is False):
             del self.matrix
 

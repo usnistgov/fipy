@@ -651,7 +651,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
           - `cacheStencil`: Boolean value to determine whether to keep the stencil (tuple of IDs and a mask) even after deleting the matrix.
 
         """
-          
+
         del self.matrix
         if not cacheStencil:
             del self.stencil
