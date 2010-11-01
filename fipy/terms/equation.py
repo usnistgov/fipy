@@ -106,6 +106,9 @@ class _Equation(Term):
         RHSvector = self.RHSvector
         if not self._cacheMatrix:
             self.matrix = None
+        else:
+            self.matrix.cache = True
+            
         if not self._cacheRHSvector:
             self.RHSvector = None
             

@@ -161,7 +161,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         else:
             shape = numerix.shape(other)
             if shape == ():
-                storeZeros = True
+                storeZeros = False
                 L = spmatrix.ll_mat(N, N, N, storeZeros)
                 L.put(other * numerix.ones(N))
                 return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, L))
@@ -281,7 +281,7 @@ class _PysparseMatrix(_PysparseMatrixBase):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=False):
         """Creates a `_PysparseMatrix`.
 
         :Parameters:
@@ -295,7 +295,7 @@ class _PysparseMatrix(_PysparseMatrixBase):
 
 class _PysparseMeshMatrix(_PysparseMatrix):
     
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, storeZeros=False):
         """Creates a `_PysparseMatrix` associated with a `Mesh`.
 
         :Parameters:
@@ -332,15 +332,17 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         self.trilinosMatrix.finalize()
 
         return self.trilinosMatrix
-        
+
     def flush(self):
         """
         Deletes the copy of the pysparse matrix held and calls `self.trilinosMatrix.flush()` if necessary.
         """
-        del self.matrix
+    
         if hasattr(self, 'trilinosMatrix'):
-            pysparseStoreZeros = True
-            self.trilinosMatrix.flush(cacheStencil=pysparseStoreZeros)
+            self.trilinosMatrix.flush(cacheStencil=self.matrix.storeZeros)
+
+        if (not hasattr(self, 'cache')) or (self.cache is False):
+            del self.matrix
 
 class _PysparseIdentityMatrix(_PysparseMatrix):
     """
