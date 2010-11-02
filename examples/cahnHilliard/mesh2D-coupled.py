@@ -72,6 +72,7 @@ much is augmented for :term:`FiPy`\'s needs.)
 ...     nx = ny = 10
 >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
 >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
+>>> psi = CellVariable(name=r"$\psi$", mesh=mesh)
 
 We start the problem with random fluctuations about :math:`\phi = 1/2`
 
