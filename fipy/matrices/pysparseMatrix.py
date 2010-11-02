@@ -73,17 +73,12 @@ class _PysparseMatrixBase(_SparseMatrix):
             return _PysparseMatrixBase(matrix=m)
 
     def __iadd__(self, other):
-            return self._iadd(self._getMatrix(), other)
+        self._iadd(self._getMatrix(), other)
+        return self
         
     def _iadd(self, L, other, sign = 1):
         if other != 0:
             L.shift(sign, other._getMatrix())
-        return self
-
-    def _add(self, other, sign = 1):
-        L = self.matrix.copy()
-        self._iadd(L, other, sign)
-        return _PysparseMatrixBase(matrix=L)
 
     def __add__(self, other):
         """
@@ -107,22 +102,27 @@ class _PysparseMatrixBase(_SparseMatrix):
             AttributeError: 'int' object has no attribute '_getMatrix'
         """
 
-        if other is 0:
+        if other == 0:
             return self
         else:
             L = self.matrix.copy()
             L.shift(1, other._getMatrix())
             return _PysparseMatrixBase(matrix=L)
         
+    __radd__ = __add__
+    
     def __sub__(self, other):
 
-        if other is 0:
+        if other == 0:
             return self
         else:
             L = self.matrix.copy()
             L.shift(-1, other._getMatrix())
             return _PysparseMatrixBase(matrix=L)
 
+    def __rsub__(self, other):
+        return -self + other
+    
     def __isub__(self, other):
             return self._iadd(self._getMatrix(), other, -1)
 
