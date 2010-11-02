@@ -98,11 +98,9 @@ class _Equation(Term):
                     self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector)
                     raw_input()
 
-                raise Exception("debug")
-                
                 self.matrix += termMatrix
                 self.RHSvector += termRHSvector
-	
+                
         matrix = self.matrix
         RHSvector = self.RHSvector
         if not self._cacheMatrix:

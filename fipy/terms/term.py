@@ -68,9 +68,6 @@ class Term:
         self.RHSvector = None
         self._diagonalSign = Variable(value=1)
         
-        import sys
-        print >>sys.stdout, self, self.var
-        
     def copy(self):
         return self.__class__(coeff=self.coeff, var=self.var)
 
