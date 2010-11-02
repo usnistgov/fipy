@@ -333,8 +333,8 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         values, irow, jcol = A.find()
         
         if not hasattr(self, 'trilinosMatrix'):
-            from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
-            self.trilinosMatrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=int(numerix.ceil(float(len(values)) / float(A.shape[0])))) 
+            from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
+            self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=int(numerix.ceil(float(len(values)) / float(A.shape[0])))) 
 
         self.trilinosMatrix.addAt(values, irow, jcol)
         self.trilinosMatrix.finalize()

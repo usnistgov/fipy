@@ -611,6 +611,18 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     def asTrilinosMeshMatrix(self):
         return self
 
+    def _getStencil(self, id1, id2):
+        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+        globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
+            
+        id1 = globalOverlappingCellIDs[id1]
+        id2 = globalOverlappingCellIDs[id2]
+            
+        mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 
+        id1 = id1[mask]
+        id2 = id2[mask]
+        return id1, id2, mask
+
     def _globalNonOverlapping(self, vector, id1, id2):
         """Transforms and subsets local overlapping values and coordinates to global non-overlapping
         
@@ -624,38 +636,15 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     global non-overlapping row indices, 
                     global non-overlapping column indices)
         """
-
-        if not hasattr(self, 'stencil'):
-            globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
-            globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
-            
-            id1 = globalOverlappingCellIDs[id1]
-            id2 = globalOverlappingCellIDs[id2]
-            
-            mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 
-            id1 = id1[mask]
-            id2 = id2[mask]
-            self.stencil = id1, id2, mask
-
-        id1, id2, mask = self.stencil
+        id1, id2, mask = self._getStencil(id1, id2)
         
         vector = vector[mask]
         
         return (vector, id1, id2)
 
-    def flush(self, cacheStencil=False):
-        """Deletes the matrix but maintains the stencil used
-        `_globalNonOverlapping()` in as it can be expensive to construct.
-
-        :Parameters:
-          - `cacheStencil`: Boolean value to determine whether to keep the stencil (tuple of IDs and a mask) even after deleting the matrix.
-
-        """
-
-        del self.matrix
-        if not cacheStencil:
-            del self.stencil
-
+    def flush(self):
+        pass
+    
     def _getMatrix(self):
         if not hasattr(self, 'matrix'):
             self.matrix = _TrilinosMeshMatrix(self.mesh, bandwidth=self.bandwidth)._getMatrix()
@@ -802,6 +791,26 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
 
+class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
+
+    def _getStencil(self, id1, id2):
+        if not hasattr(self, 'stencil'):
+            self.stencil = _TrilinosMeshMatrix._getStencil(self, id1, id2)
+
+        return self.stencil
+    
+    def flush(self, cacheStencil=False):
+        """Deletes the matrix but maintains the stencil used
+        `_globalNonOverlapping()` in as it can be expensive to construct.
+
+        :Parameters:
+          - `cacheStencil`: Boolean value to determine whether to keep the stencil (tuple of IDs and a mask) even after deleting the matrix.
+
+        """
+
+        del self.matrix
+        if not cacheStencil:
+            del self.stencil
 
 def _test(): 
     import doctest
