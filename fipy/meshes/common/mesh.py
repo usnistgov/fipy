@@ -589,7 +589,9 @@ class Mesh:
 
     def getInteriorFaceCellIDs(self):
         if not hasattr(self, 'interiorFaceCellIDs'):
-            self.interiorFaceCellIDs = self.getFaceCellIDs()[..., self.getInteriorFaceIDs()]
+            ## Commented line is better, but doesn't work for zero length arrays
+            ##  self.interiorFaceCellIDs = self.getFaceCellIDs()[..., self.getInteriorFaceIDs()]
+            self.interiorFaceCellIDs = numerix.take(self.getFaceCellIDs(), self.getInteriorFaceIDs(), axis=1)
         return self.interiorFaceCellIDs
     
     """geometry methods"""
