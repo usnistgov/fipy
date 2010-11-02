@@ -609,6 +609,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         return copy
                                  
     def asTrilinosMeshMatrix(self):
+        self.finalize()
         return self
 
     def _getStencil(self, id1, id2):
