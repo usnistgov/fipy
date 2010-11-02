@@ -365,9 +365,9 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         
         >>> m = _PysparseMatrix(size=3, storeZeros=True)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
-        >>> print numerix.allequal(m.matrix.keys(), numerix.array([(0, 1), (1, 0), (2, 2)])) or not hasattr(m.matrix, 'storeZeros')
+        >>> print not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0), (2, 2)])
         True
-        >>> print numerix.allequal(m.matrix.values(), numerix.array([1., 2., 0.])) or not hasattr(m.matrix, 'storeZeros')
+        >>> print not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.values(), [1., 2., 0.]) 
         True
         >>> m = _PysparseMatrix(size=3, storeZeros=False)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
