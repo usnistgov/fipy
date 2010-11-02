@@ -47,38 +47,37 @@ class _Equation(Term):
           "DiffusionTerm", "ConvectionTerm", "ImplicitSourceTerm", 
           "_ExplicitSourceTerm"]
 
-        self.terms = {}
-        
-        for type in self.orderedKeys:
-            self.terms[type] = None
-
+        self.vars = []
+        self.terms = []
         self.nonAdditiveTerms = []
 
 	Term.__init__(self)
 	
     def copy(self):
         eq = _Equation()
-        for key, val in self.terms.iteritems():
-            if val is not None:
-                eq.terms[key] = val.copy()
+        eq.vars = self.vars.copy()
+        for terms in self.terms:
+            dup = {}
+            for key, term in terms.iteritems():
+                dup[key] = term.copy()
+            eq.terms.append(dup)
+        for terms in self.nonAdditiveTerms:
+            dup = []
+            for term in terms:
+                dup.append(term.copy())
+            eq.nonAdditiveTerms.append(dup)
         return eq
         
-    def orderedPlusOtherKeys(self):
-        return self.orderedKeys \
-          + [k for k in self.terms.keys() if k not in self.orderedKeys]
-
-    def _getTerms(self):
-        terms = []
-        for key in self.orderedPlusOtherKeys():
-            terms += [self.terms[key]]
-        terms += self.nonAdditiveTerms
-        return terms
+    def _getTermList(self, terms, nonAdditiveTerms):
+        orderedPlusOtherKeys = self.orderedKeys \
+          + [k for k in terms.keys() if k not in self.orderedKeys]
+        return [terms[key] for key in orderedPlusOtherKeys if terms.has_key(key)] + nonAdditiveTerms
         
     def _getDiffusiveGeomCoeff(self, mesh):
-        if self.terms["DiffusionTerm"] is None:
-            return None
-        else:
+        if self.terms.has_key("DiffusionTerm"):
             return self.terms["DiffusionTerm"]._getGeomCoeff(mesh)[0]
+        else:
+            return None
         
     def _checkAndBuildMatrix(self, var, SparseMatrix,  boundaryConditions, dt, equation=None):
         from fipy.tools import numerix
@@ -86,20 +85,21 @@ class _Equation(Term):
         self.RHSvector = 0
         self.matrix = 0
 
-        for term in self._getTerms():
-            if term is not None:
-                var, termMatrix, termRHSvector = term._checkAndBuildMatrix(var, SparseMatrix,
-                                                                           boundaryConditions, 
-                                                                           dt, self)
-                
-                if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
-                    and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
-                    self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
-                    self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector)
-                    raw_input()
+        for var, terms, nonAdditiveTerms in zip(self.vars, self.terms, self.nonAdditiveTerms):
+            for term in self._getTermList(terms, nonAdditiveTerms):
+                if term is not None:
+                    var, termMatrix, termRHSvector = term._checkAndBuildMatrix(var, SparseMatrix,
+                                                                               boundaryConditions, 
+                                                                               dt, self)
+                    
+                    if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
+                        and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
+                        self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
+                        self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector)
+                        raw_input()
 
-                self.matrix += termMatrix
-                self.RHSvector += termRHSvector
+                    self.matrix += termMatrix
+                    self.RHSvector += termRHSvector
                 
         matrix = self.matrix
         RHSvector = self.RHSvector
@@ -111,8 +111,8 @@ class _Equation(Term):
 	return (var, matrix, RHSvector)
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
-        for term in self._getTerms():
-            if term is not None:
+        for var, terms, nonAdditiveTerms in zip(self.vars, self.terms, self.nonAdditiveTerms):
+            for term in self._getTermList(terms, nonAdditiveTerms):
                 defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
                 if defaultsolver is not None:
                     return defaultsolver
@@ -121,8 +121,8 @@ class _Equation(Term):
 
     def __repr__(self):
         reprs = []
-        for term in self._getTerms():
-            if term is not None:
+        for var, terms, nonAdditiveTerms in zip(self.vars, self.terms, self.nonAdditiveTerms):
+            for term in self._getTermList(terms, nonAdditiveTerms):
                 reprs.append(repr(term))
                 
         return " + ".join(reprs) + " == 0"
@@ -156,12 +156,25 @@ class _Equation(Term):
             if not isinstance(other, Term):
                 self._appendTerm(_ExplicitSourceTerm(coeff=other), "_ExplicitSourceTerm")
             elif isinstance(other, _Equation):
-                for key in other.terms.keys():
-                    self += other.terms[key]
+                for terms in other.terms:
+                    for key in terms.keys():
+                        self += terms[key]
             else:
                 appended = False
 
-                for key in self.terms.keys():
+                try:
+                    # find-in-list generator: http://dev.ionous.net/2009/01/python-find-item-in-list.html
+                    var_index = (i for i, var in enumerate(self.vars) if var is other.var).next()
+                except StopIteration:
+                    if other.var is None and len(self.vars) > 0:
+                        raise Exception("Terms with explicit Variables cannot mix with Terms with implicit Variables")
+
+                    self.vars.append(other.var)
+                    self.terms.append({})
+                    self.nonAdditiveTerms.append([])
+                    var_index = len(self.vars) - 1
+                
+                for key in self.terms[var_index].keys():
 
                     if eval("isinstance(other, %s)" % key):
                         self._appendTerm(other, key)
@@ -170,10 +183,10 @@ class _Equation(Term):
                         
                 if not appended:
                     if other._isAdditive():
-                        self.terms[other.__class__.__name__] = other
+                        self.terms[var_index][other.__class__.__name__] = other
                     else:
 
-                        self.nonAdditiveTerms += [other]
+                        self.nonAdditiveTerms[var_index] += [other]
         
         return self
         
@@ -192,6 +205,25 @@ class _Equation(Term):
                 dup.terms[key] = -term
                 
         return dup
+
+    def _test(self):
+        """
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected.
+        
+        >>> from fipy import Grid1D, CellVariable, DiffusionTerm, TransientTerm
+        >>> mesh = Grid1D(nx=3)
+        >>> A = CellVariable(mesh=mesh, name="A")
+        >>> B = CellVariable(mesh=mesh, name="B")
+        >>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B)
+        >>> print eq
+        TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B) == 0
+        >>> print eq.vars
+        >>> print eq.terms
+        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
+        >>> print solver.matrix
+        >>> print solver.RHSvector
+        """
 
 class __Term(Term):
     """
