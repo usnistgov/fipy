@@ -48,7 +48,7 @@ class ImplicitSourceTerm(SourceTerm):
        
     where :math:`S` is the `coeff` value.       
     """
-    def _calcCoeffVectors(self, var, equation=None):
+    def _calcCoeffVectors(self, var):
         """
         Test for a bug due to the sign operator not being updating
         correctly.

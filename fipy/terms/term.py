@@ -97,14 +97,11 @@ class Term:
         
         return var
         
-    def _setDiagonalSign(self, equation):
-        # The sign of the matrix diagonal doesn't seem likely to change
-        # after initialization, but who knows?
-        if equation is None or equation.matrix == 0:
-            self._diagonalSign.setValue(1)
-        else:
-            from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
+    def _setDiagonalSign(self, sign):
+        self._diagonalSign.setValue(sign)
+        
+    def _setDiffusiveGeomCoeff(self, diffCoeff):
+        pass
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
             
@@ -467,6 +464,14 @@ class Term:
 
     def _isAdditive(self):
         return True
+        
+    def _test(self):
+        """
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected.
+        
+        """
+        pass
             
 class __Term(Term): 
     """

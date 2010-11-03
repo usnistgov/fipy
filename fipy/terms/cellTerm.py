@@ -124,8 +124,6 @@ class CellTerm(Term):
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=var.getMesh())
         
-        self._setDiagonalSign(equation)
-        
         coeffVectors = self._getCoeffVectors(var=var)
 
         inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)

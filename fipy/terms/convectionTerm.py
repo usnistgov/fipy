@@ -125,6 +125,9 @@ class ConvectionTerm(FaceTerm):
         
         return projectedCoefficients.sum(0)
         
+    def _setDiffusiveGeomCoeff(self, diffCoeff):
+        self._diffCoeff = diffCoeff
+        
     def _getWeight(self, mesh, equation=None):
 
         if self.stencil is None:
@@ -132,16 +135,15 @@ class ConvectionTerm(FaceTerm):
             small = -1e-20
             
             if equation is None:
-                diffCoeff = small
+                self._diffCoeff = small
             else:
-                diffCoeff = equation._getDiffusiveGeomCoeff(mesh)
-                if diffCoeff is None:
-                    diffCoeff = small
+                if self._diffCoeff is None:
+                    self._diffCoeff = small
                 else:
-                    diffCoeff = diffCoeff.getNumericValue()
-                    diffCoeff = (diffCoeff == 0) * small + diffCoeff
+                    self._diffCoeff = self._diffCoeff.getNumericValue()
+                    self._diffCoeff = (self._diffCoeff == 0) * small + self._diffCoeff
 
-            alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
+            alpha = self._Alpha(-self._getGeomCoeff(mesh) / self._diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),

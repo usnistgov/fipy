@@ -156,8 +156,6 @@ class FaceTerm(Term):
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=mesh)
 
-        self._setDiagonalSign(equation)
-        
         weight = self._getWeight(mesh, equation=equation)
 
         if weight.has_key('implicit'):
