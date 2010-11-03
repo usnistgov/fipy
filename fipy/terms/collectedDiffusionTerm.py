@@ -34,8 +34,8 @@ from fipy.terms.diffusionTerm import DiffusionTerm
 
 class _CollectedDiffusionTerm(DiffusionTerm):
     def __init__(self, var=None):
+        DiffusionTerm.__init__(self, coeff=(), var=var)
         self.orders = [None, None]
-        self.var = var
 
     def __iadd__(self, other):
         if not isinstance(other, DiffusionTerm) or (other.var is not self.var):
