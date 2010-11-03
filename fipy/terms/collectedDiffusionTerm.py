@@ -33,11 +33,12 @@
 from fipy.terms.diffusionTerm import DiffusionTerm
 
 class _CollectedDiffusionTerm(DiffusionTerm):
-    def __init__(self):
+    def __init__(self, var=None):
         self.orders = [None, None]
+        self.var = var
 
     def __iadd__(self, other):
-        if not isinstance(other, DiffusionTerm):
+        if not isinstance(other, DiffusionTerm) or (other.var is not self.var):
             return DiffusionTerm.__add__(self, other)
         elif isinstance(other, _CollectedDiffusionTerm):
             for term in other.orders:
@@ -82,7 +83,7 @@ class _CollectedDiffusionTerm(DiffusionTerm):
         return (matrix, RHSvector)
 
     def copy(self):
-        dup = _CollectedDiffusionTerm()
+        dup = _CollectedDiffusionTerm(var=self.var)
         dup.orders = self.orders
         return dup
         
@@ -111,7 +112,7 @@ class _CollectedDiffusionTerm(DiffusionTerm):
            DiffusionTerm(coeff=[-1.0]) + DiffusionTerm(coeff=[2.0, -3.0])
 
         """
-        dup = _CollectedDiffusionTerm()
+        dup = _CollectedDiffusionTerm(var=self.var)
         
         dup.orders = []
         for term in self.orders:

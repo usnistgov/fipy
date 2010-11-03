@@ -71,13 +71,19 @@ class _MulTerm(Term):
 
         self.uniqueID += 1
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+    def _setDiagonalSign(self, sign):
+        self.term._setDiagonalSign(sign=sign)
+        
+    def _setDiffusiveGeomCoeff(self, diffCoeff):
+        self.term._setDiffusiveGeomCoeff(diffCoeff=diffCoeff)
 
-        L , b = self.term._buildMatrix(var,
-                                       SparseMatrix,
-                                       boundaryConditions=boundaryConditions,
-                                       dt=dt,
-                                       equation=equation)
+    def _checkAndBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+
+        var, L , b = self.term._checkAndBuildMatrix(var,
+                                                    SparseMatrix,
+                                                    boundaryConditions=boundaryConditions,
+                                                    dt=dt,
+                                                    equation=equation)
 
         if len(numerix.shape(self.coeff)) == 0:
             matcoeff = float(self.coeff)
@@ -85,7 +91,7 @@ class _MulTerm(Term):
             matcoeff = SparseMatrix(mesh=var.getMesh(), bandwidth=1)
             matcoeff.addAtDiagonal(self.coeff)
 
-        return (matcoeff * L, self.coeff * b)
+        return (var, matcoeff * L, self.coeff * b)
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
 

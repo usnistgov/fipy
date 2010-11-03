@@ -247,7 +247,7 @@ class DiffusionTerm(Term):
         return coefficientMatrix, boundaryB
 
     def __add__(self, other):
-        if isinstance(other, DiffusionTerm):
+        if isinstance(other, DiffusionTerm) and (other.var is self.var):
             from fipy.terms.collectedDiffusionTerm import _CollectedDiffusionTerm
             if isinstance(other, _CollectedDiffusionTerm):
                 return other + self
@@ -257,7 +257,7 @@ class DiffusionTerm(Term):
                 elif self.order == 2:
                     return self.__class__(coeff=self.coeff[0] + other.coeff[0], var=self.var)
             else:
-                term = _CollectedDiffusionTerm()
+                term = _CollectedDiffusionTerm(var=self.var)
                 term += self
                 term += other
                 return term
