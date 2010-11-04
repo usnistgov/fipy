@@ -76,7 +76,7 @@ class DiffusionTerm(Term):
           
         """
         if type(coeff) not in (type(()), type([])):
-            coeff = (coeff,)
+            coeff = [coeff]
 
         self.order = len(coeff) * 2
 
@@ -99,6 +99,13 @@ class DiffusionTerm(Term):
         
         if self.order > 0:
             self.lowerOrderDiffusionTerm = DiffusionTerm(coeff = coeff[1:])
+
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            self.coeff[0] = other * self.coeff[0] 
+            return self.__class__(coeff=self.coeff)
+        else:
+            raise Exception, "Must multiply terms by int or float."
         
     def __neg__(self):
         """
