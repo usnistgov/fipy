@@ -136,7 +136,7 @@ class _CollectedDiffusionTerm(DiffusionTerm):
 
            >>> from fipy import *
            >>> TransientTerm() == DiffusionTerm((0, 0)) + DiffusionTerm() + ImplicitSourceTerm()
-           TransientTerm(coeff=1.0) + DiffusionTerm(coeff=[-1.0]) + DiffusionTerm(coeff=[0, 0]) + ImplicitSourceTerm(coeff=-(0.0)) == 0
+           (TransientTerm(coeff=1.0) + (DiffusionTerm(coeff=[-1.0]) + DiffusionTerm(coeff=[0, 0]) + ImplicitSourceTerm(coeff=-(0.0))))
            
         """
         pass

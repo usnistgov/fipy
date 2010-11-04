@@ -46,11 +46,10 @@ def _suite():
             'transientTerm',
             'powerLawConvectionTerm',
             'exponentialConvectionTerm',
-            'equation',
+            'binaryTerm',
             'upwindConvectionTerm',
             'collectedDiffusionTerm',
             'implicitSourceTerm',
-            'mulTerm'
         ), base = __name__)
 
 if __name__ == '__main__':

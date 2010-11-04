@@ -69,7 +69,7 @@ class Term:
     def copy(self):
         return self.__class__(self.coeff)
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
         raise NotImplementedError
 
     def __buildMatrix(self, var, solver, boundaryConditions, dt):
@@ -252,50 +252,29 @@ class Term:
     def getDefaultSolver(self, solver=None, *args, **kwargs):
         return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
                          
-    def _otherIsZero(self, other):
-        if (type(other) is type(0) or type(other) is type(0.)) and other == 0:
-            return True
-        else:
-            return False
-            
     def __add__(self, other):
         r"""
         Add a `Term` to another `Term`, number or variable.
 
            >>> __Term(coeff=1.) + 10.
-           10.0 + __Term(coeff=1.0) == 0
+           (__Term(coeff=1.0) + 10.0)
            >>> __Term(coeff=1.) + __Term(coeff=2.)
-           __Term(coeff=3.0)
+           (__Term(coeff=1.0) + __Term(coeff=2.0))
 
         """
-        from fipy.terms.equation import _Equation
-
-##        print 'self',self
-##        print 'other',other
-##        print 'isinstance(other, _Equation)',isinstance(other, _Equation)
-        
-        if self._otherIsZero(other):
+        if isinstance(other, (int, float)) and other == 0:
             return self
-        elif isinstance(other, _Equation):
-            return other + self
-        elif self.__class__ == other.__class__:
-            return self.__class__(coeff=self.coeff + other.coeff)
         else:
-            return self._add(other)
-                
-    def _add(self, other):
-        from fipy.terms.equation import _Equation
-        eq = _Equation()
-        eq += self
-        eq += other
-        return eq
+            from fipy.terms.binaryTerm import _BinaryTerm
+            return _BinaryTerm(self, other)
             
     def __radd__(self, other):
         r"""
         Add a number or variable to a `Term`.
 
            >>> 10. + __Term(coeff=1.)
-           10.0 + __Term(coeff=1.0) == 0
+           (__Term(coeff=1.0) + 10.0)
+           
         """
         return self + other
     
@@ -307,12 +286,7 @@ class Term:
            __Term(coeff=-1.0)
 
         """
-        try:
-            coeff = -self.coeff
-        except:
-            coeff = -numerix.array(self.coeff)
-
-        return self.__class__(coeff=coeff)
+        return self.__class__(coeff=-self.coeff)
 
     def __pos__(self):
         r"""
@@ -329,25 +303,22 @@ class Term:
         Subtract a `Term` from a `Term`, number or variable.
 
            >>> __Term(coeff=1.) - 10.
-           -10.0 + __Term(coeff=1.0) == 0
+           (__Term(coeff=1.0) + -10.0)
            >>> __Term(coeff=1.) - __Term(coeff=2.)
-           __Term(coeff=-1.0)
+           (__Term(coeff=1.0) + __Term(coeff=-2.0))
            
         """        
-        if self._otherIsZero(other):
-            return self
-        else:
-            return self + (-other)
+        return self + (-other)
 
     def __rsub__(self, other):
         r"""
         Subtract a `Term`, number or variable from a `Term`.
 
            >>> 10. - __Term(coeff=1.)
-           10.0 + __Term(coeff=-1.0) == 0
+           (__Term(coeff=-1.0) + 10.0)
 
         """        
-        if self._otherIsZero(other):
+        if isinstance(other, (int, float)) and other == 0:
             return -self
         else:
             return other + (-self)
@@ -358,22 +329,22 @@ class Term:
         following does not return `False.`
 
            >>> __Term(coeff=1.) == __Term(coeff=2.)
-           __Term(coeff=-1.0)
+           (__Term(coeff=1.0) + __Term(coeff=-2.0))
 
         it is equivalent to,
 
            >>> __Term(coeff=1.) - __Term(coeff=2.)
-           __Term(coeff=-1.0)
+           (__Term(coeff=1.0) + __Term(coeff=-2.0))
 
         A `Term` can also equate with a number. 
 
            >>> __Term(coeff=1.) == 1.  
-           -1.0 + __Term(coeff=1.0) == 0
+           (__Term(coeff=1.0) + -1.0)
            
         Likewise for integers.
 
            >>> __Term(coeff=1.) == 1
-           -1 + __Term(coeff=1.0) == 0
+           (__Term(coeff=1.0) + -1)
            
         Equating to zero is allowed, of course
         
@@ -384,22 +355,22 @@ class Term:
            
         """
 
-        if self._otherIsZero(other):
-            return self
-        else:
-            return self - other
+        return self - other
 
     def __mul__(self, other):
         r"""
         Mutiply a term
 
             >>> 2. * __Term(coeff=0.5)
-            2.0 * __Term(coeff=0.5)
+            __Term(coeff=1.0)
             
-        """         
-        from fipy.terms.mulTerm import _MulTerm
-        return _MulTerm(term=self, coeff=other)
+        """
 
+        if isinstance(other, (int, float)):
+            return self.__class__(coeff=other * self.coeff)
+        else:
+            raise Exception, "Must multiply terms by int or float."
+            
     __rmul__ = __mul__
                
     def __div__(self, other):
@@ -407,7 +378,7 @@ class Term:
         Divide a term
 
             >>> __Term(2.) / 2.
-            0.5 * __Term(coeff=2.0)
+            __Term(coeff=1.0)
 
         """
         return (1 / other) * self
@@ -436,9 +407,43 @@ class Term:
     def _getWeight(self, mesh):
         raise NotImplementedError
 
-    def _isAdditive(self):
-        return True
-            
+    def _test(self):
+        """
+        Test stuff.
+    
+        >>> from fipy import *
+        >>> L = 1.
+        >>> nx = 100
+        >>> m = Grid1D(nx=nx, dx=L / nx)
+        >>> v = CellVariable(mesh=m, value=1.)
+        >>> eqn = DiffusionTerm() - v
+        
+        >>> v.constrain(0.,  m.getFacesLeft())
+        >>> v.constrain(1.,  m.getFacesRight())
+        
+        >>> res = 1.
+        >>> sweep = 0
+        >>> while res > 1e-8 and sweep < 100:
+        ...     res = eqn.sweep(v)
+        ...     sweep += 1
+        >>> x = m.getCellCenters()[0]
+        >>> answer = (numerix.exp(x) - numerix.exp(-x)) / (numerix.exp(L) - numerix.exp(-L))
+        >>> print numerix.allclose(v, answer, rtol=2e-5)
+        True
+        
+        >>> v.setValue(0.)
+        >>> eqn = DiffusionTerm(0.2) * 5. - 5. * ImplicitSourceTerm(0.2)
+        >>> eqn.solve(v)
+        >>> print numerix.allclose(v, answer, rtol=2e-5)
+        True
+        
+        >>> v.setValue(0.)
+        >>> eqn = 2. * (DiffusionTerm(1.) - ImplicitSourceTerm(.5)) - DiffusionTerm(1.)
+        >>> eqn.solve(v)
+        >>> print numerix.allclose(v, answer, rtol=2e-5)
+        True
+        """
+        
 class __Term(Term): 
     """
     Dummy subclass for tests

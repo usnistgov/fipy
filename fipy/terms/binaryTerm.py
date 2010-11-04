@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
  # 
- #  FILE: "equation.py"
+ #  FILE: "binaryTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -36,163 +36,55 @@
 import os
 
 from fipy.terms.term import Term
-from fipy.terms import TransientTerm, DiffusionTerm, \
-  ExplicitDiffusionTerm, ImplicitSourceTerm
-from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
-class _Equation(Term):
-    def __init__(self):
-        self.orderedKeys = ["TransientTerm", "ExplicitDiffusionTerm", 
-          "DiffusionTerm", "ConvectionTerm", "ImplicitSourceTerm", 
-          "_ExplicitSourceTerm"]
-
-        self.terms = {}
-        
-        for type in self.orderedKeys:
-            self.terms[type] = None
-
-        self.nonAdditiveTerms = []
-
+class _BinaryTerm(Term):
+    def __init__(self, term, other):
+        if not isinstance(other, Term):
+            other = _ExplicitSourceTerm(other)
+        self.terms = (term, other)
 	Term.__init__(self)
 	
-    def copy(self):
-        eq = _Equation()
-        for key, val in self.terms.iteritems():
-            if val is not None:
-                eq.terms[key] = val.copy()
-        return eq
-        
-    def orderedPlusOtherKeys(self):
-        return self.orderedKeys \
-          + [k for k in self.terms.keys() if k not in self.orderedKeys]
-
-    def _getTerms(self):
-        terms = []
-        for key in self.orderedPlusOtherKeys():
-            terms += [self.terms[key]]
-        terms += self.nonAdditiveTerms
-        return terms
-        
-    def _getDiffusiveGeomCoeff(self, mesh):
-        if self.terms["DiffusionTerm"] is None:
-            return None
-        else:
-            return self.terms["DiffusionTerm"]._getGeomCoeff(mesh)[0]
-        
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions, dt, equation=None):
+    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions, dt):
         from fipy.tools import numerix
 
-        N = len(var)
-        self.RHSvector = numerix.zeros((N,),'d')
-        self.matrix = SparseMatrix(mesh=var.getMesh())
+        matrix = 0
+        RHSvector = 0
 
-        for term in self._getTerms():
-            if term is not None:
-                termMatrix, termRHSvector = term._buildMatrix(var, SparseMatrix,
-                                                              boundaryConditions, 
-                                                              dt, self)
-                
-                if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
-                    and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
-                    self._viewer.title = "%s %s" % (var.name, term.__class__.__name__)
-                    self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector)
-                    raw_input()
-
-                self.matrix += termMatrix
-                self.RHSvector += termRHSvector
-	
-        matrix = self.matrix
-        RHSvector = self.RHSvector
-        if not self._cacheMatrix:
-            self.matrix = None
-        if not self._cacheRHSvector:
-            self.RHSvector = None
-            
+        for term in self.terms:
+            tmpMatrix, tmpRHSvector = term._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
+            from fipy.tools.debug import PRINT
+##            PRINT('term',term)
+##            PRINT('matrix',matrix)
+##            PRINT('tmpMatrix',tmpMatrix)
+            matrix += tmpMatrix
+            RHSvector += tmpRHSvector
+##            PRINT('matrix',matrix)
+##            raw_input('stopped')
 	return (matrix, RHSvector)
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
-        for term in self._getTerms():
-            if term is not None:
-                defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
-                if defaultsolver is not None:
-                    return defaultsolver
+         for term in self.terms:
+             defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
+             if defaultsolver is not None:
+                 return defaultsolver
                 
-        return solver
+         return solver
 
     def __repr__(self):
-        reprs = []
-        for term in self._getTerms():
-            if term is not None:
-                reprs.append(repr(term))
-                
-        return " + ".join(reprs) + " == 0"
 
-    def __add__(self, other):
-        r"""
-        Add a `Term` to another `Term`, number or variable.
+        return '(' + repr(self.terms[0]) + ' + ' + repr(self.terms[1]) + ')'
 
-           >>> __Term(coeff=1.) + 10. + __Term(2.)
-           10.0 + __Term(coeff=3.0) == 0
-           >>> __Term(coeff=1.) + __Term(coeff=2.) + __Term(coeff=3.)
-           __Term(coeff=6.0)
-
-        """
-        if self._otherIsZero(other):
-            return self
-        else:
-            dup = self.copy()
-            dup += other
-                
-            return dup
-        
-    def _appendTerm(self, other, key):
-        if self.terms[key] is None:
-            self.terms[key] = other
-        else:
-            self.terms[key] = self.terms[key] + other
-        
-    def __iadd__(self, other):
-        if other is not None:
-            if not isinstance(other, Term):
-                self._appendTerm(_ExplicitSourceTerm(coeff=other), "_ExplicitSourceTerm")
-            elif isinstance(other, _Equation):
-                for key in other.terms.keys():
-                    self += other.terms[key]
-            else:
-                appended = False
-
-                for key in self.terms.keys():
-
-                    if eval("isinstance(other, %s)" % key):
-                        self._appendTerm(other, key)
-                        appended = True
-                        break
-                        
-                if not appended:
-                    if other._isAdditive():
-                        self.terms[other.__class__.__name__] = other
-                    else:
-
-                        self.nonAdditiveTerms += [other]
-        
-        return self
-        
     def __neg__(self):
         r"""
-         Negate a `Term`.
+         Negate a `_BinaryTerm`.
 
            >>> -(__Term(coeff=1.) - __Term(coeff=2.))
-           __Term(coeff=1.0)
+           (__Term(coeff=-1.0) + __Term(coeff=2.0))
 
         """
-        dup = self.copy()
-        
-        for key, term in self.terms.iteritems():
-            if term is not None:
-                dup.terms[key] = -term
-                
-        return dup
+
+        return (-self.terms[0]) + (-self.terms[1])
 
 class __Term(Term):
     """

@@ -416,12 +416,12 @@ fipy/steppers/pidStepper.py
 fipy/steppers/pseudoRKQSStepper.py
 fipy/steppers/stepper.py
 fipy/terms/__init__.py
+fipy/terms/binaryTerm.py
 fipy/terms/cellTerm.py
 fipy/terms/centralDiffConvectionTerm.py
 fipy/terms/collectedDiffusionTerm.py
 fipy/terms/convectionTerm.py
 fipy/terms/diffusionTerm.py
-fipy/terms/equation.py
 fipy/terms/explicitDiffusionTerm.py
 fipy/terms/explicitSourceTerm.py
 fipy/terms/explicitUpwindConvectionTerm.py
@@ -430,7 +430,6 @@ fipy/terms/faceTerm.py
 fipy/terms/hybridConvectionTerm.py
 fipy/terms/implicitDiffusionTerm.py
 fipy/terms/implicitSourceTerm.py
-fipy/terms/mulTerm.py
 fipy/terms/nthOrderDiffusionTerm.py
 fipy/terms/powerLawConvectionTerm.py
 fipy/terms/sourceTerm.py
