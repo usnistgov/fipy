@@ -205,7 +205,9 @@ class _Equation(Term):
         
     def __iadd__(self, other):
         if not isinstance(other, Term):
-            self._appendTerm(_ExplicitSourceTerm(coeff=other), "_ExplicitSourceTerm")
+            # explict sources don't have (or need) a Variable, 
+            # so we group them with the Terms of the first variable
+            self._appendTerm(_ExplicitSourceTerm(coeff=other, var=self.vars[0]), "_ExplicitSourceTerm")
         elif isinstance(other, _Equation):
             for terms in other.terms:
                 for key in terms.keys():
@@ -287,6 +289,27 @@ class _Equation(Term):
             ---    -1.000000   1.000000  
         >>> print solver.RHSvector
         [ 0.  0.  0.]
+        
+        >>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10.
+        Traceback (most recent call last):
+            ...
+        Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+        
+        >>> eq = DiffusionTerm(coeff=1., var=B) + 10. == 0
+        >>> print eq
+        DiffusionTerm(coeff=(1.0,), var=B) + 10.0 == 0
+        >>> print eq.vars
+        [B]
+        >>> print eq.terms
+        [{'_ExplicitSourceTerm': 10.0, 'DiffusionTerm': DiffusionTerm(coeff=(1.0,), var=B)}]
+        >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
+        >>> print solver.matrix
+        -1.000000   1.000000      ---    
+         1.000000  -2.000000   1.000000  
+            ---     1.000000  -1.000000  
+        >>> print solver.RHSvector
+        [-10. -10. -10.]
+        >>> eq.solve(var=B)
         """
 
 class __Term(Term):
