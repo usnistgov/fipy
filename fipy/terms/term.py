@@ -293,10 +293,6 @@ class Term:
         """
         from fipy.terms.equation import _Equation
 
-##        print 'self',self
-##        print 'other',other
-##        print 'isinstance(other, _Equation)',isinstance(other, _Equation)
-        
         if self._otherIsZero(other):
             return self
         elif isinstance(other, _Equation):
@@ -321,6 +317,26 @@ class Term:
            10.0 + __Term(coeff=1.0) == 0
         """
         return self + other
+        
+    def __and__(self, other):
+        """Combine this equation with another
+        
+        >>> eq1 = 10. + __Term(coeff=1.)
+        >>> eq2 = 20. + __Term(coeff=2.)
+        >>> eq1 & eq2
+        (10.0 + __Term(coeff=1.0) == 0) & (20.0 + __Term(coeff=2.0) == 0)
+        """
+        from fipy.terms.coupledEquation import _CoupledEquation
+
+        if isinstance(other, _CoupledEquation):
+            return other & self
+        else:
+            eq = _CoupledEquation()
+            eq &= self
+            eq &= other
+            return eq
+        
+    __rand__ = __and__
     
     def __neg__(self):
         r"""

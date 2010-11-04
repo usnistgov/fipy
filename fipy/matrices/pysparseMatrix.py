@@ -356,7 +356,23 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
         """
         _PysparseIdentityMatrix.__init__(self, size=mesh.getNumberOfCells())
 
-
+class _CoupledPysparseMeshMatrix(_PysparseMeshMatrix):
+    def __init__(self, mesh, matrices, bandwidth=0, sizeHint=None, matrix=None):
+        self.matrices = matrices
+        self.mesh = mesh
+        
+        N = mesh.getNumberOfCells()
+        M = len(matrices)
+        _PysparseMatrix.__init__(self, 
+                                 size=N * M, 
+                                 bandwidth=bandwidth, 
+                                 sizeHint=sizeHint, 
+                                 matrix=matrix)
+                                 
+        for i, row in enumerate(matrices):
+            for j, matrix in enumerate(row):
+                self.matrix[i*N:(i+1)*N, j*N:(j+1)*N] = matrix
+                                 
 def _test(): 
     import doctest
     return doctest.testmod()
