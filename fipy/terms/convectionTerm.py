@@ -118,9 +118,6 @@ class ConvectionTerm(FaceTerm):
         FaceTerm.__init__(self, coeff=coeff, var=var)
         
     def _calcGeomCoeff(self, mesh):
-        if not isinstance(self.coeff, FaceVariable):
-            self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
-
         projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
         
         return projectedCoefficients.sum(0)
@@ -162,6 +159,9 @@ class ConvectionTerm(FaceTerm):
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a vector value."
+              
+        if not isinstance(self.coeff, FaceVariable):
+            self.coeff = FaceVariable(mesh=var.getMesh(), value=self.coeff, rank=1)
 
     def __add__(self, other):
         if isinstance(other, ConvectionTerm):
