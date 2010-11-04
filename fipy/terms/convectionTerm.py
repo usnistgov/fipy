@@ -156,8 +156,9 @@ class ConvectionTerm(FaceTerm):
         return solver or DefaultAsymmetricSolver(*args, **kwargs)
 
     def _verifyCoeffType(self, var):
-        if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
-        and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
+        if (not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1)
+            and numerix.getShape(self.coeff) != (var.getMesh().getDim(),) 
+            and numerix.getShape(self.coeff) != (var.getMesh().getDim(), 1)):
             raise TypeError, "The coefficient must be a vector value."
               
         if not isinstance(self.coeff, FaceVariable):
