@@ -116,7 +116,7 @@ class _AdvectionTerm(Term):
         Term.__init__(self)
         self.geomCoeff = coeff
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryCondtions=(), dt=None, equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryCondtions=(), dt=None):
 
         oldArray = var.getOld()
 

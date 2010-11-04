@@ -264,9 +264,9 @@ class DiffusionTerm(Term):
         else:
             return Term.__add__(self, other)
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1. , equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.):
 
-        L, b = self._buildRecursiveMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+        L, b = self._buildRecursiveMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt)
         
         if self.order == 2:
             if not hasattr(self, 'constraintB'):
@@ -292,7 +292,7 @@ class DiffusionTerm(Term):
 
         return (L, b)
 
-    def _buildRecursiveMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., equation=None):
+    def _buildRecursiveMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1.):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -304,8 +304,7 @@ class DiffusionTerm(Term):
             
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
                                                                                  boundaryConditions = lowerOrderBCs, 
-                                                                                 dt = dt,
-                                                                                 equation=equation)
+                                                                                 dt = dt)
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()

@@ -71,11 +71,11 @@ class Term:
     def copy(self):
         return self.__class__(coeff=self.coeff, var=self.var)
 
-    def _checkAndBuildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
+    def _checkAndBuildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
         var = self._checkVariable(var=var)
-        return (var,) + self._buildMatrix(var, SparseMatrix, boundaryConditions, dt, equation=equation)
+        return (var,) + self._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
         raise NotImplementedError
         
     def _checkVariable(self, var):

@@ -77,13 +77,12 @@ class _MulTerm(Term):
     def _setDiffusiveGeomCoeff(self, diffCoeff):
         self.term._setDiffusiveGeomCoeff(diffCoeff=diffCoeff)
 
-    def _checkAndBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+    def _checkAndBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.):
 
         var, L , b = self.term._checkAndBuildMatrix(var,
                                                     SparseMatrix,
                                                     boundaryConditions=boundaryConditions,
-                                                    dt=dt,
-                                                    equation=equation)
+                                                    dt=dt)
 
         if len(numerix.shape(self.coeff)) == 0:
             matcoeff = float(self.coeff)

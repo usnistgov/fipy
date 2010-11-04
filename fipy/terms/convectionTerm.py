@@ -106,6 +106,8 @@ class ConvectionTerm(FaceTerm):
         if diffusionTerm is not None:
             import warnings
             warnings.warn("The Peclet number is calculated automatically. diffusionTerm will be ignored.", DeprecationWarning, stacklevel=2)
+            
+        self._setDiffusiveGeomCoeff(None)
 
         self.stencil = None
         
@@ -125,20 +127,17 @@ class ConvectionTerm(FaceTerm):
     def _setDiffusiveGeomCoeff(self, diffCoeff):
         self._diffCoeff = diffCoeff
         
-    def _getWeight(self, mesh, equation=None):
+    def _getWeight(self, mesh):
 
         if self.stencil is None:
 
             small = -1e-20
             
-            if equation is None:
+            if self._diffCoeff is None:
                 self._diffCoeff = small
             else:
-                if self._diffCoeff is None:
-                    self._diffCoeff = small
-                else:
-                    self._diffCoeff = self._diffCoeff.getNumericValue()
-                    self._diffCoeff = (self._diffCoeff == 0) * small + self._diffCoeff
+                self._diffCoeff = self._diffCoeff.getNumericValue()
+                self._diffCoeff = (self._diffCoeff == 0) * small + self._diffCoeff
 
             alpha = self._Alpha(-self._getGeomCoeff(mesh) / self._diffCoeff)
             
@@ -172,9 +171,9 @@ class ConvectionTerm(FaceTerm):
         else:
             return FaceTerm.__add__(self, other)
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.):
 
-        L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+        L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt)
 
         if not hasattr(self,  'constraintB'):
 
@@ -192,7 +191,7 @@ class ConvectionTerm(FaceTerm):
 
             if constraintMask is not None:
                 mesh = var.getMesh()
-                weight = self._getWeight(mesh, equation)
+                weight = self._getWeight(mesh)
 
                 if weight.has_key('implicit'):
                     alpha = weight['implicit']['cell 1 diag']

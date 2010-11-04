@@ -63,7 +63,7 @@ class _CollectedDiffusionTerm(DiffusionTerm):
         
         return dup
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt, equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
         from fipy.tools import numerix
         from fipy.matrices.sparseMatrix import _SparseMatrix
         
@@ -73,9 +73,10 @@ class _CollectedDiffusionTerm(DiffusionTerm):
 
         for term in self.orders:
             if term is not None:
-                termMatrix, termRHSvector = term._buildMatrix(var, SparseMatrix,
-                                                              boundaryConditions, 
-                                                              dt=dt, equation=equation)
+                termMatrix, termRHSvector = term._buildMatrix(var=var, 
+                                                              SparseMatrix=SparseMatrix,
+                                                              boundaryConditions=boundaryConditions, 
+                                                              dt=dt)
 
                 matrix += termMatrix
                 RHSvector += termRHSvector

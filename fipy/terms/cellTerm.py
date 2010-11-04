@@ -119,7 +119,7 @@ class CellTerm(Term):
 
         L.addAtDiagonal(updatePyArray)
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.):
         N = len(var)
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=var.getMesh())

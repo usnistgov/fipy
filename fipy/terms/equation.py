@@ -91,7 +91,7 @@ class _Equation(Term):
         orderedPlusOtherKeys = self._getOrderdPlusOtherKeys(terms)
         return [terms[key] for key in orderedPlusOtherKeys if terms.has_key(key)] + nonAdditiveTerms
         
-    def _checkAndBuildMatrix(self, var, SparseMatrix,  boundaryConditions, dt, equation=None):
+    def _checkAndBuildMatrix(self, var, SparseMatrix,  boundaryConditions, dt):
         from fipy.tools import numerix
 
         self.RHSvector = 0
@@ -137,9 +137,9 @@ class _Equation(Term):
             else:
                 term._setDiffusiveGeomCoeff(diffCoeff=None)
 
-            var, termMatrix, termRHSvector = term._checkAndBuildMatrix(var, SparseMatrix,
-                                                                       boundaryConditions, 
-                                                                       dt, self)
+            var, termMatrix, termRHSvector = term._checkAndBuildMatrix(var=var, SparseMatrix=SparseMatrix,
+                                                                       boundaryConditions=boundaryConditions, 
+                                                                       dt=dt)
             
             if (os.environ.has_key('FIPY_DISPLAY_MATRIX') 
                 and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"):
