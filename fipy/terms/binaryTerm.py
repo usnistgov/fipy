@@ -46,26 +46,20 @@ class _BinaryTerm(Term):
 
 	Term.__init__(self)
 	
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientCoeff=None, diffusionCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientCoeff=0, diffusionCoeff=0):
 
-        if tansientCoeff is None:
-            transientCoeff = self._getTransientCoeff()
-
-        if diffusionCoeff is None:
-            diffusionCoeff = self._getDiffusionCoeff()
-            
         matrix = 0
         RHSvector = 0
 
         for term in self.terms:
+
             tmpMatrix, tmpRHSvector = term._buildMatrix(var,
                                                         SparseMatrix,
                                                         boundaryConditions=boundaryConditions,
                                                         dt=dt,
                                                         transientCoeff=transientCoeff,
                                                         diffusionCoeff=diffusionCoeff)
-##            from fipy.tools.debug import PRINT
-##            PRINT('term')
+
 ##            PRINT('matrix',matrix)
 ##            PRINT('tmpMatrix',tmpMatrix)
             matrix += tmpMatrix

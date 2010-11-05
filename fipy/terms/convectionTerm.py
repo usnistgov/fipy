@@ -160,7 +160,7 @@ class ConvectionTerm(FaceTerm):
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a vector value."
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.:
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., **args):
 
         L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt)
 

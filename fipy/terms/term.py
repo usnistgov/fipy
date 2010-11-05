@@ -64,12 +64,11 @@ class Term:
         self.matrix = None
         self._cacheRHSvector = False
         self.RHSvector = None
-        self._diagonalSign = Variable(value=1)
         
     def copy(self):
         return self.__class__(self.coeff)
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions, dt):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientCoeff=None, diffusionCoeff=None):
         raise NotImplementedError
 
     def __buildMatrix(self, var, solver, boundaryConditions, dt):
@@ -95,7 +94,9 @@ class Term:
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt)
+        matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
+                                              transientCoeff=self._getTransientCoeff(),
+                                              diffusionCoeff=self._getDiffusionCoeff())
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
@@ -400,7 +401,7 @@ class Term:
     def _getDiffusionCoeff(self):
         return 0
 
-    def _getTransientTerm(self):
+    def _getTransientCoeff(self):
         return 0
 
     def _test(self):

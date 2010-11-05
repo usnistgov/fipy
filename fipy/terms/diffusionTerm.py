@@ -254,9 +254,9 @@ class DiffusionTerm(Term):
             
         return coefficientMatrix, boundaryB
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., **args):
 
-        L, b = self.__buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt)
+        L, b = self._higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt)
         
         if self.order == 2:
             if not hasattr(self, 'constraintB'):
@@ -282,7 +282,7 @@ class DiffusionTerm(Term):
 
         return (L, b)
 
-    def __buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1.):
+    def _higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1.):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -380,7 +380,7 @@ class DiffusionTerm(Term):
         return (L, b)
 
     def _getDiffusionCoeff(self):
-        return self.coeff[..., -1]
+        return self.coeff[-1]
 
     def _test(self):
         r"""

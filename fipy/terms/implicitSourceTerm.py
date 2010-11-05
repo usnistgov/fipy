@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.sourceTerm import SourceTerm
 from fipy.tools import numerix
+from fipy.tools.numerix import sign
 
 class ImplicitSourceTerm(SourceTerm):
     r"""
@@ -68,7 +69,6 @@ class ImplicitSourceTerm(SourceTerm):
         """
 
         coeff = self._getGeomCoeff(var.getMesh())
-        from fipy.tools.numerix import sign
         combinedSign = self._diagonalSign * sign(coeff)
         self.coeffVectors = {
             'diagonal': coeff * (combinedSign >= 0),
@@ -77,6 +77,17 @@ class ImplicitSourceTerm(SourceTerm):
             'new value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd')
         }
 
+    def _buildMatrix(self, *args, **kwargs):
+        transientCoeff = kwargs['transientCoeff']
+        if transientCoeff != 0:
+            self._diagonalSign = sign(sign(add.reduce(transientCoeff)))
+        elif self.diffusionCoeff !=0 :
+            self._diagonalSign = sign(sign(add.reduce(diffusionCoeff)))
+        else:
+            self._diagonalSign = 0
+            
+        SourceTerm._buildMatrix(self, *args, **kwargs)
+        
 def _test(): 
     import doctest
     return doctest.testmod()

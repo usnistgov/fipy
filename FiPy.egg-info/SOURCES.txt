@@ -419,7 +419,6 @@ fipy/terms/__init__.py
 fipy/terms/binaryTerm.py
 fipy/terms/cellTerm.py
 fipy/terms/centralDiffConvectionTerm.py
-fipy/terms/collectedDiffusionTerm.py
 fipy/terms/convectionTerm.py
 fipy/terms/diffusionTerm.py
 fipy/terms/explicitDiffusionTerm.py

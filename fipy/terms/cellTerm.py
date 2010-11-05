@@ -119,20 +119,11 @@ class CellTerm(Term):
 
         L.addAtDiagonal(updatePyArray)
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., **args):
         N = len(var)
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=var.getMesh())
         
-        # The sign of the matrix diagonal doesn't seem likely to change
-        # after initialization, but who knows?
-        equation = None
-        if equation is not None:
-            from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
-        else:
-            self._diagonalSign.setValue(1)
-            
         coeffVectors = self._getCoeffVectors(var=var)
 
         inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)

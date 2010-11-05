@@ -48,7 +48,6 @@ def _suite():
             'exponentialConvectionTerm',
             'binaryTerm',
             'upwindConvectionTerm',
-            'collectedDiffusionTerm',
             'implicitSourceTerm',
         ), base = __name__)
 
