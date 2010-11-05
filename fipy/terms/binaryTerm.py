@@ -54,13 +54,13 @@ class _BinaryTerm(Term):
         for term in self.terms:
             tmpMatrix, tmpRHSvector = term._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
             from fipy.tools.debug import PRINT
-##            PRINT('term',term)
-##            PRINT('matrix',matrix)
-##            PRINT('tmpMatrix',tmpMatrix)
+            PRINT('term')
+            PRINT('matrix',matrix)
+            PRINT('tmpMatrix',tmpMatrix)
             matrix += tmpMatrix
             RHSvector += tmpRHSvector
-##            PRINT('matrix',matrix)
-##            raw_input('stopped')
+            PRINT('matrix',matrix)
+            raw_input('stopped')
 	return (matrix, RHSvector)
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
@@ -85,6 +85,11 @@ class _BinaryTerm(Term):
         """
 
         return (-self.terms[0]) + (-self.terms[1])
+
+    def __mul__(self, other):
+        return other * self.terms[0] + other * self.terms[1]
+
+    __rmul__ = __mul__
 
 class __Term(Term):
     """

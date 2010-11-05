@@ -138,7 +138,12 @@ def _TestClass(base):
                 
                 try:
                     mod = __import__(pkg)
-                    print pkg,'version',mod.__version__
+                    
+                    if hasattr(mod, '__version__'):
+                        print pkg,'version',mod.__version__
+                    else:
+                        print pkg,'version not available'
+                        
                 except ImportError, exc:
                     print pkg,'is not installed'
                 

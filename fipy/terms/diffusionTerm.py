@@ -106,7 +106,9 @@ class DiffusionTerm(Term):
             return self.__class__(coeff=self.coeff)
         else:
             raise Exception, "Must multiply terms by int or float."
-        
+
+    __rmul__ = __mul__
+    
     def __neg__(self):
         """
         Negate the term.
