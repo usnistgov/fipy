@@ -48,8 +48,3 @@ class SourceTerm(CellTerm):
     def _calcGeomCoeff(self, mesh):
 	return self.coeff * mesh.getCellVolumes()
 
-    def __add__(self, other):
-        if isinstance(other, SourceTerm):
-            return self.__class__(coeff=self.coeff + other.coeff)
-        else:
-            return CellTerm.__add__(self, other)

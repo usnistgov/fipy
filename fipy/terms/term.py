@@ -260,6 +260,8 @@ class Term:
            (__Term(coeff=1.0) + 10.0)
            >>> __Term(coeff=1.) + __Term(coeff=2.)
            (__Term(coeff=1.0) + __Term(coeff=2.0))
+           >>> 10. + __Term(coeff=1.)
+           (__Term(coeff=1.0) + 10.0)
 
         """
         if isinstance(other, (int, float)) and other == 0:
@@ -267,16 +269,8 @@ class Term:
         else:
             from fipy.terms.binaryTerm import _BinaryTerm
             return _BinaryTerm(self, other)
-            
-    def __radd__(self, other):
-        r"""
-        Add a number or variable to a `Term`.
 
-           >>> 10. + __Term(coeff=1.)
-           (__Term(coeff=1.0) + 10.0)
-           
-        """
-        return self + other
+    __radd__ = __add__
     
     def __neg__(self):
         r"""
@@ -307,7 +301,7 @@ class Term:
            >>> __Term(coeff=1.) - __Term(coeff=2.)
            (__Term(coeff=1.0) + __Term(coeff=-2.0))
            
-        """        
+        """
         return self + (-other)
 
     def __rsub__(self, other):
@@ -318,10 +312,7 @@ class Term:
            (__Term(coeff=-1.0) + 10.0)
 
         """        
-        if isinstance(other, (int, float)) and other == 0:
-            return -self
-        else:
-            return other + (-self)
+        return other + (-self)
         
     def __eq__(self, other):
         r"""
@@ -354,7 +345,6 @@ class Term:
             __Term(coeff=1.0)
            
         """
-
         return self - other
 
     def __mul__(self, other):

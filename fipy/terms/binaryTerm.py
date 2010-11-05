@@ -45,22 +45,24 @@ class _BinaryTerm(Term):
         self.terms = (term, other)
 	Term.__init__(self)
 	
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions, dt):
-        from fipy.tools import numerix
+    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0)
 
         matrix = 0
         RHSvector = 0
 
         for term in self.terms:
-            tmpMatrix, tmpRHSvector = term._buildMatrix(var, SparseMatrix, boundaryConditions, dt)
-            from fipy.tools.debug import PRINT
-            PRINT('term')
-            PRINT('matrix',matrix)
-            PRINT('tmpMatrix',tmpMatrix)
+            tmpMatrix, tmpRHSvector = term._buildMatrix(var,
+                                                        SparseMatrix,
+                                                        boundaryConditions=boundaryConditions,
+                                                        dt=dt)
+##            from fipy.tools.debug import PRINT
+##            PRINT('term')
+##            PRINT('matrix',matrix)
+##            PRINT('tmpMatrix',tmpMatrix)
             matrix += tmpMatrix
             RHSvector += tmpRHSvector
-            PRINT('matrix',matrix)
-            raw_input('stopped')
+##            PRINT('matrix',matrix)
+##            raw_input('stopped')
 	return (matrix, RHSvector)
         
     def _getDefaultSolver(self, solver, *args, **kwargs):

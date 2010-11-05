@@ -160,14 +160,6 @@ class ConvectionTerm(FaceTerm):
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a vector value."
 
-    def __add__(self, other):
-        if isinstance(other, ConvectionTerm):
-            if other.__class__ != self.__class__:
-                raise TypeError, "ConvectionTerms must use the same scheme: %s != %s" % (self.__class__.__name__, other.__class__.__name__)
-            return self.__class__(coeff=self.coeff + other.coeff)
-        else:
-            return FaceTerm.__add__(self, other)
-
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
 
         L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)

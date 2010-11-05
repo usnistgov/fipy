@@ -254,24 +254,6 @@ class DiffusionTerm(Term):
             
         return coefficientMatrix, boundaryB
 
-    def __add__(self, other):
-        if isinstance(other, DiffusionTerm):
-            from fipy.terms.collectedDiffusionTerm import _CollectedDiffusionTerm
-            if isinstance(other, _CollectedDiffusionTerm):
-                return other + self
-            elif other.order == self.order and self.order <= 2:
-                if self.order == 0:
-                    return self
-                elif self.order == 2:
-                    return self.__class__(coeff=self.coeff[0] + other.coeff[0])
-            else:
-                term = _CollectedDiffusionTerm()
-                term += self
-                term += other
-                return term
-        else:
-            return Term.__add__(self, other)
-
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1. , equation=None):
 
         L, b = self.__buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)

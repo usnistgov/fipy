@@ -109,12 +109,6 @@ class TransientTerm(CellTerm):
     def _calcGeomCoeff(self, mesh):
 	return self.coeff * mesh.getCellVolumes()
         
-    def __add__(self, other):
-        if isinstance(other, TransientTerm):
-            return self.__class__(coeff=self.coeff + other.coeff)
-        else:
-            return CellTerm.__add__(self, other)
-	
 def _test(): 
     import doctest
     return doctest.testmod()
