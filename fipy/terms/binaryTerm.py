@@ -43,10 +43,17 @@ class _BinaryTerm(Term):
         if not isinstance(other, Term):
             other = _ExplicitSourceTerm(other)
         self.terms = (term, other)
+
 	Term.__init__(self)
 	
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0)
+    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientCoeff=None, diffusionCoeff=None):
 
+        if tansientCoeff is None:
+            transientCoeff = self._getTransientCoeff()
+
+        if diffusionCoeff is None:
+            diffusionCoeff = self._getDiffusionCoeff()
+            
         matrix = 0
         RHSvector = 0
 
@@ -54,7 +61,9 @@ class _BinaryTerm(Term):
             tmpMatrix, tmpRHSvector = term._buildMatrix(var,
                                                         SparseMatrix,
                                                         boundaryConditions=boundaryConditions,
-                                                        dt=dt)
+                                                        dt=dt,
+                                                        transientCoeff=transientCoeff,
+                                                        diffusionCoeff=diffusionCoeff)
 ##            from fipy.tools.debug import PRINT
 ##            PRINT('term')
 ##            PRINT('matrix',matrix)
@@ -64,6 +73,12 @@ class _BinaryTerm(Term):
 ##            PRINT('matrix',matrix)
 ##            raw_input('stopped')
 	return (matrix, RHSvector)
+
+    def getTransientCoeff(self):
+        return self.term[0]._getTransientCoeff() + self.term[1]._getTransientCoeff()
+
+    def getDiffusionCoeff(self):
+        return self.term[0]._getDiffusionCoeff() + self.term[1]._getDiffusionCoeff()
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
          for term in self.terms:

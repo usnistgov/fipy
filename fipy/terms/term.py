@@ -397,6 +397,12 @@ class Term:
     def _getWeight(self, mesh):
         raise NotImplementedError
 
+    def _getDiffusionCoeff(self):
+        return 0
+
+    def _getTransientTerm(self):
+        return 0
+
     def _test(self):
         """
         Test stuff.

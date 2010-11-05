@@ -141,7 +141,7 @@ class FaceTerm(Term):
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.):
         """Implicit portion considers
         """
 
@@ -156,13 +156,14 @@ class FaceTerm(Term):
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=mesh)
 
+        equation = None
         if equation is not None:
             from fipy.tools.numerix import sign, add
             self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
         else:
             self._diagonalSign.setValue(1)
 
-        weight = self._getWeight(mesh, equation=equation)
+        weight = self._getWeight(mesh)
 
         if weight.has_key('implicit'):
             self._implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
