@@ -97,6 +97,16 @@ class Term:
         matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
                                               transientGeomCoeff=self._getTransientGeomCoeff(var.getMesh()),
                                               diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.getMesh()))
+
+        if self._cacheMatrix:
+            self.matrix = matrix
+        else:
+            self.matrix = None
+
+        if self._cacheRHSvector:
+            self.RHSvector = RHSvector
+        else:
+            self.RHSvector = None
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
@@ -281,7 +291,10 @@ class Term:
            __Term(coeff=-1.0)
 
         """
-        return self.__class__(coeff=-self.coeff)
+        if isinstance(self.coeff, (tuple, list)):
+            return self.__class__(coeff=-numerix.array(self.coeff))
+        else:
+            return self.__class__(coeff=-self.coeff)
 
     def __pos__(self):
         r"""
