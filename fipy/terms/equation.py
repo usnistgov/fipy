@@ -102,19 +102,16 @@ class _Equation(Term):
         except StopIteration:
             if len(self.vars) == 0:
                 # equation is not defined on any Variables
-                return (var, None, None)
-            elif len(self.vars) == 1:
-                if var is None:
+                return (var, None, 0.)
+            elif var is None:
+                if len(self.vars) == 1:
                     var_index = 0
                 else:
-                    var_index = None
-            else:
-                if var is None:
                     raise Exception("Can't build matrix without specifying a Variable")
-                else:
-                    # equation is not defined on this Variable
-                    return (var, None, None)
-
+            else:
+                # equation is not defined on this Variable
+                return (var, None, 0.)
+                    
         if var_index is None:
             var_index = 0
         else:
