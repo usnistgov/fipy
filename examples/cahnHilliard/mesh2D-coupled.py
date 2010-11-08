@@ -67,7 +67,7 @@ We can simulate this process in :term:`FiPy` with a simple script:
 much is augmented for :term:`FiPy`\'s needs.)
 
 >>> if __name__ == "__main__":
-...     nx = ny = 1000
+...     nx = ny = 20
 ... else:
 ...     nx = ny = 10
 >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
@@ -83,7 +83,7 @@ We start the problem with random fluctuations about :math:`\phi = 1/2`
 :term:`FiPy` doesn't plot or output anything unless you tell it to:
 
 >>> if __name__ == "__main__":
-...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
+...     viewer = Viewer(vars=(phi, psi)) # , datamin=0., datamax=1.)
 
 We factor :eq:`CH` into two 2nd-order PDEs and place them in canonical form for 
 :term:`FiPy` to solve them as a coupled set of equations. 
@@ -106,10 +106,14 @@ manually.
 
 >>> D = a = epsilon = 1.
 >>> dfdphi = a**2 * 2 * phi * (1 - phi) * (1 - 2 * phi)
+>>> dfdphi_ = a**2 * 2 * (1 - phi) * (1 - 2 * phi)
 >>> d2fdphi2 = a**2 * 2 * (1 - 6 * phi * (1 - phi))
 >>> eq1 = (TransientTerm(var=phi) == DiffusionTerm(coeff=D, var=psi))
->>> eq2 = (ImplicitSourceTerm(var=psi) 
-...        == ImplicitSourceTerm(coeff=d2fdphi2, var=phi) - d2fdphi2 * phi + dfdphi 
+>>> eq2 = (ImplicitSourceTerm(coeff=1., var=psi) 
+...        == ImplicitSourceTerm(coeff=-d2fdphi2, var=phi) - d2fdphi2 * phi + dfdphi 
+...        - DiffusionTerm(coeff=epsilon**2, var=phi))
+>>> eq3 = (ImplicitSourceTerm(coeff=1., var=psi) 
+...        == ImplicitSourceTerm(coeff=dfdphi_, var=phi)
 ...        - DiffusionTerm(coeff=epsilon**2, var=phi))
 
 >>> eq = eq1 & eq2
