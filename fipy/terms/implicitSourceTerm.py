@@ -37,7 +37,6 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.sourceTerm import SourceTerm
 from fipy.tools import numerix
 
-
 class ImplicitSourceTerm(SourceTerm):
     r"""
 
@@ -69,9 +68,19 @@ class ImplicitSourceTerm(SourceTerm):
         """
 
         if transientGeomCoeff is not None:
-            diagonalSign = 2 * numerix.all(transientGeomCoeff >= 0) - 1
+            if numerix.all(transientGeomCoeff >= 0):
+                diagonalSign = 1
+            elif numerix.all(transientGeomCoeff <= 0):
+                diagonalSign = -1
+            else:
+                raise Exception, "Transient coefficient has both positive and negative values"
         elif diffusionGeomCoeff is not None:
-            diagonalSign = 2 * numerix.all(diffusionGeomCoeff[0] <= 0) - 1            
+            if numerix.all(diffusionGeomCoeff[0] <= 0):
+                diagonalSign = 1
+            elif numerix.all(diffusionGeomCoeff >= 0):
+                diagonalSign = -1
+            else:
+                raise Exception, "Diffusion coefficient has both positive and negative values"
         else:
             diagonalSign = 1
             
