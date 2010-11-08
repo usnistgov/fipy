@@ -44,7 +44,7 @@ class _CoupledCellVariable:
         return "(" + ", ".join([repr(var) for var in self.vars]) + ")"
         
     def getMesh(self):
-        meshes = set([var.getMesh() for var in self.vars])
+        meshes = list(set([var.getMesh() for var in self.vars]))
         
         if len(meshes) == 0:
             raise Exception("There are no Meshes defined")
@@ -89,3 +89,12 @@ class _CoupledCellVariable:
         [2 3 4 5]
         """
         return numerix.array(self.getValue(), t)
+        
+    def __neg__(self):
+        return _CoupledCellVariable([-var for var in self.vars])
+        
+    def __abs__(self):
+        return _CoupledCellVariable([abs(var) for var in self.vars])
+        
+    def __iter__(self):
+        return iter(self.getValue())

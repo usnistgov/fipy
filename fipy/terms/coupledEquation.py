@@ -38,6 +38,7 @@ import os
 
 from fipy.terms.term import Term
 from fipy.matrices.pysparseMatrix import _CoupledPysparseMeshMatrix
+from fipy.variables.cellVariable import CellVariable
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 
 class _CoupledEquation(Term):
@@ -52,7 +53,9 @@ class _CoupledEquation(Term):
         if boundaryConditions is not ():
             raise Exception("_CoupledEquation knows more about boundary conditions than you do")
             
-        solver = self.getDefaultSolver(solver)
+        from fipy.solvers.pysparse import LinearLUSolver
+        solver = LinearLUSolver()
+#         solver = self.getDefaultSolver(solver)
         
         vars = set()
         for eq in self.eqs:
@@ -70,17 +73,20 @@ class _CoupledEquation(Term):
         bigRHSvector = []
         bigMatrix = []
         
-        for var in vars:
+        for eq in self.eqs:
             RHSvector = CellVariable(mesh=bigVar.getMesh())
             matrices = []
-            for eq in self.eqs:
+            for var in vars:
                 solver_ij = eq._prepareLinearSystem(var=var, solver=None, boundaryConditions=(), dt=dt)
+#                 print repr(var), eq
+#                 print solver_ij.matrix
+#                 print solver_ij.RHSvector
                 matrices.append(solver_ij.matrix)
                 RHSvector += solver_ij.RHSvector
             bigRHSvector.append(RHSvector)
             bigMatrix.append(matrices)
             
-        bigMatrix = _CoupledPysparseMeshMatrix(matrices=bigMatrix)
+        bigMatrix = _CoupledPysparseMeshMatrix(mesh=bigVar.getMesh(), matrices=bigMatrix)
         bigRHSvector = _CoupledCellVariable(vars=bigRHSvector)
                 
         solver._storeMatrix(var=bigVar, matrix=bigMatrix, RHSvector=bigRHSvector)
@@ -107,4 +113,6 @@ class _CoupledEquation(Term):
         
     def __iand__(self, other):
         self.eqs.append(other)
+        
+        return self
 

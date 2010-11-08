@@ -297,8 +297,8 @@ class Term:
             return self
         elif isinstance(other, _Equation):
             return other + self
-        elif self.__class__ == other.__class__:
-            return self.__class__(coeff=self.coeff + other.coeff)
+        elif (self.__class__ == other.__class__) and (other.var is self.var):
+            return self.__class__(coeff=self.coeff + other.coeff, var=self.var)
         else:
             return self._add(other)
                 
@@ -351,7 +351,7 @@ class Term:
         except:
             coeff = -numerix.array(self.coeff)
 
-        return self.__class__(coeff=coeff)
+        return self.__class__(coeff=coeff, var=self.var)
 
     def __pos__(self):
         r"""

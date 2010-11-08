@@ -371,7 +371,8 @@ class _CoupledPysparseMeshMatrix(_PysparseMeshMatrix):
                                  
         for i, row in enumerate(matrices):
             for j, matrix in enumerate(row):
-                self.matrix[i*N:(i+1)*N, j*N:(j+1)*N] = matrix
+                if matrix is not None:
+                    self.matrix[i*N:(i+1)*N, j*N:(j+1)*N] = matrix.matrix
                                  
 def _test(): 
     import doctest
