@@ -399,10 +399,10 @@ class Term:
         raise NotImplementedError
 
     def _getDiffusionCoeff(self):
-        return 0
+        return None
 
     def _getTransientCoeff(self):
-        return 0
+        return None
 
     def _test(self):
         """

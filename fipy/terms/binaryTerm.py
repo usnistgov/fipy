@@ -46,7 +46,7 @@ class _BinaryTerm(Term):
 
 	Term.__init__(self)
 	
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientCoeff=0, diffusionCoeff=0):
+    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientCoeff=None, diffusionCoeff=None):
 
         matrix = 0
         RHSvector = 0
@@ -68,11 +68,21 @@ class _BinaryTerm(Term):
 ##            raw_input('stopped')
 	return (matrix, RHSvector)
 
-    def getTransientCoeff(self):
-        return self.term[0]._getTransientCoeff() + self.term[1]._getTransientCoeff()
+    def _addNone(self, arg0, arg1):
+        if arg0 is None and arg1 is None:
+            return None
+        elif arg0 is None:
+            return arg1
+        elif arg1 is None:
+            return arg0
+        else:
+            return arg0 + arg1
 
-    def getDiffusionCoeff(self):
-        return self.term[0]._getDiffusionCoeff() + self.term[1]._getDiffusionCoeff()
+    def _getTransientCoeff(self):
+        return self._addNone(self.terms[0]._getTransientCoeff(), self.terms[1]._getTransientCoeff())
+
+    def _getDiffusionCoeff(self):
+        return self._addNone(self.terms[0]._getDiffusionCoeff(), self.terms[1]._getDiffusionCoeff())
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
          for term in self.terms:

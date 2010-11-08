@@ -156,13 +156,6 @@ class FaceTerm(Term):
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=mesh)
 
-        equation = None
-        if equation is not None:
-            from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
-        else:
-            self._diagonalSign.setValue(1)
-
         weight = self._getWeight(mesh)
 
         if weight.has_key('implicit'):

@@ -36,7 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.sourceTerm import SourceTerm
 from fipy.tools import numerix
-from fipy.tools.numerix import sign
+
 
 class ImplicitSourceTerm(SourceTerm):
     r"""
@@ -69,7 +69,7 @@ class ImplicitSourceTerm(SourceTerm):
         """
 
         coeff = self._getGeomCoeff(var.getMesh())
-        combinedSign = self._diagonalSign * sign(coeff)
+        combinedSign = self._diagonalSign * numerix.sign(coeff)
         self.coeffVectors = {
             'diagonal': coeff * (combinedSign >= 0),
             'old value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd'),
@@ -77,17 +77,33 @@ class ImplicitSourceTerm(SourceTerm):
             'new value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd')
         }
 
-    def _buildMatrix(self, *args, **kwargs):
-        transientCoeff = kwargs['transientCoeff']
-        if transientCoeff != 0:
-            self._diagonalSign = sign(sign(add.reduce(transientCoeff)))
-        elif self.diffusionCoeff !=0 :
-            self._diagonalSign = sign(sign(add.reduce(diffusionCoeff)))
+    def _buildMatrix(self,
+                     var,
+                     SparseMatrix,
+                     boundaryConditions=(),
+                     dt=1.,
+                     transientCoeff=None,
+                     diffusionCoeff=None):
+
+        if transientCoeff is not None:
+            self._diagonalSign = 2 * numerix.all(transientCoeff >= 0) - 1
+        elif diffusionCoeff is not None:
+            from fipy.tools.debug import PRINT
+            PRINT('diffusionCoeff',diffusionCoeff)
+            PRINT('diffusionCoeff <= 0',diffusionCoeff <= 0)
+            PRINT(' numerix.all(diffusionCoeff <= 0)', numerix.all(diffusionCoeff <= 0))
+            self._diagonalSign = 2 * numerix.all(diffusionCoeff <= 0) - 1
         else:
-            self._diagonalSign = 0
+            self._diagonalSign = 1
             
-        SourceTerm._buildMatrix(self, *args, **kwargs)
-        
+        return SourceTerm._buildMatrix(self,
+                                       var=var,
+                                       SparseMatrix=SparseMatrix,
+                                       boundaryConditions=boundaryConditions,
+                                       dt=dt,
+                                       transientCoeff=transientCoeff,
+                                       diffusionCoeff=diffusionCoeff)
+
 def _test(): 
     import doctest
     return doctest.testmod()
