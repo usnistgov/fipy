@@ -141,7 +141,7 @@ class FaceTerm(Term):
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Implicit portion considers
         """
 
@@ -156,7 +156,7 @@ class FaceTerm(Term):
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=mesh)
 
-        weight = self._getWeight(mesh)
+        weight = self._getWeight(mesh, diffusionGeomCoeff)
 
         if weight.has_key('implicit'):
             self._implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)

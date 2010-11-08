@@ -49,7 +49,7 @@ class ImplicitSourceTerm(SourceTerm):
        
     where :math:`S` is the `coeff` value.       
     """
-    def _calcCoeffVectors(self, var):
+    def _calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
         Test for a bug due to the sign operator not being updating
         correctly.
@@ -68,41 +68,21 @@ class ImplicitSourceTerm(SourceTerm):
             
         """
 
+        if transientGeomCoeff is not None:
+            diagonalSign = 2 * numerix.all(transientGeomCoeff >= 0) - 1
+        elif diffusionGeomCoeff is not None:
+            diagonalSign = 2 * numerix.all(diffusionGeomCoeff[0] <= 0) - 1            
+        else:
+            diagonalSign = 1
+            
         coeff = self._getGeomCoeff(var.getMesh())
-        combinedSign = self._diagonalSign * numerix.sign(coeff)
+        combinedSign = diagonalSign * numerix.sign(coeff)
         self.coeffVectors = {
             'diagonal': coeff * (combinedSign >= 0),
             'old value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd'),
             'b vector': -coeff * var * (combinedSign < 0),
             'new value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd')
         }
-
-    def _buildMatrix(self,
-                     var,
-                     SparseMatrix,
-                     boundaryConditions=(),
-                     dt=1.,
-                     transientCoeff=None,
-                     diffusionCoeff=None):
-
-        if transientCoeff is not None:
-            self._diagonalSign = 2 * numerix.all(transientCoeff >= 0) - 1
-        elif diffusionCoeff is not None:
-            from fipy.tools.debug import PRINT
-            PRINT('diffusionCoeff',diffusionCoeff)
-            PRINT('diffusionCoeff <= 0',diffusionCoeff <= 0)
-            PRINT(' numerix.all(diffusionCoeff <= 0)', numerix.all(diffusionCoeff <= 0))
-            self._diagonalSign = 2 * numerix.all(diffusionCoeff <= 0) - 1
-        else:
-            self._diagonalSign = 1
-            
-        return SourceTerm._buildMatrix(self,
-                                       var=var,
-                                       SparseMatrix=SparseMatrix,
-                                       boundaryConditions=boundaryConditions,
-                                       dt=dt,
-                                       transientCoeff=transientCoeff,
-                                       diffusionCoeff=diffusionCoeff)
 
 def _test(): 
     import doctest

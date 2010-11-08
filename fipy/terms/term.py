@@ -68,7 +68,7 @@ class Term:
     def copy(self):
         return self.__class__(self.coeff)
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientCoeff=None, diffusionCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
     def __buildMatrix(self, var, solver, boundaryConditions, dt):
@@ -95,8 +95,8 @@ class Term:
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
         matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
-                                              transientCoeff=self._getTransientCoeff(),
-                                              diffusionCoeff=self._getDiffusionCoeff())
+                                              transientGeomCoeff=self._getTransientGeomCoeff(var.getMesh()),
+                                              diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.getMesh()))
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
@@ -398,10 +398,10 @@ class Term:
     def _getWeight(self, mesh):
         raise NotImplementedError
 
-    def _getDiffusionCoeff(self):
+    def _getDiffusionGeomCoeff(self, mesh):
         return None
 
-    def _getTransientCoeff(self):
+    def _getTransientGeomCoeff(self, mesh):
         return None
 
     def _test(self):

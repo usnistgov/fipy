@@ -124,16 +124,16 @@ class ConvectionTerm(FaceTerm):
         
         return projectedCoefficients.sum(0)
         
-    def _getWeight(self, mesh):
-        equation = None
+    def _getWeight(self, mesh, diffusionGeomCoeff=None):
+
         if self.stencil is None:
 
             small = -1e-20
-            
-            if equation is None:
+
+            if diffusionGeomCoeff is None:
                 diffCoeff = small
             else:
-                diffCoeff = equation._getDiffusiveGeomCoeff(mesh)
+                diffCoeff = diffusionGeomCoeff[0]
                 if diffCoeff is None:
                     diffCoeff = small
                 else:
@@ -160,9 +160,9 @@ class ConvectionTerm(FaceTerm):
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a vector value."
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., **args):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt)
+        L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         if not hasattr(self,  'constraintB'):
 

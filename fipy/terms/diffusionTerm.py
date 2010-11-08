@@ -254,9 +254,9 @@ class DiffusionTerm(Term):
             
         return coefficientMatrix, boundaryB
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., **args):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        L, b = self._higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt)
+        L, b = self._higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
         
         if self.order == 2:
             if not hasattr(self, 'constraintB'):
@@ -282,7 +282,7 @@ class DiffusionTerm(Term):
 
         return (L, b)
 
-    def _higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1.):
+    def _higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -294,7 +294,8 @@ class DiffusionTerm(Term):
             
             lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
                                                                                  boundaryConditions = lowerOrderBCs, 
-                                                                                 dt = dt)
+                                                                                 dt = dt, transientGeomCoeff=transientGeomCoeff,
+                                                                                 diffusionGeomCoeff=diffusionGeomCoeff)
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()
@@ -379,8 +380,8 @@ class DiffusionTerm(Term):
             
         return (L, b)
 
-    def _getDiffusionCoeff(self):
-        return self.coeff[-1]
+    def _getDiffusionGeomCoeff(self, mesh):
+        return self._getGeomCoeff(mesh)
 
     def _test(self):
         r"""

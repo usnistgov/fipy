@@ -46,19 +46,18 @@ class _BinaryTerm(Term):
 
 	Term.__init__(self)
 	
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientCoeff=None, diffusionCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         matrix = 0
         RHSvector = 0
 
         for term in self.terms:
-
             tmpMatrix, tmpRHSvector = term._buildMatrix(var,
                                                         SparseMatrix,
                                                         boundaryConditions=boundaryConditions,
                                                         dt=dt,
-                                                        transientCoeff=transientCoeff,
-                                                        diffusionCoeff=diffusionCoeff)
+                                                        transientGeomCoeff=transientGeomCoeff,
+                                                        diffusionGeomCoeff=diffusionGeomCoeff)
 
 ##            PRINT('matrix',matrix)
 ##            PRINT('tmpMatrix',tmpMatrix)
@@ -78,11 +77,11 @@ class _BinaryTerm(Term):
         else:
             return arg0 + arg1
 
-    def _getTransientCoeff(self):
-        return self._addNone(self.terms[0]._getTransientCoeff(), self.terms[1]._getTransientCoeff())
+    def _getTransientGeomCoeff(self, mesh):
+        return self._addNone(self.terms[0]._getTransientGeomCoeff(mesh), self.terms[1]._getTransientGeomCoeff(mesh))
 
-    def _getDiffusionCoeff(self):
-        return self._addNone(self.terms[0]._getDiffusionCoeff(), self.terms[1]._getDiffusionCoeff())
+    def _getDiffusionGeomCoeff(self, mesh):
+        return self._addNone(self.terms[0]._getDiffusionGeomCoeff(mesh), self.terms[1]._getDiffusionGeomCoeff(mesh))
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
          for term in self.terms:

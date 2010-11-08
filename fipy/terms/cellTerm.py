@@ -62,7 +62,7 @@ class CellTerm(Term):
         self.coeffVectors = None
         self._var = None
 
-    def _calcCoeffVectors(self, var):
+    def _calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()
         coeff = self._getGeomCoeff(mesh)
         weight = self._getWeight(mesh)
@@ -78,11 +78,11 @@ class CellTerm(Term):
             'new value': coeff * weight['new value']
         }
 
-    def _getCoeffVectors(self, var):
+    def _getCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         if self.coeffVectors is None or var is not self._var:
 ##        if self.coeffVectors is None or var != self._var:
             self._var = var
-            self._calcCoeffVectors(var=var)
+            self._calcCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         return self.coeffVectors
         
@@ -119,12 +119,12 @@ class CellTerm(Term):
 
         L.addAtDiagonal(updatePyArray)
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., **args):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         N = len(var)
         b = numerix.zeros((N),'d')
         L = SparseMatrix(mesh=var.getMesh())
         
-        coeffVectors = self._getCoeffVectors(var=var)
+        coeffVectors = self._getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
         

@@ -51,6 +51,7 @@ class ExplicitDiffusionTerm(DiffusionTerm):
 
     """
     
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., **args):
-        L, b = DiffusionTerm._buildMatrix(self, var.getOld(), SparseMatrix, boundaryConditions = boundaryConditions, dt = dt)
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+        L, b = DiffusionTerm._buildMatrix(self, var.getOld(), SparseMatrix, boundaryConditions = boundaryConditions, dt = dt,
+                                          transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
         return (0, b - L * var.getValue())
