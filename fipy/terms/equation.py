@@ -100,23 +100,17 @@ class _Equation(Term):
         try:
             var_index = self._findVarIndex(var=var)
         except StopIteration:
-            if len(self.vars) == 0:
-                # equation is not defined on any Variables
-                return (var, None, 0.)
-            elif var is None:
-                if len(self.vars) == 1:
+            if len(self.vars) == 1:
+                if var is None:
                     var_index = 0
-                else:
-                    raise Exception("Can't build matrix without specifying a Variable")
+                    var = self.vars[var_index]
+                elif self.vars[0] is None:
+                    # solve all Terms for var
+                    var_index = 0
             else:
                 # equation is not defined on this Variable
                 return (var, None, 0.)
                     
-        if var_index is None:
-            var_index = 0
-        else:
-            var = self.vars[var_index]
-        
         if var is None:
             raise Exception("Can't build matrix without specifying a Variable")
 
