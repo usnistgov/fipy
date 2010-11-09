@@ -40,22 +40,22 @@ from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
 
 class NthOrderDiffusionTerm(ImplicitDiffusionTerm):
-    def __init__(self, coeff):
+    def __init__(self, coeff, var=None):
         """
         .. attention:: This class is deprecated. Use `ImplicitDiffusionTerm` instead.
         """
         import warnings
         warnings.warn("ImplicitDiffusionTerm should be used instead of NthOrderDiffusionTerm", DeprecationWarning, stacklevel=2)
-        ImplicitDiffusionTerm.__init__(self, coeff = coeff)
+        ImplicitDiffusionTerm.__init__(self, coeff=coeff, var=var)
         
 class ExplicitNthOrderDiffusionTerm(ExplicitDiffusionTerm):
-    def __init__(self, coeff):
+    def __init__(self, coeff, var=None):
         """
         .. attention:: This class is deprecated. Use `ExplicitDiffusionTerm` instead.
         """
         import warnings
         warnings.warn("ExplicitDiffusionTerm should be used instead of ExplicitNthOrderDiffusionTerm", DeprecationWarning, stacklevel=2)
-        ExplicitDiffusionTerm.__init__(self, coeff = coeff)
+        ExplicitDiffusionTerm.__init__(self, coeff=coeff, var=var)
     
 
 def _test(): 

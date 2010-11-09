@@ -46,7 +46,7 @@ class Term:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.):
+    def __init__(self, coeff=1., var=None):
         """
         Create a `Term`.
 
@@ -64,9 +64,12 @@ class Term:
         self.matrix = None
         self._cacheRHSvector = False
         self.RHSvector = None
-        
+        print 'self.__class__',self.__class__
+        print 'var',var
+        self.var = var
+                
     def copy(self):
-        return self.__class__(self.coeff)
+        return self.__class__(self.coeff, var=self.var)
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
@@ -292,9 +295,9 @@ class Term:
 
         """
         if isinstance(self.coeff, (tuple, list)):
-            return self.__class__(coeff=-numerix.array(self.coeff))
+            return self.__class__(coeff=-numerix.array(self.coeff), var=self.var)
         else:
-            return self.__class__(coeff=-self.coeff)
+            return self.__class__(coeff=-self.coeff, var=self.var)
 
     def __pos__(self):
         r"""
@@ -371,7 +374,7 @@ class Term:
         """
 
         if isinstance(other, (int, float)):
-            return self.__class__(coeff=other * self.coeff)
+            return self.__class__(coeff=other * self.coeff, var=self.var)
         else:
             raise Exception, "Must multiply terms by int or float."
             
@@ -386,6 +389,16 @@ class Term:
 
         """
         return (1 / other) * self
+
+    def __and__(self, other):
+        """Combine this equation with another 
+        
+        >>> eq1 = 10. + __Term(coeff=1.) 
+        >>> eq2 = 20. + __Term(coeff=2.) 
+        >>> eq1 & eq2 
+        (10.0 + __Term(coeff=1.0) == 0) & (20.0 + __Term(coeff=2.0) == 0) 
+        """ 
+        pass
     
     def __repr__(self):
         """
@@ -395,7 +408,12 @@ class Term:
            __Term(coeff=123.456)
 
         """
-        return "%s(coeff=%s)" % (self.__class__.__name__, repr(self.coeff))
+        if self.var is None:
+            varString = ''
+        else:
+            varString = ', var=%s' % repr(self.var)
+
+        return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
 
     def _calcGeomCoeff(self, mesh):
         return None
@@ -452,7 +470,58 @@ class Term:
         >>> eqn.solve(v)
         >>> print numerix.allclose(v, answer, rtol=2e-5)
         True
-        """
+
+ 	>>> from fipy import Grid1D, CellVariable, DiffusionTerm, TransientTerm 
+ 	>>> mesh = Grid1D(nx=3) 
+ 	>>> A = CellVariable(mesh=mesh, name="A") 
+ 	>>> B = CellVariable(mesh=mesh, name="B") 
+ 	>>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
+ 	>>> print eq 
+ 	TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B) == 0 
+ 	>>> print eq.vars 
+ 	[A, B] 
+ 	>>> print eq.terms 
+ 	[{'TransientTerm': TransientTerm(coeff=1.0, var=A)}, {'DiffusionTerm': DiffusionTerm(coeff=[-1.0], var=B)}] 
+ 	>>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.) 
+ 	Traceback (most recent call last): 
+ 	    ... 
+ 	Exception: Can't build matrix without specifying a Variable 
+ 	>>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.) 
+ 	>>> print solver.matrix 
+ 	 1.000000      ---        ---     
+ 	    ---     1.000000      ---     
+ 	    ---        ---     1.000000   
+ 	>>> print solver.RHSvector 
+ 	[ 0.  0.  0.] 
+ 	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.) 
+ 	>>> print solver.matrix 
+ 	 1.000000  -1.000000      ---     
+ 	-1.000000   2.000000  -1.000000   
+ 	    ---    -1.000000   1.000000   
+ 	>>> print solver.RHSvector 
+ 	[ 0.  0.  0.] 
+ 	 
+ 	>>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
+ 	Traceback (most recent call last): 
+ 	    ... 
+ 	Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables 
+ 	 
+ 	>>> eq = DiffusionTerm(coeff=1., var=B) + 10. == 0 
+ 	>>> print eq 
+ 	DiffusionTerm(coeff=(1.0,), var=B) + 10.0 == 0 
+ 	>>> print eq.vars 
+ 	[B] 
+ 	>>> print eq.terms 
+ 	[{'_ExplicitSourceTerm': 10.0, 'DiffusionTerm': DiffusionTerm(coeff=(1.0,), var=B)}] 
+ 	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.) 
+ 	>>> print solver.matrix 
+ 	-1.000000   1.000000      ---     
+ 	 1.000000  -2.000000   1.000000   
+ 	    ---     1.000000  -1.000000   
+ 	>>> print solver.RHSvector 
+ 	[-10. -10. -10.] 
+ 	>>> eq.solve(var=B) 
+ 	""" 
         
 class __Term(Term): 
     """

@@ -44,7 +44,7 @@ class CellTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.):
+    def __init__(self, coeff=1., var=None):
         if self.__class__ is CellTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
             
@@ -58,7 +58,7 @@ class CellTerm(Term):
             or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
                 raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
 
-        Term.__init__(self, coeff=coeff)
+        Term.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
         self._var = None
 
@@ -120,16 +120,21 @@ class CellTerm(Term):
         L.addAtDiagonal(updatePyArray)
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-        N = len(var)
-        b = numerix.zeros((N),'d')
-        L = SparseMatrix(mesh=var.getMesh())
-        
-        coeffVectors = self._getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-        inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
-        
-        return (L, b)
-        
+        if var is self.var or self.var is None:
+
+            N = len(var)
+            b = numerix.zeros((N),'d')
+            L = SparseMatrix(mesh=var.getMesh())
+
+            coeffVectors = self._getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+            inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
+
+            return (L, b)
+        else:
+            return (0,0)
+
     def _test(self):
         """
         The following tests demonstrate how the `CellVariable` objects
