@@ -52,6 +52,7 @@ def _suite():
                                        'electrostatics',
                                        'variable',
                                        'anisotropy',
+                                       'mesh20x20-coupled.py'
                                    ), 
                                    base = __name__)
     
