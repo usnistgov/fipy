@@ -46,6 +46,9 @@ class _CoupledEquation(Term):
         Term.__init__(self)
         self.eqs = []
         
+    def __repr__(self):
+        return "\n  &\n".join((repr(eq) for eq in self.eqs))
+        
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         if var is not None:
             raise Exception("_CoupledEquation knows more about variables than you do")
