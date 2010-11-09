@@ -126,7 +126,7 @@ class Term:
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
-        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX') and matrix is not None:
             self._viewer.title = "%s %s" % (var.name, self.__class__.__name__)
             self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
             from fipy import raw_input
