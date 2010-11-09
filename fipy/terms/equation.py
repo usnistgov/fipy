@@ -263,9 +263,8 @@ class _Equation(Term):
         >>> print eq.terms
         [{'TransientTerm': TransientTerm(coeff=1.0, var=A)}, {'DiffusionTerm': DiffusionTerm(coeff=[-1.0], var=B)}]
         >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
-        Traceback (most recent call last):
-            ...
-        Exception: Can't build matrix without specifying a Variable
+        >>> print solver.matrix is None
+        True
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> print solver.matrix
          1.000000      ---        ---    
