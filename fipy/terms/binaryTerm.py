@@ -37,34 +37,45 @@ import os
 
 from fipy.terms.term import Term
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
+import sets
 
 class _BinaryTerm(Term):
     def __init__(self, term, other):
         if not isinstance(other, Term):
-            other = _ExplicitSourceTerm(other)
+            other = _ExplicitSourceTerm(coeff=other, var=term.var)
         self.terms = (term, other)
 
-	Term.__init__(self)
-	
+        self.vars = [term.var, other.var]
+        if isinstance(term, _BinaryTerm):
+            self.vars += term.vars
+        if isinstance(other, _BinaryTerm):
+            self.vars += other.vars
+        
+        self.vars = list(sets.Set(self.vars))
+                
+	Term.__init__(self, var=self.vars[0])
+        
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         matrix = 0
         RHSvector = 0
-
         for term in self.terms:
-            tmpMatrix, tmpRHSvector = term._buildMatrix(var,
-                                                        SparseMatrix,
-                                                        boundaryConditions=boundaryConditions,
-                                                        dt=dt,
-                                                        transientGeomCoeff=transientGeomCoeff,
-                                                        diffusionGeomCoeff=diffusionGeomCoeff)
+            termMatrix, termRHSvector = term._buildMatrix(var,
+                                                          SparseMatrix,
+                                                          boundaryConditions=boundaryConditions,
+                                                          dt=dt,
+                                                          transientGeomCoeff=transientGeomCoeff,
+                                                          diffusionGeomCoeff=diffusionGeomCoeff)
 
-##            PRINT('matrix',matrix)
-##            PRINT('tmpMatrix',tmpMatrix)
-            matrix += tmpMatrix
-            RHSvector += tmpRHSvector
-##            PRINT('matrix',matrix)
-##            raw_input('stopped')
+            if (os.environ.has_key('FIPY_DISPLAY_MATRIX')  
+                and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
+                self._viewer.title = "%s %s" % (var.name, term.__class__.__name__) 
+                self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector) 
+                raw_input() 
+
+            matrix += termMatrix
+            RHSvector += termRHSvector
+
 	return (matrix, RHSvector)
 
     def _addNone(self, arg0, arg1):

@@ -67,7 +67,7 @@ class DiffusionTerm(Term):
 
     """
 
-    def __init__(self, coeff = (1.,)):
+    def __init__(self, coeff = (1.,), var=None):
         """
         Create a `DiffusionTerm`.
 
@@ -95,7 +95,7 @@ class DiffusionTerm(Term):
         else:
             self.nthCoeff = None
 
-        Term.__init__(self, coeff = coeff)
+        Term.__init__(self, coeff=coeff, var=var)
         
         if self.order > 0:
             self.lowerOrderDiffusionTerm = DiffusionTerm(coeff = coeff[1:])
@@ -103,7 +103,7 @@ class DiffusionTerm(Term):
     def __mul__(self, other):
         if isinstance(other, (int, float)):
             self.coeff[0] = other * self.coeff[0] 
-            return self.__class__(coeff=self.coeff)
+            return self.__class__(coeff=self.coeff, var=self.var)
         else:
             raise Exception, "Must multiply terms by int or float."
 
@@ -122,7 +122,7 @@ class DiffusionTerm(Term):
         """
         negatedCoeff = list(self.coeff)
         negatedCoeff[0] = -negatedCoeff[0]
-        return self.__class__(coeff = negatedCoeff)
+        return self.__class__(coeff=negatedCoeff, var=self.var)
             
     def _getBoundaryConditions(self, boundaryConditions):
         higherOrderBCs = []
@@ -256,32 +256,35 @@ class DiffusionTerm(Term):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        L, b = self._higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+        if var is self.var or self.var is None:
         
-        if self.order == 2:
-            if not hasattr(self, 'constraintB'):
-            
-                mesh = var.getMesh()
-                from fipy.variables.faceVariable import FaceVariable
-##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
-                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
+            L, b = self._higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-                self.constraintB = 0
-                self.constraintL = 0
+            if self.order == 2:
+                if not hasattr(self, 'constraintB'):
 
-                if var.getFaceGrad().getConstraintMask() is not None:
-                    self.constraintB -= (var.getFaceGrad().getConstraintMask() * self.nthCoeff * var.getFaceGrad()).getDivergence() * mesh.getCellVolumes()
+                    mesh = var.getMesh()
+                    from fipy.variables.faceVariable import FaceVariable
+    ##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
+                    normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
 
-                if var.getArithmeticFaceValue().getConstraintMask() is not None:
-                    constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / mesh._getCellDistances()
-                    self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence() * mesh.getCellVolumes()
-                    self.constraintL -= constrainedNormalsDotCoeffOverdAP.getDivergence() * mesh.getCellVolumes()
+                    self.constraintB = 0
+                    self.constraintL = 0
 
-            L.addAtDiagonal(self.constraintL)
-            b += self.constraintB
+                    if var.getFaceGrad().getConstraintMask() is not None:
+                        self.constraintB -= (var.getFaceGrad().getConstraintMask() * self.nthCoeff * var.getFaceGrad()).getDivergence() * mesh.getCellVolumes()
 
-        return (L, b)
+                    if var.getArithmeticFaceValue().getConstraintMask() is not None:
+                        constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / mesh._getCellDistances()
+                        self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence() * mesh.getCellVolumes()
+                        self.constraintL -= constrainedNormalsDotCoeffOverdAP.getDivergence() * mesh.getCellVolumes()
 
+                L.addAtDiagonal(self.constraintL)
+                b += self.constraintB
+
+            return (L, b)
+        else:
+            return (0,0)
     def _higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()
         
