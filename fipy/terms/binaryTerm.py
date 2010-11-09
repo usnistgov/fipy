@@ -41,19 +41,25 @@ import sets
 
 class _BinaryTerm(Term):
     def __init__(self, term, other):
+
         if not isinstance(other, Term):
-            other = _ExplicitSourceTerm(coeff=other, var=term.var)
+            other = _ExplicitSourceTerm(coeff=other, var=term.getVars()[0])
+
         self.terms = (term, other)
 
-        self.vars = [term.var, other.var]
-        if isinstance(term, _BinaryTerm):
-            self.vars += term.vars
-        if isinstance(other, _BinaryTerm):
-            self.vars += other.vars
-        
-        self.vars = list(sets.Set(self.vars))
-                
-	Term.__init__(self, var=self.vars[0])
+        if term.var is None:
+            if other.var is None:
+                pass
+            else:
+                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
+        else:
+            if other.var is None:
+                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
+
+	Term.__init__(self, var=self.getVars()[0])
+
+    def getVars(self):
+        return list(sets.Set(self.terms[0].getVars() + self.terms[1].getVars()))
         
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
 

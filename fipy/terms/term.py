@@ -64,9 +64,10 @@ class Term:
         self.matrix = None
         self._cacheRHSvector = False
         self.RHSvector = None
-        print 'self.__class__',self.__class__
-        print 'var',var
         self.var = var
+
+    def getVars(self):
+        return [self.var]
                 
     def copy(self):
         return self.__class__(self.coeff, var=self.var)
@@ -121,11 +122,13 @@ class Term:
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         solver = self.getDefaultSolver(solver)
+        if var is None:
+            var = self.var
 
         self.__buildMatrix(var, solver, boundaryConditions, dt)
         return solver
     
-    def solve(self, var, solver=None, boundaryConditions=(), dt=1.):
+    def solve(self, var=None, solver=None, boundaryConditions=(), dt=1.):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         does not return the residual. It should be used when the
@@ -144,7 +147,7 @@ class Term:
         
         solver._solve()
 
-    def sweep(self, var, solver = None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -168,7 +171,7 @@ class Term:
 
         return residual
 
-    def justResidualVector(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def justResidualVector(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -189,7 +192,7 @@ class Term:
 
         return solver._calcResidualVector(residualFn=residualFn)
 
-    def residualVectorAndNorm(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def residualVectorAndNorm(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -477,49 +480,48 @@ class Term:
  	>>> B = CellVariable(mesh=mesh, name="B") 
  	>>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
  	>>> print eq 
- 	TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B) == 0 
- 	>>> print eq.vars 
- 	[A, B] 
+ 	(TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B))
+ 	>>> print eq.getVars() 
+ 	[B, A]
  	>>> print eq.terms 
- 	[{'TransientTerm': TransientTerm(coeff=1.0, var=A)}, {'DiffusionTerm': DiffusionTerm(coeff=[-1.0], var=B)}] 
+ 	(TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
  	>>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.) 
  	Traceback (most recent call last): 
  	    ... 
- 	Exception: Can't build matrix without specifying a Variable 
+        AttributeError: 'NoneType' object has no attribute 'getsctype'
  	>>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.) 
- 	>>> print solver.matrix 
- 	 1.000000      ---        ---     
- 	    ---     1.000000      ---     
- 	    ---        ---     1.000000   
- 	>>> print solver.RHSvector 
- 	[ 0.  0.  0.] 
+ 	>>> print solver.matrix #doctest: +NORMALIZE_WHITESPACE
+         1.000000      ---        ---
+            ---     1.000000      ---
+            ---        ---     1.000000
+        >>> print solver.RHSvector 
+ 	[ 0.  0.  0.]
  	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.) 
- 	>>> print solver.matrix 
+ 	>>> print solver.matrix #doctest: +NORMALIZE_WHITESPACE 
  	 1.000000  -1.000000      ---     
  	-1.000000   2.000000  -1.000000   
  	    ---    -1.000000   1.000000   
  	>>> print solver.RHSvector 
- 	[ 0.  0.  0.] 
+ 	[ 0.  0.  0.]
  	 
  	>>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
  	Traceback (most recent call last): 
  	    ... 
- 	Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables 
- 	 
+ 	Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
  	>>> eq = DiffusionTerm(coeff=1., var=B) + 10. == 0 
  	>>> print eq 
- 	DiffusionTerm(coeff=(1.0,), var=B) + 10.0 == 0 
- 	>>> print eq.vars 
- 	[B] 
+ 	(DiffusionTerm(coeff=[1.0], var=B) + 10.0)
+ 	>>> print eq.getVars()
+ 	[B]
  	>>> print eq.terms 
- 	[{'_ExplicitSourceTerm': 10.0, 'DiffusionTerm': DiffusionTerm(coeff=(1.0,), var=B)}] 
+        (DiffusionTerm(coeff=[1.0], var=B), 10.0)
  	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.) 
- 	>>> print solver.matrix 
+ 	>>> print solver.matrix #doctest: +NORMALIZE_WHITESPACE 
  	-1.000000   1.000000      ---     
  	 1.000000  -2.000000   1.000000   
  	    ---     1.000000  -1.000000   
  	>>> print solver.RHSvector 
- 	[-10. -10. -10.] 
+ 	[-10. -10. -10.]
  	>>> eq.solve(var=B) 
  	""" 
         

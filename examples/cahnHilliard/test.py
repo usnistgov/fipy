@@ -41,7 +41,7 @@ def _suite():
             'mesh2D',
             'mesh3D',
             'sphere',
-            'mesh2D-coupled.py',            
+            'mesh2D-coupled',            
         ), base = __name__)
 
 if __name__ == '__main__':
