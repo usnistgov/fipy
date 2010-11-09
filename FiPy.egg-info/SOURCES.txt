@@ -124,6 +124,7 @@ examples/benchmarking/utils.py
 examples/benchmarking/versions.py
 examples/cahnHilliard/__init__.py
 examples/cahnHilliard/index.txt
+examples/cahnHilliard/mesh2D-coupled.py
 examples/cahnHilliard/mesh2D.py
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
@@ -173,6 +174,7 @@ examples/diffusion/circleQuad.py
 examples/diffusion/electrostatics.py
 examples/diffusion/index.txt
 examples/diffusion/mesh1D.py
+examples/diffusion/mesh20x20-coupled.py
 examples/diffusion/mesh20x20.py
 examples/diffusion/test.py
 examples/diffusion/variable.py
@@ -258,6 +260,7 @@ examples/phase/__init__.py
 examples/phase/anisotropy.py
 examples/phase/anisotropyOLD.gz
 examples/phase/anisotropyOLD.py
+examples/phase/binary-coupled.py
 examples/phase/binary.py
 examples/phase/index.txt
 examples/phase/quaternary.py

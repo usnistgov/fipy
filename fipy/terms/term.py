@@ -401,7 +401,10 @@ class Term:
         >>> eq1 & eq2 
         (10.0 + __Term(coeff=1.0) == 0) & (20.0 + __Term(coeff=2.0) == 0) 
         """ 
-        pass
+        if isinstance(other, _Term):
+            return _CoupledBinaryTerm(self, other)
+        else:
+            raise Exception
     
     def __repr__(self):
         """
