@@ -74,21 +74,21 @@ class _AdvectionTerm(Term):
     Trivial test:
 
     >>> var = CellVariable(value = numerix.zeros(3, 'd'), mesh = mesh)
-    >>> L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
+    >>> v, L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
     >>> print parallel.procID > 0 or numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
     True
    
     Less trivial test:
 
     >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
-    >>> L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
+    >>> v, L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
     >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
     True
 
     Even less trivial
 
     >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
-    >>> L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
+    >>> v, L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
     >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
     True
 
@@ -97,7 +97,7 @@ class _AdvectionTerm(Term):
 
     >>> vel = numerix.array((-1, 2, -3))
     >>> var = CellVariable(value = numerix.array((4,6,1)), mesh = mesh)
-    >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
+    >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
     >>> print parallel.procID > 0 or numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
     True
 
@@ -107,7 +107,7 @@ class _AdvectionTerm(Term):
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
     >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
-    >>> L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
+    >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
     >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
     >>> print parallel.procID > 0 or numerix.allclose(b, answer, atol = 1e-10)
     True
@@ -148,10 +148,10 @@ class _AdvectionTerm(Term):
             else:
                 coeffXdiffereneces = 0.
 
-            return (SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.getCellVolumes())
+            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.getCellVolumes())
 
         else:
-            return (0,0)
+            return (var, 0, 0)
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()

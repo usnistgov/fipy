@@ -165,8 +165,8 @@ class FaceTerm(Term):
             if weight.has_key('explicit'):
                 self._explicitBuildMatrix(SparseMatrix, var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
 
-            return (L, b)
+            return (var, L, b)
 
         else:
-            return (0,0)
+            return (var, 0, 0)
         

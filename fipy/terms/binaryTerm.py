@@ -43,9 +43,10 @@ class _BinaryTerm(Term):
     def __init__(self, term, other):
 
         if not isinstance(other, Term):
-            other = _ExplicitSourceTerm(coeff=other, var=term.getVars()[0])
+            other = _ExplicitSourceTerm(coeff=other, var=term.var)
 
-        self.terms = (term, other)
+        self.term = term
+        self.other = other
 
         if term.var is None:
             if other.var is None:
@@ -56,22 +57,30 @@ class _BinaryTerm(Term):
             if other.var is None:
                 raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
 
-	Term.__init__(self, var=self.getVars()[0])
+	Term.__init__(self, var=self._getVars()[0])
 
-    def getVars(self):
-        return list(sets.Set(self.terms[0].getVars() + self.terms[1].getVars()))
-        
+    def _getVars(self):
+        return list(sets.Set(self.term._getVars() + self.other._getVars()))
+
+    def _verifyVar(self, var):
+
+        if var is None and len(self._getVars()) > 1:
+            raise Exception, 'The solution variable needs to be specified'
+
+        return Term._verifyVar(self, var)
+    
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         matrix = 0
         RHSvector = 0
-        for term in self.terms:
-            termMatrix, termRHSvector = term._buildMatrix(var,
-                                                          SparseMatrix,
-                                                          boundaryConditions=boundaryConditions,
-                                                          dt=dt,
-                                                          transientGeomCoeff=transientGeomCoeff,
-                                                          diffusionGeomCoeff=diffusionGeomCoeff)
+
+        for term in (self.term, self.other):
+            termVar, termMatrix, termRHSvector = term._buildMatrix(var,
+                                                                   SparseMatrix,
+                                                                   boundaryConditions=boundaryConditions,
+                                                                   dt=dt,
+                                                                   transientGeomCoeff=transientGeomCoeff,
+                                                                   diffusionGeomCoeff=diffusionGeomCoeff)
 
             if (os.environ.has_key('FIPY_DISPLAY_MATRIX')  
                 and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
@@ -82,7 +91,7 @@ class _BinaryTerm(Term):
             matrix += termMatrix
             RHSvector += termRHSvector
 
-	return (matrix, RHSvector)
+	return (var, matrix, RHSvector)
 
     def _addNone(self, arg0, arg1):
         if arg0 is None and arg1 is None:
@@ -95,13 +104,13 @@ class _BinaryTerm(Term):
             return arg0 + arg1
 
     def _getTransientGeomCoeff(self, mesh):
-        return self._addNone(self.terms[0]._getTransientGeomCoeff(mesh), self.terms[1]._getTransientGeomCoeff(mesh))
+        return self._addNone(self.term._getTransientGeomCoeff(mesh), self.other._getTransientGeomCoeff(mesh))
 
     def _getDiffusionGeomCoeff(self, mesh):
-        return self._addNone(self.terms[0]._getDiffusionGeomCoeff(mesh), self.terms[1]._getDiffusionGeomCoeff(mesh))
+        return self._addNone(self.term._getDiffusionGeomCoeff(mesh), self.other._getDiffusionGeomCoeff(mesh))
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
-         for term in self.terms:
+         for term in (self.term, self.other):
              defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
              if defaultsolver is not None:
                  return defaultsolver
@@ -110,7 +119,7 @@ class _BinaryTerm(Term):
 
     def __repr__(self):
 
-        return '(' + repr(self.terms[0]) + ' + ' + repr(self.terms[1]) + ')'
+        return '(' + repr(self.term) + ' + ' + repr(self.other) + ')'
 
     def __neg__(self):
         r"""
@@ -121,10 +130,10 @@ class _BinaryTerm(Term):
 
         """
 
-        return (-self.terms[0]) + (-self.terms[1])
+        return (-self.term) + (-self.other)
 
     def __mul__(self, other):
-        return other * self.terms[0] + other * self.terms[1]
+        return other * self.term + other * self.other
 
     __rmul__ = __mul__
 

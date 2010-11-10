@@ -258,7 +258,7 @@ class DiffusionTerm(Term):
 
         if var is self.var or self.var is None:
         
-            L, b = self._higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+            var, L, b = self._higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
             if self.order == 2:
                 if not hasattr(self, 'constraintB'):
@@ -282,9 +282,10 @@ class DiffusionTerm(Term):
                 L.addAtDiagonal(self.constraintL)
                 b += self.constraintB
 
-            return (L, b)
+            return (var, L, b)
         else:
-            return (0,0)
+            return (var, 0, 0)
+        
     def _higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()
         
@@ -295,10 +296,10 @@ class DiffusionTerm(Term):
 
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
             
-            lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
-                                                                                 boundaryConditions = lowerOrderBCs, 
-                                                                                 dt = dt, transientGeomCoeff=transientGeomCoeff,
-                                                                                 diffusionGeomCoeff=diffusionGeomCoeff)
+            var, lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
+                                                                                      boundaryConditions = lowerOrderBCs, 
+                                                                                      dt = dt, transientGeomCoeff=transientGeomCoeff,
+                                                                                      diffusionGeomCoeff=diffusionGeomCoeff)
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()
@@ -381,7 +382,7 @@ class DiffusionTerm(Term):
             L.addAtDiagonal(mesh.getCellVolumes())
             b = numerix.zeros((N),'d')
             
-        return (L, b)
+        return (var, L, b)
 
     def _getDiffusionGeomCoeff(self, mesh):
         return self._getGeomCoeff(mesh)
@@ -403,7 +404,7 @@ class DiffusionTerm(Term):
         ...                         (-1.,  1.))) or procID != 0
         True
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -422,7 +423,7 @@ class DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -437,7 +438,7 @@ class DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -453,7 +454,7 @@ class DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -478,7 +479,7 @@ class DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=var, 
+        >>> v,L,b = term._buildMatrix(var=var, 
         ...                         SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
@@ -505,7 +506,7 @@ class DiffusionTerm(Term):
         ...                         (-1.,  1.))) or procID != 0
         True
 
-        >>> L,b = term._buildMatrix(var=var, SparseMatrix=SparseMatrix,
+        >>> v,L,b = term._buildMatrix(var=var, SparseMatrix=SparseMatrix,
         ...                         boundaryConditions=(bcLeft2, bcRight2))
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        (( 4., -6.), 
@@ -532,7 +533,7 @@ class DiffusionTerm(Term):
         ...                         ( 1., -1.))) or procID != 0
         True
 
-        >>> L,b = term._buildMatrix(var=var,
+        >>> v,L,b = term._buildMatrix(var=var,
         ...                         SparseMatrix=SparseMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
         
@@ -563,7 +564,7 @@ class DiffusionTerm(Term):
         ...                         (-2.,  2.))) or procID != 0
         True
 
-        >>> L,b = term._buildMatrix(var=var, 
+        >>> v,L,b = term._buildMatrix(var=var, 
         ...                         SparseMatrix=SparseMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
 

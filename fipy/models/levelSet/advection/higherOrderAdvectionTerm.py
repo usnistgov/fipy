@@ -97,21 +97,21 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> coeff = CellVariable(mesh = mesh, value = numerix.zeros(3, 'd'))
-    >>> L, b = _HigherOrderAdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _HigherOrderAdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix)
     >>> print parallel.procID > 0 or numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
     True
    
     Less trivial test:
 
     >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3))
-    >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
     True
 
     Even less trivial
 
     >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3)) 
-    >>> L, b = _HigherOrderAdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _HigherOrderAdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix)
     >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
     True
 
@@ -120,7 +120,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     >>> vel = numerix.array((-1, 2, -3))
     >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1))) 
-    >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> print parallel.procID > 0 or numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
     True
 
@@ -130,7 +130,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
     >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3 , 1, 6, 7)))
-    >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
     >>> print parallel.procID > 0 or numerix.allclose(b, answer, atol = 1e-10)
     True
@@ -154,7 +154,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> mesh = Grid1D(dx = 1., nx = 5)
     >>> vel = 1.
     >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[0]**2)
-    >>> L, b = _AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
         
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
@@ -164,7 +164,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     The higher order term is spot on.
 
-    >>> L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
     True
 
@@ -182,7 +182,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> x, y = mesh.getCellCenters()
     >>> r = numerix.sqrt(x**2 + y**2)
     >>> coeff = CellVariable(mesh = mesh, value = r)
-    >>> L, b = _AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> error = CellVariable(mesh=mesh, value=b + 1)
     >>> ans = CellVariable(mesh=mesh, value=b + 1)
     >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.123105625618
@@ -191,7 +191,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     The maximum error is large (about 12 %) for the first order advection.
 
-    >>> L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> error = CellVariable(mesh=mesh, value=b + 1)
     >>> ans = CellVariable(mesh=mesh, value=b + 1)
     >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.0201715476598

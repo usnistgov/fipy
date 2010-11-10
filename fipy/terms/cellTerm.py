@@ -131,9 +131,9 @@ class CellTerm(Term):
 
             inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
 
-            return (L, b)
+            return (var, L, b)
         else:
-            return (0,0)
+            return (var, 0,0)
 
     def _test(self):
         """

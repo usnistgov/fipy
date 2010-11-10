@@ -33,33 +33,59 @@
  # ###################################################################
  ##
 
-import os
-
-from fipy.terms.term import Term
-from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
+from fipy.terms.binaryTerm import _BinaryTerm
+from fipy.matrices.pysparseMatrix import _CoupledPysparseMeshMatrix
+from fipy.variables.coupledCellVariable import _CoupledCellVariable
 
 class _CoupledBinaryTerm(_BinaryTerm):
-	
+    def __init__(self, term, other):
+        _BinaryTerm.__init__(self, term, other)
+        if len(self._getVars()) < len(self._getCoupledTerms()):
+            raise Exception, 'Different number of solution variables and equations.'
+    
+    def _getCoupledTerms(self):
+        return self.term._getCoupledTerms() + self.other._getCoupledTerms()
+
+    def _verifyVar(self, var):
+        if var is not None:
+            raise Exception, 'The solution variable should not be specified.'
+
+        if len(self._getVars()) != len(self._getCoupledTerms()):
+            raise Exception, 'Different number of solution variables and equations.'
+
+        return _CoupledCellVariable(self._getVars())
+    
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        bigMatrix =
-        bigRHSvector = 
-        for var in self.getVars():
-            
-            for term in self.terms:
-                termMatrix, termRHSvector = term._buildMatrix(var,
-                                                              SparseMatrix,
-                                                              boundaryConditions=boundaryConditions,
-                                                              dt=dt,
-                                                              transientGeomCoeff=transientGeomCoeff,
-                                                              diffusionGeomCoeff=diffusionGeomCoeff)
 
+        matricesIJ = []
+        RHSvectorsJ = []
+
+        for term in self.getCoupledTerms():
+            matricesI = []
+            RHSvector = 0
+            for tmpVar in self.getVars():            
+                tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix(self,
+                                                                 tmpVar,
+                                                                 SparseMatrix,
+                                                                 boundaryConditions=(),
+                                                                 dt=dt,
+                                                                 transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.getMesh()),
+                                                                 diffusionGeomCoeff=term._getDiffusionGeomCoeff(tmpVar.getMesh()))
+
+                RHSvector += tmpRHSvector
+                matricesI += tmpMatrix
+
+            RHSvectorJ += RHSvector
+            matricesIJ += matricesI
+
+        matrix = _CoupledSparseMatrix(matricesIJ)
+        RHSvector = _CoupledCellVariable(RHSvectorJ)
                 
-
-	return (matrix, RHSvector)
+	return (var, bigMatrix, bigRHSvector)
 
     def __repr__(self):
 
-        return '(' + repr(self.terms[0]) + ' + ' + repr(self.terms[1]) + ')'
+        return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
 
 def _test(): 
     import doctest

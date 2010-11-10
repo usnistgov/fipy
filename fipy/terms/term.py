@@ -42,6 +42,7 @@ from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.solvers import DefaultSolver
 
+
 class Term:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -66,7 +67,7 @@ class Term:
         self.RHSvector = None
         self.var = var
 
-    def getVars(self):
+    def _getVars(self):
         return [self.var]
                 
     def copy(self):
@@ -75,14 +76,28 @@ class Term:
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
-    def __buildMatrix(self, var, solver, boundaryConditions, dt):
+    def _verifyVar(self, var):
+        if var is None:
+            if self.var is None:
+                raise Exception, 'The solution variable needs to be specified'
+            else:
+                return self.var
+        else:
+            return var
+
+    def _checkVar(self, var):
         if numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float']:
             import warnings
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
                           UserWarning, stacklevel=4)
         
         self._verifyCoeffType(var)
-        
+
+    def __buildMatrix(self, var, solver, boundaryConditions, dt):
+
+        var = self._verifyVar(var)
+        self._checkVar(var)
+
         if numerix.getShape(dt) != ():
             raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
         dt = float(dt)
@@ -98,10 +113,10 @@ class Term:
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
-                                              transientGeomCoeff=self._getTransientGeomCoeff(var.getMesh()),
-                                              diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.getMesh()))
-
+        var, matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
+                                                   transientGeomCoeff=self._getTransientGeomCoeff(var.getMesh()),
+                                                   diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.getMesh()))
+        
         if self._cacheMatrix:
             self.matrix = matrix
         else:
@@ -122,9 +137,7 @@ class Term:
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         solver = self.getDefaultSolver(solver)
-        if var is None:
-            var = self.var
-
+            
         self.__buildMatrix(var, solver, boundaryConditions, dt)
         return solver
     
@@ -395,16 +408,20 @@ class Term:
 
     def __and__(self, other):
         """Combine this equation with another 
-        
-        >>> eq1 = 10. + __Term(coeff=1.) 
-        >>> eq2 = 20. + __Term(coeff=2.) 
-        >>> eq1 & eq2 
-        (10.0 + __Term(coeff=1.0) == 0) & (20.0 + __Term(coeff=2.0) == 0) 
+
+        >>> eq1 = 10. + __Term(coeff=1., var=Variable(name='A'))
+        >>> eq2 = 20. + __Term(coeff=2., var=Variable(name='B'))
+        >>> eq1 & eq2
+        ((__Term(coeff=1.0, var=A) + 10.0) & (__Term(coeff=2.0, var=B) + 20.0))
         """ 
-        if isinstance(other, _Term):
+        if isinstance(other, Term):
+            from fipy.terms.coupledBinaryTerm import _CoupledBinaryTerm
             return _CoupledBinaryTerm(self, other)
         else:
             raise Exception
+
+    def _getCoupledTerms(self):
+        return [self]
     
     def __repr__(self):
         """
@@ -484,14 +501,14 @@ class Term:
  	>>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
  	>>> print eq 
  	(TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B))
- 	>>> print eq.getVars() 
+ 	>>> print eq._getVars() 
  	[B, A]
- 	>>> print eq.terms 
+ 	>>> print (eq.term, eq.other) 
  	(TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
- 	>>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.) 
+ 	>>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
  	Traceback (most recent call last): 
  	    ... 
-        AttributeError: 'NoneType' object has no attribute 'getsctype'
+        Exception: The solution variable needs to be specified
  	>>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.) 
  	>>> print solver.matrix #doctest: +NORMALIZE_WHITESPACE
          1.000000      ---        ---
@@ -514,9 +531,9 @@ class Term:
  	>>> eq = DiffusionTerm(coeff=1., var=B) + 10. == 0 
  	>>> print eq 
  	(DiffusionTerm(coeff=[1.0], var=B) + 10.0)
- 	>>> print eq.getVars()
+ 	>>> print eq._getVars()
  	[B]
- 	>>> print eq.terms 
+ 	>>> print (eq.term, eq.other) 
         (DiffusionTerm(coeff=[1.0], var=B), 10.0)
  	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.) 
  	>>> print solver.matrix #doctest: +NORMALIZE_WHITESPACE 
@@ -525,7 +542,72 @@ class Term:
  	    ---     1.000000  -1.000000   
  	>>> print solver.RHSvector 
  	[-10. -10. -10.]
- 	>>> eq.solve(var=B) 
+ 	>>> eq.solve(var=B)
+
+        >>> m = Grid1D(nx=1)
+        >>> A = CellVariable(mesh=m)
+        >>> B = CellVariable(mesh=m)
+        >>> C = CellVariable(mesh=m)        
+        >>> DiffusionTerm().solve()
+        Traceback (most recent call last):
+            ...
+        Exception: The solution variable needs to be specified
+        >>> DiffusionTerm().solve(A)
+        >>> DiffusionTerm(var=A).solve(A)
+        >>> (DiffusionTerm(var=A) + DiffusionTerm())
+        Traceback (most recent call last):
+            ...
+        Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+        >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve()
+        Traceback (most recent call last):
+            ...
+        Exception: The solution variable needs to be specified
+        >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A)
+        >>> DiffusionTerm() & DiffusionTerm()
+        Traceback (most recent call last):
+            ...
+        Exception: Different number of solution variables and equations.
+        >>> DiffusionTerm(var=A) & DiffusionTerm()
+        Traceback (most recent call last):
+            ...
+        Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B)).solve()
+        Traceback (most recent call last):
+            ...
+        Exception: The solution variable needs to be specified
+        >>> DiffusionTerm(var=A) & DiffusionTerm(var=A)
+        Traceback (most recent call last):
+            ...
+        Exception: Different number of solution variables and equations.
+        >>> DiffusionTerm() & DiffusionTerm()
+        Traceback (most recent call last):
+            ...
+        Exception: Different number of solution variables and equations.
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B)).solve(A)
+        Traceback (most recent call last):
+            ...
+        Exception: The solution variable should not be specified.
+        >>> DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=B)
+        Traceback (most recent call last):
+            ...
+        Exception: Different number of solution variables and equations.
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve()
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(A)
+        Traceback (most recent call last):
+            ...
+        Exception: The solution variable should not be specified.
+        >>> (DiffusionTerm(var=A) & (DiffusionTerm(var=B) + DiffusionTerm(var=C))).solve(A)
+        Traceback (most recent call last):
+            ...
+        Exception: The solution variable should not be specified.
+        >>> (DiffusionTerm(var=A) & (DiffusionTerm(var=B) + DiffusionTerm(var=C))).solve()
+        Traceback (most recent call last):
+            ...
+        Exception: Different number of solution variables and equations.
+        >>> ((DiffusionTerm(var=A) + DiffusionTerm(var=B)) & \
+        ...     (DiffusionTerm(var=B) + DiffusionTerm(var=C)) & \
+        ...     (DiffusionTerm(var=C) + DiffusionTerm(var=A)).solve()
+    
  	""" 
         
 class __Term(Term): 
