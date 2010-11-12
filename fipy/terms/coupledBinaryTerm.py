@@ -36,6 +36,7 @@
 from fipy.terms.binaryTerm import _BinaryTerm
 from fipy.matrices.pysparseMatrix import _CoupledPysparseMeshMatrix
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
+from fipy.variables.cellVariable import CellVariable
 
 class _CoupledBinaryTerm(_BinaryTerm):
     def __init__(self, term, other):
@@ -60,28 +61,29 @@ class _CoupledBinaryTerm(_BinaryTerm):
         matricesIJ = []
         RHSvectorsJ = []
 
-        for term in self.getCoupledTerms():
+        for term in self._getCoupledTerms():
+
             matricesI = []
             RHSvector = 0
-            for tmpVar in self.getVars():            
-                tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix(self,
-                                                                 tmpVar,
-                                                                 SparseMatrix,
-                                                                 boundaryConditions=(),
-                                                                 dt=dt,
-                                                                 transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.getMesh()),
-                                                                 diffusionGeomCoeff=term._getDiffusionGeomCoeff(tmpVar.getMesh()))
+            for tmpVar in self._getVars():
+
+                tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix(tmpVar,
+                                                                    SparseMatrix,
+                                                                    boundaryConditions=(),
+                                                                    dt=dt,
+                                                                    transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.getMesh()),
+                                                                    diffusionGeomCoeff=term._getDiffusionGeomCoeff(tmpVar.getMesh()))
 
                 RHSvector += tmpRHSvector
-                matricesI += tmpMatrix
+                matricesI += [tmpMatrix]
 
-            RHSvectorJ += RHSvector
-            matricesIJ += matricesI
+            RHSvectorsJ += [CellVariable(value=RHSvector, mesh=var.getMesh())]
+            matricesIJ += [matricesI]
 
-        matrix = _CoupledSparseMatrix(matricesIJ)
-        RHSvector = _CoupledCellVariable(RHSvectorJ)
-                
-	return (var, bigMatrix, bigRHSvector)
+        matrix = _CoupledPysparseMeshMatrix(mesh=var.getMesh(), matrices=matricesIJ)
+        RHSvector = _CoupledCellVariable(RHSvectorsJ)
+
+	return (var, matrix, RHSvector)
 
     def __repr__(self):
 

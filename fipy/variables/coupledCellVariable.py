@@ -36,7 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-class _CoupledCellVariable:
+class _CoupledCellVariable():
     def __init__(self, vars):
         self.vars = vars
         
@@ -80,13 +80,22 @@ class _CoupledCellVariable:
     def __array__(self, t=None):
         """
         Attempt to convert the `_CoupledCellVariable` to a numerix `array` object
-    
+
+        >>> from fipy import *
         >>> mesh = Grid1D(nx=2)
         >>> v1 = CellVariable(mesh=mesh, value=[2, 3])
         >>> v2 = CellVariable(mesh=mesh, value=[4, 5])
         >>> v = _CoupledCellVariable(vars=(v1, v2))
         >>> print numerix.array(v)
         [2 3 4 5]
+        >>> v[:] = (6,7,8,9)
+        >>> print v1
+        [6 7]
+        >>> print v2
+        [8 9]
+        >>> v.getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+        True
+        
         """
         return numerix.array(self.getValue(), t)
         
@@ -98,3 +107,15 @@ class _CoupledCellVariable:
         
     def __iter__(self):
         return iter(self.getValue())
+
+    def getsctype(self, default=None):
+        if not hasattr(self, 'typecode'):
+            self.typecode = numerix.obj2sctype(rep=self.getNumericValue(), default=default)        
+        return self.typecode
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

@@ -502,7 +502,7 @@ class Term:
  	>>> print eq 
  	(TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B))
  	>>> print eq._getVars() 
- 	[B, A]
+ 	[A, B]
  	>>> print (eq.term, eq.other) 
  	(TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
  	>>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
@@ -544,10 +544,10 @@ class Term:
  	[-10. -10. -10.]
  	>>> eq.solve(var=B)
 
-        >>> m = Grid1D(nx=1)
-        >>> A = CellVariable(mesh=m)
-        >>> B = CellVariable(mesh=m)
-        >>> C = CellVariable(mesh=m)        
+        >>> m = Grid1D(nx=2)
+        >>> A = CellVariable(mesh=m, name='A')
+        >>> B = CellVariable(mesh=m, name='B')
+        >>> C = CellVariable(mesh=m, name='C')        
         >>> DiffusionTerm().solve()
         Traceback (most recent call last):
             ...
@@ -571,10 +571,22 @@ class Term:
         Traceback (most recent call last):
             ...
         Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
-        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B)).solve()
-        Traceback (most recent call last):
-            ...
-        Exception: The solution variable needs to be specified
+        >>> A = CellVariable(mesh=m, name='A', value=1)
+        >>> B = CellVariable(mesh=m, name='B')
+        >>> C = CellVariable(mesh=m, name='C')        
+        >>> eq = (DiffusionTerm(coeff=1., var=A)) & (DiffusionTerm(coeff=2., var=B))
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve()
+        >>> print eq.getMatrix() #doctest: +NORMALIZE_WHITESPACE
+        -1.000000   1.000000      ---        ---
+         1.000000  -1.000000      ---        ---
+            ---        ---    -2.000000   2.000000
+            ---        ---     2.000000  -2.000000
+        >>> print eq.getRHSvector().getValue()
+        [ 0.  0.  0.  0.]
+        >>> print eq._getVars()
+        [A, B]
         >>> DiffusionTerm(var=A) & DiffusionTerm(var=A)
         Traceback (most recent call last):
             ...
@@ -604,10 +616,22 @@ class Term:
         Traceback (most recent call last):
             ...
         Exception: Different number of solution variables and equations.
-        >>> ((DiffusionTerm(var=A) + DiffusionTerm(var=B)) & \
-        ...     (DiffusionTerm(var=B) + DiffusionTerm(var=C)) & \
-        ...     (DiffusionTerm(var=C) + DiffusionTerm(var=A)).solve()
-    
+        >>> eq = (DiffusionTerm(coeff=1., var=A) + DiffusionTerm(coeff=2., var=B)) & (DiffusionTerm(coeff=2., var=B) + DiffusionTerm(coeff=3., var=C)) & (DiffusionTerm(coeff=3., var=C) + DiffusionTerm(coeff=1., var=A))
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve()
+        >>> print eq.getMatrix() #doctest: +NORMALIZE_WHITESPACE
+        -1.000000   1.000000  -2.000000   2.000000      ---        ---
+         1.000000  -1.000000   2.000000  -2.000000      ---        ---
+            ---        ---    -2.000000   2.000000  -3.000000   3.000000
+            ---        ---     2.000000  -2.000000   3.000000  -3.000000
+        -1.000000   1.000000      ---        ---    -3.000000   3.000000
+         1.000000  -1.000000      ---        ---     3.000000  -3.000000
+        >>> print eq.getRHSvector().getValue()
+        [ 0.  0.  0.  0.  0.  0.]
+        >>> print eq._getVars()
+        [A, B, C]
+            
  	""" 
         
 class __Term(Term): 

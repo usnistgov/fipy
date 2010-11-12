@@ -37,7 +37,6 @@ import os
 
 from fipy.terms.term import Term
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
-import sets
 
 class _BinaryTerm(Term):
     def __init__(self, term, other):
@@ -60,7 +59,13 @@ class _BinaryTerm(Term):
 	Term.__init__(self, var=self._getVars()[0])
 
     def _getVars(self):
-        return list(sets.Set(self.term._getVars() + self.other._getVars()))
+        
+        if not hasattr(self, '_vars'):
+            seen = set()
+            seq = self.term._getVars() + self.other._getVars()
+            self._vars = [x for x in seq if x not in seen and not seen.add(x)]
+            ## self._vars = list(set(seq))
+        return self._vars
 
     def _verifyVar(self, var):
 
