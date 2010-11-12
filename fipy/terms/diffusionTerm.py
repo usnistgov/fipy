@@ -284,7 +284,7 @@ class DiffusionTerm(Term):
 
             return (var, L, b)
         else:
-            return (var, 0, 0)
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)
         
     def _higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()

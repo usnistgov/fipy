@@ -55,6 +55,6 @@ class ExplicitDiffusionTerm(DiffusionTerm):
         if var is self.var or self.var is None:
             varOld, L, b = DiffusionTerm._buildMatrix(self, var.getOld(), SparseMatrix, boundaryConditions = boundaryConditions, dt = dt,
                                                    transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-            return (var, 0, b - L * var.getValue())
+            return (var, SparseMatrix(mesh=var.getMesh()), b - L * var.getValue())
         else:
-            return (var, 0, 0)
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)

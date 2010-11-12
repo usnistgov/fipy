@@ -168,5 +168,5 @@ class FaceTerm(Term):
             return (var, L, b)
 
         else:
-            return (var, 0, 0)
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)
         
