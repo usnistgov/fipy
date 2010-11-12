@@ -58,10 +58,34 @@ class Mesh:
             'area': 1.,
             'volume': 1.
         }
+
+        # Topology calculations
+        self.interiorFaceIDs        = self._calcInteriorFaceIDs()
+        self.exteriorFaceIDs        = self._calcExteriorFaceIDs()
+        self.interiorCellIDs        = self._calcInteriorCellIDs()
+        self.exteriorCellIDs        = self._calcExteriorCellIDs()
+        self.cellToFaceOrientations = self._calcCellToFaceOrientations()
+        self.adjacentCellIDs        = self._calcAdjacentCellIDs()
+        self.cellToCellIDs          = self._calcCellToCellIDs()
+        self.cellToCellIDsFilled    = self._calcCellToCellIDsFilled()
+
+        # Geometry calculations
+        self.faceAreas             = self._calcFaceAreas()
+        self.cellCenters           = self._calcCellCenters()
+        self.faceToCellDistances   = self._calcFaceToCellDistances()
+        self.cellDistances         = self._calcCellDistances()
+        self.faceNormals           = self._calcFaceNormals()
+        self.orientedFaceNormals   = self._calcOrientedFaceNormals()
+        self.cellVolumes           = self._calcCellVolumes()
+        self.cellCenters           = self._calcCellCenters()
+        self.faceCellToCellNormals = self._calcFaceCellToCellNormals()
+        self.faceToCellDistances   = self._calcFaceToCellDistances() # TODO
+        self.cellDistances         = self._calcCellDistances()
+        self.faceTangents          = self._calcFaceTangents()
+        self.cellToCellDistances   = self._calcCellToCellDistances()
+        self.scaledGeometry        = self._calcScaledGeometry()
+        self.cellAreas             = self._calcCellAreas()
         
-        self._calcTopology()
-        self._calcGeometry()
-    
     def __add__(self, other):
         """
         Either translate a `Mesh` or concatenate two `Mesh` objects.
@@ -158,7 +182,7 @@ class Mesh:
             ...
             MeshAdditionError: Dimensions do not match
         """
-        pass
+        raise NotImplementedError
         
     def __mul__(self, factor):
         """
@@ -193,56 +217,54 @@ class Mesh:
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
             
         """
-        pass
+        raise NotImplementedError
         
     def __repr__(self):
         return "%s()" % self.__class__.__name__
         
     """topology methods"""
     
-    def _calcTopology(self):
-        self._calcInteriorAndExteriorFaceIDs()
-        self._calcInteriorAndExteriorCellIDs()
-        self._calcCellToFaceOrientations()
-        self._calcAdjacentCellIDs()
-        self._calcCellToCellIDs()
-        self._calcCellToCellIDsFilled()
+#    def _calcTopology(self):
+#        self._calcInteriorAndExteriorFaceIDs()
+#        self._calcInteriorAndExteriorCellIDs()
+#        self._calcCellToFaceOrientations()
+#        self._calcAdjacentCellIDs()
+#        self._calcCellToCellIDs()
+#        self._calcCellToCellIDsFilled()
        
     """calc topology methods"""
-        
-    def _calcInteriorAndExteriorFaceIDs(self):
-        pass
+    
+    def _calcInteriorFaceIDs(self):
+        raise NotImplementedError
+
+    def _calcExteriorFaceIDs(self):
+        raise NotImplementedError
 
     def _calcExteriorCellIDs(self):
-        pass
+        raise NotImplementedError
         
     def _calcInteriorCellIDs(self):
-        pass
-##      self.interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - sets.Set(self.exteriorCellIDs))
-##        onesWhereInterior = numerix.zeros(self.numberOfCells)
-##        numerix.put(onesWhereInterior, self.exteriorCells, numerix.zeros((len(self.exteriorCellIDs))))
-##        self.interiorCellIDs = numerix.nonzero(onesWhereInterior)
-##        self.interiorCellIDs = (0,0)
-        
-    def _calcInteriorAndExteriorCellIDs(self):
-        self._calcExteriorCellIDs()
-        self._calcInteriorCellIDs()
+        raise NotImplementedError
+       
+#    def _calcInteriorAndExteriorCellIDs(self):
+#        self._calcExteriorCellIDs()
+#        self._calcInteriorCellIDs()
 
     def _calcCellToFaceOrientations(self):
-        pass
+        raise NotImplementedError
 
     def _calcAdjacentCellIDs(self):
-        pass
+        raise NotImplementedError
 
     def _calcCellToCellIDs(self):
-        pass
+        raise NotImplementedError
 
     def _calcCellToCellIDsFilled(self):
         N = self.getNumberOfCells()
         M = self._getMaxFacesPerCell()
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self._getCellToCellIDs()
-        self.cellToCellIDsFilled = MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
+        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
     
     """get topology methods"""
@@ -262,10 +284,10 @@ class Mesh:
             return self._getMaxFacesPerCell() * numerix.ones(cellFaceIDs.shape[-1], 'l')
 
     def getExteriorFaces(self):
-        pass
+        raise NotImplementedError
 
     def getInteriorFaces(self):
-        pass
+        raise NotImplementedError
         
     def _getExteriorCellIDs(self):
         """ Why do we have this?!? It's only used for testing against itself? """
@@ -571,7 +593,7 @@ class Mesh:
         return FaceVariable(mesh=self, value=z == _madmin(z))
     
     def _getMaxFacesPerCell(self):
-        pass
+        raise NotImplementedError
 
     def _getNumberOfFaces(self):
         return self.numberOfFaces
@@ -604,47 +626,47 @@ class Mesh:
     """calc geometry methods"""
     
     def _calcFaceAreas(self):
-        pass
+        raise NotImplementedError
         
     def _calcFaceNormals(self):
-        pass
+        raise NotImplementedError
         
     def _calcOrientedFaceNormals(self):
-        pass
+        raise NotImplementedError
         
     def _calcCellVolumes(self):
-        pass
+        raise NotImplementedError
         
     def _calcCellCenters(self):
-        pass
+        raise NotImplementedError
         
     def _calcFaceToCellDistances(self):
-        pass
+        raise NotImplementedError
 
     def _calcCellDistances(self):
-        pass
+        raise NotImplementedError
         
     def _calcAreaProjections(self):
-        pass
+        raise NotImplementedError
 
     def _calcOrientedAreaProjections(self):
-        pass
+        raise NotImplementedError
 
     def _calcFaceTangents(self):
-        pass
+        raise NotImplementedError
 
     def _calcFaceToCellDistanceRatio(self):
-        pass
+        raise NotImplementedError
 
     def _calcFaceAspectRatios(self):
         self.faceAspectRatios = self._getFaceAreas() / self._getCellDistances()
 
     def _calcCellToCellDistances(self):
-        pass
+        raise NotImplementedError
 
     def _calcCellAreas(self):
         from fipy.tools.numerix import take
-        self.cellAreas =  take(self._getFaceAreas(), self.cellFaceIDs)
+        return take(self._getFaceAreas(), self.cellFaceIDs)
     
     """get geometry methods"""
         
