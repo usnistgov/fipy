@@ -10,6 +10,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -60,34 +61,66 @@ class Mesh(object):
         }
 
         # Topology calculations
-        self.interiorFaces, \
-        self.exteriorFaces,         = self._calcInteriorAndExteriorFaceIDs()
-        self.interiorCellIDs, \
-        self.exteriorCellIDs        = self._calcInteriorAndExteriorCellIDs()
+        self._setTopology()
+        self._setGeometry()
+        
+        # Required instance variables
+        # requiredVariables = ["dim",
+        #                      "faceVertexIDs",
+        #                      "cellFaceIDs",
+        #                      "numberOfCells",
+        #                      "numberOfFaces",
+        #                      "vertexCoords",
+        #                      "cellNormals"]
+
+        # for var in requiredVariables:
+        #     if not hasattr(self, var):
+        #         raise NotImplementedError, \
+        #           "`%s`, as a subclass of mesh, must define a `%s` variable." \
+        #             % (str(self.__class__), var)
+                  
+
+    def _setTopology(self):
+        (self.interiorFaces,
+        self.exteriorFaces)         = self._calcInteriorAndExteriorFaceIDs()
+        (self.interiorCellIDs,
+        self.exteriorCellIDs)       = self._calcInteriorAndExteriorCellIDs()
         self.cellToFaceOrientations = self._calcCellToFaceOrientations()
         self.adjacentCellIDs        = self._calcAdjacentCellIDs()
         self.cellToCellIDs          = self._calcCellToCellIDs()
         self.cellToCellIDsFilled    = self._calcCellToCellIDsFilled()
 
-        # Geometry calculations
+    def _setGeometry(self):
         self.faceAreas             = self._calcFaceAreas()
         self.cellCenters           = self._calcCellCenters()
-        self.faceToCellDistances, \
-        self.cellToFaceDistanceVectors = self._calcFaceToCellDistancesAndVectors()
-        self.cellDistances, \
-        self.cellDistanceVectors   = self._calcCellDistancesAndVectors()
+        (self.faceToCellDistances,
+        self.cellToFaceDistanceVectors) = self._calcFaceToCellDistancesAndVectors()
+        (self.cellDistances,
+        self.cellDistanceVectors)  = self._calcCellDistancesAndVectors()
         self.faceNormals           = self._calcFaceNormals()
         self.orientedFaceNormals   = self._calcOrientedFaceNormals()
         self.cellVolumes           = self._calcCellVolumes()
         self.cellCenters           = self._calcCellCenters()
         self.faceCellToCellNormals = self._calcFaceCellToCellNormals()
-        # self.faceToCellDistances   = self._calcFaceToCellDistances() # TODO
-        # self.cellDistances         = self._calcCellDistances()
-        self.faceTangents1, \
-        self.faceTangents2         = self._calcFaceTangents()
+        (self.faceTangents1, 
+        self.faceTangents2)        = self._calcFaceTangents()
         self.cellToCellDistances   = self._calcCellToCellDistances()
-        
-        # Scaled geometry
+
+        self.setScale(self.scale['length'])
+
+        self.cellAreas             = self._calcCellAreas()
+
+    def setScale(self, value = 1.):
+
+        self.scale['length'] = PhysicalField(value = value)
+
+        if self.scale['length'].getUnit().isDimensionless():
+            self.scale['length'] = 1    
+
+        # Higher-order scalings
+        self.scale['area'] = self.scale['length']**2
+        self.scale['volume'] = self.scale['length']**3  
+
         self.scaledFaceAreas           = self.scale['area'] * self.faceAreas
         self.scaledCellVolumes         = self.scale['volume'] * self.cellVolumes
         self.scaledCellCenters         = self.scale['length'] * self.cellCenters
@@ -98,26 +131,7 @@ class Mesh(object):
         self.orientedAreaProjections   = self._calcOrientedAreaProjections()
         self.faceToCellDistanceRatio   = self._calcFaceToCellDistanceRatio()
         self.faceAspectRatios          = self._calcFaceAspectRatios()
-        
-        # Geometry *after* scaled geometry
-        self.cellAreas             = self._calcCellAreas()
-
-        # Required instance variables
-        # self.dim                     = None
-        # self.faceVertexIDs           = None
-        # self.cellFaceIDs             = None
-        # self.numberOfCells           = None
-        # self.numberOfVertices        = None
-        # self.numberOfFaces           = None
-        # self.vertexCoords            = None
-        # self.faceToCellDistanceRatio = None
-        # self.orientedAreaProjections = None
-        # self.areaProjections         = None
-        # self.orientedFaceNormals     = None
-        # self.faceTangents1           = None
-        # self.faceTangents2           = None
-        # self.cellNormals             = None
-
+         
     def __add__(self, other):
         """
         Either translate a `Mesh` or concatenate two `Mesh` objects.
@@ -254,16 +268,6 @@ class Mesh(object):
     def __repr__(self):
         return "%s()" % self.__class__.__name__
         
-    """topology methods"""
-    
-#    def _calcTopology(self):
-#        self._calcInteriorAndExteriorFaceIDs()
-#        self._calcInteriorAndExteriorCellIDs()
-#        self._calcCellToFaceOrientations()
-#        self._calcAdjacentCellIDs()
-#        self._calcCellToCellIDs()
-#        self._calcCellToCellIDsFilled()
-       
     """calc topology methods"""
     
     def _calcInteriorFaceIDs(self):
@@ -277,10 +281,6 @@ class Mesh(object):
         
     def _calcInteriorCellIDs(self):
         raise NotImplementedError
-       
-#    def _calcInteriorAndExteriorCellIDs(self):
-#        self._calcExteriorCellIDs()
-#        self._calcInteriorCellIDs()
 
     def _calcCellToFaceOrientations(self):
         raise NotImplementedError
@@ -652,7 +652,7 @@ class Mesh(object):
 #        self._calcCellDistances()        
 #        self._calcFaceTangents()
 #        self._calcCellToCellDistances()
-#        self._calcScaledGeometry()
+#        self._calcScaledGeometry() # TODO
 #        self._calcCellAreas()
        
     """calc geometry methods"""
@@ -762,30 +762,11 @@ class Mesh(object):
 
     """scaling"""
 
-    def setScale(self, value = 1.):
-        self.scale['length'] = PhysicalField(value = value)
-        if self.scale['length'].getUnit().isDimensionless():
-            self.scale['length'] = 1
-        self._calcHigherOrderScalings()
-        self._calcScaledGeometry()
+    def _calcScaleArea(self):
+        raise NotImplementedError
 
-        # Higher-order scalings
-        self.scale['area'] = self.scale['length']**2
-        self.scale['volume'] = self.scale['length']**3
-
-        # Update geometry for scale change
-        self.scaledFaceAreas = self.scale['area'] * self.faceAreas
-        self.scaledCellVolumes = self.scale['volume'] * self.cellVolumes
-        self.scaledCellCenters = self.scale['length'] * self.cellCenters
-        
-        self.scaledFaceToCellDistances = self.scale['length'] * self.faceToCellDistances
-        self.scaledCellDistances = self.scale['length'] * self.cellDistances
-        self.scaledCellToCellDistances = self.scale['length'] * self.cellToCellDistances
-        
-        self._calcAreaProjections()
-        self._calcOrientedAreaProjections()
-        self._calcFaceToCellDistanceRatio()
-        self._calcFaceAspectRatios()
+    def _calcScaleVolume(self):
+        raise NotImplementedError
         
     """point to cell distances"""
     

@@ -10,6 +10,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -49,22 +50,26 @@ from fipy.meshes.numMesh.mesh import Mesh
 
 class Mesh1D(Mesh):
     def _calcFaceAreas(self):
-        self.faceAreas = numerix.ones(self.numberOfFaces, 'd')
+        return numerix.ones(self.numberOfFaces, 'd')
 
     def _calcFaceNormals(self):
-        self.faceNormals = numerix.array((numerix.ones(self.numberOfFaces, 'd'),))
+        faceNormals = numerix.array((numerix.ones(self.numberOfFaces, 'd'),))
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
         if self.numberOfFaces > 0:
-            self.faceNormals[...,0] = -self.faceNormals[...,0]
+            faceNormals[...,0] = faceNormals[...,0]
+        return faceNormals
 
     def _calcFaceTangents(self):
-        self.faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-        self.faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        return faceTangents1, faceTangents2
 
-    def _calcHigherOrderScalings(self):
-        self.scale['area'] = 1.
-        self.scale['volume'] = self.scale['length']
+    def _calcScaleArea(self):
+        return 1.
+
+    def _calcScaleVolume(self):
+        return self.scale['length']
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector

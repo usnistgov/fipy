@@ -9,6 +9,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -39,6 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
+from fipy.tools.dimensions.physicalField import PhysicalField
 from mesh1D import Mesh1D
 from fipy.tools import parallel
 
@@ -67,12 +69,14 @@ class Grid1D(Mesh1D):
             'overlap': overlap
         }
 
-        from fipy.tools.dimensions.physicalField import PhysicalField
         self.dx = PhysicalField(value=dx)
-        scale = PhysicalField(value=1, unit=self.dx.getUnit())
+        scale   = PhysicalField(value=1, unit=self.dx.getUnit())
         self.dx /= scale
-        
+
         nx = self._calcNumPts(d=self.dx, n=nx)
+
+        self.globalNumberOfCells = nx
+        self.globalNumberOfFaces = nx + 1
 
         (self.nx,
          self.overlap,
@@ -84,11 +88,12 @@ class Grid1D(Mesh1D):
         else:
             Xoffset = self.dx * self.offset
             
-        vertices = self._createVertices() + ((Xoffset,),)
+        vertices              = self._createVertices() + ((Xoffset,),)
         self.numberOfVertices = len(vertices[0])
-        faces = self._createFaces()
-        self.numberOfFaces = len(faces[0])
-        cells = self._createCells()
+        faces                 = self._createFaces()
+        self.numberOfFaces    = len(faces[0])
+        cells                 = self._createCells()
+
         Mesh1D.__init__(self, vertices, faces, cells, communicator=communicator)
         
         self.setScale(value = scale)
@@ -115,9 +120,6 @@ class Grid1D(Mesh1D):
             
         local_nx = local_nx + overlap['left'] + overlap['right']
 
-        self.globalNumberOfCells = nx
-        self.globalNumberOfFaces = nx + 1
-        
         return local_nx, overlap, offset
 
     def __repr__(self):
@@ -125,7 +127,6 @@ class Grid1D(Mesh1D):
             return "%s(dx=%s)" % (self.__class__.__name__, str(self.args["dx"]))
         else:
             return "%s(dx=%s, nx=%d)" % (self.__class__.__name__, str(self.args["dx"]), self.args["nx"])
-
 
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)

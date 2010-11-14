@@ -11,6 +11,7 @@
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #  Author: Alexander Mont <alexander.mont@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -38,15 +39,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-from fipy.tools.numerix import MA
-
 from fipy.meshes.common.mesh import Mesh as _CommonMesh
-
 from fipy.meshes.numMesh.cell import Cell
 
+from fipy.tools import numerix
+from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
-
 from fipy.tools import serial
 
 class MeshAdditionError(Exception):

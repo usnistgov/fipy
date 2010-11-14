@@ -1,0 +1,52 @@
+why refactor?
+-------------
+
+	Mesh is confusing. To instantiate any leaf of the Mesh tree entails a
+	labyrinthine trail of function calls, many of which dynamically attach and
+	modify attributes at various levels of ancestry (most notably in
+	_CommonMesh). This undisciplined approach to state establishment and
+	management does not make refactoring or extending Mesh as easy as it could be.
+
+	Maintaining state, though unavoidable, is inherently more confusing than a
+	functional approach because it introduces temporal dependencies, i.e. it
+	forces users to worry moreso about the order in which things happen. We need
+	to consolidate state-change as much as possible and make those sectors of
+	code which manipulate state screamingly obvious. This way, problems
+	associated with time and order are mitigated.
+	
+	Instead of having a bunch of functions which dynamically add and
+	modify attribute variables, we should shift establishment of state to 
+	`__init__` and, when modifying an object's state dynamically is
+	unavoidable, we must have functions which manipulate in the clearest,
+	dumbest possible way.
+
+	We also need to make the levels of ancestry (and their respective purposes
+	and effects) more clear. Currently, it's not clear to me what exactly
+	`_CommonMesh` does and does not provide and what we should expect from it.
+	When I asked pyreverse to generate a UML diagram for me, it couldn't,
+	presumably because of attach-attributes-via-function-call approach.
+
+basic principles
+----------------
+- consolidate state-change to __init__ as much as possible
+  * `_calc` functions now have no side-effects, their use relies on return values
+
+- state-change after instantiation *is* inevitable
+  * function calls supporting dynamic state-change are leaf nodes, i.e. all
+    subfunction calls have no side-effects and only return values
+
+- make use of properties to encapsulate temporal dependencies of state-change
+  * by using properties, `set` methods will allow extended classes to use
+    attribute variables more naturally, without worrying about whether or not
+	the necessary {co,pre,post}-requisite changes have been made to peripheral
+	variables.
+
+- naming conventions for functions
+  * `_calc*` returns a value
+  * `_set*` modifies self's state
+
+specific notes
+--------------
+
+_calcHigherOrderScalings -> _calcScaleArea, _calcScaleVolume
+
