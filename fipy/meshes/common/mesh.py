@@ -59,64 +59,64 @@ class Mesh(object):
             'volume': 1.
         }
 
-        def notImplemented():
-            raise NotImplementedError
-
         # Topology calculations
-        self.interiorFaceIDs        = self._calcInteriorFaceIDs()
-        self.exteriorFaceIDs        = self._calcExteriorFaceIDs()
-        self.interiorCellIDs        = self._calcInteriorCellIDs()
-        self.exteriorCellIDs        = self._calcExteriorCellIDs()
+        self.interiorFaces, \
+        self.exteriorFaces,         = self._calcInteriorAndExteriorFaceIDs()
+        self.interiorCellIDs, \
+        self.exteriorCellIDs        = self._calcInteriorAndExteriorCellIDs()
         self.cellToFaceOrientations = self._calcCellToFaceOrientations()
         self.adjacentCellIDs        = self._calcAdjacentCellIDs()
         self.cellToCellIDs          = self._calcCellToCellIDs()
         self.cellToCellIDsFilled    = self._calcCellToCellIDsFilled()
 
         # Geometry calculations
-        self.scaledfaceAreas       = self._calcFaceAreas()
+        self.faceAreas             = self._calcFaceAreas()
         self.cellCenters           = self._calcCellCenters()
-        self.faceToCellDistances   = self._calcFaceToCellDistances()
-        self.cellDistances         = self._calcCellDistances()
+        self.faceToCellDistances, \
+        self.cellToFaceDistanceVectors = self._calcFaceToCellDistancesAndVectors()
+        self.cellDistances, \
+        self.cellDistanceVectors   = self._calcCellDistancesAndVectors()
         self.faceNormals           = self._calcFaceNormals()
         self.orientedFaceNormals   = self._calcOrientedFaceNormals()
         self.cellVolumes           = self._calcCellVolumes()
         self.cellCenters           = self._calcCellCenters()
         self.faceCellToCellNormals = self._calcFaceCellToCellNormals()
-        self.faceToCellDistances   = self._calcFaceToCellDistances() # TODO
-        self.cellDistances         = self._calcCellDistances()
-        self.faceTangents          = self._calcFaceTangents()
+        # self.faceToCellDistances   = self._calcFaceToCellDistances() # TODO
+        # self.cellDistances         = self._calcCellDistances()
+        self.faceTangents1, \
+        self.faceTangents2         = self._calcFaceTangents()
         self.cellToCellDistances   = self._calcCellToCellDistances()
-        self.cellAreas             = self._calcCellAreas()
         
         # Scaled geometry
-        scaledGeomDict = self._calcScaledGeometry()
-        self.faceAspectRatios          = scaledGeomDict["faceAspectRatios"]
-        self.scaledFaceAreas           = scaledGeomDict["faceAreas"]
-        self.scaledCellVolumes         = scaledGeomDict["cellVolumes"]
-        self.scaledCellCenters         = scaledGeomDict["cellCenters"]
-        self.scaledFaceToCellDistances = scaledGeomDict["faceToCellDistances"]
-        self.scaledCellDistances       = scaledGeomDict["cellDistances"]
-        self.scaledCellToCellDistances = scaledGeomDict["cellToCellDistances"]
-        self.areaProjections           = scaledGeomDict["areaProjections"]
-        self.orientedAreaProjections   = scaledGeomDict["orientedAreaProjections"]
-        self.faceToCellDistanceRatio   = scaledGeomDict["faceToCellDistanceRatio"]
-        self.faceAspectRatios          = scaledGeomDict["faceAspectRatios"]
+        self.scaledFaceAreas           = self.scale['area'] * self.faceAreas
+        self.scaledCellVolumes         = self.scale['volume'] * self.cellVolumes
+        self.scaledCellCenters         = self.scale['length'] * self.cellCenters
+        self.scaledFaceToCellDistances = self.scale['length'] * self.faceToCellDistances
+        self.scaledCellDistances       = self.scale['length'] * self.cellDistances
+        self.scaledCellToCellDistances = self.scale['length'] * self.cellToCellDistances
+        self.areaProjections           = self._calcAreaProjections()
+        self.orientedAreaProjections   = self._calcOrientedAreaProjections()
+        self.faceToCellDistanceRatio   = self._calcFaceToCellDistanceRatio()
+        self.faceAspectRatios          = self._calcFaceAspectRatios()
+        
+        # Geometry *after* scaled geometry
+        self.cellAreas             = self._calcCellAreas()
 
         # Required instance variables
-        self.dim                     = property(notImplemented)
-        self.faceVertexIDs           = property(notImplemented)
-        self.cellFaceIDs             = property(notImplemented)
-        self.numberOfCells           = property(notImplemented)
-        self.numberOfVertices        = property(notImplemented)
-        self.numberOfFaces           = property(notImplemented)
-        self.vertexCoords            = property(notImplemented)
-        self.faceToCellDistanceRatio = property(notImplemented)
-        self.orientedAreaProjections = property(notImplemented)
-        self.areaProjections         = property(notImplemented)
-        self.orientedFaceNormals     = property(notImplemented)
-        self.faceTangents1           = property(notImplemented)
-        self.faceTangents2           = property(notImplemented)
-        self.cellNormals             = property(notImplemented)
+        # self.dim                     = None
+        # self.faceVertexIDs           = None
+        # self.cellFaceIDs             = None
+        # self.numberOfCells           = None
+        # self.numberOfVertices        = None
+        # self.numberOfFaces           = None
+        # self.vertexCoords            = None
+        # self.faceToCellDistanceRatio = None
+        # self.orientedAreaProjections = None
+        # self.areaProjections         = None
+        # self.orientedFaceNormals     = None
+        # self.faceTangents1           = None
+        # self.faceTangents2           = None
+        # self.cellNormals             = None
 
     def __add__(self, other):
         """
@@ -656,20 +656,7 @@ class Mesh(object):
 #        self._calcCellAreas()
        
     """calc geometry methods"""
-
-    def _calcScaledGeometry(self):
-        return \
-          {"faceAreas":               self.scale['area'] * self.faceAreas, 
-           "cellVolumes":             self.scale['volume'] * self.cellVolumes,
-           "cellCenters":             self.scale['length'] * self.cellCenters,
-           "faceToCellDistances":     self.scale['length'] * self.faceToCellDistances,
-           "cellDistances":           self.scale['length'] * self.cellDistances,
-           "cellToCellDistances":     self.scale['length'] * self.cellToCellDistances,
-           "areaProjections":         self._calcAreaProjections(),
-           "orientedAreaProjection":  self._calcOrientedAreaProjections(),
-           "faceToCellDistanceRatio": self._calcFaceToCellDistanceRatio(),
-           "faceAspectRatios":        self._calcFaceAspectRatios()}
-        
+       
     def _calcFaceAreas(self):
         raise NotImplementedError
         
