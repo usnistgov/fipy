@@ -69,9 +69,13 @@ class Tri2D(Mesh2D):
         """
         self.nx = nx
         self.ny = ny
+
+        self.numberOfHorizontalFaces   = self.nx * (self.ny + 1)
+        self.numberOfVerticalFaces     = self.ny * (self.nx + 1)
+        self.numberOfEachDiagonalFaces = self.nx * self.ny
         
-        self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        self.dx  = PhysicalField(value = dx)
+        scale    = PhysicalField(value = 1, unit = self.dx.getUnit())
         self.dx /= scale
         
         self.dy = PhysicalField(value = dy)
@@ -82,13 +86,16 @@ class Tri2D(Mesh2D):
         
         self.numberOfCornerVertices = (self.nx + 1) * (self. ny + 1)
         self.numberOfCenterVertices = self.nx * self.ny
-        self.numberOfTotalVertices = self.numberOfCornerVertices + self.numberOfCenterVertices
+        self.numberOfTotalVertices  = self.numberOfCornerVertices + self.numberOfCenterVertices
         
         vertices = self._createVertices()
-        faces = self._createFaces()
+        faces    = self._createFaces()
+
         cells = self._createCells()
         cells = numerix.sort(cells, axis=0)
+
         Mesh2D.__init__(self, vertices, faces, cells)
+
         self.setScale(value = scale)
         
     def _createVertices(self):
@@ -147,9 +154,6 @@ class Tri2D(Mesh2D):
         cells = (f1, f2, f3, f4) going anticlockwise.
         f1 etc. refer to the faces
         """
-        self.numberOfHorizontalFaces = self.nx * (self.ny + 1)
-        self.numberOfVerticalFaces =  self.ny * (self.nx + 1)
-        self.numberOfEachDiagonalFaces = self.nx * self.ny
         bottomFaces = numerix.arange(0, self.numberOfHorizontalFaces - self.nx)
         topFaces = numerix.arange(self.nx, self.numberOfHorizontalFaces)
         leftFaces = vector.prune(numerix.arange(self.numberOfHorizontalFaces, self.numberOfHorizontalFaces + self.numberOfVerticalFaces), self.nx + 1, self.nx)
@@ -172,8 +176,6 @@ class Tri2D(Mesh2D):
         """Return physical dimensions of Grid2D.
         """
         return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
-
-
 
     def _getMeshSpacing(self):
         return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
@@ -383,10 +385,4 @@ def _test():
     
 if __name__ == "__main__": 
     _test() 
-
-
-
-
-
-
 

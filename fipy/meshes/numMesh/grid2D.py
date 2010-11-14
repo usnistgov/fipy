@@ -9,6 +9,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -60,20 +61,20 @@ class Grid2D(Mesh2D):
             'communicator': communicator
         }
 
-        self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value=1, unit=self.dx.getUnit())
+        self.dx  = PhysicalField(value = dx)
+        scale    = PhysicalField(value=1, unit=self.dx.getUnit())
         self.dx /= scale
         
         nx = self._calcNumPts(d=self.dx, n=nx, axis="x")
         
-        self.dy = PhysicalField(value = dy)
-#         if self.dy.getUnit().isDimensionless():
-#             self.dy = dy
-#         else:
+        self.dy  = PhysicalField(value = dy)
         self.dy /= scale
             
         ny = self._calcNumPts(d=self.dy, n=ny, axis="y")
         
+        self.globalNumberOfCells = nx * ny
+        self.globalNumberOfFaces = nx * (ny + 1) + ny * (nx + 1)
+
         (self.nx,
          self.ny,
          self.overlap,
@@ -104,10 +105,13 @@ class Grid2D(Mesh2D):
 
         self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns
 
-        vertices = self._createVertices() + ((Xoffset,), (Yoffset,))
-        faces = self._createFaces()
+        vertices            = self._createVertices() + ((Xoffset,), (Yoffset,))
+        (faces,
+        self.numberOfHorizontalFaces) = self._createFaces()
         self.numberOfFaces = len(faces[0])
-        cells = self._createCells()
+        cells              = self._createCells()
+
+
         Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator)
         
         self.setScale(value = scale)
@@ -137,9 +141,6 @@ class Grid2D(Mesh2D):
             local_ny += (ny - cellsPerNode * occupiedNodes)
         local_ny = local_ny + overlap['bottom'] + overlap['top']
         
-        self.globalNumberOfCells = nx * ny
-        self.globalNumberOfFaces = nx * (ny + 1) + ny * (nx + 1)
-        
         return local_nx, local_ny, overlap, offset
 
     def __repr__(self):
@@ -160,6 +161,8 @@ class Grid2D(Mesh2D):
         """
         v1, v2 refer to the vertices.
         Horizontal faces are first
+
+        Ugly return to avoid side-effects.
         """
         v1 = numerix.arange(self.numberOfVertices)
         v2 = v1 + 1
@@ -180,7 +183,7 @@ class Grid2D(Mesh2D):
         horizontalFaces[0,:self.nx] = tmp[1,:self.nx]
         horizontalFaces[1,:self.nx] = tmp[0,:self.nx]
 
-        self.numberOfHorizontalFaces = horizontalFaces.shape[-1]
+        numberOfHorizontalFaces = horizontalFaces.shape[-1]
 
         tmp = verticalFaces.copy()
         verticalFaces[0, :] = tmp[1, :]
@@ -189,8 +192,9 @@ class Grid2D(Mesh2D):
             verticalFaces[0, ::self.numberOfVerticalColumns] = tmp[0, ::self.numberOfVerticalColumns]
             verticalFaces[1, ::self.numberOfVerticalColumns] = tmp[1,::self.numberOfVerticalColumns]
 
-        return numerix.concatenate((horizontalFaces, verticalFaces), axis=1)
-
+        return (numerix.concatenate((horizontalFaces, verticalFaces), axis=1),
+                numberOfHorizontalFaces)
+           
     def _createCells(self):
         """
         cells = (f1, f2, f3, f4) going anticlock wise.
@@ -358,7 +362,7 @@ class Grid2D(Mesh2D):
         
             >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
             ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces())
+            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[0])
             True
 
             >>> cells = numerix.array(((0, 1, 2, 3, 4, 5),
