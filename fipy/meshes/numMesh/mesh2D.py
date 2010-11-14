@@ -10,6 +10,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -54,8 +55,11 @@ def _orderVertices(vertexCoords, vertices):
     coordinates = numerix.take(vertexCoords, vertices)
     centroid = numerix.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
-    coordinates = numerix.where(coordinates == 0, 1.e-100, coordinates) ## to prevent division by zero
-    angles = numerix.arctan(coordinates[:, 1] / coordinates[:, 0]) + numerix.where(coordinates[:, 0] < 0, numerix.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+    # to prevent division by zero
+    coordinates = numerix.where(coordinates == 0, 1.e-100, coordinates) 
+    # angles go from -pi / 2 to 3*pi / 2
+    angles = numerix.arctan(coordinates[:, 1] / coordinates[:, 0]) \
+               + numerix.where(coordinates[:, 0] < 0, numerix.pi, 0) 
     sortorder = numerix.argsort(angles)
     return numerix.take(vertices, sortorder)
 
@@ -63,32 +67,33 @@ class Mesh2D(Mesh):
     def _calcFaceAreas(self):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
         tangent = faceVertexCoords[:,1] - faceVertexCoords[:,0]
-        self.faceAreas = numerix.sqrtDot(tangent, tangent)
+        return numerix.sqrtDot(tangent, tangent)
 
     def _calcFaceNormals(self):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
-        self.faceNormals = t1.copy()
-##         mag = numerix.sqrtDot(t1, t1)
+        faceNormals = t1.copy()
         mag = numerix.sqrt(t1[1]**2 + t1[0]**2)
-        self.faceNormals[0] = -t1[1] / mag
-        self.faceNormals[1] = t1[0] / mag
+        faceNormals[0] = -t1[1] / mag
+        faceNormals[1] = t1[0] / mag
         
-        orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.cellDistanceVectors) < 0)
-        self.faceNormals = self.faceNormals * orientation
-
+        orientation = 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
+        return faceNormals * orientation
 
     def _calcFaceTangents(self):
         tmp = numerix.array((-self.faceNormals[1], self.faceNormals[0]))
-        ## copy required to get internal memory ordering correct for inlining.
+        # copy required to get internal memory ordering correct for inlining.
         tmp = tmp.copy()
         mag = numerix.sqrtDot(tmp, tmp)
-        self.faceTangents1 = tmp / mag
-        self.faceTangents2 = numerix.zeros(self.faceTangents1.shape, 'd')
+        faceTangents1 = tmp / mag
+        faceTangents2 = numerix.zeros(faceTangents1.shape, 'd')
+        return faceTangents1, faceTangents2
 
-    def _calcHigherOrderScalings(self):
-        self.scale['area'] = self.scale['length']
-        self.scale['volume'] = self.scale['length']**2
+    def _calcScaleArea(self):
+        return self.scale['length']
+
+    def _calcScaleVolume(self):
+        return self.scale['length']**2
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
@@ -121,14 +126,34 @@ class Mesh2D(Mesh):
         
         exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],))
         numerix.put(exteriorFaceArray, numerix.nonzero(self.getExteriorFaces()), 1)
-        unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) ## what we put in for the "fill" doesn't matter because only exterior faces have anything masked, and exterior faces have their displacement vectors set to zero.
-        ## if it's an exterior face, make the "displacement vector" equal to zero so the cross product will be zero.
+        unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) 
+        # what we put in for the "fill" doesn't matter because only exterior 
+        # faces have anything masked, and exterior faces have their displacement 
+        # vectors set to zero.
+        # 
+        # if it's an exterior face, make the "displacement vector" equal to zero 
+        # so the cross product will be zero.
     
-        faceDisplacementVectors = numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)), 0.0, numerix.take(self._getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[1, :]) - numerix.take(self._getCellCenters().swapaxes(0,1), unmaskedFaceCellIDs[0, :])).swapaxes(0,1)
-        faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1, :]) - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
-        faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
+        faceDisplacementVectors = \
+          numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)),
+                        0.0, 
+                        numerix.take(self._getCellCenters().swapaxes(0,1), 
+                                     unmaskedFaceCellIDs[1, :]) \
+                          - numerix.take(self._getCellCenters().swapaxes(0,1), 
+                        unmaskedFaceCellIDs[0, :]))
+
+        faceDisplacementVectors.swapaxes(0,1)
+
+        faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1,:]) \
+          - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
+
+        faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) \
+          + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
+
         faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self.faceAreas
+
         cellFaceWeightedNonOrthogonalities = numerix.take(faceWeightedNonOrthogonalities, self.cellFaceIDs)
+
         cellFaceAreas = numerix.take(self.faceAreas, self.cellFaceIDs)
         cellTotalWeightedValues = numerix.add.reduce(cellFaceWeightedNonOrthogonalities, axis = 0)  
         cellTotalFaceAreas = numerix.add.reduce(cellFaceAreas, axis = 0)

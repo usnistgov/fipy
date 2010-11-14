@@ -48,5 +48,8 @@ basic principles
 specific notes
 --------------
 
-_calcHigherOrderScalings -> _calcScaleArea, _calcScaleVolume
+_calcHigherOrderScalings      -> _calcScaleArea, _calcScaleVolume
+_calcGeometry                 -> _setGeometry
+_calcToplogy                  -> _setTopology
+_calcScaledGeometry, setScale -> setScale
 
