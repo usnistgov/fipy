@@ -195,13 +195,14 @@ class Mesh(_CommonMesh):
             self.cellFaceIDs[i] = tmp
 
         ## calculate new topology
-        _CommonMesh._calcTopology(self)
+        _CommonMesh._setTopology(self)
 
         ## calculate new geometry
-        self._calcFaceToCellDistanceRatio()
-        self._calcCellToCellDistances()
-        self._calcScaledGeometry()
-        self._calcFaceAspectRatios()
+        (self.faceToCellDistances,
+        self.cellToFaceDistanceVectors) = self._calcFaceToCellDistancesAndVectors()    
+
+        self.cellToCellDistances = self._calcCellToCellDistances()
+        self.setScale(value = self.scale['length'])
         
     def _getConcatenableMesh(self):
         return self

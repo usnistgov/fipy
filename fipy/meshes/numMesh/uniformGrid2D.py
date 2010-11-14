@@ -75,6 +75,9 @@ class UniformGrid2D(Grid2D):
             self.dy /= scale
             
         ny = int(ny)
+
+        self.globalNumberOfCells = nx * ny
+        self.globalNumberOfFaces = nx * (ny + 1) + ny * (nx + 1)
         
         (self.nx,
          self.ny,
