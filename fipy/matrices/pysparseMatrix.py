@@ -61,6 +61,9 @@ class _PysparseMatrixBase(_SparseMatrix):
 
     def _getMatrix(self):
         return self.matrix
+
+    def getCoupledClass(self):
+        return _CoupledPysparseMeshMatrix
     
     def copy(self):
         return _PysparseMatrixBase(matrix=self.matrix.copy())
@@ -312,11 +315,14 @@ class _PysparseMeshMatrix(_PysparseMatrix):
                                        matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
         else:
             return _PysparseMatrix.__mul__(self, other)
-        
-    def asTrilinosMeshMatrix(self):
+
+    def _getTrilinosMatrix(self):
         from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
-        matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
-                
+        return _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
+
+    def asTrilinosMeshMatrix(self):
+        matrix = self._getTrilinosMatrix()
+
         A = self.matrix.copy()
         values, irow, jcol = A.find()
         
@@ -372,6 +378,10 @@ class _CoupledPysparseMeshMatrix(_PysparseMeshMatrix):
         for i, row in enumerate(matrices):
             for j, matrix in enumerate(row):
                 self.matrix[i*N:(i+1)*N, j*N:(j+1)*N] = matrix.matrix
+
+    def _getTrilinosMatrix(self):
+        from fipy.matrices.trilinosMatrix import _CoupledTrilinosMeshMatrix
+        return _CoupledTrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth, matrices=self.matrices)
 
 def _test(): 
     import doctest

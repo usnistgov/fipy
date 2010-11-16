@@ -630,6 +630,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     global non-overlapping row indices, 
                     global non-overlapping column indices)
         """
+
+        
         globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
         globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
 
@@ -642,6 +644,9 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         vector = vector[mask]
         
         return (vector, id1, id2)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        return self.mesh._getLocalNonOverlappingCellIDs()
 
     def put(self, vector, id1, id2):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
@@ -784,6 +789,75 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
 
+class _CoupledTrilinosMeshMatrix(_TrilinosMeshMatrix):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrices=None):
+        """Creates a `_CoupledTrilinosMeshMatrix` associated with a `Mesh`
+
+        :Parameters:
+          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `bandwidth`: The proposed band width of the matrix.
+          - `sizeHint`: ???
+        """
+        self.mesh = mesh
+        self.matrices = matrices
+        
+        comm = mesh.communicator.epetra_comm
+
+        globalNonOverlappingCellIDs, globalOverlappingCellIDs = self._getGlobalCellIDs()
+
+        nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
+        overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
+        
+        _TrilinosMatrix.__init__(self, 
+                                 size=mesh.getNumberOfCells() * len(matrices), 
+                                 bandwidth=bandwidth, 
+                                 sizeHint=sizeHint, 
+                                 nonOverlappingMap=nonOverlappingMap,
+                                 overlappingMap=overlappingMap)
+
+    def _getGlobalCellIDs(self):
+        globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
+        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
+        globalNonOverlappingCellIDsList = []
+        globalOverlappingCellIDsList = []
+        for i in range(len(self.matrices)):
+            globalNonOverlappingCellIDsList += list(globalNonOverlappingCellIDs + i * self.mesh.getNumberOfCells())
+            globalOverlappingCellIDsList += list(globalOverlappingCellIDs + i * self.mesh.getNumberOfCells())
+        return numerix.array(globalNonOverlappingCellIDsList), numerix.array(globalOverlappingCellIDsList)
+
+    def _globalNonOverlapping(self, vector, id1, id2):
+        """Transforms and subsets local overlapping values and coordinates to global non-overlapping
+        
+        :Parameters:
+          - `vector`: The overlapping values to insert.
+          - `id1`: The local overlapping row indices.
+          - `id2`: The local overlapping column indices.
+          
+        :Returns: 
+          Tuple of (non-overlapping vector, 
+                    global non-overlapping row indices, 
+                    global non-overlapping column indices)
+        """
+
+        
+        globalNonOverlappingCellIDs, globalOverlappingCellIDs = self._getGlobalCellIDs()
+
+        id1 = globalOverlappingCellIDs[id1]
+        id2 = globalOverlappingCellIDs[id2]
+
+        mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 
+        id1 = id1[mask]
+        id2 = id2[mask]
+        vector = vector[mask]
+        
+        return (vector, id1, id2)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
+        localNonOverlappingCellIDsList = []
+        for i in range(len(self.matrices)):
+            localNonOverlappingCellIDsList += list(localNonOverlappingCellIDs + i * self.mesh.getNumberOfCells())
+        return numerix.array(localNonOverlappingCellIDsList)
 
 def _test(): 
     import doctest

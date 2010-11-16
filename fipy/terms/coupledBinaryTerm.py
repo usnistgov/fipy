@@ -80,7 +80,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
             RHSvectorsJ += [CellVariable(value=RHSvector, mesh=var.getMesh())]
             matricesIJ += [matricesI]
 
-        matrix = _CoupledPysparseMeshMatrix(mesh=var.getMesh(), matrices=matricesIJ)
+        matrix = tmpMatrix.getCoupledClass()(mesh=var.getMesh(), matrices=matricesIJ)
         RHSvector = _CoupledCellVariable(RHSvectorsJ)
 
 	return (var, matrix, RHSvector)
