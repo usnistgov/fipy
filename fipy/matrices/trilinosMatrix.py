@@ -721,6 +721,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
             return _TrilinosMatrix.__mul__(self, other=other)
         else:
             shape = numerix.shape(other)
+
+            
             if shape == ():
                 result = self.copy()
                 result._getMatrix().Scale(other)
@@ -732,16 +734,17 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     other_map = self.overlappingMap
 
                 if other_map.SameAs(self.overlappingMap):
-                    localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
+                    localNonOverlappingCellIDs = self._getLocalNonOverlappingCellIDs()
+
                     other = Epetra.Vector(self.nonOverlappingMap, 
                                           other[localNonOverlappingCellIDs])
 
                 if other.Map().SameAs(self.matrix.RowMap()):
 
                     nonoverlapping_result = Epetra.Vector(self.nonOverlappingMap)
-                    
+
                     self._getMatrix().Multiply(False, other, nonoverlapping_result)
-                
+
                     if other_map.SameAs(self.overlappingMap):
                         overlapping_result = Epetra.Vector(self.overlappingMap)
                         overlapping_result.Import(nonoverlapping_result, 
