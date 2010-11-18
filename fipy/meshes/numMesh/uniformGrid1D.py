@@ -70,6 +70,9 @@ class UniformGrid1D(Grid1D):
         self.dx /= scale
         
         nx = int(nx)
+
+        self.globalNumberOfCells = nx
+        self.globalNumberOfFaces = nx + 1
         
         (self.nx,
          self.overlap,
@@ -265,7 +268,7 @@ class UniformGrid1D(Grid1D):
 
 ##     scaling
     
-    def _calcScaledGeometry(self):
+    def _setScaledGeometry(self):
         pass
 
     def _getNearestCellID(self, points):
