@@ -77,15 +77,15 @@ class CylindricalGrid1D(Grid1D):
 
 
     def _calcFaceCenters(self):
-        Grid1D._calcFaceCenters(self)
-        self.faceCenters += self.origin
+        faceCenters = Grid1D._calcFaceCenters(self)
+        return faceCenters + self.origin
         
     def _calcFaceAreas(self):
-        self.faceAreas = self.getFaceCenters()[0]
+        return self.getFaceCenters()[0]
 
     def _calcCellVolumes(self):
-        Grid1D._calcCellVolumes(self)
-        self.cellVolumes = self.cellVolumes / 2.
+        cellVolumes = Grid1D._calcCellVolumes(self)
+        return cellVolumes / 2.
 
     def _translate(self, vector):
         return CylindricalGrid1D(dx=self.args['dx'], nx=self.args['nx'], 
