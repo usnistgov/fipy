@@ -46,8 +46,11 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     Creates a 2D cylindrical grid in the radial and axial directions,
     appropriate for axial symmetry.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2, communicator=parallel):
-        UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, origin=origin, overlap=overlap, communicator=communicator)
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
+                 overlap=2, communicator=parallel):
+        UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, 
+                               origin=origin, overlap=overlap, 
+                               communicator=communicator)
 
     def _getAreaProjections(self):
         return self._getAreaProjectionsPy()
@@ -101,7 +104,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                         0, 5, 6, 7, 4, 9, 10, 11),
             ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 
             ...                         4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces())
+            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[0])
             True
 
             >>> cells = numerix.array(((0,  1,  2,  3,  4,  5),

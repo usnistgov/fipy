@@ -41,8 +41,8 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix as nx
 from fipy.tools import parallel
 from fipy.tools import serial
-import mesh
-import mesh2D
+from fipy.meshes.numMesh.mesh import Mesh
+from fipy.meshes.numMesh.mesh2D import Mesh2D
 import sys
 import os
 import tempfile
@@ -85,7 +85,7 @@ class MshFile:
           - `coordDimension`: an integer indicating dimension of shapes
         """
         
-        self.communicator      = communicator
+        self.communicator    = communicator
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
 
@@ -480,7 +480,7 @@ class MshFile:
 
         return cellsData, ghostsData
 
-class Gmsh2D(mesh2D.Mesh2D):
+class Gmsh2D(Mesh2D):
     def __init__(self, 
                  arg, 
                  coordDimensions=2, 
@@ -492,20 +492,20 @@ class Gmsh2D(mesh2D.Mesh2D):
                                 coordDimensions=coordDimensions,
                                 communicator=communicator,
                                 order=order)
-        self.verts, \
-        self.faces, \
-        self.cells, \
-        self.cellGlobalIDs, \
-        self.gCellGlobalIDs = self.mshFile.buildMeshData()
+        (verts,
+        faces,
+        cells,
+        self.cellGlobalIDs, 
+        self.gCellGlobalIDs) = self.mshFile.buildMeshData()
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
             parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
             parprint("  Got global number of cells")
 
-        mesh2D.Mesh2D.__init__(self, vertexCoords=self.verts,
-                                     faceVertexIDs=self.faces,
-                                     cellFaceIDs=self.cells)
+        Mesh2D.__init__(self, vertexCoords=verts,
+                              faceVertexIDs=faces,
+                              cellFaceIDs=cells)
         parprint("Exiting Gmsh2D")
 
     def _getGlobalNonOverlappingCellIDs(self):
@@ -701,7 +701,7 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
         """
 
-class Gmsh3D(mesh.Mesh):
+class Gmsh3D(Mesh):
     def __init__(self, arg, communicator=parallel, order=1):
         self.communicator = communicator
         self.mshFile  = MshFile(arg, 
@@ -709,14 +709,15 @@ class Gmsh3D(mesh.Mesh):
                                 communicator=communicator,
                                 order=order)
 
-        self.verts, \
-        self.faces, \
-        self.cells, \
-        self.cellGlobalIDs, \
-        self.gCellGlobalIDs = self.mshFile.buildMeshData()
-        mesh.Mesh.__init__(self, vertexCoords=self.verts,
-                                 faceVertexIDs=self.faces,
-                                 cellFaceIDs=self.cells)
+        (verts,
+        faces,
+        cells,
+        self.cellGlobalIDs,
+        self.gCellGlobalIDs) = self.mshFile.buildMeshData()
+
+        Mesh.__init__(self, vertexCoords=verts,
+                            faceVertexIDs=faces,
+                            cellFaceIDs=cells)
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))

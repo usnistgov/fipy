@@ -142,7 +142,7 @@ class Mesh2D(Mesh):
                           - numerix.take(self._getCellCenters().swapaxes(0,1), 
                         unmaskedFaceCellIDs[0, :]))
 
-        faceDisplacementVectors.swapaxes(0,1)
+        faceDisplacementVectors = faceDisplacementVectors.swapaxes(0,1)
 
         faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1,:]) \
           - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
