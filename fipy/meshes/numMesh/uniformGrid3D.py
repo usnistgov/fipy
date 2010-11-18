@@ -58,7 +58,8 @@ class UniformGrid3D(Grid3D):
 
     Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
     """
-    def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, origin = [[0], [0], [0]], overlap=2, communicator=parallel):
+    def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, 
+                 origin = [[0], [0], [0]], overlap=2, communicator=parallel):
         self.args = {
             'dx': dx, 
             'dy': dy,
@@ -94,6 +95,10 @@ class UniformGrid3D(Grid3D):
             self.dz /= scale
             
         nz = int(nz)
+
+        self.globalNumberOfCells = nx * ny * nz
+        self.globalNumberOfFaces = nx * nz * (ny + 1) + ny * nz * (nx + 1) \
+                                     + nx * ny * (nz + 1)
 
         (self.nx,
          self.ny,
@@ -497,7 +502,7 @@ class UniformGrid3D(Grid3D):
         
 ##     scaling
     
-    def _calcScaledGeometry(self):
+    def _setScaledGeometry(self):
         pass
     
     def _getNearestCellID(self, points):
@@ -575,7 +580,7 @@ class UniformGrid3D(Grid3D):
             ...                        ( 1,  2,  3,  5,  6,  7, 13, 14, 15, 17, 18, 19,  1,  2,  3,  5,  6,  7,  9, 10, 11,  4,  5,  6,  7,  8,  9, 10, 11),
             ...                        ( 5,  6,  7,  9, 10, 11, 17, 18, 19, 21, 22, 23, 13, 14, 15, 17, 18, 19, 21, 22, 23, 16, 17, 18, 19, 20, 21, 22, 23),
             ...                        ( 4,  5,  6,  8,  9, 10, 16, 17, 18, 20, 21, 22, 12, 13, 14, 16, 17, 18, 20, 21, 22, 12, 13, 14, 15, 16, 17, 18, 19))) 
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces())
+            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[1])
             True
 
             >>> cells = numerix.array(((21, 22, 23, 25, 26, 27),
