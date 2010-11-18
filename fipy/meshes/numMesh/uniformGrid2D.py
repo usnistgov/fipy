@@ -49,7 +49,8 @@ class UniformGrid2D(Grid2D):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2, communicator=parallel):        
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
+                 overlap=2, communicator=parallel):        
         self.args = {
             'dx': dx, 
             'dy': dy, 
@@ -567,7 +568,7 @@ class UniformGrid2D(Grid2D):
         
 ##     scaling
     
-    def _calcScaledGeometry(self):
+    def _setScaledGeometry(self):
         pass
 
     def _getNearestCellID(self, points):
@@ -628,7 +629,7 @@ class UniformGrid2D(Grid2D):
         
             >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
             ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces())
+            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[0])
             True
 
             >>> cells = numerix.array(((0, 1, 2, 3, 4, 5),

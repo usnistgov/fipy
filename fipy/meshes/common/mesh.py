@@ -117,10 +117,15 @@ class Mesh(object):
         if self.scale['length'].getUnit().isDimensionless():
             self.scale['length'] = 1    
 
+        self._setHigherOrderScalings()
+        self._setScaledGeometry()
+
+    def _setHigherOrderScalings(self):
         # Higher-order scalings
         self.scale['area'] = self.scale['length']**2
         self.scale['volume'] = self.scale['length']**3  
 
+    def _setScaledGeometry(self):
         self.scaledFaceAreas           = self.scale['area'] * self.faceAreas
         self.scaledCellVolumes         = self.scale['volume'] * self.cellVolumes
         self.scaledCellCenters         = self.scale['length'] * self.cellCenters

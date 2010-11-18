@@ -93,6 +93,9 @@ class Grid3D(Mesh):
         
         nz = self._calcNumPts(d = self.dz, n = nz, axis = "z")
 
+        self.globalNumberOfCells = nx * ny * nz
+        self.globalNumberOfFaces = nx * nz * (ny + 1) + ny * nz * (nx + 1) + nx * ny * (nz + 1)
+
         (self.nx,
          self.ny,
          self.nz,
@@ -134,12 +137,25 @@ class Grid3D(Mesh):
         self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns * self.numberOfLayersDeep
         
         vertices = self._createVertices() + ((Xoffset,), (Yoffset,), (Zoffset,))
-        faces = self._createFaces()
+        numFacesList, faces = self._createFaces()
+
+        self.numberOfXYFaces = numFacesList[0]
+        self.numberOfXZFaces = numFacesList[1]
+        self.numberOfYZFaces = numFacesList[2]
+        self.numberOfFaces   = numFacesList[3]
+
         cells = self._createCells()
+
+        self.numberOfCells = self.nx * self.ny * self.nz
+        
         Mesh.__init__(self, vertices, faces, cells)
         
         self.setScale(value = scale)
-
+    
+    def _setHigherOrderScalings(self):
+        self.scale['area']   = self.scale['length']**2
+        self.scale['volume'] = self.scale['length']**3
+     
     def _calcParallelGridInfo(self, nx, ny, nz, overlap, communicator):
         
         procID = communicator.procID
@@ -169,9 +185,6 @@ class Grid3D(Mesh):
         if procID == occupiedNodes - 1:
             local_nz += (nz - cellsPerNode * occupiedNodes)
         local_nz = local_nz + overlap['front'] + overlap['back']
-        
-        self.globalNumberOfCells = nx * ny * nz
-        self.globalNumberOfFaces = nx * nz * (ny + 1) + ny * nz * (nx + 1) + nx * ny * (nz + 1)
         
         return local_nx, local_ny, local_nz, overlap, offset
 
@@ -224,22 +237,13 @@ class Grid3D(Mesh):
         v4 = v1 + ((self.nx + 1)*(self.ny + 1))
         YZFaces = numerix.array((v1, v2, v3, v4))
 
-        ## reverse some of the face orientations to obtain the correct normals
-        ##tmp = horizontalFaces.copy()
-        ##horizontalFaces[:self.nx, 0] = tmp[:self.nx, 1]
-        ##horizontalFaces[:self.nx, 1] = tmp[:self.nx, 0]
-        ##tmp = verticalFaces.copy()
-        ##verticalFaces[:, 0] = tmp[:, 1]
-        ##verticalFaces[:, 1] = tmp[:, 0]
-        ##verticalFaces[::(self.nx + 1), 0] = tmp[::(self.nx + 1), 0]
-        ##verticalFaces[::(self.nx + 1), 1] = tmp[::(self.nx + 1), 1]
-
-        self.numberOfXYFaces = (self.nx * self.ny * (self.nz + 1))
-        self.numberOfXZFaces = (self.nx * (self.ny + 1) * self.nz)
-        self.numberOfYZFaces = ((self.nx + 1) * self.ny * self.nz)
-        self.numberOfFaces = self.numberOfXYFaces + self.numberOfXZFaces + self.numberOfYZFaces
+        numberOfXYFaces = (self.nx * self.ny * (self.nz + 1))
+        numberOfXZFaces = (self.nx * (self.ny + 1) * self.nz)
+        numberOfYZFaces = ((self.nx + 1) * self.ny * self.nz)
+        numberOfFaces = numberOfXYFaces + numberOfXZFaces + numberOfYZFaces
         
-        return numerix.concatenate((XYFaces, XZFaces, YZFaces), axis=1)
+        return ([numberOfXYFaces, numberOfXZFaces, numberOfYZFaces, numberOfFaces],
+                numerix.concatenate((XYFaces, XZFaces, YZFaces), axis=1))
     
     def _createCells(self):
         """
@@ -248,8 +252,6 @@ class Grid3D(Mesh):
         left and right faces are XZ faces
         top and bottom faces are XY faces
         """
-        self.numberOfCells = self.nx * self.ny * self.nz
-        
         ## front and back faces
         frontFaces = numerix.arange(self.numberOfYZFaces)
         frontFaces = vector.prune(frontFaces, self.nx + 1, self.nx)
@@ -312,10 +314,10 @@ class Grid3D(Mesh):
         YZFaceNormals = numerix.zeros((3, self.numberOfYZFaces))
         YZFaceNormals[0, :] = 1
         YZFaceNormals[0, ::self.nx + 1] = -1
-        self.faceNormals = numerix.concatenate((XYFaceNormals, 
-                                                XZFaceNormals, 
-                                                YZFaceNormals), 
-                                               axis=-1)
+        return numerix.concatenate((XYFaceNormals, 
+                                    XZFaceNormals, 
+                                    YZFaceNormals), 
+                                   axis=-1)
         
     def _calcFaceTangents(self):
         ## need to see whether order matters.
@@ -330,12 +332,7 @@ class Grid3D(Mesh):
         ## YZ faces
         faceTangents1[1, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
         faceTangents2[2, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
-        self.faceTangents1 = faceTangents1
-        self.faceTangents2 = faceTangents2
-
-    def _calcHigherOrderScalings(self):
-        self.scale['area'] = self.scale['length']**2
-        self.scale['volume'] = self.scale['length']**3
+        return faceTangents1, faceTangents2
 
     def _isOrthogonal(self):
         return True
@@ -423,7 +420,7 @@ class Grid3D(Mesh):
             ...                        (1, 2, 3, 5,  6,  7, 13, 14, 15, 17, 18, 19,  1,  2,  3,  5,  6,  7,  9, 10, 11,  4,  5,  6,  7,  8,  9, 10, 11),
             ...                        (5, 6, 7, 9, 10, 11, 17, 18, 19, 21, 22, 23, 13, 14, 15, 17, 18, 19, 21, 22, 23, 16, 17, 18, 19, 20, 21, 22, 23),
             ...                        (4, 5, 6, 8,  9, 10, 16, 17, 18, 20, 21, 22, 12, 13, 14, 16, 17, 18, 20, 21, 22, 12, 13, 14, 15, 16, 17, 18, 19)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces())
+            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[1])
             True
 
             >>> cells = numerix.array(((21, 22, 23, 25, 26, 27),
