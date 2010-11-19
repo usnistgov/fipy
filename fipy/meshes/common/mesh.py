@@ -64,22 +64,6 @@ class Mesh(object):
         self._setTopology()
         self._setGeometry()
         
-        # Required instance variables
-        # requiredVariables = ["dim",
-        #                      "faceVertexIDs",
-        #                      "cellFaceIDs",
-        #                      "numberOfCells",
-        #                      "numberOfFaces",
-        #                      "vertexCoords",
-        #                      "cellNormals"]
-
-        # for var in requiredVariables:
-        #     if not hasattr(self, var):
-        #         raise NotImplementedError, \
-        #           "`%s`, as a subclass of mesh, must define a `%s` variable." \
-        #             % (str(self.__class__), var)
-                  
-
     def _setTopology(self):
         (self.interiorFaces,
         self.exteriorFaces)         = self._calcInteriorAndExteriorFaceIDs()

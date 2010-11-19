@@ -198,11 +198,10 @@ class Mesh(_CommonMesh):
         _CommonMesh._setTopology(self)
 
         ## calculate new geometry
-        (self.faceToCellDistances,
-        self.cellToFaceDistanceVectors) = self._calcFaceToCellDistancesAndVectors()    
-
+        self.faceToCellDistanceRatio = self._calcFaceToCellDistanceRatio()
         self.cellToCellDistances = self._calcCellToCellDistances()
-        self.setScale(value = self.scale['length'])
+
+        self._setScaledGeometry()
         
     def _getConcatenableMesh(self):
         return self
