@@ -585,15 +585,29 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
                                      bandwidth=bandwidth)
 
 class _TrilinosMeshMatrix(_TrilinosMatrix):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1):
         """Creates a `_TrilinosMatrix` associated with a `Mesh`
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: ???
+          - `numberOfVariables`: How many coupled variables?
+          
+        Tests
+
+        >>> from fipy import *
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3)
+        >>> print matrix._getGlobalNonOverlappingRowIDs()
+        [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
+        >>> print matrix._getGlobalOverlappingRowIDs()
+        [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
+        >>> print matrix._getLocalNonOverlappingRowIDs()
+        [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
+
         """
         self.mesh = mesh
+        self.numberOfVariables = numberOfVariables
         
         comm = mesh.communicator.epetra_comm
         globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
@@ -609,16 +623,21 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                                  overlappingMap=overlappingMap)
 
     def _getNumberOfRows(self):
-        return self.mesh.getNumberOfCells()
+        return self.mesh.getNumberOfCells() * self.numberOfVariables
+
+    def _rowToCellIDs(self, IDs):
+         N = len(IDs)
+         M = self.numberOfVariables
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.getNumberOfCells()).flatten()
 
     def _getGlobalNonOverlappingRowIDs(self):
-        return self.mesh._getGlobalNonOverlappingCellIDs()
+        return self._rowToCellIDs(self.mesh._getGlobalNonOverlappingCellIDs())
 
     def _getGlobalOverlappingRowIDs(self):
-        return self.mesh._getGlobalOverlappingCellIDs()
+        return self._rowToCellIDs(self.mesh._getGlobalOverlappingCellIDs())
 
     def _getLocalNonOverlappingRowIDs(self):
-        return self.mesh._getLocalNonOverlappingCellIDs()
+        return self._rowToCellIDs(self.mesh._getLocalNonOverlappingCellIDs())
 
     def copy(self):
         tmp = _TrilinosMatrix.copy(self)
@@ -799,50 +818,6 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
         size = mesh.getNumberOfCells()
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
-
-class _CoupledTrilinosMeshMatrix(_TrilinosMeshMatrix):
-
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrices=()):
-        """Creates a `_TrilinosMatrix` associated with a `Mesh`
-
-        :Parameters:
-        - `mesh`: The `Mesh` to assemble the matrix for.
-        - `bandwidth`: The proposed band width of the matrix.
-        - `sizeHint`: ???
-        Creates a `_CoupledTrilinosMeshMatrix` associated with a `Mesh`
-
-        Tests
-
-        >>> from fipy import *
-        >>> matrix = _CoupledTrilinosMeshMatrix(mesh=Grid1D(nx=5), matrices=(None, None, None))
-        >>> print matrix._getGlobalNonOverlappingRowIDs()
-        [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
-        >>> print matrix._getGlobalOverlappingRowIDs()
-        [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
-        >>> print matrix._getLocalNonOverlappingRowIDs()
-        [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
-          
-
-        """
-        self.matrices = matrices
-        _TrilinosMeshMatrix.__init__(self, mesh, bandwidth=bandwidth, sizeHint=sizeHint)
-
-    def _getNumberOfRows(self):
-        return self.mesh.getNumberOfCells() * len(self.matrices)
-
-    def _rowToCellIDs(self, IDs):
-         N = len(IDs)
-         M = len(self.matrices)
-         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.getNumberOfCells()).flatten()
-
-    def _getGlobalNonOverlappingRowIDs(self):
-        return self._rowToCellIDs(self.mesh._getGlobalNonOverlappingCellIDs())
-
-    def _getGlobalOverlappingRowIDs(self):
-        return self._rowToCellIDs(self.mesh._getGlobalOverlappingCellIDs())
-
-    def _getLocalNonOverlappingRowIDs(self):
-        return self._rowToCellIDs(self.mesh._getLocalNonOverlappingCellIDs())
 
 def _test(): 
     import doctest

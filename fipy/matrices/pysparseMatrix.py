@@ -380,8 +380,12 @@ class _CoupledPysparseMeshMatrix(_PysparseMeshMatrix):
                 self.matrix[i*N:(i+1)*N, j*N:(j+1)*N] = matrix.matrix
 
     def _getTrilinosMatrix(self):
-        from fipy.matrices.trilinosMatrix import _CoupledTrilinosMeshMatrix
-        return _CoupledTrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth, matrices=self.matrices)
+        """
+        Return a trilinos matrix of the same kind
+        """
+        
+        from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
+        return _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth, numberOfVariables=len(self.matrices))
 
 def _test(): 
     import doctest
