@@ -210,6 +210,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
             return self
         else:
             return self._add(other)
+
+    __radd__ = __add__
         
     def __sub__(self, other):
         if other is 0:

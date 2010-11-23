@@ -66,9 +66,9 @@ class _CoupledBinaryTerm(_BinaryTerm):
             matricesI = []
             RHSvector = 0
             for tmpVar in self._getVars():
-
+                tmpMatrix = SparseMatrix.__class__(mesh=var.getMesh())
                 tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix(tmpVar,
-                                                                    SparseMatrix,
+                                                                    tmpMatrix,
                                                                     boundaryConditions=(),
                                                                     dt=dt,
                                                                     transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.getMesh()),
