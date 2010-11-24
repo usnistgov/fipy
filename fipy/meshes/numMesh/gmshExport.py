@@ -96,8 +96,8 @@ def exportAsMesh(mesh, filename):
             raise MeshExportError, "Mesh has fewer than 2 or more than 3 dimensions"
     outFile.write("$ENDNOD\n$ELM\n")
     ## do the elements
-    faceVertexIDs = mesh._getFaceVertexIDs()
-    cellFaceIDs = mesh._getCellFaceIDs()
+    faceVertexIDs = mesh.faceVertexIDs
+    cellFaceIDs = mesh.cellFaceIDs
     numCells = cellFaceIDs.shape[1]
     outFile.write(str(numCells))
     outFile.write('\n')

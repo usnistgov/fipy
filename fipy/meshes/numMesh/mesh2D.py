@@ -114,8 +114,8 @@ class Mesh2D(Mesh):
         NFac = self._getMaxFacesPerCell()
 
         # numpy 1.1's MA.take doesn't like FlatIter. Call ravel() instead.
-        cellVertexIDs0 = take(self._getFaceVertexIDs()[0], self._getCellFaceIDs().ravel())
-        cellVertexIDs1 = take(self._getFaceVertexIDs()[1], self._getCellFaceIDs().ravel())
+        cellVertexIDs0 = take(self.faceVertexIDs[0], self.cellFaceIDs.ravel())
+        cellVertexIDs1 = take(self.faceVertexIDs[1], self.cellFaceIDs.ravel())
         cellVertexIDs = MA.where(self.cellToFaceOrientations.ravel() > 0,
                              cellVertexIDs0, cellVertexIDs1)
 
@@ -207,7 +207,7 @@ class Mesh2D(Mesh):
         orderedVertices = mesh._getOrderedCellVertexIDs()
         faces[:NFacPerCell, :NCells] = orderedVertices
         vertices = oldVertices
-        vert0 = mesh._getFaceVertexIDs()
+        vert0 = mesh.faceVertexIDs
         faceCount = NCells
         
         for layer in range(layers):
@@ -243,9 +243,9 @@ class Mesh2D(Mesh):
             ## build the cells, the first layer has slightly different ordering
             if layer == 0:
                 c0 =  numerix.reshape(numerix.arange(NCells), (1, NCells))
-                cells = numerix.concatenate((c0, c0 + NCells, mesh._getCellFaceIDs() + 2 * NCells), axis = 0)
+                cells = numerix.concatenate((c0, c0 + NCells, mesh.cellFaceIDs + 2 * NCells), axis = 0)
             else:
-                newCells = numerix.concatenate((c0, c0 + initialFaceCount, mesh._getCellFaceIDs() + faceCount), axis=0)
+                newCells = numerix.concatenate((c0, c0 + initialFaceCount, mesh.cellFaceIDs + faceCount), axis=0)
                 newCells[0] = cells[1,-NCells:]
                 cells = numerix.concatenate((cells, newCells), axis=1)
 

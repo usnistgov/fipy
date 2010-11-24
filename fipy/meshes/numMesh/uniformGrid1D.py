@@ -124,6 +124,8 @@ class UniformGrid1D(Grid1D):
         
     def _getCellFaceIDs(self):
         return MA.array(self._createCells())
+
+    cellFaceIDs = property(_getCellFaceIDs)
         
     def getInteriorFaces(self):
         from fipy.variables.faceVariable import FaceVariable

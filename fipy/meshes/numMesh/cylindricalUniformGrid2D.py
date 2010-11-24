@@ -253,7 +253,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             
             >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],
             ...                  [ 1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11]]
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._getFaceVertexIDs(), faceVertexIDs)
+            >>> print parallel.procID > 0 or numerix.allequal(mesh.faceVertexIDs, faceVertexIDs)
             True
 
             >>> mesh = CylindricalUniformGrid2D(nx=3)

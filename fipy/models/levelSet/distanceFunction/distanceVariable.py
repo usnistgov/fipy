@@ -204,7 +204,7 @@ class DistanceVariable(CellVariable):
         self.cellToCellIDs = numerix.array(self.mesh._getCellToCellIDsFilled())
         self.adjacentCellIDs = self.mesh._getAdjacentCellIDs()
         self.exteriorFaces = self.mesh.getExteriorFaces()
-        self.cellFaceIDs = self.mesh._getCellFaceIDs()
+        self.cellFaceIDs = self.mesh.cellFaceIDs
         
     def _calcValue(self):
         return self.value

@@ -113,7 +113,7 @@ class _ConvectionCoeff(FaceVariable):
         Nfaces = self.mesh._getNumberOfFaces()
         M = self.mesh._getMaxFacesPerCell()
         dim = self.mesh.getDim()
-        cellFaceIDs = self.mesh._getCellFaceIDs()
+        cellFaceIDs = self.mesh.cellFaceIDs
      
         faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._getFaceAreas()
 

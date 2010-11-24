@@ -147,6 +147,8 @@ class UniformGrid2D(Grid2D):
         
     def _getCellFaceIDs(self):
         return self._createCells()
+
+    cellFaceIDs = property(_getCellFaceIDs)
         
     def getExteriorFaces(self):
         """

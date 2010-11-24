@@ -53,3 +53,7 @@ _calcGeometry                 -> _setGeometry
 _calcToplogy                  -> _setTopology
 _calcScaledGeometry, setScale -> setScale
 
+todo
+----
+
+return order for _createFaces same across board?

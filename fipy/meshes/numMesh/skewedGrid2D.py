@@ -79,9 +79,9 @@ class SkewedGrid2D(Mesh2D):
                 changedVertices[1, i] = vertices[1, i]
 
 
-        faces = self.grid._getFaceVertexIDs()
+        faces = self.grid.faceVertexIDs
         
-        cells = self.grid._getCellFaceIDs()
+        cells = self.grid.cellFaceIDs
 
         Mesh2D.__init__(self, changedVertices, faces, cells)
         

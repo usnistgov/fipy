@@ -67,7 +67,7 @@ class PeriodicGrid2D(Grid2D):
         True
  
         >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._getCellFaceIDs(),
+        ...        or numerix.allclose(mesh.cellFaceIDs,
         ...                            [[0, 1, 2, 3],
         ...                             [7, 6, 10, 9],
         ...                             [2, 3, 0, 1],

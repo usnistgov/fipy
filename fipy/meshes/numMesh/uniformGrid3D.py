@@ -169,6 +169,8 @@ class UniformGrid3D(Grid3D):
         
     def _getCellFaceIDs(self):
         return MA.array(self._createCells())
+
+    cellFaceIDs = property(_getCellFaceIDs)
         
     def _getXYFaceIDs(self):
         ids = numerix.arange(0, self.numberOfXYFaces)
@@ -220,7 +222,7 @@ class UniformGrid3D(Grid3D):
         return interiorFaces
 
     def _getCellFaceOrientations(self):
-        tmp = numerix.take(self.getFaceCellIDs()[0], self._getCellFaceIDs())
+        tmp = numerix.take(self.getFaceCellIDs()[0], self.cellFaceIDs)
         return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
 
     def _getAdjacentCellIDs(self):

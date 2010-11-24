@@ -285,7 +285,6 @@ class Mesh(object):
             Traceback (most recent call last):
             ...
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
-            
         """ 
         newCoords = self.vertexCoords * factor
         newmesh = Mesh(vertexCoords=newCoords, 
@@ -313,7 +312,7 @@ class Mesh(object):
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
            >>> from fipy.tools import parallel
-           >>> print parallel.procID != 0 or (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
            ...                                                           [7, 8, 10, 11],
            ...                                                           [2, 3, 4, 5],
            ...                                                           [6, 7, 9, 10]]).flatten().all()
@@ -321,7 +320,7 @@ class Mesh(object):
 
            >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
 
-           >>> print parallel.procID != 0 or (mesh._getCellFaceIDs() == [[0, 1, 2, 3],
+           >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
            ...                                                           [7, 6, 10, 9],
            ...                                                           [2, 3, 4, 5],
            ...                                                           [6, 7, 9, 10]]).flatten().all()
@@ -423,8 +422,8 @@ class Mesh(object):
         ## compute vertex correlates
 
         ## only try to match exterior (X) vertices
-        self_Xvertices = numerix.unique(selfc._getFaceVertexIDs().filled()[..., selfc.getExteriorFaces().getValue()].flatten())
-        other_Xvertices = numerix.unique(other._getFaceVertexIDs().filled()[..., other.getExteriorFaces().getValue()].flatten())
+        self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[..., selfc.getExteriorFaces().getValue()].flatten())
+        other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[..., other.getExteriorFaces().getValue()].flatten())
 
         self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
         other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
@@ -594,14 +593,8 @@ class Mesh(object):
         cellToCellIDs = self._getCellToCellIDs()
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
-    def _getFaceVertexIDs(self):
-        return self.faceVertexIDs
-
-    def _getCellFaceIDs(self):
-        return self.cellFaceIDs
-
     def _getNumberOfFacesPerCell(self):
-        cellFaceIDs = self._getCellFaceIDs()
+        cellFaceIDs = self.cellFaceIDs
         if type(cellFaceIDs) is type(MA.array(0)):
             ## bug in count returns float values when there is no mask
             return numerix.array(cellFaceIDs.count(axis=0), 'l')
@@ -1180,10 +1173,10 @@ class Mesh(object):
         return faceTangents1, faceTangents2
         
     def _calcCellToCellDistances(self):
-        return numerix.take(self.cellDistances, self._getCellFaceIDs())
+        return numerix.take(self.cellDistances, self.cellFaceIDs)
 
     def _calcCellNormals(self):
-        cellNormals = numerix.take(self._getFaceNormals(), self._getCellFaceIDs(), axis=1)
+        cellNormals = numerix.take(self._getFaceNormals(), self.cellFaceIDs, axis=1)
         cellFaceCellIDs = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
         cellIDs = numerix.repeat(numerix.arange(self.numberOfCells)[numerix.newaxis,...], 
                                  self._getMaxFacesPerCell(), 

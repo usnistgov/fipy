@@ -82,7 +82,7 @@ class _GaussCellGradVariable(CellVariable):
         N = self.mesh.getNumberOfCells()
         M = self.mesh._getMaxFacesPerCell()
         
-        ids = self.mesh._getCellFaceIDs()
+        ids = self.mesh.cellFaceIDs
 
         orientations = self.mesh._getCellFaceOrientations()
         volumes = self.mesh.getCellVolumes()

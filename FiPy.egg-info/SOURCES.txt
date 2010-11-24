@@ -316,8 +316,6 @@ fipy/meshes/periodicGrid2D.py
 fipy/meshes/skewedGrid2D.py
 fipy/meshes/test.py
 fipy/meshes/tri2D.py
-fipy/meshes/common/__init__.py
-fipy/meshes/common/mesh.py
 fipy/meshes/numMesh/GmshTest2D.msh
 fipy/meshes/numMesh/__init__.py
 fipy/meshes/numMesh/cell.py
@@ -343,14 +341,6 @@ fipy/meshes/numMesh/tri2D.py
 fipy/meshes/numMesh/uniformGrid1D.py
 fipy/meshes/numMesh/uniformGrid2D.py
 fipy/meshes/numMesh/uniformGrid3D.py
-fipy/meshes/pyMesh/__init__.py
-fipy/meshes/pyMesh/cell.py
-fipy/meshes/pyMesh/face.py
-fipy/meshes/pyMesh/face2D.py
-fipy/meshes/pyMesh/grid2D.py
-fipy/meshes/pyMesh/mesh.py
-fipy/meshes/pyMesh/test.py
-fipy/meshes/pyMesh/vertex.py
 fipy/models/__init__.py
 fipy/models/test.py
 fipy/models/levelSet/__init__.py

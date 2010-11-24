@@ -46,7 +46,7 @@ class _AddOverFacesVariable(CellVariable):
         self.faceVariable = self._requires(faceVariable)
 
     def _calcValuePy(self):
-        ids = self.mesh._getCellFaceIDs()
+        ids = self.mesh.cellFaceIDs
         
         contributions = numerix.take(self.faceVariable, ids)
 
@@ -56,7 +56,7 @@ class _AddOverFacesVariable(CellVariable):
     def _calcValueIn(self):
 
         NCells = self.mesh.getNumberOfCells()
-        ids = self.mesh._getCellFaceIDs()
+        ids = self.mesh.cellFaceIDs
 
         val = self._getArray().copy()
         
@@ -69,7 +69,7 @@ class _AddOverFacesVariable(CellVariable):
           value[i] = 0.;
           for(j = 0; j < numberOfCellFaces; j++)
             {
-              // _getCellFaceIDs() can be masked, which caused subtle and 
+              // cellFaceIDs can be masked, which caused subtle and 
               // unreproduceable problems on OS X (who knows why not elsewhere)
               long id = ids[i + j * numberOfCells];
               if (id >= 0) { 
