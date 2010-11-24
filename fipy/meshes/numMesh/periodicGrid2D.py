@@ -51,7 +51,7 @@ class PeriodicGrid2D(Grid2D):
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
         
         >>> print (parallel.procID > 0 or 
-        ...        numerix.allclose(numerix.nonzero(mesh.getExteriorFaces())[0],
+        ...        numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
         ...                         [ 4,  5,  8, 11]))
         True
 

@@ -216,7 +216,7 @@ class DiffusionTerm(Term):
     def _getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
         interiorCoeff = numerix.array(coeff)
         
-        interiorCoeff[mesh.getExteriorFaces().getValue()] = 0
+        interiorCoeff[mesh.exteriorFaces.getValue()] = 0
         
         interiorCoeff = numerix.take(interiorCoeff, mesh.cellFaceIDs)
 
@@ -224,7 +224,7 @@ class DiffusionTerm(Term):
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
-        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
+        interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
         
         interiorFaceCellIDs = numerix.take(mesh.getFaceCellIDs(), interiorFaces, axis=1)
 

@@ -125,7 +125,7 @@ class Mesh2D(Mesh):
     def _getNonOrthogonality(self):
         
         exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],))
-        numerix.put(exteriorFaceArray, numerix.nonzero(self.getExteriorFaces()), 1)
+        numerix.put(exteriorFaceArray, numerix.nonzero(self.exteriorFaces), 1)
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) 
         # what we put in for the "fill" doesn't matter because only exterior 
         # faces have anything masked, and exterior faces have their displacement 
@@ -192,7 +192,7 @@ class Mesh2D(Mesh):
 
         ## the following allows the 2D mesh to be in 3D space, this can be the case for a
         ## GmshImporter2DIn3DSpace which would then be extruded.
-        oldVertices = mesh.getVertexCoords()
+        oldVertices = mesh.vertexCoords
         if oldVertices.shape[0] == 2:
             oldVertices = numerix.resize(oldVertices, (3, len(oldVertices[0])))
             oldVertices[2] = 0
@@ -290,12 +290,12 @@ class Mesh2D(Mesh):
             
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 13, 17, 19))
             >>> print numerix.allequal(externalFaces, 
-            ...                        numerix.nonzero(mesh.getExteriorFaces()))
+            ...                        numerix.nonzero(mesh.exteriorFaces))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 12, 14, 15, 16, 18))
             >>> print numerix.allequal(internalFaces, 
-            ...                        numerix.nonzero(mesh.getInteriorFaces()))
+            ...                        numerix.nonzero(mesh.interiorFaces))
             1
 
             >>> faceCellIds = MA.masked_values((( 0,  1,  2, 0,  1, 2,  3,  4,  5,  

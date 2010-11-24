@@ -311,21 +311,21 @@ class CellVariable(_MeshVariable):
         >>> L = 1
         >>> R = 2
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = (R - L) * (0.5 / 1.) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
         
         >>> mesh = Grid1D(dx = (2., 4.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = (R - L) * (1.0 / 3.0) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
 
         >>> mesh = Grid1D(dx = (10., 100.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = (R - L) * (5.0 / 55.0) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
@@ -387,21 +387,21 @@ class CellVariable(_MeshVariable):
         >>> L = 1
         >>> R = 2
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = L * R / ((R - L) * (0.5 / 1.) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
         
         >>> mesh = Grid1D(dx = (2., 4.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = L * R / ((R - L) * (1.0 / 3.0) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
 
         >>> mesh = Grid1D(dx = (10., 100.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = L * R / ((R - L) * (5.0 / 55.0) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True

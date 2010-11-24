@@ -335,7 +335,7 @@ class Mesh(object):
         faces = FaceVariable(mesh=self, value=False)
         faces[faces0] = True
         faces[faces1] = True
-        assert (faces | self.getExteriorFaces() == self.getExteriorFaces()).all()
+        assert (faces | self.exteriorFaces == self.exteriorFaces).all()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
         assert numerix.alltrue(numerix.take(self.areaProjections, faces0, axis=1) 
@@ -422,8 +422,8 @@ class Mesh(object):
         ## compute vertex correlates
 
         ## only try to match exterior (X) vertices
-        self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[..., selfc.getExteriorFaces().getValue()].flatten())
-        other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[..., other.getExteriorFaces().getValue()].flatten())
+        self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[..., selfc.exteriorFaces.getValue()].flatten())
+        other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[..., other.exteriorFaces.getValue()].flatten())
 
         self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
         other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
@@ -637,11 +637,11 @@ class Mesh(object):
     def _calcInteriorAndExteriorCellIDs(self):
         try:
             import sets
-            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.getExteriorFaces().getValue()])
+            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.exteriorFaces.getValue()])
             interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
             exteriorCellIDs = list(self.exteriorCellIDs)
         except:
-            exteriorCellIDs = self.faceCellIDs[0, self.getExteriorFaces().getValue()]
+            exteriorCellIDs = self.faceCellIDs[0, self.exteriorFaces.getValue()]
             tmp = numerix.zeros(self.numberOfCells)
             numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs)))
             exteriorCellIDs = numerix.nonzero(tmp)            
@@ -704,8 +704,9 @@ class Mesh(object):
         return numerix.add.accumulate(x)
 
     """get Topology methods"""
-
+    
     def getVertexCoords(self):
+        """TODO: replace this with a warning."""
         if hasattr(self, 'vertexCoords'):
             return self.vertexCoords
         else:
@@ -714,15 +715,17 @@ class Mesh(object):
     def getExteriorFaces(self):
         """
         Return only the faces that have one neighboring cell.
+        TODO: replace with a warning.
         """
         return self.exteriorFaces
             
     def getInteriorFaces(self):
         """
         Return only the faces that have two neighboring cells.
+        TODO: replace with a warning.
         """
         return self.interiorFaces
-        
+
     def getFaceCellIDs(self):
         return self.faceCellIDs
 
@@ -1411,12 +1414,12 @@ class Mesh(object):
 
             >>> externalFaces = numerix.array((0, 1, 2, 4, 5, 6, 7, 8, 9))
             >>> print numerix.allequal(externalFaces, 
-            ...                        numerix.nonzero(mesh.getExteriorFaces()))
+            ...                        numerix.nonzero(mesh.exteriorFaces))
             1
 
             >>> internalFaces = numerix.array((3,))
             >>> print numerix.allequal(internalFaces, 
-            ...                        numerix.nonzero(mesh.getInteriorFaces()))
+            ...                        numerix.nonzero(mesh.interiorFaces))
             1
 
             >>> from fipy.tools.numerix import MA
@@ -1650,7 +1653,7 @@ class Mesh(object):
         cell_array = tvtk.CellArray()
         cell_array.set_cells(num, cells)
 
-        points = self.getVertexCoords()
+        points = self.vertexCoords
         points = self._toVTK3D(points)
         ug = tvtk.UnstructuredGrid(points=points)
         

@@ -435,12 +435,12 @@ class Grid3D(Mesh):
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
             >>> print parallel.procID > 0 or numerix.allequal(externalFaces, 
-            ...                              numerix.nonzero(mesh.getExteriorFaces()))
+            ...                              numerix.nonzero(mesh.exteriorFaces))
             True
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
             >>> print parallel.procID > 0 or  numerix.allequal(internalFaces, 
-            ...                               numerix.nonzero(mesh.getInteriorFaces()))
+            ...                               numerix.nonzero(mesh.interiorFaces))
             True
 
             >>> from fipy.tools.numerix import MA

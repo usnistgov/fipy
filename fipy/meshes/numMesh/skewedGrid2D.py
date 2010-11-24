@@ -66,7 +66,7 @@ class SkewedGrid2D(Mesh2D):
 
         self.numberOfVertices = self.grid._getNumberOfVertices()
         
-        vertices = self.grid.getVertexCoords()
+        vertices = self.grid.vertexCoords
 
         changedVertices = numerix.zeros(vertices.shape, 'd')
 

@@ -184,7 +184,7 @@ class UniformGrid3D(Grid3D):
         ids = numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces, self.numberOfFaces)
         return ids.reshape((self.nz, self.ny, self.nx + 1)).swapaxes(0,2)
 
-    def getExteriorFaces(self):
+    def _getExteriorFaces(self):
         """
         Return only the faces that have one neighboring cell.
         """
@@ -203,8 +203,10 @@ class UniformGrid3D(Grid3D):
         exteriorFaces = FaceVariable(mesh=self, value=False)
         exteriorFaces[exteriorIDs] = True
         return exteriorFaces
+
+    exteriorFaces = property(_getExteriorFaces)
         
-    def getInteriorFaces(self):
+    def _getInteriorFaces(self):
         """
         Return only the faces that have two neighboring cells
         """
@@ -220,6 +222,8 @@ class UniformGrid3D(Grid3D):
         interiorFaces = FaceVariable(mesh=self, value=False)
         interiorFaces[interiorIDs] = True
         return interiorFaces
+
+    interiorFaces = property(_getInteriorFaces)
 
     def _getCellFaceOrientations(self):
         tmp = numerix.take(self.getFaceCellIDs()[0], self.cellFaceIDs)
@@ -261,8 +265,10 @@ class UniformGrid3D(Grid3D):
         
 ##         from numMesh/mesh
 
-    def getVertexCoords(self):
+    def _getVertexCoords(self):
         return self._createVertices() + self.origin
+
+    vertexCoords = property(_getVertexCoords)
 
     def getFaceCellIDs(self):
         XYids = MA.zeros((2, self.nx, self.ny, self.nz + 1), 'l')
@@ -598,12 +604,12 @@ class UniformGrid3D(Grid3D):
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
             >>> print parallel.procID > 0 or numerix.allequal(externalFaces, 
-            ...                              numerix.nonzero(mesh.getExteriorFaces()))
+            ...                              numerix.nonzero(mesh.exteriorFaces))
             True
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
             >>> print parallel.procID > 0 or numerix.allequal(internalFaces, 
-            ...                              numerix.nonzero(mesh.getInteriorFaces()))
+            ...                              numerix.nonzero(mesh.interiorFaces))
             True
 
             >>> from fipy.tools.numerix import MA

@@ -120,7 +120,7 @@ class Gist2DViewer(_GistViewer):
 
         vertexIDs = self.mesh._getOrderedCellVertexIDs()
 
-        vertexCoords = self.mesh.getVertexCoords()
+        vertexCoords = self.mesh.vertexCoords
 
         xCoords = numerix.take(vertexCoords[0], vertexIDs).flatten("FORTRAN")
         yCoords = numerix.take(vertexCoords[1], vertexIDs).flatten("FORTRAN")
@@ -140,7 +140,7 @@ class Gist2DViewer(_GistViewer):
         self._plot()
         
         faceVertexIDs = self.mesh._getFaceVertexIDs()
-        vertexCoords = self.mesh.getVertexCoords()
+        vertexCoords = self.mesh.vertexCoords
         
         x0 = numerix.take(vertexCoords[0], faceVertexIDs[0])
         y0 = numerix.take(vertexCoords[1], faceVertexIDs[0])

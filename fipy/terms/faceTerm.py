@@ -147,7 +147,7 @@ class FaceTerm(Term):
 
         mesh = var.getMesh()
         id1, id2 = mesh._getAdjacentCellIDs()
-        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
+        interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
         
         id1 = numerix.take(id1, interiorFaces)
         id2 = numerix.take(id2, interiorFaces)

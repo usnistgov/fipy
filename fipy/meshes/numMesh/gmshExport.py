@@ -76,7 +76,7 @@ def exportAsMesh(mesh, filename):
     outFile = open(filename, mode = 'w')
     ## do the nodes
     outFile.write("$NOD\n")
-    coords = mesh.getVertexCoords()
+    coords = mesh.vertexCoords
     dimensions, numNodes = coords.shape
     outFile.write(str(numNodes))
     outFile.write('\n')

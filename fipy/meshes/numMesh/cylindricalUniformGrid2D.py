@@ -116,12 +116,12 @@ class CylindricalUniformGrid2D(UniformGrid2D):
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
             >>> print parallel.procID > 0 or  numerix.allequal(externalFaces, 
-            ...                                                numerix.nonzero(mesh.getExteriorFaces()))
+            ...                                                numerix.nonzero(mesh.exteriorFaces))
             True
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
             >>> print parallel.procID > 0 or numerix.allequal(internalFaces, 
-            ...                                               numerix.nonzero(mesh.getInteriorFaces()))
+            ...                                               numerix.nonzero(mesh.interiorFaces))
             True
 
             >>> from fipy.tools.numerix import MA

@@ -195,7 +195,7 @@ class ConvectionTerm(FaceTerm):
                 else:
                     alpha = 0.0
 
-                exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
+                exteriorCoeff =  self.coeff * mesh.exteriorFaces
 
                 self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
                 self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.getCellVolumes()

@@ -114,7 +114,7 @@ class UniformGrid1D(Grid1D):
 
     def _getConcatenableMesh(self):
         from fipy.meshes.numMesh.mesh1D import Mesh1D
-        return Mesh1D(vertexCoords = self.getVertexCoords(), 
+        return Mesh1D(vertexCoords = self.vertexCoords, 
                       faceVertexIDs = self._createFaces(), 
                       cellFaceIDs = self._createCells())
                       
@@ -127,11 +127,13 @@ class UniformGrid1D(Grid1D):
 
     cellFaceIDs = property(_getCellFaceIDs)
         
-    def getInteriorFaces(self):
+    def _getInteriorFaces(self):
         from fipy.variables.faceVariable import FaceVariable
         interiorFaces = FaceVariable(mesh=self, value=False)
         interiorFaces[numerix.arange(self.numberOfFaces-2) + 1] = True
         return interiorFaces
+
+    interiorFaces = property(_getInteriorFaces)
             
     def _getCellFaceOrientations(self):
         orientations = numerix.ones((2, self.numberOfCells))
@@ -168,8 +170,10 @@ class UniformGrid1D(Grid1D):
         
 ##         from numMesh/mesh
 
-    def getVertexCoords(self):
+    def _getVertexCoords(self):
         return self.getFaceCenters()
+
+    vertexCoords = property(_getVertexCoords)
 
     def getFaceCellIDs(self):
         c1 = numerix.arange(self.numberOfFaces)

@@ -64,7 +64,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         
         mesh = oldArray.getMesh()
 
-        interiorIDs = numerix.nonzero(mesh.getInteriorFaces())[0]
+        interiorIDs = numerix.nonzero(mesh.interiorFaces)[0]
         interiorFaceAreas = numerix.take(mesh._getFaceAreas(), interiorIDs)
         interiorFaceNormals = numerix.take(mesh._getOrientedFaceNormals(), interiorIDs, axis=-1)
         

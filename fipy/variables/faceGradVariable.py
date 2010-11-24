@@ -50,7 +50,7 @@ class _FaceGradVariable(FaceVariable):
         dAP = self.mesh._getCellDistances()
         id1, id2 = self.mesh._getAdjacentCellIDs()
         N2 = numerix.take(self.var.getValue(),id2)
-        faceMask = numerix.array(self.mesh.getExteriorFaces())
+        faceMask = numerix.array(self.mesh.exteriorFaces)
         N2[..., faceMask] = self.var.getFaceValue()[..., faceMask]
         N = (N2 - numerix.take(self.var,id1)) / dAP
 

@@ -150,7 +150,7 @@ class UniformGrid2D(Grid2D):
 
     cellFaceIDs = property(_getCellFaceIDs)
         
-    def getExteriorFaces(self):
+    def _getExteriorFaces(self):
         """
         Return only the faces that have one neighboring cell.
         """
@@ -163,8 +163,10 @@ class UniformGrid2D(Grid2D):
         exteriorFaces = FaceVariable(mesh=self, value=False)
         exteriorFaces[exteriorIDs] = True
         return exteriorFaces
+
+    exteriorFaces = property(_getExteriorFaces)
         
-    def getInteriorFaces(self):
+    def _getInteriorFaces(self):
         """
         Return only the faces that have two neighboring cells.
         """
@@ -183,6 +185,8 @@ class UniformGrid2D(Grid2D):
         interiorFaces = FaceVariable(mesh=self, value=False)
         interiorFaces[interiorIDs] = True
         return interiorFaces
+
+    interiorFaces = property(_getInteriorFaces)
 
     def _getCellFaceOrientations(self):
         cellFaceOrientations = numerix.ones((4, self.numberOfCells))
@@ -292,8 +296,10 @@ class UniformGrid2D(Grid2D):
         
 ##         from numMesh/mesh
 
-    def getVertexCoords(self):
+    def _getVertexCoords(self):
         return self._createVertices() + self.origin
+
+    vertexCoords = property(_getVertexCoords)
 
     def getFaceCellIDs(self):
         return inline._optionalInline(self._getFaceCellIDsIn, self._getFaceCellIDsPy)
@@ -646,12 +652,12 @@ class UniformGrid2D(Grid2D):
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
             >>> print parallel.procID > 0 or numerix.allequal(externalFaces, 
-            ...                                               numerix.nonzero(mesh.getExteriorFaces()))
+            ...                                               numerix.nonzero(mesh.exteriorFaces))
             True
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
             >>> print parallel.procID > 0 or numerix.allequal(internalFaces, 
-            ...                                               numerix.nonzero(mesh.getInteriorFaces()))
+            ...                                               numerix.nonzero(mesh.interiorFaces))
             True
 
             >>> from fipy.tools.numerix import MA
