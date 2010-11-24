@@ -57,30 +57,43 @@ class _CoupledBinaryTerm(_BinaryTerm):
         return _CoupledCellVariable(self._getVars())
     
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """
+        Test offsets
 
-        matricesIJ = []
+        >>> from f
+        """
+
+        N = var.getMesh().getNumberOfCells()
+        matrix = 0
         RHSvectorsJ = []
 
-        for term in self._getCoupledTerms():
+        for i, term in enumerate(self._getCoupledTerms()):
 
-            matricesI = []
             RHSvector = 0
-            for tmpVar in self._getVars():
-                tmpMatrix = SparseMatrix.__class__(mesh=var.getMesh())
+            for j, tmpVar in enumerate(self._getVars()):
+
+                class OffsetSparseMatrix(SparseMatrix):
+                    def put(self, vector, id1, id2):
+                        SparseMatrix.put(self, vector, id1 + N * i, id2 + N * j)
+
+                    def addAt(self, vector, id1, id2):
+                        SparseMatrix.addAt(self, vector, id1 + N * i, id2 + N * j)
+
+                    def getSize(self):
+                        return len(self._getVars()) * self.mesh.getNumberOfVariables()
+
                 tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix(tmpVar,
-                                                                    tmpMatrix,
+                                                                    OffsetSparseMatrix,
                                                                     boundaryConditions=(),
                                                                     dt=dt,
                                                                     transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.getMesh()),
                                                                     diffusionGeomCoeff=term._getDiffusionGeomCoeff(tmpVar.getMesh()))
 
                 RHSvector += tmpRHSvector
-                matricesI += [tmpMatrix]
+                matrix += tmpMatrix
 
             RHSvectorsJ += [CellVariable(value=RHSvector, mesh=var.getMesh())]
-            matricesIJ += [matricesI]
 
-        matrix = tmpMatrix.getCoupledClass()(mesh=var.getMesh(), matrices=matricesIJ)
         RHSvector = _CoupledCellVariable(RHSvectorsJ)
 
 	return (var, matrix, RHSvector)

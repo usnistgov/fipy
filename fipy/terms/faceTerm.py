@@ -155,17 +155,18 @@ class FaceTerm(Term):
 
             N = len(var)
             b = numerix.zeros((N),'d')
+            L = SparseMatrix(mesh=mesh)
 
             weight = self._getWeight(mesh, diffusionGeomCoeff)
 
             if weight.has_key('implicit'):
-                self._implicitBuildMatrix(SparseMatrix, SparseMatrix, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
+                self._implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
 
             if weight.has_key('explicit'):
                 self._explicitBuildMatrix(SparseMatrix, var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
 
-            return (var, SparseMatrix, b)
+            return (var, L, b)
 
         else:
-            return (var, SparseMatrix, 0)
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)
         

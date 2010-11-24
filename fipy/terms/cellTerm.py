@@ -125,14 +125,15 @@ class CellTerm(Term):
 
             N = len(var)
             b = numerix.zeros((N),'d')
+            L = SparseMatrix(mesh=var.getMesh())
 
             coeffVectors = self._getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-            inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, SparseMatrix, var.getOld(), b, dt, coeffVectors)
+            inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
 
-            return (var, SparseMatrix, b)
+            return (var, L, b)
         else:
-            return (var, SparseMatrix, 0)
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)
 
     def _test(self):
         """

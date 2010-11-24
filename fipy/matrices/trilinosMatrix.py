@@ -210,8 +210,6 @@ class _TrilinosMatrixBase(_SparseMatrix):
             return self
         else:
             return self._add(other)
-
-    __radd__ = __add__
         
     def __sub__(self, other):
         if other is 0:
@@ -587,19 +585,19 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
                                      bandwidth=bandwidth)
 
 class _TrilinosMeshMatrix(_TrilinosMatrix):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, size=None):
         """Creates a `_TrilinosMatrix` associated with a `Mesh`
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: ???
-          - `numberOfVariables`: How many coupled variables?
           
         Tests
 
         >>> from fipy import *
-        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3)
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5))
+        >>> matrix.__setattr__('getSize', size = 3 * mesh.getNumberofCells)
         >>> print matrix._getGlobalNonOverlappingRowIDs()
         [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
         >>> print matrix._getGlobalOverlappingRowIDs()
@@ -609,23 +607,25 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
 
         """
         self.mesh = mesh
-        self.numberOfVariables = numberOfVariables
         
         comm = mesh.communicator.epetra_comm
         globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
         globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
         nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingRowIDs), 0, comm)
         overlappingMap = Epetra.Map(-1, list(globalOverlappingRowIDs), 0, comm)
+
+        if size is None:
+            size = self.getSize()
         
         _TrilinosMatrix.__init__(self, 
-                                 size=self._getNumberOfRows(), 
+                                 size=self.getSize(), 
                                  bandwidth=bandwidth, 
                                  sizeHint=sizeHint, 
                                  nonOverlappingMap=nonOverlappingMap,
                                  overlappingMap=overlappingMap)
 
-    def _getNumberOfRows(self):
-        return self.mesh.getNumberOfCells() * self.numberOfVariables
+    def getSize(self):
+        return self.mesh.getNumberOfCells()
 
     def _rowToCellIDs(self, IDs):
          N = len(IDs)

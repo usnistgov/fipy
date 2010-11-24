@@ -80,9 +80,8 @@ class _BinaryTerm(Term):
         RHSvector = 0
 
         for term in (self.term, self.other):
-            termMatrix = SparseMatrix.__class__(mesh=var.getMesh())
             termVar, termMatrix, termRHSvector = term._buildMatrix(var,
-                                                                   termMatrix,
+                                                                   SparseMatrix,
                                                                    boundaryConditions=boundaryConditions,
                                                                    dt=dt,
                                                                    transientGeomCoeff=transientGeomCoeff,
@@ -93,7 +92,7 @@ class _BinaryTerm(Term):
                 self._viewer.title = "%s %s" % (var.name, term.__class__.__name__) 
                 self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector) 
                 raw_input() 
-                
+
             matrix += termMatrix
             RHSvector += termRHSvector
 

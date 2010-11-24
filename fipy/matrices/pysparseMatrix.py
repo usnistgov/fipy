@@ -298,7 +298,7 @@ class _PysparseMatrix(_PysparseMatrixBase):
         _PysparseMatrixBase.__init__(self, matrix=matrix, bandwidth=bandwidth)
 
 class _PysparseMeshMatrix(_PysparseMatrix):
-    
+
     def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None):
         """Creates a `_PysparseMatrix` associated with a `Mesh`.
 
@@ -307,8 +307,11 @@ class _PysparseMeshMatrix(_PysparseMatrix):
           - `bandwidth`: The proposed band width of the matrix.
         """
         self.mesh = mesh
-        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
-        
+        _PysparseMatrix.__init__(self, size=self.getSize(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
+
+    def getSize(self):
+        return self.mesh.getNumberOfCells()
+    
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):
             return _PysparseMeshMatrix(mesh=self.mesh, 
@@ -362,30 +365,30 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
         """
         _PysparseIdentityMatrix.__init__(self, size=mesh.getNumberOfCells())
 
-class _CoupledPysparseMeshMatrix(_PysparseMeshMatrix):
-    def __init__(self, mesh, matrices, bandwidth=0, sizeHint=None, matrix=None):
-        self.matrices = matrices
-        self.mesh = mesh
+## class _CoupledPysparseMeshMatrix(_PysparseMeshMatrix):
+##     def __init__(self, mesh, matrices, bandwidth=0, sizeHint=None, matrix=None):
+##         self.matrices = matrices
+##         self.mesh = mesh
        
-        N = mesh.getNumberOfCells()
-        M = len(matrices)
-        _PysparseMatrix.__init__(self,
-                                 size=N * M,
-                                 bandwidth=bandwidth,
-                                 sizeHint=sizeHint,
-                                 matrix=matrix)
+##         N = mesh.getNumberOfCells()
+##         M = len(matrices)
+##         _PysparseMatrix.__init__(self,
+##                                  size=N * M,
+##                                  bandwidth=bandwidth,
+##                                  sizeHint=sizeHint,
+##                                  matrix=matrix)
                                  
-        for i, row in enumerate(matrices):
-            for j, matrix in enumerate(row):
-                self.matrix[i*N:(i+1)*N, j*N:(j+1)*N] = matrix.matrix
+##         for i, row in enumerate(matrices):
+##             for j, matrix in enumerate(row):
+##                 self.matrix[i*N:(i+1)*N, j*N:(j+1)*N] = matrix.matrix
 
-    def _getTrilinosMatrix(self):
-        """
-        Return a trilinos matrix of the same kind
-        """
+##     def _getTrilinosMatrix(self):
+##         """
+##         Return a trilinos matrix of the same kind
+##         """
         
-        from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
-        return _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth, numberOfVariables=len(self.matrices))
+##         from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
+##         return _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth, numberOfVariables=len(self.matrices))
 
 def _test(): 
     import doctest

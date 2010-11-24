@@ -44,7 +44,7 @@ def _suite():
         'matrices.test',
         'meshes.test',
         'variables.test',
-##        'viewers.test',
+        'viewers.test',
 	'boundaryConditions.test',
     ), base = __name__)
     

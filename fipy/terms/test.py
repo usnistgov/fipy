@@ -49,7 +49,6 @@ def _suite():
             'binaryTerm',
             'upwindConvectionTerm',
             'implicitSourceTerm',
-            'explicitDiffusionTerm',
         ), base = __name__)
 
 if __name__ == '__main__':

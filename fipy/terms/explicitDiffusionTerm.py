@@ -52,25 +52,9 @@ class ExplicitDiffusionTerm(DiffusionTerm):
     """
     
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """
-        Tests
-
-        >>> from fipy import *
-        >>> m = Grid1D(nx=1)
-        >>> v = CellVariable(mesh=m)
-        >>> ExplicitDiffusionTerm().solve(v)
-
-        """
         if var is self.var or self.var is None:
             varOld, L, b = DiffusionTerm._buildMatrix(self, var.getOld(), SparseMatrix, boundaryConditions = boundaryConditions, dt = dt,
                                                    transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-            return (var, SparseMatrix, b - L * var.getValue())
+            return (var, SparseMatrix(mesh=var.getMesh()), b - L * var.getValue())
         else:
-            return (var, SparseMatrix, 0)
-
-def _test(): 
-    import doctest
-    return doctest.testmod()
-
-if __name__ == "__main__":
-    _test()
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)

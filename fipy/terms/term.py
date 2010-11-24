@@ -113,7 +113,7 @@ class Term:
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        var, matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass()(mesh=var.getMesh()), boundaryConditions, dt,
+        var, matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
                                                    transientGeomCoeff=self._getTransientGeomCoeff(var.getMesh()),
                                                    diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.getMesh()))
         
