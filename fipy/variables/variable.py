@@ -521,7 +521,7 @@ class Variable(object):
         [2 8 5 8]
 
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> m = Grid2D(nx=2, ny=2)
         >>> x, y = m.getCellCenters()
         >>> v = CellVariable(mesh=m, rank=1, value=(x, y))
@@ -1177,7 +1177,7 @@ class Variable(object):
         True
         >>> print a & b
         [0 0 0 1]
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx=4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
@@ -1199,7 +1199,7 @@ class Variable(object):
         True
         >>> print a | b
         [0 1 1 1]
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx=4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
@@ -1267,7 +1267,7 @@ class Variable(object):
     def sqrt(self):
         """
         
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
             >>> mesh= Grid1D(nx=3)
 
             >>> from fipy.variables.cellVariable import CellVariable

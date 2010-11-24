@@ -37,7 +37,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.numMesh.grid2D import Grid2D
+from fipy.meshes.grid2D import Grid2D
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -133,7 +133,7 @@ class UniformGrid2D(Grid2D):
                              origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
 
     def _getConcatenableMesh(self):
-        from fipy.meshes.numMesh.grid2D import Grid2D
+        from fipy.meshes.grid2D import Grid2D
         args = self.args.copy()
         origin = args['origin']
         from fipy.tools import serial

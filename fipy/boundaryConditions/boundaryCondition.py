@@ -56,7 +56,7 @@ class BoundaryCondition:
         invoked with internal faces. Don't use the `BoundaryCondition`
         class in this manner. This is merely a test.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx = 2)
         >>> from fipy.tools import parallel
         >>> if parallel.procID == 0:

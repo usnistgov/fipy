@@ -46,7 +46,7 @@ class ModularVariable(CellVariable):
     The following examples show how `ModularVariable` works. When
     subtracting the answer wraps back around the circle.
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> mesh = Grid1D(nx = 2)
     >>> from fipy.tools import numerix
     >>> pi = numerix.pi
@@ -84,7 +84,7 @@ class ModularVariable(CellVariable):
 
     def _setValue(self, value, unit=None, array=None):
         """
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx = 4)
         >>> from fipy.variables.modularVariable import ModularVariable
         >>> var = ModularVariable(mesh = mesh, value = 1., hasOld = 1)
@@ -104,7 +104,7 @@ class ModularVariable(CellVariable):
         Set the values of the previous solution sweep to the current values.
         Test case due to bug.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx = 1)
         >>> var = ModularVariable(mesh=mesh, value=1., hasOld=1)
         >>> var.updateOld()

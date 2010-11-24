@@ -59,7 +59,7 @@ class DistanceVariable(CellVariable):
 
     Here we will define a few test cases. Firstly a 1D test case
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> from fipy.tools import serial
     >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serial)
     >>> from distanceVariable import DistanceVariable
@@ -83,7 +83,7 @@ class DistanceVariable(CellVariable):
 
     >>> dx = 1.
     >>> dy = 2.
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
     >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, -1, 1))
 
@@ -435,7 +435,7 @@ class DistanceVariable(CellVariable):
 
         A simple 1D test:
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(dx = 1., nx = 4)
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-1.5, -0.5, 0.5, 1.5))
@@ -446,7 +446,7 @@ class DistanceVariable(CellVariable):
 
         A 2D test case:
         
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -491,7 +491,7 @@ class DistanceVariable(CellVariable):
         
         Returns the interface normals over the cells.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.cellVariable import CellVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -528,7 +528,7 @@ class DistanceVariable(CellVariable):
 
         Returns the normals on the boundary faces only, the other are set to zero.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -551,7 +551,7 @@ class DistanceVariable(CellVariable):
 
         Returns 1 for faces on boundary and 0 otherwise.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -573,7 +573,7 @@ class DistanceVariable(CellVariable):
 
         Returns 1 for those cells on the interface:
 
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -594,7 +594,7 @@ class DistanceVariable(CellVariable):
 
         Returns the cells values at the faces.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.cellVariable import CellVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -618,7 +618,7 @@ class DistanceVariable(CellVariable):
 
         Return the face level set normals.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 

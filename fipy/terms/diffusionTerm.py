@@ -393,7 +393,7 @@ class DiffusionTerm(Term):
         r"""
         Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix as SparseMatrix
         >>> from fipy.tools import parallel
         >>> procID = parallel.procID
@@ -580,7 +580,7 @@ class DiffusionTerm(Term):
         The following tests are to check that DiffusionTerm can take any of the four
         main Variable types.
 
-        >>> from fipy.meshes.tri2D import Tri2D
+        >>> from fipy.meshes import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
         >>> term = DiffusionTerm(CellVariable(value = 1, mesh = mesh))
         >>> print term._getGeomCoeff(mesh)[0]
@@ -611,7 +611,7 @@ class DiffusionTerm(Term):
 
         Anisotropy test
 
-        >>> from fipy.meshes.tri2D import Tri2D
+        >>> from fipy.meshes import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
         >>> term = DiffusionTerm((((1, 2), (3, 4)),))
         >>> print term._getGeomCoeff(mesh)

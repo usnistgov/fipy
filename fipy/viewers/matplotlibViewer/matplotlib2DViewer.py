@@ -116,7 +116,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         self._plot()
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.mesh2D import Mesh2D
+        from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if ((isinstance(var.getMesh(), Mesh2D) and isinstance(var, CellVariable))

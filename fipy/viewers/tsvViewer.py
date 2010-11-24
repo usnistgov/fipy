@@ -131,7 +131,7 @@ class TSVViewer(_Viewer):
         "plot" the coordinates and values of the variables to `filename`. 
         If `filename` is not provided, "plots" to stdout.
         
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> m = Grid1D(nx = 3, dx = 0.4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> v = CellVariable(mesh = m, name = "var", value = (0, 2, 5))
@@ -141,7 +141,7 @@ class TSVViewer(_Viewer):
         0.6     2       6.25
         1       5       3.75
         
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> m = Grid2D(nx = 2, dx = .1, ny = 2, dy = 0.3)
         >>> v = CellVariable(mesh = m, name = "var", value = (0, 2, -2, 5))
         >>> TSVViewer(vars = (v, v.getGrad())).plot() #doctest: +NORMALIZE_WHITESPACE

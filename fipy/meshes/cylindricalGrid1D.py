@@ -2,7 +2,7 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  FiPy - Python-based phase field solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "cylindricalGrid1D.py"
  #
@@ -32,21 +32,88 @@
  # ###################################################################
  ##
 
-def CylindricalGrid1D(dr=None, nr=None, dx=1., nx=None):
-    from numMesh import cylindricalUniformGrid1D
-    from numMesh import cylindricalGrid1D
+"""
+1D Mesh
+"""
+__docformat__ = 'restructuredtext'
 
-    from fipy.tools import numerix
+from fipy.tools import numerix
+from fipy.tools.dimensions.physicalField import PhysicalField
+from grid1D import Grid1D
 
-    if dr is not None:
-        dx = dr
+class CylindricalGrid1D(Grid1D):
+    """
+    Creates a 1D cylindrical grid mesh.
+    
+        >>> mesh = CylindricalGrid1D(nx = 3)
+        >>> print mesh.getCellCenters()
+        [[ 0.5  1.5  2.5]]
+         
+        >>> mesh = CylindricalGrid1D(dx = (1, 2, 3))
+        >>> print mesh.getCellCenters()
+        [[ 0.5  2.   4.5]]
+         
+        >>> mesh = CylindricalGrid1D(nx = 2, dx = (1, 2, 3))
+        Traceback (most recent call last):
+        ...
+        IndexError: nx != len(dx)
+
+        >>> mesh = CylindricalGrid1D(nx=2, dx=(1., 2.)) + ((1.,),)
+        >>> print mesh.getCellCenters()
+        [[ 1.5  3. ]]
+        >>> from fipy.tools import parallel
+        >>> print parallel.procID > 0  or numerix.allclose(mesh.getCellVolumes(), (1.5, 6))
+        True
         
-    nx = nr or nx
+    """
+    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2):
+        scale = PhysicalField(value=1, unit=PhysicalField(value=dx).getUnit())
+        self.origin = PhysicalField(value=origin)
+        self.origin /= scale
+    
+        Grid1D.__init__(self, dx=dx, nx=nx, overlap=overlap)
 
-    if numerix.getShape(dx) == ():
-        return cylindricalUniformGrid1D.CylindricalUniformGrid1D(dx=dx, nx=nx or 1)
-    else:
-        return cylindricalGrid1D.CylindricalGrid1D(dx=dx, nx=nx)
+        self.args['origin'] = origin
 
 
+    def _calcFaceCenters(self):
+        faceCenters = Grid1D._calcFaceCenters(self)
+        return faceCenters + self.origin
+        
+    def _calcFaceAreas(self):
+        return self.getFaceCenters()[0]
 
+    def _calcCellVolumes(self):
+        cellVolumes = Grid1D._calcCellVolumes(self)
+        return cellVolumes / 2.
+
+    def _translate(self, vector):
+        return CylindricalGrid1D(dx=self.args['dx'], nx=self.args['nx'], 
+                                 origin=numerix.array(self.args['origin']) + vector, overlap=self.args['overlap'])
+                                     
+    def __mul__(self, factor):
+        return CylindricalGrid1D(dx=self.args['dx'] * factor, nx=self.args['nx'], 
+                                 origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
+
+    def getVertexCoords(self):
+        return self.vertexCoords + self.origin
+
+    def _test(self):
+        """
+        These tests are not useful as documentation, but are here to ensure
+        everything works as expected. Fixed a bug where the following throws
+        an error on solve() when nx is a float.
+
+            >>> from fipy import CellVariable, DiffusionTerm
+            >>> mesh = CylindricalGrid1D(nx=3., dx=(1., 2., 3.))
+            >>> var = CellVariable(mesh=mesh)
+            >>> DiffusionTerm().solve(var)
+
+        """
+
+def _test():
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

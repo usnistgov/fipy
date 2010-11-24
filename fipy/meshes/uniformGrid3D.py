@@ -34,7 +34,7 @@
 
 from fipy.tools.numerix import MA
 
-from fipy.meshes.numMesh.grid3D import Grid3D
+from fipy.meshes.grid3D import Grid3D
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -155,7 +155,7 @@ class UniformGrid3D(Grid3D):
                              origin = self.origin * factor)
 
     def _getConcatenableMesh(self):
-        from fipy.meshes.numMesh.grid3D import Grid3D
+        from fipy.meshes.grid3D import Grid3D
         args = self.args.copy()
         origin = args['origin']
         from fipy.tools import serial

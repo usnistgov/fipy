@@ -41,8 +41,8 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix as nx
 from fipy.tools import parallel
 from fipy.tools import serial
-from fipy.meshes.numMesh.mesh import Mesh
-from fipy.meshes.numMesh.mesh2D import Mesh2D
+from fipy.meshes.mesh import Mesh
+from fipy.meshes.mesh2D import Mesh2D
 import sys
 import os
 import tempfile

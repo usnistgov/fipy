@@ -58,7 +58,7 @@ def write(data, filename = None, extension = '', communicator=parallel):
 
     Test to check pickling and unpickling.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> old = Grid1D(nx = 2)
         >>> f, tempfile = write(old)
         >>> new = read(tempfile, f)

@@ -98,7 +98,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         return limit
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
+        from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable)

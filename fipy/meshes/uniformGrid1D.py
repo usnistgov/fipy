@@ -39,7 +39,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import MA
 
-from fipy.meshes.numMesh.grid1D import Grid1D
+from grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 from fipy.tools import parallel
@@ -113,7 +113,7 @@ class UniformGrid1D(Grid1D):
                              overlap=self.args['overlap'])
 
     def _getConcatenableMesh(self):
-        from fipy.meshes.numMesh.mesh1D import Mesh1D
+        from mesh1D import Mesh1D
         return Mesh1D(vertexCoords = self.vertexCoords, 
                       faceVertexIDs = self._createFaces(), 
                       cellFaceIDs = self._createCells())

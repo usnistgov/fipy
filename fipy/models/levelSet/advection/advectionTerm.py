@@ -64,7 +64,7 @@ class _AdvectionTerm(Term):
 
     Here are some simple test cases for this problem:
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
     >>> from fipy.tools import parallel
     >>> SparseMatrix = LinearLUSolver()._getMatrixClass()
@@ -103,7 +103,7 @@ class _AdvectionTerm(Term):
 
     Somewhat less trivial test case:
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
     >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)

@@ -143,7 +143,7 @@ class CellTerm(Term):
         The following tests demonstrate how the `CellVariable` objects
         interact with other types of `Variable` objects.
         
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> m = Grid1D(nx=2)

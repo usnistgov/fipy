@@ -45,7 +45,7 @@ class CellVariable(_MeshVariable):
 
     A `CellVariable` can be ``pickled`` to persistent storage (disk) for later use:
         
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
@@ -75,7 +75,7 @@ class CellVariable(_MeshVariable):
         
     def _OperatorVariableClass(self, baseClass=None):
         """
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
 
             >>> a = CellVariable(mesh=Grid1D(nx=1), value=1)
 
@@ -222,7 +222,7 @@ class CellVariable(_MeshVariable):
            = \frac{\sum_\text{cells} \phi_\text{cell} V_\text{cell}}
                {\sum_\text{cells} V_\text{cell}}
         
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
         >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
@@ -305,7 +305,7 @@ class CellVariable(_MeshVariable):
         
            \phi_f = (\phi_1 - \phi_2) \frac{d_{f2}}{d_{12}} + \phi_2
            
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> from fipy import numerix
         >>> mesh = Grid1D(dx = (1., 1.))
         >>> L = 1
@@ -381,7 +381,7 @@ class CellVariable(_MeshVariable):
         
            \phi_f = \frac{\phi_1 \phi_2}{(\phi_2 - \phi_1) \frac{d_{f2}}{d_{12}} + \phi_1}
            
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> from fipy import numerix
         >>> mesh = Grid1D(dx = (1., 1.))
         >>> L = 1
@@ -441,7 +441,7 @@ class CellVariable(_MeshVariable):
         Combinations of `CellVariable's` should also return old
         values.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx = 2)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> var1 = CellVariable(mesh = mesh, value = (2, 3), hasOld = 1)

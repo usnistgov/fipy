@@ -37,8 +37,8 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import numerix
-from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
+from fipy.meshes.uniformGrid2D import UniformGrid2D
+from fipy.tools import numerix
 from fipy.tools import parallel
 
 class CylindricalUniformGrid2D(UniformGrid2D):

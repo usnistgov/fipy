@@ -39,7 +39,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.numMesh.cell import Cell
+from fipy.meshes.cell import Cell
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -85,22 +85,8 @@ class Mesh(object):
         self.faceCenters = self._calcFaceCenters()
 
         self._setTopology()
-        self._setGeometry()
 
-        self.cellNormals = self._calcCellNormals()
-        
-    """Topology methods"""
-    def _setTopology(self):
-        (self.interiorFaces,
-        self.exteriorFaces)         = self._calcInteriorAndExteriorFaceIDs()
-        (self.interiorCellIDs,
-        self.exteriorCellIDs)       = self._calcInteriorAndExteriorCellIDs()
-        self.cellToFaceOrientations = self._calcCellToFaceOrientations()
-        self.adjacentCellIDs        = self._calcAdjacentCellIDs()
-        self.cellToCellIDs          = self._calcCellToCellIDs()
-        self.cellToCellIDsFilled    = self._calcCellToCellIDsFilled()
-
-    def _setGeometry(self):
+        # calculate geometry
         self.faceAreas             = self._calcFaceAreas()
         self.cellCenters           = self._calcCellCenters()
         (self.faceToCellDistances,
@@ -118,7 +104,19 @@ class Mesh(object):
 
         self.setScale(self.scale['length'])
 
-        self.cellAreas             = self._calcCellAreas()
+        self.cellAreas   = self._calcCellAreas()
+        self.cellNormals = self._calcCellNormals()
+        
+    """Topology methods"""
+    def _setTopology(self):
+        (self.interiorFaces,
+        self.exteriorFaces)         = self._calcInteriorAndExteriorFaceIDs()
+        (self.interiorCellIDs,
+        self.exteriorCellIDs)       = self._calcInteriorAndExteriorCellIDs()
+        self.cellToFaceOrientations = self._calcCellToFaceOrientations()
+        self.adjacentCellIDs        = self._calcAdjacentCellIDs()
+        self.cellToCellIDs          = self._calcCellToCellIDs()
+        self.cellToCellIDsFilled    = self._calcCellToCellIDsFilled()
 
     def setScale(self, value = 1.):
 
@@ -127,13 +125,10 @@ class Mesh(object):
         if self.scale['length'].getUnit().isDimensionless():
             self.scale['length'] = 1    
 
-        self._setHigherOrderScalings()
-        self._setScaledGeometry()
-
-    def _setHigherOrderScalings(self):
-        # Higher-order scalings
         self.scale['area'] = self.scale['length']**2
         self.scale['volume'] = self.scale['length']**3  
+
+        self._setScaledGeometry()
 
     def _setScaledGeometry(self):
         self.scaledFaceAreas           = self.scale['area'] * self.faceAreas
@@ -180,7 +175,7 @@ class Mesh(object):
         The two `Mesh` objects need not be properly aligned in order to concatenate them
         but the resulting mesh may not have the intended connectivity
         
-            >>> from fipy.meshes.numMesh.mesh import MeshAdditionError
+            >>> from fipy.meshes.mesh import MeshAdditionError
             >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
             >>> print addedMesh.getCellCenters()
             [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
@@ -308,7 +303,7 @@ class Mesh(object):
         `faces2` are not altered, they still remain as members of
         exterior faces.
 
-           >>> from fipy.meshes.numMesh.grid2D import Grid2D
+           >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
            >>> from fipy.tools import parallel
@@ -400,7 +395,7 @@ class Mesh(object):
         """Calculate the parameters to define a concatenation of `other` with `self`
         
         :Parameters:
-          - `other`: The :class:`~fipy.meshes.numMesh.Mesh` to concatenate with `self`
+          - `other`: The :class:`~fipy.meshes.Mesh` to concatenate with `self`
           - `resolution`: How close vertices have to be (relative to the smallest 
             cell-to-cell distance in either mesh) to be considered the same
 
@@ -1610,7 +1605,7 @@ class Mesh(object):
             
             Following test was added due to a bug in adding UniformGrids.
 
-            >>> from fipy.meshes.numMesh.uniformGrid1D import UniformGrid1D
+            >>> from fipy.meshes.uniformGrid1D import UniformGrid1D
             >>> a = UniformGrid1D(nx=10) + (10,)
             >>> print a.getCellCenters()
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]

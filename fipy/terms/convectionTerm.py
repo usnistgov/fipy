@@ -52,7 +52,7 @@ class ConvectionTerm(FaceTerm):
         """
         Create a `ConvectionTerm` object.
         
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> m = Grid1D(nx = 2)
@@ -80,7 +80,7 @@ class ConvectionTerm(FaceTerm):
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a vector value.
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> m2 = Grid2D(nx=2, ny=1)
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)

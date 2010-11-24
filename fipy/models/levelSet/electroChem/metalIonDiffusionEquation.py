@@ -90,7 +90,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     This is the test case,
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> nx = 11
     >>> dx = 1.
     >>> from fipy.tools import serial
