@@ -92,7 +92,7 @@ and :term:`FiPy` are identical.
 To start, some parameters are declared.
 
 >>> from fipy import *
->>> #from fipy.meshes.numMesh.grid2D import Grid2D
+>>> #from fipy.meshes.grid2D import Grid2D
 
 >>> L = 1.0
 >>> N = 50

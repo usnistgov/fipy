@@ -50,7 +50,7 @@ diffusivity and fixed value boundary conditions such that,
    \frac{\partial \phi}{\partial t} = D \nabla^2 \phi.
 
 The first step is to define a one dimensional domain with 50 solution
-points. The :class:`~fipy.meshes.numMesh.grid1D.Grid1D` object represents a linear structured grid. The
+points. The :class:`~fipy.meshes.grid1D.Grid1D` object represents a linear structured grid. The
 parameter ``dx`` refers to the grid spacing (set to unity here).
 
 >>> from fipy import *
@@ -378,8 +378,8 @@ number of cells in the mesh :math:`N_i` satisfies :math:`N_i = 4 i + 2`,
 where :math:`i` is an integer. The mesh we've been using thus far is
 satisfactory, with :math:`N_i = 50` and :math:`i = 12`.
    
-Because :term:`FiPy` considers diffusion to be a flux from one :class:`~fipy.meshes.numMesh.cell.Cell` to the next,
-through the intervening :class:`~fipy.meshes.numMesh.face.Face`, we must define the non-uniform diffusion
+Because :term:`FiPy` considers diffusion to be a flux from one :class:`~fipy.meshes.cell.Cell` to the next,
+through the intervening :class:`~fipy.meshes.face.Face`, we must define the non-uniform diffusion
 coefficient on the mesh faces
 
 .. index:: FaceVariable

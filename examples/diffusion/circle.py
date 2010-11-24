@@ -50,7 +50,7 @@ for :term:`Gmsh`, see the `gmsh manual`_.
 .. _gmsh manual: http://www.geuz.org/gmsh/doc/texinfo/gmsh.html
 
 The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
-:class:`~fipy.meshes.numMesh.gmshImporter.GmshImporter2D` object.
+:class:`~fipy.meshes.gmshImporter.GmshImporter2D` object.
 
 >>> from fipy import *
 >>> mesh = Gmsh2D('''
@@ -137,7 +137,7 @@ another application, we could export tab-separated-values with
 
 .. literalinclude:: myTSV.tsv
    
-The values are listed at the :class:`~fipy.meshes.numMesh.cell.Cell` centers.
+The values are listed at the :class:`~fipy.meshes.cell.Cell` centers.
 Particularly for irregular meshes, no specific ordering should be relied upon.
 Vector quantities are listed in multiple columns, one for each mesh dimension.
             

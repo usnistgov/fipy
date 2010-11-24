@@ -135,7 +135,7 @@ The following items **must** be changed in your scripts
        
  * The ``faces`` argument to 
    :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` now takes a mask, 
-   instead of a list of :class:`~fipy.meshes.numMesh.face.Face` IDs. Now you write
+   instead of a list of :class:`~fipy.meshes.face.Face` IDs. Now you write
    
    >>> X, Y = mesh.getFaceCenters()
    >>> FixedValue(faces=mesh.getExteriorFaces() & (X**2 < 1e-6), value=...)
@@ -147,8 +147,8 @@ The following items **must** be changed in your scripts
    >>> FixedValue(faces=exteriorFaces.where(X**2 < 1e-6), value=...)
        
    With the old syntax, a different call to
-   :meth:`~fipy.meshes.numMesh.face.Face.getCenters` had to be made for each set
-   of :class:`~fipy.meshes.numMesh.face.Face` objects. It was also extremely
+   :meth:`~fipy.meshes.face.Face.getCenters` had to be made for each set
+   of :class:`~fipy.meshes.face.Face` objects. It was also extremely
    difficult to specify boundary conditions that depended both on position in
    space and on the current values of any other :class:`~fipy.variables.variable.Variable`.
    
@@ -178,8 +178,8 @@ The following items **must** be changed in your scripts
    ...     initialArray[cell.getID()] = 1.
 
    Although they still exist, we find very lille cause to ever call
-   :meth:`~fipy.meshes.numMesh.mesh.Mesh.getCells` 
-   or :meth:`fipy.meshes.numMesh.mesh.Mesh.getFaces`.
+   :meth:`~fipy.meshes.mesh.Mesh.getCells` 
+   or :meth:`fipy.meshes.mesh.Mesh.getFaces`.
    
  * Some modules, such as :mod:`fipy.solvers`, have been significantly rearranged.
    For example, you need to change

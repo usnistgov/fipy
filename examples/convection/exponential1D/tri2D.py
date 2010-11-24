@@ -36,7 +36,7 @@ r"""
 
 This example solves the steady-state convection-diffusion equation as described in
 :mod:`examples.diffusion.convection.exponential1D.input` but uses a 
-:class:`~fipy.meshes.numMesh.tri2D.Tri2D` mesh.
+:class:`~fipy.meshes.tri2D.Tri2D` mesh.
 
 Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 
