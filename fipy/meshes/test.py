@@ -41,7 +41,7 @@ def _suite():
     return _LateImportDocTestSuite(testModuleNames = (
         'fipy.meshes.numMesh.test',),
                                    docTestModuleNames = (
-        'fipy.meshes.common.mesh',))
+        'fipy.meshes.numMesh.mesh',))
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')

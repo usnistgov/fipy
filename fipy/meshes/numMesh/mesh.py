@@ -39,7 +39,6 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.common.mesh import Mesh as _CommonMesh
 from fipy.meshes.numMesh.cell import Cell
 
 from fipy.tools import numerix
@@ -50,7 +49,7 @@ from fipy.tools import serial
 class MeshAdditionError(Exception):
     pass
     
-class Mesh(_CommonMesh):
+class Mesh(object):
     """Generic mesh class using numerix to do the calculations
 
         Meshes contain cells, faces, and vertices.
@@ -60,7 +59,12 @@ class Mesh(_CommonMesh):
 
     def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial):
         """faceVertexIds and cellFacesIds must be padded with minus ones."""
-
+        self.scale = {
+            'length': 1.,
+            'area': 1.,
+            'volume': 1.
+        }
+         
         self.vertexCoords = vertexCoords
         self.faceVertexIDs = MA.masked_values(faceVertexIDs, -1)
         self.cellFaceIDs = MA.masked_values(cellFaceIDs, -1)
@@ -80,17 +84,169 @@ class Mesh(_CommonMesh):
         self.faceCellIDs = self._calcFaceCellIDs() 
         self.faceCenters = self._calcFaceCenters()
 
-        _CommonMesh.__init__(self)
+        self._setTopology()
+        self._setGeometry()
 
         self.cellNormals = self._calcCellNormals()
         
     """Topology methods"""
+    def _setTopology(self):
+        (self.interiorFaces,
+        self.exteriorFaces)         = self._calcInteriorAndExteriorFaceIDs()
+        (self.interiorCellIDs,
+        self.exteriorCellIDs)       = self._calcInteriorAndExteriorCellIDs()
+        self.cellToFaceOrientations = self._calcCellToFaceOrientations()
+        self.adjacentCellIDs        = self._calcAdjacentCellIDs()
+        self.cellToCellIDs          = self._calcCellToCellIDs()
+        self.cellToCellIDsFilled    = self._calcCellToCellIDsFilled()
 
+    def _setGeometry(self):
+        self.faceAreas             = self._calcFaceAreas()
+        self.cellCenters           = self._calcCellCenters()
+        (self.faceToCellDistances,
+        self.cellToFaceDistanceVectors) = self._calcFaceToCellDistancesAndVectors()
+        (self.cellDistances,
+        self.cellDistanceVectors)  = self._calcCellDistancesAndVectors()
+        self.faceNormals           = self._calcFaceNormals()
+        self.orientedFaceNormals   = self._calcOrientedFaceNormals()
+        self.cellVolumes           = self._calcCellVolumes()
+        self.cellCenters           = self._calcCellCenters()
+        self.faceCellToCellNormals = self._calcFaceCellToCellNormals()
+        (self.faceTangents1, 
+        self.faceTangents2)        = self._calcFaceTangents()
+        self.cellToCellDistances   = self._calcCellToCellDistances()
+
+        self.setScale(self.scale['length'])
+
+        self.cellAreas             = self._calcCellAreas()
+
+    def setScale(self, value = 1.):
+
+        self.scale['length'] = PhysicalField(value = value)
+
+        if self.scale['length'].getUnit().isDimensionless():
+            self.scale['length'] = 1    
+
+        self._setHigherOrderScalings()
+        self._setScaledGeometry()
+
+    def _setHigherOrderScalings(self):
+        # Higher-order scalings
+        self.scale['area'] = self.scale['length']**2
+        self.scale['volume'] = self.scale['length']**3  
+
+    def _setScaledGeometry(self):
+        self.scaledFaceAreas           = self.scale['area'] * self.faceAreas
+        self.scaledCellVolumes         = self.scale['volume'] * self.cellVolumes
+        self.scaledCellCenters         = self.scale['length'] * self.cellCenters
+        self.scaledFaceToCellDistances = self.scale['length'] * self.faceToCellDistances
+        self.scaledCellDistances       = self.scale['length'] * self.cellDistances
+        self.scaledCellToCellDistances = self.scale['length'] * self.cellToCellDistances
+        self.areaProjections           = self._calcAreaProjections()
+        self.orientedAreaProjections   = self._calcOrientedAreaProjections()
+        self.faceToCellDistanceRatio   = self._calcFaceToCellDistanceRatio()
+        self.faceAspectRatios          = self._calcFaceAspectRatios()
+           
     @property
     def _concatenatedClass(self):
         return Mesh
         
     def __add__(self, other):
+        """
+        Either translate a `Mesh` or concatenate two `Mesh` objects.
+        
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
+            >>> print baseMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5]
+             [ 0.5  0.5  1.5  1.5]]
+             
+        If a vector is added to a `Mesh`, a translated `Mesh` is returned
+        
+            >>> translatedMesh = baseMesh + ((5,), (10,))
+            >>> print translatedMesh.getCellCenters()
+            [[  5.5   6.5   5.5   6.5]
+             [ 10.5  10.5  11.5  11.5]]
+
+             
+        If a `Mesh` is added to a `Mesh`, a concatenation of the two 
+        `Mesh` objects is returned
+        
+            >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
+            >>> print addedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        
+        The two `Mesh` objects need not be properly aligned in order to concatenate them
+        but the resulting mesh may not have the intended connectivity
+        
+            >>> from fipy.meshes.numMesh.mesh import MeshAdditionError
+            >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
+            >>> print addedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+
+            >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
+            >>> print addedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
+             [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
+
+        No provision is made to avoid or consolidate overlapping `Mesh` objects
+        
+            >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
+            >>> print addedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+            
+        Different `Mesh` classes can be concatenated
+         
+            >>> from fipy.meshes.tri2D import Tri2D
+            >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
+            >>> triMesh = triMesh + ((2,), (0,))
+            >>> triAddedMesh = baseMesh + triMesh
+            >>> cellCenters = [[0.5, 1.5, 0.5, 1.5, 2.83333333,  3.83333333,
+            ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+            ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
+            ...                 0.5, 0.5, 0.16666667, 0.16666667]]
+            >>> print numerix.allclose(triAddedMesh.getCellCenters(),
+            ...                        cellCenters)
+            True
+
+        again, their faces need not align, but the mesh may not have 
+        the desired connectivity
+        
+            >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
+            >>> triMesh = triMesh + ((2,), (0,))
+            >>> triAddedMesh = baseMesh + triMesh
+            >>> cellCenters = [[ 0.5, 1.5, 0.5, 1.5, 2.83333333, 3.83333333,
+            ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+            ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
+            ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
+            >>> print numerix.allclose(triAddedMesh.getCellCenters(),
+            ...                        cellCenters)
+            True
+
+        `Mesh` concatenation is not limited to 2D meshes
+        
+            >>> from fipy.meshes.grid3D import Grid3D
+            >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
+            ...                         nx = 2, ny = 2, nz = 2)
+            >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
+            ...                           nx = 1, ny = 1, nz = 1)
+            >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
+            >>> print threeDAddedMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
+             [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
+
+        but the different `Mesh` objects must, of course, have the same 
+        dimensionality.
+        
+            >>> InvalidMesh = threeDBaseMesh + baseMesh
+            Traceback (most recent call last):
+            ...
+            MeshAdditionError: Dimensions do not match
+        """  
         if(isinstance(other, Mesh)):
             return self._concatenatedClass(**self._getAddedMeshValues(other=other))
         else:
@@ -99,6 +255,38 @@ class Mesh(_CommonMesh):
     __radd__ = __add__
     
     def __mul__(self, factor):
+        """
+        Dilate a `Mesh` by `factor`.
+        
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
+            >>> print baseMesh.getCellCenters()
+            [[ 0.5  1.5  0.5  1.5]
+             [ 0.5  0.5  1.5  1.5]]
+
+        The `factor` can be a scalar
+        
+            >>> dilatedMesh = baseMesh * 3
+            >>> print dilatedMesh.getCellCenters()
+            [[ 1.5  4.5  1.5  4.5]
+             [ 1.5  1.5  4.5  4.5]]
+
+        or a vector
+        
+            >>> dilatedMesh = baseMesh * ((3,), (2,))
+            >>> print dilatedMesh.getCellCenters()
+            [[ 1.5  4.5  1.5  4.5]
+             [ 1.   1.   3.   3. ]]
+
+        
+        but the vector must have the same dimensionality as the `Mesh`
+        
+            >>> dilatedMesh = baseMesh * ((3,), (2,), (1,))
+            Traceback (most recent call last):
+            ...
+            ValueError: shape mismatch: objects cannot be broadcast to a single shape
+            
+        """ 
         newCoords = self.vertexCoords * factor
         newmesh = Mesh(vertexCoords=newCoords, 
                        faceVertexIDs=numerix.array(self.faceVertexIDs), 
@@ -107,6 +295,9 @@ class Mesh(_CommonMesh):
 
     __rmul__ = __mul__
 
+    def __repr__(self):
+        return "%s()" % self.__class__.__name__
+     
     def _connectFaces(self, faces0, faces1):
         """
         
@@ -195,7 +386,7 @@ class Mesh(_CommonMesh):
             self.cellFaceIDs[i] = tmp
 
         ## calculate new topology
-        _CommonMesh._setTopology(self)
+        self._setTopology()
 
         ## calculate new geometry
         self.faceToCellDistanceRatio = self._calcFaceToCellDistanceRatio()
@@ -384,6 +575,39 @@ class Mesh(_CommonMesh):
 
     """calc Topology methods"""
 
+    def _calcInteriorFaceIDs(self):
+        raise NotImplementedError
+
+    def _calcExteriorFaceIDs(self):
+        raise NotImplementedError
+
+    def _calcExteriorCellIDs(self):
+        raise NotImplementedError
+        
+    def _calcInteriorCellIDs(self):
+        raise NotImplementedError
+     
+    def _calcCellToCellIDsFilled(self):
+        N = self.numberOfCells
+        M = self._getMaxFacesPerCell()
+        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
+        cellToCellIDs = self._getCellToCellIDs()
+        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
+
+    def _getFaceVertexIDs(self):
+        return self.faceVertexIDs
+
+    def _getCellFaceIDs(self):
+        return self.cellFaceIDs
+
+    def _getNumberOfFacesPerCell(self):
+        cellFaceIDs = self._getCellFaceIDs()
+        if type(cellFaceIDs) is type(MA.array(0)):
+            ## bug in count returns float values when there is no mask
+            return numerix.array(cellFaceIDs.count(axis=0), 'l')
+        else:
+            return self._getMaxFacesPerCell() * numerix.ones(cellFaceIDs.shape[-1], 'l')
+      
     def _calcFaceCellIDs(self):
         array = MA.array(MA.indices(self.cellFaceIDs.shape, 'l')[1], 
                          mask=MA.getmask(self.cellFaceIDs))
@@ -512,15 +736,333 @@ class Mesh(_CommonMesh):
     def _getMaxFacesPerCell(self):
         return self.cellFaceIDs.shape[0]
 
-    """Geometry methods"""
+    def _getExteriorCellIDs(self):
+        """ Why do we have this?!? It's only used for testing against itself? """
+        return self.exteriorCellIDs
 
-#    def _calcGeometry(self):
-#        self._calcFaceCenters()
-#        _CommonMesh._calcGeometry(self)
-#        self._calcCellNormals()
+    def _getInteriorCellIDs(self):
+        """ Why do we have this?!? It's only used for testing against itself? """
+        return self.interiorCellIDs
+
+    def _getCellFaceOrientations(self):
+        return self.cellToFaceOrientations
+
+    def getNumberOfCells(self):
+        return self.numberOfCells
+
+    def _isOrthogonal(self):
+        return False
+    
+    def _getNumberOfVertices(self):
+        if hasattr(self, 'numberOfVertices'):
+            return self.numberOfVertices
+        else:
+            return self.vertexCoords.shape[-1]
         
-    """calc geometry methods"""
+    def _getAdjacentCellIDs(self):
+        return self.adjacentCellIDs
 
+    def getDim(self):
+        return self.dim
+
+    def _getGlobalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfCells)
+
+    def _getGlobalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfCells)
+
+    def _getLocalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfCells)
+
+    def _getLocalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfCells)
+
+    def _getGlobalNonOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5, 8, 9, 12, 13, 14, 17, 18, 19]
+        for mesh A
+
+            A   ||   B
+        --8---9---10--11--
+       17   18  19  20   21
+        --4---5----6---7--
+       12   13  14  15   16
+        --0---1----2---3--
+                ||
+                
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfFaces)
+
+    def _getGlobalOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 
+        14, 15, 17, 18, 19, 20] for mesh A
+
+            A   ||   B
+        --8---9---10--11--
+       17   18  19  20   21
+        --4---5----6---7--
+       12   13  14  15   16
+        --0---1----2---3--
+                ||
+                
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfFaces)
+
+    def _getLocalNonOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
+        for mesh A
+
+            A   ||   B
+        --6---7-----7---8--
+       13   14 15/14 15   16
+        --3---4-----4---5--
+        9   10 11/10 11   12
+        --0---1-----1---2--
+                ||
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfFaces)
+
+    def _getLocalOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 
+        12, 13, 14, 15, 16] for mesh A
+
+            A   ||   B
+        --6---7----8------
+       13   14  15  16   |
+        --3---4----5------
+        9   10  11  12   |
+        --0---1----2------
+                ||
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self.numberOfFaces)
+
+    def getFacesLeft(self):
+        """
+        Return face on left boundary of Grid1D as list with the
+        x-axis running from left to right.
+
+            >>> from fipy import Grid2D, Grid3D
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((21, 25), 
+            ...                              numerix.nonzero(mesh.getFacesLeft())[0])
+            True
+            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
+            >>> print parallel.procID > 0 or numerix.allequal((9, 13), 
+            ...                              numerix.nonzero(mesh.getFacesLeft())[0])
+            True
+
+        """
+        x = self.getFaceCenters()[0]
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=x == _madmin(x))
+
+    def getFacesRight(self):
+        """
+        Return list of faces on right boundary of Grid3D with the
+        x-axis running from left to right. 
+
+            >>> from fipy import Grid2D, Grid3D, numerix
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((24, 28), 
+            ...                              numerix.nonzero(mesh.getFacesRight())[0])
+            True
+            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)    
+            >>> print parallel.procID > 0 or numerix.allequal((12, 16), 
+            ...                                               numerix.nonzero(mesh.getFacesRight())[0])
+            True
+            
+        """
+        x = self.getFaceCenters()[0]
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=x == _madmax(x))
+
+    def getFacesBottom(self):
+        """
+        Return list of faces on bottom boundary of Grid3D with the
+        y-axis running from bottom to top.
+
+            >>> from fipy import Grid2D, Grid3D, numerix
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((12, 13, 14), 
+            ...                              numerix.nonzero(mesh.getFacesBottom())[0])
+            1
+            >>> x, y, z = mesh.getFaceCenters()
+            >>> print parallel.procID > 0 or numerix.allequal((12, 13), 
+            ...                              numerix.nonzero(mesh.getFacesBottom() & (x < 1))[0])
+            1
+            
+        """
+        y = self.getFaceCenters()[1]
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=y == _madmin(y))
+
+    getFacesDown = getFacesBottom
+
+    def getFacesTop(self):
+        """
+        Return list of faces on top boundary of Grid3D with the
+        y-axis running from bottom to top.
+
+            >>> from fipy import Grid2D, Grid3D, numerix
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((18, 19, 20), 
+            ...                              numerix.nonzero(mesh.getFacesTop())[0])
+            True
+            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
+            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8), 
+            ...                              numerix.nonzero(mesh.getFacesTop())[0])
+            True
+            
+        """
+        y = self.getFaceCenters()[1]
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=y == _madmax(y))
+
+    getFacesUp = getFacesTop
+
+    def getFacesBack(self):
+        """
+        Return list of faces on back boundary of Grid3D with the
+        z-axis running from front to back. 
+
+            >>> from fipy import Grid3D, numerix
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8, 9, 10, 11), 
+            ...                              numerix.nonzero(mesh.getFacesBack())[0])
+            True
+
+        """
+        z = self.getFaceCenters()[2] 
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=z == _madmax(z))
+
+    def getFacesFront(self):
+        """
+        Return list of faces on front boundary of Grid3D with the
+        z-axis running from front to back. 
+
+            >>> from fipy import Grid3D, numerix
+            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
+            >>> from fipy.tools import parallel
+            >>> print parallel.procID > 0 or numerix.allequal((0, 1, 2, 3, 4, 5), 
+            ...                              numerix.nonzero(mesh.getFacesFront())[0])
+            True
+
+        """
+        z = self.getFaceCenters()[2]
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=z == _madmin(z))
+    
+    def _getNumberOfFaces(self):
+        return self.numberOfFaces
+
+    def _getCellToCellIDs(self):
+        return self.cellToCellIDs
+
+    def _getCellToCellIDsFilled(self):
+        return self.cellToCellIDsFilled
+     
+    """calc geometry methods"""
+       
+    def _calcFaceToCellDistances(self):
+        raise NotImplementedError
+
+    def _calcCellDistances(self):
+        raise NotImplementedError
+     
+    def _calcFaceAspectRatios(self):
+        return self._getFaceAreas() / self._getCellDistances()
+    
+    def _calcCellAreas(self):
+        from fipy.tools.numerix import take
+        return take(self._getFaceAreas(), self.cellFaceIDs)
+      
     def _calcFaceAreas(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, -1)
         substitute = numerix.repeat(faceVertexIDs[numerix.newaxis, 0], 
@@ -643,7 +1185,7 @@ class Mesh(_CommonMesh):
     def _calcCellNormals(self):
         cellNormals = numerix.take(self._getFaceNormals(), self._getCellFaceIDs(), axis=1)
         cellFaceCellIDs = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
-        cellIDs = numerix.repeat(numerix.arange(self.getNumberOfCells())[numerix.newaxis,...], 
+        cellIDs = numerix.repeat(numerix.arange(self.numberOfCells)[numerix.newaxis,...], 
                                  self._getMaxFacesPerCell(), 
                                  axis=0)
         direction = (cellFaceCellIDs == cellIDs) * 2 - 1
@@ -654,6 +1196,64 @@ class Mesh(_CommonMesh):
                          
     """get geometry methods"""
 
+    def _getFaceAreas(self):
+        return self.scaledFaceAreas
+
+    def _getFaceNormals(self):
+        return self.faceNormals
+
+    def _getFaceCellToCellNormals(self):
+        return self.faceCellToCellNormals
+        
+    def getCellVolumes(self):
+        return self.scaledCellVolumes
+
+    def _getCellCenters(self):
+        return self.scaledCellCenters
+        
+    def getCellCenters(self):
+        from fipy.variables.cellVariable import CellVariable
+        return CellVariable(mesh=self, value=self._getCellCenters(), rank=1)
+
+    def _getFaceToCellDistances(self):
+        return self.scaledFaceToCellDistances
+
+    def _getCellDistances(self):
+        return self.scaledCellDistances
+
+    def _getFaceToCellDistanceRatio(self):
+        return self.faceToCellDistanceRatio
+
+    def _getOrientedAreaProjections(self):
+        return self.orientedAreaProjections
+
+    def _getAreaProjections(self):
+        return self.areaProjections
+
+    def _getOrientedFaceNormals(self):
+        return self.orientedFaceNormals
+
+    def _getFaceTangents1(self):
+        return self.faceTangents1
+
+    def _getFaceTangents2(self):
+        return self.faceTangents2
+        
+    def _getFaceAspectRatios(self):
+        return self.faceAspectRatios
+    
+    def _getCellToCellDistances(self):
+        return self.scaledCellToCellDistances
+
+    def _getCellNormals(self):
+        return self.cellNormals
+
+    def _getCellAreas(self):
+        return self.cellAreas
+
+    def _getCellAreaProjections(self):
+        return self.cellNormals * self._getCellAreas()
+         
     def getFaceCenters(self):
         return self.faceCenters
 
@@ -669,7 +1269,7 @@ class Mesh(_CommonMesh):
         cellFaceVertices = numerix.take(self.faceVertexIDs, self.cellFaceIDs, axis=1)
 
         ## get a sorted list of vertices for each cell 
-        cellVertexIDs = numerix.reshape(cellFaceVertices, (-1, self.getNumberOfCells()))
+        cellVertexIDs = numerix.reshape(cellFaceVertices, (-1, self.numberOfCells))
         cellVertexIDs = MA.sort(cellVertexIDs, axis=0, fill_value=-1)
 
         cellVertexIDs = MA.sort(MA.concatenate((cellVertexIDs[-1, numerix.newaxis], 
@@ -696,7 +1296,7 @@ class Mesh(_CommonMesh):
 ##        cellFaceVertices = take(self.faceVertexIDs, self.cellFaceIDs)
 
 ##        ## get a sorted list of vertices for each cell
-##        NCells = self.getNumberOfCells()
+##        NCells = self.numberOfCells
 ##        cellVertexIDs = MA.reshape(cellFaceVertices.flat, (NCells, -1))
 ##        newmask = MA.getmaskarray(cellVertexIDs).copy()
 
@@ -738,25 +1338,46 @@ class Mesh(_CommonMesh):
 
 
     """scaling"""
+    def _calcScaleArea(self):
+        raise NotImplementedError
 
-## ##     def setScale(self, value = 1.):
-## ##         self.scale = 1.
-    
-##    def setScale(self):
-##	self.scale = PhysicalField(value = 1.)
-##        self.faceAreas = self.faceAreas * self.scale**2
-##        self.faceCenters = self.faceCenters * self.scale
-##        self.cellVolumes = self.cellVolumes * self.scale**3
-##        self.cellCenters = self.cellCenters * self.scale
-##        self.faceToCellDistances = self.faceToCellDistances * self.scale
-##        self.cellDistances = self.cellDistances * self.scale
-##        self.areaProjections = self.areaProjections * self.scale**2
+    def _calcScaleVolume(self):
+        raise NotImplementedError
+     
+    def _getPointToCellDistances(self, point):
+        tmp = self.getCellCenters() - PhysicalField(point)
+        from fipy.tools import numerix
+        return numerix.sqrtDot(tmp, tmp)
 
-## pickling
+    def getNearestCell(self, point):
+        return self._getCellsByID([self._getNearestCellID(point)])[0]
 
-##    self.__getinitargs__(self):
-##        return (self.vertexCoords, self.faceVertexIDs, self.cellFaceIDs)
-    
+    def _getNearestCellID(self, points):
+        """
+        Test cases
+
+           >>> from fipy import *
+           >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
+           >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
+           >>> print m0._getNearestCellID(m1.getCellCenters().getGlobalValue())
+           [4 5 7 8]
+           
+        """
+        if self.globalNumberOfCells == 0:
+            return numerix.arange(0)
+            
+        points = numerix.resize(points, (self.globalNumberOfCells, len(points), len(points[0]))).swapaxes(0,1)
+
+        centers = self.getCellCenters().getGlobalValue()[...,numerix.newaxis]
+        try:
+            tmp = centers - points
+        except TypeError:
+            tmp = centers - PhysicalField(points)
+
+        return numerix.argmin(numerix.dot(tmp, tmp, axis = 0), axis=0)
+     
+
+    """pickling"""
 
     def __getstate__(self):
         dict = {
@@ -1085,10 +1706,18 @@ class Mesh(_CommonMesh):
                                                      + arr.shape[1:])))
             return arr.swapaxes(-2, -1)
 
-
-                      
-### test test test    
-
+def _madmin(x):
+    if len(x) == 0:
+        return 0
+    else:
+        return min(x)
+        
+def _madmax(x):
+    if len(x) == 0:
+        return 0
+    else:
+        return max(x)
+ 
 def _test():
     import doctest
     return doctest.testmod()

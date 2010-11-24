@@ -553,8 +553,11 @@ class UniformGrid2D(Grid2D):
         Vids[1] = Vids[0] + self.numberOfVerticalColumns
         
         return numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
-                                    Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")),
+                                    Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces),
+                                                 order="FORTRAN")),
                                    axis=1)
+
+    faceVertexIDs = property(_getFaceVertexIDs)
                                     
     def _getOrderedCellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
@@ -771,7 +774,7 @@ class UniformGrid2D(Grid2D):
             
             >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],
             ...                  [ 1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11]]
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._getFaceVertexIDs(), faceVertexIDs)
+            >>> print parallel.procID > 0 or numerix.allequal(mesh.faceVertexIDs, faceVertexIDs)
             True
 
             >>> mesh = UniformGrid2D(nx=3)

@@ -494,7 +494,9 @@ class UniformGrid3D(Grid3D):
         return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
         
     def _getFaceVertexIDs(self):
-        return self._createFaces()
+       return self._createFaces()
+
+    faceVertexIDs = property(_getFaceVertexIDs)
                                     
     def _getOrderedCellVertexIDs(self):
         """Correct ordering for VTK_VOXEL"""
