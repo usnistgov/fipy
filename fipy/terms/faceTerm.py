@@ -34,6 +34,8 @@
  
 __docformat__ = 'restructuredtext'
 
+import os
+
 from fipy.terms.term import Term
 from fipy.tools import vector
 from fipy.tools import numerix
@@ -72,6 +74,13 @@ class FaceTerm(Term):
 
         for boundaryCondition in boundaryConditions:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
+            
+            if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+                self._viewer.title = "%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
+                self._viewer.plot(matrix=LL, RHSvector=bb)
+                from fipy import raw_input
+                raw_input()
+                    
             L += LL
             b += bb
 
