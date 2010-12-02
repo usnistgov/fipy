@@ -76,7 +76,7 @@ class FaceTerm(Term):
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
             
             if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
-                self._viewer.title = "%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
+                self._viewer.title = r"\verb+%s+ \verb+%s+" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
                 raw_input()
