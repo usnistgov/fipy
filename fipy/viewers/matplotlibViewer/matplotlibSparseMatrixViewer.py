@@ -30,6 +30,7 @@
 
 from matplotlib import cm
 from matplotlib import pyplot
+from matplotlib import rcParams
 from matplotlib import ticker
 from matplotlib.colorbar import ColorbarBase
 from matplotlib.colors import Normalize
@@ -288,12 +289,17 @@ class MatplotlibSparseMatrixViewer:
         fig = pyplot.figure(self.id)
         fig.clf()
         
+        usetex = rcParams['text.usetex']
+        rcParams['text.usetex'] = False
+        
         cmap = cm.RdBu
         
         norm = Normalize(vmin=-zRange, vmax=zRange)
         
         x0 = self.margin
         L_ax = fig.add_axes([x0 / self.aspect, self.margin, self.L_width / self.aspect, self.L_width])
+        L_ax.text(0.5, -0.1, "L", 
+                  transform=L_ax.transAxes, horizontalalignment='center', verticalalignment='baseline')
 
         x0 += self.L_width + self.buffer
         c_ax = fig.add_axes([x0 / self.aspect, self.margin, self.c_width / self.aspect, self.L_width])
@@ -301,7 +307,9 @@ class MatplotlibSparseMatrixViewer:
         x0 += self.c_width + self.buffer
         b_ax = fig.add_axes([x0 / self.aspect, self.margin, self.b_width / self.aspect, self.L_width],
                             sharey=L_ax)
-                            
+        b_ax.text(0.5, -0.1, "b", 
+                  transform=b_ax.transAxes, horizontalalignment='center', verticalalignment='baseline')
+          
                             
 
         def scatterRectangles(x, y, z, norm=None, cmap=None):
@@ -334,15 +342,9 @@ class MatplotlibSparseMatrixViewer:
         b_ax.set_xlim(xmin=-0.5, xmax=0.5)
         b_ax.set_ylim(ymax=-0.5, ymin=N-0.5)
 
-        x0 = self.margin
-        y0 = self.margin / 3
-        fig.suptitle("L", verticalalignment="baseline",
-                     x=(x0 + self.L_width / 2) / self.aspect, y=y0)
-
-        x0 += self.L_width + self.buffer + self.c_width + self.buffer
-        fig.suptitle("b", verticalalignment="baseline",
-                     x=(x0 + self.b_width / 2) / self.aspect, y=y0)
-        
         fig.suptitle(self.title, x=0.5, y=0.95, fontsize=14)
 
         pyplot.draw()
+        
+        rcParams['text.usetex'] = usetex
+
