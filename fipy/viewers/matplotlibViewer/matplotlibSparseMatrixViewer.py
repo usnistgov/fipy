@@ -193,22 +193,19 @@ class MatplotlibSparseMatrixViewer:
         
         self.L_width = 0.8
         self.margin = (1. - self.L_width) / 2
-        self.bx_width = self.margin
-        self.buffer = self.bx_width / 3
-        self.aspect = (self.margin + self.L_width                        # M
-                       + self.buffer + self.bx_width                     # x
-                       + 3 * self.buffer + self.bx_width / 3             # =
-                       + 3 * self.buffer + self.bx_width + self.margin)  # b
+        self.b_width = self.margin
+        self.c_width = self.margin / 3
+        self.buffer = 1.5 * self.margin
+        self.aspect = (self.margin + self.L_width                   # M
+                       + self.buffer + self.c_width                 # colorbar
+                       + self.buffer + self.b_width + self.margin)  # b
 
         pyplot.ion()
         
-#         w, h = pyplot.figaspect(self.aspect)
-
-#         fig = pyplot.figure(figsize=[pyplot.rcParams['figure.figsize'][0] * self.aspect, pyplot.rcParams['figure.figsize'][1]])
         fig = pyplot.figure(figsize=pyplot.figaspect(1. / self.aspect))
         self.id = fig.number
         
-    def plot(self, matrix, RHSvector, var=None, log='auto'):
+    def plot(self, matrix, RHSvector, log='auto'):
         import tempfile
         import os
         
@@ -227,9 +224,6 @@ class MatplotlibSparseMatrixViewer:
 
         b = RHSvector
         
-        if var is None:
-            var = numerix.zeros((N,))
-        
         if len(z) == 0:
             y = numerix.zeros((1,))
             x = numerix.zeros((1,))
@@ -246,10 +240,9 @@ class MatplotlibSparseMatrixViewer:
             return v
 
         zPlus, zMinus = signed_to_logs(z)
-        xPlus, xMinus = signed_to_logs(var)
         bPlus, bMinus = signed_to_logs(b)
         
-        logs = (zPlus, zMinus, xPlus, xMinus, bPlus, bMinus)
+        logs = (zPlus, zMinus, bPlus, bMinus)
 
         log = ((log == True) 
                or (log == 'auto' 
@@ -275,14 +268,13 @@ class MatplotlibSparseMatrixViewer:
                 zRange = numerix.nanmax(zPlus) + 1
 
             z = logs_to_signed(z, zPlus, zMinus)
-            var = logs_to_signed(var, xPlus, xMinus)
             b = logs_to_signed(b, bPlus, bMinus)
 
             fmt = SignedLogFormatter(threshold=zMin)
             loc = SignedLogLocator(threshold=zMin)
             
         else:
-            zRange = max(abs(numerix.concatenate((z, var, b))))
+            zRange = max(abs(numerix.concatenate((z, b))))
         
             if zRange == 0:
                 zRange = 1
@@ -304,14 +296,10 @@ class MatplotlibSparseMatrixViewer:
         L_ax = fig.add_axes([x0 / self.aspect, self.margin, self.L_width / self.aspect, self.L_width])
 
         x0 += self.L_width + self.buffer
-        x_ax = fig.add_axes([x0 / self.aspect, self.margin, self.bx_width / self.aspect, self.L_width],
-                            sharey=L_ax)
+        c_ax = fig.add_axes([x0 / self.aspect, self.margin, self.c_width / self.aspect, self.L_width])
 
-        x0 += self.bx_width + 3 * self.buffer
-        c_ax = fig.add_axes([x0 / self.aspect, self.margin, self.bx_width / 3 / self.aspect, self.L_width])
-
-        x0 += self.bx_width / 3 + 3 * self.buffer
-        b_ax = fig.add_axes([x0 / self.aspect, self.margin, self.bx_width / self.aspect, self.L_width],
+        x0 += self.c_width + self.buffer
+        b_ax = fig.add_axes([x0 / self.aspect, self.margin, self.b_width / self.aspect, self.L_width],
                             sharey=L_ax)
                             
                             
@@ -329,44 +317,31 @@ class MatplotlibSparseMatrixViewer:
         L_ax.add_collection(scatterRectangles(x=x, y=y, z=z, 
                                               norm=norm, cmap=cmap))
 
-        x_ax.add_collection(scatterRectangles(x=numerix.zeros((N,)), y=numerix.arange(N), z=numerix.array(var), 
-                                              norm=norm, cmap=cmap))
-
         b_ax.add_collection(scatterRectangles(x=numerix.zeros((N,)), y=numerix.arange(N), z=b, 
                                               norm=norm, cmap=cmap))
 
         ColorbarBase(ax=c_ax, cmap=cmap, norm=norm, orientation='vertical',
                      format=fmt, ticks=loc)
 
-        for ax in (x_ax, b_ax):
-            pyplot.setp((ax.get_xticklabels(),
-                         ax.get_yticklabels(),
-                         ax.get_xticklines(),
-                         ax.get_yticklines()), visible=False)
+        pyplot.setp((b_ax.get_xticklabels(),
+                     b_ax.get_yticklabels(),
+                     b_ax.get_xticklines(),
+                     b_ax.get_yticklines()), visible=False)
                         
         L_ax.set_xlim(xmin=-0.5, xmax=N-0.5)
         L_ax.set_ylim(ymax=-0.5, ymin=N-0.5)
         
-        for ax in (x_ax, b_ax):
-            ax.set_xlim(xmin=-0.5, xmax=0.5)
-            ax.set_ylim(ymax=-0.5, ymin=N-0.5)
+        b_ax.set_xlim(xmin=-0.5, xmax=0.5)
+        b_ax.set_ylim(ymax=-0.5, ymin=N-0.5)
 
         x0 = self.margin
         y0 = self.margin / 3
         fig.suptitle("L", verticalalignment="baseline",
                      x=(x0 + self.L_width / 2) / self.aspect, y=y0)
 
-        x0 += self.L_width + self.buffer
-        fig.suptitle("x", verticalalignment="baseline",
-                     x=(x0 + self.bx_width / 2) / self.aspect, y=y0)
-
-        x0 += self.bx_width + 3 * self.buffer
-        fig.suptitle("=", verticalalignment="baseline",
-                     x=(x0 + self.bx_width / 3 / 2) / self.aspect, y=y0)
-   
-        x0 += self.bx_width / 3 + 3 * self.buffer
+        x0 += self.L_width + self.buffer + self.c_width + self.buffer
         fig.suptitle("b", verticalalignment="baseline",
-                     x=(x0 + self.bx_width / 2) / self.aspect, y=y0)
+                     x=(x0 + self.b_width / 2) / self.aspect, y=y0)
         
         fig.suptitle(self.title, x=0.5, y=0.95, fontsize=14)
 
