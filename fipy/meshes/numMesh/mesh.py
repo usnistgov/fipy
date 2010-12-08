@@ -750,12 +750,12 @@ class Mesh(_CommonMesh):
     def __getstate__(self):
         dict = {
             'vertexCoords' : self.vertexCoords *  self.scale['length'],            
-            'faceVertexIDs' : self.faceVertexIDs,
-            'cellFaceIDs' : self.cellFaceIDs }
+            'faceVertexIDs' : numerix.ma.filled(self.faceVertexIDs, -1),
+            'cellFaceIDs' : numerix.ma.filled(self.cellFaceIDs, -1) }
         return dict
 
     def __setstate__(self, dict):
-        Mesh.__init__(self, **dict)
+        self._concatenatedClass.__init__(self, **dict)
 ##        self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
      
     def _test(self):
