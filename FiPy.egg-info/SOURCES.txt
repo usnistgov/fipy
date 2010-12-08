@@ -7,7 +7,6 @@ MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
 ez_setup.py
-fipy_wc.txt
 setup.py
 stdeb.cfg
 FiPy.egg-info/PKG-INFO
