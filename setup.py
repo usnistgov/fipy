@@ -144,10 +144,10 @@ def _TestClass(base):
                     print pkg,'is not installed'
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
-            pkg = 'mayavi'
+            pkg = 'enthought.mayavi'
             try:
                 mod = __import__(pkg, fromlist=['enthought'])
-                print pkg,'version',mod.mayavi.sys.version
+                print pkg,'version',mod.sys.version
             except ImportError, exc:
                 print pkg,'is not installed'
                 
