@@ -134,13 +134,21 @@ def _TestClass(base):
 
         def printPackageInfo(self):
             
-            for pkg in ['fipy', 'numpy', 'pysparse', 'PyTrilinos', 'scipy', 'matplotlib', 'gist', 'mayavi', 'mpi4py']:
+            for pkg in ['fipy', 'numpy', 'pysparse', 'PyTrilinos', 'scipy', 'matplotlib', 'gist', 'mpi4py']:
                 
                 try:
                     mod = __import__(pkg)
                     print pkg,'version',mod.__version__
                 except ImportError, exc:
                     print pkg,'is not installed'
+
+            ## Mayavi uses a non-standard approach for storing its version nummber.
+            pkg = 'enthought.mayavi'
+            try:
+                mod = __import__(pkg, fromlist=['enthought'])
+                print pkg,'version',mod.sys.version
+            except ImportError, exc:
+                print pkg,'is not installed'            
                 
         def run_tests(self):
             import sys
