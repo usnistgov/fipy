@@ -134,7 +134,7 @@ def _TestClass(base):
 
         def printPackageInfo(self):
             
-            for pkg in ['fipy', 'numpy', 'pysparse', 'PyTrilinos', 'scipy', 'matplotlib', 'gist', 'mayavi', 'mpi4py']:
+            for pkg in ['fipy', 'numpy', 'pysparse', 'PyTrilinos', 'scipy', 'matplotlib', 'gist', 'enthought.mayavi', 'mpi4py']:
                 
                 try:
                     mod = __import__(pkg)
@@ -531,7 +531,7 @@ def getVersion(version, release=False):
     return version
 
 dist = setup(	name = "FiPy",
-        version = getVersion(version='2.1.1', release=True), 
+        version = getVersion(version='2.1.1', release=False), 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
