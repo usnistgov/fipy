@@ -34,9 +34,10 @@
  ##
 
 from fipy.terms.binaryTerm import _BinaryTerm
-from fipy.matrices.pysparseMatrix import _CoupledPysparseMeshMatrix
+##from fipy.matrices.pysparseMatrix import _CoupledPysparseMeshMatrix
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
+from fipy.tools import numerix
 
 class _CoupledBinaryTerm(_BinaryTerm):
     def __init__(self, term, other):
@@ -58,12 +59,36 @@ class _CoupledBinaryTerm(_BinaryTerm):
     
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
-        Test offsets
+        Offset tests
 
-        >>> from f
+        >>> from fipy import *
+        >>> m = Grid1D(nx=3)
+        >>> v0 = CellVariable(mesh=m, value=0.)
+        >>> v1 = CellVariable(mesh=m, value=1.)        
+        >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
+        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
+        >>> eq = eq0 & eq1
+        >>> var = eq._verifyVar(None)
+        >>> solver = DefaultSolver()
+        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
+        >>> print var.getValue()
+        [ 0.  0.  0.  1.  1.  1.]
+        >>> print RHSvector.getValue()
+        [ 0.  0.  0.  1.  1.  1.]
+        >>> print matrix #doctest: +NORMALIZE_WHITESPACE
+         2.000000  -1.000000      ---     2.000000  -2.000000      ---
+        -1.000000   3.000000  -1.000000  -2.000000   4.000000  -2.000000
+            ---    -1.000000   2.000000      ---    -2.000000   2.000000
+         3.000000  -3.000000      ---     5.000000  -4.000000      ---
+        -3.000000   6.000000  -3.000000  -4.000000   9.000000  -4.000000
+            ---    -3.000000   3.000000      ---    -4.000000   5.000000
+        
+        
         """
 
-        N = var.getMesh().getNumberOfCells()
+        numberOfCells = var.getMesh().getNumberOfCells()
+        numberOfVariables = len(self._getVars())
+        
         matrix = 0
         RHSvectorsJ = []
 
@@ -73,15 +98,23 @@ class _CoupledBinaryTerm(_BinaryTerm):
             for j, tmpVar in enumerate(self._getVars()):
 
                 class OffsetSparseMatrix(SparseMatrix):
+                    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=numberOfVariables):
+                        SparseMatrix.__init__(self, mesh=mesh, bandwidth=bandwidth, sizeHint=sizeHint, numberOfVariables=numberOfVariables)
+
                     def put(self, vector, id1, id2):
-                        SparseMatrix.put(self, vector, id1 + N * i, id2 + N * j)
+                        SparseMatrix.put(self, vector, id1 + numberOfCells * i, id2 + numberOfCells * j)
 
                     def addAt(self, vector, id1, id2):
-                        SparseMatrix.addAt(self, vector, id1 + N * i, id2 + N * j)
+                        SparseMatrix.addAt(self, vector, id1 + numberOfCells * i, id2 + numberOfCells * j)
 
-                    def getSize(self):
-                        return len(self._getVars()) * self.mesh.getNumberOfVariables()
-
+                    def addAtDiagonal(self, vector):
+                        if type(vector) in [type(1), type(1.)]:
+                            tmp = numerix.zeros((numberOfCells,), 'd')
+                            tmp[:] = vector
+                            SparseMatrix.addAtDiagonal(self, tmp)
+                        else:
+                            SparseMatrix.addAtDiagonal(self, vector)
+                            
                 tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix(tmpVar,
                                                                     OffsetSparseMatrix,
                                                                     boundaryConditions=(),

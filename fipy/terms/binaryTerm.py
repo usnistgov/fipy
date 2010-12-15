@@ -80,6 +80,7 @@ class _BinaryTerm(Term):
         RHSvector = 0
 
         for term in (self.term, self.other):
+
             termVar, termMatrix, termRHSvector = term._buildMatrix(var,
                                                                    SparseMatrix,
                                                                    boundaryConditions=boundaryConditions,
@@ -91,11 +92,11 @@ class _BinaryTerm(Term):
                 and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
                 self._viewer.title = "%s %s" % (var.name, term.__class__.__name__) 
                 self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector) 
-                raw_input() 
+                raw_input()
 
             matrix += termMatrix
             RHSvector += termRHSvector
-
+            
 	return (var, matrix, RHSvector)
 
     def _addNone(self, arg0, arg1):
