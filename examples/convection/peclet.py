@@ -57,21 +57,20 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)
 
->>> speed = 1.0
->>> convCoeff = (speed,)
+>>> convCoeff = 1.0
 >>> peclet = 1e-3
 >>> allcloseList = []
 >>> while peclet < 1e4:
 ...     var[:] = valueLeft
-...     diffCoeff = speed * dx / peclet
+...     diffCoeff = convCoeff * dx / peclet
 ...     eq = (TransientTerm(1e-4) 
 ...           == DiffusionTerm(coeff=diffCoeff)
 ...           + PowerLawConvectionTerm(coeff=convCoeff))
 ...     eq.solve(var=var)
 ...     x = mesh.getCellCenters()[0]
-...     arg0 = -speed * x / diffCoeff
+...     arg0 = -convCoeff * x / diffCoeff
 ...     arg0 = where(arg0 < -200, -200, arg0)
-...     arg1 = -speed * L / diffCoeff
+...     arg1 = -convCoeff * L / diffCoeff
 ...     arg1 = (arg1 >= -200) * (arg1 + 200) - 200  
 ...     CC = 1. - exp(arg0)
 ...     DD = 1. - exp(arg1)

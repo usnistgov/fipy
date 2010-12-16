@@ -395,6 +395,7 @@ or
 ...                + DiffusionTerm(coeff=Dphi, var=phase))
 
 >>> eq = phaseEq & diffusionEq
+
 -----
 
 We initialize the phase field to a step function in the middle of the domain
@@ -532,9 +533,15 @@ require the residual.
 
 >>> phase.updateOld()
 >>> C.updateOld()
->>> res = 1e+10
->>> while res > 1e-3:
+>>> res = 1.
+>>> initialRes = None
+
+>>> while res > 1e-4:
 ...     res = eq.sweep(dt=dt, solver=solver)
+...     if initialRes is None:
+...         initialRes = res
+...     res = res / initialRes
+
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     raw_input("stationary phase field")
@@ -547,9 +554,9 @@ We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
 
 >>> X = mesh.getFaceCenters()[0]
->>> print Cs.allclose(C.getFaceValue()[X==0], atol=2e-4)
+>>> print Cs.allclose(C.getFaceValue()[X==0], atol=1e-2)
 True
->>> print Cl.allclose(C.getFaceValue()[X==L], atol=2e-4)
+>>> print Cl.allclose(C.getFaceValue()[X==L], atol=1e-2)
 True
 
 and that the phase fraction remains unchanged
@@ -583,7 +590,6 @@ diffusion and of phase transformation compete with each other).
 ...     res = 1e+10
 ...     while res > 1e-3:
 ...         res = eq.sweep(dt=dt, solver=solver)
-...         print i, res
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 

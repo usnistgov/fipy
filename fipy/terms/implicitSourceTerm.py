@@ -48,7 +48,7 @@ class ImplicitSourceTerm(SourceTerm):
        
     where :math:`S` is the `coeff` value.       
     """
-    def _calcCoeffVectors(self, var):
+    def _calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
         Test for a bug due to the sign operator not being updating
         correctly.
@@ -67,9 +67,25 @@ class ImplicitSourceTerm(SourceTerm):
             
         """
 
+        if transientGeomCoeff is not None:
+            if numerix.all(transientGeomCoeff >= 0):
+                diagonalSign = 1
+            elif numerix.all(transientGeomCoeff <= 0):
+                diagonalSign = -1
+            else:
+                raise Exception, "Transient coefficient has both positive and negative values"
+        elif diffusionGeomCoeff is not None:
+            if numerix.all(diffusionGeomCoeff[0] <= 0):
+                diagonalSign = 1
+            elif numerix.all(diffusionGeomCoeff >= 0):
+                diagonalSign = -1
+            else:
+                raise Exception, "Diffusion coefficient has both positive and negative values"
+        else:
+            diagonalSign = 1
+            
         coeff = self._getGeomCoeff(var.getMesh())
-        from fipy.tools.numerix import sign
-        combinedSign = self._diagonalSign * sign(coeff)
+        combinedSign = diagonalSign * numerix.sign(coeff)
         self.coeffVectors = {
             'diagonal': coeff * (combinedSign >= 0),
             'old value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd'),

@@ -302,7 +302,6 @@ fipy/generated/fipy/variables/gamma.jpg
 fipy/generated/fipy/variables/gaussian.jpg
 fipy/generated/fipy/variables/uniform.jpg
 fipy/matrices/__init__.py
-fipy/matrices/coupledMeshMatrix.py
 fipy/matrices/pysparseMatrix.py
 fipy/matrices/sparseMatrix.py
 fipy/matrices/test.py
@@ -420,13 +419,11 @@ fipy/steppers/pidStepper.py
 fipy/steppers/pseudoRKQSStepper.py
 fipy/steppers/stepper.py
 fipy/terms/__init__.py
+fipy/terms/binaryTerm.py
 fipy/terms/cellTerm.py
 fipy/terms/centralDiffConvectionTerm.py
-fipy/terms/collectedDiffusionTerm.py
 fipy/terms/convectionTerm.py
-fipy/terms/coupledEquation.py
 fipy/terms/diffusionTerm.py
-fipy/terms/equation.py
 fipy/terms/explicitDiffusionTerm.py
 fipy/terms/explicitSourceTerm.py
 fipy/terms/explicitUpwindConvectionTerm.py
@@ -435,7 +432,6 @@ fipy/terms/faceTerm.py
 fipy/terms/hybridConvectionTerm.py
 fipy/terms/implicitDiffusionTerm.py
 fipy/terms/implicitSourceTerm.py
-fipy/terms/mulTerm.py
 fipy/terms/nthOrderDiffusionTerm.py
 fipy/terms/powerLawConvectionTerm.py
 fipy/terms/sourceTerm.py
@@ -479,7 +475,6 @@ fipy/variables/cellToFaceVariable.py
 fipy/variables/cellVariable.py
 fipy/variables/cellVolumeAverageVariable.py
 fipy/variables/constant.py
-fipy/variables/coupledCellVariable.py
 fipy/variables/exponentialNoiseVariable.py
 fipy/variables/faceGradContributionsVariable.py
 fipy/variables/faceGradVariable.py
