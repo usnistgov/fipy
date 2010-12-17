@@ -71,18 +71,17 @@ class _CoupledBinaryTerm(_BinaryTerm):
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
         >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
-        >>> print var.getValue()
+        >>> print var.getGlobalValue()
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print RHSvector.getValue()
+        >>> print RHSvector.getGlobalValue()
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print matrix #doctest: +NORMALIZE_WHITESPACE
-         2.000000  -1.000000      ---     2.000000  -2.000000      ---
-        -1.000000   3.000000  -1.000000  -2.000000   4.000000  -2.000000
-            ---    -1.000000   2.000000      ---    -2.000000   2.000000
-         3.000000  -3.000000      ---     5.000000  -4.000000      ---
-        -3.000000   6.000000  -3.000000  -4.000000   9.000000  -4.000000
-            ---    -3.000000   3.000000      ---    -4.000000   5.000000
-        
+        >>> print parallel.procID > 0 or numerix.allequal(matrix.getNumpyArray(), [[2, -1, 0, 2, -2, 0],
+        ...                                                                        [-1, 3, -1, -2, 4, -2],
+        ...                                                                        [0, -1, 2, 0, -2, 2],
+        ...                                                                        [3, -3, 0, 5, -4, 0],
+        ...                                                                        [-3, 6, -3, -4, 9, -4],                
+        ...                                                                        [0, -3, 3, 0, -4, 5]])
+        True
         
         """
 

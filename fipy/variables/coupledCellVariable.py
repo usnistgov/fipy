@@ -67,6 +67,9 @@ class _CoupledCellVariable():
     def getValue(self):
         return numerix.concatenate([numerix.array(var.getValue()) for var in self.vars])
 
+    def getGlobalValue(self):
+        return numerix.concatenate([numerix.array(var.getGlobalValue()) for var in self.vars])
+
     def getNumericValue(self):
         return numerix.concatenate([var.getNumericValue() for var in self.vars])
 
@@ -86,8 +89,9 @@ class _CoupledCellVariable():
         >>> v1 = CellVariable(mesh=mesh, value=[2, 3])
         >>> v2 = CellVariable(mesh=mesh, value=[4, 5])
         >>> v = _CoupledCellVariable(vars=(v1, v2))
-        >>> print numerix.array(v)
-        [2 3 4 5]
+        >>> from fipy.tools import parallel
+        >>> print parallel.procID > 0 or numerix.allequal([2,3,4,5], numerix.array(v))
+        True
         >>> v[:] = (6,7,8,9)
         >>> print v1
         [6 7]

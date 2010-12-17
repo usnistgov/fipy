@@ -509,21 +509,17 @@ class Term:
  	Traceback (most recent call last): 
  	    ... 
         Exception: The solution variable needs to be specified
- 	>>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.) 
- 	>>> print solver.matrix #doctest: +NORMALIZE_WHITESPACE
-         1.000000      ---        ---
-            ---     1.000000      ---
-            ---        ---     1.000000
-        >>> print solver.RHSvector 
- 	[ 0.  0.  0.]
- 	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.) 
- 	>>> print solver.matrix #doctest: +NORMALIZE_WHITESPACE 
- 	 1.000000  -1.000000      ---     
- 	-1.000000   2.000000  -1.000000   
- 	    ---    -1.000000   1.000000   
- 	>>> print solver.RHSvector 
- 	[ 0.  0.  0.]
- 	 
+ 	>>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
+        >>> from fipy.tools import parallel
+ 	>>> print parallel.procID > 0 or numerix.allequal(solver.matrix.getNumpyArray(), [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+ 	True
+ 	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
+        >>> print parallel.procID > 0 or numerix.allequal(solver.matrix.getNumpyArray(), [[1, -1, 0], [-1, 2, -1], [0, -1, 1]])
+        True
+ 	>>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0,])
+        True
  	>>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
  	Traceback (most recent call last): 
  	    ... 
@@ -533,15 +529,13 @@ class Term:
  	(DiffusionTerm(coeff=[1.0], var=B) + 10.0)
  	>>> print eq._getVars()
  	[B]
- 	>>> print (eq.term, eq.other) 
+ 	>>> print (eq.term, eq.other)
         (DiffusionTerm(coeff=[1.0], var=B), 10.0)
  	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.) 
- 	>>> print solver.matrix #doctest: +NORMALIZE_WHITESPACE 
- 	-1.000000   1.000000      ---     
- 	 1.000000  -2.000000   1.000000   
- 	    ---     1.000000  -1.000000   
- 	>>> print solver.RHSvector 
- 	[-10. -10. -10.]
+        >>> print parallel.procID > 0 or numerix.allequal(solver.matrix.getNumpyArray(), [[-1, 1, 0], [1, -2, 1], [0, 1, -1]])
+        True
+ 	>>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [-10, -10, -10]) 
+ 	True
  	>>> eq.solve(var=B)
 
         >>> m = Grid1D(nx=2)
@@ -578,12 +572,9 @@ class Term:
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve()
-        >>> print eq.getMatrix() #doctest: +NORMALIZE_WHITESPACE
-        -1.000000   1.000000      ---        ---
-         1.000000  -1.000000      ---        ---
-            ---        ---    -2.000000   2.000000
-            ---        ---     2.000000  -2.000000
-        >>> print eq.getRHSvector().getValue()
+        >>> print parallel.procID > 0 or numerix.allequal(eq.getMatrix().getNumpyArray(), [[-1, 1, 0, 0], [1, -1, 0, 0], [0, 0, -2, 2], [0, 0, 2, -2]])
+        True
+        >>> print eq.getRHSvector().getGlobalValue()
         [ 0.  0.  0.  0.]
         >>> print eq._getVars()
         [A, B]
@@ -620,14 +611,14 @@ class Term:
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve()
-        >>> print eq.getMatrix() #doctest: +NORMALIZE_WHITESPACE
-        -1.000000   1.000000  -2.000000   2.000000      ---        ---
-         1.000000  -1.000000   2.000000  -2.000000      ---        ---
-            ---        ---    -2.000000   2.000000  -3.000000   3.000000
-            ---        ---     2.000000  -2.000000   3.000000  -3.000000
-        -1.000000   1.000000      ---        ---    -3.000000   3.000000
-         1.000000  -1.000000      ---        ---     3.000000  -3.000000
-        >>> print eq.getRHSvector().getValue()
+        >>> print parallel.procID > 0 or numerix.allequal(eq.getMatrix().getNumpyArray(), [[-1, 1, -2, 2, 0, 0],
+        ...                                                                                [1, -1, 2, -2, 0, 0],
+        ...                                                                                [0, 0, -2, 2, -3, 3],
+        ...                                                                                [0, 0, 2, -2, 3, -3],
+        ...                                                                                [-1, 1, 0, 0, -3, 3],                
+        ...                                                                                [1, -1, 0, 0, 3, -3]])
+        True
+        >>> print eq.getRHSvector().getGlobalValue()
         [ 0.  0.  0.  0.  0.  0.]
         >>> print eq._getVars()
         [A, B, C]
