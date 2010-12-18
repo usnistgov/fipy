@@ -1245,56 +1245,58 @@ class Mesh(object):
             length = min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis=0))
         return cellVertexIDs[length:][::-1]
 
-## Below is an ordered version of _getCellVertexIDs()
-## It works for the test case in this file (other than the ordering, obviously)
-## I've left it in as it may be useful when we need ordered vertices for cells
-    
-##    def _getOrderedCellVertexIDs(self):
+ """
+ Below is an ordered version of _getCellVertexIDs()
+ It works for the test case in this file (other than the ordering, obviously)
+ I've left it in as it may be useful when we need ordered vertices for cells
+  
+    def _getOrderedCellVertexIDs(self):
 
-##        ## Get all the vertices from all the faces for each cell
-##        from fipy.tools.numerix import take
-##        cellFaceVertices = take(self.faceVertexIDs, self.cellFaceIDs)
+        ## Get all the vertices from all the faces for each cell
+        from fipy.tools.numerix import take
+        cellFaceVertices = take(self.faceVertexIDs, self.cellFaceIDs)
 
-##        ## get a sorted list of vertices for each cell
-##        NCells = self.numberOfCells
-##        cellVertexIDs = MA.reshape(cellFaceVertices.flat, (NCells, -1))
-##        newmask = MA.getmaskarray(cellVertexIDs).copy()
+        ## get a sorted list of vertices for each cell
+        NCells = self.numberOfCells
+        cellVertexIDs = MA.reshape(cellFaceVertices.flat, (NCells, -1))
+        newmask = MA.getmaskarray(cellVertexIDs).copy()
 
-##        for i in range(len(cellVertexIDs[0]) - 1):
-##            for j in range(len(cellVertexIDs[0]))[i + 1:]:
+        for i in range(len(cellVertexIDs[0]) - 1):
+            for j in range(len(cellVertexIDs[0]))[i + 1:]:
 
-##                newmask[:,j] = MA.where(newmask[:,j],
-##                                        newmask[:,j],
-##                                        MA.where(MA.filled(cellVertexIDs)[:,i] == MA.filled(cellVertexIDs)[:,j],
-##                                                 1,
-##                                                 newmask[:,j]))
-
-
-##        cellVertexIDs = MA.masked_array(cellVertexIDs, newmask)
-
-##        for i in range(len(cellVertexIDs[0]) - 1):
-##            j = i + 1
-##            while j < len(cellVertexIDs[0]):
-##                tmp = cellVertexIDs[:]
-##                tmp[:, i] = MA.where(MA.getmaskarray(cellVertexIDs[:,i]),
-##                                     MA.where(MA.getmaskarray(cellVertexIDs[:, j]),
-##                                              cellVertexIDs[:, i],
-##                                              cellVertexIDs[:, j]),
-##                                     cellVertexIDs[:, i])
-                                                        
-##                tmp[:, j] = MA.where(MA.getmaskarray(cellVertexIDs[:,i]),
-##                                     MA.where(MA.getmaskarray(cellVertexIDs[:, j]),
-##                                              cellVertexIDs[:,j],
-##                                              cellVertexIDs[:,i]),
-##                                     cellVertexIDs[:, j])
-
-##                cellVertexIDs = tmp[:]
-
-##                j += 1
+                newmask[:,j] = MA.where(newmask[:,j],
+                                        newmask[:,j],
+                                        MA.where(MA.filled(cellVertexIDs)[:,i] == MA.filled(cellVertexIDs)[:,j],
+                                                 1,
+                                                 newmask[:,j]))
 
 
-##        length = len(cellVertexIDs[0]) - min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis = 1))
-##        return cellVertexIDs[:, :length]
+        cellVertexIDs = MA.masked_array(cellVertexIDs, newmask)
+
+        for i in range(len(cellVertexIDs[0]) - 1):
+            j = i + 1
+            while j < len(cellVertexIDs[0]):
+                tmp = cellVertexIDs[:]
+                tmp[:, i] = MA.where(MA.getmaskarray(cellVertexIDs[:,i]),
+                                     MA.where(MA.getmaskarray(cellVertexIDs[:, j]),
+                                              cellVertexIDs[:, i],
+                                              cellVertexIDs[:, j]),
+                                     cellVertexIDs[:, i])
+                                                      
+                tmp[:, j] = MA.where(MA.getmaskarray(cellVertexIDs[:,i]),
+                                     MA.where(MA.getmaskarray(cellVertexIDs[:, j]),
+                                              cellVertexIDs[:,j],
+                                              cellVertexIDs[:,i]),
+                                     cellVertexIDs[:, j])
+
+                cellVertexIDs = tmp[:]
+
+                j += 1
+
+
+        length = len(cellVertexIDs[0]) - min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis = 1))
+        return cellVertexIDs[:, :length]
+"""
 
 
     """scaling"""
