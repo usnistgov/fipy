@@ -40,6 +40,8 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.cell import Cell
+from fipy.meshes.topologies import MeshTopology
+from fipy.meshes.geometries import MeshGeometry
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -109,15 +111,12 @@ class Mesh(object):
         
     """Topology methods"""
     def _setTopology(self):
-        (self.interiorFaces,
-        self.exteriorFaces)         = self._calcInteriorAndExteriorFaceIDs()
-        (self.interiorCellIDs,
-        self.exteriorCellIDs)       = self._calcInteriorAndExteriorCellIDs()
-        self.cellToFaceOrientations = self._calcCellToFaceOrientations()
-        self.adjacentCellIDs        = self._calcAdjacentCellIDs()
-        self.cellToCellIDs          = self._calcCellToCellIDs()
-        self.cellToCellIDsFilled    = self._calcCellToCellIDsFilled()
-
+        self._topology = MeshTopology(self.cellFaceIDs, 
+                                     self.faceCellIDs, 
+                                     self.numberOfCells,
+                                     self._getMaxFacesPerCell(),
+                                     self) # `self` only for int/ext face calc
+         
     def setScale(self, value = 1.):
 
         self.scale['length'] = PhysicalField(value = value)
@@ -145,6 +144,21 @@ class Mesh(object):
     @property
     def _concatenatedClass(self):
         return Mesh
+
+    """Topology properties"""
+
+    def _setExteriorFaces(self, newExtFaces):
+        self._topology.exteriorFaces = newExtFaces
+
+    interiorFaces = property(lambda s: s._topology.interiorFaces)
+    exteriorFaces = property(lambda s: s._topology.exteriorFaces,
+                             _setExteriorFaces)
+    interiorCellIDs = property(lambda s: s._topology.interiorCellIDs)
+    exteriorCellIDs = property(lambda s: s._topology.exteriorCellIDs)
+    cellToFaceOrientations = property(lambda s: s._topology.cellToFaceOrientations)
+    adjacentCellIDs = property(lambda s: s._topology.adjacentCellIDs)
+    cellToCellIDs = property(lambda s: s._topology.cellToCellIDs)
+    cellToCellIDsFilled = property(lambda s: s._topology.cellToCellIDsFilled)
         
     def __add__(self, other):
         """
@@ -417,8 +431,10 @@ class Mesh(object):
         ## compute vertex correlates
 
         ## only try to match exterior (X) vertices
-        self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[..., selfc.exteriorFaces.getValue()].flatten())
-        other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[..., other.exteriorFaces.getValue()].flatten())
+        self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[...,
+            self.exteriorFaces.getValue()].flatten())
+        other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[...,
+            other.exteriorFaces.getValue()].flatten())
 
         self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
         other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
@@ -580,14 +596,7 @@ class Mesh(object):
         
     def _calcInteriorCellIDs(self):
         raise NotImplementedError
-     
-    def _calcCellToCellIDsFilled(self):
-        N = self.numberOfCells
-        M = self._getMaxFacesPerCell()
-        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
-        cellToCellIDs = self._getCellToCellIDs()
-        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
-
+    
     def _getNumberOfFacesPerCell(self):
         cellFaceIDs = self.cellFaceIDs
         if type(cellFaceIDs) is type(MA.array(0)):
@@ -620,46 +629,6 @@ class Mesh(object):
         return MA.sort(MA.array(faceCellIDs, mask = mask),
                                    axis=0)
 
-    def _calcInteriorAndExteriorFaceIDs(self):
-        from fipy.variables.faceVariable import FaceVariable
-        mask = MA.getmask(self.faceCellIDs[1])
-        exteriorFaces = FaceVariable(mesh=self, 
-                                     value=mask)
-        interiorFaces = FaceVariable(mesh=self, 
-                                     value=numerix.logical_not(mask))
-        return interiorFaces, exteriorFaces
-    
-    def _calcInteriorAndExteriorCellIDs(self):
-        try:
-            import sets
-            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.exteriorFaces.getValue()])
-            interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self.exteriorCellIDs)
-            exteriorCellIDs = list(self.exteriorCellIDs)
-        except:
-            exteriorCellIDs = self.faceCellIDs[0, self.exteriorFaces.getValue()]
-            tmp = numerix.zeros(self.numberOfCells)
-            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs)))
-            exteriorCellIDs = numerix.nonzero(tmp)            
-            interiorCellIDs = numerix.nonzero(numerix.logical_not(tmp))
-        return interiorCellIDs, exteriorCellIDs
-
-            
-    def _calcCellToFaceOrientations(self):
-        tmp = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
-        return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
-
-    def _calcAdjacentCellIDs(self):
-        return (MA.filled(self.faceCellIDs[0]), 
-                          MA.filled(MA.where(MA.getmaskarray(self.faceCellIDs[1]), 
-                                             self.faceCellIDs[0], 
-                                             self.faceCellIDs[1])))
-
-    def _calcCellToCellIDs(self):    
-        cellToCellIDs = numerix.take(self.faceCellIDs, self.cellFaceIDs, axis=1)
-        cellToCellIDs = MA.where(self.cellToFaceOrientations == 1, 
-                                 cellToCellIDs[1], cellToCellIDs[0])
-        return cellToCellIDs
-        
     def _calcNumPts(self, d, n = None, axis = "x"):
         """
         Calculate the number of cells along the specified axis, based

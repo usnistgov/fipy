@@ -35,6 +35,7 @@
 from fipy.tools.numerix import MA
 
 from fipy.meshes.grid3D import Grid3D
+from fipy.meshes.topologies import UniformMeshTopology3D
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -132,6 +133,8 @@ class UniformGrid3D(Grid3D):
         self.numberOfYZFaces = (self.nx + 1) * self.ny * self.nz
         self.numberOfFaces = self.numberOfXYFaces + self.numberOfXZFaces + self.numberOfYZFaces
         self.numberOfCells = self.nx * self.ny * self.nz
+
+        self._topology = UniformMeshTopology3D(self)
         
         self.scale = {
             'length': 1.,
@@ -184,81 +187,7 @@ class UniformGrid3D(Grid3D):
         ids = numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces, self.numberOfFaces)
         return ids.reshape((self.nz, self.ny, self.nx + 1)).swapaxes(0,2)
 
-    def _getExteriorFaces(self):
-        """
-        Return only the faces that have one neighboring cell.
-        """
-        XYids = self._getXYFaceIDs()
-        XZids = self._getXZFaceIDs()
-        YZids = self._getYZFaceIDs()
-        
-        exteriorIDs = numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0,1)), 
-                                           numerix.ravel(XYids[...,     -1].swapaxes(0,1)),
-                                           numerix.ravel(XZids[...,  0,...]), 
-                                           numerix.ravel(XZids[..., -1,...]),
-                                           numerix.ravel(YZids[ 0,     ...]), 
-                                           numerix.ravel(YZids[-1,     ...])))
-                                                     
-        from fipy.variables.faceVariable import FaceVariable
-        exteriorFaces = FaceVariable(mesh=self, value=False)
-        exteriorFaces[exteriorIDs] = True
-        return exteriorFaces
-
-    exteriorFaces = property(_getExteriorFaces)
-        
-    def _getInteriorFaces(self):
-        """
-        Return only the faces that have two neighboring cells
-        """
-        XYids = self._getXYFaceIDs()
-        XZids = self._getXZFaceIDs()
-        YZids = self._getYZFaceIDs()
-        
-        interiorIDs = numerix.concatenate((numerix.ravel(XYids[ ...     ,1:-1]),
-                                           numerix.ravel(XZids[ ...,1:-1, ...]),
-                                           numerix.ravel(YZids[1:-1,      ...].swapaxes(0,1))))
-                                                     
-        from fipy.variables.faceVariable import FaceVariable
-        interiorFaces = FaceVariable(mesh=self, value=False)
-        interiorFaces[interiorIDs] = True
-        return interiorFaces
-
-    interiorFaces = property(_getInteriorFaces)
-
-    def _getCellFaceOrientations(self):
-        tmp = numerix.take(self.getFaceCellIDs()[0], self.cellFaceIDs)
-        return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
-
-    def _getAdjacentCellIDs(self):
-        faceCellIDs = self.getFaceCellIDs()
-        return (MA.where(MA.getmaskarray(faceCellIDs[0]), faceCellIDs[1], faceCellIDs[0]).filled(),
-                MA.where(MA.getmaskarray(faceCellIDs[1]), faceCellIDs[0], faceCellIDs[1]).filled())
-
-    def _getCellToCellIDs(self):
-        ids = MA.zeros((6, self.nx, self.ny, self.nz), 'l')
-        indices = numerix.indices((self.nx, self.ny, self.nz))
-        ids[0] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx - 1
-        ids[1] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx + 1
-        ids[2] = indices[0] + (indices[1] + indices[2] * self.ny - self.nz) * self.nx
-        ids[3] = indices[0] + (indices[1] + indices[2] * self.ny + self.nz) * self.nx
-        ids[4] = indices[0] + (indices[1] + (indices[2] - 1) * self.ny) * self.nx
-        ids[5] = indices[0] + (indices[1] + (indices[2] + 1) * self.ny) * self.nx
-        
-        ids[0, 0,    ...] = MA.masked
-        ids[1,-1,    ...] = MA.masked
-        ids[2,..., 0,...] = MA.masked
-        ids[3,...,-1,...] = MA.masked
-        ids[4,...,     0] = MA.masked
-        ids[5,...,    -1] = MA.masked
-
-        return MA.reshape(ids.swapaxes(1,3), (6, self.numberOfCells))
-        
-    def _getCellToCellIDsFilled(self):
-        N = self.getNumberOfCells()
-        M = self._getMaxFacesPerCell()
-        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
-        cellToCellIDs = self._getCellToCellIDs()
-        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
+    
         
     def _getMaxFacesPerCell(self):
         return 6

@@ -38,6 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import MA
+from fipy.meshes.topologies import UniformMeshTopology1D
 
 from grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -88,8 +89,8 @@ class UniformGrid1D(Grid1D):
         else:
             self.numberOfFaces = self.nx + 1
         self.numberOfCells = self.nx
-        
-        self.exteriorFaces = self.getFacesLeft() | self.getFacesRight()
+
+        self._topology = UniformMeshTopology1D(self)
         
         self.scale = {
             'length': 1.,
@@ -100,6 +101,32 @@ class UniformGrid1D(Grid1D):
         self.setScale(value=scale)
         self.communicator = communicator
         
+    """Topology properties"""
+
+    """
+    exteriorFaces = property(lambda s: s._topology.exteriorFaces)
+    interiorFaces = property(lambda s: s._topology._getInteriorFaces(s))
+    _cellToFaceOrientations = property(lambda s: s._topology._getCellFaceOrientations(self.numberOfCells))
+    _adjacentCellIDs = property(lambda s: s._topology._getAdjacentCellIDs(self.numberOfFaces))
+    _cellToCellIDs = property(lambda s: s._topology._getCellToCellIDs(self.numberOfCells))
+    _cellToCellIDsFilled = property(lambda s: s._topology._getCellToCellIDsFilled(self.numberOfCells))
+
+    def _getInteriorFaces(self):
+        return self._topology._getInteriorFaces(self)
+
+    def _getCellFaceOrientations(self):
+        return self._topology._getCellFaceOrientations(self.numberOfCells)
+
+    def _getAdjacentCellIDs(self):
+        return self._topology._getAdjacentCellIDs(self.numberOfFaces)
+
+    def _getCellToCellIDs(self):
+        return self._topology._getCellToCellIDs(self.numberOfCells)
+
+    def _getCellToCellIDsFilled(self):
+        return self._topology._getCellToCellIDsFilled(self.numberOfCells)
+    """
+
     def _translate(self, vector):
         return UniformGrid1D(dx=self.dx, 
                              nx=self.args['nx'], 
@@ -127,43 +154,7 @@ class UniformGrid1D(Grid1D):
 
     cellFaceIDs = property(_getCellFaceIDs)
         
-    def _getInteriorFaces(self):
-        from fipy.variables.faceVariable import FaceVariable
-        interiorFaces = FaceVariable(mesh=self, value=False)
-        interiorFaces[numerix.arange(self.numberOfFaces-2) + 1] = True
-        return interiorFaces
-
-    interiorFaces = property(_getInteriorFaces)
-            
-    def _getCellFaceOrientations(self):
-        orientations = numerix.ones((2, self.numberOfCells))
-        if self.numberOfCells > 0:
-            orientations[0] *= -1
-            orientations[0,0] = 1
-        return orientations
-
-    def _getAdjacentCellIDs(self):
-        c1 = numerix.arange(self.numberOfFaces)
-        ids = numerix.array((c1 - 1, c1))
-        if self.numberOfFaces > 0:
-            ids[0,0] = ids[1,0]
-            ids[1,-1] = ids[0,-1]
-        return ids[0], ids[1]
-
-    def _getCellToCellIDs(self):
-        c1 = numerix.arange(self.numberOfCells)
-        ids = MA.array((c1 - 1, c1 + 1))
-        if self.numberOfCells > 0:
-            ids[0,0] = MA.masked
-            ids[1,-1] = MA.masked
-        return ids
-        
-    def _getCellToCellIDsFilled(self):
-        ids = self._getCellToCellIDs().filled()
-        if self.numberOfCells > 0:
-            ids[0,0] = 0
-            ids[1,-1] = self.numberOfCells - 1
-        return ids
+    
         
     def _getMaxFacesPerCell(self):
         return 2

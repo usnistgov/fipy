@@ -325,11 +325,16 @@ fipy/meshes/periodicGrid1D.py
 fipy/meshes/periodicGrid2D.py
 fipy/meshes/skewedGrid2D.py
 fipy/meshes/test.py
-fipy/meshes/testgmsh.msh
 fipy/meshes/tri2D.py
 fipy/meshes/uniformGrid1D.py
 fipy/meshes/uniformGrid2D.py
 fipy/meshes/uniformGrid3D.py
+fipy/meshes/geometries/__init__.py
+fipy/meshes/geometries/meshGeometry.py
+fipy/meshes/topologies/__init__.py
+fipy/meshes/topologies/abstractMeshTopology.py
+fipy/meshes/topologies/meshTopology.py
+fipy/meshes/topologies/uniformMeshTopology.py
 fipy/models/__init__.py
 fipy/models/test.py
 fipy/models/levelSet/__init__.py
