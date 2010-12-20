@@ -186,6 +186,9 @@ class _PysparseMatrixBase(_SparseMatrix):
             
     def _getShape(self):
         return self.matrix.shape
+
+    def _getRange(self):
+        return range(self._getShape()[1]), range(self._getShape()[0])
         
     def put(self, vector, id1, id2):
         """

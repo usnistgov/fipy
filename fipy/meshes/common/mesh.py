@@ -296,6 +296,10 @@ class Mesh:
     def getDim(self):
         return self.dim
 
+    def getGlobalNumberOfCells(self):
+        from fipy.tools import parallel
+        return parallel.sumAll(len(self._getGlobalNonOverlappingCellIDs()))
+
     def _getGlobalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
