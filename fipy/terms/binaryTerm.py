@@ -88,15 +88,14 @@ class _BinaryTerm(Term):
                                                                    transientGeomCoeff=transientGeomCoeff,
                                                                    diffusionGeomCoeff=diffusionGeomCoeff)
 
-            if (os.environ.has_key('FIPY_DISPLAY_MATRIX')  
-                and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
-                self._viewer.title = "%s %s" % (var.name, term.__class__.__name__) 
-                self._viewer.plot(matrix=termMatrix, RHSvector=termRHSvector) 
-                raw_input()
-
             matrix += termMatrix
             RHSvector += termRHSvector
-            
+
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            self._viewer.title = "%s %s" % (var.name, repr(self))
+            self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 
+            raw_input()
+
 	return (var, matrix, RHSvector)
 
     def _addNone(self, arg0, arg1):
