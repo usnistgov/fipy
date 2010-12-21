@@ -503,7 +503,7 @@ class Term:
  	>>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
  	>>> print eq 
  	(TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B))
- 	>>> print eq._getVars() 
+ 	>>> print eq._getVars()
  	[A, B]
  	>>> print (eq.term, eq.other) 
  	(TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
@@ -513,12 +513,14 @@ class Term:
         Exception: The solution variable needs to be specified
  	>>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> from fipy.tools import parallel
- 	>>> print parallel.procID > 0 or numerix.allequal(solver.matrix.getNumpyArray(), [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        >>> numpyMatrix = solver.matrix.getNumpyArray()
+ 	>>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
  	True
  	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
-        >>> print parallel.procID > 0 or numerix.allequal(solver.matrix.getNumpyArray(), [[1, -1, 0], [-1, 2, -1], [0, -1, 1]])
+        >>> numpyMatrix = solver.matrix.getNumpyArray()
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, -1, 0], [-1, 2, -1], [0, -1, 1]])
         True
  	>>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0,])
         True
@@ -533,8 +535,9 @@ class Term:
  	[B]
  	>>> print (eq.term, eq.other)
         (DiffusionTerm(coeff=[1.0], var=B), 10.0)
- 	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.) 
-        >>> print parallel.procID > 0 or numerix.allequal(solver.matrix.getNumpyArray(), [[-1, 1, 0], [1, -2, 1], [0, 1, -1]])
+ 	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.getNumpyArray()
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0], [1, -2, 1], [0, 1, -1]])
         True
  	>>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [-10, -10, -10]) 
  	True
@@ -574,7 +577,8 @@ class Term:
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve()
-        >>> print parallel.procID > 0 or numerix.allequal(eq.getMatrix().getNumpyArray(), [[-1, 1, 0, 0], [1, -1, 0, 0], [0, 0, -2, 2], [0, 0, 2, -2]])
+        >>> numpyMatrix = eq.getMatrix().getNumpyArray()
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], [1, -1, 0, 0], [0, 0, -2, 2], [0, 0, 2, -2]])
         True
         >>> print eq.getRHSvector().getGlobalValue()
         [ 0.  0.  0.  0.]
@@ -613,12 +617,13 @@ class Term:
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve()
-        >>> print parallel.procID > 0 or numerix.allequal(eq.getMatrix().getNumpyArray(), [[-1, 1, -2, 2, 0, 0],
-        ...                                                                                [1, -1, 2, -2, 0, 0],
-        ...                                                                                [0, 0, -2, 2, -3, 3],
-        ...                                                                                [0, 0, 2, -2, 3, -3],
-        ...                                                                                [-1, 1, 0, 0, -3, 3],                
-        ...                                                                                [1, -1, 0, 0, 3, -3]])
+        >>> numpyMatrix = eq.getMatrix().getNumpyArray()
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, -2, 2, 0, 0],
+        ...                                                             [1, -1, 2, -2, 0, 0],
+        ...                                                             [0, 0, -2, 2, -3, 3],
+        ...                                                             [0, 0, 2, -2, 3, -3],
+        ...                                                             [-1, 1, 0, 0, -3, 3],                
+        ...                                                             [1, -1, 0, 0, 3, -3]])
         True
         >>> print eq.getRHSvector().getGlobalValue()
         [ 0.  0.  0.  0.  0.  0.]

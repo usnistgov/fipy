@@ -484,13 +484,12 @@ class _TrilinosMatrixBase(_SparseMatrix):
         EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     def getNumpyArray(self):
-        M = self._getMatrix().NumGlobalRows()
-        N = self._getMatrix().NumMyRows()
-        vector = numerix.zeros((N, M), 'd')
-        for i in range(N):
-            for j in range(M):
-                vector[i, j] = self[i, j]
-
+        Irange, Jrange = self._getRange()
+        vector = numerix.zeros((len(Jrange), len(Irange)), 'd')
+        self.matrix.FillComplete()
+        for j in Jrange:
+            for i in Irange:
+                vector[j, i] = self.matrix[j, i]
         return vector
 
     def _getDistributedMatrix(self):

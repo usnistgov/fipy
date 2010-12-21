@@ -75,12 +75,13 @@ class _CoupledBinaryTerm(_BinaryTerm):
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.getGlobalValue()
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print parallel.procID > 0 or numerix.allequal(matrix.getNumpyArray(), [[2, -1, 0, 2, -2, 0],
-        ...                                                                        [-1, 3, -1, -2, 4, -2],
-        ...                                                                        [0, -1, 2, 0, -2, 2],
-        ...                                                                        [3, -3, 0, 5, -4, 0],
-        ...                                                                        [-3, 6, -3, -4, 9, -4],                
-        ...                                                                        [0, -3, 3, 0, -4, 5]])
+        >>> numpyMatrix = matrix.getNumpyArray()
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[2, -1, 0, 2, -2, 0],
+        ...                                                             [-1, 3, -1, -2, 4, -2],
+        ...                                                             [0, -1, 2, 0, -2, 2],
+        ...                                                             [3, -3, 0, 5, -4, 0],
+        ...                                                             [-3, 6, -3, -4, 9, -4],                
+        ...                                                             [0, -3, 3, 0, -4, 5]])
         True
         
         """
