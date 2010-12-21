@@ -641,7 +641,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         overlappingMap = Epetra.Map(-1, list(globalOverlappingRowIDs), 0, comm)
 
         _TrilinosMatrix.__init__(self, 
-                                 size=self.numberOfVariables * self.mesh.getGlobalNumberOfCells(), 
+                                 size=self.numberOfVariables * self.mesh.globalNumberOfCells, 
                                  bandwidth=bandwidth, 
                                  sizeHint=sizeHint, 
                                  nonOverlappingMap=nonOverlappingMap,
@@ -650,7 +650,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     def _cellIDsToGlobalRowIDs(self, IDs):
          N = len(IDs)
          M = self.numberOfVariables
-         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.getGlobalNumberOfCells()).flatten()
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
 
     def _cellIDsToLocalRowIDs(self, IDs):
          M = self.numberOfVariables

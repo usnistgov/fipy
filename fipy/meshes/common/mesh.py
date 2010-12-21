@@ -296,10 +296,6 @@ class Mesh:
     def getDim(self):
         return self.dim
 
-    def getGlobalNumberOfCells(self):
-        from fipy.tools import parallel
-        return parallel.sumAll(len(self._getGlobalNonOverlappingCellIDs()))
-
     def _getGlobalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
@@ -760,7 +756,7 @@ class Mesh:
         """
         if self.globalNumberOfCells == 0:
             return numerix.arange(0)
-            
+        
         points = numerix.resize(points, (self.globalNumberOfCells, len(points), len(points[0]))).swapaxes(0,1)
 
         centers = self.getCellCenters().getGlobalValue()[...,numerix.newaxis]
