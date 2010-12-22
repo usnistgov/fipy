@@ -141,6 +141,21 @@ class Term:
             
         self.__buildMatrix(var, solver, boundaryConditions, dt)
         
+        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            if var is None:
+                name = ""
+            else:
+                name = var.name
+            self._viewer.title = r"%s %s" % (name, repr(self))
+            from fipy.variables.coupledCellVariable import _CoupledCellVariable
+            if isinstance(solver.RHSvector, _CoupledCellVariable):
+                RHSvector = solver.RHSvector.getGlobalValue()
+            else:
+                RHSvector = solver.RHSvector
+            self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
+            from fipy import raw_input
+            raw_input()
+
         return solver
     
     def solve(self, var=None, solver=None, boundaryConditions=(), dt=1.):

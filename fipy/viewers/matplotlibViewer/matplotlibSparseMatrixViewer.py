@@ -232,7 +232,9 @@ class MatplotlibSparseMatrixViewer:
         N = matrix._getShape()[0]
 
         b = RHSvector
-        
+        if numerix.shape(b) == ():
+            b = numerix.zeros((N,))
+
         if len(z) == 0:
             y = numerix.zeros((1,))
             x = numerix.zeros((1,))

@@ -91,7 +91,8 @@ class _BinaryTerm(Term):
             matrix += termMatrix
             RHSvector += termRHSvector
 
-        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+        if (os.environ.has_key('FIPY_DISPLAY_MATRIX')
+            and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
             self._viewer.title = "%s %s" % (var.name, repr(self))
             self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 
             raw_input()
