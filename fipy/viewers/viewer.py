@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-class _Viewer:
+class _Viewer(object):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
