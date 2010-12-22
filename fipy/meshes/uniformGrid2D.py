@@ -40,6 +40,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.topologies import UniformMeshTopology2D
+from fipy.meshes.geometries import UniformMeshGeometry2D
+
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -112,14 +114,8 @@ class UniformGrid2D(Grid2D):
         self.numberOfCells = self.nx * self.ny
         
         self._topology = UniformMeshTopology2D(self)
+        self._geometry = UniformMeshGeometry2D(self)
         
-        self.scale = {
-            'length': 1.,
-            'area': 1.,
-            'volume': 1.
-        }
-
-        self.setScale(value = scale)
         self.communicator = communicator
         
     def _translate(self, vector):
@@ -144,10 +140,6 @@ class UniformGrid2D(Grid2D):
         del args['origin']
         return Grid2D(**args) + origin
 
-##     get topology methods
-
-##         from common/mesh
-        
     def _getCellFaceIDs(self):
         return self._createCells()
 
@@ -231,176 +223,6 @@ class UniformGrid2D(Grid2D):
         return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
                                                      Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
     
-    def _getFaceAreas(self):
-        faceAreas = numerix.zeros(self.numberOfFaces, 'd')
-        faceAreas[:self.numberOfHorizontalFaces] = self.dx
-        faceAreas[self.numberOfHorizontalFaces:] = self.dy
-        return faceAreas
-
-    def _getFaceNormals(self):
-        normals = numerix.zeros((2, self.numberOfFaces), 'd')
-
-        normals[1, :self.numberOfHorizontalFaces] = 1
-        normals[1, :self.nx] = -1
-
-        normals[0, self.numberOfHorizontalFaces:] = 1
-        if self.numberOfVerticalColumns > 0:
-            normals[0, self.numberOfHorizontalFaces::self.numberOfVerticalColumns] = -1
-
-        return normals
-
-    def _getFaceCellToCellNormals(self):
-        return self._getFaceNormals()
-        
-    def getCellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
-
-    def _getCellCenters(self):
-        centers = numerix.zeros((2, self.nx, self.ny), 'd')
-        indices = numerix.indices((self.nx, self.ny))
-        centers[0] = (indices[0] + 0.5) * self.dx
-        centers[1] = (indices[1] + 0.5) * self.dy
-        return centers.reshape((2, self.numberOfCells), order="FORTRAN") + self.origin
-
-    def _getCellDistances(self):
-        Hdis = numerix.repeat((self.dy,), self.numberOfHorizontalFaces)
-        Hdis = numerix.reshape(Hdis, (self.nx, self.numberOfHorizontalRows))
-        if self.numberOfHorizontalRows > 0:
-            Hdis[...,0] = self.dy / 2.
-            Hdis[...,-1] = self.dy / 2.
-        
-        Vdis = numerix.repeat((self.dx,), self.numberOfFaces - self.numberOfHorizontalFaces)
-        Vdis = numerix.reshape(Vdis, (self.numberOfVerticalColumns, self.ny))
-        if self.numberOfVerticalColumns > 0:
-            Vdis[0,...] = self.dx / 2.
-            Vdis[-1,...] = self.dx / 2.
-
-        return numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis,0,1), (self.numberOfHorizontalFaces,)), 
-                                    numerix.reshape(numerix.swapaxes(Vdis,0,1), (self.numberOfFaces - self.numberOfHorizontalFaces,))))
-
-    def _getFaceToCellDistanceRatio(self):
-        faceToCellDistanceRatios = numerix.zeros(self.numberOfFaces, 'd')
-        faceToCellDistanceRatios[:] = 0.5
-        faceToCellDistanceRatios[:self.nx] = 1.
-        faceToCellDistanceRatios[self.numberOfHorizontalFaces - self.nx:self.numberOfHorizontalFaces] = 1.
-        if self.numberOfVerticalColumns > 0:
-            faceToCellDistanceRatios[self.numberOfHorizontalFaces::self.numberOfVerticalColumns] = 1.
-            faceToCellDistanceRatios[(self.numberOfHorizontalFaces + self.nx)::self.numberOfVerticalColumns] = 1.
-        return faceToCellDistanceRatios
-
-    def _getFaceToCellDistances(self):
-        faceToCellDistances = numerix.zeros((2, self.numberOfFaces), 'd')
-        distances = self._getCellDistances()
-        ratios = self._getFaceToCellDistanceRatio()
-        faceToCellDistances[0] = distances * ratios
-        faceToCellDistances[1] = distances * (1 - ratios)
-        return faceToCellDistances
-
-    def _getOrientedAreaProjections(self):
-        return self._getAreaProjections()
-
-    def _getAreaProjections(self):
-        return inline._optionalInline(self._getAreaProjectionsIn, self._getAreaProjectionsPy)
-
-    def _getAreaProjectionsPy(self):
-        return self._getFaceNormals() * self._getFaceAreas()
-
-    def _getAreaProjectionsIn(self):
-        areaProjections = numerix.zeros((2, self.numberOfFaces), 'd')
-
-        inline._runInline("""
-            if (i < nx) {
-                areaProjections[i + 1 * ni] = -dx;
-            } else if (i < Nhor) {
-                areaProjections[i + 1 * ni] = dx;
-            } else if ( (i - Nhor) % (nx + 1) == 0 ) {
-                areaProjections[i + 0 * ni] = -dy;
-            } else {
-                areaProjections[i + 0 * ni] = dy;
-           }
-        """,
-        dx = float(self.dx), # horrible hack to get around
-        dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
-        nx = self.nx,
-        Nhor = self.numberOfHorizontalFaces,
-        areaProjections = areaProjections,
-        ni = self.numberOfFaces)
-
-        return areaProjections
-
-    def _getOrientedFaceNormals(self):
-        return self._getFaceNormals()
-
-    def _getFaceTangents1(self):
-        tangents = numerix.zeros((2,self.numberOfFaces), 'd')
-
-        if self.numberOfFaces > 0:
-            tangents[0, :self.numberOfHorizontalFaces] = -1
-            tangents[0, :self.nx] = 1        
-            tangents[1, self.numberOfHorizontalFaces:] = 1
-            tangents[1, self.numberOfHorizontalFaces::self.numberOfVerticalColumns] = -1
-
-        return tangents
-        
-    def _getFaceTangents2(self):
-        return numerix.zeros((2, self.numberOfFaces), 'd')
-        
-    def _getFaceAspectRatios(self):
-        return self._getFaceAreas() / self._getCellDistances()
-    
-    def _getCellToCellDistances(self):
-        distances = numerix.zeros((4, self.nx, self.ny), 'd')
-        distances[0] = self.dy
-        distances[1] = self.dx
-        distances[2] = self.dy
-        distances[3] = self.dx
-        
-        if self.ny > 0:
-            distances[0,..., 0] = self.dy / 2.
-            distances[2,...,-1] = self.dy / 2.
-        if self.nx > 0:
-            distances[3, 0,...] = self.dx / 2.
-            distances[1,-1,...] = self.dx / 2.
-        
-        return distances.reshape((4, self.numberOfCells), order="FORTRAN")
-
-
-    def _getCellNormals(self):
-        normals = numerix.zeros((2, 4, self.numberOfCells), 'd')
-        normals[:, 0] = [[ 0], [-1]]
-        normals[:, 1] = [[ 1], [ 0]]
-        normals[:, 2] = [[ 0], [ 1]]
-        normals[:, 3] = [[-1], [ 0]]
-
-        return normals
-        
-    def _getCellAreas(self):
-        areas = numerix.ones((4, self.numberOfCells), 'd')
-        areas[0] = self.dx
-        areas[1] = self.dy
-        areas[2] = self.dx
-        areas[3] = self.dy
-        return areas
-
-    def _getCellAreaProjections(self):
-        return self._getCellAreas() * self._getCellNormals()
-
-##         from numMesh/mesh
-
-    def getFaceCenters(self):
-        Hcen = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'd')
-        indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
-        Hcen[0,...] = (indices[0] + 0.5) * self.dx
-        Hcen[1,...] = indices[1] * self.dy
-        
-        Vcen = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'd')
-        indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
-        Vcen[0,...] = indices[0] * self.dx
-        Vcen[1,...] = (indices[1] + 0.5) * self.dy
-        
-        return numerix.concatenate((Hcen.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
-                                    Vcen.reshape((2, self.numberOfVerticalFaces), order="FORTRAN")), axis=1) + self.origin
-                                    
     def _getCellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
         indices = numerix.indices((self.nx, self.ny))

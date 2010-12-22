@@ -114,7 +114,7 @@ class Grid2D(Mesh2D):
 
         Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator)
         
-        self.setScale(value = scale)
+        self.setScale(scaleLength = scale)
 
     def _calcParallelGridInfo(self, nx, ny, overlap, communicator):
         

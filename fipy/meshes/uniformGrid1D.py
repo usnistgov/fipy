@@ -40,6 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import MA
 from fipy.meshes.topologies import UniformMeshTopology1D
+from fipy.meshes.geometries import UniformMeshGeometry1D
 
 from grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -91,42 +92,31 @@ class UniformGrid1D(Grid1D):
             self.numberOfFaces = self.nx + 1
         self.numberOfCells = self.nx
 
-        self._topology = UniformMeshTopology1D(self)
-        
-        self.scale = {
+        self._scale = {
             'length': 1.,
             'area': 1.,
             'volume': 1.
         }
+
+        self._geometry = UniformMeshGeometry1D(self.origin,
+                                               self.dx,
+                                               self.numberOfFaces,
+                                               self.numberOfCells,
+                                               scale=self._scale)
+        self._topology = UniformMeshTopology1D(self)
         
-        self.setScale(value=scale)
         self.communicator = communicator
+
+    def setScale(self, scale):
+        self._setScale(scale)
+
+    def _setScale(self, scale):
+        self._geometry.scale = scale
+
+    scale = property(lambda s: s._geometry.scale, _setScale)
         
-    """Topology properties"""
-
-    """
-    exteriorFaces = property(lambda s: s._topology.exteriorFaces)
-    interiorFaces = property(lambda s: s._topology._getInteriorFaces(s))
-    _cellToFaceOrientations = property(lambda s: s._topology._getCellFaceOrientations(self.numberOfCells))
-    _adjacentCellIDs = property(lambda s: s._topology._getAdjacentCellIDs(self.numberOfFaces))
-    _cellToCellIDs = property(lambda s: s._topology._getCellToCellIDs(self.numberOfCells))
-    _cellToCellIDsFilled = property(lambda s: s._topology._getCellToCellIDsFilled(self.numberOfCells))
-
-    def _getInteriorFaces(self):
-        return self._topology._getInteriorFaces(self)
-
-    def _getCellFaceOrientations(self):
-        return self._topology._getCellFaceOrientations(self.numberOfCells)
-
-    def _getAdjacentCellIDs(self):
-        return self._topology._getAdjacentCellIDs(self.numberOfFaces)
-
-    def _getCellToCellIDs(self):
-        return self._topology._getCellToCellIDs(self.numberOfCells)
-
-    def _getCellToCellIDsFilled(self):
-        return self._topology._getCellToCellIDsFilled(self.numberOfCells)
-    """
+    def _getFaceAreas(self):
+        return self._geometry.faceAreas
 
     def _translate(self, vector):
         return UniformGrid1D(dx=self.dx, 
@@ -156,6 +146,8 @@ class UniformGrid1D(Grid1D):
     cellFaceIDs = property(_getCellFaceIDs)
         
     
+    def _getCellCenters(self):
+        return self._geometry.cellCenters
         
     def _getMaxFacesPerCell(self):
         return 2
@@ -175,89 +167,6 @@ class UniformGrid1D(Grid1D):
             ids[1,0] = MA.masked
             ids[1,-1] = MA.masked
         return ids
-
-##     get geometry methods
-        
-##         from common/mesh
-        
-    def _getFaceAreas(self):
-        return numerix.ones(self.numberOfFaces,'d')
-
-    def _getFaceNormals(self):
-        faceNormals = numerix.ones((1, self.numberOfFaces), 'd')
-        # The left-most face has neighboring cells None and the left-most cell.
-        # We must reverse the normal to make fluxes work correctly.
-        if self.numberOfFaces > 0:
-            faceNormals[...,0] *= -1
-        return faceNormals
-
-    def _getFaceCellToCellNormals(self):
-        return self._getFaceNormals()
-        
-    def getCellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx
-
-    def _getCellCenters(self):
-        return ((numerix.arange(self.numberOfCells)[numerix.NewAxis, ...] + 0.5) * self.dx + self.origin) * self.scale['length']
-
-    def _getCellDistances(self):
-        distances = numerix.ones(self.numberOfFaces, 'd')
-        distances *= self.dx
-        if len(distances) > 0:
-            distances[0] = self.dx / 2.
-            distances[-1] = self.dx / 2.
-        return distances
-
-    def _getFaceToCellDistanceRatio(self):
-        distances = numerix.ones(self.numberOfFaces, 'd')
-        distances *= 0.5
-        if len(distances) > 0:
-            distances[0] = 1
-            distances[-1] = 1
-        return distances
-        
-    def _getOrientedAreaProjections(self):
-        return self._getAreaProjections()
-
-    def _getAreaProjections(self):
-        return self._getFaceNormals()
-
-    def _getOrientedFaceNormals(self):
-        return self._getFaceNormals()
-
-    def _getFaceTangents1(self):
-        return numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-
-    def _getFaceTangents2(self):
-        return numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-        
-    def _getFaceAspectRatios(self):
-        return 1. / self._getCellDistances()
-    
-    def _getCellToCellDistances(self):
-        distances = MA.zeros((2, self.numberOfCells), 'd')
-        distances[:] = self.dx
-        if self.numberOfCells > 0:
-            distances[0,0] = self.dx / 2.
-            distances[1,-1] = self.dx / 2.
-        return distances
-
-    def _getCellNormals(self):
-        normals = numerix.ones((1, 2, self.numberOfCells), 'd')
-        if self.numberOfCells > 0:
-            normals[:,0] = -1
-        return normals
-        
-    def _getCellAreas(self):
-        return numerix.ones((2, self.numberOfCells), 'd')
-
-    def _getCellAreaProjections(self):
-        return MA.array(self._getCellNormals())
-
-##         from numMesh/mesh
-
-    def getFaceCenters(self):
-        return numerix.arange(self.numberOfFaces)[numerix.NewAxis, ...] * self.dx + self.origin
 
     def _getCellVertexIDs(self):
         c1 = numerix.arange(self.numberOfCells)

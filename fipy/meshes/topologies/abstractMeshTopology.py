@@ -47,12 +47,12 @@ class AbstractMeshTopology(object):
     def _notImplemented(self):
         raise NotImplementedError
 
-    interiorFaces = property(_notImplemented)
-    exteriorFaces = property(_notImplemented)
-    interiorCellIDs = property(_notImplemented)
-    exteriorCellIDs = property(_notImplemented)
+    interiorFaces          = property(_notImplemented)
+    exteriorFaces          = property(_notImplemented)
+    interiorCellIDs        = property(_notImplemented)
+    exteriorCellIDs        = property(_notImplemented)
     cellToFaceOrientations = property(_notImplemented)
-    adjacentCellIDs = property(_notImplemented)
-    cellToCellIDs = property(_notImplemented)
-    cellToCellIDsFilled = property(_notImplemented)
+    adjacentCellIDs        = property(_notImplemented)
+    cellToCellIDs          = property(_notImplemented)
+    cellToCellIDsFilled    = property(_notImplemented)
  
