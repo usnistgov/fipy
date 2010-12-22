@@ -754,18 +754,7 @@ class Mesh:
            [4 5 7 8]
            
         """
-        if self.globalNumberOfCells == 0:
-            return numerix.arange(0)
-            
-        points = numerix.resize(points, (self.globalNumberOfCells, len(points), len(points[0]))).swapaxes(0,1)
-
-        centers = self.getCellCenters().getGlobalValue()[...,numerix.newaxis]
-        try:
-            tmp = centers - points
-        except TypeError:
-            tmp = centers - PhysicalField(points)
-
-        return numerix.argmin(numerix.dot(tmp, tmp, axis = 0), axis=0)
+        return numerix.nearest(data=self.getCellCenters().getGlobalValue(), points=points)
 
 ## pickling
 
