@@ -34,6 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
 
 from pysparse import itsolvers
@@ -95,3 +96,9 @@ class LinearLUSolver(PysparseSolver):
             xError = numerix.zeros(len(b),'d')
             LU.solve(errorVector, xError)
             x[:] = x - xError
+            
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            from fipy.tools.debug import PRINT        
+            PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
+            PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))
+
