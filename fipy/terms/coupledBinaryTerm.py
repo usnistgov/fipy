@@ -75,14 +75,45 @@ class _CoupledBinaryTerm(_BinaryTerm):
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.getGlobalValue()
         [ 0.  0.  0.  1.  1.  1.]
-        >>> numpyMatrix = matrix.getNumpyArray()
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[2, -1, 0, 2, -2, 0],
-        ...                                                             [-1, 3, -1, -2, 4, -2],
-        ...                                                             [0, -1, 2, 0, -2, 2],
-        ...                                                             [3, -3, 0, 5, -4, 0],
-        ...                                                             [-3, 6, -3, -4, 9, -4],                
-        ...                                                             [0, -3, 3, 0, -4, 5]])
+        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().getNumpyArray(),
+        ...                        [[2, -1, 0, 2, -2, 0],
+        ...                         [-1, 3, -1, -2, 4, -2],
+        ...                         [0, -1, 2, 0, -2, 2],
+        ...                         [3, -3, 0, 5, -4, 0],
+        ...                         [-3, 6, -3, -4, 9, -4],                
+        ...                         [0, -3, 3, 0, -4, 5]])
         True
+
+        >>> m = Grid1D(nx=6)
+        >>> v0 = CellVariable(mesh=m, value=0.)
+        >>> v1 = CellVariable(mesh=m, value=1.)        
+        >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
+        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
+        >>> eq = eq0 & eq1
+        >>> var = eq._verifyVar(None)
+        >>> solver = DefaultSolver()
+        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
+        >>> print var.getGlobalValue()
+        [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
+        >>> print RHSvector.getGlobalValue()
+        [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
+        >>> numpyMatrix = matrix.asTrilinosMeshMatrix().getNumpyArray()
+        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().getNumpyArray(),
+        ...                        [[ 2, -1,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0],
+        ...                         [-1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0,  0],
+        ...                         [ 0, -1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0],
+        ...                         [ 0,  0, -1,  3, -1,  0,  0,  0, -2,  4, -2,  0],
+        ...                         [ 0,  0,  0, -1,  3, -1,  0,  0,  0, -2,  4, -2],
+        ...                         [ 0,  0,  0,  0, -1,  2,  0,  0,  0,  0, -2,  2],
+        ...                         [ 3, -3,  0,  0,  0,  0,  5, -4,  0,  0,  0,  0],
+        ...                         [-3,  6, -3,  0,  0,  0, -4,  9, -4,  0,  0,  0],
+        ...                         [ 0, -3,  6, -3,  0,  0,  0, -4,  9, -4,  0,  0],
+        ...                         [ 0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4,  0],
+        ...                         [ 0,  0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4],
+        ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]])
+        True
+
+        
         
         """
 

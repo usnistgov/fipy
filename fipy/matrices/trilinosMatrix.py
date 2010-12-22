@@ -242,7 +242,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
             >>> L = (L1 * L2).getNumpyArray()
 
-            >>> print parallel.procID > 0 or numerix.allclose(tmp, L)
+            >>> print parallel.Nproc > 1 or numerix.allclose(tmp, L)
             True
             
         or a sparse matrix by a vector
@@ -254,7 +254,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         or a vector by a sparse matrix
 
             >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
-            >>> parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
+            >>> print parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
             True
 
             
@@ -484,13 +484,27 @@ class _TrilinosMatrixBase(_SparseMatrix):
         EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     def getNumpyArray(self):
-        Irange, Jrange = self._getRange()
-        vector = numerix.zeros((len(Jrange), len(Irange)), 'd')
-        self.matrix.FillComplete()
-        for j in Jrange:
-            for i in Irange:
-                vector[j, i] = self.matrix[j, i]
-        return vector
+        import tempfile
+        import os
+        from scipy.io import mmio
+        from fipy.tools import parallel
+        
+        (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        mtxName = parallel.bcast(mtxName)
+
+        self.exportMmf(mtxName)
+
+        mtx = mmio.mmread(mtxName)
+        parallel.Barrier()
+        
+        if parallel.procID == 0:
+            os.remove(mtxName)
+
+        coo = mtx.tocoo()
+        trilinosMatrix = self._getMatrix()
+        numpyArray = numerix.zeros((trilinosMatrix.NumGlobalRows(), trilinosMatrix.NumGlobalRows()), 'd')
+        numpyArray[coo.row, coo.col] = coo.data
+        return numpyArray
 
     def _getDistributedMatrix(self):
         """
@@ -742,7 +756,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
 
             >>> L = (L1 * L2).getNumpyArray()
 
-            >>> print parallel.procID > 0 or numerix.allclose(tmp, L)
+            >>> print numerix.allclose(tmp, L)
             True
             
         or a sparse matrix by a vector
