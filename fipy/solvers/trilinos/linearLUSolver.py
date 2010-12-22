@@ -35,17 +35,18 @@
 
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
+
+from PyTrilinos import Epetra
+from PyTrilinos import EpetraExt
+from PyTrilinos import Amesos
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.matrices.trilinosMatrix import _trilinosToNumpyVector
 from fipy.matrices.trilinosMatrix import _numpyToTrilinosVector
 
 from fipy.tools import numerix
-
-from PyTrilinos import Epetra
-from PyTrilinos import EpetraExt
-from PyTrilinos import Amesos
 
 class LinearLUSolver(TrilinosSolver):
 
@@ -99,3 +100,9 @@ class LinearLUSolver(TrilinosSolver):
              Solver.Solve()
 
              x[:] = x - xError
+             
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            from fipy.tools.debug import PRINT        
+            PRINT('iterations: %d / %d' % (iteration + 1, self.iterations))
+            PRINT('residual:', numerix.sqrt(numerix.sum(numerix.array(errorVector)**2)))
+

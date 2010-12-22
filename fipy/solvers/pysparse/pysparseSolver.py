@@ -35,9 +35,12 @@
 
 __docformat__ = 'restructuredtext'
 
+import os
+
+from pysparse import precon
+
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.solver import Solver
-from pysparse import precon
 
 class PysparseSolver(Solver):
     """
@@ -73,6 +76,15 @@ class PysparseSolver(Solver):
                                            self.iterations, P)
         
         self._raiseWarning(info, iter, relres)
+        
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            from fipy.tools.debug import PRINT        
+            PRINT('iterations: %d / %d' % (iter, self.iterations))
+            
+            if info < 0:
+                PRINT('failure', self._warningList[info].__class__.__name__)
+            PRINT('relres:', relres)
+            
          
     def _solve(self):
 
