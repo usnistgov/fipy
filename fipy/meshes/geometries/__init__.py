@@ -1,1 +1,6 @@
 from meshGeometry import MeshGeometry
+from meshGeometry1D import MeshGeometry1D
+from meshGeometry2D import MeshGeometry2D
+from uniformMeshGeometry import UniformMeshGeometry1D
+from uniformMeshGeometry import UniformMeshGeometry2D
+
