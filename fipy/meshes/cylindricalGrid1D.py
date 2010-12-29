@@ -55,7 +55,7 @@ class CylindricalGrid1D(Grid1D):
         [[ 0.5  2.   4.5]]
 
         >>> mesh.getCellVolumes()
-        array([ 0.5,  1.5,  2.5])
+        array([  0.5,   4. ,  13.5])
          
         >>> mesh = CylindricalGrid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):
