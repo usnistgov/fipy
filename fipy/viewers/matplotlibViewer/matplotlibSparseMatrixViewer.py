@@ -68,7 +68,7 @@ class SignedLogFormatter(ticker.LogFormatter):
         sgn = numerix.sign(x)
         x = abs(x)
         x += self.threshold
-        isDecade = self.is_decade(x)
+        isDecade = ticker.is_decade(x)
         bx = b**x
         sgnbx = sgn * bx
         if not isDecade and self.labelOnlyBase: s = ''
@@ -232,7 +232,9 @@ class MatplotlibSparseMatrixViewer:
         N = matrix._getShape()[0]
 
         b = RHSvector
-        
+        if numerix.shape(b) == ():
+            b = numerix.zeros((N,))
+
         if len(z) == 0:
             y = numerix.zeros((1,))
             x = numerix.zeros((1,))

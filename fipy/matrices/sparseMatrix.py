@@ -65,11 +65,12 @@ class _SparseMatrix:
         pass
         
     def __str__(self):
-        s = ""
+        s = ''
         cellWidth = 11
-        shape = self._getShape()
-        for j in range(shape[1]):
-            for i in range(shape[0]):
+        Irange, Jrange = self._getRange()
+
+        for j in Jrange:
+            for i in Irange:
                 v = self[j,i]
                 if v == 0:
                     s += "---".center(cellWidth)

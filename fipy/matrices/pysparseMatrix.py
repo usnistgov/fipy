@@ -61,6 +61,9 @@ class _PysparseMatrixBase(_SparseMatrix):
 
     def _getMatrix(self):
         return self.matrix
+
+    def getCoupledClass(self):
+        return _CoupledPysparseMeshMatrix
     
     def copy(self):
         return _PysparseMatrixBase(matrix=self.matrix.copy())
@@ -73,17 +76,12 @@ class _PysparseMatrixBase(_SparseMatrix):
             return _PysparseMatrixBase(matrix=m)
 
     def __iadd__(self, other):
-            return self._iadd(self._getMatrix(), other)
+        self._iadd(self._getMatrix(), other)
+        return self
         
     def _iadd(self, L, other, sign = 1):
         if other != 0:
             L.shift(sign, other._getMatrix())
-        return self
-
-    def _add(self, other, sign = 1):
-        L = self.matrix.copy()
-        self._iadd(L, other, sign)
-        return _PysparseMatrixBase(matrix=L)
 
     def __add__(self, other):
         """
@@ -107,22 +105,27 @@ class _PysparseMatrixBase(_SparseMatrix):
             AttributeError: 'int' object has no attribute '_getMatrix'
         """
 
-        if other is 0:
+        if other == 0:
             return self
         else:
             L = self.matrix.copy()
             L.shift(1, other._getMatrix())
             return _PysparseMatrixBase(matrix=L)
         
+    __radd__ = __add__
+    
     def __sub__(self, other):
 
-        if other is 0:
+        if other == 0:
             return self
         else:
             L = self.matrix.copy()
             L.shift(-1, other._getMatrix())
             return _PysparseMatrixBase(matrix=L)
 
+    def __rsub__(self, other):
+        return -self + other
+    
     def __isub__(self, other):
             return self._iadd(self._getMatrix(), other, -1)
 
@@ -183,6 +186,9 @@ class _PysparseMatrixBase(_SparseMatrix):
             
     def _getShape(self):
         return self.matrix.shape
+
+    def _getRange(self):
+        return range(self._getShape()[1]), range(self._getShape()[0])
         
     def put(self, vector, id1, id2):
         """
@@ -295,8 +301,8 @@ class _PysparseMatrix(_PysparseMatrixBase):
         _PysparseMatrixBase.__init__(self, matrix=matrix, bandwidth=bandwidth)
 
 class _PysparseMeshMatrix(_PysparseMatrix):
-    
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None):
+
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1):
         """Creates a `_PysparseMatrix` associated with a `Mesh`.
 
         :Parameters:
@@ -304,19 +310,23 @@ class _PysparseMeshMatrix(_PysparseMatrix):
           - `bandwidth`: The proposed band width of the matrix.
         """
         self.mesh = mesh
-        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
-        
+        self.numberOfVariables = numberOfVariables
+        _PysparseMatrix.__init__(self, size=self.numberOfVariables * self.mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
+
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):
             return _PysparseMeshMatrix(mesh=self.mesh, 
                                        matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
         else:
             return _PysparseMatrix.__mul__(self, other)
-        
-    def asTrilinosMeshMatrix(self):
+
+    def _getTrilinosMatrix(self):
         from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
-        matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
-                
+        return _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth, numberOfVariables=self.numberOfVariables)
+
+    def asTrilinosMeshMatrix(self):
+        matrix = self._getTrilinosMatrix()
+
         A = self.matrix.copy()
         values, irow, jcol = A.find()
         
@@ -355,7 +365,6 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
                 ---        ---     1.000000  
         """
         _PysparseIdentityMatrix.__init__(self, size=mesh.getNumberOfCells())
-
 
 def _test(): 
     import doctest

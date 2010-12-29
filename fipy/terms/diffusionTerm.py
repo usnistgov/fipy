@@ -67,7 +67,7 @@ class DiffusionTerm(Term):
 
     """
 
-    def __init__(self, coeff = (1.,)):
+    def __init__(self, coeff = (1.,), var=None):
         """
         Create a `DiffusionTerm`.
 
@@ -76,7 +76,7 @@ class DiffusionTerm(Term):
           
         """
         if type(coeff) not in (type(()), type([])):
-            coeff = (coeff,)
+            coeff = [coeff]
 
         self.order = len(coeff) * 2
 
@@ -95,11 +95,20 @@ class DiffusionTerm(Term):
         else:
             self.nthCoeff = None
 
-        Term.__init__(self, coeff = coeff)
+        Term.__init__(self, coeff=coeff, var=var)
         
         if self.order > 0:
             self.lowerOrderDiffusionTerm = DiffusionTerm(coeff = coeff[1:])
-        
+
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            self.coeff[0] = other * self.coeff[0] 
+            return self.__class__(coeff=self.coeff, var=self.var)
+        else:
+            raise Exception, "Must multiply terms by int or float."
+
+    __rmul__ = __mul__
+    
     def __neg__(self):
         """
         Negate the term.
@@ -113,7 +122,7 @@ class DiffusionTerm(Term):
         """
         negatedCoeff = list(self.coeff)
         negatedCoeff[0] = -negatedCoeff[0]
-        return self.__class__(coeff = negatedCoeff)
+        return self.__class__(coeff=negatedCoeff, var=self.var)
             
     def _getBoundaryConditions(self, boundaryConditions):
         higherOrderBCs = []
@@ -252,53 +261,39 @@ class DiffusionTerm(Term):
             
         return coefficientMatrix, boundaryB
 
-    def __add__(self, other):
-        if isinstance(other, DiffusionTerm):
-            from fipy.terms.collectedDiffusionTerm import _CollectedDiffusionTerm
-            if isinstance(other, _CollectedDiffusionTerm):
-                return other + self
-            elif other.order == self.order and self.order <= 2:
-                if self.order == 0:
-                    return self
-                elif self.order == 2:
-                    return self.__class__(coeff=self.coeff[0] + other.coeff[0])
-            else:
-                term = _CollectedDiffusionTerm()
-                term += self
-                term += other
-                return term
-        else:
-            return Term.__add__(self, other)
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1. , equation=None):
-
-        L, b = self.__buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+        if var is self.var or self.var is None:
         
-        if self.order == 2:
-            if not hasattr(self, 'constraintB'):
-            
-                mesh = var.getMesh()
-                from fipy.variables.faceVariable import FaceVariable
-##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
-                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
+            var, L, b = self._higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-                self.constraintB = 0
-                self.constraintL = 0
+            if self.order == 2:
+                if not hasattr(self, 'constraintB'):
 
-                if var.getFaceGrad().getConstraintMask() is not None:
-                    self.constraintB -= (var.getFaceGrad().getConstraintMask() * self.nthCoeff * var.getFaceGrad()).getDivergence() * mesh.getCellVolumes()
+                    mesh = var.getMesh()
+                    from fipy.variables.faceVariable import FaceVariable
+    ##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
+                    normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
 
-                if var.getArithmeticFaceValue().getConstraintMask() is not None:
-                    constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / mesh._getCellDistances()
-                    self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence() * mesh.getCellVolumes()
-                    self.constraintL -= constrainedNormalsDotCoeffOverdAP.getDivergence() * mesh.getCellVolumes()
+                    self.constraintB = 0
+                    self.constraintL = 0
 
-            L.addAtDiagonal(self.constraintL)
-            b += self.constraintB
+                    if var.getFaceGrad().getConstraintMask() is not None:
+                        self.constraintB -= (var.getFaceGrad().getConstraintMask() * self.nthCoeff * var.getFaceGrad()).getDivergence() * mesh.getCellVolumes()
 
-        return (L, b)
+                    if var.getArithmeticFaceValue().getConstraintMask() is not None:
+                        constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / mesh._getCellDistances()
+                        self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence() * mesh.getCellVolumes()
+                        self.constraintL -= constrainedNormalsDotCoeffOverdAP.getDivergence() * mesh.getCellVolumes()
 
-    def __buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., equation=None):
+                L.addAtDiagonal(self.constraintL)
+                b += self.constraintB
+
+            return (var, L, b)
+        else:
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+        
+    def _higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()
         
         N = mesh.getNumberOfCells()
@@ -308,10 +303,10 @@ class DiffusionTerm(Term):
 
             higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
             
-            lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
-                                                                                 boundaryConditions = lowerOrderBCs, 
-                                                                                 dt = dt,
-                                                                                 equation=equation)
+            var, lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
+                                                                                      boundaryConditions = lowerOrderBCs, 
+                                                                                      dt = dt, transientGeomCoeff=transientGeomCoeff,
+                                                                                      diffusionGeomCoeff=diffusionGeomCoeff)
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()
@@ -394,8 +389,11 @@ class DiffusionTerm(Term):
             L.addAtDiagonal(mesh.getCellVolumes())
             b = numerix.zeros((N),'d')
             
-        return (L, b)
-        
+        return (var, L, b)
+
+    def _getDiffusionGeomCoeff(self, mesh):
+        return self._getGeomCoeff(mesh)
+
     def _test(self):
         r"""
         Test, 2nd order, 1 dimension, fixed flux of zero both ends.
@@ -413,7 +411,7 @@ class DiffusionTerm(Term):
         ...                         (-1.,  1.))) or procID != 0
         True
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -432,7 +430,7 @@ class DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -447,7 +445,7 @@ class DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -463,7 +461,7 @@ class DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -488,7 +486,7 @@ class DiffusionTerm(Term):
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
         True
-        >>> L,b = term._buildMatrix(var=var, 
+        >>> v,L,b = term._buildMatrix(var=var, 
         ...                         SparseMatrix=SparseMatrix)
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        ((-1.,  1.), 
@@ -515,7 +513,7 @@ class DiffusionTerm(Term):
         ...                         (-1.,  1.))) or procID != 0
         True
 
-        >>> L,b = term._buildMatrix(var=var, SparseMatrix=SparseMatrix,
+        >>> v,L,b = term._buildMatrix(var=var, SparseMatrix=SparseMatrix,
         ...                         boundaryConditions=(bcLeft2, bcRight2))
         >>> print numerix.allclose(L.getNumpyArray(), 
         ...                        (( 4., -6.), 
@@ -542,7 +540,7 @@ class DiffusionTerm(Term):
         ...                         ( 1., -1.))) or procID != 0
         True
 
-        >>> L,b = term._buildMatrix(var=var,
+        >>> v,L,b = term._buildMatrix(var=var,
         ...                         SparseMatrix=SparseMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
         
@@ -573,7 +571,7 @@ class DiffusionTerm(Term):
         ...                         (-2.,  2.))) or procID != 0
         True
 
-        >>> L,b = term._buildMatrix(var=var, 
+        >>> v,L,b = term._buildMatrix(var=var, 
         ...                         SparseMatrix=SparseMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
 

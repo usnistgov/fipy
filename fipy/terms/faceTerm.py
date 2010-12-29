@@ -45,11 +45,11 @@ class FaceTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.):
+    def __init__(self, coeff=1., var=None):
         if self.__class__ is FaceTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
             
-        Term.__init__(self, coeff=coeff)
+        Term.__init__(self, coeff=coeff, var=var)
         self.coeffMatrix = None
             
     def _getCoeffMatrix(self, mesh, weight):
@@ -150,34 +150,32 @@ class FaceTerm(Term):
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Implicit portion considers
         """
+        if var is self.var or self.var is None:
 
-        mesh = var.getMesh()
-        id1, id2 = mesh._getAdjacentCellIDs()
-        interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
-        
-        id1 = numerix.take(id1, interiorFaces)
-        id2 = numerix.take(id2, interiorFaces)
-        
-        N = len(var)
-        b = numerix.zeros((N),'d')
-        L = SparseMatrix(mesh=mesh)
+            mesh = var.getMesh()
+            id1, id2 = mesh._getAdjacentCellIDs()
+            interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
 
-        if equation is not None:
-            from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
+            id1 = numerix.take(id1, interiorFaces)
+            id2 = numerix.take(id2, interiorFaces)
+
+            N = len(var)
+            b = numerix.zeros((N),'d')
+            L = SparseMatrix(mesh=mesh)
+
+            weight = self._getWeight(mesh, diffusionGeomCoeff)
+
+            if weight.has_key('implicit'):
+                self._implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
+
+            if weight.has_key('explicit'):
+                self._explicitBuildMatrix(SparseMatrix, var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
+
+            return (var, L, b)
+
         else:
-            self._diagonalSign.setValue(1)
-
-        weight = self._getWeight(mesh, equation=equation)
-
-        if weight.has_key('implicit'):
-            self._implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
-
-        if weight.has_key('explicit'):
-            self._explicitBuildMatrix(SparseMatrix, var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
-
-        return (L, b)
-
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+        

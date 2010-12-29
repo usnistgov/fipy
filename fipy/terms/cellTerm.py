@@ -44,7 +44,7 @@ class CellTerm(Term):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.):
+    def __init__(self, coeff=1., var=None):
         if self.__class__ is CellTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
             
@@ -58,11 +58,11 @@ class CellTerm(Term):
             or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
                 raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
 
-        Term.__init__(self, coeff=coeff)
+        Term.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
         self._var = None
 
-    def _calcCoeffVectors(self, var):
+    def _calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()
         coeff = self._getGeomCoeff(mesh)
         weight = self._getWeight(mesh)
@@ -78,11 +78,11 @@ class CellTerm(Term):
             'new value': coeff * weight['new value']
         }
 
-    def _getCoeffVectors(self, var):
+    def _getCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         if self.coeffVectors is None or var is not self._var:
 ##        if self.coeffVectors is None or var != self._var:
             self._var = var
-            self._calcCoeffVectors(var=var)
+            self._calcCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         return self.coeffVectors
         
@@ -119,25 +119,22 @@ class CellTerm(Term):
 
         L.addAtDiagonal(updatePyArray)
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
-        N = len(var)
-        b = numerix.zeros((N),'d')
-        L = SparseMatrix(mesh=var.getMesh())
-        
-        # The sign of the matrix diagonal doesn't seem likely to change
-        # after initialization, but who knows?
-        if equation is not None:
-            from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
-        else:
-            self._diagonalSign.setValue(1)
-            
-        coeffVectors = self._getCoeffVectors(var=var)
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
-        
-        return (L, b)
-        
+        if var is self.var or self.var is None:
+
+            N = len(var)
+            b = numerix.zeros((N),'d')
+            L = SparseMatrix(mesh=var.getMesh())
+
+            coeffVectors = self._getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+            inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
+
+            return (var, L, b)
+        else:
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+
     def _test(self):
         """
         The following tests demonstrate how the `CellVariable` objects
