@@ -38,6 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
+from fipy.meshes.geometries import CylindricalGridGeometry1D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from grid1D import Grid1D
 
@@ -52,6 +53,9 @@ class CylindricalGrid1D(Grid1D):
         >>> mesh = CylindricalGrid1D(dx = (1, 2, 3))
         >>> print mesh.getCellCenters()
         [[ 0.5  2.   4.5]]
+
+        >>> mesh.getCellVolumes()
+        array([ 0.5,  1.5,  2.5])
          
         >>> mesh = CylindricalGrid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):
@@ -75,17 +79,8 @@ class CylindricalGrid1D(Grid1D):
 
         self.args['origin'] = origin
 
-
-    def _calcFaceCenters(self):
-        faceCenters = Grid1D._calcFaceCenters(self)
-        return faceCenters + self.origin
-        
-    def _calcFaceAreas(self):
-        return self.getFaceCenters()[0]
-
-    def _calcCellVolumes(self):
-        cellVolumes = Grid1D._calcCellVolumes(self)
-        return cellVolumes / 2.
+    def _setGeometry(self, scaleLength = 1.):
+        self._geometry = CylindricalGridGeometry1D(self, scaleLength)
 
     def _translate(self, vector):
         return CylindricalGrid1D(dx=self.args['dx'], nx=self.args['nx'], 
