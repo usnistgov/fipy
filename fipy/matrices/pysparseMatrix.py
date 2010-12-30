@@ -49,15 +49,13 @@ class _PysparseMatrixBase(_SparseMatrix):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, matrix, bandwidth=0):
+    def __init__(self, matrix):
         """Creates a `_PysparseMatrixBase`.
 
         :Parameters:
           - `matrix`: The starting `spmatrix` 
-          - `bandwidth`: The proposed band width of the matrix.
         """
         self.matrix = matrix
-        self.bandwidth = bandwidth
 
     def _getMatrix(self):
         return self.matrix
@@ -282,29 +280,38 @@ class _PysparseMatrix(_PysparseMatrixBase):
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseMatrix`.
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
+          - `storeZeros`: Instructs pysparse to store zero values if possible.
+          
         """
         sizeHint = sizeHint or size * bandwidth
         if matrix is None:
-            matrix = spmatrix.ll_mat(size, size, sizeHint)
-        _PysparseMatrixBase.__init__(self, matrix=matrix, bandwidth=bandwidth)
+            tmpMatrix = spmatrix.ll_mat(1, 1, 1)
+            if hasattr(tmpMatrix, 'storeZeros'):
+                matrix = spmatrix.ll_mat(size, size, sizeHint, storeZeros)
+            else:
+                matrix = spmatrix.ll_mat(size, size, sizeHint)
+                
+        _PysparseMatrixBase.__init__(self, matrix=matrix)
 
 class _PysparseMeshMatrix(_PysparseMatrix):
     
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseMatrix` associated with a `Mesh`.
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
+          - `storeZeros`: Instructs pysparse to store zero values if possible.
+          
         """
         self.mesh = mesh
-        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
+        _PysparseMatrix.__init__(self, size=mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
         
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):
@@ -314,16 +321,64 @@ class _PysparseMeshMatrix(_PysparseMatrix):
             return _PysparseMatrix.__mul__(self, other)
         
     def asTrilinosMeshMatrix(self):
-        from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
-        matrix = _TrilinosMeshMatrix(mesh=self.mesh, bandwidth=self.bandwidth)
-                
+        """Transforms a pysparse matrix into a trilinos matrix and maintains the
+        trilinos matrix as an attribute.
+        
+        :Returns: 
+          The trilinos matrix.
+
+        """
+
         A = self.matrix.copy()
         values, irow, jcol = A.find()
         
-        matrix.addAt(values, irow, jcol)
+        if not hasattr(self, 'trilinosMatrix'):
+            from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
+            if A.shape[0] == 0:
+                bandwidth = 0
+            else:
+                bandwidth = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
+            self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth) 
 
-        return matrix
+        self.trilinosMatrix.addAt(values, irow, jcol)
+        self.trilinosMatrix.finalize()
 
+        return self.trilinosMatrix
+
+    def flush(self):
+        """
+        Deletes the copy of the pysparse matrix held and calls `self.trilinosMatrix.flush()` if necessary.
+        """
+    
+        if hasattr(self, 'trilinosMatrix'):
+            if hasattr(self.matrix, 'storeZeros'):
+                self.trilinosMatrix.flush(cacheStencil=self.matrix.storeZeros)
+            else:
+                self.trilinosMatrix.flush(cacheStencil=False)
+                
+        if (not hasattr(self, 'cache')) or (self.cache is False):
+            del self.matrix
+
+    def _test(self):
+        """
+        Tests
+        
+        >>> m = _PysparseMatrix(size=3, storeZeros=True)
+        >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
+        >>> print not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0), (2, 2)])
+        True
+        >>> print not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.values(), [1., 2., 0.]) 
+        True
+        >>> m = _PysparseMatrix(size=3, storeZeros=False)
+        >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
+        >>> print numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0)])
+        True
+        >>> print numerix.allequal(m.matrix.values(), numerix.array([1.0, 2.0]))
+        True
+        
+        """
+        pass
+        
 class _PysparseIdentityMatrix(_PysparseMatrix):
     """
     Represents a sparse identity matrix for pysparse.
