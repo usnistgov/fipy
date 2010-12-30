@@ -88,3 +88,7 @@ class AbstractMeshGeometry(object):
     faceToCellDistanceRatio   = property(_notImplemented)
     faceAspectRatios          = property(_notImplemented)
      
+    def _wrapInCellVariable(self, val):
+        from fipy.variables.cellVariable import CellVariable
+        return CellVariable(mesh=self.mesh, value=val, rank=1)
+                                                            

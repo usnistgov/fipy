@@ -54,7 +54,8 @@ class UniformGrid2D(Grid2D):
     first and then vertical faces.
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
-                 overlap=2, communicator=parallel):        
+                 overlap=2, communicator=parallel,
+                 GeomClass=UniformMeshGeometry2D):        
         self.args = {
             'dx': dx, 
             'dy': dy, 
@@ -114,7 +115,7 @@ class UniformGrid2D(Grid2D):
         self.numberOfCells = self.nx * self.ny
         
         self._topology = UniformMeshTopology2D(self)
-        self._geometry = UniformMeshGeometry2D(self)
+        self._geometry = GeomClass(self)
         
         self.communicator = communicator
         

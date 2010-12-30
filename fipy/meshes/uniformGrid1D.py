@@ -56,7 +56,9 @@ class UniformGrid1D(Grid1D):
         [[ 0.5  1.5  2.5]]
          
     """
-    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, communicator=parallel):
+    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,
+                       communicator=parallel,
+                       GeomClass=UniformMeshGeometry1D):
         origin = numerix.array(origin)
         
         self.args = {
@@ -98,11 +100,12 @@ class UniformGrid1D(Grid1D):
             'volume': 1.
         }
 
-        self._geometry = UniformMeshGeometry1D(self.origin,
-                                               self.dx,
-                                               self.numberOfFaces,
-                                               self.numberOfCells,
-                                               scale=self._scale)
+        self._geometry = GeomClass(self,
+                                   self.origin,
+                                   self.dx,
+                                   self.numberOfFaces,
+                                   self.numberOfCells,
+                                   scale=self._scale)
         self._topology = UniformMeshTopology1D(self)
         
         self.communicator = communicator

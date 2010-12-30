@@ -38,43 +38,65 @@
  ##
 
 __docformat__ = 'restructuredtext'
- 
+
 from fipy.tools import numerix
-from fipy.tools.numerix import MA
 
 from meshGeometry import MeshGeometry
 from meshGeometry import ScaledMeshGeometry
 
-class ScaledMeshGeometry1D(ScaledMeshGeometry):
-
+class ScaledGridGeometry3D(ScaledMeshGeometry):
+    
     def _calcScaleArea(self):
-        return 1.
+        return self.scale['length']**2
 
     def _calcScaleVolume(self):
-        return self.scale['length']
-     
-class MeshGeometry1D(MeshGeometry):
-     
+        return self.scale['length']**3
+
+class GridGeometry3D(MeshGeometry):
+
     def __init__(self, mesh, scaleLength):
+        self.nx = mesh.nx
+        self.ny = mesh.ny
+        self.nz = mesh.nz
+
         self.numberOfFaces = mesh.numberOfFaces
+        self.numberOfXYFaces = mesh.numberOfXYFaces
+        self.numberOfXZFaces = mesh.numberOfXZFaces
+        self.numberOfYZFaces = mesh.numberOfYZFaces
 
-        super(MeshGeometry1D, self).__init__(mesh, 
-                                             scaleLength,
-                                             ScaledGeom=ScaledMeshGeometry1D)
-
-    def _calcFaceAreas(self):
-        return numerix.ones(self.numberOfFaces, 'd')
+        super(GridGeometry3D, self).__init__(mesh, scaleLength,
+                                             ScaledGeom=ScaledGridGeometry3D)
 
     def _calcFaceNormals(self):
-        faceNormals = numerix.array((numerix.ones(self.numberOfFaces, 'd'),))
-        # The left-most face has neighboring cells None and the left-most cell.
-        # We must reverse the normal to make fluxes work correctly.
-        if self.numberOfFaces > 0:
-            faceNormals[...,0] = -faceNormals[...,0]
-        return faceNormals
-
+        XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces))
+        XYFaceNormals[2, (self.nx * self.ny):] = 1
+        XYFaceNormals[2, :(self.nx * self.ny)] = -1
+        XZFaceNormals = numerix.zeros((3, self.numberOfXZFaces))
+        xzd = numerix.arange(self.numberOfXZFaces)
+        xzd = xzd % (self.nx * (self.ny + 1))
+        xzd = (xzd < self.nx)
+        xzd = 1 - (2 * xzd)
+        XZFaceNormals[1, :] = xzd
+        YZFaceNormals = numerix.zeros((3, self.numberOfYZFaces))
+        YZFaceNormals[0, :] = 1
+        YZFaceNormals[0, ::self.nx + 1] = -1
+        return numerix.concatenate((XYFaceNormals, 
+                                    XZFaceNormals, 
+                                    YZFaceNormals), 
+                                   axis=-1)
+        
     def _calcFaceTangents(self):
-        faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-        faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        ## need to see whether order matters.
+        faceTangents1 = numerix.zeros((3, self.numberOfFaces), 'd')
+        faceTangents2 = numerix.zeros((3, self.numberOfFaces), 'd')
+        ## XY faces
+        faceTangents1[0, :self.numberOfXYFaces] = 1.
+        faceTangents2[1, :self.numberOfXYFaces] = 1.
+        ## XZ faces
+        faceTangents1[0, self.numberOfXYFaces:self.numberOfXYFaces + self.numberOfXZFaces] = 1.
+        faceTangents2[2, self.numberOfXYFaces:self.numberOfXYFaces + self.numberOfXZFaces] = 1.
+        ## YZ faces
+        faceTangents1[1, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
+        faceTangents2[2, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
         return faceTangents1, faceTangents2
-     
+ 

@@ -96,7 +96,7 @@ class Grid1D(Mesh1D):
 
         Mesh1D.__init__(self, vertices, faces, cells, communicator=communicator)
         
-        self.setScale(value = scale)
+        self.setScale(scaleLength = scale)
 
     def _getOverlap(self, overlap, procID, occupiedNodes):
         return {'left': overlap * (procID > 0) * (procID < occupiedNodes),

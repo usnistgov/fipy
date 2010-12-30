@@ -85,7 +85,7 @@ class SkewedGrid2D(Mesh2D):
 
         Mesh2D.__init__(self, changedVertices, faces, cells)
         
-        self.setScale(value = scale)
+        self.setScale(scaleLength = scale)
             
     def getScale(self):
         return self.scale['length']

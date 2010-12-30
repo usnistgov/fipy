@@ -51,8 +51,8 @@ from fipy.meshes.geometries import MeshGeometry1D
 
 class Mesh1D(Mesh):
     
-    def _setGeometry(self):
-        self._geometry = MeshGeometry1D(self)
+    def _setGeometry(self, scaleLength = 1.):
+        self._geometry = MeshGeometry1D(self, scaleLength)
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector

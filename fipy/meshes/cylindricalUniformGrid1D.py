@@ -38,6 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid1D import UniformGrid1D
+from fipy.meshes.geometries import CylindricalUniformGridGeometry1D
 from fipy.tools import numerix
 
 class CylindricalUniformGrid1D(UniformGrid1D):
@@ -50,26 +51,9 @@ class CylindricalUniformGrid1D(UniformGrid1D):
          
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2):
-        UniformGrid1D.__init__(self, dx=dx, nx=nx, origin=origin, overlap=2) 
-        
-    def _getFaceAreas(self):
-        return self.getFaceCenters()[0]
-
-    def getCellVolumes(self):
-        return self.getCellCenters()[0] * self.dx
-
-    def _getFaceAspectRatios(self):
-        return self.getFaceAreas() / self._getCellDistances()
+        UniformGrid1D.__init__(self, dx=dx, nx=nx, origin=origin, overlap=2,
+                                     GeomClass=CylindricalUniformGridGeometry1D)
     
-    def _getCellAreas(self):
-        return numerix.array((self._getFaceAreas()[:-1], self.getFaceAreas()[1:]))
-
-    def _getCellAreaProjections(self):
-        return MA.array(self._getCellNormals()) * self._getCellAreas()
-
-    def _getAreaProjections(self):
-        return self._getFaceNormals() * self._getFaceAreas()
-
     def _translate(self, vector):
         return CylindricalUniformGrid1D(dx=self.args['dx'],
                                         nx=self.args['nx'],

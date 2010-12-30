@@ -37,6 +37,7 @@ from fipy.tools.numerix import MA
 
 from fipy.meshes.grid3D import Grid3D
 from fipy.meshes.topologies import UniformMeshTopology3D
+from fipy.meshes.geometries import UniformMeshGeometry3D
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -136,14 +137,14 @@ class UniformGrid3D(Grid3D):
         self.numberOfCells = self.nx * self.ny * self.nz
 
         self._topology = UniformMeshTopology3D(self)
+        self._geometry = UniformMeshGeometry3D(self, self.dx, self.dy, self.dz,
+                                               self.nx, self.ny, self.nz,
+                                               self.numberOfCells,
+                                               self.numberOfXYFaces,
+                                               self.numberOfXZFaces,
+                                               self.numberOfYZFaces,
+                                               self.origin)
         
-        self.scale = {
-            'length': 1.,
-            'area': 1.,
-            'volume': 1.
-        }
-
-        self.setScale(value = scale)
         self.communicator = communicator
         
     def _translate(self, vector):
@@ -229,194 +230,8 @@ class UniformGrid3D(Grid3D):
                                XZids.swapaxes(1,3).reshape((2, self.numberOfXZFaces)), 
                                YZids.swapaxes(1,3).reshape((2, self.numberOfYZFaces))), axis=1)
 
-##     get geometry methods
-        
 ##         from common/mesh
-        
-    def _getFaceAreas(self):
-        return numerix.concatenate((numerix.repeat((self.dx * self.dy,), self.numberOfXYFaces),
-                                    numerix.repeat((self.dx * self.dz,), self.numberOfXZFaces),
-                                    numerix.repeat((self.dy * self.dz,), self.numberOfYZFaces)))
-
-    def _getFaceNormals(self):
-        XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
-        XYnor[0,      ...] =  1
-        XYnor[0,  ...,  0] = -1
-
-        XZnor = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
-        XZnor[1,      ...] =  1
-        XZnor[1,...,0,...] = -1
-
-        YZnor = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
-        YZnor[2,      ...] =  1
-        YZnor[2, 0,   ...] = -1
-        
-        return numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZnor[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
-
-    def _getFaceCellToCellNormals(self):
-        return self._getFaceNormals()
-        
-    def getCellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy * self.dz
-
-    def _getCellCenters(self):
-        centers = numerix.zeros((3, self.nx, self.ny, self.nz), 'd')
-        indices = numerix.indices((self.nx, self.ny, self.nz))
-        centers[0] = (indices[0] + 0.5) * self.dx
-        centers[1] = (indices[1] + 0.5) * self.dy
-        centers[2] = (indices[2] + 0.5) * self.dz
-        return numerix.reshape(centers.swapaxes(1,3), (3, self.numberOfCells)) + self.origin
-
-    def _getCellDistances(self):
-        XYdis = numerix.zeros((self.nz + 1, self.ny, self.nx),'d')
-        XYdis[:] = self.dz
-        XYdis[ 0,...] = self.dz / 2.
-        XYdis[-1,...] = self.dz / 2.
-        
-        XZdis = numerix.zeros((self.nz, self.ny + 1, self.nx),'d')
-        XZdis[:] = self.dy
-        XZdis[..., 0,...] = self.dy / 2.
-        XZdis[...,-1,...] = self.dy / 2.
-
-        YZdis = numerix.zeros((self.nz, self.ny, self.nx + 1),'d')
-        YZdis[:] = self.dx
-        YZdis[..., 0] = self.dx / 2.
-        YZdis[...,-1] = self.dx / 2.
-
-        return numerix.concatenate((numerix.ravel(XYdis),
-                                    numerix.ravel(XZdis),
-                                    numerix.ravel(YZdis)))
-
-    def _getFaceToCellDistanceRatio(self):
-        XYdis = numerix.zeros((self.nx, self.ny, self.nz + 1),'d')
-        XYdis[:] = 0.5
-        XYdis[..., 0] = 1
-        XYdis[...,-1] = 1
-        
-        XZdis = numerix.zeros((self.nx, self.ny + 1, self.nz),'d')
-        XZdis[:] = 0.5
-        XZdis[..., 0,...] = 1
-        XZdis[...,-1,...] = 1
-        
-        YZdis = numerix.zeros((self.nx + 1, self.ny, self.nz),'d')
-        YZdis[:] = 0.5
-        YZdis[ 0,...] = 1
-        YZdis[-1,...] = 1
-        
-        return numerix.concatenate((numerix.ravel(XYdis.swapaxes(0,2)),
-                                    numerix.ravel(XZdis.swapaxes(0,2)),
-                                    numerix.ravel(YZdis.swapaxes(0,2))), axis=1)
-                                    
-    def _getOrientedAreaProjections(self):
-        return self._getAreaProjections()
-
-    def _getAreaProjections(self):
-        return self._getFaceNormals() * self._getFaceAreas()
-
-    def _getOrientedFaceNormals(self):
-        return self._getFaceNormals()
-
-    def _getFaceTangents1(self):
-        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
-        XYtan[2,      ...] =  1
-        
-        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
-        XZtan[2,      ...] =  1
-        
-        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
-        YZtan[1,      ...] =  1
-        
-        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
-        
-    def _getFaceTangents2(self):
-        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
-        XYtan[1,      ...] =  1
-        
-        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
-        XZtan[0,      ...] =  1
-        
-        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
-        YZtan[0,      ...] =  1
-        
-        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
-        
-    def _getFaceAspectRatios(self):
-        return self._getFaceAreas() / self._getCellDistances()
-    
-    def _getCellToCellDistances(self):
-        distances = numerix.zeros((6, self.nx, self.ny, self.nz), 'd')
-        distances[0] = self.dx
-        distances[1] = self.dx
-        distances[2] = self.dy
-        distances[3] = self.dy
-        distances[4] = self.dz
-        distances[5] = self.dz
-        
-        distances[0,  0,...    ] = self.dx / 2.
-        distances[1, -1,...    ] = self.dx / 2.
-        distances[2,...,  0,...] = self.dy / 2.
-        distances[3,..., -1,...] = self.dy / 2.
-        distances[4,...,      0] = self.dz / 2.
-        distances[5,...,     -1] = self.dz / 2.
-
-        return numerix.reshape(distances.swapaxes(1,3), (self.numberOfCells, 6))
-        
-    def _getCellNormals(self):
-        normals = numerix.zeros((3, 6, self.numberOfCells), 'd')
-        normals[...,0,...] = [[-1], [ 0], [ 0]]
-        normals[...,1,...] = [[ 1], [ 0], [ 0]]
-        normals[...,2,...] = [[ 0], [-1], [ 0]]
-        normals[...,3,...] = [[ 0], [ 1], [ 0]]
-        normals[...,4,...] = [[ 0], [ 0], [-1]]
-        normals[...,5,...] = [[ 0], [ 0], [ 1]]
-
-        return normals
-        
-    def _getCellAreas(self):
-        areas = numerix.ones((6, self.numberOfCells), 'd')
-        areas[0] = self.dy * self.dz
-        areas[1] = self.dy * self.dz
-        areas[2] = self.dx * self.dz
-        areas[3] = self.dx * self.dz
-        areas[4] = self.dx * self.dy
-        areas[5] = self.dx * self.dy
-        return areas
-
-    def _getCellAreaProjections(self):
-        return self._getCellAreas() * self._getCellNormals()
-
-##         from numMesh/mesh
-
-    def getFaceCenters(self):
-                                  
-        XYcen = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'd')
-        indices = numerix.indices((self.nx, self.ny, self.nz + 1))
-        XYcen[0] = (indices[0] + 0.5) * self.dx
-        XYcen[1] = (indices[1] + 0.5) * self.dy
-        XYcen[2] = indices[2] * self.dz
-
-        XZcen = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'd')
-        indices = numerix.indices((self.nx, self.ny + 1, self.nz))
-        XZcen[0] = (indices[0] + 0.5) * self.dx
-        XZcen[1] = indices[1] * self.dy
-        XZcen[2] = (indices[2] + 0.5) * self.dz
-        
-        YZcen = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'd')
-        indices = numerix.indices((self.nx + 1, self.ny, self.nz))
-        YZcen[0] = indices[0] * self.dx
-        YZcen[1] = (indices[1] + 0.5) * self.dy
-        YZcen[2] = (indices[2] + 0.5) * self.dz
-
-        return numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZcen.swapaxes(1,3), (3, self.numberOfXZFaces)),
-                                    numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1) + self.origin
-                                    
+                                   
     def _getCellVertexIDs(self):
         ids = numerix.zeros((8, self.nx, self.ny, self.nz))
         indices = numerix.indices((self.nx, self.ny, self.nz))

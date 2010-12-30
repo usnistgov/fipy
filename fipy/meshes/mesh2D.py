@@ -66,8 +66,8 @@ def _orderVertices(vertexCoords, vertices):
 
 class Mesh2D(Mesh):
     
-    def _setGeometry(self, scaleDict):
-        self._geometry = MeshGeometry2D(self, scaleDict)
+    def _setGeometry(self, scaleLength):
+        self._geometry = MeshGeometry2D(self, scaleLength)
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector

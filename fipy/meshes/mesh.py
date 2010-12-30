@@ -81,9 +81,7 @@ class Mesh(object):
         self.faceCellIDs = self._calcFaceCellIDs() 
 
         self._setTopology()
-        self._setGeometry({'length': 1.,
-                           'area': 1.,
-                           'volume': 1.})
+        self._setGeometry(scaleLength = 1.)
 
     """Topology methods"""
     def _setTopology(self):
@@ -92,8 +90,9 @@ class Mesh(object):
                                       self.numberOfCells,
                                       self._getMaxFacesPerCell(),
                                       self) # `self` only for int/ext face calc
-    def _setGeometry(self, scaleDict):
-        self._geometry = MeshGeometry(self, scaleDict)
+
+    def _setGeometry(self, scaleLength = 1.):
+        self._geometry = MeshGeometry(self, scaleLength)
                                       
     def setScale(self, scaleLength = 1.):
         """
@@ -124,24 +123,48 @@ class Mesh(object):
     cellToCellIDsFilled    = property(lambda s: s._topology.cellToCellIDsFilled)
 
     """geometry properties"""
-    faceAreas                 = property(lambda s: s._geometry.faceAreas)
+    faceAreas                 = property(lambda s: s._geometry.scaledFaceAreas)
     faceCenters               = property(lambda s: s._geometry.faceCenters)
-    faceToCellDistances       = property(lambda s: s._geometry.faceToCellDistances)
+
+    def _setFaceToCellDistances(self, v):
+        self._geometry.faceToCellDistances = v
+
+    faceToCellDistances = property(lambda s: s._geometry.faceToCellDistances,
+                                   _setFaceToCellDistances)
+
+    def _setCellDistances(self, v):
+        self._geometry.cellDistances = v
+
+    cellDistances = property(lambda s: s._geometry.scaledCellDistances,
+                             _setCellDistances)
+
+    def _setFaceNormals(self, v):
+        self._geometry.faceNormals = v
+
+    faceNormals = property(lambda s: s._geometry.faceNormals,
+                           _setFaceNormals)
+
     cellToFaceDistanceVectors = property(lambda s: s._geometry.cellToFaceDistanceVectors)
-    cellDistances             = property(lambda s: s._geometry.cellDistances)
     cellDistanceVectors       = property(lambda s: s._geometry.cellDistanceVectors)
-    faceNormals               = property(lambda s: s._geometry.faceNormals)
     orientedFaceNormals       = property(lambda s: s._geometry.orientedFaceNormals)
-    cellVolumes               = property(lambda s: s._geometry.cellVolumes)
-    cellCenters               = property(lambda s: s._geometry.cellCenters)
+    cellVolumes               = property(lambda s: s._geometry.scaledCellVolumes)
+
+    @property
+    def cellCenters(self):
+        from fipy.variables.cellVariable import CellVariable
+        return CellVariable(mesh=self, value=self._geometry.scaledCellCenters,
+                            rank=1)
+
     faceCellToCellNormals     = property(lambda s: s._geometry.faceCellToCellNormals)
     faceTangents1             = property(lambda s: s._geometry.faceTangents1)
     faceTangents2             = property(lambda s: s._geometry.faceTangents2)
-    cellToCellDistances       = property(lambda s: s._geometry.cellToCellDistances)
+    cellToCellDistances       = property(lambda s: s._geometry.scaledCellToCellDistances)
     cellAreas                 = property(lambda s: s._geometry.cellAreas)
     cellNormals               = property(lambda s: s._geometry.cellNormals)
 
-    """scaled geometery properties"""
+    """scaled geometery properties
+    
+    These should not exist."""
     scale                     = property(lambda s: s._geometry.scale,
                                          setScale)
     scaledFaceAreas           = property(lambda s: s._geometry.scaledFaceAreas)
@@ -367,17 +390,36 @@ class Mesh(object):
         ## set the new faceToCellDistances for `faces0`
         MA.put(faceToCellDistances1, faces0, MA.take(faceToCellDistances0, faces0))
         MA.put(faceToCellDistances0, faces0, MA.take(faceToCellDistances0, faces1))
-        self.faceToCellDistances[0] = faceToCellDistances0
-        self.faceToCellDistances[1] = faceToCellDistances1
 
+        """
+        Abandon hope, all ye who enter.
+
+        Some very hacky stuff going on here with property assignment. Temporary
+        variables are often used because slice and index assignments DO NOT call
+        the property-setters, instead they act on the underlying numpy reference
+        directly.
+
+        Does Guido know about this?
+        """
+
+        connectedFaceToCellDs = self.faceToCellDistances
+        connectedFaceToCellDs[0] = faceToCellDistances0
+        connectedFaceToCellDs[1] = faceToCellDistances1
+        self.faceToCellDistances = connectedFaceToCellDs
+
+        tempCellDist = self.cellDistances
         ## calculate new cell distances and add them to faces0
-        numerix.put(self.cellDistances, faces0, MA.take(faceToCellDistances0 + faceToCellDistances1, faces0))
+        numerix.put(tempCellDist, faces0, MA.take(faceToCellDistances0 + faceToCellDistances1, faces0))
+        self.cellDistances = tempCellDist
 
+        tempFaceNormals = self.faceNormals
         ## change the direction of the face normals for faces0
         for dim in range(self.getDim()):
-            faceNormals = self.faceNormals[dim].copy()
+            faceNormals = tempFaceNormals[dim].copy()
             numerix.put(faceNormals, faces0, MA.take(faceNormals, faces1))
-            self.faceNormals[dim] = faceNormals
+            tempFaceNormals[dim] = faceNormals
+
+        self.faceNormals = tempFaceNormals
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
@@ -399,9 +441,8 @@ class Mesh(object):
         self._setTopology()
 
         ## calculate new geometry
-        self.faceToCellDistanceRatio = self._calcFaceToCellDistanceRatio()
-        self.cellToCellDistances = self._calcCellToCellDistances()
-
+        self._geometry.handleFaceConnection()
+        
         self.setScale(self.scale['length'])
         
     def _getConcatenableMesh(self):
@@ -1001,7 +1042,7 @@ class Mesh(object):
     """get geometry methods"""
 
     def _getFaceAreas(self):
-        return self.scaledFaceAreas
+        return self.faceAreas
 
     def _getFaceNormals(self):
         return self.faceNormals
@@ -1010,20 +1051,22 @@ class Mesh(object):
         return self.faceCellToCellNormals
         
     def getCellVolumes(self):
-        return self.scaledCellVolumes
+        return self.cellVolumes
 
+    """
+    This shit has GOT TO GO.
+    """
     def _getCellCenters(self):
         return self.scaledCellCenters
         
     def getCellCenters(self):
-        from fipy.variables.cellVariable import CellVariable
-        return CellVariable(mesh=self, value=self._getCellCenters(), rank=1)
+        return self.cellCenters
 
     def _getFaceToCellDistances(self):
-        return self.scaledFaceToCellDistances
+        return self.faceToCellDistances
 
     def _getCellDistances(self):
-        return self.scaledCellDistances
+        return self.cellDistances
 
     def _getFaceToCellDistanceRatio(self):
         return self.faceToCellDistanceRatio
@@ -1047,7 +1090,7 @@ class Mesh(object):
         return self.faceAspectRatios
     
     def _getCellToCellDistances(self):
-        return self.scaledCellToCellDistances
+        return self.cellToCellDistances
 
     def _getCellNormals(self):
         return self.cellNormals
@@ -1056,7 +1099,7 @@ class Mesh(object):
         return self.cellAreas
 
     def _getCellAreaProjections(self):
-        return self.cellNormals * self._getCellAreas()
+        return self.cellNormals * self.cellAreas
          
     def getFaceCenters(self):
         return self.faceCenters

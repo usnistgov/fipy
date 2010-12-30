@@ -41,6 +41,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.grid2D import Grid2D
+from fipy.meshes.geometries import CylindricalGridGeometry2D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
 
@@ -58,13 +59,10 @@ class CylindricalGrid2D(Grid2D):
         Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
         self.args['origin'] = self.origin
-
-    def _getFaceAreas(self):
-        return Grid2D._getFaceAreas(self) * self.getFaceCenters()[0]
-
-    def getCellVolumes(self):
-        return Grid2D.getCellVolumes(self) * self.getCellCenters()[0]
-
+    
+    def _setGeometry(self, scaleLength = 1.):
+        self._geometry = CylindricalGridGeometry2D(self, scaleLength)
+     
     def _translate(self, vector):
         return CylindricalGrid2D(dx=self.args['dx'], nx=self.args['nx'], 
                                  dy=self.args['dy'], ny=self.args['ny'], 
@@ -83,12 +81,6 @@ class CylindricalGrid2D(Grid2D):
     def getVertexCoords(self):
         return self.vertexCoords + self.origin
 
-    def getCellCenters(self):
-        return Grid2D.getCellCenters(self) + self.origin
-
-    def getFaceCenters(self):
-        return self.faceCenters + self.origin
-    
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
@@ -141,7 +133,7 @@ class CylindricalGrid2D(Grid2D):
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
             >>> if parallel.procID == 0:
             ...     faceAreas = faceAreas * mesh.getFaceCenters()[0]
-            >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh.faceAreas, atol = 1e-10, rtol = 1e-10)
             True
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
@@ -164,7 +156,7 @@ class CylindricalGrid2D(Grid2D):
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
             >>> if parallel.procID == 0:
             ...     cellVolumes = cellVolumes * mesh.getCellCenters()[0]
-            >>> print numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2.),
@@ -192,7 +184,7 @@ class CylindricalGrid2D(Grid2D):
             True
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> print parallel.procID > 0 or numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(areaProjections, mesh.areaProjections, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., -1., 0., 0., 0., 0., 0., 0., 0., 0.),
@@ -269,10 +261,10 @@ class CylindricalGrid2D(Grid2D):
             True
 
             >>> mesh = CylindricalGrid2D(dx=(1., 2.), dy=(1.,)) + ((1.,),(0.,))
-            >>> print mesh.getCellCenters()
+            >>> print mesh.cellCenters
             [[ 1.5  3. ]
              [ 0.5  0.5]]
-            >>> print mesh.getCellVolumes()
+            >>> print mesh.cellVolumes
             [ 1.5  6. ]
 
             

@@ -38,6 +38,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.mesh import Mesh
+from fipy.meshes.geometries import GridGeometry3D
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -151,12 +152,11 @@ class Grid3D(Mesh):
         
         Mesh.__init__(self, vertices, faces, cells)
         
-        self.setScale(value = scale)
+        self.setScale(scaleLength = scale)
+
+    def _setGeometry(self, scaleLength = 1.):
+        self._geometry = GridGeometry3D(self, scaleLength)
     
-    def _setHigherOrderScalings(self):
-        self.scale['area']   = self.scale['length']**2
-        self.scale['volume'] = self.scale['length']**3
-     
     def _calcParallelGridInfo(self, nx, ny, nz, overlap, communicator):
         
         procID = communicator.procID
@@ -301,39 +301,6 @@ class Grid3D(Mesh):
 ##         YZFaceAreas = numerix.ones(self.numberOfYZFaces)
 ##         YZFaceAreas = YZFaceAreas * self.dy * self.dz
 ##         self.faceAreas =  numerix.concatenate((XYFaceAreas, XZFaceAreas, YZFaceAreas))
-
-    def _calcFaceNormals(self):
-        XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces))
-        XYFaceNormals[2, (self.nx * self.ny):] = 1
-        XYFaceNormals[2, :(self.nx * self.ny)] = -1
-        XZFaceNormals = numerix.zeros((3, self.numberOfXZFaces))
-        xzd = numerix.arange(self.numberOfXZFaces)
-        xzd = xzd % (self.nx * (self.ny + 1))
-        xzd = (xzd < self.nx)
-        xzd = 1 - (2 * xzd)
-        XZFaceNormals[1, :] = xzd
-        YZFaceNormals = numerix.zeros((3, self.numberOfYZFaces))
-        YZFaceNormals[0, :] = 1
-        YZFaceNormals[0, ::self.nx + 1] = -1
-        return numerix.concatenate((XYFaceNormals, 
-                                    XZFaceNormals, 
-                                    YZFaceNormals), 
-                                   axis=-1)
-        
-    def _calcFaceTangents(self):
-        ## need to see whether order matters.
-        faceTangents1 = numerix.zeros((3, self.numberOfFaces), 'd')
-        faceTangents2 = numerix.zeros((3, self.numberOfFaces), 'd')
-        ## XY faces
-        faceTangents1[0, :self.numberOfXYFaces] = 1.
-        faceTangents2[1, :self.numberOfXYFaces] = 1.
-        ## XZ faces
-        faceTangents1[0, self.numberOfXYFaces:self.numberOfXYFaces + self.numberOfXZFaces] = 1.
-        faceTangents2[2, self.numberOfXYFaces:self.numberOfXYFaces + self.numberOfXZFaces] = 1.
-        ## YZ faces
-        faceTangents1[1, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
-        faceTangents2[2, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
-        return faceTangents1, faceTangents2
 
     def _isOrthogonal(self):
         return True

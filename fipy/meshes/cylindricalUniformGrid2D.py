@@ -38,6 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid2D import UniformGrid2D
+from fipy.meshes.geometries import CylindricalUniformGridGeometry2D
 from fipy.tools import numerix
 from fipy.tools import parallel
 
@@ -50,27 +51,8 @@ class CylindricalUniformGrid2D(UniformGrid2D):
                  overlap=2, communicator=parallel):
         UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, 
                                origin=origin, overlap=overlap, 
-                               communicator=communicator)
-
-    def _getAreaProjections(self):
-        return self._getAreaProjectionsPy()
-            
-    def _getFaceAreas(self):
-        faceAreas = numerix.zeros(self.numberOfFaces, 'd')
-        faceAreas[:self.numberOfHorizontalFaces] = self.dx
-        faceAreas[self.numberOfHorizontalFaces:] = self.dy
-        return faceAreas * self.getFaceCenters()[0]
-        
-    def getCellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy * self.getCellCenters()[0]
-
-    def _getCellAreas(self):
-        areas = numerix.ones((4, self.numberOfCells), 'd')
-        areas[0] = self.dx * self.getCellCenters()[0]
-        areas[1] = self.dy * (self.getCellCenters()[0] + self.dx / 2)
-        areas[2] = self.dx * self.getCellCenters()[0]
-        areas[3] = self.dy * (self.getCellCenters()[0] - self.dx / 2)
-        return areas
+                               communicator=communicator,
+                               GeomClass=CylindricalUniformGridGeometry2D)
 
     def _translate(self, vector):
         return CylindricalUniformGrid2D(dx = self.args['dx'], nx = self.args['nx'], 
