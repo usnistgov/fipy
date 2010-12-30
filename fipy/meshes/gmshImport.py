@@ -909,6 +909,24 @@ class GmshGrid2D(Gmsh2D):
 
         >>> yogmsh.getCellCenters().value.size == yogrid.getCellCenters().value.size
         True
+
+        >>> mesh = GmshGrid2D(nx=2, ny=2)
+
+        >>> faceNormals = [[-0.0, 1.0, -0.0, -1.0, 1.0, -0.0, -1.0, -0.0, 1.0, -0.0, 1.0, -0.0],
+        ...                [-1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, -1.0, 0.0, 1.0, 0.0, 1.0]]
+
+        >>> numerix.allclose(mesh.faceNormals, faceNormals)
+        True
+
+        >>> mesh.cellCenters.value
+        array([[ 0.5,  0.5,  1.5,  1.5],
+               [ 0.5,  1.5,  0.5,  1.5]])
+
+        >>> mesh.faceCenters
+        array([[ 0.5,  1. ,  0.5,  0. ,  1. ,  0.5,  0. ,  1.5,  2. ,  1.5,  2. ,
+                 1.5],
+               [ 0. ,  0.5,  1. ,  0.5,  1.5,  2. ,  1.5,  0. ,  0.5,  1. ,  1.5,
+                 2. ]])
         """
 
 
@@ -965,6 +983,7 @@ class GmshGrid3D(Gmsh3D):
         to ensure they're performing similarly.
 
         >>> from fipy import *
+        >>> from fipy.tools import numerix as nx
 
         >>> yogmsh = GmshGrid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
         ...                     communicator=serial)
@@ -979,6 +998,42 @@ class GmshGrid3D(Gmsh3D):
         True
 
         >>> numerix.allclose(yogmsh._getFaceAreas(), yogrid._getFaceAreas())
+        True
+
+        >>> mesh = GmshGrid3D(nx=2, ny=2, nz=2)
+
+        >>> ccs = [[ 0.5,  0.5,  0.5,  0.5,  1.5,  1.5,  1.5,  1.5],
+        ...    [ 0.5,  0.5,  1.5,  1.5,  0.5,  0.5,  1.5,  1.5],
+        ...    [ 0.5,  1.5,  0.5,  1.5,  0.5,  1.5,  0.5,  1.5]]
+
+        >>> nx.allclose(mesh.cellCenters.value, ccs)
+        True
+
+        >>> faceAreas = [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,
+        ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,
+        ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]
+
+        >>> nx.allclose(mesh.faceAreas, faceAreas)
+        True
+
+        >>> cellAreas = [[ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
+        ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
+        ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
+        ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
+        ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
+        ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]]
+
+        >>> nx.allclose(mesh.cellAreas, cellAreas)
+        True
+
+        >>> cToCDist = [[ 1. ,  1. ,  1. ,  1. ,  0.5,  0.5,  0.5,  0.5],
+        ...        [ 0.5,  0.5,  0.5,  0.5,  1. ,  1. ,  1. ,  1. ],
+        ...        [ 1. ,  1. ,  0.5,  0.5,  1. ,  1. ,  0.5,  0.5],
+        ...        [ 0.5,  0.5,  1. ,  1. ,  0.5,  0.5,  1. ,  1. ],
+        ...        [ 1. ,  0.5,  1. ,  0.5,  1. ,  0.5,  1. ,  0.5],
+        ...        [ 0.5,  1. ,  0.5,  1. ,  0.5,  1. ,  0.5,  1. ]]
+
+        >>> nx.allclose(mesh.cellToCellDistances, cToCDist)
         True
         """
  
