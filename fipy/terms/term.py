@@ -119,6 +119,7 @@ class Term:
         
         if self._cacheMatrix:
             self.matrix = matrix
+            self.matrix.cache = True
         else:
             self.matrix = None
 

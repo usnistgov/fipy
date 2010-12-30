@@ -581,7 +581,19 @@ class Mesh:
 
     def _getCellToCellIDsFilled(self):
         return self.cellToCellIDsFilled
-        
+
+    def getInteriorFaceIDs(self):
+        if not hasattr(self, 'interiorFaceIDs'):
+            self.interiorFaceIDs = numerix.nonzero(self.getInteriorFaces())[0]
+        return self.interiorFaceIDs
+
+    def getInteriorFaceCellIDs(self):
+        if not hasattr(self, 'interiorFaceCellIDs'):
+            ## Commented line is better, but doesn't work for zero length arrays
+            ##  self.interiorFaceCellIDs = self.getFaceCellIDs()[..., self.getInteriorFaceIDs()]
+            self.interiorFaceCellIDs = numerix.take(self.getFaceCellIDs(), self.getInteriorFaceIDs(), axis=1)
+        return self.interiorFaceCellIDs
+    
     """geometry methods"""
     
     def _calcGeometry(self):
@@ -656,7 +668,7 @@ class Mesh:
 
     def _getFaceCellToCellNormals(self):
         return self.faceCellToCellNormals
-        
+
     def getCellVolumes(self):
         return self.scaledCellVolumes
 

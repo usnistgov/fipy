@@ -89,7 +89,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
     def _getMatrix(self):
         return self.matrix
-    
+
     # All operations that require getting data out of the matrix may need to
     # call FillComplete to make sure they work.  There will be no warnings when
     # FillComplete is implicitly called; there will only be warnings when
@@ -646,7 +646,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
-        
+
         comm = mesh.communicator.epetra_comm
         globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
         globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
@@ -686,7 +686,20 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         return copy
                                  
     def asTrilinosMeshMatrix(self):
+        self.finalize()
         return self
+
+    def _getStencil(self, id1, id2):
+        globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
+        globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
+            
+        id1 = globalOverlappingRowIDs[id1]
+        id2 = globalOverlappingRowIDs[id2]
+            
+        mask = numerix.in1d(id1, globalNonOverlappingRowIDs) 
+        id1 = id1[mask]
+        id2 = id2[mask]
+        return id1, id2, mask
 
     def _globalNonOverlapping(self, vector, id1, id2):
         """Transforms and subsets local overlapping values and coordinates to global non-overlapping
@@ -701,20 +714,18 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     global non-overlapping row indices, 
                     global non-overlapping column indices)
         """
-        
-        globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
-        globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
-
-        id1 = globalOverlappingRowIDs[id1]
-        id2 = globalOverlappingRowIDs[id2]
-
-        mask = numerix.in1d(id1, globalNonOverlappingRowIDs) 
-        id1 = id1[mask]
-        id2 = id2[mask]
+        id1, id2, mask = self._getStencil(id1, id2)
         vector = vector[mask]
-        
         return (vector, id1, id2)
 
+    def flush(self):
+        pass
+    
+    def _getMatrix(self):
+        if not hasattr(self, 'matrix'):
+            self.matrix = _TrilinosMeshMatrix(self.mesh, bandwidth=self.bandwidth, numberOfVariables=self.numberOfVariables)._getMatrix()
+        return _TrilinosMatrix._getMatrix(self)
+        
     def put(self, vector, id1, id2):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
         _TrilinosMatrix.put(self, vector=vector, id1=id1, id2=id2)
@@ -852,6 +863,27 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
         size = mesh.getNumberOfCells()
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
+
+class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
+
+    def _getStencil(self, id1, id2):
+        if not hasattr(self, 'stencil'):
+            self.stencil = _TrilinosMeshMatrix._getStencil(self, id1, id2)
+
+        return self.stencil
+    
+    def flush(self, cacheStencil=False):
+        """Deletes the matrix but maintains the stencil used
+        `_globalNonOverlapping()` in as it can be expensive to construct.
+
+        :Parameters:
+          - `cacheStencil`: Boolean value to determine whether to keep the stencil (tuple of IDs and a mask) even after deleting the matrix.
+
+        """
+
+        del self.matrix
+        if not cacheStencil:
+            del self.stencil
 
 def _test(): 
     import doctest
