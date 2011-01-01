@@ -137,7 +137,7 @@ class UniformGrid3D(Grid3D):
         self.numberOfCells = self.nx * self.ny * self.nz
 
         self._topology = UniformMeshTopology3D(self)
-        self._geometry = UniformGridGeometry3D(self, self.dx, self.dy, self.dz,
+        self._geometry = UniformGridGeometry3D(self.dx, self.dy, self.dz,
                                                self.nx, self.ny, self.nz,
                                                self.numberOfCells,
                                                self.numberOfXYFaces,

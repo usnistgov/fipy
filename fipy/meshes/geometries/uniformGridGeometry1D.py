@@ -71,10 +71,14 @@ class UniformGridScaledGeometry1D(AbstractScaledMeshGeometry):
         return 1. / self.geom.cellDistances
      
 class UniformGridGeometry1D(AbstractUniformGridGeometry):
-    def __init__(self, mesh, origin, dx, numberOfFaces, numberOfCells, scale,
-                 ScaledGeomClass=UniformGridScaledGeometry1D):
+    def __init__(self, origin, 
+                       dx, 
+                       numberOfFaces, 
+                       numberOfCells, 
+                       scale,
+                       ScaledGeomClass=UniformGridScaledGeometry1D):
         """TODO: Refactor args."""
-        self.mesh = mesh
+
         self.origin = origin
         self.dx = dx
         self.numberOfFaces = numberOfFaces

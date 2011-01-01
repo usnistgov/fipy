@@ -40,12 +40,12 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from uniformMeshGeometry import UniformMeshGeometry1D
-from uniformMeshGeometry import UniformMeshGeometry2D
-from uniformMeshGeometry import UniformMeshScaledGeometry1D
-from uniformMeshGeometry import UniformMeshScaledGeometry2D
+from uniformGridGeometry1D import UniformGridGeometry1D
+from uniformGridGeometry2D import UniformGridGeometry2D
+from uniformGridGeometry1D import UniformGridScaledGeometry1D
+from uniformGridGeometry2D import UniformGridScaledGeometry2D
       
-class CylindricalUniformGridScaledGeometry1D(UniformMeshScaledGeometry1D):
+class CylindricalUniformGridScaledGeometry1D(UniformGridScaledGeometry1D):
 
     @property
     def faceAspectRatios(self):
@@ -55,7 +55,7 @@ class CylindricalUniformGridScaledGeometry1D(UniformMeshScaledGeometry1D):
     def areaProjections(self):
         return self.geom.faceNormals * self.geom.faceAreas
        
-class CylindricalUniformGridGeometry1D(UniformMeshGeometry1D):
+class CylindricalUniformGridGeometry1D(UniformGridGeometry1D):
     def __init__(self, *args, **kwargs):
 
         super(CylindricalUniformGridGeometry1D, self).__init__(*args,
@@ -79,35 +79,36 @@ class CylindricalUniformGridGeometry1D(UniformMeshGeometry1D):
         return MA.array(self.cellNormals) * self.cellAreas
 
       
-class CylindricalUniformGridScaledGeometry2D(UniformMeshScaledGeometry2D):
+class CylindricalUniformGridScaledGeometry2D(UniformGridScaledGeometry2D):
 
     def _calcAreaProjections(self):
         return self._getAreaProjectionsPy()
      
-class CylindricalUniformGridGeometry2D(UniformMeshGeometry2D):
+class CylindricalUniformGridGeometry2D(UniformGridGeometry2D):
 
-    def __init__(self, mesh):
-        super(CylindricalUniformGridGeometry2D, self).__init__(mesh,
-            UniformScaledGeom=CylindricalUniformGridScaledGeometry2D)
+    def __init__(self, *args, **kwargs):
+        super(CylindricalUniformGridGeometry2D, self).__init__(*args,
+            UniformScaledGeom=CylindricalUniformGridScaledGeometry2D,
+            **kwargs)
 
     @property
     def faceAreas(self):
-        faceAreas = numerix.zeros(self.mesh.numberOfFaces, 'd')
-        faceAreas[:self.mesh.numberOfHorizontalFaces] = self.mesh.dx
-        faceAreas[self.mesh.numberOfHorizontalFaces:] = self.mesh.dy
+        faceAreas = numerix.zeros(self.numberOfFaces, 'd')
+        faceAreas[:self.numberOfHorizontalFaces] = self.dx
+        faceAreas[self.numberOfHorizontalFaces:] = self.dy
         return faceAreas * self.faceCenters[0]
         
     @property
     def cellVolumes(self):
-        return numerix.ones(self.mesh.numberOfCells, 'd') * self.mesh.dx \
-                * self.mesh.dy * self.cellCenters[0]
+        return numerix.ones(self.numberOfCells, 'd') * self.dx \
+                * self.dy * self.cellCenters[0]
 
     @property
     def cellAreas(self):
-        areas = numerix.ones((4, self.mesh.numberOfCells), 'd')
-        areas[0] = self.mesh.dx * self.cellCenters[0]
-        areas[1] = self.mesh.dy * (self.cellCenters[0] + self.mesh.dx / 2)
-        areas[2] = self.mesh.dx * self.cellCenters[0]
-        areas[3] = self.mesh.dy * (self.cellCenters[0] - self.mesh.dx / 2)
+        areas = numerix.ones((4, self.numberOfCells), 'd')
+        areas[0] = self.dx * self.cellCenters[0]
+        areas[1] = self.dy * (self.cellCenters[0] + self.dx / 2)
+        areas[2] = self.dx * self.cellCenters[0]
+        areas[3] = self.dy * (self.cellCenters[0] - self.dx / 2)
         return areas
  

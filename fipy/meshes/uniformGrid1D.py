@@ -100,8 +100,7 @@ class UniformGrid1D(Grid1D):
             'volume': 1.
         }
 
-        self._geometry = GeomClass(self,
-                                   self.origin,
+        self._geometry = GeomClass(self.origin,
                                    self.dx,
                                    self.numberOfFaces,
                                    self.numberOfCells,
