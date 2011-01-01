@@ -40,7 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.topologies import UniformMeshTopology2D
-from fipy.meshes.geometries import UniformMeshGeometry2D
+from fipy.meshes.geometries import UniformGridGeometry2D
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -55,7 +55,7 @@ class UniformGrid2D(Grid2D):
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
                  overlap=2, communicator=parallel,
-                 GeomClass=UniformMeshGeometry2D):        
+                 GeomClass=UniformGridGeometry2D):        
         self.args = {
             'dx': dx, 
             'dy': dy, 
