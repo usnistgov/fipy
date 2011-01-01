@@ -39,7 +39,7 @@ __docformat__ = 'restructuredtext'
 
 from grid1D import Grid1D
 from fipy.tools import numerix
-from fipy.meshes.geometries import PeriodicGridGeometry1D
+from fipy.meshes.geometries import _PeriodicGridGeometry1D
 
 class PeriodicGrid1D(Grid1D):
     """
@@ -93,7 +93,7 @@ class PeriodicGrid1D(Grid1D):
                                numerix.nonzero(self.getFacesRight()))
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = PeriodicGridGeometry1D(self.globalNumberOfCells,
+        self._geometry = _PeriodicGridGeometry1D(self.globalNumberOfCells,
                                                 self.args['dx'],
                                                 self.numberOfFaces,
                                                 self.dim, 

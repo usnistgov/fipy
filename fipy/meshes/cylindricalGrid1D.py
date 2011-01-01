@@ -38,7 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.meshes.geometries import CylindricalGridGeometry1D
+from fipy.meshes.geometries import _CylindricalGridGeometry1D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from grid1D import Grid1D
 
@@ -80,7 +80,7 @@ class CylindricalGrid1D(Grid1D):
         self.args['origin'] = origin
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = CylindricalGridGeometry1D(self.origin,
+        self._geometry = _CylindricalGridGeometry1D(self.origin,
                                         self.numberOfFaces,
                                         self.dim, 
                                         self.faceVertexIDs,

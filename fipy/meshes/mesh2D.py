@@ -49,7 +49,7 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
 from fipy.meshes.mesh import Mesh
-from fipy.meshes.geometries import MeshGeometry2D
+from fipy.meshes.geometries import _MeshGeometry2D
 
 
 def _orderVertices(vertexCoords, vertices):
@@ -67,7 +67,7 @@ def _orderVertices(vertexCoords, vertices):
 class Mesh2D(Mesh):
     
     def _setGeometry(self, scaleLength):
-        self._geometry = MeshGeometry2D(self.dim, 
+        self._geometry = _MeshGeometry2D(self.dim, 
                                         self.faceVertexIDs,
                                         self.vertexCoords,
                                         self.faceCellIDs,

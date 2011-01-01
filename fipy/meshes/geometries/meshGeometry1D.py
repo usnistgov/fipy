@@ -86,8 +86,72 @@ class MeshGeometry1D(MeshGeometry):
 
         >>> grid = Grid1D(nx = 4)
 
-        >>> geom = MeshGeometry1D(grid, scaleLength = 1.)
+        >>> geom = MeshGeometry1D(grid.numberOfFaces,
+        ...                       grid.dim,
+        ...                       grid.faceVertexIDs, grid.vertexCoords,
+        ...                       grid.faceCellIDs,
+        ...                       grid.cellFaceIDs,
+        ...                       grid.numberOfCells,
+        ...                       grid._maxFacesPerCell,
+        ...                       grid.cellToFaceOrientations,
+        ...                       scaleLength = 1.)
 
-        
+        >>> print geom.faceAreas
+        [ 1.  1.  1.  1.  1.]
+
+        >>> print geom.faceCenters
+        [[ 0.  1.  2.  3.  4.]]
+
+        >>> print geom.cellCenters
+        [[ 0.5  1.5  2.5  3.5]]
+
+        >>> print geom.faceToCellDistances
+        [[0.5 0.5 0.5 0.5 0.5]
+         [-- 0.5 0.5 0.5 --]]
+
+
+        >>> print geom.cellToFaceDistanceVectors
+        [[[-0.5 0.5 0.5 0.5 0.5]
+          [-- -0.5 -0.5 -0.5 --]]]
+         
+        >>> print geom.cellDistances
+        [ 0.5  1.   1.   1.   0.5]
+
+
+        >>> print geom.cellDistanceVectors
+        [[-0.5  1.   1.   1.   0.5]]
+
+        >>> print geom.faceNormals
+        [[-1.  1.  1.  1.  1.]]
+
+        >>> print geom.orientedFaceNormals
+        [[-1.  1.  1.  1.  1.]]
+
+        >>> print geom.cellVolumes
+        [ 1.  1.  1.  1.]
+
+        >>> print geom.cellCenters
+        [[ 0.5  1.5  2.5  3.5]]
+
+        >>> print geom.faceTangents2
+        [[ 0.  0.  0.  0.  0.]]
+
+        >>> print geom.cellAreas
+        [[ 1.  1.  1.  1.]
+         [ 1.  1.  1.  1.]]
+
+        >>> print geom.scaledCellVolumes
+        [ 1.  1.  1.  1.]
+
+        >>> print geom.areaProjections
+        [[-1.  1.  1.  1.  1.]]
+
+        >>> print geom.faceAspectRatios
+        [ 2.  1.  1.  1.  2.]
+
         """
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
 

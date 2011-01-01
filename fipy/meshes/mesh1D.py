@@ -47,12 +47,12 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
 from fipy.meshes.mesh import Mesh
-from fipy.meshes.geometries import MeshGeometry1D
+from fipy.meshes.geometries import _MeshGeometry1D
 
 class Mesh1D(Mesh):
     
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = MeshGeometry1D(self.numberOfFaces,
+        self._geometry = _MeshGeometry1D(self.numberOfFaces,
                                         self.dim, 
                                         self.faceVertexIDs,
                                         self.vertexCoords,

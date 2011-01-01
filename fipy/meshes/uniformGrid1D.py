@@ -40,7 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import MA
 from fipy.meshes.topologies import UniformMeshTopology1D
-from fipy.meshes.geometries import UniformGridGeometry1D
+from fipy.meshes.geometries import _UniformGridGeometry1D
 
 from grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -58,7 +58,7 @@ class UniformGrid1D(Grid1D):
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,
                        communicator=parallel,
-                       GeomClass=UniformGridGeometry1D):
+                       GeomClass=_UniformGridGeometry1D):
         origin = numerix.array(origin)
         
         self.args = {

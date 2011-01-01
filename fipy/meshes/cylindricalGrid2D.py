@@ -41,7 +41,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.geometries import CylindricalGridGeometry2D
+from fipy.meshes.geometries import _CylindricalGridGeometry2D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
 
@@ -61,7 +61,7 @@ class CylindricalGrid2D(Grid2D):
         self.args['origin'] = self.origin
     
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = CylindricalGridGeometry2D(self.origin,
+        self._geometry = _CylindricalGridGeometry2D(self.origin,
                                         self.dim, 
                                         self.faceVertexIDs,
                                         self.vertexCoords,

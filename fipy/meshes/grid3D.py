@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.mesh import Mesh
-from fipy.meshes.geometries import GridGeometry3D
+from fipy.meshes.geometries import _GridGeometry3D
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -155,7 +155,7 @@ class Grid3D(Mesh):
         self.setScale(scaleLength = scale)
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = GridGeometry3D(self.nx,
+        self._geometry = _GridGeometry3D(self.nx,
                                         self.ny,
                                         self.nz,
                                         self.numberOfFaces,

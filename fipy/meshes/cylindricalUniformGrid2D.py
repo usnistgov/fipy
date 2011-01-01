@@ -38,7 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid2D import UniformGrid2D
-from fipy.meshes.geometries import CylindricalUniformGridGeometry2D
+from fipy.meshes.geometries import _CylindricalUniformGridGeometry2D
 from fipy.tools import numerix
 from fipy.tools import parallel
 
@@ -52,7 +52,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
         UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, 
                                origin=origin, overlap=overlap, 
                                communicator=communicator,
-                               GeomClass=CylindricalUniformGridGeometry2D)
+                               GeomClass=_CylindricalUniformGridGeometry2D)
 
     def _translate(self, vector):
         return CylindricalUniformGrid2D(dx = self.args['dx'], nx = self.args['nx'], 

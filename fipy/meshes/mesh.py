@@ -41,7 +41,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.cell import Cell
 from fipy.meshes.topologies import MeshTopology
-from fipy.meshes.geometries import MeshGeometry
+from fipy.meshes.geometries import _MeshGeometry
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -92,7 +92,7 @@ class Mesh(object):
                                       self) # `self` only for int/ext face calc
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = MeshGeometry(self.dim,
+        self._geometry = _MeshGeometry(self.dim,
                                       self.faceVertexIDs,
                                       self.vertexCoords,
                                       self.faceCellIDs,
