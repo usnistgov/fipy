@@ -80,7 +80,18 @@ class CylindricalGrid1D(Grid1D):
         self.args['origin'] = origin
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = CylindricalGridGeometry1D(self, scaleLength)
+        self._geometry = CylindricalGridGeometry1D(self.origin,
+                                        self.numberOfFaces,
+                                        self.dim, 
+                                        self.faceVertexIDs,
+                                        self.vertexCoords,
+                                        self.faceCellIDs,
+                                        self.cellFaceIDs,
+                                        self.numberOfCells,
+                                        self._maxFacesPerCell,
+                                        self.cellToFaceOrientations,
+                                        scaleLength)
+                                         
 
     def _translate(self, vector):
         return CylindricalGrid1D(dx=self.args['dx'], nx=self.args['nx'], 

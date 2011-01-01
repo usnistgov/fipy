@@ -93,7 +93,18 @@ class PeriodicGrid1D(Grid1D):
                                numerix.nonzero(self.getFacesRight()))
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = PeriodicGridGeometry1D(self, scaleLength)
+        self._geometry = PeriodicGridGeometry1D(self.globalNumberOfCells,
+                                                self.args['dx'],
+                                                self.numberOfFaces,
+                                                self.dim, 
+                                                self.faceVertexIDs,
+                                                self.vertexCoords,
+                                                self.faceCellIDs,
+                                                self.cellFaceIDs,
+                                                self.numberOfCells,
+                                                self._maxFacesPerCell,
+                                                self.cellToFaceOrientations,
+                                                scaleLength)
 
     def _getOverlap(self, overlap, procID, occupiedNodes):
         self.occupiedNodes = occupiedNodes

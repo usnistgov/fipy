@@ -330,7 +330,15 @@ fipy/meshes/uniformGrid1D.py
 fipy/meshes/uniformGrid2D.py
 fipy/meshes/uniformGrid3D.py
 fipy/meshes/geometries/__init__.py
+fipy/meshes/geometries/abstractGeometries.py
+fipy/meshes/geometries/cylindricalGridGeometries.py
+fipy/meshes/geometries/cylindricalUniformGridGeometries.py
+fipy/meshes/geometries/gridGeometry3D.py
 fipy/meshes/geometries/meshGeometry.py
+fipy/meshes/geometries/meshGeometry1D.py
+fipy/meshes/geometries/meshGeometry2D.py
+fipy/meshes/geometries/periodicGeometries.py
+fipy/meshes/geometries/uniformMeshGeometry.py
 fipy/meshes/topologies/__init__.py
 fipy/meshes/topologies/abstractMeshTopology.py
 fipy/meshes/topologies/meshTopology.py

@@ -55,10 +55,10 @@ class ScaledMeshGeometry2D(ScaledMeshGeometry):
      
 class MeshGeometry2D(MeshGeometry):
      
-    def __init__(self, mesh, scaleDict):
-        super(MeshGeometry2D, self).__init__(mesh, 
-                                             scaleDict,
-                                             ScaledGeom=ScaledMeshGeometry2D)
+    def __init__(self, *args, **kwargs):
+        super(MeshGeometry2D, self).__init__(*args,
+                                             ScaledGeom=ScaledMeshGeometry2D,
+                                             **kwargs)
 
     def _calcFaceAreas(self):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)

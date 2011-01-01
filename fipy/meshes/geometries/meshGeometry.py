@@ -132,17 +132,24 @@ class ScaledMeshGeometry(AbstractScaledMeshGeometry):
     
 class MeshGeometry(AbstractMeshGeometry):
 
-    def __init__(self, mesh, scaleLength, ScaledGeom=ScaledMeshGeometry):
+    def __init__(self, dim, 
+                       faceVertexIDs,
+                       vertexCoords,
+                       faceCellIDs,
+                       cellFaceIDs,
+                       numberOfCells,
+                       maxFacesPerCell,
+                       cellToFaceOrientations,
+                       scaleLength, ScaledGeom=ScaledMeshGeometry):
 
-        self.mesh = mesh
-        self.dim = mesh.dim
-        self.faceVertexIDs = mesh.faceVertexIDs
-        self.vertexCoords = mesh.vertexCoords
-        self.faceCellIDs = mesh.faceCellIDs
-        self.cellFaceIDs = mesh.cellFaceIDs
-        self.numberOfCells = mesh.numberOfCells
-        self.maxFacesPerCell = mesh._getMaxFacesPerCell()
-        self.cellToFaceOrientations = mesh.cellToFaceOrientations
+        self.dim = dim
+        self.faceVertexIDs = faceVertexIDs
+        self.vertexCoords = vertexCoords
+        self.faceCellIDs = faceCellIDs
+        self.cellFaceIDs = cellFaceIDs
+        self.numberOfCells = numberOfCells
+        self.maxFacesPerCell = maxFacesPerCell
+        self.cellToFaceOrientations = cellToFaceOrientations
 
         self._faceAreas = self._calcFaceAreas()
         self._faceCenters = self._calcFaceCenters()

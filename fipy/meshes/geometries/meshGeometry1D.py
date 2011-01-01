@@ -55,12 +55,12 @@ class ScaledMeshGeometry1D(ScaledMeshGeometry):
      
 class MeshGeometry1D(MeshGeometry):
      
-    def __init__(self, mesh, scaleLength):
-        self.numberOfFaces = mesh.numberOfFaces
+    def __init__(self, numberOfFaces, *args, **kwargs):
+        self.numberOfFaces = numberOfFaces
 
-        super(MeshGeometry1D, self).__init__(mesh, 
-                                             scaleLength,
-                                             ScaledGeom=ScaledMeshGeometry1D)
+        super(MeshGeometry1D, self).__init__(*args,
+                                             ScaledGeom = ScaledMeshGeometry1D,
+                                             **kwargs)
 
     def _calcFaceAreas(self):
         return numerix.ones(self.numberOfFaces, 'd')
@@ -78,3 +78,16 @@ class MeshGeometry1D(MeshGeometry):
         faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
         return faceTangents1, faceTangents2
      
+    def _test(self):
+        """
+        >>> from fipy.meshes.geometries.meshGeometry1D import MeshGeometry1D
+
+        >>> from fipy.meshes.grid1D import Grid1D
+
+        >>> grid = Grid1D(nx = 4)
+
+        >>> geom = MeshGeometry1D(grid, scaleLength = 1.)
+
+        
+        """
+

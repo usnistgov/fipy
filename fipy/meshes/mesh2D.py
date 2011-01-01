@@ -67,7 +67,15 @@ def _orderVertices(vertexCoords, vertices):
 class Mesh2D(Mesh):
     
     def _setGeometry(self, scaleLength):
-        self._geometry = MeshGeometry2D(self, scaleLength)
+        self._geometry = MeshGeometry2D(self.dim, 
+                                        self.faceVertexIDs,
+                                        self.vertexCoords,
+                                        self.faceCellIDs,
+                                        self.cellFaceIDs,
+                                        self.numberOfCells,
+                                        self._maxFacesPerCell,
+                                        self.cellToFaceOrientations,
+                                        scaleLength)
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector

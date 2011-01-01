@@ -88,11 +88,19 @@ class Mesh(object):
         self._topology = MeshTopology(self.cellFaceIDs, 
                                       self.faceCellIDs, 
                                       self.numberOfCells,
-                                      self._getMaxFacesPerCell(),
+                                      self._maxFacesPerCell,
                                       self) # `self` only for int/ext face calc
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = MeshGeometry(self, scaleLength)
+        self._geometry = MeshGeometry(self.dim,
+                                      self.faceVertexIDs,
+                                      self.vertexCoords,
+                                      self.faceCellIDs,
+                                      self.cellFaceIDs,
+                                      self.numberOfCells,
+                                      self._maxFacesPerCell,
+                                      self.cellToFaceOrientations,
+                                      scaleLength)
                                       
     def setScale(self, scaleLength = 1.):
         """
@@ -636,6 +644,9 @@ class Mesh(object):
         else:
             return self._getMaxFacesPerCell() * numerix.ones(cellFaceIDs.shape[-1], 'l')
       
+    """
+    TODO: Does this really belong in mesh? I don't think so.
+    """
     def _calcFaceCellIDs(self):
         array = MA.array(MA.indices(self.cellFaceIDs.shape, 'l')[1], 
                          mask=MA.getmask(self.cellFaceIDs))
@@ -725,6 +736,10 @@ class Mesh(object):
         return self.faceCellIDs
 
     def _getMaxFacesPerCell(self):
+        return self._maxFacesPerCell
+
+    @property
+    def _maxFacesPerCell(self):
         return self.cellFaceIDs.shape[0]
 
     def _getExteriorCellIDs(self):

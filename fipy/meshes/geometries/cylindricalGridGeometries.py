@@ -42,18 +42,13 @@ from fipy.tools import numerix
 
 from meshGeometry1D import MeshGeometry1D
 from meshGeometry2D import MeshGeometry2D
-from uniformMeshGeometry import UniformMeshGeometry1D
-from uniformMeshGeometry import UniformMeshGeometry2D
-from uniformMeshGeometry import UniformMeshScaledGeometry1D
-from uniformMeshGeometry import UniformMeshScaledGeometry2D
 
 class CylindricalGridGeometry1D(MeshGeometry1D):
      
-    def __init__(self, mesh, scaleLength):
-        self.origin = mesh.origin
+    def __init__(self, origin, *args, **kwargs):
+        self.origin = origin
 
-        super(CylindricalGridGeometry1D, self).__init__(mesh, 
-                                                        scaleLength)
+        super(CylindricalGridGeometry1D, self).__init__(*args, **kwargs)
      
     def _calcFaceCenters(self):
         faceCenters = super(CylindricalGridGeometry1D, self)._calcFaceCenters()
@@ -67,12 +62,10 @@ class CylindricalGridGeometry1D(MeshGeometry1D):
      
 class CylindricalGridGeometry2D(MeshGeometry2D):
      
-    def __init__(self, mesh, scaleLength):
-        self.origin = mesh.origin
-        self.mesh = mesh
+    def __init__(self, origin, *args, **kwargs):
+        self.origin = origin
 
-        super(CylindricalGridGeometry2D, self).__init__(mesh, 
-                                                        scaleLength)
+        super(CylindricalGridGeometry2D, self).__init__(*args, **kwargs)
      
     @property
     def faceAreas(self):
@@ -89,75 +82,4 @@ class CylindricalGridGeometry2D(MeshGeometry2D):
     @property
     def faceCenters(self):
         return self._calcFaceCenters() + self.origin
-     
-class CylindricalUniformGridScaledGeometry1D(UniformMeshScaledGeometry1D):
-
-    @property
-    def faceAspectRatios(self):
-        return self.geom.faceAreas / self.geom.cellDistances
     
-    @property
-    def areaProjections(self):
-        return self.geom.faceNormals * self.geom.faceAreas
-       
-class CylindricalUniformGridGeometry1D(UniformMeshGeometry1D):
-    def __init__(self, mesh, origin, dx, numberOfFaces, numberOfCells, scale,
-                 ScaledGeomClass=UniformMeshScaledGeometry1D):
-        super(CylindricalUniformGridGeometry1D, self).__init__(
-                mesh,
-                origin,
-                dx,
-                numberOfFaces,
-                numberOfCells,
-                scale,
-                ScaledGeomClass=CylindricalUniformGridScaledGeometry1D)
-        
-    @property
-    def faceAreas(self):
-        return self.faceCenters[0]
-
-    @property
-    def cellVolumes(self):
-        return self.cellCenters[0] * self.dx
-
-    @property
-    def cellAreas(self):
-        return numerix.array((self.faceAreas[:-1], self.faceAreas[1:]))
-
-    @property
-    def cellAreaProjections(self):
-        return MA.array(self.cellNormals) * self.cellAreas
-
-      
-class CylindricalUniformGridScaledGeometry2D(UniformMeshScaledGeometry2D):
-
-    def _calcAreaProjections(self):
-        return self._getAreaProjectionsPy()
-     
-class CylindricalUniformGridGeometry2D(UniformMeshGeometry2D):
-
-    def __init__(self, mesh):
-        super(CylindricalUniformGridGeometry2D, self).__init__(mesh,
-            UniformScaledGeom=CylindricalUniformGridScaledGeometry2D)
-
-    @property
-    def faceAreas(self):
-        faceAreas = numerix.zeros(self.mesh.numberOfFaces, 'd')
-        faceAreas[:self.mesh.numberOfHorizontalFaces] = self.mesh.dx
-        faceAreas[self.mesh.numberOfHorizontalFaces:] = self.mesh.dy
-        return faceAreas * self.faceCenters[0]
-        
-    @property
-    def cellVolumes(self):
-        return numerix.ones(self.mesh.numberOfCells, 'd') * self.mesh.dx \
-                * self.mesh.dy * self.cellCenters[0]
-
-    @property
-    def cellAreas(self):
-        areas = numerix.ones((4, self.mesh.numberOfCells), 'd')
-        areas[0] = self.mesh.dx * self.cellCenters[0]
-        areas[1] = self.mesh.dy * (self.cellCenters[0] + self.mesh.dx / 2)
-        areas[2] = self.mesh.dx * self.cellCenters[0]
-        areas[3] = self.mesh.dy * (self.cellCenters[0] - self.mesh.dx / 2)
-        return areas
-     

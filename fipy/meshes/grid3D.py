@@ -155,7 +155,23 @@ class Grid3D(Mesh):
         self.setScale(scaleLength = scale)
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = GridGeometry3D(self, scaleLength)
+        self._geometry = GridGeometry3D(self.nx,
+                                        self.ny,
+                                        self.nz,
+                                        self.numberOfFaces,
+                                        self.numberOfXYFaces,
+                                        self.numberOfXZFaces,
+                                        self.numberOfYZFaces,
+                                        self.dim, 
+                                        self.faceVertexIDs,
+                                        self.vertexCoords,
+                                        self.faceCellIDs,
+                                        self.cellFaceIDs,
+                                        self.numberOfCells,
+                                        self._maxFacesPerCell,
+                                        self.cellToFaceOrientations,
+                                        scaleLength)
+                                         
     
     def _calcParallelGridInfo(self, nx, ny, nz, overlap, communicator):
         

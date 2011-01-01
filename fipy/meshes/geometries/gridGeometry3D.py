@@ -54,18 +54,26 @@ class ScaledGridGeometry3D(ScaledMeshGeometry):
 
 class GridGeometry3D(MeshGeometry):
 
-    def __init__(self, mesh, scaleLength):
-        self.nx = mesh.nx
-        self.ny = mesh.ny
-        self.nz = mesh.nz
+    def __init__(self, nx, ny, nz,
+                       numberOfFaces,
+                       numberOfXYFaces,
+                       numberOfXZFaces,
+                       numberOfYZFaces, 
+                       *args,
+                       **kwargs):
 
-        self.numberOfFaces = mesh.numberOfFaces
-        self.numberOfXYFaces = mesh.numberOfXYFaces
-        self.numberOfXZFaces = mesh.numberOfXZFaces
-        self.numberOfYZFaces = mesh.numberOfYZFaces
+        self.nx = nx
+        self.ny = ny
+        self.nz = nz
 
-        super(GridGeometry3D, self).__init__(mesh, scaleLength,
-                                             ScaledGeom=ScaledGridGeometry3D)
+        self.numberOfFaces = numberOfFaces
+        self.numberOfXYFaces = numberOfXYFaces
+        self.numberOfXZFaces = numberOfXZFaces
+        self.numberOfYZFaces = numberOfYZFaces
+
+        super(GridGeometry3D, self).__init__(*args,
+                                             ScaledGeom=ScaledGridGeometry3D,
+                                             **kwargs)
 
     def _calcFaceNormals(self):
         XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces))
