@@ -1,4 +1,4 @@
-from meshTopology import MeshTopology
-from uniformMeshTopology import UniformMeshTopology1D
-from uniformMeshTopology import UniformMeshTopology2D
-from uniformMeshTopology import UniformMeshTopology3D
+from meshTopology import MeshTopology as _MeshTopology
+from uniformMeshTopology import UniformMeshTopology1D as _UniformMeshTopology1D 
+from uniformMeshTopology import UniformMeshTopology2D as _UniformMeshTopology2D
+from uniformMeshTopology import UniformMeshTopology3D as _UniformMeshTopology3D

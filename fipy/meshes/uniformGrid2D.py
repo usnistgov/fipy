@@ -39,7 +39,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.topologies import UniformMeshTopology2D
+from fipy.meshes.topologies import _UniformMeshTopology2D
 from fipy.meshes.geometries import _UniformGridGeometry2D
 
 from fipy.tools import numerix
@@ -114,7 +114,7 @@ class UniformGrid2D(Grid2D):
         self.numberOfFaces = self.numberOfHorizontalFaces + self.numberOfVerticalFaces
         self.numberOfCells = self.nx * self.ny
         
-        self._topology = UniformMeshTopology2D(self)
+        self._topology = _UniformMeshTopology2D(self)
         self._geometry = GeomClass(self.dx, self.dy,
                                    self.nx, self.ny,
                                    self.origin,

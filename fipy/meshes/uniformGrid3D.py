@@ -36,7 +36,7 @@
 from fipy.tools.numerix import MA
 
 from fipy.meshes.grid3D import Grid3D
-from fipy.meshes.topologies import UniformMeshTopology3D
+from fipy.meshes.topologies import _UniformMeshTopology3D
 from fipy.meshes.geometries import _UniformGridGeometry3D
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -136,7 +136,7 @@ class UniformGrid3D(Grid3D):
         self.numberOfFaces = self.numberOfXYFaces + self.numberOfXZFaces + self.numberOfYZFaces
         self.numberOfCells = self.nx * self.ny * self.nz
 
-        self._topology = UniformMeshTopology3D(self)
+        self._topology = _UniformMeshTopology3D(self)
         self._geometry = _UniformGridGeometry3D(self.dx, self.dy, self.dz,
                                                self.nx, self.ny, self.nz,
                                                self.numberOfCells,

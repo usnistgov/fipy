@@ -39,7 +39,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import MA
-from fipy.meshes.topologies import UniformMeshTopology1D
+from fipy.meshes.topologies import _UniformMeshTopology1D
 from fipy.meshes.geometries import _UniformGridGeometry1D
 
 from grid1D import Grid1D
@@ -105,7 +105,7 @@ class UniformGrid1D(Grid1D):
                                    self.numberOfFaces,
                                    self.numberOfCells,
                                    scale=self._scale)
-        self._topology = UniformMeshTopology1D(self)
+        self._topology = _UniformMeshTopology1D(self)
         
         self.communicator = communicator
 

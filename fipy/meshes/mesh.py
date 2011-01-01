@@ -40,7 +40,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.cell import Cell
-from fipy.meshes.topologies import MeshTopology
+from fipy.meshes.topologies import _MeshTopology
 from fipy.meshes.geometries import _MeshGeometry
 
 from fipy.tools import numerix
@@ -85,11 +85,11 @@ class Mesh(object):
 
     """Topology methods"""
     def _setTopology(self):
-        self._topology = MeshTopology(self.cellFaceIDs, 
-                                      self.faceCellIDs, 
-                                      self.numberOfCells,
-                                      self._maxFacesPerCell,
-                                      self) # `self` only for int/ext face calc
+        self._topology = _MeshTopology(self.cellFaceIDs, 
+                                       self.faceCellIDs, 
+                                       self.numberOfCells,
+                                       self._maxFacesPerCell,
+                                       self) # `self` only for int/ext face calc
 
     def _setGeometry(self, scaleLength = 1.):
         self._geometry = _MeshGeometry(self.dim,
