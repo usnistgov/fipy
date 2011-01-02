@@ -47,6 +47,7 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import serial
+from fipy.tools.decorators import getsetDeprecated
 
 class MeshAdditionError(Exception):
     pass
@@ -102,7 +103,11 @@ class Mesh(object):
                                       self.cellToFaceOrientations,
                                       scaleLength)
                                       
+    @getsetDeprecated
     def setScale(self, scaleLength = 1.):
+        return self._setScale(scaleLength)
+
+    def _setScale(self, scaleLength = 1.):
         """
         Sets scale of geometry.
 
@@ -339,6 +344,9 @@ class Mesh(object):
     def __repr__(self):
         return "%s()" % self.__class__.__name__
      
+    """
+    TODO: Put this in a PeriodicGrid specific class.
+    """
     def _connectFaces(self, faces0, faces1):
         """
         
@@ -711,6 +719,7 @@ class Mesh(object):
 
     """get Topology methods"""
     
+    @getsetDeprecated
     def getVertexCoords(self):
         """TODO: replace this with a warning."""
         if hasattr(self, 'vertexCoords'):
@@ -718,6 +727,7 @@ class Mesh(object):
         else:
             return self._createVertices()
 
+    @getsetDeprecated
     def getExteriorFaces(self):
         """
         Return only the faces that have one neighboring cell.
@@ -725,6 +735,7 @@ class Mesh(object):
         """
         return self.exteriorFaces
             
+    @getsetDeprecated
     def getInteriorFaces(self):
         """
         Return only the faces that have two neighboring cells.
@@ -732,9 +743,11 @@ class Mesh(object):
         """
         return self.interiorFaces
 
+    @getsetDeprecated
     def getFaceCellIDs(self):
         return self.faceCellIDs
 
+    @getsetDeprecated
     def _getMaxFacesPerCell(self):
         return self._maxFacesPerCell
 
@@ -742,17 +755,21 @@ class Mesh(object):
     def _maxFacesPerCell(self):
         return self.cellFaceIDs.shape[0]
 
+    @getsetDeprecated
     def _getExteriorCellIDs(self):
         """ Why do we have this?!? It's only used for testing against itself? """
         return self.exteriorCellIDs
 
+    @getsetDeprecated
     def _getInteriorCellIDs(self):
         """ Why do we have this?!? It's only used for testing against itself? """
         return self.interiorCellIDs
 
+    @getsetDeprecated
     def _getCellFaceOrientations(self):
         return self.cellToFaceOrientations
 
+    @getsetDeprecated
     def getNumberOfCells(self):
         return self.numberOfCells
 
@@ -765,9 +782,11 @@ class Mesh(object):
         else:
             return self.vertexCoords.shape[-1]
         
+    @getsetDeprecated
     def _getAdjacentCellIDs(self):
         return self.adjacentCellIDs
 
+    @getsetDeprecated
     def getDim(self):
         return self.dim
 
@@ -1045,26 +1064,33 @@ class Mesh(object):
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=z == _madmin(z))
     
+    @getsetDeprecated
     def _getNumberOfFaces(self):
         return self.numberOfFaces
 
+    @getsetDeprecated
     def _getCellToCellIDs(self):
         return self.cellToCellIDs
 
+    @getsetDeprecated
     def _getCellToCellIDsFilled(self):
         return self.cellToCellIDsFilled
      
     """get geometry methods"""
 
+    @getsetDeprecated
     def _getFaceAreas(self):
         return self.faceAreas
 
+    @getsetDeprecated
     def _getFaceNormals(self):
         return self.faceNormals
 
+    @getsetDeprecated
     def _getFaceCellToCellNormals(self):
         return self.faceCellToCellNormals
         
+    @getsetDeprecated
     def getCellVolumes(self):
         return self.cellVolumes
 
@@ -1074,48 +1100,62 @@ class Mesh(object):
     def _getCellCenters(self):
         return self.scaledCellCenters
         
+    @getsetDeprecated
     def getCellCenters(self):
         return self.cellCenters
 
+    @getsetDeprecated
     def _getFaceToCellDistances(self):
         return self.faceToCellDistances
 
+    @getsetDeprecated
     def _getCellDistances(self):
         return self.cellDistances
 
+    @getsetDeprecated
     def _getFaceToCellDistanceRatio(self):
         return self.faceToCellDistanceRatio
 
+    @getsetDeprecated
     def _getOrientedAreaProjections(self):
         return self.orientedAreaProjections
 
+    @getsetDeprecated
     def _getAreaProjections(self):
         return self.areaProjections
 
+    @getsetDeprecated
     def _getOrientedFaceNormals(self):
         return self.orientedFaceNormals
 
+    @getsetDeprecated
     def _getFaceTangents1(self):
         return self.faceTangents1
 
+    @getsetDeprecated
     def _getFaceTangents2(self):
         return self.faceTangents2
         
+    @getsetDeprecated
     def _getFaceAspectRatios(self):
         return self.faceAspectRatios
     
+    @getsetDeprecated
     def _getCellToCellDistances(self):
         return self.cellToCellDistances
 
+    @getsetDeprecated
     def _getCellNormals(self):
         return self.cellNormals
 
+    @getsetDeprecated
     def _getCellAreas(self):
         return self.cellAreas
 
     def _getCellAreaProjections(self):
         return self.cellNormals * self.cellAreas
          
+    @getsetDeprecated
     def getFaceCenters(self):
         return self.faceCenters
 
