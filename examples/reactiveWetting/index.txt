@@ -1,8 +1,0 @@
--------------------------
-Reactive Wetting Examples
--------------------------
-
-.. autosummary::
-   :toctree: generated
-
-   examples.reactiveWetting.reactiveWetting.binaryLiquidVapor1D
