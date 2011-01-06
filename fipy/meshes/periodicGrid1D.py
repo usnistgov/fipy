@@ -39,6 +39,7 @@ __docformat__ = 'restructuredtext'
 
 from grid1D import Grid1D
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 from fipy.meshes.geometries import _PeriodicGridGeometry1D
 
 class PeriodicGrid1D(Grid1D):
@@ -113,10 +114,15 @@ class PeriodicGrid1D(Grid1D):
         else:
             return {'left': overlap, 'right': overlap}
         
+    @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
+        return self._globalOverlappingCellIDs
+
+    @property
+    def _globalOverlappingCellIDs(self):
         """Changed from trunk: self.args['nx'] -> self.nx.
         self.args['nx'] was never being set from None."""
-        return Grid1D._getGlobalOverlappingCellIDs(self) % self.nx
+        return super(PeriodicGrid1D, self)._globalOverlappingCellIDs % self.nx
 
 def _test():
     import doctest

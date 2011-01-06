@@ -40,6 +40,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.meshes.geometries import _CylindricalGridGeometry1D
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools.decorators import getsetDeprecated
 from grid1D import Grid1D
 
 class CylindricalGrid1D(Grid1D):
@@ -77,6 +78,7 @@ class CylindricalGrid1D(Grid1D):
     
         Grid1D.__init__(self, dx=dx, nx=nx, overlap=overlap)
 
+        self.vertexCoords += origin
         self.args['origin'] = origin
 
     def _setGeometry(self, scaleLength = 1.):
@@ -101,8 +103,9 @@ class CylindricalGrid1D(Grid1D):
         return CylindricalGrid1D(dx=self.args['dx'] * factor, nx=self.args['nx'], 
                                  origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
 
+    @getsetDeprecated
     def getVertexCoords(self):
-        return self.vertexCoords + self.origin
+        return self.vertexCoords
 
     def _test(self):
         """

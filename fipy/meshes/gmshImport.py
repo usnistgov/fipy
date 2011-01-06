@@ -41,6 +41,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix as nx
 from fipy.tools import parallel
 from fipy.tools import serial
+from fipy.tools.decorators import getsetDeprecated
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
 import sys
@@ -508,7 +509,12 @@ class Gmsh2D(Mesh2D):
                               cellFaceIDs=cells)
         parprint("Exiting Gmsh2D")
 
+    @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
+        return self._globalNonOverlappingCellIDs
+
+    @property
+    def _globalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Does not include the IDs of boundary cells.
@@ -526,7 +532,12 @@ class Gmsh2D(Mesh2D):
         """ 
         return nx.array(self.cellGlobalIDs)
 
+    @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
+        return self._globalOverlappingCellIDs
+
+    @property
+    def _globalOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Includes the IDs of boundary cells.
@@ -544,7 +555,12 @@ class Gmsh2D(Mesh2D):
         """ 
         return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
 
+    @getsetDeprecated
     def _getLocalNonOverlappingCellIDs(self):
+        return self._localNonOverlappingCellIDs
+
+    @property
+    def _localNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Does not include the IDs of boundary cells.
@@ -562,7 +578,12 @@ class Gmsh2D(Mesh2D):
         """
         return nx.arange(len(self.cellGlobalIDs))
 
+    @getsetDeprecated
     def _getLocalOverlappingCellIDs(self):
+        return self._localOverlappingCellIDs
+
+    @property
+    def _localOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Includes the IDs of boundary cells.
@@ -722,7 +743,12 @@ class Gmsh3D(Mesh):
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
 
+    @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
+        return self._globalNonOverlappingCellIDs
+
+    @property
+    def _globalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Does not include the IDs of boundary cells.
@@ -740,7 +766,12 @@ class Gmsh3D(Mesh):
         """ 
         return nx.array(self.cellGlobalIDs)
 
+    @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
+        return self._globalOverlappingCellIDs
+
+    @property
+    def _globalOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Includes the IDs of boundary cells.
@@ -758,7 +789,12 @@ class Gmsh3D(Mesh):
         """ 
         return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
 
+    @getsetDeprecated
     def _getLocalNonOverlappingCellIDs(self):
+        return self._localNonOverlappingCellIDs
+
+    @property
+    def _localNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Does not include the IDs of boundary cells.
@@ -776,7 +812,12 @@ class Gmsh3D(Mesh):
         """
         return nx.arange(len(self.cellGlobalIDs))
 
+    @getsetDeprecated
     def _getLocalOverlappingCellIDs(self):
+        return self._localOverlappingCellIDs
+
+    @property
+    def _localOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Includes the IDs of boundary cells.
@@ -864,7 +905,12 @@ class GmshGrid2D(Gmsh2D):
 
         Gmsh2D.__init__(self, arg, coordDimensions, communicator, order)
     
+    @getsetDeprecated
     def _getMeshSpacing(self):
+        return self._meshSpacing
+
+    @property
+    def _meshSpacing(self):
         return nx.array((self.dx,self.dy))[...,nx.newaxis]
 
     def _makeGridGeo(self, dx, dy, nx, ny):
@@ -947,7 +993,12 @@ class GmshGrid3D(Gmsh3D):
 
         Gmsh3D.__init__(self, arg, communicator=communicator, order=order)
     
+    @getsetDeprecated
     def _getMeshSpacing(self):
+        return self._meshSpacing
+
+    @property
+    def _meshSpacing(self):
         return nx.array((self.dx,self.dy,self.dz))[...,nx.newaxis]
  
     def _makeGridGeo(self, dx, dy, dz, nx, ny, nz):

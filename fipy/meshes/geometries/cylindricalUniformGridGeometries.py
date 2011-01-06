@@ -58,9 +58,8 @@ class CylindricalUniformGridScaledGeometry1D(UniformGridScaledGeometry1D):
 class CylindricalUniformGridGeometry1D(UniformGridGeometry1D):
     def __init__(self, *args, **kwargs):
 
-        super(CylindricalUniformGridGeometry1D, self).__init__(*args,
-                ScaledGeomClass=CylindricalUniformGridScaledGeometry1D,
-                **kwargs)
+        kwargs['ScaledGeomClass'] = CylindricalUniformGridScaledGeometry1D
+        super(CylindricalUniformGridGeometry1D, self).__init__(*args, **kwargs)
         
     @property
     def faceAreas(self):
@@ -87,9 +86,8 @@ class CylindricalUniformGridScaledGeometry2D(UniformGridScaledGeometry2D):
 class CylindricalUniformGridGeometry2D(UniformGridGeometry2D):
 
     def __init__(self, *args, **kwargs):
-        super(CylindricalUniformGridGeometry2D, self).__init__(*args,
-            UniformScaledGeom=CylindricalUniformGridScaledGeometry2D,
-            **kwargs)
+        kwargs['UniformScaledGeom'] = CylindricalUniformGridScaledGeometry2D
+        super(CylindricalUniformGridGeometry2D, self).__init__(*args, **kwargs)
 
     @property
     def faceAreas(self):

@@ -47,6 +47,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
+from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.geometries import _MeshGeometry2D
@@ -91,9 +92,14 @@ class Mesh2D(Mesh):
     def _concatenatedClass(self):
         return Mesh2D
         
+    @getsetDeprecated
     def _getOrderedCellVertexIDs(self):
+        return self._orderedCellVertexIDs
+
+    @property
+    def _orderedCellVertexIDs(self):
         from fipy.tools.numerix import take
-        NFac = self._getMaxFacesPerCell()
+        NFac = self._maxFacesPerCell
 
         # numpy 1.1's MA.take doesn't like FlatIter. Call ravel() instead.
         cellVertexIDs0 = take(self.faceVertexIDs[0], self.cellFaceIDs.ravel())
@@ -104,7 +110,12 @@ class Mesh2D(Mesh):
         cellVertexIDs = numerix.reshape(cellVertexIDs, (NFac, -1))
         return cellVertexIDs
     
+    @getsetDeprecated
     def _getNonOrthogonality(self):
+        return self._nonOrthogonality
+
+    @property
+    def _nonOrthogonality(self):
         
         exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],))
         numerix.put(exteriorFaceArray, numerix.nonzero(self.exteriorFaces), 1)

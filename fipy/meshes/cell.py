@@ -32,30 +32,54 @@
  # ###################################################################
  ##
 
+from fipy.tools.decorators import getsetDeprecated
+
 class Cell:
     def __init__(self, mesh, id):
         self.id = id
         self.mesh = mesh
 
+    @getsetDeprecated
     def getID(self):
         return self.id
 
+    @getsetDeprecated
     def getCenter(self):
+        return self.center
+
+    @property
+    def center(self):
         return self.mesh.getCellCenters()[...,self.id]
 
+    @getsetDeprecated
     def _getCellToCellDistances(self):
+        return self._cellToCellDistances
+
+    @property
+    def _cellToCellDistances(self):
         return self.mesh._getCellToCellDistances()[...,self.id]
 
+    @getsetDeprecated
     def _getCellToCellIDs(self):
+        return self._cellToCellIDs
+
+    @property
+    def _cellToCellIDs(self):
         return self.mesh._getCellToCellIDs()[...,self.id]
 
     def __cmp__(self, cell):
         return cmp(self.id, cell.getID())
 
+    @getsetDeprecated
     def getMesh(self):
         return self.mesh
 
+    @getsetDeprecated
     def getNormal(self, index):
+        return self.normal
+
+    @property
+    def normal(self, index):
         dis = self._getCellToCellDistances()[...,index]
         adjCellID = self._getCellToCellIDs()[...,index]
         vec = self.getCenter() - self.mesh.getCellCenters()[...,adjCellID]

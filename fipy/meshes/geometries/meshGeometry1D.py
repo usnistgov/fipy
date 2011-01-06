@@ -58,9 +58,8 @@ class MeshGeometry1D(MeshGeometry):
     def __init__(self, numberOfFaces, *args, **kwargs):
         self.numberOfFaces = numberOfFaces
 
-        super(MeshGeometry1D, self).__init__(*args,
-                                             ScaledGeom = ScaledMeshGeometry1D,
-                                             **kwargs)
+        kwargs['ScaledGeom'] = ScaledMeshGeometry1D
+        super(MeshGeometry1D, self).__init__(*args, **kwargs)
 
     def _calcFaceAreas(self):
         return numerix.ones(self.numberOfFaces, 'd')

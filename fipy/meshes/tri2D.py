@@ -40,6 +40,7 @@ from fipy.tools import numerix
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools.decorators import getsetDeprecated
 
 class Tri2D(Mesh2D):
     """
@@ -169,18 +170,22 @@ class Tri2D(Mesh2D):
         leftOfBoxCells = numerix.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces])
         return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells), axis=1)
         
+    @getsetDeprecated
     def getScale(self):
         return self.scale['length']
         
-    def getPhysicalShape(self):
+    @property
+    def physicalShape(self):
         """Return physical dimensions of Grid2D.
         """
         return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
-    def _getMeshSpacing(self):
+    @property
+    def _meshSpacing(self):
         return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
     
-    def getShape(self):
+    @property
+    def shape(self):
         return (self.nx, self.ny)
 
     def _isOrthogonal(self):

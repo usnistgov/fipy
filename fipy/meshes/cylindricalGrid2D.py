@@ -58,6 +58,7 @@ class CylindricalGrid2D(Grid2D):
         
         Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
+        self.vertexCoords += self.origin
         self.args['origin'] = self.origin
     
     def _setGeometry(self, scaleLength = 1.):
@@ -87,9 +88,6 @@ class CylindricalGrid2D(Grid2D):
                                  dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'], 
                                  origin=self.args['origin'] * factor,
                                  overlap=self.args['overlap'])
-
-    def getVertexCoords(self):
-        return self.vertexCoords + self.origin
 
     def _test(self):
         """

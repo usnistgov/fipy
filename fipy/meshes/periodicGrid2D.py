@@ -99,18 +99,22 @@ class PeriodicGrid2D(Grid2D):
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
-        self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
-        self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs(self)
+        self.nonPeriodicCellVertexIDs \
+                = super(PeriodicGrid2D, self)._cellVertexIDs
+        self.nonPeriodicOrderedCellVertexIDs \
+                = super(PeriodicGrid2D, self)._orderedCellVertexIDs
         from fipy.tools import numerix
         self._connectFaces(numerix.nonzero(self.getFacesLeft()), 
                            numerix.nonzero(self.getFacesRight()))
         self._connectFaces(numerix.nonzero(self.getFacesBottom()), 
                            numerix.nonzero(self.getFacesTop()))
 
-    def _getCellVertexIDs(self):
+    @property
+    def _cellVertexIDs(self):
         return self.nonPeriodicCellVertexIDs
 
-    def _getOrderedCellVertexIDs(self):
+    @property
+    def _orderedCellVertexIDs(self):
         return self.nonPeriodicOrderedCellVertexIDs
                
 class PeriodicGrid2DLeftRight(PeriodicGrid2D):

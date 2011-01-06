@@ -41,6 +41,7 @@ from fipy.meshes.mesh import Mesh
 from fipy.meshes.geometries import _GridGeometry3D
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools.decorators import getsetDeprecated
 
 from fipy.tools import parallel
 
@@ -152,7 +153,7 @@ class Grid3D(Mesh):
         
         Mesh.__init__(self, vertices, faces, cells)
         
-        self.setScale(scaleLength = scale)
+        self._setScale(scaleLength = scale)
 
     def _setGeometry(self, scaleLength = 1.):
         self._geometry = _GridGeometry3D(self.nx,
@@ -288,18 +289,34 @@ class Grid3D(Mesh):
 
         return numerix.array((frontFaces, backFaces, leftFaces, rightFaces, bottomFaces, topFaces))
          
+    @getsetDeprecated
     def getScale(self):
         return self.scale['length']
-        
+
+    @getsetDeprecated
     def getPhysicalShape(self):
+        return self.physicalShape
+
+    @property
+    def physicalShape(self):
         """Return physical dimensions of Grid3D.
         """
         return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale(), self.nz * self.dz * self.getScale()))
 
+    @getsetDeprecated
     def _getMeshSpacing(self):
+        return self._meshSpacing
+
+    @property
+    def _meshSpacing(self):
         return numerix.array((self.dx, self.dy, self.dz))[...,numerix.newaxis]
     
+    @getsetDeprecated
     def getShape(self):
+        return self.shape
+
+    @property
+    def shape(self):
         return (self.nx, self.ny, self.nz)
 
     def _repeatWithOffset(self, array, offset, reps):
@@ -321,7 +338,12 @@ class Grid3D(Mesh):
     def _isOrthogonal(self):
         return True
 
+    @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
+        return self._globalNonOverlappingCellIDs
+
+    @property
+    def _globalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Does not include the IDs of boundary cells.
@@ -331,7 +353,12 @@ class Grid3D(Mesh):
         return numerix.arange((self.offset[2] + self.overlap['front']) * self.nx * self.ny, 
                               (self.offset[2] + self.nz - self.overlap['back']) * self.nx * self.ny)
 
+    @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
+        return self._globalOverlappingCellIDs
+
+    @property
+    def _globalOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Includes the IDs of boundary cells.
@@ -341,7 +368,12 @@ class Grid3D(Mesh):
         
         return numerix.arange(self.offset[2] * self.nx * self.ny, (self.offset[2] + self.nz) * self.nx * self.ny)
 
+    @getsetDeprecated
     def _getLocalNonOverlappingCellIDs(self):
+        return self._localNonOverlappingCellIDs
+
+    @property
+    def _localNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Does not include the IDs of boundary cells.
@@ -351,7 +383,12 @@ class Grid3D(Mesh):
         return numerix.arange(self.overlap['front'] * self.nx * self.ny, 
                               (self.nz - self.overlap['back']) * self.nx * self.ny)
 
+    @getsetDeprecated
     def _getLocalOverlappingCellIDs(self):
+        return self._localOverlappingCellIDs
+
+    @property
+    def _localOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Includes the IDs of boundary cells.

@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+from fipy.tools.decorators import getsetDeprecated
+
 class Face:
     """`Face` within a `Mesh`
 
@@ -55,9 +57,11 @@ class Face:
         self.mesh = mesh
 	self.id = id
     
+    @getsetDeprecated
     def getMesh(self):
 	return self.mesh
 		
+    @getsetDeprecated
     def getID(self):
 	return self.id
 
@@ -66,10 +70,15 @@ class Face:
 	"""
 	return self.mesh.getFaceCellIDs()[index, self.id]
 
+    @getsetDeprecated
     def getCenter(self):
+        return self.center
+
+    @property
+    def center(self):
  	"""Return the coordinates of the `Face` center.
  	"""
- 	return self.mesh.getFaceCenters()[...,self.id]
+        return self.mesh.getFaceCenters()[...,self.id]
 
      
     def getArea(self):

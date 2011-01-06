@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
  
 from fipy.tools import numerix
 from fipy.tools.numerix import random
+from fipy.tools.decorators import getsetDeprecated
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.face import Face
 import fipy.tools.vector as vector
@@ -87,18 +88,22 @@ class SkewedGrid2D(Mesh2D):
         
         self.setScale(scaleLength = scale)
             
+    @getsetDeprecated
     def getScale(self):
         return self.scale['length']
         
-    def getPhysicalShape(self):
+    @property
+    def physicalShape(self):
         """Return physical dimensions of Grid2D.
         """
         return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
-    def _getMeshSpacing(self):
+    @property
+    def _meshSpacing(self):
         return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
     
-    def getShape(self):
+    @property
+    def shape(self):
         return (self.nx, self.ny)
     
 ## pickling

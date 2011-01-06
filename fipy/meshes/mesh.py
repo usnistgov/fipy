@@ -122,10 +122,11 @@ class Mesh(object):
 
     """Topology properties"""
 
+    interiorFaces          = property(lambda s: s._topology.interiorFaces)
+
     def _setExteriorFaces(self, newExtFaces):
         self._topology.exteriorFaces = newExtFaces
 
-    interiorFaces          = property(lambda s: s._topology.interiorFaces)
     exteriorFaces          = property(lambda s: s._topology.exteriorFaces,
                                       _setExteriorFaces)
     interiorCellIDs        = property(lambda s: s._topology.interiorCellIDs)
@@ -179,7 +180,7 @@ class Mesh(object):
     
     These should not exist."""
     scale                     = property(lambda s: s._geometry.scale,
-                                         setScale)
+                                         _setScale)
     scaledFaceAreas           = property(lambda s: s._geometry.scaledFaceAreas)
     scaledCellVolumes         = property(lambda s: s._geometry.scaledCellVolumes)
     scaledCellCenters         = property(lambda s: s._geometry.scaledCellCenters)
@@ -644,7 +645,12 @@ class Mesh(object):
 
     """calc Topology methods"""
 
+    @getsetDeprecated
     def _getNumberOfFacesPerCell(self):
+        return self._numberOfFacesPerCell
+
+    @property
+    def _numberOfFacesPerCell(self):
         cellFaceIDs = self.cellFaceIDs
         if type(cellFaceIDs) is type(MA.array(0)):
             ## bug in count returns float values when there is no mask
@@ -776,7 +782,12 @@ class Mesh(object):
     def _isOrthogonal(self):
         return False
     
+    @getsetDeprecated
     def _getNumberOfVertices(self):
+        return self._numberOfVertices
+
+    @property
+    def _numberOfVertices(self):
         if hasattr(self, 'numberOfVertices'):
             return self.numberOfVertices
         else:
@@ -790,7 +801,12 @@ class Mesh(object):
     def getDim(self):
         return self.dim
 
+    @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
+        return self._globalNonOverlappingCellIDs
+
+    @property
+    def _globalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Does not include the IDs of boundary cells.
@@ -808,7 +824,12 @@ class Mesh(object):
         """
         return numerix.arange(self.numberOfCells)
 
+    @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
+        return self._globalOverlappingCellIDs
+
+    @property
+    def _globalOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Includes the IDs of boundary cells.
@@ -826,7 +847,12 @@ class Mesh(object):
         """
         return numerix.arange(self.numberOfCells)
 
+    @getsetDeprecated
     def _getLocalNonOverlappingCellIDs(self):
+        return self._localNonOverlappingCellIDs
+
+    @property
+    def _localNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Does not include the IDs of boundary cells.
@@ -844,7 +870,12 @@ class Mesh(object):
         """
         return numerix.arange(self.numberOfCells)
 
+    @getsetDeprecated
     def _getLocalOverlappingCellIDs(self):
+        return self._localOverlappingCellIDs
+
+    @property
+    def _localOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Includes the IDs of boundary cells.
@@ -862,7 +893,12 @@ class Mesh(object):
         """
         return numerix.arange(self.numberOfCells)
 
+    @getsetDeprecated
     def _getGlobalNonOverlappingFaceIDs(self):
+        return self._globalNonOverlappingFaceIDs
+
+    @property
+    def _globalNonOverlappingFaceIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Does not include the IDs of boundary cells.
@@ -882,7 +918,12 @@ class Mesh(object):
         """
         return numerix.arange(self.numberOfFaces)
 
+    @getsetDeprecated
     def _getGlobalOverlappingFaceIDs(self):
+        return self._globalOverlappingFaceIDs
+
+    @property
+    def _globalOverlappingFaceIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Includes the IDs of boundary cells.
@@ -902,7 +943,12 @@ class Mesh(object):
         """
         return numerix.arange(self.numberOfFaces)
 
+    @getsetDeprecated
     def _getLocalNonOverlappingFaceIDs(self):
+        return self._localNonOverlappingFaceIDs
+
+    @property
+    def _localNonOverlappingFaceIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Does not include the IDs of boundary cells.
@@ -922,7 +968,12 @@ class Mesh(object):
         """
         return numerix.arange(self.numberOfFaces)
 
+    @getsetDeprecated
     def _getLocalOverlappingFaceIDs(self):
+        return self._localOverlappingFaceIDs
+
+    @property
+    def _localOverlappingFaceIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Includes the IDs of boundary cells.
@@ -942,7 +993,12 @@ class Mesh(object):
         """
         return numerix.arange(self.numberOfFaces)
 
+    @getsetDeprecated
     def getFacesLeft(self):
+        return self.facesLeft
+
+    @property
+    def facesLeft(self):
         """
         Return face on left boundary of Grid1D as list with the
         x-axis running from left to right.
@@ -963,7 +1019,12 @@ class Mesh(object):
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=x == _madmin(x))
 
+    @getsetDeprecated
     def getFacesRight(self):
+        return self.facesRight
+
+    @property
+    def facesRight(self):
         """
         Return list of faces on right boundary of Grid3D with the
         x-axis running from left to right. 
@@ -984,7 +1045,12 @@ class Mesh(object):
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=x == _madmax(x))
 
+    @getsetDeprecated
     def getFacesBottom(self):
+        return self.facesBottom
+
+    @property
+    def facesBottom(self):
         """
         Return list of faces on bottom boundary of Grid3D with the
         y-axis running from bottom to top.
@@ -1005,9 +1071,16 @@ class Mesh(object):
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=y == _madmin(y))
 
-    getFacesDown = getFacesBottom
 
+    getFacesDown = getFacesBottom
+    facesDown = facesBottom
+
+    @getsetDeprecated
     def getFacesTop(self):
+        return self.facesTop
+
+    @property
+    def facesTop(self):
         """
         Return list of faces on top boundary of Grid3D with the
         y-axis running from bottom to top.
@@ -1029,8 +1102,14 @@ class Mesh(object):
         return FaceVariable(mesh=self, value=y == _madmax(y))
 
     getFacesUp = getFacesTop
+    facesUp = facesTop
 
+    @getsetDeprecated
     def getFacesBack(self):
+        return self.facesBack
+
+    @property
+    def facesBack(self):
         """
         Return list of faces on back boundary of Grid3D with the
         z-axis running from front to back. 
@@ -1047,7 +1126,12 @@ class Mesh(object):
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=z == _madmax(z))
 
+    @getsetDeprecated
     def getFacesFront(self):
+        return self.facesFront
+
+    @property
+    def facesFront(self):
         """
         Return list of faces on front boundary of Grid3D with the
         z-axis running from front to back. 
@@ -1096,6 +1180,8 @@ class Mesh(object):
 
     """
     This shit has GOT TO GO.
+
+    This is yet another repercussion of UniformGrid inheriting from mesh.
     """
     def _getCellCenters(self):
         return self.scaledCellCenters
@@ -1159,14 +1245,28 @@ class Mesh(object):
     def getFaceCenters(self):
         return self.faceCenters
 
+    @getsetDeprecated
     def _getOrderedCellVertexIDs(self):
-        return self._getCellVertexIDs()
+        return self._orderedCellVertexIDs
 
+    @property
+    def _orderedCellVertexIDs(self):
+        return self._cellVertexIDs
+
+    @getsetDeprecated
     def _getCellDistanceNormals(self):
+        return self._cellDistanceNormals
+
+    @property
+    def _cellDistanceNormals(self):
         return self.getCellDistanceVectors() / self.getCellDistances()
         
+    @getsetDeprecated
     def _getCellVertexIDs(self):
+        return self._cellVertexIDs
 
+    @property
+    def _cellVertexIDs(self):
         ## Get all the vertices from all the faces for each cell
         cellFaceVertices = numerix.take(self.faceVertexIDs, self.cellFaceIDs, axis=1)
 

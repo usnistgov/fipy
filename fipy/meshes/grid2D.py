@@ -44,6 +44,7 @@ from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
+from fipy.tools.decorators import getsetDeprecated
 
 class Grid2D(Mesh2D):
     """
@@ -230,24 +231,45 @@ class Grid2D(Mesh2D):
 
         return cellFaceIDs
     
+    @getsetDeprecated
     def getScale(self):
         return self.scale['length']
         
+    @getsetDeprecated
     def getPhysicalShape(self):
+        return self.physicalShape
+
+    @property
+    def physicalShape(self):
         """Return physical dimensions of Grid2D.
         """
         return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
 
+    @getsetDeprecated
     def _getMeshSpacing(self):
+        return self._meshSpacing
+
+    @property
+    def _meshSpacing(self):
         return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
     
+    @getsetDeprecated
     def getShape(self):
+        return self.shape
+
+    @property
+    def shape(self):
         return (self.nx, self.ny)
 
     def _isOrthogonal(self):
         return True
         
+    @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
+        return self._globalNonOverlappingCellIDs
+
+    @property
+    def _globalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Does not include the IDs of boundary cells.
@@ -267,7 +289,12 @@ class Grid2D(Mesh2D):
         return numerix.arange((self.offset[1] + self.overlap['bottom']) * self.nx, 
                               (self.offset[1] + self.ny - self.overlap['top']) * self.nx)
 
+    @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
+        return self._globalOverlappingCellIDs
+
+    @property
+    def _globalOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Includes the IDs of boundary cells.
@@ -286,7 +313,12 @@ class Grid2D(Mesh2D):
         """
         return numerix.arange(self.offset[1] * self.nx, (self.offset[1] + self.ny) * self.nx)
 
+    @getsetDeprecated
     def _getLocalNonOverlappingCellIDs(self):
+        return self._localNonOverlappingCellIDs
+
+    @property
+    def _localNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Does not include the IDs of boundary cells.
@@ -306,7 +338,12 @@ class Grid2D(Mesh2D):
         return numerix.arange(self.overlap['bottom'] * self.nx, 
                               (self.ny - self.overlap['top']) * self.nx)
 
+    @getsetDeprecated
     def _getLocalOverlappingCellIDs(self):
+        return self._localOverlappingCellIDs
+
+    @property
+    def _localOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Includes the IDs of boundary cells.
