@@ -62,7 +62,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = 1., dy = 1.)
            >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
            >>> distanceVar = DistanceVariable(mesh, value = (-.5, .5, 1.5))
-           >>> ## answer = numerix.zeros((2, mesh._getNumberOfFaces()),'d')
+           >>> ## answer = numerix.zeros((2, mesh.numberOfFaces),'d')
            >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).getGlobalValue()
            >>> answer[0,7] = -1
            >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
@@ -109,16 +109,16 @@ class _ConvectionCoeff(FaceVariable):
 
     def _calcValue(self):
 
-        Ncells = self.mesh.getNumberOfCells()
-        Nfaces = self.mesh._getNumberOfFaces()
-        M = self.mesh._getMaxFacesPerCell()
-        dim = self.mesh.getDim()
+        Ncells = self.mesh.numberOfCells
+        Nfaces = self.mesh.numberOfFaces
+        M = self.mesh._maxFacesPerCell
+        dim = self.mesh.dim
         cellFaceIDs = self.mesh.cellFaceIDs
      
-        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._getFaceAreas()
+        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._faceAreas
 
         cellFaceNormalAreas = numerix.array(MA.filled(numerix.take(faceNormalAreas, cellFaceIDs, axis=-1), 0))
-        norms = numerix.array(MA.filled(MA.array(self.mesh._getCellNormals()), 0))
+        norms = numerix.array(MA.filled(MA.array(self.mesh._cellNormals), 0))
         
         alpha = numerix.dot(cellFaceNormalAreas, norms)
         alpha = numerix.where(alpha > 0, alpha, 0)
@@ -130,7 +130,7 @@ class _ConvectionCoeff(FaceVariable):
         phi = numerix.repeat(self.distanceVar[numerix.newaxis, ...], M, axis=0)
         alpha = numerix.where(phi > 0., 0, alpha)
         
-        volumes = numerix.array(self.mesh.getCellVolumes())
+        volumes = numerix.array(self.mesh.cellVolumes)
         alpha = alpha * volumes * norms
 
         value = numerix.zeros((dim, Nfaces),'d')
@@ -139,7 +139,7 @@ class _ConvectionCoeff(FaceVariable):
 
 ##         value = numerix.reshape(value, (dim, Nfaces, dim))
 
-        return -value / self.mesh._getFaceAreas()
+        return -value / self.mesh._faceAreas
 
 def _test(): 
     import doctest

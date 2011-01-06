@@ -80,7 +80,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
             >>> # from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
             >>> var = DistanceVariable(mesh = mesh, value = -1)
         
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
 
             >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
             >>> var.calcDistanceFunction()
@@ -138,8 +138,8 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
 
     def _plot(self):
         mesh = self.distanceVar.getMesh()
-        shape = mesh.getShape()
-        X, Y = mesh.getCellCenters()
+        shape = mesh.shape
+        X, Y = mesh.cellCenters
         
         maxX = max(X)
         

@@ -20,6 +20,7 @@ from fipy.meshes.mesh2D import Mesh2D
 import os
 from fipy.tools import numerix
 from fipy.tools import serial
+from fipy.tools.decorators import getsetDeprecated
 
 class GapFillMesh(Mesh2D):
     """
@@ -37,7 +38,7 @@ class GapFillMesh(Mesh2D):
         >>> import fipy.tools.dump as dump
         >>> (f, filename) = dump.write(mesh)
         >>> mesh = dump.read(filename, f)
-        >>> mesh.getNumberOfCells() - len(mesh.getCellIDsAboveFineRegion())
+        >>> mesh.numberOfCells - len(mesh.cellIDsAboveFineRegion)
         90
 
         >>> from fipy.variables.cellVariable import CellVariable
@@ -46,16 +47,16 @@ class GapFillMesh(Mesh2D):
         >>> from fipy.terms.diffusionTerm import DiffusionTerm
         >>> eq = DiffusionTerm()
         
-        >>> var.constrain(0., mesh.getFacesBottom())
-        >>> var.constrain(domainHeight, mesh.getFacesTop())
+        >>> var.constrain(0., mesh.facesBottom)
+        >>> var.constrain(domainHeight, mesh.facesTop)
         
         >>> eq.solve(var)
 
     Evaluate the result:
        
-        >>> centers = mesh.getCellCenters()[1].copy() ## the copy makes the array contiguous for inlining
+        >>> centers = mesh.cellCenters[1].copy() ## the copy makes the array contiguous for inlining
         >>> localErrors = (centers - var)**2 / centers**2
-        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
+        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells)
         >>> argmax = numerix.argmax(localErrors)
         >>> print numerix.sqrt(localErrors[argmax]) < 0.1
         1
@@ -162,9 +163,15 @@ class GapFillMesh(Mesh2D):
         Line Loop(9) = {5, 6, 7, 8} ;
         Plane Surface(10) = {9} ; """, communicator=serial)
     
+    @getsetDeprecated
     def getCellIDsAboveFineRegion(self):
+        return self.cellIDsAboveFineRegion
+
+    @property
+    def cellIDsAboveFineRegion(self):
         return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)[0]
 
+    @getsetDeprecated
     def getFineMesh(self):
         return self.fineMesh
         
@@ -193,7 +200,7 @@ class TrenchMesh(GapFillMesh):
         >>> import fipy.tools.dump as dump
         >>> (f, filename) = dump.write(mesh)
         >>> mesh = dump.read(filename, f)
-        >>> mesh.getNumberOfCells() - len(numerix.nonzero(mesh.getElectrolyteMask())[0])        
+        >>> mesh.numberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0])        
         150
 
         >>> from fipy.variables.cellVariable import CellVariable
@@ -202,16 +209,16 @@ class TrenchMesh(GapFillMesh):
         >>> from fipy.terms.diffusionTerm import DiffusionTerm
         >>> eq = DiffusionTerm()
         
-        >>> var.constrain(0., mesh.getFacesBottom())
-        >>> var.constrain(domainHeight, mesh.getFacesTop())
+        >>> var.constrain(0., mesh.facesBottom)
+        >>> var.constrain(domainHeight, mesh.facesTop)
         
         >>> eq.solve(var)
 
     Evaluate the result:
        
-        >>> centers = mesh.getCellCenters()[1].copy() ## ensure contiguous array for inlining
+        >>> centers = mesh.cellCenters[1].copy() ## ensure contiguous array for inlining
         >>> localErrors = (centers - var)**2 / centers**2
-        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.getNumberOfCells())
+        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells)
         >>> argmax = numerix.argmax(localErrors)
         >>> print numerix.sqrt(localErrors[argmax]) < 0.051
         1
@@ -280,7 +287,12 @@ class TrenchMesh(GapFillMesh):
                              desiredFineRegionHeight = fineRegionHeight,
                              transitionRegionHeight = transitionHeight)
 
+    @getsetDeprecated
     def getElectrolyteMask(self):
+        return self.electrolyteMask
+
+    @property
+    def electrolyteMask(self):
         x, y = self.getCellCenters()
         
         Y = (y - (self.heightBelowTrench + self.trenchDepth / 2))
@@ -344,18 +356,6 @@ class TrenchMesh(GapFillMesh):
         self.overBumpWidth = dict['overBumpWidth']
         self.overBumpRadius = dict['overBumpRadius']
         GapFillMesh.__setstate__(self, dict)
-
-    def getTopFaces(self):
-        """
-        Included to not break the interface
-        """
-        return self.getFacesTop()
-
-    def getBottomFaces(self):
-        """
-        Included to not break the interface
-        """
-        return self.getFacesBottom()
 
 def _test(): 
     import doctest

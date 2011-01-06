@@ -104,7 +104,7 @@ class PeriodicGrid1D(Grid1D):
                                                 self.cellFaceIDs,
                                                 self.numberOfCells,
                                                 self._maxFacesPerCell,
-                                                self.cellToFaceOrientations,
+                                                self._cellToFaceOrientations,
                                                 scaleLength)
 
     def _getOverlap(self, overlap, procID, occupiedNodes):

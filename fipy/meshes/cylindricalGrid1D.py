@@ -91,7 +91,7 @@ class CylindricalGrid1D(Grid1D):
                                         self.cellFaceIDs,
                                         self.numberOfCells,
                                         self._maxFacesPerCell,
-                                        self.cellToFaceOrientations,
+                                        self._cellToFaceOrientations,
                                         scaleLength)
                                          
 

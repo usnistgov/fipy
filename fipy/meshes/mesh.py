@@ -100,7 +100,7 @@ class Mesh(object):
                                       self.cellFaceIDs,
                                       self.numberOfCells,
                                       self._maxFacesPerCell,
-                                      self.cellToFaceOrientations,
+                                      self._cellToFaceOrientations,
                                       scaleLength)
                                       
     @getsetDeprecated
@@ -129,39 +129,39 @@ class Mesh(object):
 
     exteriorFaces          = property(lambda s: s._topology.exteriorFaces,
                                       _setExteriorFaces)
-    interiorCellIDs        = property(lambda s: s._topology.interiorCellIDs)
-    exteriorCellIDs        = property(lambda s: s._topology.exteriorCellIDs)
-    cellToFaceOrientations = property(lambda s: s._topology.cellToFaceOrientations)
-    adjacentCellIDs        = property(lambda s: s._topology.adjacentCellIDs)
-    cellToCellIDs          = property(lambda s: s._topology.cellToCellIDs)
-    cellToCellIDsFilled    = property(lambda s: s._topology.cellToCellIDsFilled)
+    _interiorCellIDs        = property(lambda s: s._topology.interiorCellIDs)
+    _exteriorCellIDs        = property(lambda s: s._topology.exteriorCellIDs)
+    _cellToFaceOrientations = property(lambda s: s._topology.cellToFaceOrientations)
+    _adjacentCellIDs        = property(lambda s: s._topology.adjacentCellIDs)
+    _cellToCellIDs          = property(lambda s: s._topology.cellToCellIDs)
+    _cellToCellIDsFilled    = property(lambda s: s._topology.cellToCellIDsFilled)
 
     """geometry properties"""
-    faceAreas                 = property(lambda s: s._geometry.scaledFaceAreas)
+    _faceAreas                = property(lambda s: s._geometry.scaledFaceAreas)
     faceCenters               = property(lambda s: s._geometry.faceCenters)
 
     def _setFaceToCellDistances(self, v):
         self._geometry.faceToCellDistances = v
 
-    faceToCellDistances = property(lambda s: s._geometry.faceToCellDistances,
+    _faceToCellDistances = property(lambda s: s._geometry.faceToCellDistances,
                                    _setFaceToCellDistances)
 
     def _setCellDistances(self, v):
         self._geometry.cellDistances = v
 
-    cellDistances = property(lambda s: s._geometry.scaledCellDistances,
+    _cellDistances = property(lambda s: s._geometry.scaledCellDistances,
                              _setCellDistances)
 
     def _setFaceNormals(self, v):
         self._geometry.faceNormals = v
 
-    faceNormals = property(lambda s: s._geometry.faceNormals,
+    _faceNormals = property(lambda s: s._geometry.faceNormals,
                            _setFaceNormals)
 
-    cellToFaceDistanceVectors = property(lambda s: s._geometry.cellToFaceDistanceVectors)
-    cellDistanceVectors       = property(lambda s: s._geometry.cellDistanceVectors)
-    orientedFaceNormals       = property(lambda s: s._geometry.orientedFaceNormals)
-    cellVolumes               = property(lambda s: s._geometry.scaledCellVolumes)
+    cellToFaceDistanceVectors  = property(lambda s: s._geometry.cellToFaceDistanceVectors)
+    cellDistanceVectors        = property(lambda s: s._geometry.cellDistanceVectors)
+    _orientedFaceNormals       = property(lambda s: s._geometry.orientedFaceNormals)
+    cellVolumes                = property(lambda s: s._geometry.scaledCellVolumes)
 
     @property
     def cellCenters(self):
@@ -169,12 +169,12 @@ class Mesh(object):
         return CellVariable(mesh=self, value=self._geometry.scaledCellCenters,
                             rank=1)
 
-    faceCellToCellNormals     = property(lambda s: s._geometry.faceCellToCellNormals)
-    faceTangents1             = property(lambda s: s._geometry.faceTangents1)
-    faceTangents2             = property(lambda s: s._geometry.faceTangents2)
-    cellToCellDistances       = property(lambda s: s._geometry.scaledCellToCellDistances)
-    cellAreas                 = property(lambda s: s._geometry.cellAreas)
-    cellNormals               = property(lambda s: s._geometry.cellNormals)
+    _faceCellToCellNormals    = property(lambda s: s._geometry.faceCellToCellNormals)
+    _faceTangents1            = property(lambda s: s._geometry.faceTangents1)
+    _faceTangents2            = property(lambda s: s._geometry.faceTangents2)
+    _cellToCellDistances      = property(lambda s: s._geometry.scaledCellToCellDistances)
+    _cellAreas                 = property(lambda s: s._geometry.cellAreas)
+    _cellNormals               = property(lambda s: s._geometry.cellNormals)
 
     """scaled geometery properties
     
@@ -183,20 +183,20 @@ class Mesh(object):
                                          _setScale)
     scaledFaceAreas           = property(lambda s: s._geometry.scaledFaceAreas)
     scaledCellVolumes         = property(lambda s: s._geometry.scaledCellVolumes)
-    scaledCellCenters         = property(lambda s: s._geometry.scaledCellCenters)
+    _scaledCellCenters         = property(lambda s: s._geometry.scaledCellCenters)
     scaledFaceToCellDistances = property(lambda s: \
                                          s._geometry.scaledFaceToCellDistances)
     scaledCellDistances       = property(lambda s: \
                                          s._geometry.scaledCellDistances)
     scaledCellToCellDistances = property(lambda s: \
                                          s._geometry.scaledCellToCellDistances)
-    areaProjections           = property(lambda s: \
+    _areaProjections          = property(lambda s: \
                                          s._geometry.areaProjections)
-    orientedAreaProjections   = property(lambda s: \
+    _orientedAreaProjections  = property(lambda s: \
                                          s._geometry.orientedAreaProjections)
-    faceToCellDistanceRatio   = property(lambda s: \
+    _faceToCellDistanceRatio  = property(lambda s: \
                                          s._geometry.faceToCellDistanceRatio)
-    faceAspectRatios          = property(lambda s: \
+    _faceAspectRatios         = property(lambda s: \
                                          s._geometry.faceAspectRatios)  
         
     def __add__(self, other):
@@ -389,8 +389,8 @@ class Mesh(object):
         assert (faces | self.exteriorFaces == self.exteriorFaces).all()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
-        assert numerix.alltrue(numerix.take(self.areaProjections, faces0, axis=1) 
-                               == numerix.take(-self.areaProjections, faces1, axis=1))
+        assert numerix.alltrue(numerix.take(self._areaProjections, faces0, axis=1) 
+                               == numerix.take(-self._areaProjections, faces1, axis=1))
 
         ## extract the adjacent cells for both sets of faces
         faceCellIDs0 = self.faceCellIDs[0]
@@ -402,8 +402,8 @@ class Mesh(object):
         self.faceCellIDs[1] = faceCellIDs1
         
         ## extract the face to cell distances for both sets of faces
-        faceToCellDistances0 = self.faceToCellDistances[0]
-        faceToCellDistances1 = self.faceToCellDistances[1]
+        faceToCellDistances0 = self._faceToCellDistances[0]
+        faceToCellDistances1 = self._faceToCellDistances[1]
         ## set the new faceToCellDistances for `faces0`
         MA.put(faceToCellDistances1, faces0, MA.take(faceToCellDistances0, faces0))
         MA.put(faceToCellDistances0, faces0, MA.take(faceToCellDistances0, faces1))
@@ -419,24 +419,24 @@ class Mesh(object):
         Does Guido know about this?
         """
 
-        connectedFaceToCellDs = self.faceToCellDistances
+        connectedFaceToCellDs = self._faceToCellDistances
         connectedFaceToCellDs[0] = faceToCellDistances0
         connectedFaceToCellDs[1] = faceToCellDistances1
-        self.faceToCellDistances = connectedFaceToCellDs
+        self._faceToCellDistances = connectedFaceToCellDs
 
-        tempCellDist = self.cellDistances
+        tempCellDist = self._cellDistances
         ## calculate new cell distances and add them to faces0
         numerix.put(tempCellDist, faces0, MA.take(faceToCellDistances0 + faceToCellDistances1, faces0))
-        self.cellDistances = tempCellDist
+        self._cellDistances = tempCellDist
 
-        tempFaceNormals = self.faceNormals
+        tempFaceNormals = self._faceNormals
         ## change the direction of the face normals for faces0
         for dim in range(self.getDim()):
             faceNormals = tempFaceNormals[dim].copy()
             numerix.put(faceNormals, faces0, MA.take(faceNormals, faces1))
             tempFaceNormals[dim] = faceNormals
 
-        self.faceNormals = tempFaceNormals
+        self._faceNormals = tempFaceNormals
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
@@ -748,7 +748,30 @@ class Mesh(object):
         TODO: replace with a warning.
         """
         return self.interiorFaces
+    
+    @getsetDeprecated
+    def getInteriorFaceIDs(self):
+        return self.interiorFaceIDs
 
+    @property
+    def interiorFaceIDs(self):
+        if not hasattr(self, '_interiorFaceIDs'):
+            self._interiorFaceIDs = numerix.nonzero(self.interiorFaces)[0]
+        return self._interiorFaceIDs
+
+    @getsetDeprecated
+    def getInteriorFaceCellIDs(self):
+        return self.interiorFaceCellIDs
+
+    @property
+    def interiorFaceCellIDs(self):
+        if not hasattr(self, '_interiorFaceCellIDs'):
+            ## Commented line is better, but doesn't work for zero length arrays
+            ##  self.interiorFaceCellIDs = self.getFaceCellIDs()[..., self.getInteriorFaceIDs()]
+            self._interiorFaceCellIDs = numerix.take(self.cellFaceIDs,
+                                                     self.interiorFaceIDs, axis=1)
+        return self._interiorFaceCellIDs
+     
     @getsetDeprecated
     def getFaceCellIDs(self):
         return self.faceCellIDs
@@ -764,16 +787,16 @@ class Mesh(object):
     @getsetDeprecated
     def _getExteriorCellIDs(self):
         """ Why do we have this?!? It's only used for testing against itself? """
-        return self.exteriorCellIDs
+        return self._exteriorCellIDs
 
     @getsetDeprecated
     def _getInteriorCellIDs(self):
         """ Why do we have this?!? It's only used for testing against itself? """
-        return self.interiorCellIDs
+        return self._interiorCellIDs
 
     @getsetDeprecated
     def _getCellFaceOrientations(self):
-        return self.cellToFaceOrientations
+        return self._cellToFaceOrientations
 
     @getsetDeprecated
     def getNumberOfCells(self):
@@ -795,7 +818,7 @@ class Mesh(object):
         
     @getsetDeprecated
     def _getAdjacentCellIDs(self):
-        return self.adjacentCellIDs
+        return self._adjacentCellIDs
 
     @getsetDeprecated
     def getDim(self):
@@ -1154,25 +1177,25 @@ class Mesh(object):
 
     @getsetDeprecated
     def _getCellToCellIDs(self):
-        return self.cellToCellIDs
+        return self._cellToCellIDs
 
     @getsetDeprecated
     def _getCellToCellIDsFilled(self):
-        return self.cellToCellIDsFilled
+        return self._cellToCellIDsFilled
      
     """get geometry methods"""
 
     @getsetDeprecated
     def _getFaceAreas(self):
-        return self.faceAreas
+        return self._faceAreas
 
     @getsetDeprecated
     def _getFaceNormals(self):
-        return self.faceNormals
+        return self._faceNormals
 
     @getsetDeprecated
     def _getFaceCellToCellNormals(self):
-        return self.faceCellToCellNormals
+        return self._faceCellToCellNormals
         
     @getsetDeprecated
     def getCellVolumes(self):
@@ -1184,7 +1207,7 @@ class Mesh(object):
     This is yet another repercussion of UniformGrid inheriting from mesh.
     """
     def _getCellCenters(self):
-        return self.scaledCellCenters
+        return self._scaledCellCenters
         
     @getsetDeprecated
     def getCellCenters(self):
@@ -1192,54 +1215,59 @@ class Mesh(object):
 
     @getsetDeprecated
     def _getFaceToCellDistances(self):
-        return self.faceToCellDistances
+        return self._faceToCellDistances
 
     @getsetDeprecated
     def _getCellDistances(self):
-        return self.cellDistances
+        return self._cellDistances
 
     @getsetDeprecated
     def _getFaceToCellDistanceRatio(self):
-        return self.faceToCellDistanceRatio
+        return self._faceToCellDistanceRatio
 
     @getsetDeprecated
     def _getOrientedAreaProjections(self):
-        return self.orientedAreaProjections
+        return self._orientedAreaProjections
 
     @getsetDeprecated
     def _getAreaProjections(self):
-        return self.areaProjections
+        return self._areaProjections
 
     @getsetDeprecated
     def _getOrientedFaceNormals(self):
-        return self.orientedFaceNormals
+        return self._orientedFaceNormals
 
     @getsetDeprecated
     def _getFaceTangents1(self):
-        return self.faceTangents1
+        return self._faceTangents1
 
     @getsetDeprecated
     def _getFaceTangents2(self):
-        return self.faceTangents2
+        return self._faceTangents2
         
     @getsetDeprecated
     def _getFaceAspectRatios(self):
-        return self.faceAspectRatios
+        return self._faceAspectRatios
     
     @getsetDeprecated
     def _getCellToCellDistances(self):
-        return self.cellToCellDistances
+        return self._cellToCellDistances
 
     @getsetDeprecated
     def _getCellNormals(self):
-        return self.cellNormals
+        return self._cellNormals
 
     @getsetDeprecated
     def _getCellAreas(self):
-        return self.cellAreas
+        return self._cellAreas
 
+    @property
+    def _cellAreaProjections(self):
+        return self._cellNormals * self._cellAreas
+
+    @getsetDeprecated
     def _getCellAreaProjections(self):
-        return self.cellNormals * self.cellAreas
+        return self._cellAreaProjections
          
     @getsetDeprecated
     def getFaceCenters(self):
@@ -1259,7 +1287,7 @@ class Mesh(object):
 
     @property
     def _cellDistanceNormals(self):
-        return self.getCellDistanceVectors() / self.getCellDistances()
+        return self._cellDistanceNormals/ self._cellDistances
         
     @getsetDeprecated
     def _getCellVertexIDs(self):
@@ -1367,19 +1395,8 @@ class Mesh(object):
            [4 5 7 8]
            
         """
-        if self.globalNumberOfCells == 0:
-            return numerix.arange(0)
-            
-        points = numerix.resize(points, (self.globalNumberOfCells, len(points), len(points[0]))).swapaxes(0,1)
-
-        centers = self.getCellCenters().getGlobalValue()[...,numerix.newaxis]
-        try:
-            tmp = centers - points
-        except TypeError:
-            tmp = centers - PhysicalField(points)
-
-        return numerix.argmin(numerix.dot(tmp, tmp, axis = 0), axis=0)
-     
+        return numerix.nearest(data=self.getCellCenters().getGlobalValue(), points=points)
+        
 
     """pickling"""
 

@@ -99,6 +99,23 @@ class Matplotlib1DViewer(_MatplotlibViewer):
             import warnings
             warnings.warn("Matplotlib1DViewer efficiency is improved by setting the 'datamax' and 'datamin' keys", UserWarning, stacklevel=2)
 
+    def log():
+        doc = "logarithmic data scaling"
+        
+        def fget(self):
+            return self.axes.get_yscale() == 'log'
+          
+        def fset(self, value):
+            ax = self.axes.get_yaxis()
+            if value:
+                ax = self.axes.set_yscale('log')
+            else:
+                ax = self.axes.set_yscale('linear')
+                
+        return locals()
+
+    log = property(**log())
+
     def _getData(self):
         from fipy.tools.numerix import array
         return [[array(var.getMesh().getCellCenters()[0]), array(var)] for var in self.vars]

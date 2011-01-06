@@ -48,7 +48,7 @@ class ConvectionTerm(FaceTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.0, diffusionTerm=None):
+    def __init__(self, coeff=1.0, diffusionTerm=None, var=None):
         """
         Create a `ConvectionTerm` object.
         
@@ -80,7 +80,7 @@ class ConvectionTerm(FaceTerm):
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a vector value.
-            >>> from fipy.meshes import Grid2D
+            >>> from fipy.meshes.grid2D import Grid2D
             >>> m2 = Grid2D(nx=2, ny=1)
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)
@@ -114,7 +114,7 @@ class ConvectionTerm(FaceTerm):
         if isinstance(coeff, CellVariable):
             coeff = coeff.getArithmeticFaceValue()
 
-        FaceTerm.__init__(self, coeff = coeff)
+        FaceTerm.__init__(self, coeff=coeff, var=var)
         
     def _calcGeomCoeff(self, mesh):
         if not isinstance(self.coeff, FaceVariable):
@@ -124,16 +124,16 @@ class ConvectionTerm(FaceTerm):
         
         return projectedCoefficients.sum(0)
         
-    def _getWeight(self, mesh, equation=None):
+    def _getWeight(self, mesh, diffusionGeomCoeff=None):
 
         if self.stencil is None:
 
             small = -1e-20
-            
-            if equation is None:
+
+            if diffusionGeomCoeff is None:
                 diffCoeff = small
             else:
-                diffCoeff = equation._getDiffusiveGeomCoeff(mesh)
+                diffCoeff = diffusionGeomCoeff[0]
                 if diffCoeff is None:
                     diffCoeff = small
                 else:
@@ -160,54 +160,50 @@ class ConvectionTerm(FaceTerm):
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a vector value."
 
-    def __add__(self, other):
-        if isinstance(other, ConvectionTerm):
-            if other.__class__ != self.__class__:
-                raise TypeError, "ConvectionTerms must use the same scheme: %s != %s" % (self.__class__.__name__, other.__class__.__name__)
-            return self.__class__(coeff=self.coeff + other.coeff)
-        else:
-            return FaceTerm.__add__(self, other)
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
+        if var is self.var or self.var is None:
 
-        L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, equation=equation)
+            var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-        if not hasattr(self,  'constraintB'):
+            if not hasattr(self,  'constraintB'):
 
-            constraintMaskFG = var.getFaceGrad().getConstraintMask()
-            constraintMaskFV = var.getArithmeticFaceValue().getConstraintMask()
+                constraintMaskFG = var.getFaceGrad().getConstraintMask()
+                constraintMaskFV = var.getArithmeticFaceValue().getConstraintMask()
 
-            if constraintMaskFG is not None and constraintMaskFV is not None:
-                constraintMask = constraintMaskFG | constraintMaskFV
-            elif constraintMaskFG is not None:
-                constraintMask = constraintMaskFG
-            elif constraintMaskFV is not None:
-                constraintMask = constraintMaskFV
-            else:
-                constraintMask = None
-
-            if constraintMask is not None:
-                mesh = var.getMesh()
-                weight = self._getWeight(mesh, equation)
-
-                if weight.has_key('implicit'):
-                    alpha = weight['implicit']['cell 1 diag']
+                if constraintMaskFG is not None and constraintMaskFV is not None:
+                    constraintMask = constraintMaskFG | constraintMaskFV
+                elif constraintMaskFG is not None:
+                    constraintMask = constraintMaskFG
+                elif constraintMaskFV is not None:
+                    constraintMask = constraintMaskFV
                 else:
-                    alpha = 0.0
+                    constraintMask = None
 
-                exteriorCoeff =  self.coeff * mesh.exteriorFaces
+                if constraintMask is not None:
+                    mesh = var.getMesh()
+                    weight = self._getWeight(mesh)
 
-                self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
-                self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
-            else:
-                self.constraintL = 0
-                self.constraintB = 0
+                    if weight.has_key('implicit'):
+                        alpha = weight['implicit']['cell 1 diag']
+                    else:
+                        alpha = 0.0
 
-        L.addAtDiagonal(self.constraintL)
-        b += self.constraintB
+                    exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
 
-        return (L, b)
-        
+                    self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+                    self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+                else:
+                    self.constraintL = 0
+                    self.constraintB = 0
+
+            L.addAtDiagonal(self.constraintL)
+            b += self.constraintB
+
+            return (var, L, b)
+        else:
+            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+
 class __ConvectionTerm(ConvectionTerm): 
     """
     Dummy subclass for tests

@@ -125,6 +125,7 @@ examples/benchmarking/utils.py
 examples/benchmarking/versions.py
 examples/cahnHilliard/__init__.py
 examples/cahnHilliard/index.txt
+examples/cahnHilliard/mesh2D-coupled.py
 examples/cahnHilliard/mesh2D.py
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
@@ -174,6 +175,7 @@ examples/diffusion/circleQuad.py
 examples/diffusion/electrostatics.py
 examples/diffusion/index.txt
 examples/diffusion/mesh1D.py
+examples/diffusion/mesh20x20-coupled.py
 examples/diffusion/mesh20x20.py
 examples/diffusion/test.py
 examples/diffusion/variable.py
@@ -259,6 +261,7 @@ examples/phase/__init__.py
 examples/phase/anisotropy.py
 examples/phase/anisotropyOLD.gz
 examples/phase/anisotropyOLD.py
+examples/phase/binary-coupled.py
 examples/phase/binary.py
 examples/phase/index.txt
 examples/phase/quaternary.py
@@ -412,12 +415,12 @@ fipy/steppers/pidStepper.py
 fipy/steppers/pseudoRKQSStepper.py
 fipy/steppers/stepper.py
 fipy/terms/__init__.py
+fipy/terms/binaryTerm.py
 fipy/terms/cellTerm.py
 fipy/terms/centralDiffConvectionTerm.py
-fipy/terms/collectedDiffusionTerm.py
 fipy/terms/convectionTerm.py
+fipy/terms/coupledBinaryTerm.py
 fipy/terms/diffusionTerm.py
-fipy/terms/equation.py
 fipy/terms/explicitDiffusionTerm.py
 fipy/terms/explicitSourceTerm.py
 fipy/terms/explicitUpwindConvectionTerm.py
@@ -426,7 +429,6 @@ fipy/terms/faceTerm.py
 fipy/terms/hybridConvectionTerm.py
 fipy/terms/implicitDiffusionTerm.py
 fipy/terms/implicitSourceTerm.py
-fipy/terms/mulTerm.py
 fipy/terms/nthOrderDiffusionTerm.py
 fipy/terms/powerLawConvectionTerm.py
 fipy/terms/sourceTerm.py
@@ -471,6 +473,7 @@ fipy/variables/cellToFaceVariable.py
 fipy/variables/cellVariable.py
 fipy/variables/cellVolumeAverageVariable.py
 fipy/variables/constant.py
+fipy/variables/coupledCellVariable.py
 fipy/variables/exponentialNoiseVariable.py
 fipy/variables/faceGradContributionsVariable.py
 fipy/variables/faceGradVariable.py

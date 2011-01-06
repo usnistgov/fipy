@@ -917,6 +917,30 @@ def _sqrtDotIn(a1, a2):
         result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
     return result1
 
+def nearest(data, points):
+    """find the indices of `data` that are closest to `points`
+    
+    >>> from fipy import *
+    >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
+    >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
+    >>> print nearest(m0.getCellCenters().getGlobalValue(), m1.getCellCenters().getGlobalValue())
+    [4 5 7 8]
+    """
+    N = data.shape[-1]
+    
+    if N == 0:
+        return arange(0)
+        
+    points = resize(points, (N, len(points), len(points[0]))).swapaxes(0,1)
+    data = data[..., newaxis]
+    
+    try:
+        tmp = data - points
+    except TypeError:
+        tmp = data - PhysicalField(points)
+
+    return argmin(dot(tmp, tmp, axis=0), axis=0)
+
 def allequal(first, second):
     """
     Returns `true` if every element of `first` is equal to the corresponding
@@ -945,6 +969,30 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
         return second.allclose(other=first, atol=atol, rtol=rtol)
     else:
         return MA.allclose(first, second, atol=atol, rtol=rtol)
+
+def all(a, axis=None, out=None):
+    r"""
+    Test whether all array elements along a given axis evaluate to True.
+    
+    Parameters
+    ----------
+    a : array_like
+        Input array or object that can be converted to an array.
+    axis : int, optional
+        Axis along which an logical AND is performed.
+        The default (`axis` = `None`) is to perform a logical AND
+        over a flattened input array. `axis` may be negative, in which
+        case it counts from the last to the first axis.
+    out : ndarray, optional
+        Alternative output array in which to place the result.
+        It must have the same shape as the expected output and
+        the type is preserved.
+
+    """
+    if _isPhysical(a):
+        return a.all(axis=axis)
+    else:
+        return MA.all(a=a, axis=axis, out=out)
 
 def isclose(first, second, rtol=1.e-5, atol=1.e-8):
     r"""

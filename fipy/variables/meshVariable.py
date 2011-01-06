@@ -54,7 +54,7 @@ class _MeshVariable(Variable):
           - `rank`: the rank (number of dimensions) of each element of this 
             `Variable`. Default: 0
           - `elementshape`: the shape of each element of this variable
-             Default: `rank * (mesh.getDim(),)`
+             Default: `rank * (mesh.dim,)`
           - `unit`: the physical units of the `Variable`
         """
         from fipy.tools import debug
@@ -107,7 +107,7 @@ class _MeshVariable(Variable):
             if elementshape is None:
                 elementshape = ()
         elif elementshape is None:
-            elementshape = rank * (mesh.getDim(),)
+            elementshape = rank * (mesh.dim,)
         elif len(elementshape) != rank:
             raise ValueError, 'len(elementshape) != rank'
                 

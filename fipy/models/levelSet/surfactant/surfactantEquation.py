@@ -66,7 +66,7 @@ class SurfactantEquation:
 
         self.eq = transientTerm - convectionTerm
 
-    def solve(self, var, boundaryConditions = (), solver=DefaultAsymmetricSolver(), dt = 1.):
+    def solve(self, var, boundaryConditions = (), solver=None, dt = 1.):
         """
         Builds and solves the `SurfactantEquation`'s linear system once.
                 
@@ -79,6 +79,8 @@ class SurfactantEquation:
         """
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
+        if solver is None:
+            solver=DefaultAsymmetricSolver()
 
         var.constrain(0, var.getMesh().exteriorFaces)
 
@@ -86,7 +88,7 @@ class SurfactantEquation:
                       boundaryConditions=boundaryConditions,
                       solver = solver)
 
-    def sweep(self, var, solver=DefaultAsymmetricSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -104,7 +106,8 @@ class SurfactantEquation:
 
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
-
+        if solver is None:
+            solver=DefaultAsymmetricSolver()
         var.constrain(0, var.getMesh().exteriorFaces)
 
         return self.eq.sweep(var, solver=solver, boundaryConditions=boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn)

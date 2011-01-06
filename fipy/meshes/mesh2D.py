@@ -75,7 +75,7 @@ class Mesh2D(Mesh):
                                         self.cellFaceIDs,
                                         self.numberOfCells,
                                         self._maxFacesPerCell,
-                                        self.cellToFaceOrientations,
+                                        self._cellToFaceOrientations,
                                         scaleLength)
 
     def _translate(self, vector):
@@ -104,7 +104,7 @@ class Mesh2D(Mesh):
         # numpy 1.1's MA.take doesn't like FlatIter. Call ravel() instead.
         cellVertexIDs0 = take(self.faceVertexIDs[0], self.cellFaceIDs.ravel())
         cellVertexIDs1 = take(self.faceVertexIDs[1], self.cellFaceIDs.ravel())
-        cellVertexIDs = MA.where(self.cellToFaceOrientations.ravel() > 0,
+        cellVertexIDs = MA.where(self._cellToFaceOrientations.ravel() > 0,
                              cellVertexIDs0, cellVertexIDs1)
 
         cellVertexIDs = numerix.reshape(cellVertexIDs, (NFac, -1))
@@ -137,17 +137,17 @@ class Mesh2D(Mesh):
 
         faceDisplacementVectors = faceDisplacementVectors.swapaxes(0,1)
 
-        faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1,:]) \
-          - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
+        faceCrossProducts = (faceDisplacementVectors[0, :] * self._faceNormals[1,:]) \
+          - (faceDisplacementVectors[1, :] * self._faceNormals[0, :])
 
         faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) \
           + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
 
-        faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self.faceAreas
+        faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self._faceAreas
 
         cellFaceWeightedNonOrthogonalities = numerix.take(faceWeightedNonOrthogonalities, self.cellFaceIDs)
 
-        cellFaceAreas = numerix.take(self.faceAreas, self.cellFaceIDs)
+        cellFaceAreas = numerix.take(self._faceAreas, self.cellFaceIDs)
         cellTotalWeightedValues = numerix.add.reduce(cellFaceWeightedNonOrthogonalities, axis = 0)  
         cellTotalFaceAreas = numerix.add.reduce(cellFaceAreas, axis = 0)
   

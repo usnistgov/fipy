@@ -793,6 +793,11 @@ importing anything from the :mod:`fipy` package.
    (case-insensitive) choices are "``PySparse``" and
    "``Trilinos``".
     
+.. envvar:: FIPY_VERBOSE_SOLVER
+
+   If present, causes the linear solvers to print a variety of diagnostic
+   information.
+
 .. envvar:: FIPY_VIEWER
 
    Forces the use of the specified viewer. Valid values are any

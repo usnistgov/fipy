@@ -90,7 +90,7 @@ class NoiseVariable(CellVariable):
         if parallel.Nproc > 1:
             rnd = parallel.bcast(rnd, root=0)
             
-            return rnd[self.getMesh()._getGlobalOverlappingCellIDs()]
+            return rnd[self.getMesh()._globalOverlappingCellIDs]
         else:
             return rnd
 

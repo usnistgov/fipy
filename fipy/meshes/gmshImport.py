@@ -961,7 +961,7 @@ class GmshGrid2D(Gmsh2D):
         >>> faceNormals = [[-0.0, 1.0, -0.0, -1.0, 1.0, -0.0, -1.0, -0.0, 1.0, -0.0, 1.0, -0.0],
         ...                [-1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, -1.0, 0.0, 1.0, 0.0, 1.0]]
 
-        >>> numerix.allclose(mesh.faceNormals, faceNormals)
+        >>> numerix.allclose(mesh._faceNormals, faceNormals)
         True
 
         >>> mesh.cellCenters.value
@@ -1064,7 +1064,7 @@ class GmshGrid3D(Gmsh3D):
         ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,
         ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]
 
-        >>> nx.allclose(mesh.faceAreas, faceAreas)
+        >>> nx.allclose(mesh._faceAreas, faceAreas)
         True
 
         >>> cellAreas = [[ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
@@ -1074,7 +1074,7 @@ class GmshGrid3D(Gmsh3D):
         ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
         ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]]
 
-        >>> nx.allclose(mesh.cellAreas, cellAreas)
+        >>> nx.allclose(mesh._cellAreas, cellAreas)
         True
 
         >>> cToCDist = [[ 1. ,  1. ,  1. ,  1. ,  0.5,  0.5,  0.5,  0.5],
@@ -1084,7 +1084,7 @@ class GmshGrid3D(Gmsh3D):
         ...        [ 1. ,  0.5,  1. ,  0.5,  1. ,  0.5,  1. ,  0.5],
         ...        [ 0.5,  1. ,  0.5,  1. ,  0.5,  1. ,  0.5,  1. ]]
 
-        >>> nx.allclose(mesh.cellToCellDistances, cToCDist)
+        >>> nx.allclose(mesh._cellToCellDistances, cToCDist)
         True
         """
  

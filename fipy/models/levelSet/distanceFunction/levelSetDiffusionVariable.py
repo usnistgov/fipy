@@ -101,7 +101,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
 	val = val,
 	id1 = id1, id2 = id2,
         diffusionCoeff = self.diffusionCoeff,
-	ni = self.mesh._getNumberOfFaces()
+	ni = self.mesh.numberOfFaces
 	)
  
         return self._makeValue(value = val)

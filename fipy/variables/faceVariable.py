@@ -45,7 +45,7 @@ class FaceVariable(_MeshVariable):
         """
         Return the shape of this variable type, given a particular mesh.
         """
-        return (mesh._getNumberOfFaces(),)
+        return (mesh.numberOfFaces,)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
         
     def _getArithmeticBaseClass(self, other = None):
@@ -64,8 +64,8 @@ class FaceVariable(_MeshVariable):
                                               value=self.getValue())
 
     def getGlobalValue(self):
-        return self._getGlobalValue(self.mesh._getLocalNonOverlappingFaceIDs(), 
-                                    self.mesh._getGlobalNonOverlappingFaceIDs())
+        return self._getGlobalValue(self.mesh._localNonOverlappingFaceIDs, 
+                                    self.mesh._globalNonOverlappingFaceIDs)
 
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
@@ -90,10 +90,10 @@ class FaceVariable(_MeshVariable):
         return self.mesh.globalNumberOfFaces
         
     def _getGlobalOverlappingIDs(self):
-        return self.mesh._getGlobalOverlappingFaceIDs()
+        return self.mesh._globalOverlappingFaceIDs
         
     def _getLocalNonOverlappingIDs(self):
-        return self.mesh._getLocalNonOverlappingFaceIDs()
+        return self.mesh._localNonOverlappingFaceIDs
 
 def _test(): 
     import doctest

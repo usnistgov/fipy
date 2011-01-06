@@ -70,7 +70,7 @@ class MayaviSurfactantViewer(_Viewer):
             >>> # from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
             >>> var = DistanceVariable(mesh = mesh, value = -1)
         
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
 
             >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
             >>> var.calcDistanceFunction()

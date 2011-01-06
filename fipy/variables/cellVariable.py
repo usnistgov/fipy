@@ -49,7 +49,7 @@ class CellVariable(_MeshVariable):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
-        >>> x, y = mesh.getCellCenters()
+        >>> x, y = mesh.cellCenters
         >>> var.setValue(x * y)
 
         >>> from fipy.tools import dump        
@@ -139,10 +139,10 @@ class CellVariable(_MeshVariable):
         return self.mesh.globalNumberOfCells
         
     def _getGlobalOverlappingIDs(self):
-        return self.mesh._getGlobalOverlappingCellIDs()
+        return self.mesh._globalOverlappingCellIDs
 
     def _getLocalNonOverlappingIDs(self):
-        return self.mesh._getLocalNonOverlappingCellIDs()
+        return self.mesh._localNonOverlappingCellIDs
 
     def getGlobalValue(self):
         """Concatenate and return values from all processors
@@ -150,8 +150,8 @@ class CellVariable(_MeshVariable):
         When running on a single processor, the result is identical to
         :meth:`~fipy.variables.variable.Variable.getValue`.
         """
-        return self._getGlobalValue(self.mesh._getLocalNonOverlappingCellIDs(), 
-                                    self.mesh._getGlobalNonOverlappingCellIDs())
+        return self._getGlobalValue(self.mesh._localNonOverlappingCellIDs, 
+                                    self.mesh._globalNonOverlappingCellIDs)
 
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
@@ -486,7 +486,7 @@ class CellVariable(_MeshVariable):
         """
         Return the shape of this variable type, given a particular mesh.
         """
-        return (mesh.getNumberOfCells(),)
+        return (mesh.numberOfCells,)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
     def _getArithmeticBaseClass(self, other = None):
@@ -548,7 +548,7 @@ class CellVariable(_MeshVariable):
             
         """
 
-        if numerix.shape(where)[-1] == self.mesh._getNumberOfFaces():
+        if numerix.shape(where)[-1] == self.mesh.numberOfFaces:
             
             if not hasattr(self, 'faceConstraints'):
                 self.faceConstraints = []

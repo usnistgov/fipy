@@ -70,7 +70,7 @@ class CylindricalGrid2D(Grid2D):
                                         self.cellFaceIDs,
                                         self.numberOfCells,
                                         self._maxFacesPerCell,
-                                        self.cellToFaceOrientations,
+                                        self._cellToFaceOrientations,
                                         scaleLength)
                                          
      
@@ -141,7 +141,7 @@ class CylindricalGrid2D(Grid2D):
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
             >>> if parallel.procID == 0:
             ...     faceAreas = faceAreas * mesh.getFaceCenters()[0]
-            >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh.faceAreas, atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10)
             True
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
@@ -192,7 +192,7 @@ class CylindricalGrid2D(Grid2D):
             True
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> print parallel.procID > 0 or numerix.allclose(areaProjections, mesh.areaProjections, atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., -1., 0., 0., 0., 0., 0., 0., 0., 0.),

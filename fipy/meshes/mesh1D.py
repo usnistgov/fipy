@@ -60,7 +60,7 @@ class Mesh1D(Mesh):
                                         self.cellFaceIDs,
                                         self.numberOfCells,
                                         self._maxFacesPerCell,
-                                        self.cellToFaceOrientations,
+                                        self._cellToFaceOrientations,
                                         scaleLength)
 
     def _translate(self, vector):

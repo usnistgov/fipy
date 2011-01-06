@@ -89,7 +89,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
     def _getMatrix(self):
         return self.matrix
-    
+
     # All operations that require getting data out of the matrix may need to
     # call FillComplete to make sure they work.  There will be no warnings when
     # FillComplete is implicitly called; there will only be warnings when
@@ -108,9 +108,15 @@ class _TrilinosMatrixBase(_SparseMatrix):
         return self.matrix[index]
         
     def __str__(self):
+
         if not self.matrix.Filled():
             self.matrix.FillComplete()
-        return _SparseMatrix.__str__(self)
+
+        from fipy.tools import parallel
+        return ''.join(parallel.allgather(_SparseMatrix.__str__(self)))
+
+    def _getRange(self):
+        return (range(self.nonOverlappingMap.NumGlobalElements()), self.nonOverlappingMap.MyGlobalElements())
 
     def __setitem__(self, index, value):
         self.matrix[index] = value
@@ -210,7 +216,9 @@ class _TrilinosMatrixBase(_SparseMatrix):
             return self
         else:
             return self._add(other)
-        
+
+    __radd__ = __add__
+    
     def __sub__(self, other):
         if other is 0:
             return self
@@ -220,7 +228,9 @@ class _TrilinosMatrixBase(_SparseMatrix):
     def __mul__(self, other):
         """
         Multiply a sparse matrix by another sparse matrix.
-        
+
+            >>> from fipy.tools import parallel
+           
             >>> L1 = _TrilinosMatrix(size=3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L2 = _TrilinosIdentityMatrix(size=3)
@@ -230,30 +240,22 @@ class _TrilinosMatrixBase(_SparseMatrix):
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
 
-            >>> for i in range(0,3):
-            ...     for j in range(0,3):
-            ...         numerix.allclose(((L1*L2)[i,j],), tmp[i,j])
-            True
-            True
-            True
-            True
-            True
-            True
-            True
-            True
-            True
+            >>> L = (L1 * L2).getNumpyArray()
 
+            >>> print parallel.Nproc > 1 or numerix.allclose(tmp, L)
+            True
+            
         or a sparse matrix by a vector
 
             >>> tmp = numerix.array((29., 6.28318531, 2.5))       
-            >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
-            1
+            >>> print parallel.Nproc > 1 or numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
+            True
             
         or a vector by a sparse matrix
 
             >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
-            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
-            1
+            >>> print parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
+            True
 
             
         """
@@ -307,6 +309,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
     def _getShape(self):
         N = self._getMatrix().NumGlobalRows()
         return (N,N)
+
+
         
     def put(self, vector, id1, id2):
         """
@@ -320,10 +324,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
              2.500000      ---        ---    
         """
 
-        if id1.dtype.name == 'int64':
+        if hasattr(id1, 'dtype') and id1.dtype.name == 'int64':
             id1 = id1.astype('int32')
-        if id2.dtype.name == 'int64':
-            id2 = id1.astype('int32')
+        if hasattr(id2, 'dtype') and id2.dtype.name == 'int64':
+            id2 = id2.astype('int32')
 
         if self._getMatrix().Filled():
             if self._getMatrix().ReplaceGlobalValues(id1, id2, vector) != 0:
@@ -480,7 +484,27 @@ class _TrilinosMatrixBase(_SparseMatrix):
         EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     def getNumpyArray(self):
-        raise NotImplemented
+        import tempfile
+        import os
+        from scipy.io import mmio
+        from fipy.tools import parallel
+        
+        (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        mtxName = parallel.bcast(mtxName)
+
+        self.exportMmf(mtxName)
+
+        mtx = mmio.mmread(mtxName)
+        parallel.Barrier()
+        
+        if parallel.procID == 0:
+            os.remove(mtxName)
+
+        coo = mtx.tocoo()
+        trilinosMatrix = self._getMatrix()
+        numpyArray = numerix.zeros((trilinosMatrix.NumGlobalRows(), trilinosMatrix.NumGlobalRows()), 'd')
+        numpyArray[coo.row, coo.col] = coo.data
+        return numpyArray
 
     def _getDistributedMatrix(self):
         """
@@ -585,28 +609,75 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
                                      bandwidth=bandwidth)
 
 class _TrilinosMeshMatrix(_TrilinosMatrix):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1):
         """Creates a `_TrilinosMatrix` associated with a `Mesh`
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: ???
+          
+        Tests
+
+        >>> from fipy import *
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3)
+        >>> GNO = matrix._getGlobalNonOverlappingRowIDs()
+        >>> GO = matrix._getGlobalOverlappingRowIDs()
+        >>> LNO = matrix._getLocalNonOverlappingRowIDs()
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNO, numerix.arange(15))
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(GO, numerix.arange(15))
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNO, numerix.arange(15))
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GNO, [0, 1, 5, 6, 10, 11])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GO, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(LNO, [0, 1, 4, 5, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GNO, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GO, numerix.arange(15))
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(LNO, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+
         """
         self.mesh = mesh
-        
+        self.numberOfVariables = numberOfVariables
+
         comm = mesh.communicator.epetra_comm
-        globalNonOverlappingCellIDs = mesh._getGlobalNonOverlappingCellIDs()
-        globalOverlappingCellIDs = mesh._getGlobalOverlappingCellIDs()
-        nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingCellIDs), 0, comm)
-        overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
-        
+        globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
+        globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
+        nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingRowIDs), 0, comm)
+        overlappingMap = Epetra.Map(-1, list(globalOverlappingRowIDs), 0, comm)
+
         _TrilinosMatrix.__init__(self, 
-                                 size=mesh.getNumberOfCells(), 
+                                 size=self.numberOfVariables * self.mesh.globalNumberOfCells, 
                                  bandwidth=bandwidth, 
                                  sizeHint=sizeHint, 
                                  nonOverlappingMap=nonOverlappingMap,
                                  overlappingMap=overlappingMap)
+
+    def _cellIDsToGlobalRowIDs(self, IDs):
+         N = len(IDs)
+         M = self.numberOfVariables
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
+
+    def _cellIDsToLocalRowIDs(self, IDs):
+         M = self.numberOfVariables
+         N = len(IDs)
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.getNumberOfCells()).flatten()
+
+    def _getGlobalNonOverlappingRowIDs(self):
+        return self._cellIDsToGlobalRowIDs(self.mesh._getGlobalNonOverlappingCellIDs())
+
+    def _getGlobalOverlappingRowIDs(self):
+        return self._cellIDsToGlobalRowIDs(self.mesh._getGlobalOverlappingCellIDs())
+
+    def _getLocalNonOverlappingRowIDs(self):
+        return self._cellIDsToLocalRowIDs(self.mesh._getLocalNonOverlappingCellIDs())
 
     def copy(self):
         tmp = _TrilinosMatrix.copy(self)
@@ -615,8 +686,21 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         return copy
                                  
     def asTrilinosMeshMatrix(self):
+        self.finalize()
         return self
-                                 
+
+    def _getStencil(self, id1, id2):
+        globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
+        globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
+            
+        id1 = globalOverlappingRowIDs[id1]
+        id2 = globalOverlappingRowIDs[id2]
+            
+        mask = numerix.in1d(id1, globalNonOverlappingRowIDs) 
+        id1 = id1[mask]
+        id2 = id2[mask]
+        return id1, id2, mask
+
     def _globalNonOverlapping(self, vector, id1, id2):
         """Transforms and subsets local overlapping values and coordinates to global non-overlapping
         
@@ -630,19 +714,18 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     global non-overlapping row indices, 
                     global non-overlapping column indices)
         """
-        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
-        globalNonOverlappingCellIDs = self.mesh._getGlobalNonOverlappingCellIDs()
-
-        id1 = globalOverlappingCellIDs[id1]
-        id2 = globalOverlappingCellIDs[id2]
-
-        mask = numerix.in1d(id1, globalNonOverlappingCellIDs) 
-        id1 = id1[mask]
-        id2 = id2[mask]
+        id1, id2, mask = self._getStencil(id1, id2)
         vector = vector[mask]
-        
         return (vector, id1, id2)
 
+    def flush(self):
+        pass
+    
+    def _getMatrix(self):
+        if not hasattr(self, 'matrix'):
+            self.matrix = _TrilinosMeshMatrix(self.mesh, bandwidth=self.bandwidth, numberOfVariables=self.numberOfVariables)._getMatrix()
+        return _TrilinosMatrix._getMatrix(self)
+        
     def put(self, vector, id1, id2):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
         _TrilinosMatrix.put(self, vector=vector, id1=id1, id2=id2)
@@ -656,8 +739,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         
         comm = self.mesh.communicator.epetra_comm
         
-        globalOverlappingCellIDs = self.mesh._getGlobalOverlappingCellIDs()
-        overlappingMap = Epetra.Map(-1, list(globalOverlappingCellIDs), 0, comm)
+        globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
+        overlappingMap = Epetra.Map(-1, list(globalOverlappingRowIDs), 0, comm)
 
         overlapping_result = Epetra.Vector(overlappingMap)
         overlapping_result.Import(nonoverlapping_result, 
@@ -670,7 +753,9 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     def __mul__(self, other):
         """
         Multiply a sparse matrix by another sparse matrix.
-        
+
+            >>> from fipy.tools import parallel
+           
             >>> L1 = _TrilinosMatrix(size=3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L2 = _TrilinosIdentityMatrix(size=3)
@@ -680,33 +765,25 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
 
-            >>> for i in range(0,3):
-            ...     for j in range(0,3):
-            ...         numerix.allclose(((L1*L2)[i,j],), tmp[i,j])
-            True
-            True
-            True
-            True
-            True
-            True
-            True
-            True
-            True
+            >>> L = (L1 * L2).getNumpyArray()
 
+            >>> print numerix.allclose(tmp, L)
+            True
+            
         or a sparse matrix by a vector
 
             >>> tmp = numerix.array((29., 6.28318531, 2.5))       
-            >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
-            1
+            >>> print parallel.Nproc > 1 or numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
+            True
             
         or a vector by a sparse matrix
 
             >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
-            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
-            1
+            >>> parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
+            True
 
-            
         """
+
         if not self._getMatrix().Filled():
             self._getMatrix().FillComplete()
 
@@ -716,6 +793,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
             return _TrilinosMatrix.__mul__(self, other=other)
         else:
             shape = numerix.shape(other)
+
+            
             if shape == ():
                 result = self.copy()
                 result._getMatrix().Scale(other)
@@ -727,16 +806,17 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     other_map = self.overlappingMap
 
                 if other_map.SameAs(self.overlappingMap):
-                    localNonOverlappingCellIDs = self.mesh._getLocalNonOverlappingCellIDs()
+                    localNonOverlappingRowIDs = self._getLocalNonOverlappingRowIDs()
+
                     other = Epetra.Vector(self.nonOverlappingMap, 
-                                          other[localNonOverlappingCellIDs])
+                                          other[localNonOverlappingRowIDs])
 
                 if other.Map().SameAs(self.matrix.RowMap()):
 
                     nonoverlapping_result = Epetra.Vector(self.nonOverlappingMap)
-                    
+
                     self._getMatrix().Multiply(False, other, nonoverlapping_result)
-                
+
                     if other_map.SameAs(self.overlappingMap):
                         overlapping_result = Epetra.Vector(self.overlappingMap)
                         overlapping_result.Import(nonoverlapping_result, 
@@ -784,6 +864,26 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
 
+class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
+
+    def _getStencil(self, id1, id2):
+        if not hasattr(self, 'stencil'):
+            self.stencil = _TrilinosMeshMatrix._getStencil(self, id1, id2)
+
+        return self.stencil
+    
+    def flush(self, cacheStencil=False):
+        """Deletes the matrix but maintains the stencil used
+        `_globalNonOverlapping()` in as it can be expensive to construct.
+
+        :Parameters:
+          - `cacheStencil`: Boolean value to determine whether to keep the stencil (tuple of IDs and a mask) even after deleting the matrix.
+
+        """
+
+        del self.matrix
+        if not cacheStencil:
+            del self.stencil
 
 def _test(): 
     import doctest
