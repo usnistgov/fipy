@@ -125,7 +125,7 @@ Using standard dissipation laws, we can now write down the governing equations
 for mass and momentum conservation,
 
 .. math::
-   :label: eq:reactiveWetting:liquidVapor1D:continuity
+   :label: eq:reactiveWetting:liquidVapor1D:mass
    
    \frac{\partial \rho}{\partial t} + \partial_j \left(\rho u_j \right) = 0
 
@@ -180,24 +180,24 @@ equation's matrix diagonal. The overbar refers to an averaged value between the
 two adjacent cells to the face. The notation :math:`\partial_{i,f}` refers to a
 derivative evaluated directly at the face (not averaged). The variable
 :math:`u_i^c` is used to modify the velocity used in
-Eq. :eq:`eq:reactiveWetting:liquidVapor1D:continuity` such that,
+Eq. :eq:`eq:reactiveWetting:liquidVapor1D:mass` such that,
 
 .. math::
-   :label: eq:reactiveWetting:liquidVapor1D:continuityCorrected
+   :label: eq:reactiveWetting:liquidVapor1D:massCorrected
    
    \frac{\partial \rho}{\partial t} + \partial_j \left(\rho \left[u_j + u_i^c
    \right] \right) = 0
 
-Equation :eq:`eq:reactiveWetting:liquidVapor1D:continuityCorrected` can be
+Equation :eq:`eq:reactiveWetting:liquidVapor1D:massCorrected` can be
 scripted in the form,
 
 >>> matrixDiagonal = CellVariable(mesh=mesh, name='$a_f$')
 >>> correctionCoeff = mesh._getFaceAreas() * mesh._getCellDistances() / matrixDiagonal.getFaceValue()
->>> densityEqn = TransientTerm(var=density) \
-...              + VanLeerConvectionTerm(coeff=velocity.getFaceValue() + correctionCoeff \
-...                                            * (density * potentialNC.getGrad()).getFaceValue(), \
-...                                      var=density) \
-...              - DiffusionTerm(coeff=correctionCoeff * faceDensity**2, var=potentialNC)
+>>> massEqn = TransientTerm(var=density) \
+...           + VanLeerConvectionTerm(coeff=velocity.getFaceValue() + correctionCoeff \
+...                                         * (density * potentialNC.getGrad()).getFaceValue(), \
+...                                   var=density) \
+...           - DiffusionTerm(coeff=correctionCoeff * density.getFaceValue()**2, var=potentialNC)
 
 where the first term on the LHS of
 Eq. :eq:`eq:reactiveWetting:liquidVapor1D:correction` is calculated in an
@@ -214,10 +214,12 @@ In order to write Eq. :eq:`eq:reactiveWetting:liquidVapor1D:momentum` as a
 
 which results in
 
+>>> viscosity = 1e-3
+>>> epsilon = 1e-16
 >>> ConvectionTerm = CentralDifferenceConvectionTerm
->>> velocityEqn = TransientTerm(coeff=density, var=velocity) \
+>>> momentumEqn = TransientTerm(coeff=density, var=velocity) \
 ...               + ConvectionTerm(coeff=[[1]] * density.getFaceValue() * velocity.getFaceValue(), var=velocity) \
-...               = DiffusionTerm(coeff=2 * viscosity, var=velocity) \
+...               == DiffusionTerm(coeff=2 * viscosity, var=velocity) \
 ...               - ConvectionTerm(coeff=density.getFaceValue() * [[1]], var=potentialNC) \
 ...               + ImplicitSourceTerm(coeff=density.getGrad()[0], var=potentialNC)
 
@@ -245,15 +247,15 @@ and :math:`\mu^*` is simply,
 Eq. :eq:`eq:reactiveWetting:liquidVapor1D:chemicalPotentialEquation` can then be
 written as
 
->>> potententialNCEq = ImplicitSourceTerm(coeff=1, var=potentialNC) \
-...                    == potential \
-...                    + ImplicitSourceTerm(coeff=potentialDerivative, var=density) \
-...                    - potentialDerivative * density \
-...                    - DiffusionTerm(coeff=epsilon * temperature, var=density)
+>>> potentialNCEqn = ImplicitSourceTerm(coeff=1, var=potentialNC) \
+...                  == potential \
+...                  + ImplicitSourceTerm(coeff=potentialDerivative, var=density) \
+...                  - potentialDerivative * density \
+...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
 All three equations have now been defined and can now be combined together,
 
->>> coupledEq = densityEqn & velocityEq & potentialEq
+>>> coupledEqn = massEqn & momentumEqn & potentialNCEqn
 
 The system will be solved as a phase separation problem with an initial density
 close to the average density, but with some small amplitude noise. Under these
@@ -263,7 +265,7 @@ volume. Define an initial condition for the density, such that
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.getNumberOfCells()) - 1))
 
->>> viewers = Viewer(density), Viewer(velocity), Viewer(potential)
+>>> viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
 >>> for viewer in viewers:
 ...     viewer.plot()
 
@@ -289,7 +291,7 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ...     velocity.updateOld()
 ...
 ...     globalResidual = coupledEqn.justResidualVector(dt=1e+20) / initialGlobalResidual
-...     initialResiudal = coupledEqn.justResidualVector(dt=dt)
+...     initialResidual = coupledEqn.justResidualVector(dt=dt)
 ...
 ...     while residual > tolerance:
 ... 
@@ -297,7 +299,7 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ... 
 ...         coupledEqn.cacheMatrix()
 ...         residual = coupledEqn.sweep(dt=dt) / initialResidual
-...         ap[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.getNumberOfCells(): 2 * mesh.getNumberOfCells()]
+...         matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.getNumberOfCells(): 2 * mesh.getNumberOfCells()]
 ... 
 ...     for viewer in viewers:
 ...         viewer.plot()
