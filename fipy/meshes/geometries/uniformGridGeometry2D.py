@@ -191,15 +191,26 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
             faceToCellDistanceRatios[(self.numberOfHorizontalFaces + self.nx)::self.numberOfVerticalColumns] = 1.
         return faceToCellDistanceRatios
 
-    @property
-    def faceToCellDistances(self):
-        faceToCellDistances = numerix.zeros((2, self.numberOfFaces), 'd')
-        distances = self.cellDistances
-        ratios = self.faceToCellDistanceRatio
-        faceToCellDistances[0] = distances * ratios
-        faceToCellDistances[1] = distances * (1 - ratios)
-        return faceToCellDistances
+    def _getFaceToCellDistances(self):
+        if hasattr(self, "_faceToCellDistances"):
+            """faces have been connected."""
+            return self._faceToCellDistances
+
+        else:
+            faceToCellDistances = numerix.zeros((2, self.numberOfFaces), 'd')
+            distances = self.cellDistances
+            ratios = self.faceToCellDistanceRatio
+            faceToCellDistances[0] = distances * ratios
+            faceToCellDistances[1] = distances * (1 - ratios)
+            return faceToCellDistances
     
+    def _setFaceToCellDistances(self, v):
+        """Exists only to allow `_connectFaces`."""
+        self._faceToCellDistances = v
+
+    faceToCellDistances = property(_getFaceToCellDistances,
+                                   _setFaceToCellDistances)
+     
     @property
     def faceTangents1(self):
         tangents = numerix.zeros((2,self.numberOfFaces), 'd')

@@ -163,13 +163,13 @@ class Mesh2D(Mesh):
           - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
 
         >>> from fipy.meshes.grid2D import Grid2D
-        >>> print Grid2D(nx=2,ny=2).extrude(layers=2).getCellCenters()
+        >>> print Grid2D(nx=2,ny=2).extrude(layers=2).cellCenters
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
 
         >>> from fipy.meshes.tri2D import Tri2D
-        >>> print Tri2D().extrude(layers=2).getCellCenters()
+        >>> print Tri2D().extrude(layers=2).cellCenters
         [[ 0.83333333  0.5         0.16666667  0.5         0.83333333  0.5
            0.16666667  0.5       ]
          [ 0.5         0.83333333  0.5         0.16666667  0.5         0.83333333
@@ -460,7 +460,7 @@ class Mesh2D(Mesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters)
             True
 
             

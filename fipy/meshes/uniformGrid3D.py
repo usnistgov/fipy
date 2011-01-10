@@ -300,9 +300,9 @@ class UniformGrid3D(Grid3D):
         ny = self.args['ny']
         nz = self.args['nz']
         
-        x0, y0, z0 = self.getCellCenters()[...,0]        
+        x0, y0, z0 = self.cellCenters[...,0]        
         xi, yi, zi = points
-        nx, ny, nz = self.getShape()
+        nx, ny, nz = self.shape
         dx, dy, dz = self.dx, self.dy, self.dz
         
         i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
@@ -540,7 +540,7 @@ class UniformGrid3D(Grid3D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters)
             True
             
             # Bug #130 & #135 are because we only checked a mesh with nz of 1

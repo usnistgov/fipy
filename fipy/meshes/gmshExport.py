@@ -125,9 +125,9 @@ def exportAsMesh(mesh, filename):
     outFile.close()
 
 if __name__ == "__main__":
-    from fipy.meshes.grid2D import Grid2D
-    from fipy.meshes.tri2D import Tri2D
-    from fipy.meshes.grid3D import Grid3D
+    from fipy.meshes import Grid2D
+    from fipy.meshes import Tri2D
+    from fipy.meshes import Grid3D
     
     import tempfile
     import subprocess

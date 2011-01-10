@@ -84,7 +84,7 @@ class GaussianNoiseVariable(NoiseVariable):
     We generate noise on a non-uniform cartesian mesh with cell dimensions of
     :math:`x^2` and :math:`y^3`.
            
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = arange(0.1, 5., 0.1)**2, dy = arange(0.1, 3., 0.1)**3)
     >>> from fipy.variables.cellVariable import CellVariable
     >>> volumes = CellVariable(mesh=mesh,value=mesh.cellVolumes)

@@ -97,7 +97,7 @@ class Tri2D(Mesh2D):
 
         Mesh2D.__init__(self, vertices, faces, cells)
 
-        self.setScale(scaleLength = scale)
+        self.scale = scale
         
     def _createVertices(self):
         
@@ -178,7 +178,8 @@ class Tri2D(Mesh2D):
     def physicalShape(self):
         """Return physical dimensions of Grid2D.
         """
-        return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
+        return PhysicalField(value = (self.nx * self.dx * self.scale, 
+                                      self.ny * self.dy * self.scale))
 
     @property
     def _meshSpacing(self):
@@ -378,7 +379,7 @@ class Tri2D(Mesh2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters)
             True
         """
 

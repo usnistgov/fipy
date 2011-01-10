@@ -72,7 +72,7 @@ class FaceVariable(_MeshVariable):
 
     def getDivergence(self):
         """
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=3, ny=2)
             >>> var = CellVariable(mesh=mesh, value=range(3*2))

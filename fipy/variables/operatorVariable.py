@@ -298,7 +298,7 @@ def _testBinOp(self):
         >>> from fipy.variables.cellVariable import CellVariable
         >>> from fipy.variables.faceVariable import FaceVariable
         
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> mesh = Grid2D(nx=3)
         
         

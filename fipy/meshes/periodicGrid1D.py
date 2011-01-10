@@ -90,8 +90,8 @@ class PeriodicGrid1D(Grid1D):
         from fipy.tools import numerix
 
         if self.occupiedNodes == 1:
-            self._connectFaces(numerix.nonzero(self.getFacesLeft()),
-                               numerix.nonzero(self.getFacesRight()))
+            self._connectFaces(numerix.nonzero(self.facesLeft),
+                               numerix.nonzero(self.facesRight))
 
     def _setGeometry(self, scaleLength = 1.):
         self._geometry = _PeriodicGridGeometry1D(self.globalNumberOfCells,

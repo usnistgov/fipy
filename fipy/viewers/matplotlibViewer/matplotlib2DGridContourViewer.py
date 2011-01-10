@@ -78,7 +78,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
         self._plot()
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.grid2D import Grid2D
+        from fipy.meshes import Grid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.getMesh(), Grid2D) and isinstance(var, CellVariable))]

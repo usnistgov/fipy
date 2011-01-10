@@ -43,7 +43,7 @@ class UniformNoiseVariable(NoiseVariable):
     
     We generate noise on a uniform cartesian mesh
     
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> noise = UniformNoiseVariable(mesh=Grid2D(nx=100, ny=100))
         
     and histogram the noise

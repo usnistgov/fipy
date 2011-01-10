@@ -38,7 +38,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
+from grid2D import Grid2D
 from fipy.meshes.topologies import _UniformMeshTopology2D
 from fipy.meshes.geometries import _UniformGridGeometry2D
 
@@ -142,7 +142,7 @@ class UniformGrid2D(Grid2D):
                              origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
 
     def _getConcatenableMesh(self):
-        from fipy.meshes.grid2D import Grid2D
+        from grid2D import Grid2D
         args = self.args.copy()
         origin = args['origin']
         from fipy.tools import serial
@@ -310,7 +310,7 @@ class UniformGrid2D(Grid2D):
            [4]
            >>> m0 = Grid2D(nx=2, ny=2, dx=1., dy=1.)
            >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
-           >>> print m0._getNearestCellID(m1.getCellCenters().getGlobalValue())
+           >>> print m0._getNearestCellID(m1.cellCenters.getGlobalValue())
            [0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3]
            
         """
@@ -320,7 +320,7 @@ class UniformGrid2D(Grid2D):
         if nx == 0 or ny == 0:
             return numerix.arange(0)
             
-        x0, y0 = self.getCellCenters().getGlobalValue()[...,0]        
+        x0, y0 = self.cellCenters.getGlobalValue()[...,0]        
         xi, yi = points
         dx, dy = self.dx, self.dy
         
@@ -492,7 +492,7 @@ class UniformGrid2D(Grid2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters)
             True
             
             >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],

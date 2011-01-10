@@ -84,4 +84,15 @@ class AbstractUniformGridGeometry(AbstractMeshGeometry):
     @property
     def orientedFaceNormals(self):
         return self.faceNormals
+
+    def _getFaceToCellDistances(self):
+        return self._faceToCellDistances
+
+    def _setFaceToCellDistances(self, v):
+        self._faceToCellDistances = v
+        self._scaledGeometry._setScaledValues()
+
+    faceToCellDistances = property(_getFaceToCellDistances,
+                                   _setFaceToCellDistances)
+     
  

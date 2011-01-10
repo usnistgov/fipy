@@ -301,7 +301,7 @@ class Grid3D(Mesh):
     def physicalShape(self):
         """Return physical dimensions of Grid3D.
         """
-        return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale(), self.nz * self.dz * self.getScale()))
+        return PhysicalField(value = (self.nx * self.dx * self.scale, self.ny * self.dy * self.scale, self.nz * self.dz * self.scale))
 
     @getsetDeprecated
     def _getMeshSpacing(self):
@@ -624,7 +624,7 @@ class Grid3D(Mesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.getCellCenters())
+            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
             True
 
             The following test was for a bug when dx, dy or dz are arrays.

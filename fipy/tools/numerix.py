@@ -804,7 +804,7 @@ def dot(a1, a2, axis=0):
 
     Test that Variables are returned as Variables.
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(nx=2, ny=1)
     >>> from fipy.variables.cellVariable import CellVariable
     >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)

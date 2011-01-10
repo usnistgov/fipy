@@ -623,7 +623,7 @@ class Gmsh2D(Mesh2D):
         ... Plane Surface(11) = {10}; 
         ... ''')
 
-        >>> print circ.getCellVolumes()[0] > 0
+        >>> print circ.cellVolumes[0] > 0
         True
 
         Now we'll test GmshImporter2D again, but on a rectangle.
@@ -643,7 +643,7 @@ class Gmsh2D(Mesh2D):
         ... Plane Surface(11) = {10};
         ... ''')
 
-        >>> print rect.getCellVolumes()[0] > 0
+        >>> print rect.cellVolumes[0] > 0
         True
 
         Testing multiple shape types within a mesh;
@@ -665,7 +665,7 @@ class Gmsh2D(Mesh2D):
         ... Recombine Surface{11};
         ... ''')
 
-        >>> print circle.getCellVolumes()[0] > 0
+        >>> print circle.cellVolumes[0] > 0
         True
         """
 
@@ -717,7 +717,7 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         ... Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
         ... ''').extrude(extrudeFunc=lambda r: 1.1 * r)
 
-        >>> print sphere.getCellVolumes()[0] > 0
+        >>> print sphere.cellVolumes[0] > 0
         True
 
         """
@@ -888,7 +888,7 @@ class Gmsh3D(Mesh):
         ... Volume(34) = {33};
         ... ''')
 
-        >>> print prism.getCellVolumes()[0] > 0
+        >>> print prism.cellVolumes[0] > 0
         True
         """
 
@@ -953,7 +953,7 @@ class GmshGrid2D(Gmsh2D):
         >>> numerix.allclose(yogmsh._getFaceAreas(), yogrid._getFaceAreas())
         True
 
-        >>> yogmsh.getCellCenters().value.size == yogrid.getCellCenters().value.size
+        >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size
         True
 
         >>> mesh = GmshGrid2D(nx=2, ny=2)
@@ -1042,7 +1042,7 @@ class GmshGrid3D(Gmsh3D):
         >>> yogrid = Grid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
         ...                 communicator=serial)
 
-        >>> yogmsh.getCellCenters().value.size == yogrid.getCellCenters().value.size
+        >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size
         True
 
         >>> numerix.allclose(yogmsh._getFaceAreas(), yogrid._getFaceAreas())

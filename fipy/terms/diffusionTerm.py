@@ -397,7 +397,7 @@ class DiffusionTerm(Term):
         r"""
         Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix as SparseMatrix
         >>> from fipy.tools import parallel
         >>> procID = parallel.procID

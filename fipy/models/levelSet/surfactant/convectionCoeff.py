@@ -58,7 +58,7 @@ class _ConvectionCoeff(FaceVariable):
 
         
            >>> from fipy.variables.cellVariable import CellVariable
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = 1., dy = 1.)
            >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
            >>> distanceVar = DistanceVariable(mesh, value = (-.5, .5, 1.5))

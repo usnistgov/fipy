@@ -230,7 +230,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.getCellCenters())
+            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
             True
             
             >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],

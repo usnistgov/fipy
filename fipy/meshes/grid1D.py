@@ -98,7 +98,7 @@ class Grid1D(Mesh1D):
 
         Mesh1D.__init__(self, vertices, faces, cells, communicator=communicator)
         
-        self.setScale(scaleLength = scale)
+        self.scale = scale
 
     def _getOverlap(self, overlap, procID, occupiedNodes):
         return {'left': overlap * (procID > 0) * (procID < occupiedNodes),
@@ -166,7 +166,7 @@ class Grid1D(Mesh1D):
         """Return physical dimensions of Grid1D.
         """
         from fipy.tools.dimensions.physicalField import PhysicalField
-        return PhysicalField(value = (self.nx * self.dx * self.getScale(),))
+        return PhysicalField(value = (self.nx * self.dx * self.scale,))
 
     @getsetDeprecated
     def _getMeshSpacing(self):

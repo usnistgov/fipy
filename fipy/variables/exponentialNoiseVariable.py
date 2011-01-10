@@ -53,7 +53,7 @@ class ExponentialNoiseVariable(NoiseVariable):
            
     >>> from fipy.variables.variable import Variable
     >>> mean = Variable()
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> noise = ExponentialNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), mean = mean)
            
     We histogram the root-volume-weighted noise distribution

@@ -265,7 +265,7 @@ class CylindricalGrid2D(Grid2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.getCellCenters())
+            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
             True
 
             >>> mesh = CylindricalGrid2D(dx=(1., 2.), dy=(1.,)) + ((1.,),(0.,))

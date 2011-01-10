@@ -203,16 +203,16 @@ class Mesh(object):
         """
         Either translate a `Mesh` or concatenate two `Mesh` objects.
         
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-            >>> print baseMesh.getCellCenters()
+            >>> print baseMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5]
              [ 0.5  0.5  1.5  1.5]]
              
         If a vector is added to a `Mesh`, a translated `Mesh` is returned
         
             >>> translatedMesh = baseMesh + ((5,), (10,))
-            >>> print translatedMesh.getCellCenters()
+            >>> print translatedMesh.cellCenters
             [[  5.5   6.5   5.5   6.5]
              [ 10.5  10.5  11.5  11.5]]
 
@@ -221,7 +221,7 @@ class Mesh(object):
         `Mesh` objects is returned
         
             >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
-            >>> print addedMesh.getCellCenters()
+            >>> print addedMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
              [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
         
@@ -230,19 +230,19 @@ class Mesh(object):
         
             >>> from fipy.meshes.mesh import MeshAdditionError
             >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
-            >>> print addedMesh.getCellCenters()
+            >>> print addedMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
              [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
             >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
-            >>> print addedMesh.getCellCenters()
+            >>> print addedMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
              [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
 
         No provision is made to avoid or consolidate overlapping `Mesh` objects
         
             >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
-            >>> print addedMesh.getCellCenters()
+            >>> print addedMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
              [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
             
@@ -256,7 +256,7 @@ class Mesh(object):
             ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
             ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
             ...                 0.5, 0.5, 0.16666667, 0.16666667]]
-            >>> print numerix.allclose(triAddedMesh.getCellCenters(),
+            >>> print numerix.allclose(triAddedMesh.cellCenters,
             ...                        cellCenters)
             True
 
@@ -270,7 +270,7 @@ class Mesh(object):
             ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
             ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
             ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
-            >>> print numerix.allclose(triAddedMesh.getCellCenters(),
+            >>> print numerix.allclose(triAddedMesh.cellCenters,
             ...                        cellCenters)
             True
 
@@ -282,7 +282,7 @@ class Mesh(object):
             >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
             ...                           nx = 1, ny = 1, nz = 1)
             >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
-            >>> print threeDAddedMesh.getCellCenters()
+            >>> print threeDAddedMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
              [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
              [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
@@ -306,23 +306,23 @@ class Mesh(object):
         """
         Dilate a `Mesh` by `factor`.
         
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-            >>> print baseMesh.getCellCenters()
+            >>> print baseMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5]
              [ 0.5  0.5  1.5  1.5]]
 
         The `factor` can be a scalar
         
             >>> dilatedMesh = baseMesh * 3
-            >>> print dilatedMesh.getCellCenters()
+            >>> print dilatedMesh.cellCenters
             [[ 1.5  4.5  1.5  4.5]
              [ 1.5  1.5  4.5  4.5]]
 
         or a vector
         
             >>> dilatedMesh = baseMesh * ((3,), (2,))
-            >>> print dilatedMesh.getCellCenters()
+            >>> print dilatedMesh.cellCenters
             [[ 1.5  4.5  1.5  4.5]
              [ 1.   1.   3.   3. ]]
 
@@ -431,7 +431,7 @@ class Mesh(object):
 
         tempFaceNormals = self._faceNormals
         ## change the direction of the face normals for faces0
-        for dim in range(self.getDim()):
+        for dim in range(self.dim):
             faceNormals = tempFaceNormals[dim].copy()
             numerix.put(faceNormals, faces0, MA.take(faceNormals, faces1))
             tempFaceNormals[dim] = faceNormals
@@ -460,7 +460,7 @@ class Mesh(object):
         ## calculate new geometry
         self._geometry.handleFaceConnection()
         
-        self.setScale(self.scale['length'])
+        self.scale = self.scale['length']
         
     def _getConcatenableMesh(self):
         return self
@@ -1038,7 +1038,7 @@ class Mesh(object):
             True
 
         """
-        x = self.getFaceCenters()[0]
+        x = self.faceCenters[0]
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=x == _madmin(x))
 
@@ -1064,7 +1064,7 @@ class Mesh(object):
             True
             
         """
-        x = self.getFaceCenters()[0]
+        x = self.faceCenters[0]
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=x == _madmax(x))
 
@@ -1090,7 +1090,7 @@ class Mesh(object):
             1
             
         """
-        y = self.getFaceCenters()[1]
+        y = self.faceCenters[1]
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=y == _madmin(y))
 
@@ -1120,7 +1120,7 @@ class Mesh(object):
             True
             
         """
-        y = self.getFaceCenters()[1]
+        y = self.faceCenters[1]
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=y == _madmax(y))
 
@@ -1145,7 +1145,7 @@ class Mesh(object):
             True
 
         """
-        z = self.getFaceCenters()[2] 
+        z = self.faceCenters[2] 
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=z == _madmax(z))
 
@@ -1167,7 +1167,7 @@ class Mesh(object):
             True
 
         """
-        z = self.getFaceCenters()[2]
+        z = self.faceCenters[2]
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=z == _madmin(z))
     
@@ -1377,7 +1377,7 @@ class Mesh(object):
         raise NotImplementedError
      
     def _getPointToCellDistances(self, point):
-        tmp = self.getCellCenters() - PhysicalField(point)
+        tmp = self.cellCenters - PhysicalField(point)
         from fipy.tools import numerix
         return numerix.sqrtDot(tmp, tmp)
 
@@ -1391,11 +1391,11 @@ class Mesh(object):
            >>> from fipy import *
            >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
            >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-           >>> print m0._getNearestCellID(m1.getCellCenters().getGlobalValue())
+           >>> print m0._getNearestCellID(m1.cellCenters.getGlobalValue())
            [4 5 7 8]
            
         """
-        return numerix.nearest(data=self.getCellCenters().getGlobalValue(), points=points)
+        return numerix.nearest(data=self.cellCenters.getGlobalValue(), points=points)
         
 
     """pickling"""
@@ -1614,40 +1614,40 @@ class Mesh(object):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters)
             True
 
             >>> dx = 1.
             >>> dy = 1.
             >>> nx = 10
             >>> ny = 2
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> gridMesh = Grid2D(dx, dy, nx, ny)
             >>> from fipy.meshes.tri2D import Tri2D
             >>> triMesh = Tri2D(dx, dy, nx, 1) + [[dx*nx], [0]]
             >>> bigMesh = gridMesh + triMesh
-            >>> x, y = bigMesh.getCellCenters()
+            >>> x, y = bigMesh.cellCenters
             >>> from fipy.variables.cellVariable import CellVariable
             >>> volumes = CellVariable(mesh=bigMesh, value=1.)
             >>> volumes[x > dx * nx] = 0.25
-            >>> print numerix.allclose(bigMesh.getCellVolumes(), volumes)
+            >>> print numerix.allclose(bigMesh.cellVolumes, volumes)
             True
             
             Following test was added due to a bug in adding UniformGrids.
 
             >>> from fipy.meshes.uniformGrid1D import UniformGrid1D
             >>> a = UniformGrid1D(nx=10) + (10,)
-            >>> print a.getCellCenters()
+            >>> print a.cellCenters
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
             >>> b = 10 + UniformGrid1D(nx=10)
-            >>> print b.getCellCenters()
+            >>> print b.cellCenters
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
             
             >>> from fipy.tools import parallel
             >>> if parallel.Nproc == 1:
             ...     c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
             >>> print (parallel.Nproc > 1 
-            ...        or numerix.allclose(c.getCellCenters()[0],
+            ...        or numerix.allclose(c.cellCenters[0],
             ...                            [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
             ...                            12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]))
             True
@@ -1694,7 +1694,7 @@ class Mesh(object):
         """
         from enthought.tvtk.api import tvtk
         
-        points = self.getFaceCenters()
+        points = self.faceCenters
         points = self._toVTK3D(points)
         ug = tvtk.UnstructuredGrid(points=points)
         

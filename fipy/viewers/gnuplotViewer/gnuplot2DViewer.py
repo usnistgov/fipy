@@ -39,7 +39,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from gnuplotViewer import _GnuplotViewer
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes import Grid2D
 
 class Gnuplot2DViewer(_GnuplotViewer):
     """

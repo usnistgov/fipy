@@ -201,7 +201,7 @@ class _MeshVariable(Variable):
 
     def getShape(self):
         """
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=2, ny=3)
             >>> var = CellVariable(mesh=mesh)

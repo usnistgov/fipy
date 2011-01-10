@@ -37,7 +37,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid2D import Grid2D
+from grid2D import Grid2D
 
 class PeriodicGrid2D(Grid2D):
     """
@@ -104,10 +104,10 @@ class PeriodicGrid2D(Grid2D):
         self.nonPeriodicOrderedCellVertexIDs \
                 = super(PeriodicGrid2D, self)._orderedCellVertexIDs
         from fipy.tools import numerix
-        self._connectFaces(numerix.nonzero(self.getFacesLeft()), 
-                           numerix.nonzero(self.getFacesRight()))
-        self._connectFaces(numerix.nonzero(self.getFacesBottom()), 
-                           numerix.nonzero(self.getFacesTop()))
+        self._connectFaces(numerix.nonzero(self.facesLeft), 
+                           numerix.nonzero(self.facesRight))
+        self._connectFaces(numerix.nonzero(self.facesBottom), 
+                           numerix.nonzero(self.facesTop))
 
     @property
     def _cellVertexIDs(self):
@@ -123,8 +123,8 @@ class PeriodicGrid2DLeftRight(PeriodicGrid2D):
         self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
         self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs(self)
         from fipy.tools import numerix
-        self._connectFaces(numerix.nonzero(self.getFacesLeft()), 
-                           numerix.nonzero(self.getFacesRight()))
+        self._connectFaces(numerix.nonzero(self.facesLeft), 
+                           numerix.nonzero(self.facesRight))
 
 class PeriodicGrid2DTopBottom(PeriodicGrid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
@@ -132,8 +132,8 @@ class PeriodicGrid2DTopBottom(PeriodicGrid2D):
         self.nonPeriodicCellVertexIDs = Grid2D._getCellVertexIDs(self)
         self.nonPeriodicOrderedCellVertexIDs = Grid2D._getOrderedCellVertexIDs(self)
         from fipy.tools import numerix
-        self._connectFaces(numerix.nonzero(self.getFacesBottom()), 
-                           numerix.nonzero(self.getFacesTop()))
+        self._connectFaces(numerix.nonzero(self.facesBottom), 
+                           numerix.nonzero(self.facesTop))
     
 def _test():
     import doctest

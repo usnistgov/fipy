@@ -86,7 +86,7 @@ class SkewedGrid2D(Mesh2D):
 
         Mesh2D.__init__(self, changedVertices, faces, cells)
         
-        self.setScale(scaleLength = scale)
+        self.scale = scale
             
     @getsetDeprecated
     def getScale(self):
@@ -96,7 +96,7 @@ class SkewedGrid2D(Mesh2D):
     def physicalShape(self):
         """Return physical dimensions of Grid2D.
         """
-        return PhysicalField(value = (self.nx * self.dx * self.getScale(), self.ny * self.dy * self.getScale()))
+        return PhysicalField(value = (self.nx * self.dx * self.scale, self.ny * self.dy * self.scale))
 
     @property
     def _meshSpacing(self):

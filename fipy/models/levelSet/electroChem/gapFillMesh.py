@@ -14,8 +14,8 @@ only used for the diffusion in the boundary layer.
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.gmshImport import Gmsh2D
-from fipy.meshes.grid2D import Grid2D
+from fipy.meshes import Gmsh2D
+from fipy.meshes import Grid2D
 from fipy.meshes.mesh2D import Mesh2D
 import os
 from fipy.tools import numerix
