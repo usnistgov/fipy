@@ -46,6 +46,7 @@ from grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 from fipy.tools import parallel
+from fipy.tools.decorators import getsetDeprecated
 
 class UniformGrid1D(Grid1D):
     """
@@ -117,8 +118,9 @@ class UniformGrid1D(Grid1D):
 
     scale = property(lambda s: s._geometry.scale, _setScale)
         
+    @getsetDeprecated
     def _getFaceAreas(self):
-        return self._geometry.faceAreas
+        return self._faceAreas
 
     def _translate(self, vector):
         return UniformGrid1D(dx=self.dx, 
@@ -142,26 +144,34 @@ class UniformGrid1D(Grid1D):
 
 ##         from common/mesh
         
+    @getsetDeprecated
     def _getCellFaceIDs(self):
+        return self.cellFaceIDs
+
+    @property
+    def cellFaceIDs(self):
         return MA.array(self._createCells())
 
-    cellFaceIDs = property(_getCellFaceIDs)
-        
-    
-    def _getCellCenters(self):
-        return self._geometry.cellCenters
-        
-    def _getMaxFacesPerCell(self):
+    @property
+    def _maxFacesPerCell(self):
         return 2
         
 ##         from numMesh/mesh
 
+    @getsetDeprecated
     def _getVertexCoords(self):
+        return self.vertexCoords
+
+    @property
+    def vertexCoords(self):
         return self.getFaceCenters()
 
-    vertexCoords = property(_getVertexCoords)
-
+    @getsetDeprecated
     def getFaceCellIDs(self):
+        return self.faceCellIDs
+
+    @property
+    def faceCellIDs(self):
         c1 = numerix.arange(self.numberOfFaces)
         ids = MA.array((c1 - 1, c1))
         if self.numberOfFaces > 0:
@@ -170,10 +180,14 @@ class UniformGrid1D(Grid1D):
             ids[1,-1] = MA.masked
         return ids
 
+    @getsetDeprecated
     def _getCellVertexIDs(self):
+        return self._cellVertexIDs
+
+    @property
+    def _cellVertexIDs(self):
         c1 = numerix.arange(self.numberOfCells)
         return numerix.array((c1 + 1, c1))
-
 
 ##     scaling
     

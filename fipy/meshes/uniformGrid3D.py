@@ -40,6 +40,7 @@ from fipy.meshes.topologies import _UniformMeshTopology3D
 from fipy.meshes.geometries import _UniformGridGeometry3D
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools.decorators import getsetDeprecated
 
 from fipy.tools import parallel
 
@@ -172,11 +173,14 @@ class UniformGrid3D(Grid3D):
 
 ##         from common/mesh
         
+    @getsetDeprecated
     def _getCellFaceIDs(self):
+        return self.cellFaceIDs
+
+    @property
+    def cellFaceIDs(self):
         return MA.array(self._createCells())
 
-    cellFaceIDs = property(_getCellFaceIDs)
-        
     def _getXYFaceIDs(self):
         ids = numerix.arange(0, self.numberOfXYFaces)
         return ids.reshape((self.nz + 1, self.ny, self.nx)).swapaxes(0,2)
@@ -188,20 +192,27 @@ class UniformGrid3D(Grid3D):
     def _getYZFaceIDs(self):
         ids = numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces, self.numberOfFaces)
         return ids.reshape((self.nz, self.ny, self.nx + 1)).swapaxes(0,2)
-
-    
-        
-    def _getMaxFacesPerCell(self):
+   
+    @property
+    def _maxFacesPerCell(self):
         return 6
         
 ##         from numMesh/mesh
 
+    @getsetDeprecated
     def _getVertexCoords(self):
+        return self.vertexCoords
+
+    @property
+    def vertexCoords(self):
         return self._createVertices() + self.origin
 
-    vertexCoords = property(_getVertexCoords)
-
+    @getsetDeprecated
     def getFaceCellIDs(self):
+        return self.faceCellIDs
+
+    @property
+    def faceCellIDs(self):
         XYids = MA.zeros((2, self.nx, self.ny, self.nz + 1), 'l')
         indices = numerix.indices((self.nx, self.ny, self.nz + 1))
         XYids[1] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx
@@ -232,7 +243,12 @@ class UniformGrid3D(Grid3D):
 
 ##         from common/mesh
                                    
+    @getsetDeprecated
     def _getCellVertexIDs(self):
+        return self._cellVertexIDs
+
+    @property
+    def _cellVertexIDs(self):
         ids = numerix.zeros((8, self.nx, self.ny, self.nz))
         indices = numerix.indices((self.nx, self.ny, self.nz))
         ids[1] = indices[0] + (indices[1] + (indices[2] + 1) * (self.ny + 1) + 1) * (self.nx + 1)
@@ -246,12 +262,16 @@ class UniformGrid3D(Grid3D):
         
         return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
         
+    @getsetDeprecated
     def _getFaceVertexIDs(self):
+        return self.faceVertexIDs
+
+    @property
+    def faceVertexIDs(self):
        return self._createFaces()
 
-    faceVertexIDs = property(_getFaceVertexIDs)
-                                    
-    def _getOrderedCellVertexIDs(self):
+    @property
+    def _orderedCellVertexIDs(self):
         """Correct ordering for VTK_VOXEL"""
         return self._getCellVertexIDs()     
         

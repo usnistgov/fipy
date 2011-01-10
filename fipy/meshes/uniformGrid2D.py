@@ -220,7 +220,6 @@ class UniformGrid2D(Grid2D):
         return MA.masked_where(mask, faceCellIDs)
 
     def _getFaceCellIDsPy(self):
-
         Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
         indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
         Hids[1] = indices[0] + indices[1] * self.nx
@@ -242,7 +241,12 @@ class UniformGrid2D(Grid2D):
         return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
                                                      Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
     
+    @getsetDeprecated
     def _getCellVertexIDs(self):
+        return self._cellVertexIDs
+
+    @property
+    def _cellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
         indices = numerix.indices((self.nx, self.ny))
         ids[1] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns
@@ -252,7 +256,12 @@ class UniformGrid2D(Grid2D):
         
         return numerix.reshape(ids, (4, self.numberOfCells))
         
+    @getsetDeprecated
     def _getFaceVertexIDs(self):
+        return self.faceVertexIDs
+
+    @property
+    def faceVertexIDs(self):
         Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
         indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
         Hids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
@@ -268,9 +277,12 @@ class UniformGrid2D(Grid2D):
                                                  order="FORTRAN")),
                                    axis=1)
 
-    faceVertexIDs = property(_getFaceVertexIDs)
-                                    
+    @getsetDeprecated
     def _getOrderedCellVertexIDs(self):
+        return self._orderedCellVertexIDs
+
+    @property
+    def _orderedCellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
         indices = numerix.indices((self.nx, self.ny))
         ids[2] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns
