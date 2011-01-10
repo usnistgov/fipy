@@ -33,18 +33,18 @@
  # ###################################################################
  ##
 
-from fipy.terms.binaryTerm import _BinaryTerm
+from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 ##from fipy.matrices.pysparseMatrix import _CoupledPysparseMeshMatrix
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
-class _CoupledBinaryTerm(_BinaryTerm):
+class _CoupledBinaryTerm(_BaseBinaryTerm):
     def __init__(self, term, other):
-        _BinaryTerm.__init__(self, term, other)
+        _BaseBinaryTerm.__init__(self, term, other)
         if len(self._getVars()) < len(self._getCoupledTerms()):
             raise Exception, 'Different number of solution variables and equations.'
-    
+
     def _getCoupledTerms(self):
         return self.term._getCoupledTerms() + self.other._getCoupledTerms()
 

@@ -36,36 +36,10 @@
 import os
 
 from fipy.terms.term import Term
+from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
-class _BinaryTerm(Term):
-    def __init__(self, term, other):
-
-        if not isinstance(other, Term):
-            other = _ExplicitSourceTerm(coeff=other, var=term.var)
-
-        self.term = term
-        self.other = other
-
-        if term.var is None:
-            if other.var is None:
-                pass
-            else:
-                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
-        else:
-            if other.var is None:
-                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
-
-	Term.__init__(self, var=self._getVars()[0])
-
-    def _getVars(self):
-        
-        if not hasattr(self, '_vars'):
-            seen = set()
-            seq = self.term._getVars() + self.other._getVars()
-            self._vars = [x for x in seq if x not in seen and not seen.add(x)]
-            ## self._vars = list(set(seq))
-        return self._vars
+class _BinaryTerm(_BaseBinaryTerm):
 
     def _verifyVar(self, var):
 
@@ -98,33 +72,8 @@ class _BinaryTerm(Term):
             raw_input()
 
 	return (var, matrix, RHSvector)
-
-    def _addNone(self, arg0, arg1):
-        if arg0 is None and arg1 is None:
-            return None
-        elif arg0 is None:
-            return arg1
-        elif arg1 is None:
-            return arg0
-        else:
-            return arg0 + arg1
-
-    def _getTransientGeomCoeff(self, mesh):
-        return self._addNone(self.term._getTransientGeomCoeff(mesh), self.other._getTransientGeomCoeff(mesh))
-
-    def _getDiffusionGeomCoeff(self, mesh):
-        return self._addNone(self.term._getDiffusionGeomCoeff(mesh), self.other._getDiffusionGeomCoeff(mesh))
         
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-         for term in (self.term, self.other):
-             defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
-             if defaultsolver is not None:
-                 return defaultsolver
-                
-         return solver
-
     def __repr__(self):
-
         return '(' + repr(self.term) + ' + ' + repr(self.other) + ')'
 
     def __neg__(self):
@@ -155,4 +104,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
