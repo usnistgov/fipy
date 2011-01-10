@@ -288,7 +288,7 @@ class UniformGrid3D(Grid3D):
     @property
     def _orderedCellVertexIDs(self):
         """Correct ordering for VTK_VOXEL"""
-        return self._getCellVertexIDs()     
+        return self._cellVertexIDs     
         
 ##     scaling
     

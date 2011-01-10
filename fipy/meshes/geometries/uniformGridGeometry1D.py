@@ -162,7 +162,7 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
 
     @property
     def cellAreaProjections(self):
-        return MA.array(self._getCellNormals())
+        return MA.array(self.cellNormals)
 
     @property
     def faceCenters(self):

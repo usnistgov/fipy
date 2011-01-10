@@ -65,7 +65,7 @@ class SkewedGrid2D(Mesh2D):
         from fipy import Grid2D
         self.grid = Grid2D(nx=nx, ny=ny, dx=dx, dy=dy)
 
-        self.numberOfVertices = self.grid._getNumberOfVertices()
+        self.numberOfVertices = self.grid._numberOfVertices
         
         vertices = self.grid.vertexCoords
 

@@ -80,8 +80,8 @@ class Cell:
 
     @property
     def normal(self, index):
-        dis = self._getCellToCellDistances()[...,index]
-        adjCellID = self._getCellToCellIDs()[...,index]
+        dis = self._cellToCellDistances[...,index]
+        adjCellID = self._cellToCellIDs[...,index]
         vec = self.getCenter() - self.mesh.cellCenters[...,adjCellID]
         return vec / dis
 

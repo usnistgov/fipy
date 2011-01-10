@@ -82,7 +82,7 @@ class UniformMeshTopology1D(AbstractMeshTopology):
         return ids
         
     def _getCellToCellIDsFilled(self):
-        ids = self._getCellToCellIDs().filled()
+        ids = self.cellToCellIDs.filled()
         if self.mesh.numberOfCells > 0:
             ids[0,0] = 0
             ids[1,-1] = self.mesh.numberOfCells - 1
@@ -241,7 +241,7 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         N = self.mesh.numberOfCells
         M = self.mesh._maxFacesPerCell
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
-        cellToCellIDs = self._getCellToCellIDs()
+        cellToCellIDs = self.cellToCellIDs
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
     """Properties conforming to the MeshTopology interface."""
@@ -326,7 +326,7 @@ class UniformMeshTopology3D(AbstractMeshTopology):
         N = self.mesh.numberOfCells
         M = self.mesh._maxFacesPerCell
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
-        cellToCellIDs = self._getCellToCellIDs()
+        cellToCellIDs = self.cellToCellIDs
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)     
 
     """Properties conforming to the MeshTopology interface."""

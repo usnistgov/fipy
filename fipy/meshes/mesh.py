@@ -512,14 +512,14 @@ class Mesh(object):
         distance = numerix.sqrtDot(tmp, tmp)
         # only want vertex pairs that are 100x closer than the smallest 
         # cell-to-cell distance
-        close = distance < resolution * min(selfc._getCellToCellDistances().min(), 
-                                            other._getCellToCellDistances().min())
+        close = distance < resolution * min(selfc._cellToCellDistances.min(), 
+                                            other._cellToCellDistances.min())
         vertexCorrelates = numerix.array((self_Xvertices[closest[close]],
                                           other_Xvertices[close]))
         
         # warn if meshes don't touch, but allow it
-        if (selfc._getNumberOfVertices() > 0 
-            and other._getNumberOfVertices() > 0 
+        if (selfc._numberOfVertices > 0 
+            and other._numberOfVertices > 0 
             and vertexCorrelates.shape[-1] == 0):
             import warnings
             warnings.warn("Vertices are not aligned", UserWarning, stacklevel=4)
@@ -596,8 +596,8 @@ class Mesh(object):
                                         other_matchingFaces))
 
         # warn if meshes don't touch, but allow it
-        if (selfc._getNumberOfFaces() > 0 
-            and other._getNumberOfFaces() > 0 
+        if (selfc.numberOfFaces > 0 
+            and other.numberOfFaces > 0 
             and faceCorrelates.shape[-1] == 0):
             import warnings
             warnings.warn("Faces are not aligned", UserWarning, stacklevel=4)
@@ -656,7 +656,7 @@ class Mesh(object):
             ## bug in count returns float values when there is no mask
             return numerix.array(cellFaceIDs.count(axis=0), 'l')
         else:
-            return self._getMaxFacesPerCell() * numerix.ones(cellFaceIDs.shape[-1], 'l')
+            return self._maxFacesPerCell * numerix.ones(cellFaceIDs.shape[-1], 'l')
       
     """
     TODO: Does this really belong in mesh? I don't think so.
@@ -1661,7 +1661,7 @@ class Mesh(object):
     def getVTKCellDataSet(self):
         """Returns a TVTK `DataSet` representing the cells of this mesh
         """
-        cvi = self._getOrderedCellVertexIDs().swapaxes(0,1)
+        cvi = self._orderedCellVertexIDs.swapaxes(0,1)
         from fipy.tools import numerix
         if type(cvi) is numerix.ma.masked_array:
             counts = cvi.count(axis=1)[:,None]
@@ -1700,7 +1700,7 @@ class Mesh(object):
         
         num = len(points)
         counts = numerix.array([1] * num)[..., numerix.newaxis]
-        cells = numerix.arange(self._getNumberOfFaces())[..., numerix.newaxis]
+        cells = numerix.arange(self.numberOfFaces)[..., numerix.newaxis]
         cells = numerix.concatenate((counts, cells), axis=1)
         cell_types = numerix.array([tvtk.Vertex().cell_type]*num)
         cell_array = tvtk.CellArray()
