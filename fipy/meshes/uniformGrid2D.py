@@ -47,6 +47,7 @@ from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import parallel
+from fipy.tools.decorators import getsetDeprecated
 
 class UniformGrid2D(Grid2D):
     """
@@ -149,12 +150,16 @@ class UniformGrid2D(Grid2D):
         del args['origin']
         return Grid2D(**args) + origin
 
+    @getsetDeprecated
     def _getCellFaceIDs(self):
-        return self._createCells()
+        return self.cellFaceIDs
 
-    cellFaceIDs = property(_getCellFaceIDs)
+    @property
+    def cellFaceIDs(self):
+        return self._createCells()
         
-    def _getMaxFacesPerCell(self):
+    @property
+    def _maxFacesPerCell(self):
         return 4
         
 ##         from numMesh/mesh
@@ -164,7 +169,12 @@ class UniformGrid2D(Grid2D):
 
     vertexCoords = property(_getVertexCoords)
 
+    @getsetDeprecated
     def getFaceCellIDs(self):
+        return self.faceCellIDs
+
+    @property
+    def faceCellIDs(self):
         return inline._optionalInline(self._getFaceCellIDsIn, self._getFaceCellIDsPy)
 
     def _getFaceCellIDsIn(self):

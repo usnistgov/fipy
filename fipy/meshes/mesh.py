@@ -768,7 +768,7 @@ class Mesh(object):
         if not hasattr(self, '_interiorFaceCellIDs'):
             ## Commented line is better, but doesn't work for zero length arrays
             ##  self.interiorFaceCellIDs = self.getFaceCellIDs()[..., self.getInteriorFaceIDs()]
-            self._interiorFaceCellIDs = numerix.take(self.cellFaceIDs,
+            self._interiorFaceCellIDs = numerix.take(self.faceCellIDs,
                                                      self.interiorFaceIDs, axis=1)
         return self._interiorFaceCellIDs
      
