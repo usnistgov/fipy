@@ -191,13 +191,13 @@ class Mesh2D(Mesh):
             oldVertices[2] = 0
 
         NCells = mesh.numberOfCells
-        NFac = mesh._getNumberOfFaces()
-        NFacPerCell =  mesh._getMaxFacesPerCell()
+        NFac = mesh.numberOfFaces
+        NFacPerCell =  mesh._maxFacesPerCell
 
         ## set up the initial data arrays
         new_shape = (max(NFacPerCell, 4), (1 + layers)*NCells + layers*NFac)
         faces = numerix.MA.masked_values(-numerix.ones(new_shape), value = -1)
-        orderedVertices = mesh._getOrderedCellVertexIDs()
+        orderedVertices = mesh._orderedCellVertexIDs
         faces[:NFacPerCell, :NCells] = orderedVertices
         vertices = oldVertices
         vert0 = mesh.faceVertexIDs
@@ -301,7 +301,7 @@ class Mesh2D(Mesh):
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy,
             ...                            numerix.sqrt(dx**2 + dy**2), dx, numerix.sqrt(dx**2 + dy**2)))
-            >>> numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
@@ -319,14 +319,14 @@ class Mesh2D(Mesh):
             ...                               -dx / numerix.sqrt(dx**2 + dy**2), 
             ...                               1., 
             ...                               dx / numerix.sqrt(dx**2 + dy**2))))
-            >>> numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToFaceOrientations = MA.masked_values(((1,  1,  1, -1, -1, -1,  1, -1),
             ...                                            (1,  1,  1,  1,  1,  1,  1,  1),
             ...                                            (1,  1,  1,  1,  1,  1, -1, -1),
             ...                                            (1, -1, -1,  1, -1, -1,  0,  0)), 0)
-            >>> numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
+            >>> numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations)
             1
                                              
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy / 2., dx*dy / 2.))
@@ -354,7 +354,7 @@ class Mesh2D(Mesh):
             ...                                          -1, 
             ...                                          numerix.sqrt((dx / 6.)**2 + (dy / 3.)**2), 
             ...                                          -1)), -1)
-            >>> numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10)
             1
                                               
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
@@ -367,15 +367,15 @@ class Mesh2D(Mesh):
             ...                                numerix.sqrt((dx / 6.)**2 + (dy / 6.)**2),
             ...                                2. * dy / 3.,
             ...                                numerix.sqrt((dx / 6.)**2 + (dy / 6.)**2)))
-            >>> numerix.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., -1., 
@@ -388,21 +388,21 @@ class Mesh2D(Mesh):
             ...                             dy / numerix.sqrt(dx**2 +dy**2), 
             ...                             0., 
             ...                             dy / numerix.sqrt(dx**2 +dy**2))))
-            >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents2 = numerix.array(((0., 0., 0., 0., -0., -0., -0., -0., -0., 
             ...                             -0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.),
             ...                            (0., 0., 0., 0., 0., 0., 0., 0., 0., 
             ...                             -0., 0., 0., 0., -0., 0., 0., 0., 0., 0., 0.)))
-            >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToCellIDs = MA.masked_values(((-1, -1, -1,  0,  1,  2, -1,  6),
             ...                                   ( 1,  2,  6,  4,  5,  7,  7, -1),
             ...                                   ( 3,  4,  5, -1, -1, -1,  2,  5),
             ...                                   (-1,  0,  1, -1,  3,  4, -1, -1)), -1)
-            >>> numerix.allequal(cellToCellIDs, mesh._getCellToCellIDs())
+            >>> numerix.allequal(cellToCellIDs, mesh._cellToCellIDs)
             1
 
             >>> d1 = numerix.sqrt((5. * dx / 6.)**2 + (dy / 6.)**2)
@@ -411,15 +411,15 @@ class Mesh2D(Mesh):
             ...                                         (dx, dx, d1, dx, dx, d1, 2. * dy / 3., d2),
             ...                                         (dy, dy, dy, dy / 2., dy / 2., dy / 2., d1, d1),
             ...                                         (dx / 2., dx, dx, dx / 2., dx, dx, -1, -1)), -1)
-            >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellToCellDistances, mesh._cellToCellDistances, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> interiorCellIDs = numerix.array(())
-            >>> numerix.allequal(interiorCellIDs, mesh._getInteriorCellIDs())
+            >>> numerix.allequal(interiorCellIDs, mesh._interiorCellIDs)
             1
 
             >>> exteriorCellIDs = numerix.array((0, 1, 2, 3, 4, 5, 6, 7))
-            >>> numerix.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
+            >>> numerix.allequal(exteriorCellIDs, mesh._exteriorCellIDs)
             1
 
             >>> nx = dy / numerix.sqrt(dx**2 + dy**2)
@@ -432,7 +432,7 @@ class Mesh2D(Mesh):
             ...                                  ( 0,  0,  0,  0,  0,  0,     1,    ny),
             ...                                  ( 1,  1,  1,  1,  1,  1,     0,     0),
             ...                                  ( 0,  0,  0,  0,  0,  0, -1000, -1000))), -1000)
-            >>> numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> area = numerix.sqrt(dx**2 + dy**2)
@@ -444,7 +444,7 @@ class Mesh2D(Mesh):
             ...                                          (  0,  0,  0,  0,  0,  0,         dx, ny * area),
             ...                                          ( dx, dx, dx, dx, dx, dx,          0,         0),
             ...                                          (  0,  0,  0,  0,  0,  0,      -1000,     -1000))), -1000)
-            >>> numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellVertexIDs = MA.masked_array(((5, 6, 7, 9, 10, 11,    12,    12),
@@ -452,7 +452,7 @@ class Mesh2D(Mesh):
             ...                                  (1, 2, 3, 5,  6,  7,     3,     7),
             ...                                  (0, 1, 2, 4,  5,  6, -1000, -1000)), -1000)
 
-            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> numerix.allclose(mesh._cellVertexIDs, cellVertexIDs)
             1
             
 

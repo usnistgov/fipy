@@ -70,7 +70,7 @@ class FaceTerm(Term):
         L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces),    id2, id2)
 
         N = mesh.numberOfCells
-        M = mesh._getMaxFacesPerCell()
+        M = mesh._maxFacesPerCell
 
         for boundaryCondition in boundaryConditions:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
@@ -91,7 +91,7 @@ class FaceTerm(Term):
         inline._optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight)
 
         N = mesh.numberOfCells
-        M = mesh._getMaxFacesPerCell()
+        M = mesh._maxFacesPerCell
 
         for boundaryCondition in boundaryConditions:
 
@@ -105,7 +105,7 @@ class FaceTerm(Term):
 
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
         coeff = numerix.array(self._getGeomCoeff(mesh))
-        Nfac = mesh._getNumberOfFaces()
+        Nfac = mesh.numberOfFaces
 
         cell1Diag = numerix.zeros((Nfac,),'d')
         cell1Diag[:] = weight['cell 1 diag']
@@ -156,7 +156,7 @@ class FaceTerm(Term):
         if var is self.var or self.var is None:
 
             mesh = var.getMesh()
-            id1, id2 = mesh._getAdjacentCellIDs()
+            id1, id2 = mesh._adjacentCellIDs
             interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
 
             id1 = numerix.take(id1, interiorFaces)

@@ -66,7 +66,7 @@ class TrilinosSolver(Solver):
             globalMatrix = self.matrix.asTrilinosMeshMatrix()
 
             mesh = self.var.getMesh()
-            localNonOverlappingCellIDs = mesh._getLocalNonOverlappingCellIDs()
+            localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
             nonOverlappingVector = Epetra.Vector(globalMatrix.nonOverlappingMap, 
                                                  self.var[localNonOverlappingCellIDs])

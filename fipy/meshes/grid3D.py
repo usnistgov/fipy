@@ -423,7 +423,7 @@ class Grid3D(Mesh):
             ...                               1, 2, 3, 4, 5, 0, 0, 1, 2, 3, 3, 4, 5]),
             ...                numerix.array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3,
             ...                               4, 5, 3, 4, 5, 0, 1, 2, 2, 3, 4, 5, 5]))
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._getAdjacentCellIDs(), adjacentCellIDs)
+            >>> print parallel.procID > 0 or numerix.allequal(mesh._adjacentCellIDs, adjacentCellIDs)
             True
 
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 
@@ -475,7 +475,7 @@ class Grid3D(Mesh):
             >>> faceAreas = numerix.array((xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy, xy,
             ...                            xz, xz, xz, xz, xz, xz, xz, xz, xz,
             ...                            yz, yz, yz, yz, yz, yz, yz, yz))
-            >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10)
             True
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
@@ -486,7 +486,7 @@ class Grid3D(Mesh):
             >>> faceNormals = numerix.array((( 0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0,  0,  0,  0, 0, 0, 0, 0, 0, 0, -1, 1, 1, 1, -1, 1, 1, 1),
             ...                              ( 0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, -1, -1, -1, 1, 1, 1, 1, 1, 1,  0, 0, 0, 0,  0, 0, 0, 0),
             ...                              (-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1,  0,  0,  0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0)))
-            >>> print parallel.procID > 0 or numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellToFaceOrientations = numerix.array(((1, -1, -1, 1, -1, -1),
@@ -495,7 +495,7 @@ class Grid3D(Mesh):
             ...                                         (1, 1, 1, 1, 1, 1),
             ...                                         (1, 1, 1, 1, 1, 1),
             ...                                         (1, 1, 1, 1, 1, 1)))
-            >>> print parallel.procID > 0 or numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
+            >>> print parallel.procID > 0 or numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations)
             True
                                              
             >>> cellVolumes = numerix.array((dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz))
@@ -510,33 +510,33 @@ class Grid3D(Mesh):
                                               
             >>> faceToCellDistances = MA.masked_values(((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2),
             ...                                         (  -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1, dy/2, dy/2, dy/2,   -1,   -1,   -1,   -1, dx/2, dx/2,   -1,   -1, dx/2,   -1)), -1) 
-            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10)
             1
                                               
             >>> cellDistances = numerix.array((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2,
             ...                                dy/2, dy/2, dy/2, dy, dy, dy, dy/2, dy/2, dy/2,
             ...                                dx/2, dx, dx, dx/2, dx/2, dx, dx, dx/2))
-            >>> print parallel.procID > 0 or numerix.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10)
             True
             
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> print parallel.procID > 0 or numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> tangents1 = numerix.array(((1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            >>> print parallel.procID > 0 or numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> tangents2 = numerix.array(((0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)))
-            >>> print parallel.procID > 0 or numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellToCellIDs = MA.masked_values(((-1, 0, 1, -1, 3, 4),
@@ -545,7 +545,7 @@ class Grid3D(Mesh):
             ...                                   (3, 4, 5, -1, -1, -1),
             ...                                   (-1, -1, -1, -1, -1, -1),
             ...                                   (-1, -1, -1, -1, -1, -1)), -1)
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._getCellToCellIDs(), cellToCellIDs)
+            >>> print parallel.procID > 0 or numerix.allequal(mesh._cellToCellIDs, cellToCellIDs)
             True
 
             >>> cellToCellIDsFilled = numerix.array(((0, 0, 1, 3, 3, 4),
@@ -554,19 +554,19 @@ class Grid3D(Mesh):
             ...                                      (3, 4, 5, 3, 4, 5),
             ...                                      (0, 1, 2, 3, 4, 5),
             ...                                      (0, 1, 2, 3, 4, 5)))            
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._getCellToCellIDsFilled(), cellToCellIDsFilled)
+            >>> print parallel.procID > 0 or numerix.allequal(mesh._cellToCellIDsFilled, cellToCellIDsFilled)
             True
 
             >>> cellToCellDistances = numerix.take(cellDistances, cells)
-            >>> print parallel.procID > 0 or numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellToCellDistances, mesh._cellToCellDistances, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> interiorCellIDs = numerix.array(())
-            >>> numerix.allequal(interiorCellIDs, mesh._getInteriorCellIDs())
+            >>> numerix.allequal(interiorCellIDs, mesh._interiorCellIDs)
             True
 
             >>> exteriorCellIDs = numerix.array((0, 1, 2, 3, 4, 5))
-            >>> print parallel.procID > 0 or numerix.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
+            >>> print parallel.procID > 0 or numerix.allequal(exteriorCellIDs, mesh._exteriorCellIDs)
             True
 
             >>> cellNormals = numerix.array((((-1, -1, -1, -1, -1, -1),
@@ -587,7 +587,7 @@ class Grid3D(Mesh):
             ...                               ( 0,  0,  0,  0,  0,  0),
             ...                               (-1, -1, -1, -1, -1, -1),
             ...                               ( 1,  1,  1,  1,  1,  1))))
-            >>> print parallel.procID > 0 or numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellAreaProjections = numerix.array((((-yz, -yz, -yz, -yz, -yz, -yz),
@@ -608,7 +608,7 @@ class Grid3D(Mesh):
             ...                                       (  0,   0,   0,   0,   0,   0),
             ...                                       (-xy, -xy, -xy, -xy, -xy, -xy),
             ...                                       ( xy,  xy,  xy,  xy,  xy,  xy))))
-            >>> print parallel.procID > 0 or numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellVertexIDs = numerix.array((17, 16, 13, 12, 5, 4, 1, 0))
@@ -617,7 +617,7 @@ class Grid3D(Mesh):
             >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
 
 
-            >>> print parallel.procID > 0 or numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> print parallel.procID > 0 or numerix.allclose(mesh._cellVertexIDs, cellVertexIDs)
             True
 
             >>> from fipy.tools import dump

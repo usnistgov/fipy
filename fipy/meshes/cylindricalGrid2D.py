@@ -151,14 +151,14 @@ class CylindricalGrid2D(Grid2D):
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0.)))
-            >>> print parallel.procID > 0 or numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1, -1, -1,  1, -1, -1)))
-            >>> print parallel.procID > 0 or numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
+            >>> print parallel.procID > 0 or numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations)
             True
                                              
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
@@ -174,7 +174,7 @@ class CylindricalGrid2D(Grid2D):
 
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2.),
             ...                                         (-1, -1, -1, dy / 2., dy / 2., dy / 2., -1, -1, -1, -1, dx / 2., dx / 2., -1, -1, dx / 2., dx / 2., -1)), -1)
-            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10)
             True
                                               
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
@@ -184,11 +184,11 @@ class CylindricalGrid2D(Grid2D):
             ...                                dx / 2.,
             ...                                dx / 2., dx, dx,
             ...                                dx / 2.))
-            >>> print parallel.procID > 0 or numerix.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10)
             True
             
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> areaProjections = faceNormals * faceAreas
@@ -197,33 +197,33 @@ class CylindricalGrid2D(Grid2D):
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., -1., 0., 0., 0., 0., 0., 0., 0., 0.),
             ...                            (0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.)))
-            >>> print parallel.procID > 0 or numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> tangents2 = numerix.zeros((2, 17), 'd')
-            >>> print parallel.procID > 0 or numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellToCellIDs = MA.masked_values(((-1, -1, -1, 0, 1, 2),
             ...                                   (1, 2, -1, 4, 5, -1),
             ...                                   (3, 4, 5, -1, -1, -1),
             ...                                   (-1, 0, 1, -1, 3, 4)), -1)
-            >>> print parallel.procID > 0 or numerix.allequal(cellToCellIDs, mesh._getCellToCellIDs())
+            >>> print parallel.procID > 0 or numerix.allequal(cellToCellIDs, mesh._cellToCellIDs)
             True
 
             >>> cellToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2.,      dy,      dy,      dy),
             ...                                         (     dx,      dx, dx / 2.,      dx,      dx, dx / 2.),
             ...                                         (     dy,      dy,      dy, dy / 2., dy / 2., dy / 2.),
             ...                                         (dx / 2.,      dx,      dx, dx / 2.,      dx,      dx)), -1)
-            >>> print parallel.procID > 0 or numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellToCellDistances, mesh._cellToCellDistances, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> interiorCellIDs = numerix.array(())
-            >>> print parallel.procID > 0 or numerix.allequal(interiorCellIDs, mesh._getInteriorCellIDs())
+            >>> print parallel.procID > 0 or numerix.allequal(interiorCellIDs, mesh._interiorCellIDs)
             True
 
             >>> exteriorCellIDs = numerix.array((0, 1, 2, 3, 4, 5))
-            >>> print parallel.procID > 0 or numerix.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
+            >>> print parallel.procID > 0 or numerix.allequal(exteriorCellIDs, mesh._exteriorCellIDs)
             True
 
             >>> cellNormals = numerix.array(((( 0,  0,  0,  0,  0,  0),
@@ -234,7 +234,7 @@ class CylindricalGrid2D(Grid2D):
             ...                               ( 0,  0,  0,  0,  0,  0),
             ...                               ( 1,  1,  1,  1,  1,  1),
             ...                               ( 0,  0,  0,  0,  0,  0))))
-            >>> print parallel.procID > 0 or numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellAreaProjections = numerix.array((((  0,  0,  0,  0,  0,  0),
@@ -250,7 +250,7 @@ class CylindricalGrid2D(Grid2D):
             ...     cellAreaProjections[:,1] = cellAreaProjections[:,1] * (mesh.cellCenters[0] + mesh.dx / 2.)
             ...     cellAreaProjections[:,2] = cellAreaProjections[:,2] * mesh.cellCenters[0]
             ...     cellAreaProjections[:,3] = cellAreaProjections[:,3] * (mesh.cellCenters[0] - mesh.dx / 2.)
-            >>> print parallel.procID > 0 or numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellVertexIDs = MA.masked_values(((5, 6, 7, 9, 10, 11),
@@ -258,7 +258,7 @@ class CylindricalGrid2D(Grid2D):
             ...                                   (1, 2, 3, 5,  6,  7),
             ...                                   (0, 1, 2, 4,  5,  6)), -1000)
 
-            >>> print parallel.procID > 0 or numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> print parallel.procID > 0 or numerix.allclose(mesh._cellVertexIDs, cellVertexIDs)
             True
 
             >>> from fipy.tools import dump            

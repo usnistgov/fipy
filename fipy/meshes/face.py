@@ -82,7 +82,7 @@ class Face:
 
      
     def getArea(self):
-	return self.mesh._getFaceAreas()[...,self.id]
+	return self.mesh._faceAreas[...,self.id]
 ##     
 ##     def getNormal(self):
 ## 	"""Return the unit normal vector

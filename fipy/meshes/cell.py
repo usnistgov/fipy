@@ -57,7 +57,7 @@ class Cell:
 
     @property
     def _cellToCellDistances(self):
-        return self.mesh._getCellToCellDistances()[...,self.id]
+        return self.mesh._cellToCellDistances[...,self.id]
 
     @getsetDeprecated
     def _getCellToCellIDs(self):
@@ -65,7 +65,7 @@ class Cell:
 
     @property
     def _cellToCellIDs(self):
-        return self.mesh._getCellToCellIDs()[...,self.id]
+        return self.mesh._cellToCellIDs[...,self.id]
 
     def __cmp__(self, cell):
         return cmp(self.id, cell.getID())

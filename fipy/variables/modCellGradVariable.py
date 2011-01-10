@@ -70,11 +70,11 @@ class _ModCellGradVariable(_GaussCellGradVariable):
             ids = numerix.array(ids),
             orientations = numerix.array(orientations),
             volumes = numerix.array(volumes),
-            areaProj = numerix.array(self.mesh._getAreaProjections()),
+            areaProj = numerix.array(self.mesh._areaProjections),
             faceValues = numerix.array(self.var.getArithmeticFaceValue()),
             M = M,
             ni = N, 
-            gridSpacing = numerix.array(self.mesh._getMeshSpacing()),
+            gridSpacing = numerix.array(self.mesh._meshSpacing),
             shape=numerix.array(numerix.shape(val)))
             
         return self._makeValue(value = val)
@@ -82,6 +82,6 @@ class _ModCellGradVariable(_GaussCellGradVariable):
 
     def _calcValuePy(self, N, M, ids, orientations, volumes):
         value = _GaussCellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
-        gridSpacing = self.mesh._getMeshSpacing()
+        gridSpacing = self.mesh._meshSpacing
         return self.modPy(value * gridSpacing) / gridSpacing
 

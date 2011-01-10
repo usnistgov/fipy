@@ -78,7 +78,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 
         self.mesh = self.vars[0].getMesh()
         
-        vertexIDs = self.mesh._getOrderedCellVertexIDs()
+        vertexIDs = self.mesh._orderedCellVertexIDs
 
         vertexCoords = self.mesh.vertexCoords
 

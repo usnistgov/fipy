@@ -64,23 +64,23 @@ class PeriodicGrid1D(Grid1D):
         True
 
         >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._getCellDistances(),
+        ...        or numerix.allclose(mesh._cellDistances,
         ...                            [ 2., 1.5, 2.5, 1.5]))
         True
 
         >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._getCellToCellDistances(),
+        ...        or numerix.allclose(mesh._cellToCellDistances,
         ...                            [[ 2.,   1.5,  2.5],
         ...                             [ 1.5,  2.5,  2. ]]))
         True
         
         >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._getFaceNormals(),
+        ...        or numerix.allclose(mesh._faceNormals,
         ...                            [[ 1.,  1.,  1.,  1.]]))
         True
 
         >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._getCellVertexIDs(),
+        ...        or numerix.allclose(mesh._cellVertexIDs,
         ...                            [[1, 2, 2],
         ...                             [0, 1, 0]]))
         True

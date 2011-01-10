@@ -255,7 +255,7 @@ class Tri2D(Mesh2D):
             >>> faceAreas = numerix.array((0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
             ...                            2, 2, 2, 2, 2, 2, 2, 2,
             ...                            d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d))
-            >>> numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
@@ -268,13 +268,13 @@ class Tri2D(Mesh2D):
             
             >>> faceNormals = numerix.array((( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0, 1.0, 1.0, 1.0,-1.0, 1.0, 1.0, 1.0, xc, xc, xc, xc, xc, xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc,-xc),
             ...                              (-1.0,-1.0,-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc, yc, yc, yc, yc, yc, yc)))
-            >>> numerix.allclose(faceNormals, mesh._getFaceNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToFaceOrientations = numerix.array((( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1,-1,-1, 1, 1, 1,-1,-1,-1),
             ...                                         ( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1,-1,-1,-1,-1),
             ...                                         ( 1, 1, 1, 1, 1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1)))
-            >>> numerix.allequal(cellToFaceOrientations, mesh._getCellFaceOrientations())
+            >>> numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations)
             1
                                              
             >>> cellVolumes = numerix.array((0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
@@ -294,7 +294,7 @@ class Tri2D(Mesh2D):
             >>> xd = numerix.sqrt(((dx/ 4.0)*(dx/ 4.0)) + ((dy/12.0)*(dy/12.0)))
             >>> faceToCellDistances = MA.masked_values(((dy/6.0, dy/6.0, dy/6.0, dy/6.0, dy/6.0, dy/6.0,  dy/6.0, dy/6.0, dy/6.0, dx/6.0, dx/6.0, dx/6.0, dx/6.0, dx/6.0, dx/6.0, dx/6.0, dx/6.0,     yd,     yd,     yd,     yd,     yd,     yd,     yd,     yd,     yd,     yd,     yd,     yd,     xd,     xd,     xd,     xd,     xd,     xd,     yd,     yd,     yd,     yd,     yd,     yd),
             ...                                         (    -1,     -1,     -1, dy/6.0, dy/6.0, dy/6.0,      -1,     -1,     -1,     -1, dx/6.0, dx/6.0,     -1,     -1, dx/6.0, dx/6.0,     -1,     xd,     xd,     xd,     xd,     xd,     xd,     xd,     xd,     xd,     xd,     xd,     xd,     yd,     yd,     yd,     yd,     yd,     yd,     xd,     xd,     xd,     xd,     xd,     xd)), -1)
-            >>> numerix.allclose(faceToCellDistances, mesh._getFaceToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10)
             1
                                               
             >>> dd = numerix.sqrt((dx*dx)+(dy*dy)) / 3.0
@@ -302,44 +302,44 @@ class Tri2D(Mesh2D):
             ...                                dx/6.0, dx/3.0, dx/3.0, dx/6.0, dx/6.0, dx/3.0, dx/3.0, dx/6.0,
             ...                                dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd,
             ...                                dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd, dd))
-            >>> numerix.allclose(cellDistances, mesh._getCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10)
             1
             
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> numerix.allclose(faceToCellDistanceRatios, mesh._getFaceToCellDistanceRatio(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> numerix.allclose(areaProjections, mesh._getAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents1 = numerix.array(((1.0, 1.0, 1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc,  yc, -yc, -yc, -yc, -yc, -yc, -yc),
             ...                            (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0, 1.0, 1.0, 1.0,-1.0, 1.0, 1.0, 1.0,  xc,  xc,  xc,  xc,  xc,  xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc, -xc)))
-            >>> numerix.allclose(tangents1, mesh._getFaceTangents1(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tangents2 = numerix.zeros((2, 41))
-            >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToCellIDs = MA.masked_values(((13, 14, -1, 16, 17, -1, 21, 22, 23, -1, -1, -1, -1,  0,  1, -1,  3,  4, -1, -1, -1,  6,  7,  8),
             ...                                   (18, 19, 20, 21, 22, 23, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 12, 13, 14, 15, 16, 17),
             ...                                   ( 6,  7,  8,  9, 10, 11,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11,  0,  1,  2,  3,  4,  5)), -1)
-            >>> numerix.allequal(cellToCellIDs, mesh._getCellToCellIDs())
+            >>> numerix.allequal(cellToCellIDs, mesh._cellToCellIDs)
             1
 
             >>> cellToCellDistances = numerix.array(((dx/3.0, dx/3.0, dx/6.0, dx/3.0, dx/3.0, dx/6.0, dy/3.0, dy/3.0, dy/3.0, dy/6.0, dy/6.0, dy/6.0, dx/6.0, dx/3.0, dx/3.0, dx/6.0, dx/3.0, dx/3.0, dy/6.0, dy/6.0, dy/6.0, dy/3.0, dy/3.0, dy/3.0),
             ...                                      (    dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd),
             ...                                      (    dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd,     dd)))
-            >>> numerix.allclose(cellToCellDistances, mesh._getCellToCellDistances(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellToCellDistances, mesh._cellToCellDistances, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> interiorCellIDs = numerix.array((0, 1, 3, 4, 6, 7, 8, 13, 14, 16, 17, 21, 22, 23))
-            >>> numerix.allequal(interiorCellIDs, mesh._getInteriorCellIDs())
+            >>> numerix.allequal(interiorCellIDs, mesh._interiorCellIDs)
             1
 
             >>> exteriorCellIDs = numerix.array((2, 5, 9, 10, 11, 12, 15, 18, 19, 20))
-            >>> numerix.allequal(exteriorCellIDs, mesh._getExteriorCellIDs())
+            >>> numerix.allequal(exteriorCellIDs, mesh._exteriorCellIDs)
             1
 
             >>> cellNormals = numerix.array((((  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0, -1, -1, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0),
@@ -348,7 +348,7 @@ class Tri2D(Mesh2D):
             ...                              ((  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0, -1, -1, -1, -1, -1, -1),
             ...                               (-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc,-yc, yc, yc, yc, yc, yc, yc),
             ...                               ( yc, yc, yc, yc, yc, yc,-yc,-yc,-yc,-yc,-yc,-yc, yc, yc, yc, yc, yc, yc, yc, yc, yc, yc, yc, yc))))
-            >>> numerix.allclose(cellNormals, mesh._getCellNormals(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellAreaProjections = numerix.array((((     dy,     dy,     dy,     dy,     dy,     dy,      0,      0,      0,      0,      0,      0,    -dy,    -dy,    -dy,    -dy,    -dy,    -dy,      0,      0,      0,      0,      0,      0),
@@ -357,7 +357,7 @@ class Tri2D(Mesh2D):
             ...                                      ((      0,      0,      0,      0,      0,      0,     dx,     dx,     dx,     dx,     dx,     dx,      0,      0,      0,      0,      0,      0,    -dx,    -dx,    -dx,    -dx,    -dx,    -dx),
             ...                                       ( -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.),
             ...                                       (  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2., -dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.,  dx/2.))))
-            >>> numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> tmp1 = numerix.array((12, 5, 1))
@@ -370,7 +370,7 @@ class Tri2D(Mesh2D):
             ...                                tmp3, tmp3 + 1, tmp3 + 2, tmp3 + 3 + tmp5, tmp3 + 4 + tmp5, tmp3 + 5 + tmp5,
             ...                                tmp4, tmp4 + 1, tmp4 + 2, tmp4 + 3 + tmp5, tmp4 + 4 + tmp5, tmp4 + 5 + tmp5))
             >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
-            >>> numerix.allclose(mesh._getCellVertexIDs(), cellVertexIDs)
+            >>> numerix.allclose(mesh._cellVertexIDs, cellVertexIDs)
             1
             
 

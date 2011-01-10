@@ -124,12 +124,12 @@ class _AdvectionTerm(Term):
 
             mesh = var.getMesh()
             NCells = mesh.numberOfCells
-            NCellFaces = mesh._getMaxFacesPerCell()
+            NCellFaces = mesh._maxFacesPerCell
 
             cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
 
             cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
-            cellToCellIDs = mesh._getCellToCellIDs()
+            cellToCellIDs = mesh._cellToCellIDs
 
             if NCells > 0:
                 cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
@@ -154,7 +154,7 @@ class _AdvectionTerm(Term):
             return (var, SparseMatrix(mesh=var.getMesh()), 0)
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
-        return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
+        return (adjacentValues - cellValues) / mesh._cellToCellDistances
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         if solver and not solver._canSolveAsymmetric():

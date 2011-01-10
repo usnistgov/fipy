@@ -96,8 +96,8 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         mesh = var.getMesh()
 
         if isinstance(var, FaceVariable):
-            N = mesh._getNumberOfFaces() 
-            W = mesh._getFaceAreas()
+            N = mesh.numberOfFaces 
+            W = mesh._faceAreas
             W = (W / min(W))**0.05
             X, Y = mesh.faceCenters
         elif isinstance(var, CellVariable):

@@ -198,9 +198,9 @@ class DistanceVariable(CellVariable):
         self.cellToCellDistances = MA.filled(self.mesh._cellToCellDistances, 0)
         self.cellNormals = MA.filled(self.mesh._cellNormals, 0)      
         self.cellAreas = MA.filled(self.mesh._cellAreas, 0)
-##         self.cellToCellDistances = numerix.array(MA.array(self.mesh._getCellToCellDistances()).filled(0))
-##         self.cellNormals = numerix.array(MA.array(self.mesh._getCellNormals()).filled(0))       
-##         self.cellAreas = numerix.array(MA.array(self.mesh._getCellAreas()).filled(0))
+##         self.cellToCellDistances = numerix.array(MA.array(self.mesh._cellToCellDistances).filled(0))
+##         self.cellNormals = numerix.array(MA.array(self.mesh._cellNormals).filled(0))       
+##         self.cellAreas = numerix.array(MA.array(self.mesh._cellAreas).filled(0))
         self.cellToCellIDs = numerix.array(self.mesh._cellToCellIDsFilled)
         self.adjacentCellIDs = self.mesh._adjacentCellIDs
         self.exteriorFaces = self.mesh.exteriorFaces

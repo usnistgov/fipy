@@ -189,7 +189,7 @@ approximated at the face by :math:`A_f d_{AP} / (a_P)_f`. In :term:`FiPy` the
 pressure correction equation can be written as, 
 
 >>> ap = CellVariable(mesh=mesh, value=1.)
->>> coeff = 1./ ap.getArithmeticFaceValue()*mesh._getFaceAreas() * mesh._getCellDistances() 
+>>> coeff = 1./ ap.getArithmeticFaceValue()*mesh._faceAreas * mesh._cellDistances 
 >>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.getDivergence()
 
 Above would work good on a staggered grid, however, on a colocated grid as :term:`FiPy`

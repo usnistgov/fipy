@@ -239,7 +239,7 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         
     def _getCellToCellIDsFilled(self):
         N = self.mesh.numberOfCells
-        M = self.mesh._getMaxFacesPerCell()
+        M = self.mesh._maxFacesPerCell
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self._getCellToCellIDs()
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
@@ -261,9 +261,9 @@ class UniformMeshTopology3D(AbstractMeshTopology):
         """
         Return only the faces that have one neighboring cell.
         """
-        XYids = self.mesh._getXYFaceIDs()
-        XZids = self.mesh._getXZFaceIDs()
-        YZids = self.mesh._getYZFaceIDs()
+        XYids = self.mesh._XYFaceIDs
+        XZids = self.mesh._XZFaceIDs
+        YZids = self.mesh._YZFaceIDs
         
         exteriorIDs = numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0,1)), 
                                            numerix.ravel(XYids[...,     -1].swapaxes(0,1)),
@@ -281,9 +281,9 @@ class UniformMeshTopology3D(AbstractMeshTopology):
         """
         Return only the faces that have two neighboring cells
         """
-        XYids = self.mesh._getXYFaceIDs()
-        XZids = self.mesh._getXZFaceIDs()
-        YZids = self.mesh._getYZFaceIDs()
+        XYids = self.mesh._XYFaceIDs
+        XZids = self.mesh._XZFaceIDs
+        YZids = self.mesh._YZFaceIDs
         
         interiorIDs = numerix.concatenate((numerix.ravel(XYids[ ...     ,1:-1]),
                                            numerix.ravel(XZids[ ...,1:-1, ...]),
@@ -324,7 +324,7 @@ class UniformMeshTopology3D(AbstractMeshTopology):
         
     def _getCellToCellIDsFilled(self):
         N = self.mesh.numberOfCells
-        M = self.mesh._getMaxFacesPerCell()
+        M = self.mesh._maxFacesPerCell
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self._getCellToCellIDs()
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)     

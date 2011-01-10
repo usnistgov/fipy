@@ -138,7 +138,7 @@ class DiffusionTerm(Term):
         return higherOrderBCs, lowerOrderBCs
 
     def _getNormals(self, mesh):
-        return mesh._getFaceCellToCellNormals()
+        return mesh._faceCellToCellNormals
 
     def _getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
@@ -154,7 +154,7 @@ class DiffusionTerm(Term):
                 epsilon = 1e-20
 
                 div = numerix.sqrt(1 - rotationTensor[2,0]**2)
-                flag = numerix.resize(div > epsilon, (mesh.dim, mesh._getNumberOfFaces()))
+                flag = numerix.resize(div > epsilon, (mesh.dim, mesh.numberOfFaces))
 
                 rotationTensor[0, 1] = 1
                 rotationTensor[:, 1] = numerix.where(flag,
@@ -199,7 +199,7 @@ class DiffusionTerm(Term):
                 rank = len(shape)
 
             if rank == 0 and self._treatMeshAsOrthogonal(mesh):
-                tmpBop = (coeff * mesh._getFaceAreas() / mesh._getCellDistances())[numerix.newaxis, :]
+                tmpBop = (coeff * mesh._faceAreas / mesh._cellDistances)[numerix.newaxis, :]
             else:
 
                 if rank == 1 or rank == 0:
@@ -210,11 +210,11 @@ class DiffusionTerm(Term):
                     if mesh.dim != shape[0] or mesh.dim != shape[1]:
                         raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'          
 
-                faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
+                faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._faceNormals)
                 rotationTensor = self._getRotationTensor(mesh)
-                rotationTensor[:,0] = rotationTensor[:,0] / mesh._getCellDistances()
+                rotationTensor[:,0] = rotationTensor[:,0] / mesh._cellDistances
                 
-                tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._getFaceAreas()
+                tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._faceAreas
 
             return tmpBop
 
@@ -271,8 +271,8 @@ class DiffusionTerm(Term):
 
                     mesh = var.getMesh()
                     from fipy.variables.faceVariable import FaceVariable
-    ##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
-                    normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
+    ##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals) * self.nthCoeff
+                    normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals) * self.nthCoeff
 
                     self.constraintB = 0
                     self.constraintL = 0
@@ -281,7 +281,7 @@ class DiffusionTerm(Term):
                         self.constraintB -= (var.getFaceGrad().getConstraintMask() * self.nthCoeff * var.getFaceGrad()).getDivergence() * mesh.cellVolumes
 
                     if var.getArithmeticFaceValue().getConstraintMask() is not None:
-                        constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / mesh._getCellDistances()
+                        constrainedNormalsDotCoeffOverdAP = var.getArithmeticFaceValue().getConstraintMask() * normalsDotCoeff / mesh._cellDistances
                         self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.getArithmeticFaceValue()).getDivergence() * mesh.cellVolumes
                         self.constraintL -= constrainedNormalsDotCoeffOverdAP.getDivergence() * mesh.cellVolumes
 
@@ -296,7 +296,7 @@ class DiffusionTerm(Term):
         mesh = var.getMesh()
         
         N = mesh.numberOfCells
-        M = mesh._getMaxFacesPerCell()
+        M = mesh._maxFacesPerCell
 
         if self.order > 2:
 
@@ -629,7 +629,7 @@ class DiffusionTerm(Term):
 
 class DiffusionTermNoCorrection(DiffusionTerm):
     def _getNormals(self, mesh):
-        return mesh._getFaceNormals()
+        return mesh._faceNormals
 
     def _treatMeshAsOrthogonal(self, mesh):
         return True

@@ -62,7 +62,7 @@ class PeriodicGrid2D(Grid2D):
         True
 
         >>> print (parallel.procID > 0 or 
-        ...        numerix.allclose(mesh._getCellDistances(),
+        ...        numerix.allclose(mesh._cellDistances,
         ...                         [ 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 1., 1., 0.5, 1., 1., 0.5]))
         True
  
@@ -75,7 +75,7 @@ class PeriodicGrid2D(Grid2D):
         True
 
         >>> print (parallel.procID > 0 or 
-        ...        numerix.allclose(mesh._getCellToCellDistances(),
+        ...        numerix.allclose(mesh._cellToCellDistances,
         ...                         [[ 0.5, 0.5, 0.5, 0.5],
         ...                          [ 1., 1., 1., 1. ],
         ...                          [ 0.5, 0.5, 0.5, 0.5],
@@ -86,11 +86,11 @@ class PeriodicGrid2D(Grid2D):
         ...            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]]
 
         >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._getFaceNormals(), normals))
+        ...        or numerix.allclose(mesh._faceNormals, normals))
         True
 
         >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._getCellVertexIDs(),
+        ...        or numerix.allclose(mesh._cellVertexIDs,
         ...                            [[4, 5, 7, 8],
         ...                             [3, 4, 6, 7],
         ...                             [1, 2, 4, 5],

@@ -118,7 +118,7 @@ class Gist2DViewer(_GistViewer):
         if datamax == datamin:
             datamax = datamin + 1e-10
 
-        vertexIDs = self.mesh._getOrderedCellVertexIDs()
+        vertexIDs = self.mesh._orderedCellVertexIDs
 
         vertexCoords = self.mesh.vertexCoords
 
@@ -128,7 +128,7 @@ class Gist2DViewer(_GistViewer):
         import gist
 
         import Numeric
-        gist.plfp(Numeric.array(numerix.array(self.vars[0])), yCoords, xCoords, self.mesh._getNumberOfFacesPerCell(), cmin=datamin, cmax=datamax)
+        gist.plfp(Numeric.array(numerix.array(self.vars[0])), yCoords, xCoords, self.mesh._numberOfFacesPerCell, cmin=datamin, cmax=datamax)
 
         import colorbar
 
@@ -139,7 +139,7 @@ class Gist2DViewer(_GistViewer):
     def plotMesh(self, filename = None):
         self._plot()
         
-        faceVertexIDs = self.mesh._getFaceVertexIDs()
+        faceVertexIDs = self.mesh.faceVertexIDs
         vertexCoords = self.mesh.vertexCoords
         
         x0 = numerix.take(vertexCoords[0], faceVertexIDs[0])

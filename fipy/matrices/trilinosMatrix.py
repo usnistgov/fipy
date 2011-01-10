@@ -671,13 +671,13 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
          return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
 
     def _getGlobalNonOverlappingRowIDs(self):
-        return self._cellIDsToGlobalRowIDs(self.mesh._getGlobalNonOverlappingCellIDs())
+        return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
 
     def _getGlobalOverlappingRowIDs(self):
-        return self._cellIDsToGlobalRowIDs(self.mesh._getGlobalOverlappingCellIDs())
+        return self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
 
     def _getLocalNonOverlappingRowIDs(self):
-        return self._cellIDsToLocalRowIDs(self.mesh._getLocalNonOverlappingCellIDs())
+        return self._cellIDsToLocalRowIDs(self.mesh._localNonOverlappingCellIDs)
 
     def copy(self):
         tmp = _TrilinosMatrix.copy(self)
