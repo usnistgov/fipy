@@ -89,7 +89,7 @@ Import a mesh previously created using :term:`Gmsh`.
 Set the center most cell to have a value.
 
 >>> var = CellVariable(mesh=mesh, hasOld=1)
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> var[numerix.argmin(x**2 + y**2)] = 1.
 
 Choose an orientation for the anisotropy.
@@ -108,7 +108,7 @@ Make the equation, viewer and solve.
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(var, datamin=0.0, datamax=0.001)
 
->>> mass = float(var.getCellVolumeAverage() * numerix.sum(mesh.getCellVolumes()))
+>>> mass = float(var.getCellVolumeAverage() * numerix.sum(mesh.cellVolumes))
 >>> time = 0
 >>> dt=0.00025 
 
@@ -125,7 +125,7 @@ Make the equation, viewer and solve.
 
 Compare with the analytical solution (within 5% accuracy).
 
->>> X, Y = numerix.dot(mesh.getCellCenters(), CellVariable(mesh=mesh, rank=2, value=rotationMatrix))
+>>> X, Y = numerix.dot(mesh.cellCenters, CellVariable(mesh=mesh, rank=2, value=rotationMatrix))
 >>> solution = mass * numerix.exp(-(X**2 / gamma_prime[0][0] + Y**2 / gamma_prime[1][1]) / (4 * time)) / (4 * numerix.pi * time * numerix.sqrt(gamma_prime[0][0] * gamma_prime[1][1]))
 >>> print max(abs((var - solution) / max(solution))) < 0.05
 True

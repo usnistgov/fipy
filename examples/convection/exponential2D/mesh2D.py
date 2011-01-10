@@ -52,8 +52,8 @@ mesh with ``nx = 10`` and ``ny = 10``:
 ...                    mesh = mesh,
 ...                    value = valueLeft)
 
->>> var.constrain(valueLeft, mesh.getFacesLeft())
->>> var.constrain(valueRight, mesh.getFacesRight())
+>>> var.constrain(valueLeft, mesh.facesLeft)
+>>> var.constrain(valueRight, mesh.facesRight)
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,0.)
@@ -66,7 +66,7 @@ mesh with ``nx = 10`` and ``ny = 10``:
 We test the solution against the analytical result:
 
 >>> axis = 0
->>> x = mesh.getCellCenters()[axis]
+>>> x = mesh.cellCenters[axis]
 >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD

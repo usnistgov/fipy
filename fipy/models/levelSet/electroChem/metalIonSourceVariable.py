@@ -85,7 +85,7 @@ class _MetalIonSourceVariable(CellVariable):
     def _calcValue(self):
         ionVar = numerix.array(self.ionVar)
         ionVar = numerix.where(ionVar > 1e-20, ionVar, 1e-20)
-        return numerix.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh.getCellVolumes() * self.metalIonMolarVolume) / ionVar
+        return numerix.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh.cellVolumes * self.metalIonMolarVolume) / ionVar
     
         
 def _test(): 

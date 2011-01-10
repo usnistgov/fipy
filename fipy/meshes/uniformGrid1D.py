@@ -53,7 +53,7 @@ class UniformGrid1D(Grid1D):
     Creates a 1D grid mesh.
     
         >>> mesh = UniformGrid1D(nx = 3)
-        >>> print mesh.getCellCenters()
+        >>> print mesh.cellCenters
         [[ 0.5  1.5  2.5]]
          
     """

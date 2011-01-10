@@ -94,14 +94,14 @@ class Gnuplot2DViewer(_GnuplotViewer):
         mesh = self.vars[0].getMesh()
 
         if isinstance(mesh, Grid2D.__class__):
-            nx, ny = mesh.getShape()
+            nx, ny = mesh.shape
         else:
-            N = int(numerix.sqrt(mesh.getNumberOfCells()))
+            N = int(numerix.sqrt(mesh.numberOfCells))
             nx, ny = N, N
             
         self.g('set dgrid3d %i, %i, 2' % (ny, nx))
 
-        x, y = mesh.getCellCenters()
+        x, y = mesh.cellCenters
         import Gnuplot
         data = Gnuplot.Data(numerix.array(x), numerix.array(y),
                             self.vars[0].getValue())

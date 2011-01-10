@@ -248,7 +248,7 @@ class Tri2D(Mesh2D):
             >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((18, 19, 20,  6,  7,  8,  9, 10, 11, 12,  0,  1,  2, 15,  3,  4,  5, 12, 13, 14, 15, 16, 17,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11,  0,  1,  2,  3,  4,  5),
             ...                                 (-1, -1, -1, 21, 22, 23, -1, -1, -1, -1, 13, 14, -1, -1, 16, 17, -1, 18, 19, 20, 21, 22, 23, 18, 19, 20, 21, 22, 23, 12, 13, 14, 15, 16, 17,  6,  7,  8,  9, 10, 11)), -1)
-            >>> numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
+            >>> numerix.allequal(faceCellIds, mesh.faceCellIDs)
             1
             
             >>> d = (numerix.sqrt((dx*dx)+(dy*dy))) / 2.0 ## length of diagonal edges  
@@ -260,7 +260,7 @@ class Tri2D(Mesh2D):
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> xc = dy  / numerix.sqrt((dx * dx) + (dy * dy))
@@ -280,14 +280,14 @@ class Tri2D(Mesh2D):
             >>> cellVolumes = numerix.array((0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
             ...                              0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
             ...                              0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25))
-            >>> numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> sixth = 1.0 / 6.0
             >>> cellCenters = numerix.array(((  5*sixth, 11*sixth, 17*sixth,  5*sixth, 11*sixth, 17*sixth,      0.5,      1.5,      2.5,      0.5,      1.5,      2.5,  1*sixth,  7*sixth, 13*sixth,  1*sixth,  7*sixth, 13*sixth,      0.5,      1.5,      2.5,      0.5,      1.5,      2.5),
             ...                              (      0.5,      0.5,      0.5,      1.5,      1.5,      1.5,  5*sixth,  5*sixth,  5*sixth, 11*sixth, 11*sixth, 11*sixth,      0.5,      0.5,      0.5,      1.5,      1.5,      1.5,  1*sixth,  1*sixth,  1*sixth,  7*sixth,  7*sixth,  7*sixth)))
             >>> cellCenters *= numerix.array([[dx], [dy]])
-            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
             True
                                               
             >>> yd = numerix.sqrt(((dx/12.0)*(dx/12.0)) + ((dy/ 4.0)*(dy/ 4.0)))
@@ -378,7 +378,7 @@ class Tri2D(Mesh2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.getCellCenters())
             True
         """
 

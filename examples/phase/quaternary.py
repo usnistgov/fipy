@@ -359,7 +359,7 @@ We start with a sharp phase boundary
        0& \text{for $x > L/2$,}
    \end{cases}
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L / 2)
 
@@ -408,7 +408,7 @@ We can confirm that the far-field phases have remained separated
 
 .. index:: take, allclose
 
->>> X = mesh.getFaceCenters()[0]
+>>> X = mesh.faceCenters[0]
 >>> print allclose(phase.getFaceValue()[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
 True
 >>> print allclose(phase.getFaceValue()[X==L], 0.0, rtol = 1e-5, atol = 1e-5)

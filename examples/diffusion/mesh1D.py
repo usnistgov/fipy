@@ -103,8 +103,8 @@ conditions is applied using
 ``phi``:meth:`~fipy.variables.variable.Variable.constrain`` with tthese faces and
 a value (``valueLeft``).
 
->>> phi.constrain(valueRight, mesh.getFacesRight())
->>> phi.constrain(valueLeft, mesh.getFacesLeft())
+>>> phi.constrain(valueRight, mesh.facesRight)
+>>> phi.constrain(valueLeft, mesh.facesLeft)
 
 .. note::
     
@@ -161,7 +161,7 @@ diffusion problem is given by
 :math:`\phi = 1 - \erf(x/2\sqrt{D t})`. If the :term:`SciPy` library is available,
 the result is tested against the expected profile: 
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> t = timeStepDuration * steps
 
 >>> try:
@@ -328,8 +328,8 @@ and then declare our boundary condition as a function of this :class:`~fipy.vari
 
 >>> del phi.faceConstraints
 >>> valueLeft = 0.5 * (1 + sin(time))
->>> phi.constrain(valueLeft, mesh.getFacesLeft())
->>> phi.constrain(0., mesh.getFacesRight())
+>>> phi.constrain(valueLeft, mesh.facesLeft)
+>>> phi.constrain(0., mesh.facesRight)
 
 >>> eqI = TransientTerm() == DiffusionTerm(coeff=D)
 
@@ -385,7 +385,7 @@ coefficient on the mesh faces
 .. index:: FaceVariable
 
 >>> D = FaceVariable(mesh=mesh, value=1.0)
->>> x = mesh.getFaceCenters()[0]
+>>> x = mesh.faceCenters[0]
 >>> D.setValue(0.1, where=(L / 4. <= x) & (x < 3. * L / 4.))
 
 The boundary conditions are a fixed value of 
@@ -399,8 +399,8 @@ to the left and a fixed flux of
 to the right:
 
 >>> phi = CellVariable(mesh=mesh)
->>> phi.getFaceGrad().constrain(fluxRight, mesh.getFacesRight())
->>> phi.constrain(valueLeft, mesh.getFacesLeft())
+>>> phi.getFaceGrad().constrain(fluxRight, mesh.facesRight)
+>>> phi.constrain(valueLeft, mesh.facesLeft)
 
 We re-initialize the solution variable
     
@@ -422,7 +422,7 @@ The analytical solution is simply
    
 or
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> phiAnalytical.setValue(x)
 >>> phiAnalytical.setValue(10 * x - 9. * L / 4. , 
 ...                        where=(L / 4. <= x) & (x < 3. * L / 4.))
@@ -503,8 +503,8 @@ as
 We apply the same boundary conditions that we used for the uniform
 diffusivity cases
 
->>> phi[0].constrain(valueRight, mesh.getFacesRight())
->>> phi[0].constrain(valueLeft, mesh.getFacesLeft())
+>>> phi[0].constrain(valueRight, mesh.facesRight)
+>>> phi[0].constrain(valueLeft, mesh.facesLeft)
 
 Although this problem does not have an exact transient solution, it
 can be solved in steady-state, with
@@ -513,7 +513,7 @@ can be solved in steady-state, with
 
    \phi(x) = 1 - \sqrt{\frac{x}{L}}
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> phiAnalytical.setValue(1. - sqrt(x/L))
 
 We create a viewer to compare the different numbers of sweeps with the

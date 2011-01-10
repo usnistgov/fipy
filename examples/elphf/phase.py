@@ -148,7 +148,7 @@ We linearize the source term in the same way as in :mod:`example.phase.simple.in
 We separate the phase field into electrode and electrolyte regimes
 
 >>> phase.setValue(1.)
->>> phase.setValue(0., where=mesh.getCellCenters()[0] > L / 2)
+>>> phase.setValue(0., where=mesh.cellCenters[0] > L / 2)
 
 Even though we are solving the steady-state problem (:math:`M_\phi = \infty`) we
 still must sweep the solution several times to equilibrate
@@ -176,7 +176,7 @@ with an interfacial thickness :math:`d = \sqrt{\kappa_{\xi}/2W_n}`.
    
 We verify that the correct equilibrium solution is attained
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 
 >>> d = sqrt(phase.gradientEnergy / (2 * solvent.barrier))
 >>> analyticalArray = (1. - tanh((x - L/2.)/(2 * d))) / 2.

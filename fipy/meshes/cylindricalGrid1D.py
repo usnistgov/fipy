@@ -48,14 +48,14 @@ class CylindricalGrid1D(Grid1D):
     Creates a 1D cylindrical grid mesh.
     
         >>> mesh = CylindricalGrid1D(nx = 3)
-        >>> print mesh.getCellCenters()
+        >>> print mesh.cellCenters
         [[ 0.5  1.5  2.5]]
          
         >>> mesh = CylindricalGrid1D(dx = (1, 2, 3))
-        >>> print mesh.getCellCenters()
+        >>> print mesh.cellCenters
         [[ 0.5  2.   4.5]]
 
-        >>> mesh.getCellVolumes()
+        >>> mesh.cellVolumes
         array([  0.5,   4. ,  13.5])
          
         >>> mesh = CylindricalGrid1D(nx = 2, dx = (1, 2, 3))
@@ -64,10 +64,10 @@ class CylindricalGrid1D(Grid1D):
         IndexError: nx != len(dx)
 
         >>> mesh = CylindricalGrid1D(nx=2, dx=(1., 2.)) + ((1.,),)
-        >>> print mesh.getCellCenters()
+        >>> print mesh.cellCenters
         [[ 1.5  3. ]]
         >>> from fipy.tools import parallel
-        >>> print parallel.procID > 0  or numerix.allclose(mesh.getCellVolumes(), (1.5, 6))
+        >>> print parallel.procID > 0  or numerix.allclose(mesh.cellVolumes, (1.5, 6))
         True
         
     """

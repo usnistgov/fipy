@@ -79,12 +79,12 @@ class _GaussCellGradVariable(CellVariable):
         return grad / volumes
 
     def _calcValue(self):
-        N = self.mesh.getNumberOfCells()
+        N = self.mesh.numberOfCells
         M = self.mesh._getMaxFacesPerCell()
         
         ids = self.mesh.cellFaceIDs
 
         orientations = self.mesh._getCellFaceOrientations()
-        volumes = self.mesh.getCellVolumes()
+        volumes = self.mesh.cellVolumes
 
         return inline._optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)

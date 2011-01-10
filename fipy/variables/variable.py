@@ -791,14 +791,14 @@ class Variable(object):
             '((var00[i] * var01[i]) * var1[i])'
 
         The following test was implemented due to a problem with
-        contiguous arrays.  The `mesh.getCellCenters()[1]` command
+        contiguous arrays.  The `mesh.cellCenters[1]` command
         introduces a non-contiguous array into the `Variable` and this
         causes the inline routine to return senseless results.
         
             >>> from fipy import Grid2D, CellVariable
             >>> mesh = Grid2D(dx=1., dy=1., nx=2, ny=2)
             >>> var = CellVariable(mesh=mesh, value=0.)
-            >>> Y =  mesh.getCellCenters()[1]
+            >>> Y =  mesh.cellCenters[1]
             >>> var.setValue(Y + 1.0)
             >>> print var - Y
             [ 1.  1.  1.  1.]

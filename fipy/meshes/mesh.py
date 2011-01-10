@@ -369,7 +369,7 @@ class Mesh(object):
            ...                                                           [6, 7, 9, 10]]).flatten().all()
            True
 
-           >>> mesh._connectFaces(numerix.nonzero(mesh.getFacesLeft()), numerix.nonzero(mesh.getFacesRight()))
+           >>> mesh._connectFaces(numerix.nonzero(mesh.facesLeft), numerix.nonzero(mesh.facesRight))
 
            >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
            ...                                                           [7, 6, 10, 9],
@@ -1030,11 +1030,11 @@ class Mesh(object):
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> from fipy.tools import parallel
             >>> print parallel.procID > 0 or numerix.allequal((21, 25), 
-            ...                              numerix.nonzero(mesh.getFacesLeft())[0])
+            ...                              numerix.nonzero(mesh.facesLeft)[0])
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> print parallel.procID > 0 or numerix.allequal((9, 13), 
-            ...                              numerix.nonzero(mesh.getFacesLeft())[0])
+            ...                              numerix.nonzero(mesh.facesLeft)[0])
             True
 
         """
@@ -1056,11 +1056,11 @@ class Mesh(object):
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> from fipy.tools import parallel
             >>> print parallel.procID > 0 or numerix.allequal((24, 28), 
-            ...                              numerix.nonzero(mesh.getFacesRight())[0])
+            ...                              numerix.nonzero(mesh.facesRight)[0])
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)    
             >>> print parallel.procID > 0 or numerix.allequal((12, 16), 
-            ...                                               numerix.nonzero(mesh.getFacesRight())[0])
+            ...                                               numerix.nonzero(mesh.facesRight)[0])
             True
             
         """
@@ -1082,11 +1082,11 @@ class Mesh(object):
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> from fipy.tools import parallel
             >>> print parallel.procID > 0 or numerix.allequal((12, 13, 14), 
-            ...                              numerix.nonzero(mesh.getFacesBottom())[0])
+            ...                              numerix.nonzero(mesh.facesBottom)[0])
             1
-            >>> x, y, z = mesh.getFaceCenters()
+            >>> x, y, z = mesh.faceCenters
             >>> print parallel.procID > 0 or numerix.allequal((12, 13), 
-            ...                              numerix.nonzero(mesh.getFacesBottom() & (x < 1))[0])
+            ...                              numerix.nonzero(mesh.facesBottom & (x < 1))[0])
             1
             
         """
@@ -1112,11 +1112,11 @@ class Mesh(object):
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> from fipy.tools import parallel
             >>> print parallel.procID > 0 or numerix.allequal((18, 19, 20), 
-            ...                              numerix.nonzero(mesh.getFacesTop())[0])
+            ...                              numerix.nonzero(mesh.facesTop)[0])
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
             >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8), 
-            ...                              numerix.nonzero(mesh.getFacesTop())[0])
+            ...                              numerix.nonzero(mesh.facesTop)[0])
             True
             
         """
@@ -1141,7 +1141,7 @@ class Mesh(object):
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> from fipy.tools import parallel
             >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8, 9, 10, 11), 
-            ...                              numerix.nonzero(mesh.getFacesBack())[0])
+            ...                              numerix.nonzero(mesh.facesBack)[0])
             True
 
         """
@@ -1163,7 +1163,7 @@ class Mesh(object):
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> from fipy.tools import parallel
             >>> print parallel.procID > 0 or numerix.allequal((0, 1, 2, 3, 4, 5), 
-            ...                              numerix.nonzero(mesh.getFacesFront())[0])
+            ...                              numerix.nonzero(mesh.facesFront)[0])
             True
 
         """
@@ -1450,7 +1450,7 @@ class Mesh(object):
             >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values((( 0,  0,  0, 0,  0,  0,  1,  1,  1,  1),
             ...                                 (-1, -1, -1, 1, -1, -1, -1, -1, -1, -1)), -1)
-            >>> numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
+            >>> numerix.allequal(faceCellIds, mesh.faceCellIDs)
             1
             
             >>> dxdy = dx * dy
@@ -1465,7 +1465,7 @@ class Mesh(object):
             >>> faceCenters = faceCoords[...,0,:] + faceCoords[...,1,:] + faceCoords[...,2,:] + faceCoords[...,3,:]
             >>> numVex = numerix.array((4., 4., 4., 4., 4., 4., 3., 3., 4., 4.))
             >>> faceCenters /= numVex
-            >>> numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> faceNormals = numerix.array((( 0., 0., -1., 1.,  0., 0.,  0., 0.,  0., dy / numerix.sqrt(dy**2 + dx**2)),
@@ -1484,13 +1484,13 @@ class Mesh(object):
             1
                                              
             >>> cellVolumes = numerix.array((dx*dy*dz, dx*dy*dz / 2.))
-            >>> numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellCenters = numerix.array(((dx/2., dx+dx/3.),
             ...                              (dy/2.,    dy/3.),
             ...                              (dz/2.,    dz/2.)))
-            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
             True
                                               
             >>> d1 = numerix.sqrt((dx / 3.)**2 + (dy / 6.)**2)
@@ -1614,7 +1614,7 @@ class Mesh(object):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.getCellCenters())
             True
 
             >>> dx = 1.

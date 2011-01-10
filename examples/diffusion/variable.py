@@ -40,7 +40,7 @@ number of cells set to `nx = 10`.
 
 A simple analytical answer can be used to test the result:
    >>> DiffusionTerm(coeff = diffCoeff).solve(var)
-   >>> x = mesh.getCellCenters()[0]
+   >>> x = mesh.cellCenters[0]
    >>> values = where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = where(x < L / 4., x, values)
    >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
@@ -71,11 +71,11 @@ var = CellVariable(
 
 diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
 
-x = mesh.getFaceCenters()[0]
+x = mesh.faceCenters[0]
 diffCoeff.setValue(0.1, where=(L/4. <= x) & (x < 3. * L / 4.))
 
-var.getFaceGrad().constrain(1., mesh.getFacesRight())
-var.constrain(valueLeft, mesh.getFacesLeft())
+var.getFaceGrad().constrain(1., mesh.facesRight)
+var.constrain(valueLeft, mesh.facesLeft)
 
 if __name__ == '__main__':
     DiffusionTerm(coeff = diffCoeff).solve(var)

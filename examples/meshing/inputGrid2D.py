@@ -60,19 +60,19 @@ Once the mesh has been built information about the mesh can be
 obtained.  For example the mesh volumes can be obtained with the
 `getCellVolumes()` method.
 
-   >>> vols = mesh.getCellVolumes()
+   >>> vols = mesh.cellVolumes
    >>> allclose(dx * dy * ones(nx * ny), vols)
    1
 
 Obtain the number of cells in the mesh
 
-   >>> N = mesh.getNumberOfCells()
+   >>> N = mesh.numberOfCells
    >>> allclose(N, numberOfElements)
    1
 
 Obtain all the left exterior faces, this is equal to `ny`.
 
-   >>> faces = mesh.getFacesLeft()
+   >>> faces = mesh.facesLeft
    >>> len(faces) == ny
    1
 

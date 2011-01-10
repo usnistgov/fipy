@@ -668,7 +668,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     def _cellIDsToLocalRowIDs(self, IDs):
          M = self.numberOfVariables
          N = len(IDs)
-         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.getNumberOfCells()).flatten()
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
 
     def _getGlobalNonOverlappingRowIDs(self):
         return self._cellIDsToGlobalRowIDs(self.mesh._getGlobalNonOverlappingCellIDs())
@@ -860,7 +860,7 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
                 ---        ---     1.000000  
         """
         _TrilinosMeshMatrix.__init__(self, mesh=mesh, bandwidth=1)
-        size = mesh.getNumberOfCells()
+        size = mesh.numberOfCells
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
 

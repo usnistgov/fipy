@@ -190,7 +190,7 @@ class Mesh2D(Mesh):
             oldVertices = numerix.resize(oldVertices, (3, len(oldVertices[0])))
             oldVertices[2] = 0
 
-        NCells = mesh.getNumberOfCells()
+        NCells = mesh.numberOfCells
         NFac = mesh._getNumberOfFaces()
         NFacPerCell =  mesh._getMaxFacesPerCell()
 
@@ -230,7 +230,7 @@ class Mesh2D(Mesh):
 
             vert0 = vert0 + len(oldVertices[0])
 
-            NCells = mesh.getNumberOfCells()
+            NCells = mesh.numberOfCells
 
             
             ## build the cells, the first layer has slightly different ordering
@@ -295,7 +295,7 @@ class Mesh2D(Mesh):
             ...                                   0,  0,  1, 2,  3, 3,  4,  5,  6, 6,  7),
             ...                                 (-1, -1, -1, 3,  4, 5, -1, -1, -1, 
             ...                                  -1,  1,  2, 6, -1, 4,  5,  7, -1, 7, -1)), -1)
-            >>> numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
+            >>> numerix.allequal(faceCellIds, mesh.faceCellIDs)
             1
             
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
@@ -306,7 +306,7 @@ class Mesh2D(Mesh):
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., 
@@ -330,12 +330,12 @@ class Mesh2D(Mesh):
             1
                                              
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy / 2., dx*dy / 2.))
-            >>> numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2., 3.*dx+dx/3., 3.*dx+dx/3.),
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2., 2.*dy/3., 4.*dy/3.)))
-            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
             True
                                               
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., 
@@ -460,7 +460,7 @@ class Mesh2D(Mesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.getCellCenters())
             True
 
             

@@ -80,7 +80,7 @@ class ConvectionTerm(FaceTerm):
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a vector value.
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> m2 = Grid2D(nx=2, ny=1)
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)
@@ -189,10 +189,10 @@ class ConvectionTerm(FaceTerm):
                     else:
                         alpha = 0.0
 
-                    exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
+                    exteriorCoeff =  self.coeff * mesh.exteriorFaces
 
-                    self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
-                    self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+                    self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.cellVolumes
+                    self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.cellVolumes
                 else:
                     self.constraintL = 0
                     self.constraintB = 0

@@ -57,20 +57,20 @@ a test against the analytical result.
 >>> phi0 = 1.0
 >>> alpha = 1.0
 >>> phi = CellVariable(name=r"$\phi$", mesh=mesh, value=phi0)
->>> solution = CellVariable(name=r"solution", mesh=mesh, value=phi0 * exp(-alpha * mesh.getCellCenters()[0]))
+>>> solution = CellVariable(name=r"solution", mesh=mesh, value=phi0 * exp(-alpha * mesh.cellCenters[0]))
 
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi, solution))
 ...     viewer.plot()
 ...     raw_input("press key to continue")
 
->>> phi.constrain(phi0, mesh.getFacesLeft())
+>>> phi.constrain(phi0, mesh.facesLeft)
 >>> ## fake outflow condition
->>> phi.getFaceGrad().constrain(0, mesh.getFacesRight())
+>>> phi.getFaceGrad().constrain(0, mesh.facesRight)
 
 >>> eq = PowerLawConvectionTerm((1,)) + ImplicitSourceTerm(alpha)
 >>> eq.solve(phi)
->>> print numerix.allclose(phi, phi0 * exp(-alpha * mesh.getCellCenters()[0]), atol=1e-3)
+>>> print numerix.allclose(phi, phi0 * exp(-alpha * mesh.cellCenters[0]), atol=1e-3)
 True
 
 >>> if __name__ == "__main__":

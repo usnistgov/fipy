@@ -122,7 +122,7 @@ mesh = Grid1D(nx = nx, dx = dx, communicator=serial)
 ## build the distance variable
 
 
-value = mesh.getCellCenters()[0] - 1.499 * dx
+value = mesh.cellCenters[0] - 1.499 * dx
 ##distanceVar = DistanceVariable(mesh = mesh, value = dx * (arange(nx) - 0.999))
 distanceVar = DistanceVariable(mesh = mesh, value = value, hasOld = 1)
 
@@ -138,7 +138,7 @@ bulkEqn = buildSurfactantBulkDiffusionEquation(bulkVar,
                                           diffusionCoeff = diffusion,
                                           rateConstant = rateConstant * siteDensity)
 
-bulkVar.constrain(cinf, mesh.getFacesRight())
+bulkVar.constrain(cinf, mesh.facesRight)
 
 ## Build the surfactant equation
 
@@ -149,7 +149,7 @@ surfEqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
 
 ## Build the analytical solutions,
 
-x = mesh.getCellCenters()[0,1:] - dx
+x = mesh.cellCenters[0,1:] - dx
 
 def concentrationFunc(theta):
     tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)

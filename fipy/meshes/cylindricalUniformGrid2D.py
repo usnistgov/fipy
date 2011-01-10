@@ -111,19 +111,19 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                                   5,  0,  0, 1,  2,  3,  3,  4,  5),
             ...                                 (-1, -1, -1, 3,  4,  5, -1, -1, 
             ...                                  -1, -1,  1, 2, -1, -1,  4,  5, -1)), -1)
-            >>> print parallel.procID > 0 or numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
+            >>> print parallel.procID > 0 or numerix.allequal(faceCellIds, mesh.faceCellIDs)
             True
             
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
             >>> if parallel.procID == 0: 
-            ...     faceAreas = faceAreas * mesh.getFaceCenters()[0]
+            ...     faceAreas = faceAreas * mesh.faceCenters[0]
             >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh._getFaceAreas(), atol = 1e-10, rtol = 1e-10)
             True
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> print parallel.procID > 0 or numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., 
@@ -142,13 +142,13 @@ class CylindricalUniformGrid2D(UniformGrid2D):
                                              
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
             >>> if parallel.procID == 0:
-            ...     cellVolumes = cellVolumes * mesh.getCellCenters()[0]
-            >>> print numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            ...     cellVolumes = cellVolumes * mesh.cellCenters[0]
+            >>> print numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2.,    dx/2., 3.*dx/2., 5.*dx/2.),
             ...                              (dy/2.,    dy/2.,    dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2.)))
-            >>> print numerix.allclose(cellCenters, mesh.getCellCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
             True
                                               
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
@@ -211,10 +211,10 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                                      ((-dx,) * 6, (0,) * 6, (dx,) * 6, (0,) * 6)))
             
             >>> if parallel.procID == 0:
-            ...     cellAreaProjections[:,0] = cellAreaProjections[:,0] * mesh.getCellCenters()[0]
-            ...     cellAreaProjections[:,1] = cellAreaProjections[:,1] * (mesh.getCellCenters()[0] + mesh.dx / 2.)
-            ...     cellAreaProjections[:,2] = cellAreaProjections[:,2] * mesh.getCellCenters()[0]
-            ...     cellAreaProjections[:,3] = cellAreaProjections[:,3] * (mesh.getCellCenters()[0] - mesh.dx / 2.)
+            ...     cellAreaProjections[:,0] = cellAreaProjections[:,0] * mesh.cellCenters[0]
+            ...     cellAreaProjections[:,1] = cellAreaProjections[:,1] * (mesh.cellCenters[0] + mesh.dx / 2.)
+            ...     cellAreaProjections[:,2] = cellAreaProjections[:,2] * mesh.cellCenters[0]
+            ...     cellAreaProjections[:,3] = cellAreaProjections[:,3] * (mesh.cellCenters[0] - mesh.dx / 2.)
             >>> print parallel.procID > 0 or numerix.allclose(cellAreaProjections, mesh._getCellAreaProjections(), atol = 1e-10, rtol = 1e-10)
             True
 
@@ -230,7 +230,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allclose(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.getCellCenters())
             True
             
             >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],
@@ -247,7 +247,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             True
             >>> faceCellIDs = [[0, 1, 2, 0, 1, 2, 0, 0, 1, 2],
             ...                [-1, -1, -1, -1, -1, -1, -1, 1, 2, -1]]
-            >>> print parallel.procID > 0 or numerix.allequal(mesh.getFaceCellIDs().filled(-1),
+            >>> print parallel.procID > 0 or numerix.allequal(mesh.faceCellIDs.filled(-1),
             ...                                               faceCellIDs)
             True
 
@@ -260,7 +260,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             True
             >>> faceCellIDs = [[0, 0, 1, 2, 0, 0, 1, 1, 2, 2],
             ...                [-1, 1, 2, -1, -1, -1, -1, -1, -1, -1]]
-            >>> print parallel.procID > 0 or numerix.allequal(mesh.getFaceCellIDs().filled(-1),
+            >>> print parallel.procID > 0 or numerix.allequal(mesh.faceCellIDs.filled(-1),
             ...                                               faceCellIDs)
             True
 

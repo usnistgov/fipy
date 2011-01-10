@@ -50,11 +50,11 @@ class Grid1D(Mesh1D):
     Creates a 1D grid mesh.
     
         >>> mesh = Grid1D(nx = 3)
-        >>> print mesh.getCellCenters()
+        >>> print mesh.cellCenters
         [[ 0.5  1.5  2.5]]
          
         >>> mesh = Grid1D(dx = (1, 2, 3))
-        >>> print mesh.getCellCenters()
+        >>> print mesh.cellCenters
         [[ 0.5  2.   4.5]]
          
         >>> mesh = Grid1D(nx = 2, dx = (1, 2, 3))

@@ -123,7 +123,7 @@ class _AdvectionTerm(Term):
             oldArray = var.getOld()
 
             mesh = var.getMesh()
-            NCells = mesh.getNumberOfCells()
+            NCells = mesh.numberOfCells
             NCellFaces = mesh._getMaxFacesPerCell()
 
             cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
@@ -148,7 +148,7 @@ class _AdvectionTerm(Term):
             else:
                 coeffXdiffereneces = 0.
 
-            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.getCellVolumes())
+            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.cellVolumes)
 
         else:
             return (var, SparseMatrix(mesh=var.getMesh()), 0)

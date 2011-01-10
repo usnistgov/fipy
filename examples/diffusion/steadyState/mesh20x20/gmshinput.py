@@ -61,13 +61,13 @@ if __name__ == '__main__':
 
     viewer = Viewer(vars = var)
 
-    var.constrain(valueLeft, mesh.getFacesLeft())
-    var.constrain(valueRight, mesh.getFacesRight())
+    var.constrain(valueLeft, mesh.facesLeft)
+    var.constrain(valueRight, mesh.facesRight)
 
     DiffusionTerm().solve(var)
 
     varArray = array(var)
-    x = mesh.getCellCenters()[0]
+    x = mesh.cellCenters[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray
     errorVar = CellVariable(name = 'absolute error',

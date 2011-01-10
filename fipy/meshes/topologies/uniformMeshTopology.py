@@ -49,7 +49,7 @@ from abstractMeshTopology import AbstractMeshTopology
 class UniformMeshTopology1D(AbstractMeshTopology):
 
     def __init__(self, mesh):
-        self._exteriorFaces = mesh.getFacesLeft() | mesh.getFacesRight()
+        self._exteriorFaces = mesh.facesLeft | mesh.facesRight
         self.mesh = mesh
 
     def _getInteriorFaces(self):
@@ -238,7 +238,7 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         return MA.reshape(ids.swapaxes(1,2), (4, self.mesh.numberOfCells))
         
     def _getCellToCellIDsFilled(self):
-        N = self.mesh.getNumberOfCells()
+        N = self.mesh.numberOfCells
         M = self.mesh._getMaxFacesPerCell()
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self._getCellToCellIDs()
@@ -295,11 +295,11 @@ class UniformMeshTopology3D(AbstractMeshTopology):
         return interiorFaces
 
     def _getCellToFaceOrientations(self):
-        tmp = numerix.take(self.mesh.getFaceCellIDs()[0], self.mesh.cellFaceIDs)
+        tmp = numerix.take(self.mesh.faceCellIDs[0], self.mesh.cellFaceIDs)
         return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
 
     def _getAdjacentCellIDs(self):
-        faceCellIDs = self.mesh.getFaceCellIDs()
+        faceCellIDs = self.mesh.faceCellIDs
         return (MA.where(MA.getmaskarray(faceCellIDs[0]), faceCellIDs[1], faceCellIDs[0]).filled(),
                 MA.where(MA.getmaskarray(faceCellIDs[1]), faceCellIDs[0], faceCellIDs[1]).filled())
 
@@ -323,7 +323,7 @@ class UniformMeshTopology3D(AbstractMeshTopology):
         return MA.reshape(ids.swapaxes(1,3), (6, self.mesh.numberOfCells))
         
     def _getCellToCellIDsFilled(self):
-        N = self.mesh.getNumberOfCells()
+        N = self.mesh.numberOfCells
         M = self.mesh._getMaxFacesPerCell()
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self._getCellToCellIDs()

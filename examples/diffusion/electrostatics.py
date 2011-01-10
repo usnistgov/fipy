@@ -75,7 +75,7 @@ The dimensionless Poisson equation is
 Because this equation admits an infinite number of potential profiles,
 we must constrain the solution by fixing the potential at one point:
     
->>> potential.constrain(0., mesh.getFacesLeft())
+>>> potential.constrain(0., mesh.facesLeft)
 
 First, we obtain a uniform charge distribution by setting a uniform concentration
 of electrons :math:`C_{\text{e}^{-}} = 1`.
@@ -92,7 +92,7 @@ This problem has the analytical solution
 
    \psi(x) = \frac{x^2}{2} - 2x
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> analytical = CellVariable(mesh=mesh, name="analytical solution", 
 ...                           value=(x**2)/2 - 2*x)
 
@@ -122,7 +122,7 @@ Next, we segregate all of the electrons to right side of the domain
        1& \text{for $x > L/2$.}
    \end{cases}
     
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> electrons.setValue(0.)
 >>> electrons.setValue(1., where=x > L / 2.)
 

@@ -70,12 +70,12 @@ var = CellVariable(name = "variable",
 
 ## viewer.plot()
 
-var.constrain(valueSides, mesh.getFacesLeft())
-var.constrain(valueSides, mesh.getFacesRight())
-var.constrain(valueSides, mesh.getFacesTop())
-var.constrain(valueSides, mesh.getFacesBottom())
-var.constrain(valueFront, mesh.getFacesFront())
-var.constrain(valueBack, mesh.getFacesBack())
+var.constrain(valueSides, mesh.facesLeft)
+var.constrain(valueSides, mesh.facesRight)
+var.constrain(valueSides, mesh.facesTop)
+var.constrain(valueSides, mesh.facesBottom)
+var.constrain(valueFront, mesh.facesFront)
+var.constrain(valueBack, mesh.facesBack)
 
 ## viewer.plot()
 

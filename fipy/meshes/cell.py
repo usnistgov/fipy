@@ -49,7 +49,7 @@ class Cell:
 
     @property
     def center(self):
-        return self.mesh.getCellCenters()[...,self.id]
+        return self.mesh.cellCenters[...,self.id]
 
     @getsetDeprecated
     def _getCellToCellDistances(self):
@@ -82,7 +82,7 @@ class Cell:
     def normal(self, index):
         dis = self._getCellToCellDistances()[...,index]
         adjCellID = self._getCellToCellIDs()[...,index]
-        vec = self.getCenter() - self.mesh.getCellCenters()[...,adjCellID]
+        vec = self.getCenter() - self.mesh.cellCenters[...,adjCellID]
         return vec / dis
 
     def __repr__(self):

@@ -59,7 +59,7 @@ class _CellVolumeAverageVariable(Variable):
 
     def _calcValue(self):
         mesh = self.var.getMesh()
-        volumes = CellVariable(mesh=mesh, value=mesh.getCellVolumes())
+        volumes = CellVariable(mesh=mesh, value=mesh.cellVolumes)
         return (self.var * volumes).sum() / volumes.sum()
 
 def _test(): 

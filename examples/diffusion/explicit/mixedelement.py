@@ -90,7 +90,7 @@ var = CellVariable(
 
 eqn = TransientTerm() == ExplicitDiffusionTerm()
 
-exteriorFaces = bigMesh.getExteriorFaces()
+exteriorFaces = bigMesh.exteriorFaces
 xFace = bigMesh.getFaceCenters()[0]
 
 var.constrain(valueLeft, exteriorFaces & (xFace ** 2 < 0.000000000000001))

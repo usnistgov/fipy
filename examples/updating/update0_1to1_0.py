@@ -90,10 +90,10 @@ or
 >>> from fipy.boundaryConditions.fixedValue import FixedValue
 >>> from fipy.boundaryConditions.fixedFlux import FixedFlux
 >>> boundaryConditions = (
-...     FixedValue(mesh.getFacesLeft(), valueLeft),
-...     FixedValue(mesh.getFacesRight(), valueRight),
-...     FixedFlux(mesh.getFacesTop(), 0.),
-...     FixedFlux(mesh.getFacesBottom(), 0.)
+...     FixedValue(mesh.facesLeft, valueLeft),
+...     FixedValue(mesh.facesRight, valueRight),
+...     FixedFlux(mesh.facesTop, 0.),
+...     FixedFlux(mesh.facesBottom, 0.)
 ...     )
 
 The solution variable is initialized to `valueLeft`:
@@ -161,7 +161,7 @@ or
 .. index:: numerix
 
 >>> axis = 0
->>> x = mesh.getCellCenters()[:,axis]
+>>> x = mesh.cellCenters[:,axis]
 >>> from fipy.tools import numerix
 >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
@@ -227,8 +227,8 @@ but a `Grid1D` mesh does not even have top and bottom faces:
 >>> valueRight = 1.
 >>> from fipy.boundaryConditions.fixedValue import FixedValue
 >>> boundaryConditions = (
-...     FixedValue(mesh.getFacesLeft(), valueLeft),
-...     FixedValue(mesh.getFacesRight(), valueRight))
+...     FixedValue(mesh.facesLeft, valueLeft),
+...     FixedValue(mesh.facesRight, valueRight))
 
 The creation of the solution variable is unchanged:
     

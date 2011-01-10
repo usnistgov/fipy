@@ -422,7 +422,7 @@ class Grid2D(Mesh2D):
             >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0, 1, 2, 3, 3, 4, 5),
             ...                                 (-1, -1, -1, 3, 4, 5, -1, -1, -1, -1, 1, 2, -1, -1, 4, 5, -1)), -1)
-            >>> print parallel.procID > 0 or numerix.allequal(faceCellIds, mesh.getFaceCellIDs())
+            >>> print parallel.procID > 0 or numerix.allequal(faceCellIds, mesh.faceCellIDs)
             True
             
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
@@ -432,7 +432,7 @@ class Grid2D(Mesh2D):
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> print parallel.procID > 0 or numerix.allclose(faceCenters, mesh.getFaceCenters(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.),
@@ -448,12 +448,12 @@ class Grid2D(Mesh2D):
             True
                                              
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
-            >>> print parallel.procID > 0 or numerix.allclose(cellVolumes, mesh.getCellVolumes(), atol = 1e-10, rtol = 1e-10)
+            >>> print parallel.procID > 0 or numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2.),
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2.)))
-            >>> print numerix.allclose(mesh.getCellCenters(), cellCenters, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(mesh.cellCenters, cellCenters, atol = 1e-10, rtol = 1e-10)
             True
                                               
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2.),
@@ -544,7 +544,7 @@ class Grid2D(Mesh2D):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')            
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allclose(mesh.getCellCenters(), unpickledMesh.getCellCenters())
+            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.getCellCenters())
             True
         """
 

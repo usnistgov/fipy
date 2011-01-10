@@ -100,7 +100,7 @@ functions of the phase field
     
 We separate the solution domain into two different concentration regimes
 
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> substitutionals[0].setValue(0.3)
     >>> substitutionals[0].setValue(0.6, where=x > L / 2)
     >>> substitutionals[1].setValue(0.6)
@@ -161,7 +161,7 @@ we verify that the concentrations have become uniform
 We now rerun the problem with an initial condition that only has a
 concentration step in one corner.
 
-    >>> x, y = mesh.getCellCenters()
+    >>> x, y = mesh.cellCenters
     >>> substitutionals[0].setValue(0.3)
     >>> substitutionals[0].setValue(0.6, where=(x > L / 2.) & (y > L / 2.))
     >>> substitutionals[1].setValue(0.6)

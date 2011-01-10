@@ -65,7 +65,7 @@ class GaussianNoiseVariable(NoiseVariable):
        
     which can be obtained with::
         
-        sigmaSqrd = Mobility * kBoltzmann * Temperature / (mesh.getCellVolumes() * timeStep)
+        sigmaSqrd = Mobility * kBoltzmann * Temperature / (mesh.cellVolumes * timeStep)
         GaussianNoiseVariable(mesh = mesh, variance = sigmaSqrd)
 
     .. note:: 
@@ -87,7 +87,7 @@ class GaussianNoiseVariable(NoiseVariable):
     >>> from fipy.meshes.grid2D import Grid2D
     >>> mesh = Grid2D(dx = arange(0.1, 5., 0.1)**2, dy = arange(0.1, 3., 0.1)**3)
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> volumes = CellVariable(mesh=mesh,value=mesh.getCellVolumes())
+    >>> volumes = CellVariable(mesh=mesh,value=mesh.cellVolumes)
     >>> noise = GaussianNoiseVariable(mesh = mesh, mean = mean, 
     ...                               variance = variance / volumes)
            

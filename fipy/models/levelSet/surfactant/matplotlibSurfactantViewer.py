@@ -174,7 +174,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
 
         CS.ax.set_xlim((-maxX, maxX))
 
-#         zc.set_color(pylab.cm.jet(IDs / mesh.getNumberOfCells()))
+#         zc.set_color(pylab.cm.jet(IDs / mesh.numberOfCells))
 
 #         pylab.xlim(xmin=self._getLimit('xmin'),
 #                    xmax=self._getLimit('xmax'))

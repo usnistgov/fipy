@@ -69,7 +69,7 @@ class FaceTerm(Term):
         L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces), id2, id1)
         L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces),    id2, id2)
 
-        N = mesh.getNumberOfCells()
+        N = mesh.numberOfCells
         M = mesh._getMaxFacesPerCell()
 
         for boundaryCondition in boundaryConditions:
@@ -90,7 +90,7 @@ class FaceTerm(Term):
 
         inline._optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight)
 
-        N = mesh.getNumberOfCells()
+        N = mesh.numberOfCells
         M = mesh._getMaxFacesPerCell()
 
         for boundaryCondition in boundaryConditions:
@@ -157,7 +157,7 @@ class FaceTerm(Term):
 
             mesh = var.getMesh()
             id1, id2 = mesh._getAdjacentCellIDs()
-            interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
+            interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
 
             id1 = numerix.take(id1, interiorFaces)
             id2 = numerix.take(id2, interiorFaces)

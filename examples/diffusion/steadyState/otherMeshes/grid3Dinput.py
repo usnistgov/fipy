@@ -67,10 +67,10 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueBottomTop)
 
-var.constrain(valueLeftRight, mesh.getFacesLeft())
-var.constrain(valueLeftRight, mesh.getFacesRight())
-var.constrain(valueBottomTop, mesh.getFacesTop())
-var.constrain(valueBottomTop, mesh.getFacesBottom())
+var.constrain(valueLeftRight, mesh.facesLeft)
+var.constrain(valueLeftRight, mesh.facesRight)
+var.constrain(valueBottomTop, mesh.facesTop)
+var.constrain(valueBottomTop, mesh.facesBottom)
 
 #do the 2D problem for comparison
 

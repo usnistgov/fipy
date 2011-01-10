@@ -97,8 +97,8 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
 ##         gc.collect()
 
         mesh = self.vars[0].getMesh()
-        shape = mesh.getShape()
-        X, Y = mesh.getCellCenters()
+        shape = mesh.shape
+        X, Y = mesh.cellCenters
         Z = self.vars[0].getValue()
         X, Y, Z = [v.reshape(shape, order="FORTRAN") for v in (X, Y, Z)]
 

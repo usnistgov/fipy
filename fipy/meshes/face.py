@@ -68,7 +68,7 @@ class Face:
     def getCellID(self, index = 0):
 	"""Return the `id` of the specified `Cell` on one side of this `Face`.
 	"""
-	return self.mesh.getFaceCellIDs()[index, self.id]
+	return self.mesh.faceCellIDs[index, self.id]
 
     @getsetDeprecated
     def getCenter(self):
@@ -78,7 +78,7 @@ class Face:
     def center(self):
  	"""Return the coordinates of the `Face` center.
  	"""
-        return self.mesh.getFaceCenters()[...,self.id]
+        return self.mesh.faceCenters[...,self.id]
 
      
     def getArea(self):

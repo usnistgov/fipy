@@ -55,9 +55,9 @@ class _LeastSquaresCellGradVariable(CellVariable):
         value = numerix.array(self.var)
         cellDistanceNormals = cellToCellDistances * cellNormals
 
-        N = self.mesh.getNumberOfCells()
+        N = self.mesh.numberOfCells
         M = self.mesh._getMaxFacesPerCell()
-        D = self.mesh.getDim()
+        D = self.mesh.dim
 
         mat = numerix.zeros((D, D, M, N), 'd')
 

@@ -99,11 +99,11 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
             N = mesh._getNumberOfFaces() 
             W = mesh._getFaceAreas()
             W = (W / min(W))**0.05
-            X, Y = mesh.getFaceCenters()
+            X, Y = mesh.faceCenters
         elif isinstance(var, CellVariable):
-            N = mesh.getNumberOfCells() 
-            W = mesh.getCellVolumes()
-            X, Y = mesh.getCellCenters()
+            N = mesh.numberOfCells 
+            W = mesh.cellVolumes
+            X, Y = mesh.cellCenters
 
         if sparsity is not None and N > sparsity:
             self.indices = numerix.random.rand(N) * W

@@ -105,9 +105,9 @@ We set up a transient diffusion equation
 The following line extracts the :math:`x` coordinate values on the exterior
 faces. These are used as the boundary condition fixed values.
 
->>> X, Y = mesh.getFaceCenters()
+>>> X, Y = mesh.faceCenters
 
->>> phi.constrain(X, mesh.getExteriorFaces())
+>>> phi.constrain(X, mesh.exteriorFaces)
 
 We first step through the transient problem
 
@@ -148,7 +148,7 @@ function, but it's a bit more complicated due to the varying boundary
 conditions and the different horizontal diffusion length at different
 vertical positions
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> t = timeStepDuration * steps
 
 >>> phiAnalytical = CellVariable(name="analytical value",

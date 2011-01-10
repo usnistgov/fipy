@@ -157,7 +157,7 @@ class TSVViewer(_Viewer):
         """
 
         mesh = self.vars[0].getMesh()
-        dim = mesh.getDim()
+        dim = mesh.dim
         
         if filename is not None:
             import os
@@ -195,7 +195,7 @@ class TSVViewer(_Viewer):
         faceVars = [var for var in self.vars if isinstance(var, FaceVariable)]
         
         if len(cellVars) > 0:
-            values = mesh.getCellCenters().getGlobalValue()
+            values = mesh.cellCenters.getGlobalValue()
             for var in self.vars:
                 if isinstance(var, CellVariable) and var.getRank() == 1:
                     values = numerix.concatenate((values, numerix.array(var.getGlobalValue())))
@@ -205,7 +205,7 @@ class TSVViewer(_Viewer):
             self._plot(values, f, dim)
 
         if len(faceVars) > 0:
-            values = mesh.getFaceCenters().getGlobalValue()
+            values = mesh.faceCenters.getGlobalValue()
             for var in self.vars:
                 if isinstance(var, FaceVariable) and var.getRank() == 1:
                     values = numerix.concatenate((values, numerix.array(var.getGlobalValue())))

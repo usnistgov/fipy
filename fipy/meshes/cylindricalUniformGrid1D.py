@@ -46,7 +46,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
     Creates a 1D cylindrical grid mesh.
     
         >>> mesh = CylindricalUniformGrid1D(nx = 3)
-        >>> print mesh.getCellCenters()
+        >>> print mesh.cellCenters
         [[ 0.5  1.5  2.5]]
          
     """

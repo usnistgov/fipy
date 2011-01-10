@@ -47,7 +47,7 @@ class VTKFaceViewer(_VTKViewer):
     """Renders `_MeshVariable` data in VTK format
     """
     def _makeDataSet(self, mesh):
-        return mesh.getVTKFaceDataSet()
+        return mesh.vTKFaceDataSet
         
     def _getData(self):
         return self.dataset.point_data

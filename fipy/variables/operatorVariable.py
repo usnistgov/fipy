@@ -1126,7 +1126,7 @@ def _testBinOp(self):
         >>> print a
         [[ 0  1  2  3  4  5  6  7  8]
          [ 0 -1 -2 -3 -4 -5 -6 -7 -8]]
-        >>> x, y = mesh.getCellCenters()
+        >>> x, y = mesh.cellCenters
         >>> v1[(x == 0.5) & (y == 0.5)] = 0
         >>> print a
         [[ 0  1  2  3  4  5  6  7  8]

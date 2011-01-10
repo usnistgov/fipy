@@ -58,8 +58,8 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 ...                    mesh = mesh,
 ...                    value = valueBottom)
 
->>> var.constrain(valueBottom, mesh.getFacesBottom())
->>> var.constrain(valueTop, mesh.getFacesTop())
+>>> var.constrain(valueBottom, mesh.facesBottom)
+>>> var.constrain(valueTop, mesh.facesTop)
 
 >>> diffCoeff = 1.
 >>> convCoeff = array(((0.,), (10.,)))
@@ -73,7 +73,7 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 The analytical solution test for this problem is given by:
 
 >>> axis = 1
->>> y = mesh.getCellCenters()[axis]
+>>> y = mesh.cellCenters[axis]
 >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
 >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD

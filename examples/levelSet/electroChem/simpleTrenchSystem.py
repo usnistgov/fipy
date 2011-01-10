@@ -212,7 +212,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     trenchWidth = trenchDepth / aspectRatio
     sideWidth = (trenchSpacing - trenchWidth) / 2
 
-    x, y = mesh.getCellCenters()
+    x, y = mesh.cellCenters
     distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
@@ -268,7 +268,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         metalIonMolarVolume = molarVolume,
     )
 
-    metalVar.constrain(metalConcentration, mesh.getFacesTop())
+    metalVar.constrain(metalConcentration, mesh.facesTop)
 
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
@@ -278,7 +278,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         rateConstant = rateConstant0 * siteDensity
     )
 
-    bulkCatalystVar.constrain(catalystConcentration, mesh.getFacesTop())
+    bulkCatalystVar.constrain(catalystConcentration, mesh.facesTop)
 
     if displayViewers:
         try:
