@@ -127,6 +127,8 @@ class Mesh2D(Mesh):
         # if it's an exterior face, make the "displacement vector" equal to zero 
         # so the cross product will be zero.
     
+        """TODO: This use of _getCellCenters is a symptom of the troubled mesh
+        hierarchy,"""
         faceDisplacementVectors = \
           numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)),
                         0.0, 

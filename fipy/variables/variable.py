@@ -523,9 +523,9 @@ class Variable(object):
         >>> from fipy.variables.cellVariable import CellVariable
         >>> from fipy.meshes import Grid2D
         >>> m = Grid2D(nx=2, ny=2)
-        >>> x, y = m.getCellCenters()
+        >>> x, y = m.cellCenters
         >>> v = CellVariable(mesh=m, rank=1, value=(x, y))
-        >>> v.constrain(((0.,), (-1.,)), where=m.getFacesLeft())
+        >>> v.constrain(((0.,), (-1.,)), where=m.facesLeft)
         >>> print v.getFaceValue()
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.   1.   1.5  0.   1.   1.5]
          [ 0.5  0.5  1.   1.   1.5  1.5 -1.   0.5  0.5 -1.   1.5  1.5]]

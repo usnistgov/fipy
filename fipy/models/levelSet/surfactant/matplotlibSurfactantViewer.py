@@ -61,7 +61,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
         
             >>> from fipy import *
             >>> m = Grid2D(nx=100, ny=100)
-            >>> x, y = m.getCellCenters()
+            >>> x, y = m.cellCenters
             >>> v = CellVariable(mesh=m, value=x**2 + y**2 - 10**2)
             >>> s = CellVariable(mesh=m, value=sin(x / 10) * cos(y / 30))
             >>> viewer = MatplotlibSurfactantViewer(distanceVar=v, surfactantVar=s)
@@ -133,7 +133,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
         if animate:
             self._initialCondition = None
 
-        if distanceVar.getMesh().getDim() != 2:
+        if distanceVar.getMesh().dim != 2:
             raise 'The MatplotlibSurfactantViewer only works for 2D meshes.'
 
     def _plot(self):

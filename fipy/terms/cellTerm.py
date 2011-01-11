@@ -98,7 +98,7 @@ class CellTerm(Term):
 ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
     def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
-        N = oldArray.getMesh().getNumberOfCells()
+        N = oldArray.getMesh().numberOfCells
         updatePyArray = numerix.zeros((N),'d')
 
         inline._runInline("""

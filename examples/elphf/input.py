@@ -57,8 +57,8 @@ We start by defining a 1D mesh
     >>> # L = nx * dx
     >>> mesh = Grid1D(dx = dx, nx = nx)
     >>> # mesh = Grid1D(dx = dx)
-    >>> # L = mesh.facesRight[0].getCenter()[0] - mesh.getFacesLeft()[0].getCenter()[0]
-    >>> # L = mesh.getCellCenters()[0,-1] - mesh.getCellCenters()[0,0]
+    >>> # L = mesh.facesRight[0].getCenter()[0] - mesh.facesLeft[0].getCenter()[0]
+    >>> # L = mesh.cellCenters[0,-1] - mesh.cellCenters[0,0]
 
 
 We create the phase field

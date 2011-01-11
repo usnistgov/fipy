@@ -116,7 +116,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
         
         """
 
-        numberOfCells = var.getMesh().getNumberOfCells()
+        numberOfCells = var.getMesh().numberOfCells
         numberOfVariables = len(self._getVars())
         
         matrix = 0

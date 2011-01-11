@@ -63,7 +63,7 @@ def write(data, filename = None, extension = '', communicator=parallel):
         >>> old = Grid1D(nx = 2)
         >>> f, tempfile = write(old)
         >>> new = read(tempfile, f)
-        >>> print old.getNumberOfCells() == new.getNumberOfCells()
+        >>> print old.numberOfCells == new.numberOfCells
         True
         
     """

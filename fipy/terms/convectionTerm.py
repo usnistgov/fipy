@@ -157,7 +157,7 @@ class ConvectionTerm(FaceTerm):
 
     def _verifyCoeffType(self, var):
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
-        and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
+        and numerix.getShape(self.coeff) != (var.getMesh().dim,):
             raise TypeError, "The coefficient must be a vector value."
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):

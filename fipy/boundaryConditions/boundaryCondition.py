@@ -80,7 +80,7 @@ class BoundaryCondition:
                 == self.faces.getMesh().exteriorFaces).getValue().all():
             raise IndexError, 'Face list has interior faces'
         
-        self.adjacentCellIDs = self.faces.getMesh()._getAdjacentCellIDs()[0][self.faces.getValue()]
+        self.adjacentCellIDs = self.faces.getMesh()._adjacentCellIDs[0][self.faces.getValue()]
         self.boundaryConditionApplied = False
         
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):

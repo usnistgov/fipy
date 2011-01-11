@@ -48,7 +48,7 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     >>> k = Variable(name="k", value=0.)
 
     >>> mesh1 = Grid1D(nx=100)
-    >>> x, = mesh1.getCellCenters()
+    >>> x, = mesh1.cellCenters
     >>> xVar = CellVariable(mesh=mesh1, name="x", value=x)
     >>> viewer1 = MatplotlibViewer(vars=(sin(0.1 * k * xVar), cos(0.1 * k * xVar / pi)), 
     ...                            limits={'xmin': 10, 'xmax': 90}, 
@@ -58,7 +58,7 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     ...                            legend=None)
                                 
     >>> mesh2 = Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)
-    >>> x, y = mesh2.getCellCenters()
+    >>> x, y = mesh2.cellCenters
     >>> xyVar = CellVariable(mesh=mesh2, name="x y", value=x * y)
     >>> viewer2 = MatplotlibViewer(vars=sin(k * xyVar), 
     ...                            limits={'ymin': 0.1, 'ymax': 0.9}, 
@@ -70,7 +70,7 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     >>> mesh3 = (Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
     ...          + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
     ...             + ((0.5,), (0.2,))))
-    >>> x, y = mesh3.getCellCenters()
+    >>> x, y = mesh3.cellCenters
     >>> xyVar = CellVariable(mesh=mesh3, name="x y", value=x * y)
     >>> viewer3 = MatplotlibViewer(vars=sin(k * xyVar), 
     ...                            limits={'ymin': 0.1, 'ymax': 0.9}, 

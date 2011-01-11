@@ -70,7 +70,7 @@ class GistVectorViewer(_GistViewer):
         
     def _getSuitableVars(self, vars):
         vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
-          if (var.getMesh().getDim() == 2 \
+          if (var.getMesh().dim == 2 \
               and (isinstance(var, FaceVariable) \
                    or isinstance(var, CellVariable)) and var.getRank() == 1)]
         if len(vars) == 0:
@@ -89,9 +89,9 @@ class GistVectorViewer(_GistViewer):
         var = self.vars[0]
         
         if isinstance(var, FaceVariable):
-            x, y = var.getMesh().getFaceCenters()
+            x, y = var.getMesh().faceCenters
         elif isinstance(var, CellVariable):
-            x, y = var.getMesh().getCellCenters()
+            x, y = var.getMesh().cellCenters
         
         gist.plmesh(numerix.array([y, y]), numerix.array([x, y]))
 
@@ -99,7 +99,7 @@ class GistVectorViewer(_GistViewer):
         vy = numerix.array(var[1])
         
         maxVec = var.getMag().max().getValue()
-        maxGrid = var.getMesh()._getCellDistances().max()
+        maxGrid = var.getMesh()._cellDistances.max()
         
         gist.plv(numerix.array([vy,vy]), numerix.array([vx,vx]), scale=maxGrid / maxVec * 3, hollow=1, aspect=0.25) #,scale=0.002)
         

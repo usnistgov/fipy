@@ -169,7 +169,7 @@ class GapFillMesh(Mesh2D):
 
     @property
     def cellIDsAboveFineRegion(self):
-        return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)[0]
+        return numerix.nonzero(self.cellCenters[1] > self.actualFineRegionHeight - self.cellSize)[0]
 
     @getsetDeprecated
     def getFineMesh(self):
@@ -293,7 +293,7 @@ class TrenchMesh(GapFillMesh):
 
     @property
     def electrolyteMask(self):
-        x, y = self.getCellCenters()
+        x, y = self.cellCenters
         
         Y = (y - (self.heightBelowTrench + self.trenchDepth / 2))
 

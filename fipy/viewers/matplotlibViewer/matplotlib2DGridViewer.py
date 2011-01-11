@@ -85,7 +85,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
     def _getLimit(self, key, default=None):
         limit = _MatplotlibViewer._getLimit(self, key, default=default)
         if limit is None:
-            X, Y = self.vars[0].getMesh().getFaceCenters()
+            X, Y = self.vars[0].getMesh().faceCenters
             if 'xmin' in key:
                 limit = float(min(X))
             elif 'ymin' in key:

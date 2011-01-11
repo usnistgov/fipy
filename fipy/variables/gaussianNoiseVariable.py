@@ -100,7 +100,7 @@ class GaussianNoiseVariable(NoiseVariable):
     and compare to a Gaussian distribution
     
     >>> gauss = CellVariable(mesh = histogram.getMesh())
-    >>> x = histogram.getMesh().getCellCenters()[0]
+    >>> x = histogram.getMesh().cellCenters[0]
     >>> gauss.setValue((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
     
     >>> if __name__ == '__main__':

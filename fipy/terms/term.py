@@ -487,15 +487,15 @@ class Term:
         >>> v = CellVariable(mesh=m, value=1.)
         >>> eqn = DiffusionTerm() - v
         
-        >>> v.constrain(0.,  m.getFacesLeft())
-        >>> v.constrain(1.,  m.getFacesRight())
+        >>> v.constrain(0.,  m.facesLeft)
+        >>> v.constrain(1.,  m.facesRight)
         
         >>> res = 1.
         >>> sweep = 0
         >>> while res > 1e-8 and sweep < 100:
         ...     res = eqn.sweep(v)
         ...     sweep += 1
-        >>> x = m.getCellCenters()[0]
+        >>> x = m.cellCenters[0]
         >>> answer = (numerix.exp(x) - numerix.exp(-x)) / (numerix.exp(L) - numerix.exp(-L))
         >>> print numerix.allclose(v, answer, rtol=2e-5)
         True

@@ -60,7 +60,7 @@ A loop is required to execute the necessary time steps:
 The result is again tested in the same way:
 
     >>> Lx = (2 * nx * dx)
-    >>> x = bigMesh.getCellCenters()[0]
+    >>> x = bigMesh.cellCenters[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> ## print var.allclose(analyticalArray, rtol = 0.001, atol = 0.001)
     >>> print var.allclose(answer)
@@ -91,7 +91,7 @@ var = CellVariable(
 eqn = TransientTerm() == ExplicitDiffusionTerm()
 
 exteriorFaces = bigMesh.exteriorFaces
-xFace = bigMesh.getFaceCenters()[0]
+xFace = bigMesh.faceCenters[0]
 
 var.constrain(valueLeft, exteriorFaces & (xFace ** 2 < 0.000000000000001))
 var.constrain((valueLeft + valueRight) * 0.5, exteriorFaces & ((xFace - (dx * nx)) ** 2 < 0.000000000000001))

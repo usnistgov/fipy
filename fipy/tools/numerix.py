@@ -923,7 +923,7 @@ def nearest(data, points):
     >>> from fipy import *
     >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
     >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-    >>> print nearest(m0.getCellCenters().getGlobalValue(), m1.getCellCenters().getGlobalValue())
+    >>> print nearest(m0.cellCenters.getGlobalValue(), m1.cellCenters.getGlobalValue())
     [4 5 7 8]
     """
     N = data.shape[-1]

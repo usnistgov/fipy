@@ -174,19 +174,19 @@ class CellVariable(_MeshVariable):
 
             >>> from fipy import *
             >>> m = Grid2D(nx=3, ny=2)
-            >>> v = CellVariable(mesh=m, value=m.getCellCenters()[0])
+            >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
             >>> print v(((0., 1.1, 1.2), (0., 1., 1.)))
             [ 0.5  1.5  1.5]
             >>> print v(((0., 1.1, 1.2), (0., 1., 1.)), order=1)
             [ 0.25  1.1   1.2 ]
             >>> m0 = Grid2D(nx=2, ny=2, dx=1., dy=1.)
             >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
-            >>> x, y = m0.getCellCenters()
+            >>> x, y = m0.cellCenters
             >>> v0 = CellVariable(mesh=m0, value=x * y)
-            >>> print v0(m1.getCellCenters().getGlobalValue())
+            >>> print v0(m1.cellCenters.getGlobalValue())
             [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
               0.75  0.75  2.25  2.25]
-            >>> print v0(m1.getCellCenters().getGlobalValue(), order=1)
+            >>> print v0(m1.cellCenters.getGlobalValue(), order=1)
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 
@@ -201,9 +201,9 @@ class CellVariable(_MeshVariable):
 
             elif order == 1:
                 ##cellID = self.getMesh()._getNearestCellID(points)
-##                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().getCellCenters()[...,cellID], self.getGrad()[...,cellID])
+##                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().cellCenters[...,cellID], self.getGrad()[...,cellID])
                 return (self.getGlobalValue()[..., nearestCellIDs] 
-                        + numerix.dot(points - self.getMesh().getCellCenters().getGlobalValue()[...,nearestCellIDs], 
+                        + numerix.dot(points - self.getMesh().cellCenters.getGlobalValue()[...,nearestCellIDs], 
                                       self.getGrad().getGlobalValue()[...,nearestCellIDs]))
 
             else:
@@ -538,9 +538,9 @@ class CellVariable(_MeshVariable):
 
             >>> from fipy import *
             >>> m = Grid1D(nx=3)
-            >>> v = CellVariable(mesh=m, value=m.getCellCenters()[0])
-            >>> v.constrain(0., where=m.getFacesLeft())
-            >>> v.getFaceGrad().constrain(1., where=m.getFacesRight())
+            >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
+            >>> v.constrain(0., where=m.facesLeft)
+            >>> v.getFaceGrad().constrain(1., where=m.facesRight)
             >>> print v.getFaceGrad()
             [[ 1.  1.  1.  1.]]
             >>> print v.getFaceValue()
@@ -558,7 +558,7 @@ class CellVariable(_MeshVariable):
 
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
-        newValues = oldVar.getValue(points = newMesh.getCellCenters())
+        newValues = oldVar.getValue(points = newMesh.cellCenters)
         CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.getUnit())
 
 def _test(): 

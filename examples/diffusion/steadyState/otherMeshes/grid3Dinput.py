@@ -86,10 +86,10 @@ var2 = CellVariable(name = "solution variable 2D",
                     mesh = mesh2,
                     value = valueBottomTop)
 
-var2.constrain(valueLeftRight, mesh2.getFacesLeft())
-var2.constrain(valueLeftRight, mesh2.getFacesRight())
-var2.constrain(valueBottomTop, mesh2.getFacesTop())
-var2.constrain(valueBottomTop, mesh2.getFacesBottom())
+var2.constrain(valueLeftRight, mesh2.facesLeft)
+var2.constrain(valueLeftRight, mesh2.facesRight)
+var2.constrain(valueBottomTop, mesh2.facesTop)
+var2.constrain(valueBottomTop, mesh2.facesBottom)
 
 eqn = DiffusionTerm()  
 

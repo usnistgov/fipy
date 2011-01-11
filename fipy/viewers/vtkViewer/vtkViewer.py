@@ -128,7 +128,7 @@ if __name__ == "__main__":
     from fipy import *
     m = Grid3D(nx=2, ny=1, nz=1)
 #     m = Grid3D(nx=3, ny=4, nz=5)
-    x, y, z = m.getCellCenters()
+    x, y, z = m.cellCenters
     v1 = CellVariable(mesh=m, value=x*y*z, name="x*y*z")
     v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
     
@@ -148,13 +148,13 @@ if __name__ == "__main__":
     vw.plot(filename="face.vtk")
 
 #     m = Grid2D(nx=1, ny=2)
-#     x, y = m.getCellCenters()
+#     x, y = m.cellCenters
 #     v1 = CellVariable(mesh=m, value=x*y, name="v1")
 #     v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
 #     vw = VTKViewer(vars=(v1, v2))
 
 #     m = Grid1D(nx=10)
-#     x,  = m.getCellCenters()
+#     x,  = m.cellCenters
 #     v1 = CellVariable(mesh=m, value=x*x, name="v1")
 #     v2 = CellVariable(mesh=m, value=x) #, name="v2")
 #     vw = VTKViewer(vars=(v1, v2))

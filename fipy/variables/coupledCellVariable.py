@@ -57,7 +57,7 @@ class _CoupledCellVariable():
         return numerix.concatenate([numerix.array(var[index]) for var in self.vars])
         
     def __setitem__(self, index, value):
-        N = self.getMesh().getNumberOfCells()
+        N = self.getMesh().numberOfCells
         for i, var in enumerate(self.vars):
             if numerix.shape(value) == ():
                 var[index] = value
