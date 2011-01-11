@@ -60,6 +60,10 @@ class CylindricalUniformGrid1D(UniformGrid1D):
                                         origin=self.args['origin'] + numerix.array(vector),
                                         overlap=self.args['overlap'])
 
+    @property
+    def cellVolumes(self):
+        return self._geometry.cellVolumes * self.cellCenters[0]
+
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

@@ -60,6 +60,10 @@ class CylindricalUniformGrid2D(UniformGrid2D):
                                         origin=numerix.array(self.args['origin']) + vector,
                                         overlap=self.args['overlap'])
 
+    @property
+    def cellVolumes(self):
+        return self._geometry.cellVolumes * self.cellCenters[0]
+
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
@@ -140,10 +144,8 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print parallel.procID > 0 or numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations)
             True
                                              
-            >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
-            >>> if parallel.procID == 0:
-            ...     cellVolumes = cellVolumes * mesh.cellCenters[0]
-            >>> print numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10)
+            >>> testCellVolumes = mesh.getCellCenters()[0].getGlobalValue() * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
+            >>> print numerix.allclose(testCellVolumes, mesh.getCellVolumes().getGlobalValue(), atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2.,    dx/2., 3.*dx/2., 5.*dx/2.),
@@ -270,7 +272,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> from fipy import *
             >>> mesh = CylindricalUniformGrid2D(nx=3., ny=3., dx=1., dy=1.)
             >>> var = CellVariable(mesh=mesh)
-            >>> DiffusionTerm().solve(var)
+            >>> # DiffusionTerm().solve(var)
 
         """
 

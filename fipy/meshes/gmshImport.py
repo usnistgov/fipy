@@ -724,7 +724,6 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
 class Gmsh3D(Mesh):
     def __init__(self, arg, communicator=parallel, order=1):
-        self.communicator = communicator
         self.mshFile  = MshFile(arg, 
                                 dimensions=3, 
                                 communicator=communicator,
@@ -739,6 +738,8 @@ class Gmsh3D(Mesh):
         Mesh.__init__(self, vertexCoords=verts,
                             faceVertexIDs=faces,
                             cellFaceIDs=cells)
+
+        self.communicator = communicator
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))

@@ -67,7 +67,7 @@ class CylindricalUniformGridGeometry1D(UniformGridGeometry1D):
 
     @property
     def cellVolumes(self):
-        return self.cellCenters[0] * self.dx
+        return self.dx
 
     @property
     def cellAreas(self):
@@ -98,8 +98,7 @@ class CylindricalUniformGridGeometry2D(UniformGridGeometry2D):
         
     @property
     def cellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx \
-                * self.dy * self.cellCenters[0]
+        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
 
     @property
     def cellAreas(self):
