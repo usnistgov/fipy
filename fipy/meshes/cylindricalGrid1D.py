@@ -55,8 +55,9 @@ class CylindricalGrid1D(Grid1D):
         >>> print mesh.cellCenters
         [[ 0.5  2.   4.5]]
 
-        >>> mesh.cellVolumes
-        array([  0.5,   4. ,  13.5])
+        >>> from fipy.tools import parallel
+        >>> print parallel.procID > 0 or numerix.allclose(mesh.cellVolumes, (0.5, 4., 13.5))
+        True
          
         >>> mesh = CylindricalGrid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):
