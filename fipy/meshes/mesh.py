@@ -490,6 +490,12 @@ class Mesh(object):
             
         ## compute vertex correlates
 
+        """
+        import sys
+        print >> sys.stderr, self.exteriorFaces.getValue()
+        print >> sys.stderr, other.exteriorFaces.getValue()
+        """
+
         ## only try to match exterior (X) vertices
         self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[...,
             self.exteriorFaces.getValue()].flatten())

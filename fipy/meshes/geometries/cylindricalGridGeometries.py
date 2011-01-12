@@ -73,7 +73,7 @@ class CylindricalGridGeometry2D(MeshGeometry2D):
 
     @property
     def cellVolumes(self):
-        return super(CylindricalGridGeometry2D, self).cellVolumes * self.cellCenters[0]
+        return super(CylindricalGridGeometry2D, self).cellVolumes 
      
     @property
     def cellCenters(self):
