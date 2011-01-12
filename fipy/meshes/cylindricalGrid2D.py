@@ -163,9 +163,16 @@ class CylindricalGrid2D(Grid2D):
             ...                                         (1, -1, -1,  1, -1, -1)))
             >>> print parallel.procID > 0 or numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations)
             True
-                                             
-           >>> testCellVolumes = mesh.getCellCenters()[0].getGlobalValue() * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
-            >>> print numerix.allclose(testCellVolumes, mesh.getCellVolumes().getGlobalValue(), atol = 1e-10, rtol = 1e-10)
+                                            
+            >>> type(mesh.cellCenters)
+            <class 'fipy.variables.cellVariable.CellVariable'>
+                                               
+           >>> testCellVolumes = mesh.cellCenters[0].getGlobalValue() * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
+            
+            >>> type(mesh.cellVolumes)
+            <class 'fipy.variables.binaryOperatorVariable.binOp'>
+             
+            >>> print numerix.allclose(testCellVolumes, mesh.cellVolumes.getGlobalValue(), atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2.),
