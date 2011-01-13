@@ -154,14 +154,14 @@ As usual, to proceed, we need to define a mesh
 
 and the independent variables.
 
->>> density = CellVariable(mesh=mesh, hasOld=True, name='$\rho$')
->>> velocity = CellVariable(mesh=mesh, hasOld=True, name='$u$')
+>>> density = CellVariable(mesh=mesh, hasOld=True, name=r'$\rho$')
+>>> velocity = CellVariable(mesh=mesh, hasOld=True, name=r'$u$')
 
 The system of equations will be solved in a fully coupled manner using a block
 matrix. Defining :math:`\mu^{NC}` as an independent variable makes it easier to
 script the equations without using higher order terms.
 
->>> potentialNC = CellVariable(mesh=mesh, hasOld=True, name='$\mu^{NC}$')
+>>> potentialNC = CellVariable(mesh=mesh, hasOld=True, name=r'$\mu^{NC}$')
 
 In order to solve the equations numerically, an interpolation method must be used
 to prevent the velocity and density fields decoupling. The following velocity
@@ -191,7 +191,7 @@ Eq. :eq:`eq:reactiveWetting:liquidVapor1D:mass` such that,
 Equation :eq:`eq:reactiveWetting:liquidVapor1D:massCorrected` can be
 scripted in the form,
 
->>> matrixDiagonal = CellVariable(mesh=mesh, name='$a_f$')
+>>> matrixDiagonal = CellVariable(mesh=mesh, name=r'$a_f$', value=1e+20, hasOld=True)
 >>> correctionCoeff = mesh._getFaceAreas() * mesh._getCellDistances() / matrixDiagonal.getFaceValue()
 >>> massEqn = TransientTerm(var=density) \
 ...           + VanLeerConvectionTerm(coeff=velocity.getFaceValue() + correctionCoeff \
@@ -223,7 +223,7 @@ which results in
 ...               - ConvectionTerm(coeff=density.getFaceValue() * [[1]], var=potentialNC) \
 ...               + ImplicitSourceTerm(coeff=density.getGrad()[0], var=potentialNC)
 
-The only required bnoundary condition eliminates flow in or out of the domain.
+The only required boundary condition eliminates flow in or out of the domain.
 
 >>> velocity.constrain(0, mesh.getExteriorFaces())
 
@@ -238,7 +238,7 @@ to be linearized in :math:`\rho` such that
 
 The :math:`^*` superscript denotes the current held value. In :term:`FiPy`, can be written as,
 
->>> potentialDerivative = 2 * ee / molarWeight + gasConstant * temperature / density / (molarWeight - vbar * density)**2
+>>> potentialDerivative = 2 * ee / molarWeight**2 + gasConstant * temperature * molarWeight / density / (molarWeight - vbar * density)**2
 
 and :math:`\mu^*` is simply,
 
@@ -253,9 +253,16 @@ written as
 ...                  - potentialDerivative * density \
 ...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
+Required to quirk in FiPy
+
+>>> potentialNC.getFaceGrad().constrain(value=0, where=mesh.getExteriorFaces())
+
 All three equations have now been defined and can now be combined together,
 
->>> coupledEqn = massEqn & momentumEqn & potentialNCEqn
+>>> ##massEqn.name = 'massEqn'
+>>> ##momentumEqn.name = 'momentumEqn'
+>>> ##potentialNCEqn.name = 'potentialNCEqn'
+>>> coupledEqn = momentumEqn & potentialNCEqn & massEqn
 
 The system will be solved as a phase separation problem with an initial density
 close to the average density, but with some small amplitude noise. Under these
@@ -265,6 +272,8 @@ volume. Define an initial condition for the density, such that
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.getNumberOfCells()) - 1))
 
+>>> potentialNC[:] = mu(density)
+
 >>> viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
 >>> for viewer in viewers:
 ...     viewer.plot()
@@ -272,16 +281,28 @@ volume. Define an initial condition for the density, such that
 Some control parameters need to be defined. The ``cfl`` parameter limits the size
 of the time step so that ``dt = cfl * dx / max(velocity)``. 
 
->>> cfl = 0.1
->>> tolerance = 1e-3
+>>> cfl = 1.0
+>>> tolerance = 1e-1
 >>> globalTolerance = 1e-3
->>> dt = 1e-10
+>>> dt = 1e-14
 >>> globalResidual = 1.
 >>> timestep = 0
->>> initialGlobalResidual = coupledEqn.justResidualVector(dt=1e+20)
+>>> solver = LinearGMRESSolver(precon=MultilevelDDPreconditioner())
+>>> initialGlobalResidual = None
+>>> relaxation = 0.5
 
+>>> for viewer in viewers:
+...     viewer.plot()
 
->>> while globalResidual > globalTolerance: 
+>>> raw_input('arrange viewers')
+
+>>> for viewer in viewers:
+...     viewer.plot()
+
+>>> densityPrevious = density.copy()
+>>> velocityPrevious = velocity.copy() 
+
+>>> while True: 
 ... 
 ...     residual = 1.
 ...     sweep = 0
@@ -289,18 +310,47 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ...     
 ...     density.updateOld()
 ...     velocity.updateOld()
+...     matrixDiagonal.updateOld()
 ...
-...     globalResidual = coupledEqn.justResidualVector(dt=1e+20) / initialGlobalResidual
-...     initialResidual = coupledEqn.justResidualVector(dt=dt)
+...     residual = numerix.L2norm(coupledEqn.justResidualVector(dt=1e+20))
+...     if initialGlobalResidual is None:
+...         initialGlobalResidual = residual
+...     globalResidual = residual / initialGlobalResidual
+...
+...     residual = 1.
+...     initialResidual = None
+...
+...     sweep = 0
 ...
 ...     while residual > tolerance:
-... 
-...         dt = min(dt * 1.1, dx / max(abs(velocity)) * cfl)
-... 
+...
+...         densityPrevious[:] = density
+...         velocityPrevious[:] = velocity
+...
+...         dt = min(dt, dx / max(abs(velocity)) * cfl)
+...         
 ...         coupledEqn.cacheMatrix()
-...         residual = coupledEqn.sweep(dt=dt) / initialResidual
-...         matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.getNumberOfCells(): 2 * mesh.getNumberOfCells()]
-... 
+...         previousResidual = residual
+...         residual = coupledEqn.sweep(dt=dt, solver=solver)
+...
+...         if initialResidual is None:
+...             initialResidual = residual
+...
+...         residual = residual / initialResidual
+...
+...         if residual > previousResidual * 1.1 or sweep > 20:
+...             density[:] = density.getOld()
+...             velocity[:] = velocity.getOld()
+...             matrixDiagonal[:] = matrixDiagonal.getOld()
+...             dt = dt / 10.
+...             break
+...         else:
+...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[:mesh.getNumberOfCells()]
+...             density[:] = relaxation * density + (1 - relaxation) * densityPrevious
+...             velocity[:] = relaxation * velocity + (1 - relaxation) * velocityPrevious
+...
+...         sweep += 1
+...
 ...     for viewer in viewers:
 ...         viewer.plot()
 
