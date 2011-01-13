@@ -106,7 +106,12 @@ class UniformGrid1D(Grid1D):
                                    self.numberOfFaces,
                                    self.numberOfCells,
                                    scale=self._scale)
-        self._topology = _UniformMeshTopology1D(self)
+
+        self._topology = _UniformMeshTopology1D(self.facesLeft, 
+                                                self.facesRight, 
+                                                self.numberOfCells, 
+                                                self.numberOfFaces, 
+                                                self)
         
         self.communicator = communicator
 

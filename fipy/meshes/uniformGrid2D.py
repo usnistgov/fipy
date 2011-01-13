@@ -115,7 +115,15 @@ class UniformGrid2D(Grid2D):
         self.numberOfFaces = self.numberOfHorizontalFaces + self.numberOfVerticalFaces
         self.numberOfCells = self.nx * self.ny
         
-        self._topology = _UniformMeshTopology2D(self)
+        self._topology = _UniformMeshTopology2D(self.nx, self.ny,
+                                                self.numberOfFaces, 
+                                                self.numberOfCells,
+                                                self.numberOfVerticalColumns,
+                                                self.numberOfHorizontalFaces,
+                                                self.numberOfHorizontalRows,
+                                                self._maxFacesPerCell,
+                                                self)
+
         self._geometry = GeomClass(self.dx, self.dy,
                                    self.nx, self.ny,
                                    self.origin,
