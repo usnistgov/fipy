@@ -266,7 +266,7 @@ class Mesh(object):
             
         Different `Mesh` classes can be concatenated
          
-            >>> from fipy.meshes.tri2D import Tri2D
+            >>> from fipy.meshes import Tri2D
             >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
             >>> triMesh = triMesh + ((2,), (0,))
             >>> triAddedMesh = baseMesh + triMesh
@@ -294,7 +294,7 @@ class Mesh(object):
 
         `Mesh` concatenation is not limited to 2D meshes
         
-            >>> from fipy.meshes.grid3D import Grid3D
+            >>> from fipy.meshes import Grid3D
             >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
             ...                         nx = 2, ny = 2, nz = 2)
             >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
@@ -508,16 +508,42 @@ class Mesh(object):
         ## compute vertex correlates
 
         """
-        import sys
-        print >> sys.stderr, self.exteriorFaces.getValue()
-        print >> sys.stderr, other.exteriorFaces.getValue()
+        from fipy.tools.debug import PRINT
+        PRINT("selfNumFaces", selfNumFaces)
+        PRINT("otherNumFaces", otherNumVertices)
+        PRINT("selfNumVertices", selfNumVertices)
+        PRINT("otherNumVertices", otherNumVertices)
+
+        from fipy.tools.debug import PRINT
+        from fipy.tools.debug import PRINT
+        PRINT("otherExt", other.exteriorFaces.getValue())
+        raw_input()
+        PRINT("selfExt", selfc.exteriorFaces.getValue())
+
+        PRINT("self filled", selfc.faceVertexIDs.filled())
+        PRINT("othe filled", other.faceVertexIDs.filled())
+        raw_input()
+
+        PRINT("selfc.faceVertexIDs.filled()\n",selfc.faceVertexIDs.filled())
+        PRINT("flat\n",selfc.faceVertexIDs.filled()[...,
+            selfc.exteriorFaces.getValue()].flatten())
+        PRINT("selfc.exteriorFaces.getValue()\n",selfc.exteriorFaces.getValue()) 
+        PRINT("extfaces type", type(selfc.exteriorFaces))
+        PRINT("extfaces mesh", selfc.exteriorFaces.getMesh())
         """
 
         ## only try to match exterior (X) vertices
         self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[...,
-            self.exteriorFaces.getValue()].flatten())
+            selfc.exteriorFaces.getValue()].flatten())
         other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[...,
             other.exteriorFaces.getValue()].flatten())
+
+        """
+        from fipy.tools.debug import PRINT
+        PRINT("self_Xvertices", self_Xvertices)
+        PRINT("other_Xvertices", other_Xvertices)
+        raw_input()
+        """
 
         self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
         other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
@@ -528,6 +554,12 @@ class Mesh(object):
                                                other_XvertexCoords.shape[0], 
                                                other_XvertexCoords.shape[-1])).swapaxes(0,1)
         tmp = self_XvertexCoords[..., numerix.newaxis] - other_vertexCoordMap
+
+        """
+        import sys
+        print >> sys.stderr, "tmp", tmp
+        """
+                
         closest = numerix.argmin(numerix.dot(tmp, tmp), axis=0)
         
         # just because they're closest, doesn't mean they're close

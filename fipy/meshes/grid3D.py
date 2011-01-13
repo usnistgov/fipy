@@ -173,9 +173,7 @@ class Grid3D(Mesh):
                                         self._cellToFaceOrientations,
                                         scaleLength)
                                          
-    
     def _calcParallelGridInfo(self, nx, ny, nz, overlap, communicator):
-        
         procID = communicator.procID
         Nproc = communicator.Nproc
 
