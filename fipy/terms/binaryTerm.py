@@ -72,6 +72,14 @@ class _BinaryTerm(_BaseBinaryTerm):
             raw_input()
 
 	return (var, matrix, RHSvector)
+
+    def _getDefaultSolver(self, solver, *args, **kwargs):
+         for term in (self.term, self.other):
+             defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
+             if defaultSolver is not None:
+                 solver = defaultSolver
+                 
+         return solver
         
     def __repr__(self):
         return '(' + repr(self.term) + ' + ' + repr(self.other) + ')'

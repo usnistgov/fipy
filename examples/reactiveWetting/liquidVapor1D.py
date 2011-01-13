@@ -169,6 +169,7 @@ script the equations without using higher order terms.
 
 >>> potentialNC = CellVariable(mesh=mesh, name=r'$\mu^{NC}$')
 
+>>> epsilon = 1e-16
 >>> freeEnergy = (f(density) + epsilon * temperature / 2 * density.getGrad().getMag()**2).getCellVolumeAverage()
 
 In order to solve the equations numerically, an interpolation method must be used
@@ -223,7 +224,6 @@ In order to write Eq. :eq:`eq:reactiveWetting:liquidVapor1D:momentum` as a
 which results in
 
 >>> viscosity = 1e-3
->>> epsilon = 1e-16
 >>> ConvectionTerm = CentralDifferenceConvectionTerm
 >>> momentumEqn = TransientTerm(coeff=density, var=velocity) \
 ...               + ConvectionTerm(coeff=[[1]] * density.getFaceValue() * velocity.getFaceValue(), var=velocity) \
@@ -281,12 +281,13 @@ volume. Define an initial condition for the density, such that
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.getNumberOfCells()) - 1))
 
->>> viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
->>> for viewer in viewers:
-...     viewer.plot()
->>> raw_input('arrange viewers')
->>> for viewer in viewers:
-...     viewer.plot()
+>>> if __name__ == '__main__':
+...     viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
+...     for viewer in viewers:
+...         viewer.plot()
+...     raw_input('arrange viewers')
+...     for viewer in viewers:
+...         viewer.plot()
 
 Some control parameters need to be defined. The ``cfl`` parameter limits the size
 of the time step so that ``dt = cfl * dx / max(velocity)``. 
@@ -301,7 +302,7 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ... else:
 ...     totalSteps = 150
 
->>> while timestep < totalSteps
+>>> while timestep < totalSteps:
 ... 
 ...     sweep = 0
 ...     dt *= 1.1
@@ -333,7 +334,8 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ...             velocity[:] = velocity.getOld()
 ...             matrixDiagonal[:] = matrixDiagonal.getOld()
 ...             dt = dt / 10.
-...             print 'Recalculate the time step'
+...             if __name__ == '__main__':
+...                 print 'Recalculate the time step'
 ...             timestep -= 1
 ...             break
 ...         else:

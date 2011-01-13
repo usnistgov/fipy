@@ -32,26 +32,19 @@
  # ###################################################################
  ##
 
-"""Run all the test cases in examples/
+"""Run all the test cases in examples/reactiveWetting/
 """
 
-from fipy.tests.lateImportTest import _LateImportTestSuite
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportTestSuite(testModuleNames = (
-            'phase.test',
-            'convection.test',
-            'diffusion.test',
-            'elphf.test',
-            'levelSet.test',
-            'chemotaxis.test',  
-            'cahnHilliard.test',
-            'flow.test',
-            'meshing.test',
-            'reactiveWetting.test',
-        ), base = __name__)
-
+    return _LateImportDocTestSuite(testModuleNames = (),
+                                   docTestModuleNames = (
+                                       'liquidVapor1D',
+                                   ), 
+                                   base = __name__)
+    
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
 

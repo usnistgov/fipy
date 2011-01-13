@@ -592,7 +592,7 @@ class Term:
         >>> eq = (DiffusionTerm(coeff=1., var=A)) & (DiffusionTerm(coeff=2., var=B))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve()
+        >>> eq.solve(solver=DefaultSolver())
         >>> numpyMatrix = eq.getMatrix().getNumpyArray()
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], [1, -1, 0, 0], [0, 0, -2, 2], [0, 0, 2, -2]])
         True
@@ -616,7 +616,7 @@ class Term:
         Traceback (most recent call last):
             ...
         Exception: Different number of solution variables and equations.
-        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve()
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(solver=DefaultSolver())
         >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(A)
         Traceback (most recent call last):
             ...
@@ -632,7 +632,7 @@ class Term:
         >>> eq = (DiffusionTerm(coeff=1., var=A) + DiffusionTerm(coeff=2., var=B)) & (DiffusionTerm(coeff=2., var=B) + DiffusionTerm(coeff=3., var=C)) & (DiffusionTerm(coeff=3., var=C) + DiffusionTerm(coeff=1., var=A))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve()
+        >>> eq.solve(solver=DefaultSolver())
         >>> numpyMatrix = eq.getMatrix().getNumpyArray()
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, -2, 2, 0, 0],
         ...                                                             [1, -1, 2, -2, 0, 0],
