@@ -162,9 +162,15 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 	return (var, matrix, RHSvector)
 
     def __repr__(self):
-
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
 
+    def _getDefaultSolver(self, solver, *args, **kwargs):        
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        from fipy.solvers import DefaultAsymmetricSolver
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)    
+        
 def _test(): 
     import doctest
     return doctest.testmod()

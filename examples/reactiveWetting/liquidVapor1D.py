@@ -34,6 +34,10 @@
 
 r"""
 
+To Do:
+
+ * Fix diagonalSign and variable ordering issues
+
 This example solves a single-component, liquid-vapor, van der Waals system as
 described by Wheeler et *al.* [PhysRevE.82.051601]_. The free energy for this
 system takes the form,
@@ -156,12 +160,16 @@ and the independent variables.
 
 >>> density = CellVariable(mesh=mesh, hasOld=True, name=r'$\rho$')
 >>> velocity = CellVariable(mesh=mesh, hasOld=True, name=r'$u$')
+>>> densityPrevious = density.copy()
+>>> velocityPrevious = velocity.copy()
 
 The system of equations will be solved in a fully coupled manner using a block
 matrix. Defining :math:`\mu^{NC}` as an independent variable makes it easier to
 script the equations without using higher order terms.
 
->>> potentialNC = CellVariable(mesh=mesh, hasOld=True, name=r'$\mu^{NC}$')
+>>> potentialNC = CellVariable(mesh=mesh, name=r'$\mu^{NC}$')
+
+>>> freeEnergy = (f(density) + epsilon * temperature / 2 * density.getGrad().getMag()**2).getCellVolumeAverage()
 
 In order to solve the equations numerically, an interpolation method must be used
 to prevent the velocity and density fields decoupling. The following velocity
@@ -263,6 +271,7 @@ All three equations have now been defined and can now be combined together,
 >>> ##momentumEqn.name = 'momentumEqn'
 >>> ##potentialNCEqn.name = 'potentialNCEqn'
 >>> coupledEqn = momentumEqn & potentialNCEqn & massEqn
+>>> ##coupledEqn = massEqn & momentumEqn & potentialNCEqn
 
 The system will be solved as a phase separation problem with an initial density
 close to the average density, but with some small amplitude noise. Under these
@@ -272,66 +281,47 @@ volume. Define an initial condition for the density, such that
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.getNumberOfCells()) - 1))
 
->>> potentialNC[:] = mu(density)
-
 >>> viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
+>>> for viewer in viewers:
+...     viewer.plot()
+>>> raw_input('arrange viewers')
 >>> for viewer in viewers:
 ...     viewer.plot()
 
 Some control parameters need to be defined. The ``cfl`` parameter limits the size
 of the time step so that ``dt = cfl * dx / max(velocity)``. 
 
->>> cfl = 1.0
+>>> cfl = 0.1
 >>> tolerance = 1e-1
->>> globalTolerance = 1e-3
 >>> dt = 1e-14
->>> globalResidual = 1.
 >>> timestep = 0
->>> solver = LinearGMRESSolver(precon=MultilevelDDPreconditioner())
->>> initialGlobalResidual = None
 >>> relaxation = 0.5
+>>> if __name__ == '__main__':
+...     totalSteps = 1e+10
+... else:
+...     totalSteps = 150
 
->>> for viewer in viewers:
-...     viewer.plot()
-
->>> raw_input('arrange viewers')
-
->>> for viewer in viewers:
-...     viewer.plot()
-
->>> densityPrevious = density.copy()
->>> velocityPrevious = velocity.copy() 
-
->>> while True: 
+>>> while timestep < totalSteps
 ... 
-...     residual = 1.
 ...     sweep = 0
 ...     dt *= 1.1
+...     residual = 1.
+...     initialResidual = None
 ...     
 ...     density.updateOld()
 ...     velocity.updateOld()
 ...     matrixDiagonal.updateOld()
 ...
-...     residual = numerix.L2norm(coupledEqn.justResidualVector(dt=1e+20))
-...     if initialGlobalResidual is None:
-...         initialGlobalResidual = residual
-...     globalResidual = residual / initialGlobalResidual
-...
-...     residual = 1.
-...     initialResidual = None
-...
-...     sweep = 0
-...
 ...     while residual > tolerance:
 ...
 ...         densityPrevious[:] = density
 ...         velocityPrevious[:] = velocity
+...         previousResidual = residual
 ...
 ...         dt = min(dt, dx / max(abs(velocity)) * cfl)
 ...         
 ...         coupledEqn.cacheMatrix()
-...         previousResidual = residual
-...         residual = coupledEqn.sweep(dt=dt, solver=solver)
+...         residual = coupledEqn.sweep(dt=dt)
 ...
 ...         if initialResidual is None:
 ...             initialResidual = residual
@@ -343,6 +333,8 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ...             velocity[:] = velocity.getOld()
 ...             matrixDiagonal[:] = matrixDiagonal.getOld()
 ...             dt = dt / 10.
+...             print 'Recalculate the time step'
+...             timestep -= 1
 ...             break
 ...         else:
 ...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[:mesh.getNumberOfCells()]
@@ -351,8 +343,18 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ...
 ...         sweep += 1
 ...
-...     for viewer in viewers:
-...         viewer.plot()
+...     if __name__ == '__main__' and timestep % 10 == 0:
+...         print 'timestep: %i, dt: %1.5e, free energy: %1.5e' % (timestep, dt, freeEnergy)
+...         for viewer in viewers:
+...             viewer.plot()
+...
+...     timestep += 1
+
+>>> if __name__ == '__main__':
+...     raw_input('finished')
+
+>>> print freeEnergy < 1.4e9
+True
 
 """
 
