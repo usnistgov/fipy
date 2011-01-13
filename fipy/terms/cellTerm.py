@@ -34,13 +34,13 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.term import Term
+from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import inline
 from fipy.tools import numerix
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
 
-class CellTerm(Term):
+class CellTerm(_UnaryTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
@@ -58,7 +58,7 @@ class CellTerm(Term):
             or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
                 raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
 
-        Term.__init__(self, coeff=coeff, var=var)
+        _UnaryTerm.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
         self._var = None
 

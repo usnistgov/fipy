@@ -35,11 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 import os
-
 from fipy.tools import numerix
-
-from fipy.variables.variable import Variable
-from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.solvers import DefaultSolver
 
 
@@ -68,7 +64,7 @@ class Term:
         self.var = var
 
     def _getVars(self):
-        return [self.var]
+        raise NotImplementedError
                 
     def copy(self):
         return self.__class__(self.coeff, var=self.var)
@@ -295,23 +291,12 @@ class Term:
         return self.RHSvector
     
     def _getDefaultSolver(self, solver, *args, **kwargs):
-        return None
+        raise NotImplementedError
         
     def getDefaultSolver(self, solver=None, *args, **kwargs):
         return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
                          
     def __add__(self, other):
-        r"""
-        Add a `Term` to another `Term`, number or variable.
-
-           >>> __Term(coeff=1.) + 10.
-           (__Term(coeff=1.0) + 10.0)
-           >>> __Term(coeff=1.) + __Term(coeff=2.)
-           (__Term(coeff=1.0) + __Term(coeff=2.0))
-           >>> 10. + __Term(coeff=1.)
-           (__Term(coeff=1.0) + 10.0)
-
-        """
         if isinstance(other, (int, float)) and other == 0:
             return self
         else:
@@ -321,117 +306,29 @@ class Term:
     __radd__ = __add__
     
     def __neg__(self):
-        r"""
-         Negate a `Term`.
-
-           >>> -__Term(coeff=1.)
-           __Term(coeff=-1.0)
-
-        """
-        if isinstance(self.coeff, (tuple, list)):
-            return self.__class__(coeff=-numerix.array(self.coeff), var=self.var)
-        else:
-            return self.__class__(coeff=-self.coeff, var=self.var)
+        raise NotImplementedError
 
     def __pos__(self):
-        r"""
-        Posate a `Term`.
-
-           >>> +__Term(coeff=1.)
-           __Term(coeff=1.0)
-
-        """
         return self
         
     def __sub__(self, other):
-        r"""
-        Subtract a `Term` from a `Term`, number or variable.
-
-           >>> __Term(coeff=1.) - 10.
-           (__Term(coeff=1.0) + -10.0)
-           >>> __Term(coeff=1.) - __Term(coeff=2.)
-           (__Term(coeff=1.0) + __Term(coeff=-2.0))
-           
-        """
         return self + (-other)
 
     def __rsub__(self, other):
-        r"""
-        Subtract a `Term`, number or variable from a `Term`.
-
-           >>> 10. - __Term(coeff=1.)
-           (__Term(coeff=-1.0) + 10.0)
-
-        """        
         return other + (-self)
         
     def __eq__(self, other):
-        r"""
-        This method allows `Terms` to be equated in a natural way. Note that the
-        following does not return `False.`
-
-           >>> __Term(coeff=1.) == __Term(coeff=2.)
-           (__Term(coeff=1.0) + __Term(coeff=-2.0))
-
-        it is equivalent to,
-
-           >>> __Term(coeff=1.) - __Term(coeff=2.)
-           (__Term(coeff=1.0) + __Term(coeff=-2.0))
-
-        A `Term` can also equate with a number. 
-
-           >>> __Term(coeff=1.) == 1.  
-           (__Term(coeff=1.0) + -1.0)
-           
-        Likewise for integers.
-
-           >>> __Term(coeff=1.) == 1
-           (__Term(coeff=1.0) + -1)
-           
-        Equating to zero is allowed, of course
-        
-            >>> __Term(coeff=1.) == 0
-            __Term(coeff=1.0)
-            >>> 0 == __Term(coeff=1.)
-            __Term(coeff=1.0)
-           
-        """
         return self - other
 
     def __mul__(self, other):
-        r"""
-        Mutiply a term
+        raise NotImplementedError
 
-            >>> 2. * __Term(coeff=0.5)
-            __Term(coeff=1.0)
-            
-        """
-
-        if isinstance(other, (int, float)):
-            return self.__class__(coeff=other * self.coeff, var=self.var)
-        else:
-            raise Exception, "Must multiply terms by int or float."
-            
     __rmul__ = __mul__
-               
+
     def __div__(self, other):
-        r"""
-        Divide a term
-
-            >>> __Term(2.) / 2.
-            __Term(coeff=1.0)
-
-        """
         return (1 / other) * self
 
     def __and__(self, other):
-        """Combine this equation with another 
-
-        >>> eq1 = 10. + __Term(coeff=1., var=Variable(name='A'))
-        >>> eq2 = 20. + __Term(coeff=2., var=Variable(name='B'))
-        >>> eq1 & eq2
-        ((__Term(coeff=1.0, var=A) + 10.0) & (__Term(coeff=2.0, var=B) + 20.0))
-        """ 
         if isinstance(other, Term):
             from fipy.terms.coupledBinaryTerm import _CoupledBinaryTerm
             return _CoupledBinaryTerm(self, other)
@@ -439,22 +336,10 @@ class Term:
             raise Exception
 
     def _getCoupledTerms(self):
-        return [self]
+        raise NotImplementedError
     
     def __repr__(self):
-        """
-        The representation of a `Term` object is given by,
-        
-           >>> print __Term(123.456)
-           __Term(coeff=123.456)
-
-        """
-        if self.var is None:
-            varString = ''
-        else:
-            varString = ', var=%s' % repr(self.var)
-
-        return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
+        raise NotImplementedError
 
     def _calcGeomCoeff(self, mesh):
         return None
@@ -471,10 +356,10 @@ class Term:
         raise NotImplementedError
 
     def _getDiffusionGeomCoeff(self, mesh):
-        return None
+        raise NotImplementedError
 
     def _getTransientGeomCoeff(self, mesh):
-        return None
+        raise NotImplementedError
 
     def _test(self):
         """
@@ -647,7 +532,7 @@ class Term:
         [A, B, C]
             
  	""" 
-        
+
 class __Term(Term): 
     """
     Dummy subclass for tests

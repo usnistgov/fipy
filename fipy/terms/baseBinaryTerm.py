@@ -64,12 +64,8 @@ class _BaseBinaryTerm(Term):
             seen = set()
             seq = self.term._getVars() + self.other._getVars()
             self._vars = [x for x in seq if x not in seen and not seen.add(x)]
-            ## self._vars = list(set(seq))
         return self._vars
 
-    def _verifyVar(self, var):
-        raise NotImplementedError
-    
     def _addNone(self, arg0, arg1):
         if arg0 is None and arg1 is None:
             return None
@@ -86,17 +82,27 @@ class _BaseBinaryTerm(Term):
     def _getDiffusionGeomCoeff(self, mesh):
         return self._addNone(self.term._getDiffusionGeomCoeff(mesh), self.other._getDiffusionGeomCoeff(mesh))
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        raise NotImplementedError
-        
-    def __repr__(self):
-        raise NotImplementedError
-
     def __neg__(self):
-        raise NotImplementedError
+        r"""
+         Negate a `_BinaryTerm`.
 
-    def __mul__(self, other):
-        raise NotImplementedError
+           >>> -(__UnaryTerm(coeff=1.) - __UnaryTerm(coeff=2.))
+           (__UnaryTerm(coeff=-1.0) + __UnaryTerm(coeff=2.0))
 
-    __rmul__ = __mul__
+        """
 
+        return (-self.term) + (-self.other)
+
+from fipy.terms.unaryTerm import _UnaryTerm
+class __UnaryTerm(_UnaryTerm):
+    """
+    Dummy subclass for tests
+    """
+    pass 
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

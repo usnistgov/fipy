@@ -36,10 +36,10 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from fipy.terms.term import Term
+from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
 
-class DiffusionTerm(Term):
+class DiffusionTerm(_UnaryTerm):
 
     r"""
     This term represents a higher order diffusion term. The order of the term is determined
@@ -95,7 +95,7 @@ class DiffusionTerm(Term):
         else:
             self.nthCoeff = None
 
-        Term.__init__(self, coeff=coeff, var=var)
+        _UnaryTerm.__init__(self, coeff=coeff, var=var)
         
         if self.order > 0:
             self.lowerOrderDiffusionTerm = DiffusionTerm(coeff = coeff[1:])

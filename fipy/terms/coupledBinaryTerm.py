@@ -34,7 +34,6 @@
  ##
 
 from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
-##from fipy.matrices.pysparseMatrix import _CoupledPysparseMeshMatrix
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
@@ -55,7 +54,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         if len(self._getVars()) != len(self._getCoupledTerms()):
             raise Exception, 'Different number of solution variables and equations.'
 
-        return _CoupledCellVariable(self._getVars())
+        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._getVars()))
     
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """

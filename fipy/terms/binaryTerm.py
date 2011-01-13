@@ -35,7 +35,6 @@
 
 import os
 
-from fipy.terms.term import Term
 from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
@@ -46,7 +45,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         if var is None and len(self._getVars()) > 1:
             raise Exception, 'The solution variable needs to be specified'
 
-        return Term._verifyVar(self, var)
+        return _BaseBinaryTerm._verifyVar(self, var)
     
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
@@ -84,27 +83,13 @@ class _BinaryTerm(_BaseBinaryTerm):
     def __repr__(self):
         return '(' + repr(self.term) + ' + ' + repr(self.other) + ')'
 
-    def __neg__(self):
-        r"""
-         Negate a `_BinaryTerm`.
-
-           >>> -(__Term(coeff=1.) - __Term(coeff=2.))
-           (__Term(coeff=-1.0) + __Term(coeff=2.0))
-
-        """
-
-        return (-self.term) + (-self.other)
-
     def __mul__(self, other):
         return other * self.term + other * self.other
 
-    __rmul__ = __mul__
+    def _getCoupledTerms(self):
+        return [self]
 
-class __Term(Term):
-    """
-    Dummy subclass for tests
-    """
-    pass 
+    __rmul__ = __mul__
 
 def _test(): 
     import doctest
