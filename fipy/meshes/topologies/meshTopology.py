@@ -44,6 +44,10 @@ from fipy.tools.numerix import MA
 from abstractMeshTopology import AbstractMeshTopology
 
 class MeshTopology(AbstractMeshTopology):
+    """
+    Covers all non-uniform Mesh topologies.
+    """
+
     def __init__(self, cellFaceIDs, faceCellIDs, numCells, maxFacesPerCell, 
                  mesh):
         self.cellFaceIDs = cellFaceIDs

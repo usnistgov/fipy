@@ -42,7 +42,12 @@ def _notImplemented(self):
     raise NotImplementedError
 
 class AbstractScaledMeshGeometry(object):
+    """
+    This class deals scaled geometry for meshes. It is fed information from a
+    mesh geometry object. Its attributes are accessed only by a mesh geometry.
+    """
 
+    _geom                     = None
     scale                     = property(_notImplemented)
     scaledFaceAreas           = property(_notImplemented)
     scaledCellVolumes         = property(_notImplemented)
@@ -56,6 +61,12 @@ class AbstractScaledMeshGeometry(object):
     faceAspectRatios          = property(_notImplemented)
 
 class AbstractMeshGeometry(object):
+    """ 
+    MeshGeometry classes do the geometric calculations for mesh objects.
+    They have an attribute, `_scaledGeometry`, which holds a reference to a
+    scaled geometry object. Mesh geometry exposes the scaled data it scrapes
+    from this, along with unscaled data, to the mesh class possessing it.  
+    """
 
     faceAreas                 = property(_notImplemented)           
     faceCenters               = property(_notImplemented)           
@@ -75,20 +86,26 @@ class AbstractMeshGeometry(object):
     cellAreas                 = property(_notImplemented)  
     cellNormals               = property(_notImplemented)  
 
-    """Scaled business (mostly wrappers)"""
-    scale                     = 1.
-    scaledFaceAreas           = property(_notImplemented)
-    scaledCellVolumes         = property(_notImplemented)
-    scaledCellCenters         = property(_notImplemented)
-    scaledFaceToCellDistances = property(_notImplemented)
-    scaledCellDistances       = property(_notImplemented)
-    scaledCellToCellDistances = property(_notImplemented)
-    areaProjections           = property(_notImplemented)
-    orientedAreaProjections   = property(_notImplemented)
-    faceToCellDistanceRatio   = property(_notImplemented)
-    faceAspectRatios          = property(_notImplemented)
-     
-    def _wrapInCellVariable(self, val):
-        from fipy.variables.cellVariable import CellVariable
-        return CellVariable(mesh=self.mesh, value=val, rank=1)
+    """Scaled business"""
+    _scaledGeometry           = None
+    _scale                    = 1.
+
+    scaledFaceAreas           = property(lambda self: self._scaledGeometry._scaledFaceAreas)
+    scaledCellVolumes         = property(lambda self: self._scaledGeometry._scaledCellVolumes)
+    scaledCellCenters         = property(lambda self: \
+                                         self._scaledGeometry.scaledCellCenters)
+    scaledFaceToCellDistances = property(lambda self: \
+                                         self._scaledGeometry.scaledFaceToCellDistances)
+    scaledCellDistances       = property(lambda self: \
+                                         self._scaledGeometry.scaledCellDistances)
+    scaledCellToCellDistances = property(lambda self: \
+                                         self._scaledGeometry.scaledCellToCellDistances)
+    areaProjections           = property(lambda self: \
+                                         self._scaledGeometry.areaProjections)
+    orientedAreaProjections   = property(lambda self: \
+                                         self._scaledGeometry.orientedAreaProjections)
+    faceToCellDistanceRatio   = property(lambda self: \
+                                         self._scaledGeometry.faceToCellDistanceRatio)
+    faceAspectRatios          = property(lambda self: \
+                                          self._scaledGeometry.faceAspectRatios)      
                                                             

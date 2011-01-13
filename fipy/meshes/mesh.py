@@ -112,14 +112,14 @@ class Mesh(object):
 
     def _setGeometry(self, scaleLength = 1.):
         self._geometry = _MeshGeometry(self.dim,
-                                      self.faceVertexIDs,
-                                      self.vertexCoords,
-                                      self.faceCellIDs,
-                                      self.cellFaceIDs,
-                                      self.numberOfCells,
-                                      self._maxFacesPerCell,
-                                      self._cellToFaceOrientations,
-                                      scaleLength)
+                                       self.faceVertexIDs,
+                                       self.vertexCoords,
+                                       self.faceCellIDs,
+                                       self.cellFaceIDs,
+                                       self.numberOfCells,
+                                       self._maxFacesPerCell,
+                                       self._cellToFaceOrientations,
+                                       scaleLength)
                                       
     @getsetDeprecated
     def setScale(self, scaleLength = 1.):

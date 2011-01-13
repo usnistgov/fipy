@@ -67,20 +67,7 @@ class AbstractUniformGridGeometry(AbstractMeshGeometry):
     def scaledFaceToCellDistances(self):
         return self.faceToCellDistances
 
-    @property
-    def faceToCellDistanceRatio(self):
-        return self._scaledGeometry.faceToCellDistanceRatio
-
-    @property
-    def areaProjections(self):
-        return self._scaledGeometry.areaProjections
-
-    @property
-    def orientedAreaProjections(self):
-        return self._scaledGeometry.orientedAreaProjections
-
     """Geometry properties common to 1D, 2D, 3D"""
-    
     @property
     def orientedFaceNormals(self):
         return self.faceNormals

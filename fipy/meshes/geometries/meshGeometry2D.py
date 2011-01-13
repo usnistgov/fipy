@@ -84,7 +84,3 @@ class MeshGeometry2D(MeshGeometry):
         faceTangents2 = numerix.zeros(faceTangents1.shape, 'd')
         return faceTangents1, faceTangents2
     
-    def _test(self):
-        """
-        """
-     

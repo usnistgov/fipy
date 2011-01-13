@@ -49,11 +49,11 @@ class CylindricalUniformGridScaledGeometry1D(UniformGridScaledGeometry1D):
 
     @property
     def faceAspectRatios(self):
-        return self.geom.faceAreas / self.geom.cellDistances
+        return self._geom.faceAreas / self._geom.cellDistances
     
     @property
     def areaProjections(self):
-        return self.geom.faceNormals * self.geom.faceAreas
+        return self._geom.faceNormals * self._geom.faceAreas
        
 class CylindricalUniformGridGeometry1D(UniformGridGeometry1D):
     def __init__(self, *args, **kwargs):

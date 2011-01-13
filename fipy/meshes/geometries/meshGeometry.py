@@ -63,16 +63,16 @@ class ScaledMeshGeometry(AbstractScaledMeshGeometry):
             'area': 1.,
             'volume':1.
         }
-        self.geom = meshGeom
+        self._geom = meshGeom
         self._setScaleAndRecalculate(scaleLength)
 
     def _setScaledValues(self):
-        self._scaledFaceAreas = self._scale['area'] * self.geom.faceAreas
-        self._scaledCellVolumes = self._scale['volume'] * self.geom.cellVolumes
-        self._scaledCellCenters = self._scale['length'] * self.geom.cellCenters
-        self._scaledFaceToCellDistances = self._scale['length'] * self.geom.faceToCellDistances
-        self._scaledCellDistances = self._scale['length'] * self.geom.cellDistances
-        self._scaledCellToCellDistances = self._scale['length'] * self.geom.cellToCellDistances
+        self._scaledFaceAreas = self._scale['area'] * self._geom.faceAreas
+        self._scaledCellVolumes = self._scale['volume'] * self._geom.cellVolumes
+        self._scaledCellCenters = self._scale['length'] * self._geom.cellCenters
+        self._scaledFaceToCellDistances = self._scale['length'] * self._geom.faceToCellDistances
+        self._scaledCellDistances = self._scale['length'] * self._geom.cellDistances
+        self._scaledCellToCellDistances = self._scale['length'] * self._geom.cellToCellDistances
         self._areaProjections = self._calcAreaProjections()
         self._orientedAreaProjections = self._calcOrientedAreaProjections()
         self._faceToCellDistanceRatio = self._calcFaceToCellDistanceRatio()
@@ -116,19 +116,19 @@ class ScaledMeshGeometry(AbstractScaledMeshGeometry):
     faceAspectRatios          = property(lambda self: self._faceAspectRatios)
     
     def _calcAreaProjections(self):
-        return self.geom.faceNormals * self.geom.faceAreas
+        return self._geom.faceNormals * self._geom.faceAreas
         
     def _calcOrientedAreaProjections(self):
         return self.areaProjections
 
     def _calcFaceToCellDistanceRatio(self):
-        dAP = self.geom._cellDistances
-        dFP = self.geom._faceToCellDistances[0]
+        dAP = self._geom._cellDistances
+        dFP = self._geom._faceToCellDistances[0]
         
         return MA.filled(dFP / dAP)
        
     def _calcFaceAspectRatios(self):
-        return self.scaledFaceAreas / self.geom._cellDistances
+        return self.scaledFaceAreas / self._geom._cellDistances
     
 class MeshGeometry(AbstractMeshGeometry):
 
@@ -305,11 +305,7 @@ class MeshGeometry(AbstractMeshGeometry):
         else:
             return cellNormals   
       
-    """geometry properties"""
-    @property
-    def faceAreas(self):
-        return self._faceAreas
-
+    """settable geometry properties"""
     def _getFaceToCellDistances(self):
         return self._faceToCellDistances
 
@@ -337,49 +333,22 @@ class MeshGeometry(AbstractMeshGeometry):
 
     faceNormals = property(_getFaceNormals, _setFaceNormals)
 
+    """non-settable geometry properties"""
     faceCenters               = property(lambda self: self._faceCenters)
+    faceAreas                 = property(lambda self: self._faceAreas)
     cellToFaceDistanceVectors = property(lambda self: self._cellToFaceDistanceVectors)
     cellDistanceVectors       = property(lambda self: self._cellDistanceVectors)
     orientedFaceNormals       = property(lambda self: self._orientedFaceNormals)
-
-
-    @property
-    def cellVolumes(self):
-        return self._cellVolumes
-
-    @property
-    def cellCenters(self):
-        return self._cellCenters
-
+    cellVolumes               = property(lambda self: self._cellVolumes)
+    cellCenters               = property(lambda self: self._cellCenters)
     faceCellToCellNormals     = property(lambda self: self._faceCellToCellNormals)
     faceTangents1             = property(lambda self: self._faceTangents1)
     faceTangents2             = property(lambda self: self._faceTangents2)
     cellToCellDistances       = property(lambda self: self._cellToCellDistances)
     cellAreas                 = property(lambda self: self._cellAreas)
     cellNormals               = property(lambda self: self._cellNormals)
-
-    """scaled geometery properties"""
+    
+    """Scale biz"""
     scale                     = property(lambda self: self._scaledGeometry.scale,
-                                         lambda s,v: s._scaledGeometry._setScaleAndRecalculate(v))
-    scaledFaceAreas           = property(lambda self: self._scaledGeometry._scaledFaceAreas)
-    scaledCellVolumes         = property(lambda self: self._scaledGeometry._scaledCellVolumes)
-
-    @property
-    def scaledCellCenters(self):
-        return self._scaledGeometry.scaledCellCenters
-
-    scaledFaceToCellDistances = property(lambda self: \
-                                         self._scaledGeometry.scaledFaceToCellDistances)
-    scaledCellDistances       = property(lambda self: \
-                                         self._scaledGeometry.scaledCellDistances)
-    scaledCellToCellDistances = property(lambda self: \
-                                         self._scaledGeometry.scaledCellToCellDistances)
-    areaProjections           = property(lambda self: \
-                                         self._scaledGeometry.areaProjections)
-    orientedAreaProjections   = property(lambda self: \
-                                         self._scaledGeometry.orientedAreaProjections)
-    faceToCellDistanceRatio   = property(lambda self: \
-                                         self._scaledGeometry.faceToCellDistanceRatio)
-    faceAspectRatios          = property(lambda self: \
-                                          self._scaledGeometry.faceAspectRatios)      
-
+                                         lambda s,v: s._scaledGeometry._setScaleAndRecalculate(v)) 
+    

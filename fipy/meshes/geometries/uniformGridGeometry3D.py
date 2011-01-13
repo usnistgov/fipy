@@ -47,7 +47,7 @@ from abstractUniformGeometries import AbstractUniformGridGeometry
 class UniformGridScaledGeometry3D(AbstractScaledMeshGeometry):
 
     def __init__(self, geom):
-        self.geom = geom
+        self._geom = geom
                                    
     @property
     def orientedAreaProjections(self):
@@ -55,11 +55,11 @@ class UniformGridScaledGeometry3D(AbstractScaledMeshGeometry):
 
     @property
     def areaProjections(self):
-        return self.geom.faceNormals * self.geom.faceAreas
+        return self._geom.faceNormals * self._geom.faceAreas
      
     @property
     def faceAspectRatios(self):
-        return self.geom.faceAreas / self.geom.cellDistances
+        return self._geom.faceAreas / self._geom.cellDistances
     
 class UniformGridGeometry3D(AbstractUniformGridGeometry):
     
