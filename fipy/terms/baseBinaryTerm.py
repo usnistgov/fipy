@@ -70,9 +70,6 @@ class _BaseBinaryTerm(Term):
     def _verifyVar(self, var):
         raise NotImplementedError
     
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        raise NotImplementedError
-
     def _addNone(self, arg0, arg1):
         if arg0 is None and arg1 is None:
             return None
@@ -90,12 +87,7 @@ class _BaseBinaryTerm(Term):
         return self._addNone(self.term._getDiffusionGeomCoeff(mesh), self.other._getDiffusionGeomCoeff(mesh))
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
-         for term in (self.term, self.other):
-             defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
-             if defaultsolver is not None:
-                 return defaultsolver
-                
-         return solver
+        raise NotImplementedError
         
     def __repr__(self):
         raise NotImplementedError
