@@ -134,8 +134,8 @@ class Mesh(_CommonMesh):
         assert (faces | self.getExteriorFaces() == self.getExteriorFaces()).all()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
-        assert numerix.alltrue(numerix.take(self.areaProjections, faces0, axis=1) 
-                               == numerix.take(-self.areaProjections, faces1, axis=1))
+        assert numerix.allclose(numerix.take(self.areaProjections, faces0, axis=1), 
+                                numerix.take(-self.areaProjections, faces1, axis=1))
 
         ## extract the adjacent cells for both sets of faces
         faceCellIDs0 = self.faceCellIDs[0]
