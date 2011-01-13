@@ -170,7 +170,15 @@ class MeshGeometry(AbstractMeshGeometry):
 
         self._cellAreas = self._calcCellAreas()
         self._cellNormals = self._calcCellNormals()
-       
+
+    def _getCellFaceIDs(self):
+        return self._cellFaceIDs
+
+    def _setCellFaceIDs(self, newVal):
+        self._cellFaceIDs = newVal
+
+    cellFaceIDs = property(_getCellFaceIDs, _setCellFaceIDs)
+        
     def handleFaceConnection(self):
         self._cellToCellDistances = self._calcCellToCellDist()
      

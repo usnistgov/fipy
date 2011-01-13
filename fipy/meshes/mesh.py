@@ -84,6 +84,24 @@ class Mesh(object):
         self._setTopology()
         self._setGeometry(scaleLength = 1.)
 
+    def _getCellFaceIDs(self):
+        return self._cellFaceIDs
+
+    def _setCellFaceIDs(self, newVal):
+        """We must notify the helper classes."""
+        if hasattr(self, "_topology"): 
+            self._topology.cellFaceIDs = newVal
+        if hasattr(self, "_geometry"):
+            self._geometry.cellFaceIDs = newVal
+
+        self._cellFaceIDs = newVal
+
+    """TODO; This is all to enable `_connectFaces` to work properly. Yet another
+    reason why `_connectFaces` should be moved lower down the mesh hierarchy,
+    since only periodic grids use them."""
+    cellFaceIDs = property(_getCellFaceIDs, _setCellFaceIDs)
+
+
     """Topology methods"""
     def _setTopology(self):
         self._topology = _MeshTopology(self.cellFaceIDs, 
@@ -378,7 +396,6 @@ class Mesh(object):
            True
 
         """
-
         ## check for errors
 
         ## check that faces are members of exterior faces
@@ -450,9 +467,9 @@ class Mesh(object):
                                       faces0,
                                       cellFaceIDs[i])
             ## add those faces back to the main self.cellFaceIDs
-            tmp = self.cellFaceIDs[i]
-            numerix.put(tmp, faceCellIDs, cellFaceIDs[i])
-            self.cellFaceIDs[i] = tmp
+            tmpCellFaceIDs = self.cellFaceIDs
+            numerix.put(tmpCellFaceIDs[i], faceCellIDs, cellFaceIDs[i])
+            self.cellFaceIDs = tmpCellFaceIDs
 
         ## calculate new topology
         self._setTopology()

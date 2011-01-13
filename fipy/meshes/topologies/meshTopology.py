@@ -58,6 +58,14 @@ class MeshTopology(AbstractMeshTopology):
         self._cellToCellIDs = self._calcCellToCellIDs()
         self._cellToCellIDsFilled = self._calcCellToCellIDsFilled(numCells,
                                                                  maxFacesPerCell)
+
+    def _getCellFaceIDs(self):
+        return self._cellFaceIDs
+
+    def _setCellFaceIDs(self, newVal):
+        self._cellFaceIDs = newVal
+
+    cellFaceIDs = property(_getCellFaceIDs, _setCellFaceIDs)
     
     def _getInteriorFaces(self):
         return self._interiorFaces

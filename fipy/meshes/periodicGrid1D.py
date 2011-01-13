@@ -40,7 +40,6 @@ __docformat__ = 'restructuredtext'
 from grid1D import Grid1D
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
-from fipy.meshes.geometries import _PeriodicGridGeometry1D
 
 class PeriodicGrid1D(Grid1D):
     """
@@ -93,20 +92,6 @@ class PeriodicGrid1D(Grid1D):
             self._connectFaces(numerix.nonzero(self.facesLeft),
                                numerix.nonzero(self.facesRight))
 
-    def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _PeriodicGridGeometry1D(self.globalNumberOfCells,
-                                                self.args['dx'],
-                                                self.numberOfFaces,
-                                                self.dim, 
-                                                self.faceVertexIDs,
-                                                self.vertexCoords,
-                                                self.faceCellIDs,
-                                                self.cellFaceIDs,
-                                                self.numberOfCells,
-                                                self._maxFacesPerCell,
-                                                self._cellToFaceOrientations,
-                                                scaleLength)
-
     def _getOverlap(self, overlap, procID, occupiedNodes):
         self.occupiedNodes = occupiedNodes
         if occupiedNodes == 1:
@@ -120,10 +105,16 @@ class PeriodicGrid1D(Grid1D):
 
     @property
     def _globalOverlappingCellIDs(self):
-        """Changed from trunk: self.args['nx'] -> self.nx.
-        self.args['nx'] was never being set from None."""
-        return super(PeriodicGrid1D, self)._globalOverlappingCellIDs % self.nx
+        return super(PeriodicGrid1D, self)._globalOverlappingCellIDs % self.args['nx']
 
+    @property
+    def cellCenters(self):
+        """Defined outside of a geometry class since we need the `CellVariable`
+        version of `cellCenters`; that is, the `cellCenters` defined in
+        fipy.meshes.mesh and not in any geometry (since a `CellVariable` requires
+        a reference to a mesh)."""
+        return super(PeriodicGrid1D, self).cellCenters \
+                % numerix.sum(self.globalNumberOfCells * self.args['dx']) 
 def _test():
     import doctest
     return doctest.testmod()
