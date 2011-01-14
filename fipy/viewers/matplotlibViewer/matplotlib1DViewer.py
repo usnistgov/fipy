@@ -118,10 +118,10 @@ class Matplotlib1DViewer(_MatplotlibViewer):
 
     def _getData(self):
         from fipy.tools.numerix import array
-        return [[array(var.getMesh().getCellCenters()[0]), array(var)] for var in self.vars]
+        return [[array(var.getMesh().cellCenters[0]), array(var)] for var in self.vars]
             
     def _getSuitableVars(self, vars):
-        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().dim == 1]
         if len(vars) > 1:
             vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
         if len(vars) == 0:

@@ -129,7 +129,7 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * cos((2 * pi * mesh.getCellCenters()[0]) / L)
+    RVar[:] = params['S'] + (1 + params['S']) * params['G'] * cos((2 * pi * mesh.cellCenters[0]) / L)
 
     for i in range(100):
         for var, eqn in eqs:

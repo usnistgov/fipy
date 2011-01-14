@@ -78,7 +78,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
         self._plot()
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.grid2D import Grid2D
+        from fipy.meshes import Grid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.getMesh(), Grid2D) and isinstance(var, CellVariable))]
@@ -97,8 +97,8 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
 ##         gc.collect()
 
         mesh = self.vars[0].getMesh()
-        shape = mesh.getShape()
-        X, Y = mesh.getCellCenters()
+        shape = mesh.shape
+        X, Y = mesh.cellCenters
         Z = self.vars[0].getValue()
         X, Y, Z = [v.reshape(shape, order="FORTRAN") for v in (X, Y, Z)]
 

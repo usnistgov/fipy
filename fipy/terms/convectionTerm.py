@@ -52,7 +52,7 @@ class ConvectionTerm(FaceTerm):
         """
         Create a `ConvectionTerm` object.
         
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> m = Grid1D(nx = 2)
@@ -80,7 +80,7 @@ class ConvectionTerm(FaceTerm):
             Traceback (most recent call last):
                 ...
             TypeError: The coefficient must be a vector value.
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> m2 = Grid2D(nx=2, ny=1)
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)
@@ -120,7 +120,7 @@ class ConvectionTerm(FaceTerm):
         if not isinstance(self.coeff, FaceVariable):
             self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
 
-        projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
+        projectedCoefficients = self.coeff * mesh._orientedAreaProjections
         
         return projectedCoefficients.sum(0)
         
@@ -157,7 +157,7 @@ class ConvectionTerm(FaceTerm):
 
     def _verifyCoeffType(self, var):
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
-        and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
+        and numerix.getShape(self.coeff) != (var.getMesh().dim,):
             raise TypeError, "The coefficient must be a vector value."
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
@@ -189,10 +189,10 @@ class ConvectionTerm(FaceTerm):
                     else:
                         alpha = 0.0
 
-                    exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
+                    exteriorCoeff =  self.coeff * mesh.exteriorFaces
 
-                    self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
-                    self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+                    self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.cellVolumes
+                    self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.cellVolumes
                 else:
                     self.constraintL = 0
                     self.constraintB = 0

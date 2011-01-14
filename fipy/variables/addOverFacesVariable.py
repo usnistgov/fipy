@@ -46,17 +46,17 @@ class _AddOverFacesVariable(CellVariable):
         self.faceVariable = self._requires(faceVariable)
 
     def _calcValuePy(self):
-        ids = self.mesh._getCellFaceIDs()
+        ids = self.mesh.cellFaceIDs
         
         contributions = numerix.take(self.faceVariable, ids)
 
         # FIXME: numerix.MA.filled casts away dimensions
-        return numerix.MA.filled(numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0)) / self.mesh.getCellVolumes()
+        return numerix.MA.filled(numerix.sum(contributions * self.mesh._cellToFaceOrientations, 0)) / self.mesh.cellVolumes
         
     def _calcValueIn(self):
 
-        NCells = self.mesh.getNumberOfCells()
-        ids = self.mesh._getCellFaceIDs()
+        NCells = self.mesh.numberOfCells
+        ids = self.mesh.cellFaceIDs
 
         val = self._getArray().copy()
         
@@ -69,7 +69,7 @@ class _AddOverFacesVariable(CellVariable):
           value[i] = 0.;
           for(j = 0; j < numberOfCellFaces; j++)
             {
-              // _getCellFaceIDs() can be masked, which caused subtle and 
+              // cellFaceIDs can be masked, which caused subtle and 
               // unreproduceable problems on OS X (who knows why not elsewhere)
               long id = ids[i + j * numberOfCells];
               if (id >= 0) { 
@@ -79,13 +79,13 @@ class _AddOverFacesVariable(CellVariable):
             value[i] = value[i] / cellVolume[i];
           }
         """,
-            numberOfCellFaces = self.mesh._getMaxFacesPerCell(),
+            numberOfCellFaces = self.mesh._maxFacesPerCell,
             numberOfCells = NCells,
             faceVariable = self.faceVariable.getNumericValue(),
             ids = numerix.array(ids),
             value = val,
-            orientations = numerix.array(self.mesh._getCellFaceOrientations()),
-            cellVolume = numerix.array(self.mesh.getCellVolumes()))
+            orientations = numerix.array(self.mesh._cellToFaceOrientations),
+            cellVolume = numerix.array(self.mesh.cellVolumes))
             
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())

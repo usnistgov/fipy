@@ -70,7 +70,7 @@ class TransientTerm(CellTerm):
     >>> steps = 2
     >>> sweeps = 8
     
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> mesh = Grid1D(nx = 1)
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh, value = phi0, hasOld = 1)
@@ -107,7 +107,13 @@ class TransientTerm(CellTerm):
 	}
 	
     def _calcGeomCoeff(self, mesh):
-	return self.coeff * mesh.getCellVolumes()
+	return self.coeff * mesh.cellVolumes
+
+    def getTransientCoeff(self, mesh):
+        return self._getGeomCoeff(mesh)
+
+    def getTransientCoeff(self, mesh):
+        return self._getGeomCoeff(mesh)
 
     def getTransientCoeff(self, mesh):
         return self._getGeomCoeff(mesh)

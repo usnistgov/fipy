@@ -57,7 +57,7 @@ coordinates from the mesh are gathered and the length of the domain,
 `Lx`, is calculated.  An array, `analyticalArray`, is calculated to
 compare with the numerical result,
 
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> Lx = nx * dx
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
 
@@ -82,14 +82,14 @@ valueLeft = 0.
 valueRight = 1.
 var = CellVariable(name = "solution-variable", mesh = mesh, value = valueLeft)
 
-var.constrain(valueLeft, mesh.getFacesLeft())
-var.constrain(valueRight, mesh.getFacesRight())
+var.constrain(valueLeft, mesh.facesLeft)
+var.constrain(valueRight, mesh.facesRight)
 
 if __name__ == '__main__':
     DiffusionTerm().solve(var)
     viewer = Viewer(vars=var)
     viewer.plot()
-    x = mesh.getCellCenters()[0]
+    x = mesh.cellCenters[0]
     Lx = nx * dx
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     print var.allclose(analyticalArray)

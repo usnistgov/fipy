@@ -208,7 +208,7 @@ class _Viewer(object):
         return """
             >>> from fipy import *
             >>> mesh = Grid1D(nx=100)
-            >>> x, = mesh.getCellCenters()
+            >>> x, = mesh.cellCenters
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
             >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=(sin(k * xVar), cos(k * xVar / pi)), 
@@ -226,7 +226,7 @@ class _Viewer(object):
         return """
             >>> from fipy import *
             >>> mesh = %(mesh)s
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar), 
@@ -256,7 +256,7 @@ class _Viewer(object):
         return """
             >>> from fipy import *
             >>> mesh = %(mesh)s
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar).getGrad(), 
@@ -292,7 +292,7 @@ class _Viewer(object):
         return """
             >>> from fipy import *
             >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
-            >>> x, y, z = mesh.getCellCenters()
+            >>> x, y, z = mesh.cellCenters
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
             >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 

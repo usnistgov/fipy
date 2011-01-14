@@ -57,8 +57,8 @@ We start by defining a 1D mesh
     >>> # L = nx * dx
     >>> mesh = Grid1D(dx = dx, nx = nx)
     >>> # mesh = Grid1D(dx = dx)
-    >>> # L = mesh.getFacesRight()[0].getCenter()[0] - mesh.getFacesLeft()[0].getCenter()[0]
-    >>> # L = mesh.getCellCenters()[0,-1] - mesh.getCellCenters()[0,0]
+    >>> # L = mesh.facesRight[0].getCenter()[0] - mesh.facesLeft[0].getCenter()[0]
+    >>> # L = mesh.cellCenters[0,-1] - mesh.cellCenters[0,0]
 
 
 We create the phase field
@@ -67,7 +67,7 @@ We create the phase field
     
     >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
     >>> phase.mobility = PF("1 m**3/J/s") / (molarVolume / (RT * timeStep))
-    >>> phase.gradientEnergy = PF("3.6e-11 J/m") / (mesh.getScale()**2 * RT / molarVolume)
+    >>> phase.gradientEnergy = PF("3.6e-11 J/m") / (mesh.scale**2 * RT / molarVolume)
 
     >>> def p(xi):
     ...     return xi**3 * (6 * xi**2 - 15 * xi + 10.)
@@ -113,13 +113,13 @@ and two solute species
 
     >>> substitutionals = [
     ...     ComponentVariable(mesh = mesh, name = 'SO4',
-    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.getScale()**2/timeStep),
+    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.scale**2/timeStep),
     ...                       standardPotential = PF("24276.6640625 J/mol") / RT,
     ...                       barrier = CnBarrier,
     ...                       valence = -2,
     ...                       value = PF("0.000010414586295976 mol/l") * molarVolume),
     ...     ComponentVariable(mesh = mesh, name = 'Cu',
-    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.getScale()**2/timeStep),
+    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.scale**2/timeStep),
     ...                       standardPotential = PF("-7231.81396484375 J/mol") / RT,
     ...                       barrier = CnBarrier,
     ...                       valence = +2,
@@ -129,7 +129,7 @@ and one interstitial
 
     >>> interstitials = [
     ...     ComponentVariable(mesh = mesh, name = 'e-',
-    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.getScale()**2/timeStep),
+    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.scale**2/timeStep),
     ...                       standardPotential = PF("-33225.9453125 J/mol") / RT,
     ...                       barrier = 0.,
     ...                       valence = -1,
@@ -145,7 +145,7 @@ Finally, we create the electrostatic potential field
 
     >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
     
-    >>> permittivity = PF("78.49 eps0") / (Faraday**2 * mesh.getScale()**2 / (RT * molarVolume))
+    >>> permittivity = PF("78.49 eps0") / (Faraday**2 * mesh.scale**2 / (RT * molarVolume))
 
     >>> permittivity = 1.
     >>> permitivityPrime = 0.
@@ -164,7 +164,7 @@ and the solvent and a liquid phase rich in the two substitutional species
 
 Once again, we start with a sharp phase boundary
 
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> phase.setValue(x < L / 2)
     >>> interstitials[0].setValue("0.000111111503177394 mol/l" * molarVolume, where=x > L / 2)
     >>> substitutionals[0].setValue("0.249944439430068 mol/l" * molarVolume, where=x > L / 2)
@@ -258,7 +258,7 @@ iterating to equilibrium
 
     >>> solver = LinearLUSolver(tolerance = 1e-3)
 
-    >>> potential.constrain(0., mesh.getFacesLeft())
+    >>> potential.constrain(0., mesh.facesLeft)
 
     >>> phase.residual = CellVariable(mesh = mesh)
     >>> potential.residual = CellVariable(mesh = mesh)

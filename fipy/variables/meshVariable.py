@@ -54,7 +54,7 @@ class _MeshVariable(Variable):
           - `rank`: the rank (number of dimensions) of each element of this 
             `Variable`. Default: 0
           - `elementshape`: the shape of each element of this variable
-             Default: `rank * (mesh.getDim(),)`
+             Default: `rank * (mesh.dim,)`
           - `unit`: the physical units of the `Variable`
         """
         from fipy.tools import debug
@@ -107,7 +107,7 @@ class _MeshVariable(Variable):
             if elementshape is None:
                 elementshape = ()
         elif elementshape is None:
-            elementshape = rank * (mesh.getDim(),)
+            elementshape = rank * (mesh.dim,)
         elif len(elementshape) != rank:
             raise ValueError, 'len(elementshape) != rank'
                 
@@ -201,7 +201,7 @@ class _MeshVariable(Variable):
 
     def getShape(self):
         """
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=2, ny=3)
             >>> var = CellVariable(mesh=mesh)
@@ -435,7 +435,7 @@ class _MeshVariable(Variable):
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
         
         if ((newOpShape is None or baseClass is None)
-            and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.getMesh().getDim())):
+            and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.getMesh().dim)):
                 newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other[..., numerix.newaxis])
 
         return (newOpShape, baseClass, newOther)

@@ -52,7 +52,7 @@ class _MetalIonSourceVariable(CellVariable):
 
     Here is a test,
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
     >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
@@ -85,7 +85,7 @@ class _MetalIonSourceVariable(CellVariable):
     def _calcValue(self):
         ionVar = numerix.array(self.ionVar)
         ionVar = numerix.where(ionVar > 1e-20, ionVar, 1e-20)
-        return numerix.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh.getCellVolumes() * self.metalIonMolarVolume) / ionVar
+        return numerix.array(self.depositionRate) * self.distanceVar.getCellInterfaceAreas() / (self.mesh.cellVolumes * self.metalIonMolarVolume) / ionVar
     
         
 def _test(): 

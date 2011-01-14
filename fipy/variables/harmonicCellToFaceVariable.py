@@ -72,7 +72,7 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
         alpha = alpha,
         id1 = id1, id2 = id2,
         shape=numerix.array(numerix.shape(val)),
-        ni = self.mesh._getNumberOfFaces())
+        ni = self.mesh.numberOfFaces)
 
         return self._makeValue(value = val)
 ##         return self._makeValue(value = val, unit = self.getUnit())

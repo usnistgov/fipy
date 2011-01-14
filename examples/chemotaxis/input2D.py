@@ -130,7 +130,7 @@ if __name__ == '__main__':
         for var, eqn in eqs:
             eqn.solve(var, dt = 1.)
 
-    x, y = mesh.getCellCenters()
+    x, y = mesh.cellCenters
 
     RVar[:] = L / sqrt((x - L / 2)**2 + (y - 2 * L)**2)
     

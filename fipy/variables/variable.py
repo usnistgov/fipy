@@ -521,11 +521,11 @@ class Variable(object):
         [2 8 5 8]
 
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> m = Grid2D(nx=2, ny=2)
-        >>> x, y = m.getCellCenters()
+        >>> x, y = m.cellCenters
         >>> v = CellVariable(mesh=m, rank=1, value=(x, y))
-        >>> v.constrain(((0.,), (-1.,)), where=m.getFacesLeft())
+        >>> v.constrain(((0.,), (-1.,)), where=m.facesLeft)
         >>> print v.getFaceValue()
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.   1.   1.5  0.   1.   1.5]
          [ 0.5  0.5  1.   1.   1.5  1.5 -1.   0.5  0.5 -1.   1.5  1.5]]
@@ -791,14 +791,14 @@ class Variable(object):
             '((var00[i] * var01[i]) * var1[i])'
 
         The following test was implemented due to a problem with
-        contiguous arrays.  The `mesh.getCellCenters()[1]` command
+        contiguous arrays.  The `mesh.cellCenters[1]` command
         introduces a non-contiguous array into the `Variable` and this
         causes the inline routine to return senseless results.
         
             >>> from fipy import Grid2D, CellVariable
             >>> mesh = Grid2D(dx=1., dy=1., nx=2, ny=2)
             >>> var = CellVariable(mesh=mesh, value=0.)
-            >>> Y =  mesh.getCellCenters()[1]
+            >>> Y =  mesh.cellCenters[1]
             >>> var.setValue(Y + 1.0)
             >>> print var - Y
             [ 1.  1.  1.  1.]
@@ -1177,7 +1177,7 @@ class Variable(object):
         True
         >>> print a & b
         [0 0 0 1]
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx=4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
@@ -1199,7 +1199,7 @@ class Variable(object):
         True
         >>> print a | b
         [0 1 1 1]
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx=4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
@@ -1275,7 +1275,7 @@ class Variable(object):
     def sqrt(self):
         """
         
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
             >>> mesh= Grid1D(nx=3)
 
             >>> from fipy.variables.cellVariable import CellVariable

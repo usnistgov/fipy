@@ -67,7 +67,7 @@ class VTKCellViewer(_VTKViewer):
         >>> from fipy.viewers.vtkViewer import VTKCellViewer
 
         >>> m = Grid1D(nx=10)
-        >>> x, = m.getCellCenters()
+        >>> x, = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*x, name="x*x")
         >>> v2 = CellVariable(mesh=m, value=x)
         >>> v3 = v1.getGrad()
@@ -76,7 +76,7 @@ class VTKCellViewer(_VTKViewer):
         >>> VTKFileReader().initialize(fname)
 
         >>> m = Grid2D(nx=1, ny=2)
-        >>> x, y = m.getCellCenters()
+        >>> x, y = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y, name="x*y")
         >>> v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
         >>> v3 = v1.getGrad()
@@ -87,7 +87,7 @@ class VTKCellViewer(_VTKViewer):
         >>> m = (Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
         ...      + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1))
         ...      + ((0.5,), (0.2,)))
-        >>> x, y = m.getCellCenters()
+        >>> x, y = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y, name="x*y")
         >>> v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
         >>> v3 = v1.getGrad()
@@ -96,7 +96,7 @@ class VTKCellViewer(_VTKViewer):
         >>> VTKFileReader().initialize(fname)
 
         >>> m = Grid3D(nx=2, ny=1, nz=1)
-        >>> x, y, z = m.getCellCenters()
+        >>> x, y, z = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y*z, name="x*y*z")
         >>> v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
         >>> v3 = v1.getGrad()

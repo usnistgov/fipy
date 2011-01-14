@@ -85,7 +85,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
     def _getLimit(self, key, default=None):
         limit = _MatplotlibViewer._getLimit(self, key, default=default)
         if limit is None:
-            X, Y = self.vars[0].getMesh().getFaceCenters()
+            X, Y = self.vars[0].getMesh().faceCenters
             if 'xmin' in key:
                 limit = float(min(X))
             elif 'ymin' in key:
@@ -97,7 +97,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         return limit
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
+        from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable)

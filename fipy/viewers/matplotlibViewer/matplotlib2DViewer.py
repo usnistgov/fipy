@@ -78,9 +78,9 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 
         self.mesh = self.vars[0].getMesh()
         
-        vertexIDs = self.mesh._getOrderedCellVertexIDs()
+        vertexIDs = self.mesh._orderedCellVertexIDs
 
-        vertexCoords = self.mesh.getVertexCoords()
+        vertexCoords = self.mesh.vertexCoords
 
         xCoords = numerix.take(vertexCoords[0], vertexIDs)
         yCoords = numerix.take(vertexCoords[1], vertexIDs)
@@ -114,7 +114,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         self._plot()
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.mesh2D import Mesh2D
+        from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if ((isinstance(var.getMesh(), Mesh2D) and isinstance(var, CellVariable))

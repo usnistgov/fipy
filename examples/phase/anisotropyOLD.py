@@ -136,7 +136,7 @@ The domain is seeded with a circular solidified region with parameters
 ``seedCenter`` and ``radius`` representing the center and radius of the
 seed.
    
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> phase.setValue(1., where=((x - seedCenter[0])**2 
 ...                           + (y - seedCenter[1])**2) < radius**2)
 

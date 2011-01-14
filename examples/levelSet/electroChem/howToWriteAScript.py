@@ -174,7 +174,7 @@ region will be negative.
 >>> trenchWidth = trenchDepth / aspectRatio
 >>> sideWidth = (trenchSpacing - trenchWidth) / 2
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> distanceVar.setValue(1., where=(y > trenchHeight) 
 ...                                 | ((y > bottomHeight) 
 ...                                    & (x < xCells * cellSize - sideWidth)))
@@ -338,7 +338,7 @@ The :class:`~fipy.models.levelSet.electroChem.metalIonDiffusionEquation.MetalIon
 ...     metalIonMolarVolume=molarVolume,
 ... )
 
->>> metalVar.constrain(bulkMetalConcentration, mesh.getFacesTop())
+>>> metalVar.constrain(bulkMetalConcentration, mesh.facesTop)
 
 The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
 species with a source term for the jump from the bulk to an interface.
@@ -380,7 +380,7 @@ The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.Sur
 ...     rateConstant=rateConstant0 * siteDensity
 ... )
 
->>> bulkCatalystVar.constrain(catalystConcentration, mesh.getFacesTop())
+>>> bulkCatalystVar.constrain(catalystConcentration, mesh.facesTop)
 
 If running interactively, create viewers.
 

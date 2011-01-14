@@ -98,7 +98,7 @@ class CellTerm(Term):
 ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
     def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
-        N = oldArray.getMesh().getNumberOfCells()
+        N = oldArray.getMesh().numberOfCells
         updatePyArray = numerix.zeros((N),'d')
 
         inline._runInline("""
@@ -140,7 +140,7 @@ class CellTerm(Term):
         The following tests demonstrate how the `CellVariable` objects
         interact with other types of `Variable` objects.
         
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> m = Grid1D(nx=2)

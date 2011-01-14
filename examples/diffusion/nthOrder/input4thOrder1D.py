@@ -78,10 +78,10 @@ or
     
 .. index:: NthOrderBoundaryCondition
 
->>> BCs = (NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=alpha3, order=2),
-...        NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=alpha4, order=3))
->>> var.getFaceGrad().constrain(alpha2, mesh.getFacesRight())
->>> var.constrain(alpha1, mesh.getFacesLeft())
+>>> BCs = (NthOrderBoundaryCondition(faces=mesh.facesLeft, value=alpha3, order=2),
+...        NthOrderBoundaryCondition(faces=mesh.facesRight, value=alpha4, order=3))
+>>> var.getFaceGrad().constrain(alpha2, mesh.facesRight)
+>>> var.constrain(alpha1, mesh.facesLeft)
 
 We initialize the steady-state equation
     
@@ -105,7 +105,7 @@ The analytical solution is:
 or
 
 >>> analytical = CellVariable(mesh=mesh, name='analytical value')
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> analytical.setValue(alpha4 / 6. * x**3 + alpha3 / 2. * x**2 + \
 ...                     (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1)
 

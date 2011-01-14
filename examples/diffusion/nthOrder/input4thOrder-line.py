@@ -42,7 +42,7 @@
    example, multigrid preconditioners such as those provided by Trilinos allow
    a more accurate solution.
 
-   >>> print var.allclose(mesh.getCellCenters()[0], atol = 10)
+   >>> print var.allclose(mesh.cellCenters[0], atol = 10)
    1
 
 """
@@ -60,10 +60,10 @@ var = CellVariable(mesh = mesh)
 
 eq = DiffusionTerm((1.0, 1.0))
 
-BCs = (NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 0),
-       NthOrderBoundaryCondition(mesh.getFacesRight(), Lx, 0),
-       NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2),
-       NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2))
+BCs = (NthOrderBoundaryCondition(mesh.facesLeft, 0., 0),
+       NthOrderBoundaryCondition(mesh.facesRight, Lx, 0),
+       NthOrderBoundaryCondition(mesh.facesLeft, 0., 2),
+       NthOrderBoundaryCondition(mesh.facesRight, 0., 2))
 
 solver = LinearLUSolver(iterations=10)
 
@@ -75,5 +75,5 @@ if __name__ == '__main__':
     viewer = Viewer(var)
     viewer.plot()
 
-    print var.allclose(mesh.getCellCenters()[0], atol = 10)
+    print var.allclose(mesh.cellCenters[0], atol = 10)
     raw_input("finished")

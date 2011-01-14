@@ -105,7 +105,7 @@ simply by providing a :keyword:`tuple` or :keyword:`list` of components
 
 We separate the solution domain into two different concentration regimes
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> substitutionals[0].setValue(0.3)
 >>> substitutionals[0].setValue(0.6, where=x > L / 2)
 >>> substitutionals[1].setValue(0.6)

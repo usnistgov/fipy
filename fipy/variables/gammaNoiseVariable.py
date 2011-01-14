@@ -55,7 +55,7 @@ class GammaNoiseVariable(NoiseVariable):
            >>> from fipy.variables.variable import Variable
            >>> alpha = Variable()
            >>> beta = Variable()
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> noise = GammaNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), shape = alpha, rate = beta)
            
     We histogram the root-volume-weighted noise distribution
@@ -67,7 +67,7 @@ class GammaNoiseVariable(NoiseVariable):
     
            >>> from fipy.variables.cellVariable import CellVariable
            >>> gammadist = CellVariable(mesh = histogram.getMesh())
-           >>> x = histogram.getMesh().getCellCenters()[0]
+           >>> x = histogram.getMesh().cellCenters[0]
            
            >>> if __name__ == '__main__':
            ...     from fipy import Viewer

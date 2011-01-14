@@ -65,7 +65,7 @@ class _AdsorptionCoeffInterfaceFlag(_AdsorptionCoeff):
     
 class _AdsorptionCoeffAreaOverVolume(_AdsorptionCoeff):
     def _multiplier(self):
-        return self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
+        return self.distanceVar.getCellInterfaceAreas() / self.mesh.cellVolumes
 
 class _MaxCoeff(CellVariable):
     def __init__(self, distanceVar, vars = ()):
@@ -87,7 +87,7 @@ class _SpMaxCoeff(_MaxCoeff):
 
 class _ScMaxCoeff(_MaxCoeff):
     def _calcValue(self):
-        val = self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
+        val = self.distanceVar.getCellInterfaceAreas() / self.mesh.cellVolumes
         for var in self.vars[1:]:
             val -= self.distanceVar._getCellInterfaceFlag() * numerix.array(var)
 
@@ -126,7 +126,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     import DistanceVariable
     >>> from fipy.models.levelSet.surfactant.surfactantVariable \
     ...     import SurfactantVariable
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> dx = .5
     >>> dy = 2.3
     >>> dt = 0.25
@@ -134,7 +134,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> initialValue = 0.1
     >>> c = 0.2
     
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
     >>> distanceVar = DistanceVariable(mesh = mesh, 
     ...                                value = (-dx*3/2, -dx/2, dx/2, 
@@ -160,7 +160,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     import DistanceVariable
     >>> from fipy.models.levelSet.surfactant.surfactantVariable \
     ...     import SurfactantVariable
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> dx = 0.5
     >>> dy = 2.73
     >>> dt = 0.001
@@ -211,7 +211,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     eqn0.solve(var0, dt = dt)
     ...     eqn1.solve(var1, dt = dt)
 
-    >>> x, y = mesh.getCellCenters()
+    >>> x, y = mesh.cellCenters
     >>> check = var0.getInterfaceVar() + var1.getInterfaceVar()
     >>> answer = CellVariable(mesh=mesh, value=check)
     >>> answer[x==1.25] = 1.
@@ -246,7 +246,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> dx = 1.
     >>> dy = 1.
     >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny)
-    >>> x, y = mesh.getCellCenters()
+    >>> x, y = mesh.cellCenters
+
     >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)
     >>> disVar[y < dy] = -1
     >>> disVar[x < dx] = -1

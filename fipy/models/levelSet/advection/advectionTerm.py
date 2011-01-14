@@ -64,7 +64,7 @@ class _AdvectionTerm(Term):
 
     Here are some simple test cases for this problem:
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
     >>> from fipy.tools import parallel
     >>> SparseMatrix = LinearLUSolver()._getMatrixClass()
@@ -103,7 +103,7 @@ class _AdvectionTerm(Term):
 
     Somewhat less trivial test case:
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
     >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
@@ -123,13 +123,13 @@ class _AdvectionTerm(Term):
             oldArray = var.getOld()
 
             mesh = var.getMesh()
-            NCells = mesh.getNumberOfCells()
-            NCellFaces = mesh._getMaxFacesPerCell()
+            NCells = mesh.numberOfCells
+            NCellFaces = mesh._maxFacesPerCell
 
             cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
 
             cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
-            cellToCellIDs = mesh._getCellToCellIDs()
+            cellToCellIDs = mesh._cellToCellIDs
 
             if NCells > 0:
                 cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
@@ -148,13 +148,12 @@ class _AdvectionTerm(Term):
             else:
                 coeffXdiffereneces = 0.
 
-            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.getCellVolumes())
-
+            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.cellVolumes)
         else:
             return (var, SparseMatrix(mesh=var.getMesh()), 0)
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
-        return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
+        return (adjacentValues - cellValues) / mesh._cellToCellDistances
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         if solver and not solver._canSolveAsymmetric():

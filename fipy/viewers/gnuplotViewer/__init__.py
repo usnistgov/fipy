@@ -34,7 +34,7 @@ def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
     for var in vars:
         assert mesh is var.getMesh()
 
-    dim = mesh.getDim()
+    dim = mesh.dim
     
     if dim == 1:
         return Gnuplot1DViewer(vars=vars, title=title, **kwlimits)

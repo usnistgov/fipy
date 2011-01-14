@@ -65,7 +65,7 @@ class GaussianNoiseVariable(NoiseVariable):
        
     which can be obtained with::
         
-        sigmaSqrd = Mobility * kBoltzmann * Temperature / (mesh.getCellVolumes() * timeStep)
+        sigmaSqrd = Mobility * kBoltzmann * Temperature / (mesh.cellVolumes * timeStep)
         GaussianNoiseVariable(mesh = mesh, variance = sigmaSqrd)
 
     .. note:: 
@@ -84,10 +84,10 @@ class GaussianNoiseVariable(NoiseVariable):
     We generate noise on a non-uniform cartesian mesh with cell dimensions of
     :math:`x^2` and :math:`y^3`.
            
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = arange(0.1, 5., 0.1)**2, dy = arange(0.1, 3., 0.1)**3)
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> volumes = CellVariable(mesh=mesh,value=mesh.getCellVolumes())
+    >>> volumes = CellVariable(mesh=mesh,value=mesh.cellVolumes)
     >>> noise = GaussianNoiseVariable(mesh = mesh, mean = mean, 
     ...                               variance = variance / volumes)
            
@@ -100,7 +100,7 @@ class GaussianNoiseVariable(NoiseVariable):
     and compare to a Gaussian distribution
     
     >>> gauss = CellVariable(mesh = histogram.getMesh())
-    >>> x = histogram.getMesh().getCellCenters()[0]
+    >>> x = histogram.getMesh().cellCenters[0]
     >>> gauss.setValue((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
     
     >>> if __name__ == '__main__':

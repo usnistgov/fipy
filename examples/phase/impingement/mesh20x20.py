@@ -112,7 +112,7 @@ randomly oriented liquid phase
 Four different solid circular domains are created at each corner of
 the domain with appropriate orientations
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
 ...                          (L, 0., -2. * pi / 3.), 
 ...                          (0., L, -2. * pi / 3. + 0.3), 
@@ -222,7 +222,7 @@ data. First, reset the variables to their original values.
 
 >>> phase.setValue(0)
 >>> theta.setValue(-pi + 0.0001)
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
 ...                          (L, 0., -2. * pi / 3.), 
 ...                          (0., L, -2. * pi / 3. + 0.3), 

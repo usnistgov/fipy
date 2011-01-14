@@ -140,7 +140,7 @@ subtraction operator between two angles.
 
 The left and right halves of the domain are given different orientations.
     
->>> theta.setValue(0., where=mesh.getCellCenters()[0] > Lx / 2.)
+>>> theta.setValue(0., where=mesh.cellCenters[0] > Lx / 2.)
 
 The ``phase`` equation is built in the following way.
 

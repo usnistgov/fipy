@@ -54,7 +54,7 @@ class SurfactantVariable(CellVariable):
 
         A simple 1D test:
 
-           >>> from fipy.meshes.grid1D import Grid1D
+           >>> from fipy.meshes import Grid1D
            >>> mesh = Grid1D(dx = 1., nx = 4)
            >>> from fipy.models.levelSet.distanceFunction.distanceVariable \\
            ...     import DistanceVariable
@@ -67,7 +67,7 @@ class SurfactantVariable(CellVariable):
 
         A 2D test case:
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
            >>> distanceVariable = DistanceVariable(mesh = mesh,
            ...                                     value = (1.5, 0.5, 1.5,
@@ -100,7 +100,7 @@ class SurfactantVariable(CellVariable):
         CellVariable.__init__(self, mesh = distanceVar.getMesh(), name = name, hasOld=False)
 
         self.distanceVar = self._requires(distanceVar)
-        self.value = distanceVar.getCellInterfaceAreas() * value / self.mesh.getCellVolumes()
+        self.value = distanceVar.getCellInterfaceAreas() * value / self.mesh.cellVolumes
 
         if hasOld:
             self.old = self.copy()
@@ -144,7 +144,7 @@ class _InterfaceSurfactantVariable(CellVariable):
     def _calcValue(self):
         areas = self.surfactantVar._getDistanceVar().getCellInterfaceAreas()        
         areas = numerix.where(areas > 1e-20, areas, 1)
-        return numerix.array(self.surfactantVar) * self.mesh.getCellVolumes() / areas
+        return numerix.array(self.surfactantVar) * self.mesh.cellVolumes / areas
 
 def _test(): 
     import doctest

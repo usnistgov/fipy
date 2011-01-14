@@ -35,7 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
-from fipy.meshes.grid1D import Grid1D
+from fipy.meshes import Grid1D
 from fipy.tools import numerix
 
 class HistogramVariable(CellVariable):
@@ -55,7 +55,7 @@ class HistogramVariable(CellVariable):
         
     def _calcValue(self):
         l = len(self.distribution)
-        bins = self.getMesh().getCellCenters()[0]
+        bins = self.getMesh().cellCenters[0]
         n = numerix.searchsorted(numerix.sort(self.distribution), bins)
         n = numerix.concatenate([n, [l]])
         dx = bins[1:] - bins[:-1]

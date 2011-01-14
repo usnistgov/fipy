@@ -63,7 +63,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 
             Test case added because `and` was being used instead of bitwise `&`.
 
-                >>> from fipy.meshes.grid1D import Grid1D
+                >>> from fipy.meshes import Grid1D
                 >>> mesh = Grid1D(nx = 3)
                 >>> from fipy.variables.faceVariable import FaceVariable
                 >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
@@ -114,7 +114,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		}
 	    """,
 	    alpha = alpha, eps = eps, P = P,
-	    ni = self.mesh._getNumberOfFaces()
+	    ni = self.mesh.numberOfFaces
 	    )
 
             return self._makeValue(value = alpha)

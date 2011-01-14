@@ -45,11 +45,11 @@ class CellVariable(_MeshVariable):
 
     A `CellVariable` can be ``pickled`` to persistent storage (disk) for later use:
         
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
         
         >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
-        >>> x, y = mesh.getCellCenters()
+        >>> x, y = mesh.cellCenters
         >>> var.setValue(x * y)
 
         >>> from fipy.tools import dump        
@@ -75,7 +75,7 @@ class CellVariable(_MeshVariable):
         
     def _OperatorVariableClass(self, baseClass=None):
         """
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
 
             >>> a = CellVariable(mesh=Grid1D(nx=1), value=1)
 
@@ -139,10 +139,10 @@ class CellVariable(_MeshVariable):
         return self.mesh.globalNumberOfCells
         
     def _getGlobalOverlappingIDs(self):
-        return self.mesh._getGlobalOverlappingCellIDs()
+        return self.mesh._globalOverlappingCellIDs
 
     def _getLocalNonOverlappingIDs(self):
-        return self.mesh._getLocalNonOverlappingCellIDs()
+        return self.mesh._localNonOverlappingCellIDs
 
     def getGlobalValue(self):
         """Concatenate and return values from all processors
@@ -150,8 +150,8 @@ class CellVariable(_MeshVariable):
         When running on a single processor, the result is identical to
         :meth:`~fipy.variables.variable.Variable.getValue`.
         """
-        return self._getGlobalValue(self.mesh._getLocalNonOverlappingCellIDs(), 
-                                    self.mesh._getGlobalNonOverlappingCellIDs())
+        return self._getGlobalValue(self.mesh._localNonOverlappingCellIDs, 
+                                    self.mesh._globalNonOverlappingCellIDs)
 
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
@@ -174,19 +174,19 @@ class CellVariable(_MeshVariable):
 
             >>> from fipy import *
             >>> m = Grid2D(nx=3, ny=2)
-            >>> v = CellVariable(mesh=m, value=m.getCellCenters()[0])
+            >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
             >>> print v(((0., 1.1, 1.2), (0., 1., 1.)))
             [ 0.5  1.5  1.5]
             >>> print v(((0., 1.1, 1.2), (0., 1., 1.)), order=1)
             [ 0.25  1.1   1.2 ]
             >>> m0 = Grid2D(nx=2, ny=2, dx=1., dy=1.)
             >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
-            >>> x, y = m0.getCellCenters()
+            >>> x, y = m0.cellCenters
             >>> v0 = CellVariable(mesh=m0, value=x * y)
-            >>> print v0(m1.getCellCenters().getGlobalValue())
+            >>> print v0(m1.cellCenters.getGlobalValue())
             [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
               0.75  0.75  2.25  2.25]
-            >>> print v0(m1.getCellCenters().getGlobalValue(), order=1)
+            >>> print v0(m1.cellCenters.getGlobalValue(), order=1)
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 
@@ -201,9 +201,9 @@ class CellVariable(_MeshVariable):
 
             elif order == 1:
                 ##cellID = self.getMesh()._getNearestCellID(points)
-##                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().getCellCenters()[...,cellID], self.getGrad()[...,cellID])
+##                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().cellCenters[...,cellID], self.getGrad()[...,cellID])
                 return (self.getGlobalValue()[..., nearestCellIDs] 
-                        + numerix.dot(points - self.getMesh().getCellCenters().getGlobalValue()[...,nearestCellIDs], 
+                        + numerix.dot(points - self.getMesh().cellCenters.getGlobalValue()[...,nearestCellIDs], 
                                       self.getGrad().getGlobalValue()[...,nearestCellIDs]))
 
             else:
@@ -222,7 +222,7 @@ class CellVariable(_MeshVariable):
            = \frac{\sum_\text{cells} \phi_\text{cell} V_\text{cell}}
                {\sum_\text{cells} V_\text{cell}}
         
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
         >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
@@ -305,27 +305,27 @@ class CellVariable(_MeshVariable):
         
            \phi_f = (\phi_1 - \phi_2) \frac{d_{f2}}{d_{12}} + \phi_2
            
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> from fipy import numerix
         >>> mesh = Grid1D(dx = (1., 1.))
         >>> L = 1
         >>> R = 2
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = (R - L) * (0.5 / 1.) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
         
         >>> mesh = Grid1D(dx = (2., 4.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = (R - L) * (1.0 / 3.0) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
 
         >>> mesh = Grid1D(dx = (10., 100.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = (R - L) * (5.0 / 55.0) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
@@ -381,27 +381,27 @@ class CellVariable(_MeshVariable):
         
            \phi_f = \frac{\phi_1 \phi_2}{(\phi_2 - \phi_1) \frac{d_{f2}}{d_{12}} + \phi_1}
            
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> from fipy import numerix
         >>> mesh = Grid1D(dx = (1., 1.))
         >>> L = 1
         >>> R = 2
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = L * R / ((R - L) * (0.5 / 1.) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
         
         >>> mesh = Grid1D(dx = (2., 4.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = L * R / ((R - L) * (1.0 / 3.0) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
 
         >>> mesh = Grid1D(dx = (10., 100.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.getInteriorFaces().getValue()]
+        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
         >>> answer = L * R / ((R - L) * (5.0 / 55.0) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
@@ -441,7 +441,7 @@ class CellVariable(_MeshVariable):
         Combinations of `CellVariable's` should also return old
         values.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx = 2)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> var1 = CellVariable(mesh = mesh, value = (2, 3), hasOld = 1)
@@ -486,7 +486,7 @@ class CellVariable(_MeshVariable):
         """
         Return the shape of this variable type, given a particular mesh.
         """
-        return (mesh.getNumberOfCells(),)
+        return (mesh.numberOfCells,)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
     def _getArithmeticBaseClass(self, other = None):
@@ -538,9 +538,9 @@ class CellVariable(_MeshVariable):
 
             >>> from fipy import *
             >>> m = Grid1D(nx=3)
-            >>> v = CellVariable(mesh=m, value=m.getCellCenters()[0])
-            >>> v.constrain(0., where=m.getFacesLeft())
-            >>> v.getFaceGrad().constrain(1., where=m.getFacesRight())
+            >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
+            >>> v.constrain(0., where=m.facesLeft)
+            >>> v.getFaceGrad().constrain(1., where=m.facesRight)
             >>> print v.getFaceGrad()
             [[ 1.  1.  1.  1.]]
             >>> print v.getFaceValue()
@@ -548,7 +548,7 @@ class CellVariable(_MeshVariable):
             
         """
 
-        if numerix.shape(where)[-1] == self.mesh._getNumberOfFaces():
+        if numerix.shape(where)[-1] == self.mesh.numberOfFaces:
             
             if not hasattr(self, 'faceConstraints'):
                 self.faceConstraints = []
@@ -558,7 +558,7 @@ class CellVariable(_MeshVariable):
 
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
-        newValues = oldVar.getValue(points = newMesh.getCellCenters())
+        newValues = oldVar.getValue(points = newMesh.cellCenters)
         CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.getUnit())
 
 def _test(): 

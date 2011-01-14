@@ -92,7 +92,7 @@ and :term:`FiPy` are identical.
 To start, some parameters are declared.
 
 >>> from fipy import *
->>> #from fipy.meshes.numMesh.grid2D import Grid2D
+>>> #from fipy.meshes.grid2D import Grid2D
 
 >>> L = 1.0
 >>> N = 50
@@ -189,7 +189,7 @@ approximated at the face by :math:`A_f d_{AP} / (a_P)_f`. In :term:`FiPy` the
 pressure correction equation can be written as, 
 
 >>> ap = CellVariable(mesh=mesh, value=1.)
->>> coeff = 1./ ap.getArithmeticFaceValue()*mesh._getFaceAreas() * mesh._getCellDistances() 
+>>> coeff = 1./ ap.getArithmeticFaceValue()*mesh._faceAreas * mesh._cellDistances 
 >>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.getDivergence()
 
 Above would work good on a staggered grid, however, on a colocated grid as :term:`FiPy`
@@ -229,17 +229,17 @@ removes the unphysical pressure oscillations. We start by introducing needed
 terms 
 
 >>> from fipy.variables.faceGradVariable import _FaceGradVariable
->>> volume = CellVariable(mesh=mesh, value=mesh.getCellVolumes(), name='Volume')
+>>> volume = CellVariable(mesh=mesh, value=mesh.cellVolumes, name='Volume')
 >>> contrvolume=volume.getArithmeticFaceValue()
 
 And set up the velocity with this formula in the SIMPLE loop. 
 Now, set up the no-slip boundary conditions
 
->>> xVelocity.constrain(0., mesh.getFacesRight() | mesh.getFacesLeft() | mesh.getFacesBottom())
->>> xVelocity.constrain(U, mesh.getFacesTop())
->>> yVelocity.constrain(0., mesh.getExteriorFaces())
->>> X, Y = mesh.getFaceCenters()
->>> pressureCorrection.constrain(0., mesh.getFacesLeft() & (Y < dL))
+>>> xVelocity.constrain(0., mesh.facesRight | mesh.facesLeft | mesh.facesBottom)
+>>> xVelocity.constrain(U, mesh.facesTop)
+>>> yVelocity.constrain(0., mesh.exteriorFaces)
+>>> X, Y = mesh.faceCenters
+>>> pressureCorrection.constrain(0., mesh.facesLeft & (Y < dL))
 
 Set up the viewers,
 
@@ -287,8 +287,8 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     velocity[1] = yVelocity.getArithmeticFaceValue() \
 ...          + contrvolume / ap.getArithmeticFaceValue() * \
 ...            (presgrad[1].getArithmeticFaceValue()-facepresgrad[1])
-...     velocity[..., mesh.getExteriorFaces().getValue()] = 0.
-...     velocity[0, mesh.getFacesTop().getValue()] = U
+...     velocity[..., mesh.exteriorFaces.getValue()] = 0.
+...     velocity[0, mesh.facesTop.getValue()] = U
 ...
 ...     ## solve the pressure correction equation
 ...     pressureCorrectionEq.cacheRHSvector()
@@ -300,9 +300,9 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     pressure.setValue(pressure + pressureRelaxation * pressureCorrection )
 ...     ## update the velocity using the corrected pressure
 ...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
-...                                                ap * mesh.getCellVolumes())
+...                                                ap * mesh.cellVolumes)
 ...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[1] / \
-...                                                ap * mesh.getCellVolumes())
+...                                                ap * mesh.cellVolumes)
 ...
 ...     if __name__ == '__main__':
 ...         if sweep%10 == 0:

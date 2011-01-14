@@ -314,13 +314,12 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
-          - `numberOfVariables`: The size of the matrix is determined by numberOfVariables * self.mesh.getNumberOfCells().
+          - `numberOfVariables`: The size of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
           - `storeZeros`: Instructs pysparse to store zero values if possible.
-          
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
-        _PysparseMatrix.__init__(self, size=self.numberOfVariables * self.mesh.getNumberOfCells(), bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
+        _PysparseMatrix.__init__(self, size=self.numberOfVariables * self.mesh.numberOfCells, bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
 
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):
@@ -417,7 +416,7 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PysparseIdentityMatrix.__init__(self, size=mesh.getNumberOfCells())
+        _PysparseIdentityMatrix.__init__(self, size=mesh.numberOfCells)
 
 def _test(): 
     import doctest

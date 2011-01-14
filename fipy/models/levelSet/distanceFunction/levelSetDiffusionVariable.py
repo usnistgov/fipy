@@ -52,7 +52,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
 
     Here is a simple 1D test case:
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = 1., nx = 3)
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
@@ -101,7 +101,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
 	val = val,
 	id1 = id1, id2 = id2,
         diffusionCoeff = self.diffusionCoeff,
-	ni = self.mesh._getNumberOfFaces()
+	ni = self.mesh.numberOfFaces
 	)
  
         return self._makeValue(value = val)

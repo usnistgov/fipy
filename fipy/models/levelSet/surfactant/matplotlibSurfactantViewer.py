@@ -61,7 +61,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
         
             >>> from fipy import *
             >>> m = Grid2D(nx=100, ny=100)
-            >>> x, y = m.getCellCenters()
+            >>> x, y = m.cellCenters
             >>> v = CellVariable(mesh=m, value=x**2 + y**2 - 10**2)
             >>> s = CellVariable(mesh=m, value=sin(x / 10) * cos(y / 30))
             >>> viewer = MatplotlibSurfactantViewer(distanceVar=v, surfactantVar=s)
@@ -80,7 +80,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
             >>> # from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
             >>> var = DistanceVariable(mesh = mesh, value = -1)
         
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
 
             >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
             >>> var.calcDistanceFunction()
@@ -133,13 +133,13 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
         if animate:
             self._initialCondition = None
 
-        if distanceVar.getMesh().getDim() != 2:
+        if distanceVar.getMesh().dim != 2:
             raise 'The MatplotlibSurfactantViewer only works for 2D meshes.'
 
     def _plot(self):
         mesh = self.distanceVar.getMesh()
-        shape = mesh.getShape()
-        X, Y = mesh.getCellCenters()
+        shape = mesh.shape
+        X, Y = mesh.cellCenters
         
         maxX = max(X)
         
@@ -174,7 +174,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
 
         CS.ax.set_xlim((-maxX, maxX))
 
-#         zc.set_color(pylab.cm.jet(IDs / mesh.getNumberOfCells()))
+#         zc.set_color(pylab.cm.jet(IDs / mesh.numberOfCells))
 
 #         pylab.xlim(xmin=self._getLimit('xmin'),
 #                    xmax=self._getLimit('xmax'))

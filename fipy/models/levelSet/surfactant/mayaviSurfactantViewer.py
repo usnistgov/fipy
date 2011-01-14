@@ -70,7 +70,7 @@ class MayaviSurfactantViewer(_Viewer):
             >>> # from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
             >>> var = DistanceVariable(mesh = mesh, value = -1)
         
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
 
             >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
             >>> var.calcDistanceFunction()
@@ -129,8 +129,8 @@ class MayaviSurfactantViewer(_Viewer):
 
     def _getStructure(self):
 
-        ##maxX = self.distanceVar.getMesh().getFaceCenters()[0].max()
-        ##minX = self.distanceVar.getMesh().getFaceCenters()[0].min()
+        ##maxX = self.distanceVar.getMesh().faceCenters[0].max()
+        ##minX = self.distanceVar.getMesh().faceCenters[0].min()
 
         IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())[0]
         coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()).swapaxes(0,1), IDs)
@@ -145,7 +145,7 @@ class MayaviSurfactantViewer(_Viewer):
 
         from lines import _getOrderedLines
 
-        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.getMesh()._getCellDistances().min() * 10)
+        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.getMesh()._cellDistances.min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 

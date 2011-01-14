@@ -75,7 +75,7 @@ class UpwindConvectionTerm(ConvectionTerm):
                 }
             """,
             alpha = alpha, P = P,
-            ni = self.mesh._getNumberOfFaces()
+            ni = self.mesh.numberOfFaces
             )
 
             return self._makeValue(value = alpha)
@@ -95,18 +95,18 @@ class UpwindConvectionTerm(ConvectionTerm):
 
             >>> convCoeff = FaceVariable(mesh=mesh, rank=1)
             >>> diffCoeff = FaceVariable(mesh=mesh, value=1e-20)
-            >>> x = mesh.getFaceCenters()[0]
+            >>> x = mesh.faceCenters[0]
             >>> D = 1000.
             >>> u = -1e+6
             >>> convCoeff.setValue((u,), where=x < L / 2)
             >>> diffCoeff.setValue(D, where=x > L / 2)
 
-            >>> var.constrain(1., mesh.getFacesRight())
-            >>> var.constrain(10, mesh.getFacesLeft())
+            >>> var.constrain(1., mesh.facesRight)
+            >>> var.constrain(10, mesh.facesLeft)
 
             >>> dTerm = DiffusionTerm(diffCoeff)
 
-            >>> x = mesh.getCellCenters()[0]
+            >>> x = mesh.cellCenters[0]
             >>> var0 = 2 * D / (-u * L + 2 * D)
             >>> analytical = 2 * (1 - var0) * x / L + 2 * var0 - 1
             >>> analytical = var0 * (x < L / 2) + analytical * (x >= L / 2)

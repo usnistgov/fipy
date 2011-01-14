@@ -153,7 +153,7 @@ We seed a circular solidified region in the center
 
 >>> radius = dx * 5.
 >>> C = (nx * dx / 2, ny * dy / 2)
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> phase.setValue(1., where=((x - C[0])**2 + (y - C[1])**2) < radius**2)
 
 and quench the entire simulation domain below the melting point
@@ -190,8 +190,8 @@ existing viewers to create a specialized display:
 ...                         c.remove()
 ...                         
 ...                 mesh = self.phase.getMesh()
-...                 shape = mesh.getShape()
-...                 x, y = mesh.getCellCenters()
+...                 shape = mesh.shape
+...                 x, y = mesh.cellCenters
 ...                 z = self.phase.getValue()
 ...                 x, y, z = [a.reshape(shape, order="FORTRAN") for a in (x, y, z)]
 ...                 

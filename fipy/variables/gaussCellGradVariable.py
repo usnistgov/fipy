@@ -63,7 +63,7 @@ class _GaussCellGradVariable(CellVariable):
             ids = numerix.array(numerix.MA.filled(ids, 0)),
             orientations = numerix.array(numerix.MA.filled(orientations, 0)),
             volumes = numerix.array(volumes),
-            areaProj = numerix.array(self.mesh._getAreaProjections()),
+            areaProj = numerix.array(self.mesh._areaProjections),
             faceValues = numerix.array(self.var.getArithmeticFaceValue()),
             M = M,
             ni = N, 
@@ -79,12 +79,12 @@ class _GaussCellGradVariable(CellVariable):
         return grad / volumes
 
     def _calcValue(self):
-        N = self.mesh.getNumberOfCells()
-        M = self.mesh._getMaxFacesPerCell()
+        N = self.mesh.numberOfCells
+        M = self.mesh._maxFacesPerCell
         
-        ids = self.mesh._getCellFaceIDs()
+        ids = self.mesh.cellFaceIDs
 
-        orientations = self.mesh._getCellFaceOrientations()
-        volumes = self.mesh.getCellVolumes()
+        orientations = self.mesh._cellToFaceOrientations
+        volumes = self.mesh.cellVolumes
 
         return inline._optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)

@@ -51,8 +51,8 @@ mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses the
 ...                    mesh = mesh,
 ...                    value = valueLeft)
 
->>> var.constrain(valueLeft, mesh.getFacesLeft())
->>> var.constrain(valueRight, mesh.getFacesRight())
+>>> var.constrain(valueLeft, mesh.facesLeft)
+>>> var.constrain(valueRight, mesh.facesRight)
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,0.)
@@ -66,7 +66,7 @@ mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses the
 The analytical solution test for this problem is given by:
 
 >>> axis = 0
->>> x = mesh.getCellCenters()[axis]
+>>> x = mesh.cellCenters[axis]
 >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD

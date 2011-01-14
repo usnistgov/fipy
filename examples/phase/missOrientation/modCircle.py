@@ -108,7 +108,7 @@ mesh = Grid2D(dx, dy, nx, ny)
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * pi / 3.)
-x, y = mesh.getCellCenters()
+x, y = mesh.cellCenters
 theta.setValue(-2. * pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
