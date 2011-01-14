@@ -1,0 +1,161 @@
+#!/usr/bin/env python
+
+## -*-Pyth-*-
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
+ # 
+ #  FILE: "scalarCoeffTerm.py"
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #    mail: NIST
+ #     www: http://www.ctcms.nist.gov/fipy/
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  FiPy is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  
+ # ###################################################################
+ ##
+
+__docformat__ = 'restructuredtext'
+
+from fipy.tools import numerix
+from fipy.terms.unaryTerm import _UnaryTerm
+
+class _ScalarCoeffTerm(_UnaryTerm):
+    """
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
+
+    def __neg__(self):
+        r"""
+         Negate a `Term`.
+
+           >>> -__ScalarCoeffTerm(coeff=1.)
+           __ScalarCoeffTerm(coeff=-1.0)
+
+        """
+        if isinstance(self.coeff, (tuple, list)):
+            return self.__class__(coeff=-numerix.array(self.coeff), var=self.var)
+        else:
+            return self.__class__(coeff=-self.coeff, var=self.var)
+
+    def __mul__(self, other):
+        r"""
+        Mutiply a term
+
+            >>> 2. * __ScalarCoeffTerm(coeff=0.5)
+            __ScalarCoeffTerm(coeff=1.0)
+            
+        """
+
+        if isinstance(other, (int, float)):
+            return self.__class__(coeff=other * self.coeff, var=self.var)
+        else:
+            raise Exception, "Must multiply terms by int or float."
+            
+    __rmul__ = __mul__
+
+    def _test(self):
+        r"""
+        Test stuff.
+    
+         Subtract a `Term` from a `Term`, number or variable.
+
+           >>> __ScalarCoeffTerm(coeff=1.) - 10.
+           (__ScalarCoeffTerm(coeff=1.0) + -10.0)
+           >>> __ScalarCoeffTerm(coeff=1.) - __ScalarCoeffTerm(coeff=2.)
+           (__ScalarCoeffTerm(coeff=1.0) + __ScalarCoeffTerm(coeff=-2.0))
+
+         Subtract a `Term`, number or variable from a `Term`.
+
+           >>> 10. - __ScalarCoeffTerm(coeff=1.)
+           (__ScalarCoeffTerm(coeff=-1.0) + 10.0)
+
+        Add a `Term` to another `Term`, number or variable.
+
+           >>> __ScalarCoeffTerm(coeff=1.) + 10.
+           (__ScalarCoeffTerm(coeff=1.0) + 10.0)
+           >>> __ScalarCoeffTerm(coeff=1.) + __ScalarCoeffTerm(coeff=2.)
+           (__ScalarCoeffTerm(coeff=1.0) + __ScalarCoeffTerm(coeff=2.0))
+           >>> 10. + __ScalarCoeffTerm(coeff=1.)
+           (__ScalarCoeffTerm(coeff=1.0) + 10.0)
+
+        Posate a `Term`.
+
+           >>> +__ScalarCoeffTerm(coeff=1.)
+           __ScalarCoeffTerm(coeff=1.0)
+
+        This method allows `Terms` to be equated in a natural way. Note that the
+        following does not return `False.`
+
+           >>> __ScalarCoeffTerm(coeff=1.) == __ScalarCoeffTerm(coeff=2.)
+           (__ScalarCoeffTerm(coeff=1.0) + __ScalarCoeffTerm(coeff=-2.0))
+
+        it is equivalent to,
+
+           >>> __ScalarCoeffTerm(coeff=1.) - __ScalarCoeffTerm(coeff=2.)
+           (__ScalarCoeffTerm(coeff=1.0) + __ScalarCoeffTerm(coeff=-2.0))
+
+        A `Term` can also equate with a number. 
+
+           >>> __ScalarCoeffTerm(coeff=1.) == 1.  
+           (__ScalarCoeffTerm(coeff=1.0) + -1.0)
+           
+        Likewise for integers.
+
+           >>> __ScalarCoeffTerm(coeff=1.) == 1
+           (__ScalarCoeffTerm(coeff=1.0) + -1)
+           
+        Equating to zero is allowed, of course
+        
+            >>> __ScalarCoeffTerm(coeff=1.) == 0
+            __ScalarCoeffTerm(coeff=1.0)
+            >>> 0 == __ScalarCoeffTerm(coeff=1.)
+            __ScalarCoeffTerm(coeff=1.0)
+
+        Divide a term
+
+            >>> __ScalarCoeffTerm(2.) / 2.
+            __ScalarCoeffTerm(coeff=1.0)
+
+        Combine this equation with another 
+
+            >>> from fipy.variables.variable import Variable
+            >>> eq1 = 10. + __ScalarCoeffTerm(coeff=1., var=Variable(name='A'))
+            >>> eq2 = 20. + __ScalarCoeffTerm(coeff=2., var=Variable(name='B'))
+            >>> eq1 & eq2
+            ((__ScalarCoeffTerm(coeff=1.0, var=A) + 10.0) & (__ScalarCoeffTerm(coeff=2.0, var=B) + 20.0))
+
+
+ 	""" 
+
+        
+
+class __ScalarCoeffTerm(_ScalarCoeffTerm): 
+    """
+    Dummy subclass for tests
+    """
+    pass 
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

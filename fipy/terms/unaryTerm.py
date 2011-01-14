@@ -48,35 +48,6 @@ class _UnaryTerm(Term):
     def _getDefaultSolver(self, solver, *args, **kwargs):
         return None
         
-    def __neg__(self):
-        r"""
-         Negate a `Term`.
-
-           >>> -__UnaryTerm(coeff=1.)
-           __UnaryTerm(coeff=-1.0)
-
-        """
-        if isinstance(self.coeff, (tuple, list)):
-            return self.__class__(coeff=-numerix.array(self.coeff), var=self.var)
-        else:
-            return self.__class__(coeff=-self.coeff, var=self.var)
-
-    def __mul__(self, other):
-        r"""
-        Mutiply a term
-
-            >>> 2. * __UnaryTerm(coeff=0.5)
-            __UnaryTerm(coeff=1.0)
-            
-        """
-
-        if isinstance(other, (int, float)):
-            return self.__class__(coeff=other * self.coeff, var=self.var)
-        else:
-            raise Exception, "Must multiply terms by int or float."
-            
-    __rmul__ = __mul__
-
     def _getCoupledTerms(self):
         return [self]
     
@@ -101,79 +72,6 @@ class _UnaryTerm(Term):
     def _getTransientGeomCoeff(self, mesh):
         return None
 
-    def _test(self):
-        r"""
-        Test stuff.
-    
-         Subtract a `Term` from a `Term`, number or variable.
-
-           >>> __UnaryTerm(coeff=1.) - 10.
-           (__UnaryTerm(coeff=1.0) + -10.0)
-           >>> __UnaryTerm(coeff=1.) - __UnaryTerm(coeff=2.)
-           (__UnaryTerm(coeff=1.0) + __UnaryTerm(coeff=-2.0))
-
-         Subtract a `Term`, number or variable from a `Term`.
-
-           >>> 10. - __UnaryTerm(coeff=1.)
-           (__UnaryTerm(coeff=-1.0) + 10.0)
-
-        Add a `Term` to another `Term`, number or variable.
-
-           >>> __UnaryTerm(coeff=1.) + 10.
-           (__UnaryTerm(coeff=1.0) + 10.0)
-           >>> __UnaryTerm(coeff=1.) + __UnaryTerm(coeff=2.)
-           (__UnaryTerm(coeff=1.0) + __UnaryTerm(coeff=2.0))
-           >>> 10. + __UnaryTerm(coeff=1.)
-           (__UnaryTerm(coeff=1.0) + 10.0)
-
-        Posate a `Term`.
-
-           >>> +__UnaryTerm(coeff=1.)
-           __UnaryTerm(coeff=1.0)
-
-        This method allows `Terms` to be equated in a natural way. Note that the
-        following does not return `False.`
-
-           >>> __UnaryTerm(coeff=1.) == __UnaryTerm(coeff=2.)
-           (__UnaryTerm(coeff=1.0) + __UnaryTerm(coeff=-2.0))
-
-        it is equivalent to,
-
-           >>> __UnaryTerm(coeff=1.) - __UnaryTerm(coeff=2.)
-           (__UnaryTerm(coeff=1.0) + __UnaryTerm(coeff=-2.0))
-
-        A `Term` can also equate with a number. 
-
-           >>> __UnaryTerm(coeff=1.) == 1.  
-           (__UnaryTerm(coeff=1.0) + -1.0)
-           
-        Likewise for integers.
-
-           >>> __UnaryTerm(coeff=1.) == 1
-           (__UnaryTerm(coeff=1.0) + -1)
-           
-        Equating to zero is allowed, of course
-        
-            >>> __UnaryTerm(coeff=1.) == 0
-            __UnaryTerm(coeff=1.0)
-            >>> 0 == __UnaryTerm(coeff=1.)
-            __UnaryTerm(coeff=1.0)
-
-        Divide a term
-
-            >>> __UnaryTerm(2.) / 2.
-            __UnaryTerm(coeff=1.0)
-
-        Combine this equation with another 
-
-            >>> from fipy.variables.variable import Variable
-            >>> eq1 = 10. + __UnaryTerm(coeff=1., var=Variable(name='A'))
-            >>> eq2 = 20. + __UnaryTerm(coeff=2., var=Variable(name='B'))
-            >>> eq1 & eq2
-            ((__UnaryTerm(coeff=1.0, var=A) + 10.0) & (__UnaryTerm(coeff=2.0, var=B) + 20.0))
-
-
- 	""" 
         
 class __UnaryTerm(_UnaryTerm): 
     """

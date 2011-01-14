@@ -36,12 +36,12 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from fipy.terms.unaryTerm import _UnaryTerm
+from fipy.terms.scalarCoeffTerm import _ScalarCoeffTerm
 from fipy.tools import vector
 from fipy.tools import numerix
 from fipy.tools import inline
 
-class FaceTerm(_UnaryTerm):
+class FaceTerm(_ScalarCoeffTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
@@ -49,7 +49,7 @@ class FaceTerm(_UnaryTerm):
         if self.__class__ is FaceTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
             
-        _UnaryTerm.__init__(self, coeff=coeff, var=var)
+        _ScalarCoeffTerm.__init__(self, coeff=coeff, var=var)
         self.coeffMatrix = None
             
     def _getCoeffMatrix(self, mesh, weight):

@@ -51,8 +51,9 @@ def _suite():
             'implicitSourceTerm',
             'coupledBinaryTerm',
             'baseBinaryTerm',
-            'unaryTerm'
-        ), base = __name__)
+            'unaryTerm',
+            'scalarCoeffTerm'
+            ), base = __name__)
 
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
