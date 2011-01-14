@@ -316,7 +316,6 @@ class _PysparseMeshMatrix(_PysparseMatrix):
           - `bandwidth`: The proposed band width of the matrix.
           - `numberOfVariables`: The size of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
           - `storeZeros`: Instructs pysparse to store zero values if possible.
-          
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables

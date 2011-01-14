@@ -106,8 +106,10 @@ class SurfactantEquation:
 
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
+
         if solver is None:
             solver=DefaultAsymmetricSolver()
+
         var.constrain(0, var.getMesh().exteriorFaces)
 
         return self.eq.sweep(var, solver=solver, boundaryConditions=boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn)

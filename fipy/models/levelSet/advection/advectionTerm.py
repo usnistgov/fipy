@@ -149,7 +149,6 @@ class _AdvectionTerm(Term):
                 coeffXdiffereneces = 0.
 
             return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.cellVolumes)
-
         else:
             return (var, SparseMatrix(mesh=var.getMesh()), 0)
         

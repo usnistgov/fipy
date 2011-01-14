@@ -247,6 +247,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> dy = 1.
     >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny)
     >>> x, y = mesh.cellCenters
+
     >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)
     >>> disVar[y < dy] = -1
     >>> disVar[x < dx] = -1

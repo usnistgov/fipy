@@ -155,7 +155,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> vel = 1.
     >>> coeff = CellVariable(mesh = mesh, value = mesh.cellCenters[0]**2)
     >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-        
+       
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
 

@@ -111,6 +111,9 @@ class TransientTerm(CellTerm):
 
     def getTransientCoeff(self, mesh):
         return self._getGeomCoeff(mesh)
+
+    def getTransientCoeff(self, mesh):
+        return self._getGeomCoeff(mesh)
         
 def _test(): 
     import doctest
