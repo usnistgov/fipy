@@ -307,12 +307,10 @@ fipy/matrices/sparseMatrix.py
 fipy/matrices/test.py
 fipy/matrices/trilinosMatrix.py
 fipy/meshes/__init__.py
-fipy/meshes/cell.py
 fipy/meshes/cylindricalGrid1D.py
 fipy/meshes/cylindricalGrid2D.py
 fipy/meshes/cylindricalUniformGrid1D.py
 fipy/meshes/cylindricalUniformGrid2D.py
-fipy/meshes/face.py
 fipy/meshes/factoryMeshes.py
 fipy/meshes/gmshExport.py
 fipy/meshes/gmshImport.py

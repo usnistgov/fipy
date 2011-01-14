@@ -39,7 +39,6 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.cell import Cell
 from fipy.meshes.topologies import _MeshTopology
 from fipy.meshes.geometries import _MeshGeometry
 
