@@ -63,4 +63,4 @@ class CentralDifferenceConvectionTerm(ConvectionTerm):
     class _Alpha(FaceVariable):
         def __init__(self, P):
             FaceVariable.__init__(self, P.getMesh())
-            self.value = 0.5
+            self._value = 0.5

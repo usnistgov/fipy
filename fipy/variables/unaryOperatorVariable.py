@@ -35,13 +35,15 @@ def _UnaryOperatorVariable(operatorClass=None):
         def _calcValuePy(self):
             return self.op(self.var[0].getValue())
 
-        def getUnit(self):
-            if self.unit is None:
+        @property
+        def unit(self):
+            assert(hasattr(self, "_unit") == True)
+            if self._unit is None:
                 try:
                     return self._extractUnit(self.op(self.var[0]._getUnitAsOne()))
                 except:
                     return self._extractUnit(self._calcValue())
             else:
-                return self.unit
+                return self._unit
             
     return unOp

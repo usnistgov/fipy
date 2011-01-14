@@ -78,14 +78,15 @@ def _BinaryOperatorVariable(operatorClass=None):
 
             return self.op(self.var[0].getValue(), val1)
 
-        def getUnit(self):
-            if self.unit is None:
+        @property
+        def unit(self):
+            if self._unit is None:
                 try:
                     return self._extractUnit(self.op(self.var[0]._getUnitAsOne(), self.var[1]._getUnitAsOne()))
                 except:
                     return self._extractUnit(self._calcValuePy())
             else:
-                return self.unit
+                return self._unit
                 
         def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
             self.id = id

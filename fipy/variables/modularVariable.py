@@ -82,7 +82,7 @@ class ModularVariable(CellVariable):
     # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
     """
 
-    def _setValue(self, value, unit=None, array=None):
+    def _setValueInternal(self, value, unit=None, array=None):
         """
         >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx = 4)
@@ -97,7 +97,7 @@ class ModularVariable(CellVariable):
         """
         value = self._makeValue(value=value, unit=unit, array=array)
         from fipy.variables.modPhysicalField import _ModPhysicalField
-        self.value = _ModPhysicalField(value=value, unit=unit, array=array)
+        self._value = _ModPhysicalField(value=value, unit=unit, array=array)
         
     def updateOld(self):
         """
@@ -115,7 +115,7 @@ class ModularVariable(CellVariable):
         """
         self.setValue(self.getValue().mod(self().inRadians()))
         if self.old is not None:
-            self.old.setValue(self.value.value.copy())
+            self.old.setValue(self._value.value.copy())
 
     def getGrad(self):
         r"""
@@ -124,7 +124,7 @@ class ModularVariable(CellVariable):
         """
         if not hasattr(self, 'grad'):
             from fipy.variables.modCellGradVariable import _ModCellGradVariable
-            self.grad = _ModCellGradVariable(self, self._modIn, self.value.mod)
+            self.grad = _ModCellGradVariable(self, self._modIn, self._value.mod)
 
         return self.grad
 
@@ -169,7 +169,7 @@ class ModularVariable(CellVariable):
                     self.modVar = self._requires(modVar)
                     
                 def _calcValue(self):
-                    return self.modVar.getValue()
+                    return self.modVar.value
 
             self.faceGradNoMod = NonModularTheta(self).getFaceGrad()
 

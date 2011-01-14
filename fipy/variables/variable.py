@@ -42,6 +42,7 @@ from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
 from fipy.tools import inline
+from fipy.tools.decorators import getsetDeprecated
 
 class Variable(object):
     """
@@ -108,7 +109,7 @@ class Variable(object):
                 value = value.copy()
             unit = None
             
-        self._setValue(value=value, unit=unit, array=array)
+        self._setValueInternal(value=value, unit=unit, array=array)
         
         self.name = name
                 
@@ -221,7 +222,12 @@ class Variable(object):
         return self._getArithmeticBaseClass()(value=self)
 
 
+    @getsetDeprecated
     def _getUnitAsOne(self):
+        return self._unitAsOne
+
+    @property
+    def _unitAsOne(self):
         unit = self.getUnit()
         if unit is physicalField._unity:
             return 1.
@@ -234,7 +240,11 @@ class Variable(object):
         else:
             return physicalField._unity 
 
+    @getsetDeprecated
     def getUnit(self):
+        return self.unit
+
+    def _getUnit(self):
         """
         Return the unit object of `self`.
         
@@ -243,7 +253,11 @@ class Variable(object):
         """
         return self._extractUnit(self.getValue())
         
+    @getsetDeprecated
     def setUnit(self, unit):
+        self.unit = unit
+
+    def _setUnit(self, unit):
         """
         Change the unit object of `self` to `unit`
         
@@ -252,13 +266,15 @@ class Variable(object):
             >>> print a
             1.0 m**2/s
         """
-        if self.value is None:
+        if self._value is None:
             self.getValue()
 
-        if isinstance(self.value, physicalField.PhysicalField):
-            self.value.setUnit(unit)
+        if isinstance(self._value, physicalField.PhysicalField):
+            self._value.setUnit(unit)
         else:
-            self.value = physicalField.PhysicalField(value=self.value, unit=unit)
+            self._value = physicalField.PhysicalField(value=self._value, unit=unit)
+
+    unit = property(_getUnit, _setUnit)
 
     def inBaseUnits(self):
         """
@@ -322,6 +338,7 @@ class Variable(object):
 ##         """
 ##         return (self.getValue())[index]
                             
+    @getsetDeprecated
     def getName(self):
         return self.name
         
@@ -420,21 +437,21 @@ class Variable(object):
                                 separator=separator)
         
     def __setitem__(self, index, value):
-        if self.value is None:
+        if self._value is None:
             self.getValue()
-        self.value[index] = value
+        self._value[index] = value
         self._markFresh()
         
     def itemset(self, value):
-        if self.value is None:
+        if self._value is None:
             self.getValue()
-        self.value.itemset(value)
+        self._value.itemset(value)
         self._markFresh()
         
     def put(self, indices, value):
-        if self.value is None:
+        if self._value is None:
             self.getValue()
-        numerix.put(self.value, indices, value)
+        numerix.put(self._value, indices, value)
         self._markFresh()
         
     def __call__(self):
@@ -450,9 +467,13 @@ class Variable(object):
             >>> b()
             7
         """
-        return self.getValue()
+        return self.value
 
+    @getsetDeprecated
     def getValue(self):
+        return self.value
+
+    def _getValue(self):
         """
         "Evaluate" the `Variable` and return its value (longhand)
         
@@ -467,15 +488,15 @@ class Variable(object):
 
         """
         
-        if self.stale or not self._isCached() or self.value is None:
+        if self.stale or not self._isCached() or self._value is None:
             value = self._calcValue()
             if self._isCached():
-                self._setValue(value=value)
+                self._setValueInternal(value=value)
             else:
-                self._setValue(value=None)
+                self._setValueInternal(value=None)
             self._markFresh()
         else:
-            value = self.value
+            value = self._value
 
         if hasattr(self, 'constraints'):
             for constraintValue, mask in self.constraints:
@@ -492,6 +513,13 @@ class Variable(object):
                             value[...,mask] = constraintValue[...,mask]
 
         return value
+
+    def _setValueProperty(self, newVal):
+        """Since `self.setValue` contains optional, named parameters, we will
+        punt the property's set method off to that."""
+        self.setValue(newVal)
+
+    value = property(_getValue, _setValueProperty)
             
     def constrain(self, value, where=None):
         """
@@ -569,8 +597,8 @@ class Variable(object):
             for var in self.requiredVariables:
                 var.dontCacheMe(recursive=False)
 
-    def _setValue(self, value, unit=None, array=None):
-        self.value = self._makeValue(value=value, unit=unit, array=array)
+    def _setValueInternal(self, value, unit=None, array=None):
+        self._value = self._makeValue(value=value, unit=unit, array=array)
      
     def _makeValue(self, value, unit=None, array=None):
 
@@ -589,10 +617,10 @@ class Variable(object):
 
         if not isinstance(value, PF):
             
-            if getattr(self, 'value', None) is not None:
-                v = self.value
+            if getattr(self, '_value', None) is not None:
+                v = self._value
                 if isinstance(v, PF):
-                    v = self.value.value
+                    v = self._value.value
                 if type(value) in (type(1), type(1.)):
                     if type(v) is type(numerix.array(1)):
                         if v.shape is not ():
@@ -660,24 +688,24 @@ class Variable(object):
 
         value = self._makeValue(value=tmp, unit=unit, array=None)
 
-        if numerix.getShape(self.value) == ():
-            self.value.itemset(value)
+        if numerix.getShape(self._value) == ():
+            self._value.itemset(value)
         else:
-            self.value[:] = value
+            self._value[:] = value
             
         self._markFresh()
         
     def _setNumericValue(self, value):
-        if isinstance(self.value, physicalField.PhysicalField):
-            self.value.value = value
+        if isinstance(self._value, physicalField.PhysicalField):
+            self._value.value = value
         else:
-            self.value = value
+            self._value = value
         
     def _getArray(self):
-        if isinstance(self.value, physicalField.PhysicalField):
-            return self.value._getArray()
+        if isinstance(self._value, physicalField.PhysicalField):
+            return self._value._getArray()
         else:
-            return self.value
+            return self._value
             
     def getNumericValue(self):
         value = self.getValue()
@@ -702,8 +730,8 @@ class Variable(object):
             >>> Variable(value=(3,4), unit="m").shape
             (2,)
         """
-        if self.value is not None:
-            return numerix.getShape(self.value)
+        if self._value is not None:
+            return numerix.getShape(self._value)
         else:
             return ()
             
@@ -729,7 +757,7 @@ class Variable(object):
         return self.typecode
     
     def _calcValue(self):
-        return self.value
+        return self._value
         
     def getSubscribedVariables(self):
         self.subscribedVariables = [sub for sub in self.subscribedVariables if sub() is not None]
@@ -837,25 +865,25 @@ class Variable(object):
                     raise DimensionError, 'Impossible Dimensions'
 
         ## Following section makes sure that the result array has a
-        ## valid typecode. If self.value is None then a typecode is
+        ## valid typecode. If self._value is None then a typecode is
         ## assigned to the Variable by running the calculation without
         ## inlining. The non-inlined result is thus used the first
         ## time through.
 
         
-        if self.value is None and not hasattr(self, 'typecode'):
+        if self._value is None and not hasattr(self, 'typecode'):
             self.canInline = False
             argDict['result'] = self.getValue()
             self.canInline = True
             self.typecode = numerix.obj2sctype(argDict['result'])
         else:
-            if self.value is None:
+            if self._value is None:
                 if self.getsctype() == numerix.bool_:
                     argDict['result'] = numerix.empty(dim, numerix.int8)
                 else:
                     argDict['result'] = numerix.empty(dim, self.getsctype())
             else:
-                argDict['result'] = self.value
+                argDict['result'] = self._value
 
             resultShape = argDict['result'].shape
 

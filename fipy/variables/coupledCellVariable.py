@@ -36,7 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-class _CoupledCellVariable():
+class _CoupledCellVariable(object):
     def __init__(self, vars):
         self.vars = vars
         

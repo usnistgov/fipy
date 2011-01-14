@@ -207,7 +207,7 @@ class DistanceVariable(CellVariable):
         self.cellFaceIDs = self.mesh.cellFaceIDs
         
     def _calcValue(self):
-        return self.value
+        return self._value
         
     def extendVariable(self, extensionVariable, deleteIslands = False):
         """
@@ -223,11 +223,11 @@ class DistanceVariable(CellVariable):
 
         """
         
-        self.tmpValue = self.value.copy()
+        self.tmpValue = self._value.copy()
         numericExtensionVariable = numerix.array(extensionVariable)
         self._calcDistanceFunction(numericExtensionVariable, deleteIslands = deleteIslands)
         extensionVariable[:] = numericExtensionVariable
-        self.value = self.tmpValue
+        self._value = self.tmpValue
 
     def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False):
         """
@@ -253,18 +253,18 @@ class DistanceVariable(CellVariable):
         cellToCellIDs = self.mesh._cellToCellIDs
 
         if deleteIslands:
-            adjVals = numerix.take(self.value, cellToCellIDs)
-            adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value) > 0)
+            adjVals = numerix.take(self._value, cellToCellIDs)
+            adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self._value) > 0)
             masksum = numerix.sum(numerix.logical_not(MA.getmask(adjInterfaceValues)), 0)
-            tmp = MA.logical_and(masksum == 4, self.value > 0)
-            self.value = MA.where(tmp, -1, self.value)
+            tmp = MA.logical_and(masksum == 4, self._value > 0)
+            self._value = MA.where(tmp, -1, self._value)
 
-        adjVals = numerix.take(self.value, cellToCellIDs)
-        adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value) > 0)
+        adjVals = numerix.take(self._value, cellToCellIDs)
+        adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self._value) > 0)
         dAP = self.mesh._cellToCellDistances
-        distances = abs(self.value * dAP / (self.value - adjInterfaceValues))
+        distances = abs(self._value * dAP / (self._value - adjInterfaceValues))
         indices = MA.argsort(distances, 0)
-        sign = (self.value > 0) * 2 - 1
+        sign = (self._value > 0) * 2 - 1
 
         s = distances[indices[0], numerix.arange(indices.shape[1])]
 
@@ -281,7 +281,7 @@ class DistanceVariable(CellVariable):
                 nt = MA.zeros(self.cellNormals.shape[:-1] + (0,))
 
             signedDistance = MA.where(MA.getmask(s),
-                                      self.value,
+                                      self._value,
                                       MA.where(MA.getmask(t),
                                                sign * s,
                                                MA.where(abs(numerix.dot(ns,nt)) < 0.9,
@@ -295,11 +295,11 @@ class DistanceVariable(CellVariable):
                                       )
         else:
             signedDistance = MA.where(MA.getmask(s),
-                                      self.value,
+                                      self._value,
                                       sign * s)
             
 
-        self.value = signedDistance
+        self._value = signedDistance
 
         ## calculate interface flag
         masksum = numerix.sum(numerix.logical_not(MA.getmask(distances)), 0)
@@ -313,14 +313,14 @@ class DistanceVariable(CellVariable):
             
         ext = numerix.zeros(self.mesh.numberOfCells, 'd')
 
-        positiveInterfaceFlag = numerix.where(self.value > 0, interfaceFlag, 0)
-        negativeInterfaceIDs = numerix.nonzero(numerix.where(self.value < 0, interfaceFlag, 0))[0]
+        positiveInterfaceFlag = numerix.where(self._value > 0, interfaceFlag, 0)
+        negativeInterfaceIDs = numerix.nonzero(numerix.where(self._value < 0, interfaceFlag, 0))[0]
 
         for id in negativeInterfaceIDs:
             tmp, extensionVariable[...,id] = self._calcTrialValue(id, positiveInterfaceFlag, extensionVariable)
 
         if flag:
-            self.value = self.tmpValue.copy()
+            self._value = self.tmpValue.copy()
 
         ## evaluate the trialIDs
         adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs)
@@ -333,13 +333,13 @@ class DistanceVariable(CellVariable):
 
 
         for id in trialIDs:
-            self.value[...,id], extensionVariable[id] = self._calcTrialValue(id, evaluatedFlag, extensionVariable)
+            self._value[...,id], extensionVariable[id] = self._calcTrialValue(id, evaluatedFlag, extensionVariable)
 
         while len(trialIDs):
 
-            id = trialIDs[numerix.argmin(abs(numerix.take(self.value, trialIDs)))]
+            id = trialIDs[numerix.argmin(abs(numerix.take(self._value, trialIDs)))]
 
-            if abs(self.value[...,id]) > narrowBandWidth / 2:
+            if abs(self._value[...,id]) > narrowBandWidth / 2:
                 break
 
             trialIDs.remove(id)
@@ -349,25 +349,25 @@ class DistanceVariable(CellVariable):
             for adjID in MA.filled(cellToCellIDs[...,id], -1):
                 if adjID != -1:
                     if not evaluatedFlag[...,adjID]:
-                        self.value[...,adjID], extensionVariable[...,adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
+                        self._value[...,adjID], extensionVariable[...,adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
                         if adjID not in trialIDs:
                             trialIDs.append(adjID)
 
-        self.value = numerix.array(self.value)
+        self._value = numerix.array(self._value)
 
     def _calcTrialValue(self, id, evaluatedFlag, extensionVariable):
         adjIDs = self.cellToCellIDs[...,id]
         adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs)
-        adjValues = numerix.take(self.value, adjIDs)
+        adjValues = numerix.take(self._value, adjIDs)
         adjValues = numerix.where(adjEvaluatedFlag, adjValues, 1e+10)
         try:
             indices = numerix.argsort(abs(adjValues))
         except TypeError:
             # numpy 1.1 raises a TypeError when using argsort function
             indices = abs(adjValues).argsort()
-        sign = (self.value[id] > 0) * 2 - 1
+        sign = (self._value[id] > 0) * 2 - 1
         d0 = self.cellToCellDistances[indices[0], id]
-        v0 = self.value[..., adjIDs[indices[0]]]
+        v0 = self._value[..., adjIDs[indices[0]]]
         e0 = extensionVariable[..., adjIDs[indices[0]]]
 
         N = numerix.sum(adjEvaluatedFlag)
@@ -399,7 +399,7 @@ class DistanceVariable(CellVariable):
             d1 = self.cellToCellDistances[index1, id]
             n0 = self.cellNormals[..., index0, id]
             n1 = self.cellNormals[..., index1, id]
-            v1 = self.value[..., adjIDs[index1]]
+            v1 = self._value[..., adjIDs[index1]]
             
             crossProd = d0 * d1 * (n0[0] * n1[1] - n0[1] * n1[0])
             dotProd = d0 * d1 * numerix.dot(n0, n1)
@@ -419,7 +419,7 @@ class DistanceVariable(CellVariable):
             a0 = self.cellAreas[index0, id]
             a1 = self.cellAreas[index1, id]
 
-            if self.value[id] > 0:
+            if self._value[id] > 0:
                 phi = max(dis, 0)
             else:
                 phi = min(dis, 0)
@@ -563,8 +563,8 @@ class DistanceVariable(CellVariable):
            
         """
         adjacentCellIDs = self.adjacentCellIDs
-        val0 = numerix.take(numerix.array(self.value), adjacentCellIDs[0])
-        val1 = numerix.take(numerix.array(self.value), adjacentCellIDs[1])
+        val0 = numerix.take(numerix.array(self._value), adjacentCellIDs[0])
+        val1 = numerix.take(numerix.array(self._value), adjacentCellIDs[1])
         
         return numerix.where(val1 * val0 < 0, 1, 0)
 
@@ -587,7 +587,7 @@ class DistanceVariable(CellVariable):
 
         flag = numerix.sum(flag, axis=0)
         
-        return numerix.where(numerix.logical_and(self.value > 0, flag > 0), 1, 0)
+        return numerix.where(numerix.logical_and(self._value > 0, flag > 0), 1, 0)
 
     def _getCellValueOverFaces(self):
         """
@@ -611,7 +611,7 @@ class DistanceVariable(CellVariable):
         
         M = self.mesh._maxFacesPerCell
         N = self.mesh.numberOfCells
-        return numerix.reshape(numerix.repeat(numerix.array(self.value)[numerix.newaxis, ...], M, axis=0), (M, N))
+        return numerix.reshape(numerix.repeat(numerix.array(self._value)[numerix.newaxis, ...], M, axis=0), (M, N))
 
     def _getLevelSetNormals(self):
         """

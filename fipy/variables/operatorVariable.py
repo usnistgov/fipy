@@ -34,13 +34,13 @@ from fipy.variables.variable import Variable
 
 from fipy.tools import numerix
 
-def _OperatorVariableClass(baseClass=None):
+def _OperatorVariableClass(baseClass=object):
     class _OperatorVariable(baseClass):
         def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, *args, **kwargs):
             self.op = op
             self.var = var
             self.opShape = opShape
-            self.unit = unit
+            self._unit = unit
             self.canInline = canInline  #allows for certain functions to opt out of --inline
             baseClass.__init__(self, value=None, *args, **kwargs)
             self.name = ''
@@ -124,7 +124,10 @@ def _OperatorVariableClass(baseClass=None):
                 elif style == "C":
                     if not v._isCached():
                         result = v._getCstring(argDict, id=id + str(i), freshen=freshen)
-                        v.value = None
+                        if isinstance(v, Variable):
+                            v._value = None
+                        else:
+                            v.value = None
                     else:
                         result = v._getVariableClass()._getCstring(v, argDict,
                                                                    id=id + str(i),
@@ -1075,7 +1078,7 @@ def _testBinOp(self):
         ...         Variable.__init__(self)
         ...         self.var = self._requires(var)
         ...     def _calcValue(self):
-        ...         return self.var.getValue()
+        ...         return self.var.value
 
         >>> coeff = Variable()
         >>> alpha = Alpha(-coeff / 1)

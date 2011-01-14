@@ -63,7 +63,7 @@ class NoiseVariable(CellVariable):
         """
         return CellVariable(mesh = self.getMesh(), 
                             name = self.name + "_old",
-                            value = self.getValue(),
+                            value = self.value,
                             hasOld = 0)
 
     def scramble(self):
