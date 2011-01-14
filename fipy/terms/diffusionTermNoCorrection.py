@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "unaryTerm.py"
+ #  FILE: "diffusiontermNoCorrection.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,51 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-from fipy.terms.term import Term
+from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
 
-class _UnaryTerm(Term):
-    """
-    .. attention:: This class is abstract. Always create one of its subclasses.
-    """
+class DiffusionTermNoCorrection(_BaseDiffusionTerm):
+    def _getNormals(self, mesh):
+        return mesh._getFaceNormals()
 
-    def _getVars(self):
-        return [self.var]
-                
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        return None
-        
-    def _getCoupledTerms(self):
-        return [self]
-    
-    def __repr__(self):
-        """
-        The representation of a `Term` object is given by,
-        
-           >>> print __UnaryTerm(123.456)
-           __UnaryTerm(coeff=123.456)
+    def _treatMeshAsOrthogonal(self, mesh):
+        return True
 
-        """
-        if self.var is None:
-            varString = ''
-        else:
-            varString = ', var=%s' % repr(self.var)
-
-        return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
-
-    def _getTransientGeomCoeff(self, mesh):
-        return None
-
-        
-class __UnaryTerm(_UnaryTerm): 
-    """
-    Dummy subclass for tests
-    """
-    pass 
-
-def _test(): 
-    import doctest
-    return doctest.testmod()
-
-if __name__ == "__main__":
-    _test()

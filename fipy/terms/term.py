@@ -342,7 +342,7 @@ class Term:
         raise NotImplementedError
 
     def _calcGeomCoeff(self, mesh):
-        return None
+        raise NotImplementedError
         
     def _getGeomCoeff(self, mesh):
         if self.geomCoeff is None:
@@ -359,6 +359,12 @@ class Term:
         raise NotImplementedError
 
     def _getTransientGeomCoeff(self, mesh):
+        raise NotImplementedError
+
+    def _treatMeshAsOrthogonal(self, mesh):
+        raise NotImplementedError
+
+    def _getNormals(self, mesh):
         raise NotImplementedError
 
     def _test(self):

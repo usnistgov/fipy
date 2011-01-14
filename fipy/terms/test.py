@@ -40,6 +40,7 @@ def _suite():
 
     return _LateImportDocTestSuite(docTestModuleNames = (
             'cellTerm',
+            'baseDiffusionTerm',
             'diffusionTerm',
             'term',
             'convectionTerm',
