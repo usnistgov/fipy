@@ -38,6 +38,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class CellVariable(_MeshVariable):
     """
@@ -45,19 +46,19 @@ class CellVariable(_MeshVariable):
 
     A `CellVariable` can be ``pickled`` to persistent storage (disk) for later use:
         
-        >>> from fipy.meshes import Grid2D
-        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
-        
-        >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
-        >>> x, y = mesh.cellCenters
-        >>> var.setValue(x * y)
+    >>> from fipy.meshes import Grid2D
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
+    
+    >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
+    >>> x, y = mesh.cellCenters
+    >>> var.setValue(x * y)
 
-        >>> from fipy.tools import dump        
-        >>> (f, filename) = dump.write(var, extension = '.gz')
-        >>> unPickledVar = dump.read(filename, f)
-        
-        >>> print var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10)
-        1
+    >>> from fipy.tools import dump        
+    >>> (f, filename) = dump.write(var, extension = '.gz')
+    >>> unPickledVar = dump.read(filename, f)
+    
+    >>> print var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10)
+    1
         
     """
 
@@ -66,9 +67,9 @@ class CellVariable(_MeshVariable):
                                rank=rank, elementshape=elementshape, unit=unit)
 
         if hasOld:
-            self.old = self.copy()
+            self._old = self.copy()
         else:
-            self.old = None
+            self._old = None
 
     @property
     def _variableClass(self):
@@ -112,20 +113,21 @@ class CellVariable(_MeshVariable):
                                                          baseClass=baseClass)
                                      
         class _CellOperatorVariable(baseClass):
-            def getOld(self):
-                if self.old is None:
+            @property
+            def old(self):
+                if self._old is None:
                     oldVar = []
                     for v in self.var:
-                        if hasattr(v, "getOld"):
-                            oldVar.append(v.getOld())
+                        if hasattr(v, "old"):
+                            oldVar.append(v.old)
                         else:
                             oldVar.append(v)
                     
-                    self.old = self.__class__(op=self.op, var=oldVar, 
-                                              opShape=self.opShape, 
-                                              canInline=self.canInline)
+                    self._old = self.__class__(op=self.op, var=oldVar, 
+                                               opShape=self.opShape, 
+                                               canInline=self.canInline)
                                   
-                return self.old
+                return self._old
                 
         return _CellOperatorVariable
         
@@ -217,7 +219,12 @@ class CellVariable(_MeshVariable):
         else:
             return _MeshVariable.__call__(self)
         
+    @getsetDeprecated
     def getCellVolumeAverage(self):
+        return self.cellVolumeAverage
+
+    @property
+    def cellVolumeAverage(self):
         r"""
         Return the cell-volume-weighted average of the `CellVariable`:
             
@@ -241,26 +248,41 @@ class CellVariable(_MeshVariable):
         
         return self.volumeAverage
 
+    @getsetDeprecated
     def getGrad(self):
+        return self.grad
+
+    @property
+    def grad(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `CellVariable` (first-order
         gradient).
         """
-        return self.getGaussGrad()
+        return self.gaussGrad
 
+    @getsetDeprecated
     def getGaussGrad(self):
+        return self.gaussGrad
+
+    @property
+    def gaussGrad(self):
         r"""
         Return :math:`\frac{1}{V_P} \sum_f \vec{n} \phi_f A_f`
         as a rank-1 `CellVariable` (first-order gradient).
             
         """
-        if not hasattr(self, 'gaussGrad'):
+        if not hasattr(self, '_gaussGrad'):
             from gaussCellGradVariable import _GaussCellGradVariable
-            self.gaussGrad = _GaussCellGradVariable(var = self, name = "%s_gauss_grad" % self.getName())
+            self._gaussGrad = _GaussCellGradVariable(var = self, name = "%s_gauss_grad" % self.getName())
         
-        return self.gaussGrad
+        return self._gaussGrad
 
+    @getsetDeprecated
     def getLeastSquaresGrad(self):
+        return self.leastSquaresGrad
+
+    @property
+    def leastSquaresGrad(self):
         r"""
         Return :math:`\nabla \phi`, which is determined by solving for :math:`\nabla \phi`
         in the following matrix equation, 
@@ -294,14 +316,19 @@ class CellVariable(_MeshVariable):
         True
         """
 
-        if not hasattr(self, 'leastSquaresGrad'):
+        if not hasattr(self, '_leastSquaresGrad'):
             from leastSquaresCellGradVariable import _LeastSquaresCellGradVariable
-            self.leastSquaresGrad = _LeastSquaresCellGradVariable(var = self, name = "%s_least_squares_grad" % self.getName())
+            self._leastSquaresGrad = _LeastSquaresCellGradVariable(var = self, name = "%s_least_squares_grad" % self.getName())
         
-        return self.leastSquaresGrad
+        return self._leastSquaresGrad
 
 
+    @getsetDeprecated
     def getArithmeticFaceValue(self):
+        return self.arithmeticFaceValue
+
+    @property
+    def arithmeticFaceValue(self):
         r"""
         Returns a `FaceVariable` whose value corresponds to the arithmetic interpolation
         of the adjacent cells:
@@ -335,18 +362,23 @@ class CellVariable(_MeshVariable):
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
         """
-        if not hasattr(self, 'arithmeticFaceValue'):
+        if not hasattr(self, '_arithmeticFaceValue'):
             from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
-            self.arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
+            self._arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
         if hasattr(self, 'faceConstraints'):
-            self.arithmeticFaceValue.applyConstraints(self.faceConstraints)
+            self._arithmeticFaceValue.applyConstraints(self.faceConstraints)
             
-        return self.arithmeticFaceValue
+        return self._arithmeticFaceValue
 
     getFaceValue = getArithmeticFaceValue
 
+    @getsetDeprecated
     def getMinmodFaceValue(self):
+        return self.minmodFaceValue
+
+    @property
+    def minmodFaceValue(self):
         r"""
         Returns a `FaceVariable` with a value that is the minimum of
         the absolute values of the adjacent cells. If the values are
@@ -368,16 +400,21 @@ class CellVariable(_MeshVariable):
         >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, 2)).getMinmodFaceValue()
         [-1  0  2]
         """
-        if not hasattr(self, 'minmodFaceValue'):
+        if not hasattr(self, '_minmodFaceValue'):
             from minmodCellToFaceVariable import _MinmodCellToFaceVariable
-            self.minmodFaceValue = _MinmodCellToFaceVariable(self)
+            self._minmodFaceValue = _MinmodCellToFaceVariable(self)
 
         if hasattr(self, 'faceConstraints'):
-            self.minmodFaceValue.applyConstraints(self.faceConstraints)
+            self._minmodFaceValue.applyConstraints(self.faceConstraints)
 
-        return self.minmodFaceValue
+        return self._minmodFaceValue
 
+    @getsetDeprecated
     def getHarmonicFaceValue(self):
+        return self.harmonicFaceValue
+
+    @property
+    def harmonicFaceValue(self):
         r"""
         Returns a `FaceVariable` whose value corresponds to the harmonic interpolation
         of the adjacent cells:
@@ -411,34 +448,49 @@ class CellVariable(_MeshVariable):
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
         """
-        if not hasattr(self, 'harmonicFaceValue'):
+        if not hasattr(self, '_harmonicFaceValue'):
             from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
-            self.harmonicFaceValue = _HarmonicCellToFaceVariable(self)
+            self._harmonicFaceValue = _HarmonicCellToFaceVariable(self)
 
         if hasattr(self, 'faceConstraints'):
-            self.harmonicFaceValue.applyConstraints(self.faceConstraints)
+            self._harmonicFaceValue.applyConstraints(self.faceConstraints)
 
-        return self.harmonicFaceValue
+        return self._harmonicFaceValue
 
+    @getsetDeprecated
     def getFaceGrad(self):
+        return self.faceGrad
+
+    @property
+    def faceGrad(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using differencing
         for the normal direction(second-order gradient).
         """
-        if not hasattr(self, 'faceGrad'):
+        if not hasattr(self, '_faceGrad'):
             from faceGradVariable import _FaceGradVariable
-            self.faceGrad = _FaceGradVariable(self)
+            self._faceGrad = _FaceGradVariable(self)
 
-        return self.faceGrad
+        return self._faceGrad
 
+    @getsetDeprecated
     def getFaceGradAverage(self):
+        return self.faceGradAverage
+
+    @property
+    def faceGradAverage(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using averaging
         for the normal direction(second-order gradient)
         """
         return self.getGrad().getArithmeticFaceValue()
 
+    @getsetDeprecated
     def getOld(self):
+        return self.old
+        
+    @property
+    def old(self):
         """
         Return the values of the `CellVariable` from the previous
         solution sweep.
@@ -469,23 +521,23 @@ class CellVariable(_MeshVariable):
         >>> print v1.getOld()
         [6 9]
         """
-        if self.old is None:
+        if self._old is None:
             return self
         else:
-            return self.old
+            return self._old
 ##             import weakref
-##          return weakref.proxy(self.old)
+##          return weakref.proxy(self._old)
 
     def updateOld(self):
         """
         Set the values of the previous solution sweep to the current values.
         """
-        if self.old is not None:
-            self.old.setValue(self.getValue().copy())
+        if self._old is not None:
+            self._old.setValue(self.getValue().copy())
 
     def _resetToOld(self):
-        if self.old is not None:
-            self.setValue(self.old.getValue())
+        if self._old is not None:
+            self.setValue(self._old.getValue())
             
     def _getShapeFromMesh(mesh):
         """
@@ -517,7 +569,7 @@ class CellVariable(_MeshVariable):
             'name' : self.name,
             'value' : self.getGlobalValue(),
             'unit' : self.getUnit(),
-            'old' : self.old
+            'old' : self._old
         }
 
     def __setstate__(self, dict):
@@ -535,8 +587,8 @@ class CellVariable(_MeshVariable):
 
         self.__init__(mesh=dict['mesh'], name=dict['name'], value=dict['value'], unit=dict['unit'], hasOld=hasOld)
 ##         self.__init__(hasOld=hasOld, **dict)
-        if self.old is not None:
-            self.old.setValue(dict['old'].getValue())
+        if self._old is not None:
+            self._old.setValue(dict['old'].getValue())
 
     def constrain(self, value, where=None):
         r"""

@@ -103,9 +103,9 @@ class SurfactantVariable(CellVariable):
         self._value = distanceVar.getCellInterfaceAreas() * value / self.mesh.cellVolumes
 
         if hasOld:
-            self.old = self.copy()
+            self._old = self.copy()
         else:
-            self.old = None
+            self._old = None
 
         self.interfaceSurfactantVariable = None
 

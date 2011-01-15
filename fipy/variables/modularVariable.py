@@ -114,21 +114,23 @@ class ModularVariable(CellVariable):
         True
         """
         self.setValue(self.getValue().mod(self().inRadians()))
-        if self.old is not None:
-            self.old.setValue(self._value.value.copy())
+        if self._old is not None:
+            self._old.setValue(self._value.value.copy())
 
-    def getGrad(self):
+    @property
+    def grad(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `CellVariable` (first-order
         gradient). Adjusted for a `ModularVariable`
         """
-        if not hasattr(self, 'grad'):
+        if not hasattr(self, '_grad'):
             from fipy.variables.modCellGradVariable import _ModCellGradVariable
-            self.grad = _ModCellGradVariable(self, self._modIn, self._value.mod)
+            self._grad = _ModCellGradVariable(self, self._modIn, self._value.mod)
 
-        return self.grad
+        return self._grad
 
-    def getArithmeticFaceValue(self):
+    @property
+    def arithmeticFaceValue(self):
         r"""
         Returns a `FaceVariable` whose value corresponds to the arithmetic interpolation
         of the adjacent cells:
@@ -139,22 +141,23 @@ class ModularVariable(CellVariable):
 
         Adjusted for a `ModularVariable`
         """
-        if not hasattr(self, 'arithmeticFaceValue'):
+        if not hasattr(self, '_arithmeticFaceValue'):
             from modCellToFaceVariable import _ModCellToFaceVariable
-            self.arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
+            self._arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
 
-        return self.arithmeticFaceValue
+        return self._arithmeticFaceValue
 
-    def getFaceGrad(self):
+    @property
+    def faceGrad(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` (second-order
         gradient). Adjusted for a `ModularVariable`
         """
-        if not hasattr(self, 'faceGrad'):
+        if not hasattr(self, '_faceGrad'):
             from modFaceGradVariable import _ModFaceGradVariable
-            self.faceGrad = _ModFaceGradVariable(self, self._modIn)
+            self._faceGrad = _ModFaceGradVariable(self, self._modIn)
 
-        return self.faceGrad
+        return self._faceGrad
 
     def getFaceGradNoMod(self):
         r"""
