@@ -207,7 +207,8 @@ def _OperatorVariableClass(baseClass=object):
                 name = self._getRepresentation(style="name")
             return name
             
-        def getShape(self):
+        @property
+        def shape(self):
             if self.opShape is not None:
                 return self.opShape
             else:

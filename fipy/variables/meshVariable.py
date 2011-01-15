@@ -199,23 +199,24 @@ class _MeshVariable(Variable):
         return None
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
-    def getShape(self):
+    @property
+    def shape(self):
         """
-            >>> from fipy.meshes import Grid2D
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> mesh = Grid2D(nx=2, ny=3)
-            >>> var = CellVariable(mesh=mesh)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal(var.shape, (6,))
-            True
-            >>> print parallel.procID > 0 or numerix.allequal(var.getArithmeticFaceValue().shape, (17,))
-            True
-            >>> print parallel.procID > 0 or numerix.allequal(var.getGrad().shape, (2, 6))
-            True
-            >>> print parallel.procID > 0 or numerix.allequal(var.getFaceGrad().shape, (2, 17))
-            True
+        >>> from fipy.meshes import Grid2D
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> mesh = Grid2D(nx=2, ny=3)
+        >>> var = CellVariable(mesh=mesh)
+        >>> from fipy.tools import parallel
+        >>> print parallel.procID > 0 or numerix.allequal(var.shape, (6,))
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(var.getArithmeticFaceValue().shape, (17,))
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(var.getGrad().shape, (2, 6))
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(var.getFaceGrad().shape, (2, 17))
+        True
         """
-        return (Variable.getShape(self) 
+        return (Variable._getShape(self)
                 or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
                 or ())
 

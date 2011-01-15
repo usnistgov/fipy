@@ -38,7 +38,8 @@ from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 
 class FaceVariable(_MeshVariable):
-    def _getVariableClass(self):
+    @property
+    def _variableClass(self):
         return FaceVariable
 
     def _getShapeFromMesh(mesh):

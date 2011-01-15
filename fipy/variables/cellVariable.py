@@ -70,7 +70,8 @@ class CellVariable(_MeshVariable):
         else:
             self.old = None
 
-    def _getVariableClass(self):
+    @property
+    def _variableClass(self):
         return CellVariable
         
     def _OperatorVariableClass(self, baseClass=None):

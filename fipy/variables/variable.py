@@ -342,6 +342,7 @@ class Variable(object):
     def getName(self):
         return self.name
         
+    @getsetDeprecated
     def setName(self, name):
         self.name = name
     
@@ -569,7 +570,12 @@ class Variable(object):
 
         self.constraints.append([value, where])
 
+    @getsetDeprecated
     def getConstraintMask(self):
+        return self.constraintMask
+
+    @property
+    def constraintMask(self):
         if hasattr(self, 'constraints'):
             returnMask = numerix.zeros(numerix.shape(self)[-1], dtype=numerix.bool_)
             for value, mask in self.constraints:
@@ -701,41 +707,57 @@ class Variable(object):
         else:
             self._value = value
         
+    @getsetDeprecated
     def _getArray(self):
+        return self._array
+
+    @property
+    def _array(self):
         if isinstance(self._value, physicalField.PhysicalField):
             return self._value._getArray()
         else:
             return self._value
             
+    @getsetDeprecated
     def getNumericValue(self):
+        return self.numericValue
+
+    @property
+    def numericValue(self):
         value = self.getValue()
         if isinstance(value, physicalField.PhysicalField):
             return value.getNumericValue()
         else:
             return value
             
+    @getsetDeprecated
     def getShape(self):
+        return self.shape
+
+    def _getShape(self):
         """
-            >>> Variable(value=3).shape
-            ()
-            >>> Variable(value=(3,)).shape
-            (1,)
-            >>> Variable(value=(3,4)).shape
-            (2,)
-            
-            >>> Variable(value="3 m").shape
-            ()
-            >>> Variable(value=(3,), unit="m").shape
-            (1,)
-            >>> Variable(value=(3,4), unit="m").shape
-            (2,)
+        Tuple of array dimensions.
+
+        >>> Variable(value=3).shape
+        ()
+        >>> Variable(value=(3,)).shape
+        (1,)
+        >>> Variable(value=(3,4)).shape
+        (2,)
+        
+        >>> Variable(value="3 m").shape
+        ()
+        >>> Variable(value=(3,), unit="m").shape
+        (1,)
+        >>> Variable(value=(3,4), unit="m").shape
+        (2,)
         """
         if self._value is not None:
             return numerix.getShape(self._value)
         else:
             return ()
-            
-    shape = property(fget=lambda self: self.getShape(), doc="Tuple of array dimensions.")
+    
+    shape = property(_getShape)
 
     def getsctype(self, default=None):
         """
@@ -759,10 +781,20 @@ class Variable(object):
     def _calcValue(self):
         return self._value
         
+    @getsetDeprecated
     def getSubscribedVariables(self):
-        self.subscribedVariables = [sub for sub in self.subscribedVariables if sub() is not None]
-        
         return self.subscribedVariables
+
+    def _getSubscribedVariables(self):
+        self._subscribedVariables = [sub for sub in self._subscribedVariables if sub() is not None]
+        
+        return self._subscribedVariables
+
+    def _setSubscribedVariables(self, sVars):
+        self._subscribedVariables = sVars
+
+    subscribedVariables = property(_getSubscribedVariables,
+                                   _setSubscribedVariables)
         
     def __markStale(self):
         for subscriber in self.getSubscribedVariables():
@@ -804,7 +836,12 @@ class Variable(object):
         import weakref
         self.subscribedVariables.append(weakref.ref(var))
         
+    @getsetDeprecated
     def _getVariableClass(self):
+        return self._variableClass
+
+    @property
+    def _variableClass(self):
         return Variable
         
     def _execInline(self, comment=None):
@@ -1481,11 +1518,16 @@ class Variable(object):
                                             opShape=(),
                                             canInline=False)
 
+    @getsetDeprecated
     def getMag(self):
-        if not hasattr(self, "mag"):
-            self.mag = self.dot(self).sqrt()
-            
         return self.mag
+    
+    @property
+    def mag(self):
+        if not hasattr(self, "_mag"):
+            self._mag = self.dot(self).sqrt()
+            
+        return self._mag
     
     def __getstate__(self):
         """
