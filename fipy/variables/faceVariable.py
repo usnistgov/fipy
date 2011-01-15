@@ -36,6 +36,7 @@
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class FaceVariable(_MeshVariable):
     @property
@@ -72,7 +73,12 @@ class FaceVariable(_MeshVariable):
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 
+    @getsetDeprecated
     def getDivergence(self):
+        return self.divergence
+
+    @property
+    def divergence(self):
         """
             >>> from fipy.meshes import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
@@ -82,11 +88,11 @@ class FaceVariable(_MeshVariable):
             [ 4.  3.  2. -2. -3. -4.]
             
         """
-        if not hasattr(self, 'divergence'):
+        if not hasattr(self, '_divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
-            self.divergence = _AddOverFacesVariable(self.dot(self.getMesh()._orientedAreaProjections))
+            self._divergence = _AddOverFacesVariable(self.dot(self.getMesh()._orientedAreaProjections))
             
-        return self.divergence
+        return self._divergence
 
     @property
     def _globalNumberOfElements(self):
