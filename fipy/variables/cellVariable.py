@@ -136,16 +136,20 @@ class CellVariable(_MeshVariable):
                                               value=self.getValue(),
                                               hasOld=False)
                 
-    def _getGlobalNumberOfElements(self):
+    @property
+    def _globalNumberOfElements(self):
         return self.mesh.globalNumberOfCells
         
-    def _getGlobalOverlappingIDs(self):
+    @property
+    def _globalOverlappingIDs(self):
         return self.mesh._globalOverlappingCellIDs
 
-    def _getLocalNonOverlappingIDs(self):
+    @property
+    def _localNonOverlappingIDs(self):
         return self.mesh._localNonOverlappingCellIDs
 
-    def getGlobalValue(self):
+    @property
+    def globalValue(self):
         """Concatenate and return values from all processors
         
         When running on a single processor, the result is identical to
@@ -488,6 +492,7 @@ class CellVariable(_MeshVariable):
         Return the shape of this variable type, given a particular mesh.
         """
         return (mesh.numberOfCells,)
+
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
     def _getArithmeticBaseClass(self, other = None):

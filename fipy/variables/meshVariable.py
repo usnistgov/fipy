@@ -37,6 +37,7 @@ __docformat__ = 'restructuredtext'
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class _MeshVariable(Variable):
     """
@@ -144,19 +145,23 @@ class _MeshVariable(Variable):
             value = value.getValue()
         return value
         
+    @getsetDeprecated
     def _getGlobalNumberOfElements(self):
-        pass
-        
-    def _getGlobalOverlappingIDs(self):
-        pass
+        return self._globalNumberOfElements
 
+    @getsetDeprecated
+    def _getGlobalOverlappingIDs(self):
+        return self._globalOverlappingIDs
+
+    @getsetDeprecated
     def _getLocalNonOverlappingIDs(self):
-        pass
+        return self._localNonOverlappingIDs
         
+    @getsetDeprecated
     def getGlobalValue(self):
         """Concatenate and return values from all processors
         """
-        pass
+        return self.globalValue
 
     def _getGlobalValue(self, localIDs, globalIDs):
         localValue = self.getValue()
@@ -174,6 +179,7 @@ class _MeshVariable(Variable):
             return localValue
 
                             
+    @getsetDeprecated
     def getMesh(self):
         return self.mesh
         
@@ -197,6 +203,7 @@ class _MeshVariable(Variable):
         Return `None` if unknown or independent of the mesh.
         """
         return None
+
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
 
     @property
@@ -466,12 +473,22 @@ class _MeshVariable(Variable):
                                    elementshape=elementshape,
                                    *args, **kwargs)
                                  
+            @getsetDeprecated
             def getRank(self):
+                return self.rank
+
+            @property
+            def rank(self):
                 return len(self.opShape) - 1
                 
         return _MeshOperatorVariable
                           
+    @getsetDeprecated
     def getRank(self):
+        return self.rank
+
+    @property
+    def rank(self):
         return len(self.shape) - 1
         
     def setValue(self, value, unit = None, where = None):

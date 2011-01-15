@@ -35,6 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class _CoupledCellVariable(object):
     def __init__(self, vars):
@@ -67,7 +68,12 @@ class _CoupledCellVariable(object):
     def getValue(self):
         return numerix.concatenate([numerix.array(var.getValue()) for var in self.vars])
 
+    @getsetDeprecated
     def getGlobalValue(self):
+        return self.globalValue
+
+    @property
+    def globalValue(self):
         return numerix.concatenate([numerix.array(var.getGlobalValue()) for var in self.vars])
 
     def getNumericValue(self):

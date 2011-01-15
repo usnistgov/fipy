@@ -64,7 +64,8 @@ class FaceVariable(_MeshVariable):
                                               name=self.name + "_copy", 
                                               value=self.getValue())
 
-    def getGlobalValue(self):
+    @property
+    def globalValue(self):
         return self._getGlobalValue(self.mesh._localNonOverlappingFaceIDs, 
                                     self.mesh._globalNonOverlappingFaceIDs)
 
@@ -87,13 +88,16 @@ class FaceVariable(_MeshVariable):
             
         return self.divergence
 
-    def _getGlobalNumberOfElements(self):
+    @property
+    def _globalNumberOfElements(self):
         return self.mesh.globalNumberOfFaces
         
-    def _getGlobalOverlappingIDs(self):
+    @property
+    def _globalOverlappingIDs(self):
         return self.mesh._globalOverlappingFaceIDs
         
-    def _getLocalNonOverlappingIDs(self):
+    @property
+    def _localNonOverlappingIDs(self):
         return self.mesh._localNonOverlappingFaceIDs
 
 def _test(): 
