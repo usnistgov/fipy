@@ -78,9 +78,9 @@ class _MeshVariable(Variable):
             name = name or value.name
             unit = None
             if isinstance(value, _MeshVariable):
-                if not isinstance(value, self._getVariableClass()):
-                    raise TypeError, "A '%s' cannot be cast to a '%s'" % (value._getVariableClass().__name__, 
-                                                                          self._getVariableClass().__name__)
+                if not isinstance(value, self._variableClass):
+                    raise TypeError, "A '%s' cannot be cast to a '%s'" % (value._variableClass.__name__, 
+                                                                          self._variableClass.__name__)
                 if elementshape is not None and elementshape != value.shape[:-1]:
                     raise ValueError, "'elementshape' != shape of elements of 'value'"
 
@@ -137,10 +137,10 @@ class _MeshVariable(Variable):
             if not isinstance(value, Variable):
                 value = _Constant(value)
             valueShape = value.getShape()
-            if valueShape is not () and valueShape[-1] == self._getGlobalNumberOfElements():
+            if valueShape is not () and valueShape[-1] == self._globalNumberOfElements:
                 if valueShape[-1] != 0:
                     # workaround for NumPy:ticket:1171
-                    value = value[..., self._getGlobalOverlappingIDs()]
+                    value = value[..., self._globalOverlappingIDs]
                     
             value = value.getValue()
         return value
@@ -165,14 +165,14 @@ class _MeshVariable(Variable):
 
     def _getGlobalValue(self, localIDs, globalIDs):
         localValue = self.getValue()
-        if self.getMesh().communicator.Nproc > 1:
+        if self.mesh.communicator.Nproc > 1:
             if localValue.shape[-1] != 0:
                 localValue = localValue[..., localIDs]
-            globalIDs = numerix.concatenate(self.getMesh().communicator.allgather(globalIDs))
+            globalIDs = numerix.concatenate(self.mesh.communicator.allgather(globalIDs))
             
             globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,), 
                                         dtype=numerix.obj2sctype(localValue))
-            globalValue[..., globalIDs] = numerix.concatenate(self.getMesh().communicator.allgather(localValue), axis=-1)
+            globalValue[..., globalIDs] = numerix.concatenate(self.mesh.communicator.allgather(localValue), axis=-1)
             
             return globalValue
         else:
@@ -184,14 +184,14 @@ class _MeshVariable(Variable):
         return self.mesh
         
     def __str__(self):
-        return str(self.getGlobalValue())
+        return str(self.globalValue)
         
     def __repr__(self):
         if hasattr(self, 'name') and len(self.name) > 0:
             return self.name
         else:
             s = self.__class__.__name__ + '('
-            s += 'value=' + `self.getGlobalValue()`
+            s += 'value=' + `self.globalValue`
             s += ')'
             if len(self.name) == 0:
                 s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
@@ -216,15 +216,15 @@ class _MeshVariable(Variable):
         >>> from fipy.tools import parallel
         >>> print parallel.procID > 0 or numerix.allequal(var.shape, (6,))
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.getArithmeticFaceValue().shape, (17,))
+        >>> print parallel.procID > 0 or numerix.allequal(var.arithmeticFaceValue.shape, (17,))
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.getGrad().shape, (2, 6))
+        >>> print parallel.procID > 0 or numerix.allequal(var.grad.shape, (2, 6))
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.getFaceGrad().shape, (2, 17))
+        >>> print parallel.procID > 0 or numerix.allequal(var.faceGrad.shape, (2, 17))
         True
         """
         return (Variable._getShape(self)
-                or (self.elementshape + self._getShapeFromMesh(self.getMesh())) 
+                or (self.elementshape + self._getShapeFromMesh(self.mesh)) 
                 or ())
 
     def _dot(a, b, index):
@@ -316,7 +316,7 @@ class _MeshVariable(Variable):
         return self.__dot(other, self, self._OperatorVariableClass(baseClass))
 
     def _maxminparallel_(self, a, axis, default, fn, fnParallel):
-        a = a[self._getLocalNonOverlappingIDs()]
+        a = a[self._localNonOverlappingIDs]
         
         if numerix.multiply.reduce(a.shape) == 0:
             if axis is None:
@@ -335,10 +335,10 @@ class _MeshVariable(Variable):
         return fnParallel(nodeVal)
 
     def max(self, axis=None):
-        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def maxParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
-                                             fn=a.max, fnParallel=self.getMesh().communicator.epetra_comm.MaxAll)
+                                             fn=a.max, fnParallel=self.mesh.communicator.epetra_comm.MaxAll)
                 
             return self._axisOperator(opname="maxVar", 
                                       op=maxParallel, 
@@ -347,10 +347,10 @@ class _MeshVariable(Variable):
             return Variable.max(self, axis=axis)
                                   
     def min(self, axis=None):
-        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def minParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
-                                             fn=a.min, fnParallel=self.getMesh().communicator.epetra_comm.MinAll)
+                                             fn=a.min, fnParallel=self.mesh.communicator.epetra_comm.MinAll)
                 
             return self._axisOperator(opname="minVar", 
                                       op=minParallel, 
@@ -359,10 +359,10 @@ class _MeshVariable(Variable):
             return Variable.min(self, axis=axis)
 
     def all(self, axis=None):
-        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def allParallel(a):
-                a = a[self._getLocalNonOverlappingIDs()]
-                return self.getMesh().communicator.all(a, axis=axis)
+                a = a[self._localNonOverlappingIDs]
+                return self.mesh.communicator.all(a, axis=axis)
                 
             return self._axisOperator(opname="allVar", 
                                       op=allParallel, 
@@ -371,10 +371,10 @@ class _MeshVariable(Variable):
             return Variable.all(self, axis=axis)
 
     def any(self, axis=None):
-        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def anyParallel(a):
-                a = a[self._getLocalNonOverlappingIDs()]
-                return self.getMesh().communicator.any(a, axis=axis)
+                a = a[self._localNonOverlappingIDs]
+                return self.mesh.communicator.any(a, axis=axis)
                 
             return self._axisOperator(opname="anyVar", 
                                       op=anyParallel, 
@@ -383,10 +383,10 @@ class _MeshVariable(Variable):
             return Variable.any(self, axis=axis)
 
     def sum(self, axis=None):
-        if self.getMesh().communicator.Nproc > 1 and (axis is None or axis == len(self.getShape()) - 1):
+        if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def sumParallel(a):
-                a = a[self._getLocalNonOverlappingIDs()]
-                return self.getMesh().communicator.sum(a, axis=axis)
+                a = a[self._localNonOverlappingIDs]
+                return self.mesh.communicator.sum(a, axis=axis)
                 
             return self._axisOperator(opname="sumVar", 
                                       op=sumParallel, 
@@ -395,9 +395,9 @@ class _MeshVariable(Variable):
             return Variable.sum(self, axis=axis)
 
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
-         if self.getMesh().communicator.Nproc > 1:
+         if self.mesh.communicator.Nproc > 1:
              def allcloseParallel(a, b):
-                 return self.getMesh().communicator.allclose(a, b, rtol=rtol, atol=atol)
+                 return self.mesh.communicator.allclose(a, b, rtol=rtol, atol=atol)
 
              operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
              return self._BinaryOperatorVariable(allcloseParallel,
@@ -409,9 +409,9 @@ class _MeshVariable(Variable):
              return Variable.allclose(self, other, rtol=rtol, atol=atol)
 
     def allequal(self, other):
-         if self.getMesh().communicator.Nproc > 1:
+         if self.mesh.communicator.Nproc > 1:
              def allequalParallel(a, b):
-                 return self.getMesh().communicator.allequal(a, b)
+                 return self.mesh.communicator.allequal(a, b)
 
              operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
              return self._BinaryOperatorVariable(allequalParallel,
@@ -437,13 +437,13 @@ class _MeshVariable(Variable):
         otherShape = numerix.getShape(other)
         if (not isinstance(other, _MeshVariable) 
             and otherShape is not () 
-            and otherShape[-1] == self._getGlobalNumberOfElements()):
-            other = self._getVariableClass()(value=other, mesh=self.getMesh())
+            and otherShape[-1] == self._globalNumberOfElements):
+            other = self._variableClass(value=other, mesh=self.mesh)
 
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
         
         if ((newOpShape is None or baseClass is None)
-            and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.getMesh().dim)):
+            and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.mesh.dim)):
                 newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other[..., numerix.newaxis])
 
         return (newOpShape, baseClass, newOther)
@@ -495,7 +495,7 @@ class _MeshVariable(Variable):
         if where is not None:
             shape = numerix.getShape(where)
             if shape != self.shape \
-              and shape == self._getShapeFromMesh(mesh=self.getMesh()):
+              and shape == self._getShapeFromMesh(mesh=self.mesh):
                 for dim in self.elementshape:
                     where = numerix.repeat(where[numerix.newaxis, ...], repeats=dim, axis=0)
         
@@ -534,8 +534,8 @@ class _MeshVariable(Variable):
         return {
             'mesh': self.mesh,
             'name': self.name,
-            'value': self.getValue(),
-            'unit': self.getUnit(),
+            'value': self.value,
+            'unit': self.unit,
         }
 
 

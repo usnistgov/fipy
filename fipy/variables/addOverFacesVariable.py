@@ -39,7 +39,7 @@ from fipy.variables.cellVariable import CellVariable
 class _AddOverFacesVariable(CellVariable):
     def __init__(self, faceVariable, mesh = None):
         if not mesh:
-            mesh = faceVariable.getMesh()
+            mesh = faceVariable.mesh
 
         CellVariable.__init__(self, mesh, hasOld = 0)
     
@@ -58,7 +58,7 @@ class _AddOverFacesVariable(CellVariable):
         NCells = self.mesh.numberOfCells
         ids = self.mesh.cellFaceIDs
 
-        val = self._getArray().copy()
+        val = self._array.copy()
         
         inline._runInline("""
         int i;
@@ -81,7 +81,7 @@ class _AddOverFacesVariable(CellVariable):
         """,
             numberOfCellFaces = self.mesh._maxFacesPerCell,
             numberOfCells = NCells,
-            faceVariable = self.faceVariable.getNumericValue(),
+            faceVariable = self.faceVariable.numericValue,
             ids = numerix.array(ids),
             value = val,
             orientations = numerix.array(self.mesh._cellToFaceOrientations),

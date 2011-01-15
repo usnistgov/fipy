@@ -45,7 +45,7 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
         return (cell2 - cell1) * alpha + cell1
         
     def _calcValueIn(self, alpha, id1, id2):
-        val = self._getArray().copy()
+        val = self.array.copy()
         
         inline._runIterateElementInline("""
             int ID1 = ITEM(id1, i, NULL);
@@ -54,7 +54,7 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
             double cell2 = ITEM(var, ID2, vec);
             ITEM(val, i, vec) = (cell2 - cell1) * ITEM(alpha, i, NULL) + cell1;
         """,
-        var = self.var.getNumericValue(),
+        var = self.var.numericValue,
         val = val, 
         alpha = alpha,
         id1 = id1, id2 = id2,
@@ -62,6 +62,6 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
         ni = self.mesh.numberOfFaces)
 
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)
 
         

@@ -54,11 +54,11 @@ class _CellVolumeAverageVariable(Variable):
         
     """
     def __init__(self, var):
-        Variable.__init__(self, unit = var.getUnit())
+        Variable.__init__(self, unit = var.unit)
         self.var = self._requires(var)
 
     def _calcValue(self):
-        mesh = self.var.getMesh()
+        mesh = self.var.mesh
         volumes = CellVariable(mesh=mesh, value=mesh.cellVolumes)
         return (self.var * volumes).sum() / volumes.sum()
 

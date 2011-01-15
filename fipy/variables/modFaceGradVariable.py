@@ -52,7 +52,7 @@ class _ModFaceGradVariable(_FaceGradVariable):
         
         tangents1 = self.mesh._faceTangents1
         tangents2 = self.mesh._faceTangents2
-        cellGrad = self.var.getGrad().getNumericValue()
+        cellGrad = self.var.grad.numericValue
         
         grad1 = numerix.take(cellGrad, id1, axis=1)
         grad2 = numerix.take(cellGrad, id2, axis=1)
@@ -73,7 +73,7 @@ class _ModFaceGradVariable(_FaceGradVariable):
         tangents1 = self.mesh._faceTangents1
         tangents2 = self.mesh._faceTangents2
  
-        val = self._getArray().copy()
+        val = self._array.copy()
 
         inline._runIterateElementInline(self.modIn + """
         int j;
@@ -95,12 +95,12 @@ class _ModFaceGradVariable(_FaceGradVariable):
 
         """,tangents1 = tangents1,
             tangents2 = tangents2,
-            cellGrad = self.var.getGrad().getNumericValue(),
+            cellGrad = self.var.grad.numericValue,
             normals = numerix.array(self.mesh._orientedFaceNormals),
             id1 = numerix.array(id1),
             id2 = numerix.array(id2),
             dAP = numerix.array(self.mesh._cellDistances),
-            var = self.var.getNumericValue(),
+            var = self.var.numericValue,
             val = val,
             ni = tangents1.shape[1],
             shape=numerix.array(numerix.shape(val)))

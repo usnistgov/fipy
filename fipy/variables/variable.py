@@ -104,7 +104,7 @@ class Variable(object):
         self.subscribedVariables = []
 
         if isinstance(value, Variable):
-            value = value.getValue()
+            value = value.value
             if hasattr(value, 'copy'):
                 value = value.copy()
             unit = None
@@ -177,7 +177,7 @@ class Variable(object):
             array([ 0.002,  0.003])
         """
 
-        return numerix.array(self.getValue(), t)
+        return numerix.array(self.value, t)
 
 ##    def _get_array_interface(self):
 ##        return self._getArray().__array_interface__
@@ -228,7 +228,7 @@ class Variable(object):
 
     @property
     def _unitAsOne(self):
-        unit = self.getUnit()
+        unit = self.unit
         if unit is physicalField._unity:
             return 1.
         else:
@@ -248,10 +248,10 @@ class Variable(object):
         """
         Return the unit object of `self`.
         
-            >>> Variable(value="1 m").getUnit()
+            >>> Variable(value="1 m").unit
             <PhysicalUnit m>
         """
-        return self._extractUnit(self.getValue())
+        return self._extractUnit(self.value)
         
     @getsetDeprecated
     def setUnit(self, unit):
@@ -262,12 +262,12 @@ class Variable(object):
         Change the unit object of `self` to `unit`
         
             >>> a = Variable(value="1 m")
-            >>> a.setUnit("m**2/s")
+            >>> a.unit = "m**2/s"
             >>> print a
             1.0 m**2/s
         """
         if self._value is None:
-            self.getValue()
+            self.value
 
         if isinstance(self._value, physicalField.PhysicalField):
             self._value.setUnit(unit)
@@ -285,7 +285,7 @@ class Variable(object):
             >>> print e.inBaseUnits()
             7088849.01085 kg*m**2/s**2/mol
         """
-        value = self.getValue()
+        value = self.value
         if isinstance(value, physicalField.PhysicalField):
             return value.inBaseUnits()
         else:
@@ -314,7 +314,7 @@ class Variable(object):
             >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
             ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
         """
-        value = self.getValue()
+        value = self.value
         if isinstance(value, physicalField.PhysicalField):
             return value.inUnitsOf(*units)
         else:
@@ -355,14 +355,14 @@ class Variable(object):
     name = property(_getName, _setName)
     
     def __str__(self):
-        return str(self.getValue())
+        return str(self.value)
             
     def __repr__(self):
         if hasattr(self, 'name') and len(self.name) > 0:
             return self.name
         else:
             s = self.__class__.__name__ + '('
-            s += 'value=' + `self.getValue()`
+            s += 'value=' + `self.value`
             s += ')'
             return s
 
@@ -410,7 +410,7 @@ class Variable(object):
          
          identifier = 'var%s' % (id)
 
-         v = self.getValue()
+         v = self.value
 
          if type(v) not in (type(numerix.array(1)),):
              varray = numerix.array(v)
@@ -439,7 +439,7 @@ class Variable(object):
              return identifier + self._getCIndexString(shape)
 
     def tostring(self, max_line_width=75, precision=8, suppress_small=False, separator=' '):
-        return numerix.tostring(self.getValue(), 
+        return numerix.tostring(self.value, 
                                 max_line_width=max_line_width,
                                 precision=precision, 
                                 suppress_small=suppress_small, 
@@ -447,19 +447,19 @@ class Variable(object):
         
     def __setitem__(self, index, value):
         if self._value is None:
-            self.getValue()
+            self._getValue()
         self._value[index] = value
         self._markFresh()
         
     def itemset(self, value):
         if self._value is None:
-            self.getValue()
+            self._getValue()
         self._value.itemset(value)
         self._markFresh()
         
     def put(self, indices, value):
         if self._value is None:
-            self.getValue()
+            self._getValue()
         numerix.put(self._value, indices, value)
         self._markFresh()
         
@@ -487,12 +487,12 @@ class Variable(object):
         "Evaluate" the `Variable` and return its value (longhand)
         
             >>> a = Variable(value=3)
-            >>> print a.getValue()
+            >>> print a.value
             3
             >>> b = a + 4
             >>> b
             (Variable(value=array(3)) + 4)
-            >>> b.getValue()
+            >>> b.value
             7
 
         """
@@ -625,7 +625,7 @@ class Variable(object):
             value = value.copy()
             
         if isinstance(value, Variable):
-            value = value.getValue()
+            value = value.value
             
         PF = physicalField.PhysicalField
 
@@ -674,12 +674,12 @@ class Variable(object):
             [4 2 6]
             >>> print b
             [4 5 6]
-            >>> a.setValue(3)
+            >>> a.value = 3
             >>> print a
             [3 3 3]
 
             >>> b = numerix.array((3,4,5))
-            >>> a.setValue(b)
+            >>> a.value = b
             >>> a[:] = 1
             >>> print b
             [3 4 5]
@@ -693,7 +693,7 @@ class Variable(object):
         if where is not None:
             tmp = numerix.empty(numerix.getShape(where), self.getsctype())
             tmp[:] = value
-            tmp = numerix.where(where, tmp, self.getValue())
+            tmp = numerix.where(where, tmp, self.value)
         else:
             if hasattr(value, 'copy'):
                 tmp = value.copy()
@@ -732,7 +732,7 @@ class Variable(object):
 
     @property
     def numericValue(self):
-        value = self.getValue()
+        value = self.value
         if isinstance(value, physicalField.PhysicalField):
             return value.getNumericValue()
         else:
@@ -805,7 +805,7 @@ class Variable(object):
                                    _setSubscribedVariables)
         
     def __markStale(self):
-        for subscriber in self.getSubscribedVariables():
+        for subscriber in self.subscribedVariables:
             if subscriber() is not None:
                 ## Even though getSubscribedVariables() strips out dead 
                 ## references, subscriber() might still be dead due to the 
@@ -872,7 +872,7 @@ class Variable(object):
             >>> mesh = Grid2D(dx=1., dy=1., nx=2, ny=2)
             >>> var = CellVariable(mesh=mesh, value=0.)
             >>> Y =  mesh.cellCenters[1]
-            >>> var.setValue(Y + 1.0)
+            >>> var.value = (Y + 1.0)
             >>> print var - Y
             [ 1.  1.  1.  1.]
         """
@@ -918,7 +918,7 @@ class Variable(object):
         
         if self._value is None and not hasattr(self, 'typecode'):
             self.canInline = False
-            argDict['result'] = self.getValue()
+            argDict['result'] = self.value
             self.canInline = True
             self.typecode = numerix.obj2sctype(argDict['result'])
         else:
@@ -985,14 +985,14 @@ class Variable(object):
     def _OperatorVariableClass(self, baseClass=None):
         from fipy.variables import operatorVariable
         
-        baseClass = baseClass or self._getVariableClass()
+        baseClass = baseClass or self._variableClass
         return operatorVariable._OperatorVariableClass(baseClass=baseClass)
             
     def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None):
         """
         Check that getUnit() works for unOp
 
-            >>> (-Variable(value="1 m")).getUnit()
+            >>> (-Variable(value="1 m")).unit
             <PhysicalUnit m>
             
         """
@@ -1008,7 +1008,7 @@ class Variable(object):
         if opShape is None:
             return NotImplemented
 
-        if not self.getUnit().isDimensionless():
+        if not self.unit.isDimensionless():
             canInline = False
 
         return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit, 
@@ -1050,7 +1050,7 @@ class Variable(object):
             return NotImplemented
     
         for v in [self, other]:
-            if not v.getUnit().isDimensionless():
+            if not v.unit.isDimensionless():
                 canInline = False
                 
         # obtain a general operator class with the desired base class
@@ -1144,7 +1144,7 @@ class Variable(object):
             (Variable(value=array(3)) < 4)
             >>> b()
             1
-            >>> a.setValue(4)
+            >>> a.value = 4
             >>> print b()
             0
             >>> print 1000000000000000000 * Variable(1) < 1.
@@ -1170,10 +1170,10 @@ class Variable(object):
             (Variable(value=array(3)) <= 4)
             >>> b()
             1
-            >>> a.setValue(4)
+            >>> a.value = 4
             >>> print b()
             1
-            >>> a.setValue(5)
+            >>> a.value = 5
             >>> print b()
             0
         """
@@ -1215,7 +1215,7 @@ class Variable(object):
             (Variable(value=array(3)) > 4)
             >>> print b()
             0
-            >>> a.setValue(5)
+            >>> a.value = 5
             >>> print b()
             1
         """
@@ -1231,10 +1231,10 @@ class Variable(object):
             (Variable(value=array(3)) >= 4)
             >>> b()
             0
-            >>> a.setValue(4)
+            >>> a.value = 4
             >>> print b()
             1
-            >>> a.setValue(5)
+            >>> a.value = 5
             >>> print b()
             1
         """
@@ -1285,16 +1285,16 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: a | b, other, canInline=False)
 
     def __iter__(self):
-        return iter(self.getValue())
+        return iter(self.value)
         
     def __len__(self):
-        return len(self.getValue())
+        return len(self.value)
         
     def __float__(self):
-        return float(self.getValue())
+        return float(self.value)
         
     def __int__(self):
-        return int(self.getValue())
+        return int(self.value)
         
     def __nonzero__(self):
         """
@@ -1305,7 +1305,7 @@ class Variable(object):
                 ...
             ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
         """
-        return bool(self.getValue())
+        return bool(self.value)
     
     def any(self, axis=None):
         """
@@ -1488,11 +1488,11 @@ class Variable(object):
         return self._UnaryOperatorVariable(lambda a: a[index], 
                                            operatorClass=self._getitemClass(index=index), 
                                            opShape=numerix._indexShape(index=index, arrayShape=self.shape),
-                                           unit=self.getUnit(),
+                                           unit=self.unit,
                                            canInline=False)
 
     def take(self, ids, axis=0):
-        return numerix.take(self.getValue(), ids, axis)
+        return numerix.take(self.value, ids, axis)
 
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
         """
@@ -1543,8 +1543,8 @@ class Variable(object):
         `Variable` to persistent storage.
         """
         return {
-            'value': self.getValue(),
-            'unit': self.getUnit(),
+            'value': self.value,
+            'unit': self.unit,
             'array': None,
             'name': self.name,
         }

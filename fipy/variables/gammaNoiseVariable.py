@@ -66,8 +66,8 @@ class GammaNoiseVariable(NoiseVariable):
     and compare to a Gaussian distribution
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> gammadist = CellVariable(mesh = histogram.getMesh())
-    >>> x = histogram.getMesh().cellCenters[0]
+    >>> gammadist = CellVariable(mesh = histogram.mesh)
+    >>> x = histogram.mesh.cellCenters[0]
     
     >>> if __name__ == '__main__':
     ...     from fipy import Viewer
@@ -79,17 +79,17 @@ class GammaNoiseVariable(NoiseVariable):
     >>> from scipy.special import gamma as Gamma
     
     >>> for shape in arange(1,8,1):
-    ...     alpha.setValue(shape)
+    ...     alpha.value = shape
     ...     for rate in arange(0.5,2.5,0.5):
-    ...         beta.setValue(rate)
-    ...         gammadist.setValue(x**(alpha - 1) * (beta**alpha * exp(-beta * x)) / Gamma(alpha))
+    ...         beta.value = rate
+    ...         gammadist.value = (x**(alpha - 1) * (beta**alpha * exp(-beta * x)) / Gamma(alpha))
     ...         if __name__ == '__main__':
     ...             import sys
     ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
     ...             viewer.plot()
     ...             histoplot.plot()
 
-    >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
+    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
     1
 
     .. image:: fipy/variables/gamma.*
@@ -115,7 +115,7 @@ class GammaNoiseVariable(NoiseVariable):
     
     def random(self):
         return random.gamma(shape=self.shapeParam, scale=self.rate, 
-                            size=[self.getMesh().globalNumberOfCells])
+                            size=[self.mesh.globalNumberOfCells])
 
 def _test(): 
     import doctest

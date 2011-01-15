@@ -70,19 +70,19 @@ def _BinaryOperatorVariable(operatorClass=None):
         def _calcValuePy(self):
             from fipy.variables.variable import Variable
             if isinstance(self.var[1], Variable):
-                val1 = self.var[1].getValue()
+                val1 = self.var[1].value
             else:
                 if type(self.var[1]) is type(''):
                     self.var[1] = physicalField.PhysicalField(value=self.var[1])
                 val1 = self.var[1]
 
-            return self.op(self.var[0].getValue(), val1)
+            return self.op(self.var[0].value, val1)
 
         @property
         def unit(self):
             if self._unit is None:
                 try:
-                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne(), self.var[1]._getUnitAsOne()))
+                    return self._extractUnit(self.op(self.var[0]._unitAsOne, self.var[1]._unitAsOne))
                 except:
                     return self._extractUnit(self._calcValuePy())
             else:
@@ -105,7 +105,7 @@ def _BinaryOperatorVariable(operatorClass=None):
             else:
                 args = ()
                         
-            return (self._getVariableClass(), args, self.__getstate__())
+            return (self._variableClass, args, self.__getstate__())
             
     return binOp
 

@@ -40,7 +40,7 @@ from fipy.tools import inline
 
 class _FaceGradVariable(FaceVariable):
     def __init__(self, var):
-        FaceVariable.__init__(self, mesh=var.getMesh(), rank=var.getRank() + 1)
+        FaceVariable.__init__(self, mesh=var.mesh, rank=var.rank + 1)
         self.var = self._requires(var)
 
     def _calcValue(self):        
@@ -49,7 +49,7 @@ class _FaceGradVariable(FaceVariable):
     def _calcValuePy(self):
         dAP = self.mesh._cellDistances
         id1, id2 = self.mesh._adjacentCellIDs
-        N2 = numerix.take(self.var.getValue(),id2)
+        N2 = numerix.take(self.var.value,id2)
         faceMask = numerix.array(self.mesh.exteriorFaces)
         N2[..., faceMask] = self.var.getFaceValue()[..., faceMask]
         N = (N2 - numerix.take(self.var,id1)) / dAP
@@ -58,7 +58,7 @@ class _FaceGradVariable(FaceVariable):
         
         tangents1 = self.mesh._faceTangents1
         tangents2 = self.mesh._faceTangents2
-        cellGrad = self.var.getGrad().getNumericValue()
+        cellGrad = self.var.grad.numericValue
         
         grad1 = numerix.take(cellGrad, id1, axis=1)
         grad2 = numerix.take(cellGrad, id2, axis=1)
@@ -79,7 +79,7 @@ class _FaceGradVariable(FaceVariable):
         tangents1 = self.mesh._faceTangents1
         tangents2 = self.mesh._faceTangents2
  
-        val = self._getArray().copy()
+        val = self._array.copy()
 
         inline._runIterateElementInline("""
             int j;
@@ -101,12 +101,12 @@ class _FaceGradVariable(FaceVariable):
             ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
         """,tangents1 = tangents1,
             tangents2 = tangents2,
-            cellGrad = self.var.getGrad().getNumericValue(),
+            cellGrad = self.var.grad.numericValue,
             normals = self.mesh._orientedFaceNormals,
             id1 = id1,
             id2 = id2,
             dAP = numerix.array(self.mesh._cellDistances),
-            var = self.var.getNumericValue(),
+            var = self.var.numericValue,
             val = val,
             ni = tangents1.shape[1],
             shape=numerix.array(numerix.shape(tangents1)))
