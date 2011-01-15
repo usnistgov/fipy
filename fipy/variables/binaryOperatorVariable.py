@@ -90,8 +90,8 @@ def _BinaryOperatorVariable(operatorClass=None):
                 
         def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
             self.id = id
-            if (style == "__repr__") and hasattr(self, 'name') and len(self.name) > 0:
-                return self.name
+            if (style == "__repr__") and hasattr(self, '_name') and len(self._name) > 0:
+                return self._name
             else:
                 return "(" + operatorClass._getRepresentation(self, style=style, argDict=argDict, id=id, freshen=freshen) + ")"
 

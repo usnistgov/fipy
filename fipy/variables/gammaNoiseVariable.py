@@ -52,45 +52,45 @@ class GammaNoiseVariable(NoiseVariable):
 
     We generate noise on a uniform cartesian mesh
            
-           >>> from fipy.variables.variable import Variable
-           >>> alpha = Variable()
-           >>> beta = Variable()
-           >>> from fipy.meshes import Grid2D
-           >>> noise = GammaNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), shape = alpha, rate = beta)
+    >>> from fipy.variables.variable import Variable
+    >>> alpha = Variable()
+    >>> beta = Variable()
+    >>> from fipy.meshes import Grid2D
+    >>> noise = GammaNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), shape = alpha, rate = beta)
            
     We histogram the root-volume-weighted noise distribution
     
-           >>> from fipy.variables.histogramVariable import HistogramVariable
-           >>> histogram = HistogramVariable(distribution = noise, dx = 0.1, nx = 300)
+    >>> from fipy.variables.histogramVariable import HistogramVariable
+    >>> histogram = HistogramVariable(distribution = noise, dx = 0.1, nx = 300)
            
     and compare to a Gaussian distribution
-    
-           >>> from fipy.variables.cellVariable import CellVariable
-           >>> gammadist = CellVariable(mesh = histogram.getMesh())
-           >>> x = histogram.getMesh().cellCenters[0]
-           
-           >>> if __name__ == '__main__':
-           ...     from fipy import Viewer
-           ...     viewer = Viewer(vars=noise, datamin=0, datamax=30)
-           ...     histoplot = Viewer(vars=(histogram, gammadist), 
-           ...                        datamin=0, datamax=1)
-           
-           >>> from fipy.tools.numerix import arange, exp
-           >>> from scipy.special import gamma as Gamma
-           
-           >>> for shape in arange(1,8,1):
-           ...     alpha.setValue(shape)
-           ...     for rate in arange(0.5,2.5,0.5):
-           ...         beta.setValue(rate)
-           ...         gammadist.setValue(x**(alpha - 1) * (beta**alpha * exp(-beta * x)) / Gamma(alpha))
-           ...         if __name__ == '__main__':
-           ...             import sys
-           ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
-           ...             viewer.plot()
-           ...             histoplot.plot()
 
-           >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
-           1
+    >>> from fipy.variables.cellVariable import CellVariable
+    >>> gammadist = CellVariable(mesh = histogram.getMesh())
+    >>> x = histogram.getMesh().cellCenters[0]
+    
+    >>> if __name__ == '__main__':
+    ...     from fipy import Viewer
+    ...     viewer = Viewer(vars=noise, datamin=0, datamax=30)
+    ...     histoplot = Viewer(vars=(histogram, gammadist), 
+    ...                        datamin=0, datamax=1)
+    
+    >>> from fipy.tools.numerix import arange, exp
+    >>> from scipy.special import gamma as Gamma
+    
+    >>> for shape in arange(1,8,1):
+    ...     alpha.setValue(shape)
+    ...     for rate in arange(0.5,2.5,0.5):
+    ...         beta.setValue(rate)
+    ...         gammadist.setValue(x**(alpha - 1) * (beta**alpha * exp(-beta * x)) / Gamma(alpha))
+    ...         if __name__ == '__main__':
+    ...             import sys
+    ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
+    ...             viewer.plot()
+    ...             histoplot.plot()
+
+    >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
+    1
 
     .. image:: fipy/variables/gamma.*
       :scale: 25

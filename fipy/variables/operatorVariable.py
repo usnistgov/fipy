@@ -33,6 +33,7 @@
 from fipy.variables.variable import Variable
 
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 def _OperatorVariableClass(baseClass=object):
     class _OperatorVariable(baseClass):
@@ -105,7 +106,7 @@ def _OperatorVariableClass(baseClass=object):
                     result = repr(v)
                 elif style == "name":
                     if isinstance(v, Variable):
-                        result = v.getName()
+                        result = v.name
                         if len(result) == 0:
                             # The string form of a variable
                             # would probably be too long and messy.
@@ -201,12 +202,20 @@ def _OperatorVariableClass(baseClass=object):
         def __repr__(self):
             return self._getRepresentation()
 
+        @getsetDeprecated
         def getName(self):
-            name = baseClass.getName(self)
+            return self.name
+
+        def _getName(self):
+            import sys
+            print >> sys.stderr, baseClass
+            name = baseClass._getName(self)
             if len(name) == 0:
                 name = self._getRepresentation(style="name")
             return name
-            
+   
+        name = property(_getName, baseClass._setName)
+
         @property
         def shape(self):
             if self.opShape is not None:

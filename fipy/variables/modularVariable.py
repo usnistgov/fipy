@@ -37,6 +37,7 @@
 __docformat__ = 'restructuredtext'
  
 from fipy.variables.cellVariable import CellVariable
+from fipy.tools.decorators import getsetDeprecated
 
 class ModularVariable(CellVariable):
     r"""
@@ -159,13 +160,18 @@ class ModularVariable(CellVariable):
 
         return self._faceGrad
 
+    @getsetDeprecated
     def getFaceGradNoMod(self):
+        return self.faceGradNoMod
+
+    @property
+    def faceGradNoMod(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` (second-order
         gradient). Not adjusted for a `ModularVariable`
         """
         
-        if not hasattr(self, 'faceGradNoMod'):
+        if not hasattr(self, '_faceGradNoMod'):
             class NonModularTheta(CellVariable):
                 def __init__(self, modVar):
                     CellVariable.__init__(self, mesh = modVar.getMesh())
@@ -174,9 +180,9 @@ class ModularVariable(CellVariable):
                 def _calcValue(self):
                     return self.modVar.value
 
-            self.faceGradNoMod = NonModularTheta(self).getFaceGrad()
+            self._faceGradNoMod = NonModularTheta(self).getFaceGrad()
 
-        return self.faceGradNoMod
+        return self._faceGradNoMod
 
     def __sub__(self, other):
         from fipy.terms.term import Term

@@ -111,7 +111,7 @@ class Variable(object):
             
         self._setValueInternal(value=value, unit=unit, array=array)
         
-        self.name = name
+        self._name = name
                 
         self._cached = cached
 
@@ -345,6 +345,14 @@ class Variable(object):
     @getsetDeprecated
     def setName(self, name):
         self.name = name
+
+    def _getName(self):
+        return self._name
+
+    def _setName(self, name):
+        self._name = name
+
+    name = property(_getName, _setName)
     
     def __str__(self):
         return str(self.getValue())
