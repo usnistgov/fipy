@@ -34,13 +34,13 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.scalarCoeffTerm import _ScalarCoeffTerm
+from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import inline
 from fipy.tools import numerix
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
 
-class CellTerm(_ScalarCoeffTerm):
+class CellTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
@@ -58,7 +58,7 @@ class CellTerm(_ScalarCoeffTerm):
             or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
                 raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
 
-        _ScalarCoeffTerm.__init__(self, coeff=coeff, var=var)
+        _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
         self._var = None
 

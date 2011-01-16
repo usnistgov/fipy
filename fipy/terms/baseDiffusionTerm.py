@@ -84,16 +84,6 @@ class _BaseDiffusionTerm(_UnaryTerm):
     __rmul__ = __mul__
     
     def __neg__(self):
-        """
-        Negate the term.
-
-        >>> -DiffusionTerm(coeff=[1.])
-        DiffusionTerm(coeff=[-1.0])
-
-        >>> -DiffusionTerm()
-        DiffusionTerm(coeff=[-1.0])
-           
-        """
         negatedCoeff = list(self.coeff)
         negatedCoeff[0] = -negatedCoeff[0]
         return self.__class__(coeff=negatedCoeff, var=self.var)
@@ -189,6 +179,13 @@ class _BaseDiffusionTerm(_UnaryTerm):
         else:
 
             return None
+
+    def _getCoefficientMatrixForTests(self, SparseMatrix, mesh, coeff):
+        """
+        This method was introduced because __getCoefficientMatrix is private, but
+        the tests in DiffusionTerm need to call it.
+        """
+        return self.__getCoefficientMatrix(SparseMatrix, mesh, coeff)
 
     def __getCoefficientMatrix(self, SparseMatrix, mesh, coeff):
         interiorCoeff = numerix.array(coeff)

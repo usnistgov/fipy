@@ -37,9 +37,9 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
-from fipy.terms.scalarCoeffTerm import _ScalarCoeffTerm
+from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 
-class _AdvectionTerm(_ScalarCoeffTerm):
+class _AdvectionTerm(_NonDiffusionTerm):
     r"""
 
     The `_AdvectionTerm` object constructs the b vector contribution
@@ -113,7 +113,7 @@ class _AdvectionTerm(_ScalarCoeffTerm):
     True
     """
     def __init__(self, coeff = None):
-        _ScalarCoeffTerm.__init__(self)
+        _NonDiffusionTerm.__init__(self)
         self.geomCoeff = coeff
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, equation=None, transientGeomCoeff=None, diffusionGeomCoeff=None):

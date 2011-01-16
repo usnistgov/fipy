@@ -53,7 +53,7 @@ def _suite():
             'coupledBinaryTerm',
             'baseBinaryTerm',
             'unaryTerm',
-            'scalarCoeffTerm'
+            'nonDiffusionTerm'
             ), base = __name__)
 
 if __name__ == '__main__':
