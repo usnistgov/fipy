@@ -58,23 +58,23 @@ class ModularVariable(CellVariable):
 
     Obtaining the arithmetic face value.
 
-    >>> print numerix.allclose(v1.getArithmeticFaceValue(), (2*pi/3, pi, -2*pi/3))
+    >>> print numerix.allclose(v1.arithmeticFaceValue, (2*pi/3, pi, -2*pi/3))
     1
 
     Obtaining the gradient.
 
-    >>> print numerix.allclose(v1.getGrad(), ((pi/3, pi/3),))
+    >>> print numerix.allclose(v1.grad, ((pi/3, pi/3),))
     1
 
     Obtaining the gradient at the faces.
 
-    >>> print numerix.allclose(v1.getFaceGrad(), ((0, 2*pi/3, 0),))
+    >>> print numerix.allclose(v1.faceGrad, ((0, 2*pi/3, 0),))
     1
         
     Obtaining the gradient at the faces but without modular
     arithmetic.
 
-    >>> print numerix.allclose(v1.getFaceGradNoMod(), ((0, -4*pi/3, 0),))
+    >>> print numerix.allclose(v1.faceGradNoMod, ((0, -4*pi/3, 0),))
     1
     """    
         
@@ -92,7 +92,7 @@ class ModularVariable(CellVariable):
         >>> answer = CellVariable(mesh=mesh, value=1.)
         >>> print var.allclose(answer)
         True
-        >>> var.setValue(1)
+        >>> var.value = 1
         >>> print var.allclose(answer)
         True
         """
@@ -111,12 +111,12 @@ class ModularVariable(CellVariable):
         >>> var.updateOld()
         >>> var[:] = 2
         >>> answer = CellVariable(mesh=mesh, value=1.)
-        >>> print var.getOld().allclose(answer)
+        >>> print var.old.allclose(answer)
         True
         """
-        self.setValue(self.getValue().mod(self().inRadians()))
+        self.value = (self.value.mod(self().inRadians()))
         if self._old is not None:
-            self._old.setValue(self._value.value.copy())
+            self._old.value = (self._value.value.copy())
 
     @property
     def grad(self):
@@ -174,13 +174,13 @@ class ModularVariable(CellVariable):
         if not hasattr(self, '_faceGradNoMod'):
             class NonModularTheta(CellVariable):
                 def __init__(self, modVar):
-                    CellVariable.__init__(self, mesh = modVar.getMesh())
+                    CellVariable.__init__(self, mesh = modVar.mesh)
                     self.modVar = self._requires(modVar)
                     
                 def _calcValue(self):
                     return self.modVar.value
 
-            self._faceGradNoMod = NonModularTheta(self).getFaceGrad()
+            self._faceGradNoMod = NonModularTheta(self).faceGrad
 
         return self._faceGradNoMod
 

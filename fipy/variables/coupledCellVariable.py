@@ -44,8 +44,13 @@ class _CoupledCellVariable(object):
     def __repr__(self):
         return "(" + ", ".join([repr(var) for var in self.vars]) + ")"
         
+    @getsetDeprecated
     def getMesh(self):
-        meshes = list(set([var.getMesh() for var in self.vars]))
+        return self.mesh
+
+    @property
+    def mesh(self):
+        meshes = list(set([var.mesh for var in self.vars]))
         
         if len(meshes) == 0:
             raise Exception("There are no Meshes defined")
@@ -58,31 +63,51 @@ class _CoupledCellVariable(object):
         return numerix.concatenate([numerix.array(var[index]) for var in self.vars])
         
     def __setitem__(self, index, value):
-        N = self.getMesh().getNumberOfCells()
+        N = self.mesh.numberOfCells
         for i, var in enumerate(self.vars):
             if numerix.shape(value) == ():
                 var[index] = value
             else:
                 var[index] = value[i * N:(i + 1) * N]
 
+    @getsetDeprecated
     def getValue(self):
-        return numerix.concatenate([numerix.array(var.getValue()) for var in self.vars])
+        return self.value
+    
+    @getsetDeprecated
+    def setValue(self, value):
+        self.value = value
 
+    def _getValue(self):
+        return numerix.concatenate([numerix.array(var.value) for var in self.vars])
+
+    def _setValue(self, value):
+        self[:] = value
+
+    value = property(_getValue, _setValue)
+      
     @getsetDeprecated
     def getGlobalValue(self):
         return self.globalValue
 
     @property
     def globalValue(self):
-        return numerix.concatenate([numerix.array(var.getGlobalValue()) for var in self.vars])
+        return numerix.concatenate([numerix.array(var.globalValue) for var in self.vars])
 
+    @getsetDeprecated
     def getNumericValue(self):
-        return numerix.concatenate([var.getNumericValue() for var in self.vars])
+        return self.numericValue
 
-    def setValue(self, value):
-        self[:] = value
-        
+    @property
+    def numericValue(self):
+        return numerix.concatenate([var.numericValue for var in self.vars])
+  
+    @getsetDeprecated
     def getUnit(self):
+        return self.unit
+
+    @property
+    def unit(self):
         from fipy.tools.dimensions import physicalField
         return physicalField._unity
         
@@ -107,7 +132,7 @@ class _CoupledCellVariable(object):
         True
         
         """
-        return numerix.array(self.getValue(), t)
+        return numerix.array(self.value, t)
         
     def __neg__(self):
         return _CoupledCellVariable([-var for var in self.vars])
@@ -116,11 +141,11 @@ class _CoupledCellVariable(object):
         return _CoupledCellVariable([abs(var) for var in self.vars])
         
     def __iter__(self):
-        return iter(self.getValue())
+        return iter(self.value)
 
     def getsctype(self, default=None):
         if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=self.getNumericValue(), default=default)        
+            self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)        
         return self.typecode
 
 def _test(): 

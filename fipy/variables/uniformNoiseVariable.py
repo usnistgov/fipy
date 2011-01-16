@@ -84,7 +84,7 @@ class UniformNoiseVariable(NoiseVariable):
     
     def random(self):
         return random.uniform(self.minimum, self.maximum,
-                              size=[self.getMesh().globalNumberOfCells])
+                              size=[self.mesh.globalNumberOfCells])
 
 def _test(): 
     import doctest

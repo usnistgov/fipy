@@ -4,7 +4,7 @@ from fipy.variables import FaceVariable
 
 class _FixedBCFaceGradVariable(FaceVariable):
     def __init__(self, var, boundaryConditions=()):
-        FaceVariable.__init__(self, mesh=var.getMesh(), rank=var.getRank() + 1)
+        FaceVariable.__init__(self, mesh=var.mesh, rank=var.rank + 1)
         self.var = self._requires(var)
         self.bcs = boundaryConditions
 
@@ -27,7 +27,7 @@ class _FixedBCFaceGradVariable(FaceVariable):
         
         tangents1 = self.mesh._faceTangents1
         tangents2 = self.mesh._faceTangents2
-        cellGrad = self.var.getGrad().getValue()
+        cellGrad = self.var.grad.value
         
         grad1 = take(cellGrad, id1, axis=1)
         grad2 = take(cellGrad, id2, axis=1)

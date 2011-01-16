@@ -51,7 +51,7 @@ class CellVariable(_MeshVariable):
     
     >>> var = CellVariable(mesh = mesh, value = 1., hasOld = 1, name = 'test')
     >>> x, y = mesh.cellCenters
-    >>> var.setValue(x * y)
+    >>> var.value = (x * y)
 
     >>> from fipy.tools import dump        
     >>> (f, filename) = dump.write(var, extension = '.gz')
@@ -82,7 +82,7 @@ class CellVariable(_MeshVariable):
             >>> a = CellVariable(mesh=Grid1D(nx=1), value=1)
 
             >>> c = -a
-            >>> b = c.getOld() + 3
+            >>> b = c.old + 3
             >>> print b
             [2]
             >>> b.getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
@@ -90,22 +90,22 @@ class CellVariable(_MeshVariable):
             
         replacing with the same thing is no problem
         
-            >>> a.setValue(3)
-            >>> b = c.getOld() + 3
+            >>> a.value = (3)
+            >>> b = c.old + 3
             >>> print b
             [0]
             
         replacing with multiple copies causes the reference counting problem
         
-            >>> a.setValue(3)
-            >>> b = (c + c).getOld() + 3
+            >>> a.value = (3)
+            >>> b = (c + c).old + 3
             >>> print b
             [-3]
             
         the order matters
         
-            >>> b = (c + c).getOld() + 3
-            >>> a.setValue(2)
+            >>> b = (c + c).old + 3
+            >>> a.value = (2)
             >>> print b
             [-1]
         """
@@ -135,7 +135,7 @@ class CellVariable(_MeshVariable):
         
         return self._getArithmeticBaseClass()(mesh=self.mesh, 
                                               name=self.name + "_old", 
-                                              value=self.getValue(),
+                                              value=self.value,
                                               hasOld=False)
                 
     @property
@@ -190,10 +190,10 @@ class CellVariable(_MeshVariable):
             >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
             >>> x, y = m0.cellCenters
             >>> v0 = CellVariable(mesh=m0, value=x * y)
-            >>> print v0(m1.cellCenters.getGlobalValue())
+            >>> print v0(m1.cellCenters.globalValue)
             [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
               0.75  0.75  2.25  2.25]
-            >>> print v0(m1.cellCenters.getGlobalValue(), order=1)
+            >>> print v0(m1.cellCenters.globalValue, order=1)
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 
@@ -201,17 +201,17 @@ class CellVariable(_MeshVariable):
         if points is not None:
 
             if nearestCellIDs is None:
-                nearestCellIDs = self.getMesh()._getNearestCellID(points)
+                nearestCellIDs = self.mesh._getNearestCellID(points)
 
             if order == 0:
-                return self.getGlobalValue()[..., nearestCellIDs]
+                return self.globalValue[..., nearestCellIDs]
 
             elif order == 1:
                 ##cellID = self.getMesh()._getNearestCellID(points)
 ##                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().cellCenters[...,cellID], self.getGrad()[...,cellID])
-                return (self.getGlobalValue()[..., nearestCellIDs] 
-                        + numerix.dot(points - self.getMesh().cellCenters.getGlobalValue()[...,nearestCellIDs], 
-                                      self.getGrad().getGlobalValue()[...,nearestCellIDs]))
+                return (self.globalValue[..., nearestCellIDs] 
+                        + numerix.dot(points - self.mesh.cellCenters.globalValue[...,nearestCellIDs], 
+                                      self.grad.globalValue[...,nearestCellIDs]))
 
             else:
                 raise ValueError, 'order should be either 0 or 1'
@@ -238,7 +238,7 @@ class CellVariable(_MeshVariable):
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
         >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
-        >>> print var.getCellVolumeAverage()
+        >>> print var.cellVolumeAverage
         3.0
         """
 
@@ -273,7 +273,7 @@ class CellVariable(_MeshVariable):
         """
         if not hasattr(self, '_gaussGrad'):
             from gaussCellGradVariable import _GaussCellGradVariable
-            self._gaussGrad = _GaussCellGradVariable(var = self, name = "%s_gauss_grad" % self.getName())
+            self._gaussGrad = _GaussCellGradVariable(var = self, name = "%s_gauss_grad" % self.name)
         
         return self._gaussGrad
 
@@ -305,20 +305,21 @@ class CellVariable(_MeshVariable):
 
         >>> from fipy import Grid2D
         >>> m = Grid2D(nx=2, ny=2, dx=0.1, dy=2.0)
-        >>> print numerix.allclose(CellVariable(mesh=m, value=(0,1,3,6)).getLeastSquaresGrad().getGlobalValue(), \
+        >>> print numerix.allclose(CellVariable(mesh=m, value=(0,1,3,6)).leastSquaresGrad.globalValue, \
         ...                                     [[8.0, 8.0, 24.0, 24.0],
         ...                                      [1.2, 2.0, 1.2, 2.0]])
         True
 
         >>> from fipy import Grid1D
         >>> print numerix.allclose(CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)), 
-        ...                                     value=(0, 1, 2)).getLeastSquaresGrad().getGlobalValue(), [[0.461538461538, 0.8, 1.2]])
+        ...                                     value=(0, 1, 2)).leastSquaresGrad.globalValue, [[0.461538461538, 0.8, 1.2]])
         True
         """
 
         if not hasattr(self, '_leastSquaresGrad'):
             from leastSquaresCellGradVariable import _LeastSquaresCellGradVariable
-            self._leastSquaresGrad = _LeastSquaresCellGradVariable(var = self, name = "%s_least_squares_grad" % self.getName())
+            self._leastSquaresGrad = _LeastSquaresCellGradVariable(var = self, 
+                    name = "%s_least_squares_grad" % self.name)
         
         return self._leastSquaresGrad
 
@@ -343,21 +344,21 @@ class CellVariable(_MeshVariable):
         >>> L = 1
         >>> R = 2
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
+        >>> faceValue = var.arithmeticFaceValue[mesh.interiorFaces.value]
         >>> answer = (R - L) * (0.5 / 1.) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
         
         >>> mesh = Grid1D(dx = (2., 4.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
+        >>> faceValue = var.arithmeticFaceValue[mesh.interiorFaces.value]
         >>> answer = (R - L) * (1.0 / 3.0) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
 
         >>> mesh = Grid1D(dx = (10., 100.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getArithmeticFaceValue()[mesh.interiorFaces.getValue()]
+        >>> faceValue = var.arithmeticFaceValue[mesh.interiorFaces.value]
         >>> answer = (R - L) * (5.0 / 55.0) + L
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
@@ -393,11 +394,11 @@ class CellVariable(_MeshVariable):
                     \end{cases}
                        
         >>> from fipy import *
-        >>> print CellVariable(mesh=Grid1D(nx=2), value=(1, 2)).getMinmodFaceValue()
+        >>> print CellVariable(mesh=Grid1D(nx=2), value=(1, 2)).minmodFaceValue
         [1 1 2]
-        >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, -2)).getMinmodFaceValue()
+        >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, -2)).minmodFaceValue
         [-1 -1 -2]
-        >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, 2)).getMinmodFaceValue()
+        >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, 2)).minmodFaceValue
         [-1  0  2]
         """
         if not hasattr(self, '_minmodFaceValue'):
@@ -429,21 +430,21 @@ class CellVariable(_MeshVariable):
         >>> L = 1
         >>> R = 2
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
+        >>> faceValue = var.harmonicFaceValue[mesh.interiorFaces.value]
         >>> answer = L * R / ((R - L) * (0.5 / 1.) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
         
         >>> mesh = Grid1D(dx = (2., 4.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
+        >>> faceValue = var.harmonicFaceValue[mesh.interiorFaces.value]
         >>> answer = L * R / ((R - L) * (1.0 / 3.0) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
 
         >>> mesh = Grid1D(dx = (10., 100.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
-        >>> faceValue = var.getHarmonicFaceValue()[mesh.interiorFaces.getValue()]
+        >>> faceValue = var.harmonicFaceValue[mesh.interiorFaces.value]
         >>> answer = L * R / ((R - L) * (5.0 / 55.0) + L)
         >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
         True
@@ -483,7 +484,7 @@ class CellVariable(_MeshVariable):
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using averaging
         for the normal direction(second-order gradient)
         """
-        return self.getGrad().getArithmeticFaceValue()
+        return self.grad.arithmeticFaceValue
 
     @getsetDeprecated
     def getOld(self):
@@ -506,10 +507,10 @@ class CellVariable(_MeshVariable):
         >>> v = var1 * var2
         >>> print v
         [ 6 12]
-        >>> var1.setValue((3,2))
+        >>> var1.value = ((3,2))
         >>> print v
         [9 8]
-        >>> print v.getOld()
+        >>> print v.old
         [ 6 12]
 
         The following small test is to correct for a bug when the
@@ -518,7 +519,7 @@ class CellVariable(_MeshVariable):
         >>> v1 = var1 * 3
         >>> print v1
         [9 6]
-        >>> print v1.getOld()
+        >>> print v1.old
         [6 9]
         """
         if self._old is None:
@@ -533,11 +534,11 @@ class CellVariable(_MeshVariable):
         Set the values of the previous solution sweep to the current values.
         """
         if self._old is not None:
-            self._old.setValue(self.getValue().copy())
+            self._old.value = (self.value.copy())
 
     def _resetToOld(self):
         if self._old is not None:
-            self.setValue(self._old.getValue())
+            self.value = (self._old.value)
             
     def _getShapeFromMesh(mesh):
         """
@@ -567,8 +568,8 @@ class CellVariable(_MeshVariable):
         return {
             'mesh' : self.mesh,
             'name' : self.name,
-            'value' : self.getGlobalValue(),
-            'unit' : self.getUnit(),
+            'value' : self.globalValue,
+            'unit' : self.unit,
             'old' : self._old
         }
 
@@ -588,7 +589,7 @@ class CellVariable(_MeshVariable):
         self.__init__(mesh=dict['mesh'], name=dict['name'], value=dict['value'], unit=dict['unit'], hasOld=hasOld)
 ##         self.__init__(hasOld=hasOld, **dict)
         if self._old is not None:
-            self._old.setValue(dict['old'].getValue())
+            self._old.value = (dict['old'].value)
 
     def constrain(self, value, where=None):
         r"""
@@ -598,8 +599,8 @@ class CellVariable(_MeshVariable):
             >>> m = Grid1D(nx=3)
             >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
             >>> v.constrain(0., where=m.facesLeft)
-            >>> v.getFaceGrad().constrain(1., where=m.facesRight)
-            >>> print v.getFaceGrad()
+            >>> v.faceGrad.constrain(1., where=m.facesRight)
+            >>> print v.faceGrad
             [[ 1.  1.  1.  1.]]
             >>> print v.getFaceValue()
             [ 0.   1.   2.   2.5]
@@ -617,7 +618,7 @@ class CellVariable(_MeshVariable):
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.cellCenters)
-        CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.getUnit())
+        CellVariable.__init__(self, newMesh, name = oldVar.name, value = newValues, unit = oldVar.unit)
 
 def _test(): 
     import doctest

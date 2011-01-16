@@ -99,9 +99,9 @@ class GaussianNoiseVariable(NoiseVariable):
            
     and compare to a Gaussian distribution
     
-    >>> gauss = CellVariable(mesh = histogram.getMesh())
-    >>> x = histogram.getMesh().cellCenters[0]
-    >>> gauss.setValue((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
+    >>> gauss = CellVariable(mesh = histogram.mesh)
+    >>> x = histogram.mesh.cellCenters[0]
+    >>> gauss.value = ((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
     
     >>> if __name__ == '__main__':
     ...     from fipy import viewers
@@ -115,7 +115,7 @@ class GaussianNoiseVariable(NoiseVariable):
     ...         viewer.plot()
     ...         histoplot.plot()
 
-    >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
+    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
     1
 
     Note that the noise exhibits larger amplitude in the small cells than in the large ones
@@ -144,14 +144,14 @@ class GaussianNoiseVariable(NoiseVariable):
 
     def parallelRandom(self):
 
-        if hasattr(self.variance, 'getGlobalValue'):
-            variance = self.variance.getGlobalValue()
+        if hasattr(self.variance, 'globalValue'):
+            variance = self.variance.globalValue
         else:
             variance = self.variance
 
-        if self.getMesh().communicator.procID == 0:
+        if self.mesh.communicator.procID == 0:
             return random.normal(self.mean, sqrt(variance),
-                                 size = [self.getMesh().globalNumberOfCells])
+                                 size = [self.mesh.globalNumberOfCells])
         else:
             return None
 

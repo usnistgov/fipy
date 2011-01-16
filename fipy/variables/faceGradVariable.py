@@ -112,6 +112,6 @@ class _FaceGradVariable(FaceVariable):
             shape=numerix.array(numerix.shape(tangents1)))
             
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)
 
     

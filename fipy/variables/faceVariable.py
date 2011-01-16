@@ -63,7 +63,7 @@ class FaceVariable(_MeshVariable):
     def copy(self):
         return self._getArithmeticBaseClass()(mesh=self.mesh, 
                                               name=self.name + "_copy", 
-                                              value=self.getValue())
+                                              value=self.value)
 
     @property
     def globalValue(self):
@@ -84,13 +84,13 @@ class FaceVariable(_MeshVariable):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=3, ny=2)
             >>> var = CellVariable(mesh=mesh, value=range(3*2))
-            >>> print var.getFaceGrad().getDivergence()
+            >>> print var.faceGrad.divergence
             [ 4.  3.  2. -2. -3. -4.]
             
         """
         if not hasattr(self, '_divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
-            self._divergence = _AddOverFacesVariable(self.dot(self.getMesh()._orientedAreaProjections))
+            self._divergence = _AddOverFacesVariable(self.dot(self.mesh._orientedAreaProjections))
             
         return self._divergence
 

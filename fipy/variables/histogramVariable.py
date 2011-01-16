@@ -55,7 +55,7 @@ class HistogramVariable(CellVariable):
         
     def _calcValue(self):
         l = len(self.distribution)
-        bins = self.getMesh().cellCenters[0]
+        bins = self.mesh.cellCenters[0]
         n = numerix.searchsorted(numerix.sort(self.distribution), bins)
         n = numerix.concatenate([n, [l]])
         dx = bins[1:] - bins[:-1]
