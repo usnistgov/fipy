@@ -86,15 +86,15 @@ class _BaseBinaryTerm(Term):
         r"""
          Negate a `_BinaryTerm`.
 
-           >>> -(__ScalarCoeffTerm(coeff=1.) - __ScalarCoeffTerm(coeff=2.))
-           (__ScalarCoeffTerm(coeff=-1.0) + __ScalarCoeffTerm(coeff=2.0))
+           >>> -(__NonDiffusionTerm(coeff=1.) - __NonDiffusionTerm(coeff=2.))
+           (__NonDiffusionTerm(coeff=-1.0) + __NonDiffusionTerm(coeff=2.0))
 
         """
 
         return (-self.term) + (-self.other)
 
-from fipy.terms.scalarCoeffTerm import _ScalarCoeffTerm
-class __ScalarCoeffTerm(_ScalarCoeffTerm):
+from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
+class __NonDiffusionTerm(_NonDiffusionTerm):
     """
     Dummy subclass for tests
     """

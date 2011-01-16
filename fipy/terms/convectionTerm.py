@@ -124,7 +124,7 @@ class ConvectionTerm(FaceTerm):
         
         return projectedCoefficients.sum(0)
         
-    def _getWeight(self, mesh, diffusionGeomCoeff=None):
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         if self.stencil is None:
 
@@ -140,7 +140,7 @@ class ConvectionTerm(FaceTerm):
                     diffCoeff = diffCoeff.getNumericValue()
                     diffCoeff = (diffCoeff == 0) * small + diffCoeff
 
-            alpha = self._Alpha(-self._getGeomCoeff(mesh) / diffCoeff)
+            alpha = self._Alpha(-self._getGeomCoeff(var.getMesh()) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),
@@ -182,7 +182,7 @@ class ConvectionTerm(FaceTerm):
 
                 if constraintMask is not None:
                     mesh = var.getMesh()
-                    weight = self._getWeight(mesh)
+                    weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
                     if weight.has_key('implicit'):
                         alpha = weight['implicit']['cell 1 diag']

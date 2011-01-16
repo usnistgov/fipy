@@ -62,10 +62,10 @@ class CellTerm(_NonDiffusionTerm):
         self.coeffVectors = None
         self._var = None
 
-    def _calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def __calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()
         coeff = self._getGeomCoeff(mesh)
-        weight = self._getWeight(mesh)
+        weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
         if hasattr(coeff, "getOld"):
             old = coeff.getOld()
         else:
@@ -78,15 +78,15 @@ class CellTerm(_NonDiffusionTerm):
             'new value': coeff * weight['new value']
         }
 
-    def _getCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def __getCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         if self.coeffVectors is None or var is not self._var:
 ##        if self.coeffVectors is None or var != self._var:
             self._var = var
-            self._calcCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+            self.__calcCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         return self.coeffVectors
         
-    def _buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
+    def __buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
         N = len(oldArray)
 
         b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
@@ -97,7 +97,7 @@ class CellTerm(_NonDiffusionTerm):
 ##      L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
 ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
-    def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
+    def __buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
         N = oldArray.getMesh().getNumberOfCells()
         updatePyArray = numerix.zeros((N),'d')
 
@@ -127,9 +127,9 @@ class CellTerm(_NonDiffusionTerm):
             b = numerix.zeros((N),'d')
             L = SparseMatrix(mesh=var.getMesh())
 
-            coeffVectors = self._getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+            coeffVectors = self.__getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-            inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
+            inline._optionalInline(self.__buildMatrixIn, self.__buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
 
             return (var, L, b)
         else:

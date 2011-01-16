@@ -35,6 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
+from fipy.tools import numerix
 
 class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
     r"""
@@ -50,8 +51,11 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
     For further details see :ref:`sec:NumericalSchemes`.
     """
 
-    def _getWeight(self, mesh, diffusionGeomCoeff=None):
-        weight = UpwindConvectionTerm._getWeight(self, mesh)
+    def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
+        return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
+
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        weight = UpwindConvectionTerm._getWeight(self, var, transientGeomCoeff, diffusionGeomCoeff)
         if 'implicit' in weight.keys():
             weight['explicit'] = weight['implicit']
             del weight['implicit']

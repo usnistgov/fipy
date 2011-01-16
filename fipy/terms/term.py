@@ -352,7 +352,7 @@ class Term:
 
         return self.geomCoeff
         
-    def _getWeight(self, mesh):
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
     def _getDiffusionGeomCoeff(self, mesh):
@@ -365,6 +365,9 @@ class Term:
         raise NotImplementedError
 
     def _getNormals(self, mesh):
+        raise NotImplementedError
+
+    def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         raise NotImplementedError
 
     def _test(self):

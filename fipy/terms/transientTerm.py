@@ -98,7 +98,7 @@ class TransientTerm(CellTerm):
     1
     """
 
-    def _getWeight(self, mesh):
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
 	return {
 	    'b vector':  0, 
 	    'new value': 1, 
