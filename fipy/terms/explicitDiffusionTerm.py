@@ -34,9 +34,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.diffusionTerm import DiffusionTerm
+from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
 
-class ExplicitDiffusionTerm(DiffusionTerm):
+class ExplicitDiffusionTerm(_BaseDiffusionTerm):
     r"""
     The discretization for the `ExplicitDiffusionTerm` is given by
 
@@ -52,9 +52,18 @@ class ExplicitDiffusionTerm(DiffusionTerm):
     """
     
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-        if var is self.var or self.var is None:
-            varOld, L, b = DiffusionTerm._buildMatrix(self, var.getOld(), SparseMatrix, boundaryConditions = boundaryConditions, dt = dt,
-                                                   transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-            return (var, SparseMatrix(mesh=var.getMesh()), b - L * var.getValue())
+        if hasattr(var, 'getOld'):
+            varOld = var.getOld()
         else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+            varOld = var
+            
+        varOld, L, b = _BaseDiffusionTerm._buildMatrix(self, varOld, SparseMatrix, boundaryConditions = boundaryConditions, dt = dt,
+                                                  transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+        return (var, SparseMatrix(mesh=var.getMesh()), b - L * var.getValue())
+        
+    def _getNormals(self, mesh):
+        return mesh._getFaceCellToCellNormals()
+
+    def _treatMeshAsOrthogonal(self, mesh):        
+        return mesh._isOrthogonal()
