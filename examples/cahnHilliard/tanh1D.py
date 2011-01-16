@@ -120,7 +120,7 @@ Using
 
 we create the Cahn-Hilliard equation:
 
->>> faceVar = var.getArithmeticFaceValue()
+>>> faceVar = var.arithmeticFaceValue
 >>> freeEnergyDoubleDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
 >>> diffTerm2 = DiffusionTerm(

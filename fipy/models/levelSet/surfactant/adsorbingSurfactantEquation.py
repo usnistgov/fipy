@@ -44,7 +44,7 @@ from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
-        CellVariable.__init__(self, mesh = distanceVar.getMesh())
+        CellVariable.__init__(self, mesh = distanceVar.mesh)
 
         self.distanceVar = self._requires(distanceVar)
         self.bulkVar = self._requires(bulkVar)
@@ -69,7 +69,7 @@ class _AdsorptionCoeffAreaOverVolume(_AdsorptionCoeff):
 
 class _MaxCoeff(CellVariable):
     def __init__(self, distanceVar, vars = ()):
-        CellVariable.__init__(self, mesh = distanceVar.getMesh())
+        CellVariable.__init__(self, mesh = distanceVar.mesh)
         self.vars = vars
         for var in self.vars:
             self._requires(var)

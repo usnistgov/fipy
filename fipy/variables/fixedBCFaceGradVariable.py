@@ -20,7 +20,7 @@ class _FixedBCFaceGradVariable(FaceVariable):
         
         for bc in self.bcs:
             if isinstance(bc, FixedValue):
-                v2[bc.faces.getValue()] = bc._getValue()
+                v2[bc.faces.value] = bc._value
         
         N = (v2 - v1) / dAP
         normals = self.mesh._orientedFaceNormals

@@ -65,7 +65,7 @@ class TrilinosSolver(Solver):
         if not hasattr(self, 'globalVectors'):
             globalMatrix = self.matrix.asTrilinosMeshMatrix()
 
-            mesh = self.var.getMesh()
+            mesh = self.var.mesh
             localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
             nonOverlappingVector = Epetra.Vector(globalMatrix.nonOverlappingMap, 
@@ -126,7 +126,7 @@ class TrilinosSolver(Solver):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            comm = self.var.getMesh().communicator
+            comm = self.var.mesh.communicator
             return comm.Norm2(self._calcResidualVector())
         
     def _calcRHSNorm(self):

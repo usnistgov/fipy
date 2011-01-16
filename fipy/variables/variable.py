@@ -782,7 +782,7 @@ class Variable(object):
         """
         
         if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=self.getNumericValue(), default=default)
+            self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)
         
         return self.typecode
     

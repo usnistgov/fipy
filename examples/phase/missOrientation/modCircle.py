@@ -112,7 +112,7 @@ x, y = mesh.cellCenters
 theta.setValue(-2. * pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
-thetaMag = theta.getOld().getGrad().getMag()
+thetaMag = theta.old.grad.mag
 implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 

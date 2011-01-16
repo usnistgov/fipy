@@ -211,7 +211,7 @@ class UniformGrid1D(Grid1D):
            [1]
            >>> m0 = Grid1D(nx=2, dx=1.)
            >>> m1 = Grid1D(nx=4, dx=.5)
-           >>> print m0._getNearestCellID(m1.cellCenters.getGlobalValue())
+           >>> print m0._getNearestCellID(m1.cellCenters.globalValue)
            [0 0 1 1]
            
         """
@@ -220,7 +220,7 @@ class UniformGrid1D(Grid1D):
         if nx == 0:
             return numerix.arange(0)
             
-        x0, = self.cellCenters.getGlobalValue()[...,0]        
+        x0, = self.cellCenters.globalValue[...,0]        
         xi, = points
         dx = self.dx
         

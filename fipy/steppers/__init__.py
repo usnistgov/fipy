@@ -74,8 +74,8 @@ def error(var, matrix, RHSvector, norm):
       by :func:`~fipy.steppers.norm`.
     """
     from fipy.tools.numerix import L1norm
-    denom = L1norm(var.getOld())
-    return L1norm(var - var.getOld()) / (denom + (denom == 0))
+    denom = L1norm(var.old)
+    return L1norm(var - var.old) / (denom + (denom == 0))
 
     
 def L1error(var, matrix, RHSvector):

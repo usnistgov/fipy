@@ -73,9 +73,9 @@ We examine a fixed distribution of electrons with :math:`z_{\text{e}^{-}} = -1`.
 ...         self.equation = equation
 ...
 ...     def copy(self):
-...         return self.__class__(mesh = self.getMesh(), 
-...                               value = self.getValue(), 
-...                               name = self.getName(), 
+...         return self.__class__(mesh = self.mesh, 
+...                               value = self.value, 
+...                               name = self.name, 
 ...                               standardPotential = 
 ...                                   self.standardPotential, 
 ...                               barrier = self.barrier, 

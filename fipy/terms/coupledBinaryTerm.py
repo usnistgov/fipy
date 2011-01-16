@@ -71,7 +71,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
         >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
-        >>> print var.getGlobalValue()
+        >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.getGlobalValue()
         [ 0.  0.  0.  1.  1.  1.]
@@ -93,9 +93,9 @@ class _CoupledBinaryTerm(_BinaryTerm):
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
         >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
-        >>> print var.getGlobalValue()
+        >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print RHSvector.getGlobalValue()
+        >>> print RHSvector.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().getNumpyArray(),
         ...                        [[ 2, -1,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0],
@@ -116,7 +116,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
         
         """
 
-        numberOfCells = var.getMesh().getNumberOfCells()
+        numberOfCells = var.mesh.getNumberOfCells()
         numberOfVariables = len(self._getVars())
         
         matrix = 0
@@ -149,13 +149,13 @@ class _CoupledBinaryTerm(_BinaryTerm):
                                                                     OffsetSparseMatrix,
                                                                     boundaryConditions=(),
                                                                     dt=dt,
-                                                                    transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.getMesh()),
-                                                                    diffusionGeomCoeff=term._getDiffusionGeomCoeff(tmpVar.getMesh()))
+                                                                    transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.mesh),
+                                                                    diffusionGeomCoeff=term._getDiffusionGeomCoeff(tmpVar.mesh))
 
                 RHSvector += tmpRHSvector
                 matrix += tmpMatrix
 
-            RHSvectorsJ += [CellVariable(value=RHSvector, mesh=var.getMesh())]
+            RHSvectorsJ += [CellVariable(value=RHSvector, mesh=var.mesh)]
 
         RHSvector = _CoupledCellVariable(RHSvectorsJ)
 

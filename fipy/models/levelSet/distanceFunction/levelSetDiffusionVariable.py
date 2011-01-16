@@ -105,7 +105,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
 	)
  
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)
 
 def _test(): 
     import doctest

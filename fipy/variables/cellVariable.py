@@ -207,8 +207,8 @@ class CellVariable(_MeshVariable):
                 return self.globalValue[..., nearestCellIDs]
 
             elif order == 1:
-                ##cellID = self.getMesh()._getNearestCellID(points)
-##                return self[...,self.getMesh()._getNearestCellID(points)] + numerix.dot(points - self.getMesh().cellCenters[...,cellID], self.getGrad()[...,cellID])
+                ##cellID = self.mesh._getNearestCellID(points)
+##                return self[...,self.mesh._getNearestCellID(points)] + numerix.dot(points - self.mesh.cellCenters[...,cellID], self.grad[...,cellID])
                 return (self.globalValue[..., nearestCellIDs] 
                         + numerix.dot(points - self.mesh.cellCenters.globalValue[...,nearestCellIDs], 
                                       self.grad.globalValue[...,nearestCellIDs]))

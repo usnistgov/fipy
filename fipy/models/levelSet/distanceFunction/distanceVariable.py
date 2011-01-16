@@ -631,17 +631,17 @@ class DistanceVariable(CellVariable):
            True
         """
 
-        faceGrad = self.getGrad().getArithmeticFaceValue()
-        faceGradMag = numerix.array(faceGrad.getMag())
+        faceGrad = self.grad.arithmeticFaceValue
+        faceGradMag = numerix.array(faceGrad.mag)
         faceGradMag = numerix.where(faceGradMag > 1e-10,
                                     faceGradMag,
                                     1e-10)
         faceGrad = numerix.array(faceGrad)
 
         ## set faceGrad zero on exteriorFaces
-        exteriorFaces = self.exteriorFaces.getValue()
-        if len(self.exteriorFaces.getValue()) > 0:
-            faceGrad[..., self.exteriorFaces.getValue()] = 0.
+        exteriorFaces = self.exteriorFaces.value
+        if len(self.exteriorFaces.value) > 0:
+            faceGrad[..., self.exteriorFaces.value] = 0.
         
         return faceGrad / faceGradMag 
 

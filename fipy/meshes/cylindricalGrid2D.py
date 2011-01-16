@@ -167,12 +167,12 @@ class CylindricalGrid2D(Grid2D):
             >>> type(mesh.cellCenters)
             <class 'fipy.variables.cellVariable.CellVariable'>
                                                
-           >>> testCellVolumes = mesh.cellCenters[0].getGlobalValue() * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
+           >>> testCellVolumes = mesh.cellCenters[0].globalValue * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
             
             >>> type(mesh.cellVolumes)
             <class 'fipy.variables.binaryOperatorVariable.binOp'>
              
-            >>> print numerix.allclose(testCellVolumes, mesh.cellVolumes.getGlobalValue(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(testCellVolumes, mesh.cellVolumes.globalValue, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2.),

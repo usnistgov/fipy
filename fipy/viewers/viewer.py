@@ -65,7 +65,7 @@ class _Viewer(object):
 
         if title is None:
             if len(self.vars) == 1:
-                title = self.vars[0].getName()
+                title = self.vars[0].name
             else:
                 title = ''
 
@@ -259,14 +259,14 @@ class _Viewer(object):
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = %(viewer)s(vars=sin(k * xyVar).getGrad(), 
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar).grad, 
             ...                 title="%(viewer)s test")
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
 
-            >>> viewer = %(viewer)s(vars=sin(k * xyVar).getFaceGrad(), 
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar).faceGrad, 
             ...                 title="%(viewer)s test")
             >>> for kval in range(10):
             ...     k.setValue(kval)

@@ -56,8 +56,8 @@ One component in this ternary system will be designated the "solvent"
     ...         self.equation = equation
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
-    ...                               name = self.getName(), 
+    ...         return self.__class__(mesh = self.mesh, value = self.value, 
+    ...                               name = self.name, 
     ...                               standardPotential = self.standardPotential, 
     ...                               barrier = self.barrier, 
     ...                               diffusivity = self.diffusivity,
@@ -115,12 +115,12 @@ We create one diffusion equation for each substitutional component
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.getHarmonicFaceValue()
     ...        
-    ...     counterDiffusion = CkSum.getFaceGrad()
+    ...     counterDiffusion = CkSum.faceGrad
     ...     phaseTransformation = \
     ...         (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential \
     ...         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) \
-    ...             * phase.getFaceGrad()
-    ...     electromigration = Cj.valence * potential.getFaceGrad()
+    ...             * phase.faceGrad
+    ...     electromigration = Cj.valence * potential.faceGrad
     ...     convectionCoeff = counterDiffusion \
     ...         + solvent.getHarmonicFaceValue() \
     ...             * (phaseTransformation + electromigration)

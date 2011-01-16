@@ -42,7 +42,7 @@ from fipy.variables.cellVariable import CellVariable
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, rateConstant = None, distanceVar = None):
-        CellVariable.__init__(self, mesh = distanceVar.getMesh())
+        CellVariable.__init__(self, mesh = distanceVar.mesh)
         self.distanceVar = self._requires(distanceVar)
         self.rateConstant = rateConstant
 

@@ -110,12 +110,12 @@ The following items **must** be changed in your scripts
       Because vector fields are properly supported, use vector operations to
       manipulate them, such as
       
-      >>> phase.getFaceGrad().dot((( 0, 1),
+      >>> phase.faceGrad.dot((( 0, 1),
       ...                          (-1, 0)))
 
       instead of the hackish
       
-      >>> phase.getFaceGrad()._take((1, 0), axis=1) * (-1, 1)
+      >>> phase.faceGrad._take((1, 0), axis=1) * (-1, 1)
 
  * For internal reasons, :term:`FiPy` now supports 
    :class:`~fipy.variables.cellVariable.CellVariable` and 
@@ -155,8 +155,8 @@ The following items **must** be changed in your scripts
    >>> FixedValue(faces=(mesh.exteriorFaces 
    ...                   & (((X**2 < 1e-6) 
    ...                       & (Y > 3.)) 
-   ...                      | (phi.getArithmeticFaceValue() 
-   ...                         < sin(gamma.getArithmeticFaceValue())))), value=...)
+   ...                      | (phi.arithmeticFaceValue 
+   ...                         < sin(gamma.arithmeticFaceValue)))), value=...)
 
    although it probably could have been done with a rather convoluted (and
    slow!) ``filter`` function passed to ``where``. There no longer are any ``filter``

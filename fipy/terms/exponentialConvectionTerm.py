@@ -75,7 +75,7 @@ class ExponentialConvectionTerm(ConvectionTerm):
             """
             eps = 1e-3
             largeValue = 101.0
-            P  = self.P.getNumericValue()
+            P  = self.P.numericValue
 
             P = numerix.where(abs(P) < eps, eps, P)
             alpha = numerix.where(P > largeValue, (P - 1) / P, 0.5)

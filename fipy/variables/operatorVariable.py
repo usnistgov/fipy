@@ -287,7 +287,7 @@ def _testBinOp(self):
         >>> ##        self.var[counter].value=None
 
     This is the test that fails if the last line above is removed
-    from `_getRepresentation()`, the `binOp.getValue()` statement
+    from `_getRepresentation()`, the `binOp.value` statement
     below will return `1.0` and not `0.5`.
         
         >>> from fipy import numerix

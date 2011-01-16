@@ -279,14 +279,14 @@ interstitial diffusion equations, we arrange in canonical form as before:
 
 >>> for Cj in interstitials:
 ...     phaseTransformation = (rho.getHarmonicFaceValue() / (R * T)) \
-...       * (Cj.standardPotential * p(phase).getFaceGrad() 
-...          + 0.5 * Cj.barrier * g(phase).getFaceGrad())
+...       * (Cj.standardPotential * p(phase).faceGrad 
+...          + 0.5 * Cj.barrier * g(phase).faceGrad)
 ...                            
 ...     CkSum = CellVariable(mesh=mesh, value=0.)
 ...     for Ck in [Ck for Ck in interstitials if Ck is not Cj]:
 ...         CkSum += Ck
 ...         
-...     counterDiffusion = CkSum.getFaceGrad()
+...     counterDiffusion = CkSum.faceGrad
 ...     
 ...     convectionCoeff = counterDiffusion + phaseTransformation
 ...     convectionCoeff *= (Cj.diffusivity
@@ -330,14 +330,14 @@ The canonical form of the substitutional diffusion equations is
 
 >>> for Cj in substitutionals:
 ...     phaseTransformation = (solvent.getHarmonicFaceValue() / (R * T)) \
-...       * ((Cj.standardPotential - solvent.standardPotential) * p(phase).getFaceGrad() 
-...          + 0.5 * (Cj.barrier - solvent.barrier) * g(phase).getFaceGrad())
+...       * ((Cj.standardPotential - solvent.standardPotential) * p(phase).faceGrad 
+...          + 0.5 * (Cj.barrier - solvent.barrier) * g(phase).faceGrad)
 ...                            
 ...     CkSum = CellVariable(mesh=mesh, value=0.)
 ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...         CkSum += Ck
 ...         
-...     counterDiffusion = CkSum.getFaceGrad()
+...     counterDiffusion = CkSum.faceGrad
 ...     
 ...     convectionCoeff = counterDiffusion + phaseTransformation
 ...     convectionCoeff *= (Cj.diffusivity

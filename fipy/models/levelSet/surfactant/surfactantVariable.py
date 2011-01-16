@@ -97,7 +97,7 @@ class SurfactantVariable(CellVariable):
         """
 
 
-        CellVariable.__init__(self, mesh = distanceVar.getMesh(), name = name, hasOld=False)
+        CellVariable.__init__(self, mesh = distanceVar.mesh, name = name, hasOld=False)
 
         self.distanceVar = self._requires(distanceVar)
         self._value = distanceVar.getCellInterfaceAreas() * value / self.mesh.cellVolumes
@@ -133,12 +133,12 @@ class SurfactantVariable(CellVariable):
         return self.__class__(
             distanceVar=self.distanceVar,
             name=self.name + "_old", 
-            value=self.getValue().copy(),
+            value=self.value.copy(),
             hasOld=False)
     
 class _InterfaceSurfactantVariable(CellVariable):
     def __init__(self, surfactantVar):
-        CellVariable.__init__(self, name = surfactantVar.name + "_interface", mesh = surfactantVar.getMesh())
+        CellVariable.__init__(self, name = surfactantVar.name + "_interface", mesh = surfactantVar.mesh)
         self.surfactantVar = self._requires(surfactantVar)
 
     def _calcValue(self):

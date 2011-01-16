@@ -86,7 +86,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
             self.lines = [self.axes.plot(*datum) for datum in self._getData()]
 
         if legend is not None:
-            self.axes.legend([var.getName() for var in self.vars], loc=legend)
+            self.axes.legend([var.name for var in self.vars], loc=legend)
 
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
@@ -118,12 +118,12 @@ class Matplotlib1DViewer(_MatplotlibViewer):
 
     def _getData(self):
         from fipy.tools.numerix import array
-        return [[array(var.getMesh().cellCenters[0]), array(var)] for var in self.vars]
+        return [[array(var.mesh.cellCenters[0]), array(var)] for var in self.vars]
             
     def _getSuitableVars(self, vars):
-        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().dim == 1]
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.mesh.dim == 1]
         if len(vars) > 1:
-            vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
+            vars = [var for var in vars if var.mesh is vars[0].mesh]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Can only plot 1D data"

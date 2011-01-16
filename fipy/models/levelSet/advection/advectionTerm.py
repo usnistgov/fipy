@@ -120,9 +120,9 @@ class _AdvectionTerm(Term):
 
         if var is self.var or self.var is None:
 
-            oldArray = var.getOld()
+            oldArray = var.old
 
-            mesh = var.getMesh()
+            mesh = var.mesh
             NCells = mesh.numberOfCells
             NCellFaces = mesh._maxFacesPerCell
 
@@ -148,9 +148,9 @@ class _AdvectionTerm(Term):
             else:
                 coeffXdiffereneces = 0.
 
-            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.cellVolumes)
+            return (var, SparseMatrix(mesh=var.mesh), -coeffXdiffereneces * mesh.cellVolumes)
         else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+            return (var, SparseMatrix(mesh=var.mesh), 0)
         
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._cellToCellDistances

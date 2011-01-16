@@ -29,10 +29,10 @@ def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
         
     kwlimits.update(limits)
 
-    mesh = vars[0].getMesh()
+    mesh = vars[0].mesh
     
     for var in vars:
-        assert mesh is var.getMesh()
+        assert mesh is var.mesh
 
     dim = mesh.dim
     

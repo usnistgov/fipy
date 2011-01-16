@@ -60,7 +60,7 @@ class _VTKViewer(_Viewer):
         kwlimits.update(limits)
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
 
-        mesh = self.vars[0].getMesh()
+        mesh = self.vars[0].mesh
         
         self.dataset = self._makeDataSet(mesh)
         
@@ -91,8 +91,8 @@ class _VTKViewer(_Viewer):
     @staticmethod
     def _nameRankValue(var):
         name = var.name or "%s #%d" % (var.__class__.__name__, id(var))
-        rank = var.getRank()
-        value = var.getMesh()._toVTK3D(var.getValue(), rank=rank)
+        rank = var.rank
+        value = var.mesh._toVTK3D(var.value, rank=rank)
 
         return (name, rank, value)
         
@@ -117,7 +117,7 @@ class _VTKViewer(_Viewer):
         vars = [var for var in vars if isinstance(var, cls)]
         if len(vars) == 0:
             raise TypeError("%s can only display %s" % (self.__class__.__name__, cls.__name__))
-        vars = [var for var in vars if var.getMesh()==vars[0].getMesh()]
+        vars = [var for var in vars if var.mesh==vars[0].mesh]
         return vars
 
 
@@ -132,14 +132,14 @@ if __name__ == "__main__":
     v1 = CellVariable(mesh=m, value=x*y*z, name="x*y*z")
     v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
     
-    v3 = v1.getGrad()
-    v3.name = "v1.getGrad()"
-    v4 = v1.getFaceGrad()
-    v4.name = "v1.getFaceGrad()"
+    v3 = v1.grad
+    v3.name = "v1.grad"
+    v4 = v1.faceGrad
+    v4.name = "v1.faceGrad"
     v5 = v1.getHarmonicFaceValue()
     v5.name = "v1.getHarmonicFaceValue()"
-    v6 = v1.getArithmeticFaceValue()
-    v6.name = "v1.getArithmeticFaceValue()"
+    v6 = v1.arithmeticFaceValue
+    v6.name = "v1.arithmeticFaceValue"
 
 #     vw = VTKViewer(vars=(v1, v2))
 #     vw = VTKViewer(vars=(v1, v2, v3)) #, v4, v5, v6))

@@ -155,7 +155,7 @@ class FaceTerm(Term):
         """
         if var is self.var or self.var is None:
 
-            mesh = var.getMesh()
+            mesh = var.mesh
             id1, id2 = mesh._adjacentCellIDs
             interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
 
@@ -172,10 +172,10 @@ class FaceTerm(Term):
                 self._implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
 
             if weight.has_key('explicit'):
-                self._explicitBuildMatrix(SparseMatrix, var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
+                self._explicitBuildMatrix(SparseMatrix, var.old, id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
 
             return (var, L, b)
 
         else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+            return (var, SparseMatrix(mesh=var.mesh), 0)
         

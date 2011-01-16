@@ -160,7 +160,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     don't have any neighbors for higher order evaluation
 
     >>> print numerix.allclose(CellVariable(mesh=mesh,
-    ... value=b).getGlobalValue()[1:-1], -2 * mesh.cellCenters.getGlobalValue()[0][1:-1])
+    ... value=b).globalValue[1:-1], -2 * mesh.cellCenters.globalValue[0][1:-1])
     False
 
     The higher order term is spot on.
@@ -206,15 +206,15 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
         
         dAP = mesh._cellToCellDistances
         
-##        adjacentGradient = numerix.take(oldArray.getGrad(), cellToCellIDs)
-        adjacentGradient = numerix.take(oldArray.getGrad(), mesh._cellToCellIDs, axis=-1)
+##        adjacentGradient = numerix.take(oldArray.grad, cellToCellIDs)
+        adjacentGradient = numerix.take(oldArray.grad, mesh._cellToCellIDs, axis=-1)
         adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._cellNormals)
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
 
         cellIDs = numerix.repeat(numerix.arange(mesh.numberOfCells)[numerix.newaxis, ...],
                 mesh._maxFacesPerCell, axis=0)
         cellIDs = MA.masked_array(cellIDs, mask = MA.getmask(mesh._cellToCellIDs))
-        cellGradient = numerix.take(oldArray.getGrad(), cellIDs, axis=-1)
+        cellGradient = numerix.take(oldArray.grad, cellIDs, axis=-1)
         cellNormalGradient = numerix.dot(cellGradient, mesh._cellNormals)
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         

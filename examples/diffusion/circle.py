@@ -133,7 +133,7 @@ another application, we could export tab-separated-values with
 
 ::
     
-   TSVViewer(vars=(phi, phi.getGrad())).plot(filename="myTSV.tsv")
+   TSVViewer(vars=(phi, phi.grad)).plot(filename="myTSV.tsv")
 
 .. literalinclude:: myTSV.tsv
    
