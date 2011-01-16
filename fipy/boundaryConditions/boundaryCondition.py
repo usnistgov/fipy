@@ -76,11 +76,11 @@ class BoundaryCondition:
             value = PhysicalField(value)
         self.value = value
         
-        if not (self.faces | self.faces.getMesh().exteriorFaces 
-                == self.faces.getMesh().exteriorFaces).getValue().all():
+        if not (self.faces | self.faces.mesh.exteriorFaces 
+                == self.faces.mesh.exteriorFaces).value.all():
             raise IndexError, 'Face list has interior faces'
         
-        self.adjacentCellIDs = self.faces.getMesh()._adjacentCellIDs[0][self.faces.getValue()]
+        self.adjacentCellIDs = self.faces.mesh._adjacentCellIDs[0][self.faces.value]
         self.boundaryConditionApplied = False
         
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):

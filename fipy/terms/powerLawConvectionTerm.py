@@ -118,7 +118,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    )
 
             return self._makeValue(value = alpha)
-##         return self._makeValue(value = alpha, unit = self.getUnit())
+##         return self._makeValue(value = alpha, unit = self.unit)
 
 
 	def _calcValue(self):	    

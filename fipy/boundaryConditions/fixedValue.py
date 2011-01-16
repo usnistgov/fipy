@@ -74,9 +74,9 @@ class FixedValue(BoundaryCondition):
           - `coeff`:        contribution to adjacent cell diagonal and 
             :math:`\mathsf{b}`-vector by this exterior face
         """
-        faces = self.faces.getValue()
+        faces = self.faces.value
         
-        LL = SparseMatrix(mesh=self.faces.getMesh(), sizeHint=len(self.faces), bandwidth=1)
+        LL = SparseMatrix(mesh=self.faces.mesh, sizeHint=len(self.faces), bandwidth=1)
         LL.addAt(coeff['cell 1 diag'][faces], self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because
@@ -91,7 +91,7 @@ class FixedValue(BoundaryCondition):
 
         value = self._getValue()
         if isinstance(value, Variable):
-            value = value.getValue()
+            value = value.value
         if value.shape == faces.shape:
             value = value[faces]
             

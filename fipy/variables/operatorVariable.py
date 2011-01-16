@@ -207,8 +207,6 @@ def _OperatorVariableClass(baseClass=object):
             return self.name
 
         def _getName(self):
-            import sys
-            print >> sys.stderr, baseClass
             name = baseClass._getName(self)
             if len(name) == 0:
                 name = self._getRepresentation(style="name")

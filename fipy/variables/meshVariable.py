@@ -84,7 +84,7 @@ class _MeshVariable(Variable):
                 if elementshape is not None and elementshape != value.shape[:-1]:
                     raise ValueError, "'elementshape' != shape of elements of 'value'"
 
-                if rank is not None and rank != value.getRank():
+                if rank is not None and rank != value.rank:
                     raise ValueError, "'rank' != rank of 'value'"
 
                 elementshape = value.shape[:-1]
@@ -136,13 +136,13 @@ class _MeshVariable(Variable):
         if value is not None:
             if not isinstance(value, Variable):
                 value = _Constant(value)
-            valueShape = value.getShape()
+            valueShape = value.shape
             if valueShape is not () and valueShape[-1] == self._globalNumberOfElements:
                 if valueShape[-1] != 0:
                     # workaround for NumPy:ticket:1171
                     value = value[..., self._globalOverlappingIDs]
                     
-            value = value.getValue()
+            value = value.value
         return value
         
     @getsetDeprecated
@@ -164,7 +164,7 @@ class _MeshVariable(Variable):
         return self.globalValue
 
     def _getGlobalValue(self, localIDs, globalIDs):
-        localValue = self.getValue()
+        localValue = self.value
         if self.mesh.communicator.Nproc > 1:
             if localValue.shape[-1] != 0:
                 localValue = localValue[..., localIDs]
@@ -571,7 +571,7 @@ def _testDot(self):
         ...                                  [6, 7]]])[..., newaxis])
 
         >>> def P(a):
-        ...     a = a.getGlobalValue()
+        ...     a = a.globalValue
         ...     print a[...,0], a.shape
         
         >>> P(v1.dot(v2))

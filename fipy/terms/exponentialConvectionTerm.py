@@ -56,7 +56,7 @@ class ExponentialConvectionTerm(ConvectionTerm):
     """
     class _Alpha(FaceVariable):
         def __init__(self, P):
-            FaceVariable.__init__(self, P.getMesh())
+            FaceVariable.__init__(self, P.mesh)
             self.P = self._requires(P)
             
         def _calcValue(self):

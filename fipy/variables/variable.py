@@ -336,7 +336,7 @@ class Variable(object):
 ##             IndexError: 0-d arrays can't be indexed
 ## 
 ##         """
-##         return (self.getValue())[index]
+##         return (self.value)[index]
                             
     @getsetDeprecated
     def getName(self):
@@ -654,7 +654,7 @@ class Variable(object):
 ##                 if value.typecode() == 'O':
 ##                     value = numerix.array(float(value))
 
-        if isinstance(value, PF) and value.getUnit().isDimensionless():
+        if isinstance(value, PF) and value.unit.isDimensionless():
             value = value.getNumericValue()
             
         return value

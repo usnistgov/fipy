@@ -85,7 +85,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> answer[1,3] = -1
            >>> answer[0,7] = -.5
            >>> answer[0,10] = -1
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).globalValue, answer)
            True
 
         Larger grid:
@@ -99,7 +99,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> answer[1,7] = -.25
            >>> answer[0,17] = .25
            >>> answer[0,18] = -.25
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).globalValue, answer)
            True
            
         """

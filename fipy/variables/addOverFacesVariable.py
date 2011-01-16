@@ -88,7 +88,7 @@ class _AddOverFacesVariable(CellVariable):
             cellVolume = numerix.array(self.mesh.cellVolumes))
             
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)
 
     def _calcValue(self):
 

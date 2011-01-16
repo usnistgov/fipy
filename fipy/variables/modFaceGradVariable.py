@@ -106,4 +106,4 @@ class _ModFaceGradVariable(_FaceGradVariable):
             shape=numerix.array(numerix.shape(val)))
             
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)
