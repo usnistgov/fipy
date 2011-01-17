@@ -158,9 +158,9 @@ class ConvectionTerm(FaceTerm):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        if var is self.var or self.var is None:
+        var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-            var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+        if var is self.var or self.var is None:
 
             if not hasattr(self,  'constraintB'):
 
@@ -196,9 +196,7 @@ class ConvectionTerm(FaceTerm):
             L.addAtDiagonal(self.constraintL)
             b += self.constraintB
 
-            return (var, L, b)
-        else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+        return (var, L, b)
 
 class __ConvectionTerm(ConvectionTerm): 
     """
