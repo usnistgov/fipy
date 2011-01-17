@@ -37,10 +37,10 @@ __docformat__ = 'restructuredtext'
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
-from advectionTerm import _AdvectionTerm
+from baseAdvectionTerm import _BaseAdvectionTerm
 from fipy.tools import numerix
 
-class _HigherOrderAdvectionTerm(_AdvectionTerm):
+class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
     r"""
 
     The `_HigherOrderAdvectionTerm` object constructs the `b` vector contribution for
@@ -57,7 +57,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
        \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding as in the standard
-    `_AdvectionTerm`. The higher order terms are incorperated as follows.
+    `_BaseAdvectionTerm`. The higher order terms are incorperated as follows.
     The formula used here is given by:
 
     .. math::
@@ -136,7 +136,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     True
 
     For the above test cases the `_HigherOrderAdvectionTerm` gives the
-    same result as the `_AdvectionTerm`. The following test imposes a quadratic
+    same result as the `_BaseAdvectionTerm`. The following test imposes a quadratic
     field. The higher order term can resolve this field correctly.
 
     .. math::
@@ -154,7 +154,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> mesh = Grid1D(dx = 1., nx = 5)
     >>> vel = 1.
     >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[0]**2)
-    >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = __BaseAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
         
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
@@ -182,7 +182,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> x, y = mesh.getCellCenters()
     >>> r = numerix.sqrt(x**2 + y**2)
     >>> coeff = CellVariable(mesh = mesh, value = r)
-    >>> v, L, b = _AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = __BaseAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> error = CellVariable(mesh=mesh, value=b + 1)
     >>> ans = CellVariable(mesh=mesh, value=b + 1)
     >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.123105625618
@@ -228,7 +228,13 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
                                          adjacentLaplacian,
                                          cellLaplacian))
         
-        return _AdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
+        return _BaseAdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
+
+class __BaseAdvectionTerm(_BaseAdvectionTerm):
+    """
+    Dummy subclass for tests
+    """
+    pass
 
 def _test(): 
     import doctest

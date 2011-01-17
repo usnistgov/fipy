@@ -39,6 +39,7 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import numerix
+from fipy.solvers import DefaultAsymmetricSolver
 
 class PowerLawConvectionTerm(ConvectionTerm):
     r"""
@@ -52,7 +53,14 @@ class PowerLawConvectionTerm(ConvectionTerm):
     where :math:`\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A` and
     :math:`\alpha_f` is calculated using the power law scheme.
     For further details see :ref:`sec:NumericalSchemes`.
-    """    
+    """
+
+    def _getDefaultSolver(self, solver, *args, **kwargs):        
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
+    
     class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.getMesh())

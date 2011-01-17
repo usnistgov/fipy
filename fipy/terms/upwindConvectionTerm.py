@@ -35,13 +35,11 @@
 __docformat__ = 'restructuredtext'
 
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.baseUpwindConvectionTerm import _BaseUpwindConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
-from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools import inline
-from fipy.tools import numerix
+from fipy.solvers import DefaultAsymmetricSolver
 
-class UpwindConvectionTerm(ConvectionTerm):
+class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
@@ -54,37 +52,13 @@ class UpwindConvectionTerm(ConvectionTerm):
     :math:`\alpha_f` is calculated using the upwind convection scheme.
     For further details see :ref:`sec:NumericalSchemes`.
     """
-    class _Alpha(FaceVariable):
-        def __init__(self, P):
-            FaceVariable.__init__(self, mesh = P.getMesh())
-            self.P = self._requires(P)
-            
-        def _calcValuePy(self, P):
-            alpha = numerix.where(P > 0., 1., 0.)
-            return PhysicalField(value = alpha)
 
-        def _calcValueIn(self, P):
-            alpha = self._getArray().copy()
-            inline._runInline("""
-                alpha[i] = 0.5;
-                
-                if (P[i] > 0.) {
-                    alpha[i] = 1.;
-                } else {
-                    alpha[i] = 0.;
-                }
-            """,
-            alpha = alpha, P = P,
-            ni = self.mesh._getNumberOfFaces()
-            )
-
-            return self._makeValue(value = alpha)
-
-        def _calcValue(self):
-            P  = self.P.getNumericValue()
-
-            return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)
-
+    def _getDefaultSolver(self, solver, *args, **kwargs):        
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
+    
     def _testPecletSign(self):
         r"""
             >>> from fipy import *

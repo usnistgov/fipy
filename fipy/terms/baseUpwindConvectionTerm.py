@@ -4,11 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "hybridConvectionTerm.py"
+ #  FILE: "baseUpwindConvectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -36,44 +34,52 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
-from fipy.solvers import DefaultAsymmetricSolver
+from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools import inline
+from fipy.tools import numerix
 
-class HybridConvectionTerm(ConvectionTerm):
-    r"""
-    The discretization for this :class:`~fipy.terms.term.Term` is given by
-
-    .. math::
-    
-       \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
-       \cdot \vec{u})_f \phi_f A_f
-
-    where :math:`\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A` and
-    :math:`\alpha_f` is calculated using the hybrid scheme.
-    For further details see :ref:`sec:NumericalSchemes`.
+class _BaseUpwindConvectionTerm(ConvectionTerm):
     """
-
-    def _getDefaultSolver(self, solver, *args, **kwargs):        
-        if solver and not solver._canSolveAsymmetric():
-            import warnings
-            warnings.warn("%s cannot solve assymetric matrices" % solver)
-        return solver or DefaultAsymmetricSolver(*args, **kwargs)
+    .. attention:: This class is abstract. Always create one of its subclasses.
+    """
 
     class _Alpha(FaceVariable):
         def __init__(self, P):
-            FaceVariable.__init__(self, P.getMesh())
+            FaceVariable.__init__(self, mesh = P.getMesh())
             self.P = self._requires(P)
             
+        def _calcValuePy(self, P):
+            alpha = numerix.where(P > 0., 1., 0.)
+            return PhysicalField(value = alpha)
+
+        def _calcValueIn(self, P):
+            alpha = self._getArray().copy()
+            inline._runInline("""
+                alpha[i] = 0.5;
+                
+                if (P[i] > 0.) {
+                    alpha[i] = 1.;
+                } else {
+                    alpha[i] = 0.;
+                }
+            """,
+            alpha = alpha, P = P,
+            ni = self.mesh._getNumberOfFaces()
+            )
+
+            return self._makeValue(value = alpha)
+
         def _calcValue(self):
-            eps = 1e-3
-            P  = self.P
+            P  = self.P.getNumericValue()
 
-            alpha = numerix.where(                                 P > 2., (P - 1) / P,    0.)
-            alpha = numerix.where( numerix.logical_and(2. >= P, P >= -2.),         0.5, alpha)
-            alpha = numerix.where(                               -2. >  P,      -1 / P, alpha)
+            return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)
 
-            return alpha
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

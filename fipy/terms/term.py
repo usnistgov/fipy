@@ -370,6 +370,9 @@ class Term:
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         raise NotImplementedError
 
+    def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
+        raise NotImplementedError
+
     def _test(self):
         """
         Test stuff.

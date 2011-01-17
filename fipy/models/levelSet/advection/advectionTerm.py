@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "advectionEquation.py"
+ #  FILE: "advectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -37,9 +37,9 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
-from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
+from baseAdvectionTerm import _BaseAdvectionTerm
 
-class _AdvectionTerm(_NonDiffusionTerm):
+class _AdvectionTerm(_BaseAdvectionTerm):
     r"""
 
     The `_AdvectionTerm` object constructs the b vector contribution
@@ -112,65 +112,7 @@ class _AdvectionTerm(_NonDiffusionTerm):
     >>> print parallel.procID > 0 or numerix.allclose(b, answer, atol = 1e-10)
     True
     """
-    def __init__(self, coeff = None):
-        _NonDiffusionTerm.__init__(self)
-        self.geomCoeff = coeff
-        
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, equation=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
-
-        if var is self.var or self.var is None:
-
-            oldArray = var.getOld()
-
-            mesh = var.getMesh()
-            NCells = mesh.getNumberOfCells()
-            NCellFaces = mesh._getMaxFacesPerCell()
-
-            cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
-
-            cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
-            cellToCellIDs = mesh._getCellToCellIDs()
-
-            if NCells > 0:
-                cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
-
-                adjacentValues = numerix.take(oldArray, cellToCellIDs)
-
-                differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
-                differences = MA.filled(differences, 0)
-
-                minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
-                maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
-
-                coeff = numerix.array(self._getGeomCoeff(mesh))
-
-                coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
-            else:
-                coeffXdiffereneces = 0.
-
-            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.getCellVolumes())
-
-        else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
-        
-    def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
-        return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
-
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        if solver and not solver._canSolveAsymmetric():
-            import warnings
-            warnings.warn("%s cannot solve assymetric matrices" % solver)
-
-        import fipy.solvers.solver
-        if fipy.solvers.solver == 'trilinos' or fipy.solvers.solver == 'no-pysparse':
-            from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
-            from fipy.solvers.trilinos.linearGMRESSolver import LinearGMRESSolver
-            return solver or LinearGMRESSolver(precon=JacobiPreconditioner(), *args, **kwargs)
-        else:
-            from fipy.solvers import DefaultAsymmetricSolver
-            return solver or DefaultAsymmetricSolver(*args, **kwargs)
-
-
+    pass
 
 def _test(): 
     import doctest

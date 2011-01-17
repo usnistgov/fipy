@@ -34,10 +34,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
+from fipy.terms.upwindConvectionTerm import _BaseUpwindConvectionTerm
 from fipy.tools import numerix
 
-class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
+class ExplicitUpwindConvectionTerm(_BaseUpwindConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
@@ -55,7 +55,7 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        weight = UpwindConvectionTerm._getWeight(self, var, transientGeomCoeff, diffusionGeomCoeff)
+        weight = _BaseUpwindConvectionTerm._getWeight(self, var, transientGeomCoeff, diffusionGeomCoeff)
         if 'implicit' in weight.keys():
             weight['explicit'] = weight['implicit']
             del weight['implicit']

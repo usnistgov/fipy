@@ -45,9 +45,6 @@ class _UnaryTerm(Term):
     def _getVars(self):
         return [self.var]
                 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        return None
-        
     def _getCoupledTerms(self):
         return [self]
     

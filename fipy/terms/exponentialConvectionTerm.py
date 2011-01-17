@@ -40,6 +40,7 @@ from fipy.tools import numerix
 
 from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
+from fipy.solvers import DefaultAsymmetricSolver
 
 class ExponentialConvectionTerm(ConvectionTerm):
     r"""
@@ -54,6 +55,12 @@ class ExponentialConvectionTerm(ConvectionTerm):
     :math:`\alpha_f` is calculated using the exponential scheme.
     For further details see :ref:`sec:NumericalSchemes`.
     """
+    def _getDefaultSolver(self, solver, *args, **kwargs):        
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
+    
     class _Alpha(FaceVariable):
         def __init__(self, P):
             FaceVariable.__init__(self, P.getMesh())
