@@ -49,7 +49,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
     def _getDefaultSolver(self, solver, *args, **kwargs):        
         return None
     
-    def _getGradient(self, normalGradient, gradUpwind):
+    def __getGradient(self, normalGradient, gradUpwind):
         gradUpUpwind = -gradUpwind + 2 * normalGradient
 
         avg = 0.5 * (abs(gradUpwind) + abs(gradUpUpwind))
@@ -80,17 +80,15 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         vol1 = numerix.take(mesh.getCellVolumes(), id1)
         self.CFL = interiorCFL / vol1
         
-        oldArray1 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id1, axis=-1), interiorFaceNormals), gradUpwind) \
+        oldArray1 += 0.5 * self.__getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id1, axis=-1), interiorFaceNormals), gradUpwind) \
             * (vol1 - interiorCFL) / interiorFaceAreas
 
         vol2 = numerix.take(mesh.getCellVolumes(), id2)
         
         self.CFL = numerix.maximum(interiorCFL / vol2, self.CFL)
 
-        oldArray2 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id2, axis=-1), -interiorFaceNormals), -gradUpwind) \
+        oldArray2 += 0.5 * self.__getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id2, axis=-1), -interiorFaceNormals), -gradUpwind) \
             * (vol2 - interiorCFL) / interiorFaceAreas
         
         return oldArray1, oldArray2
 
-    def _getFigureOfMerit(self):
-        return min(0.2 / self.CFL)
