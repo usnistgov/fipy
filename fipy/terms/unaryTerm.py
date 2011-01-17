@@ -63,9 +63,6 @@ class _UnaryTerm(Term):
 
         return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
 
-    def _getTransientGeomCoeff(self, mesh):
-        return None
-
         
 class __UnaryTerm(_UnaryTerm): 
     """

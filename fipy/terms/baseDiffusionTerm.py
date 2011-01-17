@@ -363,6 +363,9 @@ class _BaseDiffusionTerm(_UnaryTerm):
     def _getDiffusionGeomCoeff(self, mesh):
         return self._getGeomCoeff(mesh)
 
+    def _getTransientGeomCoeff(self, mesh):
+        return None  
+
     def _getDefaultSolver(self, solver, *args, **kwargs):
         return None
 

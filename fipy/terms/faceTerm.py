@@ -51,6 +51,9 @@ class FaceTerm(_NonDiffusionTerm):
             
         _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffMatrix = None
+
+    def _getTransientGeomCoeff(self, mesh):
+        return None  
             
     def __getCoeffMatrix(self, mesh, weight):
         coeff = self._getGeomCoeff(mesh)
