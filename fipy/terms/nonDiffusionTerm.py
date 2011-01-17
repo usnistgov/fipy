@@ -71,9 +71,6 @@ class _NonDiffusionTerm(_UnaryTerm):
             
     __rmul__ = __mul__
 
-    def _calcGeomCoeff(self, mesh):
-        return None
-
     def _getDiffusionGeomCoeff(self, mesh):
         return None
 

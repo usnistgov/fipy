@@ -87,8 +87,6 @@ class Term:
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
                           UserWarning, stacklevel=4)
         
-        self._verifyCoeffType(var)
-
     def __buildMatrix(self, var, solver, boundaryConditions, dt):
 
         var = self._verifyVar(var)
@@ -242,9 +240,6 @@ class Term:
         L2norm = numerix.L2norm(vector)
 
         return vector, L2norm
-
-    def _verifyCoeffType(self, var):
-        pass
 
     def cacheMatrix(self):
         r"""

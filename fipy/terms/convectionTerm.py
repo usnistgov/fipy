@@ -149,7 +149,9 @@ class ConvectionTerm(FaceTerm):
 
         return self.stencil
 
-    def _verifyCoeffType(self, var):
+    def _checkVar(self, var):
+        FaceTerm._checkVar(self, var)
+        
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
             raise TypeError, "The coefficient must be a vector value."
