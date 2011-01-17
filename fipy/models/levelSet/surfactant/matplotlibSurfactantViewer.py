@@ -133,11 +133,11 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
         if animate:
             self._initialCondition = None
 
-        if distanceVar.getMesh().dim != 2:
+        if distanceVar.mesh.dim != 2:
             raise 'The MatplotlibSurfactantViewer only works for 2D meshes.'
 
     def _plot(self):
-        mesh = self.distanceVar.getMesh()
+        mesh = self.distanceVar.mesh
         shape = mesh.shape
         X, Y = mesh.cellCenters
         
@@ -145,7 +145,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
         
         X = X.reshape(shape, order="FORTRAN")
         Y = Y.reshape(shape, order="FORTRAN")
-        Z = self.distanceVar.getValue().reshape(shape, order="FORTRAN")
+        Z = self.distanceVar.value.reshape(shape, order="FORTRAN")
                                      
         zmin, zmax = self._autoscale(vars=(self.surfactantVar,),
                                      datamin=self._getLimit(('datamin', 'zmin')),

@@ -71,12 +71,12 @@ class VTKFaceViewer(_VTKViewer):
         >>> x, = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*x, name="x*x")
         >>> v2 = CellVariable(mesh=m, value=x)
-        >>> v3 = v1.getFaceGrad()
-        >>> v3.name = "v1.getFaceGrad()"
+        >>> v3 = v1.faceGrad
+        >>> v3.name = "v1.faceGrad"
         >>> v4 = v1.getHarmonicFaceValue()
         >>> v4.name = "v1.getHarmonicFaceValue()"
-        >>> v5 = v1.getArithmeticFaceValue()
-        >>> v5.name = "v1.getArithmeticFaceValue()"
+        >>> v5 = v1.arithmeticFaceValue
+        >>> v5.name = "v1.arithmeticFaceValue"
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
         >>> VTKFileReader().initialize(fname)
 
@@ -84,12 +84,12 @@ class VTKFaceViewer(_VTKViewer):
         >>> x, y = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y, name="x*y")
         >>> v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
-        >>> v3 = v1.getFaceGrad()
-        >>> v3.name = "v1.getFaceGrad()"
+        >>> v3 = v1.faceGrad
+        >>> v3.name = "v1.faceGrad"
         >>> v4 = v1.getHarmonicFaceValue()
         >>> v4.name = "v1.getHarmonicFaceValue()"
-        >>> v5 = v1.getArithmeticFaceValue()
-        >>> v5.name = "v1.getArithmeticFaceValue()"
+        >>> v5 = v1.arithmeticFaceValue
+        >>> v5.name = "v1.arithmeticFaceValue"
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
         >>> VTKFileReader().initialize(fname)
 
@@ -99,12 +99,12 @@ class VTKFaceViewer(_VTKViewer):
         >>> x, y = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y, name="x*y")
         >>> v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
-        >>> v3 = v1.getFaceGrad()
-        >>> v3.name = "v1.getFaceGrad()"
+        >>> v3 = v1.faceGrad
+        >>> v3.name = "v1.faceGrad"
         >>> v4 = v1.getHarmonicFaceValue()
         >>> v4.name = "v1.getHarmonicFaceValue()"
-        >>> v5 = v1.getArithmeticFaceValue()
-        >>> v5.name = "v1.getArithmeticFaceValue()"
+        >>> v5 = v1.arithmeticFaceValue
+        >>> v5.name = "v1.arithmeticFaceValue"
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
         >>> VTKFileReader().initialize(fname)
 
@@ -112,12 +112,12 @@ class VTKFaceViewer(_VTKViewer):
         >>> x, y, z = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y*z, name="x*y*z")
         >>> v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
-        >>> v3 = v1.getFaceGrad()
-        >>> v3.name = "v1.getFaceGrad()"
+        >>> v3 = v1.faceGrad
+        >>> v3.name = "v1.faceGrad"
         >>> v4 = v1.getHarmonicFaceValue()
         >>> v4.name = "v1.getHarmonicFaceValue()"
-        >>> v5 = v1.getArithmeticFaceValue()
-        >>> v5.name = "v1.getArithmeticFaceValue()"
+        >>> v5 = v1.arithmeticFaceValue
+        >>> v5.name = "v1.arithmeticFaceValue"
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
         >>> VTKFileReader().initialize(fname)
 

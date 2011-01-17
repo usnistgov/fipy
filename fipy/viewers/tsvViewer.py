@@ -90,10 +90,10 @@ class TSVViewer(_Viewer):
         kwlimits.update(limits)
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         
-        mesh = self.vars[0].getMesh()
+        mesh = self.vars[0].mesh
         
         for var in self.vars:
-            assert mesh is var.getMesh()
+            assert mesh is var.mesh
 
 
     def _plot(self, values, f, dim):
@@ -135,7 +135,7 @@ class TSVViewer(_Viewer):
         >>> m = Grid1D(nx = 3, dx = 0.4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> v = CellVariable(mesh = m, name = "var", value = (0, 2, 5))
-        >>> TSVViewer(vars = (v, v.getGrad())).plot() #doctest: +NORMALIZE_WHITESPACE
+        >>> TSVViewer(vars = (v, v.grad)).plot() #doctest: +NORMALIZE_WHITESPACE
         x       var     var_gauss_grad_x
         0.2     0       2.5
         0.6     2       6.25
@@ -144,7 +144,7 @@ class TSVViewer(_Viewer):
         >>> from fipy.meshes import Grid2D
         >>> m = Grid2D(nx = 2, dx = .1, ny = 2, dy = 0.3)
         >>> v = CellVariable(mesh = m, name = "var", value = (0, 2, -2, 5))
-        >>> TSVViewer(vars = (v, v.getGrad())).plot() #doctest: +NORMALIZE_WHITESPACE
+        >>> TSVViewer(vars = (v, v.grad)).plot() #doctest: +NORMALIZE_WHITESPACE
         x       y       var     var_gauss_grad_x        var_gauss_grad_y
         0.05    0.15    0       10      -3.33333333333333
         0.15    0.15    2       10      5
@@ -156,7 +156,7 @@ class TSVViewer(_Viewer):
             If not `None`, the name of a file to save the image into.
         """
 
-        mesh = self.vars[0].getMesh()
+        mesh = self.vars[0].mesh
         dim = mesh.dim
         
         if filename is not None:
@@ -181,8 +181,8 @@ class TSVViewer(_Viewer):
             headings.extend(self._axis[index])
             
         for var in self.vars:
-            name = var.getName()
-            if (isinstance(var, CellVariable) or isinstance(var, FaceVariable)) and var.getRank() == 1:
+            name = var.name
+            if (isinstance(var, CellVariable) or isinstance(var, FaceVariable)) and var.rank == 1:
                 for index in range(dim):
                     headings.extend(["%s_%s" % (name, self._axis[index])])
             else:
@@ -195,22 +195,22 @@ class TSVViewer(_Viewer):
         faceVars = [var for var in self.vars if isinstance(var, FaceVariable)]
         
         if len(cellVars) > 0:
-            values = mesh.cellCenters.getGlobalValue()
+            values = mesh.cellCenters.globalValue
             for var in self.vars:
-                if isinstance(var, CellVariable) and var.getRank() == 1:
-                    values = numerix.concatenate((values, numerix.array(var.getGlobalValue())))
+                if isinstance(var, CellVariable) and var.rank == 1:
+                    values = numerix.concatenate((values, numerix.array(var.globalValue)))
                 else:
-                    values = numerix.concatenate((values, (numerix.array(var.getGlobalValue()),)))
+                    values = numerix.concatenate((values, (numerix.array(var.globalValue),)))
                     
             self._plot(values, f, dim)
 
         if len(faceVars) > 0:
-            values = mesh.faceCenters.getGlobalValue()
+            values = mesh.faceCenters.globalValue
             for var in self.vars:
-                if isinstance(var, FaceVariable) and var.getRank() == 1:
-                    values = numerix.concatenate((values, numerix.array(var.getGlobalValue())))
+                if isinstance(var, FaceVariable) and var.rank == 1:
+                    values = numerix.concatenate((values, numerix.array(var.globalValue)))
                 else:
-                    values = numerix.concatenate((values, (numerix.array(var.getGlobalValue()),)))
+                    values = numerix.concatenate((values, (numerix.array(var.globalValue),)))
                     
             self._plot(values, f, dim)
 

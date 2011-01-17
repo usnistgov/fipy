@@ -91,7 +91,7 @@ class Gnuplot2DViewer(_GnuplotViewer):
         self.g('set view map')
         self.g('set style data pm3d')
         self.g('set pm3d at st solid')
-        mesh = self.vars[0].getMesh()
+        mesh = self.vars[0].mesh
 
         if isinstance(mesh, Grid2D.__class__):
             nx, ny = mesh.shape
@@ -104,7 +104,7 @@ class Gnuplot2DViewer(_GnuplotViewer):
         x, y = mesh.cellCenters
         import Gnuplot
         data = Gnuplot.Data(numerix.array(x), numerix.array(y),
-                            self.vars[0].getValue())
+                            self.vars[0].value)
 
         self.g.splot(data)
 

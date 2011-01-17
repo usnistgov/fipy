@@ -93,8 +93,8 @@ We create four components
     ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name, hasOld = hasOld)
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
-    ...                               name = self.getName(), 
+    ...         return self.__class__(mesh = self.mesh, value = self.value, 
+    ...                               name = self.name, 
     ...                               standardPotential = self.standardPotential, 
     ...                               barrier = self.barrier, 
     ...                               diffusivity = self.diffusivity,
@@ -176,7 +176,7 @@ We again create the phase equation as in ``examples.elphf.phase.input1D``
 
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...     == DiffusionTerm(coeff = phase.gradientEnergy) \
-    ...     - (permitivityPrime / 2.) * potential.getGrad().dot(potential.getGrad())
+    ...     - (permitivityPrime / 2.) * potential.grad.dot(potential.grad)
 
 We linearize the source term in the same way as in `example.phase.simple.input1D`.
 
@@ -203,14 +203,14 @@ and we create the diffustion equation for the solute as in
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.getHarmonicFaceValue()
     ...        
-    ...     counterDiffusion = CkSum.getFaceGrad()
+    ...     counterDiffusion = CkSum.faceGrad
     ...     # phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...     #         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
+    ...     #         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.faceGrad
     ...     phaseTransformation = (pPrime(phase).getHarmonicFaceValue() * Cj.standardPotential 
-    ...             + gPrime(phase).getHarmonicFaceValue() * Cj.barrier) * phase.getFaceGrad()
-    ...     # phaseTransformation = (p(phase).getFaceGrad() * Cj.standardPotential 
-    ...     #         + g(phase).getFaceGrad() * Cj.barrier)
-    ...     electromigration = Cj.valence * potential.getFaceGrad()
+    ...             + gPrime(phase).getHarmonicFaceValue() * Cj.barrier) * phase.faceGrad
+    ...     # phaseTransformation = (p(phase).faceGrad * Cj.standardPotential 
+    ...     #         + g(phase).faceGrad * Cj.barrier)
+    ...     electromigration = Cj.valence * potential.faceGrad
     ...     convectionCoeff = counterDiffusion + \
     ...         solvent.getHarmonicFaceValue() * (phaseTransformation + electromigration)
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
@@ -221,12 +221,12 @@ and we create the diffustion equation for the solute as in
     
     >>> for Cj in interstitials:
     ...     # phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...     #         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
+    ...     #         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.faceGrad
     ...     phaseTransformation = (pPrime(phase).getHarmonicFaceValue() * Cj.standardPotential 
-    ...             + gPrime(phase).getHarmonicFaceValue() * Cj.barrier) * phase.getFaceGrad()
-    ...     # phaseTransformation = (p(phase).getFaceGrad() * Cj.standardPotential 
-    ...     #         + g(phase).getFaceGrad() * Cj.barrier)
-    ...     electromigration = Cj.valence * potential.getFaceGrad()
+    ...             + gPrime(phase).getHarmonicFaceValue() * Cj.barrier) * phase.faceGrad
+    ...     # phaseTransformation = (p(phase).faceGrad * Cj.standardPotential 
+    ...     #         + g(phase).faceGrad * Cj.barrier)
+    ...     electromigration = Cj.valence * potential.faceGrad
     ...     convectionCoeff = Cj.diffusivity * (1 + Cj.getHarmonicFaceValue()) * \
     ...         (phaseTransformation + electromigration)
     ...

@@ -116,11 +116,11 @@ class MeshTopology(AbstractMeshTopology):
     def _calcInteriorAndExteriorCellIDs(self, numCells):
         try:
             import sets
-            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.exteriorFaces.getValue()])
+            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.exteriorFaces.value])
             interiorCellIDs = list(sets.Set(range(numCells)) - self.exteriorCellIDs)
             exteriorCellIDs = list(self.exteriorCellIDs)
         except:
-            exteriorCellIDs = self.faceCellIDs[0, self.exteriorFaces.getValue()]
+            exteriorCellIDs = self.faceCellIDs[0, self.exteriorFaces.value]
             tmp = numerix.zeros(numCells)
             numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs)))
             exteriorCellIDs = numerix.nonzero(tmp)            

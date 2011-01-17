@@ -109,8 +109,8 @@ if start is not 0:
           '''
     new = '''
           mesh_tmp, phase_tmp, dT_tmp = dump.read("%s/anisotropy-%d.dmp.gz")
-          phase.setValue(phase_tmp.getValue())
-          dT.setValue(dT_tmp.getValue())
+          phase.setValue(phase_tmp.value)
+          dT.setValue(dT_tmp.value)
           for i in range(steps):
           ''' % (dir, start)
     script = script.replace(dedent(old), dedent(new)) 

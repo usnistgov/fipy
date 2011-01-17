@@ -76,7 +76,7 @@ somewhat more accurate results by performing a linear interpolation from
 Some problems benefit from non-linear interpolations, such as harmonic or
 geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 
->>> PHI = phi.getArithmeticFaceValue()
+>>> PHI = phi.arithmeticFaceValue
 >>> D = a = epsilon = 1.
 >>> eq = (TransientTerm()
 ...       == DiffusionTerm(coeff=D * a**2 * (1 - 6 * PHI * (1 - PHI)))

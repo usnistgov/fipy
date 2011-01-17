@@ -521,7 +521,7 @@ class PhysicalField(object):
         
     def _inMyUnits(self, other):
         if _isVariable(other):
-            other = other.getValue()
+            other = other.value
             
         if not isinstance(other, PhysicalField):
             if type(other) is type(''):
@@ -668,12 +668,12 @@ class PhysicalField(object):
         return numerix.array(value, t)
         
 #         if self.unit.isDimensionlessOrAngle():
-#             value = self.getNumericValue()
+#             value = self.numericValue
 # ##            if type(value) is type(numerix.array((0))) and (t is None or t == value.typecode()):
 #             if type(value) is type(numerix.array((0))) and (t is None or t == value.dtype.char):
 #                 return value
 #             else:
-#                 return numerix.array(self.getNumericValue(), t)
+#                 return numerix.array(self.numericValue, t)
 #         else:
 #             raise TypeError, 'Numeric array value must be dimensionless'
         

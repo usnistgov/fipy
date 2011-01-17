@@ -515,9 +515,9 @@ class Mesh(object):
 
         from fipy.tools.debug import PRINT
         from fipy.tools.debug import PRINT
-        PRINT("otherExt", other.exteriorFaces.getValue())
+        PRINT("otherExt", other.exteriorFaces.value)
         raw_input()
-        PRINT("selfExt", selfc.exteriorFaces.getValue())
+        PRINT("selfExt", selfc.exteriorFaces.value)
 
         PRINT("self filled", selfc.faceVertexIDs.filled())
         PRINT("othe filled", other.faceVertexIDs.filled())
@@ -525,17 +525,17 @@ class Mesh(object):
 
         PRINT("selfc.faceVertexIDs.filled()\n",selfc.faceVertexIDs.filled())
         PRINT("flat\n",selfc.faceVertexIDs.filled()[...,
-            selfc.exteriorFaces.getValue()].flatten())
-        PRINT("selfc.exteriorFaces.getValue()\n",selfc.exteriorFaces.getValue()) 
+            selfc.exteriorFaces.value].flatten())
+        PRINT("selfc.exteriorFaces.value\n",selfc.exteriorFaces.value) 
         PRINT("extfaces type", type(selfc.exteriorFaces))
-        PRINT("extfaces mesh", selfc.exteriorFaces.getMesh())
+        PRINT("extfaces mesh", selfc.exteriorFaces.mesh)
         """
 
         ## only try to match exterior (X) vertices
         self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[...,
-            selfc.exteriorFaces.getValue()].flatten())
+            selfc.exteriorFaces.value].flatten())
         other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[...,
-            other.exteriorFaces.getValue()].flatten())
+            other.exteriorFaces.value].flatten())
 
         """
         from fipy.tools.debug import PRINT
@@ -1445,11 +1445,11 @@ class Mesh(object):
            >>> from fipy import *
            >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
            >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-           >>> print m0._getNearestCellID(m1.cellCenters.getGlobalValue())
+           >>> print m0._getNearestCellID(m1.cellCenters.globalValue)
            [4 5 7 8]
            
         """
-        return numerix.nearest(data=self.cellCenters.getGlobalValue(), points=points)
+        return numerix.nearest(data=self.cellCenters.globalValue, points=points)
         
 
     """pickling"""

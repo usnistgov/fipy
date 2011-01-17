@@ -93,9 +93,9 @@ represent the "solvent" component (1 everywhere)
 
 >>> class ComponentVariable(CellVariable):
 ...     def copy(self):
-...         new = self.__class__(mesh = self.getMesh(), 
-...                              name = self.getName(), 
-...                              value = self.getValue())
+...         new = self.__class__(mesh = self.mesh, 
+...                              name = self.name, 
+...                              value = self.value)
 ...         new.standardPotential = self.standardPotential
 ...         new.barrier = self.barrier
 ...         return new
@@ -120,7 +120,7 @@ We'll have no substitutional species and no interstitial species in this first e
 >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
 ...     == DiffusionTerm(coeff = phase.gradientEnergy) \
 ...     - (permittivityPrime / 2.) \
-...        * potential.getGrad().dot(potential.getGrad())
+...        * potential.grad.dot(potential.grad)
 
 >>> enthalpy = solvent.standardPotential
 >>> barrier = solvent.barrier

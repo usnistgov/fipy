@@ -82,19 +82,19 @@ RVar = CellVariable(mesh = mesh, value = params['R'], hasOld = 1)
 
 PN = P3Var + P2Var
 
-KMscCoeff = params['chiK'] * (RVar + 1) * (1 - KCVar - KMVar.getCellVolumeAverage())
+KMscCoeff = params['chiK'] * (RVar + 1) * (1 - KCVar - KMVar.cellVolumeAverage)
 KMspCoeff = params['lambdaK'] / (1 + PN / params['kappaK'])
 KMEq = TransientTerm() - KMscCoeff + ImplicitSourceTerm(KMspCoeff)
 
-TMscCoeff = params['chiT'] * (1 - TCVar - TMVar.getCellVolumeAverage())
+TMscCoeff = params['chiT'] * (1 - TCVar - TMVar.cellVolumeAverage)
 TMspCoeff = params['lambdaT'] * (KMVar + params['zetaT'])
 TMEq = TransientTerm() - TMscCoeff + ImplicitSourceTerm(TMspCoeff)
 
-TCscCoeff = params['lambdaT'] * (TMVar * KMVar).getCellVolumeAverage()
+TCscCoeff = params['lambdaT'] * (TMVar * KMVar).cellVolumeAverage
 TCspCoeff = params['lambdaTstar']
 TCEq = TransientTerm() - TCscCoeff + ImplicitSourceTerm(TCspCoeff) 
 
-PIP2PITP = PN / (PN / params['kappam'] + PN.getCellVolumeAverage() / params['kappac'] + 1) + params['zetaPITP']
+PIP2PITP = PN / (PN / params['kappam'] + PN.cellVolumeAverage / params['kappac'] + 1) + params['zetaPITP']
 
 P3spCoeff = params['lambda3'] * (TMVar + params['zeta3T'])
 P3scCoeff = params['chi3'] * KMVar * (PIP2PITP / (1 + KMVar / params['kappa3']) + params['zeta3PITP']) + params['zeta3']
@@ -104,7 +104,7 @@ P2scCoeff = scCoeff = params['chi2'] + params['lambda3'] * params['zeta3T'] * P3
 P2spCoeff = params['lambda2'] * (TMVar + params['zeta2T'])
 P2Eq = TransientTerm() - DiffusionTerm(params['diffusionCoeff']) - P2scCoeff + ImplicitSourceTerm(P2spCoeff)
 
-KCscCoeff = params['alphaKstar'] * params['lambdaK'] * (KMVar / (1 + PN / params['kappaK'])).getCellVolumeAverage()
+KCscCoeff = params['alphaKstar'] * params['lambdaK'] * (KMVar / (1 + PN / params['kappaK'])).cellVolumeAverage
 KCspCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar)
 KCEq = TransientTerm() - KCscCoeff + ImplicitSourceTerm(KCspCoeff) 
 
@@ -112,9 +112,9 @@ eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq)
 
 if __name__ == '__main__':
 
-    v1 = KMVar / KMVar.getCellVolumeAverage()
-    v2 = PN / PN.getCellVolumeAverage()
-    v3 = TMVar / TMVar.getCellVolumeAverage()
+    v1 = KMVar / KMVar.cellVolumeAverage
+    v2 = PN / PN.cellVolumeAverage
+    v3 = TMVar / TMVar.cellVolumeAverage
     v1.setName('KM')
     v2.setName('PN')
     v3.setName('TM')

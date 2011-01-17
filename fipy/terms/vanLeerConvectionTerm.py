@@ -62,7 +62,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
         oldArray1, oldArray2 = ExplicitUpwindConvectionTerm._getOldAdjacentValues(self, oldArray, id1, id2, dt)
         
-        mesh = oldArray.getMesh()
+        mesh = oldArray.mesh
 
         interiorIDs = numerix.nonzero(mesh.interiorFaces)[0]
         interiorFaceAreas = numerix.take(mesh._faceAreas, interiorIDs)
@@ -76,14 +76,14 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         vol1 = numerix.take(mesh.cellVolumes, id1)
         self.CFL = interiorCFL / vol1
         
-        oldArray1 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id1, axis=-1), interiorFaceNormals), gradUpwind) \
+        oldArray1 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.grad, id1, axis=-1), interiorFaceNormals), gradUpwind) \
             * (vol1 - interiorCFL) / interiorFaceAreas
 
         vol2 = numerix.take(mesh.cellVolumes, id2)
         
         self.CFL = numerix.maximum(interiorCFL / vol2, self.CFL)
 
-        oldArray2 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.getGrad(), id2, axis=-1), -interiorFaceNormals), -gradUpwind) \
+        oldArray2 += 0.5 * self._getGradient(numerix.dot(numerix.take(oldArray.grad, id2, axis=-1), -interiorFaceNormals), -gradUpwind) \
             * (vol2 - interiorCFL) / interiorFaceAreas
         
         return oldArray1, oldArray2

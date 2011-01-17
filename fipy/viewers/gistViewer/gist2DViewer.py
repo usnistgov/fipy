@@ -74,7 +74,7 @@ class Gist2DViewer(_GistViewer):
     def _getSuitableVars(self, vars):
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
-          if (var.getMesh().dim == 2 and isinstance(var, CellVariable))]
+          if (var.mesh.dim == 2 and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Can only plot 2D data"
@@ -132,7 +132,7 @@ class Gist2DViewer(_GistViewer):
 
         import colorbar
 
-        colorbar._color_bar(minz=datamin, maxz=datamax, ncol=240, zlabel=self.vars[0].getName())
+        colorbar._color_bar(minz=datamin, maxz=datamax, ncol=240, zlabel=self.vars[0].name)
 
         _GistViewer.plot(self, filename = filename)
 

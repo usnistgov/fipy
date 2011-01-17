@@ -131,8 +131,8 @@ decoupling.
 
 Build the Stokes equations in the cell centers.
 
->>> xVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1.,0.])
->>> yVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0.,1.])
+>>> xVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.grad.dot([1.,0.])
+>>> yVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.grad.dot([0.,1.])
     
 In this example the SIMPLE algorithm is used to couple the
 pressure and momentum equations. Let us assume we have solved the
@@ -189,11 +189,11 @@ approximated at the face by :math:`A_f d_{AP} / (a_P)_f`. In :term:`FiPy` the
 pressure correction equation can be written as, 
 
 >>> ap = CellVariable(mesh=mesh, value=1.)
->>> coeff = 1./ ap.getArithmeticFaceValue()*mesh._faceAreas * mesh._cellDistances 
->>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.getDivergence()
+>>> coeff = 1./ ap.arithmeticFaceValue*mesh._faceAreas * mesh._cellDistances 
+>>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.divergence
 
 Above would work good on a staggered grid, however, on a colocated grid as :term:`FiPy`
-uses, the term :term:`velocity.getDivergence()` will cause oscillations in the
+uses, the term :term:`velocity.divergence` will cause oscillations in the
 pressure solution as velocity is a face variable. 
 We can apply the Rhie-Chow correction terms for this. In this an intermediate 
 velocity term :math:`u^\Diamond` is considered which does not contain the pressure corrections:
@@ -230,7 +230,7 @@ terms
 
 >>> from fipy.variables.faceGradVariable import _FaceGradVariable
 >>> volume = CellVariable(mesh=mesh, value=mesh.cellVolumes, name='Volume')
->>> contrvolume=volume.getArithmeticFaceValue()
+>>> contrvolume=volume.arithmeticFaceValue
 
 And set up the velocity with this formula in the SIMPLE loop. 
 Now, set up the no-slip boundary conditions
@@ -277,18 +277,18 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     ## update the face velocities based on starred values with the 
 ...     ## Rhie-Chow correction. 
 ...     ## cell pressure gradient
-...     presgrad = pressure.getGrad()
+...     presgrad = pressure.grad
 ...     ## face pressure gradient
 ...     facepresgrad = _FaceGradVariable(pressure)
 ...
-...     velocity[0] = xVelocity.getArithmeticFaceValue() \
-...          + contrvolume / ap.getArithmeticFaceValue() * \
-...            (presgrad[0].getArithmeticFaceValue()-facepresgrad[0])
-...     velocity[1] = yVelocity.getArithmeticFaceValue() \
-...          + contrvolume / ap.getArithmeticFaceValue() * \
-...            (presgrad[1].getArithmeticFaceValue()-facepresgrad[1])
-...     velocity[..., mesh.exteriorFaces.getValue()] = 0.
-...     velocity[0, mesh.facesTop.getValue()] = U
+...     velocity[0] = xVelocity.arithmeticFaceValue \
+...          + contrvolume / ap.arithmeticFaceValue * \
+...            (presgrad[0].arithmeticFaceValue-facepresgrad[0])
+...     velocity[1] = yVelocity.arithmeticFaceValue \
+...          + contrvolume / ap.arithmeticFaceValue * \
+...            (presgrad[1].arithmeticFaceValue-facepresgrad[1])
+...     velocity[..., mesh.exteriorFaces.value] = 0.
+...     velocity[0, mesh.facesTop.value] = U
 ...
 ...     ## solve the pressure correction equation
 ...     pressureCorrectionEq.cacheRHSvector()
@@ -299,9 +299,9 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     ## update the pressure using the corrected value
 ...     pressure.setValue(pressure + pressureRelaxation * pressureCorrection )
 ...     ## update the velocity using the corrected pressure
-...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
+...     xVelocity.setValue(xVelocity - pressureCorrection.grad[0] / \
 ...                                                ap * mesh.cellVolumes)
-...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[1] / \
+...     yVelocity.setValue(yVelocity - pressureCorrection.grad[1] / \
 ...                                                ap * mesh.cellVolumes)
 ...
 ...     if __name__ == '__main__':
@@ -319,11 +319,11 @@ solution. This argument cannot be passed to :meth:`solve`.
 
 Test values in the last cell.
 
->>> print numerix.allclose(pressure.getGlobalValue()[...,-1], 162.790867927)
+>>> print numerix.allclose(pressure.globalValue[...,-1], 162.790867927)
 1
->>> print numerix.allclose(xVelocity.getGlobalValue()[...,-1], 0.265072740929)
+>>> print numerix.allclose(xVelocity.globalValue[...,-1], 0.265072740929)
 1
->>> print numerix.allclose(yVelocity.getGlobalValue()[...,-1], -0.150290488304)
+>>> print numerix.allclose(yVelocity.globalValue[...,-1], -0.150290488304)
 1
 
 """

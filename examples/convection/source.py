@@ -66,7 +66,7 @@ a test against the analytical result.
 
 >>> phi.constrain(phi0, mesh.facesLeft)
 >>> ## fake outflow condition
->>> phi.getFaceGrad().constrain(0, mesh.facesRight)
+>>> phi.faceGrad.constrain(0, mesh.facesRight)
 
 >>> eq = PowerLawConvectionTerm((1,)) + ImplicitSourceTerm(alpha)
 >>> eq.solve(phi)

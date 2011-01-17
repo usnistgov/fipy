@@ -36,9 +36,11 @@
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class FaceVariable(_MeshVariable):
-    def _getVariableClass(self):
+    @property
+    def _variableClass(self):
         return FaceVariable
 
     def _getShapeFromMesh(mesh):
@@ -61,38 +63,47 @@ class FaceVariable(_MeshVariable):
     def copy(self):
         return self._getArithmeticBaseClass()(mesh=self.mesh, 
                                               name=self.name + "_copy", 
-                                              value=self.getValue())
+                                              value=self.value)
 
-    def getGlobalValue(self):
+    @property
+    def globalValue(self):
         return self._getGlobalValue(self.mesh._localNonOverlappingFaceIDs, 
                                     self.mesh._globalNonOverlappingFaceIDs)
 
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 
+    @getsetDeprecated
     def getDivergence(self):
+        return self.divergence
+
+    @property
+    def divergence(self):
         """
             >>> from fipy.meshes import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=3, ny=2)
             >>> var = CellVariable(mesh=mesh, value=range(3*2))
-            >>> print var.getFaceGrad().getDivergence()
+            >>> print var.faceGrad.divergence
             [ 4.  3.  2. -2. -3. -4.]
             
         """
-        if not hasattr(self, 'divergence'):
+        if not hasattr(self, '_divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
-            self.divergence = _AddOverFacesVariable(self.dot(self.getMesh()._orientedAreaProjections))
+            self._divergence = _AddOverFacesVariable(self.dot(self.mesh._orientedAreaProjections))
             
-        return self.divergence
+        return self._divergence
 
-    def _getGlobalNumberOfElements(self):
+    @property
+    def _globalNumberOfElements(self):
         return self.mesh.globalNumberOfFaces
         
-    def _getGlobalOverlappingIDs(self):
+    @property
+    def _globalOverlappingIDs(self):
         return self.mesh._globalOverlappingFaceIDs
         
-    def _getLocalNonOverlappingIDs(self):
+    @property
+    def _localNonOverlappingIDs(self):
         return self.mesh._localNonOverlappingFaceIDs
 
 def _test(): 

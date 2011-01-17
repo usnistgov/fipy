@@ -64,8 +64,8 @@ class ExponentialNoiseVariable(NoiseVariable):
     and compare to a Gaussian distribution
     
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> expdist = CellVariable(mesh = histogram.getMesh())
-    >>> x = histogram.getMesh().cellCenters[0]
+    >>> expdist = CellVariable(mesh = histogram.mesh)
+    >>> x = histogram.mesh.cellCenters[0]
     
     >>> if __name__ == '__main__':
     ...     from fipy import Viewer
@@ -76,15 +76,15 @@ class ExponentialNoiseVariable(NoiseVariable):
     >>> from fipy.tools.numerix import arange, exp
     
     >>> for mu in arange(0.5,3,0.5):
-    ...     mean.setValue(mu)
-    ...     expdist.setValue((1/mean)*exp(-x/mean))
+    ...     mean.value = (mu)
+    ...     expdist.value = ((1/mean)*exp(-x/mean))
     ...     if __name__ == '__main__':
     ...         import sys
     ...         print >>sys.stderr, "mean: %g" % mean
     ...         viewer.plot()
     ...         histoplot.plot()
 
-    >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
+    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
     1
 
     .. image:: fipy/variables/exp.*
@@ -107,7 +107,7 @@ class ExponentialNoiseVariable(NoiseVariable):
     
     def random(self):
         return random.exponential(scale = self.mean, 
-                                  size = [self.getMesh().globalNumberOfCells])
+                                  size = [self.mesh.globalNumberOfCells])
 
 def _test(): 
     import doctest

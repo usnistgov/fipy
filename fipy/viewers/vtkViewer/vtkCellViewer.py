@@ -70,8 +70,8 @@ class VTKCellViewer(_VTKViewer):
         >>> x, = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*x, name="x*x")
         >>> v2 = CellVariable(mesh=m, value=x)
-        >>> v3 = v1.getGrad()
-        >>> v3.name = "v1.getGrad()"
+        >>> v3 = v1.grad
+        >>> v3.name = "v1.grad"
         >>> VTKCellViewer(vars=(v1, v2, v3)).plot(fname)
         >>> VTKFileReader().initialize(fname)
 
@@ -79,8 +79,8 @@ class VTKCellViewer(_VTKViewer):
         >>> x, y = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y, name="x*y")
         >>> v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
-        >>> v3 = v1.getGrad()
-        >>> v3.name = "v1.getGrad()"
+        >>> v3 = v1.grad
+        >>> v3.name = "v1.grad"
         >>> VTKCellViewer(vars=(v1, v2, v3)).plot(fname)
         >>> VTKFileReader().initialize(fname)
 
@@ -90,8 +90,8 @@ class VTKCellViewer(_VTKViewer):
         >>> x, y = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y, name="x*y")
         >>> v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
-        >>> v3 = v1.getGrad()
-        >>> v3.name = "v1.getGrad()"
+        >>> v3 = v1.grad
+        >>> v3.name = "v1.grad"
         >>> VTKCellViewer(vars=(v1, v2, v3)).plot(fname)
         >>> VTKFileReader().initialize(fname)
 
@@ -99,8 +99,8 @@ class VTKCellViewer(_VTKViewer):
         >>> x, y, z = m.cellCenters
         >>> v1 = CellVariable(mesh=m, value=x*y*z, name="x*y*z")
         >>> v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
-        >>> v3 = v1.getGrad()
-        >>> v3.name = "v1.getGrad()"
+        >>> v3 = v1.grad
+        >>> v3.name = "v1.grad"
         >>> VTKCellViewer(vars=(v1, v2, v3)).plot(filename=fname)
         >>> VTKFileReader().initialize(fname)
 

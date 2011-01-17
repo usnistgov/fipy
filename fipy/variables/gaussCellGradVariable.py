@@ -42,12 +42,12 @@ from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 class _GaussCellGradVariable(CellVariable):
     def __init__(self, var, name=''):
-        CellVariable.__init__(self, mesh=var.getMesh(), name=name, rank=var.getRank() + 1)
+        CellVariable.__init__(self, mesh=var.mesh, name=name, rank=var.rank + 1)
         self.var = self._requires(var)
         self.faceGradientContributions = _FaceGradContributions(self.var)
         
     def _calcValueIn(self, N, M, ids, orientations, volumes):
-        val = self._getArray().copy()
+        val = self._array.copy()
 
         inline._runIterateElementInline("""
             ITEM(val, i, vec) = 0.;
@@ -64,7 +64,7 @@ class _GaussCellGradVariable(CellVariable):
             orientations = numerix.array(numerix.MA.filled(orientations, 0)),
             volumes = numerix.array(volumes),
             areaProj = numerix.array(self.mesh._areaProjections),
-            faceValues = numerix.array(self.var.getArithmeticFaceValue()),
+            faceValues = numerix.array(self.var.arithmeticFaceValue),
             M = M,
             ni = N, 
             shape=numerix.array(numerix.shape(val)))

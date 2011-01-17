@@ -55,7 +55,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
     """    
     class _Alpha(FaceVariable):
 	def __init__(self, P):
-	    FaceVariable.__init__(self, mesh = P.getMesh())
+	    FaceVariable.__init__(self, mesh = P.mesh)
 	    self.P = self._requires(P)
 	    
 	def _calcValuePy(self, eps, P):
@@ -118,12 +118,12 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    )
 
             return self._makeValue(value = alpha)
-##         return self._makeValue(value = alpha, unit = self.getUnit())
+##         return self._makeValue(value = alpha, unit = self.unit)
 
 
 	def _calcValue(self):	    
 	    eps = 1e-3
-	    P  = self.P.getNumericValue()
+	    P  = self.P.numericValue
 	    
             return inline._optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
 

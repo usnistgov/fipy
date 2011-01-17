@@ -82,7 +82,7 @@ equation, with a source due to the latent heat of solidification
 >>> DT = 2.25
 >>> heatEq = (TransientTerm()
 ...           == DiffusionTerm(DT)
-...           + (phase - phase.getOld()) / dt)
+...           + (phase - phase.old) / dt)
 
 The governing equation for the phase field is
 
@@ -126,8 +126,8 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 >>> c = 0.02
 >>> N = 6.
 >>> theta = pi / 8.
->>> psi = theta + arctan2(phase.getFaceGrad()[1], 
-...                       phase.getFaceGrad()[0])
+>>> psi = theta + arctan2(phase.faceGrad[1], 
+...                       phase.faceGrad[0])
 >>> Phi = tan(N * psi / 2)
 >>> PhiSq = Phi**2
 >>> beta = (1. - PhiSq) / (1. + PhiSq)
@@ -189,10 +189,10 @@ existing viewers to create a specialized display:
 ...                     for c in self.contour.collections:
 ...                         c.remove()
 ...                         
-...                 mesh = self.phase.getMesh()
+...                 mesh = self.phase.mesh
 ...                 shape = mesh.shape
 ...                 x, y = mesh.cellCenters
-...                 z = self.phase.getValue()
+...                 z = self.phase.value
 ...                 x, y, z = [a.reshape(shape, order="FORTRAN") for a in (x, y, z)]
 ...                 
 ...                 self.contour = pylab.contour(x, y, z, (0.5,))

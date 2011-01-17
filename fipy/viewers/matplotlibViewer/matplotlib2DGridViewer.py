@@ -80,12 +80,12 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
                                       cmap=self.cmap)
                    
         if title is None:                          
-            self.axes.set_title(self.vars[0].getName())
+            self.axes.set_title(self.vars[0].name)
 
     def _getLimit(self, key, default=None):
         limit = _MatplotlibViewer._getLimit(self, key, default=default)
         if limit is None:
-            X, Y = self.vars[0].getMesh().faceCenters
+            X, Y = self.vars[0].mesh.faceCenters
             if 'xmin' in key:
                 limit = float(min(X))
             elif 'ymin' in key:
@@ -100,8 +100,8 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-          if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable)
-              and var.getRank() == 0)]
+          if (isinstance(var.mesh, UniformGrid2D) and isinstance(var, CellVariable)
+              and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Matplotlib2DGridViewer can only display a rank-0 CellVariable with a UniformGrid2D mesh"
@@ -110,7 +110,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         
     def _getData(self):
         from fipy.tools.numerix import array, reshape
-        return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape()[::-1])[::-1]
+        return reshape(array(self.vars[0]), self.vars[0].mesh.shape[::-1])[::-1]
 
     def _plot(self):
         self.norm.vmin = self._getLimit(('datamin', 'zmin'))

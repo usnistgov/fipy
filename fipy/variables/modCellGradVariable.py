@@ -53,7 +53,7 @@ class _ModCellGradVariable(_GaussCellGradVariable):
             
 
     def _calcValueIn(self, N, M, ids, orientations, volumes):
-        val = self._getArray().copy()
+        val = self._array.copy()
         
         inline._runIterateElementInline(self.modIn + """
             ITEM(val, i, vec) = 0.;
@@ -71,14 +71,14 @@ class _ModCellGradVariable(_GaussCellGradVariable):
             orientations = numerix.array(orientations),
             volumes = numerix.array(volumes),
             areaProj = numerix.array(self.mesh._areaProjections),
-            faceValues = numerix.array(self.var.getArithmeticFaceValue()),
+            faceValues = numerix.array(self.var.arithmeticFaceValue),
             M = M,
             ni = N, 
             gridSpacing = numerix.array(self.mesh._meshSpacing),
             shape=numerix.array(numerix.shape(val)))
             
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)
 
     def _calcValuePy(self, N, M, ids, orientations, volumes):
         value = _GaussCellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)

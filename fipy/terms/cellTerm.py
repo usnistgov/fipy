@@ -54,7 +54,7 @@ class CellTerm(Term):
             coeff = _Constant(value=coeff)
 
         from fipy.variables.cellVariable import CellVariable
-        if ((isinstance(coeff, CellVariable) and coeff.getRank() != 0)
+        if ((isinstance(coeff, CellVariable) and coeff.rank != 0)
             or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
                 raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
 
@@ -63,11 +63,11 @@ class CellTerm(Term):
         self._var = None
 
     def _calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        mesh = var.getMesh()
+        mesh = var.mesh
         coeff = self._getGeomCoeff(mesh)
         weight = self._getWeight(mesh)
         if hasattr(coeff, "getOld"):
-            old = coeff.getOld()
+            old = coeff.old
         else:
             old = coeff
 
@@ -98,7 +98,7 @@ class CellTerm(Term):
 ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
     def _buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
-        N = oldArray.getMesh().numberOfCells
+        N = oldArray.mesh.numberOfCells
         updatePyArray = numerix.zeros((N),'d')
 
         inline._runInline("""
@@ -107,7 +107,7 @@ class CellTerm(Term):
             updatePyArray[i] += newCoeff[i] / dt;
             updatePyArray[i] += diagCoeff[i];
         """,b=b,
-            oldArray=oldArray.getNumericValue(),
+            oldArray=oldArray.numericValue,
 ##            oldArray=numerix.array(oldArray),
             oldCoeff=numerix.array(coeffVectors['old value']),
             bCoeff=numerix.array(coeffVectors['b vector']),
@@ -125,15 +125,15 @@ class CellTerm(Term):
 
             N = len(var)
             b = numerix.zeros((N),'d')
-            L = SparseMatrix(mesh=var.getMesh())
+            L = SparseMatrix(mesh=var.mesh)
 
             coeffVectors = self._getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-            inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.getOld(), b, dt, coeffVectors)
+            inline._optionalInline(self._buildMatrixIn, self._buildMatrixPy, L, var.old, b, dt, coeffVectors)
 
             return (var, L, b)
         else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+            return (var, SparseMatrix(mesh=var.mesh), 0)
 
     def _test(self):
         """

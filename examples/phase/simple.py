@@ -478,7 +478,7 @@ thickness
 ...     from scipy.optimize import leastsq
 ...     x =  mesh.cellCenters[0]
 ...     (V_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., delta], 
-...                                   args=(phase.getGlobalValue(), x.getGlobalValue(), elapsed))
+...                                   args=(phase.globalValue, x.globalValue, elapsed))
 ... except ImportError:
 ...     V_fit = d_fit = 0
 ...     print "The SciPy library is unavailable to fit the interface \

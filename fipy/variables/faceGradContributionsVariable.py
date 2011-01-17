@@ -38,10 +38,10 @@ from fipy.variables.cellVariable import CellVariable
 
 class _FaceGradContributions(CellVariable):
     def __init__(self, var):
-        CellVariable.__init__(self, mesh=var.getMesh(), rank=var.getRank() + 1)
+        CellVariable.__init__(self, mesh=var.mesh, rank=var.rank + 1)
 	self.var = self._requires(var)
 
     def _calcValue(self):
-        return self.mesh._areaProjections * self.var.getArithmeticFaceValue().getNumericValue()
+        return self.mesh._areaProjections * self.var.arithmeticFaceValue.numericValue
     
 

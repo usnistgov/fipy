@@ -93,7 +93,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         
     def quiver(self, sparsity=None, scale=None):
         var = self.vars[0]
-        mesh = var.getMesh()
+        mesh = var.mesh
 
         if isinstance(var, FaceVariable):
             N = mesh.numberOfFaces 
@@ -122,9 +122,9 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         from fipy.meshes.mesh2D import Mesh2D
 
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-                if (isinstance(var.getMesh(), Mesh2D) \
+                if (isinstance(var.mesh, Mesh2D) \
                     and (isinstance(var, FaceVariable) \
-                         or isinstance(var, CellVariable)) and var.getRank() == 1)]
+                         or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "The mesh must be a Mesh2D instance"
@@ -134,9 +134,9 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
     def _plot(self):
 
         var = self.vars[0]
-        mesh = var.getMesh()
+        mesh = var.mesh
 
-        U, V = var.getNumericValue()
+        U, V = var.numericValue
 
         U = numerix.take(U, self.indices)
         V = numerix.take(V, self.indices)

@@ -114,8 +114,8 @@ class Term:
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
         var, matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
-                                                   transientGeomCoeff=self._getTransientGeomCoeff(var.getMesh()),
-                                                   diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.getMesh()))
+                                                   transientGeomCoeff=self._getTransientGeomCoeff(var.mesh),
+                                                   diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.mesh))
         
         if self._cacheMatrix:
             self.matrix = matrix

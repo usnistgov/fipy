@@ -775,9 +775,9 @@ def conjugate(arr):
     1
     >>> from fipy.variables.variable import Variable
     >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
-    >>> print var.getUnit()
+    >>> print var.unit
     <PhysicalUnit ohm>
-    >>> print allclose(var.getNumericValue(), (3 - 4j, 2j, 10))
+    >>> print allclose(var.numericValue, (3 - 4j, 2j, 10))
     1
     """
     if _isPhysical(arr):
@@ -923,7 +923,7 @@ def nearest(data, points):
     >>> from fipy import *
     >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
     >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-    >>> print nearest(m0.cellCenters.getGlobalValue(), m1.cellCenters.getGlobalValue())
+    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue)
     [4 5 7 8]
     """
     N = data.shape[-1]

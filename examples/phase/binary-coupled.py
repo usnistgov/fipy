@@ -285,8 +285,8 @@ these issues automatically, so we could just write::
 
     chemPotA = Vm * (enthalpyA * p(phase) + WA * g(phase)) + R * T * log(C)
     chemPotB = Vm * (enthalpyB * p(phase) + WB * g(phase)) + R * T * log(1-C)
-    flux = Mc * (chemPotB - chemPotA).getFaceGrad()
-    eq = TransientTerm() == flux.getDivergence()
+    flux = Mc * (chemPotB - chemPotA).faceGrad
+    eq = TransientTerm() == flux.divergence
 
 Although the second syntax would essentially work as written, such an
 explicit implementation would be very slow. In order to take advantage
@@ -384,11 +384,11 @@ or
 
 >>> Dl = Variable(value=1e-5) # cm**2 / s
 >>> Ds = Variable(value=1e-9) # cm**2 / s
->>> Dc = (Dl - Ds) * phase.getArithmeticFaceValue() + Dl
+>>> Dc = (Dl - Ds) * phase.arithmeticFaceValue + Dl
 
 >>> Dphi = ((Dc * C.getHarmonicFaceValue() * (1 - C.getHarmonicFaceValue()) * Vm / (R * T))
-...         * ((enthalpyB - enthalpyA) * pPrime(phase.getArithmeticFaceValue())
-...            + 0.5 * (WB - WA) * gPrime(phase.getArithmeticFaceValue())))
+...         * ((enthalpyB - enthalpyA) * pPrime(phase.arithmeticFaceValue)
+...            + 0.5 * (WB - WA) * gPrime(phase.arithmeticFaceValue)))
 
 >>> diffusionEq = (TransientTerm(var=C) 
 ...                == DiffusionTerm(coeff=Dc, var=C)
@@ -426,7 +426,7 @@ deduce the liquidus and solidus compositions as
 
 The phase fraction is predicted by the lever rule
 
->>> Cavg = C.getCellVolumeAverage()
+>>> Cavg = C.cellVolumeAverage
 >>> fraction = (Cl - Cavg) / (Cl - Cs)
 
 For the special case of ``fraction = Cavg = 0.5``, a little bit of algebra
@@ -561,7 +561,7 @@ True
 
 and that the phase fraction remains unchanged
 
->>> print fraction.allclose(phase.getCellVolumeAverage(), atol=2e-4)
+>>> print fraction.allclose(phase.cellVolumeAverage, atol=2e-4)
 1
 
 while conserving mass overall

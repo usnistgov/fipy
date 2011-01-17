@@ -76,7 +76,7 @@ class _MetalIonSourceVariable(CellVariable):
        
         """
         
-        CellVariable.__init__(self, distanceVar.getMesh(), hasOld = 0)
+        CellVariable.__init__(self, distanceVar.mesh, hasOld = 0)
         self.ionVar = self._requires(ionVar)
         self.distanceVar = self._requires(distanceVar)
         self.depositionRate = self._requires(depositionRate)
