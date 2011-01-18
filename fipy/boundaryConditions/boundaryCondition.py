@@ -39,7 +39,7 @@ from fipy.tools import numerix
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-class BoundaryCondition:
+class BoundaryCondition(object):
     """
     Generic boundary condition base class. 
     
