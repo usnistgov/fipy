@@ -110,6 +110,30 @@ class TransientTerm(CellTerm):
 	return self.coeff * mesh.getCellVolumes()
 
     def _getTransientGeomCoeff(self, var):
+        """
+        Test to ensure that _getTransientGeomCoeff is not returning None when a
+        TransientTerm is defined.
+        
+        >>> from fipy import *
+        >>> var = CellVariable(mesh=Grid1D(nx=1))
+        >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
+        >>> print eq._getTransientGeomCoeff(var)
+        [ 1.]
+        >>> eq.cacheMatrix()
+        >>> eq.solve(var)
+        >>> print eq.getMatrix()[0,0] == 1
+        True
+        
+        >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
+        >>> print eq._getTransientGeomCoeff(var)
+        [-1.]
+        >>> eq.cacheMatrix()
+        >>> eq.solve(var)
+        >>> print eq.getMatrix()[0,0] == -2
+        True
+        
+        """
+    
         if CellTerm._getTransientGeomCoeff(self, var) is not None:
             raise AssertionError, 'An alternate _getTransientGeomCoeff() is defined in a base class' 
         if var is self.var or self.var is None:
