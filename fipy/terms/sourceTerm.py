@@ -47,6 +47,3 @@ class SourceTerm(CellTerm):
 	
     def _calcGeomCoeff(self, mesh):
 	return self.coeff * mesh.getCellVolumes()
-
-    def _getTransientGeomCoeff(self, mesh):
-        return None

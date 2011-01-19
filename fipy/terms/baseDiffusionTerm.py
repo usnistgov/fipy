@@ -360,15 +360,16 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
         return (var, L, b)
 
-    def _getDiffusionGeomCoeff(self, mesh):
-        return self._getGeomCoeff(mesh)
-
-    def _getTransientGeomCoeff(self, mesh):
-        return None  
-
+    def _getDiffusionGeomCoeff(self, var):
+         if var is self.var or self.var is None:
+             return self._getGeomCoeff(var.getMesh())
+         else:
+             return None
+         
 def _test(): 
     import doctest
     return doctest.testmod()
 
 if __name__ == "__main__":
     _test()
+    

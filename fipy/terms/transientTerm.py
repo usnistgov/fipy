@@ -109,8 +109,13 @@ class TransientTerm(CellTerm):
     def _calcGeomCoeff(self, mesh):
 	return self.coeff * mesh.getCellVolumes()
 
-    def _getTransientGeomCoeff(self, mesh):
-        return self._getGeomCoeff(mesh)
+    def _getTransientGeomCoeff(self, var):
+        if CellTerm._getTransientGeomCoeff(self, var) is not None:
+            raise AssertionError, 'An alternate _getTransientGeomCoeff() is defined in a base class' 
+        if var is self.var or self.var is None:
+            return self._getGeomCoeff(var.getMesh())
+        else:
+            return None
         
 def _test(): 
     import doctest

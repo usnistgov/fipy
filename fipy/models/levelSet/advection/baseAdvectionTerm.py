@@ -48,9 +48,6 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
         _NonDiffusionTerm.__init__(self)
         self.geomCoeff = coeff
 
-    def _getTransientGeomCoeff(self, mesh):
-        return None     
-        
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, equation=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         if var is self.var or self.var is None:

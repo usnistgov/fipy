@@ -121,7 +121,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         matrix = 0
         RHSvectorsJ = []
 
-        for i, term in enumerate(self._getCoupledTerms()):
+        for i, uncoupledTerm in enumerate(self._getCoupledTerms()):
 
             RHSvector = 0
             for j, tmpVar in enumerate(self._getVars()):
@@ -143,13 +143,13 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
                             SparseMatrix.addAtDiagonal(self, tmp)
                         else:
                             SparseMatrix.addAtDiagonal(self, vector)
-                            
-                tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix(tmpVar,
-                                                                    OffsetSparseMatrix,
-                                                                    boundaryConditions=(),
-                                                                    dt=dt,
-                                                                    transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.getMesh()),
-                                                                    diffusionGeomCoeff=term._getDiffusionGeomCoeff(tmpVar.getMesh()))
+
+                tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildMatrix(tmpVar,
+                                                                             OffsetSparseMatrix,
+                                                                             boundaryConditions=(),
+                                                                             dt=dt,
+                                                                             transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(tmpVar),
+                                                                             diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar))
 
                 RHSvector += tmpRHSvector
                 matrix += tmpMatrix

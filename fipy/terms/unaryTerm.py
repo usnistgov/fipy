@@ -65,7 +65,10 @@ class _UnaryTerm(Term):
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         return None
-        
+    
+    def _getTransientGeomCoeff(self, var):
+        return None
+
 class __UnaryTerm(_UnaryTerm): 
     """
     Dummy subclass for tests

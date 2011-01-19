@@ -108,8 +108,8 @@ class Term:
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
         var, matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
-                                                   transientGeomCoeff=self._getTransientGeomCoeff(var.getMesh()),
-                                                   diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.getMesh()))
+                                                   transientGeomCoeff=self._getTransientGeomCoeff(var),
+                                                   diffusionGeomCoeff=self._getDiffusionGeomCoeff(var))
         
         if self._cacheMatrix:
             self.matrix = matrix
@@ -350,10 +350,10 @@ class Term:
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
-    def _getDiffusionGeomCoeff(self, mesh):
+    def _getDiffusionGeomCoeff(self, var):
         raise NotImplementedError
 
-    def _getTransientGeomCoeff(self, mesh):
+    def _getTransientGeomCoeff(self, var):
         raise NotImplementedError
 
     def _treatMeshAsOrthogonal(self, mesh):
