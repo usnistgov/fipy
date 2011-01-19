@@ -39,6 +39,26 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
 class _CoupledBinaryTerm(_BaseBinaryTerm):
+    """
+    Test to ensure that _getTransientGeomCoeff and _getDiffusionGeomCoeff return sensible results for coupled equations.
+
+    >>> from fipy import *
+    >>> m = Grid1D(nx=1)
+    >>> v0 = CellVariable(mesh=m)
+    >>> v1 = CellVariable(mesh=m)
+    >>> eq0 = TransientTerm(1, var=v0) == DiffusionTerm(2, var=v1)
+    >>> eq1 = TransientTerm(3, var=v1) == DiffusionTerm(4, var=v0)
+    >>> eq = eq0 & eq1
+    >>> print eq._getTransientGeomCoeff(v0)
+    None
+    >>> print eq._getDiffusionGeomCoeff(v1)
+    None
+    >>> print eq._getCoupledTerms()[0]._getTransientGeomCoeff(v0)
+    [ 1.]
+    >>> print eq._getCoupledTerms()[1]._getDiffusionGeomCoeff(v0)
+    [[-8. -8.]]
+    
+    """
     def __init__(self, term, other):
         _BaseBinaryTerm.__init__(self, term, other)
         if len(self._getVars()) < len(self._getCoupledTerms()):
@@ -164,6 +184,9 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
+        if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
+            raise AssertionError, 'An alternate _getDefaultSolver() is defined in a base class'
+
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)

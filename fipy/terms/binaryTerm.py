@@ -73,12 +73,15 @@ class _BinaryTerm(_BaseBinaryTerm):
 	return (var, matrix, RHSvector)
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
-         for term in (self.term, self.other):
-             defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
-             if defaultSolver is not None:
-                 solver = defaultSolver
-                 
-         return solver
+        if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
+            raise AssertionError, 'An alternate _getDefaultSolver() is defined in a base class'
+        
+        for term in (self.term, self.other):
+            defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
+            if defaultSolver is not None:
+                solver = defaultSolver
+                
+        return solver
         
     def __repr__(self):
         return '(' + repr(self.term) + ' + ' + repr(self.other) + ')'
@@ -88,6 +91,16 @@ class _BinaryTerm(_BaseBinaryTerm):
 
     def _getCoupledTerms(self):
         return [self]
+
+    def _getTransientGeomCoeff(self, var):
+        if _BaseBinaryTerm._getTransientGeomCoeff(self, var) is not None:
+            raise AssertionError, 'An alternate _getTransientGeomCoeff() is defined in a base class'
+        return self._addNone(self.term._getTransientGeomCoeff(var), self.other._getTransientGeomCoeff(var))
+
+    def _getDiffusionGeomCoeff(self, var):
+        if _BaseBinaryTerm._getDiffusionGeomCoeff(self, var) is not None:
+            raise AssertionError, 'An alternate _getDiffusionGeomCoeff() is defined in a base class'
+        return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var))
 
     __rmul__ = __mul__
 

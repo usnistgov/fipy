@@ -78,11 +78,7 @@ class _BaseBinaryTerm(Term):
         else:
             return arg0 + arg1
 
-    def _getTransientGeomCoeff(self, var):
-        return self._addNone(self.term._getTransientGeomCoeff(var), self.other._getTransientGeomCoeff(var))
 
-    def _getDiffusionGeomCoeff(self, var):
-        return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var))
 
     def __neg__(self):
         r"""

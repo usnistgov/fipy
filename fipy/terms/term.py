@@ -286,7 +286,7 @@ class Term:
         return self.RHSvector
     
     def _getDefaultSolver(self, solver, *args, **kwargs):
-        raise NotImplementedError
+        return None
         
     def getDefaultSolver(self, solver=None, *args, **kwargs):
         return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
@@ -351,10 +351,10 @@ class Term:
         raise NotImplementedError
 
     def _getDiffusionGeomCoeff(self, var):
-        raise NotImplementedError
+        return None
 
     def _getTransientGeomCoeff(self, var):
-        raise NotImplementedError
+        return None
 
     def _treatMeshAsOrthogonal(self, mesh):
         raise NotImplementedError

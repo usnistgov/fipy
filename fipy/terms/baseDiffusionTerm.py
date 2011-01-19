@@ -150,9 +150,11 @@ class _BaseDiffusionTerm(_UnaryTerm):
                 self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.getCellVolumes()
 
     def _calcGeomCoeff(self, mesh):
+
         if self.nthCoeff is not None:
           
             coeff = self.nthCoeff
+
             shape = numerix.getShape(coeff)
 
             from fipy.variables.faceVariable import FaceVariable
@@ -167,7 +169,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
                 if rank == 1 or rank == 0:
                     coeff = coeff * numerix.identity(mesh.getDim())
-
+                
                 if rank > 0:
                     shape = numerix.getShape(coeff)
                     if mesh.getDim() != shape[0] or mesh.getDim() != shape[1]:
@@ -176,7 +178,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._getFaceNormals())
                 rotationTensor = self.__getRotationTensor(mesh)
                 rotationTensor[:,0] = rotationTensor[:,0] / mesh._getCellDistances()
-                
+
                 tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._getFaceAreas()
 
             return tmpBop
@@ -361,10 +363,13 @@ class _BaseDiffusionTerm(_UnaryTerm):
         return (var, L, b)
 
     def _getDiffusionGeomCoeff(self, var):
-         if var is self.var or self.var is None:
-             return self._getGeomCoeff(var.getMesh())
-         else:
-             return None
+        if _UnaryTerm._getDiffusionGeomCoeff(self, var) is not None:
+            raise AssertionError, 'An alternate _getDiffusionGeomCoeff() is defined in a base class'
+
+        if var is self.var or self.var is None:
+            return self._getGeomCoeff(var.getMesh())
+        else:
+            return None
          
 def _test(): 
     import doctest

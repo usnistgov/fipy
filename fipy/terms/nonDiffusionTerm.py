@@ -71,9 +71,6 @@ class _NonDiffusionTerm(_UnaryTerm):
             
     __rmul__ = __mul__
 
-    def _getDiffusionGeomCoeff(self, var):
-        return None
-
     def _test(self):
         r"""
         Test stuff.
