@@ -64,7 +64,7 @@ The result can be tested with the following code:
 >>> surfactantAfter = sum(surfactantVariable * mesh.cellVolumes)
 >>> print surfactantBefore.allclose(surfactantAfter)
 1
->>> areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
+>>> areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
 >>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
 >>> coverage = surfactantVariable * mesh.cellVolumes / areas
 >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
     print 'total surfactant after:', sum(surfactantVariable * mesh.cellVolumes)
 
-    areas = (distanceVariable.getCellInterfaceAreas() < 1e-6) * 1e+10 + distanceVariable.getCellInterfaceAreas()
+    areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
     answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
     coverage = surfactantVariable * mesh.cellVolumes / areas
 

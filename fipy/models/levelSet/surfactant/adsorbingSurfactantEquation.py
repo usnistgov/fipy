@@ -61,7 +61,7 @@ class _AdsorptionCoeff(CellVariable):
 
 class _AdsorptionCoeffInterfaceFlag(_AdsorptionCoeff):
     def _multiplier(self):
-        return self.distanceVar._getCellInterfaceFlag()
+        return self.distanceVar._cellInterfaceFlag
     
 class _AdsorptionCoeffAreaOverVolume(_AdsorptionCoeff):
     def _multiplier(self):
@@ -79,7 +79,7 @@ class _MaxCoeff(CellVariable):
         total = 0
         for var in self.vars:
             total += numerix.array(var.getInterfaceVar())
-        return numerix.array(total > 1) * self.distanceVar._getCellInterfaceFlag()
+        return numerix.array(total > 1) * self.distanceVar._cellInterfaceFlag
 
 class _SpMaxCoeff(_MaxCoeff):
     def _calcValue(self):
@@ -89,7 +89,7 @@ class _ScMaxCoeff(_MaxCoeff):
     def _calcValue(self):
         val = self.distanceVar.getCellInterfaceAreas() / self.mesh.cellVolumes
         for var in self.vars[1:]:
-            val -= self.distanceVar._getCellInterfaceFlag() * numerix.array(var)
+            val -= self.distanceVar._cellInterfaceFlag * numerix.array(var)
 
         return 1e20 * self._calcMax() * numerix.where(val < 0, 0, val)
 

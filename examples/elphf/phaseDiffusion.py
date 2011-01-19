@@ -141,16 +141,16 @@ and create the diffustion equations for the different species as in
 ...         CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
 ...         for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...             CkSum += Ck
-...             CkFaceSum += Ck.getHarmonicFaceValue()
+...             CkFaceSum += Ck.harmonicFaceValue
 ...            
 ...         counterDiffusion = CkSum.faceGrad
-...         phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) \
+...         phaseTransformation = (pPrime(phase.harmonicFaceValue) \
 ...                 * Cj.standardPotential 
-...                 + gPrime(phase.getHarmonicFaceValue()) \
+...                 + gPrime(phase.harmonicFaceValue) \
 ...                     * Cj.barrier) * phase.faceGrad
 ...         electromigration = Cj.valence * potential.faceGrad
 ...         convectionCoeff = counterDiffusion + \
-...             solvent.getHarmonicFaceValue() \
+...             solvent.harmonicFaceValue \
 ...                 * (phaseTransformation + electromigration)
 ...         convectionCoeff *= \
 ...             (Cj.diffusivity / (1. - CkFaceSum))
@@ -160,13 +160,13 @@ and create the diffustion equations for the different species as in
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
 ...
 ...     for Cj in interstitials:
-...         phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) \
+...         phaseTransformation = (pPrime(phase.harmonicFaceValue) \
 ...             * Cj.standardPotential \
-...             + gPrime(phase.getHarmonicFaceValue()) \
+...             + gPrime(phase.harmonicFaceValue) \
 ...                 * Cj.barrier) * phase.faceGrad
 ...         electromigration = Cj.valence * potential.faceGrad
 ...         convectionCoeff = Cj.diffusivity \
-...             * (1 + Cj.getHarmonicFaceValue()) \
+...             * (1 + Cj.harmonicFaceValue) \
 ...             * (phaseTransformation + electromigration)
 ...    
 ...         Cj.equation = (TransientTerm()

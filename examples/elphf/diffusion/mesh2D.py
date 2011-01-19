@@ -113,16 +113,16 @@ We create one diffusion equation for each substitutional component
     ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
-    ...         CkFaceSum += Ck.getHarmonicFaceValue()
+    ...         CkFaceSum += Ck.harmonicFaceValue
     ...        
     ...     counterDiffusion = CkSum.faceGrad
     ...     phaseTransformation = \
-    ...         (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential \
-    ...         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) \
+    ...         (pPrime(phase.harmonicFaceValue) * Cj.standardPotential \
+    ...         + gPrime(phase.harmonicFaceValue) * Cj.barrier) \
     ...             * phase.faceGrad
     ...     electromigration = Cj.valence * potential.faceGrad
     ...     convectionCoeff = counterDiffusion \
-    ...         + solvent.getHarmonicFaceValue() \
+    ...         + solvent.harmonicFaceValue \
     ...             * (phaseTransformation + electromigration)
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
     ...
@@ -153,9 +153,9 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
 
-    >>> substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
+    >>> substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7).value
     1
-    >>> substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7).getValue()
+    >>> substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7).value
     1
     
 We now rerun the problem with an initial condition that only has a
@@ -181,9 +181,9 @@ We iterate the problem to equilibrium again
 
 and verify that the correct uniform concentrations are achieved
 
-    >>> substitutionals[0].allclose(0.375, rtol = 1e-7, atol = 1e-7).getValue()
+    >>> substitutionals[0].allclose(0.375, rtol = 1e-7, atol = 1e-7).value
     1
-    >>> substitutionals[1].allclose(0.525, rtol = 1e-7, atol = 1e-7).getValue()
+    >>> substitutionals[1].allclose(0.525, rtol = 1e-7, atol = 1e-7).value
     1
 
 

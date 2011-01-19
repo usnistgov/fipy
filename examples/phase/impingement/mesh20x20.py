@@ -166,7 +166,7 @@ evaluation of the face gradient without the modular operators.
 ...     IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
 ...     diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
 ...
-...     thetaGradDiff = theta.faceGrad - theta.getFaceGradNoMod()
+...     thetaGradDiff = theta.faceGrad - theta.faceGradNoMod
 ...     sourceCoeff = (diffusionCoeff * thetaGradDiff).divergence
 ...
 ...     return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \

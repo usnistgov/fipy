@@ -373,6 +373,7 @@ class CellVariable(_MeshVariable):
         return self._arithmeticFaceValue
 
     getFaceValue = getArithmeticFaceValue
+    faceValue = arithmeticFaceValue
 
     @getsetDeprecated
     def getMinmodFaceValue(self):

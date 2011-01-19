@@ -154,7 +154,7 @@ def runGold(faradaysConstant=9.6e4,
         mesh = mesh,
         value = metalConcentration)
 
-    exchangeCurrentDensity = currentDensity0 + currentDensity1 * catalystVar.getInterfaceVar()
+    exchangeCurrentDensity = currentDensity0 + currentDensity1 * catalystVar.interfaceVar
     
     currentDensity = metalVar / metalConcentration * exchangeCurrentDensity
 
@@ -188,7 +188,7 @@ def runGold(faradaysConstant=9.6e4,
 
         try:
             
-            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, datamax=1.0, datamin=0.0, smooth = 1, title = 'catalyst coverage', animate=True)
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=1.0, datamin=0.0, smooth = 1, title = 'catalyst coverage', animate=True)
             
         except:
             
@@ -202,7 +202,7 @@ def runGold(faradaysConstant=9.6e4,
 
             viewer = MultiViewer(viewers=(
                 Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
-                Viewer(PlotVariable(var = catalystVar.getInterfaceVar()))))
+                Viewer(PlotVariable(var = catalystVar.interfaceVar))))
     else:
         viewer = None
 

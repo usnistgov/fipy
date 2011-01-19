@@ -379,7 +379,7 @@ or
 >>> phaseTransformationVelocity = \
 ...  ((enthalpyB - enthalpyA) * p(phase).faceGrad
 ...   + 0.5 * (WB - WA) * g(phase).faceGrad) \
-...   * D * (1. - C).getHarmonicFaceValue() * Vm / (R * T)
+...   * D * (1. - C).harmonicFaceValue * Vm / (R * T)
 
 
 .. index:: PowerLawConvectionTerm
@@ -542,9 +542,9 @@ We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
 
 >>> X = mesh.faceCenters[0]
->>> print Cs.allclose(C.getFaceValue()[X==0], atol=2e-4)
+>>> print Cs.allclose(C.faceValue[X==0], atol=2e-4)
 True
->>> print Cl.allclose(C.getFaceValue()[X==L], atol=2e-4)
+>>> print Cl.allclose(C.faceValue[X==L], atol=2e-4)
 True
 
 and that the phase fraction remains unchanged

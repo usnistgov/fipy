@@ -132,7 +132,7 @@ class MayaviSurfactantViewer(_Viewer):
         ##maxX = self.distanceVar.mesh.faceCenters[0].max()
         ##minX = self.distanceVar.mesh.faceCenters[0].min()
 
-        IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())[0]
+        IDs = numerix.nonzero(self.distanceVar._cellInterfaceFlag)[0]
         coordinates = numerix.take(numerix.array(self.distanceVar.mesh.getCellCenters()).swapaxes(0,1), IDs)
 
         coordinates -= numerix.take(numerix.array(self.distanceVar.grad * self.distanceVar).swapaxes(0,1), IDs)

@@ -50,7 +50,7 @@ The result is again tested in the same way:
     >>> print var.allclose(analyticalArray, atol = 0.025)
     1
 
-    >>> max(mesh._getNonOrthogonality()) < 0.51
+    >>> max(mesh._nonOrthogonality) < 0.51
     True
 
 Note that this test case will only work if you run it by running the
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
-                               value = mesh._getNonOrthogonality())
+                               value = mesh._nonOrthogonality)
     NOViewer = Viewer(vars = NonOrthoVar)
 
 

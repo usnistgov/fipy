@@ -56,7 +56,7 @@ conservation of surfactant:
 >>> surfactantBefore = sum(surfactantVariable * mesh.cellVolumes)
 >>> totalTime = 0
 >>> for step in range(steps):
-...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
+...     velocity.setValue(surfactantVariable.interfaceVar * k)
 ...     distanceVariable.extendVariable(velocity)
 ...     timeStepDuration = cfl * dx / velocity.max()
 ...     distanceVariable.updateOld()
@@ -72,7 +72,7 @@ Next test for the correct local value of surfactant:
 
 >>> finalRadius = sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
 >>> answer = initialSurfactantValue * initialRadius / finalRadius
->>> coverage = surfactantVariable.getInterfaceVar()
+>>> coverage = surfactantVariable.interfaceVar
 >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
 >>> print sqrt(sum(error) / sum(error > 0)) < 0.04
 1
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
     for step in range(steps):
         print 'step',step
-        velocity.setValue(surfactantVariable.getInterfaceVar() * k)
+        velocity.setValue(surfactantVariable.interfaceVar * k)
         distanceVariable.extendVariable(velocity)
         timeStepDuration = cfl * dx / velocity.max()
         distanceVariable.updateOld()
@@ -157,7 +157,7 @@ if __name__ == '__main__':
 
         finalRadius = sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
         answer = initialSurfactantValue * initialRadius / finalRadius
-        coverage = surfactantVariable.getInterfaceVar()
+        coverage = surfactantVariable.interfaceVar
         error = (coverage / answer - 1)**2 * (coverage > 1e-3)
         print 'error', sqrt(sum(error) / sum(error > 0))
 

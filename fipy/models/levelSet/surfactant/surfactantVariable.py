@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class SurfactantVariable(CellVariable):
     """
@@ -109,7 +110,12 @@ class SurfactantVariable(CellVariable):
 
         self.interfaceSurfactantVariable = None
 
+    @getsetDeprecated
     def getInterfaceVar(self):
+        return self.interfaceVar
+
+    @property
+    def interfaceVar(self):
         """
         
         Returns the `SurfactantVariable` rendered as an
@@ -123,9 +129,10 @@ class SurfactantVariable(CellVariable):
 
         return self.interfaceSurfactantVariable
 
+    @getsetDeprecated
     def _getDistanceVar(self):
         return self.distanceVar
-        
+   
     def _calcValue(self):
         return self._value
 
@@ -142,7 +149,7 @@ class _InterfaceSurfactantVariable(CellVariable):
         self.surfactantVar = self._requires(surfactantVar)
 
     def _calcValue(self):
-        areas = self.surfactantVar._getDistanceVar().getCellInterfaceAreas()        
+        areas = self.surfactantVar.distanceVar.getCellInterfaceAreas()        
         areas = numerix.where(areas > 1e-20, areas, 1)
         return numerix.array(self.surfactantVar) * self.mesh.cellVolumes / areas
 

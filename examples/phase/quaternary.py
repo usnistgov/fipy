@@ -278,7 +278,7 @@ interstitial diffusion equations, we arrange in canonical form as before:
 .. index:: PowerLawConvectionTerm
 
 >>> for Cj in interstitials:
-...     phaseTransformation = (rho.getHarmonicFaceValue() / (R * T)) \
+...     phaseTransformation = (rho.harmonicFaceValue / (R * T)) \
 ...       * (Cj.standardPotential * p(phase).faceGrad 
 ...          + 0.5 * Cj.barrier * g(phase).faceGrad)
 ...                            
@@ -290,7 +290,7 @@ interstitial diffusion equations, we arrange in canonical form as before:
 ...     
 ...     convectionCoeff = counterDiffusion + phaseTransformation
 ...     convectionCoeff *= (Cj.diffusivity
-...                         / (1. + CkSum.getHarmonicFaceValue()))
+...                         / (1. + CkSum.harmonicFaceValue))
 ...                         
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
@@ -329,7 +329,7 @@ The canonical form of the substitutional diffusion equations is
     }_{\text{convection}}
 
 >>> for Cj in substitutionals:
-...     phaseTransformation = (solvent.getHarmonicFaceValue() / (R * T)) \
+...     phaseTransformation = (solvent.harmonicFaceValue / (R * T)) \
 ...       * ((Cj.standardPotential - solvent.standardPotential) * p(phase).faceGrad 
 ...          + 0.5 * (Cj.barrier - solvent.barrier) * g(phase).faceGrad)
 ...                            
@@ -341,7 +341,7 @@ The canonical form of the substitutional diffusion equations is
 ...     
 ...     convectionCoeff = counterDiffusion + phaseTransformation
 ...     convectionCoeff *= (Cj.diffusivity
-...                         / (1. - CkSum.getHarmonicFaceValue()))
+...                         / (1. - CkSum.harmonicFaceValue))
 ...                         
 ...     Cj.equation = (TransientTerm() 
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
@@ -409,9 +409,9 @@ We can confirm that the far-field phases have remained separated
 .. index:: take, allclose
 
 >>> X = mesh.faceCenters[0]
->>> print allclose(phase.getFaceValue()[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
+>>> print allclose(phase.faceValue[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
 True
->>> print allclose(phase.getFaceValue()[X==L], 0.0, rtol = 1e-5, atol = 1e-5)
+>>> print allclose(phase.faceValue[X==L], 0.0, rtol = 1e-5, atol = 1e-5)
 True
     
 and that the concentration fields have appropriately segregated into 
@@ -419,8 +419,8 @@ their equilibrium values in each phase
 
 >>> equilibrium = True
 >>> for Cj in interstitials + substitutionals:
-...     equilibrium &= allclose(Cj.getFaceValue()[X==0], Cj.S, rtol = 3e-3, atol = 3e-3).getValue()
-...     equilibrium &= allclose(Cj.getFaceValue()[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).getValue()
+...     equilibrium &= allclose(Cj.faceValue[X==0], Cj.S, rtol = 3e-3, atol = 3e-3).value
+...     equilibrium &= allclose(Cj.faceValue[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
 >>> print equilibrium
 True
 """

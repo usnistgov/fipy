@@ -243,7 +243,7 @@ The commands needed to build this equation are,
 >>> expoConstant = -transferCoefficient * faradaysConstant \
 ...                / (gasConstant * temperature)
 >>> tmp = currentDensity1 \
-...       * catalystVar.getInterfaceVar()
+...       * catalystVar.interfaceVar
 >>> exchangeCurrentDensity = currentDensity0 + tmp
 >>> expo = exp(expoConstant * overpotential)
 >>> currentDensity = expo * exchangeCurrentDensity * metalVar \
@@ -389,7 +389,7 @@ If running interactively, create viewers.
 >>> if __name__ == '__main__':
 ...     try:
 ...         viewer = MayaviSurfactantViewer(distanceVar,
-...                                         catalystVar.getInterfaceVar(),
+...                                         catalystVar.interfaceVar,
 ...                                         zoomFactor=1e6,
 ...                                         datamax=1.0, 
 ...                                         datamin=0.0,
@@ -397,7 +397,7 @@ If running interactively, create viewers.
 ...     except:
 ...         viewer = MultiViewer(viewers=(
 ...             Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
-...             Viewer(catalystVar.getInterfaceVar())))
+...             Viewer(catalystVar.interfaceVar)))
 ... else:
 ...     viewer = None
 

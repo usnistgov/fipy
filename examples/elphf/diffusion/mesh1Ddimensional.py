@@ -106,7 +106,7 @@ We create one diffusion equation for each substitutional component
     ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
-    ...         CkFaceSum += Ck.getHarmonicFaceValue()
+    ...         CkFaceSum += Ck.harmonicFaceValue
     ...        
     ...     convectionCoeff = CkSum.faceGrad \
     ...                       * (Cj.diffusivity / (1. - CkFaceSum))
@@ -142,7 +142,7 @@ we verify that the concentrations have become uniform
     >>> print substitutionals[0].getScaled().allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
-    >>> print substitutionals[1].getScaled().allclose("0.45 mol/m**3",
+    >>> print substitutionals[1].scaled.allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
     

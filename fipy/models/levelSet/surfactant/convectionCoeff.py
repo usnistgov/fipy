@@ -115,7 +115,7 @@ class _ConvectionCoeff(FaceVariable):
         dim = self.mesh.dim
         cellFaceIDs = self.mesh.cellFaceIDs
      
-        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._faceAreas
+        faceNormalAreas = self.distanceVar._levelSetNormals * self.mesh._faceAreas
 
         cellFaceNormalAreas = numerix.array(MA.filled(numerix.take(faceNormalAreas, cellFaceIDs, axis=-1), 0))
         norms = numerix.array(MA.filled(MA.array(self.mesh._cellNormals), 0))

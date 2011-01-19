@@ -118,7 +118,7 @@ We create one diffusion equation for each substitutional component
 ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
 ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...         CkSum += Ck
-...         CkFaceSum += Ck.getHarmonicFaceValue()
+...         CkFaceSum += Ck.harmonicFaceValue
 ...        
 ...     convectionCoeff = CkSum.faceGrad \
 ...                       * (Cj.diffusivity / (1. - CkFaceSum))
