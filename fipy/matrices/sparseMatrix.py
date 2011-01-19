@@ -37,8 +37,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
-class _SparseMatrix:
+class _SparseMatrix(object):
     
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -47,10 +48,14 @@ class _SparseMatrix:
     def __init__(self, mesh=None, bandwidth=0, matrix=None, sizeHint=None):
         pass
 
+    matrix     = None
+    _shape     = property()
+    numpyArray = property()
+
     __array_priority__ = 100.0    
 
     def _getMatrix(self):
-        pass
+        raise NotImplementedError
 
     def __array_wrap(self, arr, context=None):
         if context is None:
@@ -124,7 +129,7 @@ class _SparseMatrix:
         return self
         
 ##     def __eq__(self,other):
-## 	return self.matrix.__eq__(other._getMatrix())
+## 	return self.matrix.__eq__(other.matrix)
 
     def _getShape(self):
         pass

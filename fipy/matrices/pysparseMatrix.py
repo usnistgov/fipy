@@ -39,6 +39,7 @@ from fipy.tools import numerix
 
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
+from fipy.tools.decorators import getsetDeprecated
 
 class _PysparseMatrixBase(_SparseMatrix):
     
@@ -57,9 +58,10 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         self.matrix = matrix
 
+    @getsetDeprecated
     def _getMatrix(self):
         return self.matrix
-
+        
     def getCoupledClass(self):
         return _CoupledPysparseMeshMatrix
     
@@ -74,12 +76,12 @@ class _PysparseMatrixBase(_SparseMatrix):
             return _PysparseMatrixBase(matrix=m)
 
     def __iadd__(self, other):
-        self._iadd(self._getMatrix(), other)
+        self._iadd(self.matrix, other)
         return self
         
     def _iadd(self, L, other, sign = 1):
         if other != 0:
-            L.shift(sign, other._getMatrix())
+            L.shift(sign, other.matrix)
 
     def __add__(self, other):
         """
@@ -100,14 +102,14 @@ class _PysparseMatrixBase(_SparseMatrix):
             >>> print L + 3
             Traceback (most recent call last):
             ...
-            AttributeError: 'int' object has no attribute '_getMatrix'
+            AttributeError: 'int' object has no attribute 'matrix'
         """
 
         if other == 0:
             return self
         else:
             L = self.matrix.copy()
-            L.shift(1, other._getMatrix())
+            L.shift(1, other.matrix)
             return _PysparseMatrixBase(matrix=L)
         
     __radd__ = __add__
@@ -118,14 +120,14 @@ class _PysparseMatrixBase(_SparseMatrix):
             return self
         else:
             L = self.matrix.copy()
-            L.shift(-1, other._getMatrix())
+            L.shift(-1, other.matrix)
             return _PysparseMatrixBase(matrix=L)
 
     def __rsub__(self, other):
         return -self + other
     
     def __isub__(self, other):
-            return self._iadd(self._getMatrix(), other, -1)
+            return self._iadd(self.matrix, other, -1)
 
     def __mul__(self, other):
         """
@@ -160,7 +162,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         N = self.matrix.shape[0]
 
         if isinstance(other, _PysparseMatrixBase):
-            return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+            return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, other.matrix))
         else:
             shape = numerix.shape(other)
             if shape == ():
@@ -324,7 +326,7 @@ class _PysparseMeshMatrix(_PysparseMatrix):
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):
             return _PysparseMeshMatrix(mesh=self.mesh, 
-                                       matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+                                       matrix=spmatrix.matrixmultiply(self.matrix, other.matrix))
         else:
             return _PysparseMatrix.__mul__(self, other)
 

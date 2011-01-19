@@ -65,7 +65,7 @@ class PysparseSolver(Solver):
         doesn't use preconditioning, this must be overridden.
         """
 
-        A = L._getMatrix()
+        A = L.matrix
 
         if self.preconditioner is None:
             P = None
