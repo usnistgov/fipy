@@ -92,6 +92,9 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
         return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
+        if _NonDiffusionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
+            raise AssertionError, 'A different solver has been defined in a base class.'
+        
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)

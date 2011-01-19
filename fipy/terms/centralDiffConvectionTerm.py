@@ -54,9 +54,6 @@ class CentralDifferenceConvectionTerm(ConvectionTerm):
     For further details see :ref:`sec:NumericalSchemes`.
     """
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):        
-        return None 
-    
     class _Alpha(FaceVariable):
         def __init__(self, P):
             FaceVariable.__init__(self, P.getMesh())

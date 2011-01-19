@@ -62,10 +62,5 @@ class ExplicitUpwindConvectionTerm(_BaseUpwindConvectionTerm):
 
         return weight
         
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        """
-        ExplicitUpwindConvectionTerm only affects the b-vector, leaving a symmetric matrix.
-        """
-        return None
 
 

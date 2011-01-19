@@ -46,9 +46,6 @@ from fipy.tools import numerix
 
 class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):        
-        return None
-    
     def __getGradient(self, normalGradient, gradUpwind):
         gradUpUpwind = -gradUpwind + 2 * normalGradient
 

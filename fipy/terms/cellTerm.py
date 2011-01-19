@@ -62,9 +62,6 @@ class CellTerm(_NonDiffusionTerm):
         self.coeffVectors = None
         self._var = None
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        return None
-
     def __calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.getMesh()
         coeff = self._getGeomCoeff(mesh)

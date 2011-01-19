@@ -163,7 +163,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     def __repr__(self):
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):        
+    def _getDefaultSolver(self, solver, *args, **kwargs):
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)

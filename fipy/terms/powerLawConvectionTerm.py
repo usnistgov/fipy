@@ -34,14 +34,13 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import numerix
-from fipy.solvers import DefaultAsymmetricSolver
 
-class PowerLawConvectionTerm(ConvectionTerm):
+class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
@@ -54,12 +53,6 @@ class PowerLawConvectionTerm(ConvectionTerm):
     :math:`\alpha_f` is calculated using the power law scheme.
     For further details see :ref:`sec:NumericalSchemes`.
     """
-
-    def _getDefaultSolver(self, solver, *args, **kwargs):        
-        if solver and not solver._canSolveAsymmetric():
-            import warnings
-            warnings.warn("%s cannot solve assymetric matrices" % solver)
-        return solver or DefaultAsymmetricSolver(*args, **kwargs)
     
     class _Alpha(FaceVariable):
 	def __init__(self, P):

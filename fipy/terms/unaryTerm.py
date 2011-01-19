@@ -63,6 +63,8 @@ class _UnaryTerm(Term):
 
         return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
 
+    def _getDefaultSolver(self, solver, *args, **kwargs):
+        return None
         
 class __UnaryTerm(_UnaryTerm): 
     """

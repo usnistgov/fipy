@@ -366,9 +366,6 @@ class _BaseDiffusionTerm(_UnaryTerm):
     def _getTransientGeomCoeff(self, mesh):
         return None  
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        return None
-
 def _test(): 
     import doctest
     return doctest.testmod()
