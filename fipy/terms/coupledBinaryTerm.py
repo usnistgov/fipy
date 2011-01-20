@@ -70,7 +70,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
         >>> eq = eq0 & eq1
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
-        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
+        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.getGlobalValue()
@@ -92,7 +92,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
         >>> eq = eq0 & eq1
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
-        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
+        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
