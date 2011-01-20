@@ -529,13 +529,13 @@ class Term:
         Exception: The solution variable needs to be specified
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> from fipy.tools import parallel
-        >>> numpyMatrix = solver.matrix.getNumpyArray()
+        >>> numpyMatrix = solver.matrix.numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
         True
         >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
-        >>> numpyMatrix = solver.matrix.getNumpyArray()
+        >>> numpyMatrix = solver.matrix.numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, -1, 0], [-1, 2, -1], [0, -1, 1]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0,])
@@ -552,7 +552,7 @@ class Term:
         >>> print (eq.term, eq.other)
         (DiffusionTerm(coeff=[1.0], var=B), 10.0)
         >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
-        >>> numpyMatrix = solver.matrix.getNumpyArray()
+        >>> numpyMatrix = solver.matrix.numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0], [1, -2, 1], [0, 1, -1]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [-10, -10, -10]) 
@@ -593,7 +593,7 @@ class Term:
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve()
-        >>> numpyMatrix = eq.getMatrix().getNumpyArray()
+        >>> numpyMatrix = eq.getMatrix().numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], [1, -1, 0, 0], [0, 0, -2, 2], [0, 0, 2, -2]])
         True
         >>> print eq.getRHSvector().getGlobalValue()
@@ -633,7 +633,7 @@ class Term:
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve()
-        >>> numpyMatrix = eq.getMatrix().getNumpyArray()
+        >>> numpyMatrix = eq.getMatrix().numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, -2, 2, 0, 0],
         ...                                                             [1, -1, 2, -2, 0, 0],
         ...                                                             [0, 0, -2, 2, -3, 3],

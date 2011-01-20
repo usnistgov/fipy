@@ -75,7 +75,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.getGlobalValue()
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().getNumpyArray(),
+        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
         ...                        [[2, -1, 0, 2, -2, 0],
         ...                         [-1, 3, -1, -2, 4, -2],
         ...                         [0, -1, 2, 0, -2, 2],
@@ -97,7 +97,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().getNumpyArray(),
+        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
         ...                        [[ 2, -1,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0],
         ...                         [-1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0,  0],
         ...                         [ 0, -1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0],

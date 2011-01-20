@@ -229,7 +229,7 @@ class MatplotlibSparseMatrixViewer:
         y = c.row
         x = c.col
         z = c.data
-        N = matrix._getShape()[0]
+        N = matrix._shape[0]
 
         b = RHSvector
         if numerix.shape(b) == ():

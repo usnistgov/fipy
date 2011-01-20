@@ -244,7 +244,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
 
-            >>> L = (L1 * L2).getNumpyArray()
+            >>> L = (L1 * L2).numpyArray
 
             >>> print parallel.Nproc > 1 or numerix.allclose(tmp, L)
             True
@@ -775,7 +775,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
 
-            >>> L = (L1 * L2).getNumpyArray()
+            >>> L = (L1 * L2).numpyArray
 
             >>> print numerix.allclose(tmp, L)
             True
