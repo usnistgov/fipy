@@ -38,6 +38,8 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
+from fipy.tools.decorators import getsetDeprecated
+
 class _Viewer(object):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -71,6 +73,7 @@ class _Viewer(object):
 
         self.title = title
 
+    @getsetDeprecated
     def getVars(self):
         return self.vars
         

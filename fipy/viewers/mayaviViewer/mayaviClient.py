@@ -88,14 +88,14 @@ class MayaviClient(_Viewer):
 
         try:
             self.vtkCellViewer = VTKCellViewer(vars=vars)
-            cell_vars = self.vtkCellViewer.getVars()
+            cell_vars = self.vtkCellViewer.vars
         except TypeError:
             self.vtkCellViewer = None
             cell_vars = []
 
         try:
             self.vtkFaceViewer = VTKFaceViewer(vars=vars)
-            face_vars = self.vtkFaceViewer.getVars()
+            face_vars = self.vtkFaceViewer.vars
         except TypeError:
             self.vtkFaceViewer = None
             face_vars = []

@@ -39,6 +39,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import _Viewer
+from fipy.tools.decorators import getsetDeprecated
 
 class _VTKViewer(_Viewer):
     """Renders `_MeshVariable` data in VTK format
@@ -64,7 +65,7 @@ class _VTKViewer(_Viewer):
         
         self.dataset = self._makeDataSet(mesh)
         
-        data = self._getData()
+        data = self._data
         
         for var in self.vars:
             name, rank, value = self._nameRankValue(var)
@@ -82,11 +83,13 @@ class _VTKViewer(_Viewer):
     def _makeDataSet(self, mesh):
         pass
         
+    @getsetDeprecated
     def _getData(self):
-        pass
+        return self._data
         
+    @getsetDeprecated
     def _getVariableClass(self):
-        pass
+        return self._variableClass
 
     @staticmethod
     def _nameRankValue(var):
@@ -97,7 +100,7 @@ class _VTKViewer(_Viewer):
         return (name, rank, value)
         
     def plot(self, filename=None):
-        data = self._getData()
+        data = self._data
 
         from fipy.tools import numerix
         
@@ -113,7 +116,7 @@ class _VTKViewer(_Viewer):
     def _getSuitableVars(self,vars):
         if type(vars) not in [type([]),type(())]:
             vars = [vars]
-        cls = self._getVariableClass()
+        cls = self._variableClass
         vars = [var for var in vars if isinstance(var, cls)]
         if len(vars) == 0:
             raise TypeError("%s can only display %s" % (self.__class__.__name__, cls.__name__))

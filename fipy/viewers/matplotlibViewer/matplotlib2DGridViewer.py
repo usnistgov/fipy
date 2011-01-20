@@ -37,6 +37,7 @@
 __docformat__ = 'restructuredtext'
 
 from matplotlibViewer import _MatplotlibViewer, _ColorBar
+from fipy.tools.decorators import getsetDeprecated
 
 class Matplotlib2DGridViewer(_MatplotlibViewer):
     """
@@ -73,7 +74,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
                                    cmap=cmap, colorbar=colorbar, axes=axes, 
                                    **kwlimits)
 
-        self.image = self.axes.imshow(self._getData(),
+        self.image = self.axes.imshow(self._data,
                                       extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
                                               self._getLimit('ymin'), self._getLimit('ymax')),
                                       vmin=0, vmax=1,
@@ -108,7 +109,12 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         # this viewer can only display one variable
         return [vars[0]]
         
+    @getsetDeprecated
     def _getData(self):
+        return self._data
+
+    @property
+    def _data(self):
         from fipy.tools.numerix import array, reshape
         return reshape(array(self.vars[0]), self.vars[0].mesh.shape[::-1])[::-1]
 
@@ -116,7 +122,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         self.norm.vmin = self._getLimit(('datamin', 'zmin'))
         self.norm.vmax = self._getLimit(('datamax', 'zmax'))
         
-        self.image.set_data(self.norm(self._getData()))
+        self.image.set_data(self.norm(self._data))
         
         if self.colorbar is not None:
             self.colorbar.plot()
