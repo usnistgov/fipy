@@ -222,7 +222,9 @@ def rank(a):
        element `Grid1D`, has rank 0. If it is defined on a 3x3 `Grid2D`, it is
        still rank 0.
     """
-    if hasattr(a, "getRank"):
+    if hasattr(a, "rank"):
+        return a.rank
+    elif hasattr(a, "getRank"):
         return a.getRank()
     else:
         return NUMERIX.rank(a)
@@ -809,15 +811,15 @@ def dot(a1, a2, axis=0):
     >>> from fipy.variables.cellVariable import CellVariable
     >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
     >>> v2 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
-    >>> dot(v1, v2)._getVariableClass()
+    >>> dot(v1, v2)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
-    >>> dot(v2, v1)._getVariableClass()
+    >>> dot(v2, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> print rank(dot(v2, v1))
     0
     >>> print dot(v1, v2)
     [ 4 10]
-    >>> dot(v1, v1)._getVariableClass()
+    >>> dot(v1, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> print dot(v1, v1)
     [ 4 10]

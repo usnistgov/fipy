@@ -169,7 +169,9 @@ class PhysicalField(object):
         .. _PhysicalQuantity: http://starship.python.net/~hinsen/ScientificPython/ScientificPythonManual/Scientific_31.html
         .. _Numeric: http://www.numpy.org
         """
-        if hasattr(value, "getValue") and callable(value.getValue):
+        if hasattr(value, "value") and not isinstance(value, PhysicalField):
+            value = value.value
+        elif hasattr(value, "getValue") and callable(value.getValue):
             value = value.getValue()
             
         if isinstance(value, PhysicalField):
@@ -607,6 +609,7 @@ class PhysicalField(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
         
+           >>> from fipy.tools.dimensions.physicalField import PhysicalField
            >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0], unit="m"))
            <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
 
@@ -1930,7 +1933,7 @@ def _Scale(quantity, scaling):
     
     quantity = PhysicalField(quantity)
 
-    if not quantity.unit.isDimensionless():
+    if not quantity.getUnit().isDimensionless():
         scaling = PhysicalField(scaling)
         # normalize quantity to scaling
         # error will be thrown if incompatible
@@ -1940,7 +1943,7 @@ def _Scale(quantity, scaling):
         # Automatically throws an error if it's not a number.
         dimensionless = quantity
                 
-    if isinstance(dimensionless,PhysicalField) and not dimensionless.unit.isDimensionless():
+    if isinstance(dimensionless,PhysicalField) and not dimensionless.getUnit().isDimensionless():
         raise TypeError, `quantity.inBaseUnits().unit` + ' and ' \
         + `scaling.inBaseUnits().unit` \
         + ' are incompatible'

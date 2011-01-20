@@ -96,7 +96,7 @@ class FixedValue(BoundaryCondition):
         if value.shape == faces.shape:
             value = value[faces]
             
-        vector.putAdd(bb, self.adjacentCellIDs, -coeff['cell 1 offdiag'].getValue()[faces] * value)
+        vector.putAdd(bb, self.adjacentCellIDs, -coeff['cell 1 offdiag'].value[faces] * value)
         
         return (LL, bb)
         

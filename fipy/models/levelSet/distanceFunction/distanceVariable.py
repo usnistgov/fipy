@@ -446,7 +446,7 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-1.5, -0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 0., 1., 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), 
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, 
         ...                        answer)
         True
 
@@ -461,7 +461,7 @@ class DistanceVariable(CellVariable):
         ...                                              1.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, 1, 0, 1, 0, 1, 0, 1, 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), answer)
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, answer)
         True
 
         Another 2D test case:
@@ -472,7 +472,7 @@ class DistanceVariable(CellVariable):
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, numerix.sqrt(2) / 4,  numerix.sqrt(2) / 4, 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), 
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, 
         ...                        answer)
         True
 
@@ -484,7 +484,7 @@ class DistanceVariable(CellVariable):
         >>> x, y = mesh.cellCenters
         >>> rad = numerix.sqrt((x - .5)**2 + (y - .5)**2) - r
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-        >>> print distanceVariable.getCellInterfaceAreas().sum()
+        >>> print distanceVariable.cellInterfaceAreas.sum()
         1.57984690073
         """        
         normals = numerix.array(MA.filled(self._cellInterfaceNormals, 0))

@@ -627,9 +627,9 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
 
         >>> from fipy import *
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3)
-        >>> GNO = matrix._getGlobalNonOverlappingRowIDs()
-        >>> GO = matrix._getGlobalOverlappingRowIDs()
-        >>> LNO = matrix._getLocalNonOverlappingRowIDs()
+        >>> GNO = matrix._globalNonOverlappingRowIDs
+        >>> GO = matrix._globalOverlappingRowIDs
+        >>> LNO = matrix._localNonOverlappingRowIDs
         >>> print parallel.Nproc != 1 or numerix.allequal(GNO, numerix.arange(15))
         True
         >>> print parallel.Nproc != 1 or numerix.allequal(GO, numerix.arange(15))
@@ -654,8 +654,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         self.numberOfVariables = numberOfVariables
 
         comm = mesh.communicator.epetra_comm
-        globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
-        globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
+        globalNonOverlappingRowIDs = self._globalNonOverlappingRowIDs
+        globalOverlappingRowIDs = self._globalOverlappingRowIDs
         nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingRowIDs), 0, comm)
         overlappingMap = Epetra.Map(-1, list(globalOverlappingRowIDs), 0, comm)
 
@@ -676,13 +676,28 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
          N = len(IDs)
          return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
 
+    @getsetDeprecated
     def _getGlobalNonOverlappingRowIDs(self):
+        return self._globalNonOverlappingRowIDs
+
+    @property
+    def _globalNonOverlappingRowIDs(self):
         return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
 
+    @getsetDeprecated
     def _getGlobalOverlappingRowIDs(self):
+        return self._globalOverlappingRowIDs
+
+    @property
+    def _globalOverlappingRowIDs(self):
         return self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
 
+    @getsetDeprecated
     def _getLocalNonOverlappingRowIDs(self):
+        return self._localNonOverlappingRowIDs
+
+    @property
+    def _localNonOverlappingRowIDs(self):
         return self._cellIDsToLocalRowIDs(self.mesh._localNonOverlappingCellIDs)
 
     def copy(self):
@@ -696,8 +711,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         return self
 
     def _getStencil(self, id1, id2):
-        globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
-        globalNonOverlappingRowIDs = self._getGlobalNonOverlappingRowIDs()
+        globalOverlappingRowIDs = self._globalOverlappingRowIDs
+        globalNonOverlappingRowIDs = self._globalNonOverlappingRowIDs
             
         id1 = globalOverlappingRowIDs[id1]
         id2 = globalOverlappingRowIDs[id2]
@@ -749,7 +764,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         
         comm = self.mesh.communicator.epetra_comm
         
-        globalOverlappingRowIDs = self._getGlobalOverlappingRowIDs()
+        globalOverlappingRowIDs = self._globalOverlappingRowIDs
         overlappingMap = Epetra.Map(-1, list(globalOverlappingRowIDs), 0, comm)
 
         overlapping_result = Epetra.Vector(overlappingMap)
@@ -816,7 +831,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     other_map = self.overlappingMap
 
                 if other_map.SameAs(self.overlappingMap):
-                    localNonOverlappingRowIDs = self._getLocalNonOverlappingRowIDs()
+                    localNonOverlappingRowIDs = self._localNonOverlappingRowIDs
 
                     other = Epetra.Vector(self.nonOverlappingMap, 
                                           other[localNonOverlappingRowIDs])

@@ -51,7 +51,7 @@ class _FaceGradVariable(FaceVariable):
         id1, id2 = self.mesh._adjacentCellIDs
         N2 = numerix.take(self.var.value,id2)
         faceMask = numerix.array(self.mesh.exteriorFaces)
-        N2[..., faceMask] = self.var.getFaceValue()[..., faceMask]
+        N2[..., faceMask] = self.var.faceValue[..., faceMask]
         N = (N2 - numerix.take(self.var,id1)) / dAP
 
         normals = self.mesh._orientedFaceNormals

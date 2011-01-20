@@ -21,7 +21,7 @@ class ScharfetterGummelFaceVariable(_CellToFaceVariable):
         
         for bc in self.bcs:
             if isinstance(bc, FixedValue):
-                value[bc.faces.value] = bc._getValue()
+                value[bc.faces.value] = bc._value
         
         return value
         
