@@ -57,11 +57,7 @@ class _PysparseMatrixBase(_SparseMatrix):
           - `matrix`: The starting `spmatrix` 
         """
         self.matrix = matrix
-
-    @getsetDeprecated
-    def _getMatrix(self):
-        return self.matrix
-        
+   
     def getCoupledClass(self):
         return _CoupledPysparseMeshMatrix
     
@@ -184,11 +180,12 @@ class _PysparseMatrixBase(_SparseMatrix):
         else:
             return self * other
             
-    def _getShape(self):
+    @property
+    def _shape(self):
         return self.matrix.shape
 
     def _getRange(self):
-        return range(self._getShape()[1]), range(self._getShape()[0])
+        return range(self._shape[1]), range(self._shape[0])
         
     def put(self, vector, id1, id2):
         """
@@ -220,8 +217,8 @@ class _PysparseMatrixBase(_SparseMatrix):
                 ---        ---     3.141593  
         """
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getShape()[0])
-            tmp = numerix.zeros((self._getShape()[0],), 'd')
+            ids = numerix.arange(self._shape[0])
+            tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
             self.put(tmp, ids, ids)
         else:
@@ -234,7 +231,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         return vector
 
     def takeDiagonal(self):
-        ids = numerix.arange(self._getShape()[0])
+        ids = numerix.arange(self._shape[0])
         return self.take(ids, ids)
 
     def addAt(self, vector, id1, id2):
@@ -253,16 +250,17 @@ class _PysparseMatrixBase(_SparseMatrix):
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getShape()[0])
-            tmp = numerix.zeros((self._getShape()[0],), 'd')
+            ids = numerix.arange(self._shape[0])
+            tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
             self.addAt(tmp, ids, ids)
         else:
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
 
-    def getNumpyArray(self):
-        shape = self._getShape()
+    @property
+    def numpyArray(self):
+        shape = self._shape
         indices = numerix.indices(shape)
         numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
         return numerix.reshape(numMatrix, shape)

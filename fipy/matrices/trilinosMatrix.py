@@ -89,10 +89,6 @@ class _TrilinosMatrixBase(_SparseMatrix):
         else:
             self.bandwidth = bandwidth
 
-    @getsetDeprecated
-    def _getMatrix(self):
-        return self.matrix
-
     def _setMatrix(self, m):
         self._matrix = m
 
@@ -314,7 +310,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
         else:
             return self * other
             
-    def _getShape(self):
+    @property
+    def _shape(self):
         N = self.matrix.NumGlobalRows()
         return (N,N)
 
@@ -491,7 +488,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
             self.matrix.FillComplete()
         EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
-    def getNumpyArray(self):
+    @property
+    def numpyArray(self):
         import tempfile
         import os
         from scipy.io import mmio
