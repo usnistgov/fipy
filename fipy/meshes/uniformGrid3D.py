@@ -79,13 +79,13 @@ class UniformGrid3D(Grid3D):
         self.dim = 3
         
         self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        scale = PhysicalField(value = 1, unit = self.dx.unit)
         self.dx /= scale
         
         nx = int(nx)
         
         self.dy = PhysicalField(value = dy)
-        if self.dy.getUnit().isDimensionless():
+        if self.dy.unit.isDimensionless():
             self.dy = dy
         else:
             self.dy /= scale
@@ -93,7 +93,7 @@ class UniformGrid3D(Grid3D):
         ny = int(ny)
         
         self.dz = PhysicalField(value = dy)
-        if self.dz.getUnit().isDimensionless():
+        if self.dz.unit.isDimensionless():
             self.dz = dz
         else:
             self.dz /= scale

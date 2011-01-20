@@ -73,7 +73,7 @@ class CylindricalGrid1D(Grid1D):
         
     """
     def __init__(self, dx=1., nx=None, origin=(0,), overlap=2):
-        scale = PhysicalField(value=1, unit=PhysicalField(value=dx).getUnit())
+        scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
     

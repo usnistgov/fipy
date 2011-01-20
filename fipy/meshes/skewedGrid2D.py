@@ -52,11 +52,11 @@ class SkewedGrid2D(Mesh2D):
         self.ny = ny
         
         self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        scale = PhysicalField(value = 1, unit = self.dx.unit)
         self.dx /= scale
         
         self.dy = PhysicalField(value = dy)
-        if self.dy.getUnit().isDimensionless():
+        if self.dy.unit.isDimensionless():
             self.dy = dy
         else:
             self.dy /= scale

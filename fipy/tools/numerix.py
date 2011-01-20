@@ -97,7 +97,7 @@ def _isPhysical(arr):
 
 def getUnit(arr):
     if hasattr(arr, "getUnit") and callable(arr.getUnit):
-        return arr.getUnit()
+        return arr.unit
     else:
         from fipy.tools.dimensions import physicalField
         return physicalField._unity
@@ -881,11 +881,11 @@ def _sqrtDotIn(a1, a2):
     
     unit1 = unit2 = 1
     if _isPhysical(a1):
-        unit1 = a1.inBaseUnits().getUnit()
-        a1 = a1.getNumericValue()
+        unit1 = a1.inBaseUnits().unit
+        a1 = a1.numericValue
     if _isPhysical(a2):
-        unit2 = a2.inBaseUnits().getUnit()
-        a2 = a2.getNumericValue()
+        unit2 = a2.inBaseUnits().unit
+        a2 = a2.numericValue
     NJ, ni = NUMERIX.shape(a1)
     result1 = NUMERIX.zeros((ni,),'d')
 

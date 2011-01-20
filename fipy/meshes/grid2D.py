@@ -63,7 +63,7 @@ class Grid2D(Mesh2D):
         }
 
         self.dx  = PhysicalField(value = dx)
-        scale    = PhysicalField(value=1, unit=self.dx.getUnit())
+        scale    = PhysicalField(value=1, unit=self.dx.unit)
         self.dx /= scale
         
         nx = self._calcNumPts(d=self.dx, n=nx, axis="x")

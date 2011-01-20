@@ -87,7 +87,7 @@ class ScaledMeshGeometry(AbstractScaledMeshGeometry):
         """
         self._scale['length'] = PhysicalField(value=val)
         
-        if self._scale['length'].getUnit().isDimensionless():
+        if self._scale['length'].unit.isDimensionless():
             self._scale['length'] = 1    
 
         self._scale['area'] = self._calcAreaScale()

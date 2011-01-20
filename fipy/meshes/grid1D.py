@@ -72,7 +72,7 @@ class Grid1D(Mesh1D):
 
         self.dim = 1
         self.dx = PhysicalField(value=dx)
-        scale   = PhysicalField(value=1, unit=self.dx.getUnit())
+        scale   = PhysicalField(value=1, unit=self.dx.unit)
         self.dx /= scale
 
         nx = self._calcNumPts(d=self.dx, n=nx)
