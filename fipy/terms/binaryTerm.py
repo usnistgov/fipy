@@ -54,7 +54,10 @@ class _BinaryTerm(Term):
                 raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
         else:
             if other.var is None:
-                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
+                if isinstance(other, _ExplicitSourceTerm):
+                    other.var = term.var
+                else:
+                    raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
 
 	Term.__init__(self, var=self._getVars()[0])
 
