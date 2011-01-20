@@ -75,13 +75,13 @@ class Grid3D(Mesh):
         }
         
         self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.getUnit())
+        scale = PhysicalField(value = 1, unit = self.dx.unit)
         self.dx /= scale
         
         nx = self._calcNumPts(d = self.dx, n = nx, axis = "x")
         
         self.dy = PhysicalField(value = dy)
-        if self.dy.getUnit().isDimensionless():
+        if self.dy.unit.isDimensionless():
             self.dy = dy
         else:
             self.dy /= scale
@@ -89,7 +89,7 @@ class Grid3D(Mesh):
         ny = self._calcNumPts(d = self.dy, n = ny, axis = "y")
         
         self.dz = PhysicalField(value = dz)
-        if self.dz.getUnit().isDimensionless():
+        if self.dz.unit.isDimensionless():
             self.dz = dz
         else:
             self.dz /= scale

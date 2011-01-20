@@ -124,7 +124,7 @@ class MayaviSurfactantViewer(_Viewer):
         if animate:
             self._initialCondition = None
 
-        if distanceVar.mesh.getDim() != 2:
+        if distanceVar.mesh.dim != 2:
             raise 'The MayaviIsoViewer only works for 2D meshes.'
 
     def _getStructure(self):
@@ -132,8 +132,8 @@ class MayaviSurfactantViewer(_Viewer):
         ##maxX = self.distanceVar.mesh.faceCenters[0].max()
         ##minX = self.distanceVar.mesh.faceCenters[0].min()
 
-        IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())[0]
-        coordinates = numerix.take(numerix.array(self.distanceVar.mesh.getCellCenters()).swapaxes(0,1), IDs)
+        IDs = numerix.nonzero(self.distanceVar._cellInterfaceFlag)[0]
+        coordinates = numerix.take(numerix.array(self.distanceVar.mesh.cellCenters).swapaxes(0,1), IDs)
 
         coordinates -= numerix.take(numerix.array(self.distanceVar.grad * self.distanceVar).swapaxes(0,1), IDs)
 

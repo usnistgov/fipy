@@ -40,6 +40,7 @@ from PyTrilinos import EpetraExt
 
 from fipy.solvers.solver import Solver
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class TrilinosSolver(Solver):
 
@@ -61,7 +62,12 @@ class TrilinosSolver(Solver):
             self.matrix = matrix
         self.RHSvector = RHSvector
         
+    @getsetDeprecated
     def _getGlobalMatrixAndVectors(self):
+        return self._globalMatrixAndVectors
+
+    @property
+    def _globalMatrixAndVectors(self):
         if not hasattr(self, 'globalVectors'):
             globalMatrix = self.matrix.asTrilinosMeshMatrix()
 
@@ -86,7 +92,7 @@ class TrilinosSolver(Solver):
         
     def _solve(self):
 
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._getGlobalMatrixAndVectors()
+        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
 
         self._solve_(globalMatrix.matrix, 
                      nonOverlappingVector, 
@@ -103,7 +109,12 @@ class TrilinosSolver(Solver):
         del self.var
         del self.RHSvector
             
+    @getsetDeprecated
     def _getMatrixClass(self):
+        return self._matrixClass
+
+    @property
+    def _matrixClass(self):
         from fipy.solvers import _MeshMatrix
         return _MeshMatrix
 
@@ -111,7 +122,7 @@ class TrilinosSolver(Solver):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._getGlobalMatrixAndVectors()
+            globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
                 
             # If A is an Epetra.Vector with map M
             # and B is an Epetra.Vector with map M

@@ -70,12 +70,12 @@ class _CoupledBinaryTerm(_BinaryTerm):
         >>> eq = eq0 & eq1
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
-        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
+        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.getGlobalValue()
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().getNumpyArray(),
+        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
         ...                        [[2, -1, 0, 2, -2, 0],
         ...                         [-1, 3, -1, -2, 4, -2],
         ...                         [0, -1, 2, 0, -2, 2],
@@ -92,12 +92,12 @@ class _CoupledBinaryTerm(_BinaryTerm):
         >>> eq = eq0 & eq1
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
-        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._getMatrixClass()) 
+        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().getNumpyArray(),
+        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
         ...                        [[ 2, -1,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0],
         ...                         [-1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0,  0],
         ...                         [ 0, -1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0],

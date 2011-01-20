@@ -39,6 +39,7 @@ from fipy.tools import numerix
 
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
+from fipy.tools.decorators import getsetDeprecated
 
 class _PysparseMatrixBase(_SparseMatrix):
     
@@ -56,10 +57,7 @@ class _PysparseMatrixBase(_SparseMatrix):
           - `matrix`: The starting `spmatrix` 
         """
         self.matrix = matrix
-
-    def _getMatrix(self):
-        return self.matrix
-
+   
     def getCoupledClass(self):
         return _CoupledPysparseMeshMatrix
     
@@ -74,12 +72,12 @@ class _PysparseMatrixBase(_SparseMatrix):
             return _PysparseMatrixBase(matrix=m)
 
     def __iadd__(self, other):
-        self._iadd(self._getMatrix(), other)
+        self._iadd(self.matrix, other)
         return self
         
     def _iadd(self, L, other, sign = 1):
         if other != 0:
-            L.shift(sign, other._getMatrix())
+            L.shift(sign, other.matrix)
 
     def __add__(self, other):
         """
@@ -100,14 +98,14 @@ class _PysparseMatrixBase(_SparseMatrix):
             >>> print L + 3
             Traceback (most recent call last):
             ...
-            AttributeError: 'int' object has no attribute '_getMatrix'
+            AttributeError: 'int' object has no attribute 'matrix'
         """
 
         if other == 0:
             return self
         else:
             L = self.matrix.copy()
-            L.shift(1, other._getMatrix())
+            L.shift(1, other.matrix)
             return _PysparseMatrixBase(matrix=L)
         
     __radd__ = __add__
@@ -118,14 +116,14 @@ class _PysparseMatrixBase(_SparseMatrix):
             return self
         else:
             L = self.matrix.copy()
-            L.shift(-1, other._getMatrix())
+            L.shift(-1, other.matrix)
             return _PysparseMatrixBase(matrix=L)
 
     def __rsub__(self, other):
         return -self + other
     
     def __isub__(self, other):
-            return self._iadd(self._getMatrix(), other, -1)
+            return self._iadd(self.matrix, other, -1)
 
     def __mul__(self, other):
         """
@@ -140,7 +138,7 @@ class _PysparseMatrixBase(_SparseMatrix):
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
 
-            >>> numerix.allclose((L1 * L2).getNumpyArray(), tmp)
+            >>> numerix.allclose((L1 * L2).numpyArray, tmp)
             1
 
         or a sparse matrix by a vector
@@ -160,7 +158,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         N = self.matrix.shape[0]
 
         if isinstance(other, _PysparseMatrixBase):
-            return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+            return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, other.matrix))
         else:
             shape = numerix.shape(other)
             if shape == ():
@@ -182,11 +180,12 @@ class _PysparseMatrixBase(_SparseMatrix):
         else:
             return self * other
             
-    def _getShape(self):
+    @property
+    def _shape(self):
         return self.matrix.shape
 
     def _getRange(self):
-        return range(self._getShape()[1]), range(self._getShape()[0])
+        return range(self._shape[1]), range(self._shape[0])
         
     def put(self, vector, id1, id2):
         """
@@ -218,8 +217,8 @@ class _PysparseMatrixBase(_SparseMatrix):
                 ---        ---     3.141593  
         """
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getShape()[0])
-            tmp = numerix.zeros((self._getShape()[0],), 'd')
+            ids = numerix.arange(self._shape[0])
+            tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
             self.put(tmp, ids, ids)
         else:
@@ -232,7 +231,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         return vector
 
     def takeDiagonal(self):
-        ids = numerix.arange(self._getShape()[0])
+        ids = numerix.arange(self._shape[0])
         return self.take(ids, ids)
 
     def addAt(self, vector, id1, id2):
@@ -251,16 +250,17 @@ class _PysparseMatrixBase(_SparseMatrix):
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
-            ids = numerix.arange(self._getShape()[0])
-            tmp = numerix.zeros((self._getShape()[0],), 'd')
+            ids = numerix.arange(self._shape[0])
+            tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
             self.addAt(tmp, ids, ids)
         else:
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
 
-    def getNumpyArray(self):
-        shape = self._getShape()
+    @property
+    def numpyArray(self):
+        shape = self._shape
         indices = numerix.indices(shape)
         numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
         return numerix.reshape(numMatrix, shape)
@@ -324,7 +324,7 @@ class _PysparseMeshMatrix(_PysparseMatrix):
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):
             return _PysparseMeshMatrix(mesh=self.mesh, 
-                                       matrix=spmatrix.matrixmultiply(self.matrix, other._getMatrix()))
+                                       matrix=spmatrix.matrixmultiply(self.matrix, other.matrix))
         else:
             return _PysparseMatrix.__mul__(self, other)
 

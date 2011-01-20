@@ -90,7 +90,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    return PhysicalField(value = alpha)
 
 	def _calcValueIn(self, eps, P):
-            alpha = self._getArray().copy()
+            alpha = self._array.copy()
             
 	    inline._runInline("""
 		if (fabs(P[i]) < eps) {

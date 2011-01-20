@@ -65,7 +65,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> ## answer = numerix.zeros((2, mesh.numberOfFaces),'d')
            >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).globalValue
            >>> answer[0,7] = -1
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).globalValue, answer)
            True
 
         Change the dimensions:
@@ -73,7 +73,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .25)
            >>> distanceVar = DistanceVariable(mesh, value = (-.25, .25, .75))
            >>> answer[0,7] = -.5
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).getGlobalValue(), answer)
+           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).globalValue, answer)
            True
 
         Two dimensional example:
@@ -115,7 +115,7 @@ class _ConvectionCoeff(FaceVariable):
         dim = self.mesh.dim
         cellFaceIDs = self.mesh.cellFaceIDs
      
-        faceNormalAreas = self.distanceVar._getLevelSetNormals() * self.mesh._faceAreas
+        faceNormalAreas = self.distanceVar._levelSetNormals * self.mesh._faceAreas
 
         cellFaceNormalAreas = numerix.array(MA.filled(numerix.take(faceNormalAreas, cellFaceIDs, axis=-1), 0))
         norms = numerix.array(MA.filled(MA.array(self.mesh._cellNormals), 0))

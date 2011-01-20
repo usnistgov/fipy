@@ -266,7 +266,7 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     xVelocityEq.cacheMatrix()
 ...     xres = xVelocityEq.sweep(var=xVelocity,
 ...                              underRelaxation=velocityRelaxation)
-...     xmat = xVelocityEq.getMatrix()
+...     xmat = xVelocityEq.matrix
 ...
 ...     yres = yVelocityEq.sweep(var=yVelocity,
 ...                              underRelaxation=velocityRelaxation)

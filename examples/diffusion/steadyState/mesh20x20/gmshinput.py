@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
-                               value = mesh._getNonOrthogonality())
+                               value = mesh._nonOrthogonality)
     NOViewer = Viewer(vars = NonOrthoVar)
     viewer.plot()
     NOViewer.plot()

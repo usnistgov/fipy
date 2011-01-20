@@ -70,7 +70,7 @@ if __name__ == '__main__':
         x = mesh.cellCenters[0]
         analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
         errorArray = varArray - analyticalArray
-        nonOrthoArray = mesh._getNonOrthogonality()
+        nonOrthoArray = mesh._nonOrthogonality
         RMSError = (add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
         RMSNonOrtho = (add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
 

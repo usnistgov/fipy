@@ -89,7 +89,7 @@ Start time steping:
 
 Compare the analaytical and numerical results:
 
->>> theta = surfactantVar.getInterfaceVar()[1]
+>>> theta = surfactantVar.interfaceVar[1]
 
 >>> allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
 1
@@ -161,7 +161,7 @@ def currentTimeFunc(theta):
 
 ## set up the comparison arrays
 
-theta = surfactantVar.getInterfaceVar()[1]
+theta = surfactantVar.interfaceVar[1]
     
 
 if __name__ == "__main__":
@@ -174,7 +174,7 @@ if __name__ == "__main__":
 
         ## evaluate the analytical and numerical solution and plot
 
-        theta = surfactantVar.getInterfaceVar()[1]
+        theta = surfactantVar.interfaceVar[1]
         print "theta:",theta
 
         ## do a time step

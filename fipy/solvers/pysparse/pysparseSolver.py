@@ -41,6 +41,7 @@ from pysparse import precon
 
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.solver import Solver
+from fipy.tools.decorators import getsetDeprecated
 
 class PysparseSolver(Solver):
     """
@@ -55,7 +56,12 @@ class PysparseSolver(Solver):
             
         Solver.__init__(self, *args, **kwargs)
 
+    @getsetDeprecated
     def _getMatrixClass(self):
+        return self._matrixClass
+
+    @property
+    def _matrixClass(self):
         return _PysparseMeshMatrix
 
     def _solve_(self, L, x, b):
@@ -65,7 +71,7 @@ class PysparseSolver(Solver):
         doesn't use preconditioning, this must be overridden.
         """
 
-        A = L._getMatrix()
+        A = L.matrix
 
         if self.preconditioner is None:
             P = None

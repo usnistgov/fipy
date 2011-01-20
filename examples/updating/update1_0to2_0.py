@@ -143,7 +143,7 @@ The following items **must** be changed in your scripts
    instead of
    
    >>> exteriorFaces = mesh.exteriorFaces
-   >>> X = exteriorFaces.getCenters()[...,0]
+   >>> X = exteriorFaces.centers[...,0]
    >>> FixedValue(faces=exteriorFaces.where(X**2 < 1e-6), value=...)
        
    With the old syntax, a different call to
@@ -168,14 +168,14 @@ The following items **must** be changed in your scripts
    instead of the *much* slower
 
    >>> def cellFilter(cell): 
-   ...     return ((cell.getCenter()[0] < dx) 
-   ...             or (cell.getCenter()[0] > (Lx - dx)) 
-   ...             or (cell.getCenter()[1] < dy) 
-   ...             or (cell.getCenter()[1] > (Ly - dy)))
+   ...     return ((cell.center[0] < dx) 
+   ...             or (cell.center[0] > (Lx - dx)) 
+   ...             or (cell.center[1] < dy) 
+   ...             or (cell.center[1] > (Ly - dy)))
 
    >>> positiveCells = mesh.getCells(filter=cellFilter)
    >>> for cell in positiveCells:
-   ...     initialArray[cell.getID()] = 1.
+   ...     initialArray[cell.ID] = 1.
 
    Although they still exist, we find very lille cause to ever call
    :meth:`~fipy.meshes.mesh.Mesh.getCells` 

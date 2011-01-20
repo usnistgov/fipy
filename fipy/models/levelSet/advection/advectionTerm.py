@@ -67,7 +67,7 @@ class _AdvectionTerm(Term):
     >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
     >>> from fipy.tools import parallel
-    >>> SparseMatrix = LinearLUSolver()._getMatrixClass()
+    >>> SparseMatrix = LinearLUSolver()._matrixClass
     >>> mesh = Grid1D(dx = 1., nx = 3) 
     >>> from fipy.variables.cellVariable import CellVariable
    

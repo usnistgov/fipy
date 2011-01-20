@@ -257,7 +257,7 @@ def _testBinOp(self):
         >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
         '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
         
-    Check that getUnit() works for a binOp
+    Check that unit works for a binOp
 
         >>> (Variable(value="1 m") * Variable(value="1 s")).unit
         <PhysicalUnit s*m>

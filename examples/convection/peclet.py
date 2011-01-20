@@ -75,7 +75,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...     CC = 1. - exp(arg0)
 ...     DD = 1. - exp(arg1)
 ...     analyticalArray = CC / DD
-...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).getValue())
+...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).value)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 ...         raw_input("Peclet number: " + str(peclet) + ", press key")

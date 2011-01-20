@@ -61,11 +61,11 @@ class _AdsorptionCoeff(CellVariable):
 
 class _AdsorptionCoeffInterfaceFlag(_AdsorptionCoeff):
     def _multiplier(self):
-        return self.distanceVar._getCellInterfaceFlag()
+        return self.distanceVar._cellInterfaceFlag
     
 class _AdsorptionCoeffAreaOverVolume(_AdsorptionCoeff):
     def _multiplier(self):
-        return self.distanceVar.getCellInterfaceAreas() / self.mesh.cellVolumes
+        return self.distanceVar.cellInterfaceAreas / self.mesh.cellVolumes
 
 class _MaxCoeff(CellVariable):
     def __init__(self, distanceVar, vars = ()):
@@ -78,8 +78,8 @@ class _MaxCoeff(CellVariable):
     def _calcMax(self):
         total = 0
         for var in self.vars:
-            total += numerix.array(var.getInterfaceVar())
-        return numerix.array(total > 1) * self.distanceVar._getCellInterfaceFlag()
+            total += numerix.array(var.interfaceVar)
+        return numerix.array(total > 1) * self.distanceVar._cellInterfaceFlag
 
 class _SpMaxCoeff(_MaxCoeff):
     def _calcValue(self):
@@ -87,9 +87,9 @@ class _SpMaxCoeff(_MaxCoeff):
 
 class _ScMaxCoeff(_MaxCoeff):
     def _calcValue(self):
-        val = self.distanceVar.getCellInterfaceAreas() / self.mesh.cellVolumes
+        val = self.distanceVar.cellInterfaceAreas / self.mesh.cellVolumes
         for var in self.vars[1:]:
-            val -= self.distanceVar._getCellInterfaceFlag() * numerix.array(var)
+            val -= self.distanceVar._cellInterfaceFlag * numerix.array(var)
 
         return 1e20 * self._calcMax() * numerix.where(val < 0, 0, val)
 
@@ -149,7 +149,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...                                   rateConstant = k)
     >>> eqn.solve(surfactantVar, dt = dt)
     >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-    >>> print numerix.allclose(surfactantVar.getInterfaceVar(), 
+    >>> print numerix.allclose(surfactantVar.interfaceVar, 
     ...                  numerix.array((0, 0, answer, 0, 0)))
     1
 
@@ -200,10 +200,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     eqn1.solve(var1, dt = dt)
     >>> answer0 = 1 - numerix.exp(-k0 * c0 * dt * totalSteps)
     >>> answer1 = (1 - numerix.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
-    >>> print numerix.allclose(var0.getInterfaceVar(), 
+    >>> print numerix.allclose(var0.interfaceVar, 
     ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
     1
-    >>> print numerix.allclose(var1.getInterfaceVar(), 
+    >>> print numerix.allclose(var1.interfaceVar, 
     ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
     1
     >>> dt = 0.1
@@ -212,7 +212,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     eqn1.solve(var1, dt = dt)
 
     >>> x, y = mesh.cellCenters
-    >>> check = var0.getInterfaceVar() + var1.getInterfaceVar()
+    >>> check = var0.interfaceVar + var1.interfaceVar
     >>> answer = CellVariable(mesh=mesh, value=check)
     >>> answer[x==1.25] = 1.
     >>> print check.allequal(answer)
@@ -233,9 +233,9 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     >>> eqn0.solve(var0, dt = dt)
     >>> eqn0.solve(var0, dt = dt)
-    >>> answer = CellVariable(mesh=mesh, value=var0.getInterfaceVar())
+    >>> answer = CellVariable(mesh=mesh, value=var0.interfaceVar)
     >>> answer[x==1.25] = 0.
-    >>> print var0.getInterfaceVar().allclose(answer)
+    >>> print var0.interfaceVar.allclose(answer)
     True
 
     The following test case is to fix a bug that allows the accelerator to
@@ -269,7 +269,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...                                     otherBulkVar = 0,
     ...                                     otherRateConstant = 0)
 
-    >>> extVar = CellVariable(mesh = mesh, value = accVar.getInterfaceVar())
+    >>> extVar = CellVariable(mesh = mesh, value = accVar.interfaceVar)
 
     >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
     ...     import buildHigherOrderAdvectionEquation
@@ -279,7 +279,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     >>> for i in range(50):
     ...     disVar.calcDistanceFunction()
-    ...     extVar.setValue(numerix.array(accVar.getInterfaceVar()))
+    ...     extVar.value = (numerix.array(accVar.interfaceVar))
     ...     disVar.extendVariable(extVar)
     ...     disVar.updateOld()
     ...     advEq.solve(disVar, dt = dt)
@@ -326,7 +326,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
         if otherVar is not None:
             otherSpCoeff = _AdsorptionCoeffInterfaceFlag(distanceVar, otherBulkVar, otherRateConstant)
-            otherScCoeff = _AdsorptionCoeffAreaOverVolume(distanceVar, -bulkVar * otherVar.getInterfaceVar(), rateConstant)
+            otherScCoeff = _AdsorptionCoeffAreaOverVolume(distanceVar, -bulkVar * otherVar.interfaceVar, rateConstant)
 
             self.eq += ImplicitSourceTerm(otherSpCoeff) - otherScCoeff
 

@@ -40,7 +40,7 @@ def _UnaryOperatorVariable(operatorClass=None):
             assert(hasattr(self, "_unit") == True)
             if self._unit is None:
                 try:
-                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne()))
+                    return self._extractUnit(self.op(self.var[0]._unitAsOne))
                 except:
                     return self._extractUnit(self._calcValue())
             else:

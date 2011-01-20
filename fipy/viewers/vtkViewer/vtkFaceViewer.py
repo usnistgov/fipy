@@ -49,10 +49,12 @@ class VTKFaceViewer(_VTKViewer):
     def _makeDataSet(self, mesh):
         return mesh.getVTKFaceDataSet()
         
-    def _getData(self):
+    @property
+    def _data(self):
         return self.dataset.point_data
 
-    def _getVariableClass(self):
+    @property
+    def _variableclass(self):
         return FaceVariable
         
     def _test(self):

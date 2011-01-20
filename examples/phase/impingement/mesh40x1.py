@@ -187,7 +187,7 @@ The source term requires the evaluation of the face gradient without
 the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
 evelautes the gradient without modular arithmetic.
 
->>> thetaGradDiff = theta.faceGrad - theta.getFaceGradNoMod()
+>>> thetaGradDiff = theta.faceGrad - theta.faceGradNoMod
 >>> sourceCoeff = (diffusionCoeff * thetaGradDiff).divergence
 
 Finally the ``theta`` equation can be constructed.

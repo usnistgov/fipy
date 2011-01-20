@@ -74,7 +74,7 @@ where
 >>> D = 2.0
 >>> P = 3.0
 
->>> C.faceGrad.constrain(-P + P * C.getFaceValue(), mesh.facesLeft)
+>>> C.faceGrad.constrain(-P + P * C.faceValue, mesh.facesLeft)
 >>> C.faceGrad.constrain(0, mesh.facesRight)
 
 >>> eq = PowerLawConvectionTerm((P,)) == \

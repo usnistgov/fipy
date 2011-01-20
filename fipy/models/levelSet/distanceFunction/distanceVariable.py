@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
+from fipy.tools.decorators import getsetDeprecated
 
 from fipy.variables.cellVariable import CellVariable
 
@@ -429,7 +430,12 @@ class DistanceVariable(CellVariable):
             
             return dis, (e0 * n0grad + e1 * n1grad) / (n0grad + n1grad)
 
+    @getsetDeprecated
     def getCellInterfaceAreas(self):
+        return self.cellInterfaceAreas
+
+    @property
+    def cellInterfaceAreas(self):
         """
         Returns the length of the interface that crosses the cell
 
@@ -440,7 +446,7 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-1.5, -0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 0., 1., 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), 
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, 
         ...                        answer)
         True
 
@@ -455,7 +461,7 @@ class DistanceVariable(CellVariable):
         ...                                              1.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, 1, 0, 1, 0, 1, 0, 1, 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), answer)
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, answer)
         True
 
         Another 2D test case:
@@ -466,7 +472,7 @@ class DistanceVariable(CellVariable):
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, numerix.sqrt(2) / 4,  numerix.sqrt(2) / 4, 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), 
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, 
         ...                        answer)
         True
 
@@ -478,15 +484,20 @@ class DistanceVariable(CellVariable):
         >>> x, y = mesh.cellCenters
         >>> rad = numerix.sqrt((x - .5)**2 + (y - .5)**2) - r
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-        >>> print distanceVariable.getCellInterfaceAreas().sum()
+        >>> print distanceVariable.cellInterfaceAreas.sum()
         1.57984690073
         """        
-        normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), 0))
+        normals = numerix.array(MA.filled(self._cellInterfaceNormals, 0))
         areas = numerix.array(MA.filled(self.mesh._cellAreaProjections, 0))
         return CellVariable(mesh=self.mesh, 
                             value=numerix.sum(abs(numerix.dot(normals, areas)), axis=0))
 
+    @getsetDeprecated
     def _getCellInterfaceNormals(self):
+        return self._cellInterfaceNormals
+    
+    @property
+    def _cellInterfaceNormals(self):
         """
         
         Returns the interface normals over the cells.
@@ -506,7 +517,7 @@ class DistanceVariable(CellVariable):
            ...                               (0, 0, 0, 0),
            ...                               (0, 0, 0, 0),
            ...                               (0, v, 0, 0))))
-           >>> print numerix.allclose(distanceVariable._getCellInterfaceNormals(), answer)
+           >>> print numerix.allclose(distanceVariable._cellInterfaceNormals, answer)
            True
            
         """
@@ -515,15 +526,20 @@ class DistanceVariable(CellVariable):
         M = self.mesh._maxFacesPerCell
         dim = self.mesh.dim
 
-        valueOverFaces = numerix.repeat(self._getCellValueOverFaces()[numerix.newaxis, ...], dim, axis=0)
+        valueOverFaces = numerix.repeat(self._cellValueOverFaces[numerix.newaxis, ...], dim, axis=0)
         if self.cellFaceIDs.shape[-1] > 0:
-            interfaceNormals = self._getInterfaceNormals()[...,self.cellFaceIDs]
+            interfaceNormals = self._interfaceNormals[...,self.cellFaceIDs]
         else:
             interfaceNormals = 0
         from fipy.tools.numerix import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
+    @getsetDeprecated
     def _getInterfaceNormals(self):
+        return self._interfaceNormals
+
+    @property
+    def _interfaceNormals(self):
         """
 
         Returns the normals on the boundary faces only, the other are set to zero.
@@ -537,16 +553,21 @@ class DistanceVariable(CellVariable):
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=((0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0),
            ...                              (0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0)))
-           >>> print numerix.allclose(distanceVariable._getInterfaceNormals(), answer)
+           >>> print numerix.allclose(distanceVariable._interfaceNormals, answer)
            True
            
         """
         
         M = self.mesh.dim
-        interfaceFlag = numerix.repeat(self._getInterfaceFlag()[numerix.newaxis, ...], M, axis=0)
-        return numerix.where(interfaceFlag, self._getLevelSetNormals(), 0)
+        interfaceFlag = numerix.repeat(self._interfaceFlag[numerix.newaxis, ...], M, axis=0)
+        return numerix.where(interfaceFlag, self._levelSetNormals, 0)
 
+    @getsetDeprecated
     def _getInterfaceFlag(self):
+        return self._interfaceFlag
+
+    @property
+    def _interfaceFlag(self):
         """
 
         Returns 1 for faces on boundary and 0 otherwise.
@@ -558,7 +579,7 @@ class DistanceVariable(CellVariable):
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=(0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0))
-           >>> print numerix.allclose(distanceVariable._getInterfaceFlag(), answer)
+           >>> print numerix.allclose(distanceVariable._interfaceFlag, answer)
            True
            
         """
@@ -568,7 +589,12 @@ class DistanceVariable(CellVariable):
         
         return numerix.where(val1 * val0 < 0, 1, 0)
 
+    @getsetDeprecated
     def _getCellInterfaceFlag(self):
+        return self._cellInterfaceFlag
+
+    @property
+    def _cellInterfaceFlag(self):
         """
 
         Returns 1 for those cells on the interface:
@@ -579,17 +605,22 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 1, 1, 0))
-        >>> print numerix.allclose(distanceVariable._getCellInterfaceFlag(), answer)
+        >>> print numerix.allclose(distanceVariable._cellInterfaceFlag, answer)
         True
 
         """
-        flag = MA.filled(numerix.take(self._getInterfaceFlag(), self.cellFaceIDs), 0)
+        flag = MA.filled(numerix.take(self._interfaceFlag, self.cellFaceIDs), 0)
 
         flag = numerix.sum(flag, axis=0)
         
         return numerix.where(numerix.logical_and(self._value > 0, flag > 0), 1, 0)
 
+    @getsetDeprecated
     def _getCellValueOverFaces(self):
+        return self._cellValueOverFaces
+
+    @property
+    def _cellValueOverFaces(self):
         """
 
         Returns the cells values at the faces.
@@ -604,7 +635,7 @@ class DistanceVariable(CellVariable):
            ...                              (-.5, .5, .5, 1.5),
            ...                              (-.5, .5, .5, 1.5),
            ...                              (-.5, .5, .5, 1.5)))
-           >>> print numerix.allclose(distanceVariable._getCellValueOverFaces(), answer)
+           >>> print numerix.allclose(distanceVariable._cellValueOverFaces, answer)
            True
 
         """
@@ -613,7 +644,12 @@ class DistanceVariable(CellVariable):
         N = self.mesh.numberOfCells
         return numerix.reshape(numerix.repeat(numerix.array(self._value)[numerix.newaxis, ...], M, axis=0), (M, N))
 
+    @getsetDeprecated
     def _getLevelSetNormals(self):
+        return self._levelSetNormals
+
+    @property
+    def _levelSetNormals(self):
         """
 
         Return the face level set normals.
@@ -627,7 +663,7 @@ class DistanceVariable(CellVariable):
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=((0, 0, v, v, 0, 0, 0, v, 0, 0, v, 0),
            ...                              (0, 0, v, v, 0, 0, 0, v, 0, 0, v, 0)))
-           >>> print numerix.allclose(distanceVariable._getLevelSetNormals(), answer)
+           >>> print numerix.allclose(distanceVariable._levelSetNormals, answer)
            True
         """
 

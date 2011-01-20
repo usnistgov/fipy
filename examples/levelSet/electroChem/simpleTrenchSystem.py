@@ -235,7 +235,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     expoConstant = -transferCoefficient * faradaysConstant \
                    / (gasConstant * temperature)
     
-    tmp = currentDensity1 * catalystVar.getInterfaceVar()
+    tmp = currentDensity1 * catalystVar.interfaceVar
 
     exchangeCurrentDensity = currentDensity0 + tmp
 
@@ -282,11 +282,11 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
             viewer = MultiViewer(viewers=(
                 Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
-                Viewer(catalystVar.getInterfaceVar())))
+                Viewer(catalystVar.interfaceVar)))
     else:
         viewer = None
 

@@ -180,13 +180,13 @@ class Variable(object):
         return numerix.array(self.value, t)
 
 ##    def _get_array_interface(self):
-##        return self._getArray().__array_interface__
+##        return self._array.__array_interface__
      
 ##    def _set_array_interface(self, value):
-##        self._getArray().__array_interface__ = value
+##        self._array.__array_interface__ = value
          
 ##    def _del_array_interface(self):
-##        del self._getArray().__array_interface__
+##        del self._array.__array_interface__
   
 ##    __array_interface__ = property(_get_array_interface,
 ##                                   _set_array_interface,
@@ -236,7 +236,7 @@ class Variable(object):
 
     def _extractUnit(self, value):
         if isinstance(value, physicalField.PhysicalField):
-            return value.getUnit()
+            return value.unit
         else:
             return physicalField._unity 
 
@@ -563,7 +563,7 @@ class Variable(object):
         >>> x, y = m.cellCenters
         >>> v = CellVariable(mesh=m, rank=1, value=(x, y))
         >>> v.constrain(((0.,), (-1.,)), where=m.facesLeft)
-        >>> print v.getFaceValue()
+        >>> print v.faceValue
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.   1.   1.5  0.   1.   1.5]
          [ 0.5  0.5  1.   1.   1.5  1.5 -1.   0.5  0.5 -1.   1.5  1.5]]
         
@@ -655,7 +655,7 @@ class Variable(object):
 ##                     value = numerix.array(float(value))
 
         if isinstance(value, PF) and value.unit.isDimensionless():
-            value = value.getNumericValue()
+            value = value.numericValue
             
         return value
 
@@ -722,7 +722,7 @@ class Variable(object):
     @property
     def _array(self):
         if isinstance(self._value, physicalField.PhysicalField):
-            return self._value._getArray()
+            return self._value._array
         else:
             return self._value
             
@@ -734,7 +734,7 @@ class Variable(object):
     def numericValue(self):
         value = self.value
         if isinstance(value, physicalField.PhysicalField):
-            return value.getNumericValue()
+            return value.numericValue
         else:
             return value
             
@@ -990,7 +990,7 @@ class Variable(object):
             
     def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None):
         """
-        Check that getUnit() works for unOp
+        Check that unit works for unOp
 
             >>> (-Variable(value="1 m")).unit
             <PhysicalUnit m>

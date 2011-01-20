@@ -181,7 +181,7 @@ We verify that the correct equilibrium solution is attained
 >>> d = sqrt(phase.gradientEnergy / (2 * solvent.barrier))
 >>> analyticalArray = (1. - tanh((x - L/2.)/(2 * d))) / 2.
 
->>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).getValue()
+>>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).value
 1
     
 
