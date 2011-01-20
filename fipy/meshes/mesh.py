@@ -83,6 +83,10 @@ class Mesh(object):
         self._setTopology()
         self._setGeometry(scaleLength = 1.)
 
+    @getsetDeprecated
+    def _getFaceVertexIDs(self):
+        return self.faceVertexIDs
+
     def _getCellFaceIDs(self):
         return self._cellFaceIDs
 
