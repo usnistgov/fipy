@@ -135,11 +135,17 @@ class TransientTerm(CellTerm):
         """
     
         if CellTerm._getTransientGeomCoeff(self, var) is not None:
-            raise AssertionError, 'An alternate _getTransientGeomCoeff() is defined in a base class' 
+            raise AssertionError, 'An alternate _getTransientGeomCoeff() is defined in a base class.' 
         if var is self.var or self.var is None:
             return self._getGeomCoeff(var.getMesh())
         else:
             return None
+
+    def _getTransientVars(self):
+        if len(CellTerm._getTransientVars(self)) != 0:
+            raise AssertionError, 'An alternate _getTransientVars() is defined in a base class.'
+        return self._getVars()
+    
         
 def _test(): 
     import doctest

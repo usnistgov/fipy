@@ -44,8 +44,11 @@ class _UnaryTerm(Term):
 
     def _getVars(self):
         return [self.var]
+
+    def _getTransientVars(self):
+        return []
                 
-    def _getCoupledTerms(self):
+    def _getUncoupledTerms(self):
         return [self]
     
     def __repr__(self):

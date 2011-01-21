@@ -47,7 +47,6 @@ def _suite():
             'transientTerm',
             'powerLawConvectionTerm',
             'exponentialConvectionTerm',
-##            'binaryTerm',
             'upwindConvectionTerm',
             'implicitSourceTerm',
             'coupledBinaryTerm',

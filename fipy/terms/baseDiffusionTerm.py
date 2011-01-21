@@ -370,6 +370,9 @@ class _BaseDiffusionTerm(_UnaryTerm):
             return self._getGeomCoeff(var.getMesh())
         else:
             return None
+
+    def _getDiffusionVars(self):
+        return self._getVars()
          
 def _test(): 
     import doctest

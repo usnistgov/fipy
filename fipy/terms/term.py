@@ -65,6 +65,12 @@ class Term:
 
     def _getVars(self):
         raise NotImplementedError
+
+    def _getTransientVars(self):
+        raise NotImplementedError
+
+    def _getDiffusionVars(self):
+        raise NotImplementedError
                 
     def copy(self):
         return self.__class__(self.coeff, var=self.var)
@@ -330,7 +336,7 @@ class Term:
         else:
             raise Exception
 
-    def _getCoupledTerms(self):
+    def _getUncoupledTerms(self):
         raise NotImplementedError
     
     def __repr__(self):
@@ -449,6 +455,7 @@ class Term:
         True
  	>>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [-10, -10, -10]) 
  	True
+
  	>>> eq.solve(var=B)
 
         >>> m = Grid1D(nx=2)
@@ -517,10 +524,6 @@ class Term:
         Traceback (most recent call last):
             ...
         Exception: The solution variable should not be specified.
-        >>> (DiffusionTerm(var=A) & (DiffusionTerm(var=B) + DiffusionTerm(var=C))).solve()
-        Traceback (most recent call last):
-            ...
-        Exception: Different number of solution variables and equations.
         >>> eq = (DiffusionTerm(coeff=1., var=A) + DiffusionTerm(coeff=2., var=B)) & (DiffusionTerm(coeff=2., var=B) + DiffusionTerm(coeff=3., var=C)) & (DiffusionTerm(coeff=3., var=C) + DiffusionTerm(coeff=1., var=A))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()

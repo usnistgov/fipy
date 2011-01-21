@@ -89,7 +89,7 @@ class _BinaryTerm(_BaseBinaryTerm):
     def __mul__(self, other):
         return other * self.term + other * self.other
 
-    def _getCoupledTerms(self):
+    def _getUncoupledTerms(self):
         return [self]
 
     def _getTransientGeomCoeff(self, var):
@@ -100,7 +100,7 @@ class _BinaryTerm(_BaseBinaryTerm):
     def _getDiffusionGeomCoeff(self, var):
         if _BaseBinaryTerm._getDiffusionGeomCoeff(self, var) is not None:
             raise AssertionError, 'An alternate _getDiffusionGeomCoeff() is defined in a base class'
-        return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var))
+        return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var)) 
 
     __rmul__ = __mul__
 

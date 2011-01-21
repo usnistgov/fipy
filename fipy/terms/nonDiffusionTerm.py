@@ -39,7 +39,7 @@ from fipy.terms.unaryTerm import _UnaryTerm
 
 class _NonDiffusionTerm(_UnaryTerm):
     """
-    .. attention:: This class is abstract. Always create one of its subclasses.
+        .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
     def __neg__(self):
@@ -70,6 +70,9 @@ class _NonDiffusionTerm(_UnaryTerm):
             raise Exception, "Must multiply terms by int or float."
             
     __rmul__ = __mul__
+
+    def _getDiffusionVars(self):
+        return []
 
     def _test(self):
         r"""
