@@ -37,7 +37,6 @@ from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
-from fipy.tools import isin
 
 class _CoupledBinaryTerm(_BaseBinaryTerm):
     """
@@ -245,21 +244,19 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         """
         if not hasattr(self, '_orderedVars'):
             uncoupledTerms = self._getUncoupledTerms()
-            unorderedVars = self._getVars()[:]
+            ## set() is used to force comparison by reference rather than value
+            unorderedVars = set(self._getVars())
             orderedVars = [None] * len(uncoupledTerms)
-
 
             for fnc in (lambda index, term: term._getTransientVars(),
                         lambda index, term: term._getDiffusionVars(),
-                        lambda index, term: unorderedVars):
-
+                        lambda index, term: list(unorderedVars)):
                 for index, term in enumerate(uncoupledTerms):
                     if orderedVars[index] is None:
                         _vars = fnc(index, term)
-                        if  _vars != [] and isin(_vars[0], unorderedVars):
+                        if  _vars != [] and _vars[0] in unorderedVars:
                             orderedVars[index] = _vars[0]
-                            unorderedVars = [u for u in unorderedVars if u is not _vars[0]]
-                            ## unorderedVars.remove(_vars[0]) Does not compare references, but values. 
+                            unorderedVars.remove(_vars[0])
                             
             self._orderedVars = orderedVars
                 
@@ -275,7 +272,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         _orderedVars = fipy.tools.uniqueList(_orderedVars)
 
         for var in _orderedVars:
-            if not isin(var, self._getVars()):            
+            if var not in set(self._getVars()):
                 raise Exception, 'Variable not in previously defined variables for this coupled equation.'
 
         if len(_orderedVars) != len(self._getVars()):

@@ -76,12 +76,3 @@ def uniqueList(seq):
     seen = set()
     return [x for x in seq if x not in seen and not seen.add(x)]
 
-def isin(item, seq):
-    """
-    Substitute for "in", but uses "is" to compare the members. Compares by reference rather than value.
-    """
-    for other in seq:
-        if item is other:
-            return True
-    else:
-        return False

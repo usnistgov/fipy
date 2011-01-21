@@ -59,15 +59,7 @@ class _BaseBinaryTerm(Term):
                 raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
 
 	Term.__init__(self, var=self._getVars()[0])
-
-    def _getVars(self):
-        
-        if not hasattr(self, '_vars'):
-            seen = set()
-            seq = self.term._getVars() + self.other._getVars()
-            self._vars = [x for x in seq if x not in seen and not seen.add(x)]
-        return self._vars
-
+    
     def _addNone(self, arg0, arg1):
         if arg0 is None and arg1 is None:
             return None
@@ -77,8 +69,6 @@ class _BaseBinaryTerm(Term):
             return arg0
         else:
             return arg0 + arg1
-
-
 
     def __neg__(self):
         r"""
@@ -90,6 +80,19 @@ class _BaseBinaryTerm(Term):
         """
 
         return (-self.term) + (-self.other)
+
+    def _getVars(self):
+        if not hasattr(self, '_vars'):
+            import fipy.tools
+            self._vars = fipy.tools.uniqueList(self.term._getVars() + self.other._getVars())
+        return self._vars
+
+    def _getTransientVars(self):
+        return self.term._getTransientVars() + self.other._getTransientVars()
+
+    def _getDiffusionVars(self):
+        return self.term._getDiffusionVars() + self.other._getDiffusionVars() 
+
 
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 class __NonDiffusionTerm(_NonDiffusionTerm):
