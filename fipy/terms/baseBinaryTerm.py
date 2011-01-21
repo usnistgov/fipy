@@ -81,10 +81,12 @@ class _BaseBinaryTerm(Term):
 
         return (-self.term) + (-self.other)
 
+    def _calcVars(self):
+        return list(set(self.term._getVars() + self.other._getVars()))
+
     def _getVars(self):
         if not hasattr(self, '_vars'):
-            import fipy.tools
-            self._vars = fipy.tools.uniqueList(self.term._getVars() + self.other._getVars())
+            self._vars = self._calcVars()
         return self._vars
 
     def _getTransientVars(self):

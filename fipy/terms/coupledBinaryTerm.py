@@ -74,7 +74,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         if len(self._getVars()) != len(self._getUncoupledTerms()):
             raise Exception, 'Different number of solution variables and equations.'
 
-        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self.__getOrderedVars()))
+        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._getVars()))
     
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
@@ -145,7 +145,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
             RHSvector = 0
 
-            for j, tmpVar in enumerate(self.__getOrderedVars()):
+            for j, tmpVar in enumerate(self._getVars()):
 
                 class OffsetSparseMatrix(SparseMatrix):
                     def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=numberOfVariables):
@@ -194,10 +194,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         from fipy.solvers import DefaultAsymmetricSolver
         return solver or DefaultAsymmetricSolver(*args, **kwargs)    
 
-    def _getOrderedVarsForTests(self):
-        return self.__getOrderedVars()
-        
-    def __getOrderedVars(self):
+    def _calcVars(self):
         """
         This method returns the equations variables ordered by, transient terms,
         diffusion terms and other terms. Currently, this won't cure all of
@@ -213,39 +210,42 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) + VanLeerConvectionTerm(var=v0) + DiffusionTerm(var=v1)
         >>> eq1 = TransientTerm(var=v2) + ConvectionTerm(var=v2) + DiffusionTerm(var=v2) + ConvectionTerm(var=v1) + ImplicitSourceTerm(var=v1)
         >>> eq2 = ImplicitSourceTerm(var=v1) + 1 + ImplicitSourceTerm(var=v0) + 1 + DiffusionTerm(var=v1)
-        >>> print (eq0 & eq1 & eq2)._getOrderedVarsForTests()
+        >>> print (eq0 & eq1 & eq2)._getVars()
         [v0, v2, v1]
-        >>> print (eq0 & eq2 & eq1)._getOrderedVarsForTests()
+        >>> print (eq0 & eq2 & eq1)._getVars()
         [v0, v1, v2]
         >>> eq0 =  DiffusionTerm(var=v1) + TransientTerm(var=v0) + VanLeerConvectionTerm(var=v0)
-        >>> print (eq0 & eq2 & eq1)._getOrderedVarsForTests()
+        >>> print (eq0 & eq2 & eq1)._getVars()
         [v0, v1, v2]
-        >>> print (eq2 & eq0 & eq1)._getOrderedVarsForTests()
+        >>> print (eq2 & eq0 & eq1)._getVars()
         [v1, v0, v2]
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._getOrderedVarsForTests()
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._getVars()
         [v1, v2, v0]
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._getOrderedVarsForTests()
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._getVars()
   	Traceback (most recent call last): 
  	    ... 
  	Exception: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._getOrderedVarsForTests()
+        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._getVars()
   	Traceback (most recent call last): 
  	    ... 
  	Exception: Variable not in previously defined variables for this coupled equation.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._getOrderedVarsForTests()
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._getVars()
  	Traceback (most recent call last): 
  	    ... 
  	Exception: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2])._getOrderedVarsForTests()
+        >>> print (eq2 & eq0 & eq1)([v1, v2])._getVars()
  	Traceback (most recent call last): 
  	    ... 
  	Exception: Different number of solution variables and equations.
 
         """
-        if not hasattr(self, '_orderedVars'):
-            uncoupledTerms = self._getUncoupledTerms()
-            ## set() is used to force comparison by reference rather than value
-            unorderedVars = set(self._getVars())
+    
+        ## set() is used to force comparison by reference rather than value
+        unorderedVars = _BaseBinaryTerm._calcVars(self)
+        uncoupledTerms = self._getUncoupledTerms()
+        
+        if len(unorderedVars) == len(uncoupledTerms):
+            unorderedVars = set(unorderedVars)
             orderedVars = [None] * len(uncoupledTerms)
 
             for fnc in (lambda index, term: term._getTransientVars(),
@@ -257,28 +257,24 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
                         if  _vars != [] and _vars[0] in unorderedVars:
                             orderedVars[index] = _vars[0]
                             unorderedVars.remove(_vars[0])
-                            
-            self._orderedVars = orderedVars
-                
-        return self._orderedVars
+            
+            return orderedVars
+        else:
+            ## Constituent _CoupledBinaryTerms don't necessarily have the same
+            ## number of equations and variables so ordering is unnecessary.
+            return unorderedVars
 
-    def __call__(self, _orderedVars):
-        _orderedVars = list(_orderedVars)
+    def __call__(self, _vars):
+        _vars = list(_vars)
 
-        if len(_orderedVars) != len(self._getVars()):
+        if len(_vars) != len(self._getVars()) or len(set(_vars)) != len(self._getVars()):
             raise Exception, 'Different number of solution variables and equations.'
-        import fipy.tools
 
-        _orderedVars = fipy.tools.uniqueList(_orderedVars)
-
-        for var in _orderedVars:
+        for var in _vars:
             if var not in set(self._getVars()):
                 raise Exception, 'Variable not in previously defined variables for this coupled equation.'
 
-        if len(_orderedVars) != len(self._getVars()):
-            raise Exception, 'Different number of solution variables and equations.'
-        self._orderedVars = _orderedVars
-
+        self._vars = _vars
         return self
         
                

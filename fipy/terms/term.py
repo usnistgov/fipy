@@ -66,6 +66,9 @@ class Term:
     def _getVars(self):
         raise NotImplementedError
 
+    def _calcVars(self):
+        raise NotImplementedError
+
     def _getTransientVars(self):
         raise NotImplementedError
 
@@ -417,8 +420,8 @@ class Term:
  	>>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
  	>>> print eq 
  	(TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B))
- 	>>> print eq._getVars()
- 	[A, B]
+ 	>>> A in set(eq._getVars()) and B in set(eq._getVars()) ## _getVars() is unordered for _BinaryTerm's.
+ 	True
  	>>> print (eq.term, eq.other) 
  	(TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
  	>>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
