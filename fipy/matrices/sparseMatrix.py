@@ -74,7 +74,8 @@ class _SparseMatrix(object):
             print "Can't import SciPy for sparse representation."
             return None
 
-        return sp.lil_matrix(self.numpyArray)
+        (data, row, col) = self.matrix.find()
+        return sp.csr_matrix((data, (row, col)), shape=self.matrix.shape)
         
                                                 
     def __array_wrap(self, arr, context=None):

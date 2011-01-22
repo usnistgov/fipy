@@ -261,6 +261,7 @@ class _PysparseMatrixBase(_SparseMatrix):
     @property
     def numpyArray(self):
         shape = self._shape
+        print "shape", shape
         indices = numerix.indices(shape)
         numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
         return numerix.reshape(numMatrix, shape)

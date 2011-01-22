@@ -86,7 +86,7 @@ class ScalarQuantityOutOfRangeWarning(SolverConvergenceWarning):
     def __str__(self):
         return "A scalar quantity became too small or too large to continue computing. Iterations: %g. Relative error: %g" % (self.iter, self.relres)
 
-class Solver:
+class Solver(object):
     """
     The base `LinearXSolver` class.
     
