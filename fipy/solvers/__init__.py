@@ -21,15 +21,19 @@ elif '--no-pysparse' in args:
     solver = "no-pysparse"
 elif '--pyamg' in args:
     solver = 'pyamg'
+elif '--scipy' in args:
+    solver = 'scipy'
 elif os.environ.has_key('FIPY_SOLVERS'):
     solver = os.environ['FIPY_SOLVERS'].lower()
 else:
     solver = None
-    
-if solver == "pysparse":
-    from fipy.solvers.pysparse import *
+
+if solver in ["pysparse", "pyamg", "scipy"]:
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
     _MeshMatrix =  _PysparseMeshMatrix
+     
+if solver == "pysparse":
+    from fipy.solvers.pysparse import *
 
 elif solver == "trilinos":
     from fipy.solvers.trilinos import *
@@ -43,8 +47,9 @@ elif solver == "trilinos":
 
 elif solver == "pyamg":
     from fipy.solvers.pyAMG import *
-    from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-    _MeshMatrix =  _PysparseMeshMatrix
+
+elif solver == "scipy":
+    from fipy.solvers.scipy import *
 
 elif solver == "no-pysparse":
     from fipy.solvers.trilinos import *
