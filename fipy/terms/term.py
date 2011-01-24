@@ -43,6 +43,7 @@ class Term:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
+    self.__isAbstractBaseClass
     def __init__(self, coeff=1., var=None):
         """
         Create a `Term`.
@@ -51,7 +52,8 @@ class Term:
           - `coeff`: The coefficient for the term. A `CellVariable` or number.
             `FaceVariable` objects are also acceptable for diffusion or convection terms.
 
-        """  
+        """
+        
         if self.__class__ is Term:
             raise NotImplementedError, "can't instantiate abstract base class"
             
