@@ -37,13 +37,15 @@ import os
 
 from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
-
+from fipy.terms import AlternativeMethodInBaseClass
+from fipy.terms import SolutionVariableNumberError
+from fipy.terms import SolutionVariableRequiredError
 class _BinaryTerm(_BaseBinaryTerm):
 
     def _verifyVar(self, var):
 
         if var is None and len(self._getVars()) > 1:
-            raise Exception, 'The solution variable needs to be specified'
+            raise SolutionVariableRequiredError
 
         return _BaseBinaryTerm._verifyVar(self, var)
     
@@ -74,7 +76,7 @@ class _BinaryTerm(_BaseBinaryTerm):
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
-            raise AssertionError, 'An alternate _getDefaultSolver() is defined in a base class'
+            raise AlternativeMethodInBaseClass('_getDefaultSolver()')
         
         for term in (self.term, self.other):
             defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
@@ -94,12 +96,12 @@ class _BinaryTerm(_BaseBinaryTerm):
 
     def _getTransientGeomCoeff(self, var):
         if _BaseBinaryTerm._getTransientGeomCoeff(self, var) is not None:
-            raise AssertionError, 'An alternate _getTransientGeomCoeff() is defined in a base class'
+            AlternativeMethodInBaseClass('_getTransientGeomCoeff()')
         return self._addNone(self.term._getTransientGeomCoeff(var), self.other._getTransientGeomCoeff(var))
 
     def _getDiffusionGeomCoeff(self, var):
         if _BaseBinaryTerm._getDiffusionGeomCoeff(self, var) is not None:
-            raise AssertionError, 'An alternate _getDiffusionGeomCoeff() is defined in a base class'
+            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')
         return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var)) 
 
     __rmul__ = __mul__

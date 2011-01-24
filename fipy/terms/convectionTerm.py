@@ -40,7 +40,8 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
-
+from fipy.terms import AbstractBaseClassError
+from fipy.terms import VectorCoeffError
 
 from fipy.tools import numerix
 
@@ -63,11 +64,11 @@ class ConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff = cv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a vector value.
+            VectorCoeffError: The coefficient must be a vector value.
             >>> __ConvectionTerm(coeff = fv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a vector value.
+            VectorCoeffError: The coefficient must be a vector value.
             >>> __ConvectionTerm(coeff = vcv)
             __ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> __ConvectionTerm(coeff = vfv)
@@ -79,7 +80,7 @@ class ConvectionTerm(FaceTerm):
             >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var = cv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a vector value.
+            VectorCoeffError: The coefficient must be a vector value.
             >>> from fipy.meshes.grid2D import Grid2D
             >>> m2 = Grid2D(nx=2, ny=1)
             >>> cv2 = CellVariable(mesh=m2)
@@ -100,7 +101,7 @@ class ConvectionTerm(FaceTerm):
           - `diffusionTerm` : **deprecated**. The Peclet number is calculated automatically.
         """
         if self.__class__ is ConvectionTerm:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise AbstractBaseClassError
             
         if diffusionTerm is not None:
             import warnings
@@ -109,7 +110,7 @@ class ConvectionTerm(FaceTerm):
         self.stencil = None
         
         if isinstance(coeff, _MeshVariable) and coeff.getRank() != 1:
-            raise TypeError, "The coefficient must be a vector value."
+            raise VectorCoeffError
 
         if isinstance(coeff, CellVariable):
             coeff = coeff.getArithmeticFaceValue()
@@ -154,7 +155,7 @@ class ConvectionTerm(FaceTerm):
         
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
         and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
-            raise TypeError, "The coefficient must be a vector value."
+            raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 

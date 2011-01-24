@@ -35,6 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
+from fipy.terms import AbstractBaseClassError
 
 class SourceTerm(CellTerm):
     """
@@ -42,7 +43,7 @@ class SourceTerm(CellTerm):
     """
     def __init__(self, coeff=0., var=None):
         if self.__class__ is SourceTerm:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise AbstractBaseClassError
 	CellTerm.__init__(self, coeff=coeff, var=var) 
 	
     def _calcGeomCoeff(self, mesh):

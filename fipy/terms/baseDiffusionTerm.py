@@ -38,6 +38,8 @@ import os
 
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
+from fipy.terms import AlternativeMethodInBaseClass
+from fipy.terms import TermMultiplyError
 
 class _BaseDiffusionTerm(_UnaryTerm):
 
@@ -73,7 +75,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             self.coeff[0] = other * self.coeff[0] 
             return self.__class__(coeff=self.coeff, var=self.var)
         else:
-            raise Exception, "Must multiply terms by int or float."
+            raise TermMultiplyError
 
     __rmul__ = __mul__
     
@@ -353,8 +355,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
     def _getDiffusionGeomCoeff(self, var):
         if _UnaryTerm._getDiffusionGeomCoeff(self, var) is not None:
-            raise AssertionError, 'An alternate _getDiffusionGeomCoeff() is defined in a base class'
-
+            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')       
         if var is self.var or self.var is None:
             return self._getGeomCoeff(var.getMesh())
         else:

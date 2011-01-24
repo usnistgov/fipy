@@ -37,7 +37,7 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import inline
 from fipy.tools import numerix
-
+from fipy.terms import AbstractBaseClassError
 from fipy.matrices.sparseMatrix import _SparseMatrix
 
 class CellTerm(_NonDiffusionTerm):
@@ -46,7 +46,7 @@ class CellTerm(_NonDiffusionTerm):
     """
     def __init__(self, coeff=1., var=None):
         if self.__class__ is CellTerm:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise AbstractBaseClassError
             
         from fipy.variables.variable import Variable
         if not isinstance(coeff, Variable):

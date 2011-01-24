@@ -52,7 +52,8 @@ def _suite():
             'coupledBinaryTerm',
             'baseBinaryTerm',
             'unaryTerm',
-            'nonDiffusionTerm'
+            'nonDiffusionTerm',
+            'asymmetricConvectionTerm'
             ), base = __name__)
 
 if __name__ == '__main__':

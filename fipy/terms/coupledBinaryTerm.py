@@ -37,6 +37,8 @@ from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
+from fipy.terms import SolutionVariableNumberError
+from fipy.terms import AlternativeMethodInBaseClass
 
 class _CoupledBinaryTerm(_BaseBinaryTerm):
     """
@@ -62,7 +64,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     def __init__(self, term, other):
         _BaseBinaryTerm.__init__(self, term, other)
         if len(self._getVars()) < len(self._getUncoupledTerms()):
-            raise Exception, 'Different number of solution variables and equations.'
+            raise SolutionVariableNumberError
 
     def _getUncoupledTerms(self):
         return self.term._getUncoupledTerms() + self.other._getUncoupledTerms()
@@ -72,7 +74,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
             raise Exception, 'The solution variable should not be specified.'
 
         if len(self._getVars()) != len(self._getUncoupledTerms()):
-            raise Exception, 'Different number of solution variables and equations.'
+            raise SolutionVariableNumberError
 
         return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._getVars()))
     
@@ -186,7 +188,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
-            raise AssertionError, 'An alternate _getDefaultSolver() is defined in a base class'
+            raise AlternativeMethodInBaseClass('getDefaultSolver()')
 
         if solver and not solver._canSolveAsymmetric():
             import warnings
@@ -224,7 +226,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._getVars()
   	Traceback (most recent call last): 
  	    ... 
- 	Exception: Different number of solution variables and equations.
+ 	SolutionVariableNumberError: Different number of solution variables and equations.
         >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._getVars()
   	Traceback (most recent call last): 
  	    ... 
@@ -232,11 +234,11 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._getVars()
  	Traceback (most recent call last): 
  	    ... 
- 	Exception: Different number of solution variables and equations.
+ 	SolutionVariableNumberError: Different number of solution variables and equations.
         >>> print (eq2 & eq0 & eq1)([v1, v2])._getVars()
  	Traceback (most recent call last): 
  	    ... 
- 	Exception: Different number of solution variables and equations.
+ 	SolutionVariableNumberError: Different number of solution variables and equations.
 
         """
     
@@ -268,7 +270,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         _vars = list(_vars)
 
         if len(_vars) != len(self._getVars()) or len(set(_vars)) != len(self._getVars()):
-            raise Exception, 'Different number of solution variables and equations.'
+            raise SolutionVariableNumberError
 
         for var in _vars:
             if var not in set(self._getVars()):

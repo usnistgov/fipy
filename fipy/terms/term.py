@@ -37,7 +37,8 @@ __docformat__ = 'restructuredtext'
 import os
 from fipy.tools import numerix
 from fipy.solvers import DefaultSolver
-
+from fipy.terms import AbstractBaseClassError
+from fipy.terms import SolutionVariableRequiredError
 
 class Term:
     """
@@ -55,8 +56,8 @@ class Term:
         """
         
         if self.__class__ is Term:
-            raise NotImplementedError, "can't instantiate abstract base class"
-            
+            raise AbstractBaseClassError
+
         self.coeff = coeff
         self.geomCoeff = None
         self._cacheMatrix = False
@@ -86,7 +87,7 @@ class Term:
     def _verifyVar(self, var):
         if var is None:
             if self.var is None:
-                raise Exception, 'The solution variable needs to be specified'
+                raise SolutionVariableRequiredError
             else:
                 return self.var
         else:
@@ -339,7 +340,7 @@ class Term:
             from fipy.terms.coupledBinaryTerm import _CoupledBinaryTerm
             return _CoupledBinaryTerm(self, other)
         else:
-            raise Exception
+            raise Exception, "Can only couple Term objects."
 
     def _getUncoupledTerms(self):
         raise NotImplementedError
@@ -429,7 +430,7 @@ class Term:
  	>>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
  	Traceback (most recent call last): 
  	    ... 
-        Exception: The solution variable needs to be specified
+        SolutionVariableRequiredError: The solution variable needs to be specified.
  	>>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> from fipy.tools import parallel
         >>> numpyMatrix = solver.matrix.getNumpyArray()
@@ -446,7 +447,7 @@ class Term:
  	>>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
  	Traceback (most recent call last): 
  	    ... 
- 	Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+ 	ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
  	>>> eq = DiffusionTerm(coeff=1., var=B) + 10. == 0 
  	>>> print eq 
  	(DiffusionTerm(coeff=[1.0], var=B) + 10.0)
@@ -470,26 +471,26 @@ class Term:
         >>> DiffusionTerm().solve()
         Traceback (most recent call last):
             ...
-        Exception: The solution variable needs to be specified
+        SolutionVariableRequiredError: The solution variable needs to be specified.
         >>> DiffusionTerm().solve(A)
         >>> DiffusionTerm(var=A).solve(A)
         >>> (DiffusionTerm(var=A) + DiffusionTerm())
         Traceback (most recent call last):
             ...
-        Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+        ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve()
         Traceback (most recent call last):
             ...
-        Exception: The solution variable needs to be specified
+        SolutionVariableRequiredError: The solution variable needs to be specified.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A)
         >>> DiffusionTerm() & DiffusionTerm()
         Traceback (most recent call last):
             ...
-        Exception: Different number of solution variables and equations.
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> DiffusionTerm(var=A) & DiffusionTerm()
         Traceback (most recent call last):
             ...
-        Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+        ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
         >>> A = CellVariable(mesh=m, name='A', value=1)
         >>> B = CellVariable(mesh=m, name='B')
         >>> C = CellVariable(mesh=m, name='C')        
@@ -507,11 +508,11 @@ class Term:
         >>> DiffusionTerm(var=A) & DiffusionTerm(var=A)
         Traceback (most recent call last):
             ...
-        Exception: Different number of solution variables and equations.
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> DiffusionTerm() & DiffusionTerm()
         Traceback (most recent call last):
             ...
-        Exception: Different number of solution variables and equations.
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B)).solve(A)
         Traceback (most recent call last):
             ...
@@ -519,7 +520,7 @@ class Term:
         >>> DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=B)
         Traceback (most recent call last):
             ...
-        Exception: Different number of solution variables and equations.
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(solver=DefaultSolver())
         >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(A)
         Traceback (most recent call last):

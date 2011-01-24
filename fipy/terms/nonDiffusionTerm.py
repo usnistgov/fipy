@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.terms.unaryTerm import _UnaryTerm
+from fipy.terms import TermMultiplyError
 
 class _NonDiffusionTerm(_UnaryTerm):
 
@@ -64,7 +65,7 @@ class _NonDiffusionTerm(_UnaryTerm):
         if isinstance(other, (int, float)):
             return self.__class__(coeff=other * self.coeff, var=self.var)
         else:
-            raise Exception, "Must multiply terms by int or float."
+            raise TermMultiplyError
             
     __rmul__ = __mul__
 

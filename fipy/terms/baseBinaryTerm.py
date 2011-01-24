@@ -37,6 +37,7 @@ import os
 
 from fipy.terms.term import Term
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
+from fipy.terms import ExplicitVariableError
 
 class _BaseBinaryTerm(Term):
     def __init__(self, term, other):
@@ -51,10 +52,10 @@ class _BaseBinaryTerm(Term):
             if other.var is None:
                 pass
             else:
-                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
+                raise ExplicitVariableError
         else:
             if other.var is None:
-                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
+                raise ExplicitVariableError
 
 	Term.__init__(self, var=self._getVars()[0])
     
