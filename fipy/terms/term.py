@@ -43,7 +43,7 @@ class Term:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    self.__isAbstractBaseClass
+
     def __init__(self, coeff=1., var=None):
         """
         Create a `Term`.
