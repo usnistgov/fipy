@@ -40,8 +40,6 @@ from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 
 class _BaseBinaryTerm(Term):
     def __init__(self, term, other):
-        if self.__class__ is _BaseBinaryTerm:
-            raise NotImplementedError, "can't instantiate abstract base class"
 
         if not isinstance(other, Term):
             other = _ExplicitSourceTerm(coeff=other, var=term.var)

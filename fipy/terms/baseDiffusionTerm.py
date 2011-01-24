@@ -40,19 +40,8 @@ from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
 
 class _BaseDiffusionTerm(_UnaryTerm):
-    """
-    .. attention:: This class is abstract. Always create one of its subclasses.
-    """
-    def __init__(self, coeff = (1.,), var=None):
-        """
-        Create a `DiffusionTerm`.
 
-        :Parameters:
-          - `coeff`: `Tuple` or `list` of `FaceVariables` or numbers.
-          
-        """
-        if self.__class__ is _BaseDiffusionTerm:
-            raise NotImplementedError, "can't instantiate abstract base class"
+    def __init__(self, coeff = (1.,), var=None):
         
         if type(coeff) not in (type(()), type([])):
             coeff = [coeff]

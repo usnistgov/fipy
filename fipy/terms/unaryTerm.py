@@ -38,9 +38,6 @@ from fipy.tools import numerix
 from fipy.terms.term import Term
 
 class _UnaryTerm(Term):
-    """
-    .. attention:: This class is abstract. Always create one of its subclasses.
-    """
 
     def _getVars(self):
         return [self.var]

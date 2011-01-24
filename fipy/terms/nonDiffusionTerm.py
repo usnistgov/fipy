@@ -38,9 +38,6 @@ from fipy.tools import numerix
 from fipy.terms.unaryTerm import _UnaryTerm
 
 class _NonDiffusionTerm(_UnaryTerm):
-    """
-        .. attention:: This class is abstract. Always create one of its subclasses.
-    """
 
     def __neg__(self):
         r"""

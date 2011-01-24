@@ -41,9 +41,6 @@ from fipy.tools import inline
 from fipy.tools import numerix
 
 class _BaseUpwindConvectionTerm(ConvectionTerm):
-    """
-    .. attention:: This class is abstract. Always create one of its subclasses.
-    """
 
     class _Alpha(FaceVariable):
         def __init__(self, P):

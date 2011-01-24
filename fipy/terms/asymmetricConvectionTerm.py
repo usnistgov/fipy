@@ -38,9 +38,6 @@ from fipy.terms.convectionTerm import ConvectionTerm
 from fipy.solvers import DefaultAsymmetricSolver
 
 class _AsymmetricConvectionTerm(ConvectionTerm):
-    """
-    .. attention:: This class is abstract. Always create one of its subclasses.
-    """ 
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         if ConvectionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
