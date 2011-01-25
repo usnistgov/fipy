@@ -44,7 +44,7 @@ class NoiseVariable(CellVariable):
     
     In the event that the noise should be conserved, use::
         
-        <Specific>NoiseVariable(...).getFaceGrad().getDivergence()
+        <Specific>NoiseVariable(...).faceGrad.divergence
 
     The `seed()` and `get_seed()` functions of the
     `fipy.tools.numerix.random` module can be set and query the random
@@ -61,9 +61,9 @@ class NoiseVariable(CellVariable):
         """
         Copy the value of the `NoiseVariable` to a static `CellVariable`.
         """
-        return CellVariable(mesh = self.getMesh(), 
+        return CellVariable(mesh = self.mesh, 
                             name = self.name + "_old",
-                            value = self.getValue(),
+                            value = self.value,
                             hasOld = 0)
 
     def scramble(self):
@@ -77,7 +77,7 @@ class NoiseVariable(CellVariable):
         
     def parallelRandom(self):
 
-        if self.getMesh().communicator.procID == 0:
+        if self.mesh.communicator.procID == 0:
             return self.random()
         else:
             return None
@@ -90,7 +90,7 @@ class NoiseVariable(CellVariable):
         if parallel.Nproc > 1:
             rnd = parallel.bcast(rnd, root=0)
             
-            return rnd[self.getMesh()._getGlobalOverlappingCellIDs()]
+            return rnd[self.mesh._globalOverlappingCellIDs]
         else:
             return rnd
 

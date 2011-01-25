@@ -57,7 +57,7 @@ class ExponentialConvectionTerm(_AsymmetricConvectionTerm):
     
     class _Alpha(FaceVariable):
         def __init__(self, P):
-            FaceVariable.__init__(self, P.getMesh())
+            FaceVariable.__init__(self, P.mesh)
             self.P = self._requires(P)
             
         def _calcValue(self):
@@ -65,7 +65,7 @@ class ExponentialConvectionTerm(_AsymmetricConvectionTerm):
             
             Test case added because `and` was being used instead of bitwise `&`.
             
-                >>> from fipy.meshes.grid1D import Grid1D
+                >>> from fipy.meshes import Grid1D
                 >>> mesh = Grid1D(nx = 3)
                 >>> from fipy.variables.faceVariable import FaceVariable
                 >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
@@ -76,7 +76,7 @@ class ExponentialConvectionTerm(_AsymmetricConvectionTerm):
             """
             eps = 1e-3
             largeValue = 101.0
-            P  = self.P.getNumericValue()
+            P  = self.P.numericValue
 
             P = numerix.where(abs(P) < eps, eps, P)
             alpha = numerix.where(P > largeValue, (P - 1) / P, 0.5)

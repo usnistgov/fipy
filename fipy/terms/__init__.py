@@ -34,6 +34,8 @@ from implicitDiffusionTerm import ImplicitDiffusionTerm
 
 from implicitSourceTerm import ImplicitSourceTerm
 
+from residualTerm import ResidualTerm
+
 from centralDiffConvectionTerm import CentralDifferenceConvectionTerm
 from explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from exponentialConvectionTerm import ExponentialConvectionTerm

@@ -45,12 +45,12 @@ The result is again tested in the same way:
 
     >>> DiffusionTerm().solve(var)
     >>> Lx = 20
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> print var.allclose(analyticalArray, atol = 0.025)
     1
 
-    >>> max(mesh._getNonOrthogonality()) < 0.51
+    >>> max(mesh._nonOrthogonality) < 0.51
     True
 
 Note that this test case will only work if you run it by running the
@@ -89,8 +89,8 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-var.constrain(valueLeft, mesh.getFacesLeft())
-var.constrain(valueRight, mesh.getFacesRight())
+var.constrain(valueLeft, mesh.facesLeft)
+var.constrain(valueRight, mesh.facesRight)
 
 if __name__ == '__main__':
 
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     viewer = Viewer(vars = var)
     viewer.plot()
     varArray = array(var)
-    x = mesh.getCellCenters()[0]
+    x = mesh.cellCenters[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray
     errorVar = CellVariable(name = "absolute error",
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     NonOrthoVar = CellVariable(name = "non-orthogonality",
                                mesh = mesh,
-                               value = mesh._getNonOrthogonality())
+                               value = mesh._nonOrthogonality)
     NOViewer = Viewer(vars = NonOrthoVar)
 
 

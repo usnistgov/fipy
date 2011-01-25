@@ -93,17 +93,17 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         
     def quiver(self, sparsity=None, scale=None):
         var = self.vars[0]
-        mesh = var.getMesh()
+        mesh = var.mesh
 
         if isinstance(var, FaceVariable):
-            N = mesh._getNumberOfFaces() 
-            W = mesh._getFaceAreas()
+            N = mesh.numberOfFaces 
+            W = mesh._faceAreas
             W = (W / min(W))**0.05
-            X, Y = mesh.getFaceCenters()
+            X, Y = mesh.faceCenters
         elif isinstance(var, CellVariable):
-            N = mesh.getNumberOfCells() 
-            W = mesh.getCellVolumes()
-            X, Y = mesh.getCellCenters()
+            N = mesh.numberOfCells 
+            W = mesh.cellVolumes
+            X, Y = mesh.cellCenters
 
         if sparsity is not None and N > sparsity:
             self.indices = numerix.random.rand(N) * W
@@ -119,12 +119,12 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         self._quiver = self.axes.quiver(X, Y, U, V, scale=scale, pivot='middle')
 
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.mesh2D import Mesh2D
+        from fipy.meshes.mesh2D import Mesh2D
 
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-                if (isinstance(var.getMesh(), Mesh2D) \
+                if (isinstance(var.mesh, Mesh2D) \
                     and (isinstance(var, FaceVariable) \
-                         or isinstance(var, CellVariable)) and var.getRank() == 1)]
+                         or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "The mesh must be a Mesh2D instance"
@@ -134,9 +134,9 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
     def _plot(self):
 
         var = self.vars[0]
-        mesh = var.getMesh()
+        mesh = var.mesh
 
-        U, V = var.getNumericValue()
+        U, V = var.numericValue
 
         U = numerix.take(U, self.indices)
         V = numerix.take(V, self.indices)

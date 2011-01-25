@@ -53,7 +53,7 @@ class ConvectionTerm(FaceTerm):
         """
         Create a `ConvectionTerm` object.
         
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> m = Grid1D(nx = 2)
@@ -81,7 +81,7 @@ class ConvectionTerm(FaceTerm):
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> m2 = Grid2D(nx=2, ny=1)
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)
@@ -109,11 +109,11 @@ class ConvectionTerm(FaceTerm):
 
         self.stencil = None
         
-        if isinstance(coeff, _MeshVariable) and coeff.getRank() != 1:
+        if isinstance(coeff, _MeshVariable) and coeff.rank != 1:
             raise VectorCoeffError
 
         if isinstance(coeff, CellVariable):
-            coeff = coeff.getArithmeticFaceValue()
+            coeff = coeff.arithmeticFaceValue
 
         FaceTerm.__init__(self, coeff=coeff, var=var)
         
@@ -121,7 +121,7 @@ class ConvectionTerm(FaceTerm):
         if not isinstance(self.coeff, FaceVariable):
             self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
 
-        projectedCoefficients = self.coeff * mesh._getOrientedAreaProjections()
+        projectedCoefficients = self.coeff * mesh._orientedAreaProjections
         
         return projectedCoefficients.sum(0)
         
@@ -138,7 +138,7 @@ class ConvectionTerm(FaceTerm):
                 if diffCoeff is None:
                     diffCoeff = small
                 else:
-                    diffCoeff = diffCoeff.getNumericValue()
+                    diffCoeff = diffCoeff.numericValue
                     diffCoeff = (diffCoeff == 0) * small + diffCoeff
 
             alpha = self._Alpha(-self._getGeomCoeff(var.getMesh()) / diffCoeff)
@@ -153,8 +153,8 @@ class ConvectionTerm(FaceTerm):
     def _checkVar(self, var):
         FaceTerm._checkVar(self, var)
         
-        if not (isinstance(self.coeff, FaceVariable) and self.coeff.getRank() == 1) \
-        and numerix.getShape(self.coeff) != (var.getMesh().getDim(),):
+        if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1) \
+        and numerix.getShape(self.coeff) != (var.mesh.dim,):
             raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
@@ -165,8 +165,8 @@ class ConvectionTerm(FaceTerm):
 
             if not hasattr(self,  'constraintB'):
 
-                constraintMaskFG = var.getFaceGrad().getConstraintMask()
-                constraintMaskFV = var.getArithmeticFaceValue().getConstraintMask()
+                constraintMaskFG = var.faceGrad.constraintMask
+                constraintMaskFV = var.arithmeticFaceValue.constraintMask
 
                 if constraintMaskFG is not None and constraintMaskFV is not None:
                     constraintMask = constraintMaskFG | constraintMaskFV
@@ -178,7 +178,7 @@ class ConvectionTerm(FaceTerm):
                     constraintMask = None
 
                 if constraintMask is not None:
-                    mesh = var.getMesh()
+                    mesh = var.mesh
                     weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
                     if weight.has_key('implicit'):
@@ -186,10 +186,10 @@ class ConvectionTerm(FaceTerm):
                     else:
                         alpha = 0.0
 
-                    exteriorCoeff =  self.coeff * mesh.getExteriorFaces()
+                    exteriorCoeff =  self.coeff * mesh.exteriorFaces
 
-                    self.constraintL = (constraintMask * alpha * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
-                    self.constraintB =  -((1 - alpha) * var.getArithmeticFaceValue() * constraintMask * exteriorCoeff).getDivergence() * mesh.getCellVolumes()
+                    self.constraintL = (constraintMask * alpha * exteriorCoeff).divergence * mesh.cellVolumes
+                    self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
                 else:
                     self.constraintL = 0
                     self.constraintB = 0

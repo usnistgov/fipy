@@ -52,7 +52,7 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
         return value
         
     def _calcValueIn(self, alpha, id1, id2):
-        val = self._getArray().copy()
+        val = self._array.copy()
 
         inline._runIterateElementInline("""
             int ID1 = ITEM(id1, i, NULL);
@@ -67,12 +67,12 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
                 ITEM(val, i, vec) = 0.;
             }
         """,
-        var = self.var.getNumericValue(),
+        var = self.var.numericValue,
         val = val, 
         alpha = alpha,
         id1 = id1, id2 = id2,
         shape=numerix.array(numerix.shape(val)),
-        ni = self.mesh._getNumberOfFaces())
+        ni = self.mesh.numberOfFaces)
 
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)

@@ -47,7 +47,7 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 >>> convCoeff = ((10.,),(0.,))
     
 We define a 2D cylindrical mesh representing an anulus. The mesh is a
-suedo 1D mesh, but is a good test case for the :class:`~fipy.meshes.numMesh.cylindricalGrid2D.CylindricalGrid2D`
+suedo 1D mesh, but is a good test case for the :class:`~fipy.meshes.cylindricalGrid2D.CylindricalGrid2D`
 mesh. The mesh has a non-constant cell spacing.
 
 >>> from fipy import *
@@ -76,8 +76,8 @@ and impose the boundary conditions
    
 with
 
->>> var.constrain(valueLeft, mesh.getFacesLeft())
->>> var.constrain(valueRight, mesh.getFacesRight())
+>>> var.constrain(valueLeft, mesh.facesLeft)
+>>> var.constrain(valueRight, mesh.facesRight)
 
 The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`.
@@ -106,7 +106,7 @@ and test the solution against the analytical result
 >>> axis = 0
 >>> try:
 ...     from scipy.special import expi
-...     r = mesh.getCellCenters()[axis]
+...     r = mesh.cellCenters[axis]
 ...     U = convCoeff[0][0]
 ...     AA = exp(U / diffCoeff * (r1 - r))
 ...     BB = expi(U * r0 / diffCoeff) - expi(U * r / diffCoeff)

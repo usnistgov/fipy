@@ -110,11 +110,11 @@ mesh = Grid2D(dx, dy, nx, ny)
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
-x, y = mesh.getCellCenters()
+x, y = mesh.cellCenters
 theta.setValue(0., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2)
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
-thetaMag = theta.getOld().getGrad().getMag()
+thetaMag = theta.old.grad.mag
 implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 

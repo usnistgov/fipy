@@ -92,7 +92,7 @@ and :term:`FiPy` are identical.
 To start, some parameters are declared.
 
 >>> from fipy import *
->>> #from fipy.meshes.numMesh.grid2D import Grid2D
+>>> #from fipy.meshes.grid2D import Grid2D
 
 >>> L = 1.0
 >>> N = 50
@@ -131,8 +131,8 @@ decoupling.
 
 Build the Stokes equations in the cell centers.
 
->>> xVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([1.,0.])
->>> yVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.getGrad().dot([0.,1.])
+>>> xVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.grad.dot([1.,0.])
+>>> yVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.grad.dot([0.,1.])
     
 In this example the SIMPLE algorithm is used to couple the
 pressure and momentum equations. Let us assume we have solved the
@@ -189,11 +189,11 @@ approximated at the face by :math:`A_f d_{AP} / (a_P)_f`. In :term:`FiPy` the
 pressure correction equation can be written as, 
 
 >>> ap = CellVariable(mesh=mesh, value=1.)
->>> coeff = 1./ ap.getArithmeticFaceValue()*mesh._getFaceAreas() * mesh._getCellDistances() 
->>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.getDivergence()
+>>> coeff = 1./ ap.arithmeticFaceValue*mesh._faceAreas * mesh._cellDistances 
+>>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.divergence
 
 Above would work good on a staggered grid, however, on a colocated grid as :term:`FiPy`
-uses, the term :term:`velocity.getDivergence()` will cause oscillations in the
+uses, the term :term:`velocity.divergence` will cause oscillations in the
 pressure solution as velocity is a face variable. 
 We can apply the Rhie-Chow correction terms for this. In this an intermediate 
 velocity term :math:`u^\Diamond` is considered which does not contain the pressure corrections:
@@ -229,17 +229,17 @@ removes the unphysical pressure oscillations. We start by introducing needed
 terms 
 
 >>> from fipy.variables.faceGradVariable import _FaceGradVariable
->>> volume = CellVariable(mesh=mesh, value=mesh.getCellVolumes(), name='Volume')
->>> contrvolume=volume.getArithmeticFaceValue()
+>>> volume = CellVariable(mesh=mesh, value=mesh.cellVolumes, name='Volume')
+>>> contrvolume=volume.arithmeticFaceValue
 
 And set up the velocity with this formula in the SIMPLE loop. 
 Now, set up the no-slip boundary conditions
 
->>> xVelocity.constrain(0., mesh.getFacesRight() | mesh.getFacesLeft() | mesh.getFacesBottom())
->>> xVelocity.constrain(U, mesh.getFacesTop())
->>> yVelocity.constrain(0., mesh.getExteriorFaces())
->>> X, Y = mesh.getFaceCenters()
->>> pressureCorrection.constrain(0., mesh.getFacesLeft() & (Y < dL))
+>>> xVelocity.constrain(0., mesh.facesRight | mesh.facesLeft | mesh.facesBottom)
+>>> xVelocity.constrain(U, mesh.facesTop)
+>>> yVelocity.constrain(0., mesh.exteriorFaces)
+>>> X, Y = mesh.faceCenters
+>>> pressureCorrection.constrain(0., mesh.facesLeft & (Y < dL))
 
 Set up the viewers,
 
@@ -266,7 +266,7 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     xVelocityEq.cacheMatrix()
 ...     xres = xVelocityEq.sweep(var=xVelocity,
 ...                              underRelaxation=velocityRelaxation)
-...     xmat = xVelocityEq.getMatrix()
+...     xmat = xVelocityEq.matrix
 ...
 ...     yres = yVelocityEq.sweep(var=yVelocity,
 ...                              underRelaxation=velocityRelaxation)
@@ -277,18 +277,18 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     ## update the face velocities based on starred values with the 
 ...     ## Rhie-Chow correction. 
 ...     ## cell pressure gradient
-...     presgrad = pressure.getGrad()
+...     presgrad = pressure.grad
 ...     ## face pressure gradient
 ...     facepresgrad = _FaceGradVariable(pressure)
 ...
-...     velocity[0] = xVelocity.getArithmeticFaceValue() \
-...          + contrvolume / ap.getArithmeticFaceValue() * \
-...            (presgrad[0].getArithmeticFaceValue()-facepresgrad[0])
-...     velocity[1] = yVelocity.getArithmeticFaceValue() \
-...          + contrvolume / ap.getArithmeticFaceValue() * \
-...            (presgrad[1].getArithmeticFaceValue()-facepresgrad[1])
-...     velocity[..., mesh.getExteriorFaces().getValue()] = 0.
-...     velocity[0, mesh.getFacesTop().getValue()] = U
+...     velocity[0] = xVelocity.arithmeticFaceValue \
+...          + contrvolume / ap.arithmeticFaceValue * \
+...            (presgrad[0].arithmeticFaceValue-facepresgrad[0])
+...     velocity[1] = yVelocity.arithmeticFaceValue \
+...          + contrvolume / ap.arithmeticFaceValue * \
+...            (presgrad[1].arithmeticFaceValue-facepresgrad[1])
+...     velocity[..., mesh.exteriorFaces.value] = 0.
+...     velocity[0, mesh.facesTop.value] = U
 ...
 ...     ## solve the pressure correction equation
 ...     pressureCorrectionEq.cacheRHSvector()
@@ -299,10 +299,10 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     ## update the pressure using the corrected value
 ...     pressure.setValue(pressure + pressureRelaxation * pressureCorrection )
 ...     ## update the velocity using the corrected pressure
-...     xVelocity.setValue(xVelocity - pressureCorrection.getGrad()[0] / \
-...                                                ap * mesh.getCellVolumes())
-...     yVelocity.setValue(yVelocity - pressureCorrection.getGrad()[1] / \
-...                                                ap * mesh.getCellVolumes())
+...     xVelocity.setValue(xVelocity - pressureCorrection.grad[0] / \
+...                                                ap * mesh.cellVolumes)
+...     yVelocity.setValue(yVelocity - pressureCorrection.grad[1] / \
+...                                                ap * mesh.cellVolumes)
 ...
 ...     if __name__ == '__main__':
 ...         if sweep%10 == 0:
@@ -319,11 +319,11 @@ solution. This argument cannot be passed to :meth:`solve`.
 
 Test values in the last cell.
 
->>> print numerix.allclose(pressure.getGlobalValue()[...,-1], 162.790867927)
+>>> print numerix.allclose(pressure.globalValue[...,-1], 162.790867927)
 1
->>> print numerix.allclose(xVelocity.getGlobalValue()[...,-1], 0.265072740929)
+>>> print numerix.allclose(xVelocity.globalValue[...,-1], 0.265072740929)
 1
->>> print numerix.allclose(yVelocity.getGlobalValue()[...,-1], -0.150290488304)
+>>> print numerix.allclose(yVelocity.globalValue[...,-1], -0.150290488304)
 1
 
 """

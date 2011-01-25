@@ -37,8 +37,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
-class _SparseMatrix:
+class _SparseMatrix(object):
     
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -47,11 +48,24 @@ class _SparseMatrix:
     def __init__(self, mesh=None, bandwidth=0, matrix=None, sizeHint=None):
         pass
 
+    matrix     = None
+    numpyArray = property()
+    _shape     = property()
+
     __array_priority__ = 100.0    
 
+    @getsetDeprecated
     def _getMatrix(self):
-        pass
-
+        return self.matrix
+     
+    @getsetDeprecated
+    def _getShape(self):
+        return self._shape
+    
+    @getsetDeprecated
+    def getNumpyArray(self):
+        return self.numpyArray
+                                                
     def __array_wrap(self, arr, context=None):
         if context is None:
             return arr
@@ -124,11 +138,8 @@ class _SparseMatrix:
         return self
         
 ##     def __eq__(self,other):
-## 	return self.matrix.__eq__(other._getMatrix())
+## 	return self.matrix.__eq__(other.matrix)
 
-    def _getShape(self):
-        pass
-        
 ##     def transpose(self):
 ##         pass
 
@@ -150,14 +161,11 @@ class _SparseMatrix:
     def addAtDiagonal(self, vector):
         pass
 
-    def getNumpyArray(self):
-        pass
-
     def exportMmf(self, filename):
         pass
         
 ##     def __array__(self):
-##      shape = self._getShape()
+##      shape = self._shape
 ##      indices = numerix.indices(shape)
 ##         numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
 ##      return numerix.reshape(numMatrix, shape)

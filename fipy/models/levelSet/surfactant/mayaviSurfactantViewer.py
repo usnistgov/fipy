@@ -70,7 +70,7 @@ class MayaviSurfactantViewer(_Viewer):
             >>> # from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
             >>> var = DistanceVariable(mesh = mesh, value = -1)
         
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
 
             >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
             >>> var.calcDistanceFunction()
@@ -124,18 +124,18 @@ class MayaviSurfactantViewer(_Viewer):
         if animate:
             self._initialCondition = None
 
-        if distanceVar.getMesh().getDim() != 2:
+        if distanceVar.mesh.dim != 2:
             raise 'The MayaviIsoViewer only works for 2D meshes.'
 
     def _getStructure(self):
 
-        ##maxX = self.distanceVar.getMesh().getFaceCenters()[0].max()
-        ##minX = self.distanceVar.getMesh().getFaceCenters()[0].min()
+        ##maxX = self.distanceVar.mesh.faceCenters[0].max()
+        ##minX = self.distanceVar.mesh.faceCenters[0].min()
 
-        IDs = numerix.nonzero(self.distanceVar._getCellInterfaceFlag())[0]
-        coordinates = numerix.take(numerix.array(self.distanceVar.getMesh().getCellCenters()).swapaxes(0,1), IDs)
+        IDs = numerix.nonzero(self.distanceVar._cellInterfaceFlag)[0]
+        coordinates = numerix.take(numerix.array(self.distanceVar.mesh.cellCenters).swapaxes(0,1), IDs)
 
-        coordinates -= numerix.take(numerix.array(self.distanceVar.getGrad() * self.distanceVar).swapaxes(0,1), IDs)
+        coordinates -= numerix.take(numerix.array(self.distanceVar.grad * self.distanceVar).swapaxes(0,1), IDs)
 
         coordinates *= self.zoomFactor
 
@@ -145,7 +145,7 @@ class MayaviSurfactantViewer(_Viewer):
 
         from lines import _getOrderedLines
 
-        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.getMesh()._getCellDistances().min() * 10)
+        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 

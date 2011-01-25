@@ -56,7 +56,7 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     
     class _Alpha(FaceVariable):
 	def __init__(self, P):
-	    FaceVariable.__init__(self, mesh = P.getMesh())
+	    FaceVariable.__init__(self, mesh = P.mesh)
 	    self.P = self._requires(P)
 	    
 	def _calcValuePy(self, eps, P):
@@ -64,7 +64,7 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
 
             Test case added because `and` was being used instead of bitwise `&`.
 
-                >>> from fipy.meshes.grid1D import Grid1D
+                >>> from fipy.meshes import Grid1D
                 >>> mesh = Grid1D(nx = 3)
                 >>> from fipy.variables.faceVariable import FaceVariable
                 >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
@@ -91,7 +91,7 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
 	    return PhysicalField(value = alpha)
 
 	def _calcValueIn(self, eps, P):
-            alpha = self._getArray().copy()
+            alpha = self._array.copy()
             
 	    inline._runInline("""
 		if (fabs(P[i]) < eps) {
@@ -115,16 +115,16 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
 		}
 	    """,
 	    alpha = alpha, eps = eps, P = P,
-	    ni = self.mesh._getNumberOfFaces()
+	    ni = self.mesh.numberOfFaces
 	    )
 
             return self._makeValue(value = alpha)
-##         return self._makeValue(value = alpha, unit = self.getUnit())
+##         return self._makeValue(value = alpha, unit = self.unit)
 
 
 	def _calcValue(self):	    
 	    eps = 1e-3
-	    P  = self.P.getNumericValue()
+	    P  = self.P.numericValue
 	    
             return inline._optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
 

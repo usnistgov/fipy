@@ -52,18 +52,19 @@ class ExplicitDiffusionTerm(_BaseDiffusionTerm):
     """
     
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-        if hasattr(var, 'getOld'):
-            varOld = var.getOld()
+        if hasattr(var, 'old'):
+            varOld = var.old
         else:
             varOld = var
             
         varOld, L, b = _BaseDiffusionTerm._buildMatrix(self, varOld, SparseMatrix, boundaryConditions = boundaryConditions, dt = dt,
                                                   transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-        return (var, SparseMatrix(mesh=var.getMesh()), b - L * var.getValue())
+        return (var, SparseMatrix(mesh=var.mesh), b - L * var.getValue())
         
     def _getNormals(self, mesh):
         return mesh._getFaceCellToCellNormals()
 
     def _treatMeshAsOrthogonal(self, mesh):        
         return mesh._isOrthogonal()
+

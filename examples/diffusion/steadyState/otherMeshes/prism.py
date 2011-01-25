@@ -42,7 +42,7 @@ The result is again tested in the same way:
 
     >>> DiffusionTerm().solve(var)
     >>> Lx = 20
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> print var.allclose(analyticalArray, atol = 0.027)
     1
@@ -63,8 +63,8 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-exteriorFaces = mesh.getExteriorFaces()
-xFace = mesh.getFaceCenters()[0]
+exteriorFaces = mesh.exteriorFaces
+xFace = mesh.faceCenters[0]
 
 var.constrain(valueLeft, exteriorFaces & (xFace ** 2 < 0.000000000000001))
 var.constrain(valueRight, exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001))
@@ -72,7 +72,7 @@ var.constrain(valueRight, exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001
 if __name__ == '__main__':
     DiffusionTerm().solve(var)
     varArray = array(var)
-    x = mesh.getCellCenters()[0]
+    x = mesh.cellCenters[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray
     errorVar = CellVariable(name = "absolute error",

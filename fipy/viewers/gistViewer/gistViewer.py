@@ -71,7 +71,7 @@ class _GistViewer(_Viewer):
     
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         
-        self.mesh = self.vars[0].getMesh()
+        self.mesh = self.vars[0].mesh
 
         self.id = _GistViewer._id 
         _GistViewer._id += 1

@@ -82,7 +82,7 @@ class SurfactantEquation:
         if solver is None:
             solver=DefaultAsymmetricSolver()
 
-        var.constrain(0, var.getMesh().getExteriorFaces())
+        var.constrain(0, var.mesh.exteriorFaces)
 
         self.eq.solve(var,
                       boundaryConditions=boundaryConditions,
@@ -108,6 +108,7 @@ class SurfactantEquation:
             boundaryConditions = (boundaryConditions,)
         if solver is None:
             solver=DefaultAsymmetricSolver()
-        var.constrain(0, var.getMesh().getExteriorFaces())
+        
+        var.constrain(0, var.mesh.exteriorFaces)
 
         return self.eq.sweep(var, solver=solver, boundaryConditions=boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn)

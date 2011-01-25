@@ -44,18 +44,18 @@ class _ModCellToFaceVariable(_ArithmeticCellToFaceVariable):
         self.modIn = modIn
         
     def  _calcValueIn(self, alpha, id1, id2):
-        val = self._getArray().copy()
+        val = self._array.copy()
         
         inline._runInline(self.modIn + """
         int ID1 = id1[i];
         int ID2 = id2[i];
         double cell2 = var[ID2];
         val[i] = mod(cell2 - var[ID1]) * alpha[i] + var[ID1];
-        """,var = self.var.getNumericValue(),
+        """,var = self.var.numericValue,
             val = val, 
             alpha = alpha,
             id1 = id1, id2 = id2,
-            ni = self.mesh._getNumberOfFaces())
+            ni = self.mesh.numberOfFaces)
             
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)

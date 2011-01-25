@@ -50,7 +50,7 @@ for :term:`Gmsh`, see the `gmsh manual`_.
 .. _gmsh manual: http://www.geuz.org/gmsh/doc/texinfo/gmsh.html
 
 The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
-:class:`~fipy.meshes.numMesh.gmshImporter.Gmsh2D` object.
+:class:`~fipy.meshes.gmshImporter.Gmsh2D` object.
 
 >>> from fipy import *
 >>> mesh = Gmsh2D('''
@@ -106,8 +106,8 @@ We set up a transient diffusion equation
 The following line extracts the :math:`x` coordinate values on the exterior
 faces. These are used as the boundary condition fixed values.
 
->>> X, Y = mesh.getFaceCenters()
->>> phi.constrain(X, mesh.getExteriorFaces())
+>>> X, Y = mesh.faceCenters
+>>> phi.constrain(X, mesh.exteriorFaces)
 
 We first step through the transient problem
 
@@ -133,11 +133,11 @@ another application, we could export tab-separated-values with
 
 ::
     
-   TSVViewer(vars=(phi, phi.getGrad())).plot(filename="myTSV.tsv")
+   TSVViewer(vars=(phi, phi.grad)).plot(filename="myTSV.tsv")
 
 .. literalinclude:: myTSV.tsv
    
-The values are listed at the :class:`~fipy.meshes.numMesh.cell.Cell` centers.
+The values are listed at the :class:`~fipy.meshes.cell.Cell` centers.
 Particularly for irregular meshes, no specific ordering should be relied upon.
 Vector quantities are listed in multiple columns, one for each mesh dimension.
             
@@ -148,7 +148,7 @@ function, but it's a bit more complicated due to the varying boundary
 conditions and the different horizontal diffusion length at different
 vertical positions
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> t = timeStepDuration * steps
 
 >>> phiAnalytical = CellVariable(name="analytical value",

@@ -38,10 +38,23 @@ from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportDocTestSuite(testModuleNames = (
-        'fipy.meshes.numMesh.test',),
-                                   docTestModuleNames = (
-        'fipy.meshes.common.mesh',))
+    return _LateImportDocTestSuite(docTestModuleNames = (
+        'fipy.meshes.mesh',
+        'fipy.meshes.mesh2D',
+        'fipy.meshes.grid1D',
+        'fipy.meshes.grid2D',
+        'fipy.meshes.grid3D',
+        'fipy.meshes.tri2D',
+        'fipy.meshes.gmshImport',
+        'fipy.meshes.periodicGrid1D',
+        'fipy.meshes.periodicGrid2D',
+        'fipy.meshes.uniformGrid1D',
+        'fipy.meshes.uniformGrid2D',
+        'fipy.meshes.uniformGrid3D',
+        'fipy.meshes.cylindricalUniformGrid1D',
+        'fipy.meshes.cylindricalUniformGrid2D',
+        'fipy.meshes.cylindricalGrid1D',
+        'fipy.meshes.cylindricalGrid2D'))
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')

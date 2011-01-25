@@ -69,8 +69,8 @@ class FaceTerm(_NonDiffusionTerm):
         L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces), id2, id1)
         L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces),    id2, id2)
 
-        N = mesh.getNumberOfCells()
-        M = mesh._getMaxFacesPerCell()
+        N = mesh.numberOfCells
+        M = mesh._maxFacesPerCell
 
         for boundaryCondition in boundaryConditions:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
@@ -90,8 +90,8 @@ class FaceTerm(_NonDiffusionTerm):
 
         inline._optionalInline(self.__explicitBuildMatrixIn, self.__explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight)
 
-        N = mesh.getNumberOfCells()
-        M = mesh._getMaxFacesPerCell()
+        N = mesh.numberOfCells
+        M = mesh._maxFacesPerCell
 
         for boundaryCondition in boundaryConditions:
 
@@ -105,7 +105,7 @@ class FaceTerm(_NonDiffusionTerm):
 
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
         coeff = numerix.array(self._getGeomCoeff(mesh))
-        Nfac = mesh._getNumberOfFaces()
+        Nfac = mesh.numberOfFaces
 
         cell1Diag = numerix.zeros((Nfac,),'d')
         cell1Diag[:] = weight['cell 1 diag']
@@ -152,9 +152,9 @@ class FaceTerm(_NonDiffusionTerm):
         """
         if var is self.var or self.var is None:
 
-            mesh = var.getMesh()
-            id1, id2 = mesh._getAdjacentCellIDs()
-            interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
+            mesh = var.mesh
+            id1, id2 = mesh._adjacentCellIDs
+            interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
 
             id1 = numerix.take(id1, interiorFaces)
             id2 = numerix.take(id2, interiorFaces)
@@ -169,10 +169,10 @@ class FaceTerm(_NonDiffusionTerm):
                 self.__implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
 
             if weight.has_key('explicit'):
-                self.__explicitBuildMatrix(SparseMatrix, var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
+                self.__explicitBuildMatrix(SparseMatrix, var.old, id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
 
             return (var, L, b)
 
         else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+            return (var, SparseMatrix(mesh=var.mesh), 0)
         

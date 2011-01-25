@@ -36,7 +36,7 @@ r"""
 
 This example solves the steady-state convection-diffusion equation as described in
 :mod:`examples.diffusion.convection.exponential1D.input` but uses a 
-:class:`~fipy.meshes.numMesh.tri2D.Tri2D` mesh.
+:class:`~fipy.meshes.tri2D.Tri2D` mesh.
 
 Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 
@@ -58,8 +58,8 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 ...                    mesh = mesh,
 ...                    value = valueBottom)
 
->>> var.constrain(valueBottom, mesh.getFacesBottom())
->>> var.constrain(valueTop, mesh.getFacesTop())
+>>> var.constrain(valueBottom, mesh.facesBottom)
+>>> var.constrain(valueTop, mesh.facesTop)
 
 >>> diffCoeff = 1.
 >>> convCoeff = array(((0.,), (10.,)))
@@ -73,7 +73,7 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 The analytical solution test for this problem is given by:
 
 >>> axis = 1
->>> y = mesh.getCellCenters()[axis]
+>>> y = mesh.cellCenters[axis]
 >>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
 >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD

@@ -73,9 +73,9 @@ We examine a fixed distribution of electrons with :math:`z_{\text{e}^{-}} = -1`.
 ...         self.equation = equation
 ...
 ...     def copy(self):
-...         return self.__class__(mesh = self.getMesh(), 
-...                               value = self.getValue(), 
-...                               name = self.getName(), 
+...         return self.__class__(mesh = self.mesh, 
+...                               value = self.value, 
+...                               name = self.name, 
 ...                               standardPotential = 
 ...                                   self.standardPotential, 
 ...                               barrier = self.barrier, 
@@ -95,7 +95,7 @@ multiple interstitial species:
 Because Poisson's equation admits an infinite number of potential profiles,
 we must constrain the solution by fixing the potential at one point:
     
->>> potential.constrain(0., mesh.getFacesLeft())
+>>> potential.constrain(0., mesh.facesLeft)
 
 >>> charge = 0.
 >>> for Cj in interstitials + substitutionals:
@@ -121,7 +121,7 @@ This problem has the analytical solution
 
 We verify that the correct equilibrium is attained
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> analyticalArray = (x**2)/2 - 2*x
 
 >>> print potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
@@ -144,7 +144,7 @@ Next, we segregate all of the electrons to right side of the domain
        1& \text{for $x > L/2$.}
    \end{cases}
     
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> interstitials[0].setValue(0.)
 >>> interstitials[0].setValue(1., where=x > L / 2.)
 
@@ -166,7 +166,7 @@ We verify that the correct equilibrium is attained
     
 >>> analyticalArray = where(x < L/2, -x, ((x-1)**2)/2 - x)
 
->>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).getValue()
+>>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).value
 1
     
 and again view the result
@@ -206,7 +206,7 @@ We again verify that the correct equilibrium is attained
     
 >>> analyticalArray = where(x < 1, (x**2)/2 - x, -0.5)
 
->>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).getValue()
+>>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).value
 1
     
 and again view the result

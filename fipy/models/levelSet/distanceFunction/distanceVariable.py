@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
+from fipy.tools.decorators import getsetDeprecated
 
 from fipy.variables.cellVariable import CellVariable
 
@@ -59,7 +60,7 @@ class DistanceVariable(CellVariable):
 
     Here we will define a few test cases. Firstly a 1D test case
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> from fipy.tools import serial
     >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serial)
     >>> from distanceVariable import DistanceVariable
@@ -83,7 +84,7 @@ class DistanceVariable(CellVariable):
 
     >>> dx = 1.
     >>> dy = 2.
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
     >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, -1, 1))
 
@@ -195,19 +196,19 @@ class DistanceVariable(CellVariable):
         self._markStale()
         self.narrowBandWidth = narrowBandWidth
 
-        self.cellToCellDistances = MA.filled(self.mesh._getCellToCellDistances(), 0)
-        self.cellNormals = MA.filled(self.mesh._getCellNormals(), 0)      
-        self.cellAreas = MA.filled(self.mesh._getCellAreas(), 0)
-##         self.cellToCellDistances = numerix.array(MA.array(self.mesh._getCellToCellDistances()).filled(0))
-##         self.cellNormals = numerix.array(MA.array(self.mesh._getCellNormals()).filled(0))       
-##         self.cellAreas = numerix.array(MA.array(self.mesh._getCellAreas()).filled(0))
-        self.cellToCellIDs = numerix.array(self.mesh._getCellToCellIDsFilled())
-        self.adjacentCellIDs = self.mesh._getAdjacentCellIDs()
-        self.exteriorFaces = self.mesh.getExteriorFaces()
-        self.cellFaceIDs = self.mesh._getCellFaceIDs()
+        self.cellToCellDistances = MA.filled(self.mesh._cellToCellDistances, 0)
+        self.cellNormals = MA.filled(self.mesh._cellNormals, 0)      
+        self.cellAreas = MA.filled(self.mesh._cellAreas, 0)
+##         self.cellToCellDistances = numerix.array(MA.array(self.mesh._cellToCellDistances).filled(0))
+##         self.cellNormals = numerix.array(MA.array(self.mesh._cellNormals).filled(0))       
+##         self.cellAreas = numerix.array(MA.array(self.mesh._cellAreas).filled(0))
+        self.cellToCellIDs = numerix.array(self.mesh._cellToCellIDsFilled)
+        self.adjacentCellIDs = self.mesh._adjacentCellIDs
+        self.exteriorFaces = self.mesh.exteriorFaces
+        self.cellFaceIDs = self.mesh.cellFaceIDs
         
     def _calcValue(self):
-        return self.value
+        return self._value
         
     def extendVariable(self, extensionVariable, deleteIslands = False):
         """
@@ -223,11 +224,11 @@ class DistanceVariable(CellVariable):
 
         """
         
-        self.tmpValue = self.value.copy()
+        self.tmpValue = self._value.copy()
         numericExtensionVariable = numerix.array(extensionVariable)
         self._calcDistanceFunction(numericExtensionVariable, deleteIslands = deleteIslands)
         extensionVariable[:] = numericExtensionVariable
-        self.value = self.tmpValue
+        self._value = self.tmpValue
 
     def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False):
         """
@@ -250,25 +251,25 @@ class DistanceVariable(CellVariable):
 
         ## calculate interface values
 
-        cellToCellIDs = self.mesh._getCellToCellIDs()
+        cellToCellIDs = self.mesh._cellToCellIDs
 
         if deleteIslands:
-            adjVals = numerix.take(self.value, cellToCellIDs)
-            adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value) > 0)
+            adjVals = numerix.take(self._value, cellToCellIDs)
+            adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self._value) > 0)
             masksum = numerix.sum(numerix.logical_not(MA.getmask(adjInterfaceValues)), 0)
-            tmp = MA.logical_and(masksum == 4, self.value > 0)
-            self.value = MA.where(tmp, -1, self.value)
+            tmp = MA.logical_and(masksum == 4, self._value > 0)
+            self._value = MA.where(tmp, -1, self._value)
 
-        adjVals = numerix.take(self.value, cellToCellIDs)
-        adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self.value) > 0)
-        dAP = self.mesh._getCellToCellDistances()
-        distances = abs(self.value * dAP / (self.value - adjInterfaceValues))
+        adjVals = numerix.take(self._value, cellToCellIDs)
+        adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self._value) > 0)
+        dAP = self.mesh._cellToCellDistances
+        distances = abs(self._value * dAP / (self._value - adjInterfaceValues))
         indices = MA.argsort(distances, 0)
-        sign = (self.value > 0) * 2 - 1
+        sign = (self._value > 0) * 2 - 1
 
         s = distances[indices[0], numerix.arange(indices.shape[1])]
 
-        if self.mesh.getDim() == 2:
+        if self.mesh.dim == 2:
 
             t = distances[indices[1], numerix.arange(indices.shape[1])]
             u = distances[indices[2], numerix.arange(indices.shape[1])]
@@ -281,7 +282,7 @@ class DistanceVariable(CellVariable):
                 nt = MA.zeros(self.cellNormals.shape[:-1] + (0,))
 
             signedDistance = MA.where(MA.getmask(s),
-                                      self.value,
+                                      self._value,
                                       MA.where(MA.getmask(t),
                                                sign * s,
                                                MA.where(abs(numerix.dot(ns,nt)) < 0.9,
@@ -295,11 +296,11 @@ class DistanceVariable(CellVariable):
                                       )
         else:
             signedDistance = MA.where(MA.getmask(s),
-                                      self.value,
+                                      self._value,
                                       sign * s)
             
 
-        self.value = signedDistance
+        self._value = signedDistance
 
         ## calculate interface flag
         masksum = numerix.sum(numerix.logical_not(MA.getmask(distances)), 0)
@@ -308,19 +309,19 @@ class DistanceVariable(CellVariable):
         ## spread the extensionVariable to the whole interface
         flag = True
         if extensionVariable is None:
-            extensionVariable = numerix.zeros(self.mesh.getNumberOfCells(), 'd')
+            extensionVariable = numerix.zeros(self.mesh.numberOfCells, 'd')
             flag = False
             
-        ext = numerix.zeros(self.mesh.getNumberOfCells(), 'd')
+        ext = numerix.zeros(self.mesh.numberOfCells, 'd')
 
-        positiveInterfaceFlag = numerix.where(self.value > 0, interfaceFlag, 0)
-        negativeInterfaceIDs = numerix.nonzero(numerix.where(self.value < 0, interfaceFlag, 0))[0]
+        positiveInterfaceFlag = numerix.where(self._value > 0, interfaceFlag, 0)
+        negativeInterfaceIDs = numerix.nonzero(numerix.where(self._value < 0, interfaceFlag, 0))[0]
 
         for id in negativeInterfaceIDs:
             tmp, extensionVariable[...,id] = self._calcTrialValue(id, positiveInterfaceFlag, extensionVariable)
 
         if flag:
-            self.value = self.tmpValue.copy()
+            self._value = self.tmpValue.copy()
 
         ## evaluate the trialIDs
         adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs)
@@ -333,13 +334,13 @@ class DistanceVariable(CellVariable):
 
 
         for id in trialIDs:
-            self.value[...,id], extensionVariable[id] = self._calcTrialValue(id, evaluatedFlag, extensionVariable)
+            self._value[...,id], extensionVariable[id] = self._calcTrialValue(id, evaluatedFlag, extensionVariable)
 
         while len(trialIDs):
 
-            id = trialIDs[numerix.argmin(abs(numerix.take(self.value, trialIDs)))]
+            id = trialIDs[numerix.argmin(abs(numerix.take(self._value, trialIDs)))]
 
-            if abs(self.value[...,id]) > narrowBandWidth / 2:
+            if abs(self._value[...,id]) > narrowBandWidth / 2:
                 break
 
             trialIDs.remove(id)
@@ -349,38 +350,38 @@ class DistanceVariable(CellVariable):
             for adjID in MA.filled(cellToCellIDs[...,id], -1):
                 if adjID != -1:
                     if not evaluatedFlag[...,adjID]:
-                        self.value[...,adjID], extensionVariable[...,adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
+                        self._value[...,adjID], extensionVariable[...,adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
                         if adjID not in trialIDs:
                             trialIDs.append(adjID)
 
-        self.value = numerix.array(self.value)
+        self._value = numerix.array(self._value)
 
     def _calcTrialValue(self, id, evaluatedFlag, extensionVariable):
         adjIDs = self.cellToCellIDs[...,id]
         adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs)
-        adjValues = numerix.take(self.value, adjIDs)
+        adjValues = numerix.take(self._value, adjIDs)
         adjValues = numerix.where(adjEvaluatedFlag, adjValues, 1e+10)
         try:
             indices = numerix.argsort(abs(adjValues))
         except TypeError:
             # numpy 1.1 raises a TypeError when using argsort function
             indices = abs(adjValues).argsort()
-        sign = (self.value[id] > 0) * 2 - 1
+        sign = (self._value[id] > 0) * 2 - 1
         d0 = self.cellToCellDistances[indices[0], id]
-        v0 = self.value[..., adjIDs[indices[0]]]
+        v0 = self._value[..., adjIDs[indices[0]]]
         e0 = extensionVariable[..., adjIDs[indices[0]]]
 
         N = numerix.sum(adjEvaluatedFlag)
 
         index0 = indices[0]
         index1 = indices[1]
-        index2 = indices[self.mesh.getDim()]
+        index2 = indices[self.mesh.dim]
         
         if N > 1:
             n0 = self.cellNormals[..., index0, id]
             n1 = self.cellNormals[..., index1, id]
 
-            if self.mesh.getDim() == 2:
+            if self.mesh.dim == 2:
                 cross = (n0[0] * n1[1] - n0[1] * n1[0])
             else:
                 cross = 0.0
@@ -399,7 +400,7 @@ class DistanceVariable(CellVariable):
             d1 = self.cellToCellDistances[index1, id]
             n0 = self.cellNormals[..., index0, id]
             n1 = self.cellNormals[..., index1, id]
-            v1 = self.value[..., adjIDs[index1]]
+            v1 = self._value[..., adjIDs[index1]]
             
             crossProd = d0 * d1 * (n0[0] * n1[1] - n0[1] * n1[0])
             dotProd = d0 * d1 * numerix.dot(n0, n1)
@@ -419,7 +420,7 @@ class DistanceVariable(CellVariable):
             a0 = self.cellAreas[index0, id]
             a1 = self.cellAreas[index1, id]
 
-            if self.value[id] > 0:
+            if self._value[id] > 0:
                 phi = max(dis, 0)
             else:
                 phi = min(dis, 0)
@@ -429,24 +430,29 @@ class DistanceVariable(CellVariable):
             
             return dis, (e0 * n0grad + e1 * n1grad) / (n0grad + n1grad)
 
+    @getsetDeprecated
     def getCellInterfaceAreas(self):
+        return self.cellInterfaceAreas
+
+    @property
+    def cellInterfaceAreas(self):
         """
         Returns the length of the interface that crosses the cell
 
         A simple 1D test:
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(dx = 1., nx = 4)
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-1.5, -0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 0., 1., 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), 
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, 
         ...                        answer)
         True
 
         A 2D test case:
         
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -455,7 +461,7 @@ class DistanceVariable(CellVariable):
         ...                                              1.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, 1, 0, 1, 0, 1, 0, 1, 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), answer)
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, answer)
         True
 
         Another 2D test case:
@@ -466,7 +472,7 @@ class DistanceVariable(CellVariable):
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, numerix.sqrt(2) / 4,  numerix.sqrt(2) / 4, 0))
-        >>> print numerix.allclose(distanceVariable.getCellInterfaceAreas(), 
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, 
         ...                        answer)
         True
 
@@ -475,23 +481,28 @@ class DistanceVariable(CellVariable):
 	
         >>> mesh = Grid2D(dx = 0.05, dy = 0.05, nx = 20, ny = 20)
         >>> r = 0.25
-        >>> x, y = mesh.getCellCenters()
+        >>> x, y = mesh.cellCenters
         >>> rad = numerix.sqrt((x - .5)**2 + (y - .5)**2) - r
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-        >>> print distanceVariable.getCellInterfaceAreas().sum()
+        >>> print distanceVariable.cellInterfaceAreas.sum()
         1.57984690073
         """        
-        normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), 0))
-        areas = numerix.array(MA.filled(self.mesh._getCellAreaProjections(), 0))
+        normals = numerix.array(MA.filled(self._cellInterfaceNormals, 0))
+        areas = numerix.array(MA.filled(self.mesh._cellAreaProjections, 0))
         return CellVariable(mesh=self.mesh, 
                             value=numerix.sum(abs(numerix.dot(normals, areas)), axis=0))
 
+    @getsetDeprecated
     def _getCellInterfaceNormals(self):
+        return self._cellInterfaceNormals
+    
+    @property
+    def _cellInterfaceNormals(self):
         """
         
         Returns the interface normals over the cells.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.cellVariable import CellVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -506,29 +517,34 @@ class DistanceVariable(CellVariable):
            ...                               (0, 0, 0, 0),
            ...                               (0, 0, 0, 0),
            ...                               (0, v, 0, 0))))
-           >>> print numerix.allclose(distanceVariable._getCellInterfaceNormals(), answer)
+           >>> print numerix.allclose(distanceVariable._cellInterfaceNormals, answer)
            True
            
         """
 
-        N = self.mesh.getNumberOfCells()
-        M = self.mesh._getMaxFacesPerCell()
-        dim = self.mesh.getDim()
+        N = self.mesh.numberOfCells
+        M = self.mesh._maxFacesPerCell
+        dim = self.mesh.dim
 
-        valueOverFaces = numerix.repeat(self._getCellValueOverFaces()[numerix.newaxis, ...], dim, axis=0)
+        valueOverFaces = numerix.repeat(self._cellValueOverFaces[numerix.newaxis, ...], dim, axis=0)
         if self.cellFaceIDs.shape[-1] > 0:
-            interfaceNormals = self._getInterfaceNormals()[...,self.cellFaceIDs]
+            interfaceNormals = self._interfaceNormals[...,self.cellFaceIDs]
         else:
             interfaceNormals = 0
         from fipy.tools.numerix import MA
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
+    @getsetDeprecated
     def _getInterfaceNormals(self):
+        return self._interfaceNormals
+
+    @property
+    def _interfaceNormals(self):
         """
 
         Returns the normals on the boundary faces only, the other are set to zero.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -537,64 +553,79 @@ class DistanceVariable(CellVariable):
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=((0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0),
            ...                              (0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0)))
-           >>> print numerix.allclose(distanceVariable._getInterfaceNormals(), answer)
+           >>> print numerix.allclose(distanceVariable._interfaceNormals, answer)
            True
            
         """
         
-        M = self.mesh.getDim()
-        interfaceFlag = numerix.repeat(self._getInterfaceFlag()[numerix.newaxis, ...], M, axis=0)
-        return numerix.where(interfaceFlag, self._getLevelSetNormals(), 0)
+        M = self.mesh.dim
+        interfaceFlag = numerix.repeat(self._interfaceFlag[numerix.newaxis, ...], M, axis=0)
+        return numerix.where(interfaceFlag, self._levelSetNormals, 0)
 
+    @getsetDeprecated
     def _getInterfaceFlag(self):
+        return self._interfaceFlag
+
+    @property
+    def _interfaceFlag(self):
         """
 
         Returns 1 for faces on boundary and 0 otherwise.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=(0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0))
-           >>> print numerix.allclose(distanceVariable._getInterfaceFlag(), answer)
+           >>> print numerix.allclose(distanceVariable._interfaceFlag, answer)
            True
            
         """
         adjacentCellIDs = self.adjacentCellIDs
-        val0 = numerix.take(numerix.array(self.value), adjacentCellIDs[0])
-        val1 = numerix.take(numerix.array(self.value), adjacentCellIDs[1])
+        val0 = numerix.take(numerix.array(self._value), adjacentCellIDs[0])
+        val1 = numerix.take(numerix.array(self._value), adjacentCellIDs[1])
         
         return numerix.where(val1 * val0 < 0, 1, 0)
 
+    @getsetDeprecated
     def _getCellInterfaceFlag(self):
+        return self._cellInterfaceFlag
+
+    @property
+    def _cellInterfaceFlag(self):
         """
 
         Returns 1 for those cells on the interface:
 
-        >>> from fipy.meshes.grid2D import Grid2D
+        >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 1, 1, 0))
-        >>> print numerix.allclose(distanceVariable._getCellInterfaceFlag(), answer)
+        >>> print numerix.allclose(distanceVariable._cellInterfaceFlag, answer)
         True
 
         """
-        flag = MA.filled(numerix.take(self._getInterfaceFlag(), self.cellFaceIDs), 0)
+        flag = MA.filled(numerix.take(self._interfaceFlag, self.cellFaceIDs), 0)
 
         flag = numerix.sum(flag, axis=0)
         
-        return numerix.where(numerix.logical_and(self.value > 0, flag > 0), 1, 0)
+        return numerix.where(numerix.logical_and(self._value > 0, flag > 0), 1, 0)
 
+    @getsetDeprecated
     def _getCellValueOverFaces(self):
+        return self._cellValueOverFaces
+
+    @property
+    def _cellValueOverFaces(self):
         """
 
         Returns the cells values at the faces.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.cellVariable import CellVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -604,21 +635,26 @@ class DistanceVariable(CellVariable):
            ...                              (-.5, .5, .5, 1.5),
            ...                              (-.5, .5, .5, 1.5),
            ...                              (-.5, .5, .5, 1.5)))
-           >>> print numerix.allclose(distanceVariable._getCellValueOverFaces(), answer)
+           >>> print numerix.allclose(distanceVariable._cellValueOverFaces, answer)
            True
 
         """
         
-        M = self.mesh._getMaxFacesPerCell()
-        N = self.mesh.getNumberOfCells()
-        return numerix.reshape(numerix.repeat(numerix.array(self.value)[numerix.newaxis, ...], M, axis=0), (M, N))
+        M = self.mesh._maxFacesPerCell
+        N = self.mesh.numberOfCells
+        return numerix.reshape(numerix.repeat(numerix.array(self._value)[numerix.newaxis, ...], M, axis=0), (M, N))
 
+    @getsetDeprecated
     def _getLevelSetNormals(self):
+        return self._levelSetNormals
+
+    @property
+    def _levelSetNormals(self):
         """
 
         Return the face level set normals.
 
-           >>> from fipy.meshes.grid2D import Grid2D
+           >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
            >>> distanceVariable = DistanceVariable(mesh = mesh, 
@@ -627,21 +663,21 @@ class DistanceVariable(CellVariable):
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=((0, 0, v, v, 0, 0, 0, v, 0, 0, v, 0),
            ...                              (0, 0, v, v, 0, 0, 0, v, 0, 0, v, 0)))
-           >>> print numerix.allclose(distanceVariable._getLevelSetNormals(), answer)
+           >>> print numerix.allclose(distanceVariable._levelSetNormals, answer)
            True
         """
 
-        faceGrad = self.getGrad().getArithmeticFaceValue()
-        faceGradMag = numerix.array(faceGrad.getMag())
+        faceGrad = self.grad.arithmeticFaceValue
+        faceGradMag = numerix.array(faceGrad.mag)
         faceGradMag = numerix.where(faceGradMag > 1e-10,
                                     faceGradMag,
                                     1e-10)
         faceGrad = numerix.array(faceGrad)
 
         ## set faceGrad zero on exteriorFaces
-        exteriorFaces = self.exteriorFaces.getValue()
-        if len(self.exteriorFaces.getValue()) > 0:
-            faceGrad[..., self.exteriorFaces.getValue()] = 0.
+        exteriorFaces = self.exteriorFaces.value
+        if len(self.exteriorFaces.value) > 0:
+            faceGrad[..., self.exteriorFaces.value] = 0.
         
         return faceGrad / faceGradMag 
 

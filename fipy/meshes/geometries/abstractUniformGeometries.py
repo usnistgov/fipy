@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
 ## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "vertex.py"
+ #  FILE: "mesh.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -28,27 +30,56 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  # ###################################################################
  ##
 
-"""Vertex within a Mesh
+__docformat__ = 'restructuredtext'
 
-    Vertices bound Faces.
-"""
+from fipy.meshes.geometries.abstractGeometries import AbstractMeshGeometry
+        
+class AbstractUniformGridGeometry(AbstractMeshGeometry):
 
-class Vertex:
-    def __init__(self,coordinates):
-	"""Vertex is initialized by Mesh with its coordinates.
-	"""
-        self.coordinates = coordinates
+    """Wrapped scaled geometry properties"""
+    @property
+    def scaledFaceAreas(self):
+        return self.faceAreas
 
-    def getCoordinates(self):
-	"""Return coordinates of Vertex.
-	"""
-        return self.coordinates
-	
-    def __repr__(self):
-	"""Textual representation of Vertex.
-	"""
-	return str(self.coordinates)
+    @property
+    def scaledCellVolumes(self):
+        return self.cellVolumes
+
+    @property
+    def scaledCellCenters(self):
+        return self.cellCenters
+
+    @property
+    def scaledCellDistances(self):
+        return self.cellDistances
+
+    @property
+    def scaledCellToCellDistances(self):
+        return self.cellToCellDistances
+
+    @property
+    def scaledFaceToCellDistances(self):
+        return self.faceToCellDistances
+
+    """Geometry properties common to 1D, 2D, 3D"""
+    @property
+    def orientedFaceNormals(self):
+        return self.faceNormals
+
+    def _getFaceToCellDistances(self):
+        return self._faceToCellDistances
+
+    def _setFaceToCellDistances(self, v):
+        self._faceToCellDistances = v
+        self._scaledGeometry._setScaledValues()
+
+    faceToCellDistances = property(_getFaceToCellDistances,
+                                   _setFaceToCellDistances)
+     
+ 

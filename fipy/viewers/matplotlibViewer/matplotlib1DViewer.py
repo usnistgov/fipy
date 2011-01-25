@@ -37,6 +37,7 @@
 __docformat__ = 'restructuredtext'
 
 from matplotlibViewer import _MatplotlibViewer
+from fipy.tools.decorators import getsetDeprecated
 
 class Matplotlib1DViewer(_MatplotlibViewer):
     """
@@ -77,16 +78,16 @@ class Matplotlib1DViewer(_MatplotlibViewer):
         import pylab
         
         if xlog and ylog:
-            self.lines = [self.axes.loglog(*datum) for datum in self._getData()]
+            self.lines = [self.axes.loglog(*datum) for datum in self._data]
         elif xlog:
-            self.lines = [self.axes.semilogx(*datum) for datum in self._getData()]
+            self.lines = [self.axes.semilogx(*datum) for datum in self._data]
         elif ylog:
-            self.lines = [self.axes.semilogy(*datum) for datum in self._getData()]
+            self.lines = [self.axes.semilogy(*datum) for datum in self._data]
         else:
-            self.lines = [self.axes.plot(*datum) for datum in self._getData()]
+            self.lines = [self.axes.plot(*datum) for datum in self._data]
 
         if legend is not None:
-            self.axes.legend([var.getName() for var in self.vars], loc=legend)
+            self.axes.legend([var.name for var in self.vars], loc=legend)
 
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
@@ -116,14 +117,19 @@ class Matplotlib1DViewer(_MatplotlibViewer):
 
     log = property(**log())
 
+    @getsetDeprecated
     def _getData(self):
+        return self._data
+
+    @property
+    def _data(self):
         from fipy.tools.numerix import array
-        return [[array(var.getMesh().getCellCenters()[0]), array(var)] for var in self.vars]
+        return [[array(var.mesh.cellCenters[0]), array(var)] for var in self.vars]
             
     def _getSuitableVars(self, vars):
-        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.getMesh().getDim() == 1]
+        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.mesh.dim == 1]
         if len(vars) > 1:
-            vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
+            vars = [var for var in vars if var.mesh is vars[0].mesh]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Can only plot 1D data"
@@ -136,7 +142,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
 
         self.axes.set_ylim(ymin=ymin, ymax=ymax)
 
-        for line, datum in zip(self.lines, self._getData()):
+        for line, datum in zip(self.lines, self._data):
             line[0].set_xdata(datum[0])
             line[0].set_ydata(datum[1])
             

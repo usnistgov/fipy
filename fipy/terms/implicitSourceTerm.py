@@ -84,13 +84,13 @@ class ImplicitSourceTerm(SourceTerm):
         else:
             diagonalSign = 1
 
-        coeff = self._getGeomCoeff(var.getMesh())
+        coeff = self._getGeomCoeff(var.mesh)
         combinedSign = diagonalSign * numerix.sign(coeff)
 
         return {'diagonal' : (combinedSign >= 0),
-                'old value' : numerix.zeros(var.getMesh().getNumberOfCells(), 'd'),
+                'old value' : numerix.zeros(var.mesh.numberOfCells, 'd'),
                 'b vector' :  -var * (combinedSign < 0),
-                'new value' : numerix.zeros(var.getMesh().getNumberOfCells(), 'd')}
+                'new value' : numerix.zeros(var.mesh.numberOfCells, 'd')}
     
 def _test(): 
     import doctest

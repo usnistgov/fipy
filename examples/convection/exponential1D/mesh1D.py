@@ -74,8 +74,8 @@ and impose the boundary conditions
 
 with
 
->>> var.constrain(valueLeft, mesh.getFacesLeft())
->>> var.constrain(valueRight, mesh.getFacesRight())
+>>> var.constrain(valueLeft, mesh.facesLeft)
+>>> var.constrain(valueRight, mesh.facesRight)
 
 The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`. The scheme used by the convection term
@@ -106,7 +106,7 @@ or
 .. index:: exp
 
 >>> axis = 0
->>> x = mesh.getCellCenters()[axis]
+>>> x = mesh.cellCenters[axis]
 >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD

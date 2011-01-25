@@ -42,12 +42,12 @@ from fipy.variables.cellVariable import CellVariable
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, rateConstant = None, distanceVar = None):
-        CellVariable.__init__(self, mesh = distanceVar.getMesh())
+        CellVariable.__init__(self, mesh = distanceVar.mesh)
         self.distanceVar = self._requires(distanceVar)
         self.rateConstant = rateConstant
 
     def _calcValue(self):
-        return self.rateConstant * self.distanceVar.getCellInterfaceAreas() / self.mesh.getCellVolumes()
+        return self.rateConstant * self.distanceVar.cellInterfaceAreas / self.mesh.cellVolumes
 
 class _ScAdsorptionCoeff(_AdsorptionCoeff):
     def __init__(self, bulkVar = None, surfactantVar = None, rateConstant = None, distanceVar = None):
@@ -59,7 +59,7 @@ class _ScAdsorptionCoeff(_AdsorptionCoeff):
         value = _AdsorptionCoeff._calcValue(self)
         bulk = numerix.array(self.bulkVar)
         val = numerix.array(value)
-        return val * bulk * numerix.array(self.surfactantVar.getInterfaceVar())
+        return val * bulk * numerix.array(self.surfactantVar.interfaceVar)
 
 def buildSurfactantBulkDiffusionEquation(bulkVar = None,
                                          distanceVar = None,

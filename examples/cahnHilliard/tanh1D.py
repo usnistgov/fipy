@@ -106,11 +106,11 @@ or
 .. index:: NthOrderBoundaryCondition
       
 >>> BCs = (
-...     NthOrderBoundaryCondition(faces=mesh.getFacesLeft(), value=0, order=2),
-...     NthOrderBoundaryCondition(faces=mesh.getFacesRight(), value=0, order=2))
+...     NthOrderBoundaryCondition(faces=mesh.facesLeft, value=0, order=2),
+...     NthOrderBoundaryCondition(faces=mesh.facesRight, value=0, order=2))
 
->>> var.constrain(1, mesh.getFacesRight())
->>> var.constrain(.5, mesh.getFacesLeft())
+>>> var.constrain(1, mesh.facesRight)
+>>> var.constrain(.5, mesh.facesLeft)
 
 Using
 
@@ -120,7 +120,7 @@ Using
 
 we create the Cahn-Hilliard equation:
 
->>> faceVar = var.getArithmeticFaceValue()
+>>> faceVar = var.arithmeticFaceValue
 >>> freeEnergyDoubleDerivative = asq * ( 1 - 6 * faceVar * (1 - faceVar))
 
 >>> diffTerm2 = DiffusionTerm(
@@ -147,7 +147,7 @@ or
 .. index:: sqrt, exp
       
 >>> a = sqrt(asq)
->>> answer = 1 / (1 + exp(-a * (mesh.getCellCenters()[0]) / epsilon))
+>>> answer = 1 / (1 + exp(-a * (mesh.cellCenters[0]) / epsilon))
 
 If we are running interactively, we create a viewer to see the results
 

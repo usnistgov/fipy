@@ -51,8 +51,8 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 
 >>> var = CellVariable(name = "solution variable", mesh=mesh, value=valueLeft)
 
->>> var.constrain(valueLeft, mesh.getFacesLeft())
->>> var.constrain(valueRight, mesh.getFacesRight())
+>>> var.constrain(valueLeft, mesh.facesLeft)
+>>> var.constrain(valueRight, mesh.facesRight)
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)
@@ -67,7 +67,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...           == DiffusionTerm(coeff=diffCoeff)
 ...           + PowerLawConvectionTerm(coeff=convCoeff))
 ...     eq.solve(var=var)
-...     x = mesh.getCellCenters()[0]
+...     x = mesh.cellCenters[0]
 ...     arg0 = -convCoeff * x / diffCoeff
 ...     arg0 = where(arg0 < -200, -200, arg0)
 ...     arg1 = -convCoeff * L / diffCoeff
@@ -75,7 +75,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...     CC = 1. - exp(arg0)
 ...     DD = 1. - exp(arg1)
 ...     analyticalArray = CC / DD
-...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).getValue())
+...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).value)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 ...         raw_input("Peclet number: " + str(peclet) + ", press key")

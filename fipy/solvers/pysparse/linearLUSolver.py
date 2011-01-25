@@ -83,7 +83,7 @@ class LinearLUSolver(PysparseSolver):
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
 
-        LU = superlu.factorize(L._getMatrix().to_csr())
+        LU = superlu.factorize(L.matrix.to_csr())
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 

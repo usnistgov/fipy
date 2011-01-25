@@ -176,7 +176,7 @@ class _ColorBar(object):
         # and labels.
         self._cb = matplotlib.colorbar.ColorbarBase(cbax, cmap=viewer.cmap,
                                                     orientation=orientation)
-        self._cb.set_label(viewer.vars[0].getName())
+        self._cb.set_label(viewer.vars[0].name)
         
         self.formatter = None
         

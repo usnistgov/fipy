@@ -52,16 +52,16 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
 
         if var is self.var or self.var is None:
 
-            oldArray = var.getOld()
+            oldArray = var.old
 
-            mesh = var.getMesh()
-            NCells = mesh.getNumberOfCells()
-            NCellFaces = mesh._getMaxFacesPerCell()
+            mesh = var.mesh
+            NCells = mesh.numberOfCells
+            NCellFaces = mesh._maxFacesPerCell
 
             cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
 
             cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
-            cellToCellIDs = mesh._getCellToCellIDs()
+            cellToCellIDs = mesh._cellToCellIDs
 
             if NCells > 0:
                 cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
@@ -80,13 +80,13 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
             else:
                 coeffXdiffereneces = 0.
 
-            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.getCellVolumes())
+            return (var, SparseMatrix(mesh=var.mesh), -coeffXdiffereneces * mesh.cellVolumes)
 
         else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+            return (var, SparseMatrix(mesh=var.mesh), 0)
 
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
-        return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
+        return (adjacentValues - cellValues) / mesh._cellToCellDistances
         
     def _getDefaultSolver(self, solver, *args, **kwargs):
         if _NonDiffusionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:

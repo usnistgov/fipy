@@ -68,7 +68,7 @@ demonstrates how to create the required mesh.
     ...     Surface Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
     ... ''').extrude(extrudeFunc=lambda r: 1.1 * r)
 
-    >>> x, y, z = mesh.getCellCenters()
+    >>> x, y, z = mesh.cellCenters
 
     >>> var = CellVariable(mesh=mesh, value=x * y * z, name="x*y*z")
 

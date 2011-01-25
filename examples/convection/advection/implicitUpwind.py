@@ -59,8 +59,8 @@ var = CellVariable(
     mesh = mesh,
     value = startingArray)
 
-var.constrain(valueLeft, mesh.getFacesLeft())
-var.constrain(valueRight, mesh.getFacesRight())
+var.constrain(valueLeft, mesh.facesLeft)
+var.constrain(valueRight, mesh.facesRight)
 
 eq = TransientTerm() - PowerLawConvectionTerm(coeff = (velocity,))
 

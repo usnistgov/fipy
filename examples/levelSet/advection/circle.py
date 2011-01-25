@@ -77,7 +77,7 @@ Construct a `distanceVariable` object.
 
 Initialise the `distanceVariable` to be a circular distance function.
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> initialArray = sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
 >>> var.setValue(initialArray)
 
@@ -102,7 +102,7 @@ The result can be tested with the following commands.
 >>> for step in range(steps):
 ...     var.updateOld()
 ...     advEqn.solve(var, dt=timeStepDuration)
->>> x = array(mesh.getCellCenters()[0])
+>>> x = array(mesh.cellCenters[0])
 >>> distanceTravelled = timeStepDuration * steps * velocity
 >>> answer = initialArray - distanceTravelled
 >>> answer = where(answer < 0., -1001., answer)
