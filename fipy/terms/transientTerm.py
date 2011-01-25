@@ -116,23 +116,24 @@ class TransientTerm(CellTerm):
         TransientTerm is defined.
         
         >>> from fipy import *
-        >>> var = CellVariable(mesh=Grid1D(nx=1))
+        >>> m = Grid1D(nx=1)
+        >>> var = CellVariable(mesh=m)
         >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
-        >>> print eq._getTransientGeomCoeff(var)
+        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
         [ 1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.getMatrix()[0,0] == 1
-        True
+        >>> print eq.getMatrix().asTrilinosMeshMatrix().getNumpyArray()
+        [[ 1.]]
         
         >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
-        >>> print eq._getTransientGeomCoeff(var)
+        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
         [-1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.getMatrix()[0,0] == -2
-        True
-        
+        >>> print eq.getMatrix().asTrilinosMeshMatrix().getNumpyArray() ##== -2
+        [[-2.]]
+
         """
         if CellTerm._getTransientGeomCoeff(self, var) is not None:
             AlternativeMethodInBaseClass('_getTransientGeomCoeff()')

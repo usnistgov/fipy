@@ -55,10 +55,12 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     None
     >>> print eq._getDiffusionGeomCoeff(v1)
     None
-    >>> print eq._getUncoupledTerms()[0]._getTransientGeomCoeff(v0)
-    [ 1.]
-    >>> print eq._getUncoupledTerms()[1]._getDiffusionGeomCoeff(v0)
-    [[-8. -8.]]
+    >>> tranCoeff = eq._getUncoupledTerms()[0]._getTransientGeomCoeff(v0)
+    >>> print parallel.procID > 0 or numerix.allequal(tranCoeff, [1])
+    True
+    >>> diffCoeff = eq._getUncoupledTerms()[1]._getDiffusionGeomCoeff(v0)
+    >>> print parallel.procID > 0 or numerix.allequal(diffCoeff, [[-8, -8]])
+    True
     
     """
     def __init__(self, term, other):
