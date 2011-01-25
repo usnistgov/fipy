@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "explicitSourceTerm.py"
+ #  FILE: "test.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -32,32 +32,20 @@
  # ###################################################################
  ##
 
-__docformat__ = 'restructuredtext'
+"""Run all the test cases in examples/reactiveWetting/
+"""
 
-from fipy.terms.sourceTerm import SourceTerm
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
+import fipy.tests.testProgram
 
-class _ExplicitSourceTerm(SourceTerm):
-    r"""
-
-    The `_ExplicitSourceTerm` discretisation is given by
-
-    .. math::
-
-       \int_V S \,dV \simeq S_P V_P 
-       
-    where :math:`S` is the `coeff` value. This source is added to the RHS vector and
-    does not contribute to the solution matrix.
-
-    """
-	
-    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-	return {
-	    'b vector': -1, 
-	    'new value': 0, 
-	    'old value': 0, 
-	    'diagonal' : 0
-	}
-	
-    def __repr__(self):
-        return repr(self.coeff)
+def _suite():
+    return _LateImportDocTestSuite(testModuleNames = (),
+                                   docTestModuleNames = (
+                                       'liquidVapor1D',
+                                       'liquidVapor2D',
+                                   ), 
+                                   base = __name__)
+    
+if __name__ == '__main__':
+    fipy.tests.testProgram.main(defaultTest='_suite')
 

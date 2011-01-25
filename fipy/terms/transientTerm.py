@@ -35,6 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
+from fipy.terms import AlternativeMethodInBaseClass
 
 class TransientTerm(CellTerm):
     r"""
@@ -98,7 +99,7 @@ class TransientTerm(CellTerm):
     1
     """
 
-    def _getWeight(self, mesh):
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
 	return {
 	    'b vector':  0, 
 	    'new value': 1, 
@@ -109,14 +110,49 @@ class TransientTerm(CellTerm):
     def _calcGeomCoeff(self, mesh):
 	return self.coeff * mesh.cellVolumes
 
-    def getTransientCoeff(self, mesh):
-        return self._getGeomCoeff(mesh)
+    def _getTransientGeomCoeff(self, var):
+        """
+        Test to ensure that _getTransientGeomCoeff is not returning None when a
+        TransientTerm is defined.
 
     def getTransientCoeff(self, mesh):
         return self._getGeomCoeff(mesh)
 
     def getTransientCoeff(self, mesh):
         return self._getGeomCoeff(mesh)
+        
+        >>> from fipy import *
+        >>> m = Grid1D(nx=1)
+        >>> var = CellVariable(mesh=m)
+        >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
+        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
+        [ 1.]
+        >>> eq.cacheMatrix()
+        >>> eq.solve(var)
+        >>> print eq.getMatrix().asTrilinosMeshMatrix().getNumpyArray()
+        [[ 1.]]
+        
+        >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
+        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
+        [-1.]
+        >>> eq.cacheMatrix()
+        >>> eq.solve(var)
+        >>> print eq.getMatrix().asTrilinosMeshMatrix().getNumpyArray() ##== -2
+        [[-2.]]
+
+        """
+        if CellTerm._getTransientGeomCoeff(self, var) is not None:
+            AlternativeMethodInBaseClass('_getTransientGeomCoeff()')
+        if var is self.var or self.var is None:
+            return self._getGeomCoeff(var.getMesh())
+        else:
+            return None
+
+    def _getTransientVars(self):
+        if len(CellTerm._getTransientVars(self)) != 0:
+            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')
+        return self._getVars()
+    
         
 def _test(): 
     import doctest

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "explicitSourceTerm.py"
+ #  FILE: "diffusiontermNoCorrection.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,30 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.sourceTerm import SourceTerm
+from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
 
-class _ExplicitSourceTerm(SourceTerm):
-    r"""
+class DiffusionTermNoCorrection(_BaseDiffusionTerm):
+    def _getNormals(self, mesh):
+        return mesh._getFaceNormals()
 
-    The `_ExplicitSourceTerm` discretisation is given by
-
-    .. math::
-
-       \int_V S \,dV \simeq S_P V_P 
-       
-    where :math:`S` is the `coeff` value. This source is added to the RHS vector and
-    does not contribute to the solution matrix.
-
-    """
-	
-    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-	return {
-	    'b vector': -1, 
-	    'new value': 0, 
-	    'old value': 0, 
-	    'diagonal' : 0
-	}
-	
-    def __repr__(self):
-        return repr(self.coeff)
+    def _treatMeshAsOrthogonal(self, mesh):
+        return True
 

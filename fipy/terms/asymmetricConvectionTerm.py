@@ -4,11 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "explicitSourceTerm.py"
+ #  FILE: "asymmetricConvectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -28,36 +26,36 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.sourceTerm import SourceTerm
+from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.solvers import DefaultAsymmetricSolver
+from fipy.terms import AlternativeMethodInBaseClass
 
-class _ExplicitSourceTerm(SourceTerm):
-    r"""
+class _AsymmetricConvectionTerm(ConvectionTerm):
 
-    The `_ExplicitSourceTerm` discretisation is given by
+    def _getDefaultSolver(self, solver, *args, **kwargs):
+        r"""
+        Make sure the method actually does something.
+        >>> print _AsymmetricConvectionTerm((1,)).getDefaultSolver().__repr__()[:6]
+        Linear
+        """
+        if ConvectionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
+            AlternativeMethodInBaseClass('_getDefaultSolver()')
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
+    
+def _test(): 
+    import doctest
+    return doctest.testmod()
 
-    .. math::
-
-       \int_V S \,dV \simeq S_P V_P 
-       
-    where :math:`S` is the `coeff` value. This source is added to the RHS vector and
-    does not contribute to the solution matrix.
-
-    """
-	
-    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-	return {
-	    'b vector': -1, 
-	    'new value': 0, 
-	    'old value': 0, 
-	    'diagonal' : 0
-	}
-	
-    def __repr__(self):
-        return repr(self.coeff)
-
+if __name__ == "__main__":
+    _test()

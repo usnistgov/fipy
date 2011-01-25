@@ -34,13 +34,13 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import numerix
 
-class PowerLawConvectionTerm(ConvectionTerm):
+class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
@@ -52,7 +52,8 @@ class PowerLawConvectionTerm(ConvectionTerm):
     where :math:`\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A` and
     :math:`\alpha_f` is calculated using the power law scheme.
     For further details see :ref:`sec:NumericalSchemes`.
-    """    
+    """
+    
     class _Alpha(FaceVariable):
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.mesh)

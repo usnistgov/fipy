@@ -66,6 +66,7 @@ please `contact us`_.
    levelSet/index
    cahnHilliard/index
    flow/index
+   reactiveWetting/index
    updating/index
 
 
