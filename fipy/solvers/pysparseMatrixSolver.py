@@ -35,51 +35,59 @@
 
 __docformat__ = 'restructuredtext'
 
-import os
-
-from pysparse import precon
-
+from fipy.solvers.solver import Solver
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
 
-class PysparseSolver(_PysparseMatrixSolver):
+from fipy.tools.decorators import getsetDeprecated
+ 
+class _PysparseMatrixSolver(Solver):
+
     """
-    The base `pysparseSolver` class.
-    
+    A class consolidating methods for solver packages which use
+    `_PysparseMeshMatrix` for their matrix class.
+
+    Subclasses have a `_solve_` method, which is called by `_solve`. Typically,
+    `_solve_` returns the new value of `self.var` to `_solve` and solve sets the
+    var accordingly.
+
+    A solution function `solveFnc`, usually of the form `solve(A, x, b)`, is
+    implemented in most leaf-node child classes.
+
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, *args, **kwargs):
-        if self.__class__ is PysparseSolver:
-            raise NotImplementedError, \
-                  "can't instantiate abstract base class"
-            
-        super(PysparseSolver, self).__init__(*args, **kwargs)
 
-    def _solve_(self, L, x, b):
+    solveFnc = None
+
+    @getsetDeprecated
+    def _getMatrixClass(self):
+        return self._matrixClass
+
+    @property
+    def _matrixClass(self):
+        return _PysparseMeshMatrix
+         
+    def _solve(self):
         """
-        `_solve_` is only for use by solvers which may use
-        preconditioning. If you are writing a solver which
-        doesn't use preconditioning, this must be overridden.
+        Call `_solve_` for the new value of `self.var`.
+
+        In certain cases, `_solve_` won't return anything, e.g. 
+        `fipy.solvers.pysparse.linearLUSolver`. In these cases, we preserve the
+        value of `self.var.numericValue`.
         """
 
-        A = L.matrix
-
-        if self.preconditioner is None:
-            P = None
-        else:
-            P, A = self.preconditioner._applyToMatrix(A)
-
-        info, iter, relres = self.solveFnc(A, b, x, self.tolerance, 
-                                           self.iterations, P)
+        if self.var.mesh.communicator.Nproc > 1:
+            raise Exception("%ss cannot be used with multiple processors" \
+                            % self.__class__)
         
-        self._raiseWarning(info, iter, relres)
-        
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
-            from fipy.tools.debug import PRINT        
-            PRINT('iterations: %d / %d' % (iter, self.iterations))
-            
-            if info < 0:
-                PRINT('failure', self._warningList[info].__class__.__name__)
-            PRINT('relres:', relres)
-            
-    
+        array = self.var.numericValue
+        newArr = self._solve_(self.matrix, array, self.RHSvector)
+
+        if newArr is not None:
+            array = newArr
+
+        factor = self.var.unit.factor
+
+        if factor != 1:
+            array /= self.var.unit.factor
+
+        self.var[:] = array  

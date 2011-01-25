@@ -58,7 +58,6 @@ class PyAMGSolver(Solver):
             raise NotImplementedError, \
                   "can't instantiate abstract base class"
 
-        self.solveFnc         = None
         self.setupOptionsDict = None
         self.solveOptionsDict = None
                  
@@ -87,8 +86,9 @@ class PyAMGSolver(Solver):
 
         verbose = True if os.environ.has_key('FIPY_VERBOSE_SOLVER') else False
         relres = []
-        A = L.scipySparse.asformat('csr')
+        A = L.asScipySparse.asformat('csr')
 
+        """
         if useSolveIt:
             x[:] = solveit(A, b, x0 = x, 
                            tol = self.tolerance,
@@ -98,13 +98,23 @@ class PyAMGSolver(Solver):
         else:
             ml = self.solveFnc(A, **self.setupOptionsDict)
             x[:] = ml.solve(b = b, residuals = relres, **self.solveOptionsDict)
-        
+        """
+
+        from scipy.sparse.linalg import cgs
+        from pyamg import smoothed_aggregation_solver
+
+        ml = smoothed_aggregation_solver(A)
+        M = ml.aspreconditioner(cycle='V')
+        x, info = cgs(A, b, x, tol=self.tolerance, maxiter=self.iterations, M=M)
+
         if verbose and not useSolveIt:
             from fipy.tools.debug import PRINT        
             PRINT(ml)
             PRINT('iterations: %d / %d' % (len(relres), self.iterations))
             PRINT('relres:', relres)
             PRINT('MG convergence factor: %g' % ((relres[-1])**(1.0/iter)))
+
+        return x
                         
     def _solve(self):
 
@@ -112,9 +122,9 @@ class PyAMGSolver(Solver):
             raise Exception("PyAMG solvers cannot be used with multiple processors")
         
         array = self.var.numericValue
-        self._solve_(self.matrix, array, self.RHSvector)
+        newArr = self._solve_(self.matrix, array, self.RHSvector)
         factor = self.var.unit.factor
         if factor != 1:
             array /= self.var.unit.factor
-        self.var[:] = array         
+        self.var[:] = newArr
 

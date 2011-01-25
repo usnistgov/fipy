@@ -67,7 +67,7 @@ class _SparseMatrix(object):
         return self.numpyArray
 
     @property
-    def scipySparse(self):
+    def asScipySparse(self):
         try:
             import scipy.sparse as sp
         except ImportError:

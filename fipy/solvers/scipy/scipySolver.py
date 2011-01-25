@@ -39,11 +39,11 @@ __docformat__ = 'restructuredtext'
 import os
 
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-from fipy.solvers.solver import Solver
+from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
 
 from fipy.tools.decorators import getsetDeprecated
 
-class ScipySolver(Solver):
+class ScipySolver(_PysparseMatrixSolver):
     """
     The base `ScipySolver` class.
     
@@ -54,16 +54,8 @@ class ScipySolver(Solver):
             raise NotImplementedError, \
                   "can't instantiate abstract base class"
             
-        Solver.__init__(self, *args, **kwargs)
-
-    @getsetDeprecated
-    def _getMatrixClass(self):
-        return self._matrixClass
-
-    @property
-    def _matrixClass(self):
-        return _PysparseMeshMatrix
-                                                  
+        super(ScipySolver, self).__init__(*args, **kwargs)
+                                  
     def _solve_(self, L, x, b):
         """
         Establishes a `pyamg.multilevel.multilevel_solver` object based on
@@ -90,16 +82,4 @@ class ScipySolver(Solver):
                 PRINT('failure', self._warningList[info].__class__.__name__) 
 
         return x
-                       
-    def _solve(self):
 
-        if self.var.mesh.communicator.Nproc > 1:
-            raise Exception("SciPy solvers cannot be used with multiple processors")
-        
-        array = self.var.numericValue
-        newArr = self._solve_(self.matrix, array, self.RHSvector)
-        factor = self.var.unit.factor
-        if factor != 1:
-            array /= self.var.unit.factor
-        self.var[:] = newArr
-                            

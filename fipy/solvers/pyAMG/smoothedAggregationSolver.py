@@ -45,7 +45,7 @@ class SmoothedAggregationSolver(PyAMGSolver):
         super(SmoothedAggregationSolver, self).__init__(*args, **kwargs)
 
         self.solveFnc = smoothed_aggregation_solver
-        self.setupOptionsDict = {"max_coarse": 10}
+        self.setupOptionsDict = {"max_coarse": 500}
         self.solveOptionsDict = {"maxiter": self.iterations,
                                  "tol": self.tolerance}
 

@@ -64,7 +64,7 @@ class LinearPCGSolver(PysparseSolver):
         :Parameters:
           - `precon`: Preconditioner to use
         """
-        PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
+        super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
         self.solveFnc = itsolvers.pcg
         
     def _canSolveAsymmetric(self):

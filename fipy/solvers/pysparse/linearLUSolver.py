@@ -73,8 +73,9 @@ class LinearLUSolver(PysparseSolver):
 
         iterations = min(iterations, maxIterations)
         
-        PysparseSolver.__init__(self, tolerance = tolerance, 
-                                      iterations=iterations, steps = steps)
+        super(LinearLUSolver, self).__init__(tolerance = tolerance, 
+                                             iterations = iterations, 
+                                             steps = steps)
 
     def _solve_(self, L, x, b):
         diag = L.takeDiagonal()
