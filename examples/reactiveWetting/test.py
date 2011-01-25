@@ -42,6 +42,7 @@ def _suite():
     return _LateImportDocTestSuite(testModuleNames = (),
                                    docTestModuleNames = (
                                        'liquidVapor1D',
+                                       'liquidVapor2D',
                                    ), 
                                    base = __name__)
     

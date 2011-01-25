@@ -65,6 +65,8 @@ class _BinaryTerm(_BaseBinaryTerm):
 
             matrix += termMatrix
             RHSvector += termRHSvector
+            
+            term._buildCache(termMatrix, termRHSvector)
 
         if (os.environ.has_key('FIPY_DISPLAY_MATRIX')
             and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 

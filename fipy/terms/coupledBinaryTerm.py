@@ -132,8 +132,28 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         ...                         [ 0,  0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4],
         ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]])
         True
-
         
+        >>> m = Grid1D(nx=3)
+        >>> v0 = CellVariable(mesh=m, value=0.)
+        >>> v1 = CellVariable(mesh=m, value=1.)
+        >>> diffTerm = DiffusionTerm(coeff=1., var=v0)
+        >>> eq00 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0)
+        >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
+        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
+        >>> eq0.cacheMatrix()
+        >>> diffTerm.cacheMatrix()
+        >>> (eq0 & eq1).solve()
+        >>> print numerix.allequal(eq0.getMatrix().asTrilinosMeshMatrix().getNumpyArray(),
+        ...                        [[ 0,  0,  0,  2, -2,  0],
+        ...                         [ 0,  0,  0, -2,  4, -2],
+        ...                         [ 0,  0,  0,  0, -2,  2],
+        ...                         [ 0,  0,  0,  0,  0,  0],
+        ...                         [ 0,  0,  0,  0,  0,  0],
+        ...                         [ 0,  0,  0,  0,  0,  0]])
+        True
+        >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
+        >>> print diffTerm.getMatrix() 
+        None
         
         """
 
@@ -173,6 +193,8 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
                                                                              dt=dt,
                                                                              transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(tmpVar),
                                                                              diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar))
+
+                uncoupledTerm._buildCache(tmpMatrix, tmpRHSvector)
 
                 RHSvector += tmpRHSvector
                 matrix += tmpMatrix
@@ -278,8 +300,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
         self._vars = _vars
         return self
-        
-               
+
 def _test(): 
     import doctest
     return doctest.testmod()

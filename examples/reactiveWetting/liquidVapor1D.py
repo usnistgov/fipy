@@ -34,10 +34,6 @@
 
 r"""
 
-To Do:
-
- * Fix diagonalSign and variable ordering issues
-
 This example solves a single-component, liquid-vapor, van der Waals system as
 described by Wheeler et *al.* [PhysRevE.82.051601]_. The free energy for this
 system takes the form,
@@ -46,10 +42,10 @@ system takes the form,
    
    f = - \frac{e \rho^2}{m^2} + \frac{R T}{m} \left( \ln \frac{\rho}{m - \bar{v} \rho} \right)
 
-where :math:`\rho` is the density. This free energy supports a two phase in
+where :math:`\rho` is the density. This free energy supports a two phase
 equilibrium with densities given by :math:`\rho^l` and :math:`\rho^v` in the
-liquid and vapor phases, respectively. These densities can be determined by
-solving the following system of equations,
+liquid and vapor phases, respectively. The densities are determined by solving
+the following system of equations,
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:pressureEquilibrium
@@ -90,13 +86,12 @@ with equilibrium density values of
 >>> liquidDensity = 7354.3402662299995
 >>> vaporDensity = 82.855803327810008
 
-The equilibrium densities can be verified by substitution into Eqs.
+The equilibrium densities are verified by substitution into Eqs.
 :eq:`eq:reactiveWetting:liquidVapor1D:pressureEquilibrium` and
 :eq:`eq:reactiveWetting:liquidVapor1D:chemicalPotentialEquilibrium`. Firstly,
 Eqs. :eq:`eq:reactiveWetting:liquidVapor1D:freeEnergy`,
 :eq:`eq:reactiveWetting:liquidVapor1D:chemicalPotential` and
-:eq:`eq:reactiveWetting:liquidVapor1D:pressure` need to be defined as python
-functions,
+:eq:`eq:reactiveWetting:liquidVapor1D:pressure` are defined as python functions,
 
 >>> from fipy import *
 
@@ -111,22 +106,24 @@ functions,
 >>> def P(rho):
 ...     return rho * mu(rho) - f(rho)
 
-The equilibrium densities values can then be verified.
+The equilibrium densities values are verified with
 
 >>> print numerix.allclose(mu(liquidDensity), mu(vaporDensity))
 True
 
+and
+
 >>> print numerix.allclose(P(liquidDensity), P(vaporDensity))
 True
 
-In order to derive governing equations, the free energy functional must aslo be defined.
+In order to derive governing equations, the free energy functional is defined.
 
 .. math::
    
    F = \int \left[ f + \frac{\epsilon T}{2} \left( \partial_j \rho \right)^2 \right] dV
 
-Using standard dissipation laws, we can now write down the governing equations
-for mass and momentum conservation,
+Using standard dissipation laws, we write the governing equations for mass and
+momentum conservation,
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:mass
@@ -142,14 +139,14 @@ and
    u_iu_j \right) = \partial_j\left( \nu \left[ \partial_j u_i + \partial_i u_j
    \right] \right) - \rho \partial_i \mu^{NC}
 
-where the non-classical potential, :math:`\mu^{NC}` is given by,
+where the non-classical potential, :math:`\mu^{NC}`, is given by,
 
 .. math::
   :label: eq:reactiveWetting:liquidVapor1D:nonClassicalPotential
 
    \mu^{NC} = \frac{\delta F}{\delta \rho} = \mu - \epsilon T \partial_j^2 \rho
    
-As usual, to proceed, we need to define a mesh
+As usual, to proceed, we define a mesh
 
 >>> Lx = 1e-6
 >>> nx = 100
@@ -163,7 +160,7 @@ and the independent variables.
 >>> densityPrevious = density.copy()
 >>> velocityPrevious = velocity.copy()
 
-The system of equations will be solved in a fully coupled manner using a block
+The system of equations is solved in a fully coupled manner using a block
 matrix. Defining :math:`\mu^{NC}` as an independent variable makes it easier to
 script the equations without using higher order terms.
 
@@ -172,8 +169,8 @@ script the equations without using higher order terms.
 >>> epsilon = 1e-16
 >>> freeEnergy = (f(density) + epsilon * temperature / 2 * density.getGrad().getMag()**2).getCellVolumeAverage()
 
-In order to solve the equations numerically, an interpolation method must be used
-to prevent the velocity and density fields decoupling. The following velocity
+In order to solve the equations numerically, an interpolation method is used to
+prevent the velocity and density fields decoupling. The following velocity
 correction equation (expressed in discretized form) prevents decoupling from
 occuring,
 
@@ -197,8 +194,7 @@ Eq. :eq:`eq:reactiveWetting:liquidVapor1D:mass` such that,
    \frac{\partial \rho}{\partial t} + \partial_j \left(\rho \left[u_j + u_i^c
    \right] \right) = 0
 
-Equation :eq:`eq:reactiveWetting:liquidVapor1D:massCorrected` can be
-scripted in the form,
+Equation :eq:`eq:reactiveWetting:liquidVapor1D:massCorrected` becomes
 
 >>> matrixDiagonal = CellVariable(mesh=mesh, name=r'$a_f$', value=1e+20, hasOld=True)
 >>> correctionCoeff = mesh._getFaceAreas() * mesh._getCellDistances() / matrixDiagonal.getFaceValue()
@@ -215,7 +211,7 @@ calculated implicitly as a ``DiffusionTerm`` with :math:`\mu^{NC}` as the
 independent variable.
 
 In order to write Eq. :eq:`eq:reactiveWetting:liquidVapor1D:momentum` as a
-:term:`FiPy` expression, the last term must be rewritten such that,
+:term:`FiPy` expression, the last term is rewritten such that,
 
 .. math::
 
@@ -236,15 +232,16 @@ The only required boundary condition eliminates flow in or out of the domain.
 >>> velocity.constrain(0, mesh.getExteriorFaces())
 
 As previously stated, the :math:`\mu^{NC}` variable will be solved implicitly. To
-do this the Eq. eq:`eq:reactiveWetting:liquidVapor1D:nonClassicalPotential` needs
-to be linearized in :math:`\rho` such that
+do this the Eq. :eq:`eq:reactiveWetting:liquidVapor1D:nonClassicalPotential` is
+linearized in :math:`\rho` such that
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:chemicalPotentialEquation
 
    \mu^{NC} = \mu^* + \left( \frac{\partial \mu}{\partial \rho} \right)^* \left( \rho - \rho^* \right) - \epsilon T \partial_j^2 \rho
 
-The :math:`^*` superscript denotes the current held value. In :term:`FiPy`, can be written as,
+The :math:`^*` superscript denotes the current held value. In :term:`FiPy`,
+:math:`\frac{\partial \mu}{\partial \rho}` is written as,
 
 >>> potentialDerivative = 2 * ee / molarWeight**2 + gasConstant * temperature * molarWeight / density / (molarWeight - vbar * density)**2
 
@@ -252,8 +249,8 @@ and :math:`\mu^*` is simply,
 
 >>> potential = mu(density)
 
-Eq. :eq:`eq:reactiveWetting:liquidVapor1D:chemicalPotentialEquation` can then be
-written as
+Eq. :eq:`eq:reactiveWetting:liquidVapor1D:chemicalPotentialEquation` can be
+scripted as
 
 >>> potentialNCEqn = ImplicitSourceTerm(coeff=1, var=potentialNC) \
 ...                  == potential \
@@ -261,25 +258,25 @@ written as
 ...                  - potentialDerivative * density \
 ...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
-Required to quirk in FiPy
+Due to a quirk in :term:`FiPy`, the gradient of :math:`\mu^{NC}` needs to be
+constrained on the boundary.  This is because ``ConvectionTerm``'s will
+automatically assume a zero flux, which is not what we need in this case.
 
 >>> potentialNC.getFaceGrad().constrain(value=0, where=mesh.getExteriorFaces())
 
-All three equations have now been defined and can now be combined together,
+All three equations are defined and an are combined together with
 
->>> ##massEqn.name = 'massEqn'
->>> ##momentumEqn.name = 'momentumEqn'
->>> ##potentialNCEqn.name = 'potentialNCEqn'
->>> coupledEqn = momentumEqn & potentialNCEqn & massEqn
->>> ##coupledEqn = massEqn & momentumEqn & potentialNCEqn
+>>> coupledEqn = massEqn & momentumEqn & potentialNCEqn
 
 The system will be solved as a phase separation problem with an initial density
 close to the average density, but with some small amplitude noise. Under these
 circumstances, the final condition should be two separate phases of roughly equal
-volume. Define an initial condition for the density, such that
+volume. The initial condition for the density is defined by
 
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.getNumberOfCells()) - 1))
+
+Viewers are also defined.
 
 >>> if __name__ == '__main__':
 ...     viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
@@ -289,8 +286,9 @@ volume. Define an initial condition for the density, such that
 ...     for viewer in viewers:
 ...         viewer.plot()
 
-Some control parameters need to be defined. The ``cfl`` parameter limits the size
-of the time step so that ``dt = cfl * dx / max(velocity)``. 
+The following section defines the required control parameters. The ``cfl``
+parameter limits the size of the time step so that ``dt = cfl * dx /
+max(velocity)``.
 
 >>> cfl = 0.1
 >>> tolerance = 1e-1
@@ -301,6 +299,13 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ...     totalSteps = 1e+10
 ... else:
 ...     totalSteps = 150
+
+In the following time stepping scheme a time step is recalculated if the residual
+increases between sweeps or the required tolerance is not attained within 20
+sweeps. The major quirk in this scheme is the requirement of updating the
+``matrixDiagonal`` using the entire coupled matrix. This could be achieved more
+elegantly by calling ``cacheMatrix()`` only on the necessary part of the
+equation. This currently doesn't work properly in :term:`FiPy``.
 
 >>> while timestep < totalSteps:
 ... 
@@ -339,7 +344,7 @@ of the time step so that ``dt = cfl * dx / max(velocity)``.
 ...             timestep -= 1
 ...             break
 ...         else:
-...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[:mesh.getNumberOfCells()]
+...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.getNumberOfCells():2 * mesh.getNumberOfCells()]
 ...             density[:] = relaxation * density + (1 - relaxation) * densityPrevious
 ...             velocity[:] = relaxation * velocity + (1 - relaxation) * velocityPrevious
 ...

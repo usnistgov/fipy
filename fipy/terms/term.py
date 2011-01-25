@@ -98,7 +98,19 @@ class Term:
             import warnings
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
                           UserWarning, stacklevel=4)
-        
+
+    def _buildCache(self, matrix, RHSvector):
+        if self._cacheMatrix:
+            self.matrix = matrix
+            self.matrix.cache = True
+        else:
+            self.matrix = None
+
+        if self._cacheRHSvector:
+            self.RHSvector = RHSvector
+        else:
+            self.RHSvector = None
+    
     def __buildMatrix(self, var, solver, boundaryConditions, dt):
 
         var = self._verifyVar(var)
@@ -122,17 +134,8 @@ class Term:
         var, matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
                                                    transientGeomCoeff=self._getTransientGeomCoeff(var),
                                                    diffusionGeomCoeff=self._getDiffusionGeomCoeff(var))
-        
-        if self._cacheMatrix:
-            self.matrix = matrix
-            self.matrix.cache = True
-        else:
-            self.matrix = None
 
-        if self._cacheRHSvector:
-            self.RHSvector = RHSvector
-        else:
-            self.RHSvector = None
+        self._buildCache(matrix, RHSvector)
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
