@@ -159,7 +159,7 @@ class Term:
             self._viewer.title = r"%s %s" % (name, repr(self))
             from fipy.variables.coupledCellVariable import _CoupledCellVariable
             if isinstance(solver.RHSvector, _CoupledCellVariable):
-                RHSvector = solver.RHSvector.getGlobalValue()
+                RHSvector = solver.RHSvector.globalValue
             else:
                 RHSvector = solver.RHSvector
             self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
@@ -504,7 +504,7 @@ class Term:
         >>> numpyMatrix = eq.getMatrix().numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], [1, -1, 0, 0], [0, 0, -2, 2], [0, 0, 2, -2]])
         True
-        >>> print eq.getRHSvector().getGlobalValue()
+        >>> print eq.getRHSvector().globalValue
         [ 0.  0.  0.  0.]
         >>> print eq._getVars()
         [A, B]
@@ -545,7 +545,7 @@ class Term:
         ...                                                             [-1, 1, 0, 0, -3, 3],                
         ...                                                             [1, -1, 0, 0, 3, -3]])
         True
-        >>> print eq.getRHSvector().getGlobalValue()
+        >>> print eq.getRHSvector().globalValue
         [ 0.  0.  0.  0.  0.  0.]
         >>> print eq._getVars()
         [A, B, C]

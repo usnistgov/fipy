@@ -167,7 +167,7 @@ script the equations without using higher order terms.
 >>> potentialNC = CellVariable(mesh=mesh, name=r'$\mu^{NC}$')
 
 >>> epsilon = 1e-16
->>> freeEnergy = (f(density) + epsilon * temperature / 2 * density.getGrad().getMag()**2).getCellVolumeAverage()
+>>> freeEnergy = (f(density) + epsilon * temperature / 2 * density.grad.mag**2).cellVolumeAverage
 
 In order to solve the equations numerically, an interpolation method is used to
 prevent the velocity and density fields decoupling. The following velocity
@@ -197,12 +197,12 @@ Eq. :eq:`eq:reactiveWetting:liquidVapor1D:mass` such that,
 Equation :eq:`eq:reactiveWetting:liquidVapor1D:massCorrected` becomes
 
 >>> matrixDiagonal = CellVariable(mesh=mesh, name=r'$a_f$', value=1e+20, hasOld=True)
->>> correctionCoeff = mesh._getFaceAreas() * mesh._getCellDistances() / matrixDiagonal.getFaceValue()
+>>> correctionCoeff = mesh._faceAreas * mesh._cellDistances / matrixDiagonal.faceValue
 >>> massEqn = TransientTerm(var=density) \
-...           + VanLeerConvectionTerm(coeff=velocity.getFaceValue() + correctionCoeff \
-...                                         * (density * potentialNC.getGrad()).getFaceValue(), \
+...           + VanLeerConvectionTerm(coeff=velocity.faceValue + correctionCoeff \
+...                                         * (density * potentialNC.grad).faceValue, \
 ...                                   var=density) \
-...           - DiffusionTerm(coeff=correctionCoeff * density.getFaceValue()**2, var=potentialNC)
+...           - DiffusionTerm(coeff=correctionCoeff * density.faceValue**2, var=potentialNC)
 
 where the first term on the LHS of
 Eq. :eq:`eq:reactiveWetting:liquidVapor1D:correction` is calculated in an
@@ -222,14 +222,14 @@ which results in
 >>> viscosity = 1e-3
 >>> ConvectionTerm = CentralDifferenceConvectionTerm
 >>> momentumEqn = TransientTerm(coeff=density, var=velocity) \
-...               + ConvectionTerm(coeff=[[1]] * density.getFaceValue() * velocity.getFaceValue(), var=velocity) \
+...               + ConvectionTerm(coeff=[[1]] * density.faceValue * velocity.faceValue, var=velocity) \
 ...               == DiffusionTerm(coeff=2 * viscosity, var=velocity) \
-...               - ConvectionTerm(coeff=density.getFaceValue() * [[1]], var=potentialNC) \
-...               + ImplicitSourceTerm(coeff=density.getGrad()[0], var=potentialNC)
+...               - ConvectionTerm(coeff=density.faceValue * [[1]], var=potentialNC) \
+...               + ImplicitSourceTerm(coeff=density.grad[0], var=potentialNC)
 
 The only required boundary condition eliminates flow in or out of the domain.
 
->>> velocity.constrain(0, mesh.getExteriorFaces())
+>>> velocity.constrain(0, mesh.exteriorFaces)
 
 As previously stated, the :math:`\mu^{NC}` variable will be solved implicitly. To
 do this the Eq. :eq:`eq:reactiveWetting:liquidVapor1D:nonClassicalPotential` is
@@ -262,7 +262,7 @@ Due to a quirk in :term:`FiPy`, the gradient of :math:`\mu^{NC}` needs to be
 constrained on the boundary.  This is because ``ConvectionTerm``'s will
 automatically assume a zero flux, which is not what we need in this case.
 
->>> potentialNC.getFaceGrad().constrain(value=0, where=mesh.getExteriorFaces())
+>>> potentialNC.faceGrad.constrain(value=0, where=mesh.exteriorFaces)
 
 All three equations are defined and an are combined together with
 
@@ -274,7 +274,7 @@ circumstances, the final condition should be two separate phases of roughly equa
 volume. The initial condition for the density is defined by
 
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
-...    (1  + 0.01 * (2 * numerix.random.random(mesh.getNumberOfCells()) - 1))
+...    (1  + 0.01 * (2 * numerix.random.random(mesh.numberOfCells) - 1))
 
 Viewers are also defined.
 
@@ -335,16 +335,16 @@ equation. This currently doesn't work properly in :term:`FiPy``.
 ...         residual = residual / initialResidual
 ...
 ...         if residual > previousResidual * 1.1 or sweep > 20:
-...             density[:] = density.getOld()
-...             velocity[:] = velocity.getOld()
-...             matrixDiagonal[:] = matrixDiagonal.getOld()
+...             density[:] = density.old
+...             velocity[:] = velocity.old
+...             matrixDiagonal[:] = matrixDiagonal.old
 ...             dt = dt / 10.
 ...             if __name__ == '__main__':
 ...                 print 'Recalculate the time step'
 ...             timestep -= 1
 ...             break
 ...         else:
-...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.getNumberOfCells():2 * mesh.getNumberOfCells()]
+...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.numberOfCells:2 * mesh.numberOfCells]
 ...             density[:] = relaxation * density + (1 - relaxation) * densityPrevious
 ...             velocity[:] = relaxation * velocity + (1 - relaxation) * velocityPrevious
 ...

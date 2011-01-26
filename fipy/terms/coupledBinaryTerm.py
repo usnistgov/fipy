@@ -96,7 +96,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print RHSvector.getGlobalValue()
+        >>> print RHSvector.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
         ...                        [[2, -1, 0, 2, -2, 0],
@@ -145,7 +145,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
         >>> (eq0 & eq1).solve()
-        >>> print numerix.allequal(eq0.getMatrix().asTrilinosMeshMatrix().getNumpyArray(),
+        >>> print numerix.allequal(eq0.getMatrix().asTrilinosMeshMatrix().numpyArray,
         ...                        [[ 0,  0,  0,  2, -2,  0],
         ...                         [ 0,  0,  0, -2,  4, -2],
         ...                         [ 0,  0,  0,  0, -2,  2],
@@ -159,7 +159,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         
         """
 
-        numberOfCells = var.mesh.getNumberOfCells()
+        numberOfCells = var.mesh.numberOfCells
         numberOfVariables = len(self._getVars())
         
         matrix = 0

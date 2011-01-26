@@ -60,10 +60,10 @@ class ExplicitDiffusionTerm(_BaseDiffusionTerm):
         varOld, L, b = _BaseDiffusionTerm._buildMatrix(self, varOld, SparseMatrix, boundaryConditions = boundaryConditions, dt = dt,
                                                   transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-        return (var, SparseMatrix(mesh=var.mesh), b - L * var.getValue())
+        return (var, SparseMatrix(mesh=var.mesh), b - L * var.value)
         
     def _getNormals(self, mesh):
-        return mesh._getFaceCellToCellNormals()
+        return mesh._faceCellToCellNormals
 
     def _treatMeshAsOrthogonal(self, mesh):        
         return mesh._isOrthogonal()
