@@ -54,7 +54,7 @@ class VTKFaceViewer(_VTKViewer):
         return self.dataset.point_data
 
     @property
-    def _variableclass(self):
+    def _variableClass(self):
         return FaceVariable
         
     def _test(self):

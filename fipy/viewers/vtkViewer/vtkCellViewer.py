@@ -48,10 +48,12 @@ class VTKCellViewer(_VTKViewer):
     def _makeDataSet(self, mesh):
         return mesh.getVTKCellDataSet()
         
-    def _getData(self):
+    @property
+    def _data(self):
         return self.dataset.cell_data
-    
-    def _getVariableClass(self):
+
+    @property
+    def _variableClass(self):
         return CellVariable
         
     def _test(self):
