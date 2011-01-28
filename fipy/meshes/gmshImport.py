@@ -509,6 +509,13 @@ class Gmsh2D(Mesh2D):
                               cellFaceIDs=cells)
         parprint("Exiting Gmsh2D")
 
+    def __setstate__(self, dict):
+        Mesh2D.__init__(self, **dict)
+        self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
+        self.gCellGlobalIDs = []
+        self.communicator = serial
+        self.mshFile = None
+    
     @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
         return self._globalNonOverlappingCellIDs
@@ -667,6 +674,16 @@ class Gmsh2D(Mesh2D):
 
         >>> print circle.cellVolumes[0] > 0
         True
+        
+        >>> from fipy.tools import dump
+        >>> f, tempfile = dump.write(circle)
+        >>> pickle_circle = dump.read(tempfile, f)
+
+        >>> print (pickle_circle.cellVolumes == circle.cellVolumes).all()
+        True
+        
+        >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
+        True
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
@@ -720,6 +737,15 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         >>> print sphere.cellVolumes[0] > 0
         True
 
+        >>> from fipy.tools import dump
+        >>> f, tempfile = dump.write(sphere)
+        >>> pickle_sphere = dump.read(tempfile, f)
+
+        >>> print (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
+        True
+        
+        >>> print (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
+        True
         """
 
 class Gmsh3D(Mesh):
@@ -743,6 +769,13 @@ class Gmsh3D(Mesh):
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
+
+    def __setstate__(self, dict):
+        Mesh.__init__(self, **dict)
+        self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
+        self.gCellGlobalIDs = []
+        self.communicator = serial
+        self.mshFile = None
 
     @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
@@ -890,6 +923,16 @@ class Gmsh3D(Mesh):
         ... ''')
 
         >>> print prism.cellVolumes[0] > 0
+        True
+        
+        >>> from fipy.tools import dump
+        >>> f, tempfile = dump.write(prism)
+        >>> pickle_prism = dump.read(tempfile, f)
+
+        >>> print (pickle_prism.cellVolumes == prism.cellVolumes).all()
+        True
+        
+        >>> print (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
         True
         """
 
