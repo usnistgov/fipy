@@ -97,7 +97,7 @@ class MshFile:
             parprint("SERIAL!")
 
         # much special-casing based on gmsh version
-        gmshVersion = self._getGmshVersion()
+        gmshVersion = self._gmshVersion
         if gmshVersion < 2.0:
             errStr = "Gmsh version must be >= 2.0."
             raise EnvironmentError(errStr)
@@ -177,7 +177,8 @@ class MshFile:
         f.seek(0)
         return [float(x) for x in metaData]
 
-    def _getGmshVersion(self):
+    @property
+    def _gmshVersion(self):
         """
         Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
         

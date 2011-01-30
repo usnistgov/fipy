@@ -46,7 +46,7 @@ class VTKCellViewer(_VTKViewer):
     """Renders `CellVariable` data in VTK format
     """
     def _makeDataSet(self, mesh):
-        return mesh.getVTKCellDataSet()
+        return mesh.VTKCellDataSet
         
     @property
     def _data(self):

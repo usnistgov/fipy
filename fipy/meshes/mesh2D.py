@@ -251,7 +251,8 @@ class Mesh2D(Mesh):
         ## return a new mesh, extrude could just as easily act on self
         return Mesh(vertices, faces, cells, communicator=mesh.communicator)
 
-    def _getVTKCellType(self):
+    @property
+    def _VTKCellType(self):
         from enthought.tvtk.api import tvtk
         return tvtk.Polygon().cell_type
         
