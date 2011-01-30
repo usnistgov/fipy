@@ -361,8 +361,9 @@ class _BaseDiffusionTerm(_UnaryTerm):
         else:
             return None
 
-    def _getDiffusionVars(self):
-        return self._getVars()
+    @property
+    def _diffusionVars(self):
+        return self._vars
          
 def _test(): 
     import doctest

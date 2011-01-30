@@ -38,7 +38,7 @@ from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
 
 class DiffusionTermNoCorrection(_BaseDiffusionTerm):
     def _getNormals(self, mesh):
-        return mesh._getFaceNormals()
+        return mesh._faceNormals
 
     def _treatMeshAsOrthogonal(self, mesh):
         return True

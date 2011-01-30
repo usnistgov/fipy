@@ -55,30 +55,31 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     None
     >>> print eq._getDiffusionGeomCoeff(v1)
     None
-    >>> tranCoeff = eq._getUncoupledTerms()[0]._getTransientGeomCoeff(v0)
+    >>> tranCoeff = eq._uncoupledTerms[0]._getTransientGeomCoeff(v0)
     >>> print parallel.procID > 0 or numerix.allequal(tranCoeff, [1])
     True
-    >>> diffCoeff = eq._getUncoupledTerms()[1]._getDiffusionGeomCoeff(v0)
+    >>> diffCoeff = eq._uncoupledTerms[1]._getDiffusionGeomCoeff(v0)
     >>> print parallel.procID > 0 or numerix.allequal(diffCoeff, [[-8, -8]])
     True
     
     """
     def __init__(self, term, other):
         _BaseBinaryTerm.__init__(self, term, other)
-        if len(self._getVars()) < len(self._getUncoupledTerms()):
+        if len(self._vars) < len(self._uncoupledTerms):
             raise SolutionVariableNumberError
 
-    def _getUncoupledTerms(self):
-        return self.term._getUncoupledTerms() + self.other._getUncoupledTerms()
+    @property
+    def _uncoupledTerms(self):
+        return self.term._uncoupledTerms + self.other._uncoupledTerms
 
     def _verifyVar(self, var):
         if var is not None:
             raise Exception, 'The solution variable should not be specified.'
 
-        if len(self._getVars()) != len(self._getUncoupledTerms()):
+        if len(self._vars) != len(self._uncoupledTerms):
             raise SolutionVariableNumberError
 
-        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._getVars()))
+        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
     
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
@@ -145,7 +146,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
         >>> (eq0 & eq1).solve()
-        >>> print numerix.allequal(eq0.getMatrix().asTrilinosMeshMatrix().numpyArray,
+        >>> print numerix.allequal(eq0.matrix.asTrilinosMeshMatrix().numpyArray,
         ...                        [[ 0,  0,  0,  2, -2,  0],
         ...                         [ 0,  0,  0, -2,  4, -2],
         ...                         [ 0,  0,  0,  0, -2,  2],
@@ -154,22 +155,22 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         ...                         [ 0,  0,  0,  0,  0,  0]])
         True
         >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
-        >>> print diffTerm.getMatrix() 
+        >>> print diffTerm.matrix 
         None
         
         """
 
         numberOfCells = var.mesh.numberOfCells
-        numberOfVariables = len(self._getVars())
+        numberOfVariables = len(self._vars)
         
         matrix = 0
         RHSvectorsJ = []
 
-        for i, uncoupledTerm in enumerate(self._getUncoupledTerms()):
+        for i, uncoupledTerm in enumerate(self._uncoupledTerms):
 
             RHSvector = 0
 
-            for j, tmpVar in enumerate(self._getVars()):
+            for j, tmpVar in enumerate(self._vars):
 
                 class OffsetSparseMatrix(SparseMatrix):
                     def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=numberOfVariables):
@@ -236,30 +237,30 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) + VanLeerConvectionTerm(var=v0) + DiffusionTerm(var=v1)
         >>> eq1 = TransientTerm(var=v2) + ConvectionTerm(var=v2) + DiffusionTerm(var=v2) + ConvectionTerm(var=v1) + ImplicitSourceTerm(var=v1)
         >>> eq2 = ImplicitSourceTerm(var=v1) + 1 + ImplicitSourceTerm(var=v0) + 1 + DiffusionTerm(var=v1)
-        >>> print (eq0 & eq1 & eq2)._getVars()
+        >>> print (eq0 & eq1 & eq2)._vars
         [v0, v2, v1]
-        >>> print (eq0 & eq2 & eq1)._getVars()
+        >>> print (eq0 & eq2 & eq1)._vars
         [v0, v1, v2]
         >>> eq0 =  DiffusionTerm(var=v1) + TransientTerm(var=v0) + VanLeerConvectionTerm(var=v0)
-        >>> print (eq0 & eq2 & eq1)._getVars()
+        >>> print (eq0 & eq2 & eq1)._vars
         [v0, v1, v2]
-        >>> print (eq2 & eq0 & eq1)._getVars()
+        >>> print (eq2 & eq0 & eq1)._vars
         [v1, v0, v2]
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._getVars()
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._vars
         [v1, v2, v0]
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._getVars()
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars
   	Traceback (most recent call last): 
  	    ... 
  	SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._getVars()
+        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars
   	Traceback (most recent call last): 
  	    ... 
  	Exception: Variable not in previously defined variables for this coupled equation.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._getVars()
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars
  	Traceback (most recent call last): 
  	    ... 
  	SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2])._getVars()
+        >>> print (eq2 & eq0 & eq1)([v1, v2])._vars
  	Traceback (most recent call last): 
  	    ... 
  	SolutionVariableNumberError: Different number of solution variables and equations.
@@ -268,14 +269,14 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     
         ## set() is used to force comparison by reference rather than value
         unorderedVars = _BaseBinaryTerm._calcVars(self)
-        uncoupledTerms = self._getUncoupledTerms()
+        uncoupledTerms = self._uncoupledTerms
         
         if len(unorderedVars) == len(uncoupledTerms):
             unorderedVars = set(unorderedVars)
             orderedVars = [None] * len(uncoupledTerms)
 
-            for fnc in (lambda index, term: term._getTransientVars(),
-                        lambda index, term: term._getDiffusionVars(),
+            for fnc in (lambda index, term: term._transientVars,
+                        lambda index, term: term._diffusionVars,
                         lambda index, term: list(unorderedVars)):
                 for index, term in enumerate(uncoupledTerms):
                     if orderedVars[index] is None:
@@ -293,14 +294,14 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     def __call__(self, _vars):
         _vars = list(_vars)
 
-        if len(_vars) != len(self._getVars()) or len(set(_vars)) != len(self._getVars()):
+        if len(_vars) != len(self._vars) or len(set(_vars)) != len(self._vars):
             raise SolutionVariableNumberError
 
         for var in _vars:
-            if var not in set(self._getVars()):
+            if var not in set(self._vars):
                 raise Exception, 'Variable not in previously defined variables for this coupled equation.'
 
-        self._vars = _vars
+        self._internalVars = _vars
         return self
 
 def _test(): 

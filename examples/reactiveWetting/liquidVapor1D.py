@@ -344,7 +344,7 @@ equation. This currently doesn't work properly in :term:`FiPy``.
 ...             timestep -= 1
 ...             break
 ...         else:
-...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.numberOfCells:2 * mesh.numberOfCells]
+...             matrixDiagonal[:] = coupledEqn.matrix.takeDiagonal()[mesh.numberOfCells:2 * mesh.numberOfCells]
 ...             density[:] = relaxation * density + (1 - relaxation) * densityPrevious
 ...             velocity[:] = relaxation * velocity + (1 - relaxation) * velocityPrevious
 ...
