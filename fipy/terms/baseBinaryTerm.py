@@ -55,7 +55,10 @@ class _BaseBinaryTerm(Term):
                 raise ExplicitVariableError
         else:
             if other.var is None:
-                raise ExplicitVariableError
+                if isinstance(other, _ExplicitSourceTerm):
+                    other.var = term.var
+                else:
+                    raise ExplicitVariableError
 
 	Term.__init__(self, var=self._getVars()[0])
     
