@@ -39,13 +39,16 @@ from fipy.terms.term import Term
 
 class _UnaryTerm(Term):
 
-    def _getVars(self):
+    @property
+    def _vars(self):
         return [self.var]
 
-    def _getTransientVars(self):
+    @property
+    def _transientVars(self):
         return []
                 
-    def _getUncoupledTerms(self):
+    @property
+    def _uncoupledTerms(self):
         return [self]
     
     def __repr__(self):

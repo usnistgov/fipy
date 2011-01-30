@@ -186,7 +186,7 @@ A 2D version of the 1D example.
 ...             timestep -= 1
 ...             break
 ...         else:
-...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.numberOfCells:2 * mesh.numberOfCells]
+...             matrixDiagonal[:] = coupledEqn.matrix.takeDiagonal()[mesh.numberOfCells:2 * mesh.numberOfCells]
 ...             density[:] = relaxation * density + (1 - relaxation) * densityPrevious
 ...             velocityX[:] = relaxation * velocityX + (1 - relaxation) * velocityXPrevious
 ...             velocityY[:] = relaxation * velocityY + (1 - relaxation) * velocityYPrevious
