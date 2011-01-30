@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "explicitSourceTerm.py"
+ #  FILE: "unaryTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,30 +34,47 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.sourceTerm import SourceTerm
+from fipy.tools import numerix
+from fipy.terms.term import Term
 
-class _ExplicitSourceTerm(SourceTerm):
-    r"""
+class _UnaryTerm(Term):
 
-    The `_ExplicitSourceTerm` discretisation is given by
+    @property
+    def _vars(self):
+        return [self.var]
 
-    .. math::
-
-       \int_V S \,dV \simeq S_P V_P 
-       
-    where :math:`S` is the `coeff` value. This source is added to the RHS vector and
-    does not contribute to the solution matrix.
-
-    """
-	
-    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-	return {
-	    'b vector': -1, 
-	    'new value': 0, 
-	    'old value': 0, 
-	    'diagonal' : 0
-	}
-	
+    @property
+    def _transientVars(self):
+        return []
+                
+    @property
+    def _uncoupledTerms(self):
+        return [self]
+    
     def __repr__(self):
-        return repr(self.coeff)
+        """
+        The representation of a `Term` object is given by,
+        
+           >>> print __UnaryTerm(123.456)
+           __UnaryTerm(coeff=123.456)
 
+        """
+        if self.var is None:
+            varString = ''
+        else:
+            varString = ', var=%s' % repr(self.var)
+
+        return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
+
+class __UnaryTerm(_UnaryTerm): 
+    """
+    Dummy subclass for tests
+    """
+    pass 
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

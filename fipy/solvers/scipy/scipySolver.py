@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
+from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
 
 from fipy.tools.decorators import getsetDeprecated
@@ -55,7 +55,11 @@ class ScipySolver(_PysparseMatrixSolver):
                   "can't instantiate abstract base class"
             
         super(ScipySolver, self).__init__(*args, **kwargs)
-                                  
+    
+    @property
+    def _matrixClass(self):
+        return _ScipyMeshMatrix
+                                   
     def _solve_(self, L, x, b):
         """
         Establishes a `pyamg.multilevel.multilevel_solver` object based on

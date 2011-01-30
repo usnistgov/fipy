@@ -946,7 +946,7 @@ class PhysicalField(object):
         Change the unit object of `self` to `unit`
         
             >>> a = PhysicalField(value="1 m")
-            >>> a.setUnit("m**2/s")
+            >>> a.unit = ("m**2/s")
             >>> print a
             1.0 m**2/s
         """
@@ -1933,7 +1933,7 @@ def _Scale(quantity, scaling):
     
     quantity = PhysicalField(quantity)
 
-    if not quantity.getUnit().isDimensionless():
+    if not quantity.unit.isDimensionless():
         scaling = PhysicalField(scaling)
         # normalize quantity to scaling
         # error will be thrown if incompatible
@@ -1943,7 +1943,7 @@ def _Scale(quantity, scaling):
         # Automatically throws an error if it's not a number.
         dimensionless = quantity
                 
-    if isinstance(dimensionless,PhysicalField) and not dimensionless.getUnit().isDimensionless():
+    if isinstance(dimensionless,PhysicalField) and not dimensionless.unit.isDimensionless():
         raise TypeError, `quantity.inBaseUnits().unit` + ' and ' \
         + `scaling.inBaseUnits().unit` \
         + ' are incompatible'

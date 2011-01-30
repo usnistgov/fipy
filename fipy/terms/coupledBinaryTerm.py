@@ -33,29 +33,53 @@
  # ###################################################################
  ##
 
-from fipy.terms.binaryTerm import _BinaryTerm
-##from fipy.matrices.pysparseMatrix import _CoupledPysparseMeshMatrix
+from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
+from fipy.terms import SolutionVariableNumberError
+from fipy.terms import AlternativeMethodInBaseClass
 
-class _CoupledBinaryTerm(_BinaryTerm):
-    def __init__(self, term, other):
-        _BinaryTerm.__init__(self, term, other)
-        if len(self._getVars()) < len(self._getCoupledTerms()):
-            raise Exception, 'Different number of solution variables and equations.'
+class _CoupledBinaryTerm(_BaseBinaryTerm):
+    """
+    Test to ensure that _getTransientGeomCoeff and _getDiffusionGeomCoeff return sensible results for coupled equations.
+
+    >>> from fipy import *
+    >>> m = Grid1D(nx=1)
+    >>> v0 = CellVariable(mesh=m)
+    >>> v1 = CellVariable(mesh=m)
+    >>> eq0 = TransientTerm(1, var=v0) == DiffusionTerm(2, var=v1)
+    >>> eq1 = TransientTerm(3, var=v1) == DiffusionTerm(4, var=v0)
+    >>> eq = eq0 & eq1
+    >>> print eq._getTransientGeomCoeff(v0)
+    None
+    >>> print eq._getDiffusionGeomCoeff(v1)
+    None
+    >>> tranCoeff = eq._uncoupledTerms[0]._getTransientGeomCoeff(v0)
+    >>> print parallel.procID > 0 or numerix.allequal(tranCoeff, [1])
+    True
+    >>> diffCoeff = eq._uncoupledTerms[1]._getDiffusionGeomCoeff(v0)
+    >>> print parallel.procID > 0 or numerix.allequal(diffCoeff, [[-8, -8]])
+    True
     
-    def _getCoupledTerms(self):
-        return self.term._getCoupledTerms() + self.other._getCoupledTerms()
+    """
+    def __init__(self, term, other):
+        _BaseBinaryTerm.__init__(self, term, other)
+        if len(self._vars) < len(self._uncoupledTerms):
+            raise SolutionVariableNumberError
+
+    @property
+    def _uncoupledTerms(self):
+        return self.term._uncoupledTerms + self.other._uncoupledTerms
 
     def _verifyVar(self, var):
         if var is not None:
             raise Exception, 'The solution variable should not be specified.'
 
-        if len(self._getVars()) != len(self._getCoupledTerms()):
-            raise Exception, 'Different number of solution variables and equations.'
+        if len(self._vars) != len(self._uncoupledTerms):
+            raise SolutionVariableNumberError
 
-        return _CoupledCellVariable(self._getVars())
+        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
     
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
@@ -73,7 +97,7 @@ class _CoupledBinaryTerm(_BinaryTerm):
         >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print RHSvector.getGlobalValue()
+        >>> print RHSvector.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
         ...                        [[2, -1, 0, 2, -2, 0],
@@ -111,21 +135,42 @@ class _CoupledBinaryTerm(_BinaryTerm):
         ...                         [ 0,  0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4],
         ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]])
         True
-
         
+        >>> m = Grid1D(nx=3)
+        >>> v0 = CellVariable(mesh=m, value=0.)
+        >>> v1 = CellVariable(mesh=m, value=1.)
+        >>> diffTerm = DiffusionTerm(coeff=1., var=v0)
+        >>> eq00 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0)
+        >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
+        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
+        >>> eq0.cacheMatrix()
+        >>> diffTerm.cacheMatrix()
+        >>> (eq0 & eq1).solve()
+        >>> print numerix.allequal(eq0.matrix.asTrilinosMeshMatrix().numpyArray,
+        ...                        [[ 0,  0,  0,  2, -2,  0],
+        ...                         [ 0,  0,  0, -2,  4, -2],
+        ...                         [ 0,  0,  0,  0, -2,  2],
+        ...                         [ 0,  0,  0,  0,  0,  0],
+        ...                         [ 0,  0,  0,  0,  0,  0],
+        ...                         [ 0,  0,  0,  0,  0,  0]])
+        True
+        >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
+        >>> print diffTerm.matrix 
+        None
         
         """
 
-        numberOfCells = var.mesh.getNumberOfCells()
-        numberOfVariables = len(self._getVars())
+        numberOfCells = var.mesh.numberOfCells
+        numberOfVariables = len(self._vars)
         
         matrix = 0
         RHSvectorsJ = []
 
-        for i, term in enumerate(self._getCoupledTerms()):
+        for i, uncoupledTerm in enumerate(self._uncoupledTerms):
 
             RHSvector = 0
-            for j, tmpVar in enumerate(self._getVars()):
+
+            for j, tmpVar in enumerate(self._vars):
 
                 class OffsetSparseMatrix(SparseMatrix):
                     def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=numberOfVariables):
@@ -144,13 +189,15 @@ class _CoupledBinaryTerm(_BinaryTerm):
                             SparseMatrix.addAtDiagonal(self, tmp)
                         else:
                             SparseMatrix.addAtDiagonal(self, vector)
-                            
-                tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix(tmpVar,
-                                                                    OffsetSparseMatrix,
-                                                                    boundaryConditions=(),
-                                                                    dt=dt,
-                                                                    transientGeomCoeff=term._getTransientGeomCoeff(tmpVar.mesh),
-                                                                    diffusionGeomCoeff=term._getDiffusionGeomCoeff(tmpVar.mesh))
+
+                tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildMatrix(tmpVar,
+                                                                             OffsetSparseMatrix,
+                                                                             boundaryConditions=(),
+                                                                             dt=dt,
+                                                                             transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(tmpVar),
+                                                                             diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar))
+
+                uncoupledTerm._buildCache(tmpMatrix, tmpRHSvector)
 
                 RHSvector += tmpRHSvector
                 matrix += tmpMatrix
@@ -162,8 +209,100 @@ class _CoupledBinaryTerm(_BinaryTerm):
 	return (var, matrix, RHSvector)
 
     def __repr__(self):
-
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
+
+    def _getDefaultSolver(self, solver, *args, **kwargs):
+        if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
+            raise AlternativeMethodInBaseClass('getDefaultSolver()')
+
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        from fipy.solvers import DefaultAsymmetricSolver
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)    
+
+    def _calcVars(self):
+        """
+        This method returns the equations variables ordered by, transient terms,
+        diffusion terms and other terms. Currently, this won't cure all of
+        coupled equations ills, but it fixes the majority of issues, mainly with
+        preconditioning. Some tests to make sure it works correctly.
+
+        >>> from fipy import *
+        >>> m = Grid1D(nx=2)
+        >>> v0 = CellVariable(mesh=m, name='v0')
+        >>> v1 = CellVariable(mesh=m, name='v1')
+        >>> v2 = CellVariable(mesh=m, name='v2')
+        >>> ConvectionTerm = CentralDifferenceConvectionTerm
+        >>> eq0 = TransientTerm(var=v0) + VanLeerConvectionTerm(var=v0) + DiffusionTerm(var=v1)
+        >>> eq1 = TransientTerm(var=v2) + ConvectionTerm(var=v2) + DiffusionTerm(var=v2) + ConvectionTerm(var=v1) + ImplicitSourceTerm(var=v1)
+        >>> eq2 = ImplicitSourceTerm(var=v1) + 1 + ImplicitSourceTerm(var=v0) + 1 + DiffusionTerm(var=v1)
+        >>> print (eq0 & eq1 & eq2)._vars
+        [v0, v2, v1]
+        >>> print (eq0 & eq2 & eq1)._vars
+        [v0, v1, v2]
+        >>> eq0 =  DiffusionTerm(var=v1) + TransientTerm(var=v0) + VanLeerConvectionTerm(var=v0)
+        >>> print (eq0 & eq2 & eq1)._vars
+        [v0, v1, v2]
+        >>> print (eq2 & eq0 & eq1)._vars
+        [v1, v0, v2]
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._vars
+        [v1, v2, v0]
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars
+  	Traceback (most recent call last): 
+ 	    ... 
+ 	SolutionVariableNumberError: Different number of solution variables and equations.
+        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars
+  	Traceback (most recent call last): 
+ 	    ... 
+ 	Exception: Variable not in previously defined variables for this coupled equation.
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars
+ 	Traceback (most recent call last): 
+ 	    ... 
+ 	SolutionVariableNumberError: Different number of solution variables and equations.
+        >>> print (eq2 & eq0 & eq1)([v1, v2])._vars
+ 	Traceback (most recent call last): 
+ 	    ... 
+ 	SolutionVariableNumberError: Different number of solution variables and equations.
+
+        """
+    
+        ## set() is used to force comparison by reference rather than value
+        unorderedVars = _BaseBinaryTerm._calcVars(self)
+        uncoupledTerms = self._uncoupledTerms
+        
+        if len(unorderedVars) == len(uncoupledTerms):
+            unorderedVars = set(unorderedVars)
+            orderedVars = [None] * len(uncoupledTerms)
+
+            for fnc in (lambda index, term: term._transientVars,
+                        lambda index, term: term._diffusionVars,
+                        lambda index, term: list(unorderedVars)):
+                for index, term in enumerate(uncoupledTerms):
+                    if orderedVars[index] is None:
+                        _vars = fnc(index, term)
+                        if  _vars != [] and _vars[0] in unorderedVars:
+                            orderedVars[index] = _vars[0]
+                            unorderedVars.remove(_vars[0])
+            
+            return orderedVars
+        else:
+            ## Constituent _CoupledBinaryTerms don't necessarily have the same
+            ## number of equations and variables so ordering is unnecessary.
+            return unorderedVars
+
+    def __call__(self, _vars):
+        _vars = list(_vars)
+
+        if len(_vars) != len(self._vars) or len(set(_vars)) != len(self._vars):
+            raise SolutionVariableNumberError
+
+        for var in _vars:
+            if var not in set(self._vars):
+                raise Exception, 'Variable not in previously defined variables for this coupled equation.'
+
+        self._internalVars = _vars
+        return self
 
 def _test(): 
     import doctest

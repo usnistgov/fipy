@@ -7,7 +7,6 @@ MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
 ez_setup.py
-notes.txt
 setup.py
 stdeb.cfg
 FiPy.egg-info/PKG-INFO
@@ -283,6 +282,11 @@ examples/phase/missOrientation/mesh1D.py
 examples/phase/missOrientation/modCircle.gz
 examples/phase/missOrientation/modCircle.py
 examples/phase/missOrientation/test.py
+examples/reactiveWetting/__init__.py
+examples/reactiveWetting/index.txt
+examples/reactiveWetting/liquidVapor1D.py
+examples/reactiveWetting/liquidVapor2D.py
+examples/reactiveWetting/test.py
 examples/updating/.gitignore
 examples/updating/__init__.py
 examples/updating/index.txt
@@ -371,6 +375,7 @@ fipy/models/levelSet/test.py
 fipy/models/levelSet/advection/__init__.py
 fipy/models/levelSet/advection/advectionEquation.py
 fipy/models/levelSet/advection/advectionTerm.py
+fipy/models/levelSet/advection/baseAdvectionTerm.py
 fipy/models/levelSet/advection/higherOrderAdvectionEquation.py
 fipy/models/levelSet/advection/higherOrderAdvectionTerm.py
 fipy/models/levelSet/distanceFunction/__init__.py
@@ -430,12 +435,17 @@ fipy/steppers/pidStepper.py
 fipy/steppers/pseudoRKQSStepper.py
 fipy/steppers/stepper.py
 fipy/terms/__init__.py
+fipy/terms/asymmetricConvectionTerm.py
+fipy/terms/baseBinaryTerm.py
+fipy/terms/baseDiffusionTerm.py
+fipy/terms/baseUpwindConvectionTerm.py
 fipy/terms/binaryTerm.py
 fipy/terms/cellTerm.py
 fipy/terms/centralDiffConvectionTerm.py
 fipy/terms/convectionTerm.py
 fipy/terms/coupledBinaryTerm.py
 fipy/terms/diffusionTerm.py
+fipy/terms/diffusionTermNoCorrection.py
 fipy/terms/explicitDiffusionTerm.py
 fipy/terms/explicitSourceTerm.py
 fipy/terms/explicitUpwindConvectionTerm.py
@@ -444,6 +454,7 @@ fipy/terms/faceTerm.py
 fipy/terms/hybridConvectionTerm.py
 fipy/terms/implicitDiffusionTerm.py
 fipy/terms/implicitSourceTerm.py
+fipy/terms/nonDiffusionTerm.py
 fipy/terms/nthOrderDiffusionTerm.py
 fipy/terms/powerLawConvectionTerm.py
 fipy/terms/residualTerm.py
@@ -451,6 +462,7 @@ fipy/terms/sourceTerm.py
 fipy/terms/term.py
 fipy/terms/test.py
 fipy/terms/transientTerm.py
+fipy/terms/unaryTerm.py
 fipy/terms/upwindConvectionTerm.py
 fipy/terms/vanLeerConvectionTerm.py
 fipy/tests/__init__.py

@@ -47,14 +47,14 @@ class VTKFaceViewer(_VTKViewer):
     """Renders `_MeshVariable` data in VTK format
     """
     def _makeDataSet(self, mesh):
-        return mesh.getVTKFaceDataSet()
+        return mesh.VTKFaceDataSet
         
     @property
     def _data(self):
         return self.dataset.point_data
 
     @property
-    def _variableclass(self):
+    def _variableClass(self):
         return FaceVariable
         
     def _test(self):
@@ -75,8 +75,8 @@ class VTKFaceViewer(_VTKViewer):
         >>> v2 = CellVariable(mesh=m, value=x)
         >>> v3 = v1.faceGrad
         >>> v3.name = "v1.faceGrad"
-        >>> v4 = v1.getHarmonicFaceValue()
-        >>> v4.name = "v1.getHarmonicFaceValue()"
+        >>> v4 = v1.harmonicFaceValue
+        >>> v4.name = "v1.harmonicFaceValue"
         >>> v5 = v1.arithmeticFaceValue
         >>> v5.name = "v1.arithmeticFaceValue"
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
@@ -88,8 +88,8 @@ class VTKFaceViewer(_VTKViewer):
         >>> v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
         >>> v3 = v1.faceGrad
         >>> v3.name = "v1.faceGrad"
-        >>> v4 = v1.getHarmonicFaceValue()
-        >>> v4.name = "v1.getHarmonicFaceValue()"
+        >>> v4 = v1.harmonicFaceValue
+        >>> v4.name = "v1.harmonicFaceValue"
         >>> v5 = v1.arithmeticFaceValue
         >>> v5.name = "v1.arithmeticFaceValue"
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
@@ -103,8 +103,8 @@ class VTKFaceViewer(_VTKViewer):
         >>> v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
         >>> v3 = v1.faceGrad
         >>> v3.name = "v1.faceGrad"
-        >>> v4 = v1.getHarmonicFaceValue()
-        >>> v4.name = "v1.getHarmonicFaceValue()"
+        >>> v4 = v1.harmonicFaceValue
+        >>> v4.name = "v1.harmonicFaceValue"
         >>> v5 = v1.arithmeticFaceValue
         >>> v5.name = "v1.arithmeticFaceValue"
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
@@ -116,8 +116,8 @@ class VTKFaceViewer(_VTKViewer):
         >>> v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
         >>> v3 = v1.faceGrad
         >>> v3.name = "v1.faceGrad"
-        >>> v4 = v1.getHarmonicFaceValue()
-        >>> v4.name = "v1.getHarmonicFaceValue()"
+        >>> v4 = v1.harmonicFaceValue
+        >>> v4.name = "v1.harmonicFaceValue"
         >>> v5 = v1.arithmeticFaceValue
         >>> v5.name = "v1.arithmeticFaceValue"
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)

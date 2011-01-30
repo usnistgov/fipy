@@ -40,17 +40,21 @@ def _suite():
 
     return _LateImportDocTestSuite(docTestModuleNames = (
             'cellTerm',
+            'baseDiffusionTerm',
             'diffusionTerm',
             'term',
             'convectionTerm',
             'transientTerm',
             'powerLawConvectionTerm',
             'exponentialConvectionTerm',
-            'binaryTerm',
             'upwindConvectionTerm',
             'implicitSourceTerm',
-            'coupledBinaryTerm'
-        ), base = __name__)
+            'coupledBinaryTerm',
+            'baseBinaryTerm',
+            'unaryTerm',
+            'nonDiffusionTerm',
+            'asymmetricConvectionTerm'
+            ), base = __name__)
 
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')

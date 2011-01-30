@@ -119,7 +119,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
         from fipy.tools import parallel
         return ''.join(parallel.allgather(_SparseMatrix.__str__(self)))
 
-    def _getRange(self):
+    @property
+    def _range(self):
         return (range(self.nonOverlappingMap.NumGlobalElements()), self.nonOverlappingMap.MyGlobalElements())
 
     def __setitem__(self, index, value):

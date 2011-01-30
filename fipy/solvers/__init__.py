@@ -28,12 +28,14 @@ elif os.environ.has_key('FIPY_SOLVERS'):
 else:
     solver = None
 
-if solver in ["pysparse", "pyamg", "scipy"]:
-    from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-    _MeshMatrix =  _PysparseMeshMatrix
+if solver in ["pyamg", "scipy"]:
+    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+    _MeshMatrix = _ScipyMeshMatrix
      
 if solver == "pysparse":
     from fipy.solvers.pysparse import *
+    from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
+    _MeshMatrix =  _PysparseMeshMatrix
 
 elif solver == "trilinos":
     from fipy.solvers.trilinos import *

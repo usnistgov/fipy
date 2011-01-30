@@ -4,11 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "__init__.py"
+ #  FILE: "baseUpwindConvectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -34,46 +32,51 @@
  # ###################################################################
  ##
 
-try:
-    import scipy
-except:
-    pass
+__docformat__ = 'restructuredtext'
 
-try:
-    from PyTrilinos import Epetra
-    from fipy.tools.commWrapper import CommWrapper
+from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.variables.faceVariable import FaceVariable
+from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools import inline
+from fipy.tools import numerix
 
-    parallel = CommWrapper(Epetra=Epetra)
+class _BaseUpwindConvectionTerm(ConvectionTerm):
 
-    if parallel.Nproc > 1:
+    class _Alpha(FaceVariable):
+        def __init__(self, P):
+            FaceVariable.__init__(self, mesh = P.mesh)
+            self.P = self._requires(P)
+            
+        def _calcValuePy(self, P):
+            alpha = numerix.where(P > 0., 1., 0.)
+            return PhysicalField(value = alpha)
 
-        try:
-            from mpi4py import MPI
-            from fipy.tools.mpi4pyCommWrapper import Mpi4pyCommWrapper
-            parallel = Mpi4pyCommWrapper(Epetra=Epetra, MPI=MPI)
-        except ImportError:
-            raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos in parallel. Try installing using 'easy_install mpi4py'.")
+        def _calcValueIn(self, P):
+            alpha = self._array.copy()
+            inline._runInline("""
+                alpha[i] = 0.5;
+                
+                if (P[i] > 0.) {
+                    alpha[i] = 1.;
+                } else {
+                    alpha[i] = 0.;
+                }
+            """,
+            alpha = alpha, P = P,
+            ni = self.mesh._numberOfFaces
+            )
 
-    from fipy.tools.serialCommWrapper import SerialCommWrapper
-    serial = SerialCommWrapper(Epetra=Epetra)
+            return self._makeValue(value = alpha)
 
-except ImportError:
-    from fipy.tools.dummyComm import DummyComm
-    parallel = DummyComm()
-    serial = DummyComm()
+        def _calcValue(self):
+            P  = self.P.numericValue
 
-import dump
-import numerix
-import vector
-from dimensions.physicalField import PhysicalField
-from numerix import *
-from vitals import Vitals
+            return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)
 
-def uniqueList(seq):
-    """
-    Returns the unique memebers of a list ordered in the same way as seq. Simply
-    doing list(set(seq)) doesn't retain the ordering.
-    """    
-    seen = set()
-    return [x for x in seq if x not in seen and not seen.add(x)]
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

@@ -34,9 +34,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.upwindConvectionTerm import UpwindConvectionTerm
+from fipy.terms.upwindConvectionTerm import _BaseUpwindConvectionTerm
+from fipy.tools import numerix
 
-class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
+class ExplicitUpwindConvectionTerm(_BaseUpwindConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
@@ -50,18 +51,16 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
     For further details see :ref:`sec:NumericalSchemes`.
     """
 
-    def _getWeight(self, mesh, diffusionGeomCoeff=None):
-        weight = UpwindConvectionTerm._getWeight(self, mesh)
+    def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
+        return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
+
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        weight = _BaseUpwindConvectionTerm._getWeight(self, var, transientGeomCoeff, diffusionGeomCoeff)
         if 'implicit' in weight.keys():
             weight['explicit'] = weight['implicit']
             del weight['implicit']
 
         return weight
         
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        """
-        ExplicitUpwindConvectionTerm only affects the b-vector, leaving a symmetric matrix.
-        """
-        return None
 
 

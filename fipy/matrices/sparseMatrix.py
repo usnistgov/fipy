@@ -93,7 +93,7 @@ class _SparseMatrix(object):
     def __str__(self):
         s = ''
         cellWidth = 11
-        Irange, Jrange = self._getRange()
+        Irange, Jrange = self._range
 
         for j in Jrange:
             for i in Irange:

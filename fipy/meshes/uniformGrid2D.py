@@ -149,7 +149,8 @@ class UniformGrid2D(Grid2D):
                              dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'], 
                              origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
 
-    def _getConcatenableMesh(self):
+    @property
+    def _concatenableMesh(self):
         from grid2D import Grid2D
         args = self.args.copy()
         origin = args['origin']

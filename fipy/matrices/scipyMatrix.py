@@ -4,11 +4,12 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "pysparseMatrix.py"
+ #  FILE: "scipyMatrix.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -42,8 +43,8 @@ from fipy.matrices.sparseMatrix import _SparseMatrix
 class _ScipyMatrixBase(_SparseMatrix):
     
     """
-    _PysparseMatrix class wrapper for pysparse.
-    _PysparseMatrix is always NxN.
+    _ScipyMatrix class wrapper for scipy.
+    _ScipyMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
@@ -60,14 +61,15 @@ class _ScipyMatrixBase(_SparseMatrix):
     def _shape(self):
         return self.matrix.shape
 
-    def _getRange(self):
+    @property
+    def _range(self):
         return range(self._shape[1]), range(self._shape[0])
         
     def put(self, vector, id1, id2):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
-            >>> L = _PysparseMatrix(size=3)
+            >>> L = _ScipyMatrix(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L
                 ---    10.000000   3.000000  
@@ -83,7 +85,7 @@ class _ScipyMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
         
-            >>> L = _PysparseMatrix(size=3)
+            >>> L = _ScipyMatrix(size=3)
             >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print L
              3.000000      ---        ---    
@@ -113,7 +115,7 @@ class _ScipyMatrixBase(_SparseMatrix):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
-            >>> L = _PysparseMatrix(size=3)
+            >>> L = _ScipyMatrix(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
             >>> print L
@@ -143,64 +145,62 @@ class _ScipyMatrixBase(_SparseMatrix):
         """
         return self * x
 
-class _PysparseMatrix(_ScipyMatrixBase):
+class _ScipyMatrix(_ScipyMatrixBase):
     
     """
-    _PysparseMatrix class wrapper for pysparse.
-    _PysparseMatrix is always NxN.
+    _ScipyMatrix class wrapper for scipy.
+    _ScipyMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
 
     def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
-        """Creates a `_PysparseMatrix`.
+        """Creates a `_ScipyMatrix`.
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
-          - `storeZeros`: Instructs pysparse to store zero values if possible.
+          - `storeZeros`: Instructs scipy to store zero values if possible.
           
         """
-        sizeHint = sizeHint or size * bandwidth
-        if matrix is None:
-            tmpMatrix = spmatrix.ll_mat(1, 1, 1)
-            if hasattr(tmpMatrix, 'storeZeros'):
-                matrix = spmatrix.ll_mat(size, size, sizeHint, storeZeros)
-            else:
-                matrix = spmatrix.ll_mat(size, size, sizeHint)
+        matrix = sp.lil_matrix((size, size))
                 
         _ScipyMatrixBase.__init__(self, matrix=matrix)
 
-class _PysparseMeshMatrix(_PysparseMatrix):
+class _ScipyMeshMatrix(_ScipyMatrix):
     
     def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, storeZeros=True):
 
-        """Creates a `_PysparseMatrix` associated with a `Mesh`.
+        """Creates a `_ScipyMatrix` associated with a `Mesh`.
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
           - `numberOfVariables`: The size of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
-          - `storeZeros`: Instructs pysparse to store zero values if possible.
+          - `storeZeros`: Instructs scipy to store zero values if possible.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
-        _PysparseMatrix.__init__(self, size=self.numberOfVariables * self.mesh.numberOfCells, bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
+
+        size = self.numberOfVariables * self.mesh.numberOfCells
+
+        _ScipyMatrix.__init__(self, size=size)
 
     def __mul__(self, other):
-        if isinstance(other, _PysparseMeshMatrix):
-            return _PysparseMeshMatrix(mesh=self.mesh, 
-                                       matrix=spmatrix.matrixmultiply(self.matrix, other.matrix))
+        if isinstance(other, _ScipyMeshMatrix):
+            return _ScipyMeshMatrix(mesh=self.mesh, 
+                                    matrix=(self.matrix * other.matrix))
         else:
-            return _PysparseMatrix.__mul__(self, other)
+            return _ScipyMatrix.__mul__(self, other)
 
     def asTrilinosMeshMatrix(self):
-        """Transforms a pysparse matrix into a trilinos matrix and maintains the
+        """Transforms a scipy matrix into a trilinos matrix and maintains the
         trilinos matrix as an attribute.
         
         :Returns: 
           The trilinos matrix.
 
+        """
         """
         A = self.matrix.copy()
         values, irow, jcol = A.find()
@@ -217,17 +217,20 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         self.trilinosMatrix.finalize()
 
         return self.trilinosMatrix
+        """
+
+        raise NotImplementedError
 
     def flush(self):
         """
-        Deletes the copy of the pysparse matrix held and calls `self.trilinosMatrix.flush()` if necessary.
-        """
+        Deletes the copy of the scipy matrix held and calls `self.trilinosMatrix.flush()` if necessary.
     
         if hasattr(self, 'trilinosMatrix'):
             if hasattr(self.matrix, 'storeZeros'):
                 self.trilinosMatrix.flush(cacheStencil=self.matrix.storeZeros)
             else:
                 self.trilinosMatrix.flush(cacheStencil=False)
+        """
                 
         if (not hasattr(self, 'cache')) or (self.cache is False):
             del self.matrix
@@ -236,13 +239,13 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         """
         Tests
         
-        >>> m = _PysparseMatrix(size=3, storeZeros=True)
+        >>> m = _ScipyMatrix(size=3, storeZeros=True)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> print not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0), (2, 2)])
         True
         >>> print not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.values(), [1., 2., 0.]) 
         True
-        >>> m = _PysparseMatrix(size=3, storeZeros=False)
+        >>> m = _ScipyMatrix(size=3, storeZeros=False)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> print numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0)])
         True
@@ -252,24 +255,24 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         """
         pass
         
-class _PysparseIdentityMatrix(_PysparseMatrix):
+class _ScipyIdentityMatrix(_ScipyMatrix):
     """
-    Represents a sparse identity matrix for pysparse.
+    Represents a sparse identity matrix for scipy.
     """
     def __init__(self, size):
         """
         Create a sparse matrix with '1' in the diagonal
         
-            >>> print _PysparseIdentityMatrix(size=3)
+            >>> print _ScipyIdentityMatrix(size=3)
              1.000000      ---        ---    
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PysparseMatrix.__init__(self, size=size, bandwidth = 1)
+        _ScipyMatrix.__init__(self, size=size, bandwidth = 1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
         
-class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
+class _ScipyIdentityMeshMatrix(_ScipyIdentityMatrix):
     def __init__(self, mesh):
         """
         Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
@@ -277,12 +280,12 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
             >>> from fipy import Grid1D
             >>> from fipy.tools import serial
             >>> mesh = Grid1D(nx=3, communicator=serial)
-            >>> print _PysparseIdentityMeshMatrix(mesh=mesh)
+            >>> print _ScipyIdentityMeshMatrix(mesh=mesh)
              1.000000      ---        ---    
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PysparseIdentityMatrix.__init__(self, size=mesh.numberOfCells)
+        _ScipyIdentityMatrix.__init__(self, size=mesh.numberOfCells)
 
 def _test(): 
     import doctest

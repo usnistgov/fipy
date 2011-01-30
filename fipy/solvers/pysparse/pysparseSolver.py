@@ -60,6 +60,11 @@ class PysparseSolver(_PysparseMatrixSolver):
         `_solve_` is only for use by solvers which may use
         preconditioning. If you are writing a solver which
         doesn't use preconditioning, this must be overridden.
+
+        :Parameters:
+            - `L`: a `fipy.matrices.pysparseMatrix._PysparseMeshMatrix`.
+            - `x`: a `numpy.ndarray`.
+            - `b`: a `numpy.ndarray`.
         """
 
         A = L.matrix
