@@ -4,6 +4,6 @@ from linearBicgstabSolver import LinearBicgstabSolver
 
 from fipy.solvers.pysparse.linearPCGSolver import LinearPCGSolver
 
-DefaultSolver = LinearCGSSolver
-DefaultAsymmetricSolver = LinearCGSSolver
+DefaultSolver = LinearGMRESSolver
+DefaultAsymmetricSolver = LinearGMRESSolver
  

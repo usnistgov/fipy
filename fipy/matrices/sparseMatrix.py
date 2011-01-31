@@ -65,19 +65,7 @@ class _SparseMatrix(object):
     @getsetDeprecated
     def getNumpyArray(self):
         return self.numpyArray
-
-    @property
-    def asScipySparse(self):
-        try:
-            import scipy.sparse as sp
-        except ImportError:
-            print "Can't import SciPy for sparse representation."
-            return None
-
-        (data, row, col) = self.matrix.find()
-        return sp.csr_matrix((data, (row, col)), shape=self.matrix.shape)
-        
-                                                
+                                       
     def __array_wrap(self, arr, context=None):
         if context is None:
             return arr

@@ -49,6 +49,7 @@ can abort whenever it has problems with::
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):
@@ -173,5 +174,7 @@ class Solver(object):
     def _canSolveAsymmetric(self):
         return True
 
+    @getsetDeprecated
     def _getMatrixClass(self):
-        raise NotImplementedError
+        return self._matrixClass
+        

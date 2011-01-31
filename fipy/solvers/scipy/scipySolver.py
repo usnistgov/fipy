@@ -71,12 +71,18 @@ class ScipySolver(_PysparseMatrixSolver):
             - `x`: A `numpy.ndarray`.
             - `b`: A `numpy.ndarray`.
         """
-        A = L.asScipySparse.asformat('csr')
-        M = None if self.preconditioner is None else self.preconditioner(A)
-        
+        A = L.asformat('csr')
+        # M = None if self.preconditioner is None else self.preconditioner(A)
+
+        from pyamg import smoothed_aggregation_solver
+
+        ml = smoothed_aggregation_solver(A)
+        M = ml.aspreconditioner(cycle='V')
+             
         x, info = self.solveFnc(A, b, x, 
                                 tol=self.tolerance, 
-                                maxiter=self.iterations)
+                                maxiter=self.iterations,
+                                M=M)
         
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
             from fipy.tools.debug import PRINT        
