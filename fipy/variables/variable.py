@@ -270,7 +270,7 @@ class Variable(object):
             self.value
 
         if isinstance(self._value, physicalField.PhysicalField):
-            self._value.setUnit(unit)
+            self._value.unit = unit
         else:
             self._value = physicalField.PhysicalField(value=self._value, unit=unit)
 
