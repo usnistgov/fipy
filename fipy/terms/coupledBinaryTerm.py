@@ -99,7 +99,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.globalValue
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
+        >>> print numerix.allequal(matrix.numpyArray,
         ...                        [[2, -1, 0, 2, -2, 0],
         ...                         [-1, 3, -1, -2, 4, -2],
         ...                         [0, -1, 2, 0, -2, 2],
@@ -121,7 +121,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
+        >>> print numerix.allequal(matrix.numpyArray,
         ...                        [[ 2, -1,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0],
         ...                         [-1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0,  0],
         ...                         [ 0, -1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0],
@@ -146,7 +146,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
         >>> (eq0 & eq1).solve()
-        >>> print numerix.allequal(eq0.matrix.asTrilinosMeshMatrix().numpyArray,
+        >>> print numerix.allequal(eq0.matrix.numpyArray,
         ...                        [[ 0,  0,  0,  2, -2,  0],
         ...                         [ 0,  0,  0, -2,  4, -2],
         ...                         [ 0,  0,  0,  0, -2,  2],

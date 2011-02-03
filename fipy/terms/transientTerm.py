@@ -115,12 +115,6 @@ class TransientTerm(CellTerm):
         Test to ensure that _getTransientGeomCoeff is not returning None when a
         TransientTerm is defined.
 
-    def getTransientCoeff(self, mesh):
-        return self._getGeomCoeff(mesh)
-
-    def getTransientCoeff(self, mesh):
-        return self._getGeomCoeff(mesh)
-        
         >>> from fipy import *
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
@@ -129,7 +123,7 @@ class TransientTerm(CellTerm):
         [ 1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.matrix.asTrilinosMeshMatrix().numpyArray
+        >>> print eq.matrix.numpyArray
         [[ 1.]]
         
         >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
@@ -137,7 +131,7 @@ class TransientTerm(CellTerm):
         [-1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.matrix.asTrilinosMeshMatrix().numpyArray
+        >>> print eq.matrix.numpyArray
         [[-2.]]
 
         """
