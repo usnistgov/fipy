@@ -119,7 +119,8 @@ class MshFile:
         
         gmshFlags += " -format msh"
 
-        self.filename = self._parseFilename(filename, gmshFlags)
+        self.filename, self.gmshOutput = self._parseFilename(filename, 
+                                                             gmshFlags)
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
@@ -166,7 +167,7 @@ class MshFile:
             parprint("gmsh out: %s" % gmshout)
             os.close(f)
 
-            return mshFile
+            return mshFile, gmshout
          
     def _getMetaData(self, f):
         """
@@ -355,6 +356,7 @@ class MshFile:
 
         if numCellsTotal < 1:
             errStr = "Gmsh hasn't produced any cells! Check your Gmsh code."
+            errStr += "\n\nGmsh output:\n%s" % "".join(self.gmshOutput).rstrip()
             raise GmshException(errStr)
 
         parprint("Recovering coords.")
@@ -693,7 +695,7 @@ class Gmsh2D(Mesh2D):
 
         >>> cmd = "Point(1) = {0, 0, 0, 0.05};"
 
-        >>> Gmsh2D(cmd)
+        >>> Gmsh2D(cmd) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         GmshException: Gmsh hasn't produced any cells! Check your Gmsh code.
