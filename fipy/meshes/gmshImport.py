@@ -150,7 +150,7 @@ class MshFile:
         import subprocess as subp
         lowerFname = fname.lower()
         if '.msh' in lowerFname:
-            return fname
+            return fname, None
         else:
             if '.geo' in lowerFname or '.gmsh' in lowerFname:
                 geoFile = fname
