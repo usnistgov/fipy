@@ -355,7 +355,6 @@ class _PysparseMeshMatrix(_PysparseMatrix):
 
     @property
     def numpyArray(self):
-        print 'got here'
         from fipy.tools import parallel
         if parallel.Nproc == 1:
             return Super(_PysparseMeshMatrix, self).numpyArray
