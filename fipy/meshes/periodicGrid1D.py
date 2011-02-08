@@ -94,13 +94,6 @@ class PeriodicGrid1D(Grid1D):
             self._connectFaces(numerix.nonzero(self.facesLeft),
                                numerix.nonzero(self.facesRight))
 
-    def _getOverlap(self, overlap, procID, occupiedNodes):
-        self.occupiedNodes = occupiedNodes
-        if occupiedNodes == 1:
-            return Grid1D._getOverlap(self, overlap, procID, occupiedNodes)
-        else:
-            return {'left': overlap, 'right': overlap}
-        
     @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
         return self._globalOverlappingCellIDs
