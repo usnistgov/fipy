@@ -48,6 +48,7 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
+from fipy.meshes.builders import Grid2DBuilder
 
 class UniformGrid2D(Grid2D):
     """
@@ -57,6 +58,9 @@ class UniformGrid2D(Grid2D):
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
                  overlap=2, communicator=parallel,
                  GeomClass=_UniformGridGeometry2D):        
+
+        builder = Grid2DBuilder()
+
         self.args = {
             'dx': dx, 
             'dy': dy, 
@@ -85,11 +89,13 @@ class UniformGrid2D(Grid2D):
 
         self.globalNumberOfCells = nx * ny
         self.globalNumberOfFaces = nx * (ny + 1) + ny * (nx + 1)
-        
-        (self.nx,
-         self.ny,
+
+        builder.buildParallelInfo((nx, ny), overlap, communicator)
+
+        ([self.nx,
+          self.ny],
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, communicator)
+         self.offset) = builder.getParallelInfo()
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale

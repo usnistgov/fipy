@@ -45,6 +45,8 @@ from fipy.tools.decorators import getsetDeprecated
 from mesh1D import Mesh1D
 from fipy.tools import parallel
 
+from fipy.meshes.builders import Grid1DBuilder
+
 class Grid1D(Mesh1D):
     """
     Creates a 1D grid mesh.
@@ -63,7 +65,12 @@ class Grid1D(Mesh1D):
         IndexError: nx != len(dx)
 
     """
-    def __init__(self, dx=1., nx=None, overlap=2, communicator=parallel):
+    def __init__(self, dx=1., nx=None, overlap=2, 
+                 communicator=parallel,
+                 BuilderClass=Grid1DBuilder):
+
+        builder = BuilderClass()
+
         self.args = {
             'dx': dx, 
             'nx': nx, 
@@ -80,9 +87,12 @@ class Grid1D(Mesh1D):
         self.globalNumberOfCells = nx
         self.globalNumberOfFaces = nx + 1
 
-        (self.nx,
+        builder.buildParallelInfo([nx], overlap, communicator)
+
+        ([self.nx],
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, overlap, communicator)
+         self.offset,
+         self.occupiedNodes) = builder.getParallelInfo()
 
         if numerix.getShape(self.dx) is not ():
             Xoffset = numerix.sum(self.dx[0:self.offset])
@@ -99,30 +109,6 @@ class Grid1D(Mesh1D):
         Mesh1D.__init__(self, vertices, faces, cells, communicator=communicator)
         
         self.scale = scale
-
-    def _getOverlap(self, overlap, procID, occupiedNodes):
-        return {'left': overlap * (procID > 0) * (procID < occupiedNodes),
-                'right': overlap * (procID < occupiedNodes - 1)}
-        
-    def _calcParallelGridInfo(self, nx, overlap, communicator):
-
-        procID = communicator.procID
-        Nproc = communicator.Nproc
-        
-        overlap = min(overlap, nx)
-        cellsPerNode = max(int(nx / Nproc), overlap)
-        occupiedNodes = min(int(nx / (cellsPerNode or 1)), Nproc)
-            
-        overlap = self._getOverlap(overlap, procID, occupiedNodes)
-
-        offset = min(procID, occupiedNodes-1) * cellsPerNode - overlap['left']
-        local_nx = cellsPerNode * (procID < occupiedNodes)
-        if procID == occupiedNodes - 1:
-            local_nx += (nx - cellsPerNode * occupiedNodes)
-            
-        local_nx = local_nx + overlap['left'] + overlap['right']
-
-        return local_nx, overlap, offset
 
     def __repr__(self):
         if self.args["nx"] is None:

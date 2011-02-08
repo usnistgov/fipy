@@ -45,6 +45,7 @@ from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
+from fipy.meshes.builders import Grid2DBuilder
 
 class Grid2D(Mesh2D):
     """
@@ -52,6 +53,8 @@ class Grid2D(Mesh2D):
     first and then vertical faces.
     """
     def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
+
+        builder = Grid2DBuilder()
         
         self.args = {
             'dx': dx, 
@@ -76,10 +79,13 @@ class Grid2D(Mesh2D):
         self.globalNumberOfCells = nx * ny
         self.globalNumberOfFaces = nx * (ny + 1) + ny * (nx + 1)
 
-        (self.nx,
-         self.ny,
+        builder.buildParallelInfo((nx, ny), overlap, communicator)
+
+        ([self.nx,
+          self.ny],
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, communicator)
+         self.offset) = builder.getParallelInfo()
+                                                    
 
         if numerix.getShape(self.dx) is not ():
             Xoffset = numerix.sum(self.dx[0:self.offset[0]])
@@ -116,33 +122,6 @@ class Grid2D(Mesh2D):
         Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator)
         
         self.scale = scale
-
-    def _calcParallelGridInfo(self, nx, ny, overlap, communicator):
-        
-        procID = communicator.procID
-        Nproc = communicator.Nproc
-
-        overlap = min(overlap, ny)
-        cellsPerNode = max(int(ny / Nproc), overlap)
-        occupiedNodes = min(int(ny / (cellsPerNode or 1)), Nproc)
-            
-        overlap = {
-            'left': 0,
-            'right': 0,
-            'bottom': overlap * (procID > 0) * (procID < occupiedNodes),
-            'top': overlap * (procID < occupiedNodes - 1)
-        }
-        
-        offset = (0,
-                  min(procID, occupiedNodes-1) * cellsPerNode - overlap['bottom'])
-                
-        local_nx = nx
-        local_ny = cellsPerNode * (procID < occupiedNodes)
-        if procID == occupiedNodes - 1:
-            local_ny += (ny - cellsPerNode * occupiedNodes)
-        local_ny = local_ny + overlap['bottom'] + overlap['top']
-        
-        return local_nx, local_ny, overlap, offset
 
     def __repr__(self):
         return "%s(dx=%s, dy=%s, nx=%s, ny=%s)" \

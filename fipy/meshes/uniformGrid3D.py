@@ -44,6 +44,8 @@ from fipy.tools.decorators import getsetDeprecated
 
 from fipy.tools import parallel
 
+from fipy.meshes.builders import Grid3DBuilder
+
 class UniformGrid3D(Grid3D):
     """
     3D rectangular-prism Mesh with uniform grid spacing in each dimension.
@@ -64,6 +66,9 @@ class UniformGrid3D(Grid3D):
     """
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, 
                  origin = [[0], [0], [0]], overlap=2, communicator=parallel):
+
+        builder = Grid3DBuilder()
+
         self.args = {
             'dx': dx, 
             'dy': dy,
@@ -104,11 +109,14 @@ class UniformGrid3D(Grid3D):
         self.globalNumberOfFaces = nx * nz * (ny + 1) + ny * nz * (nx + 1) \
                                      + nx * ny * (nz + 1)
 
-        (self.nx,
-         self.ny,
-         self.nz,
+        builder.buildParallelInfo((nx, ny, nz), overlap, communicator)
+
+        ([self.nx,
+          self.ny,
+          self.nz],
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, nz, overlap, communicator)
+         self.offset) = builder.getParallelInfo()
+                                                    
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale

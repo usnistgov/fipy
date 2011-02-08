@@ -48,6 +48,8 @@ from fipy.tools import numerix
 from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
 
+from fipy.meshes.builders import Grid1DBuilder
+
 class UniformGrid1D(Grid1D):
     """
     Creates a 1D grid mesh.
@@ -60,6 +62,8 @@ class UniformGrid1D(Grid1D):
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,
                        communicator=parallel,
                        GeomClass=_UniformGridGeometry1D):
+        builder = Grid1DBuilder()
+
         origin = numerix.array(origin)
         
         self.args = {
@@ -79,10 +83,13 @@ class UniformGrid1D(Grid1D):
 
         self.globalNumberOfCells = nx
         self.globalNumberOfFaces = nx + 1
-        
-        (self.nx,
+
+        builder.buildParallelInfo([nx], overlap, communicator)
+
+        ([self.nx],
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, overlap, communicator)
+         self.offset,
+         self.occupiedNodes) = builder.getParallelInfo()
         
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
