@@ -748,18 +748,6 @@ class Mesh(object):
         return MA.sort(MA.array(faceCellIDs, mask = mask),
                                    axis=0)
 
-    def _calcVertexCoordinates(self, d, n):
-        """
-        Calculate the positions of the vertices along an axis, based on the 
-        specified `Cell` `d` spacing or list of `d` spacings.
-        
-        Used by the `Grid` meshes.
-        """
-        x = numerix.zeros((n + 1), 'd')
-        if n > 0:
-            x[1:] = d
-        return numerix.add.accumulate(x)
-
     """get Topology methods"""
     
     @getsetDeprecated

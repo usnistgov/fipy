@@ -39,7 +39,10 @@ __docformat__ = 'restructuredtext'
 from abstractGridBuilder import AbstractGridBuilder
 
 from fipy.meshes.builders.utilityClasses import (UniformNumPts,
-                                                 NonuniformNumPts)
+                                                 NonuniformNumPts,
+                                                 DOffsets,
+                                                 UniformOrigin)
+from fipy.tools import numerix
  
 class Grid1DBuilder(AbstractGridBuilder):
 
@@ -56,14 +59,60 @@ class Grid1DBuilder(AbstractGridBuilder):
 
     def _packOffset(self, arg):
         return arg
+    
+    @staticmethod
+    def createVertices(dx, nx):
+        x = AbstractGridBuilder.calcVertexCoordinates(dx, nx)
+        return x[numerix.newaxis,...]
+    
+    @staticmethod
+    def createFaces(numVertices):
+        if numVertices == 1:
+            return numerix.arange(0)[numerix.newaxis, ...]
+        else:
+            return numerix.arange(numVertices)[numerix.newaxis, ...]
 
+    @staticmethod
+    def createCells(nx):
+        """
+        cells = (f1, f2) going left to right.
+        f1 etc. refer to the faces
+        """
+        f1 = numerix.arange(nx)
+        f2 = f1 + 1
+        return numerix.array((f1, f2))
+      
 class NonuniformGrid1DBuilder(Grid1DBuilder):
 
     def __init__(self):
         self.NumPtsCalcClass = NonuniformNumPts
 
         super(NonuniformGrid1DBuilder, self).__init__()
+ 
+    def buildPostParallelGridInfo(self, ns, ds, offset):
+        # call super for side-effects
+        super(NonuniformGrid1DBuilder, self).buildPostParallelGridInfo(ns)
 
+        (self.offsets, 
+         self.newDs) = DOffsets.calcDOffsets(ds, ns, offset)
+
+        self.vertices = Grid1DBuilder.createVertices(ds[0], ns[0]) \
+                         + ((self.offsets[0],),) 
+        self.faces = Grid1DBuilder.createFaces(self.numberOfVertices)
+        self.numberOfFaces = len(self.faces[0])
+        self.cells = Grid1DBuilder.createCells(ns[0])
+
+    def getPostParallelGridInfo(self):
+        return (self.ns,
+                self.newDs,
+                self.offsets,
+                self.vertices,
+                self.faces,
+                self.cells,
+                self.numberOfVertices,
+                self.numberOfFaces,
+                self.numberOfCells)
+                                     
 class UniformGrid1DBuilder(Grid1DBuilder):
 
     def __init__(self):
@@ -71,7 +120,24 @@ class UniformGrid1DBuilder(Grid1DBuilder):
 
         super(UniformGrid1DBuilder, self).__init__()
 
+    def buildPostParallelGridInfo(self, ns, ds, offset, origin, scale):
+        super(UniformGrid1DBuilder, self).buildPostParallelGridInfo(ns)
 
+        self.origin = UniformOrigin.calcOrigin(origin, offset, ds, scale)
+
+        if 0 in ns:
+            self.numberOfFaces = 0
+        else:
+            self.numberOfFaces = ns[0] + 1
+
+        self.numberOfCells = ns[0]
+
+    def getPostParallelGridInfo(self):
+
+        return (self.origin,
+                self.numberOfVertices,
+                self.numberOfFaces,
+                self.numberOfCells)
 
 
 

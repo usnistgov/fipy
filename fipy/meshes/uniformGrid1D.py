@@ -49,6 +49,7 @@ from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.builders import UniformGrid1DBuilder
+from fipy.meshes.builders import Grid1DBuilder
 
 class UniformGrid1D(Grid1D):
     """
@@ -88,17 +89,17 @@ class UniformGrid1D(Grid1D):
          self.overlap,
          self.offset,
          self.occupiedNodes) = builder.getParallelInfo()
+
+        builder.buildPostParallelGridInfo([self.nx], 
+                                          [self.dx], 
+                                          self.offset, 
+                                          origin, 
+                                          scale = 1.)
         
-        self.origin = PhysicalField(value=origin)
-        self.origin /= scale
-        self.origin += self.offset * self.dx
-        
-        self.numberOfVertices = self.nx + 1
-        if self.nx == 0:
-            self.numberOfFaces = 0
-        else:
-            self.numberOfFaces = self.nx + 1
-        self.numberOfCells = self.nx
+        (self.origin,
+         self.numberOfVertices,
+         self.numberOfFaces,
+         self.numberOfCells) = builder.getPostParallelGridInfo()
 
         self._scale = {
             'length': 1.,
@@ -148,8 +149,8 @@ class UniformGrid1D(Grid1D):
     def _concatenableMesh(self):
         from mesh1D import Mesh1D
         return Mesh1D(vertexCoords = self.vertexCoords, 
-                      faceVertexIDs = self._createFaces(), 
-                      cellFaceIDs = self._createCells())
+                      faceVertexIDs = Grid1DBuilder.createFaces(self.numberOfVertices), 
+                      cellFaceIDs = Grid1DBuilder.createCells(self.nx))
                       
 ##     get topology methods
 
@@ -161,7 +162,7 @@ class UniformGrid1D(Grid1D):
 
     @property
     def cellFaceIDs(self):
-        return MA.array(self._createCells())
+        return MA.array(Grid1DBuilder.createCells(self.nx))
 
     @property
     def _maxFacesPerCell(self):

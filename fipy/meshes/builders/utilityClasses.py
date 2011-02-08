@@ -36,6 +36,59 @@
 
 __docformat__ = 'restructuredtext'
 
+from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools import numerix
+
+class UniformOrigin(object):
+    """
+    Used to calculate the origin for uniform grids in a
+    dimensionally-independent way.
+    """
+
+    @staticmethod
+    def calcOrigin(origin, offset, ds, scale):
+        newOrigin  = PhysicalField(value=origin)
+        newOrigin /= scale
+
+        if type(offset) in [int, float]:
+            newOrigin += offset * ds[0]
+        else:
+            newOrigin += (o*d for o, d in zip(offset, ds))
+
+        return newOrigin
+
+class DOffsets(object):
+    """
+    For use by non-uniform grid builders.
+    """
+
+    @staticmethod
+    def calcDOffsets(ds, ns, offset):
+        """
+        :Parameters:
+            - `ds`: A list, e.g. [dx, dy]
+            - `ns`: A list, e.g. [nx, ny, nz]
+            - `offset`: A scalar 
+
+        :Returns:
+            - `offsetList`: a list which contains the analogous scalars to
+              `XOffset`, `YOffset`, and `ZOffset`, whichever are applicable for
+              the dimensionality.
+            - `newDs`: a list containing proper [dx, [dy, ...]] values
+        """
+        offsetList = []
+        newDs = []
+        
+        for d, n in zip(ds, ns):
+            if numerix.getShape(d) is not ():
+                offsetList.append(numerix.sum(d[0:offset]))
+                newDs.append(d[offset:offset + n])
+            else:
+                offsetList.append(d * offset)
+                newDs.append(d)
+
+        return offsetList, newDs
+
 class AbstractNumPts(object):
     """
     Interface definition for NumPtsCalculators.
@@ -85,7 +138,7 @@ class NonuniformNumPts(AbstractNumPts):
                 raise IndexError, "n%s != len(d%s)" % (axis, axis)
                 
         return n
-  
+
 class UniformNumPts(AbstractNumPts):
     """
     For use by uniform grid builders.

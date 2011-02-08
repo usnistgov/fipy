@@ -37,7 +37,9 @@
 __docformat__ = 'restructuredtext'
 
 from itertools import permutations
+
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools import numerix
  
 class AbstractGridBuilder(object):
 
@@ -73,7 +75,7 @@ class AbstractGridBuilder(object):
 
         newNs = self._calcNs(ns, newDs)
 
-        globalNumCells = reduce(lambda x,y: x*y, newNs)
+        globalNumCells = reduce(self._mult, newNs)
         globalNumFaces = self._calcNumFaces(newNs)
 
         """
@@ -94,7 +96,6 @@ class AbstractGridBuilder(object):
                 self.scale,
                 self.globalNumberOfCells,
                 self.globalNumberOfFaces)
-
 
     def _calcNumFaces(self, ns):
         """
@@ -182,12 +183,58 @@ class AbstractGridBuilder(object):
         self.offset = self._packOffset(offsetArg)
         self.overlap = overlap
 
-         
     def getParallelInfo(self):
         return (self.local_ns, 
                 self.overlap, 
                 self.offset)
+
+    def buildPostParallelGridInfo(self, ns):
+        """
+        Builds final information about the grid after `buildParallelInfo` has
+        been called. Establishes the follow information:
+
+            * [nx, [ny, [nz]]]
+            * numberOfHorizontalRows
+            * numberOfVerticalColumns
+            * numberOfLayersDeep
+            * numberOfVertices
+            * numberOfCells
+
+        All other attributes needed by grids are established by children who
+        override `buildPostParallelGridInfo` and call up to this incarnation.
+
+        :Note: 
+            - `spatialNums` is a list whose elements are analogous to
+                * numberOfHorizontalRows
+                * numberOfVerticalColumns
+                * numberOfLayersDeep
+              though `spatialNums` may be of length 1, 2, or 3 depending on
+              dimensionality.
+ 
+        :Parameters:
+            - `ns`: A tuple containing `nx`, `ny`, and `nz`, if available for
+              the particular dimension of this builder. Could be `(nx)`, `(nx,
+              ny)`, etc. 
+        """
         
+        if 0 in ns:
+            newNs = [0 for n in ns]
+            spatialNums = [0 for n in ns]
+        else:
+            newNs = ns
+            spatialNums = [n + 1 for n in ns]
+
+        numVertices = reduce(self._mult, spatialNums)
+        numCells = reduce(self._mult, newNs)
+
+        """
+        Side-effects
+        """
+        self.ns = newNs
+        self.spatialNums = spatialNums
+        self.numberOfVertices = numVertices
+        self.numberOfCells = numCells
+
     def _buildOverlap(self, overlap, procID, occupiedNodes):
          
         (first, sec) = self._calcFirstAndSecOverlap(overlap, procID, occupiedNodes)
@@ -205,6 +252,22 @@ class AbstractGridBuilder(object):
 
     def _packOffset(self, arg):
         raise NotImplementedError
+    
+    @staticmethod
+    def calcVertexCoordinates(d, n):
+        """
+        Calculate the positions of the vertices along an axis, based on the 
+        specified `Cell` `d` spacing or list of `d` spacings.
+        
+        Used by the `Grid` meshes.
+        """
+        x = numerix.zeros((n + 1), 'd')
+        if n > 0:
+            x[1:] = d
+        return numerix.add.accumulate(x)
+
+    def _mult(self, x, y):
+        return x*y
 
 if __name__ == '__main__':
     import doctest

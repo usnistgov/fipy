@@ -1,5 +1,6 @@
 from grid1DBuilder import NonuniformGrid1DBuilder
 from grid1DBuilder import UniformGrid1DBuilder
+from grid1DBuilder import Grid1DBuilder
 from grid2DBuilder import NonuniformGrid2DBuilder
 from grid2DBuilder import UniformGrid2DBuilder
 from grid3DBuilder import NonuniformGrid3DBuilder

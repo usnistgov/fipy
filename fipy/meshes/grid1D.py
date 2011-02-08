@@ -93,17 +93,17 @@ class Grid1D(Mesh1D):
          self.offset,
          self.occupiedNodes) = builder.getParallelInfo()
 
-        if numerix.getShape(self.dx) is not ():
-            Xoffset = numerix.sum(self.dx[0:self.offset])
-            self.dx = self.dx[self.offset:self.offset + self.nx]
-        else:
-            Xoffset = self.dx * self.offset
-            
-        vertices              = self._createVertices() + ((Xoffset,),)
-        self.numberOfVertices = len(vertices[0])
-        faces                 = self._createFaces()
-        self.numberOfFaces    = len(faces[0])
-        cells                 = self._createCells()
+        builder.buildPostParallelGridInfo([self.nx], [self.dx], self.offset)
+
+        ([self.nx],
+         [self.dx],
+         [self.Xoffset],
+         vertices,
+         faces,
+         cells,
+         self.numberOfVertices,
+         self.numberOfFaces,
+         self.numberOfCells) = builder.getPostParallelGridInfo()
 
         Mesh1D.__init__(self, vertices, faces, cells, communicator=communicator)
         
@@ -114,25 +114,6 @@ class Grid1D(Mesh1D):
             return "%s(dx=%s)" % (self.__class__.__name__, str(self.args["dx"]))
         else:
             return "%s(dx=%s, nx=%d)" % (self.__class__.__name__, str(self.args["dx"]), self.args["nx"])
-
-    def _createVertices(self):
-        x = self._calcVertexCoordinates(self.dx, self.nx)
-        return x[numerix.newaxis,...]
-    
-    def _createFaces(self):
-        if self.numberOfVertices == 1:
-            return numerix.arange(0)[numerix.newaxis, ...]
-        else:
-            return numerix.arange(self.numberOfVertices)[numerix.newaxis, ...]
-
-    def _createCells(self):
-        """
-        cells = (f1, f2) going left to right.
-        f1 etc. refer to the faces
-        """
-        f1 = numerix.arange(self.nx)
-        f2 = f1 + 1
-        return numerix.array((f1, f2))
 
     @getsetDeprecated
     def getDim(self):
