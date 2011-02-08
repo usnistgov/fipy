@@ -357,7 +357,7 @@ class _PysparseMeshMatrix(_PysparseMatrix):
     def numpyArray(self):
         from fipy.tools import parallel
         if parallel.Nproc == 1:
-            return Super(_PysparseMeshMatrix, self).numpyArray
+            return super(_PysparseMeshMatrix, self).numpyArray
         else:
             return self.asTrilinosMeshMatrix().numpyArray
 
