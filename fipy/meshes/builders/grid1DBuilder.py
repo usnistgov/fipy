@@ -37,6 +37,9 @@
 __docformat__ = 'restructuredtext'
 
 from abstractGridBuilder import AbstractGridBuilder
+
+from fipy.meshes.builders.utilityClasses import (UniformNumPts,
+                                                 NonuniformNumPts)
  
 class Grid1DBuilder(AbstractGridBuilder):
 
@@ -53,3 +56,23 @@ class Grid1DBuilder(AbstractGridBuilder):
 
     def _packOffset(self, arg):
         return arg
+
+class NonuniformGrid1DBuilder(Grid1DBuilder):
+
+    def __init__(self):
+        self.NumPtsCalcClass = NonuniformNumPts
+
+        super(NonuniformGrid1DBuilder, self).__init__()
+
+class UniformGrid1DBuilder(Grid1DBuilder):
+
+    def __init__(self):
+        self.NumPtsCalcClass = UniformNumPts
+
+        super(UniformGrid1DBuilder, self).__init__()
+
+
+
+
+
+

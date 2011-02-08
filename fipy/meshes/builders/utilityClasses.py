@@ -36,17 +36,65 @@
 
 __docformat__ = 'restructuredtext'
 
-from grid1DBuilder import NonuniformGrid1DBuilder
- 
-class PeriodicGrid1DBuilder(NonuniformGrid1DBuilder):
-               
-    def _buildOverlap(self, overlap, procID, occupiedNodes):
-        if occupiedNodes == 1:
-            return super(PeriodicGrid1DBuilder, self)._buildOverlap(overlap, 
-                     procID, occupiedNodes)
-        else:
-            (first, sec) = self._calcFirstAndSecOverlap(overlap, procID,
-                                                        occupiedNodes)
-            return (first, sec, {'left': overlap, 'right': overlap})
-            
+class AbstractNumPts(object):
+    """
+    Interface definition for NumPtsCalculators.
+    """
 
+    @staticmethod
+    def calcNs(ns, ds):
+        raise NotImplementedError
+ 
+class NonuniformNumPts(AbstractNumPts):
+    """
+    For use by non-uniform grid builders.
+    """
+
+    @staticmethod
+    def calcNs(ns, ds):
+        axis = ["x", "y", "z"][:len(ns)]
+        newNs = []
+
+        for a, d, n in zip(axis, ds, ns):
+            newNs.append(NonuniformNumPts._calcNumPts(d=d, n=n, axis=a))
+
+        return newNs
+
+    @staticmethod
+    def _calcNumPts(d, n = None, axis = "x"):
+        """
+        Calculate the number of cells along the specified axis, based
+        on either the specified number or on the number elements in the
+        cell  `d` spacings.
+        
+        Used by the `Grid` meshes.
+
+        This tests a bug that was occuring with PeriodicGrid1D when
+        using a numpy float as the argument for the grid spacing.
+
+           >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
+           >>> PeriodicGrid1D(nx=2, dx=numerix.float32(1.))
+           PeriodicGrid1D(dx=1.0, nx=2)
+        """
+
+        if type(d) in [int, float] or not hasattr(d, '__len__'):
+            n = int(n or 1)
+        else:
+            n = int(n or len(d))
+            if n != len(d) and len(d) != 1:
+                raise IndexError, "n%s != len(d%s)" % (axis, axis)
+                
+        return n
+  
+class UniformNumPts(AbstractNumPts):
+    """
+    For use by uniform grid builders.
+    """
+ 
+    @staticmethod
+    def calcNs(ns, ds):
+        return map(lambda x: int(x), ns)
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

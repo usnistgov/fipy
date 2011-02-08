@@ -45,7 +45,7 @@ from fipy.tools.decorators import getsetDeprecated
 
 from fipy.tools import parallel
 
-from fipy.meshes.builders import Grid3DBuilder
+from fipy.meshes.builders import NonuniformGrid3DBuilder
 
 class Grid3D(Mesh):
     """
@@ -65,7 +65,7 @@ class Grid3D(Mesh):
     """
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
 
-        builder = Grid3DBuilder()
+        builder = NonuniformGrid3DBuilder()
         
         self.args = {
             'dx': dx, 
@@ -78,31 +78,16 @@ class Grid3D(Mesh):
             'communicator': communicator
         }
         
-        self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.unit)
-        self.dx /= scale
-        
-        nx = self._calcNumPts(d = self.dx, n = nx, axis = "x")
-        
-        self.dy = PhysicalField(value = dy)
-        if self.dy.unit.isDimensionless():
-            self.dy = dy
-        else:
-            self.dy /= scale
+        builder.buildPreParallelGridInfo(ds=[dx, dy, dz], 
+                                         ns=[nx, ny, nz])
 
-        ny = self._calcNumPts(d = self.dy, n = ny, axis = "y")
-        
-        self.dz = PhysicalField(value = dz)
-        if self.dz.unit.isDimensionless():
-            self.dz = dz
-        else:
-            self.dz /= scale
-        
-        nz = self._calcNumPts(d = self.dz, n = nz, axis = "z")
-
-        self.globalNumberOfCells = nx * ny * nz
-        self.globalNumberOfFaces = nx * nz * (ny + 1) + ny * nz * (nx + 1) + nx * ny * (nz + 1)
-
+        ([nx, ny, nz],
+         [self.dx, self.dy, self.dz],
+         self.dim,
+         scale,
+         self.globalNumberOfCells,
+         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
+               
         builder.buildParallelInfo((nx, ny, nz), overlap, communicator)
 
         ([self.nx,

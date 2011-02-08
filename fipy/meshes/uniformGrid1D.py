@@ -48,7 +48,7 @@ from fipy.tools import numerix
 from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
 
-from fipy.meshes.builders import Grid1DBuilder
+from fipy.meshes.builders import UniformGrid1DBuilder
 
 class UniformGrid1D(Grid1D):
     """
@@ -62,7 +62,7 @@ class UniformGrid1D(Grid1D):
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,
                        communicator=parallel,
                        GeomClass=_UniformGridGeometry1D):
-        builder = Grid1DBuilder()
+        builder = UniformGrid1DBuilder()
 
         origin = numerix.array(origin)
         
@@ -73,17 +73,15 @@ class UniformGrid1D(Grid1D):
             'overlap': overlap
         }
         
-        self.dim = 1
-        
-        self.dx = PhysicalField(value=dx)
-        scale = PhysicalField(value=1, unit=self.dx.unit)
-        self.dx /= scale
-        
-        nx = int(nx)
+        builder.buildPreParallelGridInfo([dx], [nx])
 
-        self.globalNumberOfCells = nx
-        self.globalNumberOfFaces = nx + 1
-
+        ([nx],
+         [self.dx],
+         self.dim,
+         scale,
+         self.globalNumberOfCells,
+         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
+             
         builder.buildParallelInfo([nx], overlap, communicator)
 
         ([self.nx],

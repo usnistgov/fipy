@@ -38,6 +38,9 @@ __docformat__ = 'restructuredtext'
  
 from abstractGridBuilder import AbstractGridBuilder
 
+from fipy.meshes.builders.utilityClasses import (UniformNumPts,
+                                                 NonuniformNumPts)
+
 class Grid2DBuilder(AbstractGridBuilder):
 
     def _packOverlap(self, first, second):
@@ -45,3 +48,18 @@ class Grid2DBuilder(AbstractGridBuilder):
 
     def _packOffset(self, arg):
         return (0, arg)
+
+class NonuniformGrid2DBuilder(Grid2DBuilder):
+
+    def __init__(self):
+        self.NumPtsCalcClass = NonuniformNumPts
+
+        super(NonuniformGrid2DBuilder, self).__init__()
+
+class UniformGrid2DBuilder(Grid2DBuilder):
+
+    def __init__(self):
+        self.NumPtsCalcClass = UniformNumPts
+
+        super(UniformGrid2DBuilder, self).__init__()
+                                  

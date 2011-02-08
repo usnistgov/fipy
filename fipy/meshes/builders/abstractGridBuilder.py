@@ -35,8 +35,107 @@
  ##
 
 __docformat__ = 'restructuredtext'
+
+from itertools import permutations
+from fipy.tools.dimensions.physicalField import PhysicalField
  
 class AbstractGridBuilder(object):
+
+    def buildPreParallelGridInfo(self, ds, ns):
+        """
+        Build and save any information derivable from (dx, dy, dz) and 
+        (nx, ny, nz). Generalized to handle any dimension. Has side-effects.
+
+        :Parameters:
+            - `ds` - A list containing grid spacing information, e.g. [dx, dy]
+            - `ns` - A list containing number of grid points, e.g. [nx, ny, nz]
+        """
+
+        dim = len(ns)
+
+        newDs = []
+
+        newdx = PhysicalField(value = ds[0])
+        scale = PhysicalField(value = 1, unit = newdx.unit)
+        newdx /= scale
+
+        newDs.append(newdx)
+
+        for d in ds[1:]: # for remaining ds
+            newD = PhysicalField(value = d)
+
+            if newD.unit.isDimensionless():
+                newD = d
+            else:
+                newD /= scale
+
+            newDs.append(newD)
+
+        newNs = self._calcNs(ns, newDs)
+
+        globalNumCells = reduce(lambda x,y: x*y, newNs)
+        globalNumFaces = self._calcNumFaces(newNs)
+
+        """
+        Side-effects
+        """
+        self.dim     = dim
+        self.selfds  = newDs
+        self.ns      = newNs
+        self.scale   = scale
+
+        self.globalNumberOfCells = globalNumCells
+        self.globalNumberOfFaces = globalNumFaces
+
+    def getPreParallelGridInfo(self):
+        return (self.ns,
+                self.selfds,
+                self.dim,
+                self.scale,
+                self.globalNumberOfCells,
+                self.globalNumberOfFaces)
+
+
+    def _calcNumFaces(self, ns):
+        """
+        Dimensionally independent face-number calculation.
+
+        >>> from fipy.meshes.builders import *
+
+        >>> gb = Grid1DBuilder()
+        >>> gb._calcNumFaces([1])
+        2
+
+        >>> gb2 = Grid2DBuilder()
+        >>> gb2._calcNumFaces([2, 3])
+        17
+
+        >>> gb3 = Grid3DBuilder()
+        >>> gb3._calcNumFaces([2, 3, 2])
+        52
+        """
+        assert type(ns) is list
+
+        nIter = list(permutations(range(len(ns))))
+
+        # ensure len(nIter) == len(ns) && nIter[i][0] unique
+        if len(ns) == 3: 
+            nIter = nIter[::2]
+
+        numFaces = 0
+        
+        for idx in nIter: 
+            temp = ns[idx[0]] + 1 # base of (n_1 + 1)
+
+            for otherIdx in idx[1:]: # for any extra dimensions beyond x
+                temp *= ns[otherIdx] # build (n_x * ... + (n_1 + 1))
+                                     # for each valid ordering
+            numFaces += temp
+
+        return numFaces
+        
+    def _calcNs(self, ns, ds):
+        return self.NumPtsCalcClass.calcNs(ns, ds)
 
     def buildParallelInfo(self, ns, overlap, communicator):
         """
@@ -107,3 +206,6 @@ class AbstractGridBuilder(object):
     def _packOffset(self, arg):
         raise NotImplementedError
 
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

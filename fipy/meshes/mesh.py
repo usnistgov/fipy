@@ -748,32 +748,6 @@ class Mesh(object):
         return MA.sort(MA.array(faceCellIDs, mask = mask),
                                    axis=0)
 
-    def _calcNumPts(self, d, n = None, axis = "x"):
-        """
-        Calculate the number of cells along the specified axis, based
-        on either the specified number or on the number elements in the
-        cell  `d` spacings.
-        
-        Used by the `Grid` meshes.
-
-        This tests a bug that was occuring with PeriodicGrid1D when
-        using a numpy float as the argument for the grid spacing.
-
-           >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
-           >>> PeriodicGrid1D(nx=2, dx=numerix.float32(1.))
-           PeriodicGrid1D(dx=1.0, nx=2)
-
-        """
-
-        if type(d) in [type(1), type(1.)] or not hasattr(d, '__len__'):
-            n = int(n or 1)
-        else:
-            n = int(n or len(d))
-            if n != len(d) and len(d) != 1:
-                raise IndexError, "n%s != len(d%s)" % (axis, axis)
-                
-        return n
-
     def _calcVertexCoordinates(self, d, n):
         """
         Calculate the positions of the vertices along an axis, based on the 

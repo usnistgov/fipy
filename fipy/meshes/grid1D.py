@@ -45,7 +45,7 @@ from fipy.tools.decorators import getsetDeprecated
 from mesh1D import Mesh1D
 from fipy.tools import parallel
 
-from fipy.meshes.builders import Grid1DBuilder
+from fipy.meshes.builders import NonuniformGrid1DBuilder
 
 class Grid1D(Mesh1D):
     """
@@ -67,7 +67,7 @@ class Grid1D(Mesh1D):
     """
     def __init__(self, dx=1., nx=None, overlap=2, 
                  communicator=parallel,
-                 BuilderClass=Grid1DBuilder):
+                 BuilderClass=NonuniformGrid1DBuilder):
 
         builder = BuilderClass()
 
@@ -77,15 +77,14 @@ class Grid1D(Mesh1D):
             'overlap': overlap
         }
 
-        self.dim = 1
-        self.dx = PhysicalField(value=dx)
-        scale   = PhysicalField(value=1, unit=self.dx.unit)
-        self.dx /= scale
+        builder.buildPreParallelGridInfo([dx], [nx])
 
-        nx = self._calcNumPts(d=self.dx, n=nx)
-
-        self.globalNumberOfCells = nx
-        self.globalNumberOfFaces = nx + 1
+        ([nx],
+         [self.dx],
+         self.dim,
+         scale,
+         self.globalNumberOfCells,
+         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
 
         builder.buildParallelInfo([nx], overlap, communicator)
 

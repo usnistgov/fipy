@@ -45,7 +45,7 @@ from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
-from fipy.meshes.builders import Grid2DBuilder
+from fipy.meshes.builders import NonuniformGrid2DBuilder
 
 class Grid2D(Mesh2D):
     """
@@ -54,7 +54,7 @@ class Grid2D(Mesh2D):
     """
     def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
 
-        builder = Grid2DBuilder()
+        builder = NonuniformGrid2DBuilder()
         
         self.args = {
             'dx': dx, 
@@ -65,19 +65,14 @@ class Grid2D(Mesh2D):
             'communicator': communicator
         }
 
-        self.dx  = PhysicalField(value = dx)
-        scale    = PhysicalField(value=1, unit=self.dx.unit)
-        self.dx /= scale
-        
-        nx = self._calcNumPts(d=self.dx, n=nx, axis="x")
-        
-        self.dy  = PhysicalField(value = dy)
-        self.dy /= scale
-            
-        ny = self._calcNumPts(d=self.dy, n=ny, axis="y")
-        
-        self.globalNumberOfCells = nx * ny
-        self.globalNumberOfFaces = nx * (ny + 1) + ny * (nx + 1)
+        builder.buildPreParallelGridInfo(ds=[dx, dy], ns=[nx, ny])
+
+        ([nx, ny],
+         [self.dx, self.dy],
+         self.dim,
+         scale,
+         self.globalNumberOfCells,
+         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
 
         builder.buildParallelInfo((nx, ny), overlap, communicator)
 
