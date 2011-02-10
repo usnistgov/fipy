@@ -50,8 +50,6 @@ class PeriodicGrid1DBuilder(NonuniformGrid1DBuilder):
             return super(PeriodicGrid1DBuilder, self)._buildOverlap(overlap, 
                      procID, occupiedNodes)
         else:
-            (first, sec) = self._calcFirstAndSecOverlap(overlap, procID,
-                                                        occupiedNodes)
-            return (first, sec, {'left': overlap, 'right': overlap})
+            return (overlap, overlap, {'left': overlap, 'right': overlap})
             
 

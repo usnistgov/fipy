@@ -385,17 +385,17 @@ class Mesh(object):
 
            >>> from fipy.tools import parallel
            >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
-           ...                                                           [7, 8, 10, 11],
-           ...                                                           [2, 3, 4, 5],
-           ...                                                           [6, 7, 9, 10]]).flatten().all()
+           ...                                                     [7, 8, 10, 11],
+           ...                                                     [2, 3, 4, 5],
+           ...                                                     [6, 7, 9, 10]]).flatten().all()
            True
 
            >>> mesh._connectFaces(numerix.nonzero(mesh.facesLeft), numerix.nonzero(mesh.facesRight))
 
            >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
-           ...                                                           [7, 6, 10, 9],
-           ...                                                           [2, 3, 4, 5],
-           ...                                                           [6, 7, 9, 10]]).flatten().all()
+           ...                                                     [7, 6, 10, 9],
+           ...                                                     [2, 3, 4, 5],
+           ...                                                     [6, 7, 9, 10]]).flatten().all()
            True
 
         """
@@ -429,8 +429,6 @@ class Mesh(object):
         MA.put(faceToCellDistances0, faces0, MA.take(faceToCellDistances0, faces1))
 
         """
-        Abandon hope, all ye who enter.
-
         Some very hacky stuff going on here with property assignment. Temporary
         variables are often used because slice and index assignments DO NOT call
         the property-setters, instead they act on the underlying numpy reference

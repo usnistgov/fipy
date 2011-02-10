@@ -106,7 +106,6 @@ class AbstractGridBuilder(object):
 
         overlap = min(overlap, newNs[-1])
         cellsPerNode = max(int(newNs[-1] / Nproc), overlap)
-
         occupiedNodes = min(int(newNs[-1] / (cellsPerNode or 1)), Nproc) 
 
         (firstOverlap,
@@ -255,16 +254,11 @@ class AbstractGridBuilder(object):
         return self.NumPtsCalcClass.calcNs(ns, ds)
 
     def _buildOverlap(self, overlap, procID, occupiedNodes):
-        (first, sec) = self._calcFirstAndSecOverlap(overlap, procID, occupiedNodes)
+        (first, sec) = (overlap * (procID > 0) * (procID < occupiedNodes),
+                        overlap * (procID < occupiedNodes - 1)) 
+
         return first, sec, self._packOverlap(first, sec)
 
-    def _calcFirstAndSecOverlap(self, overlap, procID, occupiedNodes):
-        """
-        Only consolidated to prevent duplication in `PeriodicGrid1DBuilder`.
-        """
-        return (overlap * (procID > 0) * (procID < occupiedNodes),
-                overlap * (procID < occupiedNodes - 1))
-         
     def _packOverlap(self, first, sec):
         raise NotImplementedError
 
