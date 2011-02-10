@@ -93,9 +93,6 @@ class MshFile:
         if order > 1:
             self.communicator = serial
 
-        if self.communicator == serial:
-            parprint("SERIAL!")
-
         # much special-casing based on gmsh version
         gmshVersion = self._gmshVersion
         if gmshVersion < 2.0:

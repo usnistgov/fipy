@@ -72,13 +72,8 @@ class ScipySolver(_PysparseMatrixSolver):
             - `b`: A `numpy.ndarray`.
         """
         A = L.asformat('csr')
-        # M = None if self.preconditioner is None else self.preconditioner(A)
+        M = None
 
-        from pyamg import smoothed_aggregation_solver
-
-        ml = smoothed_aggregation_solver(A)
-        M = ml.aspreconditioner(cycle='V')
-             
         x, info = self.solveFnc(A, b, x, 
                                 tol=self.tolerance, 
                                 maxiter=self.iterations,

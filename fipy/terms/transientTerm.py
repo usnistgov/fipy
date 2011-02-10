@@ -122,6 +122,7 @@ class TransientTerm(CellTerm):
         return self._getGeomCoeff(mesh)
         
         >>> from fipy import *
+        >>> from fipy.matrices.pysparseMatrix import _PysparseMatrix
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
         >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
@@ -129,16 +130,18 @@ class TransientTerm(CellTerm):
         [ 1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.matrix.asTrilinosMeshMatrix().numpyArray
-        [[ 1.]]
+        >>> print not isinstance(eq.matrix, _PysparseMatrix) \
+                or eq.matrix.asTrilinosMeshMatrix().numpyArray[0,0] == 1.
+        True
         
         >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
         >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
         [-1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.matrix.asTrilinosMeshMatrix().numpyArray
-        [[-2.]]
+        >>> print not isinstance(eq.matrix, _PysparseMatrix) \
+                or eq.matrix.asTrilinosMeshMatrix().numpyArray[0,0] == -2.
+        True
 
         """
         if CellTerm._getTransientGeomCoeff(self, var) is not None:

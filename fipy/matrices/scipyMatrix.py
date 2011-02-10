@@ -71,13 +71,22 @@ class _ScipyMatrixBase(_SparseMatrix):
             return _ScipyMatrixBase(matrix=m)
 
     def __iadd__(self, other):
+        return self._iadd(other)
+
+    def _iadd(self, other, sign=1):
         if hasattr(other, "matrix"):
-            self.matrix += other.matrix
+            self.matrix = self.matrix + (sign * other.matrix)
+        elif type(other) in [float, int]:
+            fillVec = numerix.repeat(other, self.matrix.nnz)
+
+            self.matrix = self.matrix \
+                          + sp.csr_matrix((fillVec, self.matrix.nonzero()),
+                                          self.matrix.shape)
         else:
-            self.matrix += other
+            self.matrix = self.matrix + (sign * other)
 
         return self
-        
+         
     def __add__(self, other):
         """
         Add two sparse matrices
@@ -122,7 +131,7 @@ class _ScipyMatrixBase(_SparseMatrix):
         return -self + other
     
     def __isub__(self, other):
-            return self._iadd(self.matrix, other, -1)
+            return self._iadd(other, sign=-1)
 
     def __mul__(self, other):
         """
@@ -196,8 +205,11 @@ class _ScipyMatrixBase(_SparseMatrix):
         """
         assert(len(id1) == len(id2) == len(vector))
 
-        for v, i1, i2 in zip(vector, id1, id2):
-            self.matrix[i1, i2] = v
+        # done in such a way to vectorize everything
+        tempVec = numerix.array(vector) - self.matrix[id1, id2]
+        tempMat = sp.csr_matrix((tempVec, (id1, id2)), self.matrix.shape)
+
+        self.matrix = self.matrix + tempMat
 
     def putDiagonal(self, vector):
         """
@@ -221,9 +233,7 @@ class _ScipyMatrixBase(_SparseMatrix):
         self.matrix.setdiag(vector)
             
     def take(self, id1, id2):
-        assert(len(id1) == len(id2))
-
-        return self.matrix[zip(id1, id2)] # fancy indexing ftw
+        return self.matrix[id1, id2]
 
     def takeDiagonal(self):
         self.matrix.diagonal()
@@ -242,8 +252,9 @@ class _ScipyMatrixBase(_SparseMatrix):
         """
         assert(len(id1) == len(id2) == len(vector))
 
-        for v, i1, i2 in zip(vector, id1, id2):
-            self.matrix[i1, i2] += v
+        temp = sp.csr_matrix((vector, (id1, id2)), self.matrix.shape)
+
+        self.matrix = self.matrix + temp
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
@@ -283,7 +294,8 @@ class _ScipyMatrix(_ScipyMatrixBase):
           - `storeZeros`: Instructs scipy to store zero values if possible.
           
         """
-        matrix = sp.lil_matrix((size, size))
+        if matrix is None:
+            matrix = sp.csr_matrix((size, size))
                 
         _ScipyMatrixBase.__init__(self, matrix=matrix)
 
@@ -304,7 +316,7 @@ class _ScipyMeshMatrix(_ScipyMatrix):
 
         size = self.numberOfVariables * self.mesh.numberOfCells
 
-        _ScipyMatrix.__init__(self, size=size)
+        _ScipyMatrix.__init__(self, size=size, matrix=matrix)
 
     def __mul__(self, other):
         if isinstance(other, _ScipyMeshMatrix):
