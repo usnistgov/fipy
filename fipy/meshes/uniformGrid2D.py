@@ -41,6 +41,7 @@ __docformat__ = 'restructuredtext'
 from grid2D import Grid2D
 from fipy.meshes.topologies import _UniformMeshTopology2D
 from fipy.meshes.geometries import _UniformGridGeometry2D
+from fipy.meshes.builders import Grid2DBuilder
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -71,46 +72,26 @@ class UniformGrid2D(Grid2D):
             'communicator': communicator
         }
 
-        builder.buildPreParallelGridInfo(ds=[dx, dy], ns=[nx, ny])
-
-        ([nx, ny],
-         [self.dx, self.dy],
+        builder.buildGridData([dx, dy], [nx, ny], overlap, communicator, 
+                              origin)
+                                               
+        ([self.dx, self.dy],
+         [self.nx, self.ny],
          self.dim,
          scale,
          self.globalNumberOfCells,
-         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
-
-        builder.buildParallelInfo((nx, ny), overlap, communicator)
-
-        ([self.nx,
-          self.ny],
+         self.globalNumberOfFaces,
          self.overlap,
-         self.offset) = builder.getParallelInfo()
-        
-        self.origin = PhysicalField(value = origin)
-        self.origin /= scale
-
-        self.origin += ((self.offset[0] * float(self.dx),),
-                        (self.offset[1] * float(self.dy),))
-
-        if self.nx == 0:
-            self.ny = 0
-        if self.ny == 0:
-            self.nx = 0
-        if self.nx == 0 or self.ny == 0:
-            self.numberOfHorizontalRows = 0
-            self.numberOfVerticalColumns = 0
-        else:
-            self.numberOfHorizontalRows = (self.ny + 1)
-            self.numberOfVerticalColumns = (self.nx + 1)
-            
-        self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns
-
-        self.numberOfHorizontalFaces = self.nx * self.numberOfHorizontalRows
-        self.numberOfVerticalFaces = self.numberOfVerticalColumns * self.ny
-        self.numberOfFaces = self.numberOfHorizontalFaces + self.numberOfVerticalFaces
-        self.numberOfCells = self.nx * self.ny
-        
+         self.offset,
+         self.numberOfVertices,
+         self.numberOfFaces,
+         self.numberOfCells,
+         self.numberOfHorizontalRows,
+         self.numberOfVerticalColumns,
+         self.numberOfHorizontalFaces,
+         self.numberOfVerticalFaces,
+         self.origin) = builder.gridData
+                         
         self._topology = _UniformMeshTopology2D(self.nx, self.ny,
                                                 self.numberOfFaces, 
                                                 self.numberOfCells,
@@ -161,7 +142,10 @@ class UniformGrid2D(Grid2D):
 
     @property
     def cellFaceIDs(self):
-        return self._createCells()
+        return Grid2DBuilder.createCells(self.nx, self.ny,
+                                         self.numberOfFaces,
+                                         self.numberOfHorizontalFaces,
+                                         self.numberOfVerticalColumns)
         
     @property
     def _maxFacesPerCell(self):
@@ -170,7 +154,11 @@ class UniformGrid2D(Grid2D):
 ##         from numMesh/mesh
 
     def _getVertexCoords(self):
-        return self._createVertices() + self.origin
+        return Grid2DBuilder.createVertices(self.nx, self.ny,
+                                            self.dx, self.dy,
+                                            self.numberOfVertices,
+                                            self.numberOfVerticalColumns) \
+                 + self.origin
 
     vertexCoords = property(_getVertexCoords)
 
@@ -355,19 +343,24 @@ class UniformGrid2D(Grid2D):
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array(((dx,), (dy,)))
             >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal(vertices, mesh._createVertices())
+            >>> print parallel.procID > 0 or numerix.allequal(vertices,
+            ...                                               mesh.vertexCoords)
             True
         
-            >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
-            ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[0])
+            >>> faces = numerix.array([[0, 1, 2, 4, 5, 6, 8, 9,10, 0, 1, 2, 3, 
+            ...                         4, 5, 6, 7],
+            ...                        [1, 2, 3, 5, 6, 7, 9,10,11, 4, 5, 6, 7,
+            ...                         8, 9, 10, 11]])
+            >>> print parallel.procID > 0 or numerix.allequal(faces,
+            ...                                               mesh.faceVertexIDs)
             True
 
             >>> cells = numerix.array(((0, 1, 2, 3, 4, 5),
             ...                        (10, 11, 12, 14, 15, 16),
             ...                        (3, 4, 5, 6, 7, 8),
             ...                        (9, 10, 11, 13, 14, 15)))
-            >>> print parallel.procID > 0 or numerix.allequal(cells, mesh._createCells())
+            >>> print parallel.procID > 0 or numerix.allequal(cells,
+            ...                                               mesh.cellFaceIDs)
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))

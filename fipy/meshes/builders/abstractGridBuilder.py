@@ -139,6 +139,11 @@ class AbstractGridBuilder(object):
         else:
             spatialNums = [n + 1 for n in newNs]
 
+        spatialDict = dict(zip(["numVerticalCols",
+                                "numHorizontalRows",
+                                "numLayersDeep"][:len(spatialNums)],
+                               spatialNums))
+
         numVertices = reduce(self._mult, spatialNums)
         numCells = reduce(self._mult, newNs)
              
@@ -156,7 +161,7 @@ class AbstractGridBuilder(object):
         self.offset = offset
         self.overlap = overlap
          
-        self.spatialNums = spatialNums
+        self.spatialDict = spatialDict
         self.numberOfVertices = numVertices
         self.numberOfCells = numCells
 
