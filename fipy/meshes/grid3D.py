@@ -78,70 +78,30 @@ class Grid3D(Mesh):
             'communicator': communicator
         }
         
-        builder.buildPreParallelGridInfo(ds=[dx, dy, dz], 
-                                         ns=[nx, ny, nz])
-
-        ([nx, ny, nz],
-         [self.dx, self.dy, self.dz],
+        builder.buildGridData([dx, dy, dz], [nx, ny, nz], overlap, 
+                              communicator)
+                                                                      
+        ([self.dx, self.dy, self.dz],
+         [self.nx, self.ny, self.nz],
          self.dim,
          scale,
          self.globalNumberOfCells,
-         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
-               
-        builder.buildParallelInfo((nx, ny, nz), overlap, communicator)
-
-        ([self.nx,
-          self.ny,
-          self.nz],
+         self.globalNumberOfFaces,
          self.overlap,
-         self.offset) = builder.getParallelInfo()
-                                                    
-
-        if numerix.getShape(self.dx) is not ():
-            Xoffset = numerix.sum(self.dx[0:self.offset[0]])
-            self.dx = self.dx[self.offset[0]:self.offset[0] + self.nx]
-        else:
-            Xoffset = 0
-
-        if numerix.getShape(self.dy) is not ():
-            Yoffset =  numerix.sum(self.dy[0:self.offset[1]])
-            self.dy = self.dy[self.offset[1]:self.offset[1] + self.ny]
-        else:
-            Yoffset = 0
-
-        if numerix.getShape(self.dy) is not ():
-            Zoffset =  numerix.sum(self.dz[0:self.offset[2]])
-            self.dz = self.dz[self.offset[2]:self.offset[2] + self.nz]
-        else:
-            Zoffset = 0
-
-        if self.nx == 0 or self.ny == 0 or self.nz == 0:
-            self.nx = 0
-            self.ny = 0
-            self.nz = 0
-
-        if self.nx == 0 or self.ny == 0 or self.nz == 0:
-            self.numberOfHorizontalRows = 0
-            self.numberOfVerticalColumns = 0
-            self.numberOfLayersDeep = 0
-        else:
-            self.numberOfHorizontalRows = (self.ny + 1)
-            self.numberOfVerticalColumns = (self.nx + 1)
-            self.numberOfLayersDeep = (self.nz + 1)
-            
-        self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns * self.numberOfLayersDeep
-        
-        vertices = self._createVertices() + ((Xoffset,), (Yoffset,), (Zoffset,))
-        numFacesList, faces = self._createFaces()
-
-        self.numberOfXYFaces = numFacesList[0]
-        self.numberOfXZFaces = numFacesList[1]
-        self.numberOfYZFaces = numFacesList[2]
-        self.numberOfFaces   = numFacesList[3]
-
-        cells = self._createCells()
-
-        self.numberOfCells = self.nx * self.ny * self.nz
+         self.offset,
+         self.numberOfVertices,
+         self.numberOfFaces,
+         self.numberOfCells,
+         self.numberOfXYFaces,
+         self.numberOfXZFaces,
+         self.numberOfYZFaces,
+         self.numberOfHorizontalRows,
+         self.numberOfVerticalColumns,
+         self.numberOfLayersDeep,
+         vertices,
+         faces,
+         cells,
+         self.Xoffset, self.Yoffset, self.Zoffset) = builder.gridData
         
         Mesh.__init__(self, vertices, faces, cells)
         
@@ -170,84 +130,6 @@ class Grid3D(Mesh):
             % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), str(self.args["dz"]), 
                self.args["nx"], self.args["ny"], self.args["nz"])
 
-    def _createVertices(self):
-        x = self._calcVertexCoordinates(self.dx, self.nx)
-        x = numerix.resize(x, (self.numberOfVertices,))
-        
-        y = self._calcVertexCoordinates(self.dy, self.ny)
-        y = numerix.repeat(y, self.numberOfVerticalColumns)
-        y = numerix.resize(y, (self.numberOfVertices,))
-        
-        z = self._calcVertexCoordinates(self.dz, self.nz)
-        z = numerix.repeat(z, self.numberOfHorizontalRows * self.numberOfVerticalColumns)
-        z = numerix.resize(z, (self.numberOfVertices,))
-        
-        return numerix.array((x, y, z))
-    
-    def _createFaces(self):
-        """
-        XY faces are first, then XZ faces, then YZ faces
-        """
-        ## do the XY faces
-        v1 = numerix.arange((self.nx + 1) * (self.ny))
-        v1 = vector.prune(v1, self.nx + 1, self.nx)
-        v1 = self._repeatWithOffset(v1, (self.nx + 1) * (self.ny + 1), self.nz + 1) 
-        v2 = v1 + 1
-        v3 = v1 + (self.nx + 2)
-        v4 = v1 + (self.nx + 1)
-        XYFaces = numerix.array((v1, v2, v3, v4))
-
-        ## do the XZ faces
-        v1 = numerix.arange((self.nx + 1) * (self.ny + 1))
-        v1 = vector.prune(v1, self.nx + 1, self.nx)
-        v1 = self._repeatWithOffset(v1, (self.nx + 1) * (self.ny + 1), self.nz)
-        v2 = v1 + 1
-        v3 = v1 + ((self.nx + 1)*(self.ny + 1)) + 1
-        v4 = v1 + ((self.nx + 1)*(self.ny + 1))
-        XZFaces = numerix.array((v1, v2, v3, v4))
-        
-        ## do the YZ faces
-        v1 = numerix.arange((self.nx + 1) * self.ny)
-        v1 = self._repeatWithOffset(v1, (self.nx + 1) * (self.ny + 1), self.nz)
-        v2 = v1 + (self.nx + 1)
-        v3 = v1 + ((self.nx + 1)*(self.ny + 1)) + (self.nx + 1)                                  
-        v4 = v1 + ((self.nx + 1)*(self.ny + 1))
-        YZFaces = numerix.array((v1, v2, v3, v4))
-
-        numberOfXYFaces = (self.nx * self.ny * (self.nz + 1))
-        numberOfXZFaces = (self.nx * (self.ny + 1) * self.nz)
-        numberOfYZFaces = ((self.nx + 1) * self.ny * self.nz)
-        numberOfFaces = numberOfXYFaces + numberOfXZFaces + numberOfYZFaces
-        
-        return ([numberOfXYFaces, numberOfXZFaces, numberOfYZFaces, numberOfFaces],
-                numerix.concatenate((XYFaces, XZFaces, YZFaces), axis=1))
-    
-    def _createCells(self):
-        """
-        cells = (front face, back face, left face, right face, bottom face, top face)
-        front and back faces are YZ faces
-        left and right faces are XZ faces
-        top and bottom faces are XY faces
-        """
-        ## front and back faces
-        frontFaces = numerix.arange(self.numberOfYZFaces)
-        frontFaces = vector.prune(frontFaces, self.nx + 1, self.nx)
-        frontFaces = frontFaces + self.numberOfXYFaces + self.numberOfXZFaces
-        backFaces = frontFaces + 1
-
-        ## left and right faces
-        leftFaces = numerix.arange(self.nx * self.ny)
-        leftFaces = self._repeatWithOffset(leftFaces, self.nx * (self.ny + 1), self.nz)
-        leftFaces = numerix.ravel(leftFaces)
-        leftFaces = leftFaces + self.numberOfXYFaces
-        rightFaces = leftFaces + self.nx
-
-        ## bottom and top faces
-        bottomFaces = numerix.arange(self.nx * self.ny * self.nz)
-        topFaces = bottomFaces + (self.nx * self.ny)
-
-        return numerix.array((frontFaces, backFaces, leftFaces, rightFaces, bottomFaces, topFaces))
-         
     @getsetDeprecated
     def getScale(self):
         return self.scale['length']
@@ -277,10 +159,6 @@ class Grid3D(Mesh):
     @property
     def shape(self):
         return (self.nx, self.ny, self.nz)
-
-    def _repeatWithOffset(self, array, offset, reps):
-        a = numerix.fromfunction(lambda rnum, x: array + (offset * rnum), (reps, numerix.size(array))).astype('l')
-        return numerix.ravel(a)
 
 ## The following method is broken when dx, dy or dz are not scalar. Simpler to use the generic
 ## _calcFaceAreas rather than do the required type checking, resizing and outer product.
@@ -393,14 +271,16 @@ class Grid3D(Mesh):
             ...                            1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.)))
             >>> vertices *= numerix.array([[dx], [dy], [dz]])
             
-            >>> print parallel.procID > 0 or numerix.allequal(vertices, mesh._createVertices())
+            >>> print parallel.procID > 0 or numerix.allequal(vertices,
+            ...                                               mesh.vertexCoords)
             True
         
             >>> faces = numerix.array(((0, 1, 2, 4,  5,  6, 12, 13, 14, 16, 17, 18,  0,  1,  2,  4,  5,  6,  8,  9, 10,  0,  1,  2,  3,  4,  5,  6,  7),
             ...                        (1, 2, 3, 5,  6,  7, 13, 14, 15, 17, 18, 19,  1,  2,  3,  5,  6,  7,  9, 10, 11,  4,  5,  6,  7,  8,  9, 10, 11),
             ...                        (5, 6, 7, 9, 10, 11, 17, 18, 19, 21, 22, 23, 13, 14, 15, 17, 18, 19, 21, 22, 23, 16, 17, 18, 19, 20, 21, 22, 23),
             ...                        (4, 5, 6, 8,  9, 10, 16, 17, 18, 20, 21, 22, 12, 13, 14, 16, 17, 18, 20, 21, 22, 12, 13, 14, 15, 16, 17, 18, 19)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[1])
+            >>> print parallel.procID > 0 or numerix.allequal(faces,
+            ...                                               mesh.faceVertexIDs)
             True
 
             >>> cells = numerix.array(((21, 22, 23, 25, 26, 27),
@@ -409,7 +289,8 @@ class Grid3D(Mesh):
             ...                        (15, 16, 17, 18, 19, 20),
             ...                        ( 0,  1,  2,  3,  4,  5),
             ...                        ( 6,  7,  8,  9, 10, 11)))
-            >>> print parallel.procID > 0 or numerix.allequal(cells, mesh._createCells())
+            >>> print parallel.procID > 0 or numerix.allequal(cells,
+            ...                                               mesh.cellFaceIDs)
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))

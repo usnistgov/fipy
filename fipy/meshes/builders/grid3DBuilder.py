@@ -38,10 +38,121 @@ __docformat__ = 'restructuredtext'
  
 from abstractGridBuilder import AbstractGridBuilder
 
+from fipy.tools import numerix
+from fipy.tools import vector
+from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.meshes.builders.utilityClasses import (UniformNumPts,
+                                                 DOffsets,
                                                  NonuniformNumPts)
 
 class Grid3DBuilder(AbstractGridBuilder):
+
+    def buildGridData(self, *args, **kwargs):
+        super(Grid3DBuilder, self).buildGridData(*args, **kwargs)
+
+        self.numberOfHorizontalRows = self.spatialDict["numHorizontalRows"]
+        self.numberOfVerticalColumns = self.spatialDict["numVerticalCols"]
+        self.numberOfLayersDeep = self.spatialDict["numLayersDeep"]
+
+    @property
+    def _specificGridData(self):
+        return [self.numberOfXYFaces,
+                self.numberOfXZFaces,
+                self.numberOfYZFaces,
+                self.numberOfHorizontalRows,
+                self.numberOfVerticalColumns,
+                self.numberOfLayersDeep]
+
+    
+    @staticmethod
+    def createVertices(dx, dy, dz, nx, ny, nz,
+                       numVertices, numHorizRows, numVertCols):
+        x = AbstractGridBuilder.calcVertexCoordinates(dx, nx)
+        x = numerix.resize(x, (numVertices,))
+        
+        y = AbstractGridBuilder.calcVertexCoordinates(dy, ny)
+        y = numerix.repeat(y, numVertCols)
+        y = numerix.resize(y, (numVertices,))
+        
+        z = AbstractGridBuilder.calcVertexCoordinates(dz, nz)
+        z = numerix.repeat(z, numHorizRows * numVertCols)
+        z = numerix.resize(z, (numVertices,))
+        
+        return numerix.array((x, y, z))
+    
+    @staticmethod
+    def createFaces(nx, ny, nz):
+        """
+        XY faces are first, then XZ faces, then YZ faces
+        """
+        ## do the XY faces
+        v1 = numerix.arange((nx + 1) * (ny))
+        v1 = vector.prune(v1, nx + 1, nx)
+        v1 = Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz + 1) 
+        v2 = v1 + 1
+        v3 = v1 + (nx + 2)
+        v4 = v1 + (nx + 1)
+        XYFaces = numerix.array((v1, v2, v3, v4))
+
+        ## do the XZ faces
+        v1 = numerix.arange((nx + 1) * (ny + 1))
+        v1 = vector.prune(v1, nx + 1, nx)
+        v1 = Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz)
+        v2 = v1 + 1
+        v3 = v1 + ((nx + 1)*(ny + 1)) + 1
+        v4 = v1 + ((nx + 1)*(ny + 1))
+        XZFaces = numerix.array((v1, v2, v3, v4))
+        
+        ## do the YZ faces
+        v1 = numerix.arange((nx + 1) * ny)
+        v1 = Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz)
+        v2 = v1 + (nx + 1)
+        v3 = v1 + ((nx + 1)*(ny + 1)) + (nx + 1)                                  
+        v4 = v1 + ((nx + 1)*(ny + 1))
+        YZFaces = numerix.array((v1, v2, v3, v4))
+
+        numberOfXYFaces = (nx * ny * (nz + 1))
+        numberOfXZFaces = (nx * (ny + 1) * nz)
+        numberOfYZFaces = ((nx + 1) * ny * nz)
+        numberOfFaces = numberOfXYFaces + numberOfXZFaces + numberOfYZFaces
+        
+        return ([numberOfXYFaces, numberOfXZFaces, numberOfYZFaces, numberOfFaces],
+                numerix.concatenate((XYFaces, XZFaces, YZFaces), axis=1))
+    
+    @staticmethod
+    def createCells(nx, ny, nz, numXYFaces, numXZFaces, numYZFaces):
+        """
+        cells = (front face, back face, left face, right face, bottom face, top face)
+        front and back faces are YZ faces
+        left and right faces are XZ faces
+        top and bottom faces are XY faces
+        """
+        ## front and back faces
+        frontFaces = numerix.arange(numYZFaces)
+        frontFaces = vector.prune(frontFaces, nx + 1, nx)
+        frontFaces = frontFaces + numXYFaces + numXZFaces
+        backFaces = frontFaces + 1
+
+        ## left and right faces
+        leftFaces = numerix.arange(nx * ny)
+        leftFaces = Grid3DBuilder._repeatWithOffset(leftFaces, nx * (ny + 1), nz)
+        leftFaces = numerix.ravel(leftFaces)
+        leftFaces = leftFaces + numXYFaces
+        rightFaces = leftFaces + nx
+
+        ## bottom and top faces
+        bottomFaces = numerix.arange(nx * ny * nz)
+        topFaces = bottomFaces + (nx * ny)
+
+        return numerix.array((frontFaces, backFaces, leftFaces, 
+                              rightFaces, bottomFaces, topFaces))
+
+    @staticmethod
+    def _repeatWithOffset(array, offset, reps):
+        a = numerix.fromfunction(lambda rnum, x: array + (offset * rnum), 
+                                 (reps, numerix.size(array))).astype('l')
+        return numerix.ravel(a)
+          
 
     def _packOverlap(self, first, second):
         return {'left': 0, 'right': 0, 'bottom' : 0, 'top' : 0,
@@ -57,10 +168,73 @@ class NonuniformGrid3DBuilder(Grid3DBuilder):
 
         super(NonuniformGrid3DBuilder, self).__init__()
 
+    def buildGridData(self, *args, **kwargs):
+        super(NonuniformGrid3DBuilder, self).buildGridData(*args, **kwargs)
+                      
+        ([self.Xoffset, self.Yoffset, self.Zoffset],
+         self.ds) = DOffsets.calcDOffsets(self.ds, 
+                                          self.ns, 
+                                          self.offset)
+
+        self.vertices = Grid3DBuilder.createVertices(self.ds[0], self.ds[1],
+                                                     self.ds[2],
+                                                     self.ns[0], self.ns[1],
+                                                     self.ns[2],
+                                                     self.numberOfVertices,
+                                                     self.numberOfHorizontalRows,
+                                                     self.numberOfVerticalColumns) \
+                         + ((self.Xoffset,), (self.Yoffset,), (self.Zoffset,))
+
+        numFacesList, self.faces = Grid3DBuilder.createFaces(self.ns[0],
+                                                             self.ns[1],
+                                                             self.ns[2])
+
+        self.numberOfXYFaces = numFacesList[0]
+        self.numberOfXZFaces = numFacesList[1]
+        self.numberOfYZFaces = numFacesList[2]
+        self.numberOfFaces   = numFacesList[3]
+
+        self.cells = Grid3DBuilder.createCells(self.ns[0], 
+                                               self.ns[1],
+                                               self.ns[2],
+                                               self.numberOfXYFaces,
+                                               self.numberOfXZFaces,
+                                               self.numberOfYZFaces)
+
+    @property
+    def _specificGridData(self):
+        return super(NonuniformGrid3DBuilder, self)._specificGridData \
+                + [self.vertices,
+                   self.faces,
+                   self.cells,
+                   self.Xoffset, self.Yoffset, self.Zoffset]
+
 class UniformGrid3DBuilder(Grid3DBuilder):
 
     def __init__(self):
         self.NumPtsCalcClass = UniformNumPts
 
         super(UniformGrid3DBuilder, self).__init__()
+
+    def buildGridData(self, ds, ns, overlap, communicator, origin):
+        super(UniformGrid3DBuilder, self).buildGridData(ds, ns, overlap,
+                                                        communicator)
+         
+        self.origin = PhysicalField(value = origin)
+        self.origin /= self.scale
+        self.origin += ((self.offset[0] * float(self.ds[0]),),
+                        (self.offset[1] * float(self.ds[1]),),
+                        (self.offset[2] * float(self.ds[2]),))
+
+        self.numberOfXYFaces = self.ns[0] * self.ns[1] * (self.ns[2] + 1)
+        self.numberOfXZFaces = self.ns[0] * (self.ns[1] + 1) * self.ns[2]
+        self.numberOfYZFaces = (self.ns[0] + 1) * self.ns[1] * self.ns[2]
+        self.numberOfFaces = self.numberOfXYFaces + self.numberOfXZFaces \
+                              + self.numberOfYZFaces
+
+    @property
+    def _specificGridData(self):
+        return super(UniformGrid3DBuilder, self)._specificGridData \
+                + [self.origin]
+
                                   

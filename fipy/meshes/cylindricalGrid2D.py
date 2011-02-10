@@ -109,19 +109,22 @@ class CylindricalGrid2D(Grid2D):
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array(((dx,), (dy,)))
-            >>> print parallel.procID > 0 or numerix.allequal(vertices, mesh._createVertices())
+            >>> print parallel.procID > 0 or numerix.allequal(vertices,
+            ...                                               mesh.vertexCoords)
             True
         
             >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
             ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[0])
+            >>> print parallel.procID > 0 or numerix.allequal(faces,
+            ...                                               mesh.faceVertexIDs)
             True
 
             >>> cells = numerix.array(((0, 1, 2, 3, 4, 5),
             ...                        (10, 11, 12, 14, 15, 16),
             ...                        (3, 4, 5, 6, 7, 8),
             ...                        (9, 10, 11, 13, 14, 15)))
-            >>> print parallel.procID > 0 or numerix.allequal(cells, mesh._createCells())
+            >>> print parallel.procID > 0 or numerix.allequal(cells,
+            ...                                               mesh.cellFaceIDs)
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))

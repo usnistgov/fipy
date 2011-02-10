@@ -6,4 +6,5 @@ from grid2DBuilder import UniformGrid2DBuilder
 from grid2DBuilder import Grid2DBuilder
 from grid3DBuilder import NonuniformGrid3DBuilder
 from grid3DBuilder import UniformGrid3DBuilder
+from grid3DBuilder import Grid3DBuilder
 from periodicGrid1DBuilder import PeriodicGrid1DBuilder

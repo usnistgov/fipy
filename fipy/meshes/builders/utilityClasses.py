@@ -78,14 +78,17 @@ class DOffsets(object):
         """
         offsetList = []
         newDs = []
-        
-        for d, n in zip(ds, ns):
+
+        if type(offset) in [int, float]:
+            offset = [offset]
+
+        for d, n, i in zip(ds, ns, range(len(ds))):
             if numerix.getShape(d) is not ():
-                offsetList.append(numerix.sum(d[0:offset]))
-                newDs.append(d[offset:offset + n])
+                offsetList.append(numerix.sum(d[0:offset[i]]))
+                newDs.append(d[offset[i]:offset[i] + n])
             else:
-                if type(offset) in [int, float]:
-                    offsetList.append(d * offset)
+                if len(offset) == 1:
+                    offsetList.append(d * offset[0])
                 else:
                     offsetList.append(0)
 

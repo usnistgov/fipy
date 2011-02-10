@@ -38,6 +38,7 @@ from fipy.tools.numerix import MA
 from fipy.meshes.grid3D import Grid3D
 from fipy.meshes.topologies import _UniformMeshTopology3D
 from fipy.meshes.geometries import _UniformGridGeometry3D
+from fipy.meshes.builders import Grid3DBuilder
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools.decorators import getsetDeprecated
@@ -81,52 +82,28 @@ class UniformGrid3D(Grid3D):
             'communicator': communicator
         }
         
-        builder.buildPreParallelGridInfo(ds=[dx, dy, dz], 
-                                         ns=[nx, ny, nz])
-
-        ([nx, ny, nz],
-         [self.dx, self.dy, self.dz],
+        builder.buildGridData([dx, dy, dz], [nx, ny, nz], overlap, 
+                              communicator, origin)
+                                                        
+        ([self.dx, self.dy, self.dz],
+         [self.nx, self.ny, self.nz],
          self.dim,
          scale,
          self.globalNumberOfCells,
-         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
-                    
-        builder.buildParallelInfo((nx, ny, nz), overlap, communicator)
-
-        ([self.nx,
-          self.ny,
-          self.nz],
+         self.globalNumberOfFaces,
          self.overlap,
-         self.offset) = builder.getParallelInfo()
-                                                    
-        
-        self.origin = PhysicalField(value = origin)
-        self.origin /= scale
-
-        self.origin += ((self.offset[0] * float(self.dx),),
-                        (self.offset[1] * float(self.dy),),
-                        (self.offset[2] * float(self.dz),))
-
-        if self.nx == 0 or self.ny == 0 or self.nz == 0:
-            self.nx = 0
-            self.ny = 0
-            self.nz = 0
-        if self.nx == 0 or self.ny == 0 or self.nz == 0:
-            self.numberOfHorizontalRows = 0
-            self.numberOfVerticalColumns = 0
-            self.numberOflayers = 0
-        else:
-            self.numberOfHorizontalRows = (self.ny + 1)
-            self.numberOfVerticalColumns = (self.nx + 1)
-            self.numberOfLayers = (self.nz + 1)
-
-        self.numberOfVertices = (self.nx + 1) * (self.ny + 1) * (self.nz + 1)
-        self.numberOfXYFaces = self.nx * self.ny * (self.nz + 1)
-        self.numberOfXZFaces = self.nx * (self.ny + 1) * self.nz
-        self.numberOfYZFaces = (self.nx + 1) * self.ny * self.nz
-        self.numberOfFaces = self.numberOfXYFaces + self.numberOfXZFaces + self.numberOfYZFaces
-        self.numberOfCells = self.nx * self.ny * self.nz
-
+         self.offset,
+         self.numberOfVertices,
+         self.numberOfFaces,
+         self.numberOfCells,
+         self.numberOfXYFaces,
+         self.numberOfXZFaces,
+         self.numberOfYZFaces,
+         self.numberOfHorizontalRows,
+         self.numberOfVerticalColumns,
+         self.numberOfLayers,
+         self.origin) = builder.gridData
+                                    
         self._topology = _UniformMeshTopology3D(self.nx, self.ny, self.nz,
                                                 self.numberOfCells,
                                                 self._maxFacesPerCell,
@@ -179,7 +156,12 @@ class UniformGrid3D(Grid3D):
 
     @property
     def cellFaceIDs(self):
-        return MA.array(self._createCells())
+        return MA.array(Grid3DBuilder.createCells(self.nx,
+                                                  self.ny,
+                                                  self.nz,
+                                                  self.numberOfXYFaces,
+                                                  self.numberOfXZFaces,
+                                                  self.numberOfYZFaces))
 
     @getsetDeprecated
     def _getXYFaceIDs(self):
@@ -220,7 +202,12 @@ class UniformGrid3D(Grid3D):
 
     @property
     def vertexCoords(self):
-        return self._createVertices() + self.origin
+        return Grid3DBuilder.createVertices(self.dx, self.dy, self.dz,
+                                            self.nx, self.ny, self.nz,
+                                            self.numberOfVertices,     
+                                            self.numberOfHorizontalRows,
+                                            self.numberOfVerticalColumns) \
+                + self.origin
 
     @getsetDeprecated
     def getFaceCellIDs(self):
@@ -283,7 +270,7 @@ class UniformGrid3D(Grid3D):
 
     @property
     def faceVertexIDs(self):
-       return self._createFaces()
+       return Grid3DBuilder.createFaces(self.nx, self.ny, self.nz)[1]
 
     @property
     def _orderedCellVertexIDs(self):
@@ -363,14 +350,16 @@ class UniformGrid3D(Grid3D):
             ...                           (0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.)))
             >>> vertices *= numerix.array([[dx], [dy], [dz]])
             
-            >>> print parallel.procID > 0 or numerix.allequal(vertices, mesh._createVertices())
+            >>> print parallel.procID > 0 or numerix.allequal(vertices,
+            ...                                               mesh.vertexCoords)
             True
         
             >>> faces = numerix.array((( 0,  1,  2,  4,  5,  6, 12, 13, 14, 16, 17, 18,  0,  1,  2,  4,  5,  6,  8,  9, 10,  0,  1,  2,  3,  4,  5,  6,  7),
             ...                        ( 1,  2,  3,  5,  6,  7, 13, 14, 15, 17, 18, 19,  1,  2,  3,  5,  6,  7,  9, 10, 11,  4,  5,  6,  7,  8,  9, 10, 11),
             ...                        ( 5,  6,  7,  9, 10, 11, 17, 18, 19, 21, 22, 23, 13, 14, 15, 17, 18, 19, 21, 22, 23, 16, 17, 18, 19, 20, 21, 22, 23),
             ...                        ( 4,  5,  6,  8,  9, 10, 16, 17, 18, 20, 21, 22, 12, 13, 14, 16, 17, 18, 20, 21, 22, 12, 13, 14, 15, 16, 17, 18, 19))) 
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[1])
+            >>> print parallel.procID > 0 or numerix.allclose(faces,
+            ...                                               mesh.faceVertexIDs)
             True
 
             >>> cells = numerix.array(((21, 22, 23, 25, 26, 27),
@@ -379,7 +368,8 @@ class UniformGrid3D(Grid3D):
             ...                        (15, 16, 17, 18, 19, 20),
             ...                        ( 0,  1,  2,  3,  4,  5),
             ...                        ( 6,  7,  8,  9, 10, 11)))
-            >>> print parallel.procID > 0 or numerix.allequal(cells, mesh._createCells())
+            >>> print parallel.procID > 0 or numerix.allequal(cells,
+            ...                                               mesh.cellFaceIDs)
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
