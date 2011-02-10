@@ -94,9 +94,9 @@ class NonuniformGrid1DBuilder(Grid1DBuilder):
         super(NonuniformGrid1DBuilder, self).buildPostParallelGridInfo(ns)
 
         (self.offsets, 
-         self.newDs) = DOffsets.calcDOffsets(ds, ns, offset)
+         self.ds) = DOffsets.calcDOffsets(ds, ns, offset)
 
-        self.vertices = Grid1DBuilder.createVertices(ds[0], ns[0]) \
+        self.vertices = Grid1DBuilder.createVertices(self.ds[0], self.ns[0]) \
                          + ((self.offsets[0],),) 
         self.faces = Grid1DBuilder.createFaces(self.numberOfVertices)
         self.numberOfFaces = len(self.faces[0])
@@ -104,7 +104,7 @@ class NonuniformGrid1DBuilder(Grid1DBuilder):
 
     def getPostParallelGridInfo(self):
         return (self.ns,
-                self.newDs,
+                self.ds,
                 self.offsets,
                 self.vertices,
                 self.faces,

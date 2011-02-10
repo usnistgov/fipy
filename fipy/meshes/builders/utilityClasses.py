@@ -68,7 +68,7 @@ class DOffsets(object):
         :Parameters:
             - `ds`: A list, e.g. [dx, dy]
             - `ns`: A list, e.g. [nx, ny, nz]
-            - `offset`: A scalar 
+            - `offset`
 
         :Returns:
             - `offsetList`: a list which contains the analogous scalars to
@@ -84,7 +84,11 @@ class DOffsets(object):
                 offsetList.append(numerix.sum(d[0:offset]))
                 newDs.append(d[offset:offset + n])
             else:
-                offsetList.append(d * offset)
+                if type(offset) in [int, float]:
+                    offsetList.append(d * offset)
+                else:
+                    offsetList.append(0)
+
                 newDs.append(d)
 
         return offsetList, newDs

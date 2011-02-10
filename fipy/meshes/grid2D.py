@@ -81,38 +81,19 @@ class Grid2D(Mesh2D):
          self.overlap,
          self.offset) = builder.getParallelInfo()
                                                     
-
-        if numerix.getShape(self.dx) is not ():
-            Xoffset = numerix.sum(self.dx[0:self.offset[0]])
-            self.dx = self.dx[self.offset[0]:self.offset[0] + self.nx]
-        else:
-            Xoffset = 0
-
-        if numerix.getShape(self.dy) is not ():
-            Yoffset =  numerix.sum(self.dy[0:self.offset[1]])
-            self.dy = self.dy[self.offset[1]:self.offset[1] + self.ny]
-        else:
-            Yoffset = 0
-            
-        if self.nx == 0:
-            self.ny = 0
-        if self.ny == 0:
-            self.nx = 0
-        if self.nx == 0 or self.ny == 0:
-            self.numberOfHorizontalRows = 0
-            self.numberOfVerticalColumns = 0
-        else:
-            self.numberOfHorizontalRows = (self.ny + 1)
-            self.numberOfVerticalColumns = (self.nx + 1)
-
-        self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns
-
-        vertices            = self._createVertices() + ((Xoffset,), (Yoffset,))
-        (faces,
-        self.numberOfHorizontalFaces) = self._createFaces()
-        self.numberOfFaces = len(faces[0])
-        cells              = self._createCells()
-
+        builder.buildPostParallelGridInfo([self.nx, self.ny],
+                                          [self.dx, self.dy],
+                                          self.offset)
+        ([self.nx, self.ny],
+         [self.dx, self.dy],
+         [self.XOffset, self.YOffset],
+         vertices,
+         faces,
+         cells,
+         self.numberOfVertices,
+         self.numberOfFaces,
+         self.numberOfCells,
+         self.numberOfHorizontalFaces) = builder.getPostParallelGridInfo()
 
         Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator)
         
@@ -123,88 +104,6 @@ class Grid2D(Mesh2D):
             % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), 
                str(self.args["nx"]), str(self.args["ny"]))
             
-    def _createVertices(self):
-        x = self._calcVertexCoordinates(self.dx, self.nx)
-        x = numerix.resize(x, (self.numberOfVertices,))
-            
-        y = self._calcVertexCoordinates(self.dy, self.ny)
-        y = numerix.repeat(y, self.numberOfVerticalColumns)
-        
-        return numerix.array((x, y))
-    
-    def _createFaces(self):
-        """
-        v1, v2 refer to the vertices.
-        Horizontal faces are first
-
-        Ugly return to avoid side-effects.
-        """
-        v1 = numerix.arange(self.numberOfVertices)
-        v2 = v1 + 1
-
-        horizontalFaces = vector.prune(numerix.array((v1, v2)), self.numberOfVerticalColumns, self.nx, axis=1)
-
-        v1 = numerix.arange(self.numberOfVertices - self.numberOfVerticalColumns)
-        v2 = v1 + self.numberOfVerticalColumns
-        verticalFaces =  numerix.array((v1, v2))
-
-        ## The cell normals must point out of the cell.
-        ## The left and bottom faces have only one neighboring cell,
-        ## in the 2nd neighbor position (there is nothing in the 1st).
-        ## 
-        ## reverse some of the face orientations to obtain the correct normals
-
-        tmp = horizontalFaces.copy()
-        horizontalFaces[0,:self.nx] = tmp[1,:self.nx]
-        horizontalFaces[1,:self.nx] = tmp[0,:self.nx]
-
-        numberOfHorizontalFaces = horizontalFaces.shape[-1]
-
-        tmp = verticalFaces.copy()
-        verticalFaces[0, :] = tmp[1, :]
-        verticalFaces[1, :] = tmp[0, :]
-        if self.numberOfVerticalColumns > 0:
-            verticalFaces[0, ::self.numberOfVerticalColumns] = tmp[0, ::self.numberOfVerticalColumns]
-            verticalFaces[1, ::self.numberOfVerticalColumns] = tmp[1,::self.numberOfVerticalColumns]
-
-        return (numerix.concatenate((horizontalFaces, verticalFaces), axis=1),
-                numberOfHorizontalFaces)
-           
-    def _createCells(self):
-        """
-        cells = (f1, f2, f3, f4) going anticlock wise.
-        f1 etc. refer to the faces
-        """
-        return inline._optionalInline(self._createCellsIn, self._createCellsPy)
-
-    def _createCellsPy(self):
-        cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
-        faceIDs = numerix.arange(self.numberOfFaces)
-        if self.numberOfFaces > 0:
-            cellFaceIDs[0,:] = faceIDs[:self.numberOfHorizontalFaces - self.nx]
-            cellFaceIDs[2,:] = cellFaceIDs[0,:] + self.nx
-            cellFaceIDs[1,:] = vector.prune(faceIDs[self.numberOfHorizontalFaces:], self.numberOfVerticalColumns)
-            cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
-        return cellFaceIDs
-
-    def _createCellsIn(self):
-        cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
-        
-        inline._runInline("""
-            int ID = j * ni + i;
-            int NCELLS = ni * nj;
-            cellFaceIDs[ID + 0 * NCELLS] = ID;
-            cellFaceIDs[ID + 2 * NCELLS] = cellFaceIDs[ID + 0 * NCELLS] + ni;
-            cellFaceIDs[ID + 3 * NCELLS] = horizontalFaces + ID + j;
-            cellFaceIDs[ID + 1 * NCELLS] = cellFaceIDs[ID + 3 * NCELLS] + 1;
-        """,
-        horizontalFaces=self.numberOfHorizontalFaces,
-        cellFaceIDs=cellFaceIDs,
-        ni=self.nx,
-        nj=self.ny)
-
-        return cellFaceIDs
-    
     @getsetDeprecated
     def getScale(self):
         return self.scale['length']
