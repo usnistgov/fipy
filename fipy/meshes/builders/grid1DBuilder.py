@@ -46,19 +46,19 @@ from fipy.tools import numerix
  
 class Grid1DBuilder(AbstractGridBuilder):
 
-    def getParallelInfo(self):
-        """
-        :Returns:
-            - A tuple.
-        """
-        return list(super(Grid1DBuilder, self).getParallelInfo()) \
-                + [self.occupiedNodes]
+    def buildGridData(self, *args, **kwargs):
+        kwargs["cacheOccupiedNodes"] = True
+        super(Grid1DBuilder, self).buildGridData(*args, **kwargs)
 
     def _packOverlap(self, first, second):
         return {'left': first, 'right': second}
 
     def _packOffset(self, arg):
         return arg
+
+    @property
+    def _specificGridData(self):
+        return [self.occupiedNodes]
     
     @staticmethod
     def createVertices(dx, nx):
@@ -89,29 +89,25 @@ class NonuniformGrid1DBuilder(Grid1DBuilder):
 
         super(NonuniformGrid1DBuilder, self).__init__()
  
-    def buildPostParallelGridInfo(self, ns, ds, offset):
+    def buildGridData(self, *args, **kwargs):
         # call super for side-effects
-        super(NonuniformGrid1DBuilder, self).buildPostParallelGridInfo(ns)
+        super(NonuniformGrid1DBuilder, self).buildGridData(*args, **kwargs)
 
         (self.offsets, 
-         self.ds) = DOffsets.calcDOffsets(ds, ns, offset)
+         self.ds) = DOffsets.calcDOffsets(self.ds, self.ns, self.offset)
 
         self.vertices = Grid1DBuilder.createVertices(self.ds[0], self.ns[0]) \
                          + ((self.offsets[0],),) 
         self.faces = Grid1DBuilder.createFaces(self.numberOfVertices)
         self.numberOfFaces = len(self.faces[0])
-        self.cells = Grid1DBuilder.createCells(ns[0])
+        self.cells = Grid1DBuilder.createCells(self.ns[0])
 
-    def getPostParallelGridInfo(self):
-        return (self.ns,
-                self.ds,
-                self.offsets,
-                self.vertices,
-                self.faces,
-                self.cells,
-                self.numberOfVertices,
-                self.numberOfFaces,
-                self.numberOfCells)
+    @property
+    def _specificGridData(self):
+        return super(NonuniformGrid1DBuilder, self)._specificGridData \
+                + [self.vertices,
+                   self.faces,
+                   self.cells]
                                      
 class UniformGrid1DBuilder(Grid1DBuilder):
 
@@ -120,24 +116,24 @@ class UniformGrid1DBuilder(Grid1DBuilder):
 
         super(UniformGrid1DBuilder, self).__init__()
 
-    def buildPostParallelGridInfo(self, ns, ds, offset, origin, scale):
-        super(UniformGrid1DBuilder, self).buildPostParallelGridInfo(ns)
+    def buildGridData(self, ns, ds, overlap, communicator, origin):
+        super(UniformGrid1DBuilder, self).buildGridData(ns, ds, overlap,
+                                                        communicator)
 
-        self.origin = UniformOrigin.calcOrigin(origin, offset, ds, scale)
+        self.origin = UniformOrigin.calcOrigin(origin, 
+                                               self.offset, self.ds, self.scale)
 
-        if 0 in ns:
+        if 0 in self.ns:
             self.numberOfFaces = 0
         else:
-            self.numberOfFaces = ns[0] + 1
+            self.numberOfFaces = self.ns[0] + 1
 
-        self.numberOfCells = ns[0]
+        self.numberOfCells = self.ns[0]
 
-    def getPostParallelGridInfo(self):
-
-        return (self.origin,
-                self.numberOfVertices,
-                self.numberOfFaces,
-                self.numberOfCells)
+    @property
+    def _specificGridData(self):
+        return super(UniformGrid1DBuilder, self)._specificGridData \
+                + [self.origin]
 
 
 

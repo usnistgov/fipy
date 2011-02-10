@@ -74,38 +74,27 @@ class UniformGrid1D(Grid1D):
             'overlap': overlap
         }
         
-        builder.buildPreParallelGridInfo([dx], [nx])
-
-        ([nx],
-         [self.dx],
-         self.dim,
-         scale,
-         self.globalNumberOfCells,
-         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
-             
-        builder.buildParallelInfo([nx], overlap, communicator)
-
-        ([self.nx],
-         self.overlap,
-         self.offset,
-         self.occupiedNodes) = builder.getParallelInfo()
-
-        builder.buildPostParallelGridInfo([self.nx], 
-                                          [self.dx], 
-                                          self.offset, 
-                                          origin, 
-                                          scale = 1.)
-        
-        (self.origin,
-         self.numberOfVertices,
-         self.numberOfFaces,
-         self.numberOfCells) = builder.getPostParallelGridInfo()
-
         self._scale = {
             'length': 1.,
             'area': 1.,
             'volume': 1.
         }
+         
+        builder.buildGridData([dx], [nx], overlap, communicator, origin)
+
+        ([self.dx],
+         [self.nx],
+         self.dim,
+         scale,
+         self.globalNumberOfCells,
+         self.globalNumberOfFaces,
+         self.overlap,
+         self.offset,
+         self.numberOfVertices,
+         self.numberOfFaces,
+         self.numberOfCells,
+         self.occupiedNodes,
+         self.origin) = builder.gridData
 
         self._geometry = GeomClass(self.origin,
                                    self.dx,

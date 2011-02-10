@@ -77,33 +77,23 @@ class Grid1D(Mesh1D):
             'overlap': overlap
         }
 
-        builder.buildPreParallelGridInfo([dx], [nx])
+        builder.buildGridData([dx], [nx], overlap, communicator)
 
-        ([nx],
-         [self.dx],
+        ([self.dx],
+         [self.nx],
          self.dim,
          scale,
          self.globalNumberOfCells,
-         self.globalNumberOfFaces) = builder.getPreParallelGridInfo()
-
-        builder.buildParallelInfo([nx], overlap, communicator)
-
-        ([self.nx],
+         self.globalNumberOfFaces,
          self.overlap,
          self.offset,
-         self.occupiedNodes) = builder.getParallelInfo()
-
-        builder.buildPostParallelGridInfo([self.nx], [self.dx], self.offset)
-
-        ([self.nx],
-         [self.dx],
-         [self.Xoffset],
-         vertices,
-         faces,
-         cells,
          self.numberOfVertices,
          self.numberOfFaces,
-         self.numberOfCells) = builder.getPostParallelGridInfo()
+         self.numberOfCells,
+         self.occupiedNodes,
+         vertices,
+         faces,
+         cells) = builder.gridData
 
         Mesh1D.__init__(self, vertices, faces, cells, communicator=communicator)
         

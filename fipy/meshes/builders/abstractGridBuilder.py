@@ -36,21 +36,38 @@
 
 __docformat__ = 'restructuredtext'
 
-from itertools import permutations
+import itertools 
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
  
 class AbstractGridBuilder(object):
 
-    def buildPreParallelGridInfo(self, ds, ns):
-        """
-        Build and save any information derivable from (dx, dy, dz) and 
-        (nx, ny, nz). Generalized to handle any dimension. Has side-effects.
+    NumPtsCalcClass = None
 
+    def buildGridData(self, ds, ns, overlap, communicator,
+                            cacheOccupiedNodes=False):
+        """
+        Build and save any information relevant to the construction of a grid.
+        Generalized to handle any dimension. Has side-effects.
+             
+        Dimension specific functionality is built into `_buildOverlap` and
+        `_packOffset`, which are overridden by children of this class. Often,
+        this method is overridden (but always called) by children classes who
+        must distinguish between uniform and non-uniform behavior.
+             
+        :Note: 
+            - `spatialNums` is a list whose elements are analogous to
+                * numberOfHorizontalRows
+                * numberOfVerticalColumns
+                * numberOfLayersDeep
+              though `spatialNums` may be of length 1, 2, or 3 depending on
+              dimensionality.
+         
         :Parameters:
             - `ds` - A list containing grid spacing information, e.g. [dx, dy]
             - `ns` - A list containing number of grid points, e.g. [nx, ny, nz]
+            - `overlap` 
         """
 
         dim = len(ns)
@@ -76,52 +93,146 @@ class AbstractGridBuilder(object):
         newNs = self._calcNs(ns, newDs)
 
         globalNumCells = reduce(self._mult, newNs)
-        globalNumFaces = self._calcNumFaces(newNs)
+        globalNumFaces = self._calcGlobalNumFaces(newNs)
 
+        """
+        parallel stuff
+        """
+ 
+        newNs = list(newNs)
+
+        procID = communicator.procID
+        Nproc = communicator.Nproc
+
+        overlap = min(overlap, newNs[-1])
+        cellsPerNode = max(int(newNs[-1] / Nproc), overlap)
+
+        occupiedNodes = min(int(newNs[-1] / (cellsPerNode or 1)), Nproc) 
+
+        (firstOverlap,
+         secOverlap,
+         overlap) = self._buildOverlap(overlap, procID, occupiedNodes)
+
+        offsetArg = min(procID, occupiedNodes-1) * cellsPerNode - firstOverlap
+        offset = self._packOffset(offsetArg)
+
+        """
+        local nx, [ny, [nz]] calculation
+        """
+        local_n = cellsPerNode * (procID < occupiedNodes)
+
+        if procID == occupiedNodes - 1:
+            local_n += (newNs[-1] - cellsPerNode * occupiedNodes)
+
+        local_n += firstOverlap + secOverlap
+
+        newNs = tuple(newNs[:-1] + [local_n])
+         
+        """
+        post-parallel
+        """
+  
+        # "what is spatialNums?" -> see docstring
+        if 0 in newNs:
+            newNs = [0 for n in newNs]
+            spatialNums = [0 for n in newNs] 
+        else:
+            spatialNums = [n + 1 for n in newNs]
+
+        numVertices = reduce(self._mult, spatialNums)
+        numCells = reduce(self._mult, newNs)
+             
         """
         Side-effects
         """
         self.dim     = dim
-        self.selfds  = newDs
+        self.ds      = newDs
         self.ns      = newNs
         self.scale   = scale
 
         self.globalNumberOfCells = globalNumCells
         self.globalNumberOfFaces = globalNumFaces
 
-    def getPreParallelGridInfo(self):
-        return (self.ns,
-                self.selfds,
+        self.offset = offset
+        self.overlap = overlap
+         
+        self.spatialNums = spatialNums
+        self.numberOfVertices = numVertices
+        self.numberOfCells = numCells
+
+        if cacheOccupiedNodes:
+            self.occupiedNodes = occupiedNodes
+
+    @property
+    def gridData(self):
+        """
+        `_getSpecificGridData must be defined by children.
+        """
+        return self._basicGridData + self._specificGridData
+
+    @property
+    def _basicGridData(self):
+        return [self.ds,
+                self.ns,
                 self.dim,
                 self.scale,
                 self.globalNumberOfCells,
-                self.globalNumberOfFaces)
+                self.globalNumberOfFaces,
+                self.overlap,
+                self.offset,
+                self.numberOfVertices,
+                self.numberOfFaces,
+                self.numberOfCells]
 
-    def _calcNumFaces(self, ns):
+    @property
+    def _specificGridData(self):
+        raise NotImplementedError
+
+    @staticmethod
+    def calcVertexCoordinates(d, n):
+        """
+        Calculate the positions of the vertices along an axis, based on the 
+        specified `Cell` `d` spacing or list of `d` spacings.
+        
+        Used by the `Grid` meshes.
+        """
+        x = numerix.zeros((n + 1), 'd')
+        if n > 0:
+            x[1:] = d
+        return numerix.add.accumulate(x)
+     
+    def _calcGlobalNumFaces(self, ns):
         """
         Dimensionally independent face-number calculation.
 
         >>> from fipy.meshes.builders import *
 
         >>> gb = Grid1DBuilder()
-        >>> gb._calcNumFaces([1])
+        >>> gb._calcGlobalNumFaces([1])
         2
 
         >>> gb2 = Grid2DBuilder()
-        >>> gb2._calcNumFaces([2, 3])
+        >>> gb2._calcGlobalNumFaces([2, 3])
         17
 
         >>> gb3 = Grid3DBuilder()
-        >>> gb3._calcNumFaces([2, 3, 2])
+        >>> gb3._calcGlobalNumFaces([2, 3, 2])
         52
         """
         assert type(ns) is list
 
-        nIter = list(permutations(range(len(ns))))
+        # `permutations` is the cleanest way to do this, but it's new in 
+        # python 2.6, so we can't rely on it.
+        if hasattr(itertools, "permutations"):
+            nIter = list(permutations(range(len(ns))))
 
-        # ensure len(nIter) == len(ns) && nIter[i][0] unique
-        if len(ns) == 3: 
-            nIter = nIter[::2]
+            # ensure len(nIter) == len(ns) && nIter[i][0] unique
+            if len(ns) == 3: 
+                nIter = nIter[::2]
+        else:
+            nIter = [[[0]],
+                     [[0, 1], [1, 0]],
+                     [[0, 1, 2], [1, 0, 2], [2, 0, 1]]][len(ns) - 1]
 
         numFaces = 0
         
@@ -138,105 +249,7 @@ class AbstractGridBuilder(object):
     def _calcNs(self, ns, ds):
         return self.NumPtsCalcClass.calcNs(ns, ds)
 
-    def buildParallelInfo(self, ns, overlap, communicator):
-        """
-        Dimension-independent method for establishing parallel grid
-        information. Has side-effects.
-
-        Dimension specific functionality is built into `_buildOverlap` and
-        `_packOffset`, which are overridden by children of this class.
-
-        :Parameters:
-            - `ns`: A tuple containing `nx`, `ny`, and `nz`, if available for
-              the particular dimension of this builder. Could be `(nx)`, `(nx,
-              ny)`, etc.
-        """
-        
-        ns = list(ns)
-
-        procID = communicator.procID
-        Nproc = communicator.Nproc
-
-        overlap = min(overlap, ns[-1])
-        cellsPerNode = max(int(ns[-1] / Nproc), overlap)
-
-        occupiedNodes = min(int(ns[-1] / (cellsPerNode or 1)), Nproc) 
-
-        (firstOverlap,
-         secOverlap,
-         overlap) = self._buildOverlap(overlap, procID, occupiedNodes)
-
-        offsetArg = min(procID, occupiedNodes-1) * cellsPerNode - firstOverlap
-
-        local_n = cellsPerNode * (procID < occupiedNodes)
-
-        if procID == occupiedNodes - 1:
-            local_n += (ns[-1] - cellsPerNode * occupiedNodes)
-
-        local_n += firstOverlap + secOverlap
-
-        """
-        Side-effects
-        """
-        self.local_ns = tuple(ns[:-1] + [local_n])
-        self.occupiedNodes = occupiedNodes
-        self.offset = self._packOffset(offsetArg)
-        self.overlap = overlap
-
-    def getParallelInfo(self):
-        return (self.local_ns, 
-                self.overlap, 
-                self.offset)
-
-    def buildPostParallelGridInfo(self, ns):
-        """
-        Builds final information about the grid after `buildParallelInfo` has
-        been called. Establishes the follow information:
-
-            * [nx, [ny, [nz]]]
-            * numberOfHorizontalRows
-            * numberOfVerticalColumns
-            * numberOfLayersDeep
-            * numberOfVertices
-            * numberOfCells
-
-        All other attributes needed by grids are established by children who
-        override `buildPostParallelGridInfo` and call up to this incarnation.
-
-        :Note: 
-            - `spatialNums` is a list whose elements are analogous to
-                * numberOfHorizontalRows
-                * numberOfVerticalColumns
-                * numberOfLayersDeep
-              though `spatialNums` may be of length 1, 2, or 3 depending on
-              dimensionality.
- 
-        :Parameters:
-            - `ns`: A tuple containing `nx`, `ny`, and `nz`, if available for
-              the particular dimension of this builder. Could be `(nx)`, `(nx,
-              ny)`, etc. 
-        """
-        
-        if 0 in ns:
-            newNs = [0 for n in ns]
-            spatialNums = [0 for n in ns]
-        else:
-            newNs = ns
-            spatialNums = [n + 1 for n in ns]
-
-        numVertices = reduce(self._mult, spatialNums)
-        numCells = reduce(self._mult, newNs)
-
-        """
-        Side-effects
-        """
-        self.ns = newNs
-        self.spatialNums = spatialNums
-        self.numberOfVertices = numVertices
-        self.numberOfCells = numCells
-
     def _buildOverlap(self, overlap, procID, occupiedNodes):
-         
         (first, sec) = self._calcFirstAndSecOverlap(overlap, procID, occupiedNodes)
         return first, sec, self._packOverlap(first, sec)
 
@@ -253,19 +266,6 @@ class AbstractGridBuilder(object):
     def _packOffset(self, arg):
         raise NotImplementedError
     
-    @staticmethod
-    def calcVertexCoordinates(d, n):
-        """
-        Calculate the positions of the vertices along an axis, based on the 
-        specified `Cell` `d` spacing or list of `d` spacings.
-        
-        Used by the `Grid` meshes.
-        """
-        x = numerix.zeros((n + 1), 'd')
-        if n > 0:
-            x[1:] = d
-        return numerix.add.accumulate(x)
-
     def _mult(self, x, y):
         return x*y
 

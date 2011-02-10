@@ -39,7 +39,12 @@ __docformat__ = 'restructuredtext'
 from grid1DBuilder import NonuniformGrid1DBuilder
  
 class PeriodicGrid1DBuilder(NonuniformGrid1DBuilder):
-               
+
+    def buildGridData(self, *args, **kwargs):
+        kwargs["cacheOccupiedNodes"] = True
+        return super(PeriodicGrid1DBuilder, self).buildGridData(*args, 
+                                                                **kwargs)
+          
     def _buildOverlap(self, overlap, procID, occupiedNodes):
         if occupiedNodes == 1:
             return super(PeriodicGrid1DBuilder, self)._buildOverlap(overlap, 
