@@ -44,6 +44,7 @@ from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.meshes.builders.utilityClasses import (UniformNumPts,
                                                  DOffsets,
+                                                 UniformOrigin,
                                                  NonuniformNumPts)
 
 class Grid2DBuilder(AbstractGridBuilder):
@@ -211,11 +212,9 @@ class UniformGrid2DBuilder(Grid2DBuilder):
         super(UniformGrid2DBuilder, self).buildGridData(ds, ns, overlap,
                                                         communicator)
         
-        self.origin = PhysicalField(value = origin)
-        self.origin /= self.scale
-        self.origin += ((self.offset[0] * float(self.ds[0]),),
-                        (self.offset[1] * float(self.ds[1]),))
-            
+        self.origin = UniformOrigin.calcOrigin(origin, 
+                                               self.offset, self.ds, self.scale)
+           
         self.numberOfHorizontalFaces = self.ns[0] * self.numberOfHorizontalRows
         self.numberOfVerticalFaces = self.numberOfVerticalColumns * self.ns[1]
         self.numberOfFaces = self.numberOfHorizontalFaces \

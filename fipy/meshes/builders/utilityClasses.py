@@ -53,7 +53,7 @@ class UniformOrigin(object):
         if type(offset) in [int, float]:
             newOrigin += offset * ds[0]
         else:
-            newOrigin += (o*d for o, d in zip(offset, ds))
+            newOrigin += [[o*float(d)] for o, d in zip(offset, ds)]
 
         return newOrigin
 
