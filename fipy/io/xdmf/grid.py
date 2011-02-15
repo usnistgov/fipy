@@ -40,6 +40,7 @@ from xml.dom import minidom
 
 from fipy.tools import numerix
 
+from fipy.io.xdmf.dataItem import XMLDataItem
 from fipy.io.xdmf.node import _Node
 
 class Grid(_Node):

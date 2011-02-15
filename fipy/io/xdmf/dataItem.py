@@ -41,8 +41,14 @@ from xml.dom import minidom
 
 from fipy.tools import numerix
 
-from fipy.io.xdmf import _xml_to_array
+# from fipy.io.xdmf import xml_to_array
 from fipy.io.xdmf.node import _Node
+
+def xml_to_array(xml):
+    from fipy.tools import numerix
+    from StringIO import StringIO
+    return numerix.loadtxt(StringIO(xml)).ravel()
+
 
 class DataItem(_Node):
     @classmethod

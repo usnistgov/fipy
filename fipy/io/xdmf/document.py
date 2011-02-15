@@ -70,30 +70,6 @@ def Open(filename, mode='r'):
 
     return _Document(filename=filename, mode=mode, doc=doc)
         
-def NodesFromValues(document, values, h5filename):
-    from fipy.variables.meshVariable import _MeshVariable
-    from fipy.variables import CellVariable, FaceVariable
-
-    nodes = []
-    for value in values:
-        if isinstance(value, _MeshVariable):
-            if len(nodes) > 0 and isinstance(nodes[-1], Grid) and nodes[-1].mesh is value.mesh:
-                grid = nodes[-1]
-            else:
-                grid = MeshGrid.from_Mesh(document=document, mesh=value.mesh)
-                nodes.append(grid)
-            
-            if isinstance(value, CellVariable):
-                attr = CellAttribute.from_CellVariable(document=document, var=value, grid=grid, h5filename=h5filename)
-            elif isinstance(value, FaceVariable):
-                attr = FaceAttribute.from_FaceVariable(document=document, var=value, grid=grid, h5filename=h5filename)
-
-            grid += attr
-        else:
-            nodes.append(Attribute.from_Variable(document=document, var=value))
-            
-    return nodes
-    
 def GridFromValues(doc, values):
     """
     >= 1 _MeshVariable with same Mesh

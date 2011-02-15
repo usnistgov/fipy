@@ -36,6 +36,7 @@
 
 __docformat__ = 'restructuredtext'
 
+from fipy.io.xdmf.dataItem import HDFDataItem, XMLDataItem
 from fipy.io.xdmf.node import _Node
 
 class Attribute(_Node):

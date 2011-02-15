@@ -39,7 +39,9 @@ __docformat__ = 'restructuredtext'
 import os
 from xml.dom import minidom
 
-from node import _Node
+from fipy.io.xdmf.attribute import Attribute, CellAttribute
+from fipy.io.xdmf.grid import CollectionGrid, Grid, MeshGrid
+from fipy.io.xdmf.node import _Node
 
 class TimeSeries(_Node):
     @classmethod
@@ -95,3 +97,28 @@ class Time(_Node):
         time.setAttribute("Value", str(value))
 
         return cls(document=document, node=time)
+
+def NodesFromValues(document, values, h5filename):
+    from fipy.variables.meshVariable import _MeshVariable
+    from fipy.variables import CellVariable, FaceVariable
+
+    nodes = []
+    for value in values:
+        if isinstance(value, _MeshVariable):
+            if len(nodes) > 0 and isinstance(nodes[-1], Grid) and nodes[-1].mesh is value.mesh:
+                grid = nodes[-1]
+            else:
+                grid = MeshGrid.from_Mesh(document=document, mesh=value.mesh)
+                nodes.append(grid)
+            
+            if isinstance(value, CellVariable):
+                attr = CellAttribute.from_CellVariable(document=document, var=value, grid=grid, h5filename=h5filename)
+            elif isinstance(value, FaceVariable):
+                attr = FaceAttribute.from_FaceVariable(document=document, var=value, grid=grid, h5filename=h5filename)
+
+            grid += attr
+        else:
+            nodes.append(Attribute.from_Variable(document=document, var=value))
+            
+    return nodes
+    
