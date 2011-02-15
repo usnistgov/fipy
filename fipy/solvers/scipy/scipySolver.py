@@ -67,11 +67,11 @@ class ScipySolver(_PysparseMatrixSolver):
         a list of residuals.
 
         :Parameters:
-            - `L`: A `fipy.matrices.pysparseMatrix._PysparseMeshMatrix`.
+            - `L`: A `fipy.matrices.scipyMatrix._ScipyMeshMatrix`.
             - `x`: A `numpy.ndarray`.
             - `b`: A `numpy.ndarray`.
         """
-        A = L.asformat('csr')
+        A = L.matrix
         M = None
 
         x, info = self.solveFnc(A, b, x, 

@@ -236,7 +236,7 @@ class _ScipyMatrixBase(_SparseMatrix):
         return self.matrix[id1, id2]
 
     def takeDiagonal(self):
-        self.matrix.diagonal()
+        return self.matrix.diagonal()
 
     def addAt(self, vector, id1, id2):
         """
