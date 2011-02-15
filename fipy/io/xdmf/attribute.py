@@ -39,7 +39,7 @@ __docformat__ = 'restructuredtext'
 from fipy.io.xdmf.dataItem import DataItem, HDFDataItem, XMLDataItem
 from fipy.io.xdmf.node import _Node
 from fipy.variables.variable import Variable
-from fipy.variables.cellVariable import CellVariable
+from fipy.variables.cellVariable import CellVariable, FaceVariable
 
 class Attribute(_Node):
     @property

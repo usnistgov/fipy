@@ -39,8 +39,7 @@ __docformat__ = 'restructuredtext'
 import os
 from xml.dom import minidom
 
-from fipy.io.xdmf.attribute import Attribute, CellAttribute
-from fipy.io.xdmf.grid import CollectionGrid, Grid, MeshGrid
+from fipy.io.xdmf.grid import CollectionGrid, Grid
 from fipy.io.xdmf.node import _Node
 
 class TimeSeries(_Node):

@@ -40,8 +40,8 @@ from xml.dom import minidom
 
 from fipy.tools import numerix
 
-from fipy.io.xdmf.attribute import Attribute, CellAttribute
-from fipy.io.xdmf.dataItem import DataItem, XMLDataItem, xml_to_array
+from fipy.io.xdmf.attribute import Attribute, CellAttribute, FaceAttribute
+from fipy.io.xdmf.dataItem import DataItem, xml_to_array
 from fipy.io.xdmf.node import _Node
 
 class Grid(_Node):
