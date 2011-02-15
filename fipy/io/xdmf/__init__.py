@@ -1,3 +1,3 @@
 from document import Open
-from time import TimeSeries
+from timeSeries import TimeSeries
 

@@ -95,8 +95,8 @@ class XMLDataItem(DataItem):
     def array(self):
         self.node.normalize()
         
-        shape = _xml_to_array(self.node.getAttribute("Dimensions"))
-        return _xml_to_array(self.node.firstChild.data).reshape(shape)
+        shape = xml_to_array(self.node.getAttribute("Dimensions"))
+        return xml_to_array(self.node.firstChild.data).reshape(shape)
         
 class HDFDataItem(DataItem):
     @classmethod

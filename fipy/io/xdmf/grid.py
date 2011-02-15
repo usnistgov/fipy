@@ -40,7 +40,8 @@ from xml.dom import minidom
 
 from fipy.tools import numerix
 
-from fipy.io.xdmf.dataItem import XMLDataItem
+from fipy.io.xdmf.attribute import Attribute, CellAttribute
+from fipy.io.xdmf.dataItem import DataItem, XMLDataItem, xml_to_array
 from fipy.io.xdmf.node import _Node
 
 class Grid(_Node):
@@ -162,7 +163,7 @@ class Topology(_Node):
 class StructuredTopology(Topology):
     @property
     def nxnynz(self):
-        return _xml_to_array(self.node.getAttribute("Dimensions"))[::-1] - 1
+        return xml_to_array(self.node.getAttribute("Dimensions"))[::-1] - 1
         
 class ThreeDCoRectMeshTopology(StructuredTopology):
     pass
