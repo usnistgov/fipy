@@ -92,8 +92,9 @@ class LinearLUSolver(ScipySolver):
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
 
-        import sys
-        print >> sys.stderr, l.matrix.todense()
+        if DEBUG:
+            import sys
+            print >> sys.stderr, l.matrix.todense()
 
         LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
                                             drop_tol=0.,
