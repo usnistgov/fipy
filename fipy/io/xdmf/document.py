@@ -140,20 +140,20 @@ if __name__ == "__main__":
     
     for time in arange(0, 1, 0.1):
         var2.value = var2 + time
-        ts[time] = (var1, var2, varx, vary, varz) #, var3)
+        ts["%0.1g" % time] = (var1, var2, varx, vary, varz) #, var3)
         xdmf.save()
         
     xdmf2 = Open("test.xmf", "r")
-    ts = TimeSeries(document=xdmf, node=xdmf2.domain.getElementsByTagName("Grid")[0])
-#     var1a, var2a, varxa, varya, varza, var2grad = ts[0.9]
-    var1a, var2a, varxa, varya, varza = ts[0.9]
+    ts = TimeSeries(document=xdmf2, node=xdmf2.domain.getElementsByTagName("Grid")[0])
+#     var1a, var2a, varxa, varya, varza, var2grad = ts["0.9"]
+    var1a, var2a, varxa, varya, varza = ts["0.9"]
     
     print var1a.allclose(var1)
     print var2a.allclose(var2)
     print varxa.allclose(varx)
     print varya.allclose(vary)
     print varza.allclose(varz)
-    print var2grad.allclose(var2.grad)
+#     print var2grad.allclose(var2.grad)
 
 #     print xdmf
 #     xdmf.save()

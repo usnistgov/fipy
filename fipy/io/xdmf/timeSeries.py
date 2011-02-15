@@ -54,7 +54,7 @@ class TimeSeries(_Node):
 
     def __setitem__(self, index, value):
         # find and remove existing index?
-        collection = CollectionGrid.from_name(document=self.document, name="Step %g" % index)
+        collection = CollectionGrid.from_name(document=self.document, name="Step " + index)
         collection += Time.from_value(document=self.document, value=index)
         if not isinstance(value, (list, tuple)):
             value = (value,)
@@ -81,7 +81,7 @@ class TimeSeries(_Node):
                  if node.nodeType == minidom.Node.ELEMENT_NODE 
                  and node.tagName == "Grid"]
         node = [node for node in nodes 
-                if (node.getElementsByTagName("Time")[0].getAttribute("Value") == str(index))][0]
+                if (node.getElementsByTagName("Time")[0].getAttribute("Value") == index)][0]
         
         grid = Grid.from_xml(document=self.document, node=node)
         
@@ -93,7 +93,7 @@ class Time(_Node):
     @classmethod
     def from_value(cls, document, value):
         time = document.node.createElement("Time")
-        time.setAttribute("Value", str(value))
+        time.setAttribute("Value", value)
 
         return cls(document=document, node=time)
 
