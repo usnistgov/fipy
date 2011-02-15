@@ -106,6 +106,16 @@ class FaceVariable(_MeshVariable):
     def _localNonOverlappingIDs(self):
         return self.mesh._localNonOverlappingFaceIDs
 
+    def _to_xdmf(self, document, grid, h5filename):
+        from fipy.io.xdmf.attribute import FaceAttribute
+        
+        data = grid.reshape_faces(var.value.copy())
+        attribute = FaceAttribute._node(document=document, var=var, data=data, h5filename=h5filename)
+        attribute.setAttribute("Center", "Face")
+
+        return FaceAttribute(document=document, node=attribute)
+
+
 def _test(): 
     import doctest
     return doctest.testmod()

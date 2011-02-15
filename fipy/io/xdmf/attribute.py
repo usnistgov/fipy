@@ -42,18 +42,6 @@ from fipy.variables.variable import Variable
 from fipy.variables.cellVariable import CellVariable
 
 class Attribute(_Node):
-    @classmethod
-    def from_Variable(cls, document, var):
-        attribute = document.node.createElement("Attribute")
-        attribute.setAttribute("Name", var.name)
-        attribute.setAttribute("AttributeType", "Scalar")
-        attribute.setAttribute("Center", "Grid")
-
-        data = XMLDataItem.from_array(document=document, arr=var.value)
-        attribute.appendChild(data.node)
-
-        return cls(document=document, node=attribute)
-        
     @property
     def data(self):
         data = self.node.getElementsByTagName("DataItem")[0]
@@ -69,18 +57,6 @@ class MeshAttribute(Attribute):
         Attribute.__init__(self, document=document, node=node)
         self.grid = grid
         
-    @classmethod
-    def from_MeshVariable(cls, document, var, grid, h5filename):
-        from fipy.variables import CellVariable, FaceVariable
-        if isinstance(var, CellVariable):
-            attr = CellAttribute.from_CellVariable(document=document, var=var, grid=grid, h5filename=h5filename)
-        elif isinstance(var, FaceVariable):
-            attr = FaceAttribute.from_FaceVariable(document=document, var=var, grid=grid, h5filename=h5filename)
-        else:
-            raise Exception("Can't make Attribute from ", var.__class__.__name__)
-            
-        return attr
-            
     @staticmethod
     def _node(document, var, data, h5filename):
         attribute = document.node.createElement("Attribute")
@@ -97,14 +73,6 @@ class MeshAttribute(Attribute):
         return attribute
 
 class CellAttribute(MeshAttribute):
-    @classmethod
-    def from_CellVariable(cls, document, var, grid, h5filename):
-        data = grid.reshape_cells(var.value.copy())
-        attribute = cls._node(document=document, var=var, data=data, h5filename=h5filename)
-        attribute.setAttribute("Center", "Cell")
-
-        return cls(document=document, node=attribute)
-        
     @property
     def variable(self):
         name = self.node.getAttribute("Name")
@@ -112,14 +80,6 @@ class CellAttribute(MeshAttribute):
         return CellVariable(mesh=self.grid.mesh, name=name, value=data)
         
 class FaceAttribute(MeshAttribute):
-    @classmethod
-    def from_FaceVariable(cls, document, var, grid, h5filename):
-        data = grid.reshape_faces(var.value.copy())
-        attribute = cls._node(document=document, var=var, data=data, h5filename=h5filename)
-        attribute.setAttribute("Center", "Face")
-
-        return cls(document=document, node=attribute)
-        
     @property
     def variable(self):
         name = self.node.getAttribute("Name")

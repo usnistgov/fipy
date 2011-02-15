@@ -615,6 +615,15 @@ class CellVariable(_MeshVariable):
             self.faceConstraints.append([value, where])
         else:
             _MeshVariable.constrain(value, where)
+            
+    def _to_xdmf(self, document, grid, h5filename):
+        from fipy.io.xdmf.attribute import CellAttribute
+        
+        data = grid.reshape_cells(self.value.copy())
+        attribute = CellAttribute._node(document=document, var=self, data=data, h5filename=h5filename)
+        attribute.setAttribute("Center", "Cell")
+
+        return CellAttribute(document=document, node=attribute)
 
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):

@@ -108,17 +108,12 @@ def NodesFromValues(document, values, h5filename):
             if len(nodes) > 0 and isinstance(nodes[-1], Grid) and nodes[-1].mesh is value.mesh:
                 grid = nodes[-1]
             else:
-                grid = MeshGrid.from_Mesh(document=document, mesh=value.mesh)
+                grid = value.mesh._to_xdmf(document=document)
                 nodes.append(grid)
             
-            if isinstance(value, CellVariable):
-                attr = CellAttribute.from_CellVariable(document=document, var=value, grid=grid, h5filename=h5filename)
-            elif isinstance(value, FaceVariable):
-                attr = FaceAttribute.from_FaceVariable(document=document, var=value, grid=grid, h5filename=h5filename)
-
-            grid += attr
+            grid += value._to_xdmf(document=document, grid=grid, h5filename=h5filename)
         else:
-            nodes.append(Attribute.from_Variable(document=document, var=value))
+            nodes.append(value._to_xdmf(document=document))
             
     return nodes
     

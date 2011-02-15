@@ -70,16 +70,6 @@ class MeshGrid(Grid):
         _Node.__init__(self, document=document, node=node)
         self._mesh = mesh
         
-    @classmethod
-    def from_Mesh(cls, document, mesh):
-        from fipy.meshes.uniformGrid3D import UniformGrid3D
-        if isinstance(mesh, UniformGrid3D):
-            grid = ThreeDCoRectMeshGrid.from_Mesh(document=document, mesh=mesh)
-        else:
-            raise Exception("Don't know how!")
-            
-        return grid
-        
     @property
     def variables(self):
         vars = []
@@ -97,36 +87,6 @@ class MeshGrid(Grid):
         return vars
    
 class ThreeDCoRectMeshGrid(MeshGrid):
-# the following are properly specific Mesh methods?
-    @classmethod
-    def from_Mesh(cls, document, mesh):
-        grid = document.node.createElement("Grid")
-        grid.setAttribute("Name", mesh.__class__.__name__)
-        grid.setAttribute("GridType", "Uniform")
-        
-        topology = document.node.createElement("Topology")
-        topology.setAttribute("TopologyType", "3DCoRectMesh")
-        shape = list(mesh.shape)
-        shape.reverse()
-        topology.setAttribute("Dimensions", " ".join(str(v+1) for v in shape))
-        grid.appendChild(topology)
-        
-        geometry = document.node.createElement("Geometry")
-        geometry.setAttribute("GeometryType", "ORIGIN_DXDYDZ")
-        grid.appendChild(geometry)
-
-        origin = XMLDataItem.from_array(document=document, 
-                                        name="Origin",
-                                        arr=mesh.origin.ravel())
-        geometry.appendChild(origin.node)
-        
-        spacing = XMLDataItem.from_array(document=document, 
-                                         name="Spacing",
-                                         arr=(mesh.dx, mesh.dy, mesh.dz))
-        geometry.appendChild(spacing.node)
-
-        return cls(document=document, node=grid, mesh=mesh)
-        
     def reshape_cells(self, data):
 #         return data.reshape((-1,) + self.mesh.shape)
         data = numerix.rollaxis(data, -1)
