@@ -58,14 +58,13 @@ class _Document(_Node):
     @property
     def series(self):
         if not hasattr(self, "_series"):
-            serieses = [node for node in self.domain.getElementsByTagName("Grid") 
-                        if node.getAttribute("GridType") == "Collection" 
-                        and node.getAttribute("CollectionType") == "Temporal"]
-            if len(serieses) > 0:
-                self._series = TimeSeries(document=self, node=serieses[0])
-            else:
-                self._series = TimeSeries.empty(document=self)
-            self.domain.appendChild(self._series.node)
+            nodes = self.domain.getElementsByTagName("Grid")
+            self._series = [TimeSeries(document=self, node=node) for node in nodes 
+                            if node.getAttribute("GridType") == "Collection" 
+                            and node.getAttribute("CollectionType") == "Temporal"]
+            if len(self._series) == 0:
+                self._series = [TimeSeries.empty(document=self)]
+                self.domain.appendChild(self._series[0].node)
         
         return self._series
 
@@ -158,11 +157,11 @@ if __name__ == "__main__":
 
     for time in arange(0, 1, 0.1):
         var2.value = var2 + time
-        xdmf.series["%0.1g" % time] = (var1, var2, varx, vary, varz) #, var3)
+        xdmf.series[0]["%0.1g" % time] = (var1, var2, varx, vary, varz) #, var3)
         
     xdmf2 = Open("test.xmf", "r")
-#     var1a, var2a, varxa, varya, varza, var2grad = xdmf2.series["0.9"]
-    var1a, var2a, varxa, varya, varza = xdmf2.series["0.9"]
+#     var1a, var2a, varxa, varya, varza, var2grad = xdmf2.series[0]["0.9"]
+    var1a, var2a, varxa, varya, varza = xdmf2.series[0]["0.9"]
     
     print var1a.allclose(var1)
     print var2a.allclose(var2)
@@ -170,7 +169,7 @@ if __name__ == "__main__":
     print varya.allclose(vary)
     print varza.allclose(varz)
     
-    print xdmf2.series.keys()
+    print xdmf2.series[0].keys()
     
 #     print var2grad.allclose(var2.grad)
 
