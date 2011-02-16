@@ -51,29 +51,41 @@ class _Document(_Node):
         self.mode = mode
         self.gathered = gathered
         self.heavyThreshold = heavyThreshold
-        
-        xdmf = doc.getElementsByTagName("Xdmf")[0]
-        self.domain = xdmf.getElementsByTagName("Domain")[0]
-        
+
     @property
-    def series(self):
-        if not hasattr(self, "_series"):
-            nodes = self.domain.getElementsByTagName("Grid")
-            self._series = [TimeSeries(document=self, node=node) for node in nodes 
-                            if node.getAttribute("GridType") == "Collection" 
-                            and node.getAttribute("CollectionType") == "Temporal"]
-            if len(self._series) == 0:
-                self._series = [TimeSeries.empty(document=self)]
-                self.domain.appendChild(self._series[0].node)
+    def domain(self):
+        if not hasattr(self, "_domain"):
+            xdmf = self.node.getElementsByTagName("Xdmf")[0]
+            nodes = self.node.getElementsByTagName("Domain")
+            self._domain = [_Domain(document=self, node=node) for node in nodes
+                            if node.parentNode is xdmf]
+            if len(self._domain) == 0:
+                self._domain = [_Domain(document=self, node=self.node.createElement("Domain"))]
+                xdmf.appendChild(self._domain[0].node)
         
-        return self._series
+        return self._domain
 
     def save(self):
         if parallel.procID == 0:
             f = open(self.filename, mode=self.mode)
             self.node.writexml(f, indent="    ", addindent="    ", newl="\n")
             f.close()
+            
+class _Domain(_Node):
+    @property
+    def series(self):
+        if not hasattr(self, "_series"):
+            nodes = self.node.getElementsByTagName("Grid")
+            self._series = [TimeSeries(document=self, node=node) for node in nodes 
+                            if node.getAttribute("GridType") == "Collection" 
+                            and node.getAttribute("CollectionType") == "Temporal"
+                            and node.parentNode is self.node]
+            if len(self._series) == 0:
+                self._series = [TimeSeries.empty(document=self.document)]
+                self.node.appendChild(self._series[0].node)
         
+        return self._series
+    
 def Open(filename, mode='r', gathered=False):
     if mode.startswith('w'):
         imp = minidom.getDOMImplementation('')
@@ -81,9 +93,6 @@ def Open(filename, mode='r', gathered=False):
         doc = imp.createDocument(None, "Xdmf", dt)
         xdmf = doc.documentElement
         xdmf.setAttribute("xmlns:xi", "http://www.w3.org/2003/XInclude")
-        
-        domain = doc.createElement("Domain")
-        xdmf.appendChild(domain)
     else:
         doc = minidom.parse(filename)
 
@@ -157,11 +166,11 @@ if __name__ == "__main__":
 
     for time in arange(0, 1, 0.1):
         var2.value = var2 + time
-        xdmf.series[0]["%0.1g" % time] = (var1, var2, varx, vary, varz) #, var3)
+        xdmf.domain[0].series[0]["%0.1g" % time] = (var1, var2, varx, vary, varz) #, var3)
         
     xdmf2 = Open("test.xmf", "r")
 #     var1a, var2a, varxa, varya, varza, var2grad = xdmf2.series[0]["0.9"]
-    var1a, var2a, varxa, varya, varza = xdmf2.series[0]["0.9"]
+    var1a, var2a, varxa, varya, varza = xdmf2.domain[0].series[0]["0.9"]
     
     print var1a.allclose(var1)
     print var2a.allclose(var2)
@@ -169,7 +178,7 @@ if __name__ == "__main__":
     print varya.allclose(vary)
     print varza.allclose(varz)
     
-    print xdmf2.series[0].keys()
+    print xdmf2.domain[0].series[0].keys()
     
 #     print var2grad.allclose(var2.grad)
 
