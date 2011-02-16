@@ -44,7 +44,7 @@ from fipy.variables.faceVariable import FaceVariable
 
 class Attribute(_Node):
     @classmethod
-    def _node_from_array(cls, document, name, attributeType, center, data, h5filename):
+    def _from_array(cls, document, name, attributeType, center, data, h5filename):
         attribute = document.node.createElement("Attribute")
         attribute.setAttribute("Name", name)
         attribute.setAttribute("AttributeType", attributeType)
@@ -60,8 +60,8 @@ class Attribute(_Node):
 
     @classmethod
     def from_array(cls, document, name, data, h5filename):
-        return cls._node_from_array(document=document, name=name, attributeType="Scalar", 
-                                    center="Grid", data=data, h5filename=h5filename)
+        return cls._from_array(document=document, name=name, attributeType="Scalar", 
+                               center="Grid", data=data, h5filename=h5filename)
                                     
     @property
     def data(self):
@@ -82,9 +82,9 @@ class MeshAttribute(Attribute):
         
     @classmethod
     def from_array(cls, document, name, data, rank, h5filename):
-        return cls._node_from_array(document=document, name=name, 
-                                    attributeType=cls.attributeType[rank],
-                                    center=cls.center, data=data, h5filename=h5filename)
+        return cls._from_array(document=document, name=name, 
+                               attributeType=cls.attributeType[rank],
+                               center=cls.center, data=data, h5filename=h5filename)
 
 class CellAttribute(MeshAttribute):
     center = "Cell"
