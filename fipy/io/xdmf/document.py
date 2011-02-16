@@ -39,23 +39,43 @@ __docformat__ = 'restructuredtext'
 from xml.dom import minidom
 
 from fipy.io.xdmf.node import _Node
+from fipy.io.xdmf.timeSeries import TimeSeries
+
+from fipy.tools import parallel
 
 class _Document(_Node):
-    def __init__(self, filename, mode, doc):
+    def __init__(self, filename, mode, doc, gathered=False, heavyThreshold=10):
         _Node.__init__(self, document=self, node=doc)
         
         self.filename = filename
         self.mode = mode
+        self.gathered = gathered
+        self.heavyThreshold = heavyThreshold
         
         xdmf = doc.getElementsByTagName("Xdmf")[0]
         self.domain = xdmf.getElementsByTagName("Domain")[0]
         
-    def save(self):
-        f = open(self.filename, mode=self.mode)
-        self.node.writexml(f, indent="    ", addindent="    ", newl="\n")
-        f.close()
+    @property
+    def series(self):
+        if not hasattr(self, "_series"):
+            serieses = [node for node in self.domain.getElementsByTagName("Grid") 
+                        if node.getAttribute("GridType") == "Collection" 
+                        and node.getAttribute("CollectionType") == "Temporal"]
+            if len(serieses) > 0:
+                self._series = TimeSeries(document=self, node=serieses[0])
+            else:
+                self._series = TimeSeries.empty(document=self)
+            self.domain.appendChild(self._series.node)
         
-def Open(filename, mode='r'):
+        return self._series
+
+    def save(self):
+        if parallel.procID == 0:
+            f = open(self.filename, mode=self.mode)
+            self.node.writexml(f, indent="    ", addindent="    ", newl="\n")
+            f.close()
+        
+def Open(filename, mode='r', gathered=False):
     if mode.startswith('w'):
         imp = minidom.getDOMImplementation('')
         dt = imp.createDocumentType("Xdmf", None, "Xdmf.dtd")
@@ -68,7 +88,7 @@ def Open(filename, mode='r'):
     else:
         doc = minidom.parse(filename)
 
-    return _Document(filename=filename, mode=mode, doc=doc)
+    return _Document(filename=filename, mode=mode, doc=doc, gathered=gathered)
         
 def GridFromValues(doc, values):
     """
@@ -112,11 +132,7 @@ def GridFromValues(doc, values):
     return meshes
     
 if __name__ == "__main__":
-    from fipy.io.xdmf import Open, TimeSeries
-    
-    xdmf = Open("test.xmf", "w")
-    ts = TimeSeries.empty(document=xdmf)
-    xdmf.domain.appendChild(ts.node)
+    from fipy.io.xdmf import Open
     
     from fipy import *
     mesh1 = Grid3D(nx=2, ny=3, nz=4)
@@ -138,21 +154,24 @@ if __name__ == "__main__":
 #     print "meshless:", meshless
 #     print "meshed:", meshed
     
+    xdmf = Open("test.xmf", "w")
+
     for time in arange(0, 1, 0.1):
         var2.value = var2 + time
-        ts["%0.1g" % time] = (var1, var2, varx, vary, varz) #, var3)
-        xdmf.save()
+        xdmf.series["%0.1g" % time] = (var1, var2, varx, vary, varz) #, var3)
         
     xdmf2 = Open("test.xmf", "r")
-    ts = TimeSeries(document=xdmf2, node=xdmf2.domain.getElementsByTagName("Grid")[0])
-#     var1a, var2a, varxa, varya, varza, var2grad = ts["0.9"]
-    var1a, var2a, varxa, varya, varza = ts["0.9"]
+#     var1a, var2a, varxa, varya, varza, var2grad = xdmf2.series["0.9"]
+    var1a, var2a, varxa, varya, varza = xdmf2.series["0.9"]
     
     print var1a.allclose(var1)
     print var2a.allclose(var2)
     print varxa.allclose(varx)
     print varya.allclose(vary)
     print varza.allclose(varz)
+    
+    print xdmf2.series.keys()
+    
 #     print var2grad.allclose(var2.grad)
 
 #     print xdmf

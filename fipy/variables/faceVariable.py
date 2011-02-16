@@ -109,11 +109,9 @@ class FaceVariable(_MeshVariable):
     def _to_xdmf(self, document, grid, h5filename):
         from fipy.io.xdmf.attribute import FaceAttribute
         
-        data = grid.reshape_faces(var.value.copy())
-        attribute = FaceAttribute._node(document=document, var=var, data=data, h5filename=h5filename)
-        attribute.setAttribute("Center", "Face")
-
-        return FaceAttribute(document=document, node=attribute)
+        return FaceAttribute.from_array(document=document, name=self.name, 
+                                        data=grid.reshape_faces(self.value.copy()), 
+                                        rank=self.rank, h5filename=h5filename)
 
 
 def _test(): 

@@ -1560,20 +1560,11 @@ class Variable(object):
 
         self.__init__(**dict)
         
-    def _to_xdmf(self, document):
+    def _to_xdmf(self, document, grid, h5filename):
         from fipy.io.xdmf.attribute import Attribute
-        from fipy.io.xdmf.dataItem import XMLDataItem
         
-        attribute = document.node.createElement("Attribute")
-        attribute.setAttribute("Name", self.name)
-        attribute.setAttribute("AttributeType", "Scalar")
-        attribute.setAttribute("Center", "Grid")
-
-        data = XMLDataItem.from_array(document=document, arr=self.value)
-        attribute.appendChild(data.node)
-
-        return Attribute(document=document, node=attribute)
-
+        return Attribute.from_array(document=document, name=self.name, 
+                                    data=self.value.copy(), h5filename=h5filename)
 
 def _test(): 
     import doctest

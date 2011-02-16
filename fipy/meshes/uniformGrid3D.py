@@ -330,37 +330,10 @@ class UniformGrid3D(Grid3D):
         return k * ny * nx + j * nx + i
         
     def _to_xdmf(self, document):
-        from fipy.io.xdmf.dataItem import XMLDataItem
-        from fipy.io.xdmf.grid import ThreeDCoRectMeshGrid
-
+        from fipy.io.xdmf.grid import ThreeDCoRectGrid
         
-        grid = document.node.createElement("Grid")
-        grid.setAttribute("Name", self.__class__.__name__)
-        grid.setAttribute("GridType", "Uniform")
-        
-        topology = document.node.createElement("Topology")
-        topology.setAttribute("TopologyType", "3DCoRectMesh")
-        shape = list(self.shape)
-        shape.reverse()
-        topology.setAttribute("Dimensions", " ".join(str(v+1) for v in shape))
-        grid.appendChild(topology)
-        
-        geometry = document.node.createElement("Geometry")
-        geometry.setAttribute("GeometryType", "ORIGIN_DXDYDZ")
-        grid.appendChild(geometry)
-
-        origin = XMLDataItem.from_array(document=document, 
-                                        name="Origin",
-                                        arr=self.origin.ravel())
-        geometry.appendChild(origin.node)
-        
-        spacing = XMLDataItem.from_array(document=document, 
-                                         name="Spacing",
-                                         arr=(self.dx, self.dy, self.dz))
-        geometry.appendChild(spacing.node)
-
-        return ThreeDCoRectMeshGrid(document=document, node=grid, mesh=self)
-        
+        return ThreeDCoRectGrid.from_UniformGrid3D(document=document, 
+                                                   mesh=self)
         
     def _test(self):
         """

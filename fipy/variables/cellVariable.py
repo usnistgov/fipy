@@ -619,12 +619,10 @@ class CellVariable(_MeshVariable):
     def _to_xdmf(self, document, grid, h5filename):
         from fipy.io.xdmf.attribute import CellAttribute
         
-        data = grid.reshape_cells(self.value.copy())
-        attribute = CellAttribute._node(document=document, var=self, data=data, h5filename=h5filename)
-        attribute.setAttribute("Center", "Cell")
-
-        return CellAttribute(document=document, node=attribute)
-
+        return CellAttribute.from_array(document=document, name=self.name, 
+                                        data=grid.reshape_cells(self.value.copy()), 
+                                        rank=self.rank, h5filename=h5filename)
+                                        
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.cellCenters)

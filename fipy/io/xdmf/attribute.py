@@ -43,6 +43,26 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
 class Attribute(_Node):
+    @classmethod
+    def _node_from_array(cls, document, name, attributeType, center, data, h5filename):
+        attribute = document.node.createElement("Attribute")
+        attribute.setAttribute("Name", name)
+        attribute.setAttribute("AttributeType", attributeType)
+        attribute.setAttribute("Center", center)
+
+        if data.size < document.heavyThreshold:
+            data = XMLDataItem.from_array(document=document, arr=data)
+        else:
+            data = HDFDataItem.from_array(document=document, arr=data, name=name, h5filename=h5filename)
+        attribute.appendChild(data.node)
+        
+        return cls(document=document, node=attribute)
+
+    @classmethod
+    def from_array(cls, document, name, data, h5filename):
+        return cls._node_from_array(document=document, name=name, attributeType="Scalar", 
+                                    center="Grid", data=data, h5filename=h5filename)
+                                    
     @property
     def data(self):
         data = self.node.getElementsByTagName("DataItem")[0]
@@ -54,26 +74,21 @@ class Attribute(_Node):
         return Variable(name=name, value=self.data.array)
 
 class MeshAttribute(Attribute):
+    attributeType = ["Scalar", "Vector", "Tensor"]
+    
     def __init__(self, document, node, grid=None):
         Attribute.__init__(self, document=document, node=node)
         self.grid = grid
         
-    @staticmethod
-    def _node(document, var, data, h5filename):
-        attribute = document.node.createElement("Attribute")
-        attribute.setAttribute("Name", var.name)
-        rank = ["Scalar", "Vector", "Tensor"]
-        attribute.setAttribute("AttributeType", rank[var.rank])
-        
-        if data.size < 10:
-            data = XMLDataItem.from_array(document=document, arr=data)
-        else:
-            data = HDFDataItem.from_array(document=document, arr=data, name=var.name, h5filename=h5filename)
-        attribute.appendChild(data.node)
-        
-        return attribute
+    @classmethod
+    def from_array(cls, document, name, data, rank, h5filename):
+        return cls._node_from_array(document=document, name=name, 
+                                    attributeType=cls.attributeType[rank],
+                                    center=cls.center, data=data, h5filename=h5filename)
 
 class CellAttribute(MeshAttribute):
+    center = "Cell"
+    
     @property
     def variable(self):
         name = self.node.getAttribute("Name")
@@ -81,6 +96,8 @@ class CellAttribute(MeshAttribute):
         return CellVariable(mesh=self.grid.mesh, name=name, value=data)
         
 class FaceAttribute(MeshAttribute):
+    center = "Face"
+    
     @property
     def variable(self):
         name = self.node.getAttribute("Name")

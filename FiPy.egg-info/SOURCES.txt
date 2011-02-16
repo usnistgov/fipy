@@ -306,6 +306,14 @@ fipy/generated/fipy/variables/exp.jpg
 fipy/generated/fipy/variables/gamma.jpg
 fipy/generated/fipy/variables/gaussian.jpg
 fipy/generated/fipy/variables/uniform.jpg
+fipy/io/__init__.py
+fipy/io/xdmf/__init__.py
+fipy/io/xdmf/attribute.py
+fipy/io/xdmf/dataItem.py
+fipy/io/xdmf/document.py
+fipy/io/xdmf/grid.py
+fipy/io/xdmf/node.py
+fipy/io/xdmf/timeSeries.py
 fipy/matrices/__init__.py
 fipy/matrices/pysparseMatrix.py
 fipy/matrices/sparseMatrix.py

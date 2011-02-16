@@ -76,18 +76,26 @@ class TimeSeries(_Node):
 #         self += GridFromValues(doc=self.doc, values=value)
         self += collection
         
+        self.document.save()
+        
+    @property
+    def _nodes(self):
+        return [node for node in self.node.childNodes 
+                if node.nodeType == minidom.Node.ELEMENT_NODE 
+                and node.tagName == "Grid"
+                and len(node.getElementsByTagName("Time")) > 0]
+                     
     def __getitem__(self, index):
-        nodes = [node for node in self.node.childNodes 
-                 if node.nodeType == minidom.Node.ELEMENT_NODE 
-                 and node.tagName == "Grid"]
-        node = [node for node in nodes 
-                if (node.getElementsByTagName("Time")[0].getAttribute("Value") == index)][0]
+        nodes = [node for node in self._nodes 
+                 if (node.getElementsByTagName("Time")[0].getAttribute("Value") == index)]
         
-        grid = Grid.from_xml(document=self.document, node=node)
+        grid = Grid.from_xml(document=self.document, node=nodes[0])
         
-#         raise Exception("stop!")
-
         return grid.variables
+        
+    def keys(self):
+        return [node.getElementsByTagName("Time")[0].getAttribute("Value") for node in self._nodes]
+
 
 class Time(_Node):
     @classmethod
@@ -99,7 +107,6 @@ class Time(_Node):
 
 def NodesFromValues(document, values, h5filename):
     from fipy.variables.meshVariable import _MeshVariable
-    from fipy.variables import CellVariable, FaceVariable
 
     nodes = []
     for value in values:
@@ -112,7 +119,7 @@ def NodesFromValues(document, values, h5filename):
             
             grid += value._to_xdmf(document=document, grid=grid, h5filename=h5filename)
         else:
-            nodes.append(value._to_xdmf(document=document))
+            nodes.append(value._to_xdmf(document=document, grid=None, h5filename=h5filename))
             
     return nodes
     

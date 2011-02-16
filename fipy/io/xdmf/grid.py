@@ -56,7 +56,7 @@ class Grid(_Node):
             topology = node.getElementsByTagName("Topology")[0]
             topologyType = topology.getAttribute("TopologyType") or topology.getAttribute("Type")
             if topologyType == "3DCoRectMesh":
-                grid = ThreeDCoRectMeshGrid(document=document, node=node, mesh=None)
+                grid = ThreeDCoRectGrid(document=document, node=node, mesh=None)
             else:
                 raise Exception("Unknown TopologyType: " + topologyType)
             
@@ -86,7 +86,39 @@ class MeshGrid(Grid):
 
         return vars
    
-class ThreeDCoRectMeshGrid(MeshGrid):
+class ThreeDCoRectGrid(MeshGrid):
+    @classmethod
+    def from_UniformGrid3D(cls, document, mesh):
+        from fipy.io.xdmf.dataItem import XMLDataItem
+        from fipy.io.xdmf.grid import ThreeDCoRectGrid
+
+        grid = document.node.createElement("Grid")
+        grid.setAttribute("Name", mesh.__class__.__name__)
+        grid.setAttribute("GridType", "Uniform")
+        
+        topology = document.node.createElement("Topology")
+        topology.setAttribute("TopologyType", "3DCoRectMesh")
+        shape = list(mesh.shape)
+        shape.reverse()
+        topology.setAttribute("Dimensions", " ".join(str(v+1) for v in shape))
+        grid.appendChild(topology)
+        
+        geometry = document.node.createElement("Geometry")
+        geometry.setAttribute("GeometryType", "ORIGIN_DXDYDZ")
+        grid.appendChild(geometry)
+
+        origin = XMLDataItem.from_array(document=document, 
+                                        name="Origin",
+                                        arr=mesh.origin.ravel())
+        geometry.appendChild(origin.node)
+        
+        spacing = XMLDataItem.from_array(document=document, 
+                                         name="Spacing",
+                                         arr=(mesh.dx, mesh.dy, mesh.dz))
+        geometry.appendChild(spacing.node)
+
+        return cls(document=document, node=grid, mesh=mesh)
+
     def reshape_cells(self, data):
 #         return data.reshape((-1,) + self.mesh.shape)
         data = numerix.rollaxis(data, -1)
