@@ -357,8 +357,12 @@ class Term(object):
         if isinstance(other, Term):
             from fipy.terms.coupledBinaryTerm import _CoupledBinaryTerm
             return _CoupledBinaryTerm(self, other)
+        elif other == 0:
+            return self
         else:
             raise Exception, "Can only couple Term objects."
+            
+    __rand__ = __and__
 
     @getsetDeprecated
     def _getUncoupledTerms(self):
@@ -518,7 +522,10 @@ class Term(object):
         >>> eq.cacheRHSvector()
         >>> eq.solve(solver=DefaultSolver())
         >>> numpyMatrix = eq.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], [1, -1, 0, 0], [0, 0, -2, 2], [0, 0, 2, -2]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], 
+        ...                                                             [1, -1, 0, 0], 
+        ...                                                             [0, 0, -2, 2], 
+        ...                                                             [0, 0, 2, -2]])
         True
         >>> print eq.RHSvector.globalValue
         [ 0.  0.  0.  0.]
@@ -565,6 +572,21 @@ class Term(object):
         [ 0.  0.  0.  0.  0.  0.]
         >>> print eq._vars
         [A, B, C]
+        >>> eq = DiffusionTerm(var=A)
+        >>> print (0 & eq) is eq
+        True
+        >>> eq = 0
+        >>> eq &= DiffusionTerm(coeff=1., var=A)
+        >>> eq &= DiffusionTerm(coeff=2., var=B)
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve(solver=DefaultSolver())
+        >>> numpyMatrix = eq.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], 
+        ...                                                             [1, -1, 0, 0], 
+        ...                                                             [0, 0, -2, 2], 
+        ...                                                             [0, 0, 2, -2]])
+        True
         """ 
 
 class __Term(Term): 
