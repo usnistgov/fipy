@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "matplotlib2DViewer.py"
+ #  FILE: "matplotlib2DContourViewer.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -39,19 +39,19 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from matplotlibViewer import _MatplotlibViewer
 
-class Matplotlib2DGridContourViewer(_MatplotlibViewer):
+class Matplotlib2DContourViewer(_MatplotlibViewer):
     """Displays a contour plot of a 2D `CellVariable` object.    
 
-    The `Matplotlib2DGridContourViewer` plots a 2D `CellVariable` using Matplotlib_.
+    The `Matplotlib2DContourViewer` plots a 2D `CellVariable` using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
+    __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DContourViewer")
 
 
-    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
-        """Creates a `Matplotlib2DViewer`.
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, number=10, levels=None, **kwlimits):
+        """Creates a `Matplotlib2DContourViewer`.
         
         :Parameters:
           vars
@@ -69,22 +69,32 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
             plot a colorbar in specified orientation if not `None`
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+          number
+            contour `number` automatically-chosen levels
+          *levels* [level0, level1, ..., leveln]
+            A list of floating point numbers indicating the level
+            curves to draw; eg to draw just the zero contour pass
+            ``levels=[0]``
+            
         """
         kwlimits.update(limits)
         _MatplotlibViewer.__init__(self, vars=vars, title=title, 
                                    cmap=cmap, colorbar=colorbar, axes=axes, 
                                    **kwlimits)
+        self.number = number
+        self.levels = levels
         
         self._plot()
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.grid2D import Grid2D
+        from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-          if (isinstance(var.mesh, Grid2D) and isinstance(var, CellVariable))]
+          if ((isinstance(var.mesh, Mesh2D) and isinstance(var, CellVariable))
+              and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "The mesh must be a Grid2D instance"
+            raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-0, 2D CellVariable"
         # this viewer can only display one variable
         return [vars[0]]
         
@@ -97,10 +107,37 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
 ##         gc.collect()
 
         mesh = self.vars[0].mesh
-        shape = mesh.shape
-        X, Y = mesh.cellCenters
-        Z = self.vars[0].value
-        X, Y, Z = [v.reshape(shape, order="FORTRAN") for v in (X, Y, Z)]
+        x, y = mesh.cellCenters
+        z = self.vars[0].value
+        
+        vertexIDs = mesh._orderedCellVertexIDs
+
+        vertexCoords = mesh.getVertexCoords()
+
+        X = numerix.take(vertexCoords[0], vertexIDs)
+        Y = numerix.take(vertexCoords[1], vertexIDs)
+
+        xmin = X.min()
+        xmax = X.max()
+        ymin = Y.min()
+        ymax = Y.max()
+
+        from matplotlib.mlab import griddata
+        
+        xi = numerix.linspace(xmin, xmax, 1000)
+        yi = numerix.linspace(ymin, ymax, 1000)
+        # grid the data.
+        zi = griddata(x, y, z, xi, yi, interp='linear')
+
+        if hasattr(self, "_contourSet"):
+            for collection in self._contourSet.collections:
+                try:
+                    ix = self.axes.collections.index(collection)
+                except ValueError, e:
+                    ix = None
+                    
+                if ix is not None:
+                    del self.axes.collections[ix]
 
         zmin, zmax = self._autoscale(vars=self.vars,
                                      datamin=self._getLimit(('datamin', 'zmin')),
@@ -109,16 +146,13 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
         self.norm.vmin = zmin
         self.norm.vmax = zmax
 
-        numberOfContours = 10
-        smallNumber = 1e-7
-        diff = zmax - zmin
-        
-        if diff < smallNumber:            
-            V = numerix.arange(numberOfContours + 1) * smallNumber / numberOfContours + zmin
+        if self.levels is not None:
+            levels = self.levels
         else:
-            V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + zmin
+            levels = numerix.arange(self.number + 1) * (zmax - zmin) / self.number + zmin
 
-        self.axes.contourf(X, Y, Z, V, cmap=self.cmap)
+
+        self._contourSet = self.axes.contour(xi, yi, zi, levels=levels, cmap=self.cmap)
 
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
@@ -132,7 +166,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
                    
 def _test():
     from fipy.viewers.viewer import _test2D
-    _test2D(Matplotlib2DGridContourViewer)
+    _test2D(Matplotlib2DContourViewer)
 
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus

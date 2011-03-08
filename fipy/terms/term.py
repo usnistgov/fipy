@@ -253,9 +253,8 @@ class Term(object):
            - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
 
         """
-        solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
-        solver._applyUnderRelaxation(underRelaxation)
-        vector = solver._calcResidualVector(residualFn=residualFn)
+        vector = self.justResidualVector(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, 
+                                         underRelaxation=underRelaxation, residualFn=residualFn)
         
         L2norm = numerix.L2norm(vector)
 
