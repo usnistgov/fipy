@@ -38,7 +38,6 @@ from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.terms import SolutionVariableNumberError
-from fipy.terms import AlternativeMethodInBaseClass
 
 class _CoupledBinaryTerm(_BaseBinaryTerm):
     """
@@ -212,9 +211,6 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
-        if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
-            raise AlternativeMethodInBaseClass('getDefaultSolver()')
-
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)

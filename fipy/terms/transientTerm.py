@@ -35,7 +35,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
-from fipy.terms import AlternativeMethodInBaseClass
 
 class TransientTerm(CellTerm):
     r"""
@@ -135,8 +134,6 @@ class TransientTerm(CellTerm):
         [[-2.]]
 
         """
-        if CellTerm._getTransientGeomCoeff(self, var) is not None:
-            AlternativeMethodInBaseClass('_getTransientGeomCoeff()')
         if var is self.var or self.var is None:
             return self._getGeomCoeff(var.mesh)
         else:
@@ -144,8 +141,6 @@ class TransientTerm(CellTerm):
 
     @property
     def _transientVars(self):
-        if len(super(TransientTerm, self)._transientVars) != 0:
-            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')
         return self._vars
     
         
