@@ -116,8 +116,9 @@ class Term(object):
         else:
             self._RHSvector = None
     
-    def __buildMatrix(self, var, solver, boundaryConditions, dt):
-
+    def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
+        solver = self.getDefaultSolver(solver)
+            
         var = self._verifyVar(var)
         self._checkVar(var)
 
@@ -143,18 +144,6 @@ class Term(object):
         self._buildCache(matrix, RHSvector)
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
-        
-        if (os.environ.has_key('FIPY_DISPLAY_MATRIX')
-            and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
-            self._viewer.title = r"%s %s" % (var.name, self.__class__.__name__)
-            self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
-            from fipy import raw_input
-            raw_input()
-
-    def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        solver = self.getDefaultSolver(solver)
-            
-        self.__buildMatrix(var, solver, boundaryConditions, dt)
         
         if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
             if var is None:
