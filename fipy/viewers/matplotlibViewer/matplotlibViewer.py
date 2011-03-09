@@ -111,12 +111,14 @@ class _MatplotlibViewer(_Viewer):
     def plot(self, filename = None):
         import pylab
 
-        pylab.figure(self.id)
+        fig = pylab.figure(self.id)
 
         pylab.ioff()
         
         self._plot()
         pylab.draw()
+
+        fig.canvas.flush_events()
         
         pylab.ion()
 
