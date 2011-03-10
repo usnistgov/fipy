@@ -35,7 +35,6 @@
 
 from fipy.tools.numerix import MA
 
-from fipy.meshes.grid3D import Grid3D
 from fipy.meshes.topologies import _UniformMeshTopology3D
 from fipy.meshes.geometries import _UniformGridGeometry3D
 from fipy.meshes.builders import Grid3DBuilder
@@ -46,8 +45,10 @@ from fipy.tools.decorators import getsetDeprecated
 from fipy.tools import parallel
 
 from fipy.meshes.builders import UniformGrid3DBuilder
+from fipy.meshes.abstractGrid import AbstractGrid3DFactory
+from fipy.meshes.abstractMesh import AbstractMesh
 
-class UniformGrid3D(Grid3D):
+class UniformGrid3D(AbstractGrid3DFactory(AbstractMesh)):
     """
     3D rectangular-prism Mesh with uniform grid spacing in each dimension.
 

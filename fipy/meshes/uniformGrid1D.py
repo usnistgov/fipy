@@ -42,15 +42,16 @@ from fipy.tools.numerix import MA
 from fipy.meshes.topologies import _UniformMeshTopology1D
 from fipy.meshes.geometries import _UniformGridGeometry1D
 
-from grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 from fipy.tools import parallel
 
 from fipy.meshes.builders import UniformGrid1DBuilder
 from fipy.meshes.builders import Grid1DBuilder
+from fipy.meshes.abstractGrid import AbstractGrid1DFactory
+from fipy.meshes.abstractMesh import AbstractMesh
 
-class UniformGrid1D(Grid1D):
+class UniformGrid1D(AbstractGrid1DFactory(AbstractMesh)):
     """
     Creates a 1D grid mesh.
     
@@ -116,7 +117,7 @@ class UniformGrid1D(Grid1D):
                                    self.numberOfFaces,
                                    self.numberOfCells,
                                    scale=self._scale)
-                                                     
+                                                          
     def _translate(self, vector):
         return UniformGrid1D(dx=self.dx, 
                              nx=self.args['nx'], 

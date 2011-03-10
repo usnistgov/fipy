@@ -49,9 +49,12 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
-from fipy.meshes.builders import UniformGrid2DBuilder
 
-class UniformGrid2D(Grid2D):
+from fipy.meshes.builders import UniformGrid2DBuilder
+from fipy.meshes.abstractGrid import AbstractGrid2DFactory
+from fipy.meshes.abstractMesh import AbstractMesh
+
+class UniformGrid2D(AbstractGrid2DFactory(AbstractMesh)):
     """
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.

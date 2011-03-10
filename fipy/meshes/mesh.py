@@ -193,19 +193,7 @@ class Mesh(AbstractMesh):
 
     def _isOrthogonal(self):
         return False
-    
-    @property
-    def _cellAreaProjections(self):
-        return self._cellNormals * self._cellAreas
-
-    @property
-    def _orderedCellVertexIDs(self):
-        return self._cellVertexIDs
-
-    @property
-    def _cellDistanceNormals(self):
-        return self._cellDistanceNormals/ self._cellDistances
-        
+       
     @property
     def _cellVertexIDs(self):
         ## Get all the vertices from all the faces for each cell
