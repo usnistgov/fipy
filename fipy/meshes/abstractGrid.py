@@ -41,8 +41,9 @@ from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
 
  
-def NonuniformGridFactory(parent):
-    class NonuniformGrid(parent):
+def AbstractGridFactory(parent):
+    class AbstractGrid(parent):
+
         @getsetDeprecated
         def getPhysicalShape(self):
             return self.physicalShape
@@ -57,4 +58,18 @@ def NonuniformGridFactory(parent):
 
         def _isOrthogonal(self):
             return True
+             
+        def __getstate__(self):
+            """
+            Used internally to collect the necessary information to ``pickle`` the 
+            `Grid2D` to persistent storage.
+            """
+            return self.args
+
+        def __setstate__(self, dict):
+            """
+            Used internally to create a new `Grid2D` from ``pickled`` 
+            persistent storage.
+            """
+            self.__init__(**dict)
                                

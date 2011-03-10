@@ -264,12 +264,6 @@ class Grid1D(Mesh1D):
     
 ## pickling
 
-    def __getstate__(self):
-        return self.args
-        
-    def __setstate__(self, dict):
-        self.__init__(**dict)
-
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

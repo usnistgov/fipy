@@ -197,20 +197,6 @@ class Grid2D(Mesh2D):
     
 ## pickling
 
-    def __getstate__(self):
-        """
-        Used internally to collect the necessary information to ``pickle`` the 
-        `Grid2D` to persistent storage.
-        """
-        return self.args
-
-    def __setstate__(self, dict):
-        """
-        Used internally to create a new `Grid2D` from ``pickled`` 
-        persistent storage.
-        """
-        self.__init__(**dict)
-
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

@@ -133,18 +133,6 @@ class Grid3D(Mesh):
             % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), str(self.args["dz"]), 
                self.args["nx"], self.args["ny"], self.args["nz"])
 
-    @getsetDeprecated
-    def getPhysicalShape(self):
-        return self.physicalShape
-
-    @getsetDeprecated
-    def _getMeshSpacing(self):
-        return self._meshSpacing
-   
-    @getsetDeprecated
-    def getShape(self):
-        return self.shape
-
 ## The following method is broken when dx, dy or dz are not scalar. Simpler to use the generic
 ## _calcFaceAreas rather than do the required type checking, resizing and outer product.
 ##
@@ -156,9 +144,6 @@ class Grid3D(Mesh):
 ##         YZFaceAreas = numerix.ones(self.numberOfYZFaces)
 ##         YZFaceAreas = YZFaceAreas * self.dy * self.dz
 ##         self.faceAreas =  numerix.concatenate((XYFaceAreas, XZFaceAreas, YZFaceAreas))
-
-    def _isOrthogonal(self):
-        return True
 
     @property
     def _globalNonOverlappingCellIDs(self):
@@ -202,14 +187,6 @@ class Grid3D(Mesh):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(0, self.ny * self.nx * self.nz)
-       
-## pickling
-
-    def __getstate__(self):
-        return self.args
-
-    def __setstate__(self, dict):
-        self.__init__(**dict)
 
     def _test(self):
         """
