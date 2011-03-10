@@ -96,6 +96,9 @@ class UniformGrid3D(Grid3D):
          self.numberOfVertices,
          self.numberOfFaces,
          self.numberOfCells,
+         self.shape,
+         self.physicalShape,
+         self._meshSpacing,
          self.numberOfXYFaces,
          self.numberOfXZFaces,
          self.numberOfYZFaces,
@@ -103,7 +106,13 @@ class UniformGrid3D(Grid3D):
          self.numberOfVerticalColumns,
          self.numberOfLayers,
          self.origin) = builder.gridData
-                                    
+        
+        self._setTopology()
+        self._setGeometry()
+
+        self.communicator = communicator
+        
+    def _setTopology(self):
         self._topology = _UniformMeshTopology3D(self.nx, self.ny, self.nz,
                                                 self.numberOfCells,
                                                 self._maxFacesPerCell,
@@ -113,7 +122,8 @@ class UniformGrid3D(Grid3D):
                                                 self.faceCellIDs,
                                                 self.cellFaceIDs,
                                                 self)
-
+         
+    def _setGeometry(self):
         self._geometry = _UniformGridGeometry3D(self.dx, self.dy, self.dz,
                                                self.nx, self.ny, self.nz,
                                                self.numberOfCells,
@@ -121,9 +131,7 @@ class UniformGrid3D(Grid3D):
                                                self.numberOfXZFaces,
                                                self.numberOfYZFaces,
                                                self.origin)
-        
-        self.communicator = communicator
-        
+         
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
                               dy = self.args['dy'], ny = self.args['ny'],
@@ -149,13 +157,9 @@ class UniformGrid3D(Grid3D):
 ##     get topology methods
 
 ##         from common/mesh
-        
-    @getsetDeprecated
-    def _getCellFaceIDs(self):
-        return self.cellFaceIDs
 
     @property
-    def cellFaceIDs(self):
+    def _cellFaceIDs(self):
         return MA.array(Grid3DBuilder.createCells(self.nx,
                                                   self.ny,
                                                   self.nz,
@@ -196,10 +200,6 @@ class UniformGrid3D(Grid3D):
         
 ##         from numMesh/mesh
 
-    @getsetDeprecated
-    def _getVertexCoords(self):
-        return self.vertexCoords
-
     @property
     def vertexCoords(self):
         return Grid3DBuilder.createVertices(self.dx, self.dy, self.dz,
@@ -208,10 +208,6 @@ class UniformGrid3D(Grid3D):
                                             self.numberOfHorizontalRows,
                                             self.numberOfVerticalColumns) \
                 + self.origin
-
-    @getsetDeprecated
-    def getFaceCellIDs(self):
-        return self.faceCellIDs
 
     @property
     def faceCellIDs(self):
@@ -244,11 +240,7 @@ class UniformGrid3D(Grid3D):
                                YZids.swapaxes(1,3).reshape((2, self.numberOfYZFaces))), axis=1)
 
 ##         from common/mesh
-                                   
-    @getsetDeprecated
-    def _getCellVertexIDs(self):
-        return self._cellVertexIDs
-
+     
     @property
     def _cellVertexIDs(self):
         ids = numerix.zeros((8, self.nx, self.ny, self.nz))
@@ -263,11 +255,7 @@ class UniformGrid3D(Grid3D):
         ids[6] = ids[7] + 1
         
         return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
-        
-    @getsetDeprecated
-    def _getFaceVertexIDs(self):
-        return self.faceVertexIDs
-
+     
     @property
     def faceVertexIDs(self):
        return Grid3DBuilder.createFaces(self.nx, self.ny, self.nz)[1]
@@ -278,9 +266,6 @@ class UniformGrid3D(Grid3D):
         return self._cellVertexIDs     
         
 ##     scaling
-    
-    def _setScaledGeometry(self):
-        pass
     
     def _getNearestCellID(self, points):
         nx = self.args['nx']

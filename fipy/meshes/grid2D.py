@@ -78,6 +78,9 @@ class Grid2D(Mesh2D):
          self.numberOfVertices,
          self.numberOfFaces,
          self.numberOfCells,
+         self.shape,
+         self.physicalShape,
+         self._meshSpacing,
          self.numberOfHorizontalRows,
          self.numberOfVerticalColumns,
          self.numberOfHorizontalFaces,
@@ -94,45 +97,22 @@ class Grid2D(Mesh2D):
         return "%s(dx=%s, dy=%s, nx=%s, ny=%s)" \
             % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), 
                str(self.args["nx"]), str(self.args["ny"]))
-            
-    @getsetDeprecated
-    def getScale(self):
-        return self.scale['length']
         
     @getsetDeprecated
     def getPhysicalShape(self):
         return self.physicalShape
 
-    @property
-    def physicalShape(self):
-        """Return physical dimensions of Grid2D.
-        """
-        return PhysicalField(value = (self.nx * self.dx * self.scale, 
-                                      self.ny * self.dy * self.scale))
-
     @getsetDeprecated
     def _getMeshSpacing(self):
         return self._meshSpacing
-
-    @property
-    def _meshSpacing(self):
-        return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
-    
+   
     @getsetDeprecated
     def getShape(self):
         return self.shape
 
-    @property
-    def shape(self):
-        return (self.nx, self.ny)
-
     def _isOrthogonal(self):
         return True
         
-    @getsetDeprecated
-    def _getGlobalNonOverlappingCellIDs(self):
-        return self._globalNonOverlappingCellIDs
-
     @property
     def _globalNonOverlappingCellIDs(self):
         """
@@ -154,10 +134,6 @@ class Grid2D(Mesh2D):
         return numerix.arange((self.offset[1] + self.overlap['bottom']) * self.nx, 
                               (self.offset[1] + self.ny - self.overlap['top']) * self.nx)
 
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
-
     @property
     def _globalOverlappingCellIDs(self):
         """
@@ -177,10 +153,6 @@ class Grid2D(Mesh2D):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.offset[1] * self.nx, (self.offset[1] + self.ny) * self.nx)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingCellIDs(self):
-        return self._localNonOverlappingCellIDs
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -202,10 +174,6 @@ class Grid2D(Mesh2D):
         """
         return numerix.arange(self.overlap['bottom'] * self.nx, 
                               (self.ny - self.overlap['top']) * self.nx)
-
-    @getsetDeprecated
-    def _getLocalOverlappingCellIDs(self):
-        return self._localOverlappingCellIDs
 
     @property
     def _localOverlappingCellIDs(self):

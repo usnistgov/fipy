@@ -312,6 +312,7 @@ fipy/matrices/sparseMatrix.py
 fipy/matrices/test.py
 fipy/matrices/trilinosMatrix.py
 fipy/meshes/__init__.py
+fipy/meshes/abstractMesh.py
 fipy/meshes/cylindricalGrid1D.py
 fipy/meshes/cylindricalGrid2D.py
 fipy/meshes/cylindricalUniformGrid1D.py
@@ -333,6 +334,13 @@ fipy/meshes/tri2D.py
 fipy/meshes/uniformGrid1D.py
 fipy/meshes/uniformGrid2D.py
 fipy/meshes/uniformGrid3D.py
+fipy/meshes/builders/__init__.py
+fipy/meshes/builders/abstractGridBuilder.py
+fipy/meshes/builders/grid1DBuilder.py
+fipy/meshes/builders/grid2DBuilder.py
+fipy/meshes/builders/grid3DBuilder.py
+fipy/meshes/builders/periodicGrid1DBuilder.py
+fipy/meshes/builders/utilityClasses.py
 fipy/meshes/geometries/__init__.py
 fipy/meshes/geometries/abstractGeometries.py
 fipy/meshes/geometries/abstractUniformGeometries.py

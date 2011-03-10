@@ -170,10 +170,6 @@ class Tri2D(Mesh2D):
         leftOfBoxCells = numerix.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces])
         return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells), axis=1)
         
-    @getsetDeprecated
-    def getScale(self):
-        return self.scale['length']
-        
     @property
     def physicalShape(self):
         """Return physical dimensions of Grid2D.

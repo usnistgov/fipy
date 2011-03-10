@@ -46,7 +46,6 @@ from grid1D import Grid1D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 from fipy.tools import parallel
-from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.builders import UniformGrid1DBuilder
 from fipy.meshes.builders import Grid1DBuilder
@@ -93,35 +92,31 @@ class UniformGrid1D(Grid1D):
          self.numberOfVertices,
          self.numberOfFaces,
          self.numberOfCells,
+         self.shape,
+         self.physicalShape,
+         self._meshSpacing,
          self.occupiedNodes,
          self.origin) = builder.gridData
 
-        self._geometry = GeomClass(self.origin,
-                                   self.dx,
-                                   self.numberOfFaces,
-                                   self.numberOfCells,
-                                   scale=self._scale)
+        self._setGeometry(GeomClass=GeomClass)
+        self._setTopology()
 
+        self.communicator = communicator
+
+    def _setTopology(self):
         self._topology = _UniformMeshTopology1D(self.facesLeft, 
                                                 self.facesRight, 
                                                 self.numberOfCells, 
                                                 self.numberOfFaces, 
                                                 self)
-        
-        self.communicator = communicator
 
-    def setScale(self, scale):
-        self._setScale(scale)
-
-    def _setScale(self, scale):
-        self._geometry.scale = scale
-
-    scale = property(lambda s: s._geometry.scale, _setScale)
-        
-    @getsetDeprecated
-    def _getFaceAreas(self):
-        return self._faceAreas
-
+    def _setGeometry(self, GeomClass=_UniformGridGeometry1D):
+        self._geometry = GeomClass(self.origin,
+                                   self.dx,
+                                   self.numberOfFaces,
+                                   self.numberOfCells,
+                                   scale=self._scale)
+                                                     
     def _translate(self, vector):
         return UniformGrid1D(dx=self.dx, 
                              nx=self.args['nx'], 
@@ -144,13 +139,9 @@ class UniformGrid1D(Grid1D):
 ##     get topology methods
 
 ##         from common/mesh
-        
-    @getsetDeprecated
-    def _getCellFaceIDs(self):
-        return self.cellFaceIDs
 
     @property
-    def cellFaceIDs(self):
+    def _cellFaceIDs(self):
         return MA.array(Grid1DBuilder.createCells(self.nx))
 
     @property
@@ -159,17 +150,9 @@ class UniformGrid1D(Grid1D):
         
 ##         from numMesh/mesh
 
-    @getsetDeprecated
-    def _getVertexCoords(self):
-        return self.vertexCoords
-
     @property
     def vertexCoords(self):
         return self.faceCenters
-
-    @getsetDeprecated
-    def getFaceCellIDs(self):
-        return self.faceCellIDs
 
     @property
     def faceCellIDs(self):
@@ -181,10 +164,6 @@ class UniformGrid1D(Grid1D):
             ids[1,-1] = MA.masked
         return ids
 
-    @getsetDeprecated
-    def _getCellVertexIDs(self):
-        return self._cellVertexIDs
-
     @property
     def _cellVertexIDs(self):
         c1 = numerix.arange(self.numberOfCells)
@@ -192,9 +171,6 @@ class UniformGrid1D(Grid1D):
 
 ##     scaling
     
-    def _setScaledGeometry(self):
-        pass
-
     def _getNearestCellID(self, points):
         """
         Test cases

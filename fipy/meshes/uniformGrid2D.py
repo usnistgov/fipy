@@ -86,12 +86,21 @@ class UniformGrid2D(Grid2D):
          self.numberOfVertices,
          self.numberOfFaces,
          self.numberOfCells,
+         self.shape,
+         self.physicalShape,
+         self._meshSpacing,
          self.numberOfHorizontalRows,
          self.numberOfVerticalColumns,
          self.numberOfHorizontalFaces,
          self.numberOfVerticalFaces,
          self.origin) = builder.gridData
-                         
+        
+        self._setTopology()
+        self._setGeometry(GeomClass=GeomClass)
+
+        self.communicator = communicator
+        
+    def _setTopology(self):
         self._topology = _UniformMeshTopology2D(self.nx, self.ny,
                                                 self.numberOfFaces, 
                                                 self.numberOfCells,
@@ -100,7 +109,8 @@ class UniformGrid2D(Grid2D):
                                                 self.numberOfHorizontalRows,
                                                 self._maxFacesPerCell,
                                                 self)
-
+         
+    def _setGeometry(self, GeomClass=_UniformGridGeometry2D):
         self._geometry = GeomClass(self.dx, self.dy,
                                    self.nx, self.ny,
                                    self.origin,
@@ -110,9 +120,7 @@ class UniformGrid2D(Grid2D):
                                    self.numberOfHorizontalRows,
                                    self.numberOfVerticalColumns,
                                    self.numberOfCells)
-        
-        self.communicator = communicator
-        
+                            
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
                               dy = self.args['dy'], ny = self.args['ny'], 
@@ -136,12 +144,8 @@ class UniformGrid2D(Grid2D):
         del args['origin']
         return Grid2D(**args) + origin
 
-    @getsetDeprecated
-    def _getCellFaceIDs(self):
-        return self.cellFaceIDs
-
     @property
-    def cellFaceIDs(self):
+    def _cellFaceIDs(self):
         return Grid2DBuilder.createCells(self.nx, self.ny,
                                          self.numberOfFaces,
                                          self.numberOfHorizontalFaces,
@@ -153,18 +157,13 @@ class UniformGrid2D(Grid2D):
         
 ##         from numMesh/mesh
 
-    def _getVertexCoords(self):
+    @property
+    def vertexCoords(self):
         return Grid2DBuilder.createVertices(self.nx, self.ny,
                                             self.dx, self.dy,
                                             self.numberOfVertices,
                                             self.numberOfVerticalColumns) \
                  + self.origin
-
-    vertexCoords = property(_getVertexCoords)
-
-    @getsetDeprecated
-    def getFaceCellIDs(self):
-        return self.faceCellIDs
 
     @property
     def faceCellIDs(self):
@@ -234,10 +233,6 @@ class UniformGrid2D(Grid2D):
         return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
                                                      Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
     
-    @getsetDeprecated
-    def _getCellVertexIDs(self):
-        return self._cellVertexIDs
-
     @property
     def _cellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
@@ -248,11 +243,7 @@ class UniformGrid2D(Grid2D):
         ids[2] = ids[3] + 1
         
         return numerix.reshape(ids, (4, self.numberOfCells))
-        
-    @getsetDeprecated
-    def _getFaceVertexIDs(self):
-        return self.faceVertexIDs
-
+    
     @property
     def faceVertexIDs(self):
         Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
@@ -270,10 +261,6 @@ class UniformGrid2D(Grid2D):
                                                  order="FORTRAN")),
                                    axis=1)
 
-    @getsetDeprecated
-    def _getOrderedCellVertexIDs(self):
-        return self._orderedCellVertexIDs
-
     @property
     def _orderedCellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
@@ -285,11 +272,6 @@ class UniformGrid2D(Grid2D):
         
         return ids.reshape((4, self.numberOfCells), order="FORTRAN")
         
-##     scaling
-    
-    def _setScaledGeometry(self):
-        pass
-
     def _getNearestCellID(self, points):
         """
         Test cases

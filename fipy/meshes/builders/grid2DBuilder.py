@@ -56,6 +56,18 @@ class Grid2DBuilder(AbstractGridBuilder):
         self.numberOfVerticalColumns = self.spatialDict["numVerticalCols"]
         self.numberOfHorizontalRows = self.spatialDict["numHorizontalRows"]
 
+    def _calcShape(self):
+        return (self.ns[0], self.ns[1])
+             
+    def _calcPhysicalShape(self):
+        """Return physical dimensions of Grid1D."""
+        from fipy.tools.dimensions.physicalField import PhysicalField
+        return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale, 
+                                      self.ns[1] * self.ds[1] * self.scale))
+                      
+    def _calcMeshSpacing(self):
+        return numerix.array((self.ds[0],self.ds[1]))[...,numerix.newaxis]
+
     @property
     def _specificGridData(self):
         return [self.numberOfHorizontalRows,
@@ -197,8 +209,6 @@ class NonuniformGrid2DBuilder(Grid2DBuilder):
                     self.faces,
                     self.cells,
                     self.offsets]
-               
-
 
 class UniformGrid2DBuilder(Grid2DBuilder):
 
@@ -225,7 +235,4 @@ class UniformGrid2DBuilder(Grid2DBuilder):
         return super(UniformGrid2DBuilder, self)._specificGridData \
                 + [self.numberOfVerticalFaces,
                    self.origin]
-                   
-
-    
-                                  
+                                 

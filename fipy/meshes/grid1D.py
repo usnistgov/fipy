@@ -90,6 +90,9 @@ class Grid1D(Mesh1D):
          self.numberOfVertices,
          self.numberOfFaces,
          self.numberOfCells,
+         self.shape,
+         self.physicalShape,
+         self._meshSpacing,
          self.occupiedNodes,
          vertices,
          faces,
@@ -106,44 +109,17 @@ class Grid1D(Mesh1D):
             return "%s(dx=%s, nx=%d)" % (self.__class__.__name__, str(self.args["dx"]), self.args["nx"])
 
     @getsetDeprecated
-    def getDim(self):
-        return self.dim
-
-    @getsetDeprecated
-    def getScale(self):
-        return self.scale['length']
-
-    @getsetDeprecated
     def getPhysicalShape(self):
         return self.physicalShape
-
-    @property
-    def physicalShape(self):
-        """Return physical dimensions of Grid1D.
-        """
-        from fipy.tools.dimensions.physicalField import PhysicalField
-        return PhysicalField(value = (self.nx * self.dx * self.scale,))
 
     @getsetDeprecated
     def _getMeshSpacing(self):
         return self._meshSpacing
-
-    @property
-    def _meshSpacing(self):
-        return numerix.array((self.dx,))[...,numerix.newaxis]
     
     @getsetDeprecated
     def getShape(self):
         return self.shape
-
-    @property
-    def shape(self):
-        return (self.nx,)
         
-    @getsetDeprecated
-    def _getGlobalNonOverlappingCellIDs(self):
-        return self._globalNonOverlappingCellIDs
-
     @property
     def _globalNonOverlappingCellIDs(self):
         """
@@ -163,10 +139,6 @@ class Grid1D(Mesh1D):
         return numerix.arange(self.offset + self.overlap['left'], 
                               self.offset + self.nx - self.overlap['right'])
 
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
-
     @property
     def _globalOverlappingCellIDs(self):
         """
@@ -183,10 +155,6 @@ class Grid1D(Mesh1D):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.offset, self.offset + self.nx)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingCellIDs(self):
-        return self._localNonOverlappingCellIDs
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -206,10 +174,6 @@ class Grid1D(Mesh1D):
         return numerix.arange(self.overlap['left'], 
                               self.nx - self.overlap['right'])
 
-    @getsetDeprecated
-    def _getLocalOverlappingCellIDs(self):
-        return self._localOverlappingCellIDs
-
     @property
     def _localOverlappingCellIDs(self):
         """
@@ -226,10 +190,6 @@ class Grid1D(Mesh1D):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(0, self.nx)
-
-    @getsetDeprecated
-    def _getGlobalNonOverlappingFaceIDs(self):
-        return self._globalNonOverlappingFaceIDs
 
     @property
     def _globalNonOverlappingFaceIDs(self):
@@ -249,10 +209,6 @@ class Grid1D(Mesh1D):
         return numerix.arange(self.offset + self.overlap['left'], 
                               self.offset + self.numberOfFaces - self.overlap['right'])
 
-    @getsetDeprecated
-    def _getGlobalOverlappingFaceIDs(self):
-        return self._globalOverlappingFaceIDs
-
     @property
     def _globalOverlappingFaceIDs(self):
         """
@@ -269,10 +225,6 @@ class Grid1D(Mesh1D):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.offset, self.offset + self.numberOfFaces)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingFaceIDs(self):
-        return self._localNonOverlappingFaceIDs
 
     @property
     def _localNonOverlappingFaceIDs(self):
@@ -291,10 +243,6 @@ class Grid1D(Mesh1D):
         """
         return numerix.arange(self.overlap['left'], 
                               self.numberOfFaces - self.overlap['right'])
-
-    @getsetDeprecated
-    def _getLocalOverlappingFaceIDs(self):
-        return self._localOverlappingFaceIDs
 
     @property
     def _localOverlappingFaceIDs(self):

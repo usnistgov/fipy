@@ -92,6 +92,9 @@ class Grid3D(Mesh):
          self.numberOfVertices,
          self.numberOfFaces,
          self.numberOfCells,
+         self.shape,
+         self.physicalShape,
+         self._meshSpacing,
          self.numberOfXYFaces,
          self.numberOfXZFaces,
          self.numberOfYZFaces,
@@ -131,34 +134,16 @@ class Grid3D(Mesh):
                self.args["nx"], self.args["ny"], self.args["nz"])
 
     @getsetDeprecated
-    def getScale(self):
-        return self.scale['length']
-
-    @getsetDeprecated
     def getPhysicalShape(self):
         return self.physicalShape
-
-    @property
-    def physicalShape(self):
-        """Return physical dimensions of Grid3D.
-        """
-        return PhysicalField(value = (self.nx * self.dx * self.scale, self.ny * self.dy * self.scale, self.nz * self.dz * self.scale))
 
     @getsetDeprecated
     def _getMeshSpacing(self):
         return self._meshSpacing
-
-    @property
-    def _meshSpacing(self):
-        return numerix.array((self.dx, self.dy, self.dz))[...,numerix.newaxis]
-    
+   
     @getsetDeprecated
     def getShape(self):
         return self.shape
-
-    @property
-    def shape(self):
-        return (self.nx, self.ny, self.nz)
 
 ## The following method is broken when dx, dy or dz are not scalar. Simpler to use the generic
 ## _calcFaceAreas rather than do the required type checking, resizing and outer product.
@@ -175,10 +160,6 @@ class Grid3D(Mesh):
     def _isOrthogonal(self):
         return True
 
-    @getsetDeprecated
-    def _getGlobalNonOverlappingCellIDs(self):
-        return self._globalNonOverlappingCellIDs
-
     @property
     def _globalNonOverlappingCellIDs(self):
         """
@@ -189,10 +170,6 @@ class Grid3D(Mesh):
         """
         return numerix.arange((self.offset[2] + self.overlap['front']) * self.nx * self.ny, 
                               (self.offset[2] + self.nz - self.overlap['back']) * self.nx * self.ny)
-
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -205,10 +182,6 @@ class Grid3D(Mesh):
         
         return numerix.arange(self.offset[2] * self.nx * self.ny, (self.offset[2] + self.nz) * self.nx * self.ny)
 
-    @getsetDeprecated
-    def _getLocalNonOverlappingCellIDs(self):
-        return self._localNonOverlappingCellIDs
-
     @property
     def _localNonOverlappingCellIDs(self):
         """
@@ -219,10 +192,6 @@ class Grid3D(Mesh):
         """
         return numerix.arange(self.overlap['front'] * self.nx * self.ny, 
                               (self.nz - self.overlap['back']) * self.nx * self.ny)
-
-    @getsetDeprecated
-    def _getLocalOverlappingCellIDs(self):
-        return self._localOverlappingCellIDs
 
     @property
     def _localOverlappingCellIDs(self):

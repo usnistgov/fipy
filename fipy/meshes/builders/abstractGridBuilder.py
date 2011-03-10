@@ -84,11 +84,15 @@ class AbstractGridBuilder(object):
             newD = PhysicalField(value = d)
 
             if newD.unit.isDimensionless():
-                newD = d
+                if type(d) in [list, tuple]:
+                    newD = numerix.array(d)
+                else:
+                    newD = d
             else:
                 newD /= scale
 
             newDs.append(newD)
+
 
         newNs = self._calcNs(ns, newDs)
 
@@ -186,7 +190,19 @@ class AbstractGridBuilder(object):
                 self.offset,
                 self.numberOfVertices,
                 self.numberOfFaces,
-                self.numberOfCells]
+                self.numberOfCells,
+                self._calcShape(),
+                self._calcPhysicalShape(),
+                self._calcMeshSpacing()]
+
+    def _calcShape(self):
+        raise NotImplementedError
+
+    def _calcPhysicalShape(self):
+        raise NotImplementedError
+
+    def _calcMeshSpacing(self):
+        raise NotImplementedError
 
     @property
     def _specificGridData(self):
