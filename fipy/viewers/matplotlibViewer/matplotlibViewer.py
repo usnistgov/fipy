@@ -118,7 +118,10 @@ class _MatplotlibViewer(_Viewer):
         self._plot()
         pylab.draw()
 
-        fig.canvas.flush_events()
+        try:
+            fig.canvas.flush_events()
+        except NotImplementedError:
+            pass
         
         pylab.ion()
 
