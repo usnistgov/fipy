@@ -461,6 +461,81 @@ class Term(object):
         >>> mesh = Grid1D(nx=3) 
         >>> A = CellVariable(mesh=mesh, name="A", value=[1., 2., 3.]) 
         >>> B = CellVariable(mesh=mesh, name="B", value=[3., 4., 5.]) 
+        >>> C = CellVariable(mesh=mesh, name="C") 
+
+        >>> eq = DiffusionTerm(coeff=1.)
+        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
+        Traceback (most recent call last): 
+        ... 
+        SolutionVariableRequiredError: The solution variable needs to be specified.
+        >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
+        >>> from fipy.tools import parallel
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0], 
+        ...                                                             [ 1,-2, 1], 
+        ...                                                             [ 0, 1,-1]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        True
+        
+        >>> eq = DiffusionTerm(coeff=1., var=A)
+        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0], 
+        ...                                                             [ 1,-2, 1], 
+        ...                                                             [ 0, 1,-1]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        True
+        >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        True
+        
+        >>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1.)
+        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
+        Traceback (most recent call last): 
+        ... 
+        SolutionVariableRequiredError: The solution variable needs to be specified.
+        >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 2,-1, 0], 
+        ...                                                             [-1, 3,-1], 
+        ...                                                             [ 0,-1, 2]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        True
+
+        >>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=A)
+        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 2,-1, 0], 
+        ...                                                             [-1, 3,-1], 
+        ...                                                             [ 0,-1, 2]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        True
+        >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 2,-1, 0], 
+        ...                                                             [-1, 3,-1], 
+        ...                                                             [ 0,-1, 2]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        True
+        >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        True
+
         >>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
         >>> print eq 
         (TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B))
@@ -469,24 +544,38 @@ class Term(object):
         >>> print (eq.term, eq.other) 
         (TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
         >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
-        >>> from fipy.tools import parallel
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[0, 0, 0], 
+        ...                                                             [0, 0, 0], 
+        ...                                                             [0, 0, 0]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 0, -1])
         True
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, 0, 0], 
+        ...                                                             [0, 1, 0], 
+        ...                                                             [0, 0, 1]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [2, 2, 2])
         True
         >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, -1, 0], [-1, 2, -1], [0, -1, 1]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 1,-1, 0], 
+        ...                                                             [-1, 2,-1], 
+        ...                                                             [ 0,-1, 1]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0,])
         True
+        >>> solver = eq._prepareLinearSystem(var=C, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        True
+
         >>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
         Traceback (most recent call last): 
             ... 
@@ -534,9 +623,11 @@ class Term(object):
         Traceback (most recent call last):
             ...
         ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
+        
         >>> A = CellVariable(mesh=m, name='A', value=1)
         >>> B = CellVariable(mesh=m, name='B')
-        >>> C = CellVariable(mesh=m, name='C')        
+        >>> C = CellVariable(mesh=m, name='C')  
+
         >>> eq = (DiffusionTerm(coeff=1., var=A)) & (DiffusionTerm(coeff=2., var=B))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
@@ -551,6 +642,24 @@ class Term(object):
         [ 0.  0.  0.  0.]
         >>> print eq._vars
         [A, B]
+        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = eq.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], 
+        ...                                                             [1, -1, 0, 0], 
+        ...                                                             [0, 0, -2, 2], 
+        ...                                                             [0, 0, 2, -2]])
+        True
+        >>> print eq.RHSvector.globalValue
+        [ 0.  0.  0.  0.]
+        >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
+        Traceback (most recent call last):
+            ...
+        Exception: The solution variable should not be specified.
+        >>> solver = eq._prepareLinearSystem(var=C, solver=None, boundaryConditions=(), dt=1.)
+        Traceback (most recent call last):
+            ...
+        Exception: The solution variable should not be specified.
+        
         >>> DiffusionTerm(var=A) & DiffusionTerm(var=A)
         Traceback (most recent call last):
             ...
