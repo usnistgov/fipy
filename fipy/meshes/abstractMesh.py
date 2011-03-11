@@ -952,8 +952,7 @@ class AbstractMesh(object):
             ...
             MeshAdditionError: Dimensions do not match
         """  
-        from fipy.meshes.mesh import Mesh
-        if(isinstance(other, Mesh)):
+        if(isinstance(other, AbstractMesh)):
             return self._concatenatedClass(**self._getAddedMeshValues(other=other))
         else:
             return self._translate(other)

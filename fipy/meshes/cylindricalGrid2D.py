@@ -55,7 +55,7 @@ class CylindricalGrid2D(Grid2D):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
-        
+
         Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
         self.vertexCoords += self.origin

@@ -66,7 +66,7 @@ class Grid2D(AbstractGrid2DFactory(Mesh2D)):
             'overlap': overlap,
             'communicator': communicator
         }
-
+        
         builder.buildGridData([dx, dy], [nx, ny], overlap, communicator)
                                                
         ([self.dx, self.dy],
