@@ -524,7 +524,7 @@ class Term(object):
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve()
         Traceback (most recent call last):
             ...
-        SolutionVariableRequiredError: The solution variable needs to be specified.
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A)
         >>> DiffusionTerm() & DiffusionTerm()
         Traceback (most recent call last):

@@ -94,6 +94,12 @@ class TrilinosSolver(Solver):
 
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
 
+        if ((globalMatrix.matrix.NumGlobalRows() != globalMatrix.matrix.NumGlobalCols())
+            | (globalMatrix.matrix.NumGlobalRows() != len(self.var.value))):
+            from fipy.terms import SolutionVariableNumberError
+
+            raise SolutionVariableNumberError
+            
         self._solve_(globalMatrix.matrix, 
                      nonOverlappingVector, 
                      nonOverlappingRHSvector)
