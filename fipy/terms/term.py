@@ -507,7 +507,7 @@ class Term(object):
         ...                                                             [-1, 3,-1], 
         ...                                                             [ 0,-1, 2]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 2, 3])
         True
 
         >>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=A)
@@ -517,7 +517,7 @@ class Term(object):
         ...                                                             [-1, 3,-1], 
         ...                                                             [ 0,-1, 2]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 2, 3])
         True
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
@@ -525,7 +525,7 @@ class Term(object):
         ...                                                             [-1, 3,-1], 
         ...                                                             [ 0,-1, 2]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 2, 3])
         True
         >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
@@ -533,7 +533,7 @@ class Term(object):
         ...                                                             [ 0, 0, 0], 
         ...                                                             [ 0, 0, 0]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 0, -1])
         True
 
         >>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
@@ -573,7 +573,7 @@ class Term(object):
         ...                                                             [ 0, 0, 0], 
         ...                                                             [ 0, 0, 0]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 0, -1])
         True
 
         >>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
