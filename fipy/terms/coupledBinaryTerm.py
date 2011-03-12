@@ -164,6 +164,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
         numberOfCells = var.mesh.numberOfCells
         numberOfVariables = len(self._vars)
+        numberOfEquations = len(self._uncoupledTerms)
         
         matrix = 0
         RHSvectorsJ = []
@@ -175,8 +176,10 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
             for j, tmpVar in enumerate(self._vars):
 
                 class OffsetSparseMatrix(SparseMatrix):
-                    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=numberOfVariables):
-                        SparseMatrix.__init__(self, mesh=mesh, bandwidth=bandwidth, sizeHint=sizeHint, numberOfVariables=numberOfVariables)
+                    def __init__(self, mesh, bandwidth=0, sizeHint=None, 
+                                 numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations):
+                        SparseMatrix.__init__(self, mesh=mesh, bandwidth=bandwidth, sizeHint=sizeHint, 
+                                              numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations) 
 
                     def put(self, vector, id1, id2):
                         SparseMatrix.put(self, vector, id1 + numberOfCells * i, id2 + numberOfCells * j)

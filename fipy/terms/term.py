@@ -114,7 +114,8 @@ class Term(object):
             return var
 
     def _checkVar(self, var):
-        if numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float']:
+        if ((var is not None) 
+            and (numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float'])):
             import warnings
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
                           UserWarning, stacklevel=4)
@@ -545,11 +546,14 @@ class Term(object):
         (TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
         >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[0, 0, 0], 
-        ...                                                             [0, 0, 0], 
-        ...                                                             [0, 0, 0]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[0, 0, 0, 0, 0, 0], 
+        ...                                                             [0, 0, 0, 0, 0, 0], 
+        ...                                                             [0, 0, 0, 0, 0, 0]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 0, -1])
+        True
+        >>> res = eq.justResidualVector(boundaryConditions=(), dt=1.)
+        >>> print parallel.procID > 0 or numerix.allequal(res, [-1, 0, 1]) 
         True
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray

@@ -74,13 +74,13 @@ class TrilinosSolver(Solver):
             mesh = self.var.mesh
             localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
-            nonOverlappingVector = Epetra.Vector(globalMatrix.nonOverlappingMap, 
+            nonOverlappingVector = Epetra.Vector(globalMatrix.nonOverlappingColMap, 
                                                  self.var[localNonOverlappingCellIDs])
 
-            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.nonOverlappingMap, 
+            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.nonOverlappingRowMap, 
                                                     self.RHSvector[localNonOverlappingCellIDs])
 
-            overlappingVector = Epetra.Vector(globalMatrix.overlappingMap, self.var)
+            overlappingVector = Epetra.Vector(globalMatrix.overlappingColMap, self.var)
 
             self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
 
@@ -91,12 +91,12 @@ class TrilinosSolver(Solver):
         del self.globalVectors
         
     def _solve(self):
-
+        from fipy.terms import SolutionVariableNumberError
+        
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
 
         if ((globalMatrix.matrix.NumGlobalRows() != globalMatrix.matrix.NumGlobalCols())
-            | (globalMatrix.matrix.NumGlobalRows() != len(self.var.value))):
-            from fipy.terms import SolutionVariableNumberError
+            or (globalMatrix.matrix.NumGlobalRows() != len(self.var.value))):
 
             raise SolutionVariableNumberError
             
@@ -105,8 +105,8 @@ class TrilinosSolver(Solver):
                      nonOverlappingRHSvector)
 
         overlappingVector.Import(nonOverlappingVector, 
-                                 Epetra.Import(globalMatrix.overlappingMap, 
-                                               globalMatrix.nonOverlappingMap), 
+                                 Epetra.Import(globalMatrix.overlappingColMap, 
+                                               globalMatrix.nonOverlappingColMap), 
                                  Epetra.Insert)
         
         self.var.value = overlappingVector

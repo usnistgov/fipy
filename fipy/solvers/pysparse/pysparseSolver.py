@@ -104,9 +104,11 @@ class PysparseSolver(Solver):
         
         array = self.var.numericValue
         
-        if ((self.matrix.matrix.shape[0] != self.matrix.matrix.shape[1])
-            | (self.matrix.matrix.shape[0] != len(array))):
-            from fipy.terms import SolutionVariableNumberError
+        from fipy.terms import SolutionVariableNumberError
+        
+        if ((self.matrix == 0)
+            or (self.matrix.matrix.shape[0] != self.matrix.matrix.shape[1])
+            or (self.matrix.matrix.shape[0] != len(array))):
 
             raise SolutionVariableNumberError
 

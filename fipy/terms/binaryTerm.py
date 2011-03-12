@@ -57,18 +57,17 @@ class _BinaryTerm(_BaseBinaryTerm):
         
         Only called at top-level by `_prepareLinearSystem()`
         """
-        if var is None and len(self._vars) > 1:
+        if isinstance(var, _CoupledCellVariable) and len(var.vars) > 1:
             RHSvector = 0
-            for var in self._vars:
-                RHSvector += self._buildExplicitIfOtherVar(var=var, 
+            for v in var.vars:
+                RHSvector += self._buildExplicitIfOtherVar(var=v, 
                                                            SparseMatrix=SparseMatrix, 
                                                            boundaryConditions=boundaryConditions, 
                                                            dt=dt,
                                                            transientGeomCoeff=transientGeomCoeff,
                                                            diffusionGeomCoeff=diffusionGeomCoeff)
-                                                           
-            var = None
-            matrix = 0
+                      
+            matrix = SparseMatrix(mesh=var.mesh, numberOfVariables=len(var.vars), numberOfEquations=1)
         else:
             var, matrix, RHSvector = self._buildMatrix(var=var, 
                                                        SparseMatrix=SparseMatrix, 
