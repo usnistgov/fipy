@@ -508,6 +508,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
         self.exportMmf(mtxName)
 
+        parallel.Barrier()
         mtx = mmio.mmread(mtxName)
         parallel.Barrier()
         
