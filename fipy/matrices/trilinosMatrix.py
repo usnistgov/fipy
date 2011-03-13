@@ -652,27 +652,48 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         Tests
 
         >>> from fipy import *
-        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3, numberOfEquations=3)
-        >>> GNO = matrix._globalNonOverlappingRowIDs
-        >>> GO = matrix._globalOverlappingRowIDs
-        >>> LNO = matrix._localNonOverlappingRowIDs
-        >>> print parallel.Nproc != 1 or numerix.allequal(GNO, numerix.arange(15))
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3, numberOfEquations=1)
+        >>> GNOR = matrix._globalNonOverlappingRowIDs
+        >>> GOR = matrix._globalOverlappingRowIDs
+        >>> LNOR = matrix._localNonOverlappingRowIDs
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOR, numerix.arange(5))
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(GO, numerix.arange(15))
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOR, numerix.arange(5))
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(LNO, numerix.arange(15))
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOR, numerix.arange(5))
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GNO, [0, 1, 5, 6, 10, 11])
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GNOR, [0, 1])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GO, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GOR, [0, 1, 2, 3])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(LNO, [0, 1, 4, 5, 8, 9])
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(LNOR, [0, 1])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GNO, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GNOR, [2, 3, 4])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GO, numerix.arange(15))
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GOR, [0, 1, 2, 3, 4])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(LNO, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(LNOR, [2, 3, 4])
+        True
+        >>> GNOC = matrix._globalNonOverlappingColIDs
+        >>> GOC = matrix._globalOverlappingColIDs
+        >>> LNOC = matrix._localNonOverlappingColIDs
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOC, numerix.arange(15))
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOC, numerix.arange(15))
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOC, numerix.arange(15))
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GNOC, [0, 1, 5, 6, 10, 11])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GOC, numerix.arange(15))
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
         True
 
         """
