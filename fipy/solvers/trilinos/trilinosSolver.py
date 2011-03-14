@@ -96,7 +96,7 @@ class TrilinosSolver(Solver):
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
 
         if ((globalMatrix.matrix.NumGlobalRows() != globalMatrix.matrix.NumGlobalCols())
-            or (globalMatrix.matrix.NumGlobalRows() != len(self.var.value))):
+            or (globalMatrix.matrix.NumGlobalRows() != len(self.var.globalValue))):
 
             raise SolutionVariableNumberError
             
