@@ -653,49 +653,425 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         Tests
 
         >>> from fipy import *
-        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3, numberOfEquations=1)
-        >>> GNOR = matrix._globalNonOverlappingRowIDs
-        >>> GOR = matrix._globalOverlappingRowIDs
-        >>> LNOR = matrix._localNonOverlappingRowIDs
-        >>> print parallel.Nproc != 1 or numerix.allequal(GNOR, numerix.arange(5))
-        True
-        >>> print parallel.Nproc != 1 or numerix.allequal(GOR, numerix.arange(5))
-        True
-        >>> print parallel.Nproc != 1 or numerix.allequal(LNOR, numerix.arange(5))
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GNOR, [0, 1])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GOR, [0, 1, 2, 3])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(LNOR, [0, 1])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GNOR, [2, 3, 4])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GOR, [0, 1, 2, 3, 4])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(LNOR, [2, 3, 4])
-        True
-        >>> GNOC = matrix._globalNonOverlappingColIDs
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3, numberOfEquations=2)
         >>> GOC = matrix._globalOverlappingColIDs
+        >>> GNOC = matrix._globalNonOverlappingColIDs
         >>> LNOC = matrix._localNonOverlappingColIDs
-        >>> print parallel.Nproc != 1 or numerix.allequal(GNOC, numerix.arange(15))
+        >>> GOR = matrix._globalOverlappingRowIDs
+        >>> GNOR = matrix._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._localNonOverlappingRowIDs
+
+        5 cells, 3 variables, 1 processor
+                       
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:0
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalNonOverlappingColIDs:0
+        
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:0
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(GOC, numerix.arange(15))
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(LNOC, numerix.arange(15))
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GNOC, [0, 1, 5, 6, 10, 11])
+
+        
+        5 cells, 2 equations, 1 processor
+                       
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:0
+
+        0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _globalNonOverlappingRowIDs:0
+        
+        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:0
+
+        0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+
+
+        5 cells, 3 variables, 2 processors
+                       
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        0  1  2  3     0  1  2  3     0  1  2  3      _globalOverlappingCellIDs:0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:1
+                    
+        0  1  2  3     5  6  7  8    10 11 12 13      _globalOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:1
+
+        0  1           0  1           0  1            _globalNonOverlappingCellIDs:0
+              2  3  4        2  3  4        2  3  4   _globalNonOverlappingCellIDs:1
+                    
+        0  1           5  6          10 11            _globalNonOverlappingColIDs:0
+              2  3  4        7  8  9       12 13 14   _globalNonOverlappingColIDs:1
+        
+        0  1  2  3     0  1  2  3     0  1  2  3      _localOverlappingCellIDs:0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:1
+                    
+        0  1  2  3     4  5  6  7     8  9 10 11      _localOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:1
+
+        0  1           0  1           0  1            _localNonOverlappingCellIDs:0
+              2  3  4        2  3  4        2  3  4   _localNonOverlappingCellIDs:1
+                    
+        0  1           4  5           8  9            _localNonOverlappingColIDs:0
+              2  3  4        7  8  9       12 13 14   _localNonOverlappingColIDs:1
+              
+              
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GOC, numerix.arange(15))
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 5, 6, 10, 11])
         True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+
+
+        5 cells, 2 equations, 2 processors
+                       
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        0  1  2  3     0  1  2  3      _globalOverlappingCellIDs:0
+        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:1
+                    
+        0  1  2  3     5  6  7  8      _globalOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:1
+
+        0  1           0  1            _globalNonOverlappingCellIDs:0
+              2  3  4        2  3  4   _globalNonOverlappingCellIDs:1
+                    
+        0  1           5  6            _globalNonOverlappingRowIDs:0
+              2  3  4        7  8  9   _globalNonOverlappingRowIDs:1
+        
+        0  1  2  3     0  1  2  3      _localOverlappingCellIDs:0
+        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:1
+                    
+        0  1  2  3     4  5  6  7      _localOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:1
+
+        0  1           0  1            _localNonOverlappingCellIDs:0
+              2  3  4        2  3  4   _localNonOverlappingCellIDs:1
+                    
+        0  1           4  5            _localNonOverlappingRowIDs:0
+              2  3  4        7  8  9   _localNonOverlappingRowIDs:1
+
+
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOR, [0, 1, 2, 3, 5, 6, 7, 8])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOR, [0, 1, 5, 6])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOR, [2, 3, 4, 7, 8, 9])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOR, [0, 1, 4, 5])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOR, [2, 3, 4, 7, 8, 9])
+        True
+
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7), numberOfVariables=3, numberOfEquations=2)
+        >>> GOC = matrix._globalOverlappingColIDs
+        >>> GNOC = matrix._globalNonOverlappingColIDs
+        >>> LNOC = matrix._localNonOverlappingColIDs
+        >>> GOR = matrix._globalOverlappingRowIDs
+        >>> GNOR = matrix._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._localNonOverlappingRowIDs
+        >>> from fipy.tools.debug import PRINT
+        >>> PRINT("GNOC a", GNOC)
+        >>> PRINT("GNOC b", matrix.mesh._globalNonOverlappingCellIDs)
+        >>> PRINT("GOC a", GOC)
+        >>> PRINT("GOC b", matrix.mesh._globalOverlappingCellIDs)
+        >>> PRINT("LNOC a", LNOC)
+        >>> PRINT("LNOC b", matrix.mesh._localNonOverlappingCellIDs)
+        >>> PRINT("LOC b", matrix.mesh._localOverlappingCellIDs)
+
+        7 cells, 3 variables, 1 processor
+                       
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _globalOverlappingColIDs:0
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _globalNonOverlappingColIDs:0
+        
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localOverlappingColIDs:0
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localNonOverlappingColIDs:0
+        
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        ...                                                     11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+        ...                                                      11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+        ...                                                      11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        True
+
+ 
+        7 cells, 2 equations, 1 processor
+                       
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _globalOverlappingRowIDs:0
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _globalNonOverlappingRowIDs:0
+        
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localOverlappingRowIDs:0
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localNonOverlappingRowIDs:0
+                 
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        True
+
+                 
+        7 cells, 3 variables, 2 processors
+                       
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         _globalOverlappingCellIDs:0
+           1  2  3  4  5  6     1  2  3  4  5  6     1  2  3  4  5  6   _globalOverlappingCellIDs:1
+                    
+        0  1  2  3  4        7  8  9 10 11       14 15 16 17 18         _globalOverlappingColIDs:0
+           1  2  3  4  5  6     8  9 10 11 12 13    15 16 17 18 19 20   _globalOverlappingColIDs:1
+
+        0  1  2              0  1  2              0  1  2               _globalNonOverlappingCellIDs:0
+                 3  4  5  6           3  4  5  6           3  4  5  6   _globalNonOverlappingCellIDs:1
+                    
+        0  1  2              7  8  9             14 15 16               _globalNonOverlappingColIDs:0
+                 3  4  5  6          10 11 12 13          17 18 19 20   _globalNonOverlappingColIDs:1
+        
+        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         _localOverlappingCellIDs:0
+           0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5   _localOverlappingCellIDs:1
+                    
+        0  1  2  3  4        5  6  7  8  9       10 11 12 13 14         _localOverlappingColIDs:0
+           0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17   _localOverlappingColIDs:1
+
+        0  1  2              0  1  2              0  1  2               _localNonOverlappingCellIDs:0
+                 2  3  4  5           2  3  4  5           2  3  4  5   _localNonOverlappingCellIDs:1
+                    
+        0  1  2              5  6  7             10 11 12               _localNonOverlappingColIDs:0
+                 2  3  4  5           8  9 10 11          14 15 16 17   _localNonOverlappingColIDs:1
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOC, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 2, 7, 8, 9, 14, 15, 16])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOC, [3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 2, 5, 6, 7, 10, 11, 12])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 4, 5, 8, 9, 10, 11, 14, 15, 16, 17])
+        True
+      
+        7 cells, 2 equations, 2 processors
+        
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        0  1  2  3  4        0  1  2  3  4         _globalOverlappingCellIDs:0
+           1  2  3  4  5  6     1  2  3  4  5  6   _globalOverlappingCellIDs:1
+                    
+        0  1  2  3  4        7  8  9 10 11         _globalOverlappingRowIDs:0
+           1  2  3  4  5  6     8  9 10 11 12 13   _globalOverlappingRowIDs:1
+
+        0  1  2              0  1  2               _globalNonOverlappingCellIDs:0
+                 3  4  5  6           3  4  5  6   _globalNonOverlappingCellIDs:1
+                    
+        0  1  2              7  8  9               _globalNonOverlappingRowIDs:0
+                 3  4  5  6          10 11 12 13   _globalNonOverlappingRowIDs:1
+        
+        0  1  2  3  4        0  1  2  3  4         _localOverlappingCellIDs:0
+           0  1  2  3  4  5     0  1  2  3  4  5   _localOverlappingCellIDs:1
+                    
+        0  1  2  3  4        5  6  7  8  9         _localOverlappingRowIDs:0
+           0  1  2  3  4  5     6  7  8  9 10 11   _localOverlappingRowIDs:1
+
+        0  1  2              0  1  2               _localNonOverlappingCellIDs:0
+                 2  3  4  5           2  3  4  5   _localNonOverlappingCellIDs:1
+                    
+        0  1  2              5  6  7               _localNonOverlappingRowIDs:0
+                 2  3  4  5           8  9 10 11   _localNonOverlappingRowIDs:1
+ 
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOR, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOR, [0, 1, 2, 7, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOR, [3, 4, 5, 6, 10, 11, 12, 13])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOR, [0, 1, 2, 5, 6, 7])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOR, [2, 3, 4, 5, 8, 9, 10, 11])
+        True
+
+        
+        7 cells, 3 variables, 3 processors
+                       
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        0  1  2  3           0  1  2  3           0  1  2  3            _globalOverlappingCellIDs:0
+        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      _globalOverlappingCellIDs:1
+              2  3  4  5  6        2  3  4  5  6        2  3  4  5  6   _globalOverlappingCellIDs:2
+                    
+        0  1  2  3           7  8  9 10          14 15 16 17            _globalOverlappingColIDs:0
+        0  1  2  3  4  5     7  8  9 10 11 12    14 15 16 17 18 19      _globalOverlappingColIDs:1
+              2  3  4  5  6        9 10 11 12 13       16 17 18 19 20   _globalOverlappingColIDs:2
+
+        0  1                 0  1                 0  1                  _globalNonOverlappingCellIDs:0
+              2  3                 2  3                 2  3            _globalNonOverlappingCellIDs:1
+                    4  5  6              4  5  6              4  5  6   _globalNonOverlappingCellIDs:2
+                    
+        0  1                 7  8                14 15                  _globalNonOverlappingColIDs:0
+              2  3                 9 10                16 17            _globalNonOverlappingColIDs:1
+                    4  5  6             11 12 13             18 19 20   _globalNonOverlappingColIDs:2
+        
+        0  1  2  3           0  1  2  3           0  1  2  3            _localOverlappingCellIDs:0
+        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      _localOverlappingCellIDs:1
+              0  1  2  3  4        0  1  2  3  4        0  1  2  3  4   _localOverlappingCellIDs:2
+                    
+        0  1  2  3           4  5  6  7           8  9 10 11            _localOverlappingColIDs:0
+        0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17      _localOverlappingColIDs:1
+              0  1  2  3  4        5  6  7  8  9       10 11 12 13 14   _localOverlappingColIDs:2
+
+        0  1                 0  1                 0  1                  _localNonOverlappingCellIDs:0
+              2  3                 2  3                 2  3            _localNonOverlappingCellIDs:1
+                    2  3  4              2  3  4              2  3  4   _localNonOverlappingCellIDs:2
+                    
+        0  1                 4  5                 8  9                  _localNonOverlappingColIDs:0
+              2  3                 8  9                14 15            _localNonOverlappingColIDs:1
+                    2  3  4              7  8  9             12 13 14   _localNonOverlappingColIDs:2
+        
+        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(GOC, [2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20])
+        True
+        
+        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 7, 8, 14, 15])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(GNOC, [2, 3, 9, 10, 16, 17])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(GNOC, [4, 5, 6, 11, 12, 13, 18, 19, 20])
+        True
+        
+        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 8, 9, 14, 15])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+
+                    
+        7 cells, 2 equations, 3 processors
+        
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        0  1  2  3           0  1  2  3            _globalOverlappingCellIDs:0
+        0  1  2  3  4  5     0  1  2  3  4  5      _globalOverlappingCellIDs:1
+              2  3  4  5  6        2  3  4  5  6   _globalOverlappingCellIDs:2
+                    
+        0  1  2  3           7  8  9 10            _globalOverlappingRowIDs:0
+        0  1  2  3  4  5     7  8  9 10 11 12      _globalOverlappingRowIDs:1
+              2  3  4  5  6        9 10 11 12 13   _globalOverlappingRowIDs:2
+
+        0  1                 0  1                  _globalNonOverlappingCellIDs:0
+              2  3                 2  3            _globalNonOverlappingCellIDs:1
+                    4  5  6              4  5  6   _globalNonOverlappingCellIDs:2
+                    
+        0  1                 7  8                  _globalNonOverlappingRowIDs:0
+              2  3                 9 10            _globalNonOverlappingRowIDs:1
+                    4  5  6             11 12 13   _globalNonOverlappingRowIDs:2
+        
+        0  1  2  3           0  1  2  3            _localOverlappingCellIDs:0
+        0  1  2  3  4  5     0  1  2  3  4  5      _localOverlappingCellIDs:1
+              0  1  2  3  4        0  1  2  3  4   _localOverlappingCellIDs:2
+                    
+        0  1  2  3           4  5  6  7            _localOverlappingRowIDs:0
+        0  1  2  3  4  5     6  7  8  9 10 11      _localOverlappingRowIDs:1
+              0  1  2  3  4        5  6  7  8  9   _localOverlappingRowIDs:2
+
+        0  1                 0  1                  _localNonOverlappingCellIDs:0
+              2  3                 2  3            _localNonOverlappingCellIDs:1
+                    2  3  4              2  3  4   _localNonOverlappingCellIDs:2
+                    
+        0  1                 4  5                  _localNonOverlappingRowIDs:0
+              2  3                 8  9            _localNonOverlappingRowIDs:1
+                    2  3  4              7  8  9   _localNonOverlappingRowIDs:2
+        
 
         """
         self.mesh = mesh
