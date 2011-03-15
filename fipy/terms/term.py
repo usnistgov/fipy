@@ -100,7 +100,7 @@ class Term(object):
                                                        transientGeomCoeff=transientGeomCoeff,
                                                        diffusionGeomCoeff=diffusionGeomCoeff)
                                                        
-            return RHSvector - var.value * matrix
+            return RHSvector - matrix * var.value
         else:
             return 0
 
