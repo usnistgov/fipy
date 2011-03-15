@@ -1157,15 +1157,13 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         return self
 
     def _getStencil(self, id1, id2):
-        globalOverlappingRowIDs = self._globalOverlappingRowIDs
-        globalNonOverlappingRowIDs = self._globalNonOverlappingRowIDs
-        
-        id1 = globalOverlappingRowIDs[id1]
-        id2 = globalOverlappingRowIDs[id2]
-        
-        mask = numerix.in1d(id1, globalNonOverlappingRowIDs) 
+        id1 = self._globalOverlappingRowIDs[id1]
+        id2 = self._globalOverlappingColIDs[id2]
+            
+        mask = numerix.in1d(id1, self._globalNonOverlappingRowIDs) 
         id1 = id1[mask]
         id2 = id2[mask]
+        
         return id1, id2, mask
 
     def _globalNonOverlapping(self, vector, id1, id2):
