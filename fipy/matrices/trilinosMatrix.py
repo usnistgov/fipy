@@ -311,7 +311,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
            
     def __rmul__(self, other):
         if type(numerix.ones(1)) == type(other):
-            y = Epetra.Vector(other)
+            if not self.matrix.Filled():
+                self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
+
+            y = _numpyToTrilinosVector(other, self.nonOverlappingColMap)
             result = Epetra.Vector(self.nonOverlappingColMap)
             self.matrix.Multiply(True, y, result)
             return _trilinosToNumpyVector(result)
