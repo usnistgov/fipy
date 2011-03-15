@@ -107,21 +107,21 @@ class _TrilinosMatrixBase(_SparseMatrix):
     # insertions fail.
     def copy(self):
         if not self.matrix.Filled():
-            self.matrix.FillComplete()
+            self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
 
         return _TrilinosMatrixBase(matrix=Epetra.CrsMatrix(self.matrix))
             
         
     def __getitem__(self, index):
         if not self.matrix.Filled():
-            self.matrix.FillComplete()
+            self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
 
         return self.matrix[index]
         
     def __str__(self):
 
         if not self.matrix.Filled():
-            self.matrix.FillComplete()
+            self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
 
         from fipy.tools import parallel
         return ''.join(parallel.allgather(_SparseMatrix.__str__(self)))
@@ -149,7 +149,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
     def __iadd__(self, other):
         if other != 0:
             if not other.matrix.Filled():
-                other.matrix.FillComplete()
+                other.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
             
             # Depending on which one is more filled, pick the order of operations 
             if self.matrix.Filled() and other.matrix.NumGlobalNonzeros() \
@@ -184,10 +184,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
     def _add(self, other, sign = 1):
 
         if not self.matrix.Filled():
-            self.matrix.FillComplete()
+            self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
             
         if not other.matrix.Filled():
-            other.matrix.FillComplete()
+            other.matrix.FillComplete(other.nonOverlappingColMap, other.nonOverlappingRowMap)
         
         # make the one with more nonzeros the right-hand operand
         # so addition is likely to succeed
@@ -277,10 +277,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
             if isinstance(other.matrix, Epetra.RowMatrix):
             
                 if not self.matrix.Filled():
-                    self.matrix.FillComplete()
+                    self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
                     
                 if not other.matrix.Filled():
-                    other.matrix.FillComplete()
+                    other.matrix.FillComplete(other.nonOverlappingColMap, other.nonOverlappingRowMap)
 
                 result = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingRowMap, self.nonOverlappingColMap, 0)
 
@@ -300,7 +300,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
             elif shape == (N,):
 
                 if not self.matrix.Filled():
-                    self.matrix.FillComplete()
+                    self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
 
                 y = _numpyToTrilinosVector(other, self.nonOverlappingColMap)
                 result = Epetra.Vector(self.nonOverlappingRowMap)
@@ -368,7 +368,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
             else:
                 self.matrix.InsertGlobalValues(id1, id2, numerix.zeros(len(vector)))
                 if not self.matrix.Filled():
-                    self.matrix.FillComplete()
+                    self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
                 if self.matrix.ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings
                     warnings.warn("ReplaceGlobalValues returned error code in put", 
@@ -427,7 +427,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
     def takeDiagonal(self):
         if not self.matrix.Filled():
-            self.matrix.FillComplete()
+            self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
 
         result = Epetra.Vector(self.nonOverlappingColMap)
         self.matrix.ExtractDiagonalCopy(result)
@@ -493,7 +493,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         Exports the matrix to a Matrix Market file of the given filename.
         """
         if not self.matrix.Filled():
-            self.matrix.FillComplete()
+            self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
         EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     @property
@@ -517,7 +517,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
         coo = mtx.tocoo()
         trilinosMatrix = self.matrix
-        numpyArray = numerix.zeros((trilinosMatrix.NumGlobalRows(), trilinosMatrix.NumGlobalRows()), 'd')
+        numpyArray = numerix.zeros((trilinosMatrix.NumGlobalRows(), trilinosMatrix.NumGlobalCols()), 'd')
         numpyArray[coo.row, coo.col] = coo.data
         return numpyArray
 
@@ -817,14 +817,6 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         >>> GOR = matrix._globalOverlappingRowIDs
         >>> GNOR = matrix._globalNonOverlappingRowIDs
         >>> LNOR = matrix._localNonOverlappingRowIDs
-        >>> from fipy.tools.debug import PRINT
-        >>> PRINT("GNOC a", GNOC)
-        >>> PRINT("GNOC b", matrix.mesh._globalNonOverlappingCellIDs)
-        >>> PRINT("GOC a", GOC)
-        >>> PRINT("GOC b", matrix.mesh._globalOverlappingCellIDs)
-        >>> PRINT("LNOC a", LNOC)
-        >>> PRINT("LNOC b", matrix.mesh._localNonOverlappingCellIDs)
-        >>> PRINT("LOC b", matrix.mesh._localOverlappingCellIDs)
 
         7 cells, 3 variables, 1 processor
                        
@@ -1167,10 +1159,10 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     def _getStencil(self, id1, id2):
         globalOverlappingRowIDs = self._globalOverlappingRowIDs
         globalNonOverlappingRowIDs = self._globalNonOverlappingRowIDs
-            
+        
         id1 = globalOverlappingRowIDs[id1]
         id2 = globalOverlappingRowIDs[id2]
-            
+        
         mask = numerix.in1d(id1, globalNonOverlappingRowIDs) 
         id1 = id1[mask]
         id2 = id2[mask]
@@ -1265,7 +1257,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         """
 
         if not self.matrix.Filled():
-            self.matrix.FillComplete()
+            self.matrix.FillComplete(self.nonOverlappingColMap, self.nonOverlappingRowMap)
 
         N = self.matrix.NumMyCols()
 
