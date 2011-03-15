@@ -74,15 +74,13 @@ class TrilinosSolver(Solver):
             mesh = self.var.mesh
             localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
-            nonOverlappingVector = Epetra.Vector(globalMatrix.nonOverlappingColMap, 
+            nonOverlappingVector = Epetra.Vector(globalMatrix.colMap, 
                                                  self.var[localNonOverlappingCellIDs])
 
             nonOverlappingRHSvector = Epetra.Vector(globalMatrix.nonOverlappingRowMap, 
                                                     self.RHSvector[localNonOverlappingCellIDs])
 
-            overlappingVector = Epetra.Vector(globalMatrix.overlappingColMap, self.var)
-
-            self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
+            self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector)
 
         return self.globalVectors
         
@@ -93,8 +91,8 @@ class TrilinosSolver(Solver):
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError
         
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
-
+        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector = self._globalMatrixAndVectors
+        
         if ((globalMatrix.matrix.NumGlobalRows() != globalMatrix.matrix.NumGlobalCols())
             or (globalMatrix.matrix.NumGlobalRows() != len(self.var.globalValue))):
 
@@ -104,9 +102,11 @@ class TrilinosSolver(Solver):
                      nonOverlappingVector, 
                      nonOverlappingRHSvector)
 
+        overlappingVector = Epetra.Vector(globalMatrix.overlappingRowMap, self.var)
+
         overlappingVector.Import(nonOverlappingVector, 
-                                 Epetra.Import(globalMatrix.overlappingColMap, 
-                                               globalMatrix.nonOverlappingColMap), 
+                                 Epetra.Import(globalMatrix.overlappingRowMap, 
+                                               globalMatrix.colMap), 
                                  Epetra.Insert)
         
         self.var.value = overlappingVector
@@ -128,7 +128,7 @@ class TrilinosSolver(Solver):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
+            globalMatrix, nonOverlappingVector, nonOverlappingRHSvector = self._globalMatrixAndVectors
                 
             # If A is an Epetra.Vector with map M
             # and B is an Epetra.Vector with map M
