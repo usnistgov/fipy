@@ -100,18 +100,15 @@ class TrilinosSolver(Solver):
 
             raise SolutionVariableNumberError
             
-#         self._solve_(globalMatrix.matrix, 
-#                      overlappingVector, 
-#                      nonOverlappingRHSvector)
         self._solve_(globalMatrix.matrix, 
-                     nonOverlappingRHSvector, 
-                     overlappingVector)
+                     nonOverlappingVector, 
+                     nonOverlappingRHSvector)
 
-#         overlappingVector.Import(nonOverlappingVector, 
-#                                  Epetra.Import(globalMatrix.overlappingColMap, 
-#                                                globalMatrix.nonOverlappingColMap), 
-#                                  Epetra.Insert)
-
+        overlappingVector.Import(nonOverlappingVector, 
+                                 Epetra.Import(globalMatrix.overlappingColMap, 
+                                               globalMatrix.nonOverlappingColMap), 
+                                 Epetra.Insert)
+        
         self.var.value = overlappingVector
 
         self._deleteGlobalMatrixAndVectors()
@@ -137,13 +134,7 @@ class TrilinosSolver(Solver):
             # and B is an Epetra.Vector with map M
             # and C = A - B
             # then C is an Epetra.Vector with *no map* !!!?!?!
-            residual = Epetra.Vector(globalMatrix.nonOverlappingRowMap)
-
-            residual.Import(globalMatrix * overlappingVector, 
-                            Epetra.Import(globalMatrix.nonOverlappingRowMap, 
-                                          globalMatrix.overlappingRowMap), 
-                            Epetra.Insert)
-
+            residual = globalMatrix * nonOverlappingVector
             residual -= nonOverlappingRHSvector
             
             return residual

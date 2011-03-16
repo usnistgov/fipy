@@ -157,7 +157,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 tempBandwidth = other.matrix.NumGlobalNonzeros() \
                                  /self.matrix.NumGlobalRows()+1
 
-                tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingRowMap, self.overlappingColMap, tempBandwidth)
+                tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingRowMap, self.nonOverlappingColMap, tempBandwidth)
                 
                 if EpetraExt.Add(other.matrix, False, 1, tempMatrix, 1) != 0:
                     import warnings
@@ -282,7 +282,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 if not other.matrix.Filled():
                     other.matrix.FillComplete(other.nonOverlappingColMap, other.nonOverlappingRowMap)
 
-                result = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingRowMap, self.overlappingColMap, 0)
+                result = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingRowMap, self.nonOverlappingColMap, 0)
 
                 EpetraExt.Multiply(self.matrix, False, other.matrix, False, result)
                 copy = self.copy()
@@ -617,8 +617,6 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
             else: 
                 nonOverlappingRowMap = Epetra.Map(rows, [], 0, comm)
 
-        overlappingRowMap = overlappingRowMap or nonOverlappingRowMap
-
         if nonOverlappingColMap is None:
             comm = Epetra.PyComm()
             # Matrix building gets done on one processor - it gets the map for
@@ -627,10 +625,8 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
                 nonOverlappingColMap = Epetra.Map(cols, range(0, cols), 0, comm)
             else: 
                 nonOverlappingColMap = Epetra.Map(cols, [], 0, comm)
-                
-        overlappingColMap = overlappingColMap or nonOverlappingColMap
 
-        matrix = Epetra.CrsMatrix(Epetra.Copy, nonOverlappingRowMap, overlappingColMap, bandwidth*3/2)
+        matrix = Epetra.CrsMatrix(Epetra.Copy, nonOverlappingRowMap, nonOverlappingColMap, bandwidth*3/2)
 
         # Leave extra bandwidth, to handle multiple insertions into the
         # same spot. It's memory-inefficient, but it'll get cleaned up when
@@ -1285,7 +1281,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                 if other_map.SameAs(self.overlappingColMap):
                     localNonOverlappingColIDs = self._localNonOverlappingRowIDs
 
-                    other = Epetra.Vector(self.overlappingColMap, 
+                    other = Epetra.Vector(self.nonOverlappingColMap, 
                                           other[localNonOverlappingColIDs])
 
                 if other.Map().SameAs(self.matrix.ColMap()):
