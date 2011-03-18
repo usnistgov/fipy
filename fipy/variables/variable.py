@@ -63,7 +63,7 @@ class Variable(object):
     >>> a.setValue(5)
     >>> b
     (Variable(value=array(5)) * 4)
-    >>> b()
+    >>> print b()
     20
     """
 
