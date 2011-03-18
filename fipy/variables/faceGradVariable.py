@@ -55,11 +55,17 @@ class _FaceGradVariable(FaceVariable):
 
             inline._runIterateElementInline("""
                 int j;
-                double t1grad1, t1grad2, t2grad1, t2grad2, N;
+                double t1grad1, t1grad2, t2grad1, t2grad2, N, N2;
                 int ID1 = ITEM(id1, i, NULL);
                 int ID2 = ITEM(id2, i, NULL);
+                                          
+                if ITEM(exteriorFaces, i, NULL) {
+                     N2 = ITEM(facevar, i, NULL);
+                } else {
+                     N2 = ITEM(var, ID2, NULL);
+                }
                 
-                N = (ITEM(var, ID2, NULL) - ITEM(var, ID1, NULL)) / ITEM(dAP, i, NULL);
+                N = (N2 - ITEM(var, ID1, NULL)) / ITEM(dAP, i, NULL);
 
                 t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
                 
@@ -79,6 +85,8 @@ class _FaceGradVariable(FaceVariable):
                 id2 = id2,
                 dAP = numerix.array(self.mesh._getCellDistances()),
                 var = self.var.getNumericValue(),
+                facevar = self.var.getFaceValue().getNumericValue(),
+                exteriorFaces = self.mesh.getExteriorFaces().getNumericValue(),
                 val = val,
                 ni = tangents1.shape[1],
                 shape=numerix.array(numerix.shape(tangents1)))

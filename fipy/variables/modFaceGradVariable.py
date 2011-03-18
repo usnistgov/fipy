@@ -44,7 +44,7 @@ class _ModFaceGradVariable(_FaceGradVariable):
         self.modIn = modIn
 
     if inline.doInline:
-        def _calcValue_(self):
+        def _calcValue(self):
 
             id1, id2 = self.mesh._getAdjacentCellIDs()
             
@@ -86,7 +86,7 @@ class _ModFaceGradVariable(_FaceGradVariable):
             return self._makeValue(value = val)
     ##         return self._makeValue(value = val, unit = self.getUnit())
     else:
-        def _calcValue_(self):
+        def _calcValue(self):
             dAP = self.mesh._getCellDistances()
             id1, id2 = self.mesh._getAdjacentCellIDs()
     ##      N = self.mod(numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
