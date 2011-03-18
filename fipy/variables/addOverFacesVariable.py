@@ -45,54 +45,51 @@ class _AddOverFacesVariable(CellVariable):
     
         self.faceVariable = self._requires(faceVariable)
 
-    def _calcValuePy(self):
-        ids = self.mesh._getCellFaceIDs()
-        
-        contributions = numerix.take(self.faceVariable, ids)
+    if inline.doInline:
+        def _calcValue(self):
 
-        # FIXME: numerix.MA.filled casts away dimensions
-        return numerix.MA.filled(numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0)) / self.mesh.getCellVolumes()
-        
-    def _calcValueIn(self):
+            NCells = self.mesh.getNumberOfCells()
+            ids = self.mesh._getCellFaceIDs()
 
-        NCells = self.mesh.getNumberOfCells()
-        ids = self.mesh._getCellFaceIDs()
-
-        val = self._getArray().copy()
-        
-        inline._runInline("""
-        int i;
-        
-        for(i = 0; i < numberOfCells; i++)
-          {
-          int j;
-          value[i] = 0.;
-          for(j = 0; j < numberOfCellFaces; j++)
-            {
-              // _getCellFaceIDs() can be masked, which caused subtle and 
-              // unreproduceable problems on OS X (who knows why not elsewhere)
-              long id = ids[i + j * numberOfCells];
-              if (id >= 0) { 
-                  value[i] += orientations[i + j * numberOfCells] * faceVariable[id];
-              }
-            }
-            value[i] = value[i] / cellVolume[i];
-          }
-        """,
-            numberOfCellFaces = self.mesh._getMaxFacesPerCell(),
-            numberOfCells = NCells,
-            faceVariable = self.faceVariable.getNumericValue(),
-            ids = numerix.array(ids),
-            value = val,
-            orientations = numerix.array(self.mesh._getCellFaceOrientations()),
-            cellVolume = numerix.array(self.mesh.getCellVolumes()))
+            val = self._getArray().copy()
             
-        return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+            inline._runInline("""
+            int i;
+            
+            for(i = 0; i < numberOfCells; i++)
+              {
+              int j;
+              value[i] = 0.;
+              for(j = 0; j < numberOfCellFaces; j++)
+                {
+                  // _getCellFaceIDs() can be masked, which caused subtle and 
+                  // unreproduceable problems on OS X (who knows why not elsewhere)
+                  long id = ids[i + j * numberOfCells];
+                  if (id >= 0) { 
+                      value[i] += orientations[i + j * numberOfCells] * faceVariable[id];
+                  }
+                }
+                value[i] = value[i] / cellVolume[i];
+              }
+            """,
+                numberOfCellFaces = self.mesh._getMaxFacesPerCell(),
+                numberOfCells = NCells,
+                faceVariable = self.faceVariable.getNumericValue(),
+                ids = numerix.array(ids),
+                value = val,
+                orientations = numerix.array(self.mesh._getCellFaceOrientations()),
+                cellVolume = numerix.array(self.mesh.getCellVolumes()))
+                
+            return self._makeValue(value = val)
+    ##         return self._makeValue(value = val, unit = self.getUnit())
+    else:
+        def _calcValue(self):
+            ids = self.mesh._getCellFaceIDs()
+            
+            contributions = numerix.take(self.faceVariable, ids)
 
-    def _calcValue(self):
-
-        return inline._optionalInline(self._calcValueIn, self._calcValuePy)
+            # FIXME: numerix.MA.filled casts away dimensions
+            return numerix.MA.filled(numerix.sum(contributions * self.mesh._getCellFaceOrientations(), 0)) / self.mesh.getCellVolumes()
 
 
 

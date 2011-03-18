@@ -67,7 +67,7 @@ def _BinaryOperatorVariable(operatorClass=None):
     # declare a binary operator class with the desired base class
     class binOp(operatorClass):
 
-        def _calcValuePy(self):
+        def _calcValue_(self):
             from fipy.variables.variable import Variable
             if isinstance(self.var[1], Variable):
                 val1 = self.var[1].getValue()
@@ -83,7 +83,7 @@ def _BinaryOperatorVariable(operatorClass=None):
                 try:
                     return self._extractUnit(self.op(self.var[0]._getUnitAsOne(), self.var[1]._getUnitAsOne()))
                 except:
-                    return self._extractUnit(self._calcValuePy())
+                    return self._extractUnit(self._calcValue_())
             else:
                 return self.unit
                 
