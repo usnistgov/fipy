@@ -59,7 +59,7 @@ class PseudoRKQSStepper(Stepper):
                     
                 # revert
                 for var, eqn, bcs in self.vardata:
-                    var.setValue(var.getOld())
+                    var.setValue(var.old)
                     
                     dt = max(self.safety * dt * residual**self.pgrow, 0.1 * dt)
                     

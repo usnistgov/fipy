@@ -60,7 +60,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
     """
     __doc__ += _MatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
 
-    def __init__(self, vars, title=None, scale=None, sparsity=None, limits={}, axes=None, **kwlimits):
+    def __init__(self, vars, title=None, scale=None, sparsity=None, log=False, limits={}, axes=None, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
         :Parameters:
@@ -73,6 +73,8 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
           sparsity
             if not `None`, then this number of arrows will be
             randomly chosen (weighted by the cell volume or face area)
+          log
+            if `True`, arrow length goes at the base-10 logarithm of the magnitude
           limits : dict
             a (deprecated) alternative to limit keyword arguments
           xmin, xmax, ymin, ymax, datamin, datamax
@@ -82,27 +84,29 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, axs=axes, **kwlimits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
 
         self.quiver(sparsity=sparsity, scale=scale)
+        self.log = log
         
         self._plot()
         
     def quiver(self, sparsity=None, scale=None):
         var = self.vars[0]
-        mesh = var.getMesh()
+        mesh = var.mesh
 
         if isinstance(var, FaceVariable):
-            N = mesh._getNumberOfFaces() 
-            V = mesh._getFaceAreas()
-            X, Y = mesh.getFaceCenters()
+            N = mesh.numberOfFaces 
+            W = mesh._faceAreas
+            W = (W / min(W))**0.05
+            X, Y = mesh.faceCenters
         elif isinstance(var, CellVariable):
-            N = mesh.getNumberOfCells() 
-            V = mesh.getCellVolumes()
-            X, Y = mesh.getCellCenters()
+            N = mesh.numberOfCells 
+            W = mesh.cellVolumes
+            X, Y = mesh.cellCenters
 
         if sparsity is not None and N > sparsity:
-            self.indices = numerix.random.rand(N) * V
+            self.indices = numerix.random.rand(N) * W
             self.indices = self.indices.argsort()[-sparsity:]
         else:
             self.indices = numerix.arange(N)
@@ -112,20 +116,15 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         
         U = V = numerix.ones(X.shape)
         
-        import pylab
-        
-        pylab.ion()
-        self.axes.cla()
-        self._quiver = self.axes.quiver(X, Y, U, V, scale=scale)
-        pylab.ioff()
+        self._quiver = self.axes.quiver(X, Y, U, V, scale=scale, pivot='middle')
 
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.mesh2D import Mesh2D
+        from fipy.meshes.mesh2D import Mesh2D
 
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-                if (isinstance(var.getMesh(), Mesh2D) \
+                if (isinstance(var.mesh, Mesh2D) \
                     and (isinstance(var, FaceVariable) \
-                         or isinstance(var, CellVariable)) and var.getRank() == 1)]
+                         or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "The mesh must be a Mesh2D instance"
@@ -135,12 +134,29 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
     def _plot(self):
 
         var = self.vars[0]
-        mesh = var.getMesh()
+        mesh = var.mesh
 
-        U, V = var.getNumericValue()
+        U, V = var.numericValue
 
         U = numerix.take(U, self.indices)
         V = numerix.take(V, self.indices)
+        
+        ang = numerix.arctan2(V, U)
+        mag = numerix.sqrt(U**2 + V**2)
+        
+        datamin, datamax = self._autoscale(vars=(mag,),
+                                           datamin=self._getLimit('datamin'),
+                                           datamax=self._getLimit('datamax'))
+        
+        mag = numerix.where(mag > datamax, datamax, mag)
+        mag = numerix.ma.masked_array(mag, mag < datamin)
+        
+        if self.log:
+            mag = numerix.log10(mag)
+            mag = numerix.ma.masked_array(mag, numerix.isnan(mag))
+            
+        U = mag * numerix.cos(ang)
+        V = mag * numerix.sin(ang)
 
         self._quiver.set_UVC(U, V)
         

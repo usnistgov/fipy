@@ -212,7 +212,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     trenchWidth = trenchDepth / aspectRatio
     sideWidth = (trenchSpacing - trenchWidth) / 2
 
-    x, y = mesh.getCellCenters()
+    x, y = mesh.cellCenters
     distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
@@ -235,7 +235,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     expoConstant = -transferCoefficient * faradaysConstant \
                    / (gasConstant * temperature)
     
-    tmp = currentDensity1 * catalystVar.getInterfaceVar()
+    tmp = currentDensity1 * catalystVar.interfaceVar
 
     exchangeCurrentDensity = currentDensity0 + tmp
 
@@ -268,7 +268,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         metalIonMolarVolume = molarVolume,
     )
 
-    metalVar.constrain(metalConcentration, mesh.getFacesTop())
+    metalVar.constrain(metalConcentration, mesh.facesTop)
 
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
@@ -278,15 +278,15 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         rateConstant = rateConstant0 * siteDensity
     )
 
-    bulkCatalystVar.constrain(catalystConcentration, mesh.getFacesTop())
+    bulkCatalystVar.constrain(catalystConcentration, mesh.facesTop)
 
     if displayViewers:
         try:
-            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.getInterfaceVar(), zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
+            viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
             viewer = MultiViewer(viewers=(
                 Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
-                Viewer(catalystVar.getInterfaceVar())))
+                Viewer(catalystVar.interfaceVar)))
     else:
         viewer = None
 

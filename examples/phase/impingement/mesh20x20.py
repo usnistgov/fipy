@@ -112,7 +112,7 @@ randomly oriented liquid phase
 Four different solid circular domains are created at each corner of
 the domain with appropriate orientations
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
 ...                          (L, 0., -2. * pi / 3.), 
 ...                          (0., L, -2. * pi / 3. + 0.3), 
@@ -131,7 +131,7 @@ so that it can be reused later.
 >>> def buildPhaseEquation(phase, theta):
 ...
 ...     mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
-...     thetaMag = theta.getOld().getGrad().getMag()
+...     thetaMag = theta.old.grad.mag
 ...     implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 ...     implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 ...
@@ -154,20 +154,20 @@ evaluation of the face gradient without the modular operators.
 ...
 ...     phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
 ...     phaseModSq = phaseMod * phaseMod
-...     expo = epsilon * beta * theta.getGrad().getMag()
+...     expo = epsilon * beta * theta.grad.mag
 ...     expo = (expo < 100.) * (expo - 100.) + 100.
 ...     pFunc = 1. + exp(-expo) * (mu / epsilon - 1.)
 ...
-...     phaseFace = phase.getArithmeticFaceValue()
+...     phaseFace = phase.arithmeticFaceValue
 ...     phaseSq = phaseFace * phaseFace
-...     gradMag = theta.getFaceGrad().getMag()
+...     gradMag = theta.faceGrad.mag
 ...     eps = 1. / gamma / 10.
 ...     gradMag += (gradMag < eps) * eps
 ...     IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
 ...     diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
 ...
-...     thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
-...     sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
+...     thetaGradDiff = theta.faceGrad - theta.faceGradNoMod
+...     sourceCoeff = (diffusionCoeff * thetaGradDiff).divergence
 ...
 ...     return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
 ...                DiffusionTerm(diffusionCoeff) \
@@ -222,7 +222,7 @@ data. First, reset the variables to their original values.
 
 >>> phase.setValue(0)
 >>> theta.setValue(-pi + 0.0001)
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
 ...                          (L, 0., -2. * pi / 3.), 
 ...                          (0., L, -2. * pi / 3. + 0.3), 

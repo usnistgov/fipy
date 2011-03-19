@@ -58,7 +58,7 @@ A loop is required to execute the necessary time steps:
 The result is again tested in the same way:
 
     >>> Lx = nx * dx
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> print var.allclose(answer, rtol = 1e-8)
     1
 
@@ -85,8 +85,8 @@ eq = TransientTerm() == ExplicitDiffusionTerm()
 
 solver = DefaultSolver(tolerance=1e-6, iterations=1000)
 
-var.constrain(valueLeft, mesh.getFacesLeft())
-var.constrain(valueRight, mesh.getFacesRight())
+var.constrain(valueLeft, mesh.facesLeft)
+var.constrain(valueRight, mesh.facesRight)
 
 answer = array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
                           0.00000000e+00,  0.00000000e+00,  1.58508452e-07,  6.84325019e-04,

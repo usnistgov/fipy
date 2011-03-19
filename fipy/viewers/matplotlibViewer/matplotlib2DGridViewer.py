@@ -37,6 +37,7 @@
 __docformat__ = 'restructuredtext'
 
 from matplotlibViewer import _MatplotlibViewer, _ColorBar
+from fipy.tools.decorators import getsetDeprecated
 
 class Matplotlib2DGridViewer(_MatplotlibViewer):
     """
@@ -73,20 +74,19 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
                                    cmap=cmap, colorbar=colorbar, axes=axes, 
                                    **kwlimits)
 
-        self.image = self.axes.imshow(self._getData(),
+        self.image = self.axes.imshow(self._data,
                                       extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
                                               self._getLimit('ymin'), self._getLimit('ymax')),
-                                      vmin=self._getLimit(key=('datamin', 'zmin')),
-                                      vmax=self._getLimit(key=('datamax', 'zmax')),
+                                      vmin=0, vmax=1,
                                       cmap=self.cmap)
                    
         if title is None:                          
-            self.axes.set_title(self.vars[0].getName())
+            self.axes.set_title(self.vars[0].name)
 
     def _getLimit(self, key, default=None):
         limit = _MatplotlibViewer._getLimit(self, key, default=default)
         if limit is None:
-            X, Y = self.vars[0].getMesh().getFaceCenters()
+            X, Y = self.vars[0].mesh.faceCenters
             if 'xmin' in key:
                 limit = float(min(X))
             elif 'ymin' in key:
@@ -98,35 +98,34 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         return limit
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.uniformGrid2D import UniformGrid2D
+        from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-          if (isinstance(var.getMesh(), UniformGrid2D) and isinstance(var, CellVariable)
-              and var.getRank() == 0)]
+          if (isinstance(var.mesh, UniformGrid2D) and isinstance(var, CellVariable)
+              and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Matplotlib2DGridViewer can only display a rank-0 CellVariable with a UniformGrid2D mesh"
         # this viewer can only display one variable
         return [vars[0]]
         
+    @getsetDeprecated
     def _getData(self):
+        return self._data
+
+    @property
+    def _data(self):
         from fipy.tools.numerix import array, reshape
-        return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape()[::-1])[::-1]
+        return reshape(array(self.vars[0]), self.vars[0].mesh.shape[::-1])[::-1]
 
     def _plot(self):
-        datamin = self._getLimit(('datamin', 'zmin')) 
-        datamax = self._getLimit(('datamax', 'zmax')) 
-        if datamin is None or datamax is None:
-            datamin, datamax = self._autoscale(vars=self.vars, 
-                                               datamin=datamin, 
-                                               datamax=datamax)
-
-            self.image.set_clim(vmax=datamax, vmin=datamin)
-
-        self.image.set_data(self._getData())
+        self.norm.vmin = self._getLimit(('datamin', 'zmin'))
+        self.norm.vmax = self._getLimit(('datamax', 'zmax'))
+        
+        self.image.set_data(self.norm(self._data))
         
         if self.colorbar is not None:
-            self.colorbar.plot(vmin=datamin, vmax=datamax)
+            self.colorbar.plot()
 
 def _test():
     from fipy.viewers.viewer import _test2D

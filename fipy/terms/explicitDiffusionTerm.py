@@ -34,9 +34,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.diffusionTerm import DiffusionTerm
+from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
 
-class ExplicitDiffusionTerm(DiffusionTerm):
+class ExplicitDiffusionTerm(_BaseDiffusionTerm):
     r"""
     The discretization for the `ExplicitDiffusionTerm` is given by
 
@@ -51,6 +51,20 @@ class ExplicitDiffusionTerm(DiffusionTerm):
 
     """
     
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., equation=None):
-        L, b = DiffusionTerm._buildMatrix(self, var.getOld(), SparseMatrix, boundaryConditions = boundaryConditions, dt = dt, equation=equation)
-        return (0, b - L * var.getValue())
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+        if hasattr(var, 'old'):
+            varOld = var.old
+        else:
+            varOld = var
+            
+        varOld, L, b = _BaseDiffusionTerm._buildMatrix(self, varOld, SparseMatrix, boundaryConditions = boundaryConditions, dt = dt,
+                                                  transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+        return (var, SparseMatrix(mesh=var.mesh), b - L * var.value)
+        
+    def _getNormals(self, mesh):
+        return mesh._faceCellToCellNormals
+
+    def _treatMeshAsOrthogonal(self, mesh):        
+        return mesh._isOrthogonal()
+

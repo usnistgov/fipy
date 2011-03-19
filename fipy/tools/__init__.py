@@ -69,3 +69,11 @@ from dimensions.physicalField import PhysicalField
 from numerix import *
 from vitals import Vitals
 
+def uniqueList(seq):
+    """
+    Returns the unique memebers of a list ordered in the same way as seq. Simply
+    doing list(set(seq)) doesn't retain the ordering.
+    """    
+    seen = set()
+    return [x for x in seq if x not in seen and not seen.add(x)]
+

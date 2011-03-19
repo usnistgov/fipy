@@ -37,6 +37,7 @@
 __docformat__ = 'restructuredtext'
  
 from fipy.variables.cellVariable import CellVariable
+from fipy.tools.decorators import getsetDeprecated
 
 class ModularVariable(CellVariable):
     r"""
@@ -46,7 +47,7 @@ class ModularVariable(CellVariable):
     The following examples show how `ModularVariable` works. When
     subtracting the answer wraps back around the circle.
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> mesh = Grid1D(nx = 2)
     >>> from fipy.tools import numerix
     >>> pi = numerix.pi
@@ -57,23 +58,23 @@ class ModularVariable(CellVariable):
 
     Obtaining the arithmetic face value.
 
-    >>> print numerix.allclose(v1.getArithmeticFaceValue(), (2*pi/3, pi, -2*pi/3))
+    >>> print numerix.allclose(v1.arithmeticFaceValue, (2*pi/3, pi, -2*pi/3))
     1
 
     Obtaining the gradient.
 
-    >>> print numerix.allclose(v1.getGrad(), ((pi/3, pi/3),))
+    >>> print numerix.allclose(v1.grad, ((pi/3, pi/3),))
     1
 
     Obtaining the gradient at the faces.
 
-    >>> print numerix.allclose(v1.getFaceGrad(), ((0, 2*pi/3, 0),))
+    >>> print numerix.allclose(v1.faceGrad, ((0, 2*pi/3, 0),))
     1
         
     Obtaining the gradient at the faces but without modular
     arithmetic.
 
-    >>> print numerix.allclose(v1.getFaceGradNoMod(), ((0, -4*pi/3, 0),))
+    >>> print numerix.allclose(v1.faceGradNoMod, ((0, -4*pi/3, 0),))
     1
     """    
         
@@ -82,53 +83,55 @@ class ModularVariable(CellVariable):
     # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
     """
 
-    def _setValue(self, value, unit=None, array=None):
+    def _setValueInternal(self, value, unit=None, array=None):
         """
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx = 4)
         >>> from fipy.variables.modularVariable import ModularVariable
         >>> var = ModularVariable(mesh = mesh, value = 1., hasOld = 1)
         >>> answer = CellVariable(mesh=mesh, value=1.)
         >>> print var.allclose(answer)
         True
-        >>> var.setValue(1)
+        >>> var.value = 1
         >>> print var.allclose(answer)
         True
         """
         value = self._makeValue(value=value, unit=unit, array=array)
         from fipy.variables.modPhysicalField import _ModPhysicalField
-        self.value = _ModPhysicalField(value=value, unit=unit, array=array)
+        self._value = _ModPhysicalField(value=value, unit=unit, array=array)
         
     def updateOld(self):
         """
         Set the values of the previous solution sweep to the current values.
         Test case due to bug.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx = 1)
         >>> var = ModularVariable(mesh=mesh, value=1., hasOld=1)
         >>> var.updateOld()
         >>> var[:] = 2
         >>> answer = CellVariable(mesh=mesh, value=1.)
-        >>> print var.getOld().allclose(answer)
+        >>> print var.old.allclose(answer)
         True
         """
-        self.setValue(self.getValue().mod(self().inRadians()))
-        if self.old is not None:
-            self.old.setValue(self.value.value.copy())
+        self.value = (self.value.mod(self().inRadians()))
+        if self._old is not None:
+            self._old.value = (self._value.value.copy())
 
-    def getGrad(self):
+    @property
+    def grad(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `CellVariable` (first-order
         gradient). Adjusted for a `ModularVariable`
         """
-        if not hasattr(self, 'grad'):
+        if not hasattr(self, '_grad'):
             from fipy.variables.modCellGradVariable import _ModCellGradVariable
-            self.grad = _ModCellGradVariable(self, self._modIn, self.value.mod)
+            self._grad = _ModCellGradVariable(self, self._modIn, self._value.mod)
 
-        return self.grad
+        return self._grad
 
-    def getArithmeticFaceValue(self):
+    @property
+    def arithmeticFaceValue(self):
         r"""
         Returns a `FaceVariable` whose value corresponds to the arithmetic interpolation
         of the adjacent cells:
@@ -139,41 +142,47 @@ class ModularVariable(CellVariable):
 
         Adjusted for a `ModularVariable`
         """
-        if not hasattr(self, 'arithmeticFaceValue'):
+        if not hasattr(self, '_arithmeticFaceValue'):
             from modCellToFaceVariable import _ModCellToFaceVariable
-            self.arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
+            self._arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
 
-        return self.arithmeticFaceValue
+        return self._arithmeticFaceValue
 
-    def getFaceGrad(self):
+    @property
+    def faceGrad(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` (second-order
         gradient). Adjusted for a `ModularVariable`
         """
-        if not hasattr(self, 'faceGrad'):
+        if not hasattr(self, '_faceGrad'):
             from modFaceGradVariable import _ModFaceGradVariable
-            self.faceGrad = _ModFaceGradVariable(self, self._modIn)
+            self._faceGrad = _ModFaceGradVariable(self, self._modIn)
 
-        return self.faceGrad
+        return self._faceGrad
 
+    @getsetDeprecated
     def getFaceGradNoMod(self):
+        return self.faceGradNoMod
+
+    @property
+    def faceGradNoMod(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` (second-order
         gradient). Not adjusted for a `ModularVariable`
         """
         
-        if not hasattr(self, 'faceGradNoMod'):
+        if not hasattr(self, '_faceGradNoMod'):
             class NonModularTheta(CellVariable):
                 def __init__(self, modVar):
-                    CellVariable.__init__(self, mesh = modVar.getMesh())
+                    CellVariable.__init__(self, mesh = modVar.mesh)
                     self.modVar = self._requires(modVar)
                     
                 def _calcValue(self):
-                    return self.modVar.getValue()
+                    return self.modVar.value
 
-            self.faceGradNoMod = NonModularTheta(self).getFaceGrad()
+            self._faceGradNoMod = NonModularTheta(self).faceGrad
 
-        return self.faceGradNoMod
+        return self._faceGradNoMod
 
     def __sub__(self, other):
         from fipy.terms.term import Term

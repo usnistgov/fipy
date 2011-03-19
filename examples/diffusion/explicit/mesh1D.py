@@ -75,7 +75,7 @@ We build the equation:
     
 and the boundary conditions:
     
->>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueLeft, mesh.facesLeft)
 
 In this case, many steps have to be taken to reach equilibrium.  A loop is
 required to execute the necessary time steps:
@@ -92,7 +92,7 @@ by :math:`\phi = \erf(x/2\sqrt{D t})`.
 The result is tested against the expected profile:
     
 >>> Lx = nx * dx
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> t = timeStepDuration * steps
 >>> epsi = x / sqrt(t * diffusionCoeff)
 >>> from scipy.special import erf

@@ -28,18 +28,24 @@
  # #############################################################################
  ##
 
-import math
-
-import pylab
-# from pylab import ticker
+from matplotlib import cm
+from matplotlib import pyplot
+from matplotlib import rcParams
 from matplotlib import ticker
+from matplotlib.colorbar import ColorbarBase
+from matplotlib.colors import Normalize
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Rectangle
+
 from scipy.io import mmio
 
-from fipy.tools.numerix import arange, array, compress, isnan, log, log10, nan, nanmax, nanmin, sign, where, zeros, maximum, minimum
+from fipy.tools import numerix
+
 
 class SignedLogFormatter(ticker.LogFormatter):
-    """
-    Format values for log axis;
+    """Format signed values for log axis
+    
+    formatted values range from large positive to small positive to small negative to large negative.
 
     if attribute decadeOnly is True, only the decades will be labelled.
     """
@@ -59,10 +65,10 @@ class SignedLogFormatter(ticker.LogFormatter):
         d = abs(vmax - vmin)
         b=self._base
         # only label the decades
-        sgn = sign(x)
+        sgn = numerix.sign(x)
         x = abs(x)
         x += self.threshold
-        isDecade = self.is_decade(x)
+        isDecade = ticker.is_decade(x)
         bx = b**x
         sgnbx = sgn * bx
         if not isDecade and self.labelOnlyBase: s = ''
@@ -98,9 +104,9 @@ class SignedLogFormatter(ticker.LogFormatter):
         return s
     
 class SignedLogLocator(ticker.LogLocator):
-    """
-    Determine the tick locations for "log" axes that express both positive and
-    negative values
+    """Determine the tick locations for "signed" log axes
+    
+    Locate ticks from large positive to small positive to small negative to large negative
     """
 
     def __init__(self, base=10.0, subs=[1.0], threshold=0.):
@@ -129,27 +135,32 @@ class SignedLogLocator(ticker.LogLocator):
         ticklocs = []
 
         for limit, sgn in zip([vmax, -vmin], [1, -1]):
-            numdec = math.floor(limit+self.threshold)-math.ceil(self.threshold)
+            numdec = numerix.floor(limit+self.threshold)-numerix.ceil(self.threshold)
 
             if self._subs is None: # autosub
-                if numdec>10: subs = array([1.0])
-                elif numdec>6: subs = arange(2.0, b, 2.0)
-                else: subs = arange(2.0, b)
-                subs = log(subs) / log(b)
+                if numdec>10: 
+                    subs = numerix.array([1.0])
+                elif numdec>6: 
+                    subs = numerix.arange(2.0, b, 2.0)
+                else: 
+                    subs = numerix.arange(2.0, b)
+                subs = numerix.log(subs) / numerix.log(b)
             else:
                 subs = self._subs
                 if numdec == 0 and len(subs) == 1:
-                    subs = array(list(subs) + list(log(arange(2.0, b)) / log(b)))
+                    subs = numerix.array(list(subs) + list(numerix.log(numerix.arange(2.0, b)) / numerix.log(b)))
 
             stride = 1
             while numdec/stride+1 > self.numticks:
                 stride += 1
 
-            for decadeStart in arange(math.floor(self.threshold), math.ceil(limit + self.threshold)+stride, stride):
+            for decadeStart in numerix.arange(numerix.floor(self.threshold), 
+                                              numerix.ceil(limit + self.threshold)+stride, 
+                                              stride):
                 ticks = subs + decadeStart - self.threshold
                 ticklocs.extend( sgn * ticks.compress(ticks > 0) )
 
-        return array(ticklocs)
+        return numerix.array(ticklocs)
 
     def autoscale(self):
         'Try to choose the view limits intelligently'
@@ -167,13 +178,13 @@ class SignedLogLocator(ticker.LogLocator):
         if vmin == -self.threshold:
             vmin -= 1
 
-        exponent, remainder = divmod(math.log10(vmax - vmin), 1)
+        exponent, remainder = divmod(numerix.log10(vmax - vmin), 1)
 
         if remainder < 0.5:
             exponent -= 1
         scale = 10**(-exponent)
-        vmin = math.floor(scale*vmin)/scale
-        vmax = math.ceil(scale*vmax)/scale
+        vmin = numerix.floor(scale*vmin)/scale
+        vmax = numerix.ceil(scale*vmax)/scale
 
         return nonsingular(vmin, vmax)
                          
@@ -181,86 +192,100 @@ class MatplotlibSparseMatrixViewer:
     def __init__(self, title="Sparsity"):
         self.title = title
         
-        self.margin = 0.1
-        self.width = 0.8
-        self.aspect = 1.3
+        self.L_width = 0.8
+        self.margin = (1. - self.L_width) / 2
+        self.b_width = self.margin
+        self.c_width = self.margin / 3
+        self.buffer = 1.5 * self.margin
+        self.aspect = (self.margin + self.L_width                   # M
+                       + self.buffer + self.c_width                 # colorbar
+                       + self.buffer + self.b_width + self.margin)  # b
 
-        pylab.ion()
+        pyplot.ion()
         
-        fig = pylab.figure(figsize=[pylab.rcParams['figure.figsize'][0] * self.aspect, pylab.rcParams['figure.figsize'][1]])
+        fig = pyplot.figure(figsize=pyplot.figaspect(1. / self.aspect))
         self.id = fig.number
-        
-        pylab.title(self.title)
         
     def plot(self, matrix, RHSvector, log='auto'):
         import tempfile
         import os
         
+        if "print" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split():
+            print "-"*75
+            print self.title
+            print "-"*75
+            print "L:"
+            print matrix
+            print "b:", RHSvector
+        
         (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
         matrix.exportMmf(mtxName)
         mtx = mmio.mmread(mtxName)
-##         f.close()
         os.remove(mtxName)
         
-        pylab.ion()
+        pyplot.ion()
         
         c = mtx.tocoo()
         y = c.row
         x = c.col
         z = c.data
-        
+        N = matrix._shape[0]
+
         b = RHSvector
-        
+        if numerix.shape(b) == ():
+            b = numerix.zeros((N,))
+
         if len(z) == 0:
-            y = zeros((1,))
-            x = zeros((1,))
-            z = zeros((1,))
+            y = numerix.zeros((1,))
+            x = numerix.zeros((1,))
+            z = numerix.zeros((1,))
 
-        zPlus = where(z > 0, log10(z), nan)
-        zMinus = where(z < 0, log10(-z), nan)
-        bPlus = where(b > 0, log10(b), nan)
-        bMinus = where(b < 0, log10(-b), nan)
+        def signed_to_logs(v):
+            return (numerix.where(v > 0, numerix.log10(v), numerix.nan),
+                    numerix.where(v < 0, numerix.log10(-v), numerix.nan))
+                    
+        def logs_to_signed(v, plus, minus):
+            v = numerix.where(v > 0, plus, -minus)
+            v = numerix.where(numerix.isnan(v), 0., v)
+            
+            return v
 
-        if (log == True
-            or (log == 'auto' 
-                and (max(zPlus) - min(zPlus) > 2
-                     or max(zMinus) - min(zMinus) > 2
-                     or max(bPlus) - min(bPlus) > 2
-                     or max(bMinus) - min(bMinus) > 2))):
-            log = True
-        else:
-            log = False
+        zPlus, zMinus = signed_to_logs(z)
+        bPlus, bMinus = signed_to_logs(b)
+        
+        logs = (zPlus, zMinus, bPlus, bMinus)
+
+        log = ((log == True) 
+               or (log == 'auto' 
+                   and (numerix.nanmax(numerix.concatenate(logs)) 
+                        - numerix.nanmin(numerix.concatenate(logs)) > 2)))
             
         if log:
-            zMin = nanmin((nanmin(zPlus), nanmin(zMinus), nanmin(bPlus), nanmin(bMinus)))
-            zMax = nanmax((nanmax(zPlus), nanmax(zMinus), nanmax(bPlus), nanmax(bMinus)))
-##             zThreshold = 0.5 # (zMax - zMin) / 5.
+            zMin = numerix.nanmin(numerix.concatenate(logs))
+            zMax = numerix.nanmax(numerix.concatenate(logs))
             
             zMin -= 0.5
             
-            numdec = math.floor(zMax)-math.ceil(zMin)
+            numdec = numerix.floor(zMax) - numerix.ceil(zMin)
             if numdec < 0:
                 zMax += 0.5
             
-            zPlus -= zMin
-            zMinus -= zMin
-            bPlus -= zMin
-            bMinus -= zMin
+            for v in logs:
+                v -= zMin
+                
             zRange = zMax - zMin
             
             if zRange == 0:
-                zRange = nanmax(zPlus) + 1
+                zRange = numerix.nanmax(zPlus) + 1
 
-            z = where(z > 0, zPlus, -zMinus)
-            z = where(isnan(z), 0., z)
-            b = where(b > 0, bPlus, -bMinus)
-            b = where(isnan(b), 0., b)
+            z = logs_to_signed(z, zPlus, zMinus)
+            b = logs_to_signed(b, bPlus, bMinus)
 
             fmt = SignedLogFormatter(threshold=zMin)
             loc = SignedLogLocator(threshold=zMin)
             
         else:
-            zRange = max(max(abs(z)), max(abs(b)))
+            zRange = max(abs(numerix.concatenate((z, b))))
         
             if zRange == 0:
                 zRange = 1
@@ -269,39 +294,67 @@ class MatplotlibSparseMatrixViewer:
             loc = None
             
 
-        N = matrix._getShape()[0]
-        saveSize = pylab.rcParams['figure.figsize']
-        size = pylab.rcParams['figure.dpi'] **2 * saveSize[0] * saveSize[1] / N**2
-
-        pylab.ioff()
+        pyplot.ioff()
         
-        pylab.figure(self.id)
-        pylab.clf()
-
-        pylab.delaxes()
-        ax1 = pylab.axes([self.margin, self.margin, self.width, self.width])
+        fig = pyplot.figure(self.id)
+        fig.clf()
         
-        Mscat = pylab.scatter(x, y, c=z, 
-                              vmin=-zRange, vmax=zRange, edgecolors='none', 
-                              cmap=pylab.get_cmap('RdBu'), marker='s', s=size)
-                             
-        ax2 = pylab.axes([self.width + self.margin, self.margin, (self.width / self.aspect) / N, self.width], 
-                         sharey=ax1)
-
-        bscat = pylab.scatter(zeros((N,)), arange(N), c=b, 
-                              vmin=-zRange, vmax=zRange, edgecolors='none', 
-                              cmap=pylab.get_cmap('RdBu'), marker='s', s=size)
-
-        pylab.setp((ax2.get_xticklabels(),
-                    ax2.get_yticklabels(),
-                    ax2.get_xticklines(),
-                    ax2.get_yticklines()), visible=False)
+        usetex = rcParams['text.usetex']
+        rcParams['text.usetex'] = False
         
-        pylab.axes(ax1)
-        pylab.axis([-0.5, N - 0.5, N - 0.5, -0.5])
+        cmap = cm.RdBu
+        
+        norm = Normalize(vmin=-zRange, vmax=zRange)
+        
+        x0 = self.margin
+        L_ax = fig.add_axes([x0 / self.aspect, self.margin, self.L_width / self.aspect, self.L_width])
+        L_ax.text(0.5, -0.1, "L", 
+                  transform=L_ax.transAxes, horizontalalignment='center', verticalalignment='baseline')
 
-        pylab.colorbar(format=fmt, ticks=loc)
+        x0 += self.L_width + self.buffer
+        c_ax = fig.add_axes([x0 / self.aspect, self.margin, self.c_width / self.aspect, self.L_width])
 
-        pylab.title(self.title)
+        x0 += self.c_width + self.buffer
+        b_ax = fig.add_axes([x0 / self.aspect, self.margin, self.b_width / self.aspect, self.L_width],
+                            sharey=L_ax)
+        b_ax.text(0.5, -0.1, "b", 
+                  transform=b_ax.transAxes, horizontalalignment='center', verticalalignment='baseline')
+          
+                            
 
-        pylab.draw()
+        def scatterRectangles(x, y, z, norm=None, cmap=None):
+            patches = [Rectangle(numerix.array([X - 0.5, Y - 0.5]), 1., 1., 
+                                 edgecolor='none') for X, Y in zip(x, y)]
+
+            collection = PatchCollection(patches, norm=norm, cmap=cmap,
+                                         edgecolors='none')
+            collection.set_array(z)
+            
+            return collection
+
+        L_ax.add_collection(scatterRectangles(x=x, y=y, z=z, 
+                                              norm=norm, cmap=cmap))
+
+        b_ax.add_collection(scatterRectangles(x=numerix.zeros((N,)), y=numerix.arange(N), z=b, 
+                                              norm=norm, cmap=cmap))
+
+        ColorbarBase(ax=c_ax, cmap=cmap, norm=norm, orientation='vertical',
+                     format=fmt, ticks=loc)
+
+        pyplot.setp((b_ax.get_xticklabels(),
+                     b_ax.get_yticklabels(),
+                     b_ax.get_xticklines(),
+                     b_ax.get_yticklines()), visible=False)
+                        
+        L_ax.set_xlim(xmin=-0.5, xmax=N-0.5)
+        L_ax.set_ylim(ymax=-0.5, ymin=N-0.5)
+        
+        b_ax.set_xlim(xmin=-0.5, xmax=0.5)
+        b_ax.set_ylim(ymax=-0.5, ymin=N-0.5)
+
+        fig.suptitle(self.title, x=0.5, y=0.95, fontsize=14)
+
+        pyplot.draw()
+        
+        rcParams['text.usetex'] = usetex
+

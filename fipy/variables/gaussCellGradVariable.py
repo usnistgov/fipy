@@ -42,13 +42,13 @@ from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 class _GaussCellGradVariable(CellVariable):
     def __init__(self, var, name=''):
-        CellVariable.__init__(self, mesh=var.getMesh(), name=name, rank=var.getRank() + 1)
+        CellVariable.__init__(self, mesh=var.mesh, name=name, rank=var.rank + 1)
         self.var = self._requires(var)
         self.faceGradientContributions = _FaceGradContributions(self.var)
         
     if inline.doInline:
         def _calcValue_(self, N, M, ids, orientations, volumes):
-            val = self._getArray().copy()
+            val = self._array.copy()
 
             inline._runIterateElementInline("""
                 ITEM(val, i, vec) = 0.;
@@ -64,8 +64,8 @@ class _GaussCellGradVariable(CellVariable):
                 ids = numerix.array(numerix.MA.filled(ids, 0)),
                 orientations = numerix.array(numerix.MA.filled(orientations, 0)),
                 volumes = numerix.array(volumes),
-                areaProj = numerix.array(self.mesh._getAreaProjections()),
-                faceValues = numerix.array(self.var.getArithmeticFaceValue()),
+                areaProj = numerix.array(self.mesh._areaProjections),
+                faceValues = numerix.array(self.var.arithmeticFaceValue),
                 M = M,
                 ni = N, 
                 shape=numerix.array(numerix.shape(val)))
@@ -80,8 +80,8 @@ class _GaussCellGradVariable(CellVariable):
             return grad / volumes
 
     def _calcValue(self):
-        return self._calcValue_(N=self.mesh.getNumberOfCells(), 
-                                M=self.mesh._getMaxFacesPerCell(), 
-                                ids=self.mesh._getCellFaceIDs(), 
-                                orientations=self.mesh._getCellFaceOrientations(), 
-                                volumes=self.mesh.getCellVolumes())
+        return self._calcValue_(N=self.mesh.numberOfCells, 
+                                M=self.mesh._maxFacesPerCell, 
+                                ids=self.mesh.cellFaceIDs, 
+                                orientations=self.mesh._cellToFaceOrientations, 
+                                volumes=self.mesh.cellVolumes)

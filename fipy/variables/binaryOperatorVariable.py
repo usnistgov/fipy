@@ -70,27 +70,28 @@ def _BinaryOperatorVariable(operatorClass=None):
         def _calcValue_(self):
             from fipy.variables.variable import Variable
             if isinstance(self.var[1], Variable):
-                val1 = self.var[1].getValue()
+                val1 = self.var[1].value
             else:
                 if type(self.var[1]) is type(''):
                     self.var[1] = physicalField.PhysicalField(value=self.var[1])
                 val1 = self.var[1]
 
-            return self.op(self.var[0].getValue(), val1)
+            return self.op(self.var[0].value, val1)
 
-        def getUnit(self):
-            if self.unit is None:
+        @property
+        def unit(self):
+            if self._unit is None:
                 try:
-                    return self._extractUnit(self.op(self.var[0]._getUnitAsOne(), self.var[1]._getUnitAsOne()))
+                    return self._extractUnit(self.op(self.var[0]._unitAsOne, self.var[1]._unitAsOne))
                 except:
                     return self._extractUnit(self._calcValue_())
             else:
-                return self.unit
+                return self._unit
                 
         def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
             self.id = id
-            if (style == "__repr__") and hasattr(self, 'name') and len(self.name) > 0:
-                return self.name
+            if (style == "__repr__") and hasattr(self, '_name') and len(self._name) > 0:
+                return self._name
             else:
                 return "(" + operatorClass._getRepresentation(self, style=style, argDict=argDict, id=id, freshen=freshen) + ")"
 
@@ -104,7 +105,7 @@ def _BinaryOperatorVariable(operatorClass=None):
             else:
                 args = ()
                         
-            return (self._getVariableClass(), args, self.__getstate__())
+            return (self._variableClass, args, self.__getstate__())
             
     return binOp
 

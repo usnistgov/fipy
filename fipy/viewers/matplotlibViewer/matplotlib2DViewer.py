@@ -76,11 +76,11 @@ class Matplotlib2DViewer(_MatplotlibViewer):
                                    cmap=cmap, colorbar=colorbar, axes=axes, 
                                    **kwlimits)
 
-        self.mesh = self.vars[0].getMesh()
+        self.mesh = self.vars[0].mesh
         
-        vertexIDs = self.mesh._getOrderedCellVertexIDs()
+        vertexIDs = self.mesh._orderedCellVertexIDs
 
-        vertexCoords = self.mesh.getVertexCoords()
+        vertexCoords = self.mesh.vertexCoords
 
         xCoords = numerix.take(vertexCoords[0], vertexIDs)
         yCoords = numerix.take(vertexCoords[1], vertexIDs)
@@ -93,8 +93,6 @@ class Matplotlib2DViewer(_MatplotlibViewer):
             if hasattr(y, 'mask'):
                 y = y.compressed()
             polys.append(zip(x,y))
-
-        import matplotlib
 
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
@@ -116,11 +114,11 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         self._plot()
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.mesh2D import Mesh2D
+        from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-          if ((isinstance(var.getMesh(), Mesh2D) and isinstance(var, CellVariable))
-              and var.getRank() == 0)]
+          if ((isinstance(var.mesh, Mesh2D) and isinstance(var, CellVariable))
+              and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-0, 2D CellVariable"
@@ -135,26 +133,18 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 ##         import gc
 ##         gc.collect()
 
-        Z = self.vars[0].getValue() 
+        Z = self.vars[0].value 
         
-        zmin, zmax = self._autoscale(vars=self.vars,
-                                     datamin=self._getLimit(('datamin', 'zmin')),
-                                     datamax=self._getLimit(('datamax', 'zmax')))
+        self.norm.vmin = self._getLimit(('datamin', 'zmin'))
+        self.norm.vmax = self._getLimit(('datamax', 'zmax'))
 
-        diff = zmax - zmin
-        
-        import matplotlib
-
-        if diff == 0:
-            rgba = self.cmap(0.5)
-        else:
-            rgba = self.cmap((Z - zmin) / diff)
+        rgba = self.cmap(self.norm(Z))
         
         self.collection.set_facecolors(rgba)
         self.collection.set_edgecolors(rgba)
 
         if self.colorbar is not None:
-            self.colorbar.plot(vmin=zmin, vmax=zmax)
+            self.colorbar.plot() #vmin=zmin, vmax=zmax)
         
 ##        pylab.xlim(xmin=self._getLimit('xmin'),
 ##                   xmax=self._getLimit('xmax'))

@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "vertex.py"
+ #  FILE: "asymmetricConvectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -28,27 +26,33 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  # ###################################################################
  ##
 
-"""Vertex within a Mesh
+__docformat__ = 'restructuredtext'
 
-    Vertices bound Faces.
-"""
+from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.solvers import DefaultAsymmetricSolver
 
-class Vertex:
-    def __init__(self,coordinates):
-	"""Vertex is initialized by Mesh with its coordinates.
-	"""
-        self.coordinates = coordinates
+class _AsymmetricConvectionTerm(ConvectionTerm):
 
-    def getCoordinates(self):
-	"""Return coordinates of Vertex.
-	"""
-        return self.coordinates
-	
-    def __repr__(self):
-	"""Textual representation of Vertex.
-	"""
-	return str(self.coordinates)
+    def _getDefaultSolver(self, solver, *args, **kwargs):
+        r"""
+        Make sure the method actually does something.
+        >>> print _AsymmetricConvectionTerm((1,)).getDefaultSolver().__repr__()[:6]
+        Linear
+        """
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
+    
+def _test(): 
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

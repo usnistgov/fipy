@@ -78,9 +78,9 @@ class Gist1DViewer(_GistViewer):
     def _getSuitableVars(self, vars):
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
-          if (var.getMesh().getDim() == 1 and isinstance(var, CellVariable))]
+          if (var.mesh.dim == 1 and isinstance(var, CellVariable))]
         if len(vars) > 1:
-            vars = [var for var in vars if var.getMesh() is vars[0].getMesh()]
+            vars = [var for var in vars if var.mesh is vars[0].mesh]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Can only plot 1D data"
@@ -90,7 +90,7 @@ class Gist1DViewer(_GistViewer):
         arrays = []
         
         for var in self.vars:
-            arrays.append((numerix.array(var), numerix.array(var.getMesh().getCellCenters()[0])))
+            arrays.append((numerix.array(var), numerix.array(var.mesh.cellCenters[0])))
             
         return arrays
         

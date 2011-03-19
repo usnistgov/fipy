@@ -140,7 +140,7 @@ subtraction operator between two angles.
 
 The left and right halves of the domain are given different orientations.
     
->>> theta.setValue(0., where=mesh.getCellCenters()[0] > Lx / 2.)
+>>> theta.setValue(0., where=mesh.cellCenters[0] > Lx / 2.)
 
 The ``phase`` equation is built in the following way.
 
@@ -151,7 +151,7 @@ The ``phase`` equation is built in the following way.
 The source term is linearized in the manner demonstrated in
 :mod:`examples.phase.simple` (Kobayashi, semi-implicit).
 
->>> thetaMag = theta.getOld().getGrad().getMag()
+>>> thetaMag = theta.old.grad.mag
 >>> implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 >>> implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 
@@ -171,13 +171,13 @@ discretization of ``theta`` on the circle.
 
 >>> phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
 >>> phaseModSq = phaseMod * phaseMod
->>> expo = epsilon * beta * theta.getGrad().getMag()
+>>> expo = epsilon * beta * theta.grad.mag
 >>> expo = (expo < 100.) * (expo - 100.) + 100.
 >>> pFunc = 1. + exp(-expo) * (mu / epsilon - 1.)
 
->>> phaseFace = phase.getArithmeticFaceValue()
+>>> phaseFace = phase.arithmeticFaceValue
 >>> phaseSq = phaseFace * phaseFace
->>> gradMag = theta.getFaceGrad().getMag()
+>>> gradMag = theta.faceGrad.mag
 >>> eps = 1. / gamma / 10.
 >>> gradMag += (gradMag < eps) * eps
 >>> IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
@@ -187,8 +187,8 @@ The source term requires the evaluation of the face gradient without
 the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
 evelautes the gradient without modular arithmetic.
 
->>> thetaGradDiff = theta.getFaceGrad() - theta.getFaceGradNoMod()
->>> sourceCoeff = (diffusionCoeff * thetaGradDiff).getDivergence()
+>>> thetaGradDiff = theta.faceGrad - theta.faceGradNoMod
+>>> sourceCoeff = (diffusionCoeff * thetaGradDiff).divergence
 
 Finally the ``theta`` equation can be constructed.
 

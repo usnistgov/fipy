@@ -38,6 +38,7 @@ __docformat__ = 'restructuredtext'
 
 import cPickle
 import os
+import sys
 import gzip
 
 from fipy.tools import parallel
@@ -58,11 +59,11 @@ def write(data, filename = None, extension = '', communicator=parallel):
 
     Test to check pickling and unpickling.
 
-        >>> from fipy.meshes.grid1D import Grid1D
+        >>> from fipy.meshes import Grid1D
         >>> old = Grid1D(nx = 2)
         >>> f, tempfile = write(old)
         >>> new = read(tempfile, f)
-        >>> print old.getNumberOfCells() == new.getNumberOfCells()
+        >>> print old.numberOfCells == new.numberOfCells
         True
         
     """
@@ -83,7 +84,7 @@ def write(data, filename = None, extension = '', communicator=parallel):
     if filename is None:
         return (f, _filename)
 
-def read(filename, fileobject = None, communicator=parallel):
+def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
     """
     Read a pickled object from a file. Returns the unpickled object.
     Wrapper for `cPickle.load()`.
@@ -92,6 +93,7 @@ def read(filename, fileobject = None, communicator=parallel):
       - `filename`: The name of the file to unpickle the object from.
       - `fileobject`: Used to remove temporary files
       - `communicator`: Object with `procID` and `Nproc` attributes.
+      - `mesh_unmangle`: Correct improper pickling of non-uniform meshes (ticket:243)
       
     """
     if communicator.procID == 0:
@@ -107,7 +109,39 @@ def read(filename, fileobject = None, communicator=parallel):
     if communicator.Nproc > 1:
         data = communicator.bcast(data, root=0)
 
-    return cPickle.loads(data)
+    import StringIO
+    f = StringIO.StringIO(data)
+    unpickler = cPickle.Unpickler(f)
+    
+    if mesh_unmangle:
+        def find_class(module, name):
+            __import__(module)
+            mod = sys.modules[module]
+            klass = getattr(mod, name)
+            
+            from fipy import meshes
+            import types
+            
+            if isinstance(klass, types.ClassType) and issubclass(klass, meshes.mesh.Mesh):
+                class UnmangledMesh(klass):
+                    def __setstate__(self, dict):
+                        if (dict.has_key('cellFaceIDs') 
+                            and dict.has_key('faceVertexIDs')):
+                                
+                            dict = dict.copy()
+                            for key in ('cellFaceIDs', 'faceVertexIDs'):
+                                arr = dict[key]
+                                arr.data[:] = arr.transpose().flatten().reshape(arr.shape)
+                            
+                        klass.__setstate__(self, dict)
+                    
+                return UnmangledMesh
+            else:
+                return klass
+
+        unpickler.find_global = find_class
+        
+    return unpickler.load()
 
 def _test(): 
     import doctest

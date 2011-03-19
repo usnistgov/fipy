@@ -77,9 +77,9 @@ class Gnuplot1DViewer(_GnuplotViewer):
         for var in self.vars:
             # Python 2.6 made 'with' a keyward (deprecation warnings have been issued since 2.5)
             # this was addressed in Gnuplot.py in r299, in 2007
-            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.getMesh().getCellCenters()[0]), 
-                                                numerix.array(var.getValue()),
-                                                title=var.getName(),
+            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.mesh.cellCenters[0]), 
+                                                numerix.array(var.value),
+                                                title=var.name,
                                                 with_='lines'),)
                               
         apply(self.g.plot, tupleOfGnuplotData)

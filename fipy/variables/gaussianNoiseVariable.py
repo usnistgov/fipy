@@ -65,7 +65,7 @@ class GaussianNoiseVariable(NoiseVariable):
        
     which can be obtained with::
         
-        sigmaSqrd = Mobility * kBoltzmann * Temperature / (mesh.getCellVolumes() * timeStep)
+        sigmaSqrd = Mobility * kBoltzmann * Temperature / (mesh.cellVolumes * timeStep)
         GaussianNoiseVariable(mesh = mesh, variance = sigmaSqrd)
 
     .. note:: 
@@ -84,10 +84,10 @@ class GaussianNoiseVariable(NoiseVariable):
     We generate noise on a non-uniform cartesian mesh with cell dimensions of
     :math:`x^2` and :math:`y^3`.
            
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = arange(0.1, 5., 0.1)**2, dy = arange(0.1, 3., 0.1)**3)
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> volumes = CellVariable(mesh=mesh,value=mesh.getCellVolumes())
+    >>> volumes = CellVariable(mesh=mesh,value=mesh.cellVolumes)
     >>> noise = GaussianNoiseVariable(mesh = mesh, mean = mean, 
     ...                               variance = variance / volumes)
            
@@ -99,9 +99,9 @@ class GaussianNoiseVariable(NoiseVariable):
            
     and compare to a Gaussian distribution
     
-    >>> gauss = CellVariable(mesh = histogram.getMesh())
-    >>> x = histogram.getMesh().getCellCenters()[0]
-    >>> gauss.setValue((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
+    >>> gauss = CellVariable(mesh = histogram.mesh)
+    >>> x = histogram.mesh.cellCenters[0]
+    >>> gauss.value = ((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
     
     >>> if __name__ == '__main__':
     ...     from fipy import viewers
@@ -115,7 +115,7 @@ class GaussianNoiseVariable(NoiseVariable):
     ...         viewer.plot()
     ...         histoplot.plot()
 
-    >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
+    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
     1
 
     Note that the noise exhibits larger amplitude in the small cells than in the large ones
@@ -144,14 +144,14 @@ class GaussianNoiseVariable(NoiseVariable):
 
     def parallelRandom(self):
 
-        if hasattr(self.variance, 'getGlobalValue'):
-            variance = self.variance.getGlobalValue()
+        if hasattr(self.variance, 'globalValue'):
+            variance = self.variance.globalValue
         else:
             variance = self.variance
 
-        if self.getMesh().communicator.procID == 0:
+        if self.mesh.communicator.procID == 0:
             return random.normal(self.mean, sqrt(variance),
-                                 size = [self.getMesh().globalNumberOfCells])
+                                 size = [self.mesh.globalNumberOfCells])
         else:
             return None
 

@@ -111,6 +111,7 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/levelSet/index.txt',
                         'examples/cahnHilliard/index.txt',
                         'examples/flow/index.txt',
+                        'examples/reactiveWetting/index.txt',
                         'examples/updating/index.txt']
 
                         

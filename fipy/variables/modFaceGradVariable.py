@@ -46,12 +46,12 @@ class _ModFaceGradVariable(_FaceGradVariable):
     if inline.doInline:
         def _calcValue(self):
 
-            id1, id2 = self.mesh._getAdjacentCellIDs()
+            id1, id2 = self.mesh._adjacentCellIDs
             
-            tangents1 = self.mesh._getFaceTangents1()
-            tangents2 = self.mesh._getFaceTangents2()
+            tangents1 = self.mesh._faceTangents1
+            tangents2 = self.mesh._faceTangents2
      
-            val = self._getArray().copy()
+            val = self._array.copy()
 
             inline._runIterateElementInline(self.modIn + """
             int j;
@@ -73,23 +73,21 @@ class _ModFaceGradVariable(_FaceGradVariable):
 
             """,tangents1 = tangents1,
                 tangents2 = tangents2,
-                cellGrad = self.var.getGrad().getNumericValue(),
-                normals = numerix.array(self.mesh._getOrientedFaceNormals()),
+                cellGrad = self.var.grad.numericValue,
+                normals = numerix.array(self.mesh._orientedFaceNormals),
                 id1 = numerix.array(id1),
                 id2 = numerix.array(id2),
-                dAP = numerix.array(self.mesh._getCellDistances()),
-                var = self.var.getNumericValue(),
+                dAP = numerix.array(self.mesh._cellDistances),
+                var = self.var.numericValue,
                 val = val,
                 ni = tangents1.shape[1],
                 shape=numerix.array(numerix.shape(val)))
                 
             return self._makeValue(value = val)
-    ##         return self._makeValue(value = val, unit = self.getUnit())
     else:
         def _calcValue(self):
             dAP = self.mesh._getCellDistances()
             id1, id2 = self.mesh._getAdjacentCellIDs()
-    ##      N = self.mod(numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
             N = (numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
             normals = self.mesh._getOrientedFaceNormals()
             

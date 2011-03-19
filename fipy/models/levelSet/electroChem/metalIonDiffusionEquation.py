@@ -90,12 +90,12 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     This is the test case,
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> nx = 11
     >>> dx = 1.
     >>> from fipy.tools import serial
     >>> mesh = Grid1D(nx = nx, dx = dx, communicator=serial)
-    >>> x, = mesh.getCellCenters()
+    >>> x, = mesh.cellCenters
     >>> from fipy.variables.cellVariable import CellVariable
     >>> ionVar = CellVariable(mesh = mesh, value = 1.)
     >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
@@ -115,7 +115,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     ...                                      diffusionCoeff = diffusion,
     ...                                      metalIonMolarVolume = omega)
 
-    >>> ionVar.constrain(cinf, mesh.getFacesRight())
+    >>> ionVar.constrain(cinf, mesh.facesRight)
     
     >>> for i in range(10):
     ...     eqn.solve(ionVar, dt = 1000)

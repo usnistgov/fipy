@@ -64,9 +64,9 @@ Again, one component in this ternary system will be designated the "solvent"
     ...         self.equation = equation
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), 
-    ...                               value = self.getValue(), 
-    ...                               name = self.getName(), 
+    ...         return self.__class__(mesh = self.mesh, 
+    ...                               value = self.value, 
+    ...                               name = self.name, 
     ...                               standardPotential = 
     ...                                   self.standardPotential, 
     ...                               barrier = self.barrier, 
@@ -93,7 +93,7 @@ simply by providing a `Tuple` or `list` of components
 
 We separate the solution domain into two different concentration regimes
 
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> substitutionals[0].setValue("0.3 mol/m**3")
     >>> substitutionals[0].setValue("0.6 mol/m**3", where=x > L / 2)
     >>> substitutionals[1].setValue("0.6 mol/m**3")
@@ -106,9 +106,9 @@ We create one diffusion equation for each substitutional component
     ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
-    ...         CkFaceSum += Ck.getHarmonicFaceValue()
+    ...         CkFaceSum += Ck.harmonicFaceValue
     ...        
-    ...     convectionCoeff = CkSum.getFaceGrad() \
+    ...     convectionCoeff = CkSum.faceGrad \
     ...                       * (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     Cj.equation = (TransientTerm()
@@ -139,10 +139,10 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
 
-    >>> print substitutionals[0].getScaled().allclose("0.45 mol/m**3",
+    >>> print substitutionals[0].scaled.allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
-    >>> print substitutionals[1].getScaled().allclose("0.45 mol/m**3",
+    >>> print substitutionals[1].scaled.allclose("0.45 mol/m**3",
     ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
     1
     

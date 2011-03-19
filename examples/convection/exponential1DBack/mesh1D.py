@@ -51,8 +51,8 @@ This example solves the steady-state convection-diffusion equation as described 
 ...                    mesh = mesh,
 ...                    value = valueLeft)
 
->>> var.constrain(valueLeft, mesh.getFacesLeft())
->>> var.constrain(valueRight, mesh.getFacesRight())
+>>> var.constrain(valueLeft, mesh.facesLeft)
+>>> var.constrain(valueRight, mesh.facesRight)
 
 >>> diffCoeff = 1.
 >>> convCoeff = (-10.,)
@@ -66,7 +66,7 @@ This example solves the steady-state convection-diffusion equation as described 
 We test the solution against the analytical result:
 
 >>> axis = 0
->>> x = mesh.getCellCenters()[axis]
+>>> x = mesh.cellCenters[axis]
 >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD

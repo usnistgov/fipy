@@ -174,7 +174,7 @@ region will be negative.
 >>> trenchWidth = trenchDepth / aspectRatio
 >>> sideWidth = (trenchSpacing - trenchWidth) / 2
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> distanceVar.setValue(1., where=(y > trenchHeight) 
 ...                                 | ((y > bottomHeight) 
 ...                                    & (x < xCells * cellSize - sideWidth)))
@@ -243,7 +243,7 @@ The commands needed to build this equation are,
 >>> expoConstant = -transferCoefficient * faradaysConstant \
 ...                / (gasConstant * temperature)
 >>> tmp = currentDensity1 \
-...       * catalystVar.getInterfaceVar()
+...       * catalystVar.interfaceVar
 >>> exchangeCurrentDensity = currentDensity0 + tmp
 >>> expo = exp(expoConstant * overpotential)
 >>> currentDensity = expo * exchangeCurrentDensity * metalVar \
@@ -338,7 +338,7 @@ The :class:`~fipy.models.levelSet.electroChem.metalIonDiffusionEquation.MetalIon
 ...     metalIonMolarVolume=molarVolume,
 ... )
 
->>> metalVar.constrain(bulkMetalConcentration, mesh.getFacesTop())
+>>> metalVar.constrain(bulkMetalConcentration, mesh.facesTop)
 
 The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
 species with a source term for the jump from the bulk to an interface.
@@ -380,7 +380,7 @@ The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.Sur
 ...     rateConstant=rateConstant0 * siteDensity
 ... )
 
->>> bulkCatalystVar.constrain(catalystConcentration, mesh.getFacesTop())
+>>> bulkCatalystVar.constrain(catalystConcentration, mesh.facesTop)
 
 If running interactively, create viewers.
 
@@ -389,7 +389,7 @@ If running interactively, create viewers.
 >>> if __name__ == '__main__':
 ...     try:
 ...         viewer = MayaviSurfactantViewer(distanceVar,
-...                                         catalystVar.getInterfaceVar(),
+...                                         catalystVar.interfaceVar,
 ...                                         zoomFactor=1e6,
 ...                                         datamax=1.0, 
 ...                                         datamin=0.0,
@@ -397,7 +397,7 @@ If running interactively, create viewers.
 ...     except:
 ...         viewer = MultiViewer(viewers=(
 ...             Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
-...             Viewer(catalystVar.getInterfaceVar())))
+...             Viewer(catalystVar.interfaceVar)))
 ... else:
 ...     viewer = None
 

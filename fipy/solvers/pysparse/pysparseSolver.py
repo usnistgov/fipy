@@ -35,9 +35,13 @@
 
 __docformat__ = 'restructuredtext'
 
+import os
+
+from pysparse import precon
+
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.solver import Solver
-from pysparse import precon
+from fipy.tools.decorators import getsetDeprecated
 
 class PysparseSolver(Solver):
     """
@@ -52,7 +56,12 @@ class PysparseSolver(Solver):
             
         Solver.__init__(self, *args, **kwargs)
 
+    @getsetDeprecated
     def _getMatrixClass(self):
+        return self._matrixClass
+
+    @property
+    def _matrixClass(self):
         return _PysparseMeshMatrix
 
     def _solve_(self, L, x, b):
@@ -60,9 +69,14 @@ class PysparseSolver(Solver):
         `_solve_` is only for use by solvers which may use
         preconditioning. If you are writing a solver which
         doesn't use preconditioning, this must be overridden.
+
+        :Parameters:
+            - `L`: a `fipy.matrices.pysparseMatrix._PysparseMeshMatrix`.
+            - `x`: a `numpy.ndarray`.
+            - `b`: a `numpy.ndarray`.
         """
 
-        A = L._getMatrix()
+        A = L.matrix
 
         if self.preconditioner is None:
             P = None
@@ -73,15 +87,24 @@ class PysparseSolver(Solver):
                                            self.iterations, P)
         
         self._raiseWarning(info, iter, relres)
+        
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            from fipy.tools.debug import PRINT        
+            PRINT('iterations: %d / %d' % (iter, self.iterations))
+            
+            if info < 0:
+                PRINT('failure', self._warningList[info].__class__.__name__)
+            PRINT('relres:', relres)
+            
          
     def _solve(self):
 
-        if self.var.getMesh().communicator.Nproc > 1:
+        if self.var.mesh.communicator.Nproc > 1:
             raise Exception("PySparse solvers cannot be used with multiple processors")
         
-        array = self.var.getNumericValue()
+        array = self.var.numericValue
         self._solve_(self.matrix, array, self.RHSvector)
-        factor = self.var.getUnit().factor
+        factor = self.var.unit.factor
         if factor != 1:
-            array /= self.var.getUnit().factor
+            array /= self.var.unit.factor
         self.var[:] = array 

@@ -68,11 +68,11 @@ We apply Dirichlet boundary conditions
 to the top-left and bottom-right corners.  Neumann boundary conditions
 are automatically applied to the top-right and bottom-left corners.
 
->>> x, y = mesh.getFaceCenters()
->>> facesTopLeft = ((mesh.getFacesLeft() & (y > L / 2))
-...                 | (mesh.getFacesTop() & (x < L / 2)))
->>> facesBottomRight = ((mesh.getFacesRight() & (y < L / 2))
-...                     | (mesh.getFacesBottom() & (x > L / 2)))
+>>> x, y = mesh.faceCenters
+>>> facesTopLeft = ((mesh.facesLeft & (y > L / 2))
+...                 | (mesh.facesTop & (x < L / 2)))
+>>> facesBottomRight = ((mesh.facesRight & (y < L / 2))
+...                     | (mesh.facesBottom & (x > L / 2)))
 
 >>> phi.constrain(valueTopLeft, facesTopLeft)
 >>> phi.constrain(valueBottomRight, facesBottomRight)

@@ -107,10 +107,10 @@ mesh = Grid1D(dx = dx, nx = nx)
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
-theta.setValue(0., where=mesh.getCellCenters()[0] > L / 2.)
+theta.setValue(0., where=mesh.cellCenters[0] > L / 2.)
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
-thetaMag = theta.getOld().getGrad().getMag()
+thetaMag = theta.old.grad.mag
 implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
 

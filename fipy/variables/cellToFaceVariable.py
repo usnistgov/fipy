@@ -39,12 +39,12 @@ from fipy.tools import numerix
 
 class _CellToFaceVariable(FaceVariable):
     def __init__(self, var):
-        FaceVariable.__init__(self, mesh=var.getMesh(), elementshape=var.shape[:-1])
+        FaceVariable.__init__(self, mesh=var.mesh, elementshape=var.shape[:-1])
         self.var = self._requires(var)
 
     def _calcValue(self):
-        alpha = self.mesh._getFaceToCellDistanceRatio()
-        id1, id2 = self.mesh._getAdjacentCellIDs()
+        alpha = self.mesh._faceToCellDistanceRatio
+        id1, id2 = self.mesh._adjacentCellIDs
         
         return self._calcValue_(alpha=alpha, id1=id1, id2=id2)
 

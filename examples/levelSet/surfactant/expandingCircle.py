@@ -53,10 +53,10 @@ The solution for these set of equations is given by:
 The following tests can be performed. First test for global
 conservation of surfactant:
 
->>> surfactantBefore = sum(surfactantVariable * mesh.getCellVolumes())
+>>> surfactantBefore = sum(surfactantVariable * mesh.cellVolumes)
 >>> totalTime = 0
 >>> for step in range(steps):
-...     velocity.setValue(surfactantVariable.getInterfaceVar() * k)
+...     velocity.setValue(surfactantVariable.interfaceVar * k)
 ...     distanceVariable.extendVariable(velocity)
 ...     timeStepDuration = cfl * dx / velocity.max()
 ...     distanceVariable.updateOld()
@@ -64,7 +64,7 @@ conservation of surfactant:
 ...     surfactantEquation.solve(surfactantVariable)
 ...     totalTime += timeStepDuration
 >>> surfactantEquation.solve(surfactantVariable)
->>> surfactantAfter = sum(surfactantVariable * mesh.getCellVolumes())
+>>> surfactantAfter = sum(surfactantVariable * mesh.cellVolumes)
 >>> print surfactantBefore.allclose(surfactantAfter)
 1
 
@@ -72,14 +72,14 @@ Next test for the correct local value of surfactant:
 
 >>> finalRadius = sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
 >>> answer = initialSurfactantValue * initialRadius / finalRadius
->>> coverage = surfactantVariable.getInterfaceVar()
+>>> coverage = surfactantVariable.interfaceVar
 >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
 >>> print sqrt(sum(error) / sum(error > 0)) < 0.04
 1
 
 Test for the correct position of the interface:
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> radius = sqrt((x - L / 2)**2 + (y - L / 2)**2)
 >>> solution = radius - distanceVariable
 >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
@@ -102,7 +102,7 @@ steps = 20
 from fipy.tools import serial
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx, communicator=serial)
 
-x, y = mesh.getCellCenters()
+x, y = mesh.cellCenters
 distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
     for step in range(steps):
         print 'step',step
-        velocity.setValue(surfactantVariable.getInterfaceVar() * k)
+        velocity.setValue(surfactantVariable.interfaceVar * k)
         distanceVariable.extendVariable(velocity)
         timeStepDuration = cfl * dx / velocity.max()
         distanceVariable.updateOld()
@@ -157,7 +157,7 @@ if __name__ == '__main__':
 
         finalRadius = sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
         answer = initialSurfactantValue * initialRadius / finalRadius
-        coverage = surfactantVariable.getInterfaceVar()
+        coverage = surfactantVariable.interfaceVar
         error = (coverage / answer - 1)**2 * (coverage > 1e-3)
         print 'error', sqrt(sum(error) / sum(error > 0))
 

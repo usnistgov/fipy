@@ -70,7 +70,7 @@ class TransientTerm(CellTerm):
     >>> steps = 2
     >>> sweeps = 8
     
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> mesh = Grid1D(nx = 1)
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh, value = phi0, hasOld = 1)
@@ -98,7 +98,7 @@ class TransientTerm(CellTerm):
     1
     """
 
-    def _getWeight(self, mesh):
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
 	return {
 	    'b vector':  0, 
 	    'new value': 1, 
@@ -107,14 +107,43 @@ class TransientTerm(CellTerm):
 	}
 	
     def _calcGeomCoeff(self, mesh):
-	return self.coeff * mesh.getCellVolumes()
+	return self.coeff * mesh.cellVolumes
+
+    def _getTransientGeomCoeff(self, var):
+        """
+        Test to ensure that _getTransientGeomCoeff is not returning None when a
+        TransientTerm is defined.
+
+        >>> from fipy import *
+        >>> m = Grid1D(nx=1)
+        >>> var = CellVariable(mesh=m)
+        >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
+        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
+        [ 1.]
+        >>> eq.cacheMatrix()
+        >>> eq.solve(var)
+        >>> print eq.matrix.numpyArray
+        [[ 1.]]
         
-    def __add__(self, other):
-        if isinstance(other, TransientTerm):
-            return self.__class__(coeff=self.coeff + other.coeff)
+        >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
+        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
+        [-1.]
+        >>> eq.cacheMatrix()
+        >>> eq.solve(var)
+        >>> print eq.matrix.numpyArray
+        [[-2.]]
+
+        """
+        if var is self.var or self.var is None:
+            return self._getGeomCoeff(var.mesh)
         else:
-            return CellTerm.__add__(self, other)
-	
+            return None
+
+    @property
+    def _transientVars(self):
+        return self._vars
+    
+        
 def _test(): 
     import doctest
     return doctest.testmod()

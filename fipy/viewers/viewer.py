@@ -38,7 +38,9 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-class _Viewer:
+from fipy.tools.decorators import getsetDeprecated
+
+class _Viewer(object):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
@@ -65,12 +67,13 @@ class _Viewer:
 
         if title is None:
             if len(self.vars) == 1:
-                title = self.vars[0].getName()
+                title = self.vars[0].name
             else:
                 title = ''
 
         self.title = title
 
+    @getsetDeprecated
     def getVars(self):
         return self.vars
         
@@ -208,7 +211,7 @@ class _Viewer:
         return """
             >>> from fipy import *
             >>> mesh = Grid1D(nx=100)
-            >>> x, = mesh.getCellCenters()
+            >>> x, = mesh.cellCenters
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
             >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=(sin(k * xVar), cos(k * xVar / pi)), 
@@ -226,7 +229,7 @@ class _Viewer:
         return """
             >>> from fipy import *
             >>> mesh = %(mesh)s
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar), 
@@ -256,17 +259,17 @@ class _Viewer:
         return """
             >>> from fipy import *
             >>> mesh = %(mesh)s
-            >>> x, y = mesh.getCellCenters()
+            >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = %(viewer)s(vars=sin(k * xyVar).getGrad(), 
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar).grad, 
             ...                 title="%(viewer)s test")
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
 
-            >>> viewer = %(viewer)s(vars=sin(k * xyVar).getFaceGrad(), 
+            >>> viewer = %(viewer)s(vars=sin(k * xyVar).faceGrad, 
             ...                 title="%(viewer)s test")
             >>> for kval in range(10):
             ...     k.setValue(kval)
@@ -292,7 +295,7 @@ class _Viewer:
         return """
             >>> from fipy import *
             >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
-            >>> x, y, z = mesh.getCellCenters()
+            >>> x, y, z = mesh.cellCenters
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
             >>> k = Variable(name="k", value=0.)
             >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 

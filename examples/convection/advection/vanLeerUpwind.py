@@ -51,8 +51,8 @@ periodic wave wraps around the mesh.
 ...     eq1.solve(var=var1, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
 ...     eq2.solve(var=var2, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
 
->>> print numerix.allclose(var1.getGlobalValue()[nx / 2:3 * nx / 4],
-...                        var2.getGlobalValue()[:nx / 4], atol=1e-6)
+>>> print numerix.allclose(var1.globalValue[nx / 2:3 * nx / 4],
+...                        var2.globalValue[:nx / 4], atol=1e-6)
 1
 
 Currently after 20 steps the wave has lost 23% of its height. Van Leer

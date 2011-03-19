@@ -50,7 +50,7 @@ class _ExplicitSourceTerm(SourceTerm):
 
     """
 	
-    def _getWeight(self, mesh):
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
 	return {
 	    'b vector': -1, 
 	    'new value': 0, 

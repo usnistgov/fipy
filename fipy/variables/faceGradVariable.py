@@ -40,18 +40,18 @@ from fipy.tools import inline
 
 class _FaceGradVariable(FaceVariable):
     def __init__(self, var):
-        FaceVariable.__init__(self, mesh=var.getMesh(), rank=var.getRank() + 1)
+        FaceVariable.__init__(self, mesh=var.mesh, rank=var.rank + 1)
         self.var = self._requires(var)
 
     if inline.doInline:
         def _calcValue(self):
 
-            id1, id2 = self.mesh._getAdjacentCellIDs()
+            id1, id2 = self.mesh._adjacentCellIDs
             
-            tangents1 = self.mesh._getFaceTangents1()
-            tangents2 = self.mesh._getFaceTangents2()
+            tangents1 = self.mesh._faceTangents1
+            tangents2 = self.mesh._faceTangents2
      
-            val = self._getArray().copy()
+            val = self._array.copy()
 
             inline._runIterateElementInline("""
                 int j;
@@ -79,27 +79,26 @@ class _FaceGradVariable(FaceVariable):
                 ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
             """,tangents1 = tangents1,
                 tangents2 = tangents2,
-                cellGrad = self.var.getGrad().getNumericValue(),
-                normals = self.mesh._getOrientedFaceNormals(),
+                cellGrad = self.var.grad.numericValue,
+                normals = self.mesh._orientedFaceNormals,
                 id1 = id1,
                 id2 = id2,
-                dAP = numerix.array(self.mesh._getCellDistances()),
-                var = self.var.getNumericValue(),
-                facevar = self.var.getFaceValue().getNumericValue(),
-                exteriorFaces = self.mesh.getExteriorFaces().getNumericValue(),
+                dAP = numerix.array(self.mesh._cellDistances),
+                var = self.var.numericValue,
+                facevar = self.var.faceValue.numericValue,
+                exteriorFaces = self.mesh.exteriorFaces.numericValue,
                 val = val,
                 ni = tangents1.shape[1],
                 shape=numerix.array(numerix.shape(tangents1)))
                 
             return self._makeValue(value = val)
-    ##         return self._makeValue(value = val, unit = self.getUnit())
     else:
         def _calcValue(self):
-            dAP = self.mesh._getCellDistances()
-            id1, id2 = self.mesh._getAdjacentCellIDs()
-            N2 = numerix.take(self.var.getValue(),id2)
-            faceMask = numerix.array(self.mesh.getExteriorFaces())
-            N2[..., faceMask] = self.var.getFaceValue()[..., faceMask]
+            dAP = self.mesh._cellDistances
+            id1, id2 = self.mesh._adjacentCellIDs
+            N2 = numerix.take(self.var.value,id2)
+            faceMask = numerix.array(self.mesh.exteriorFaces)
+            N2[..., faceMask] = self.var.faceValue[..., faceMask]
             N = (N2 - numerix.take(self.var,id1)) / dAP
 
             normals = self.mesh._getOrientedFaceNormals()

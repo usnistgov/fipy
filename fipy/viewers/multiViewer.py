@@ -31,6 +31,7 @@
  ##
 
 from fipy.viewers.viewer import _Viewer
+from fipy.tools.decorators import getsetDeprecated
 
 class MultiViewer(_Viewer):
     """
@@ -50,12 +51,13 @@ class MultiViewer(_Viewer):
 
     def setLimits(self, limits={}, **kwlimits):
         kwlimits.update(limits)
-        for viewer in self.getViewers():
+        for viewer in self.viewers:
             viewer.setLimits(**kwlimits)
             
     def plot(self):
-        for viewer in self.getViewers():
+        for viewer in self.viewers:
             viewer.plot()
             
+    @getsetDeprecated
     def getViewers(self):
         return self.viewers

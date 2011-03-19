@@ -273,7 +273,7 @@ def runLeveler(kLeveler=0.018,
         value = -1.,
         narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1., where=mesh.getElectrolyteMask())
+    distanceVar.setValue(1., where=mesh.electrolyteMask)
     
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
     levelerVar = SurfactantVariable(
@@ -307,7 +307,7 @@ def runLeveler(kLeveler=0.018,
     coeffSuppressor = depositionCoeff(alphaSuppressor, i0Suppressor)
     coeffAccelerator = depositionCoeff(alphaAccelerator, i0Accelerator)
 
-    exchangeCurrentDensity = acceleratorVar.getInterfaceVar() * (coeffAccelerator - coeffSuppressor) + coeffSuppressor
+    exchangeCurrentDensity = acceleratorVar.interfaceVar * (coeffAccelerator - coeffSuppressor) + coeffSuppressor
 
     currentDensity = metalVar / bulkMetalConcentration * exchangeCurrentDensity
 
@@ -329,7 +329,7 @@ def runLeveler(kLeveler=0.018,
         rateConstant = kLeveler,
         consumptionCoeff = kLevelerConsumption * depositionRateVariable)
 
-    accVar1 = acceleratorVar.getInterfaceVar()
+    accVar1 = acceleratorVar.interfaceVar
     accVar2 = (accVar1 > 0) * accVar1
     accConsumptionCoeff = kAcceleratorConsumption * (accVar2**(q - 1))
 
@@ -353,7 +353,7 @@ def runLeveler(kLeveler=0.018,
         diffusionCoeff = metalDiffusionCoefficient,
         metalIonMolarVolume = atomicVolume)
 
-    metalVar.constrain(bulkMetalConcentration, mesh.getFacesTop())
+    metalVar.constrain(bulkMetalConcentration, mesh.facesTop)
 
     bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkAcceleratorVar,
@@ -363,7 +363,7 @@ def runLeveler(kLeveler=0.018,
         diffusionCoeff = acceleratorDiffusionCoefficient,
         rateConstant = kAccelerator * siteDensity)
 
-    bulkAcceleratorVar.constrain(bulkAcceleratorConcentration, mesh.getFacesTop())
+    bulkAcceleratorVar.constrain(bulkAcceleratorConcentration, mesh.facesTop)
     
     bulkLevelerEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkLevelerVar,
@@ -372,7 +372,7 @@ def runLeveler(kLeveler=0.018,
         diffusionCoeff = levelerDiffusionCoefficient,
         rateConstant = kLeveler * siteDensity)
 
-    bulkLevelerVar.constrain(bulkLevelerConcentration, mesh.getFacesTop())
+    bulkLevelerVar.constrain(bulkLevelerConcentration, mesh.facesTop)
     
     eqnTuple = ( (advectionEquation, distanceVar, (), None),
                  (levelerSurfactantEquation, levelerVar, (), None),
@@ -387,8 +387,8 @@ def runLeveler(kLeveler=0.018,
 
     if displayViewers:
         viewers = (
-            MayaviSurfactantViewer(distanceVar, acceleratorVar.getInterfaceVar(), zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
-            MayaviSurfactantViewer(distanceVar, levelerVar.getInterfaceVar(), zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))
+            MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
+            MayaviSurfactantViewer(distanceVar, levelerVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))
         
     for step in range(numberOfSteps):
 
@@ -410,10 +410,10 @@ def runLeveler(kLeveler=0.018,
 
         dt = cflNumber * cellSize / extOnInt.max()
 
-        id = nonzero(distanceVar._getInterfaceFlag())[0].max()
+        id = nonzero(distanceVar._interfaceFlag)[0].max()
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
 
-        extensionVelocityVariable[mesh.getFineMesh().getNumberOfCells():] = 0.
+        extensionVelocityVariable[mesh.fineMesh.numberOfCells:] = 0.
 
         for eqn, var, BCs, solver in eqnTuple:
             var.updateOld()

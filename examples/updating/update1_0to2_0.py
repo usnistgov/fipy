@@ -55,21 +55,21 @@ The following items **must** be changed in your scripts
 
  * The dimension axis of a :class:`~fipy.variables.variable.Variable` is now first, not last
    
-   >>> x = mesh.getCellCenters()[0]
+   >>> x = mesh.cellCenters[0]
 
    instead of
    
-   >>> x = mesh.getCellCenters()[...,0]
+   >>> x = mesh.cellCenters[...,0]
        
    This seemingly arbitrary change simplifies a great many things in :term:`FiPy`, but
    the one most noticeable to the user is that you can now write
    
-   >>> x, y = mesh.getCellCenters()
+   >>> x, y = mesh.cellCenters
   
    instead of
    
-   >>> x = mesh.getCellCenters()[...,0]
-   >>> y = mesh.getCellCenters()[...,1]
+   >>> x = mesh.cellCenters[...,0]
+   >>> y = mesh.cellCenters[...,1]
 
    Unfortunately, we cannot reliably automate this conversion, but we find that
    searching for "``...,``" and "``:,``" finds almost everything. Please don't
@@ -110,12 +110,12 @@ The following items **must** be changed in your scripts
       Because vector fields are properly supported, use vector operations to
       manipulate them, such as
       
-      >>> phase.getFaceGrad().dot((( 0, 1),
+      >>> phase.faceGrad.dot((( 0, 1),
       ...                          (-1, 0)))
 
       instead of the hackish
       
-      >>> phase.getFaceGrad()._take((1, 0), axis=1) * (-1, 1)
+      >>> phase.faceGrad._take((1, 0), axis=1) * (-1, 1)
 
  * For internal reasons, :term:`FiPy` now supports 
    :class:`~fipy.variables.cellVariable.CellVariable` and 
@@ -135,51 +135,51 @@ The following items **must** be changed in your scripts
        
  * The ``faces`` argument to 
    :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` now takes a mask, 
-   instead of a list of :class:`~fipy.meshes.numMesh.face.Face` IDs. Now you write
+   instead of a list of :class:`~fipy.meshes.face.Face` IDs. Now you write
    
-   >>> X, Y = mesh.getFaceCenters()
-   >>> FixedValue(faces=mesh.getExteriorFaces() & (X**2 < 1e-6), value=...)
+   >>> X, Y = mesh.faceCenters
+   >>> FixedValue(faces=mesh.exteriorFaces & (X**2 < 1e-6), value=...)
        
    instead of
    
-   >>> exteriorFaces = mesh.getExteriorFaces()
-   >>> X = exteriorFaces.getCenters()[...,0]
+   >>> exteriorFaces = mesh.exteriorFaces
+   >>> X = exteriorFaces.centers[...,0]
    >>> FixedValue(faces=exteriorFaces.where(X**2 < 1e-6), value=...)
        
    With the old syntax, a different call to
-   :meth:`~fipy.meshes.numMesh.face.Face.getCenters` had to be made for each set
-   of :class:`~fipy.meshes.numMesh.face.Face` objects. It was also extremely
+   :meth:`~fipy.meshes.face.Face.getCenters` had to be made for each set
+   of :class:`~fipy.meshes.face.Face` objects. It was also extremely
    difficult to specify boundary conditions that depended both on position in
    space and on the current values of any other :class:`~fipy.variables.variable.Variable`.
    
-   >>> FixedValue(faces=(mesh.getExteriorFaces() 
+   >>> FixedValue(faces=(mesh.exteriorFaces 
    ...                   & (((X**2 < 1e-6) 
    ...                       & (Y > 3.)) 
-   ...                      | (phi.getArithmeticFaceValue() 
-   ...                         < sin(gamma.getArithmeticFaceValue())))), value=...)
+   ...                      | (phi.arithmeticFaceValue 
+   ...                         < sin(gamma.arithmeticFaceValue)))), value=...)
 
    although it probably could have been done with a rather convoluted (and
    slow!) ``filter`` function passed to ``where``. There no longer are any ``filter``
    methods used in :term:`FiPy`. You now would write 
    
-   >>> x, y = mesh.getCellCenters()
+   >>> x, y = mesh.cellCenters
    >>> initialArray[(x < dx) | (x > (Lx - dx)) | (y < dy) | (y > (Ly - dy))] = 1.
 
    instead of the *much* slower
 
    >>> def cellFilter(cell): 
-   ...     return ((cell.getCenter()[0] < dx) 
-   ...             or (cell.getCenter()[0] > (Lx - dx)) 
-   ...             or (cell.getCenter()[1] < dy) 
-   ...             or (cell.getCenter()[1] > (Ly - dy)))
+   ...     return ((cell.center[0] < dx) 
+   ...             or (cell.center[0] > (Lx - dx)) 
+   ...             or (cell.center[1] < dy) 
+   ...             or (cell.center[1] > (Ly - dy)))
 
    >>> positiveCells = mesh.getCells(filter=cellFilter)
    >>> for cell in positiveCells:
-   ...     initialArray[cell.getID()] = 1.
+   ...     initialArray[cell.ID] = 1.
 
    Although they still exist, we find very lille cause to ever call
-   :meth:`~fipy.meshes.numMesh.mesh.Mesh.getCells` 
-   or :meth:`fipy.meshes.numMesh.mesh.Mesh.getFaces`.
+   :meth:`~fipy.meshes.mesh.Mesh.getCells` 
+   or :meth:`fipy.meshes.mesh.Mesh.getFaces`.
    
  * Some modules, such as :mod:`fipy.solvers`, have been significantly rearranged.
    For example, you need to change

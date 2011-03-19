@@ -93,9 +93,9 @@ represent the "solvent" component (1 everywhere)
 
 >>> class ComponentVariable(CellVariable):
 ...     def copy(self):
-...         new = self.__class__(mesh = self.getMesh(), 
-...                              name = self.getName(), 
-...                              value = self.getValue())
+...         new = self.__class__(mesh = self.mesh, 
+...                              name = self.name, 
+...                              value = self.value)
 ...         new.standardPotential = self.standardPotential
 ...         new.barrier = self.barrier
 ...         return new
@@ -120,7 +120,7 @@ We'll have no substitutional species and no interstitial species in this first e
 >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
 ...     == DiffusionTerm(coeff = phase.gradientEnergy) \
 ...     - (permittivityPrime / 2.) \
-...        * potential.getGrad().dot(potential.getGrad())
+...        * potential.grad.dot(potential.grad)
 
 >>> enthalpy = solvent.standardPotential
 >>> barrier = solvent.barrier
@@ -148,7 +148,7 @@ We linearize the source term in the same way as in :mod:`example.phase.simple.in
 We separate the phase field into electrode and electrolyte regimes
 
 >>> phase.setValue(1.)
->>> phase.setValue(0., where=mesh.getCellCenters()[0] > L / 2)
+>>> phase.setValue(0., where=mesh.cellCenters[0] > L / 2)
 
 Even though we are solving the steady-state problem (:math:`M_\phi = \infty`) we
 still must sweep the solution several times to equilibrate
@@ -176,12 +176,12 @@ with an interfacial thickness :math:`d = \sqrt{\kappa_{\xi}/2W_n}`.
    
 We verify that the correct equilibrium solution is attained
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 
 >>> d = sqrt(phase.gradientEnergy / (2 * solvent.barrier))
 >>> analyticalArray = (1. - tanh((x - L/2.)/(2 * d))) / 2.
 
->>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).getValue()
+>>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).value
 1
     
 

@@ -44,7 +44,7 @@ The result is again tested in the same way:
 
     >>> DiffusionTerm().solve(var)
     >>> Lx = nx * dx
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> print var.allclose(analyticalArray, rtol = 1e-9)
     1
@@ -69,8 +69,8 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-var.constrain(valueLeft, mesh.getFacesLeft())
-var.constrain(valueRight, mesh.getFacesRight())
+var.constrain(valueLeft, mesh.facesLeft)
+var.constrain(valueRight, mesh.facesRight)
     
 if __name__ == '__main__':
     DiffusionTerm().solve(var)

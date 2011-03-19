@@ -40,8 +40,8 @@ Test case for the Grid3D.
  
    >>> DiffusionTerm().solve(var)
    >>> DiffusionTerm().solve(var2)
-   >>> a = array(var.getGlobalValue())
-   >>> b = array(var2.getGlobalValue())
+   >>> a = array(var.globalValue)
+   >>> b = array(var2.globalValue)
    >>> c = ravel(array((b, b, b)))
    >>> print allclose(a, c)
    1
@@ -67,10 +67,10 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueBottomTop)
 
-var.constrain(valueLeftRight, mesh.getFacesLeft())
-var.constrain(valueLeftRight, mesh.getFacesRight())
-var.constrain(valueBottomTop, mesh.getFacesTop())
-var.constrain(valueBottomTop, mesh.getFacesBottom())
+var.constrain(valueLeftRight, mesh.facesLeft)
+var.constrain(valueLeftRight, mesh.facesRight)
+var.constrain(valueBottomTop, mesh.facesTop)
+var.constrain(valueBottomTop, mesh.facesBottom)
 
 #do the 2D problem for comparison
 
@@ -86,10 +86,10 @@ var2 = CellVariable(name = "solution variable 2D",
                     mesh = mesh2,
                     value = valueBottomTop)
 
-var2.constrain(valueLeftRight, mesh2.getFacesLeft())
-var2.constrain(valueLeftRight, mesh2.getFacesRight())
-var2.constrain(valueBottomTop, mesh2.getFacesTop())
-var2.constrain(valueBottomTop, mesh2.getFacesBottom())
+var2.constrain(valueLeftRight, mesh2.facesLeft)
+var2.constrain(valueLeftRight, mesh2.facesRight)
+var2.constrain(valueBottomTop, mesh2.facesTop)
+var2.constrain(valueBottomTop, mesh2.facesBottom)
 
 eqn = DiffusionTerm()  
 

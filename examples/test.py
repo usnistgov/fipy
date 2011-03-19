@@ -49,6 +49,7 @@ def _suite():
             'cahnHilliard.test',
             'flow.test',
             'meshing.test',
+            'reactiveWetting.test',
         ), base = __name__)
 
 if __name__ == '__main__':

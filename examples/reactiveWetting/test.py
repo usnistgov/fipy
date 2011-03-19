@@ -27,19 +27,25 @@
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
+ # ========================================================================
  #  
  # ###################################################################
  ##
 
-"""Test numeric implementation of the mesh
+"""Run all the test cases in examples/reactiveWetting/
 """
 
-import unittest
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    theSuite = unittest.TestSuite()
-    return theSuite
+    return _LateImportDocTestSuite(testModuleNames = (),
+                                   docTestModuleNames = (
+                                       'liquidVapor1D',
+                                       'liquidVapor2D',
+                                   ), 
+                                   base = __name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
+

@@ -65,7 +65,7 @@ This example creates a trench with the following zero level set:
 ...                        hasOld = 1
 ...                        )
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
 
 >>> var.calcDistanceFunction()

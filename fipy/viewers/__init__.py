@@ -107,7 +107,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
             while len(vars) > 0:
                 viewer = ViewerClass(vars=vars, title=title, limits=limits, **kwlimits)
                 
-                for var in viewer.getVars():
+                for var in viewer.vars:
                     vars.remove(var)
                 
                 viewers.append(viewer)

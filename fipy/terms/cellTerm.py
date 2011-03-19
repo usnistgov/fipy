@@ -34,19 +34,19 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.term import Term
+from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import inline
 from fipy.tools import numerix
-
+from fipy.terms import AbstractBaseClassError
 from fipy.matrices.sparseMatrix import _SparseMatrix
 
-class CellTerm(Term):
+class CellTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.):
+    def __init__(self, coeff=1., var=None):
         if self.__class__ is CellTerm:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise AbstractBaseClassError
             
         from fipy.variables.variable import Variable
         if not isinstance(coeff, Variable):
@@ -54,20 +54,20 @@ class CellTerm(Term):
             coeff = _Constant(value=coeff)
 
         from fipy.variables.cellVariable import CellVariable
-        if ((isinstance(coeff, CellVariable) and coeff.getRank() != 0)
+        if ((isinstance(coeff, CellVariable) and coeff.rank != 0)
             or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
                 raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
 
-        Term.__init__(self, coeff=coeff)
+        _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
         self._var = None
 
-    def _calcCoeffVectors(self, var):
-        mesh = var.getMesh()
+    def __calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        mesh = var.mesh
         coeff = self._getGeomCoeff(mesh)
-        weight = self._getWeight(mesh)
+        weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
         if hasattr(coeff, "getOld"):
-            old = coeff.getOld()
+            old = coeff.old
         else:
             old = coeff
 
@@ -78,17 +78,17 @@ class CellTerm(Term):
             'new value': coeff * weight['new value']
         }
 
-    def _getCoeffVectors(self, var):
+    def __getCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         if self.coeffVectors is None or var is not self._var:
 ##        if self.coeffVectors is None or var != self._var:
             self._var = var
-            self._calcCoeffVectors(var=var)
+            self.__calcCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         return self.coeffVectors
         
     if inline.doInline:
         def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
-            N = oldArray.getMesh().getNumberOfCells()
+            N = oldArray.mesh.numberOfCells
             updatePyArray = numerix.zeros((N),'d')
 
             inline._runInline("""
@@ -97,7 +97,7 @@ class CellTerm(Term):
                 updatePyArray[i] += newCoeff[i] / dt;
                 updatePyArray[i] += diagCoeff[i];
             """,b=b,
-                oldArray=oldArray.getNumericValue(),
+                oldArray=oldArray.numericValue,
     ##            oldArray=numerix.array(oldArray),
                 oldCoeff=numerix.array(coeffVectors['old value']),
                 bCoeff=numerix.array(coeffVectors['b vector']),
@@ -120,31 +120,28 @@ class CellTerm(Term):
     ##      L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
     ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., equation=None):
-        N = len(var)
-        b = numerix.zeros((N),'d')
-        L = SparseMatrix(mesh=var.getMesh())
-        
-        # The sign of the matrix diagonal doesn't seem likely to change
-        # after initialization, but who knows?
-        if equation is not None:
-            from fipy.tools.numerix import sign, add
-            self._diagonalSign.setValue(sign(add.reduce(equation.matrix.takeDiagonal())))
-        else:
-            self._diagonalSign.setValue(1)
-            
-        coeffVectors = self._getCoeffVectors(var=var)
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        self._buildMatrix_(L=L, oldArray=var.getOld(), b=b, dt=dt, coeffVectors=coeffVectors)
-        
-        return (L, b)
-        
+        if var is self.var or self.var is None:
+
+            N = len(var)
+            b = numerix.zeros((N),'d')
+            L = SparseMatrix(mesh=var.mesh)
+
+            coeffVectors = self.__getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+            self._buildMatrix_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
+
+            return (var, L, b)
+        else:
+            return (var, SparseMatrix(mesh=var.mesh), 0)
+
     def _test(self):
         """
         The following tests demonstrate how the `CellVariable` objects
         interact with other types of `Variable` objects.
         
-            >>> from fipy.meshes.grid1D import Grid1D
+            >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
             >>> m = Grid1D(nx=2)

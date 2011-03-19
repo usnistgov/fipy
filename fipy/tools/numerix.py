@@ -99,7 +99,7 @@ def _isPhysical(arr):
 
 def getUnit(arr):
     if hasattr(arr, "getUnit") and callable(arr.getUnit):
-        return arr.getUnit()
+        return arr.unit
     else:
         from fipy.tools.dimensions import physicalField
         return physicalField._unity
@@ -224,7 +224,9 @@ def rank(a):
        element `Grid1D`, has rank 0. If it is defined on a 3x3 `Grid2D`, it is
        still rank 0.
     """
-    if hasattr(a, "getRank"):
+    if hasattr(a, "rank"):
+        return a.rank
+    elif hasattr(a, "getRank"):
         return a.getRank()
     else:
         return NUMERIX.rank(a)
@@ -777,9 +779,9 @@ def conjugate(arr):
     1
     >>> from fipy.variables.variable import Variable
     >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
-    >>> print var.getUnit()
+    >>> print var.unit
     <PhysicalUnit ohm>
-    >>> print allclose(var.getNumericValue(), (3 - 4j, 2j, 10))
+    >>> print allclose(var.numericValue, (3 - 4j, 2j, 10))
     1
     """
     if _isPhysical(arr):
@@ -806,20 +808,20 @@ def dot(a1, a2, axis=0):
 
     Test that Variables are returned as Variables.
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(nx=2, ny=1)
     >>> from fipy.variables.cellVariable import CellVariable
     >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
     >>> v2 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
-    >>> dot(v1, v2)._getVariableClass()
+    >>> dot(v1, v2)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
-    >>> dot(v2, v1)._getVariableClass()
+    >>> dot(v2, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> print rank(dot(v2, v1))
     0
     >>> print dot(v1, v2)
     [ 4 10]
-    >>> dot(v1, v1)._getVariableClass()
+    >>> dot(v1, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> print dot(v1, v1)
     [ 4 10]
@@ -890,6 +892,30 @@ else:
         ## We can't use Numeric.dot on an array of vectors
         return sqrt(dot(a1, a2))
         
+def nearest(data, points):
+    """find the indices of `data` that are closest to `points`
+    
+    >>> from fipy import *
+    >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
+    >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
+    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue)
+    [4 5 7 8]
+    """
+    N = data.shape[-1]
+    
+    if N == 0:
+        return arange(0)
+        
+    points = resize(points, (N, len(points), len(points[0]))).swapaxes(0,1)
+    data = data[..., newaxis]
+    
+    try:
+        tmp = data - points
+    except TypeError:
+        tmp = data - PhysicalField(points)
+
+    return argmin(dot(tmp, tmp, axis=0), axis=0)
+
 def allequal(first, second):
     """
     Returns `true` if every element of `first` is equal to the corresponding
@@ -918,6 +944,30 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
         return second.allclose(other=first, atol=atol, rtol=rtol)
     else:
         return MA.allclose(first, second, atol=atol, rtol=rtol)
+
+def all(a, axis=None, out=None):
+    r"""
+    Test whether all array elements along a given axis evaluate to True.
+    
+    Parameters
+    ----------
+    a : array_like
+        Input array or object that can be converted to an array.
+    axis : int, optional
+        Axis along which an logical AND is performed.
+        The default (`axis` = `None`) is to perform a logical AND
+        over a flattened input array. `axis` may be negative, in which
+        case it counts from the last to the first axis.
+    out : ndarray, optional
+        Alternative output array in which to place the result.
+        It must have the same shape as the expected output and
+        the type is preserved.
+
+    """
+    if _isPhysical(a):
+        return a.all(axis=axis)
+    else:
+        return MA.all(a=a, axis=axis, out=out)
 
 def isclose(first, second, rtol=1.e-5, atol=1.e-8):
     r"""

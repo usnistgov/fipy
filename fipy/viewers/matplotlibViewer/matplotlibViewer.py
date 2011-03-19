@@ -49,7 +49,7 @@ class _MatplotlibViewer(_Viewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
         
-    def __init__(self, vars, title=None, figaspect=1.0, cmap=None, colorbar=None, axes=None, **kwlimits):
+    def __init__(self, vars, title=None, figaspect=1.0, cmap=None, colorbar=None, axes=None, log=False, **kwlimits):
         """
         Create a `_MatplotlibViewer`.
         
@@ -73,6 +73,8 @@ class _MatplotlibViewer(_Viewer):
             plot a colorbar in specified orientation if not `None`
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+          log
+            whether to logarithmically scale the data
         """
         if self.__class__ is _MatplotlibViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
@@ -102,21 +104,50 @@ class _MatplotlibViewer(_Viewer):
             self.cmap = matplotlib.cm.jet
         else:
             self.cmap = cmap
-
+            
         if colorbar:
             self.colorbar = _ColorBar(viewer=self)
         else:
             self.colorbar = None
 
+        self.norm = None
+        self.log = log 
+
+    def log():
+        doc = "logarithmic data scaling"
+        
+        def fget(self):
+            from matplotlib import colors
+            return isinstance(self.norm, colors.LogNorm)
+          
+        def fset(self, value):
+            from matplotlib import colors
+            if value:
+                self.norm = colors.LogNorm()
+            else:
+                self.norm = colors.Normalize()
+            
+            if self.colorbar is not None:
+                self.colorbar.set_norm(self.norm)
+
+        return locals()
+
+    log = property(**log())
+
     def plot(self, filename = None):
         import pylab
 
-        pylab.figure(self.id)
+        fig = pylab.figure(self.id)
 
         pylab.ioff()
         
         self._plot()
         pylab.draw()
+
+        try:
+            fig.canvas.flush_events()
+        except NotImplementedError:
+            pass
         
         pylab.ion()
 
@@ -136,14 +167,12 @@ class _MatplotlibViewer(_Viewer):
 #         return [".%s" % key for key in filetypes.keys()]
         
 
-class _ColorBar:
+class _ColorBar(object):
     def __init__(self, viewer, vmin=-1, vmax=1, orientation="vertical"):
         self.viewer = viewer
         
         import matplotlib
         cbax, kw = matplotlib.colorbar.make_axes(viewer.axes, orientation=orientation)
-        
-        norm = matplotlib.colors.normalize(vmin=vmin, vmax=vmax)
         
         # ColorbarBase derives from ScalarMappable and puts a colorbar
         # in a specified axes, so it has everything needed for a
@@ -151,13 +180,27 @@ class _ColorBar:
         # following gives a basic continuous colorbar with ticks
         # and labels.
         self._cb = matplotlib.colorbar.ColorbarBase(cbax, cmap=viewer.cmap,
-                                                    norm=norm,
                                                     orientation=orientation)
-        self._cb.set_label(viewer.vars[0].getName())
+        self._cb.set_label(viewer.vars[0].name)
         
-    def plot(self, vmin, vmax):
-        import matplotlib
-        self._cb.norm = matplotlib.colors.normalize(vmin=vmin, vmax=vmax)
+        self.formatter = None
+        
+    def get_norm(self):
+        return self._cb.get_norm()
+
+    def set_norm(self, value):
+        self._cb.set_norm(value)
+        if self.formatter is None:
+            from matplotlib import colors, ticker
+            if isinstance(value, colors.LogNorm):
+                self._cb.formatter = ticker.LogFormatterMathtext()
+            else:
+                self._cb.formatter = ticker.ScalarFormatter()
+        
+    norm = property(fget=get_norm, fset=set_norm, doc="data normalization")
+
+    def plot(self): #, vmin, vmax):
+        self._cb.set_norm(self.viewer.norm)
         self._cb.cmap = self.viewer.cmap
         self._cb.draw_all()
         
