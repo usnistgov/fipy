@@ -104,7 +104,7 @@ class GaussianNoiseVariable(NoiseVariable):
     >>> gauss.value = ((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
     
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
+    ...     from fipy.viewers import Viewer
     ...     viewer = Viewer(vars=noise, 
     ...                     datamin=-5, datamax=5)
     ...     histoplot = Viewer(vars=(histogram, gauss))
