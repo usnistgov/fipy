@@ -101,11 +101,11 @@ class _FaceGradVariable(FaceVariable):
             N2[..., faceMask] = self.var.faceValue[..., faceMask]
             N = (N2 - numerix.take(self.var,id1)) / dAP
 
-            normals = self.mesh._getOrientedFaceNormals()
+            normals = self.mesh._orientedFaceNormals
             
-            tangents1 = self.mesh._getFaceTangents1()
-            tangents2 = self.mesh._getFaceTangents2()
-            cellGrad = self.var.getGrad().getNumericValue()
+            tangents1 = self.mesh._faceTangents1
+            tangents2 = self.mesh._faceTangents2
+            cellGrad = self.var.grad.numericValue
             
             grad1 = numerix.take(cellGrad, id1, axis=1)
             grad2 = numerix.take(cellGrad, id2, axis=1)

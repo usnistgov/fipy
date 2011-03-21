@@ -392,10 +392,10 @@ if inline.doInline:
         unit1 = unit2 = 1
         if _isPhysical(a1):
             unit1 = a1.inBaseUnits().getUnit()
-            a1 = a1.getNumericValue()
+            a1 = a1.numericValue
         if _isPhysical(a2):
             unit2 = a2.inBaseUnits().getUnit()
-            a2 = a2.getNumericValue()
+            a2 = a2.numericValue
         NJ, ni = NUMERIX.shape(a1)
         result1 = NUMERIX.zeros((ni,),'d')
 
