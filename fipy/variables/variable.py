@@ -1560,6 +1560,166 @@ class Variable(object):
 
         self.__init__(**dict)
         
+    def _test(self):
+        """
+        Inverse cosine of :math:`x`, :math:`\cos^{-1} x`
+        
+        >>> from fipy.tools.numerix import *
+
+        >>> arccos(Variable(value=(0,0.5,1.0)))
+        arccos(Variable(value=array([ 0. ,  0.5,  1. ])))
+            
+        .. attention:: 
+            
+           the next should really return radians, but doesn't
+           
+        >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3)
+        [ 1.571  1.047  0.   ]
+
+        Inverse hyperbolic cosine of :math:`x`, :math:`\cosh^{-1} x`
+        
+        >>> arccosh(Variable(value=(1,2,3)))
+        arccosh(Variable(value=array([1, 2, 3])))
+        >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
+        [ 0.     1.317  1.763]
+        
+        Inverse sine of :math:`x`, :math:`\sin^{-1} x`
+        
+        >>> arcsin(Variable(value=(0,0.5,1.0)))
+        arcsin(Variable(value=array([ 0. ,  0.5,  1. ])))
+            
+        .. attention:: 
+            
+           the next should really return radians, but doesn't
+           
+        >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
+        [ 0.     0.524  1.571]
+
+        Inverse hyperbolic sine of :math:`x`, :math:`\sinh^{-1} x`
+
+        >>> arcsinh(Variable(value=(1,2,3)))
+        arcsinh(Variable(value=array([1, 2, 3])))
+        >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
+        [ 0.881  1.444  1.818]
+        
+        Inverse tangent of :math:`x`, :math:`\tan^{-1} x`
+
+        >>> arctan(Variable(value=(0,0.5,1.0)))
+        arctan(Variable(value=array([ 0. ,  0.5,  1. ])))
+        
+        .. attention:: 
+            
+           the next should really return radians, but doesn't
+           
+        >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
+        [ 0.     0.464  0.785]
+
+        Inverse tangent of a ratio :math:`x/y`, :math:`\tan^{-1} \frac{x}{y}`
+
+        >>> arctan2(Variable(value=(0, 1, 2)), 2)
+        (arctan2(Variable(value=array([0, 1, 2])), 2))
+            
+        .. attention:: 
+            
+           the next should really return radians, but doesn't
+           
+        >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
+        [ 0.     0.464  0.785]
+
+        Inverse hyperbolic tangent of :math:`x`, :math:`\tanh^{-1} x`
+
+        >>> arctanh(Variable(value=(0,0.25,0.5)))
+        arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
+        >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
+        [ 0.     0.255  0.549]
+
+        Cosine of :math:`x`, :math:`\cos x`
+
+        >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad"))
+        cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
+        >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
+        [ 1.   0.5  0. ]
+        
+        Hyperbolic cosine of :math:`x`, :math:`\cosh x`
+
+        >>> cosh(Variable(value=(0,1,2)))
+        cosh(Variable(value=array([0, 1, 2])))
+        >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
+        [ 1.     1.543  3.762]
+        
+        Tangent of :math:`x`, :math:`\tan x`
+
+        >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad"))
+        tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
+        >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
+        [ 0.     1.732 -1.732]
+        
+        Hyperbolic tangent of :math:`x`, :math:`\tanh x`
+
+        >>> tanh(Variable(value=(0,1,2)))
+        tanh(Variable(value=array([0, 1, 2])))
+        >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
+        [ 0.     0.762  0.964]
+        
+        Base-10 logarithm of :math:`x`, :math:`\log_{10} x`
+
+        >>> log10(Variable(value=(0.1,1,10)))
+        log10(Variable(value=array([  0.1,   1. ,  10. ])))
+        >>> print log10(Variable(value=(0.1,1,10)))
+        [-1.  0.  1.]
+        
+        Sine of :math:`x`, :math:`\sin x`
+
+        >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
+        >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        [ 0.   0.5  1. ]
+        
+        Hyperbolic sine of :math:`x`, :math:`\sinh x`
+
+        >>> sinh(Variable(value=(0,1,2)))
+        sinh(Variable(value=array([0, 1, 2])))
+        >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
+        [ 0.     1.175  3.627]
+
+        Square root of :math:`x`, :math:`\sqrt{x}`
+
+        >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
+        sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
+        >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
+        [ 1.     1.414  1.732] m
+        
+        The largest integer :math:`\le x`, :math:`\lfloor x \rfloor`
+
+        >>> floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        floor(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
+        >>> print floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        [-2.  2.  2.] m**2
+        
+        The largest integer :math:`\ge x`, :math:`\lceil x \rceil`
+           
+        >>> ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        ceil(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
+        >>> print ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        [-1.  2.  3.] m**2
+        
+        Natural logarithm of :math:`x`, :math:`\ln x \equiv \log_e x`
+
+        >>> log(Variable(value=(0.1,1,10)))
+        log(Variable(value=array([  0.1,   1. ,  10. ])))
+        >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
+        [-2.303  0.     2.303]
+        
+        Complex conjugate of :math:`z = x + i y`, :math:`z^\star = x - i y`
+           
+        >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
+        >>> print var.unit
+        <PhysicalUnit ohm>
+        >>> print allclose(var.numericValue, (3 - 4j, 2j, 10))
+        1
+        """
+        pass
+        
 
 def _test(): 
     import doctest
