@@ -42,7 +42,7 @@ from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
 from fipy.tools import inline
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.decorators import getsetDeprecated, mathMethodDeprecated
 
 class Variable(object):
     """
@@ -1333,18 +1333,23 @@ class Variable(object):
                                            opShape=(),
                                            canInline=False)
 
+    @mathMethodDeprecated
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))
 
+    @mathMethodDeprecated
     def arccosh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccosh(a))
 
+    @mathMethodDeprecated
     def arcsin(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arcsin(a))
 
+    @mathMethodDeprecated
     def arcsinh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arcsinh(a))
 
+    @mathMethodDeprecated
     def sqrt(self):
         """
         
@@ -1359,51 +1364,67 @@ class Variable(object):
         """
         return self._UnaryOperatorVariable(lambda a: numerix.sqrt(a))
         
+    @mathMethodDeprecated
     def tan(self):
         return self._UnaryOperatorVariable(lambda a: numerix.tan(a))
 
+    @mathMethodDeprecated
     def tanh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.tanh(a))
 
+    @mathMethodDeprecated
     def arctan(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arctan(a))
 
+    @mathMethodDeprecated
     def arctanh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arctanh(a))
             
+    @mathMethodDeprecated
     def exp(self):
         return self._UnaryOperatorVariable(lambda a: numerix.exp(a))
 
+    @mathMethodDeprecated
     def log(self):
         return self._UnaryOperatorVariable(lambda a: numerix.log(a))
 
+    @mathMethodDeprecated
     def log10(self):
         return self._UnaryOperatorVariable(lambda a: numerix.log10(a))
 
+    @mathMethodDeprecated
     def sin(self):
         return self._UnaryOperatorVariable(lambda a: numerix.sin(a))
                 
+    @mathMethodDeprecated
     def sinh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.sinh(a))
 
+    @mathMethodDeprecated
     def cos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.cos(a))
         
+    @mathMethodDeprecated
     def cosh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.cosh(a))
 
+    @mathMethodDeprecated
     def floor(self):
         return self._UnaryOperatorVariable(lambda a: numerix.floor(a))
 
+    @mathMethodDeprecated
     def ceil(self):
         return self._UnaryOperatorVariable(lambda a: numerix.ceil(a))
 
+    @mathMethodDeprecated
     def sign(self):
         return self._UnaryOperatorVariable(lambda a: numerix.sign(a), canInline=False)
         
+    @mathMethodDeprecated
     def conjugate(self):
         return self._UnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline=False)
 
+    @mathMethodDeprecated
     def arctan2(self, other):
         return self._BinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
         
@@ -1419,6 +1440,7 @@ class Variable(object):
                                             operatorClass=operatorClass,
                                             canInline=False)
         
+    @mathMethodDeprecated
     def reshape(self, shape):
         return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opShape=shape, canInline=False)
         
@@ -1466,6 +1488,7 @@ class Variable(object):
         return self._axisOperator(opname="minVar", 
                                   op=lambda a: a.min(axis=axis), 
                                   axis=axis)
+                                  
     def _getitemClass(self, index):
         return self._OperatorVariableClass()
 
@@ -1533,7 +1556,7 @@ class Variable(object):
     @property
     def mag(self):
         if not hasattr(self, "_mag"):
-            self._mag = self.dot(self).sqrt()
+            self._mag = numerix.sqrt(self.dot(self))
             
         return self._mag
     

@@ -37,6 +37,31 @@ def getsetDeprecated(*args, **kwargs):
         return _GetSetDeprecated(*args, **kwargs)(fn)
     else:
         return _GetSetDeprecated(*args, **kwargs)
+        
+class _MathMethodDeprecated(_Deprecate):
+    def __call__(self, func, *args, **kwargs):
+        old_name = self.old_name
+        new_name = self.new_name
+
+        if old_name is None:
+            try:
+                old_name = func.func_name
+            except AttributeError:
+                old_name = func.__name__
+                
+        if new_name is None:
+            self.new_name = "numerix.%s" % old_name
+                
+        return _Deprecate.__call__(self, func=func, *args, **kwargs)
+
+def mathMethodDeprecated(*args, **kwargs):
+    if args:
+        fn = args[0]
+        args = args[1:]
+
+        return _MathMethodDeprecated(*args, **kwargs)(fn)
+    else:
+        return _MathMethodDeprecated(*args, **kwargs)
 
 def _test(): 
     import doctest
