@@ -39,7 +39,6 @@ from fipy.tools import numerix
 
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
-from fipy.tools.decorators import getsetDeprecated
 
 class _PysparseMatrixBase(_SparseMatrix):
     

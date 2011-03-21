@@ -183,7 +183,7 @@ class UniformGrid3D(Grid3D):
 
 ##         from common/mesh
         
-    @getsetDeprecated
+    @getsetDeprecated(new_name="cellFaceIDs")
     def _getCellFaceIDs(self):
         return self.cellFaceIDs
 
@@ -287,7 +287,7 @@ class UniformGrid3D(Grid3D):
         
         return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
         
-    @getsetDeprecated
+    @getsetDeprecated(new_name="faceVertexIDs")
     def _getFaceVertexIDs(self):
         return self.faceVertexIDs
 

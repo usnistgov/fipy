@@ -4,10 +4,6 @@ import warnings
 from numpy.lib.utils import _Deprecate
 
 class _GetSetDeprecated(_Deprecate):
-    def __init__(self, old_name=None, new_name=None, message=None):
-        _Deprecate.__init__(self, old_name=old_name, new_name=None, message=message)
-        self.new_property = new_name
-        
     def __call__(self, func, *args, **kwargs):
         old_name = self.old_name
         new_name = self.new_name
@@ -25,8 +21,11 @@ class _GetSetDeprecated(_Deprecate):
             RE = re.search("(_*)(get|set)(.)(.*)", old_name)
             if RE is not None:
                 new_name = RE.group(1) + RE.group(3).lower() + RE.group(4)
-                if message is None:
-                    self.message = "Use the `%s` property instead." % new_name
+        else:
+            self.new_name = None
+                
+        if message is None:
+            self.message = "Use the `%s` property instead." % new_name
         
         return _Deprecate.__call__(self, func=func, *args, **kwargs)
 
