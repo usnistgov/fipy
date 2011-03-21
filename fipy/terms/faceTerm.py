@@ -88,7 +88,8 @@ class FaceTerm(_NonDiffusionTerm):
 
         coeffMatrix = self.__getCoeffMatrix(mesh, weight)
 
-        inline._optionalInline(self.__explicitBuildMatrixIn, self.__explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight)
+        self._explicitBuildMatrix_(oldArray=oldArray, id1=id1, id2=id2, b=b, coeffMatrix=coeffMatrix, 
+                                   mesh=mesh, interiorFaces=interiorFaces, dt=dt, weight=weight)
 
         N = mesh.numberOfCells
         M = mesh._maxFacesPerCell
@@ -101,51 +102,52 @@ class FaceTerm(_NonDiffusionTerm):
                 b -= LL * numerix.array(oldArray)
             b += bb
 
-    def __explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, interiorFaces, dt, weight):
+    if inline.doInline:
+        def _explicitBuildMatrix_(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
 
-        oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
-        coeff = numerix.array(self._getGeomCoeff(mesh))
-        Nfac = mesh.numberOfFaces
+            oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
+            coeff = numerix.array(self._getGeomCoeff(mesh))
+            Nfac = mesh.numberOfFaces
 
-        cell1Diag = numerix.zeros((Nfac,),'d')
-        cell1Diag[:] = weight['cell 1 diag']
-        cell1OffDiag = numerix.zeros((Nfac,),'d')
-        cell1OffDiag[:] = weight['cell 1 offdiag']
-        cell2Diag = numerix.zeros((Nfac,),'d')
-        cell2Diag[:] = weight['cell 2 diag']
-        cell2OffDiag = numerix.zeros((Nfac,),'d')
-        cell2OffDiag[:] = weight['cell 2 offdiag']
-        
-        inline._runInline("""
-            long int faceID = faceIDs[i];
-            long int cellID1 = id1[i];
-            long int cellID2 = id2[i];
+            cell1Diag = numerix.zeros((Nfac,),'d')
+            cell1Diag[:] = weight['cell 1 diag']
+            cell1OffDiag = numerix.zeros((Nfac,),'d')
+            cell1OffDiag[:] = weight['cell 1 offdiag']
+            cell2Diag = numerix.zeros((Nfac,),'d')
+            cell2Diag[:] = weight['cell 2 diag']
+            cell2OffDiag = numerix.zeros((Nfac,),'d')
+            cell2OffDiag[:] = weight['cell 2 offdiag']
             
-            b[cellID1] += -coeff[faceID] * (cell1Diag[faceID] * oldArrayId1[i] + cell1OffDiag[faceID] * oldArrayId2[i]);
-            b[cellID2] += -coeff[faceID] * (cell2Diag[faceID] * oldArrayId2[i] + cell2OffDiag[faceID] * oldArrayId1[i]);
-        """,oldArrayId1 = numerix.array(oldArrayId1),
-            oldArrayId2 = numerix.array(oldArrayId2),
-            id1 = id1,
-            id2 = id2,
-            b = b,
-            cell1Diag = cell1Diag,
-            cell1OffDiag = cell1OffDiag,
-            cell2Diag = cell2Diag,
-            cell2OffDiag = cell2OffDiag,
-            coeff = coeff,
-            faceIDs = interiorFaces,
-            ni = len(interiorFaces))
+            inline._runInline("""
+                long int faceID = faceIDs[i];
+                long int cellID1 = id1[i];
+                long int cellID2 = id2[i];
+                
+                b[cellID1] += -coeff[faceID] * (cell1Diag[faceID] * oldArrayId1[i] + cell1OffDiag[faceID] * oldArrayId2[i]);
+                b[cellID2] += -coeff[faceID] * (cell2Diag[faceID] * oldArrayId2[i] + cell2OffDiag[faceID] * oldArrayId1[i]);
+            """,oldArrayId1 = numerix.array(oldArrayId1),
+                oldArrayId2 = numerix.array(oldArrayId2),
+                id1 = id1,
+                id2 = id2,
+                b = b,
+                cell1Diag = cell1Diag,
+                cell1OffDiag = cell1OffDiag,
+                cell2Diag = cell2Diag,
+                cell2OffDiag = cell2OffDiag,
+                coeff = coeff,
+                faceIDs = interiorFaces,
+                ni = len(interiorFaces))
+    else:
+        def _explicitBuildMatrix_(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
+            oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt=dt)
 
-    def __explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
-        oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt=dt)
+            cell1diag = numerix.take(coeffMatrix['cell 1 diag'], interiorFaces)
+            cell1offdiag = numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces)
+            cell2diag = numerix.take(coeffMatrix['cell 2 diag'], interiorFaces)
+            cell2offdiag = numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces)
 
-        cell1diag = numerix.take(coeffMatrix['cell 1 diag'], interiorFaces)
-        cell1offdiag = numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces)
-        cell2diag = numerix.take(coeffMatrix['cell 2 diag'], interiorFaces)
-        cell2offdiag = numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces)
-
-        vector.putAdd(b, id1, -(cell1diag * oldArrayId1 + cell1offdiag * oldArrayId2))
-        vector.putAdd(b, id2, -(cell2diag * oldArrayId2 + cell2offdiag * oldArrayId1))
+            vector.putAdd(b, id1, -(cell1diag * oldArrayId1 + cell1offdiag * oldArrayId2))
+            vector.putAdd(b, id2, -(cell2diag * oldArrayId2 + cell2offdiag * oldArrayId1))
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Implicit portion considers
