@@ -110,10 +110,6 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
         return self.faceNormals
 
     @property
-    def faceCellToCellNormals(self):
-        return self.faceNormals
-        
-    @property
     def cellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx
 
@@ -168,10 +164,6 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
     def faceCenters(self):
         return numerix.arange(self.numberOfFaces)[numerix.NewAxis, ...] * self.dx + self.origin
      
-    @property
-    def faceCellToCellNormals(self):
-        return self.faceNormals
-
     @property
     def cellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx

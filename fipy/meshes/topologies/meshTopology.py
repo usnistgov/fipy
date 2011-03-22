@@ -54,14 +54,14 @@ class MeshTopology(AbstractMeshTopology):
         self.faceCellIDs = faceCellIDs
 
         (self._interiorFaces,
-        self._exteriorFaces) = self._calcInteriorAndExteriorFaceIDs(mesh)
+         self._exteriorFaces) = self._calcInteriorAndExteriorFaceIDs(mesh)
         (self._interiorCellIDs,
-        self._exteriorCellIDs) = self._calcInteriorAndExteriorCellIDs(numCells)
+         self._exteriorCellIDs) = self._calcInteriorAndExteriorCellIDs(numCells)
         self._cellToFaceOrientations = self._calcCellToFaceOrientations()
         self._adjacentCellIDs = self._calcAdjacentCellIDs()
         self._cellToCellIDs = self._calcCellToCellIDs()
         self._cellToCellIDsFilled = self._calcCellToCellIDsFilled(numCells,
-                                                                 maxFacesPerCell)
+                                                                  maxFacesPerCell)
 
     def _getCellFaceIDs(self):
         return self._cellFaceIDs
@@ -71,39 +71,38 @@ class MeshTopology(AbstractMeshTopology):
 
     cellFaceIDs = property(_getCellFaceIDs, _setCellFaceIDs)
     
-    def _getInteriorFaces(self):
+    @property
+    def interiorFaces(self):
         return self._interiorFaces
 
-    def _getExteriorFaces(self):
+    @property
+    def exteriorFaces(self):
         return self._exteriorFaces
 
-    def _getInteriorCellIDs(self):
+    @property
+    def interiorCellIDs(self):
         return self._interiorCellIDs
 
-    def _getExteriorCellIDs(self):
+    @property
+    def exteriorCellIDs(self):
         return self._exteriorCellIDs
 
-    def _getCellToFaceOrientations(self):
+    @property
+    def cellToFaceOrientations(self):
         return self._cellToFaceOrientations
 
-    def _getAdjacentCellIDs(self):
+    @property
+    def adjacentCellIDs(self):
         return self._adjacentCellIDs
 
-    def _getCellToCellIDs(self):
+    @property
+    def cellToCellIDs(self):
         return self._cellToCellIDs
 
-    def _getCellToCellIDsFilled(self):
+    @property
+    def cellToCellIDsFilled(self):
         return self._cellToCellIDsFilled
     
-    interiorFaces = property(_getInteriorFaces)
-    exteriorFaces = property(_getExteriorFaces)
-    interiorCellIDs = property(_getInteriorCellIDs)
-    exteriorCellIDs = property(_getExteriorCellIDs)
-    cellToFaceOrientations = property(_getCellToFaceOrientations)
-    adjacentCellIDs = property(_getAdjacentCellIDs)
-    cellToCellIDs = property(_getCellToCellIDs)
-    cellToCellIDsFilled = property(_getCellToCellIDsFilled)
-      
     def _calcInteriorAndExteriorFaceIDs(self, mesh):
         from fipy.variables.faceVariable import FaceVariable
         mask = MA.getmask(self.faceCellIDs[1])

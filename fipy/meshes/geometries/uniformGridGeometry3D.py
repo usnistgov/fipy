@@ -108,10 +108,6 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
                                     numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
 
     @property
-    def faceCellToCellNormals(self):
-        return self.faceNormals
-        
-    @property
     def cellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy * self.dz
 

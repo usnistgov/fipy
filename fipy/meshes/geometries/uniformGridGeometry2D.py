@@ -146,10 +146,6 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
         return normals
 
     @property
-    def faceCellToCellNormals(self):
-        return self.faceNormals
-        
-    @property
     def cellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
 

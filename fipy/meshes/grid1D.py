@@ -46,9 +46,9 @@ from mesh1D import Mesh1D
 from fipy.tools import parallel
 
 from fipy.meshes.builders import NonuniformGrid1DBuilder
-from fipy.meshes.abstractGrid import AbstractGrid1DFactory
+from fipy.meshes.gridlike import Gridlike1D
 
-class Grid1D(AbstractGrid1DFactory(Mesh1D)):
+class Grid1D(Mesh1D):
     """
     Creates a 1D grid mesh.
     
@@ -102,6 +102,14 @@ class Grid1D(AbstractGrid1DFactory(Mesh1D)):
         Mesh1D.__init__(self, vertices, faces, cells, communicator=communicator)
         
         self.scale = scale
+
+        self._gridAttributes = Gridlike1D()
+
+    getShape = self._gridAttributes.getShape
+    getPhysicalShape = self._gridAttributes.getPhysicalShape
+    _getMeshSpacing = self._gridAttributes._getMeshSpacing
+    __getstate__ = self._gridAttributes.__getstate__
+    __setstate__ = self._gridAttributes.__setstate__
 
     
 ## pickling
