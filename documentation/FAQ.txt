@@ -718,14 +718,13 @@ for an example of this usage.
 How do I apply a fixed gradient?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In general, it is not currently possible to apply a fixed gradient or Von
-Neumann type boundary condition explicitly. Of course, it is often possible
-to use :class:`~fipy.boundaryConditions.fixedValue.FixedValue` or 
-:class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary conditions to mimic a
-fixed gradient condition. In the case when there is no convection, one can
-simply use a :class:`~fipy.boundaryConditions.FixedFlux` condition and 
-multiply through by the diffusion
-coefficient to create the boundary condition,
+In general, it is not currently possible to apply a fixed gradient or Neumann
+type boundary condition explicitly. Of course, it is often possible to use
+:class:`~fipy.boundaryConditions.fixedValue.FixedValue` or
+:class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary conditions to
+mimic a fixed gradient condition. In the case when there is no convection, one
+can simply use a :class:`~fipy.boundaryConditions.FixedFlux` condition and
+multiply through by the diffusion coefficient to create the boundary condition,
 
 >>> FixedFlux(value=gradient * diffusionCoeff, faces=myFaces)
 
