@@ -40,25 +40,53 @@ from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import parallel
 
 class _NOXInterface(NOX.Epetra.Interface.Required):
-    def __init__(self, var, equation, overlappingMap, nonOverlappingMap, jacobian=None):
-        self.var = var
-        self.equation = equation
-        self.overlappingMap = overlappingMap
-        self.nonOverlappingMap = nonOverlappingMap
-        self.jacobian = jacobian
+    def __init__(self, solver):
         NOX.Epetra.Interface.Required.__init__(self)
+        self.solver = solver
+        
+        self.solver.equation._prepareLinearSystem(var=None, solver=solver, boundaryConditions=(), dt=1.)
+        
+        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = solver._globalMatrixAndVectors
+        
+        self.overlappingMap = globalMatrix.overlappingMap
+        self.nonOverlappingMap = globalMatrix.nonOverlappingMap
+        
+        # Define the Jacobian interface/operator
+        self.mf = NOX.Epetra.MatrixFree(self.solver.nlParams["Printing"], self, nonOverlappingVector)
+
+        # Define the Preconditioner interface/operator
+        self.fdc = NOX.Epetra.FiniteDifferenceColoring(self.solver.nlParams["Printing"], self,
+                                                       nonOverlappingVector, globalMatrix.matrix.Graph(), True)
+        
+    def solve(self, dt=1.):
+        self.dt = dt
+        
+        var = self.solver.var
+        
+        mesh = var.mesh
+        localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
+        nonOverlappingVector = Epetra.Vector(self.nonOverlappingMap, 
+                                             var[localNonOverlappingCellIDs])
+
+        noxSolver = NOX.Epetra.defaultSolver(nonOverlappingVector, 
+                                             self, self.mf, self.mf, self.fdc, self.fdc, self.solver.nlParams,
+                                             absTol=self.solver.tolerance, relTol=0.5, maxIters=self.solver.iterations, 
+                                             updateTol=None, wAbsTol=None, wRelTol=None)
+                                             
+        return noxSolver.solve()
+
         
     def computeF(self, u, F, flag):
         try:
-            overlappingVector = Epetra.Vector(self.overlappingMap, self.var)
+            overlappingVector = Epetra.Vector(self.overlappingMap, self.solver.var)
             
             overlappingVector.Import(u, 
                                      Epetra.Import(self.overlappingMap, 
                                                    self.nonOverlappingMap), 
                                      Epetra.Insert)
 
-            self.var.value = u
-            F[:] = self.equation.justResidualVector(dt=self.dt)
+            self.solver.var.value = u
+            F[:] = self.solver.equation.justResidualVector(dt=self.dt)
             return True
             
         except Exception, e:
@@ -68,63 +96,40 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
             
     
 class TrilinosNonlinearSolver(TrilinosSolver):
-    def __init__(self, equation, jacobian=None, tolerance=1e-10, iterations=1000, steps=None, precon=None):
-        TrilinosSolver.__init__(self, tolerance=tolerance, iterations=iterations, precon=precon)
+    def __init__(self, equation, jacobian=None, tolerance=1e-10, iterations=1000, 
+                 printingOptions=None, solverOptions=None, linearSolverOptions=None, 
+                 lineSearchOptions=None, directionOptions=None, newtonOptions=None):
+        TrilinosSolver.__init__(self, tolerance=tolerance, iterations=iterations, precon=None)
+        
+        self.equation = equation
+        self.jacobian = jacobian
         
         self.nlParams = NOX.Epetra.defaultNonlinearParameters(parallel.epetra_comm, 2)
-        self.nlParams["Printing"] = {
+        self.nlParams["Printing"] = printingOptions or {
             'Output Precision': 3, 
             'MyPID': 0, 
             'Output Information': 0, 
             'Output Processor': 0
         }
-        self.nlParams["Solver Options"] =  {
+        self.nlParams["Solver Options"] =  solverOptions or {
             'Status Test Check Type': 'Complete', 
             'Rescue Bad Newton Solve': 'True'
         }
-        self.nlParams["Linear Solver"] = {
+        self.nlParams["Linear Solver"] = linearSolverOptions or {
             'Aztec Solver': 'GMRES', 
             'Tolerance': 0.0001, 
             'Max Age Of Prec': 5, 
             'Max Iterations': 20, 
             'Preconditioner': 'Ifpack'
         }
-        self.nlParams["Line Search"] = {'Method': "Polynomial"}
-        self.nlParams["Direction"] = {'Method': 'Newton'}
-        self.nlParams["Newton"] = {'Forcing Term Method': 'Type 2'}
+        self.nlParams["Line Search"] = lineSearchOptions or {'Method': "Polynomial"}
+        self.nlParams["Direction"] = directionOptions or {'Method': 'Newton'}
+        self.nlParams["Newton"] = newtonOptions or {'Forcing Term Method': 'Type 2'}
         
-        equation._prepareLinearSystem(var=None, solver=self, boundaryConditions=(), dt=1.)
-        
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
-        
-        #define the NOX interface 
-        self.overlappingMap = globalMatrix.overlappingMap
-        self.nonOverlappingMap = globalMatrix.nonOverlappingMap
-        
-        self.nox = _NOXInterface(var=self.var, equation=equation, jacobian=jacobian, 
-                                 overlappingMap=self.overlappingMap,
-                                 nonOverlappingMap=self.nonOverlappingMap)
-        
-        # Define the Jacobian interface/operator
-        self.mf = NOX.Epetra.MatrixFree(self.nlParams["Printing"], self.nox, nonOverlappingVector)
-
-        # Define the Preconditioner interface/operator
-        self.fdc = NOX.Epetra.FiniteDifferenceColoring(self.nlParams["Printing"], self.nox,
-                                                       nonOverlappingVector, globalMatrix.matrix.Graph(), True)
+        self.nox = _NOXInterface(solver=self)
 
     def solve(self, dt=1.):
-        self.nox.dt = dt
-        
-        mesh = self.var.mesh
-        localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
-        nonOverlappingVector = Epetra.Vector(self.nonOverlappingMap, 
-                                             self.var[localNonOverlappingCellIDs])
-
-        solver = NOX.Epetra.defaultSolver(nonOverlappingVector, 
-                                          self.nox, self.mf, self.mf, self.fdc, self.fdc, self.nlParams,
-                                          absTol=self.tolerance, relTol=0.5, maxIters=self.iterations, 
-                                          updateTol=None, wAbsTol=None, wRelTol=None)
-        output = solver.solve()
+        output = self.nox.solve(dt=dt)
         
 #         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
 #             status = Solver.GetAztecStatus()
