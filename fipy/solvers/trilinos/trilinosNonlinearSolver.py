@@ -44,36 +44,33 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
         NOX.Epetra.Interface.Required.__init__(self)
         self.solver = solver
         
-        self.solver.equation._prepareLinearSystem(var=None, solver=solver, boundaryConditions=(), dt=1.)
+    def solve(self, dt=1.):
+        self.dt = dt
         
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = solver._globalMatrixAndVectors
+        self.solver.equation._prepareLinearSystem(var=None, solver=self.solver, boundaryConditions=(), dt=1.)
+        
+        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self.solver._globalMatrixAndVectors
         
         self.overlappingMap = globalMatrix.overlappingMap
         self.nonOverlappingMap = globalMatrix.nonOverlappingMap
         
         # Define the Jacobian interface/operator
-        self.mf = NOX.Epetra.MatrixFree(self.solver.nlParams["Printing"], self, nonOverlappingVector)
+        mf = NOX.Epetra.MatrixFree(self.solver.nlParams["Printing"], self, nonOverlappingVector)
 
         # Define the Preconditioner interface/operator
-        self.fdc = NOX.Epetra.FiniteDifferenceColoring(self.solver.nlParams["Printing"], self,
-                                                       nonOverlappingVector, globalMatrix.matrix.Graph(), True)
-        
-    def solve(self, dt=1.):
-        self.dt = dt
-        
-        var = self.solver.var
-        
-        mesh = var.mesh
-        localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
-        nonOverlappingVector = Epetra.Vector(self.nonOverlappingMap, 
-                                             var[localNonOverlappingCellIDs])
+        fdc = NOX.Epetra.FiniteDifferenceColoring(self.solver.nlParams["Printing"], self,
+                                                  nonOverlappingVector, globalMatrix.matrix.Graph(), True)
 
         noxSolver = NOX.Epetra.defaultSolver(nonOverlappingVector, 
-                                             self, self.mf, self.mf, self.fdc, self.fdc, self.solver.nlParams,
-                                             absTol=self.solver.tolerance, relTol=0.5, maxIters=self.solver.iterations, 
-                                             updateTol=None, wAbsTol=None, wRelTol=None)
+                                             self, mf, mf, fdc, fdc, self.solver.nlParams) #,
+#                                              absTol=self.solver.tolerance, relTol=0.5, maxIters=self.solver.iterations, 
+#                                              updateTol=None, wAbsTol=None, wRelTol=None)
                                              
-        return noxSolver.solve()
+        status = noxSolver.solve()
+        
+        noxSolver.getList()._print()
+        
+        return status
 
         
     def computeF(self, u, F, flag):
@@ -87,6 +84,7 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
 
             self.solver.var.value = u
             F[:] = self.solver.equation.justResidualVector(dt=self.dt)
+            
             return True
             
         except Exception, e:
