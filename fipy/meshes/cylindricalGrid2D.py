@@ -41,7 +41,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.geometries import _CylindricalGridGeometry2D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
 
@@ -60,23 +59,22 @@ class CylindricalGrid2D(Grid2D):
 
         self.vertexCoords += self.origin
         self.args['origin'] = self.origin
-    
-    def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _CylindricalGridGeometry2D(self.origin,
-                                        self.dim, 
-                                        self.faceVertexIDs,
-                                        self.vertexCoords,
-                                        self.faceCellIDs,
-                                        self.cellFaceIDs,
-                                        self.numberOfCells,
-                                        self._maxFacesPerCell,
-                                        self._cellToFaceOrientations,
-                                        scaleLength)
 
+    def _calcFaceAreas(self):
+        return super(CylindricalGrid2D, self)._calcFaceAreas() \
+                * self._faceCenters[0]
+
+    def _calcCellCenters(self):
+        return super(CylindricalGrid2D, self)._calcCellCenters()
+
+    def _calcFaceCenters(self):
+        return super(CylindricalGrid2D, self)._calcFaceCenters() \
+                + self.origin
+         
     @property
     def cellVolumes(self):
-        return self._geometry.scaledCellVolumes * self.cellCenters[0]
-     
+        return self._scaledCellVolumes * self.cellCenters[0]
+  
     def _translate(self, vector):
         return CylindricalGrid2D(dx=self.args['dx'], nx=self.args['nx'], 
                                  dy=self.args['dy'], ny=self.args['ny'], 

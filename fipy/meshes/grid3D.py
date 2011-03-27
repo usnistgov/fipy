@@ -38,7 +38,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.mesh import Mesh
-from fipy.meshes.geometries import _GridGeometry3D
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools.decorators import getsetDeprecated
@@ -46,9 +45,9 @@ from fipy.tools.decorators import getsetDeprecated
 from fipy.tools import parallel
 
 from fipy.meshes.builders import NonuniformGrid3DBuilder
-from fipy.meshes.abstractGrid import AbstractGrid3DFactory
+from fipy.meshes.gridlike import Gridlike3D
 
-class Grid3D(AbstractGrid3DFactory(Mesh)):
+class Grid3D(Mesh):
     """
     3D rectangular-prism Mesh
 
@@ -110,24 +109,137 @@ class Grid3D(AbstractGrid3DFactory(Mesh)):
         Mesh.__init__(self, vertices, faces, cells)
         
         self._setScale(scaleLength = scale)
+         
+    def __getstate__(self):
+        return Gridlike3D.__getstate__(self)
 
-    def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _GridGeometry3D(self.nx,
-                                        self.ny,
-                                        self.nz,
-                                        self.numberOfFaces,
-                                        self.numberOfXYFaces,
-                                        self.numberOfXZFaces,
-                                        self.numberOfYZFaces,
-                                        self.dim, 
-                                        self.faceVertexIDs,
-                                        self.vertexCoords,
-                                        self.faceCellIDs,
-                                        self.cellFaceIDs,
-                                        self.numberOfCells,
-                                        self._maxFacesPerCell,
-                                        self._cellToFaceOrientations,
-                                        scaleLength)
+    def __setstate__(self, dict):
+        return Gridlike3D.__setstate__(self, dict)
+
+    def __repr__(self):
+        return Gridlike3D.__repr__(self)
+
+    def _isOrthogonal(self):
+        return Gridlike3D._isOrthogonal(self)
+
+    @property
+    def _concatenatedClass(self):
+        return Gridlike3D._concatenatedClass
+                                                                
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike3D._globalNonOverlappingCellIDs(self)
+
+    @property
+    def _globalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike3D._globalOverlappingCellIDs(self)
+
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike3D._localNonOverlappingCellIDs(self)
+
+    @property
+    def _localOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike3D._localOverlappingCellIDs(self)
+ 
+    def _calcScaleArea(self):
+        return self.scale['length']**2
+
+    def _calcScaleVolume(self):
+        return self.scale['length']**3  
+
+    def _calcFaceNormals(self):
+        XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces))
+        XYFaceNormals[2, (self.nx * self.ny):] = 1
+        XYFaceNormals[2, :(self.nx * self.ny)] = -1
+        XZFaceNormals = numerix.zeros((3, self.numberOfXZFaces))
+        xzd = numerix.arange(self.numberOfXZFaces)
+        xzd = xzd % (self.nx * (self.ny + 1))
+        xzd = (xzd < self.nx)
+        xzd = 1 - (2 * xzd)
+        XZFaceNormals[1, :] = xzd
+        YZFaceNormals = numerix.zeros((3, self.numberOfYZFaces))
+        YZFaceNormals[0, :] = 1
+        YZFaceNormals[0, ::self.nx + 1] = -1
+        return numerix.concatenate((XYFaceNormals, 
+                                    XZFaceNormals, 
+                                    YZFaceNormals), 
+                                   axis=-1)
+        
+    def _calcFaceTangents(self):
+        ## need to see whether order matters.
+        faceTangents1 = numerix.zeros((3, self.numberOfFaces), 'd')
+        faceTangents2 = numerix.zeros((3, self.numberOfFaces), 'd')
+        ## XY faces
+        faceTangents1[0, :self.numberOfXYFaces] = 1.
+        faceTangents2[1, :self.numberOfXYFaces] = 1.
+        ## XZ faces
+        faceTangents1[0, self.numberOfXYFaces:self.numberOfXYFaces + self.numberOfXZFaces] = 1.
+        faceTangents2[2, self.numberOfXYFaces:self.numberOfXYFaces + self.numberOfXZFaces] = 1.
+        ## YZ faces
+        faceTangents1[1, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
+        faceTangents2[2, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
+        return faceTangents1, faceTangents2                                     
 
 ## The following method is broken when dx, dy or dz are not scalar. Simpler to use the generic
 ## _calcFaceAreas rather than do the required type checking, resizing and outer product.

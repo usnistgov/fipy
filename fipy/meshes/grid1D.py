@@ -103,15 +103,182 @@ class Grid1D(Mesh1D):
         
         self.scale = scale
 
-        self._gridAttributes = Gridlike1D()
+    def __getstate__(self):
+        return Gridlike1D.__getstate__(self)
 
-    getShape = self._gridAttributes.getShape
-    getPhysicalShape = self._gridAttributes.getPhysicalShape
-    _getMeshSpacing = self._gridAttributes._getMeshSpacing
-    __getstate__ = self._gridAttributes.__getstate__
-    __setstate__ = self._gridAttributes.__setstate__
+    def __setstate__(self, dict):
+        return Gridlike1D.__setstate__(self, dict)
 
-    
+    def __repr__(self):
+        return Gridlike1D.__repr__(self)
+
+    def _isOrthogonal(self):
+        return Gridlike1D._isOrthogonal(self)
+
+    @property
+    def _concatenatedClass(self):
+        return Gridlike1D._concatenatedClass
+                                                                
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike1D._globalNonOverlappingCellIDs(self)
+
+    @property
+    def _globalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike1D._globalOverlappingCellIDs(self)
+
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike1D._localNonOverlappingCellIDs(self)
+
+    @property
+    def _localOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike1D._localOverlappingCellIDs(self)
+
+    @property
+    def _globalNonOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5, 8, 9, 12, 13, 14, 17, 18, 19]
+        for mesh A
+
+            A   ||   B
+        --8---9---10--11--
+       17   18  19  20   21
+        --4---5----6---7--
+       12   13  14  15   16
+        --0---1----2---3--
+                ||
+                
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike1D._globalNonOverlappingFaceIDs(self)
+
+    @property
+    def _globalOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 
+        14, 15, 17, 18, 19, 20] for mesh A
+
+            A   ||   B
+        --8---9---10--11--
+       17   18  19  20   21
+        --4---5----6---7--
+       12   13  14  15   16
+        --0---1----2---3--
+                ||
+                
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike1D._globalOverlappingFaceIDs(self)
+
+    @property
+    def _localNonOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
+        for mesh A
+
+            A   ||   B
+        --6---7-----7---8--
+       13   14 15/14 15   16
+        --3---4-----4---5--
+        9   10 11/10 11   12
+        --0---1-----1---2--
+                ||
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike1D._localNonOverlappingFaceIDs(self)
+
+    @property
+    def _localOverlappingFaceIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 
+        12, 13, 14, 15, 16] for mesh A
+
+            A   ||   B
+        --6---7----8------
+       13   14  15  16   |
+        --3---4----5------
+        9   10  11  12   |
+        --0---1----2------
+                ||
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike1D._localOverlappingFaceIDs(self)
+          
 ## pickling
 
     def _test(self):

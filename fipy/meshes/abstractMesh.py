@@ -39,7 +39,9 @@ from fipy.tools import serial
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
-
+ 
+class MeshAdditionError(Exception):
+    pass
  
 class AbstractMesh(object):
     """
@@ -65,9 +67,9 @@ class AbstractMesh(object):
         :Parameters:
           - `scaleLength`: The desired scale length.
         """
-        self._geometry.scale = scaleLength
+        self._scale['length'] = scaleLength
 
-    scale = property(lambda s: s._geometry.scale, _setScale)
+    scale = property(lambda s: s._scale, _setScale)
 
     def _calcScaleArea(self):
         raise NotImplementedError
@@ -87,12 +89,6 @@ class AbstractMesh(object):
         return self._cellFaceIDs
 
     def _setCellFaceIDs(self, newVal):
-        """We must notify the helper classes."""
-        if hasattr(self, "_topology"): 
-            self._topology.cellFaceIDs = newVal
-        if hasattr(self, "_geometry"):
-            self._geometry.cellFaceIDs = newVal
-
         self._cellFaceIDs = newVal
 
     """This is to enable `_connectFaces` to work properly."""
@@ -100,82 +96,40 @@ class AbstractMesh(object):
                     
     """Topology properties"""
 
-    interiorFaces          = property(lambda s: s._topology.interiorFaces)
+    interiorFaces = property(lambda s: s._interiorFaces)
 
     def _setExteriorFaces(self, newExtFaces):
-        self._topology.exteriorFaces = newExtFaces
+        self._exteriorFaces = newExtFaces
 
-    exteriorFaces          = property(lambda s: s._topology.exteriorFaces,
+    exteriorFaces           = property(lambda s: s._exteriorFaces,
                                       _setExteriorFaces)
-    _interiorCellIDs        = property(lambda s: s._topology.interiorCellIDs)
-    _exteriorCellIDs        = property(lambda s: s._topology.exteriorCellIDs)
-    _cellToFaceOrientations = property(lambda s: s._topology.cellToFaceOrientations)
-    _adjacentCellIDs        = property(lambda s: s._topology.adjacentCellIDs)
-    _cellToCellIDs          = property(lambda s: s._topology.cellToCellIDs)
-    _cellToCellIDsFilled    = property(lambda s: s._topology.cellToCellIDsFilled)
+    
+    def _isOrthogonal(self):
+        raise NotImplementedError
 
     """Geometry properties"""
 
-    _faceAreas                = property(lambda s: s._geometry.scaledFaceAreas)
-    faceCenters               = property(lambda s: s._geometry.faceCenters)
+    faceCenters = property(lambda s: s._faceCenters)
 
-    def _setFaceToCellDistances(self, v):
-        self._geometry.faceToCellDistances = v
-
-    _faceToCellDistances = property(lambda s: s._geometry.faceToCellDistances,
-                                   _setFaceToCellDistances)
-
-    def _setCellDistances(self, v):
-        self._geometry.cellDistances = v
-
-    _cellDistances = property(lambda s: s._geometry.scaledCellDistances,
-                             _setCellDistances)
-
-    def _setFaceNormals(self, v):
-        self._geometry.faceNormals = v
-
-    _faceNormals = property(lambda s: s._geometry.faceNormals,
-                           _setFaceNormals)
-
-    cellToFaceDistanceVectors  = property(lambda s: s._geometry.cellToFaceDistanceVectors)
-    cellDistanceVectors        = property(lambda s: s._geometry.cellDistanceVectors)
-    _orientedFaceNormals       = property(lambda s: s._geometry.orientedFaceNormals)
-    cellVolumes                = property(lambda s: s._geometry.scaledCellVolumes)
+    cellToFaceDistanceVectors  = property(lambda s: s._cellToFaceDistanceVectors)
+    cellDistanceVectors        = property(lambda s: s._cellDistanceVectors)
+    cellVolumes                = property(lambda s: s._scaledCellVolumes)
 
     @property
     def cellCenters(self):
         from fipy.variables.cellVariable import CellVariable
-        return CellVariable(mesh=self, value=self._geometry.scaledCellCenters,
+        return CellVariable(mesh=self, value=self._scaledCellCenters,
                             rank=1)
-
-    _faceCellToCellNormals = property(lambda s: s._geometry.faceCellToCellNormals)
-    _faceTangents1         = property(lambda s: s._geometry.faceTangents1)
-    _faceTangents2         = property(lambda s: s._geometry.faceTangents2)
-    _cellToCellDistances   = property(lambda s: s._geometry.scaledCellToCellDistances)
-    _cellAreas             = property(lambda s: s._geometry.cellAreas)
-    _cellNormals           = property(lambda s: s._geometry.cellNormals)
 
     """scaled geometery properties
     
     These should not exist."""
-    scaledFaceAreas           = property(lambda s: s._geometry.scaledFaceAreas)
-    scaledCellVolumes         = property(lambda s: s._geometry.scaledCellVolumes)
-    _scaledCellCenters        = property(lambda s: s._geometry.scaledCellCenters)
-    scaledFaceToCellDistances = property(lambda s: \
-                                         s._geometry.scaledFaceToCellDistances)
-    scaledCellDistances       = property(lambda s: \
-                                         s._geometry.scaledCellDistances)
-    scaledCellToCellDistances = property(lambda s: \
-                                         s._geometry.scaledCellToCellDistances)
-    _areaProjections          = property(lambda s: \
-                                         s._geometry.areaProjections)
-    _orientedAreaProjections  = property(lambda s: \
-                                         s._geometry.orientedAreaProjections)
-    _faceToCellDistanceRatio  = property(lambda s: \
-                                         s._geometry.faceToCellDistanceRatio)
-    _faceAspectRatios         = property(lambda s: \
-                                         s._geometry.faceAspectRatios)  
-
+    scaledFaceAreas           = property(lambda s: s._scaledFaceAreas)
+    scaledCellVolumes         = property(lambda s: s._scaledCellVolumes)
+    scaledFaceToCellDistances = property(lambda s: s._scaledFaceToCellDistances)
+    scaledCellDistances       = property(lambda s: s._scaledCellDistances)
+    scaledCellToCellDistances = property(lambda s: s._scaledCellToCellDistances)
+    
     def _connectFaces(self, faces0, faces1):
         """
         
@@ -283,7 +237,7 @@ class AbstractMesh(object):
         self._setTopology()
 
         ## calculate new geometry
-        self._geometry.handleFaceConnection()
+        self._handleFaceConnection()
         
         self.scale = self.scale['length']
  
@@ -536,10 +490,7 @@ class AbstractMesh(object):
     @property
     def _maxFacesPerCell(self):
         raise NotImplementedError
-
-    def _isOrthogonal(self):
-        raise NotImplementedError
-         
+     
     @property
     def _numberOfVertices(self):
         if hasattr(self, 'numberOfVertices'):
@@ -773,7 +724,6 @@ class AbstractMesh(object):
         from fipy.variables.faceVariable import FaceVariable
         return FaceVariable(mesh=self, value=y == _madmin(y))
 
-
     facesDown = facesBottom
 
     @property
@@ -885,7 +835,7 @@ class AbstractMesh(object):
         The two `Mesh` objects need not be properly aligned in order to concatenate them
         but the resulting mesh may not have the intended connectivity
         
-            >>> from fipy.meshes.mesh import MeshAdditionError
+            >>> from fipy.meshes.nonuniformMesh import MeshAdditionError
             >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
             >>> print addedMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
@@ -1295,7 +1245,28 @@ class AbstractMesh(object):
     @getsetDeprecated
     def getScale(self):
         return self.scale['length']
-         
+     
+    @getsetDeprecated
+    def getPhysicalShape(self):
+        if hasattr(self, "physicalShape"):
+            return self.physicalShape
+        else:
+            return None
+
+    @getsetDeprecated
+    def _getMeshSpacing(self):
+        if hasattr(self, "_meshSpacing"):
+            return self._meshSpacing
+        else:
+            return None
+   
+    @getsetDeprecated
+    def getShape(self):
+        if hasattr(self, "shape"):
+            return self.shape
+        else:
+            return None
+     
 def _madmin(x):
     if len(x) == 0:
         return 0

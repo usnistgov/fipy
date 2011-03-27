@@ -47,9 +47,9 @@ from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.builders import NonuniformGrid2DBuilder
-from fipy.meshes.abstractGrid import AbstractGrid2DFactory
+from fipy.meshes.gridlike import Gridlike2D
 
-class Grid2D(AbstractGrid2DFactory(Mesh2D)):
+class Grid2D(Mesh2D):
     """
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
@@ -94,7 +94,99 @@ class Grid2D(AbstractGrid2DFactory(Mesh2D)):
         Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator)
         
         self.scale = scale
-  
+
+    def __getstate__(self):
+        return Gridlike2D.__getstate__(self)
+
+    def __setstate__(self, dict):
+        return Gridlike2D.__setstate__(self, dict)
+
+    def __repr__(self):
+        return Gridlike2D.__repr__(self)
+
+    def _isOrthogonal(self):
+        return Gridlike2D._isOrthogonal(self)
+
+    @property
+    def _concatenatedClass(self):
+        return Gridlike2D._concatenatedClass
+                                                                
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike2D._globalNonOverlappingCellIDs(self)
+
+    @property
+    def _globalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike2D._globalOverlappingCellIDs(self)
+
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike2D._localNonOverlappingCellIDs(self)
+
+    @property
+    def _localOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike2D._localOverlappingCellIDs(self)
+ 
 ## pickling
 
     def _test(self):

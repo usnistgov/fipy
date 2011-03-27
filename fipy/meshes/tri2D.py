@@ -98,7 +98,7 @@ class Tri2D(Mesh2D):
         Mesh2D.__init__(self, vertices, faces, cells)
 
         self.scale = scale
-        
+
     def _createVertices(self):
         
         x = numerix.arange(self.nx + 1) * self.dx

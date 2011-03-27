@@ -35,8 +35,6 @@
 
 from fipy.tools.numerix import MA
 
-from fipy.meshes.topologies import _UniformMeshTopology3D
-from fipy.meshes.geometries import _UniformGridGeometry3D
 from fipy.meshes.builders import Grid3DBuilder
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -45,10 +43,10 @@ from fipy.tools.decorators import getsetDeprecated
 from fipy.tools import parallel
 
 from fipy.meshes.builders import UniformGrid3DBuilder
-from fipy.meshes.abstractGrid import AbstractGrid3DFactory
-from fipy.meshes.abstractMesh import AbstractMesh
+from fipy.meshes.gridlike import Gridlike3D
+from fipy.meshes.uniformGrid import UniformGrid
 
-class UniformGrid3D(AbstractGrid3DFactory(AbstractMesh)):
+class UniformGrid3D(UniformGrid):
     """
     3D rectangular-prism Mesh with uniform grid spacing in each dimension.
 
@@ -108,30 +106,384 @@ class UniformGrid3D(AbstractGrid3DFactory(AbstractMesh)):
          self.numberOfLayers,
          self.origin) = builder.gridData
         
-        self._setTopology()
-        self._setGeometry()
-
         self.communicator = communicator
+              
+    def __getstate__(self):
+        return Gridlike3D.__getstate__(self)
+
+    def __setstate__(self, dict):
+        return Gridlike3D.__setstate__(self, dict)
+
+    def __repr__(self):
+        return Gridlike3D.__repr__(self)
+
+    def _isOrthogonal(self):
+        return Gridlike3D._isOrthogonal(self)
+
+    @property
+    def _concatenatedClass(self):
+        return Gridlike3D._concatenatedClass
+
+    """
+    Topology set and calc
+    """
+
+    @property
+    def _exteriorFaces(self):
+        """
+        Return only the faces that have one neighboring cell.
+        """
+        XYids = self._XYFaceIDs
+        XZids = self._XZFaceIDs
+        YZids = self._YZFaceIDs
         
-    def _setTopology(self):
-        self._topology = _UniformMeshTopology3D(self.nx, self.ny, self.nz,
-                                                self.numberOfCells,
-                                                self._maxFacesPerCell,
-                                                self._XYFaceIDs,
-                                                self._XZFaceIDs,
-                                                self._YZFaceIDs,
-                                                self.faceCellIDs,
-                                                self.cellFaceIDs,
-                                                self)
-         
-    def _setGeometry(self):
-        self._geometry = _UniformGridGeometry3D(self.dx, self.dy, self.dz,
-                                               self.nx, self.ny, self.nz,
-                                               self.numberOfCells,
-                                               self.numberOfXYFaces,
-                                               self.numberOfXZFaces,
-                                               self.numberOfYZFaces,
-                                               self.origin)
+        exteriorIDs = numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0,1)), 
+                                           numerix.ravel(XYids[...,     -1].swapaxes(0,1)),
+                                           numerix.ravel(XZids[...,  0,...]), 
+                                           numerix.ravel(XZids[..., -1,...]),
+                                           numerix.ravel(YZids[ 0,     ...]), 
+                                           numerix.ravel(YZids[-1,     ...])))
+                                                     
+        from fipy.variables.faceVariable import FaceVariable
+        exteriorFaces = FaceVariable(mesh=self, value=False)
+        exteriorFaces[exteriorIDs] = True
+        return exteriorFaces
+
+    @property
+    def _interiorFaces(self):
+        """
+        Return only the faces that have two neighboring cells
+        """
+        XYids = self._XYFaceIDs
+        XZids = self._XZFaceIDs
+        YZids = self._YZFaceIDs
+        
+        interiorIDs = numerix.concatenate((numerix.ravel(XYids[ ...     ,1:-1]),
+                                           numerix.ravel(XZids[ ...,1:-1, ...]),
+                                           numerix.ravel(YZids[1:-1,      ...].swapaxes(0,1))))
+                                                     
+        from fipy.variables.faceVariable import FaceVariable
+        interiorFaces = FaceVariable(mesh=self, value=False)
+        interiorFaces[interiorIDs] = True
+        return interiorFaces
+
+    @property
+    def _cellToFaceOrientations(self):
+        tmp = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
+        return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
+
+    @property
+    def _adjacentCellIDs(self):
+        faceCellIDs = self.faceCellIDs
+        return (MA.where(MA.getmaskarray(faceCellIDs[0]), faceCellIDs[1], faceCellIDs[0]).filled(),
+                MA.where(MA.getmaskarray(faceCellIDs[1]), faceCellIDs[0], faceCellIDs[1]).filled())
+
+    @property
+    def _cellToCellIDs(self):
+        ids = MA.zeros((6, self.nx, self.ny, self.nz), 'l')
+        indices = numerix.indices((self.nx, self.ny, self.nz))
+        ids[0] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx - 1
+        ids[1] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx + 1
+        ids[2] = indices[0] + (indices[1] + indices[2] * self.ny - self.nz) * self.nx
+        ids[3] = indices[0] + (indices[1] + indices[2] * self.ny + self.nz) * self.nx
+        ids[4] = indices[0] + (indices[1] + (indices[2] - 1) * self.ny) * self.nx
+        ids[5] = indices[0] + (indices[1] + (indices[2] + 1) * self.ny) * self.nx
+        
+        ids[0, 0,    ...] = MA.masked
+        ids[1,-1,    ...] = MA.masked
+        ids[2,..., 0,...] = MA.masked
+        ids[3,...,-1,...] = MA.masked
+        ids[4,...,     0] = MA.masked
+        ids[5,...,    -1] = MA.masked
+
+        return MA.reshape(ids.swapaxes(1,3), (6, self.numberOfCells))
+        
+    @property
+    def _cellToCellIDsFilled(self):
+        N = self.numberOfCells
+        M = self._maxFacesPerCell
+        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
+        cellToCellIDs = self._cellToCellIDs
+        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)     
+                                                                                                
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike3D._globalNonOverlappingCellIDs(self)
+
+    @property
+    def _globalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike3D._globalOverlappingCellIDs(self)
+
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike3D._localNonOverlappingCellIDs(self)
+
+    @property
+    def _localOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike3D._localOverlappingCellIDs(self)
+
+    """
+    Geometry set and calc
+    """
+
+    @property
+    def _faceAreas(self):
+        return numerix.concatenate((numerix.repeat((self.dx * self.dy,), self.numberOfXYFaces),
+                                    numerix.repeat((self.dx * self.dz,), self.numberOfXZFaces),
+                                    numerix.repeat((self.dy * self.dz,), self.numberOfYZFaces)))
+
+    @property
+    def _faceNormals(self):
+        XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYnor[0,      ...] =  1
+        XYnor[0,  ...,  0] = -1
+
+        XZnor = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZnor[1,      ...] =  1
+        XZnor[1,...,0,...] = -1
+
+        YZnor = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZnor[2,      ...] =  1
+        YZnor[2, 0,   ...] = -1
+        
+        return numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                    numerix.reshape(XZnor[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                    numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+
+    @property
+    def _cellVolumes(self):
+        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy * self.dz
+
+    @property
+    def _cellCenters(self):
+        centers = numerix.zeros((3, self.nx, self.ny, self.nz), 'd')
+        indices = numerix.indices((self.nx, self.ny, self.nz))
+        centers[0] = (indices[0] + 0.5) * self.dx
+        centers[1] = (indices[1] + 0.5) * self.dy
+        centers[2] = (indices[2] + 0.5) * self.dz
+        ccs = numerix.reshape(centers.swapaxes(1,3), (3, self.numberOfCells)) + self.origin
+        return ccs
+
+    @property
+    def _cellDistances(self):
+        XYdis = numerix.zeros((self.nz + 1, self.ny, self.nx),'d')
+        XYdis[:] = self.dz
+        XYdis[ 0,...] = self.dz / 2.
+        XYdis[-1,...] = self.dz / 2.
+        
+        XZdis = numerix.zeros((self.nz, self.ny + 1, self.nx),'d')
+        XZdis[:] = self.dy
+        XZdis[..., 0,...] = self.dy / 2.
+        XZdis[...,-1,...] = self.dy / 2.
+
+        YZdis = numerix.zeros((self.nz, self.ny, self.nx + 1),'d')
+        YZdis[:] = self.dx
+        YZdis[..., 0] = self.dx / 2.
+        YZdis[...,-1] = self.dx / 2.
+
+        return numerix.concatenate((numerix.ravel(XYdis),
+                                    numerix.ravel(XZdis),
+                                    numerix.ravel(YZdis)))
+
+    @property
+    def _faceToCellDistanceRatio(self):
+        XYdis = numerix.zeros((self.nx, self.ny, self.nz + 1),'d')
+        XYdis[:] = 0.5
+        XYdis[..., 0] = 1
+        XYdis[...,-1] = 1
+        
+        XZdis = numerix.zeros((self.nx, self.ny + 1, self.nz),'d')
+        XZdis[:] = 0.5
+        XZdis[..., 0,...] = 1
+        XZdis[...,-1,...] = 1
+        
+        YZdis = numerix.zeros((self.nx + 1, self.ny, self.nz),'d')
+        YZdis[:] = 0.5
+        YZdis[ 0,...] = 1
+        YZdis[-1,...] = 1
+        
+        return numerix.concatenate((numerix.ravel(XYdis.swapaxes(0,2)),
+                                    numerix.ravel(XZdis.swapaxes(0,2)),
+                                    numerix.ravel(YZdis.swapaxes(0,2))), axis=1)
+    
+    @property
+    def _orientedFaceNormals(self):
+        return self._faceNormals
+
+    @property
+    def _faceTangents1(self):
+        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYtan[2,      ...] =  1
+        
+        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZtan[2,      ...] =  1
+        
+        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZtan[1,      ...] =  1
+        
+        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        
+    @property
+    def _faceTangents2(self):
+        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYtan[1,      ...] =  1
+        
+        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZtan[0,      ...] =  1
+        
+        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZtan[0,      ...] =  1
+        
+        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+    
+    @property
+    def _cellToCellDistances(self):
+        distances = numerix.zeros((6, self.nx, self.ny, self.nz), 'd')
+        distances[0] = self.dx
+        distances[1] = self.dx
+        distances[2] = self.dy
+        distances[3] = self.dy
+        distances[4] = self.dz
+        distances[5] = self.dz
+        
+        distances[0,  0,...    ] = self.dx / 2.
+        distances[1, -1,...    ] = self.dx / 2.
+        distances[2,...,  0,...] = self.dy / 2.
+        distances[3,..., -1,...] = self.dy / 2.
+        distances[4,...,      0] = self.dz / 2.
+        distances[5,...,     -1] = self.dz / 2.
+
+        return numerix.reshape(distances.swapaxes(1,3), (self.numberOfCells, 6))
+        
+    @property
+    def _cellNormals(self):
+        normals = numerix.zeros((3, 6, self.numberOfCells), 'd')
+        normals[...,0,...] = [[-1], [ 0], [ 0]]
+        normals[...,1,...] = [[ 1], [ 0], [ 0]]
+        normals[...,2,...] = [[ 0], [-1], [ 0]]
+        normals[...,3,...] = [[ 0], [ 1], [ 0]]
+        normals[...,4,...] = [[ 0], [ 0], [-1]]
+        normals[...,5,...] = [[ 0], [ 0], [ 1]]
+
+        return normals
+        
+    @property
+    def _cellAreas(self):
+        areas = numerix.ones((6, self.numberOfCells), 'd')
+        areas[0] = self.dy * self.dz
+        areas[1] = self.dy * self.dz
+        areas[2] = self.dx * self.dz
+        areas[3] = self.dx * self.dz
+        areas[4] = self.dx * self.dy
+        areas[5] = self.dx * self.dy
+        return areas
+
+    @property
+    def _cellAreaProjections(self):
+        return self._cellAreas * self._cellNormals
+
+##         from numMesh/mesh
+
+    @property
+    def _faceCenters(self):
+                                  
+        XYcen = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'd')
+        indices = numerix.indices((self.nx, self.ny, self.nz + 1))
+        XYcen[0] = (indices[0] + 0.5) * self.dx
+        XYcen[1] = (indices[1] + 0.5) * self.dy
+        XYcen[2] = indices[2] * self.dz
+
+        XZcen = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'd')
+        indices = numerix.indices((self.nx, self.ny + 1, self.nz))
+        XZcen[0] = (indices[0] + 0.5) * self.dx
+        XZcen[1] = indices[1] * self.dy
+        XZcen[2] = (indices[2] + 0.5) * self.dz
+        
+        YZcen = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'd')
+        indices = numerix.indices((self.nx + 1, self.ny, self.nz))
+        YZcen[0] = indices[0] * self.dx
+        YZcen[1] = (indices[1] + 0.5) * self.dy
+        YZcen[2] = (indices[2] + 0.5) * self.dz
+
+        return numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                    numerix.reshape(XZcen.swapaxes(1,3), (3, self.numberOfXZFaces)),
+                                    numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1) + self.origin
+                                                                 
+    @property
+    def _orientedAreaProjections(self):
+        return self._areaProjections
+
+    @property
+    def _areaProjections(self):
+        return self._faceNormals * self._faceAreas
+     
+    @property
+    def _faceAspectRatios(self):
+        return self._faceAreas / self._cellDistances  
          
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
