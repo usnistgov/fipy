@@ -57,23 +57,37 @@ class CylindricalGrid2D(Grid2D):
 
         Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
+        """
+        This is an unfortunate block of code, but it's better than the
+        alternatives.
+        """
+        oldFaceAreas = self._faceAreas
+        self._faceAreas *= self._faceCenters[0]
+
+        self._scaledFaceAreas = self._scale['area'] * self._faceAreas
+        self._areaProjections = self._faceNormals * oldFaceAreas
+                                       
+        self._cellAreas = self._calcCellAreas()
+        self._cellNormals = self._calcCellNormals() 
+        
         self.vertexCoords += self.origin
         self.args['origin'] = self.origin
 
-    def _calcFaceAreas(self):
-        return super(CylindricalGrid2D, self)._calcFaceAreas() \
-                * self._faceCenters[0]
+    @property
+    def cellCenters(self):
+        from fipy.variables.cellVariable import CellVariable
+        return CellVariable(mesh=self, 
+                            value=self._scaledCellCenters + self.origin,
+                            rank=1)
 
-    def _calcCellCenters(self):
-        return super(CylindricalGrid2D, self)._calcCellCenters()
-
-    def _calcFaceCenters(self):
-        return super(CylindricalGrid2D, self)._calcFaceCenters() \
-                + self.origin
+    @property
+    def faceCenters(self):
+        return self._faceCenters + self.origin
          
     @property
     def cellVolumes(self):
-        return self._scaledCellVolumes * self.cellCenters[0]
+        return super(CylindricalGrid2D, self).cellVolumes \
+                * self.cellCenters[0]
   
     def _translate(self, vector):
         return CylindricalGrid2D(dx=self.args['dx'], nx=self.args['nx'], 
