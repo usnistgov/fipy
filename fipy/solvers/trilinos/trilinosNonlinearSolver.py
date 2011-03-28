@@ -68,7 +68,7 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
                                              
         status = noxSolver.solve()
         
-        noxSolver.getList()._print()
+        self.solver._deleteGlobalMatrixAndVectors()
         
         return status
 
