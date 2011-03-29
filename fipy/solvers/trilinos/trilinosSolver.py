@@ -74,13 +74,13 @@ class TrilinosSolver(Solver):
             mesh = self.var.mesh
             localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
-            nonOverlappingVector = Epetra.Vector(globalMatrix.nonOverlappingColMap, 
+            nonOverlappingVector = Epetra.Vector(globalMatrix.domainMap, 
                                                  self.var[localNonOverlappingCellIDs])
 
-            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.nonOverlappingRowMap, 
+            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.rangeMap, 
                                                     self.RHSvector[localNonOverlappingCellIDs])
 
-            overlappingVector = Epetra.Vector(globalMatrix.overlappingColMap, self.var)
+            overlappingVector = Epetra.Vector(globalMatrix.colMap, self.var)
 
             self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
 
@@ -95,8 +95,15 @@ class TrilinosSolver(Solver):
         
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
 
-        if ((globalMatrix.matrix.NumGlobalRows() != globalMatrix.matrix.NumGlobalCols())
-            or (globalMatrix.matrix.NumGlobalRows() != len(self.var.globalValue))):
+#         if ((globalMatrix.matrix.NumGlobalRows() != globalMatrix.matrix.NumGlobalCols())
+#             or (globalMatrix.matrix.NumGlobalRows() != len(self.var.globalValue))):
+        if ((globalMatrix.rangeMap.NumGlobalElements() != globalMatrix.domainMap.NumGlobalElements())
+            or (globalMatrix.rangeMap.NumGlobalElements() != len(self.var.globalValue))):
+            from fipy.tools.debug import PRINT
+            PRINT("range: %d, domain: %d" % (globalMatrix.rangeMap.NumGlobalElements(), 
+                                             globalMatrix.domainMap.NumGlobalElements()))
+            PRINT("range: %d, var: %d" % (globalMatrix.rangeMap.NumGlobalElements(), 
+                                          len(self.var.globalValue)))
 
             raise SolutionVariableNumberError
             
@@ -105,8 +112,8 @@ class TrilinosSolver(Solver):
                      nonOverlappingRHSvector)
 
         overlappingVector.Import(nonOverlappingVector, 
-                                 Epetra.Import(globalMatrix.overlappingColMap, 
-                                               globalMatrix.nonOverlappingColMap), 
+                                 Epetra.Import(globalMatrix.colMap, 
+                                               globalMatrix.domainMap), 
                                  Epetra.Insert)
         
         self.var.value = overlappingVector
