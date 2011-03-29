@@ -60,32 +60,54 @@ from fipy.tools.decorators import getsetDeprecated
 # the warnings that guard for those, and all tests pass. Because of the way
 # FiPy constructs its matrices, I do not anticipate any of these occurring. 
 
-class _TrilinosMatrixBase(_SparseMatrix):
-    """_TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
-    
-    Allows basic python operations __add__, __sub__ etc.
-    Facilitate matrix populating in an easy way.
-    """
-    def __init__(self, matrix, bandwidth=None, 
-                 rowMap=None, colMap=None, domainMap=None):
-        """
-        :Parameters:
-          - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
-          - `bandwidth`: The proposed band width of the matrix.
-        """
-        self.matrix = matrix
+class _TrilinosMatrix(_SparseMatrix):
+    def __init__(self, rows, cols, bandwidth=1, sizeHint=None, 
+                 rowMap=None, colMap=None, domainMap=None, matrix=None):
+        """Creates a `_TrilinosMatrix`.
 
-        self.rowMap = rowMap or matrix.RowMap()
+        :Parameters:
+          - `rows`: The number of matrix rows
+          - `cols`: The number of matrix columns
+          - `bandwidth`: The proposed band width of the matrix.
+          - `sizeHint`: estimate of the number of non-zeros
+          - `rowMap`: the Epetra `Map` for the rows (equations) that this processor holds
+          - `colMap`: the Epetra `Map` for the columns (variables) that this processor holds
+          - `domainMap`: the Epetra `Map` for the domain (solution) that this processor holds
+        """
+        _SparseMatrix.__init__(self, bandwidth=bandwidth, matrix=matrix, sizeHint=sizeHint)
+        
+        size = max(rows, cols)
+        if sizeHint is not None and bandwidth == 0:
+            bandwidth = (sizeHint + size - 1) / (size or 1) 
+        else:
+            bandwidth = bandwidth
+            
+        comm = Epetra.PyComm()
+        
+        # Matrix building gets done on one processor - it gets the map for
+        # all the rows
+        if comm.MyPID() == 0:
+            self.rowMap = rowMap or Epetra.Map(rows, range(0, rows), 0, comm)
+        else: 
+            self.rowMap = rowMap or Epetra.Map(rows, [], 0, comm)
+
         self.colMap = colMap or self.rowMap
         self.domainMap = domainMap or self.colMap
         self.rangeMap = self.rowMap
-        
-        self.comm = matrix.Comm()
+
+        # Leave extra bandwidth, to handle multiple insertions into the
+        # same spot. It's memory-inefficient, but it'll get cleaned up when
+        # FillComplete is called, and according to the Trilinos devs the
+        # performance boost will be worth it.
         if bandwidth is None:
-            self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() -1 ) 
-                              / matrix.NumGlobalRows())
+            self.bandwidth = ((self.matrix.NumGlobalNonzeros() + self.matrix.NumGlobalRows() -1 ) 
+                              / self.matrix.NumGlobalRows())
         else:
             self.bandwidth = bandwidth
+
+        self.matrix = matrix or Epetra.CrsMatrix(Epetra.Copy, self.rowMap, self.bandwidth*3/2)
+
+        self.comm = self.matrix.Comm()
 
     def _setMatrix(self, m):
         self._matrix = m
@@ -99,8 +121,13 @@ class _TrilinosMatrixBase(_SparseMatrix):
     def copy(self):
         self.fillComplete()
 
-        return _TrilinosMatrixBase(matrix=Epetra.CrsMatrix(self.matrix))
-            
+        return _TrilinosMatrix(rows=self.matrix.NumGlobalRows(), 
+                               cols=self.matrix.NumGlobalCols(), 
+                               bandwidth=self.bandwidth, 
+                               rowMap=Epetra.Map(self.rowMap), 
+                               colMap=Epetra.Map(self.colMap), 
+                               domainMap=Epetra.Map(self.domainMap),
+                               matrix=Epetra.CrsMatrix(self.matrix))
         
     def __getitem__(self, index):
         self.fillComplete()
@@ -255,7 +282,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         N = self.matrix.NumMyCols()
 
-        if isinstance(other, _TrilinosMatrixBase):
+        if isinstance(other, _TrilinosMatrix):
             if isinstance(other.matrix, Epetra.RowMatrix):
                 self.fillComplete()
                 other.fillComplete()
@@ -525,53 +552,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
         self.fillComplete()
         self.matrix.OptimizeStorage()
 
-class _TrilinosMatrix(_TrilinosMatrixBase):
-    def __init__(self, rows, cols, bandwidth=1, sizeHint=None, 
-                 rowMap=None, colMap=None, domainMap=None):
-        """Creates a `_TrilinosMatrix`.
-
-        :Parameters:
-          - `rows`: The number of matrix rows
-          - `cols`: The number of matrix columns
-          - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: estimate of the number of non-zeros
-          - `map`: The Epetra `Map` for the rows that this processor holds
-        """
-        size = max(rows, cols)
-        if sizeHint is not None and bandwidth == 0:
-            bandwidth = (sizeHint + size - 1) / (size or 1) 
-        else:
-            bandwidth = bandwidth
-            
-        comm = Epetra.PyComm()
-        
-        if rowMap is None:
-            # Matrix building gets done on one processor - it gets the map for
-            # all the rows
-            if comm.MyPID() == 0:
-                rowMap = Epetra.Map(rows, range(0, rows), 0, comm)
-            else: 
-                rowMap = Epetra.Map(rows, [], 0, comm)
-
-        if colMap is None:
-           colMap = Epetra.Map(cols, range(0, cols), 0, comm)
-
-        matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, bandwidth*3/2)
-
-        # Leave extra bandwidth, to handle multiple insertions into the
-        # same spot. It's memory-inefficient, but it'll get cleaned up when
-        # FillComplete is called, and according to the Trilinos devs the
-        # performance boost will be worth it.
-        
-        _TrilinosMatrixBase.__init__(self, 
-                                     matrix=matrix, 
-                                     rowMap=rowMap, 
-                                     colMap=colMap, 
-                                     domainMap=domainMap, 
-                                     bandwidth=bandwidth)
-
 class _TrilinosMeshMatrix(_TrilinosMatrix):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1, numberOfEquations=1):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1, numberOfEquations=1, matrix=None):
         """Creates a `_TrilinosMatrix` associated with a `Mesh`
 
         :Parameters:
@@ -597,7 +579,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                                  sizeHint=sizeHint, 
                                  rowMap=rowMap,
                                  colMap=colMap,
-                                 domainMap=domainMap)
+                                 domainMap=domainMap,
+                                 matrix=matrix)
 
     def _cellIDsToGlobalRowIDs(self, IDs):
          N = len(IDs)
@@ -660,10 +643,10 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
 
     def copy(self):
-        tmp = _TrilinosMatrix.copy(self)
-        copy = self.__class__(mesh=self.mesh, bandwidth=self.bandwidth)
-        copy.matrix = tmp._matrix
-        return copy
+        return self.__class__(mesh=self.mesh, bandwidth=self.bandwidth, 
+                              numberOfVariables=self.numberOfVariables, 
+                              numberOfEquations=self.numberOfEquations,
+                              matrix=self.matrix)
                                  
     def asTrilinosMeshMatrix(self):
         self.finalize()
@@ -765,7 +748,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
 
         N = self.matrix.NumMyCols()
 
-        if isinstance(other, _TrilinosMatrixBase):
+        if isinstance(other, _TrilinosMatrix):
             return _TrilinosMatrix.__mul__(self, other=other)
         else:
             shape = numerix.shape(other)
