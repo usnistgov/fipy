@@ -278,10 +278,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
             elif shape == (N,):
                 self.fillComplete()
 
-                y = _numpyToTrilinosVector(other, self.domainMap)
+                y = Epetra.Vector(self.domainMap, other)
                 result = Epetra.Vector(self.rangeMap)
                 self.matrix.Multiply(False, y, result)
-                return _trilinosToNumpyVector(result)
+                return numerix.array(result)
             else:
                 raise TypeError
            
@@ -289,10 +289,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
         if type(numerix.ones(1)) == type(other):
             self.fillComplete()
 
-            y = _numpyToTrilinosVector(other, self.rangeMap)
+            y = Epetra.Vector(self.rangeMap, other)
             result = Epetra.Vector(self.domainMap)
             self.matrix.Multiply(True, y, result)
-            return _trilinosToNumpyVector(result)
+            return numerix.array(result)
         else:
             return self * other
             
@@ -525,45 +525,6 @@ class _TrilinosMatrixBase(_SparseMatrix):
         self.fillComplete()
         self.matrix.OptimizeStorage()
 
-def _numpyToTrilinosVector(v, map):
-    """
-    Takes a numpy vector and return an equivalent Trilinos vector, distributed
-    across all processors as specified by the map.
-    """
-    if(map.Comm().NumProc() == 1):
-        return Epetra.Vector(v)
-        # No redistribution necessary in serial mode
-    else:
-        if map.Comm().MyPID() == 0:
-            myElements=len(v)
-        else:
-            myElements=0
-        RootMap = Epetra.Map(-1, range(0, myElements), 0, map.Comm())
-
-        RootToDist = Epetra.Import(map, RootMap)
-
-        rootVector = Epetra.Vector(RootMap, v)
-        distVector = Epetra.Vector(map)
-        distVector.Import(rootVector, RootToDist, Epetra.Insert)
-        return distVector
-
-def _trilinosToNumpyVector(v):
-    """
-    Takes a distributed Trilinos vector and gives all processors a copy of it
-    in a numpy vector.
-    """
-
-    if(v.Comm().NumProc() == 1):
-        return numerix.array(v)
-    else:
-        PersonalMap = Epetra.Map(-1, range(0, v.GlobalLength()), 0, v.Comm())
-        DistToPers = Epetra.Import(PersonalMap, v.Map())
-
-        PersonalV = Epetra.Vector(PersonalMap)
-        PersonalV.Import(v, DistToPers, Epetra.Insert) 
-
-        return numerix.array(PersonalV)
-        
 class _TrilinosMatrix(_TrilinosMatrixBase):
     def __init__(self, rows, cols, bandwidth=1, sizeHint=None, 
                  rowMap=None, colMap=None, domainMap=None):
