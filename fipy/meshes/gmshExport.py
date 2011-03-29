@@ -73,8 +73,13 @@ class GmshExporter(object):
         coordinates = numerix.take(vertexCoords, vertices, axis=1)
         centroid = numerix.add.reduce(coordinates, axis=1) / coordinates.shape[1]
         coordinates = coordinates - centroid[..., numerix.newaxis]
-        coordinates = numerix.where(coordinates == 0, 1.e-10, coordinates) ## to prevent division by zero
-        angles = numerix.arctan(coordinates[1] / coordinates[0]) + numerix.where(coordinates[0] < 0, numerix.pi, 0) ## angles go from -pi / 2 to 3*pi / 2
+
+        # to prevent div by zero
+        coordinates = numerix.where(coordinates == 0, 1.e-10, coordinates)
+
+        # angles go from -pi / 2 to 3*pi / 2
+        angles = numerix.arctan(coordinates[1] / coordinates[0]) \
+                + numerix.where(coordinates[0] < 0, numerix.pi, 0) 
         sortorder = numerix.argsort(angles)
         return numerix.take(vertices, sortorder)
         
@@ -149,10 +154,35 @@ class GmshExporter(object):
 
         self.outFile.write("$EndElements\n") 
 
+    def _test(self):
+        """
+        >>> import tempfile as tmp
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> g = Grid2D(nx = 10, ny = 10)
+        >>> f = tmp.mktemp(".msh")
+        >>> GmshExporter(g, f).export()
+
+        >>> from fipy.meshes.uniformGrid2D import UniformGrid2D
+        >>> ug = UniformGrid2D(nx = 10, ny = 10)
+        >>> GmshExporter(ug, f).export()
+
+        >>> from fipy.meshes import Tri2D
+        >>> t = Tri2D(nx = 10, ny = 10)
+        >>> GmshExporter(t, f).export()
+
+        >>> concat = ug + (t + ([10], [0]))
+        >>> GmshExporter(concat, f).export()
+
+        >>> from fipy.meshes import Grid3D
+        >>> g3d = Grid3D(nx=10, ny=10, nz=30)
+        >>> GmshExporter(g3d, f).export()
+        """
+
 if __name__ == "__main__":
     from fipy.meshes import Grid2D
     from fipy.meshes import Tri2D
     from fipy.meshes import Grid3D
+    from fipy.meshes import CylindricalGrid2D
     
     import tempfile as tmp
     import subprocess
@@ -166,18 +196,29 @@ if __name__ == "__main__":
     f2 = tmp.mktemp(".msh")
     GmshExporter(b, f2).export()
 
-    c = Grid3D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, nz = 20)
+    c = Grid3D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, nz = 40)
     f3 = tmp.mktemp(".msh")
     GmshExporter(c, f3).export()
+    subprocess.Popen(["gmsh", f3])
+    raw_input("Grid3D... Press enter.")
 
     d = a + a2
     f4 = tmp.mktemp(".msh")
     GmshExporter(d, f4).export()
     subprocess.Popen(["gmsh", f4])
+    raw_input("Concatenated grid... Press enter.")
  
     e = a + (b + ([0], [10]))
     f5 = tmp.mktemp(".msh")
     GmshExporter(e, f5).export()
     subprocess.Popen(["gmsh", f5])
+    raw_input("Tri2D + Grid2D... Press enter.")
+
+    cyl = CylindricalGrid2D(nx = 10, ny = 10)
+    f6 = tmp.mktemp(".msh")
+    GmshExporter(cyl, f6).export()
+    subprocess.Popen(["gmsh", f6])
+    raw_input("CylindricalGrid2D... Press enter.")
+
     
     
