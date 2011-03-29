@@ -73,17 +73,20 @@ class LinearLUSolver(TrilinosSolver):
     def _solve_(self, L, x, b):
          
         for iteration in range(self.iterations):
-
              # errorVector = L*x - b
-             errorVector = Epetra.Vector(L.RowMap())
+             errorVector = Epetra.Vector(L.RangeMap())
              L.Multiply(False, x, errorVector)
-             errorVector = errorVector - b
+             # If A is an Epetra.Vector with map M
+             # and B is an Epetra.Vector with map M
+             # and C = A - B
+             # then C is an Epetra.Vector with *no map* !!!?!?!
+             errorVector -= b
 
              tol = errorVector.Norm1()
 
              if iteration == 0:
                  tol0 = tol
-
+                 
              if (tol / tol0) <= self.tolerance: 
                  break
 
