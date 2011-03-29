@@ -826,22 +826,13 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     other = Epetra.Vector(self.domainMap, 
                                           other[localNonOverlappingColIDs])
 
-                if other.Map().NumGlobalPoints() == self.matrix.ColMap().NumGlobalPoints():
+                if other.Map().SameAs(self.matrix.DomainMap()):
 
                     nonoverlapping_result = Epetra.Vector(self.rangeMap)
 
                     self.matrix.Multiply(False, other, nonoverlapping_result)
 
-                    if other_map.SameAs(self.colMap):
-                        overlapping_result = Epetra.Vector(self.colMap)
-                        overlapping_result.Import(nonoverlapping_result, 
-                                                  Epetra.Import(self.colMap, 
-                                                                self.domainMap), 
-                                                  Epetra.Insert)
-
-                        return overlapping_result
-                    else:
-                        return nonoverlapping_result
+                    return nonoverlapping_result
                 else:
                     raise TypeError("%s: %s != (%d,)" % (self.__class__, str(shape), N))
                     
