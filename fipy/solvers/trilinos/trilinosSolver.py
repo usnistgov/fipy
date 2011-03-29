@@ -95,18 +95,11 @@ class TrilinosSolver(Solver):
         
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
 
-#         if ((globalMatrix.matrix.NumGlobalRows() != globalMatrix.matrix.NumGlobalCols())
-#             or (globalMatrix.matrix.NumGlobalRows() != len(self.var.globalValue))):
-        if ((globalMatrix.rangeMap.NumGlobalElements() != globalMatrix.domainMap.NumGlobalElements())
-            or (globalMatrix.rangeMap.NumGlobalElements() != len(self.var.globalValue))):
-            from fipy.tools.debug import PRINT
-            PRINT("range: %d, domain: %d" % (globalMatrix.rangeMap.NumGlobalElements(), 
-                                             globalMatrix.domainMap.NumGlobalElements()))
-            PRINT("range: %d, var: %d" % (globalMatrix.rangeMap.NumGlobalElements(), 
-                                          len(self.var.globalValue)))
+        if not (globalMatrix.rangeMap.SameAs(globalMatrix.domainMap)
+                and globalMatrix.rangeMap.SameAs(nonOverlappingVector.Map())):
 
             raise SolutionVariableNumberError
-            
+        
         self._solve_(globalMatrix.matrix, 
                      nonOverlappingVector, 
                      nonOverlappingRHSvector)
