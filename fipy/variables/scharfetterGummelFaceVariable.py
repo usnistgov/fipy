@@ -6,7 +6,7 @@ class ScharfetterGummelFaceVariable(_CellToFaceVariable):
         _CellToFaceVariable.__init__(self, var)
         self.bcs = boundaryConditions
         
-    def _calcValuePy(self, alpha, id1, id2):
+    def _calcValue_(self, alpha, id1, id2):
         cell1 = take(self.var,id1)
         cell2 = take(self.var,id2)
         delta = cell1 - cell2
@@ -24,5 +24,3 @@ class ScharfetterGummelFaceVariable(_CellToFaceVariable):
                 value[bc.faces.value] = bc._value
         
         return value
-        
-    _calcValueIn = _calcValuePy

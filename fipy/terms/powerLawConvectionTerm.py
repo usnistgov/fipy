@@ -55,78 +55,74 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     """
     
     class _Alpha(FaceVariable):
+        """
+
+        Test case added because `and` was being used instead of bitwise `&`.
+
+            >>> from fipy.meshes import Grid1D
+            >>> mesh = Grid1D(nx = 3)
+            >>> from fipy.variables.faceVariable import FaceVariable
+            >>> P = FaceVariable(mesh=mesh, value=(1e-3, 1e+71, 1e-3, 1e-3))
+            >>> alpha = PowerLawConvectionTerm._Alpha(P)
+            >>> print numerix.allclose(alpha, [ 0.5,  1.,   0.5 , 0.5])
+            True
+        """
 	def __init__(self, P):
 	    FaceVariable.__init__(self, mesh = P.mesh)
 	    self.P = self._requires(P)
+            self.eps = 1e-3
 	    
-	def _calcValuePy(self, eps, P):
-            """
-
-            Test case added because `and` was being used instead of bitwise `&`.
-
-                >>> from fipy.meshes import Grid1D
-                >>> mesh = Grid1D(nx = 3)
-                >>> from fipy.variables.faceVariable import FaceVariable
-                >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
-                >>> alpha = PowerLawConvectionTerm._Alpha(P)
-                >>> print numerix.allclose(alpha, [ 0.5,  1.,   0.5 , 0.5])
-                True
+        if inline.doInline:
+            def _calcValue(self):
+                eps = self.eps 
+                P = self.P.numericValue
+                alpha = self._array.copy()
                 
-            """
-            
-	    P = numerix.where(abs(P) < eps, eps, P)
-	    
-	    alpha = numerix.where(                  P > 10.,                     (P - 1.) / P,   0.5)
+                inline._runInline("""
+                    if (fabs(P[i]) < eps) {
+                        P[i] = eps;
+                    }
+                    
+                    alpha[i] = 0.5;
+                    
+                    if (P[i] > 10.) {
+                        alpha[i] = (P[i] - 1.) / P[i];
+                    } else if (10. >= P[i] && P[i] > eps) {
+                        double	tmp = (1. - P[i] / 10.);
+                        double	tmpSqr = tmp * tmp;
+                        alpha[i] = ((P[i] - 1.) + tmpSqr*tmpSqr*tmp) / P[i];
+                    } else if (-eps > P[i] && P[i] >= -10.) {
+                        double	tmp = (1. + P[i] / 10.);
+                        double	tmpSqr = tmp * tmp;
+                        alpha[i] = (tmpSqr*tmpSqr*tmp - 1.) / P[i];
+                    } else if (P[i] < -10.) {
+                        alpha[i] = -1. / P[i];
+                    }
+                """,
+                alpha = alpha, eps = eps, P = P,
+                ni = self.mesh.numberOfFaces
+                )
 
-	    tmp = (1. - P / 10.)
-	    tmpSqr = tmp * tmp
-	    alpha = numerix.where(  (10. >= P) & (P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
+                return self._makeValue(value = alpha)
+        else:
+            def _calcValue(self):
+                eps = self.eps 
+                P = self.P.getNumericValue()
+                P = numerix.where(abs(P) < eps, eps, P)
+                
+                alpha = numerix.where(                  P > 10.,                     (P - 1.) / P,   0.5)
 
-	    tmp = (1. + P / 10.)
-	    tmpSqr = tmp * tmp
-	    alpha = numerix.where((-eps >  P) & (P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
+                tmp = (1. - P / 10.)
+                tmpSqr = tmp * tmp
+                alpha = numerix.where(  (10. >= P) & (P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
 
-	    alpha = numerix.where(                 P < -10.,                          -1. / P, alpha)
+                tmp = (1. + P / 10.)
+                tmpSqr = tmp * tmp
+                alpha = numerix.where((-eps >  P) & (P >= -10.),     (tmpSqr*tmpSqr*tmp - 1.) / P, alpha)
 
-	    return PhysicalField(value = alpha)
+                alpha = numerix.where(                 P < -10.,                          -1. / P, alpha)
 
-	def _calcValueIn(self, eps, P):
-            alpha = self._array.copy()
-            
-	    inline._runInline("""
-		if (fabs(P[i]) < eps) {
-		    P[i] = eps;
-		}
-		
-		alpha[i] = 0.5;
-		
-		if (P[i] > 10.) {
-		    alpha[i] = (P[i] - 1.) / P[i];
-		} else if (10. >= P[i] && P[i] > eps) {
-		    double	tmp = (1. - P[i] / 10.);
-		    double	tmpSqr = tmp * tmp;
-		    alpha[i] = ((P[i] - 1.) + tmpSqr*tmpSqr*tmp) / P[i];
-		} else if (-eps > P[i] && P[i] >= -10.) {
-		    double	tmp = (1. + P[i] / 10.);
-		    double	tmpSqr = tmp * tmp;
-		    alpha[i] = (tmpSqr*tmpSqr*tmp - 1.) / P[i];
-		} else if (P[i] < -10.) {
-		    alpha[i] = -1. / P[i];
-		}
-	    """,
-	    alpha = alpha, eps = eps, P = P,
-	    ni = self.mesh.numberOfFaces
-	    )
-
-            return self._makeValue(value = alpha)
-##         return self._makeValue(value = alpha, unit = self.unit)
-
-
-	def _calcValue(self):	    
-	    eps = 1e-3
-	    P  = self.P.numericValue
-	    
-            return inline._optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
+                return PhysicalField(value = alpha)
 
 def _test(): 
     import doctest
