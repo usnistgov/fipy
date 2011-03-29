@@ -1005,7 +1005,72 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         True
         >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOR, [2, 3, 4, 7, 8, 9])
         True
+        
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serial), numberOfVariables=3, numberOfEquations=2)
+        >>> GOC = matrix._globalOverlappingColIDs
+        >>> GNOC = matrix._globalNonOverlappingColIDs
+        >>> LNOC = matrix._localNonOverlappingColIDs
+        >>> GOR = matrix._globalOverlappingRowIDs
+        >>> GNOR = matrix._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._localNonOverlappingRowIDs
 
+        5 cells, 3 variables, 2 processor, serial
+                       
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:0
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalNonOverlappingColIDs:0
+        
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:0
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+
+        >>> print parallel.Nproc != 2 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+        >>> print parallel.Nproc != 2 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+        >>> print parallel.Nproc != 2 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+
+        
+        5 cells, 2 equations, 2 processors, serial
+                       
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:0
+
+        0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _globalNonOverlappingRowIDs:0
+        
+        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:0
+
+        0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        
+        >>> print parallel.Nproc != 2 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+        
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7), numberOfVariables=3, numberOfEquations=2)
         >>> GOC = matrix._globalOverlappingColIDs
         >>> GNOC = matrix._globalNonOverlappingColIDs
