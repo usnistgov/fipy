@@ -76,7 +76,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         self.matrix = matrix
 
         self.rowMap = rowMap or matrix.RowMap()
-        self.colMap = colMap or self.rowMap # matrix.ColMap()
+        self.colMap = colMap or self.rowMap
         self.domainMap = domainMap or self.colMap
         self.rangeMap = self.rowMap
         
