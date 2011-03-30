@@ -62,7 +62,7 @@ var = CellVariable(
 var.constrain(valueLeft, mesh.facesLeft)
 var.constrain(valueRight, mesh.facesRight)
 
-eq = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity,))
+eq = TransientTerm() - ExplicitUpwindConvectionTerm(coeff=(velocity,))
 
 if __name__ == '__main__':
     
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,
-                 solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000))
+                 solver = LinearLUSolver(tolerance=1.e-15, iterations=2000))
         viewer.plot()
     viewer.plot()
     raw_input('finished')
