@@ -197,6 +197,16 @@ class _MeshVariable(Variable):
                 s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
             return s
         
+    @property
+    def constraintMask(self):
+        if hasattr(self, 'constraints'):
+            returnMask = False
+            for value, mask in self.constraints:
+                returnMask = returnMask | numerix.array(mask)
+            return self._variableClass(mesh=self.mesh, rank=0, value=returnMask)
+        else:
+            return None
+
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this `MeshVariable` type, given a particular mesh.
@@ -433,11 +443,28 @@ class _MeshVariable(Variable):
         `Variable._shapeClassAndOther()`, but if that fails, and if each
         dimension of `other` is exactly the `Mesh` dimension, do what the user
         probably "meant" and project `other` onto the `Mesh`.
+        
+        >>> from fipy import *
+        >>> mesh = Grid1D(nx=5)
+        >>> A = numerix.arange(5)
+        >>> B = Variable(1.)
+        >>> import warnings
+        >>> warnings.simplefilter("error", UserWarning, append=True)
+        >>> C = CellVariable(mesh=mesh) * (A * B)
+        Traceback (most recent call last):
+          ...
+        UserWarning: The expression `(multiply([0 1 2 3 4], Variable(value=array(1.0))))` has been cast to a constant `CellVariable`
+        >>> junk = warnings.filters.pop()
         """
         otherShape = numerix.getShape(other)
         if (not isinstance(other, _MeshVariable) 
             and otherShape is not () 
             and otherShape[-1] == self._globalNumberOfElements):
+            if (isinstance(other, Variable) and len(other.requiredVariables) > 0):
+                import warnings
+                warnings.warn("The expression `%s` has been cast to a constant `%s`" 
+                              % (repr(other), self._variableClass.__name__), 
+                              UserWarning, stacklevel=4)
             other = self._variableClass(value=other, mesh=self.mesh)
 
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
