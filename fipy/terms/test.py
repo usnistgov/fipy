@@ -43,7 +43,7 @@ def _suite():
             'baseDiffusionTerm',
             'diffusionTerm',
             'term',
-            'convectionTerm',
+            'baseConvectionTerm',
             'transientTerm',
             'powerLawConvectionTerm',
             'exponentialConvectionTerm',

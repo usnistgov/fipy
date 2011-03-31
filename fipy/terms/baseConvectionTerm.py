@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "convectionTerm.py"
+ #  FILE: "baseConvectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -45,13 +45,13 @@ from fipy.terms import VectorCoeffError
 
 from fipy.tools import numerix
 
-class ConvectionTerm(FaceTerm):
+class _BaseConvectionTerm(FaceTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.0, diffusionTerm=None, var=None):
         """
-        Create a `ConvectionTerm` object.
+        Create a `_BaseConvectionTerm` object.
         
             >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
@@ -100,7 +100,7 @@ class ConvectionTerm(FaceTerm):
           - `coeff` : The `Term`'s coefficient value.
           - `diffusionTerm` : **deprecated**. The Peclet number is calculated automatically.
         """
-        if self.__class__ is ConvectionTerm:
+        if self.__class__ is _BaseConvectionTerm:
             raise AbstractBaseClassError
             
         if diffusionTerm is not None:
@@ -199,7 +199,7 @@ class ConvectionTerm(FaceTerm):
 
         return (var, L, b)
 
-class __ConvectionTerm(ConvectionTerm): 
+class __ConvectionTerm(_BaseConvectionTerm): 
     """
     Dummy subclass for tests
     """
