@@ -32,7 +32,7 @@
 
 def _UnaryOperatorVariable(operatorClass=None):
     class unOp(operatorClass):
-        def _calcValuePy(self):
+        def _calcValue_(self):
             return self.op(self.var[0].value)
 
         @property

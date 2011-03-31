@@ -37,17 +37,54 @@ import os
 
 from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
-from fipy.terms import SolutionVariableNumberError
-from fipy.terms import SolutionVariableRequiredError
+from fipy.variables.coupledCellVariable import _CoupledCellVariable
+
 class _BinaryTerm(_BaseBinaryTerm):
 
     def _verifyVar(self, var):
+        if var is None:
+            if len(self._vars) == 0:
+                raise SolutionVariableRequiredError
+            elif len(self._vars) == 1:
+                return _BaseBinaryTerm._verifyVar(self, self._vars[0])
+            else:
+                return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
+        else:
+            return var
 
-        if var is None and len(self._vars) > 1:
-            raise SolutionVariableRequiredError
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """Build matrices of constituent Terms and collect them
+        
+        Only called at top-level by `_prepareLinearSystem()`
+        """
+        if isinstance(var, _CoupledCellVariable) and len(var.vars) > 1:
+            RHSvector = 0
+            for v in var.vars:
+                RHSvector += self._buildExplicitIfOtherVar(var=v, 
+                                                           SparseMatrix=SparseMatrix, 
+                                                           boundaryConditions=boundaryConditions, 
+                                                           dt=dt,
+                                                           transientGeomCoeff=transientGeomCoeff,
+                                                           diffusionGeomCoeff=diffusionGeomCoeff)
+                      
+            matrix = SparseMatrix(mesh=var.mesh, numberOfVariables=len(var.vars), numberOfEquations=1)
+        else:
+            var, matrix, RHSvector = self._buildMatrix(var=var, 
+                                                       SparseMatrix=SparseMatrix, 
+                                                       boundaryConditions=boundaryConditions, 
+                                                       dt=dt,
+                                                       transientGeomCoeff=transientGeomCoeff,
+                                                       diffusionGeomCoeff=diffusionGeomCoeff)
+                                                       
+            RHSvector += self._buildExplicitIfOtherVar(var=var, 
+                                                       SparseMatrix=SparseMatrix, 
+                                                       boundaryConditions=boundaryConditions, 
+                                                       dt=dt,
+                                                       transientGeomCoeff=transientGeomCoeff,
+                                                       diffusionGeomCoeff=diffusionGeomCoeff)
+                                                       
+        return (var, matrix, RHSvector)
 
-        return _BaseBinaryTerm._verifyVar(self, var)
-    
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         matrix = 0
@@ -74,6 +111,22 @@ class _BinaryTerm(_BaseBinaryTerm):
             raw_input()
 
 	return (var, matrix, RHSvector)
+
+    def _buildExplicitIfOtherVar(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """return the residual vector if `var` is not `Term.var`, otherwise return 0
+        """
+        return (self.term._buildExplicitIfOtherVar(var=var, 
+                                                   SparseMatrix=SparseMatrix, 
+                                                   boundaryConditions=boundaryConditions, 
+                                                   dt=dt,
+                                                   transientGeomCoeff=transientGeomCoeff,
+                                                   diffusionGeomCoeff=diffusionGeomCoeff) 
+                + self.other._buildExplicitIfOtherVar(var=var, 
+                                                      SparseMatrix=SparseMatrix, 
+                                                      boundaryConditions=boundaryConditions, 
+                                                      dt=dt,
+                                                      transientGeomCoeff=transientGeomCoeff,
+                                                      diffusionGeomCoeff=diffusionGeomCoeff))
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         for term in (self.term, self.other):

@@ -86,39 +86,40 @@ class CellTerm(_NonDiffusionTerm):
 
         return self.coeffVectors
         
-    def __buildMatrixPy(self, L, oldArray, b, dt, coeffVectors):
-        N = len(oldArray)
+    if inline.doInline:
+        def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
+            N = oldArray.mesh.numberOfCells
+            updatePyArray = numerix.zeros((N),'d')
 
-        b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
-        b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
-        L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
-        L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
-        
-##      L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
-##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
+            inline._runInline("""
+                b[i] += oldArray[i] * oldCoeff[i] / dt;
+                b[i] += bCoeff[i];
+                updatePyArray[i] += newCoeff[i] / dt;
+                updatePyArray[i] += diagCoeff[i];
+            """,b=b,
+                oldArray=oldArray.numericValue,
+    ##            oldArray=numerix.array(oldArray),
+                oldCoeff=numerix.array(coeffVectors['old value']),
+                bCoeff=numerix.array(coeffVectors['b vector']),
+                newCoeff=numerix.array(coeffVectors['new value']),
+                diagCoeff=numerix.array(coeffVectors['diagonal']),
+                updatePyArray=updatePyArray,
+                ni=len(updatePyArray),
+                dt=dt)
 
-    def __buildMatrixIn(self, L, oldArray, b, dt, coeffVectors):
-        N = oldArray.mesh.numberOfCells
-        updatePyArray = numerix.zeros((N),'d')
+            L.addAtDiagonal(updatePyArray)
+    else:
+        def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
+            N = len(oldArray)
 
-        inline._runInline("""
-            b[i] += oldArray[i] * oldCoeff[i] / dt;
-            b[i] += bCoeff[i];
-            updatePyArray[i] += newCoeff[i] / dt;
-            updatePyArray[i] += diagCoeff[i];
-        """,b=b,
-            oldArray=oldArray.numericValue,
-##            oldArray=numerix.array(oldArray),
-            oldCoeff=numerix.array(coeffVectors['old value']),
-            bCoeff=numerix.array(coeffVectors['b vector']),
-            newCoeff=numerix.array(coeffVectors['new value']),
-            diagCoeff=numerix.array(coeffVectors['diagonal']),
-            updatePyArray=updatePyArray,
-            ni=len(updatePyArray),
-            dt=dt)
+            b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
+            b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
+            L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
+            L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
+            
+    ##      L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
+    ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
 
-        L.addAtDiagonal(updatePyArray)
-        
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         if var is self.var or self.var is None:
@@ -129,7 +130,7 @@ class CellTerm(_NonDiffusionTerm):
 
             coeffVectors = self.__getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-            inline._optionalInline(self.__buildMatrixIn, self.__buildMatrixPy, L, var.old, b, dt, coeffVectors)
+            self._buildMatrix_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
 
             return (var, L, b)
         else:

@@ -58,36 +58,35 @@ class UniformGridScaledGeometry2D(AbstractScaledMeshGeometry):
     def orientedAreaProjections(self):
         return self.areaProjections
 
-    @property
-    def areaProjections(self):
-        return inline._optionalInline(self._getAreaProjectionsIn, self._getAreaProjectionsPy)
+    if inline.doInline:
+        @property
+        def areaProjections(self):
+            areaProjections = numerix.zeros((2, self.numberOfFaces), 'd')
 
-    def _getAreaProjectionsPy(self):
-        return self._geom.faceNormals * self._geom.faceAreas
+            inline._runInline("""
+                if (i < nx) {
+                    areaProjections[i + 1 * ni] = -dx;
+                } else if (i < Nhor) {
+                    areaProjections[i + 1 * ni] = dx;
+                } else if ( (i - Nhor) % (nx + 1) == 0 ) {
+                    areaProjections[i + 0 * ni] = -dy;
+                } else {
+                    areaProjections[i + 0 * ni] = dy;
+               }
+            """,
+            dx = float(self.dx), # horrible hack to get around
+            dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
+            nx = self.nx,
+            Nhor = self.numberOfHorizontalFaces,
+            areaProjections = areaProjections,
+            ni = self.numberOfFaces)
 
-    def _getAreaProjectionsIn(self):
-        areaProjections = numerix.zeros((2, self.numberOfFaces), 'd')
+            return areaProjections   
+    else:
+        @property
+        def areaProjections(self):
+            return self._geom.faceNormals * self._geom.faceAreas
 
-        inline._runInline("""
-            if (i < nx) {
-                areaProjections[i + 1 * ni] = -dx;
-            } else if (i < Nhor) {
-                areaProjections[i + 1 * ni] = dx;
-            } else if ( (i - Nhor) % (nx + 1) == 0 ) {
-                areaProjections[i + 0 * ni] = -dy;
-            } else {
-                areaProjections[i + 0 * ni] = dy;
-           }
-        """,
-        dx = float(self.dx), # horrible hack to get around
-        dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
-        nx = self.nx,
-        Nhor = self.numberOfHorizontalFaces,
-        areaProjections = areaProjections,
-        ni = self.numberOfFaces)
-
-        return areaProjections
-        
     @property
     def faceAspectRatios(self):
         return self._geom.faceAreas / self._geom.cellDistances
