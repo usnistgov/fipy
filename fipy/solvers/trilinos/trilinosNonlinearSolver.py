@@ -51,8 +51,8 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
         
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self.solver._globalMatrixAndVectors
         
-        self.overlappingMap = globalMatrix.overlappingMap
-        self.nonOverlappingMap = globalMatrix.nonOverlappingMap
+        self.colMap = globalMatrix.colMap
+        self.domainMap = globalMatrix.domainMap
         
         # Define the Jacobian interface/operator
         mf = NOX.Epetra.MatrixFree(self.solver.nlParams["Printing"], self, nonOverlappingVector)
@@ -75,14 +75,14 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
         
     def computeF(self, u, F, flag):
         try:
-            overlappingVector = Epetra.Vector(self.overlappingMap, self.solver.var)
+            overlappingVector = Epetra.Vector(self.colMap, self.solver.var)
             
             overlappingVector.Import(u, 
-                                     Epetra.Import(self.overlappingMap, 
-                                                   self.nonOverlappingMap), 
+                                     Epetra.Import(self.colMap, 
+                                                   self.domainMap), 
                                      Epetra.Insert)
 
-            self.solver.var.value = u
+            self.solver.var.value = overlappingVector
             F[:] = self.solver.equation.justResidualVector(dt=self.dt)
             
             return True
