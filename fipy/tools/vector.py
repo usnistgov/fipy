@@ -35,14 +35,9 @@
 """Vector utility functions that are inexplicably absent from Numeric
 """
 
-from fipy.tools import inline, numerix
+from fipy.tools import numerix
 
-# Factored out for fipy.models.levelSet.surfactant.convectionCoeff._ConvectionCoeff
-# for some reason
-def _putAdd(vector, ids, additionVector, mask=False):
-    """This is a temporary replacement for Numeric.put as it was not doing
-    what we thought it was doing.
-    """
+def _putAddPy(vector, ids, additionVector, mask = False):
     additionVector = numerix.array(additionVector)
 
     if numerix.sometrue(mask):
@@ -65,27 +60,23 @@ def _putAdd(vector, ids, additionVector, mask=False):
             for id, value in zip(ids.flat, additionVector.flat):
                 vector.flat[id] += value
 
-if inline.doInline:
-    ## FIXME: inline version doesn't account for all of the conditions that Python 
-    ## version does.
-    def putAdd(vector, ids, additionVector):
-        """ This is a temporary replacement for Numeric.put as it was not doing
-        what we thought it was doing.
-        """
-        inline._runInline("""
-                              int ID = ids[i];
-                              vector[ID] += additionVector[i];
-                          """,
-                          vector=vector, 
-                          ids=ids, 
-                          additionVector=numerix.array(additionVector),
-        ni = len(ids.flat))
-else:
-    def putAdd(vector, ids, additionVector):
-        """ This is a temporary replacement for Numeric.put as it was not doing
-        what we thought it was doing.
-        """
-        _putAdd(vector, ids, additionVector)
+## FIXME: inline version doesn't account for all of the conditions that Python 
+## version does.
+def _putAddIn(vector, ids, additionVector):
+    from fipy.tools import inline
+    inline._runInline("""
+        int ID = ids[i];
+	vector[ID] += additionVector[i];
+    """,
+    vector=vector, ids=ids, additionVector=numerix.array(additionVector),
+    ni = len(ids.flat))
+
+def putAdd(vector, ids, additionVector):
+    """ This is a temporary replacement for Numeric.put as it was not doing
+    what we thought it was doing.
+    """
+    from fipy.tools import inline
+    inline._optionalInline(_putAddIn, _putAddPy, vector, ids, additionVector)
 
 def prune(array, shift, start=0, axis=0):
     """

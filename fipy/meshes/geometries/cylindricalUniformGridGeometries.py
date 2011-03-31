@@ -80,9 +80,8 @@ class CylindricalUniformGridGeometry1D(UniformGridGeometry1D):
       
 class CylindricalUniformGridScaledGeometry2D(UniformGridScaledGeometry2D):
 
-    @property
-    def areaProjections(self):
-        return self._geom.faceNormals * self._geom.faceAreas
+    def _calcAreaProjections(self):
+        return self._getAreaProjectionsPy()
      
 class CylindricalUniformGridGeometry2D(UniformGridGeometry2D):
 

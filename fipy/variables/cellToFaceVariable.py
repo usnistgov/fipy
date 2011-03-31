@@ -35,6 +35,7 @@
  ##
 
 from fipy.variables.faceVariable import FaceVariable
+from fipy.tools import inline
 from fipy.tools import numerix
 
 class _CellToFaceVariable(FaceVariable):
@@ -45,11 +46,12 @@ class _CellToFaceVariable(FaceVariable):
     def _calcValue(self):
         alpha = self.mesh._faceToCellDistanceRatio
         id1, id2 = self.mesh._adjacentCellIDs
-        
-        return self._calcValue_(alpha=alpha, id1=id1, id2=id2)
+        return inline._optionalInline(self._calcValueIn, self._calcValuePy, alpha, id1, id2)
 
     def __getstate__(self):
-        return dict(var=self.var)
+        return {
+            'var': self.var
+        }
         
     def __setstate__(self, dict):
         self.__init__(**dict)

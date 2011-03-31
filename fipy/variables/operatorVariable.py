@@ -65,15 +65,15 @@ def _OperatorVariableClass(baseClass=object):
         
         def _calcValue(self):
             if not self.canInline:
-                return self._calcValue_()
+                return self._calcValuePy()
             else:
                 from fipy.tools import inline
-                if inline.doInline:
-                    return self._execInline(comment=self.comment)
-                else:
-                    return self._calcValue_()
+                return inline._optionalInline(self._calcValueIn, self._calcValuePy)
 
-        def _calcValue_(self):
+        def _calcValueIn(self):
+            return self._execInline(comment=self.comment)
+
+        def _calcValuePy(self):
             pass
 
         def _isCached(self):

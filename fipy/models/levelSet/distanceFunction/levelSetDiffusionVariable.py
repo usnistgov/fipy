@@ -73,39 +73,39 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
         _CellToFaceVariable.__init__(self, distanceVariable)
         self.diffusionCoeff = diffusionCoeff
     
-    if inline.doInline:
-        def _calcValue_(self, alpha, id1, id2):
-            val = self._getArray().copy()
-            
-            inline._runInline("""
-                int ID1 = id1[i];
-                int ID2 = id2[i];
-                double	cell1 = var[ID1];
-                double	cell2 = var[ID2];
+    def _calcValuePy(self, alpha, id1, id2):
+        distance = numerix.array(self.var)
+        cell1 = numerix.take(distance, id1)
+        cell2 = numerix.take(distance, id2)
 
-                if (cell1 < 0 || cell2 < 0) {
-                    val[i] = 0;
-                } else {
-                    val[i] = diffusionCoeff;
-                }
-            """,
-            var = numerix.array(self.var),
-            val = val,
-            id1 = id1, id2 = id2,
-            diffusionCoeff = self.diffusionCoeff,
-            ni = self.mesh._getNumberOfFaces()
-            )
-     
-            return self._makeValue(value = val)
-    else:
-        def _calcValue_(self, alpha, id1, id2):
-            distance = numerix.array(self.var)
-            cell1 = numerix.take(distance, id1)
-            cell2 = numerix.take(distance, id2)
+        return numerix.where(numerix.logical_or(cell1 < 0, cell2 < 0),
+                             0,
+                             self.diffusionCoeff)
+                                   
+    def _calcValueIn(self, alpha, id1, id2):
+        val = self._array.copy()
+        
+        inline._runInline("""
+            int ID1 = id1[i];
+            int ID2 = id2[i];
+	    double	cell1 = var[ID1];
+	    double	cell2 = var[ID2];
 
-            return numerix.where(numerix.logical_or(cell1 < 0, cell2 < 0),
-                                 0,
-                                 self.diffusionCoeff)
+	    if (cell1 < 0 || cell2 < 0) {
+		val[i] = 0;
+	    } else {
+		val[i] = diffusionCoeff;
+	    }
+	""",
+	var = numerix.array(self.var),
+	val = val,
+	id1 = id1, id2 = id2,
+        diffusionCoeff = self.diffusionCoeff,
+	ni = self.mesh.numberOfFaces
+	)
+ 
+        return self._makeValue(value = val)
+##         return self._makeValue(value = val, unit = self.unit)
 
 def _test(): 
     import doctest

@@ -196,42 +196,40 @@ class Grid2D(Mesh2D):
         return (numerix.concatenate((horizontalFaces, verticalFaces), axis=1),
                 numberOfHorizontalFaces)
            
-    if inline.doInline:
-        def _createCells(self):
-            """
-            cells = (f1, f2, f3, f4) going anticlock wise.
-            f1 etc. refer to the faces
-            """
-            cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
-            
-            inline._runInline("""
-                int ID = j * ni + i;
-                int NCELLS = ni * nj;
-                cellFaceIDs[ID + 0 * NCELLS] = ID;
-                cellFaceIDs[ID + 2 * NCELLS] = cellFaceIDs[ID + 0 * NCELLS] + ni;
-                cellFaceIDs[ID + 3 * NCELLS] = horizontalFaces + ID + j;
-                cellFaceIDs[ID + 1 * NCELLS] = cellFaceIDs[ID + 3 * NCELLS] + 1;
-            """,
-            horizontalFaces=self.numberOfHorizontalFaces,
-            cellFaceIDs=cellFaceIDs,
-            ni=self.nx,
-            nj=self.ny)
+    def _createCells(self):
+        """
+        cells = (f1, f2, f3, f4) going anticlock wise.
+        f1 etc. refer to the faces
+        """
+        return inline._optionalInline(self._createCellsIn, self._createCellsPy)
 
-            return cellFaceIDs
-    else:
-        def _createCells(self):
-            """
-            cells = (f1, f2, f3, f4) going anticlock wise.
-            f1 etc. refer to the faces
-            """
-            cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
-            faceIDs = numerix.arange(self.numberOfFaces)
-            if self.numberOfFaces > 0:
-                cellFaceIDs[0,:] = faceIDs[:self.numberOfHorizontalFaces - self.nx]
-                cellFaceIDs[2,:] = cellFaceIDs[0,:] + self.nx
-                cellFaceIDs[1,:] = vector.prune(faceIDs[self.numberOfHorizontalFaces:], self.numberOfVerticalColumns)
-                cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
-            return cellFaceIDs
+    def _createCellsPy(self):
+        cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
+        faceIDs = numerix.arange(self.numberOfFaces)
+        if self.numberOfFaces > 0:
+            cellFaceIDs[0,:] = faceIDs[:self.numberOfHorizontalFaces - self.nx]
+            cellFaceIDs[2,:] = cellFaceIDs[0,:] + self.nx
+            cellFaceIDs[1,:] = vector.prune(faceIDs[self.numberOfHorizontalFaces:], self.numberOfVerticalColumns)
+            cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
+        return cellFaceIDs
+
+    def _createCellsIn(self):
+        cellFaceIDs = numerix.zeros((4, self.nx * self.ny))
+        
+        inline._runInline("""
+            int ID = j * ni + i;
+            int NCELLS = ni * nj;
+            cellFaceIDs[ID + 0 * NCELLS] = ID;
+            cellFaceIDs[ID + 2 * NCELLS] = cellFaceIDs[ID + 0 * NCELLS] + ni;
+            cellFaceIDs[ID + 3 * NCELLS] = horizontalFaces + ID + j;
+            cellFaceIDs[ID + 1 * NCELLS] = cellFaceIDs[ID + 3 * NCELLS] + 1;
+        """,
+        horizontalFaces=self.numberOfHorizontalFaces,
+        cellFaceIDs=cellFaceIDs,
+        ni=self.nx,
+        nj=self.ny)
+
+        return cellFaceIDs
     
     @getsetDeprecated
     def getScale(self):

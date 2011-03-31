@@ -514,10 +514,8 @@ This interactive Python shell is nicer to use than the default, and
 integrates nicely with matplotlib_. Depending on platform, you may be able 
 to download a binary or build from source.
 
-.. _PYTRILINOS:
-
-PyTrilinos
-==========
+Trilinos
+========
 
 http://trilinos.sandia.gov
 
@@ -625,8 +623,6 @@ indicators, :term:`FiPy` will default to using :term:`PySparse` if it is present
         forced the solver to stop before reaching an adequate solution.
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
-
-.. _MPI4PY:
 
 mpi4py
 ======

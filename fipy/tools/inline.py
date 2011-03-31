@@ -2,6 +2,8 @@ import inspect
 import os
 import sys
 
+from fipy.tools import numerix
+
 if '--inline' in sys.argv[1:]:
     doInline = True
 else:
@@ -9,6 +11,12 @@ else:
     
 inlineFrameComment = os.environ.has_key('FIPY_INLINE_COMMENT')
 
+def _optionalInline(inlineFn, pythonFn, *args):
+    if doInline:
+        return inlineFn(*args)
+    else:
+        return pythonFn(*args)
+              
 def _getframeinfo(level, context=1):
     """
     Much faster alternative to `inspect.getouterframes(inspect.currentframe())[level]`

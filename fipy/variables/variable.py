@@ -64,7 +64,7 @@ class Variable(object):
     >>> a.setValue(5)
     >>> b
     (Variable(value=array(5)) * 4)
-    >>> print b()
+    >>> b()
     20
     """
 
@@ -153,12 +153,10 @@ class Variable(object):
                 return v
             args = [__makeVariable(arg) for arg in args]
 
-            cannotInline = ["expi", "logical_and", "logical_or", "logical_not", "logical_xor", "sign", 
-                            "conjugate", "dot", "allclose", "allequal"]
             if len(args) == 1:
-                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape, canInline=func.__name__ not in cannotInline)
+                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape)
             elif len(args) == 2:
-                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape, canInline=func.__name__ not in cannotInline)
+                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape)
             else:
                 result = NotImplemented
 
@@ -1092,7 +1090,7 @@ class Variable(object):
     __rmul__ = __mul__
             
     def __mod__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.fmod(a, b), other)
+        return self._BinaryOperatorVariable(lambda a,b: a%b, other)
             
     def __pow__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: pow(a,b), other)
@@ -1122,7 +1120,9 @@ class Variable(object):
             1.1
 
         """
-        return self._UnaryOperatorVariable(lambda a: numerix.fabs(a))
+        
+        fabs = abs
+        return self._UnaryOperatorVariable(lambda a: fabs(a))
 
     def __invert__(self):
         """

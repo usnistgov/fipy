@@ -36,7 +36,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
 from fipy.terms import AbstractBaseClassError
-from fipy.variables.cellVariable import CellVariable
 
 class SourceTerm(CellTerm):
     """
@@ -48,4 +47,4 @@ class SourceTerm(CellTerm):
 	CellTerm.__init__(self, coeff=coeff, var=var) 
 	
     def _calcGeomCoeff(self, mesh):
-	return self.coeff * CellVariable(mesh=mesh, value=mesh.cellVolumes)
+	return self.coeff * mesh.cellVolumes

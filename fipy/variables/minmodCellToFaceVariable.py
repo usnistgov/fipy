@@ -36,9 +36,10 @@
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools import numerix
+from fipy.tools import inline
 
 class _MinmodCellToFaceVariable(_CellToFaceVariable):
-    def _calcValue_(self, alpha, id1, id2):
+    def _calcValuePy(self, alpha, id1, id2):
         cell1 = numerix.take(self.var,id1, axis=-1)
         cell2 = numerix.take(self.var,id2, axis=-1)
         return numerix.where((cell1 > 0) & (cell2 > 0),
@@ -46,3 +47,6 @@ class _MinmodCellToFaceVariable(_CellToFaceVariable):
                              numerix.where((cell1 < 0) & (cell2 < 0),
                                            numerix.maximum(cell1, cell2),
                                            0))
+    
+    def _calcValueIn(self, alpha, id1, id2):
+        return self._calcValuePy(alpha, id1, id2)
