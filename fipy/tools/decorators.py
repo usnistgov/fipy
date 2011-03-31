@@ -4,12 +4,12 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosNonlinearSolver.py"
+ #  FILE: "decorators.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
- #  Author: David Saylor <David.Saylor@fda.hhs.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
