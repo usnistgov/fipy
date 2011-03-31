@@ -580,6 +580,20 @@ class Variable(object):
 
         self.constraints.append([value, where])
 
+    @getsetDeprecated
+    def getConstraintMask(self):
+        return self.constraintMask
+
+    @property
+    def constraintMask(self):
+        if hasattr(self, 'constraints'):
+            returnMask = numerix.zeros(numerix.shape(self)[-1], dtype=numerix.bool_)
+            for value, mask in self.constraints:
+                returnMask = returnMask | numerix.array(mask)
+            return returnMask
+        else:
+            return None
+        
     def applyConstraints(self, constraints):
         for value, mask in constraints:
             self.constrain(value, mask)
