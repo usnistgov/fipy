@@ -58,7 +58,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     >>> print parallel.procID > 0 or numerix.allequal(tranCoeff, [1])
     True
     >>> diffCoeff = eq._uncoupledTerms[1]._getDiffusionGeomCoeff(v0)
-    >>> print parallel.procID > 0 or numerix.allequal(diffCoeff, [[-8, -8]])
+    >>> print numerix.allequal(diffCoeff, [[-8, -8]])
     True
     
     """
