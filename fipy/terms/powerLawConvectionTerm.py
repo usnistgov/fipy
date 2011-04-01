@@ -107,7 +107,7 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
         else:
             def _calcValue(self):
                 eps = self.eps 
-                P = self.P.getNumericValue()
+                P = self.P.numericValue
                 P = numerix.where(abs(P) < eps, eps, P)
                 
                 alpha = numerix.where(                  P > 10.,                     (P - 1.) / P,   0.5)

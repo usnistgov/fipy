@@ -154,7 +154,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
                 rank = len(shape)
 
             if rank == 0 and self._treatMeshAsOrthogonal(mesh):
-                tmpBop = (coeff * mesh._faceAreas / mesh._cellDistances)[numerix.newaxis, :]
+                tmpBop = (coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas) / mesh._cellDistances)[numerix.newaxis, :]
             else:
 
                 if rank == 1 or rank == 0:
