@@ -159,7 +159,7 @@ class UniformGrid2D(Grid2D):
         del args['origin']
         return Grid2D(**args) + origin
 
-    @getsetDeprecated
+    @getsetDeprecated(new_name="cellFaceIDs")
     def _getCellFaceIDs(self):
         return self.cellFaceIDs
 

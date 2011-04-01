@@ -39,8 +39,6 @@ from fipy.terms.term import Term
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.terms import ExplicitVariableError
 
-from fipy.tools.decorators import getsetDeprecated
-
 class _BaseBinaryTerm(Term):
     def __init__(self, term, other):
 

@@ -54,7 +54,7 @@ class _SparseMatrix(object):
 
     __array_priority__ = 100.0    
 
-    @getsetDeprecated
+    @getsetDeprecated(new_name="matrix")
     def _getMatrix(self):
         return self.matrix
      

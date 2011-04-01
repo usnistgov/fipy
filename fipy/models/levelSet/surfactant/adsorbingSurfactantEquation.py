@@ -52,8 +52,8 @@ class _AdsorptionCoeff(CellVariable):
         self.dt = 0
 
     def _calcValue(self):
-        return self.dt * numerix.array(self.bulkVar) \
-                     * self.rateConstant * self._multiplier()
+        return numerix.array(self.dt * self.bulkVar
+                             * self.rateConstant * self._multiplier())
 
     def _updateDt(self, dt):
         self.dt = dt

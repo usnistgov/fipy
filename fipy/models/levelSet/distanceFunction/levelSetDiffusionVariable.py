@@ -75,7 +75,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
     
     if inline.doInline:
         def _calcValue_(self, alpha, id1, id2):
-            val = self._getArray().copy()
+            val = self._array.copy()
             
             inline._runInline("""
                 int ID1 = id1[i];
@@ -93,7 +93,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
             val = val,
             id1 = id1, id2 = id2,
             diffusionCoeff = self.diffusionCoeff,
-            ni = self.mesh._getNumberOfFaces()
+            ni = self.mesh.numberOfFaces
             )
      
             return self._makeValue(value = val)
