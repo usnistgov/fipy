@@ -50,7 +50,7 @@ We create an appropriate mesh
 
 >>> from fipy import *
 
->>> nx = 1000
+>>> nx = 500
 >>> dx = L / nx
 >>> mesh = Grid1D(dx=dx, nx=nx)
 

@@ -36,7 +36,7 @@
  
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import _MatplotlibViewer
+from matplotlibViewer import _MatplotlibViewer, _ColorBar
 
 class Matplotlib2DGridViewer(_MatplotlibViewer):
     """
@@ -47,7 +47,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
     
     __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
 
-    def __init__(self, vars, title=None, limits={}, cmap=None, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
         """
         Creates a `Matplotlib2DGridViewer`.
         
@@ -59,36 +59,29 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
           limits : dict
             a (deprecated) alternative to limit keyword arguments
           cmap
-            The colormap. Defaults to `pylab.cm.jet`
+            The colormap. Defaults to `matplotlib.cm.jet`
           xmin, xmax, ymin, ymax, datamin, datamax
             displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
-
+          colorbar
+            plot a colorbar in specified orientation if not `None`
+          axes
+            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, 
+                                   cmap=cmap, colorbar=colorbar, axes=axes, 
+                                   **kwlimits)
 
-        import pylab
-
-        if cmap is None:
-            self.cmap = pylab.cm.jet
-        else:
-            self.cmap = cmap
-
-        self.image = pylab.imshow(self._getData(),
-                                  extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
-                                          self._getLimit('ymin'), self._getLimit('ymax')),
-                                  vmin=self._getLimit(key=('datamin', 'zmin')),
-                                  vmax=self._getLimit(key=('datamax', 'zmax')),
-                                  cmap=self.cmap)
+        self.image = self.axes.imshow(self._getData(),
+                                      extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
+                                              self._getLimit('ymin'), self._getLimit('ymax')),
+                                      vmin=self._getLimit(key=('datamin', 'zmin')),
+                                      vmax=self._getLimit(key=('datamax', 'zmax')),
+                                      cmap=self.cmap)
                    
         if title is None:                          
-            pylab.title(self.vars[0].getName())
-
-        # colorbar will not automatically update
-        # http://sourceforge.net/mailarchive/forum.php?thread_id=10159140&forum_id=33405
-        self.colorbar = pylab.colorbar()
-        self.colorbar.set_label(self.vars[0].getName())
+            self.axes.set_title(self.vars[0].getName())
 
     def _getLimit(self, key):
         limit = _MatplotlibViewer._getLimit(self, key)
@@ -121,12 +114,6 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape()[::-1])[::-1]
 
     def _plot(self):
-        import pylab
-        
-        # per http://sourceforge.net/tracker/index.php?func=detail&aid=1656374&group_id=80706&atid=560720
-        # although seems to no longer be needed with matplotlib >= 0.91.1
-        pylab.sci(self.image)
-        
         datamin = self._getLimit(('datamin', 'zmin')) 
         datamax = self._getLimit(('datamax', 'zmax')) 
         if datamin is None or datamax is None:
@@ -134,9 +121,12 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
                                                datamin=datamin, 
                                                datamax=datamax)
 
-            pylab.clim(vmax=datamax, vmin=datamin)
+            self.image.clim(vmax=datamax, vmin=datamin)
 
         self.image.set_data(self._getData())
+        
+        if self.colorbar is not None:
+            self.colorbar.plot(vmin=datamin, vmax=datamax)
 
 def _test():
     from fipy.viewers.viewer import _test2D

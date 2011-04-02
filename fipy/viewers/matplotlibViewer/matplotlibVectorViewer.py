@@ -60,7 +60,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
     """
     __doc__ += _MatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
 
-    def __init__(self, vars, title=None, scale=None, sparsity=None, limits={}, **kwlimits):
+    def __init__(self, vars, title=None, scale=None, sparsity=None, limits={}, axes=None, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
         :Parameters:
@@ -78,13 +78,13 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
           xmin, xmax, ymin, ymax, datamin, datamax
             displayed range of data. Any limit set to 
             a (default) value of `None` will autoscale.
-
+          axes
+            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, **kwlimits)
+        _MatplotlibViewer.__init__(self, vars=vars, title=title, axs=axes, **kwlimits)
 
         self.quiver(sparsity=sparsity, scale=scale)
-        self.colorbar = False
         
         self._plot()
         
@@ -115,8 +115,8 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         import pylab
         
         pylab.ion()
-        pylab.cla()
-        self._quiver = pylab.quiver(X, Y, U, V, scale=scale)
+        self.axes.cla()
+        self._quiver = self.axes.quiver(X, Y, U, V, scale=scale)
         pylab.ioff()
 
     def _getSuitableVars(self, vars):
@@ -144,12 +144,10 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
 
         self._quiver.set_UVC(U, V)
         
-        import pylab
-                            
-        pylab.xlim(xmin = self._getLimit('xmin'))
-        pylab.xlim(xmax = self._getLimit('xmax'))
-        pylab.ylim(ymin = self._getLimit('ymin'))
-        pylab.ylim(ymax = self._getLimit('ymax'))
+        self.axes.set_xlim(xmin=self._getLimit('xmin'),
+                           xmax=self._getLimit('xmax'))
+        self.axes.set_ylim(ymin=self._getLimit('ymin'),
+                           ymax=self._getLimit('ymax'))
 
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus
