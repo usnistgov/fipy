@@ -879,16 +879,20 @@ def dot(a1, a2, axis=0, omit=()):
     """
 
     ## have to check MA since MA's have dot() method!!!
-    if hasattr(a1, 'dot') and not (type(a1) is type(MA.array(0))):
+    ## and numpy arrays now have a dot() method too!!!!
+
+    def isNumpy(aa):
+        return type(aa) in (type(MA.array(0)), type(NUMERIX.array(0)))
+ 
+    if hasattr(a1, 'dot') and not isNumpy(a1):
         return a1.dot(a2, omit=omit)
-    elif hasattr(a2, 'rdot') and not (type(a2) is type(MA.array(0))):
+    elif hasattr(a2, 'rdot') and not isNumpy(a2):
         return a2.rdot(a1, omit=omit)
-    elif hasattr(a2, 'dot') and not (type(a2) is type(MA.array(0))):
+    elif hasattr(a2, 'dot') and not isNumpy(a2):
         # dot() is not commutative with tensors, but if there's no
         # rdot(), what else can we do? Just throw an error?
         return a2.dot(a1, omit=omit)
     else:
-##         return NUMERIX.dot(a1, a2)
         return sum(a1*a2, axis)
 
 def sqrtDot(a1, a2):
