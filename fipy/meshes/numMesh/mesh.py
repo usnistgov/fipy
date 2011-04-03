@@ -88,9 +88,13 @@ class Mesh(_CommonMesh):
         
     """Topology methods"""
 
+    @property
+    def _concatenatedClass(self):
+        return Mesh
+        
     def __add__(self, other):
         if(isinstance(other, Mesh)):
-            return self._concatenate(other, smallNumber = 1e-15)
+            return self._concatenatedClass(**self._getAddedMeshValues(other=other))
         else:
             return self._translate(other)
 
@@ -104,9 +108,6 @@ class Mesh(_CommonMesh):
         return newmesh
 
     __rmul__ = __mul__
-
-    def _concatenate(self, other, smallNumber):
-        return Mesh(**self._getAddedMeshValues(other, smallNumber))
 
     def _connectFaces(self, faces0, faces1):
         """
@@ -211,114 +212,172 @@ class Mesh(_CommonMesh):
     def _getConcatenableMesh(self):
         return self
         
-    def _getAddedMeshValues(self, other, smallNumber):
-        """
-        Returns a `dictionary` with 3 elements: the new mesh `vertexCoords`,
-        `faceVertexIDs`, and `cellFaceIDs`.
-        """
+    def _getAddedMeshValues(self, other, resolution=1e-2):
+        """Calculate the parameters to define a concatenation of `other` with `self`
+        
+        :Parameters:
+          - `other`: The :class:`~fipy.meshes.numMesh.Mesh` to concatenate with `self`
+          - `resolution`: How close vertices have to be (relative to the smallest 
+            cell-to-cell distance in either mesh) to be considered the same
 
+        :Returns:
+          A `dict` with 3 elements: the new mesh `vertexCoords`, 
+          `faceVertexIDs`, and `cellFaceIDs`.
+        """
+        
+        selfc = self._getConcatenableMesh()
         other = other._getConcatenableMesh()
 
         ## check dimensions
         if self.getDim() != other.getDim():
             raise MeshAdditionError, "Dimensions do not match"
+            
         ## compute vertex correlates
-        vertexCorrelates = {}
-        
-        for i in range(other._getNumberOfVertices()):
-            diff = self.vertexCoords() - other.vertexCoords()[...,i,numerix.newaxis]
-            j = numerix.array(numerix.dot(diff, diff) < smallNumber).nonzero()[0]
-            if len(j) == 1:
-                vertexCorrelates[i] = int(j)
-            elif len(j) > 1:
-                raise MeshAdditionError, "Vertices are indistinguishable"
 
-        if (self._getNumberOfVertices() > 0 and other._getNumberOfVertices() > 0 and vertexCorrelates == {}):
-            raise MeshAdditionError, "Vertices are not aligned"
+        ## only try to match exterior (X) vertices
+        self_Xvertices = numerix.unique(selfc._getFaceVertexIDs().filled()[..., selfc.getExteriorFaces()].flatten().getValue())
+        other_Xvertices = numerix.unique(other._getFaceVertexIDs().filled()[..., other.getExteriorFaces()].flatten().getValue())
 
+        self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
+        other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
         
-         
+        # lifted from Mesh._getNearestCellID()
+        other_vertexCoordMap = numerix.resize(other_XvertexCoords, 
+                                              (self_XvertexCoords.shape[-1], 
+                                               other_XvertexCoords.shape[0], 
+                                               other_XvertexCoords.shape[-1])).swapaxes(0,1)
+        tmp = self_XvertexCoords[..., numerix.newaxis] - other_vertexCoordMap
+        closest = numerix.argmin(numerix.dot(tmp, tmp), axis=0)
+        
+        # just because they're closest, doesn't mean they're close
+        tmp = self_XvertexCoords[..., closest] - other_XvertexCoords
+        distance = numerix.sqrtDot(tmp, tmp)
+        # only want vertex pairs that are 100x closer than the smallest 
+        # cell-to-cell distance
+        close = (distance < resolution * min(selfc._getCellToCellDistances().min(), 
+                                             other._getCellToCellDistances().min())).getValue()
+        vertexCorrelates = numerix.array((self_Xvertices[closest[close]],
+                                          other_Xvertices[close]))
+        
+        # warn if meshes don't touch, but allow it
+        if (selfc._getNumberOfVertices() > 0 
+            and other._getNumberOfVertices() > 0 
+            and vertexCorrelates.shape[-1] == 0):
+            import warnings
+            warnings.warn("Vertices are not aligned", UserWarning, stacklevel=4)
+
         ## compute face correlates
-        faceCorrelates = {}
-        for i in range(other._getNumberOfFaces()):
-            currFace = numerix.array(other.faceVertexIDs()[...,i])
-            keepGoing = 1
-            currIndex = 0 
-            for item in currFace:
-                if vertexCorrelates.has_key(item):
-                    currFace[currIndex] = vertexCorrelates[item]
-                    currIndex = currIndex + 1
-                else:
-                    keepGoing = 0
-            if keepGoing == 1:
-                for j in range(self._getNumberOfFaces()):
-                    if self._equalExceptOrder(currFace, self.faceVertexIDs()[...,j]):
-                        faceCorrelates[i] = j
-        if (self._getNumberOfFaces() > 0 and other._getNumberOfFaces() > 0 and faceCorrelates == {}):
-            raise MeshAdditionError, "Faces are not aligned"
+        # ensure that both sets of faceVertexIDs have the same maximum number of (masked) elements
+        self_faceVertexIDs = selfc.faceVertexIDs
+        other_faceVertexIDs = other.faceVertexIDs
+
+        diff = self_faceVertexIDs.shape[0] - other_faceVertexIDs.shape[0]
+        if diff > 0:
+            other_faceVertexIDs = numerix.append(other_faceVertexIDs, 
+                                                 -1 * numerix.ones((diff,) 
+                                                                   + other_faceVertexIDs.shape[1:]),
+                                                 axis=0)
+            other_faceVertexIDs = MA.masked_values(other_faceVertexIDs, -1)
+        elif diff < 0:
+            self_faceVertexIDs = numerix.append(self_faceVertexIDs, 
+                                                -1 * numerix.ones((-diff,) 
+                                                                  + self_faceVertexIDs.shape[1:]),
+                                                axis=0)
+            self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
+
+        # want self's Faces for which all faceVertexIDs are in vertexCorrelates
+        self_matchingFaces = numerix.in1d(self_faceVertexIDs.getValue(), 
+                                          vertexCorrelates[0]).reshape(self_faceVertexIDs.shape).all(axis=0).nonzero()[0]
+
+        # want other's Faces for which all faceVertexIDs are in vertexCorrelates
+        other_matchingFaces = numerix.in1d(other_faceVertexIDs.getValue(), 
+                                           vertexCorrelates[1]).reshape(other_faceVertexIDs.shape).all(axis=0).nonzero()[0]
+                                           
+        # map other's Vertex IDs to new Vertex IDs, 
+        # accounting for overlaps with self's Vertex IDs
+        vertex_map = numerix.empty(other._getNumberOfVertices(), dtype=int)
+        verticesToAdd = numerix.delete(numerix.arange(other._getNumberOfVertices()), vertexCorrelates[1])
+        vertex_map[verticesToAdd] = numerix.arange(other._getNumberOfVertices() - len(vertexCorrelates[1])) + selfc._getNumberOfVertices()
+        vertex_map[vertexCorrelates[1]] = vertexCorrelates[0]
+
+        # calculate hashes of faceVertexIDs for comparing Faces
         
-        faceIndicesToAdd = ()
-        for i in range(other._getNumberOfFaces()):
-            if not faceCorrelates.has_key(i):
-                faceIndicesToAdd = faceIndicesToAdd + (i,)
-        vertexIndicesToAdd = ()
-        for i in range(other._getNumberOfVertices()):
-            if not vertexCorrelates.has_key(i):
-                vertexIndicesToAdd = vertexIndicesToAdd + (i,)
+        if self_matchingFaces.shape[-1] == 0:
+            self_faceHash = numerix.empty(self_matchingFaces.shape[:-1] + (0,), dtype="str")
+        else:
+            # sort each of self's Face's vertexIDs for canonical comparison
+            self_faceHash = numerix.sort(self_faceVertexIDs[..., self_matchingFaces], axis=0)
+            # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
+            self_faceHash = numerix.apply_along_axis(str, axis=0, arr=self_faceHash)
+            
+        face_sort = numerix.argsort(self_faceHash)
+        self_faceHash = self_faceHash[face_sort]
+        self_matchingFaces = self_matchingFaces[face_sort]
 
-        ##compute the full face and vertex correlation list
-        a = self._getNumberOfFaces()
-        for i in faceIndicesToAdd:
-            faceCorrelates[i] = a
-            a = a + 1
-        b = self._getNumberOfVertices()
-        for i in vertexIndicesToAdd:
-            vertexCorrelates[i] = b
-            b = b + 1
+        if other_matchingFaces.shape[-1] == 0:
+            other_faceHash = numerix.empty(other_matchingFaces.shape[:-1] + (0,), dtype="str")
+        else:
+            # convert each of other's Face's vertexIDs to new IDs
+            other_faceHash = vertex_map[other_faceVertexIDs[..., other_matchingFaces].getValue()]
+            # sort each of other's Face's vertexIDs for canonical comparison
+            other_faceHash = numerix.sort(other_faceHash, axis=0)
+            # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
+            other_faceHash = numerix.apply_along_axis(str, axis=0, arr=other_faceHash)
 
-        ## compute what the cells are that we need to add
-        cellsToAdd = numerix.ones((self.cellFaceIDs.shape[0], other.cellFaceIDs.shape[-1]))
-        cellsToAdd = -1 * cellsToAdd
+        face_sort = numerix.argsort(other_faceHash)
+        other_faceHash = other_faceHash[face_sort]
+        other_matchingFaces = other_matchingFaces[face_sort]
 
-        for j in range(other.cellFaceIDs.shape[-1]):
-            for i in range(other.cellFaceIDs.shape[0]):
-                cellsToAdd[i, j] = faceCorrelates[int(other.cellFaceIDs[i, j])]
+        self_matchingFaces = self_matchingFaces[numerix.in1d(self_faceHash, 
+                                                             other_faceHash)]
+        other_matchingFaces = other_matchingFaces[numerix.in1d(other_faceHash, 
+                                                               self_faceHash)]
+        
+        faceCorrelates = numerix.array((self_matchingFaces,
+                                        other_matchingFaces))
 
-        cellsToAdd = MA.masked_values(cellsToAdd, -1)
+        # warn if meshes don't touch, but allow it
+        if (selfc._getNumberOfFaces() > 0 
+            and other._getNumberOfFaces() > 0 
+            and faceCorrelates.shape[-1] == 0):
+            import warnings
+            warnings.warn("Faces are not aligned", UserWarning, stacklevel=4)
 
+        # map other's Face IDs to new Face IDs, 
+        # accounting for overlaps with self's Face IDs
+        face_map = numerix.empty(other._getNumberOfFaces(), dtype=int)
+        facesToAdd = numerix.delete(numerix.arange(other._getNumberOfFaces()), faceCorrelates[1])
+        face_map[facesToAdd] = numerix.arange(other._getNumberOfFaces() - len(faceCorrelates[1])) + selfc._getNumberOfFaces()
+        face_map[faceCorrelates[1]] = faceCorrelates[0]
+        
+        other_faceVertexIDs = vertex_map[other.faceVertexIDs[..., facesToAdd].getValue()]
+        
+        # ensure that both sets of cellFaceIDs have the same maximum number of (masked) elements
+        self_cellFaceIDs = selfc.cellFaceIDs
+        other_cellFaceIDs = face_map[other.cellFaceIDs.getValue()]
+        diff = self_cellFaceIDs.shape[0] - other_cellFaceIDs.shape[0]
+        if diff > 0:
+            other_cellFaceIDs = numerix.append(other_cellFaceIDs, 
+                                               -1 * numerix.ones((diff,) 
+                                                                 + other_cellFaceIDs.shape[1:]),
+                                               axis=0)
+            other_cellFaceIDs = MA.masked_values(other_cellFaceIDs, -1)
+        elif diff < 0:
+            self_cellFaceIDs = numerix.append(self_cellFaceIDs, 
+                                              -1 * numerix.ones((-diff,) 
+                                                                + self_cellFaceIDs.shape[1:]),
+                                              axis=0)
+            self_cellFaceIDs = MA.masked_values(self_cellFaceIDs, -1)
 
-        ## compute what the faces are that we need to add
-        facesToAdd = numerix.take(other.faceVertexIDs, faceIndicesToAdd, axis=1).getValue()
-
-        for j in range(facesToAdd.shape[-1]):
-            for i in range(facesToAdd.shape[0]):
-                facesToAdd[i, j] = vertexCorrelates[int(facesToAdd[i, j])]
-
-        ## compute what the vertices are that we need to add
-        verticesToAdd = numerix.take(other.vertexCoords, vertexIndicesToAdd, axis=1)
-
+        # concatenate everything and return
         return {
-            'vertexCoords': numerix.concatenate((self.vertexCoords, verticesToAdd), axis=1), 
-            'faceVertexIDs': numerix.concatenate((self.faceVertexIDs, facesToAdd), axis=1), 
-            'cellFaceIDs': MA.concatenate((self.cellFaceIDs.getValue(), cellsToAdd), axis=1)
+            'vertexCoords': numerix.concatenate((selfc.vertexCoords, 
+                                                 other.vertexCoords[..., verticesToAdd]), axis=1), 
+            'faceVertexIDs': numerix.concatenate((self_faceVertexIDs, 
+                                                  other_faceVertexIDs), axis=1), 
+            'cellFaceIDs': MA.concatenate((self_cellFaceIDs, 
+                                           other_cellFaceIDs), axis=1)
             }
-
-    def _equalExceptOrder(self, first, second):
-        """Determines if two lists contain the same set of elements, although they may be in different orders. Does not work if one list contains duplicates of an element.
-        """
-        res = 0
- 
-        if (len(first) == len(second)):
-            res = 1
-        for i in first:
-            isthisin = 0
-            for j in second:
-                if (i == j):
-                    isthisin = 1
-            if(isthisin == 0):
-                res = 0
-        return res
-    
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
@@ -984,6 +1043,25 @@ class Mesh(_CommonMesh):
             >>> print numerix.allclose(bigMesh.getCellVolumes(), volumes)
             True
             
+            Following test was added due to a bug in adding UniformGrids.
+
+            >>> from fipy.meshes.numMesh.uniformGrid1D import UniformGrid1D
+            >>> a = UniformGrid1D(nx=10) + (10,)
+            >>> print a.getCellCenters()
+            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
+            >>> b = 10 + UniformGrid1D(nx=10)
+            >>> print b.getCellCenters()
+            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
+            
+            >>> from fipy.tools import parallel
+            >>> if parallel.Nproc == 1:
+            ...     c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
+            >>> print (parallel.Nproc > 1 
+            ...        or numerix.allclose(c.getCellCenters()[0],
+            ...                            [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
+            ...                            12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]))
+            True
+
         """
 
     def _getVTKCellType(self):

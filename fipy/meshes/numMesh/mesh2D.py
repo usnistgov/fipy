@@ -105,9 +105,10 @@ class Mesh2D(Mesh):
         newmesh = Mesh2D(newCoords, self.faceVertexIDs, self.cellFaceIDs)
         return newmesh
 
-    def _concatenate(self, other, smallNumber):
-        return Mesh2D(**self._getAddedMeshValues(other._getConcatenableMesh(), smallNumber))
-
+    @property
+    def _concatenatedClass(self):
+        return Mesh2D
+        
     def _getOrderedCellVertexIDs(self):
         cellVertexIDs = self._getFaceVertexIDs()[..., self._getCellFaceIDs()]
         pos = (self.cellToFaceOrientations > 0)

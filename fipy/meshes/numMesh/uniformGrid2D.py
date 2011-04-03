@@ -140,9 +140,6 @@ class UniformGrid2D(Grid2D):
         del args['origin']
         return Grid2D(**args) + origin
 
-    def _concatenate(self, other, smallNumber):
-        return self._getConcatenableMesh()._concatenate(other = other._getConcatenableMesh(), smallNumber = smallNumber)
-        
 ##     get topology methods
 
 ##         from common/mesh
