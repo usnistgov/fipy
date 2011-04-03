@@ -121,7 +121,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
                                                datamin=datamin, 
                                                datamax=datamax)
 
-            self.image.clim(vmax=datamax, vmin=datamin)
+            self.image.set_clim(vmax=datamax, vmin=datamin)
 
         self.image.set_data(self._getData())
         

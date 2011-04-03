@@ -226,7 +226,7 @@ class Mesh2D(Mesh):
             oldVertices = newVertices
 
         ## return a new mesh, extrude could just as easily act on self
-        return Mesh(vertices, faces, cells)
+        return Mesh(vertices, faces, cells, communicator=mesh.communicator)
 
     def _getVTKCellType(self):
         from enthought.tvtk.api import tvtk

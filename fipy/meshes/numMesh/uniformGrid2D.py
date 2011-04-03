@@ -53,7 +53,7 @@ class UniformGrid2D(Grid2D):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2, parallelModule=parallel):        
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), overlap=2, communicator=parallel):        
         self.args = {
             'dx': dx, 
             'dy': dy, 
@@ -61,7 +61,7 @@ class UniformGrid2D(Grid2D):
             'ny': ny, 
             'origin': origin,
             'overlap': overlap,
-            'parallelModule': parallelModule
+            'communicator': communicator
         }
 
         self.dim = 2
@@ -83,7 +83,7 @@ class UniformGrid2D(Grid2D):
         (self.nx,
          self.ny,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, parallelModule)
+         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, communicator)
         
         self.origin = PhysicalField(value = origin)
         self.origin /= scale
@@ -117,6 +117,7 @@ class UniformGrid2D(Grid2D):
         }
 
         self.setScale(value = scale)
+        self.communicator = communicator
         
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
@@ -136,7 +137,7 @@ class UniformGrid2D(Grid2D):
         args = self.args.copy()
         origin = args['origin']
         from fipy.tools import serial
-        args['parallelModule'] = serial
+        args['communicator'] = serial
         del args['origin']
         return Grid2D(**args) + origin
 

@@ -50,7 +50,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
     
     __doc__ += _MatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
-    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar=True, axes=None, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
         
 

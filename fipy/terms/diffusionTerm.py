@@ -216,7 +216,7 @@ class DiffusionTerm(Term):
         
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
-        coefficientMatrix = SparseMatrix(size = mesh.getNumberOfCells(), bandwidth = mesh._getMaxFacesPerCell())
+        coefficientMatrix = SparseMatrix(mesh=mesh, bandwidth = mesh._getMaxFacesPerCell())
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
@@ -236,7 +236,8 @@ class DiffusionTerm(Term):
         boundaryB += LLbb[1]
         
     def _doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
-        [self._bcAdd(coefficientMatrix, boundaryB, boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)) for boundaryCondition in higherOrderBCs]
+        for boundaryCondition in higherOrderBCs:
+            self._bcAdd(coefficientMatrix, boundaryB, boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs))
             
         return coefficientMatrix, boundaryB
 
@@ -275,7 +276,7 @@ class DiffusionTerm(Term):
             del lowerOrderBCs
             
             lowerOrderb = lowerOrderb / mesh.getCellVolumes()
-            volMatrix = SparseMatrix(size = N, bandwidth = 1)
+            volMatrix = SparseMatrix(mesh=var.getMesh(), bandwidth = 1)
             
             volMatrix.addAtDiagonal(1. / mesh.getCellVolumes() )
             lowerOrderL = volMatrix * lowerOrderL
@@ -350,7 +351,7 @@ class DiffusionTerm(Term):
 
         else:
             
-            L = SparseMatrix(size = N)
+            L = SparseMatrix(mesh=mesh)
             L.addAtDiagonal(mesh.getCellVolumes())
             b = numerix.zeros((N),'d')
             
@@ -361,7 +362,7 @@ class DiffusionTerm(Term):
         Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
         >>> from fipy.meshes.grid1D import Grid1D
-        >>> from fipy.tools.pysparseMatrix import _PysparseMatrix as SparseMatrix
+        >>> from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix as SparseMatrix
         >>> from fipy.tools import parallel
         >>> procID = parallel.procID
         >>> mesh = Grid1D(dx = 1., nx = 2)

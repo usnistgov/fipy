@@ -76,7 +76,7 @@ class FixedValue(BoundaryCondition):
         """
         faces = self.faces.getValue()
         
-        LL = SparseMatrix(size = Ncells, sizeHint = len(self.faces))
+        LL = SparseMatrix(mesh=self.faces.getMesh(), sizeHint=len(self.faces), bandwidth=1)
         LL.addAt(coeff['cell 1 diag'][faces], self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because

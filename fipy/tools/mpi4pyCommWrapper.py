@@ -2,9 +2,9 @@
 
 ## -*-Pyth-*-
  # ###################################################################
- #  FiPy - Python-based phase field solver
+ #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "testSuite.py"
+ #  FILE: "mpi4pyCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,42 +34,40 @@
  # ###################################################################
  ##
 
-import unittest
+from fipy.tools.commWrapper import CommWrapper
+from fipy.tools import numerix
 
-class _TestProgram(unittest.TestProgram):
-    def parseArgs(self, argv):
-        import getopt
-##      inline = 0
-##        numMesh = 0
-        try:
-            options, args = getopt.getopt(argv[1:], 'hHvq',
-                                          ['help','verbose','quiet','inline', 'Trilinos', 'Pysparse', 'pysparse', 'trilinos', 'no-pysparse'])
-            for opt, value in options:
-                if opt in ('-h','-H','--help'):
-                    self.usageExit()
-                if opt in ('-q','--quiet'):
-                    self.verbosity = 0
-                if opt in ('-v','--verbose'):
-                    self.verbosity = 2
-##              if opt in ('--inline',):
-##                  inline = 1
-##                if opt in ('--numMesh',):
-##                    numMesh = 1
-            if len(args) == 0 and self.defaultTest is None:
-                self.test = self.testLoader.loadTestsFromModule(self.module)
-                return
-            if len(args) > 0:
-                self.testNames = args
-            else:
-                self.testNames = (self.defaultTest,)
-            self.createTests()
-##            print argv
-##            raw_input()
-##          if inline:
-##              argv[1:] = ['--inline']
-##            if numMesh:
-##                argv[1:] = ['--numMesh']
-        except getopt.error, msg:
-            self.usageExit(msg)
+class Mpi4pyCommWrapper(CommWrapper):
+    """MPI Communicator wrapper
+    
+    Encapsulates capabilities needed for both Epetra and mpi4py.
+    
+    """
+    
+    def __init__(self, Epetra, MPI):
+        self.MPI = MPI
+        self.mpi4py_comm = self.MPI.COMM_WORLD
+        CommWrapper.__init__(self, Epetra)
+        
+    def __setstate__(self, dict):
+        from PyTrilinos import Epetra
+        from mpi4py import MPI
+        self.__init__(Epetra=Epetra, MPI=MPI)
+        
+    def all(self, a, axis=None):
+        return self.mpi4py_comm.allreduce(a.all(axis=axis), op=self.MPI.LAND)
 
-main = _TestProgram
+    def any(self, a, axis=None):
+        return self.mpi4py_comm.allreduce(a.any(axis=axis), op=self.MPI.LOR)
+
+    def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
+        return self.mpi4py_comm.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=self.MPI.LAND)
+
+    def allequal(self, a, b):
+        return self.mpi4py_comm.allreduce(numerix.allequal(a, b), op=self.MPI.LAND)
+
+    def bcast(self, obj=None, root=0):
+        return self.mpi4py_comm.bcast(obj=obj, root=root)
+
+    def allgather(self, sendobj=None, recvobj=None):
+        return self.mpi4py_comm.allgather(sendobj=sendobj, recvobj=recvobj)

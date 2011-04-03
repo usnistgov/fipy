@@ -34,7 +34,7 @@
 
 from fipy.tools import parallel
 
-def CylindricalGrid2D(dr=None, dz=None, nr=None, nz=None, dx=1., dy=1., nx=None, ny=None, parallelModule=parallel):
+def CylindricalGrid2D(dr=None, dz=None, nr=None, nz=None, dx=1., dy=1., nx=None, ny=None, communicator=parallel):
     from numMesh import cylindricalUniformGrid2D
     from numMesh import cylindricalGrid2D
 
@@ -55,6 +55,6 @@ def CylindricalGrid2D(dr=None, dz=None, nr=None, nz=None, dx=1., dy=1., nx=None,
         dy = 1.
     
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
-        return cylindricalUniformGrid2D.CylindricalUniformGrid2D(dx=dx, dy=dy, nx=nx or 1, ny=ny or 1, parallelModule=parallelModule)
+        return cylindricalUniformGrid2D.CylindricalUniformGrid2D(dx=dx, dy=dy, nx=nx or 1, ny=ny or 1, communicator=communicator)
     else:
-        return cylindricalGrid2D.CylindricalGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, parallelModule=parallelModule)
+        return cylindricalGrid2D.CylindricalGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=communicator)

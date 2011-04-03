@@ -58,7 +58,7 @@ class Grid3D(Mesh):
 
     Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
     """
-    def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, parallelModule=parallel):
+    def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
         
         self.args = {
             'dx': dx, 
@@ -68,7 +68,7 @@ class Grid3D(Mesh):
             'ny': ny,
             'nz': nz,
             'overlap': overlap,
-            'parallelModule': parallelModule
+            'communicator': communicator
         }
         
         self.dx = PhysicalField(value = dx)
@@ -97,7 +97,7 @@ class Grid3D(Mesh):
          self.ny,
          self.nz,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, nz, overlap, parallelModule)
+         self.offset) = self._calcParallelGridInfo(nx, ny, nz, overlap, communicator)
 
         if numerix.getShape(self.dx) is not ():
             Xoffset = numerix.sum(self.dx[0:self.offset[0]])
@@ -140,10 +140,10 @@ class Grid3D(Mesh):
         
         self.setScale(value = scale)
 
-    def _calcParallelGridInfo(self, nx, ny, nz, overlap, parallelModule):
+    def _calcParallelGridInfo(self, nx, ny, nz, overlap, communicator):
         
-        procID = parallelModule.procID
-        Nproc = parallelModule.Nproc
+        procID = communicator.procID
+        Nproc = communicator.Nproc
 
         overlap = min(overlap, nz)
         cellsPerNode = max(int(nz / Nproc), overlap)
