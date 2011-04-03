@@ -43,18 +43,11 @@ To run this example from the base fipy directory type::
     
     $ python examples/levelSet/electroChem/simpleTrenchSystem.py
 
-at the command line. The results of the simulation will be displayed
-and the word `finished` in the terminal at the end of the
-simulation. In order to alter the number of timesteps, the python
-function that encapsulates the system of equations must first be
-imported (at the python command line),
+at the command line. The results of the simulation will be displayed and the word
+`finished` in the terminal at the end of the simulation. To run with a different
+number of time steps change the ``numberOfSteps`` argument as follows,
 
 .. index:: runSimpleTrenchSystem
-
->>> from examples.levelSet.electroChem.simpleTrenchSystem import runSimpleTrenchSystem
-
-and then the function can be run with a different number of time steps
-with the ``numberOfSteps`` argument as follows,
 
 >>> runSimpleTrenchSystem(numberOfSteps=5, displayViewers=False)
 1

@@ -140,7 +140,7 @@ class MayaviClient(_Viewer):
                 os.unlink(fname)
         os.rmdir(self.vtkdir)
         
-    def _getLimit(self, key):
+    def _getLimit(self, key, default=None):
         """
         Return the limit associated with the key
         
@@ -156,7 +156,7 @@ class MayaviClient(_Viewer):
         :Returns:
           the value of the limit or `None`
         """
-        lim = _Viewer._getLimit(self, key)
+        lim = _Viewer._getLimit(self, key, default=None)
         if lim is not None:
             return ["--%s" % key, str(lim)]
         else:

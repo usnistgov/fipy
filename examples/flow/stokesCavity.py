@@ -34,9 +34,11 @@
 
 r"""
 
-This example is an implementation of a rudimentary Stokes solver on a 
-colocated grid. 
-It solves the Navier-Stokes equation in the viscous limit,
+Many thanks to Benny Malengier <bm@cage.ugent.be> for reworking this example and
+actually making it work correctly...see changeset:3799
+
+This example is an implementation of a rudimentary Stokes solver on a collocated
+grid.  It solves the Navier-Stokes equation in the viscous limit,
 
 .. math::
 
@@ -52,7 +54,7 @@ continuity equation,
 where :math:`\vec{u}` is the fluid velocity, :math:`p` is the pressure and :math:`\mu`
 is the viscosity.  The domain in this example is a square cavity
 of unit dimensions with a moving lid of unit speed.  This example
-uses the SIMPLE algorithm with Rhie-Chow interpolation for colocated grids to solve
+uses the SIMPLE algorithm with Rhie-Chow interpolation for collocated grids to solve
 the pressure-momentum coupling. Some of the details of the
 algorithm will be highlighted below but a good reference for this
 material is Ferziger and Peric [ferziger]_ and Rossow [rossow:2003]_. The 

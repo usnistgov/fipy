@@ -57,7 +57,7 @@ class LinearLUSolver(PysparseSolver):
     """
     
     def __init__(self, tolerance=1e-10, iterations=10, steps=None,
-                       maxIterations=10):
+                       maxIterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
 
@@ -66,7 +66,8 @@ class LinearLUSolver(PysparseSolver):
           - `iterations`: The number of LU decompositions to perform.
           - `steps`: A deprecated name for `iterations`.
             For large systems a number of iterations is generally required.
-
+          - `precon`: not used but maintains a common interface.
+          
         """
 
         iterations = min(iterations, maxIterations)

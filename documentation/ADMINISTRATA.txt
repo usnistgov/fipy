@@ -148,6 +148,10 @@ Again, merge n.m.q+1 changes back to main trunk::
 Making a Release
 ================
 
+------
+Source
+------
+
 Change the version number in :file:`setup.py`
 
 Check items in the tickets_.
@@ -171,6 +175,10 @@ Build the compressed distribution::
     $ rm MANIFEST
     $ python setup.py sdist
 
+-------
+Windows
+-------
+
 Build a windows executable installer::
 
     $ rm MANIFEST
@@ -187,6 +195,20 @@ Combine the windows installer and examples into one archive::
     $ cp MANIFEST.in.bkup MANIFEST.in
     $ unlink FiPy-${FIPY_VERSION}.win32.exe
     $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
+
+------
+Debian
+------
+
+Make sure stdeb_ is installed.
+
+   $ cd CLEAN
+   $ python setup.py --command-packages=stdeb.command bdist_deb
+   $ mv deb_dist/python-fipy_${FIPY_VERSION}-1_all.deb dist/python-fipy_${FIPY_VERSION}-1_all.deb
+
+------
+Upload
+------
 
 Tag the repository as appropriate (see `SVN practices`_ above).
 
@@ -219,6 +241,7 @@ executable and upload to download page.
 .. _Bitten: http://matforge.org/fipy/build
 .. _fipy@nist.gov: mailto:fipy@nist.gov
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
+.. _stdeb: http://github.com/astraw/stdeb
 
 ==========================================
 Making a Windows Distribution for Pysparse
