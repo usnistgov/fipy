@@ -44,12 +44,10 @@ given by
 with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 
 >>> diffCoeff = 1.
->>> convCoeff = (10.,)
+>>> convCoeff = ((10.,), (0.,))
     
 We define a 1D cylindrical mesh representing an anulus. The mesh has a
 non-constant cell spacing.
-
-.. index:: Grid1D
 
 >>> from fipy import *
 
@@ -60,6 +58,13 @@ non-constant cell spacing.
 >>> dr = r0 * (Rratio - 1) * Rratio**numerix.arange(nr)
 >>> mesh = CylindricalGrid2D(dr=dr) + ((r0,),)
 
+>>> valueLeft = 0.
+>>> valueRight = 1.
+
+The solution variable is initialized to ``valueLeft``:
+    
+>>> var = CellVariable(mesh=mesh, name = "variable")
+
 and impose the boundary conditions
 
 .. math
@@ -69,20 +74,10 @@ and impose the boundary conditions
    1& \text{at $r = r_1$,}
    \end{cases}
    
-or
+with
    
-.. index:: FixedValue
-
->>> valueLeft = 0.
->>> valueRight = 1.
->>> boundaryConditions = (
-...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-...     )
-
-The solution variable is initialized to ``valueLeft``:
-    
->>> var = CellVariable(mesh=mesh, name = "variable")
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`.
@@ -98,7 +93,7 @@ both handle most types of convection-diffusion cases, with the
 
 We solve the equation
 
->>> eq.solve(var=var, boundaryConditions=boundaryConditions)
+>>> eq.solve(var=var)
    
 and test the solution against the analytical result
 
@@ -111,15 +106,18 @@ or
 .. index:: exp
 
 >>> axis = 0
+
 >>> try:
+...     U = convCoeff[0][0]
 ...     from scipy.special import expi
 ...     r = mesh.getCellCenters()[axis]
-...     AA = exp(convCoeff[axis] / diffCoeff * (r1 - r))
-...     BB = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r / diffCoeff)
-...     CC = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r1 / diffCoeff)
+...     AA = exp(U / diffCoeff * (r1 - r))
+...     BB = expi(U * r0 / diffCoeff) - expi(U * r / diffCoeff)
+...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff)
 ...     analyticalArray = AA * BB / CC
 ... except ImportError:
 ...     print "The SciPy library is unavailable. It is required for testing purposes."
+
 >>> print var.allclose(analyticalArray, atol=1e-3)
 1
    

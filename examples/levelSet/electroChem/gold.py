@@ -182,7 +182,7 @@ def runGold(faradaysConstant=9.6e4,
         diffusionCoeff = metalDiffusion,
         metalIonMolarVolume = molarVolume)
 
-    metalEquationBCs = FixedValue(mesh.getFacesTop(), metalConcentration)
+    metalVar.constrain(metalConcentration, mesh.getFacesTop())
 
     if displayViewers:
 
@@ -237,7 +237,7 @@ def runGold(faradaysConstant=9.6e4,
         advectionEquation.solve(distanceVar, dt = dt)
         catalystSurfactantEquation.solve(catalystVar, dt = dt)
 
-        metalEquation.solve(metalVar, boundaryConditions = metalEquationBCs, dt = dt)
+        metalEquation.solve(metalVar, dt = dt)
                     
         step += 1
 

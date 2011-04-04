@@ -40,11 +40,11 @@ being that it uses a triangular mesh loaded in using the Gmsh.
 
 The result is again tested in the same way:
 
-    >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    >>> DiffusionTerm().solve(var)
     >>> Lx = 20
     >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> print var.allclose(analyticalArray, atol = 0.026)
+    >>> print var.allclose(analyticalArray, atol = 0.027)
     1
 
 Note that this test case will only work if you run it by running the
@@ -123,11 +123,12 @@ var = CellVariable(name = "solution variable",
 
 exteriorFaces = mesh.getExteriorFaces()
 xFace = mesh.getFaceCenters()[0]
-boundaryConditions = (FixedValue(exteriorFaces & (xFace ** 2 < 0.000000000000001), valueLeft),
-                      FixedValue(exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001), valueRight))
+
+var.constrain(valueLeft, exteriorFaces & (xFace ** 2 < 0.000000000000001))
+var.constrain(valueRight, exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001))
 
 if __name__ == '__main__':
-    DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    DiffusionTerm().solve(var)
     varArray = array(var)
     x = mesh.getCellCenters()[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20

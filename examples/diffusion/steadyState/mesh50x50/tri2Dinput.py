@@ -46,7 +46,7 @@ being that the mesh size is given by
 
 The result is again tested in the same way:
 
-    >>> DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    >>> DiffusionTerm().solve(var)
     >>> Lx = nx * dx
     >>> x = mesh.getCellCenters()[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
@@ -71,11 +71,11 @@ var = CellVariable(name = "solution variable",
                    mesh = mesh,
                    value = valueLeft)
 
-boundaryConditions = (FixedValue(mesh.getFacesLeft(),valueLeft),
-                      FixedValue(mesh.getFacesRight(),valueRight))
+var.constrain(valueLeft, mesh.getFacesLeft())
+var.constrain(valueRight, mesh.getFacesRight())
 
 if __name__ == '__main__':
-    DiffusionTerm().solve(var, boundaryConditions = boundaryConditions)
+    DiffusionTerm().solve(var)
     viewer = Viewer(vars = var)
     viewer.plot()
     raw_input("finished")

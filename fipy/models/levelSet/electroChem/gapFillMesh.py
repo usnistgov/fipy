@@ -19,6 +19,7 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.meshes.numMesh.mesh2D import Mesh2D
 import os
 from fipy.tools import numerix
+from fipy.tools import serial
 
 class GapFillMesh(Mesh2D):
     """
@@ -45,9 +46,10 @@ class GapFillMesh(Mesh2D):
         >>> from fipy.terms.diffusionTerm import DiffusionTerm
         >>> eq = DiffusionTerm()
         
-        >>> from fipy.boundaryConditions.fixedValue import FixedValue
-        >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getFacesBottom(), 0.),
-        ...                                     FixedValue(mesh.getFacesTop(), domainHeight)))
+        >>> var.constrain(0., mesh.getFacesBottom())
+        >>> var.constrain(domainHeight, mesh.getFacesTop())
+        
+        >>> eq.solve(var)
 
     Evaluate the result:
        
@@ -158,7 +160,7 @@ class GapFillMesh(Mesh2D):
         Line(7) = {4, 3} ;
         Line(8) = {3, 1} ;
         Line Loop(9) = {5, 6, 7, 8} ;
-        Plane Surface(10) = {9} ; """)
+        Plane Surface(10) = {9} ; """, commModule=serial)
     
     def getCellIDsAboveFineRegion(self):
         return numerix.nonzero(self.getCellCenters()[1] > self.actualFineRegionHeight - self.cellSize)[0]
@@ -200,10 +202,10 @@ class TrenchMesh(GapFillMesh):
         >>> from fipy.terms.diffusionTerm import DiffusionTerm
         >>> eq = DiffusionTerm()
         
-        >>> from fipy.boundaryConditions.fixedValue import FixedValue
+        >>> var.constrain(0., mesh.getFacesBottom())
+        >>> var.constrain(domainHeight, mesh.getFacesTop())
         
-        >>> eq.solve(var, boundaryConditions = (FixedValue(mesh.getFacesBottom(), 0.),
-        ...                                     FixedValue(mesh.getFacesTop(), domainHeight)))
+        >>> eq.solve(var)
 
     Evaluate the result:
        

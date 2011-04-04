@@ -78,6 +78,9 @@ class CommWrapper(object):
          
         return recvobj
                     
+    def sumAll(self, a):
+        return self.epetra_comm.SumAll(a)
+
     def sum(self, a, axis=None):
         return self.epetra_comm.SumAll(a.sum(axis=axis))
         

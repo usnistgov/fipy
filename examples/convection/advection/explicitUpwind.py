@@ -59,10 +59,8 @@ var = CellVariable(
     mesh = mesh,
     value = startingArray)
 
-boundaryConditions = (
-    FixedValue(mesh.getFacesLeft(), valueLeft),
-    FixedValue(mesh.getFacesRight(), valueRight)
-    )
+var.constrain(valueLeft, mesh.getFacesLeft())
+var.constrain(valueRight, mesh.getFacesRight())
 
 eq = TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (velocity,))
 
@@ -72,7 +70,6 @@ if __name__ == '__main__':
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,
-                 boundaryConditions = boundaryConditions,
                  solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000))
         viewer.plot()
     viewer.plot()

@@ -345,7 +345,7 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         diffusionCoeff = metalDiffusionCoefficient,
         metalIonMolarVolume = atomicVolume)
 
-    metalEquationBCs = FixedValue(mesh.getFacesTop(), bulkMetalConcentration)
+    metalVar.constrain(bulkMetalConcentration, mesh.getFacesTop())
 
     bulkAcceleratorEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkAcceleratorVar,
@@ -355,10 +355,8 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         diffusionCoeff = acceleratorDiffusionCoefficient,
         rateConstant = kAccelerator * siteDensity)
 
-    bulkAcceleratorEquationBCs = (FixedValue(
-        mesh.getFacesTop(),
-        bulkAcceleratorConcentration),)
-
+    bulkAcceleratorVar.constrain(bulkAcceleratorConcentration, mesh.getFacesTop())
+    
     bulkLevelerEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkLevelerVar,
         distanceVar = distanceVar,
@@ -366,16 +364,14 @@ def runLeveler(kLeveler=0.018, bulkLevelerConcentration=0.02, cellSize=0.1e-7, r
         diffusionCoeff = levelerDiffusionCoefficient,
         rateConstant = kLeveler * siteDensity)
 
-    bulkLevelerEquationBCs =  (FixedValue(
-        mesh.getFacesTop(),
-        bulkLevelerConcentration),)
-
+    bulkLevelerVar.constrain(bulkLevelerConcentration, mesh.getFacesTop())
+    
     eqnTuple = ( (advectionEquation, distanceVar, (), None),
                  (levelerSurfactantEquation, levelerVar, (), None),
                  (acceleratorSurfactantEquation, acceleratorVar, (), None),
-                 (metalEquation, metalVar,  metalEquationBCs, None),
-                 (bulkAcceleratorEquation, bulkAcceleratorVar, bulkAcceleratorEquationBCs, None),
-                 (bulkLevelerEquation, bulkLevelerVar, bulkLevelerEquationBCs, None))
+                 (metalEquation, metalVar,  (), None),
+                 (bulkAcceleratorEquation, bulkAcceleratorVar, (), None),
+                 (bulkLevelerEquation, bulkLevelerVar, (), None))
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 

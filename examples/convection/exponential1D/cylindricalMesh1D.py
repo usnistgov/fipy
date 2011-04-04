@@ -57,6 +57,13 @@ We define a 1D cylindrical mesh representing an anulus
 >>> nr = 100
 >>> mesh = CylindricalGrid1D(dr=(r1 - r0) / nr, nr=nr) + ((r0,),)
 
+The solution variable is initialized to ``valueLeft``:
+
+>>> valueLeft = 0.
+>>> valueRight = 1.
+    
+>>> var = CellVariable(mesh=mesh, name = "variable")
+
 and impose the boundary conditions
 
 .. math::
@@ -66,18 +73,10 @@ and impose the boundary conditions
    1& \text{at $r = r_1$,}
    \end{cases}
    
-or
+with
 
->>> valueLeft = 0.
->>> valueRight = 1.
->>> boundaryConditions = (
-...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-...     )
-
-The solution variable is initialized to ``valueLeft``:
-    
->>> var = CellVariable(mesh=mesh, name = "variable")
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`.
@@ -93,7 +92,7 @@ both handle most types of convection-diffusion cases, with the
 
 We solve the equation
 
->>> eq.solve(var=var, boundaryConditions=boundaryConditions)
+>>> eq.solve(var=var)
    
 and test the solution against the analytical result
 

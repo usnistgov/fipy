@@ -498,9 +498,78 @@ class Variable(object):
             self._markFresh()
         else:
             value = self.value
-            
-        return value
 
+        if hasattr(self, 'constraints'):
+            for constraintValue, mask in self.constraints:
+                if mask is None:
+                    value[:] = constraintValue
+                else:
+                    mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
+                                             
+                    if len(numerix.getShape(value)) == 1:
+                        value[:] = numerix.where(mask, constraintValue, value)
+                    else:
+                        
+                        try:
+                            value[..., mask] = constraintValue
+                        except ValueError:
+                            value[:] = numerix.where(numerix.resize(mask, numerix.shape(value)),
+                                                     numerix.resize(constraintValue, numerix.shape(value)),
+                                                     value)
+                            
+        return value
+            
+    def constrain(self, value, where=None):
+        """
+        Constrain the `Variable` to have a `value` at an index or mask location specified by `where`.
+
+        >>> v = Variable((0,1,2,3))
+        >>> v.constrain(2, numerix.array((True, False, False, False)))
+        >>> print v
+        [2 1 2 3]
+        >>> v[:] = 10
+        >>> print v
+        [ 2 10 10 10]
+        >>> v.constrain(5, numerix.array((False, False, True, False)))
+        >>> print v
+        [ 2 10  5 10]
+        >>> v[:] = 6
+        >>> print v
+        [2 6 5 6]
+        >>> v.constrain(8)
+        >>> print v
+        [8 8 8 8]
+        >>> v[:] = 10
+        >>> print v
+        [8 8 8 8]
+        >>> del v.constraints[2]
+        >>> print v
+        [2 8 5 8]
+        
+        :Parameters:
+          - `value`: the value of the constraint
+          - `where`: the constraint mask or index specifying the location of the constraint
+
+        """
+
+        if not hasattr(self, 'constraints'):
+            self.constraints = []
+
+        self.constraints.append([value, where])
+
+    def getConstraintMask(self):
+        if hasattr(self, 'constraints'):
+            returnMask = numerix.zeros(numerix.shape(self)[-1], dtype=numerix.bool_)
+            for value, mask in self.constraints:
+                returnMask = returnMask | numerix.array(mask)
+            return returnMask
+        else:
+            return None
+        
+    def applyConstraints(self, constraints):
+        for value, mask in constraints:
+            self.constrain(value, mask)
+        
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
         

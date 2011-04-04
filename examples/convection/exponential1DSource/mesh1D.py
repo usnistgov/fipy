@@ -56,6 +56,15 @@ We define a 1D mesh
 >>> L = 10.
 >>> mesh = Grid1D(dx=L / 1000, nx=nx)
 
+>>> valueLeft = 0.
+>>> valueRight = 1.
+
+The solution variable is initialized to ``valueLeft``:
+    
+.. index:: CellVariable
+
+>>> var = CellVariable(name="variable", mesh=mesh)
+
 and impose the boundary conditions
 
 .. math::
@@ -65,23 +74,10 @@ and impose the boundary conditions
    1& \text{at $x = L$,}
    \end{cases}
    
-or
+with
 
-.. index:: FixedValue
-   
->>> valueLeft = 0.
->>> valueRight = 1.
->>> boundaryConditions = (
-...     FixedValue(faces=mesh.getFacesRight(), value=valueRight),
-...     FixedValue(faces=mesh.getFacesLeft(), value=valueLeft),
-...     )
-
-The solution variable is initialized to ``valueLeft``:
-    
-.. index:: CellVariable
-
->>> var = CellVariable(name="variable", mesh=mesh)
-
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 We define the convection-diffusion equation with source
 
@@ -92,7 +88,6 @@ We define the convection-diffusion equation with source
 .. index:: DefaultAsymmetricSolver
     
 >>> eq.solve(var=var, 
-...          boundaryConditions=boundaryConditions,
 ...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))
     
 and test the solution against the analytical result:

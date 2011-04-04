@@ -52,10 +52,8 @@ mesh with ``nx = 10`` and ``ny = 10``:
 ...                    mesh = mesh,
 ...                    value = valueLeft)
 
->>> boundaryConditions = (
-...     FixedValue(mesh.getFacesLeft(), valueLeft),
-...     FixedValue(mesh.getFacesRight(), valueRight),
-... )
+>>> var.constrain(valueLeft, mesh.getFacesLeft())
+>>> var.constrain(valueRight, mesh.getFacesRight())
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,0.)
@@ -63,7 +61,6 @@ mesh with ``nx = 10`` and ``ny = 10``:
 >>> eq = DiffusionTerm(coeff=diffCoeff) + ExponentialConvectionTerm(coeff=convCoeff)
 
 >>> eq.solve(var = var,
-...          boundaryConditions=boundaryConditions,
 ...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))
 
 We test the solution against the analytical result:

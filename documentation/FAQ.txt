@@ -608,145 +608,35 @@ How do I represent boundary conditions?
 What is a :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is simply a Dirichlet boundary condition by another name.
+This is now deprecated. Use 
+
+>>> var.constrain(...)
+
+instead.
 
 What does the :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary condition actually represent?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In :term:`FiPy` a :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary condition object represents the
-quantity 
+This is deprecated too. Use
 
-.. math::
+>>> var.constrainFaceGrad(...)
 
-   \Gamma \vec{n} \cdot \nabla \phi - \vec{n} \cdot \vec{u} \phi
-
-on a given boundary edge with :math:`\vec{n}` pointing out of the boundary.
-The quantity :math:`\Gamma` represents the diffusion coefficient and :math:`\vec{u}`
-represents the convection coefficient for a general convection-diffusion
-equation of the type given in Eq. :eq:`num:gen`. See
-:mod:`examples.convection.robin` for a usage case.
-
-.. _FAQ-anyBoundaryCondition:
-
-I can't get the :class:`~fipy.boundaryConditions.fixedValue.FixedValue` or :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary condition objects to work right. What do I do now?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. currentmodule:: fipy.variables.faceVariable
-
-There have been a number of questions on the mailing list about boundary
-conditions and from the feedback it is clear that there are some
-problematic issues with the design and implementation of the boundary
-condition objects. We hope to rectify this in future releases. However, it
-is possible to specify almost any boundary condition by using a rank 1
-:class:`FaceVariable` to represent the external flux value and apply the
-:meth:`~FaceVariable.getDivergence` method to this object and then use it as as a source
-term in the given equation. The following code demonstrates how to
-implement this technique. First define the coefficients,
-
->>> convectionCoeff = FaceVariable(..., rank=1)
->>> diffusionCoeff = FaceVariable(...)
-
-where the ``convectionCoeff`` and ``diffusionCoeff`` are defined over
-all the faces. We will define a third :class:`FaceVariable` to represent the
-boundary source term and then set the values of the coefficients to zero on
-the exterior faces.
-
->>> boundarySource = FaceVariable(..., rank=1)
->>> convectionCoeff.setValue(0, where=mesh.getExteriorFaces())
->>> diffusionCoeff.setValue(0, where=mesh.getExteriorFaces())
->>> boundarySource.setValue(vectorValues, where=mesh.getExteriorFaces())
-
-The ``vectorValues`` quantity can be set to whatever value is required for
-the particular boundary condition. The variable ``boundarySource`` could
-be a variable that defines a relationship between other variables rather than
-a simple container object. To finish off, the :meth:`boundarySource.getDivergence` object
-must be added to the regular equation
-
->>> eqn = (TransientTerm() + ConvectionTerm(convectionSource) 
-...        = DiffusionSource(diffusionCoeff) + boundarySource.getDivergence())
-
-No other boundary conditions need to be applied. It may be necessary to reset
-or update the values of ``boundarySource``, ``diffusionCoeff`` and
-``convectionCoeff`` at each sweep if they are not automatically updated or
-if the exterior values need to be reset to zero. For complex boundary
-conditions, it is often easier to implement the technique described here
-rather than trying to get the 
-:class:`~fipy.boundaryConditions.fixedValue.FixedValue` and 
-:class:`~fipy.boundaryConditions.fixedFlux.FixedFlux`
-boundary conditions to work correctly.
-
-.. _FAQ-inletOutletBoundaryCondition:
+instead. This constrains the gradient of a
+:class:`~fipy.variables.cellVariable.CellVariable` rather than specifying the
+flux.
 
 How do I apply an outlet or inlet boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There is no good way to do this with the standard boundary conditions in
-:term:`FiPy` and thus one needs to use the method suggested above,
-see :ref:`FAQ-anyBoundaryCondition`\.
-Currently, boundary conditions for the :class:`~fipy.terms.convectionTerm.ConvectionTerm` assume a
-:class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary condition with a ``value`` of 0. This is in
-fact not the most intuitive default boundary condition, a natural outlet or
-inlet boundary condition would in fact be more sensible. In order to apply an
-inlet/outlet boundary condition one needs a separate exterior convection
-coefficient (velocity vector) to hold the boundary values,
-
->>> convectionCoeff = FaceVaravble(..., rank=1)
->>> exteriorCoeff = FaceVariable(..., value=0, rank=1)
-
-The ``exteriorCoeff`` can now be given non-zero values on
-``inletOutletFaces`` and the ``convectionCoeff`` can be set to zero on
-these faces.
-
->>> exteriorCoeff.setValue(convectionCoeff, where=inletOutletFaces)
->>> convectionCoeff.setValue(0, where=inletOutletFaces)
-
-where the ``inletOutletFaces`` object are the faces over which the
-inlet/outlet boundary condition applies. The divergence of the
-``exteriorCoeff`` is then included in the equations with an
-:class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm`. This allows an implicit formulation for outlet
-boundary conditions and an explicit formulation for inlet boundary
-conditions, consistent with an upwind convection scheme.
-
->>> eqn = (TransientTerm() + ConvectionTerm(convectionCoeff)
-...        + ImplicitSourceTerm(exteriorCoeff.getDivergence()) 
-...        == DiffusionTerm(diffusionCoeff))
-
-As in the previous section, the coefficient values may need updating on the
-exterior faces between sweeps. See :mod:`examples.convection.source`
-for an example of this usage.
+In earlier versions of :term:`FiPy` this was quite difficult to do, but is now
+the default behavior.
 
 How do I apply a fixed gradient?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In general, it is not currently possible to apply a fixed gradient or Von
-Neumann type boundary condition explicitly. Of course, it is often possible
-to use :class:`~fipy.boundaryConditions.fixedValue.FixedValue` or 
-:class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary conditions to mimic a
-fixed gradient condition. In the case when there is no convection, one can
-simply use a :class:`~fipy.boundaryConditions.FixedFlux` condition and 
-multiply through by the diffusion
-coefficient to create the boundary condition,
+Easy, just use,
 
->>> FixedFlux(value=gradient * diffusionCoeff, faces=myFaces)
-
-where ``gradient`` is the value of the boundary gradient and
-``myFaces`` are the faces over which the boundary condition applies.  If
-the equation contains a :class:`~fipy.terms.convectionTerm.ConvectionTerm` and the boundary condition has
-a zero gradient then one would use a 
-:class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary condition of
-the form
-
->>> FixedValue(value=phi.getFaceValue(), faces=myFaces)
-
-This is not an "implicit" boundary condition so would in general require
-sweeps to reach convergence. See :mod:`examples.convection.source`
-for an example of this usage.
-In the case of a non-zero gradient one would need to employ the techniques in
-both :ref:`FAQ-anyBoundaryCondition`
-and :ref:`FAQ-inletOutletBoundaryCondition`
-without using either a
-:class:`~fipy.boundaryConditions.fixedValue.FixedValue` or a 
-:class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` object.
+>>> var.constrainFaceGrad(value, mask)
 
 How do I apply spatially varying boundary conditions?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -769,14 +659,12 @@ be written with the following code,
 
 >>> x, y = mesh.getFaceCenters()
 >>> mask =  ((x < 0.5) | (y < 0.5))
->>> BCs = [FixedFlux(value=0, faces=mesh.getExteriorFaces() & mask),
-...        FixedValue(value=x * y, faces=mesh.getExteriorFaces() & ~mask)]
+>>> var.constrainFaceGrad(0, mesh.getExteriorFaces() & mask)
+>>> var.constrain(x * y, mesh.getExteriorFaces() & ~mask)
 
-The ``BCs`` list can then be passed to the equation's 
-:meth:`~fipy.terms.term.Term.solve` method
-when its called,
+then
 
->>> eqn.solve(..., boundaryConditions=BCs)
+>>> eqn.solve(...)
 
 Further demonstrations of spatially varying boundary condition can be found
 in :mod:`examples.diffusion.mesh20x20`
