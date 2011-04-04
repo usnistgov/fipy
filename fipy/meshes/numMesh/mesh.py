@@ -43,8 +43,6 @@ from fipy.tools.numerix import MA
 
 from fipy.meshes.common.mesh import Mesh as _CommonMesh
 
-from fipy.meshes.numMesh.cell import Cell
-
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 from fipy.tools import serial

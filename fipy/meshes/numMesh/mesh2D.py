@@ -46,8 +46,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-
 from fipy.meshes.numMesh.mesh import Mesh
+from fipy.variables.faceVariable import FaceVariable
 
 
 def _orderVertices(vertexCoords, vertices):
@@ -89,7 +89,7 @@ class Mesh2D(Mesh):
         tmp = self.faceNormals.dot(rot)
         mag = numerix.sqrtDot(tmp, tmp)
         self.faceTangents1 = tmp / mag
-        self.faceTangents2 = numerix.zeros(self.faceTangents1.shape, 'd')
+        self.faceTangents2 = FaceVariable(mesh=self, value=0., rank=1)
 
     def _calcHigherOrderScalings(self):
         self.scale['area'] = self.scale['length']

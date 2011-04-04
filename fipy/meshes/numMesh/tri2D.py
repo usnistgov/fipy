@@ -324,7 +324,7 @@ class Tri2D(Mesh2D):
             1
 
             >>> tangents2 = numerix.zeros((2, 41))
-            >>> numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents2, mesh._getFaceTangents2(), atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToCellIDs = MA.masked_values(((13, 14, -1, 16, 17, -1, 21, 22, 23, -1, -1, -1, -1,  0,  1, -1,  3,  4, -1, -1, -1,  6,  7,  8),

@@ -37,10 +37,11 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.numMesh.mesh import Mesh
+from fipy.tools import parallel
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.variables.faceVariable import FaceVariable
 
-from fipy.tools import parallel
 
 class Grid3D(Mesh):
     """
@@ -330,8 +331,8 @@ class Grid3D(Mesh):
         ## YZ faces
         faceTangents1[1, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
         faceTangents2[2, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
-        self.faceTangents1 = faceTangents1
-        self.faceTangents2 = faceTangents2
+        self.faceTangents1 = FaceVariable(mesh=self, value=faceTangents1, rank=1)
+        self.faceTangents2 = FaceVariable(mesh=self, value=faceTangents2, rank=1)
 
     def _calcHigherOrderScalings(self):
         self.scale['area'] = self.scale['length']**2
