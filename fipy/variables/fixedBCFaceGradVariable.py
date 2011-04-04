@@ -13,20 +13,20 @@ class _FixedBCFaceGradVariable(FaceVariable):
         return inline._optionalInline(self._calcValueInline, self._calcValuePy)
     
     def _calcValuePy(self):
-        dAP = self.mesh._getCellDistances()
-        id1, id2 = self.mesh._getAdjacentCellIDs()
-        v1 = take(self.var,id1)
-        v2 = take(self.var,id2)
+        dAP = self.mesh._getCellDistances().getValue()
+        id1, id2 = [id.getValue() for id in self.mesh._getAdjacentCellIDs()]
+        v1 = take(self.var.getValue(), id1)
+        v2 = take(self.var.getValue(), id2)
         
         for bc in self.bcs:
             if isinstance(bc, FixedValue):
                 v2[bc.faces.getValue()] = bc._getValue()
         
         N = (v2 - v1) / dAP
-        normals = self.mesh._getOrientedFaceNormals()
+        normals = self.mesh._getOrientedFaceNormals().getValue()
         
-        tangents1 = self.mesh._getFaceTangents1()
-        tangents2 = self.mesh._getFaceTangents2()
+        tangents1 = self.mesh._getFaceTangents1().getValue()
+        tangents2 = self.mesh._getFaceTangents2().getValue()
         cellGrad = self.var.getGrad().getValue()
         
         grad1 = take(cellGrad, id1, axis=1)
