@@ -39,9 +39,10 @@ from PyTrilinos import NOX
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import parallel
 
-class _NOXInterface(NOX.Epetra.Interface.Required):
+class _NOXInterface(NOX.Epetra.Interface.Required, NOX.Epetra.Interface.Jacobian):
     def __init__(self, solver):
         NOX.Epetra.Interface.Required.__init__(self)
+        NOX.Epetra.Interface.Jacobian.__init__(self)
         self.solver = solver
         
     def solve(self, dt=1.):
@@ -51,20 +52,30 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
         
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self.solver._globalMatrixAndVectors
         
-        self.overlappingMap = globalMatrix.overlappingMap
-        self.nonOverlappingMap = globalMatrix.nonOverlappingMap
+        self.colMap = globalMatrix.colMap
+        self.domainMap = globalMatrix.domainMap
         
-        # Define the Jacobian interface/operator
-        mf = NOX.Epetra.MatrixFree(self.solver.nlParams["Printing"], self, nonOverlappingVector)
-
+        if self.solver.jacobian is None:
+            # Define the Jacobian interface/operator
+            jacInterface = NOX.Epetra.MatrixFree(self.solver.nlParams["Printing"], self, nonOverlappingVector)
+            jacobian = jacInterface
+        else:
+            jacInterface = self
+            self.solver.jacobian.cacheMatrix()
+            self.jacsolver = self.solver.jacobian._prepareLinearSystem(var=None, solver=_DummyJacobianSolver(), boundaryConditions=(), dt=1.)
+            jacobian = (self.solver.jacobian.matrix.asTrilinosMeshMatrix()).matrix
+        
         # Define the Preconditioner interface/operator
         fdc = NOX.Epetra.FiniteDifferenceColoring(self.solver.nlParams["Printing"], self,
                                                   nonOverlappingVector, globalMatrix.matrix.Graph(), True)
 
-        noxSolver = NOX.Epetra.defaultSolver(nonOverlappingVector, 
-                                             self, mf, mf, fdc, fdc, self.solver.nlParams) #,
-#                                              absTol=self.solver.tolerance, relTol=0.5, maxIters=self.solver.iterations, 
-#                                              updateTol=None, wAbsTol=None, wRelTol=None)
+        noxSolver = NOX.Epetra.defaultSolver(initGuess=nonOverlappingVector, 
+                                             reqInterface=self, 
+                                             jacInterface=jacInterface, jacobian=jacobian, 
+                                             precInterface=fdc, preconditioner=fdc, 
+                                             nlParams=self.solver.nlParams,
+                                             absTol=self.solver.tolerance, relTol=0.5, maxIters=self.solver.iterations, 
+                                             updateTol=None, wAbsTol=None, wRelTol=None)
                                              
         status = noxSolver.solve()
         
@@ -73,16 +84,39 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
         return status
 
         
-    def computeF(self, u, F, flag):
+    def computeJacobian(self, u, Jac):
         try:
-            overlappingVector = Epetra.Vector(self.overlappingMap, self.solver.var)
+            
+            overlappingVector = Epetra.Vector(self.colMap, self.solver.var)
             
             overlappingVector.Import(u, 
-                                     Epetra.Import(self.overlappingMap, 
-                                                   self.nonOverlappingMap), 
+                                     Epetra.Import(self.colMap, 
+                                                   self.domainMap), 
+                                     Epetra.Insert)
+                                     
+            self.solver.var.value = overlappingVector
+            
+            self.solver.jacobian.matrix.trilinosMatrix = Jac
+            self.solver.jacobian._prepareLinearSystem(var=None, solver=self.jacsolver, boundaryConditions=(), dt=1.)
+            
+            return True
+            
+        except Exception, e:
+            print "TrilinosNonlinearSolver.computeJacobian() has thrown an exception:"
+            print str(type(e))[18:-2] + ":", e
+            return False
+
+        
+    def computeF(self, u, F, flag):
+        try:
+            overlappingVector = Epetra.Vector(self.colMap, self.solver.var)
+            
+            overlappingVector.Import(u, 
+                                     Epetra.Import(self.colMap, 
+                                                   self.domainMap), 
                                      Epetra.Insert)
 
-            self.solver.var.value = u
+            self.solver.var.value = overlappingVector
             F[:] = self.solver.equation.justResidualVector(dt=self.dt)
             
             return True
@@ -92,6 +126,8 @@ class _NOXInterface(NOX.Epetra.Interface.Required):
             print str(type(e))[18:-2] + ":", e
             return False
             
+class _DummyJacobianSolver(TrilinosSolver):
+    pass
     
 class TrilinosNonlinearSolver(TrilinosSolver):
     def __init__(self, equation, jacobian=None, tolerance=1e-10, iterations=1000, 
@@ -106,7 +142,7 @@ class TrilinosNonlinearSolver(TrilinosSolver):
         self.nlParams["Printing"] = printingOptions or {
             'Output Precision': 3, 
             'MyPID': 0, 
-            'Output Information': 0, 
+            'Output Information': NOX.Utils.OuterIteration, 
             'Output Processor': 0
         }
         self.nlParams["Solver Options"] =  solverOptions or {

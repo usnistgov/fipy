@@ -326,7 +326,7 @@ class _MeshVariable(Variable):
         return self.__dot(other, self, self._OperatorVariableClass(baseClass))
 
     def _maxminparallel_(self, a, axis, default, fn, fnParallel):
-        a = a[self._localNonOverlappingIDs]
+        a = a[..., self._localNonOverlappingIDs]
         
         if numerix.multiply.reduce(a.shape) == 0:
             if axis is None:
@@ -371,7 +371,7 @@ class _MeshVariable(Variable):
     def all(self, axis=None):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def allParallel(a):
-                a = a[self._localNonOverlappingIDs]
+                a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.all(a, axis=axis)
                 
             return self._axisOperator(opname="allVar", 
@@ -383,7 +383,7 @@ class _MeshVariable(Variable):
     def any(self, axis=None):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def anyParallel(a):
-                a = a[self._localNonOverlappingIDs]
+                a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.any(a, axis=axis)
                 
             return self._axisOperator(opname="anyVar", 
@@ -395,7 +395,7 @@ class _MeshVariable(Variable):
     def sum(self, axis=None):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def sumParallel(a):
-                a = a[self._localNonOverlappingIDs]
+                a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.sum(a, axis=axis)
                 
             return self._axisOperator(opname="sumVar", 

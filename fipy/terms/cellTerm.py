@@ -112,6 +112,10 @@ class CellTerm(_NonDiffusionTerm):
         def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
             N = len(oldArray)
 
+            print numerix.array(oldArray)
+            print numerix.array(coeffVectors['old value'])
+            print dt
+
             b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
             b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
             L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)

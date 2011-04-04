@@ -80,6 +80,7 @@ class _Viewer(object):
     def _getSuitableVars(self, vars):
         if type(vars) not in [type([]), type(())]:
             vars = [vars]
+
         return [var for var in vars]
         
     def setLimits(self, limits={}, **kwlimits):
