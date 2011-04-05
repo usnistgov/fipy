@@ -78,7 +78,8 @@ class MshFile:
                        dimensions, 
                        coordDimensions=None,
                        communicator=parallel,
-                       order=1):
+                       order=1,
+                       recompile=False):
         """
         Isolate relevant data into two files, store in 
         `self.nodesFile` for $Nodes,
@@ -119,8 +120,10 @@ class MshFile:
         
         gmshFlags += " -format msh"
 
-        self.filename, self.gmshOutput = self._parseFilename(filename, 
-                                                             gmshFlags)
+        (self.filename, 
+         self.gmshOutput) = self._parseFilename(filename, 
+                                                gmshFlags, 
+                                                recompile=recompile)
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
@@ -141,18 +144,19 @@ class MshFile:
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
 
-    def _parseFilename(self, fname, gmshFlags):
+    def _parseFilename(self, fname, gmshFlags, recompile=False):
         """
-        If we're being passed a .msh file, leave it be. Otherwise,
+        If we're being passed a .msh file, leave it be unless `recompile` is
+        True. Otherwise,
         we've gotta compile a .msh file from either (i) a .geo file, 
         or (ii) a gmsh script passed as a string.
         """
         import subprocess as subp
         lowerFname = fname.lower()
-        if '.msh' in lowerFname:
+        if '.msh' in lowerFname and not recompile:
             return fname, None
         else:
-            if '.geo' in lowerFname or '.gmsh' in lowerFname:
+            if '.geo' in lowerFname or '.gmsh' in lowerFname or '.msh' in lowerFname:
                 geoFile = fname
             else: # fname must be a full script, not a file
                 (f, geoFile) = tempfile.mkstemp('.geo')
@@ -494,13 +498,15 @@ class Gmsh2D(Mesh2D):
                  arg, 
                  coordDimensions=2, 
                  communicator=parallel, 
-                 order=1):
+                 order=1,
+                 recompileMsh=False):
         self.communicator = communicator 
         self.mshFile  = MshFile(arg, 
                                 dimensions=2, 
                                 coordDimensions=coordDimensions,
                                 communicator=communicator,
-                                order=order)
+                                order=order,
+                                recompile=recompileMsh)
         (verts,
         faces,
         cells,
@@ -518,11 +524,23 @@ class Gmsh2D(Mesh2D):
         parprint("Exiting Gmsh2D")
 
     def __setstate__(self, dict):
-        Mesh2D.__init__(self, **dict)
-        self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
-        self.gCellGlobalIDs = []
-        self.communicator = serial
-        self.mshFile = None
+        import sys
+        print >> sys.stderr, "numVert dict", dict["vertexCoords"].shape
+        if parallel.procID == 0 or parallel.Nproc < 2:
+            import tempfile as tmp
+            filename = tmp.mktemp(".msh")
+        else: 
+            filename = None
+
+        if parallel.procID == 0 or parallel.Nproc < 2:
+            from gmshExport import GmshExporter
+            tmpMesh = Mesh2D(**dict)
+            GmshExporter(tmpMesh, filename).export()
+
+        if parallel.Nproc > 1:
+            filename = parallel.bcast(obj=filename, root=0)
+
+        self.__init__(filename, recompileMsh=True)
     
     @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
@@ -684,8 +702,13 @@ class Gmsh2D(Mesh2D):
         True
         
         >>> from fipy.tools import dump
+        >>> from fipy.tools import numerix
         >>> f, tempfile = dump.write(circle)
         >>> pickle_circle = dump.read(tempfile, f)
+        >>> print pickle_circle.cellVolumes.shape
+        >>> print pickle_circle.vertexCoords.shape
+        >>> print circle.cellVolumes.shape
+        >>> print circle.vertexCoords.shape
 
         >>> print (pickle_circle.cellVolumes == circle.cellVolumes).all()
         True
