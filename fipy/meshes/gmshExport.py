@@ -132,6 +132,7 @@ class GmshExporter(object):
         for i in range(numCells):
             ## build the vertex list
             vertexList = []
+
             for faceNum in cellFaceIDs[..., i]:
                 """For more complicated meshes, some cells may have fewer
                 faces than others. If this is the case, ignore the
@@ -139,7 +140,7 @@ class GmshExporter(object):
                 if type(faceNum) not in [numerix.int32, 
                                          numerix.float32,
                                          numerix.float64]:
-                    break
+                    continue
                 for vertexNum in faceVertexIDs[..., faceNum]:
                     if vertexNum not in vertexList:
                         vertexList.append(vertexNum)
@@ -186,6 +187,7 @@ if __name__ == "__main__":
     from fipy.meshes import Tri2D
     from fipy.meshes import Grid3D
     from fipy.meshes import CylindricalGrid2D
+    from fipy.meshes import Gmsh2D
     
     import tempfile as tmp
     import subprocess
@@ -222,6 +224,26 @@ if __name__ == "__main__":
     GmshExporter(cyl, f6).export()
     subprocess.Popen(["gmsh", f6])
     raw_input("CylindricalGrid2D... Press enter.")
+
+    circle = Gmsh2D('''
+         cellSize = 0.05;
+         radius = 1;
+         Point(1) = {0, 0, 0, cellSize};
+         Point(2) = {-radius, 0, 0, cellSize};
+         Point(3) = {0, radius, 0, cellSize};
+         Point(4) = {radius, 0, 0, cellSize};
+         Point(5) = {0, -radius, 0, cellSize};
+         Circle(6) = {2, 1, 3};
+         Circle(7) = {3, 1, 4};
+         Circle(8) = {4, 1, 5};
+         Circle(9) = {5, 1, 2};
+         Line Loop(10) = {6, 7, 8, 9};
+         Plane Surface(11) = {10};
+         Recombine Surface{11};''')   
+    f7 = tmp.mktemp(".msh")
+    GmshExporter(circle, f7).export()
+    subprocess.Popen(["gmsh", f7])
+    raw_input("Circle... Press enter.")
 
     
     
