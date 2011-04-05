@@ -136,7 +136,9 @@ class GmshExporter(object):
                 """For more complicated meshes, some cells may have fewer
                 faces than others. If this is the case, ignore the
                 '--' entries."""
-                if type(faceNum) == numerix.ma.core.MaskedConstant:
+                if type(faceNum) not in [numerix.int32, 
+                                         numerix.float32,
+                                         numerix.float64]:
                     break
                 for vertexNum in faceVertexIDs[..., faceNum]:
                     if vertexNum not in vertexList:
