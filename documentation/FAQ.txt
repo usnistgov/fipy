@@ -89,16 +89,13 @@ or
 
 >>> ExplicitDiffusionTerm(coeff = Gamma1)
     
-:class:`~explicitDiffusionTerm.ExplicitDiffusionTerm` is provided only for illustrative purposes.
-:class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` is almost 
-always preferred (:class:`~diffusionTerm.DiffusionTerm` is a 
-synonym for :class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` to reinforce this preference). It is
-theoretically possible to create an explicit diffusion term with
+:class:`~explicitDiffusionTerm.ExplicitDiffusionTerm` is provided only for
+illustrative purposes.  :class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` is
+almost always preferred (:class:`~diffusionTerm.DiffusionTerm` is a synonym for
+:class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` to reinforce this
+preference). One can also create an explicit diffusion term with
 
 >>> (Gamma1 * phi.getFaceGrad()).getDivergence()
-
-Unfortunately, in this form, any boundary conditions on :math:`\phi` will not be
-accounted for.
 
 .. _FAQ-higherOrderDiffusion:
 
