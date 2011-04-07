@@ -57,8 +57,8 @@ We start by defining a 1D mesh
     >>> # L = nx * dx
     >>> mesh = Grid1D(dx = dx, nx = nx)
     >>> # mesh = Grid1D(dx = dx)
-    >>> # L = mesh.getFacesRight()[0].getCenter()[0] - mesh.getFacesLeft()[0].getCenter()[0]
-    >>> # L = mesh.getCellCenters()[0,-1] - mesh.getCellCenters()[0,0]
+    >>> # L = mesh.facesRight[0].center[0] - mesh.facesLeft[0].center[0]
+    >>> # L = mesh.cellCenters[0,-1] - mesh.cellCenters[0,0]
 
 
 We create the phase field
@@ -67,7 +67,7 @@ We create the phase field
     
     >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
     >>> phase.mobility = PF("1 m**3/J/s") / (molarVolume / (RT * timeStep))
-    >>> phase.gradientEnergy = PF("3.6e-11 J/m") / (mesh.getScale()**2 * RT / molarVolume)
+    >>> phase.gradientEnergy = PF("3.6e-11 J/m") / (mesh.scale**2 * RT / molarVolume)
 
     >>> def p(xi):
     ...     return xi**3 * (6 * xi**2 - 15 * xi + 10.)
@@ -93,8 +93,8 @@ We create four components
     ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name, hasOld = hasOld)
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.getMesh(), value = self.getValue(), 
-    ...                               name = self.getName(), 
+    ...         return self.__class__(mesh = self.mesh, value = self.value, 
+    ...                               name = self.name, 
     ...                               standardPotential = self.standardPotential, 
     ...                               barrier = self.barrier, 
     ...                               diffusivity = self.diffusivity,
@@ -113,13 +113,13 @@ and two solute species
 
     >>> substitutionals = [
     ...     ComponentVariable(mesh = mesh, name = 'SO4',
-    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.getScale()**2/timeStep),
+    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.scale**2/timeStep),
     ...                       standardPotential = PF("24276.6640625 J/mol") / RT,
     ...                       barrier = CnBarrier,
     ...                       valence = -2,
     ...                       value = PF("0.000010414586295976 mol/l") * molarVolume),
     ...     ComponentVariable(mesh = mesh, name = 'Cu',
-    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.getScale()**2/timeStep),
+    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.scale**2/timeStep),
     ...                       standardPotential = PF("-7231.81396484375 J/mol") / RT,
     ...                       barrier = CnBarrier,
     ...                       valence = +2,
@@ -129,7 +129,7 @@ and one interstitial
 
     >>> interstitials = [
     ...     ComponentVariable(mesh = mesh, name = 'e-',
-    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.getScale()**2/timeStep),
+    ...                       diffusivity = PF("1e-9 m**2/s") / (mesh.scale**2/timeStep),
     ...                       standardPotential = PF("-33225.9453125 J/mol") / RT,
     ...                       barrier = 0.,
     ...                       valence = -1,
@@ -145,7 +145,7 @@ Finally, we create the electrostatic potential field
 
     >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
     
-    >>> permittivity = PF("78.49 eps0") / (Faraday**2 * mesh.getScale()**2 / (RT * molarVolume))
+    >>> permittivity = PF("78.49 eps0") / (Faraday**2 * mesh.scale**2 / (RT * molarVolume))
 
     >>> permittivity = 1.
     >>> permitivityPrime = 0.
@@ -164,7 +164,7 @@ and the solvent and a liquid phase rich in the two substitutional species
 
 Once again, we start with a sharp phase boundary
 
-    >>> x = mesh.getCellCenters()[0]
+    >>> x = mesh.cellCenters[0]
     >>> phase.setValue(x < L / 2)
     >>> interstitials[0].setValue("0.000111111503177394 mol/l" * molarVolume, where=x > L / 2)
     >>> substitutionals[0].setValue("0.249944439430068 mol/l" * molarVolume, where=x > L / 2)
@@ -176,7 +176,7 @@ We again create the phase equation as in ``examples.elphf.phase.input1D``
 
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...     == DiffusionTerm(coeff = phase.gradientEnergy) \
-    ...     - (permitivityPrime / 2.) * potential.getGrad().dot(potential.getGrad())
+    ...     - (permitivityPrime / 2.) * potential.grad.dot(potential.grad)
 
 We linearize the source term in the same way as in `example.phase.simple.input1D`.
 
@@ -201,18 +201,18 @@ and we create the diffustion equation for the solute as in
     ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
-    ...         CkFaceSum += Ck.getHarmonicFaceValue()
+    ...         CkFaceSum += Ck.harmonicFaceValue
     ...        
-    ...     counterDiffusion = CkSum.getFaceGrad()
-    ...     # phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...     #         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
-    ...     phaseTransformation = (pPrime(phase).getHarmonicFaceValue() * Cj.standardPotential 
-    ...             + gPrime(phase).getHarmonicFaceValue() * Cj.barrier) * phase.getFaceGrad()
-    ...     # phaseTransformation = (p(phase).getFaceGrad() * Cj.standardPotential 
-    ...     #         + g(phase).getFaceGrad() * Cj.barrier)
-    ...     electromigration = Cj.valence * potential.getFaceGrad()
+    ...     counterDiffusion = CkSum.faceGrad
+    ...     # phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential 
+    ...     #         + gPrime(phase.harmonicFaceValue) * Cj.barrier) * phase.faceGrad
+    ...     phaseTransformation = (pPrime(phase).harmonicFaceValue * Cj.standardPotential 
+    ...             + gPrime(phase).harmonicFaceValue * Cj.barrier) * phase.faceGrad
+    ...     # phaseTransformation = (p(phase).faceGrad * Cj.standardPotential 
+    ...     #         + g(phase).faceGrad * Cj.barrier)
+    ...     electromigration = Cj.valence * potential.faceGrad
     ...     convectionCoeff = counterDiffusion + \
-    ...         solvent.getHarmonicFaceValue() * (phaseTransformation + electromigration)
+    ...         solvent.harmonicFaceValue * (phaseTransformation + electromigration)
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
     ...
     ...     Cj.equation = (TransientTerm()
@@ -220,14 +220,14 @@ and we create the diffustion equation for the solute as in
     ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
     
     >>> for Cj in interstitials:
-    ...     # phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) * Cj.standardPotential 
-    ...     #         + gPrime(phase.getHarmonicFaceValue()) * Cj.barrier) * phase.getFaceGrad()
-    ...     phaseTransformation = (pPrime(phase).getHarmonicFaceValue() * Cj.standardPotential 
-    ...             + gPrime(phase).getHarmonicFaceValue() * Cj.barrier) * phase.getFaceGrad()
-    ...     # phaseTransformation = (p(phase).getFaceGrad() * Cj.standardPotential 
-    ...     #         + g(phase).getFaceGrad() * Cj.barrier)
-    ...     electromigration = Cj.valence * potential.getFaceGrad()
-    ...     convectionCoeff = Cj.diffusivity * (1 + Cj.getHarmonicFaceValue()) * \
+    ...     # phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential 
+    ...     #         + gPrime(phase.harmonicFaceValue) * Cj.barrier) * phase.faceGrad
+    ...     phaseTransformation = (pPrime(phase).harmonicFaceValue * Cj.standardPotential 
+    ...             + gPrime(phase).harmonicFaceValue * Cj.barrier) * phase.faceGrad
+    ...     # phaseTransformation = (p(phase).faceGrad * Cj.standardPotential 
+    ...     #         + g(phase).faceGrad * Cj.barrier)
+    ...     electromigration = Cj.valence * potential.faceGrad
+    ...     convectionCoeff = Cj.diffusivity * (1 + Cj.harmonicFaceValue) * \
     ...         (phaseTransformation + electromigration)
     ...
     ...     Cj.equation = (TransientTerm()
@@ -258,7 +258,7 @@ iterating to equilibrium
 
     >>> solver = LinearLUSolver(tolerance = 1e-3)
 
-    >>> potential.constrain(0., mesh.getFacesLeft())
+    >>> potential.constrain(0., mesh.facesLeft)
 
     >>> phase.residual = CellVariable(mesh = mesh)
     >>> potential.residual = CellVariable(mesh = mesh)

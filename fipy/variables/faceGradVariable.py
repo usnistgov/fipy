@@ -40,25 +40,25 @@ from fipy.tools import inline
 
 class _FaceGradVariable(FaceVariable):
     def __init__(self, var):
-        FaceVariable.__init__(self, mesh=var.getMesh(), rank=var.getRank() + 1)
+        FaceVariable.__init__(self, mesh=var.mesh, rank=var.rank + 1)
         self.var = self._requires(var)
 
     def _calcValue(self):        
         return inline._optionalInline(self._calcValueInline, self._calcValuePy)
     
     def _calcValuePy(self):
-        dAP = self.mesh._getCellDistances().getValue()
-        id1, id2 = [id.getValue() for id in self.mesh._getAdjacentCellIDs()]
-        N2 = numerix.take(self.var.getValue(), id2, axis=-1) 
-        faceMask = self.mesh.getExteriorFaces().getValue()
-        N2[..., faceMask] = self.var.getFaceValue().getValue()[..., faceMask] 
-        N = (N2 - numerix.take(self.var.getValue(), id1, axis=-1)) / dAP
+        dAP = self.mesh._cellDistances.getValue()
+        id1, id2 = [id.value for id in self.mesh._adjacentCellIDs]
+        N2 = numerix.take(self.var.value, id2, axis=-1) 
+        faceMask = self.mesh.exteriorFaces.value
+        N2[..., faceMask] = self.var.faceValue.value[..., faceMask] 
+        N = (N2 - numerix.take(self.var.value, id1, axis=-1)) / dAP
         
-        normals = self.mesh._getOrientedFaceNormals().getValue()
+        normals = self.mesh.orientedFaceNormals.value
         
-        tangents1 = self.mesh._getFaceTangents1().getValue()
-        tangents2 = self.mesh._getFaceTangents2().getValue()
-        cellGrad = self.var.getGrad().getNumericValue()
+        tangents1 = self.mesh._faceTangents1.value
+        tangents2 = self.mesh._faceTangents2.value
+        cellGrad = self.var.grad.numericValue
         
         grad1 = numerix.take(cellGrad, id1, axis=1)
         grad2 = numerix.take(cellGrad, id2, axis=1)
@@ -74,12 +74,12 @@ class _FaceGradVariable(FaceVariable):
 
     def _calcValueInline(self):
 
-        id1, id2 = self.mesh._getAdjacentCellIDs()
+        id1, id2 = self.mesh._adjacentCellIDs
         
-        tangents1 = self.mesh._getFaceTangents1()
-        tangents2 = self.mesh._getFaceTangents2()
+        tangents1 = self.mesh._faceTangents1
+        tangents2 = self.mesh._faceTangents2
  
-        val = self._getArray().copy()
+        val = self._array.copy()
 
         inline._runIterateElementInline("""
             int j;
@@ -101,17 +101,17 @@ class _FaceGradVariable(FaceVariable):
             ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
         """,tangents1 = tangents1,
             tangents2 = tangents2,
-            cellGrad = self.var.getGrad().getNumericValue(),
-            normals = self.mesh._getOrientedFaceNormals(),
+            cellGrad = self.var.grad.numericValue,
+            normals = self.mesh._orientedFaceNormals,
             id1 = id1,
             id2 = id2,
-            dAP = numerix.array(self.mesh._getCellDistances()),
-            var = self.var.getNumericValue(),
+            dAP = numerix.array(self.mesh._cellDistances),
+            var = self.var.numericValue,
             val = val,
             ni = tangents1.shape[1],
             shape=numerix.array(numerix.shape(tangents1)))
             
         return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.getUnit())
+##         return self._makeValue(value = val, unit = self.unit)
 
     

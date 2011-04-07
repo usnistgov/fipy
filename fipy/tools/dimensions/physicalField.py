@@ -100,6 +100,7 @@ import re, string
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.numerix import umath
+from fipy.tools.decorators import getsetDeprecated
 
 from NumberDict import _NumberDict
 
@@ -168,7 +169,9 @@ class PhysicalField(object):
         .. _PhysicalQuantity: http://starship.python.net/~hinsen/ScientificPython/ScientificPythonManual/Scientific_31.html
         .. _Numeric: http://www.numpy.org
         """
-        if hasattr(value, "getValue") and callable(value.getValue):
+        if hasattr(value, "value") and not isinstance(value, PhysicalField):
+            value = value.value
+        elif hasattr(value, "getValue") and callable(value.getValue):
             value = value.getValue()
             
         if isinstance(value, PhysicalField):
@@ -213,7 +216,7 @@ class PhysicalField(object):
 ##             unit = _findUnit("")
 
         self.value = numerix.array(value)
-        self.unit = unit
+        self._unit = unit
         if array is not None:
             array[:] = self.value
             self.value = array
@@ -521,7 +524,7 @@ class PhysicalField(object):
         
     def _inMyUnits(self, other):
         if _isVariable(other):
-            other = other.getValue()
+            other = other.value
             
         if not isinstance(other, PhysicalField):
             if type(other) is type(''):
@@ -606,6 +609,7 @@ class PhysicalField(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
         
+           >>> from fipy.tools.dimensions.physicalField import PhysicalField
            >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0], unit="m"))
            <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
 
@@ -668,16 +672,21 @@ class PhysicalField(object):
         return numerix.array(value, t)
         
 #         if self.unit.isDimensionlessOrAngle():
-#             value = self.getNumericValue()
+#             value = self.numericValue
 # ##            if type(value) is type(numerix.array((0))) and (t is None or t == value.typecode()):
 #             if type(value) is type(numerix.array((0))) and (t is None or t == value.dtype.char):
 #                 return value
 #             else:
-#                 return numerix.array(self.getNumericValue(), t)
+#                 return numerix.array(self.numericValue, t)
 #         else:
 #             raise TypeError, 'Numeric array value must be dimensionless'
         
+    @getsetDeprecated
     def _getArray(self):
+        return self._array
+
+    @property
+    def _array(self):
         if self.unit.isDimensionlessOrAngle():
             return self.value
         else:
@@ -713,7 +722,7 @@ class PhysicalField(object):
         .. _Numeric: http://www.numpy.org
         """
         if self.unit.isDimensionlessOrAngle():
-            return float(self.getNumericValue())
+            return float(self.numericValue)
         else:
             raise TypeError, 'Not possible to convert a PhysicalField with dimensions to float'
                     
@@ -797,7 +806,7 @@ class PhysicalField(object):
         """
         unit = _findUnit(unit)
         self.value = _convertValue (self.value, self.unit, unit)
-        self.unit = unit
+        self._unit = unit
 
     def inRadians(self):
         """
@@ -910,21 +919,29 @@ class PhysicalField(object):
         """
         
         if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=numerix.array(self.getNumericValue()), 
+            self.typecode = numerix.obj2sctype(rep=numerix.array(self.numericValue), 
                                                default=default)
         
         return self.typecode
 
+    @getsetDeprecated
     def getUnit(self):
+        return self.unit
+
+    def _getUnit(self):
         """
         Return the unit object of `self`.
         
-            >>> PhysicalField("1 m").getUnit()
+            >>> PhysicalField("1 m").unit
             <PhysicalUnit m>
         """
-        return self.unit
+        return self._unit
         
+    @getsetDeprecated
     def setUnit(self, unit):
+        self.unit = unit
+
+    def _setUnit(self, unit):
         """
         Change the unit object of `self` to `unit`
         
@@ -933,13 +950,20 @@ class PhysicalField(object):
             >>> print a
             1.0 m**2/s
         """
-        self.unit = _findUnit(unit)
+        self._unit = _findUnit(unit)
+
+    unit = property(_getUnit, _setUnit)
         
+    @getsetDeprecated
     def getNumericValue(self):
+        return self.numericValue
+
+    @property
+    def numericValue(self):
         """
         Return the `PhysicalField` without units, after conversion to base SI units.
         
-            >>> print round(PhysicalField("1 inch").getNumericValue(), 6)
+            >>> print round(PhysicalField("1 inch").numericValue, 6)
             0.0254
         """
         return self.inSIUnits().value
@@ -1342,12 +1366,16 @@ class PhysicalField(object):
         """
         numerix.put(self.value, indices, self._inMyUnits(values).value)
       
+    @getsetDeprecated
     def getShape(self):
+        return self.shape
+
+    @property
+    def shape(self):
+        """Tuple of array dimensions."""
         from fipy.tools import numerix
         return numerix.getShape(self.value)
         
-    shape = property(fget=getShape, doc="Tuple of array dimensions.")
-
     def reshape(self, shape):
         """
         Changes the shape of `self` to that specified in `shape`
@@ -1392,7 +1420,7 @@ class PhysicalField(object):
         """
         other = self._inMyUnits(other)
         if atol is None:
-            atol = PhysicalField(1.e-5, self.getUnit())
+            atol = PhysicalField(1.e-5, self.unit)
         else:
             atol = self._inMyUnits(atol)
             
@@ -1451,14 +1479,14 @@ class PhysicalUnit:
         
             >>> a = PhysicalField("1. m")
             >>> b = PhysicalField("3. ft")
-            >>> a.getUnit() == b.getUnit()
+            >>> a.unit == b.unit
             0
-            >>> a.getUnit() == b.inBaseUnits().getUnit()
+            >>> a.unit == b.inBaseUnits().unit
             1
             
         Units can only be compared with other units
         
-            >>> a.getUnit() == 3
+            >>> a.unit == 3
             Traceback (most recent call last):
                 ...
             TypeError: PhysicalUnits can only be compared with other PhysicalUnits
@@ -1478,31 +1506,31 @@ class PhysicalUnit:
         
             >>> a = PhysicalField("1. m")
             >>> b = PhysicalField("3. ft")
-            >>> a.getUnit() * b.getUnit()
+            >>> a.unit * b.unit
             <PhysicalUnit ft*m>
-            >>> a.getUnit() * b.inBaseUnits().getUnit()
+            >>> a.unit * b.inBaseUnits().unit
             <PhysicalUnit m**2>
             >>> c = PhysicalField("1. s")
             >>> d = PhysicalField("3. Hz")
-            >>> c.getUnit() * d.getUnit()
+            >>> c.unit * d.unit
             <PhysicalUnit Hz*s>
-            >>> c.getUnit() * d.inBaseUnits().getUnit()
+            >>> c.unit * d.inBaseUnits().unit
             <PhysicalUnit 1>
             
         or multiply units by numbers
         
-            >>> a.getUnit() * 3.
+            >>> a.unit * 3.
             <PhysicalUnit m*3.0>
         
         Units must have zero offset to be multiplied
         
             >>> e = PhysicalField("1. kB")
             >>> f = PhysicalField("25. degC")
-            >>> e.getUnit() * f.getUnit()
+            >>> e.unit * f.unit
             Traceback (most recent call last):
                 ...
             TypeError: cannot multiply units with non-zero offset
-            >>> e.getUnit() * f.inBaseUnits().getUnit()
+            >>> e.unit * f.inBaseUnits().unit
             <PhysicalUnit kB*K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
@@ -1525,31 +1553,31 @@ class PhysicalUnit:
         
             >>> a = PhysicalField("1. m")
             >>> b = PhysicalField("3. ft")
-            >>> a.getUnit() / b.getUnit()
+            >>> a.unit / b.unit
             <PhysicalUnit m/ft>
-            >>> a.getUnit() / b.inBaseUnits().getUnit()
+            >>> a.unit / b.inBaseUnits().unit
             <PhysicalUnit 1>
             >>> c = PhysicalField("1. s")
             >>> d = PhysicalField("3. Hz")
-            >>> c.getUnit() / d.getUnit()
+            >>> c.unit / d.unit
             <PhysicalUnit s/Hz>
-            >>> c.getUnit() / d.inBaseUnits().getUnit()
+            >>> c.unit / d.inBaseUnits().unit
             <PhysicalUnit s**2/1>
             
         or divide units by numbers
         
-            >>> a.getUnit() / 3.
+            >>> a.unit / 3.
             <PhysicalUnit m/3.0>
         
         Units must have zero offset to be divided
         
             >>> e = PhysicalField("1. J")
             >>> f = PhysicalField("25. degC")
-            >>> e.getUnit() / f.getUnit()
+            >>> e.unit / f.unit
             Traceback (most recent call last):
                 ...
             TypeError: cannot divide units with non-zero offset
-            >>> e.getUnit() / f.inBaseUnits().getUnit()
+            >>> e.unit / f.inBaseUnits().unit
             <PhysicalUnit J/K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
@@ -1567,17 +1595,17 @@ class PhysicalUnit:
         Divide something by a unit
         
             >>> a = PhysicalField("1. m")
-            >>> 3. / a.getUnit()
+            >>> 3. / a.unit
             <PhysicalUnit 3.0/m>
         
         Units must have zero offset to be divided
         
             >>> b = PhysicalField("25. degC")
-            >>> 3. / b.getUnit()
+            >>> 3. / b.unit
             Traceback (most recent call last):
                 ...
             TypeError: cannot divide units with non-zero offset
-            >>> 3. / b.inBaseUnits().getUnit()
+            >>> 3. / b.inBaseUnits().unit
             <PhysicalUnit 3.0/K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
@@ -1597,14 +1625,14 @@ class PhysicalUnit:
         Raise a unit to an integer power
         
             >>> a = PhysicalField("1. m")
-            >>> a.getUnit()**2
+            >>> a.unit**2
             <PhysicalUnit m**2>
-            >>> a.getUnit()**-2
+            >>> a.unit**-2
             <PhysicalUnit 1/m**2>
             
         Non-integer powers are not supported
         
-            >>> a.getUnit()**0.5
+            >>> a.unit**0.5
             Traceback (most recent call last):
                 ...
             TypeError: Illegal exponent
@@ -1612,11 +1640,11 @@ class PhysicalUnit:
         Units must have zero offset to be exponentiated
         
             >>> b = PhysicalField("25. degC")
-            >>> b.getUnit()**2
+            >>> b.unit**2
             Traceback (most recent call last):
                 ...
             TypeError: cannot exponentiate units with non-zero offset
-            >>> b.inBaseUnits().getUnit()**2
+            >>> b.inBaseUnits().unit**2
             <PhysicalUnit K**2>
         """
         if self.offset != 0:
@@ -1660,13 +1688,13 @@ class PhysicalUnit:
         
             >>> a = PhysicalField("1. mm")
             >>> b = PhysicalField("1. inch")
-            >>> print round(b.getUnit().conversionFactorTo(a.getUnit()), 6)
+            >>> print round(b.unit.conversionFactorTo(a.unit), 6)
             25.4
             
         Units must have the same fundamental SI units
         
             >>> c = PhysicalField("1. K")
-            >>> c.getUnit().conversionFactorTo(a.getUnit())
+            >>> c.unit.conversionFactorTo(a.unit)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1674,10 +1702,10 @@ class PhysicalUnit:
         If units have different offsets, they must have the same factor
         
             >>> d = PhysicalField("1. degC")
-            >>> c.getUnit().conversionFactorTo(d.getUnit())
+            >>> c.unit.conversionFactorTo(d.unit)
             1.0
             >>> e = PhysicalField("1. degF")
-            >>> c.getUnit().conversionFactorTo(e.getUnit())
+            >>> c.unit.conversionFactorTo(e.unit)
             Traceback (most recent call last):
                 ...
             TypeError: Unit conversion (K to degF) cannot be expressed as a simple multiplicative factor
@@ -1698,8 +1726,8 @@ class PhysicalUnit:
         """
         Return a `tuple` of the multiplication factor and offset between two physical units
         
-            >>> a = PhysicalField("1. K").getUnit()
-            >>> b = PhysicalField("1. degF").getUnit()
+            >>> a = PhysicalField("1. K").unit
+            >>> b = PhysicalField("1. degF").unit
             >>> [str(round(element,6)) for element in b.conversionTupleTo(a)]
             ['0.555556', '459.67']
         """
@@ -1732,11 +1760,11 @@ class PhysicalUnit:
             
             >>> a = PhysicalField("1. mm")
             >>> b = PhysicalField("1. inch")
-            >>> print numerix.allclose(a.getUnit().isCompatible(b.getUnit()),
+            >>> print numerix.allclose(a.unit.isCompatible(b.unit),
             ...                        [True, True, True, True, True, True, True, True, True])
             True
             >>> c = PhysicalField("1. K")
-            >>> print numerix.allclose(a.getUnit().isCompatible(c.getUnit()),
+            >>> print numerix.allclose(a.unit.isCompatible(c.unit),
             ...                        [False, True, True, True, False, True, True, True, True])
             True
             
@@ -1747,9 +1775,9 @@ class PhysicalUnit:
         """
         Returns `True` if the unit is dimensionless
             
-            >>> PhysicalField("1. m/m").getUnit().isDimensionless()
+            >>> PhysicalField("1. m/m").unit.isDimensionless()
             1
-            >>> PhysicalField("1. inch").getUnit().isDimensionless()
+            >>> PhysicalField("1. inch").unit.isDimensionless()
             0
         """
         return not numerix.logical_or.reduce(self.powers)
@@ -1758,11 +1786,11 @@ class PhysicalUnit:
         """
         Returns `True` if the unit is an angle
             
-            >>> PhysicalField("1. deg").getUnit().isAngle()
+            >>> PhysicalField("1. deg").unit.isAngle()
             1
-            >>> PhysicalField("1. rad").getUnit().isAngle()
+            >>> PhysicalField("1. rad").unit.isAngle()
             1
-            >>> PhysicalField("1. inch").getUnit().isAngle()
+            >>> PhysicalField("1. inch").unit.isAngle()
             0
         """
         return self.powers[7] == 1 and \
@@ -1772,11 +1800,11 @@ class PhysicalUnit:
         """
         Returns `True` if the 1 divided by the unit is an angle
             
-            >>> PhysicalField("1. deg**-1").getUnit().isInverseAngle()
+            >>> PhysicalField("1. deg**-1").unit.isInverseAngle()
             1
-            >>> PhysicalField("1. 1/rad").getUnit().isInverseAngle()
+            >>> PhysicalField("1. 1/rad").unit.isInverseAngle()
             1
-            >>> PhysicalField("1. inch").getUnit().isInverseAngle()
+            >>> PhysicalField("1. inch").unit.isInverseAngle()
             0
         """
         return self.powers[7] == -1 and \
@@ -1787,13 +1815,13 @@ class PhysicalUnit:
         """
         Returns `True` if the unit is dimensionless or an angle
             
-            >>> PhysicalField("1. m/m").getUnit().isDimensionlessOrAngle()
+            >>> PhysicalField("1. m/m").unit.isDimensionlessOrAngle()
             1
-            >>> PhysicalField("1. deg").getUnit().isDimensionlessOrAngle()
+            >>> PhysicalField("1. deg").unit.isDimensionlessOrAngle()
             1
-            >>> PhysicalField("1. rad").getUnit().isDimensionlessOrAngle()
+            >>> PhysicalField("1. rad").unit.isDimensionlessOrAngle()
             1
-            >>> PhysicalField("1. inch").getUnit().isDimensionlessOrAngle()
+            >>> PhysicalField("1. inch").unit.isDimensionlessOrAngle()
             0
         """
         return self.isDimensionless() or self.isAngle()
@@ -1802,7 +1830,7 @@ class PhysicalUnit:
         """
         Set the name of the unit to `name`
         
-            >>> a = PhysicalField("1. m/s").getUnit()
+            >>> a = PhysicalField("1. m/s").unit
             >>> a
             <PhysicalUnit m/s>
             >>> a.setName('meterpersecond')
@@ -1816,10 +1844,10 @@ class PhysicalUnit:
         """
         Return the name of the unit
         
-            >>> PhysicalField("1. m").getUnit().name()
+            >>> PhysicalField("1. m").unit.name()
             'm'
             >>> (PhysicalField("1. m") / PhysicalField("1. s") 
-            ...  / PhysicalField("1. s")).getUnit().name()
+            ...  / PhysicalField("1. s")).unit.name()
             'm/s**2'
         """
         num = ''
@@ -1852,7 +1880,7 @@ def _findUnit(unit):
         <PhysicalUnit 1>
         >>> _findUnit(1.)
         <PhysicalUnit 1>
-        >>> _findUnit(PhysicalField("4 N*m").getUnit())
+        >>> _findUnit(PhysicalField("4 N*m").unit)
         <PhysicalUnit m*N>
         >>> _findUnit(2.)
         Traceback (most recent call last):

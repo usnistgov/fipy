@@ -74,7 +74,7 @@ class Gist2DViewer(_GistViewer):
     def _getSuitableVars(self, vars):
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _GistViewer._getSuitableVars(self, vars) \
-          if (var.getMesh().getDim() == 2 and isinstance(var, CellVariable))]
+          if (var.mesh.dim == 2 and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Can only plot 2D data"
@@ -118,9 +118,9 @@ class Gist2DViewer(_GistViewer):
         if datamax == datamin:
             datamax = datamin + 1e-10
 
-        vertexIDs = self.mesh._getOrderedCellVertexIDs()
+        vertexIDs = self.mesh._orderedCellVertexIDs
 
-        vertexCoords = self.mesh.getVertexCoords()
+        vertexCoords = self.mesh.vertexCoords
 
         xCoords = numerix.take(vertexCoords[0], vertexIDs, axis=-1).flatten("FORTRAN")
         yCoords = numerix.take(vertexCoords[1], vertexIDs, axis=-1).flatten("FORTRAN")
@@ -128,19 +128,19 @@ class Gist2DViewer(_GistViewer):
         import gist
 
         import Numeric
-        gist.plfp(Numeric.array(numerix.array(self.vars[0])), yCoords, xCoords, self.mesh._getNumberOfFacesPerCell(), cmin=datamin, cmax=datamax)
+        gist.plfp(Numeric.array(numerix.array(self.vars[0])), yCoords, xCoords, self.mesh._numberOfFacesPerCell, cmin=datamin, cmax=datamax)
 
         import colorbar
 
-        colorbar._color_bar(minz=datamin, maxz=datamax, ncol=240, zlabel=self.vars[0].getName())
+        colorbar._color_bar(minz=datamin, maxz=datamax, ncol=240, zlabel=self.vars[0].name)
 
         _GistViewer.plot(self, filename = filename)
 
     def plotMesh(self, filename = None):
         self._plot()
         
-        faceVertexIDs = self.mesh._getFaceVertexIDs()
-        vertexCoords = self.mesh.getVertexCoords()
+        faceVertexIDs = self.mesh.faceVertexIDs
+        vertexCoords = self.mesh.vertexCoords
         
         x0 = numerix.take(vertexCoords[0], faceVertexIDs[0], axis=-1)
         y0 = numerix.take(vertexCoords[1], faceVertexIDs[0], axis=-1)

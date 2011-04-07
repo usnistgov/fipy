@@ -57,7 +57,7 @@ class BetaNoiseVariable(NoiseVariable):
     >>> from fipy.variables.variable import Variable
     >>> alpha = Variable()
     >>> beta = Variable()
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> noise = BetaNoiseVariable(mesh = Grid2D(nx = 100, ny = 100), alpha = alpha, beta = beta)
            
     We histogram the root-volume-weighted noise distribution
@@ -68,8 +68,8 @@ class BetaNoiseVariable(NoiseVariable):
     and compare to a Gaussian distribution
     
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> betadist = CellVariable(mesh = histogram.getMesh())
-    >>> x = histogram.getMesh().getCellCenters()[0]
+    >>> betadist = CellVariable(mesh = histogram.mesh)
+    >>> x = histogram.mesh.cellCenters[0]
     
     >>> if __name__ == '__main__':
     ...     from fipy import Viewer
@@ -81,9 +81,9 @@ class BetaNoiseVariable(NoiseVariable):
     >>> from scipy.special import gamma as Gamma
     
     >>> for a in arange(0.5,5,0.5):
-    ...     alpha.setValue(a)
+    ...     alpha.value = a
     ...     for b in arange(0.5,5,0.5):
-    ...         beta.setValue(b)
+    ...         beta.value = b
     ...         betadist.setValue((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) 
     ...                           * x**(alpha - 1) * (1 - x)**(beta - 1))
     ...         if __name__ == '__main__':
@@ -92,7 +92,7 @@ class BetaNoiseVariable(NoiseVariable):
     ...             viewer.plot()
     ...             histoplot.plot()
 
-    >>> print abs(noise.getFaceGrad().getDivergence().getCellVolumeAverage()) < 5e-15
+    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
     1
 
     .. image:: fipy/variables/beta.*
@@ -118,7 +118,7 @@ class BetaNoiseVariable(NoiseVariable):
     
     def random(self):
         return random.beta(a = self.alpha, b = self.beta, 
-                           size = [self.getMesh().globalNumberOfCells])
+                           size = [self.mesh.globalNumberOfCells])
 
 def _test(): 
     import doctest

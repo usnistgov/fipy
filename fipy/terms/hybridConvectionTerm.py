@@ -38,10 +38,10 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
-class HybridConvectionTerm(ConvectionTerm):
+class HybridConvectionTerm(_AsymmetricConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
@@ -57,7 +57,7 @@ class HybridConvectionTerm(ConvectionTerm):
 
     class _Alpha(FaceVariable):
         def __init__(self, P):
-            FaceVariable.__init__(self, P.getMesh())
+            FaceVariable.__init__(self, P.mesh)
             self.P = self._requires(P)
             
         def _calcValue(self):

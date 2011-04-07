@@ -37,10 +37,10 @@ __docformat__ = 'restructuredtext'
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
-from advectionTerm import _AdvectionTerm
+from baseAdvectionTerm import _BaseAdvectionTerm
 from fipy.tools import numerix
 
-class _HigherOrderAdvectionTerm(_AdvectionTerm):
+class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
     r"""
 
     The `_HigherOrderAdvectionTerm` object constructs the `b` vector contribution for
@@ -57,7 +57,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
        \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding as in the standard
-    `_AdvectionTerm`. The higher order terms are incorperated as follows.
+    `_BaseAdvectionTerm`. The higher order terms are incorperated as follows.
     The formula used here is given by:
 
     .. math::
@@ -87,10 +87,10 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     Here are some simple test cases for this problem:
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
     >>> from fipy.tools import parallel
-    >>> SparseMatrix = LinearPCGSolver()._getMatrixClass()
+    >>> SparseMatrix = LinearPCGSolver()._matrixClass
     >>> mesh = Grid1D(dx = 1., nx = 3) 
    
     Trivial test:
@@ -126,7 +126,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     Somewhat less trivial test case:
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
     >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3 , 1, 6, 7)))
@@ -136,7 +136,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     True
 
     For the above test cases the `_HigherOrderAdvectionTerm` gives the
-    same result as the `_AdvectionTerm`. The following test imposes a quadratic
+    same result as the `_BaseAdvectionTerm`. The following test imposes a quadratic
     field. The higher order term can resolve this field correctly.
 
     .. math::
@@ -153,19 +153,20 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     >>> mesh = Grid1D(dx = 1., nx = 5)
     >>> vel = 1.
-    >>> coeff = CellVariable(mesh = mesh, value = mesh.getCellCenters()[0]**2)
-    >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-        
+    >>> coeff = CellVariable(mesh = mesh, value = mesh.cellCenters[0]**2)
+    >>> v, L, b = __BaseAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+       
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
 
-    >>> print numerix.allclose(CellVariable(mesh=mesh, value=b).getGlobalValue()[1:-1], -2 * mesh.getCellCenters().getGlobalValue()[0][1:-1])
+    >>> print numerix.allclose(CellVariable(mesh=mesh,
+    ... value=b).globalValue[1:-1], -2 * mesh.cellCenters.globalValue[0][1:-1])
     False
 
     The higher order term is spot on.
 
     >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-    >>> print numerix.allclose(b[1:-1], -2 * mesh.getCellCenters()[0][1:-1])
+    >>> print numerix.allclose(b[1:-1], -2 * mesh.cellCenters[0][1:-1])
     True
 
     The `_HigherOrderAdvectionTerm` will also resolve a circular field with
@@ -179,10 +180,10 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 10, ny = 10)
     >>> vel = 1.
-    >>> x, y = mesh.getCellCenters()
+    >>> x, y = mesh.cellCenters
     >>> r = numerix.sqrt(x**2 + y**2)
     >>> coeff = CellVariable(mesh = mesh, value = r)
-    >>> v, L, b = _AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = __BaseAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> error = CellVariable(mesh=mesh, value=b + 1)
     >>> ans = CellVariable(mesh=mesh, value=b + 1)
     >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.123105625618
@@ -203,16 +204,18 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     """
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         
-        dAP = mesh._getCellToCellDistances()
+        dAP = mesh._cellToCellDistances
         
-        adjacentGradient = numerix.take(oldArray.getGrad(), mesh._getCellToCellIDs(), axis=-1)
-        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._getCellNormals(), omit=(0,))
-        adjacentUpValues = cellValues + (2 * dAP * adjacentNormalGradient).getValue()
+##        adjacentGradient = numerix.take(oldArray.grad, cellToCellIDs)
+        adjacentGradient = numerix.take(oldArray.grad, mesh._cellToCellIDs, axis=-1)
+        adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._cellNormals, omit=(0,))
+        adjacentUpValues = cellValues + (2 * dAP * adjacentNormalGradient).value
 
-        cellIDs = numerix.repeat(numerix.arange(mesh.getNumberOfCells())[numerix.newaxis, ...], mesh._getMaxFacesPerCell(), axis=0)
+        cellIDs = numerix.repeat(numerix.arange(mesh.numberOfCells)[numerix.newaxis, ...],
+                                 mesh._maxFacesPerCell, axis=0)
         cellIDs = MA.masked_array(cellIDs, mask=mesh._getCellToCellIDs().getMask())
-        cellGradient = numerix.take(oldArray.getGrad(), cellIDs, axis=-1)
-        cellNormalGradient = numerix.dot(cellGradient, mesh._getCellNormals(), omit=(0,))
+        cellGradient = numerix.take(oldArray.grad, cellIDs, axis=-1)
+        cellNormalGradient = numerix.dot(cellGradient, mesh._cellNormals, omit=(0,))
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         
         cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2
@@ -227,7 +230,13 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
                                          adjacentLaplacian,
                                          cellLaplacian))
         
-        return _AdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
+        return _BaseAdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
+
+class __BaseAdvectionTerm(_BaseAdvectionTerm):
+    """
+    Dummy subclass for tests
+    """
+    pass
 
 def _test(): 
     import doctest

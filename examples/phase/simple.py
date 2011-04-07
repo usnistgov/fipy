@@ -102,7 +102,7 @@ and set a step-function initial condition
    \end{cases}
    \quad\text{at $t = 0$}
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
     
@@ -145,7 +145,7 @@ or
 
 .. index:: tanh, sqrt
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
 
 We treat the diffusion term
@@ -364,7 +364,7 @@ and thus must redeclare :math:`\phi` on the new mesh
 >>> phase = CellVariable(name="phase",
 ...                      mesh=mesh,
 ...                      hasOld=1)
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
@@ -476,9 +476,9 @@ thickness
 ...         V, d = p
 ...         return y - 0.5 * (1 - tanh((x - V * t - L / 2.) / (2*d)))
 ...     from scipy.optimize import leastsq
-...     x =  mesh.getCellCenters()[0]
+...     x =  mesh.cellCenters[0]
 ...     (V_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., delta], 
-...                                   args=(phase.getGlobalValue(), x.getGlobalValue(), elapsed))
+...                                   args=(phase.globalValue, x.globalValue, elapsed))
 ... except ImportError:
 ...     V_fit = d_fit = 0
 ...     print "The SciPy library is unavailable to fit the interface \

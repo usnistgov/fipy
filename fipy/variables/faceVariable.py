@@ -36,16 +36,18 @@
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class FaceVariable(_MeshVariable):
-    def _getVariableClass(self):
+    @property
+    def _variableClass(self):
         return FaceVariable
 
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this variable type, given a particular mesh.
         """
-        return (mesh._getNumberOfFaces(),)
+        return (mesh.numberOfFaces,)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
         
     def _getArithmeticBaseClass(self, other = None):
@@ -58,30 +60,37 @@ class FaceVariable(_MeshVariable):
             
         return _MeshVariable._getArithmeticBaseClass(self, other)
 
-    def getGlobalValue(self):
-        return self._getGlobalValue(self.mesh._getLocalNonOverlappingFaceIDs(), 
-                                    self.mesh._getGlobalNonOverlappingFaceIDs())
+    @property
+    def globalValue(self):
+        return self._getGlobalValue(self.mesh._localNonOverlappingFaceIDs, 
+                                    self.mesh._globalNonOverlappingFaceIDs)
 
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 
+    @getsetDeprecated
     def getDivergence(self):
+        return self.divergence
+
+    @property
+    def divergence(self):
         """
-            >>> from fipy.meshes.grid2D import Grid2D
+            >>> from fipy.meshes import Grid2D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> mesh = Grid2D(nx=3, ny=2)
             >>> var = CellVariable(mesh=mesh, value=range(3*2))
-            >>> print var.getFaceGrad().getDivergence()
+            >>> print var.faceGrad.divergence
             [ 4.  3.  2. -2. -3. -4.]
             
         """
-        if not hasattr(self, 'divergence'):
+        if not hasattr(self, '_divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
-            self.divergence = _AddOverFacesVariable(self.dot(self.getMesh()._getOrientedAreaProjections()))
+            self._divergence = _AddOverFacesVariable(self.dot(self.mesh._orientedAreaProjections))
             
-        return self.divergence
+        return self._divergence
 
-    def _getGlobalNumberOfElements(self):
+    @property
+    def _globalNumberOfElements(self):
         return self.mesh.globalNumberOfFaces
         
     def _getArithmeticVertexValue(self):
@@ -92,11 +101,13 @@ class FaceVariable(_MeshVariable):
         return self.arithmeticVertexValue
 
     
-    def _getGlobalOverlappingIDs(self):
-        return self.mesh._getGlobalOverlappingFaceIDs()
+    @property
+    def _globalOverlappingIDs(self):
+        return self.mesh._globalOverlappingFaceIDs
         
-    def _getLocalNonOverlappingIDs(self):
-        return self.mesh._getLocalNonOverlappingFaceIDs()
+    @property
+    def _localNonOverlappingIDs(self):
+        return self.mesh._localNonOverlappingFaceIDs
 
 def _test(): 
     import doctest

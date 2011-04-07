@@ -44,19 +44,19 @@ from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 
 class _CellInterfaceFlagVariable(CellVariable):
     def __init__(self, distanceVar):
-        CellVariable.__init__(self, mesh=distanceVar.getMesh())
+        CellVariable.__init__(self, mesh=distanceVar.mesh)
         self.distanceVar = self._requires(distanceVar)
         
     def _calcValue(self):
-        return self.distanceVar._getCellInterfaceFlag()
+        return self.distanceVar._cellInterfaceFlag
 
 class _CellInterfaceAreasVariable(CellVariable):
     def __init__(self, distanceVar):
-        CellVariable.__init__(self, mesh=distanceVar.getMesh())
+        CellVariable.__init__(self, mesh=distanceVar.mesh)
         self.distanceVar = self._requires(distanceVar)
         
     def _calcValue(self):
-        return self.distanceVar.getCellInterfaceAreas()
+        return self.distanceVar.cellInterfaceAreas
 
 class AdsorbingSurfactantEquation(SurfactantEquation):
     r"""
@@ -91,7 +91,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     import DistanceVariable
     >>> from fipy.models.levelSet.surfactant.surfactantVariable \
     ...     import SurfactantVariable
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> dx = .5
     >>> dy = 2.3
     >>> dt = 0.25
@@ -99,7 +99,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> initialValue = 0.1
     >>> c = 0.2
     
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
     >>> distanceVar = DistanceVariable(mesh = mesh, 
     ...                                value = (-dx*3/2, -dx/2, dx/2, 
@@ -114,7 +114,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...                                   rateConstant = k)
     >>> eqn.solve(surfactantVar, dt = dt)
     >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-    >>> print numerix.allclose(surfactantVar.getInterfaceVar(), 
+    >>> print numerix.allclose(surfactantVar.interfaceVar, 
     ...                  numerix.array((0, 0, answer, 0, 0)))
     1
 
@@ -125,7 +125,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     import DistanceVariable
     >>> from fipy.models.levelSet.surfactant.surfactantVariable \
     ...     import SurfactantVariable
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> dx = 0.5
     >>> dy = 2.73
     >>> dt = 0.001
@@ -165,10 +165,10 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     eqn1.solve(var1, dt = dt)
     >>> answer0 = 1 - numerix.exp(-k0 * c0 * dt * totalSteps)
     >>> answer1 = (1 - numerix.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
-    >>> print numerix.allclose(var0.getInterfaceVar(), 
+    >>> print numerix.allclose(var0.interfaceVar, 
     ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
     1
-    >>> print numerix.allclose(var1.getInterfaceVar(), 
+    >>> print numerix.allclose(var1.interfaceVar, 
     ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
     1
     >>> dt = 0.1
@@ -176,8 +176,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     eqn0.solve(var0, dt = dt)
     ...     eqn1.solve(var1, dt = dt)
 
-    >>> x, y = mesh.getCellCenters()
-    >>> check = var0.getInterfaceVar() + var1.getInterfaceVar()
+    >>> x, y = mesh.cellCenters
+    >>> check = var0.interfaceVar + var1.interfaceVar
     >>> answer = CellVariable(mesh=mesh, value=check)
     >>> answer[x==1.25] = 1.
     >>> print check.allequal(answer)
@@ -198,9 +198,9 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     >>> eqn0.solve(var0, dt = dt)
     >>> eqn0.solve(var0, dt = dt)
-    >>> answer = CellVariable(mesh=mesh, value=var0.getInterfaceVar())
+    >>> answer = CellVariable(mesh=mesh, value=var0.interfaceVar)
     >>> answer[x==1.25] = 0.
-    >>> print var0.getInterfaceVar().allclose(answer)
+    >>> print var0.interfaceVar.allclose(answer)
     True
 
     The following test case is to fix a bug that allows the accelerator to
@@ -211,7 +211,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> dx = 1.
     >>> dy = 1.
     >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny)
-    >>> x, y = mesh.getCellCenters()
+    >>> x, y = mesh.cellCenters
+
     >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)
     >>> disVar[y < dy] = -1
     >>> disVar[x < dx] = -1
@@ -233,7 +234,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...                                     otherBulkVar = 0,
     ...                                     otherRateConstant = 0)
 
-    >>> extVar = CellVariable(mesh = mesh, value = accVar.getInterfaceVar())
+    >>> extVar = CellVariable(mesh = mesh, value = accVar.interfaceVar)
 
     >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
     ...     import buildHigherOrderAdvectionEquation
@@ -243,7 +244,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     >>> for i in range(50):
     ...     disVar.calcDistanceFunction()
-    ...     extVar.setValue(numerix.array(accVar.getInterfaceVar()))
+    ...     extVar.value = (numerix.array(accVar.interfaceVar))
     ...     disVar.extendVariable(extVar)
     ...     disVar.updateOld()
     ...     advEq.solve(disVar, dt = dt)
@@ -288,7 +289,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         mesh = distanceVar.getMesh()
 
         interfaceFlag = _CellInterfaceFlagVariable(distanceVar)
-        interfaceAreaToVolume = _CellInterfaceAreasVariable(distanceVar) / mesh.getCellVolumes()
+        interfaceAreaToVolume = _CellInterfaceAreasVariable(distanceVar) / mesh.cellVolumes
         
         spCoeff = self.dt * bulkVar * rateConstant * interfaceFlag
         scCoeff = self.dt * bulkVar * rateConstant * interfaceAreaToVolume
@@ -299,7 +300,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         
         if otherVar is not None:
             otherSpCoeff = self.dt * otherBulkVar * otherRateConstant * interfaceFlag
-            otherScCoeff = self.dt * -bulkVar * otherVar.getInterfaceVar() * rateConstant * interfaceAreaToVolume
+            otherScCoeff = self.dt * -bulkVar * otherVar.interfaceVar * rateConstant * interfaceAreaToVolume
             
             self.eq += ImplicitSourceTerm(otherSpCoeff) - otherScCoeff
             

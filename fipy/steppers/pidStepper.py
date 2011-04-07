@@ -70,7 +70,7 @@ class PIDStepper(Stepper):
                 self.nrej += 1
                 
                 for var, eqn, bcs in self.vardata:
-                    var.setValue(var.getOld())
+                    var.setValue(var.old)
 
                 factor = min(1. / self.error[2], 0.8)
                 

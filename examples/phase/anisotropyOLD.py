@@ -136,7 +136,7 @@ The domain is seeded with a circular solidified region with parameters
 ``seedCenter`` and ``radius`` representing the center and radius of the
 seed.
    
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> phase.setValue(1., where=((x - seedCenter[0])**2 
 ...                           + (y - seedCenter[1])**2) < radius**2)
 
@@ -158,8 +158,8 @@ is created from the ``phase`` and ``temperature`` variables.
 
 The following section of code builds up the :math:`A` and :math:`D` coefficients.
 
->>> phaseY = phase.getFaceGrad().dot((0, 1))
->>> phaseX = phase.getFaceGrad().dot((1, 0))
+>>> phaseY = phase.faceGrad.dot((0, 1))
+>>> phaseX = phase.faceGrad.dot((1, 0))
 >>> psi = theta + arctan2(phaseY, phaseX)
 >>> Phi = tan(N * psi / 2)
 >>> PhiSq = Phi**2
@@ -174,8 +174,8 @@ is constructed by first obtaining :math:`\nabla \phi`
     
 using :meth:`getFaceGrad`. The axes are rotated ninety degrees.
 
->>> dxi = phase.getFaceGrad().dot(((0, 1),(-1,0)))
->>> anisotropySource = (A * dxi).getDivergence()
+>>> dxi = phase.faceGrad.dot(((0, 1),(-1,0)))
+>>> anisotropySource = (A * dxi).divergence
 
 The phase equation can now be constructed.
 
@@ -189,7 +189,7 @@ The temperature equation is built in the following way,
 
 >>> temperatureEq = TransientTerm() == \
 ...                 DiffusionTerm(tempDiffusionCoeff) + \
-...                 (phase - phase.getOld()) / timeStepDuration
+...                 (phase - phase.old) / timeStepDuration
 
 If we are running this example interactively, we create viewers for
 the phase and temperature fields

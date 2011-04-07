@@ -35,44 +35,19 @@
 
 import os
 
-from fipy.terms.term import Term
+from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
-
-class _BinaryTerm(Term):
-    def __init__(self, term, other):
-
-        if not isinstance(other, Term):
-            other = _ExplicitSourceTerm(coeff=other, var=term.var)
-
-        self.term = term
-        self.other = other
-
-        if term.var is None:
-            if other.var is None:
-                pass
-            else:
-                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
-        else:
-            if other.var is None:
-                raise Exception, 'Terms with explicit Variables cannot mix with Terms with implicit Variables'
-
-	Term.__init__(self, var=self._getVars()[0])
-
-    def _getVars(self):
-        
-        if not hasattr(self, '_vars'):
-            seen = set()
-            seq = self.term._getVars() + self.other._getVars()
-            self._vars = [x for x in seq if x not in seen and not seen.add(x)]
-            ## self._vars = list(set(seq))
-        return self._vars
+from fipy.terms import AlternativeMethodInBaseClass
+from fipy.terms import SolutionVariableNumberError
+from fipy.terms import SolutionVariableRequiredError
+class _BinaryTerm(_BaseBinaryTerm):
 
     def _verifyVar(self, var):
 
         if var is None and len(self._getVars()) > 1:
-            raise Exception, 'The solution variable needs to be specified'
+            raise SolutionVariableRequiredError
 
-        return Term._verifyVar(self, var)
+        return _BaseBinaryTerm._verifyVar(self, var)
     
     def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
@@ -90,6 +65,8 @@ class _BinaryTerm(Term):
 
             matrix += termMatrix
             RHSvector += termRHSvector
+            
+            term._buildCache(termMatrix, termRHSvector)
 
         if (os.environ.has_key('FIPY_DISPLAY_MATRIX')
             and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
@@ -99,55 +76,37 @@ class _BinaryTerm(Term):
 
 	return (var, matrix, RHSvector)
 
-    def _addNone(self, arg0, arg1):
-        if arg0 is None and arg1 is None:
-            return None
-        elif arg0 is None:
-            return arg1
-        elif arg1 is None:
-            return arg0
-        else:
-            return arg0 + arg1
-
-    def _getTransientGeomCoeff(self, mesh):
-        return self._addNone(self.term._getTransientGeomCoeff(mesh), self.other._getTransientGeomCoeff(mesh))
-
-    def _getDiffusionGeomCoeff(self, mesh):
-        return self._addNone(self.term._getDiffusionGeomCoeff(mesh), self.other._getDiffusionGeomCoeff(mesh))
-        
     def _getDefaultSolver(self, solver, *args, **kwargs):
-         for term in (self.term, self.other):
-             defaultsolver = term._getDefaultSolver(solver, *args, **kwargs)
-             if defaultsolver is not None:
-                 return defaultsolver
+        if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
+            raise AlternativeMethodInBaseClass('_getDefaultSolver()')
+        
+        for term in (self.term, self.other):
+            defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
+            if defaultSolver is not None:
+                solver = defaultSolver
                 
-         return solver
-
+        return solver
+        
     def __repr__(self):
-
         return '(' + repr(self.term) + ' + ' + repr(self.other) + ')'
-
-    def __neg__(self):
-        r"""
-         Negate a `_BinaryTerm`.
-
-           >>> -(__Term(coeff=1.) - __Term(coeff=2.))
-           (__Term(coeff=-1.0) + __Term(coeff=2.0))
-
-        """
-
-        return (-self.term) + (-self.other)
 
     def __mul__(self, other):
         return other * self.term + other * self.other
 
-    __rmul__ = __mul__
+    def _getUncoupledTerms(self):
+        return [self]
 
-class __Term(Term):
-    """
-    Dummy subclass for tests
-    """
-    pass 
+    def _getTransientGeomCoeff(self, var):
+        if _BaseBinaryTerm._getTransientGeomCoeff(self, var) is not None:
+            AlternativeMethodInBaseClass('_getTransientGeomCoeff()')
+        return self._addNone(self.term._getTransientGeomCoeff(var), self.other._getTransientGeomCoeff(var))
+
+    def _getDiffusionGeomCoeff(self, var):
+        if _BaseBinaryTerm._getDiffusionGeomCoeff(self, var) is not None:
+            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')
+        return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var)) 
+
+    __rmul__ = __mul__
 
 def _test(): 
     import doctest
@@ -155,4 +114,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "advectionEquation.py"
+ #  FILE: "advectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -37,9 +37,9 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
-from fipy.terms.term import Term
+from baseAdvectionTerm import _BaseAdvectionTerm
 
-class _AdvectionTerm(Term):
+class _AdvectionTerm(_BaseAdvectionTerm):
     r"""
 
     The `_AdvectionTerm` object constructs the b vector contribution
@@ -64,10 +64,10 @@ class _AdvectionTerm(Term):
 
     Here are some simple test cases for this problem:
 
-    >>> from fipy.meshes.grid1D import Grid1D
+    >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
     >>> from fipy.tools import parallel
-    >>> SparseMatrix = LinearLUSolver()._getMatrixClass()
+    >>> SparseMatrix = LinearLUSolver()._matrixClass
     >>> mesh = Grid1D(dx = 1., nx = 3) 
     >>> from fipy.variables.cellVariable import CellVariable
    
@@ -103,7 +103,7 @@ class _AdvectionTerm(Term):
 
     Somewhat less trivial test case:
 
-    >>> from fipy.meshes.grid2D import Grid2D
+    >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
     >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
@@ -112,61 +112,7 @@ class _AdvectionTerm(Term):
     >>> print parallel.procID > 0 or numerix.allclose(b, answer, atol = 1e-10)
     True
     """
-    def __init__(self, coeff = None):
-        Term.__init__(self)
-        self.geomCoeff = coeff
-        
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, equation=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
-
-        if var is self.var or self.var is None:
-
-            oldArray = var.getOld()
-
-            mesh = var.getMesh()
-            NCells = mesh.getNumberOfCells()
-            NCellFaces = mesh._getMaxFacesPerCell()
-
-            if NCells > 0:
-                mask = cellToCellIDs.getMask()
-                cellToCellIDs = mask * cellIDs + ~mask * cellToCellIDs.filled()
-
-                adjacentValues = numerix.take(oldArray, cellToCellIDs, axis=-1)
-
-                differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
-                differences = differences.filled(0)
-                
-                minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences.getValue(), numerix.zeros((NCellFaces, NCells)))**2, axis=0))
-                maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences.getValue(), numerix.zeros((NCellFaces, NCells)))**2, axis=0))
-
-                coeff = numerix.array(self._getGeomCoeff(mesh))
-
-                coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
-            else:
-                coeffXdiffereneces = 0.
-
-            return (var, SparseMatrix(mesh=var.getMesh()), -coeffXdiffereneces * mesh.getCellVolumes())
-
-        else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
-        
-    def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
-        return (adjacentValues - cellValues) / mesh._getCellToCellDistances()
-
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        if solver and not solver._canSolveAsymmetric():
-            import warnings
-            warnings.warn("%s cannot solve assymetric matrices" % solver)
-
-        import fipy.solvers.solver
-        if fipy.solvers.solver == 'trilinos' or fipy.solvers.solver == 'no-pysparse':
-            from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
-            from fipy.solvers.trilinos.linearGMRESSolver import LinearGMRESSolver
-            return solver or LinearGMRESSolver(precon=JacobiPreconditioner(), *args, **kwargs)
-        else:
-            from fipy.solvers import DefaultAsymmetricSolver
-            return solver or DefaultAsymmetricSolver(*args, **kwargs)
-
-
+    pass
 
 def _test(): 
     import doctest

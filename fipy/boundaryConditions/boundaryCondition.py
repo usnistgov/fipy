@@ -39,7 +39,7 @@ from fipy.tools import numerix
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
-class BoundaryCondition:
+class BoundaryCondition(object):
     """
     Generic boundary condition base class. 
     
@@ -56,16 +56,16 @@ class BoundaryCondition:
         invoked with internal faces. Don't use the `BoundaryCondition`
         class in this manner. This is merely a test.
 
-            >>> from fipy.meshes.grid1D import Grid1D
-            >>> mesh = Grid1D(nx = 2)
-            >>> from fipy.tools import parallel
-            >>> if parallel.procID == 0:
-            ...     bc = __BoundaryCondition(mesh.getInteriorFaces(), 0)
-            ... else:
-            ...     raise IndexError("Face list has interior faces")
-            Traceback (most recent call last):
-                ...
-            IndexError: Face list has interior faces
+        >>> from fipy.meshes import Grid1D
+        >>> mesh = Grid1D(nx = 2)
+        >>> from fipy.tools import parallel
+        >>> if parallel.procID == 0:
+        ...     bc = __BoundaryCondition(mesh.interiorFaces, 0)
+        ... else:
+        ...     raise IndexError("Face list has interior faces")
+        Traceback (most recent call last):
+            ...
+        IndexError: Face list has interior faces
 
         """
         if self.__class__ is BoundaryCondition:
@@ -76,11 +76,11 @@ class BoundaryCondition:
             value = PhysicalField(value)
         self.value = value
         
-        if not (self.faces | self.faces.getMesh().getExteriorFaces() 
-                == self.faces.getMesh().getExteriorFaces()).getValue().all():
+        if not (self.faces | self.faces.mesh.exteriorFaces 
+                == self.faces.mesh.exteriorFaces).value.all():
             raise IndexError, 'Face list has interior faces'
         
-        self.adjacentCellIDs = self.faces.getMesh()._getAdjacentCellIDs()[0][self.faces.getValue()]
+        self.adjacentCellIDs = self.faces.mesh._adjacentCellIDs[0][self.faces.value]
         self.boundaryConditionApplied = False
         
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):

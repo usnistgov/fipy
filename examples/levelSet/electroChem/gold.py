@@ -141,7 +141,7 @@ def runGold(faradaysConstant=9.6e4,
        value = -1.,
        narrowBandWidth = narrowBandWidth)
 
-    distanceVar.setValue(1., where=mesh.getElectrolyteMask())
+    distanceVar.setValue(1., where=mesh.electrolyteMask)
     distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
 
     catalystVar = SurfactantVariable(
@@ -154,7 +154,7 @@ def runGold(faradaysConstant=9.6e4,
         mesh = mesh,
         value = metalConcentration)
 
-    exchangeCurrentDensity = currentDensity0 + currentDensity1 * catalystVar.getInterfaceVar()
+    exchangeCurrentDensity = currentDensity0 + currentDensity1 * catalystVar.interfaceVar
     
     currentDensity = metalVar / metalConcentration * exchangeCurrentDensity
 
@@ -182,14 +182,14 @@ def runGold(faradaysConstant=9.6e4,
         diffusionCoeff = metalDiffusion,
         metalIonMolarVolume = molarVolume)
 
-    metalVar.constrain(metalConcentration, mesh.getFacesTop())
+    metalVar.constrain(metalConcentration, mesh.facesTop)
 
     if displayViewers:
 
         try:
             
             viewer = MayaviSurfactantViewer(distanceVar, 
-                                            catalystVar.getInterfaceVar(), 
+                                            catalystVar.interfaceVar, 
                                             zoomFactor=1e6, 
                                             datamax=1.0, 
                                             datamin=0.0,
@@ -201,15 +201,15 @@ def runGold(faradaysConstant=9.6e4,
             
             class PlotVariable(CellVariable):
                 def __init__(self, var = None, name = ''):
-                    CellVariable.__init__(self, mesh = mesh.getFineMesh(), name = name)
+                    CellVariable.__init__(self, mesh = mesh.fineMesh, name = name)
                     self.var = self._requires(var)
 
                 def _calcValue(self):
-                    return array(self.var[:self.mesh.getNumberOfCells()])
+                    return array(self.var[:self.mesh.numberOfCells])
 
             viewer = MultiViewer(viewers=(
                 Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
-                Viewer(PlotVariable(var = catalystVar.getInterfaceVar()))))
+                Viewer(PlotVariable(var = catalystVar.interfaceVar))))
     else:
         viewer = None
 

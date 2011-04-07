@@ -76,8 +76,8 @@ and impose the boundary conditions
    
 with
 
->>> var.constrain(valueLeft, mesh.getFacesLeft())
->>> var.constrain(valueRight, mesh.getFacesRight())
+>>> var.constrain(valueLeft, mesh.facesLeft)
+>>> var.constrain(valueRight, mesh.facesRight)
 
 We define the convection-diffusion equation with source
 
@@ -102,7 +102,7 @@ or
 .. index:: exp
 
 >>> axis = 0
->>> x = mesh.getCellCenters()[axis]
+>>> x = mesh.cellCenters[axis]
 >>> AA = -sourceCoeff * x / convCoeff[axis]
 >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
 >>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)

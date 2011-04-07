@@ -45,6 +45,7 @@ from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.variables.variable import Variable
+from fipy.tools.decorators import getsetDeprecated
 
 class FixedValue(BoundaryCondition):
     r"""
@@ -74,9 +75,9 @@ class FixedValue(BoundaryCondition):
           - `coeff`:        contribution to adjacent cell diagonal and 
             :math:`\mathsf{b}`-vector by this exterior face
         """
-        faces = self.faces.getValue()
+        faces = self.faces.value
         
-        LL = SparseMatrix(mesh=self.faces.getMesh(), sizeHint=len(self.faces), bandwidth=1)
+        LL = SparseMatrix(mesh=self.faces.mesh, sizeHint=len(self.faces), bandwidth=1)
         LL.addAt(coeff['cell 1 diag'][faces], self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because
@@ -89,16 +90,17 @@ class FixedValue(BoundaryCondition):
         
         bb = numerix.zeros((Ncells,),'d')
 
-        value = self._getValue()
+        value = self.value
         if isinstance(value, Variable):
-            value = value.getValue()
+            value = value.value
         if value.shape == faces.shape:
             value = value[faces]
             
-        vector.putAdd(bb, self.adjacentCellIDs, -coeff['cell 1 offdiag'].getValue()[faces] * value)
+        vector.putAdd(bb, self.adjacentCellIDs, -coeff['cell 1 offdiag'].value[faces] * value)
         
         return (LL, bb)
         
+    @getsetDeprecated
     def _getValue(self):
         return self.value
 

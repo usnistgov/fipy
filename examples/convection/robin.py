@@ -74,15 +74,15 @@ where
 >>> D = 2.0
 >>> P = 3.0
 
->>> C.getFaceGrad().constrain(-P + P * C.getFaceValue(), mesh.getFacesLeft())
->>> C.getFaceGrad().constrain(0, mesh.getFacesRight())
+>>> C.faceGrad.constrain(-P + P * C.faceValue, mesh.facesLeft)
+>>> C.faceGrad.constrain(0, mesh.facesRight)
 
 >>> eq = PowerLawConvectionTerm((P,)) == \
 ...      DiffusionTerm() - ImplicitSourceTerm(D)
 
 >>> A = numerix.sqrt(P**2 + 4 * D)
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> CAnalytical = CellVariable(mesh=mesh)
 >>> CAnalytical.setValue(2 * P * exp(P * x / 2) * ((P + A) * exp(A / 2 * (1 - x))
 ...             - (P - A) * exp(-A / 2 *(1 - x)))/

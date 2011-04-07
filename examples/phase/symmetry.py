@@ -71,7 +71,7 @@ We create a square domain
   
 First set the values as given in the above equation:
 
->>> x, y = mesh.getCellCenters()
+>>> x, y = mesh.cellCenters
 >>> var.setValue(x * y)
 
 >>> if __name__ == '__main__':

@@ -36,12 +36,12 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from fipy.terms.term import Term
+from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import vector
 from fipy.tools import numerix
 from fipy.tools import inline
 
-class FaceTerm(Term):
+class FaceTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
@@ -49,10 +49,10 @@ class FaceTerm(Term):
         if self.__class__ is FaceTerm:
             raise NotImplementedError, "can't instantiate abstract base class"
             
-        Term.__init__(self, coeff=coeff, var=var)
+        _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffMatrix = None
-            
-    def _getCoeffMatrix(self, mesh, weight):
+
+    def __getCoeffMatrix(self, mesh, weight):
         coeff = self._getGeomCoeff(mesh)
         if self.coeffMatrix is None:
             self.coeffMatrix = {'cell 1 diag' : coeff * weight['cell 1 diag'],
@@ -61,16 +61,16 @@ class FaceTerm(Term):
                                 'cell 2 offdiag': coeff * weight['cell 2 offdiag']}
         return self.coeffMatrix
 
-    def _implicitBuildMatrix(self, SparseMatrix, L, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
-        coeffMatrix = self._getCoeffMatrix(mesh, weight)
+    def __implicitBuildMatrix(self, SparseMatrix, L, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
+        coeffMatrix = self.__getCoeffMatrix(mesh, weight)
 
         L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces, axis=-1),    id1, id1)
         L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1), id1, id2)
         L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces, axis=-1), id2, id1)
         L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces, axis=-1),    id2, id2)
 
-        N = mesh.getNumberOfCells()
-        M = mesh._getMaxFacesPerCell()
+        N = mesh.numberOfCells
+        M = mesh._maxFacesPerCell
 
         for boundaryCondition in boundaryConditions:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
@@ -84,14 +84,14 @@ class FaceTerm(Term):
             L += LL
             b += bb
 
-    def _explicitBuildMatrix(self, SparseMatrix, oldArray, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
+    def __explicitBuildMatrix(self, SparseMatrix, oldArray, id1, id2, b, weight, mesh, boundaryConditions, interiorFaces, dt):
 
-        coeffMatrix = self._getCoeffMatrix(mesh, weight)
+        coeffMatrix = self.__getCoeffMatrix(mesh, weight)
 
-        inline._optionalInline(self._explicitBuildMatrixIn, self._explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight)
+        inline._optionalInline(self.__explicitBuildMatrixIn, self.__explicitBuildMatrixPy, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight)
 
-        N = mesh.getNumberOfCells()
-        M = mesh._getMaxFacesPerCell()
+        N = mesh.numberOfCells
+        M = mesh._maxFacesPerCell
 
         for boundaryCondition in boundaryConditions:
 
@@ -101,11 +101,11 @@ class FaceTerm(Term):
                 b -= LL * numerix.array(oldArray)
             b += bb
 
-    def _explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, interiorFaces, dt, weight):
+    def __explicitBuildMatrixIn(self, oldArray, id1, id2, b, weightedStencilCoeff, mesh, interiorFaces, dt, weight):
 
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
         coeff = numerix.array(self._getGeomCoeff(mesh))
-        Nfac = mesh._getNumberOfFaces()
+        Nfac = mesh.numberOfFaces
 
         cell1Diag = numerix.zeros((Nfac,),'d')
         cell1Diag[:] = weight['cell 1 diag']
@@ -136,7 +136,7 @@ class FaceTerm(Term):
             faceIDs = interiorFaces,
             ni = len(interiorFaces))
 
-    def _explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
+    def __explicitBuildMatrixPy(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
         oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt=dt)
 
         cell1diag = coeffMatrix['cell 1 diag'].take(interiorFaces, axis=-1).getValue()
@@ -147,18 +147,14 @@ class FaceTerm(Term):
         vector.putAdd(b, id1, -(cell1diag * oldArrayId1 + cell1offdiag * oldArrayId2))
         vector.putAdd(b, id2, -(cell2diag * oldArrayId2 + cell2offdiag * oldArrayId1))
 
-    def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
-        return (oldArray.take(id1, axis=-1).getValue(), 
-                oldArray.take(id2, axis=-1).getValue())
-
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Implicit portion considers
         """
         if var is self.var or self.var is None:
 
-            mesh = var.getMesh()
-            id1, id2 = mesh._getAdjacentCellIDs()
-            interiorFaces = numerix.nonzero(mesh.getInteriorFaces())[0]
+            mesh = var.mesh
+            id1, id2 = mesh._adjacentCellIDs
+            interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
             
             id1 = numerix.take(id1, interiorFaces, axis=-1)
             id2 = numerix.take(id2, interiorFaces, axis=-1)
@@ -167,16 +163,16 @@ class FaceTerm(Term):
             b = numerix.zeros((N),'d')
             L = SparseMatrix(mesh=mesh)
 
-            weight = self._getWeight(mesh, diffusionGeomCoeff)
+            weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
             if weight.has_key('implicit'):
-                self._implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
+                self.__implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
 
             if weight.has_key('explicit'):
-                self._explicitBuildMatrix(SparseMatrix, var.getOld(), id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
+                self.__explicitBuildMatrix(SparseMatrix, var.old, id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
 
             return (var, L, b)
 
         else:
-            return (var, SparseMatrix(mesh=var.getMesh()), 0)
+            return (var, SparseMatrix(mesh=var.mesh), 0)
         

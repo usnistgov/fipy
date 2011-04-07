@@ -285,8 +285,8 @@ these issues automatically, so we could just write::
 
     chemPotA = Vm * (enthalpyA * p(phase) + WA * g(phase)) + R * T * log(C)
     chemPotB = Vm * (enthalpyB * p(phase) + WB * g(phase)) + R * T * log(1-C)
-    flux = Mc * (chemPotB - chemPotA).getFaceGrad()
-    eq = TransientTerm() == flux.getDivergence()
+    flux = Mc * (chemPotB - chemPotA).faceGrad
+    eq = TransientTerm() == flux.divergence
 
 Although the second syntax would essentially work as written, such an
 explicit implementation would be very slow. In order to take advantage
@@ -384,11 +384,11 @@ or
 
 >>> Dl = Variable(value=1e-5) # cm**2 / s
 >>> Ds = Variable(value=1e-9) # cm**2 / s
->>> Dc = (Dl - Ds) * phase.getArithmeticFaceValue() + Dl
+>>> Dc = (Dl - Ds) * phase.arithmeticFaceValue + Dl
 
->>> Dphi = ((Dc * C.getHarmonicFaceValue() * (1 - C.getHarmonicFaceValue()) * Vm / (R * T))
-...         * ((enthalpyB - enthalpyA) * pPrime(phase.getArithmeticFaceValue())
-...            + 0.5 * (WB - WA) * gPrime(phase.getArithmeticFaceValue())))
+>>> Dphi = ((Dc * C.harmonicFaceValue * (1 - C.harmonicFaceValue) * Vm / (R * T))
+...         * ((enthalpyB - enthalpyA) * pPrime(phase.arithmeticFaceValue)
+...            + 0.5 * (WB - WA) * gPrime(phase.arithmeticFaceValue)))
 
 >>> diffusionEq = (TransientTerm(var=C) 
 ...                == DiffusionTerm(coeff=Dc, var=C)
@@ -401,7 +401,7 @@ or
 We initialize the phase field to a step function in the middle of the domain
 
 >>> phase.setValue(1.)
->>> phase.setValue(0., where=mesh.getCellCenters()[0] > L/2.)
+>>> phase.setValue(0., where=mesh.cellCenters[0] > L/2.)
 
 and start with a uniform composition field :math:`C = 1/2`
    
@@ -426,7 +426,7 @@ deduce the liquidus and solidus compositions as
 
 The phase fraction is predicted by the lever rule
 
->>> Cavg = C.getCellVolumeAverage()
+>>> Cavg = C.cellVolumeAverage
 >>> fraction = (Cl - Cavg) / (Cl - Cs)
 
 For the special case of ``fraction = Cavg = 0.5``, a little bit of algebra
@@ -496,7 +496,7 @@ and we'll have much better luck if we also supply the Jacobian
 We plot the result against the sharp interface solution
 
 >>> sharp = CellVariable(name="sharp", mesh=mesh)
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> sharp.setValue(Cs, where=x < L * fraction)
 >>> sharp.setValue(Cl, where=x >= L * fraction)
 
@@ -553,15 +553,15 @@ require the residual.
 We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
 
->>> X = mesh.getFaceCenters()[0]
->>> print Cs.allclose(C.getFaceValue()[X==0], atol=1e-2)
+>>> X = mesh.faceCenters[0]
+>>> print Cs.allclose(C.faceValue[X==0], atol=1e-2)
 True
->>> print Cl.allclose(C.getFaceValue()[X==L], atol=1e-2)
+>>> print Cl.allclose(C.faceValue[X==L], atol=1e-2)
 True
 
 and that the phase fraction remains unchanged
 
->>> print fraction.allclose(phase.getCellVolumeAverage(), atol=2e-4)
+>>> print fraction.allclose(phase.cellVolumeAverage, atol=2e-4)
 1
 
 while conserving mass overall

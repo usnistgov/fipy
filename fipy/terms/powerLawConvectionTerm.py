@@ -34,13 +34,13 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import numerix
 
-class PowerLawConvectionTerm(ConvectionTerm):
+class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
@@ -52,10 +52,11 @@ class PowerLawConvectionTerm(ConvectionTerm):
     where :math:`\phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A` and
     :math:`\alpha_f` is calculated using the power law scheme.
     For further details see :ref:`sec:NumericalSchemes`.
-    """    
+    """
+    
     class _Alpha(FaceVariable):
 	def __init__(self, P):
-	    FaceVariable.__init__(self, mesh = P.getMesh())
+	    FaceVariable.__init__(self, mesh = P.mesh)
 	    self.P = self._requires(P)
 	    
 	def _calcValuePy(self, eps, P):
@@ -63,7 +64,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 
             Test case added because `and` was being used instead of bitwise `&`.
 
-                >>> from fipy.meshes.grid1D import Grid1D
+                >>> from fipy.meshes import Grid1D
                 >>> mesh = Grid1D(nx = 3)
                 >>> from fipy.variables.faceVariable import FaceVariable
                 >>> P = FaceVariable(mesh = mesh, value = (1e-3, 1e+71, 1e-3, 1e-3))
@@ -90,7 +91,7 @@ class PowerLawConvectionTerm(ConvectionTerm):
 	    return PhysicalField(value = alpha)
 
 	def _calcValueIn(self, eps, P):
-            alpha = self._getArray().copy()
+            alpha = self._array.copy()
             
 	    inline._runInline("""
 		if (fabs(P[i]) < eps) {
@@ -114,16 +115,16 @@ class PowerLawConvectionTerm(ConvectionTerm):
 		}
 	    """,
 	    alpha = alpha, eps = eps, P = P,
-	    ni = self.mesh._getNumberOfFaces()
+	    ni = self.mesh.numberOfFaces
 	    )
 
             return self._makeValue(value = alpha)
-##         return self._makeValue(value = alpha, unit = self.getUnit())
+##         return self._makeValue(value = alpha, unit = self.unit)
 
 
 	def _calcValue(self):	    
 	    eps = 1e-3
-	    P  = self.P.getNumericValue()
+	    P  = self.P.numericValue
 	    
             return inline._optionalInline(self._calcValueIn, self._calcValuePy, eps, P)
 

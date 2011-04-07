@@ -75,8 +75,8 @@ and impose the boundary conditions
    
 with
 
->>> var.constrain(valueLeft, mesh.getFacesLeft())
->>> var.constrain(valueRight, mesh.getFacesRight())
+>>> var.constrain(valueLeft, mesh.facesLeft)
+>>> var.constrain(valueRight, mesh.facesRight)
 
 The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`.
@@ -107,7 +107,7 @@ or
 >>> axis = 0
 >>> try:
 ...     from scipy.special import expi
-...     r = mesh.getCellCenters()[axis]
+...     r = mesh.cellCenters[axis]
 ...     AA = exp(convCoeff[axis] / diffCoeff * (r1 - r))
 ...     BB = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r / diffCoeff)
 ...     CC = expi(convCoeff[axis] * r0 / diffCoeff) - expi(convCoeff[axis] * r1 / diffCoeff)

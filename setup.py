@@ -144,16 +144,22 @@ def _TestClass(base):
                     else:
                         print pkg,'version not available'
                         
-                except ImportError, exc:
+                except ImportError, e:
                     print pkg,'is not installed'
+                    
+                except Exception, e:
+                    print pkg, 'version check failed:', e
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
             pkg = 'enthought.mayavi'
             try:
-                mod = __import__(pkg, fromlist=['enthought'])
-                print pkg,'version',mod.sys.version
-            except ImportError, exc:
-                print pkg,'is not installed'            
+                from enthought.mayavi.__version__ import __version__ as mayaviversion
+                print pkg,'version',mayaviversion
+            except ImportError, e:
+                print pkg,'is not installed'       
+            except Exception, e:
+                print pkg, 'version check failed:', e
+
                 
         def run_tests(self):
             import sys

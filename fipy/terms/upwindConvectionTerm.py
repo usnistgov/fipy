@@ -35,13 +35,12 @@
 __docformat__ = 'restructuredtext'
 
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.baseUpwindConvectionTerm import _BaseUpwindConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
-from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools import inline
-from fipy.tools import numerix
+from fipy.solvers import DefaultAsymmetricSolver
+from fipy.terms import AlternativeMethodInBaseClass
 
-class UpwindConvectionTerm(ConvectionTerm):
+class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
@@ -54,37 +53,15 @@ class UpwindConvectionTerm(ConvectionTerm):
     :math:`\alpha_f` is calculated using the upwind convection scheme.
     For further details see :ref:`sec:NumericalSchemes`.
     """
-    class _Alpha(FaceVariable):
-        def __init__(self, P):
-            FaceVariable.__init__(self, mesh = P.getMesh())
-            self.P = self._requires(P)
-            
-        def _calcValuePy(self, P):
-            alpha = numerix.where(P > 0., 1., 0.)
-            return PhysicalField(value = alpha)
 
-        def _calcValueIn(self, P):
-            alpha = self._getArray().copy()
-            inline._runInline("""
-                alpha[i] = 0.5;
-                
-                if (P[i] > 0.) {
-                    alpha[i] = 1.;
-                } else {
-                    alpha[i] = 0.;
-                }
-            """,
-            alpha = alpha, P = P,
-            ni = self.mesh._getNumberOfFaces()
-            )
-
-            return self._makeValue(value = alpha)
-
-        def _calcValue(self):
-            P  = self.P.getNumericValue()
-
-            return inline._optionalInline(self._calcValueIn, self._calcValuePy, P)
-
+    def _getDefaultSolver(self, solver, *args, **kwargs):
+        if _BaseUpwindConvectionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
+            AlternativeMethodInBaseClass('_getDefaultSolver()')
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
+    
     def _testPecletSign(self):
         r"""
             >>> from fipy import *
@@ -95,18 +72,18 @@ class UpwindConvectionTerm(ConvectionTerm):
 
             >>> convCoeff = FaceVariable(mesh=mesh, rank=1)
             >>> diffCoeff = FaceVariable(mesh=mesh, value=1e-20)
-            >>> x = mesh.getFaceCenters()[0]
+            >>> x = mesh.faceCenters[0]
             >>> D = 1000.
             >>> u = -1e+6
             >>> convCoeff.setValue((u,), where=x < L / 2)
             >>> diffCoeff.setValue(D, where=x > L / 2)
 
-            >>> var.constrain(1., mesh.getFacesRight())
-            >>> var.constrain(10, mesh.getFacesLeft())
+            >>> var.constrain(1., mesh.facesRight)
+            >>> var.constrain(10, mesh.facesLeft)
 
             >>> dTerm = DiffusionTerm(diffCoeff)
 
-            >>> x = mesh.getCellCenters()[0]
+            >>> x = mesh.cellCenters[0]
             >>> var0 = 2 * D / (-u * L + 2 * D)
             >>> analytical = 2 * (1 - var0) * x / L + 2 * var0 - 1
             >>> analytical = var0 * (x < L / 2) + analytical * (x >= L / 2)

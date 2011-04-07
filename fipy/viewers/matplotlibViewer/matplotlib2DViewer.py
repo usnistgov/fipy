@@ -76,12 +76,12 @@ class Matplotlib2DViewer(_MatplotlibViewer):
                                    cmap=cmap, colorbar=colorbar, axes=axes, 
                                    **kwlimits)
 
-        self.mesh = self.vars[0].getMesh()
+        self.mesh = self.vars[0].mesh
         
-        vertexIDs = self.mesh._getOrderedCellVertexIDs()
+        vertexIDs = self.mesh._orderedCellVertexIDs
         coords = self.mesh.getVertexCoords()[..., vertexIDs]
 
-        polys = []
+#         polys = []
 
         for vertices in coords.getValue().swapaxes(0,2):
             if hasattr(vertices, 'mask'):
@@ -97,10 +97,10 @@ class Matplotlib2DViewer(_MatplotlibViewer):
             # PolyCollection not child of PatchCollection in matplotlib 0.98
             self.axes.add_collection(self.collection)
 
-        xmin = self._getLimit('xmin', default=xCoords.min())
-        xmax = self._getLimit('xmax', default=xCoords.max())
-        ymin = self._getLimit('ymin', default=yCoords.min())
-        ymax = self._getLimit('ymax', default=yCoords.max())
+        xmin = self._getLimit('xmin', default=coords[0].min())
+        xmax = self._getLimit('xmax', default=coords[0].max())
+        ymin = self._getLimit('ymin', default=coords[1].min())
+        ymax = self._getLimit('ymax', default=coords[1].max())
 
         self.axes.set_xlim(xmin=xmin, xmax=xmax)
         self.axes.set_ylim(ymin=ymin, ymax=ymax)
@@ -108,11 +108,11 @@ class Matplotlib2DViewer(_MatplotlibViewer):
         self._plot()
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes.numMesh.mesh2D import Mesh2D
+        from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-          if ((isinstance(var.getMesh(), Mesh2D) and isinstance(var, CellVariable))
-              and var.getRank() == 0)]
+          if ((isinstance(var.mesh, Mesh2D) and isinstance(var, CellVariable))
+              and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-0, 2D CellVariable"
@@ -127,7 +127,7 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 ##         import gc
 ##         gc.collect()
 
-        Z = self.vars[0].getValue() 
+        Z = self.vars[0].value 
         
         self.norm.vmin = self._getLimit(('datamin', 'zmin'))
         self.norm.vmax = self._getLimit(('datamax', 'zmax'))

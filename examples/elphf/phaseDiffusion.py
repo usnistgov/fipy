@@ -78,9 +78,9 @@ We start with a binary substitutional system
 ...                               name = name, hasOld = hasOld)
 ...
 ...     def copy(self):
-...         return self.__class__(mesh = self.getMesh(), 
-...                               value = self.getValue(), 
-...                               name = self.getName(), 
+...         return self.__class__(mesh = self.mesh, 
+...                               value = self.value, 
+...                               name = self.name, 
 ...                               standardPotential = 
 ...                                   self.standardPotential, 
 ...                               barrier = self.barrier, 
@@ -121,7 +121,7 @@ and create the diffustion equations for the different species as in
 ...     phase.equation = TransientTerm(coeff = 1/phase.mobility) \
 ...         == DiffusionTerm(coeff = phase.gradientEnergy) \
 ...         - (permitivityPrime / 2.) \
-...             * potential.getGrad().dot(potential.getGrad())
+...             * potential.grad.dot(potential.grad)
 ...     enthalpy = solvent.standardPotential
 ...     barrier = solvent.barrier
 ...     for component in substitutionals + interstitials:
@@ -141,16 +141,16 @@ and create the diffustion equations for the different species as in
 ...         CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
 ...         for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...             CkSum += Ck
-...             CkFaceSum += Ck.getHarmonicFaceValue()
+...             CkFaceSum += Ck.harmonicFaceValue
 ...            
-...         counterDiffusion = CkSum.getFaceGrad()
-...         phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) \
+...         counterDiffusion = CkSum.faceGrad
+...         phaseTransformation = (pPrime(phase.harmonicFaceValue) \
 ...                 * Cj.standardPotential 
-...                 + gPrime(phase.getHarmonicFaceValue()) \
-...                     * Cj.barrier) * phase.getFaceGrad()
-...         electromigration = Cj.valence * potential.getFaceGrad()
+...                 + gPrime(phase.harmonicFaceValue) \
+...                     * Cj.barrier) * phase.faceGrad
+...         electromigration = Cj.valence * potential.faceGrad
 ...         convectionCoeff = counterDiffusion + \
-...             solvent.getHarmonicFaceValue() \
+...             solvent.harmonicFaceValue \
 ...                 * (phaseTransformation + electromigration)
 ...         convectionCoeff *= \
 ...             (Cj.diffusivity / (1. - CkFaceSum))
@@ -160,13 +160,13 @@ and create the diffustion equations for the different species as in
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
 ...
 ...     for Cj in interstitials:
-...         phaseTransformation = (pPrime(phase.getHarmonicFaceValue()) \
+...         phaseTransformation = (pPrime(phase.harmonicFaceValue) \
 ...             * Cj.standardPotential \
-...             + gPrime(phase.getHarmonicFaceValue()) \
-...                 * Cj.barrier) * phase.getFaceGrad()
-...         electromigration = Cj.valence * potential.getFaceGrad()
+...             + gPrime(phase.harmonicFaceValue) \
+...                 * Cj.barrier) * phase.faceGrad
+...         electromigration = Cj.valence * potential.faceGrad
 ...         convectionCoeff = Cj.diffusivity \
-...             * (1 + Cj.getHarmonicFaceValue()) \
+...             * (1 + Cj.harmonicFaceValue) \
 ...             * (phaseTransformation + electromigration)
 ...    
 ...         Cj.equation = (TransientTerm()
@@ -187,7 +187,7 @@ We start with a sharp phase boundary
 
 or
 
->>> x = mesh.getCellCenters()[0]
+>>> x = mesh.cellCenters[0]
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L / 2)
 

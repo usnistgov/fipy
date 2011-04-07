@@ -48,7 +48,8 @@ class ImplicitSourceTerm(SourceTerm):
        
     where :math:`S` is the `coeff` value.       
     """
-    def _calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
         Test for a bug due to the sign operator not being updating
         correctly.
@@ -66,7 +67,6 @@ class ImplicitSourceTerm(SourceTerm):
             [-0.5]
             
         """
-
         if transientGeomCoeff is not None:
             if numerix.all(transientGeomCoeff >= 0):
                 diagonalSign = 1
@@ -83,16 +83,15 @@ class ImplicitSourceTerm(SourceTerm):
                 raise Exception, "Diffusion coefficient has both positive and negative values"
         else:
             diagonalSign = 1
-            
-        coeff = self._getGeomCoeff(var.getMesh())
-        combinedSign = diagonalSign * numerix.sign(coeff)
-        self.coeffVectors = {
-            'diagonal': coeff * (combinedSign >= 0),
-            'old value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd'),
-            'b vector': -coeff * var * (combinedSign < 0),
-            'new value': numerix.zeros(var.getMesh().getNumberOfCells(), 'd')
-        }
 
+        coeff = self._getGeomCoeff(var.mesh)
+        combinedSign = diagonalSign * numerix.sign(coeff)
+
+        return {'diagonal' : (combinedSign >= 0),
+                'old value' : numerix.zeros(var.mesh.numberOfCells, 'd'),
+                'b vector' :  -var * (combinedSign < 0),
+                'new value' : numerix.zeros(var.mesh.numberOfCells, 'd')}
+    
 def _test(): 
     import doctest
     return doctest.testmod()

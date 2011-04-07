@@ -35,18 +35,16 @@
 __docformat__ = 'restructuredtext'
 
 import os
-
 from fipy.tools import numerix
-
-from fipy.variables.variable import Variable
-from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.solvers import DefaultSolver
-
+from fipy.terms import AbstractBaseClassError
+from fipy.terms import SolutionVariableRequiredError
 
 class Term:
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
+
     def __init__(self, coeff=1., var=None):
         """
         Create a `Term`.
@@ -55,10 +53,11 @@ class Term:
           - `coeff`: The coefficient for the term. A `CellVariable` or number.
             `FaceVariable` objects are also acceptable for diffusion or convection terms.
 
-        """  
+        """
+        
         if self.__class__ is Term:
-            raise NotImplementedError, "can't instantiate abstract base class"
-            
+            raise AbstractBaseClassError
+
         self.coeff = coeff
         self.geomCoeff = None
         self._cacheMatrix = False
@@ -68,7 +67,16 @@ class Term:
         self.var = var
 
     def _getVars(self):
-        return [self.var]
+        raise NotImplementedError
+
+    def _calcVars(self):
+        raise NotImplementedError
+
+    def _getTransientVars(self):
+        raise NotImplementedError
+
+    def _getDiffusionVars(self):
+        raise NotImplementedError
                 
     def copy(self):
         return self.__class__(self.coeff, var=self.var)
@@ -79,7 +87,7 @@ class Term:
     def _verifyVar(self, var):
         if var is None:
             if self.var is None:
-                raise Exception, 'The solution variable needs to be specified'
+                raise SolutionVariableRequiredError
             else:
                 return self.var
         else:
@@ -90,9 +98,19 @@ class Term:
             import warnings
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
                           UserWarning, stacklevel=4)
-        
-        self._verifyCoeffType(var)
 
+    def _buildCache(self, matrix, RHSvector):
+        if self._cacheMatrix:
+            self.matrix = matrix
+            self.matrix.cache = True
+        else:
+            self.matrix = None
+
+        if self._cacheRHSvector:
+            self.RHSvector = RHSvector
+        else:
+            self.RHSvector = None
+    
     def __buildMatrix(self, var, solver, boundaryConditions, dt):
 
         var = self._verifyVar(var)
@@ -113,20 +131,11 @@ class Term:
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        var, matrix, RHSvector = self._buildMatrix(var, solver._getMatrixClass(), boundaryConditions, dt,
-                                                   transientGeomCoeff=self._getTransientGeomCoeff(var.getMesh()),
-                                                   diffusionGeomCoeff=self._getDiffusionGeomCoeff(var.getMesh()))
-        
-        if self._cacheMatrix:
-            self.matrix = matrix
-            self.matrix.cache = True
-        else:
-            self.matrix = None
+        var, matrix, RHSvector = self._buildMatrix(var, solver._matrixClass, boundaryConditions, dt,
+                                                   transientGeomCoeff=self._getTransientGeomCoeff(var),
+                                                   diffusionGeomCoeff=self._getDiffusionGeomCoeff(var))
 
-        if self._cacheRHSvector:
-            self.RHSvector = RHSvector
-        else:
-            self.RHSvector = None
+        self._buildCache(matrix, RHSvector)
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
@@ -247,9 +256,6 @@ class Term:
 
         return vector, L2norm
 
-    def _verifyCoeffType(self, var):
-        pass
-
     def cacheMatrix(self):
         r"""
         Informs `solve()` and `sweep()` to cache their matrix so
@@ -301,17 +307,6 @@ class Term:
         return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
                          
     def __add__(self, other):
-        r"""
-        Add a `Term` to another `Term`, number or variable.
-
-           >>> __Term(coeff=1.) + 10.
-           (__Term(coeff=1.0) + 10.0)
-           >>> __Term(coeff=1.) + __Term(coeff=2.)
-           (__Term(coeff=1.0) + __Term(coeff=2.0))
-           >>> 10. + __Term(coeff=1.)
-           (__Term(coeff=1.0) + 10.0)
-
-        """
         if isinstance(other, (int, float)) and other == 0:
             return self
         else:
@@ -321,143 +316,43 @@ class Term:
     __radd__ = __add__
     
     def __neg__(self):
-        r"""
-         Negate a `Term`.
-
-           >>> -__Term(coeff=1.)
-           __Term(coeff=-1.0)
-
-        """
-        if isinstance(self.coeff, (tuple, list)):
-            return self.__class__(coeff=-numerix.array(self.coeff), var=self.var)
-        else:
-            return self.__class__(coeff=-self.coeff, var=self.var)
+        raise NotImplementedError
 
     def __pos__(self):
-        r"""
-        Posate a `Term`.
-
-           >>> +__Term(coeff=1.)
-           __Term(coeff=1.0)
-
-        """
         return self
         
     def __sub__(self, other):
-        r"""
-        Subtract a `Term` from a `Term`, number or variable.
-
-           >>> __Term(coeff=1.) - 10.
-           (__Term(coeff=1.0) + -10.0)
-           >>> __Term(coeff=1.) - __Term(coeff=2.)
-           (__Term(coeff=1.0) + __Term(coeff=-2.0))
-           
-        """
         return self + (-other)
 
     def __rsub__(self, other):
-        r"""
-        Subtract a `Term`, number or variable from a `Term`.
-
-           >>> 10. - __Term(coeff=1.)
-           (__Term(coeff=-1.0) + 10.0)
-
-        """        
         return other + (-self)
         
     def __eq__(self, other):
-        r"""
-        This method allows `Terms` to be equated in a natural way. Note that the
-        following does not return `False.`
-
-           >>> __Term(coeff=1.) == __Term(coeff=2.)
-           (__Term(coeff=1.0) + __Term(coeff=-2.0))
-
-        it is equivalent to,
-
-           >>> __Term(coeff=1.) - __Term(coeff=2.)
-           (__Term(coeff=1.0) + __Term(coeff=-2.0))
-
-        A `Term` can also equate with a number. 
-
-           >>> __Term(coeff=1.) == 1.  
-           (__Term(coeff=1.0) + -1.0)
-           
-        Likewise for integers.
-
-           >>> __Term(coeff=1.) == 1
-           (__Term(coeff=1.0) + -1)
-           
-        Equating to zero is allowed, of course
-        
-            >>> __Term(coeff=1.) == 0
-            __Term(coeff=1.0)
-            >>> 0 == __Term(coeff=1.)
-            __Term(coeff=1.0)
-           
-        """
         return self - other
 
     def __mul__(self, other):
-        r"""
-        Mutiply a term
+        raise NotImplementedError
 
-            >>> 2. * __Term(coeff=0.5)
-            __Term(coeff=1.0)
-            
-        """
-
-        if isinstance(other, (int, float)):
-            return self.__class__(coeff=other * self.coeff, var=self.var)
-        else:
-            raise Exception, "Must multiply terms by int or float."
-            
     __rmul__ = __mul__
-               
+
     def __div__(self, other):
-        r"""
-        Divide a term
-
-            >>> __Term(2.) / 2.
-            __Term(coeff=1.0)
-
-        """
         return (1 / other) * self
 
     def __and__(self, other):
-        """Combine this equation with another 
-
-        >>> eq1 = 10. + __Term(coeff=1., var=Variable(name='A'))
-        >>> eq2 = 20. + __Term(coeff=2., var=Variable(name='B'))
-        >>> eq1 & eq2
-        ((__Term(coeff=1.0, var=A) + 10.0) & (__Term(coeff=2.0, var=B) + 20.0))
-        """ 
         if isinstance(other, Term):
             from fipy.terms.coupledBinaryTerm import _CoupledBinaryTerm
             return _CoupledBinaryTerm(self, other)
         else:
-            raise Exception
+            raise Exception, "Can only couple Term objects."
 
-    def _getCoupledTerms(self):
-        return [self]
+    def _getUncoupledTerms(self):
+        raise NotImplementedError
     
     def __repr__(self):
-        """
-        The representation of a `Term` object is given by,
-        
-           >>> print __Term(123.456)
-           __Term(coeff=123.456)
-
-        """
-        if self.var is None:
-            varString = ''
-        else:
-            varString = ', var=%s' % repr(self.var)
-
-        return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
+        raise NotImplementedError
 
     def _calcGeomCoeff(self, mesh):
-        return None
+        raise NotImplementedError
         
     def _getGeomCoeff(self, mesh):
         if self.geomCoeff is None:
@@ -467,14 +362,26 @@ class Term:
 
         return self.geomCoeff
         
-    def _getWeight(self, mesh):
+    def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
-    def _getDiffusionGeomCoeff(self, mesh):
+    def _getDiffusionGeomCoeff(self, var):
         return None
 
-    def _getTransientGeomCoeff(self, mesh):
+    def _getTransientGeomCoeff(self, var):
         return None
+
+    def _treatMeshAsOrthogonal(self, mesh):
+        raise NotImplementedError
+
+    def _getNormals(self, mesh):
+        raise NotImplementedError
+
+    def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
+        raise NotImplementedError
+
+    def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
+        raise NotImplementedError
 
     def _test(self):
         """
@@ -487,15 +394,15 @@ class Term:
         >>> v = CellVariable(mesh=m, value=1.)
         >>> eqn = DiffusionTerm() - v
         
-        >>> v.constrain(0.,  m.getFacesLeft())
-        >>> v.constrain(1.,  m.getFacesRight())
+        >>> v.constrain(0.,  m.facesLeft)
+        >>> v.constrain(1.,  m.facesRight)
         
         >>> res = 1.
         >>> sweep = 0
         >>> while res > 1e-8 and sweep < 100:
         ...     res = eqn.sweep(v)
         ...     sweep += 1
-        >>> x = m.getCellCenters()[0]
+        >>> x = m.cellCenters[0]
         >>> answer = (numerix.exp(x) - numerix.exp(-x)) / (numerix.exp(L) - numerix.exp(-L))
         >>> print numerix.allclose(v, answer, rtol=2e-5)
         True
@@ -519,31 +426,31 @@ class Term:
  	>>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
  	>>> print eq 
  	(TransientTerm(coeff=1.0, var=A) + DiffusionTerm(coeff=[-1.0], var=B))
- 	>>> print eq._getVars()
- 	[A, B]
+ 	>>> A in set(eq._getVars()) and B in set(eq._getVars()) ## _getVars() is unordered for _BinaryTerm's.
+ 	True
  	>>> print (eq.term, eq.other) 
  	(TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
  	>>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
  	Traceback (most recent call last): 
  	    ... 
-        Exception: The solution variable needs to be specified
- 	>>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
+        SolutionVariableRequiredError: The solution variable needs to be specified.
+        >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> from fipy.tools import parallel
-        >>> numpyMatrix = solver.matrix.getNumpyArray()
- 	>>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         True
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
- 	True
- 	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
-        >>> numpyMatrix = solver.matrix.getNumpyArray()
+        True
+        >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, -1, 0], [-1, 2, -1], [0, -1, 1]])
         True
- 	>>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0,])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0,])
         True
  	>>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
  	Traceback (most recent call last): 
  	    ... 
- 	Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+ 	ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
  	>>> eq = DiffusionTerm(coeff=1., var=B) + 10. == 0 
  	>>> print eq 
  	(DiffusionTerm(coeff=[1.0], var=B) + 10.0)
@@ -551,12 +458,13 @@ class Term:
  	[B]
  	>>> print (eq.term, eq.other)
         (DiffusionTerm(coeff=[1.0], var=B), 10.0)
- 	>>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
-        >>> numpyMatrix = solver.matrix.getNumpyArray()
+        >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
+        >>> numpyMatrix = solver.matrix.numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0], [1, -2, 1], [0, 1, -1]])
         True
  	>>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [-10, -10, -10]) 
  	True
+
  	>>> eq.solve(var=B)
 
         >>> m = Grid1D(nx=2)
@@ -566,34 +474,34 @@ class Term:
         >>> DiffusionTerm().solve()
         Traceback (most recent call last):
             ...
-        Exception: The solution variable needs to be specified
+        SolutionVariableRequiredError: The solution variable needs to be specified.
         >>> DiffusionTerm().solve(A)
         >>> DiffusionTerm(var=A).solve(A)
         >>> (DiffusionTerm(var=A) + DiffusionTerm())
         Traceback (most recent call last):
             ...
-        Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+        ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve()
         Traceback (most recent call last):
             ...
-        Exception: The solution variable needs to be specified
+        SolutionVariableRequiredError: The solution variable needs to be specified.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A)
         >>> DiffusionTerm() & DiffusionTerm()
         Traceback (most recent call last):
             ...
-        Exception: Different number of solution variables and equations.
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> DiffusionTerm(var=A) & DiffusionTerm()
         Traceback (most recent call last):
             ...
-        Exception: Terms with explicit Variables cannot mix with Terms with implicit Variables
+        ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
         >>> A = CellVariable(mesh=m, name='A', value=1)
         >>> B = CellVariable(mesh=m, name='B')
         >>> C = CellVariable(mesh=m, name='C')        
         >>> eq = (DiffusionTerm(coeff=1., var=A)) & (DiffusionTerm(coeff=2., var=B))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve()
-        >>> numpyMatrix = eq.getMatrix().getNumpyArray()
+        >>> eq.solve(solver=DefaultSolver())
+        >>> numpyMatrix = eq.getMatrix().numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], [1, -1, 0, 0], [0, 0, -2, 2], [0, 0, 2, -2]])
         True
         >>> print eq.getRHSvector().getGlobalValue()
@@ -603,11 +511,11 @@ class Term:
         >>> DiffusionTerm(var=A) & DiffusionTerm(var=A)
         Traceback (most recent call last):
             ...
-        Exception: Different number of solution variables and equations.
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> DiffusionTerm() & DiffusionTerm()
         Traceback (most recent call last):
             ...
-        Exception: Different number of solution variables and equations.
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B)).solve(A)
         Traceback (most recent call last):
             ...
@@ -615,8 +523,8 @@ class Term:
         >>> DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=B)
         Traceback (most recent call last):
             ...
-        Exception: Different number of solution variables and equations.
-        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve()
+        SolutionVariableNumberError: Different number of solution variables and equations.
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(solver=DefaultSolver())
         >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(A)
         Traceback (most recent call last):
             ...
@@ -625,15 +533,11 @@ class Term:
         Traceback (most recent call last):
             ...
         Exception: The solution variable should not be specified.
-        >>> (DiffusionTerm(var=A) & (DiffusionTerm(var=B) + DiffusionTerm(var=C))).solve()
-        Traceback (most recent call last):
-            ...
-        Exception: Different number of solution variables and equations.
         >>> eq = (DiffusionTerm(coeff=1., var=A) + DiffusionTerm(coeff=2., var=B)) & (DiffusionTerm(coeff=2., var=B) + DiffusionTerm(coeff=3., var=C)) & (DiffusionTerm(coeff=3., var=C) + DiffusionTerm(coeff=1., var=A))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve()
-        >>> numpyMatrix = eq.getMatrix().getNumpyArray()
+        >>> eq.solve(solver=DefaultSolver())
+        >>> numpyMatrix = eq.getMatrix().numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, -2, 2, 0, 0],
         ...                                                             [1, -1, 2, -2, 0, 0],
         ...                                                             [0, 0, -2, 2, -3, 3],
@@ -645,9 +549,8 @@ class Term:
         [ 0.  0.  0.  0.  0.  0.]
         >>> print eq._getVars()
         [A, B, C]
-            
- 	""" 
-        
+        """ 
+
 class __Term(Term): 
     """
     Dummy subclass for tests
