@@ -471,7 +471,7 @@ class DiffusionTerm(Term):
         Test, 2nd order, 1 dimension, fixed flux 3, fixed value of 4
 
         >>> var=CellVariable(mesh=mesh)
-        >>> var.constrainFaceGrad(-3., mesh.getFacesLeft())
+        >>> var.getFaceGrad().constrain(-3., mesh.getFacesLeft())
         >>> var.constrain(4., mesh.getFacesRight())
         >>> term = DiffusionTerm(coeff = (1.,))
         >>> coeff = term._getGeomCoeff(mesh)
@@ -496,7 +496,7 @@ class DiffusionTerm(Term):
         ...     import NthOrderBoundaryCondition
         >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.getFacesLeft(), 0., 2)
         >>> var = CellVariable(mesh=mesh)
-        >>> var.constrainFaceGrad(-3., mesh.getFacesLeft())
+        >>> var.getFaceGrad().constrain(-3., mesh.getFacesLeft())
         >>> var.constrain(4., mesh.getFacesRight())
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 2)
         >>> term = DiffusionTerm(coeff = (1., 1.))
@@ -523,7 +523,7 @@ class DiffusionTerm(Term):
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), -1., 3)
 
         >>> var = CellVariable(mesh=mesh)
-        >>> var.constrainFaceGrad(-3., mesh.getFacesLeft())
+        >>> var.getFaceGrad().constrain(-3., mesh.getFacesLeft())
         >>> var.constrain(4., mesh.getFacesRight())
 
         >>> term = DiffusionTerm(coeff = (-1., 1.))
@@ -554,7 +554,7 @@ class DiffusionTerm(Term):
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.getFacesRight(), 0., 3)
 
         >>> var = CellVariable(mesh=mesh)
-        >>> var.constrainFaceGrad(1., mesh.getFacesRight())
+        >>> var.getFaceGrad().constrain(1., mesh.getFacesRight())
         >>> var.constrain(0., mesh.getFacesLeft())
         
         >>> term = DiffusionTerm(coeff = (1., 1.))

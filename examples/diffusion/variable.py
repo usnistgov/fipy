@@ -74,7 +74,7 @@ diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
 x = mesh.getFaceCenters()[0]
 diffCoeff.setValue(0.1, where=(L/4. <= x) & (x < 3. * L / 4.))
 
-var.constrainFaceGrad(1., mesh.getFacesRight())
+var.getFaceGrad().constrain(1., mesh.getFacesRight())
 var.constrain(valueLeft, mesh.getFacesLeft())
 
 if __name__ == '__main__':

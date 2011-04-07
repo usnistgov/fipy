@@ -504,18 +504,13 @@ class Variable(object):
                 if mask is None:
                     value[:] = constraintValue
                 else:
-                    mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
-                                             
-                    if len(numerix.getShape(value)) == 1:
-                        value[:] = numerix.where(mask, constraintValue, value)
+                    if not hasattr(mask, 'dtype') or mask.dtype != bool:
+                        mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
+
+                    if numerix.shape(constraintValue) == ():
+                        value[...,mask] = constraintValue
                     else:
-                        
-                        try:
-                            value[..., mask] = constraintValue
-                        except ValueError:
-                            value[:] = numerix.where(numerix.resize(mask, numerix.shape(value)),
-                                                     numerix.resize(constraintValue, numerix.shape(value)),
-                                                     value)
+                        value[...,mask] = constraintValue[...,mask]
                             
         return value
             

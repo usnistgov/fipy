@@ -49,9 +49,11 @@ class _FaceGradVariable(FaceVariable):
     def _calcValuePy(self):
         dAP = self.mesh._getCellDistances().getValue()
         id1, id2 = [id.getValue() for id in self.mesh._getAdjacentCellIDs()]
-##      N = self.mod(numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
-        N = (numerix.take(self.var.getValue(), id2, axis=-1) 
-             - numerix.take(self.var.getValue(), id1, axis=-1)) / dAP
+        N2 = numerix.take(self.var.getValue(), id2, axis=-1) 
+        faceMask = self.mesh.getExteriorFaces().getValue()
+        N2[..., faceMask] = self.var.getFaceValue().getValue()[..., faceMask] 
+        N = (N2 - numerix.take(self.var.getValue(), id1, axis=-1)) / dAP
+        
         normals = self.mesh._getOrientedFaceNormals().getValue()
         
         tangents1 = self.mesh._getFaceTangents1().getValue()

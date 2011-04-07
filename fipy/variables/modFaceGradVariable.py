@@ -42,6 +42,29 @@ class _ModFaceGradVariable(_FaceGradVariable):
     def __init__(self, var, modIn):
         _FaceGradVariable.__init__(self, var)
         self.modIn = modIn
+
+    def _calcValuePy(self):
+        dAP = self.mesh._getCellDistances()
+        id1, id2 = self.mesh._getAdjacentCellIDs()
+##      N = self.mod(numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
+        N = (numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
+        normals = self.mesh._getOrientedFaceNormals()
+        
+        tangents1 = self.mesh._getFaceTangents1()
+        tangents2 = self.mesh._getFaceTangents2()
+        cellGrad = self.var.getGrad().getNumericValue()
+        
+        grad1 = numerix.take(cellGrad, id1, axis=1)
+        grad2 = numerix.take(cellGrad, id2, axis=1)
+        t1grad1 = numerix.sum(tangents1*grad1,0)
+        t1grad2 = numerix.sum(tangents1*grad2,0)
+        t2grad1 = numerix.sum(tangents2*grad1,0)
+        t2grad2 = numerix.sum(tangents2*grad2,0)
+        
+        T1 = (t1grad1 + t1grad2) / 2.
+        T2 = (t2grad1 + t2grad2) / 2.
+        
+        return normals * N + tangents1 * T1 + tangents2 * T2
         
     def _calcValueInline(self):
 

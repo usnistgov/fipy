@@ -605,38 +605,52 @@ and so they take a :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable` coeff
 How do I represent boundary conditions?
 ---------------------------------------
 
-What is a :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary condition?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I represent a fixed value (Dirichlet) boundary condition?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is now deprecated. Use 
+Use the :meth:`~fipy.variable.cellVariable.CellVariable.constrain` method. For
+example, to fix `var` to have a value of `2` along the upper surface of a domain,
+use
 
->>> var.constrain(...)
+>>> var.constrain(2., where=mesh.getFacesTop())
 
-instead.
+.. note:: The old equivalent :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary condition is now deprecated.
 
-What does the :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary condition actually represent?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I apply a (Neumann) fixed gradient boundary condition?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is deprecated too. Use
+Use the :meth:`~fipy.variable.cellVariable.CellVariable.constrainFaceGrad`
+method. For example, to fix `var` to have a gradient of `(0,2)` along the upper
+surface of a 2D domain, use
 
->>> var.constrainFaceGrad(...)
+>>> var.constrainFaceGrad(((0,),(2,)), where=mesh.getFacesTop())
 
-instead. This constrains the gradient of a
-:class:`~fipy.variables.cellVariable.CellVariable` rather than specifying the
-flux.
+How do I apply a fixed flux boundary condition?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Generally this can be implemented with a judicious use of
+:meth:`~fipy.variables.cellVariable.CellVariable.constrainFaceGrad`. Failing
+that, an exterior flux term can be added to the equation. Firstly, set the terms'
+coefficients to be zero on the exterior faces,
+
+>>> diffCoeff.constrain(0., mesh.getExteriorFaces())
+>>> convCoeff.constrain(0., mesh.getExteriorFaces())
+
+then create an equation with an extra term to account for the exterior flux,
+
+>>> eqn = TransientTerm() + ConvectionTerm(convCoeff) == \
+...     DiffusionCoeff(diffCoeff) + \
+...     (mesh.getExteriorFaces() * exteriorFlux).getDivergence()
+
+where `exteriorFlux` is a rank 1
+:class:`~fipy.variables.faceVariable.FaceVariable`.
+
+.. note:: The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary condition is now deprecated.
 
 How do I apply an outlet or inlet boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In earlier versions of :term:`FiPy` this was quite difficult to do, but is now
-the default behavior.
-
-How do I apply a fixed gradient?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Easy, just use,
-
->>> var.constrainFaceGrad(value, mask)
+This boundary condition is applied by default to convection terms.
 
 How do I apply spatially varying boundary conditions?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -659,8 +673,8 @@ be written with the following code,
 
 >>> x, y = mesh.getFaceCenters()
 >>> mask =  ((x < 0.5) | (y < 0.5))
->>> var.constrainFaceGrad(0, mesh.getExteriorFaces() & mask)
->>> var.constrain(x * y, mesh.getExteriorFaces() & ~mask)
+>>> var.constrainFaceGrad(0, where=mesh.getExteriorFaces() & mask)
+>>> var.constrain(x * y, where=mesh.getExteriorFaces() & ~mask)
 
 then
 
