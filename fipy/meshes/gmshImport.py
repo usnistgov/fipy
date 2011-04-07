@@ -63,14 +63,20 @@ class GmshPickler(object):
 
     @staticmethod
     def setstate(self, dict):
-        self.__init__(dict["gmshSpec"], unpickling=True)
+        self.__init__(dict["gmshSpec"])
          
     @staticmethod
     def getstate(self):
+
+        """
+        fnameLower = self._mshFile.filenameOrArg.lower()
+        if '.msh' in fnameLower or '.geo' in fnameLower or '.gmsh' in fnameLower:
+
         gmshSpec = open(self._mshFile.filename, 'r')
         specStr = "".join(gmshSpec.readlines())
+        """
 
-        dict = {"gmshSpec": specStr}
+        dict = {"gmshSpec": self._mshFile.args['filenameOrArg']}
         return dict
          
 
@@ -110,6 +116,8 @@ class MshFile:
         self.communicator    = communicator
         self.coordDimensions = coordDimensions or dimensions
         self.dimensions      = dimensions
+
+        self.args = {'filenameOrArg': filenameOrArg}
 
         if order > 1:
             self.communicator = serial
@@ -736,12 +744,6 @@ class Gmsh2DIn3DSpace(Gmsh2D):
                         communicator=communicator,
                         order=order,
                         unpickling=unpickling)
-         
-    def __setstate__(self, dict):
-        GmshPickler.setstate(self, dict)
-
-    def __getstate__(self):
-        GmshPickler.getstate(self)
          
     def _test(self):
         """
