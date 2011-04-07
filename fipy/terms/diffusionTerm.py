@@ -34,7 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
+import os
 
 from fipy.terms.term import Term
 from fipy.tools import numerix
@@ -220,6 +220,7 @@ class DiffusionTerm(Term):
         interiorCoeff = numerix.take(interiorCoeff, mesh._getCellFaceIDs())
 
         coefficientMatrix = SparseMatrix(mesh=mesh, bandwidth = mesh._getMaxFacesPerCell())
+        
         coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, 0))
         del interiorCoeff
         
@@ -234,13 +235,19 @@ class DiffusionTerm(Term):
         
         return coefficientMatrix
         
-    def _bcAdd(self, coefficientMatrix, boundaryB, LLbb):
-        coefficientMatrix += LLbb[0]
-        boundaryB += LLbb[1]
+    def _bcAdd(self, coefficientMatrix, boundaryB, LL, bb):
+        coefficientMatrix += LL
+        boundaryB += bb
         
     def _doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
         for boundaryCondition in higherOrderBCs:
-            self._bcAdd(coefficientMatrix, boundaryB, boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs))
+            LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)
+            if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+                self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
+                self._viewer.plot(matrix=LL, RHSvector=bb)
+                from fipy import raw_input
+                raw_input()
+            self._bcAdd(coefficientMatrix, boundaryB, LL, bb) 
             
         return coefficientMatrix, boundaryB
 

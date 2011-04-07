@@ -797,13 +797,13 @@ class Mesh(_CommonMesh):
 
     def __getstate__(self):
         dict = {
-            'vertexCoords' : self.vertexCoords.getValue(),            
-            'faceVertexIDs' : self.faceVertexIDs.getValue(),
-            'cellFaceIDs' : self.cellFaceIDs.getValue() }
+            'vertexCoords' : self.vertexCoords.getValue() * self.scale['length'],            
+            'faceVertexIDs' : numerix.ma.filled(self.faceVertexIDs.getValue()),
+            'cellFaceIDs' : numerix.ma.filled(self.cellFaceIDs.getValue()) }
         return dict
 
     def __setstate__(self, dict):
-        Mesh.__init__(self, **dict)
+        self._concatenatedClass.__init__(self, **dict)
      
     def _test(self):
         """

@@ -507,6 +507,11 @@ class Gmsh2D(mesh2D.Mesh2D):
                                      faceVertexIDs=self.faces,
                                      cellFaceIDs=self.cells)
         parprint("Exiting Gmsh2D")
+        
+    def __setstate__(self, dict):
+        mesh2D.Mesh2D.__init__(self, **dict)
+        self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
+        self.gCellGlobalIDs = []
 
     def _getGlobalNonOverlappingCellIDs(self):
         """
