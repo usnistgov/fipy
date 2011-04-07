@@ -59,6 +59,21 @@ def parprint(str):
 class GmshException(Exception):
     pass
 
+class GmshPickler(object):
+
+    @staticmethod
+    def setstate(self, dict):
+        self.__init__(dict["gmshSpec"], unpickling=True)
+         
+    @staticmethod
+    def getstate(self):
+        gmshSpec = open(self._mshFile.filename, 'r')
+        specStr = "".join(gmshSpec.readlines())
+
+        dict = {"gmshSpec": specStr}
+        return dict
+         
+
 class MshFile:
     """
     Class responsible for parsing a Gmsh file and then readying
@@ -530,15 +545,11 @@ class Gmsh2D(Mesh2D):
         parprint("Exiting Gmsh2D")
 
     def __setstate__(self, dict):
-        self.__init__(dict["gmshSpec"], unpickling=True)
+        return GmshPickler.setstate(self, dict)
          
     def __getstate__(self):
-        gmshSpec = open(self._mshFile.filename, 'r')
-        specStr = "".join(gmshSpec.readlines())
-
-        dict = {"gmshSpec": specStr}
-        return dict
-         
+        return GmshPickler.getstate(self)
+        
     @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
         return self._globalNonOverlappingCellIDs
@@ -718,13 +729,20 @@ class Gmsh2D(Mesh2D):
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
-    def __init__(self, arg, communicator=parallel, order=1):
+    def __init__(self, arg, communicator=parallel, order=1, unpickling=False):
         Gmsh2D.__init__(self, 
                         arg, 
                         coordDimensions=3, 
                         communicator=communicator,
-                        order=order)
+                        order=order,
+                        unpickling=unpickling)
+         
+    def __setstate__(self, dict):
+        GmshPickler.setstate(self, dict)
 
+    def __getstate__(self):
+        GmshPickler.getstate(self)
+         
     def _test(self):
         """
         Stolen from the cahnHilliard sphere example.
@@ -780,11 +798,12 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         """
 
 class Gmsh3D(Mesh):
-    def __init__(self, arg, communicator=parallel, order=1):
+    def __init__(self, arg, communicator=parallel, order=1, unpickling=False):
         self._mshFile  = MshFile(arg, 
                                 dimensions=3, 
                                 communicator=communicator,
-                                order=order)
+                                order=order,
+                                unpickling=unpickling)
 
         (verts,
         faces,
@@ -802,12 +821,11 @@ class Gmsh3D(Mesh):
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
 
     def __setstate__(self, dict):
-        Mesh.__init__(self, **dict)
-        self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
-        self.gCellGlobalIDs = []
-        self.communicator = serial
-        self._mshFile = None
+        return GmshPickler.setstate(self, dict)
 
+    def __getstate__(self):
+        return GmshPickler.getstate(self)
+        
     @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
         return self._globalNonOverlappingCellIDs
