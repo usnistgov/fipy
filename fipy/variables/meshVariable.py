@@ -58,8 +58,6 @@ class _MeshVariable(Variable):
              Default: `rank * (mesh.dim,)`
           - `unit`: the physical units of the `Variable`
         """
-        from fipy.tools import debug
-
         if isinstance(value, (list, tuple)):
             value = numerix.array(value)
             
