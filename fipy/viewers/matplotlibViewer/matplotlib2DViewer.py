@@ -88,8 +88,6 @@ class Matplotlib2DViewer(_MatplotlibViewer):
                 vertices = vertices.compress(~vertices.mask[...,0], axis=0)
             polys.append(vertices)
 
-        import matplotlib
-
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
         self.collection.set_linewidth(0.5)
@@ -131,24 +129,16 @@ class Matplotlib2DViewer(_MatplotlibViewer):
 
         Z = self.vars[0].getValue() 
         
-        zmin, zmax = self._autoscale(vars=self.vars,
-                                     datamin=self._getLimit(('datamin', 'zmin')),
-                                     datamax=self._getLimit(('datamax', 'zmax')))
+        self.norm.vmin = self._getLimit(('datamin', 'zmin'))
+        self.norm.vmax = self._getLimit(('datamax', 'zmax'))
 
-        diff = zmax - zmin
-        
-        import matplotlib
-
-        if diff == 0:
-            rgba = self.cmap(0.5)
-        else:
-            rgba = self.cmap((Z - zmin) / diff)
+        rgba = self.cmap(self.norm(Z))
         
         self.collection.set_facecolors(rgba)
         self.collection.set_edgecolors(rgba)
 
         if self.colorbar is not None:
-            self.colorbar.plot(vmin=zmin, vmax=zmax)
+            self.colorbar.plot() #vmin=zmin, vmax=zmax)
         
 ##        pylab.xlim(xmin=self._getLimit('xmin'),
 ##                   xmax=self._getLimit('xmax'))

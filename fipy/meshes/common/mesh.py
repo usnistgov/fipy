@@ -652,7 +652,19 @@ class Mesh:
 
     def _getCellToCellIDsFilled(self):
         return self.cellToCellIDsFilled
-        
+
+    def getInteriorFaceIDs(self):
+        if not hasattr(self, 'interiorFaceIDs'):
+            self.interiorFaceIDs = numerix.nonzero(self.getInteriorFaces())[0]
+        return self.interiorFaceIDs
+
+    def getInteriorFaceCellIDs(self):
+        if not hasattr(self, 'interiorFaceCellIDs'):
+            ## Commented line is better, but doesn't work for zero length arrays
+            ##  self.interiorFaceCellIDs = self.getFaceCellIDs()[..., self.getInteriorFaceIDs()]
+            self.interiorFaceCellIDs = numerix.take(self.getFaceCellIDs(), self.getInteriorFaceIDs(), axis=1)
+        return self.interiorFaceCellIDs
+    
     """geometry methods"""
     
     def _calcGeometry(self):
@@ -727,7 +739,7 @@ class Mesh:
 
     def _getFaceCellToCellNormals(self):
         return self.faceCellToCellNormals
-        
+
     def getCellVolumes(self):
         return self.scaledCellVolumes
 
@@ -825,18 +837,8 @@ class Mesh:
            [4 5 7 8]
            
         """
-        if self.globalNumberOfCells == 0:
-            return numerix.arange(0)
-            
-        points = numerix.resize(points, (self.globalNumberOfCells, len(points), len(points[0]))).swapaxes(0,1)
+        return numerix.nearest(data=self.getCellCenters().getGlobalValue(), points=points)
 
-        centers = self.getCellCenters().getGlobalValue()[...,numerix.newaxis]
-        try:
-            tmp = centers - points
-        except TypeError:
-            tmp = centers - PhysicalField(points)
-        return numerix.argmin(numerix.dot(tmp, tmp, axis = 0), axis=0)
-        
     def _subscribe(self, var):
         if not hasattr(self, 'subscribedVariables'):
             self.subscribedVariables = []

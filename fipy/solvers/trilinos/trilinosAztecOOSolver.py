@@ -35,10 +35,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+import os
 
 from PyTrilinos import AztecOO
+
+from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
+from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
 class TrilinosAztecOOSolver(TrilinosSolver):
 
@@ -82,25 +84,25 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         if self.preconditioner is not None:
             if hasattr(self.preconditioner, 'Prec'):
                 del self.preconditioner.Prec
-            
-        status = Solver.GetAztecStatus()
 
-##         from fipy.tools.debug import PRINT        
-##         PRINT('self.iterations:',self.iterations)
-##         PRINT('AztecOO.AZ_its:',status[AztecOO.AZ_its])
-##         failure = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
-##                    AztecOO.AZ_param : 'AztecOO.AZ_param',
-##                    AztecOO.AZ_breakdown : 'AztecOO.AZ_breakdown',
-##                    AztecOO.AZ_loss : 'AztecOO.AZ_loss',
-##                    AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
-##                    AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            status = Solver.GetAztecStatus()
 
-##         PRINT('failure',failure[status[AztecOO.AZ_why]])
-                              
-##         PRINT('AztecOO.AZ_r:',status[AztecOO.AZ_r])
-##         PRINT('AztecOO.AZ_scaled_r:',status[AztecOO.AZ_scaled_r])
-##         PRINT('AztecOO.AZ_rec_r:',status[AztecOO.AZ_rec_r])
-##         PRINT('AztecOO.AZ_solve_time:',status[AztecOO.AZ_solve_time])
-##         PRINT('AztecOO.AZ_Aztec_version:',status[AztecOO.AZ_Aztec_version])
+            from fipy.tools.debug import PRINT        
+            PRINT('iterations: %d / %d' % (status[AztecOO.AZ_its], self.iterations))
+            failure = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
+                       AztecOO.AZ_param : 'AztecOO.AZ_param',
+                       AztecOO.AZ_breakdown : 'AztecOO.AZ_breakdown',
+                       AztecOO.AZ_loss : 'AztecOO.AZ_loss',
+                       AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
+                       AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
+
+            PRINT('failure',failure[status[AztecOO.AZ_why]])
+                               
+            PRINT('AztecOO.AZ_r:',status[AztecOO.AZ_r])
+            PRINT('AztecOO.AZ_scaled_r:',status[AztecOO.AZ_scaled_r])
+            PRINT('AztecOO.AZ_rec_r:',status[AztecOO.AZ_rec_r])
+            PRINT('AztecOO.AZ_solve_time:',status[AztecOO.AZ_solve_time])
+            PRINT('AztecOO.AZ_Aztec_version:',status[AztecOO.AZ_Aztec_version])
         
         return output

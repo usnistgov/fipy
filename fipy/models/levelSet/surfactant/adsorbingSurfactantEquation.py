@@ -208,7 +208,9 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     >>> nx = 5
     >>> ny = 5
-    >>> mesh = Grid2D(dx = 1., dy = 1., nx = nx, ny = ny)
+    >>> dx = 1.
+    >>> dy = 1.
+    >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny)
     >>> x, y = mesh.getCellCenters()
     >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)
     >>> disVar[y < dy] = -1
@@ -324,8 +326,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         
         if consumptionCoeff is not None:
             self.eq += ImplicitSourceTerm(consumptionCoeff)
-            
-    def solve(self, var, boundaryConditions=(), solver=LinearPCGSolver(), dt=1.):
+
+    def solve(self, var, boundaryConditions=(), solver=None, dt = 1.):
         """
         Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
                 
@@ -335,11 +337,15 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            
-        """
-        self.dt.setValue(dt)
+	"""
+
+        for coeff in self.coeffs:
+            coeff._updateDt(dt)
+        if solver is None:
+            solver = LinearPCGSolver()
         SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
         
-    def sweep(self, var, solver=DefaultAsymmetricSolver(), boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `AdsorbingSurfactantEquation`'s linear
         system once. This method also recalculates and returns the
@@ -355,6 +361,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
         """
         self.dt.setValue(dt)
+        if solver is None:
+            solver = DefaultAsymmetricSolver()
         return SurfactantEquation.sweep(self, var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, underRelaxation=underRelaxation, residualFn=residualFn)
 
 def _test(): 

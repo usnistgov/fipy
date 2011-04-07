@@ -76,8 +76,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         self.image = self.axes.imshow(self._getData(),
                                       extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
                                               self._getLimit('ymin'), self._getLimit('ymax')),
-                                      vmin=self._getLimit(key=('datamin', 'zmin')),
-                                      vmax=self._getLimit(key=('datamax', 'zmax')),
+                                      vmin=0, vmax=1,
                                       cmap=self.cmap)
                    
         if title is None:                          
@@ -114,19 +113,13 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
         return reshape(array(self.vars[0]), self.vars[0].getMesh().getShape()[::-1])[::-1]
 
     def _plot(self):
-        datamin = self._getLimit(('datamin', 'zmin')) 
-        datamax = self._getLimit(('datamax', 'zmax')) 
-        if datamin is None or datamax is None:
-            datamin, datamax = self._autoscale(vars=self.vars, 
-                                               datamin=datamin, 
-                                               datamax=datamax)
-
-            self.image.set_clim(vmax=datamax, vmin=datamin)
-
-        self.image.set_data(self._getData())
+        self.norm.vmin = self._getLimit(('datamin', 'zmin'))
+        self.norm.vmax = self._getLimit(('datamax', 'zmax'))
+        
+        self.image.set_data(self.norm(self._getData()))
         
         if self.colorbar is not None:
-            self.colorbar.plot(vmin=datamin, vmax=datamax)
+            self.colorbar.plot()
 
 def _test():
     from fipy.viewers.viewer import _test2D

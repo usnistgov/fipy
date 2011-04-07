@@ -50,8 +50,8 @@ class ExplicitUpwindConvectionTerm(UpwindConvectionTerm):
     For further details see :ref:`sec:NumericalSchemes`.
     """
 
-    def _getWeight(self, mesh, equation=None):
-        weight = UpwindConvectionTerm._getWeight(self, mesh, equation=equation)
+    def _getWeight(self, mesh, diffusionGeomCoeff=None):
+        weight = UpwindConvectionTerm._getWeight(self, mesh)
         if 'implicit' in weight.keys():
             weight['explicit'] = weight['implicit']
             del weight['implicit']

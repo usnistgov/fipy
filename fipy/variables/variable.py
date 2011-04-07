@@ -1286,7 +1286,11 @@ class Variable(object):
             >>> print Variable(value=(0, 0, 1, 1)).any()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis))
+        operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
+        return self._UnaryOperatorVariable(lambda a: a.any(axis=axis),
+                                           operatorClass=operatorClass,
+                                           opShape=(),
+                                           canInline=False)
 
     def all(self, axis=None):
         """
@@ -1295,7 +1299,11 @@ class Variable(object):
             >>> print Variable(value=(1, 1, 1, 1)).all()
             1
         """
-        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis))
+        operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
+        return self._UnaryOperatorVariable(lambda a: a.all(axis=axis),
+                                           operatorClass=operatorClass,
+                                           opShape=(),
+                                           canInline=False)
 
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))

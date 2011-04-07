@@ -44,7 +44,8 @@ def _suite():
                                        'anisotropy',
                                        'quaternary',
                                        'simple',
-                                       'symmetry'
+                                       'symmetry',
+                                       'binary-coupled'
                                    ), 
                                    base = __name__)
     
