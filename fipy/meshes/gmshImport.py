@@ -74,19 +74,20 @@ class MshFile:
 
     TODO: Refactor face extraction functions.
     """
-    def __init__(self, filename, 
+    def __init__(self, filenameOrArg, 
                        dimensions, 
                        coordDimensions=None,
                        communicator=parallel,
                        order=1,
-                       recompile=False):
+                       unpickling=False):
         """
         Isolate relevant data into two files, store in 
         `self.nodesFile` for $Nodes,
         `self.elemsFile` for $Elements. 
 
         :Parameters:
-          - `filename`: a string indicating gmsh output file
+          - `filenameOrArg`: a string indicating gmsh output file or gmsh 
+            specification
           - `dimensions`: an integer indicating dimension of mesh
           - `coordDimension`: an integer indicating dimension of shapes
         """
@@ -121,9 +122,9 @@ class MshFile:
         gmshFlags += " -format msh"
 
         (self.filename, 
-         self.gmshOutput) = self._parseFilename(filename, 
+         self.gmshOutput) = self._parseFilename(filenameOrArg, 
                                                 gmshFlags, 
-                                                recompile=recompile)
+                                                unpickling=unpickling)
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
@@ -144,29 +145,34 @@ class MshFile:
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
 
-    def _parseFilename(self, fname, gmshFlags, recompile=False):
+        f.close()
+
+    def _parseFilename(self, fname, gmshFlags, unpickling=False):
         """
-        If we're being passed a .msh file, leave it be unless `recompile` is
-        True. Otherwise,
+        If we're being passed a .msh file, leave it be. Otherwise,
         we've gotta compile a .msh file from either (i) a .geo file, 
         or (ii) a gmsh script passed as a string.
         """
         import subprocess as subp
         lowerFname = fname.lower()
-        if '.msh' in lowerFname and not recompile:
+        if '.msh' in lowerFname:
             return fname, None
         else:
             if '.geo' in lowerFname or '.gmsh' in lowerFname or '.msh' in lowerFname:
-                geoFile = fname
+                inFile = fname
             else: # fname must be a full script, not a file
-                (f, geoFile) = tempfile.mkstemp('.geo')
-                file = open(geoFile, 'w')
+                if unpickling: # if unpickling, we have .msh contents
+                    extension = '.msh'
+                else:
+                    extension = '.geo'
+                (f, inFile) = tempfile.mkstemp(extension)
+                file = open(inFile, 'w')
                 file.writelines(fname)
                 file.close(); os.close(f)
 
             (f, mshFile) = tempfile.mkstemp('.msh')
             gmshout = subp.Popen("gmsh %s %s -o %s" \
-                      % (geoFile, gmshFlags, mshFile),
+                      % (inFile, gmshFlags, mshFile),
                       stdout=subp.PIPE, shell=True).stdout.readlines()
             parprint("gmsh out: %s" % gmshout)
             os.close(f)
@@ -499,19 +505,19 @@ class Gmsh2D(Mesh2D):
                  coordDimensions=2, 
                  communicator=parallel, 
                  order=1,
-                 recompileMsh=False):
+                 unpickling=False):
         self.communicator = communicator 
-        self.mshFile  = MshFile(arg, 
+        self._mshFile  = MshFile(arg, 
                                 dimensions=2, 
                                 coordDimensions=coordDimensions,
                                 communicator=communicator,
                                 order=order,
-                                recompile=recompileMsh)
+                                unpickling=unpickling)
         (verts,
-        faces,
-        cells,
-        self.cellGlobalIDs, 
-        self.gCellGlobalIDs) = self.mshFile.buildMeshData()
+         faces,
+         cells,
+         self.cellGlobalIDs, 
+         self.gCellGlobalIDs) = self._mshFile.buildMeshData()
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
@@ -524,24 +530,15 @@ class Gmsh2D(Mesh2D):
         parprint("Exiting Gmsh2D")
 
     def __setstate__(self, dict):
-        import sys
-        print >> sys.stderr, "numVert dict", dict["vertexCoords"].shape
-        if parallel.procID == 0 or parallel.Nproc < 2:
-            import tempfile as tmp
-            filename = tmp.mktemp(".msh")
-        else: 
-            filename = None
+        self.__init__(dict["gmshSpec"], unpickling=True)
+         
+    def __getstate__(self):
+        gmshSpec = open(self._mshFile.filename, 'r')
+        specStr = "".join(gmshSpec.readlines())
 
-        if parallel.procID == 0 or parallel.Nproc < 2:
-            from gmshExport import GmshExporter
-            tmpMesh = Mesh2D(**dict)
-            GmshExporter(tmpMesh, filename).export()
-
-        if parallel.Nproc > 1:
-            filename = parallel.bcast(obj=filename, root=0)
-
-        self.__init__(filename, recompileMsh=True)
-    
+        dict = {"gmshSpec": specStr}
+        return dict
+         
     @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
         return self._globalNonOverlappingCellIDs
@@ -705,11 +702,7 @@ class Gmsh2D(Mesh2D):
         >>> from fipy.tools import numerix
         >>> f, tempfile = dump.write(circle)
         >>> pickle_circle = dump.read(tempfile, f)
-        >>> print pickle_circle.cellVolumes.shape
-        >>> print pickle_circle.vertexCoords.shape
-        >>> print circle.cellVolumes.shape
-        >>> print circle.vertexCoords.shape
-
+        
         >>> print (pickle_circle.cellVolumes == circle.cellVolumes).all()
         True
         
@@ -788,7 +781,7 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
 class Gmsh3D(Mesh):
     def __init__(self, arg, communicator=parallel, order=1):
-        self.mshFile  = MshFile(arg, 
+        self._mshFile  = MshFile(arg, 
                                 dimensions=3, 
                                 communicator=communicator,
                                 order=order)
@@ -797,7 +790,7 @@ class Gmsh3D(Mesh):
         faces,
         cells,
         self.cellGlobalIDs,
-        self.gCellGlobalIDs) = self.mshFile.buildMeshData()
+        self.gCellGlobalIDs) = self._mshFile.buildMeshData()
 
         Mesh.__init__(self, vertexCoords=verts,
                             faceVertexIDs=faces,
@@ -813,7 +806,7 @@ class Gmsh3D(Mesh):
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
         self.communicator = serial
-        self.mshFile = None
+        self._mshFile = None
 
     @getsetDeprecated
     def _getGlobalNonOverlappingCellIDs(self):
@@ -1043,7 +1036,6 @@ class GmshGrid2D(Gmsh2D):
         >>> len(mesh.faceCenters[0]) == 12
         True
         """
-
 
 class GmshGrid3D(Gmsh3D):
     """Should serve as a drop-in replacement for Grid3D."""
