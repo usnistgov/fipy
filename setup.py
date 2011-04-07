@@ -130,6 +130,17 @@ def _TestClass(base):
 
             if self.test_args and noSuiteOrModule:
                 self.test_suite = "dummy"
+
+
+        def printPackageInfo(self):
+            
+            for pkg in ['fipy', 'numpy', 'pysparse', 'PyTrilinos', 'scipy', 'matplotlib', 'gist', 'mayavi', 'mpi4py']:
+                
+                try:
+                    mod = __import__(pkg)
+                    print pkg,'version',mod.__version__
+                except ImportError, exc:
+                    print pkg,'is not installed'
                 
         def run_tests(self):
             import sys
@@ -159,6 +170,8 @@ def _TestClass(base):
             if self.pythoncompiled is not None:
                 import os
                 os.environ['PYTHONCOMPILED'] = self.pythoncompiled
+
+            self.printPackageInfo()
 
             base.run_tests(self)
 
@@ -473,8 +486,52 @@ except IOError, e:
 #             ],
 #         },
 
+##Hacked from numpy
+def svn_version():
+    def _minimal_ext_cmd(cmd):
+        # construct minimal environment
+        env = {}
+        for k in ['SYSTEMROOT', 'PATH']:
+            v = os.environ.get(k)
+            if v is not None:
+                env[k] = v
+        # LANGUAGE is used on win32
+        env['LANGUAGE'] = 'C'
+        env['LANG'] = 'C'
+        env['LC_ALL'] = 'C'
+        import subprocess
+        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
+        return out
+
+    try:
+        out = _minimal_ext_cmd(['svn', 'info'])
+    except OSError:
+        print(" --- Could not run svn info --- ")
+        return ""
+
+    import re
+    r = re.compile('Revision: ([0-9]+)')
+    svnver = ""
+
+    out = out.decode()
+
+    for line in out.split('\n'):
+        m = r.match(line.strip())
+        if m:
+            svnver = m.group(1)
+
+    if not svnver:
+        print("Error while parsing svn version")
+
+    return svnver
+
+def getVersion(version, release=False):
+    if not release:
+        version += '-dev' + svn_version()
+    return version
+
 dist = setup(	name = "FiPy",
-        version = "2.1", 
+        version = getVersion(version='2.2', release=False), 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
