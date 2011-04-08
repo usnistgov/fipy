@@ -1438,6 +1438,24 @@ class Mesh(object):
         """
         return numerix.nearest(data=self.cellCenters.globalValue, points=points)
         
+    def _subscribe(self, var):
+        if not hasattr(self, 'subscribedVariables'):
+            self.subscribedVariables = []
+
+        # we retain a weak reference to avoid a memory leak
+        # due to circular references between the subscriber
+        # and the subscribee
+        import weakref
+        self.subscribedVariables.append(weakref.ref(var))
+
+    def getSubscribedVariables(self):
+        if not hasattr(self, 'subscribedVariables'):
+            self.subscribedVariables = []
+           
+        self.subscribedVariables = [sub for sub in self.subscribedVariables if sub() is not None]
+       
+        return self.subscribedVariables
+
 
     """pickling"""
 
