@@ -112,10 +112,6 @@ class CellTerm(_NonDiffusionTerm):
         def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
             N = len(oldArray)
 
-            print numerix.array(oldArray)
-            print numerix.array(coeffVectors['old value'])
-            print dt
-
             b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
             b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
             L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
@@ -126,20 +122,16 @@ class CellTerm(_NonDiffusionTerm):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        if var is self.var or self.var is None:
-
-            N = len(var)
-            b = numerix.zeros((N),'d')
-            L = SparseMatrix(mesh=var.mesh)
-
-            coeffVectors = self.__getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-
-            self._buildMatrix_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
-
-            return (var, L, b)
-        else:
-            return (var, SparseMatrix(mesh=var.mesh), 0)
-
+        N = len(var)
+        b = numerix.zeros((N),'d')
+        L = SparseMatrix(mesh=var.mesh)
+        
+        coeffVectors = self.__getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+        
+        self._buildMatrix_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
+        
+        return (var, L, b)
+        
     def _test(self):
         """
         The following tests demonstrate how the `CellVariable` objects

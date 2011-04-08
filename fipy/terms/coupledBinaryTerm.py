@@ -38,7 +38,8 @@ from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.terms import SolutionVariableNumberError
-
+from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+                
 class _CoupledBinaryTerm(_BaseBinaryTerm):
     """
     Test to ensure that _getTransientGeomCoeff and _getDiffusionGeomCoeff return sensible results for coupled equations.
@@ -79,7 +80,13 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
             raise SolutionVariableNumberError
 
         return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
-    
+
+    def _getMatrixClass(self, solver):
+        from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+        return OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
+                                  numberOfVariables=len(self._vars),
+                                  numberOfEquations=len(self._uncoupledTerms))
+        
     def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Build matrices of constituent Terms and collect them
 
@@ -94,9 +101,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq = eq0 & eq1
-        >>> var = eq._verifyVar(None)
-        >>> solver = DefaultSolver()
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=eq._getMatrixClass(DefaultSolver())) 
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -116,9 +121,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq = eq0 & eq1
-        >>> var = eq._verifyVar(None)
-        >>> solver = DefaultSolver()
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=eq._getMatrixClass(DefaultSolver())) 
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -149,9 +152,9 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> diffTerm.cacheMatrix()
         >>> (eq0 & eq1).solve()
         >>> print numerix.allequal(eq0.matrix.numpyArray,
-        ...                        [[ 0,  0,  0,  2, -2,  0],
-        ...                         [ 0,  0,  0, -2,  4, -2],
-        ...                         [ 0,  0,  0,  0, -2,  2],
+        ...                        [[ 2, -1,  0,  2, -2,  0],
+        ...                         [-1,  3, -1, -2,  4, -2],
+        ...                         [ 0, -1,  2,  0, -2,  2],
         ...                         [ 0,  0,  0,  0,  0,  0],
         ...                         [ 0,  0,  0,  0,  0,  0],
         ...                         [ 0,  0,  0,  0,  0,  0]])
@@ -161,55 +164,28 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         None
         
         """
-
-        numberOfCells = var.mesh.numberOfCells
-        numberOfVariables = len(self._vars)
-        numberOfEquations = len(self._uncoupledTerms)
         
-        matrix = 0
-        RHSvectorsJ = []
+        matrix = SparseMatrix(mesh=var.mesh)
+        RHSvectors = []
 
-        for i, uncoupledTerm in enumerate(self._uncoupledTerms):
+        for equationIndex, uncoupledTerm in enumerate(self._uncoupledTerms):
 
-            RHSvector = 0
+            SparseMatrix.equationIndex = equationIndex
 
-            for j, tmpVar in enumerate(self._vars):
+            tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildAndAddMatrices(var,
+                                                                                 SparseMatrix,
+                                                                                 boundaryConditions=(),
+                                                                                 dt=dt,
+                                                                                 transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(var),
+                                                                                 diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(var))
 
-                class OffsetSparseMatrix(SparseMatrix):
-                    def __init__(self, mesh, bandwidth=0, sizeHint=None, 
-                                 numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations):
-                        SparseMatrix.__init__(self, mesh=mesh, bandwidth=bandwidth, sizeHint=sizeHint, 
-                                              numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations) 
 
-                    def put(self, vector, id1, id2):
-                        SparseMatrix.put(self, vector, id1 + numberOfCells * i, id2 + numberOfCells * j)
+            uncoupledTerm._buildCache(tmpMatrix, tmpRHSvector)
 
-                    def addAt(self, vector, id1, id2):
-                        SparseMatrix.addAt(self, vector, id1 + numberOfCells * i, id2 + numberOfCells * j)
+            matrix += tmpMatrix            
+            RHSvectors += [CellVariable(value=tmpRHSvector, mesh=var.mesh)]
 
-                    def addAtDiagonal(self, vector):
-                        if type(vector) in [type(1), type(1.)]:
-                            tmp = numerix.zeros((numberOfCells,), 'd')
-                            tmp[:] = vector
-                            SparseMatrix.addAtDiagonal(self, tmp)
-                        else:
-                            SparseMatrix.addAtDiagonal(self, vector)
-
-                tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildMatrix(tmpVar,
-                                                                             OffsetSparseMatrix,
-                                                                             boundaryConditions=(),
-                                                                             dt=dt,
-                                                                             transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(tmpVar),
-                                                                             diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar))
-
-                uncoupledTerm._buildCache(tmpMatrix, tmpRHSvector)
-
-                RHSvector += tmpRHSvector
-                matrix += tmpMatrix
-
-            RHSvectorsJ += [CellVariable(value=RHSvector, mesh=var.mesh)]
-
-        RHSvector = _CoupledCellVariable(RHSvectorsJ)
+        RHSvector = _CoupledCellVariable(RHSvectors)
 
 	return (var, matrix, RHSvector)
 
