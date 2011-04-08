@@ -359,7 +359,6 @@ fipy/meshes/numMesh/gmshImport.py
 fipy/meshes/numMesh/grid1D.py
 fipy/meshes/numMesh/grid2D.py
 fipy/meshes/numMesh/grid3D.py
-fipy/meshes/numMesh/movingMesh.py
 fipy/meshes/numMesh/periodicGrid1D.py
 fipy/meshes/numMesh/periodicGrid2D.py
 fipy/meshes/numMesh/skewedGrid2D.py
