@@ -67,20 +67,20 @@ class MeshGeometry2D(MeshGeometry):
     def _calcFaceNormals(self):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
-        faceNormals = t1.copy()
-        mag = numerix.sqrt(t1[1]**2 + t1[0]**2)
-        faceNormals[0] = -t1[1] / mag
-        faceNormals[1] = t1[0] / mag
+        rot = numerix.eye(N=self.dim)
+        rot[0:2,0:2] = numerix.array((( 0, 1),
+                                      (-1, 0)))
+        faceNormals = t1.dot(rot) / t1.mag
         
         orientation = 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
         return faceNormals * orientation
 
     def _calcFaceTangents(self):
-        tmp = numerix.array((-self.faceNormals[1], self.faceNormals[0]))
-        # copy required to get internal memory ordering correct for inlining.
-        tmp = tmp.copy()
-        mag = numerix.sqrtDot(tmp, tmp)
-        faceTangents1 = tmp / mag
-        faceTangents2 = numerix.zeros(faceTangents1.shape, 'd')
+        rot = numerix.eye(N=self.getDim())
+        rot[0:2,0:2] = numerix.array((( 0, 1),
+                                      (-1, 0)))
+        tmp = self.faceNormals.dot(rot)
+        faceTangents1 = tmp / tmp.mag
+        faceTangents2 = FaceVariable(mesh=self, value=0., rank=1)
         return faceTangents1, faceTangents2
     

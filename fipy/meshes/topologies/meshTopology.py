@@ -56,7 +56,7 @@ class MeshTopology(AbstractMeshTopology):
         (self._interiorFaces,
         self._exteriorFaces) = self._calcInteriorAndExteriorFaceIDs(mesh)
         (self._interiorCellIDs,
-        self._exteriorCellIDs) = self._calcInteriorAndExteriorCellIDs(numCells)
+        self._exteriorCellIDs) = self._calcInteriorAndExteriorCellIDs(numCells, mesh)
         self._cellToFaceOrientations = self._calcCellToFaceOrientations()
         self._adjacentCellIDs = self._calcAdjacentCellIDs()
         self._cellToCellIDs = self._calcCellToCellIDs()
@@ -105,42 +105,35 @@ class MeshTopology(AbstractMeshTopology):
     cellToCellIDsFilled = property(_getCellToCellIDsFilled)
       
     def _calcInteriorAndExteriorFaceIDs(self, mesh):
-        from fipy.variables.faceVariable import FaceVariable
-        mask = MA.getmask(self.faceCellIDs[1])
-        exteriorFaces = FaceVariable(mesh=mesh, 
-                                     value=mask)
-        interiorFaces = FaceVariable(mesh=mesh, 
-                                     value=numerix.logical_not(mask))
+        exteriorFaces = self.faceCellIDs[1].getMaskArray()
+        interiorFaces = ~self.exteriorFaces
+
         return interiorFaces, exteriorFaces
            
-    def _calcInteriorAndExteriorCellIDs(self, numCells):
-        try:
-            import sets
-            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self.exteriorFaces.value])
-            interiorCellIDs = list(sets.Set(range(numCells)) - self.exteriorCellIDs)
-            exteriorCellIDs = list(self.exteriorCellIDs)
-        except:
-            exteriorCellIDs = self.faceCellIDs[0, self.exteriorFaces.value]
-            tmp = numerix.zeros(numCells)
-            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs)))
-            exteriorCellIDs = numerix.nonzero(tmp)            
-            interiorCellIDs = numerix.nonzero(numerix.logical_not(tmp))
+    def _calcInteriorAndExteriorCellIDs(self, numCells, mesh):
+        ids = numerix.take(self.faceCellIDs[0], self.exteriorFaces, axis=-1).filled().sorted()
+        extras = numerix.array([True] * (len(ids) - len(ids[:-1])), dtype=bool)
+        exteriorCellIDs = ids[(ids[:-1] != ids[1:]).append(extras)]
+        
+        from fipy.variables.cellVariable import CellVariable
+        interiorCellIDs = CellVariable(mesh=mesh, value=numerix.arange(numCells)).delete(exteriorCellIDs)
+    
         return interiorCellIDs, exteriorCellIDs
        
     def _calcCellToFaceOrientations(self):
-        tmp = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
+        tmp = numerix.take(self.faceCellIDs[0], self.cellFaceIDs, axis=-1)
         return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
 
     def _calcAdjacentCellIDs(self):
-        return (MA.filled(self.faceCellIDs[0]), 
-                          MA.filled(MA.where(MA.getmaskarray(self.faceCellIDs[1]), 
-                              self.faceCellIDs[0], 
-                                             self.faceCellIDs[1])))
+        mask = self.faceCellIDs[1].getMask()
+        return (self.faceCellIDs[0].filled(),
+                (mask * self.faceCellIDs[0].filled(0) 
+                 + ~mask * self.faceCellIDs[1].filled(0)))
 
     def _calcCellToCellIDs(self):    
         cellToCellIDs = numerix.take(self.faceCellIDs, self.cellFaceIDs, axis=1)
-        cellToCellIDs = MA.where(self.cellToFaceOrientations == 1, 
-                                 cellToCellIDs[1], cellToCellIDs[0])
+        cellToCellIDs = ((self.cellToFaceOrientations == 1) * self.cellToCellIDs[1] 
+                         + (self.cellToFaceOrientations != 1) * self.cellToCellIDs[0])
         return cellToCellIDs 
      
     def _calcCellToCellIDsFilled(self, numCells, maxFacesPerCell):

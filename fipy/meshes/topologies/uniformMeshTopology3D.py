@@ -109,8 +109,10 @@ class UniformMeshTopology3D(AbstractMeshTopology):
 
     def _getAdjacentCellIDs(self):
         faceCellIDs = self.faceCellIDs
-        return (MA.where(MA.getmaskarray(faceCellIDs[0]), faceCellIDs[1], faceCellIDs[0]).filled(),
-                MA.where(MA.getmaskarray(faceCellIDs[1]), faceCellIDs[0], faceCellIDs[1]).filled())
+        mask = faceCellIDs.getMask()
+        faceCellIDs = faceCellIDs.filled()
+        return ((mask[0] * faceCellIDs[1] + ~mask[0] * faceCellIDs[0]),
+                (mask[1] * faceCellIDs[0] + ~mask[1] * faceCellIDs[1]))
 
     def _getCellToCellIDs(self):
         ids = MA.zeros((6, self.nx, self.ny, self.nz), 'l')
@@ -129,14 +131,16 @@ class UniformMeshTopology3D(AbstractMeshTopology):
         ids[4,...,     0] = MA.masked
         ids[5,...,    -1] = MA.masked
 
-        return MA.reshape(ids.swapaxes(1,3), (6, self.numberOfCells))
+        return CellVariable(mesh=self.mesh, 
+                            value=MA.reshape(ids.swapaxes(1,3), (6, self.numberOfCells)))
         
     def _getCellToCellIDsFilled(self):
         N = self.numberOfCells
         M = self.maxFacesPerCell
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self.cellToCellIDs
-        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)     
+        mask = cellToCellIDs.getMask()
+        return mask * cellIDs + ~mask * cellToCellIDs.filled()
 
     """Properties conforming to the MeshTopology interface."""
     interiorFaces = property(_getInteriorFaces)

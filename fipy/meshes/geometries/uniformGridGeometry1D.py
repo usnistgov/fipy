@@ -90,7 +90,7 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
     """Geometry properties"""
     @property
     def faceAreas(self):
-        return numerix.ones(self.numberOfFaces,'d')
+        return FaceVariable(mesh=self, value=1.)
 
     @property
     def faceCenters(self):
@@ -98,7 +98,7 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
 
     @property
     def faceNormals(self):
-        faceNormals = numerix.ones((1, self.numberOfFaces), 'd')
+        faceNormals = FaceVariable(mesh=self, value=1., rank=1)
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
         if self.numberOfFaces > 0:
@@ -115,18 +115,19 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
         
     @property
     def cellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx
+        return CellVariable(mesh=self, value=self.dx)
 
     @property
     def cellCenters(self):
-        ccs = ((numerix.arange(self.numberOfCells)[numerix.NewAxis, ...] + 0.5) \
-               * self.dx + self.origin) * self.scale['length']
-        return ccs
+        return CellVariable(mesh=self,
+                            value=((numerix.arange(self.numberOfCells)[numerix.newaxis, ...] + 0.5) 
+                                   * self.dx + self.origin) * self.scale['length'],
+                            rank=1)
 
     @property
     def cellDistances(self):
-        distances = numerix.ones(self.numberOfFaces, 'd')
-        distances *= self.dx
+        distances = FaceVariable(mesh=self, value=0.)
+        distances[1:-1] = self.dx
         if len(distances) > 0:
             distances[0] = self.dx / 2.
             distances[-1] = self.dx / 2.
@@ -134,11 +135,11 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
 
     @property
     def faceTangents1(self):
-        return numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        return FaceVariable(mesh=self, value=0., rank=1)
 
     @property
     def faceTangents2(self):
-        return numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
+        return FaceVariable(mesh=self, value=0., rank=1)
     
     @property
     def cellToCellDistances(self):
@@ -147,26 +148,30 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
         if self.numberOfCells > 0:
             distances[0,0] = self.dx / 2.
             distances[1,-1] = self.dx / 2.
-        return distances
+        return CellVariable(mesh=self, value=distances, elementshape=(2,))
 
     @property
     def cellNormals(self):
-        normals = numerix.ones((1, 2, self.numberOfCells), 'd')
+        normals = CellVariable(mesh=self, value=1., elementshape=(1,2))
         if self.numberOfCells > 0:
             normals[:,0] = -1
         return normals
         
     @property
     def cellAreas(self):
-        return numerix.ones((2, self.numberOfCells), 'd')
+        return CellVariable(mesh=self, value=1, elementshape=(2,))
 
     @property
     def cellAreaProjections(self):
-        return MA.array(self.cellNormals)
+        return CellVariable(mesh=self,
+                            value=MA.array(self.cellNormals.value),
+                            elementshape=(1,2))
 
     @property
     def faceCenters(self):
-        return numerix.arange(self.numberOfFaces)[numerix.NewAxis, ...] * self.dx + self.origin
+        return FaceVariable(mesh=self,
+                            value=numerix.arange(self.numberOfFaces)[numerix.newaxis, ...] * self.dx + self.origin,
+                            rank=1)
      
     @property
     def faceCellToCellNormals(self):

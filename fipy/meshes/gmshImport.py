@@ -948,10 +948,10 @@ class GmshGrid2D(Gmsh2D):
 
         >>> yogrid = Grid2D(dx=5, dy=5, nx=5, ny=5, communicator=serial)
 
-        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
+        >>> print numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
         True
 
-        >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size
+        >>> print yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size
         True
 
         >>> mesh = GmshGrid2D(nx=2, ny=2)
@@ -1030,10 +1030,10 @@ class GmshGrid3D(Gmsh3D):
         >>> yogrid = Grid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
         ...                 communicator=serial)
 
-        >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size
+        >>> print yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size
         True
 
-        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
+        >>> print numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
         True
 
         >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)

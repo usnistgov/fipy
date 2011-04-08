@@ -98,7 +98,7 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         return interiorFaces
 
     def _getCellToFaceOrientations(self):
-        cellFaceOrientations = numerix.ones((4, self.numberOfCells))
+        cellFaceOrientations = CellVariable(mesh=self.mesh, value=1., elementshape=(4,))
         if self.numberOfCells > 0:
             cellFaceOrientations[0, self.nx:] = -1
             cellFaceOrientations[3, :] = -1
@@ -146,7 +146,8 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         ni=self.nx,
         nj=self.ny)
 
-        return (faceCellIDs0, faceCellIDs1)
+        return (FaceVariable(mesh=self.mesh, value=faceCellIDs0), 
+                FaceVariable(mesh=self.mesh, value=faceCellIDs1))
 
     def _getAdjacentCellIDsPy(self):
         Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2))
@@ -173,7 +174,8 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         faceCellIDs =  numerix.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)), 
                                             numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
 
-        return (faceCellIDs[:,0], faceCellIDs[:,1])
+        return (FaceVariable(mesh=self.mesh, value=faceCellIDs[:,0]), 
+                FaceVariable(mesh=self.mesh, value=faceCellIDs[:,1]))
 
     def _getCellToCellIDs(self):
         ids = MA.zeros((4, self.nx, self.ny), 'l')
@@ -190,14 +192,16 @@ class UniformMeshTopology2D(AbstractMeshTopology):
             ids[1,-1,...] = MA.masked
             ids[3, 0,...] = MA.masked
         
-        return MA.reshape(ids.swapaxes(1,2), (4, self.numberOfCells))
+        return CellVariable(mesh=self.mesh, 
+                            value=MA.reshape(ids.swapaxes(1,2), (4, self.numberOfCells)))
         
     def _getCellToCellIDsFilled(self):
         N = self.numberOfCells
         M = self.maxFacesPerCell
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self.cellToCellIDs
-        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
+        return CellVariable(mesh=self, 
+                            value=MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs))
 
     """Properties conforming to the MeshTopology interface."""
     interiorFaces = property(_getInteriorFaces)

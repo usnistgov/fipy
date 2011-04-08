@@ -164,7 +164,7 @@ class UniformGrid2D(Grid2D):
 
     @property
     def cellFaceIDs(self):
-        return self._createCells()
+        return CellVariable(mesh=self, value=self._createCells())
         
     @property
     def _maxFacesPerCell(self):
@@ -173,7 +173,9 @@ class UniformGrid2D(Grid2D):
 ##         from numMesh/mesh
 
     def _getVertexCoords(self):
-        return self._createVertices() + self.origin
+        return _VertexVariable(mesh=self,
+                               value=self._createVertices() + self.origin,
+                               _bootstrap=True)
 
     vertexCoords = property(_getVertexCoords)
 
@@ -225,7 +227,7 @@ class UniformGrid2D(Grid2D):
         ni=self.nx,
         nj=self.ny)
 
-        return MA.masked_where(mask, faceCellIDs)
+        return FaceVariable(mesh=self, value=MA.masked_where(mask, faceCellIDs))
 
     def _getFaceCellIDsPy(self):
         Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
@@ -246,8 +248,9 @@ class UniformGrid2D(Grid2D):
             Vids[1,0] = -1
             Vids[1,-1] = -1
         
-        return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
-                                                     Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
+        return FaceVariable(mesh=self,
+                            value=MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
+                                                                        Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1))
     
     @getsetDeprecated
     def _getCellVertexIDs(self):
@@ -262,7 +265,9 @@ class UniformGrid2D(Grid2D):
         ids[3] = indices[0] + indices[1] * self.numberOfVerticalColumns
         ids[2] = ids[3] + 1
         
-        return numerix.reshape(ids, (4, self.numberOfCells))
+        return CellVariable(mesh=self, 
+                            value=numerix.reshape(ids, (4, self.numberOfCells)), 
+                            elementshape=(4,))
         
     @getsetDeprecated
     def _getFaceVertexIDs(self):
@@ -280,10 +285,12 @@ class UniformGrid2D(Grid2D):
         Vids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
         Vids[1] = Vids[0] + self.numberOfVerticalColumns
         
-        return numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
-                                    Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces),
-                                                 order="FORTRAN")),
-                                   axis=1)
+        values = numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
+                                                                                Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")),
+                                                                               axis=1)
+        return FaceVariable(mesh=self,
+                            value=MA.masked_values((values[1], values[0]), -1),
+                            elementshape=(2,))
 
     @getsetDeprecated
     def _getOrderedCellVertexIDs(self):
@@ -298,7 +305,9 @@ class UniformGrid2D(Grid2D):
         ids[3] = indices[0] + indices[1] * self.numberOfVerticalColumns
         ids[0] = ids[3] + 1
         
-        return ids.reshape((4, self.numberOfCells), order="FORTRAN")
+        return CellVariable(mesh=self, 
+                            value=ids.reshape((4, self.numberOfCells), order="FORTRAN"), 
+                            elementshape=(4,))
         
 ##     scaling
     

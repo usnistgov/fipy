@@ -188,7 +188,7 @@ class UniformGrid3D(Grid3D):
 
     @property
     def cellFaceIDs(self):
-        return MA.array(self._createCells())
+        return CellVariable(mesh=self, value=self._createCells())
 
     @getsetDeprecated
     def _getXYFaceIDs(self):
@@ -229,7 +229,9 @@ class UniformGrid3D(Grid3D):
 
     @property
     def vertexCoords(self):
-        return self._createVertices() + self.origin
+        return _VertexVariable(mesh=self,
+                               value=self._createVertices() + self.origin,
+                               _bootstrap=True)
 
     @getsetDeprecated
     def getFaceCellIDs(self):
@@ -261,9 +263,10 @@ class UniformGrid3D(Grid3D):
         YZids[1, 0] = MA.masked
         YZids[1,-1] = MA.masked
 
-        return MA.concatenate((XYids.swapaxes(1,3).reshape((2, self.numberOfXYFaces)), 
-                               XZids.swapaxes(1,3).reshape((2, self.numberOfXZFaces)), 
-                               YZids.swapaxes(1,3).reshape((2, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self,
+                            value=MA.concatenate((XYids.swapaxes(1,3).reshape((2, self.numberOfXYFaces)), 
+                                                  XZids.swapaxes(1,3).reshape((2, self.numberOfXZFaces)), 
+                                                  YZids.swapaxes(1,3).reshape((2, self.numberOfYZFaces))), axis=1))
 
 ##         from common/mesh
                                    
@@ -284,7 +287,9 @@ class UniformGrid3D(Grid3D):
         ids[7] = indices[0] + (indices[1] + indices[2] * (self.ny + 1)) * (self.nx + 1)
         ids[6] = ids[7] + 1
         
-        return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
+        return CellVariable(mesh=self, 
+                            value=numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells)),
+                            elementshape=(8,))
         
     @getsetDeprecated
     def _getFaceVertexIDs(self):
@@ -292,7 +297,8 @@ class UniformGrid3D(Grid3D):
 
     @property
     def faceVertexIDs(self):
-       return self._createFaces()
+       return FaceVariable(mesh=self,
+                            value=self._createFaces())
 
     @property
     def _orderedCellVertexIDs(self):

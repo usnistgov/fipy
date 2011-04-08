@@ -116,7 +116,9 @@ class ScaledMeshGeometry(AbstractScaledMeshGeometry):
     faceAspectRatios          = property(lambda self: self._faceAspectRatios)
     
     def _calcAreaProjections(self):
-        return self._geom.faceNormals * self._geom.faceAreas
+        areaProjections = self._geom.faceNormals * self._geom.faceAreas
+        areaProjections.name = self.__class__.__name__ + ".areaProjections"
+        return areaProjections
         
     def _calcOrientedAreaProjections(self):
         return self.areaProjections
@@ -125,7 +127,9 @@ class ScaledMeshGeometry(AbstractScaledMeshGeometry):
         dAP = self._geom._cellDistances
         dFP = self._geom._faceToCellDistances[0]
         
-        return MA.filled(dFP / dAP)
+        faceToCellDistanceRatio = (dFP / dAP).filled()
+        faceToCellDistanceRatio.name = self.__class__.__name__ + ".faceToCellDistanceRatio"
+        return faceToCellDistanceRatio
        
     def _calcFaceAspectRatios(self):
         return self.scaledFaceAreas / self._geom._cellDistances
@@ -185,11 +189,11 @@ class MeshGeometry(AbstractMeshGeometry):
     """internal `_calc*` methods"""
 
     def _calcFaceAreas(self):
-        faceVertexIDs = MA.filled(self.faceVertexIDs, -1)
+        faceVertexIDs = self.faceVertexIDs.filled(-1)
         substitute = numerix.repeat(faceVertexIDs[numerix.newaxis, 0], 
                                     faceVertexIDs.shape[0], axis=0)
-        faceVertexIDs = numerix.where(MA.getmaskarray(self.faceVertexIDs), 
-                                      substitute, faceVertexIDs)
+        mask = self.faceVertexIDs.getMaskArray()
+        faceVertexIDs = mask * substitute + ~mask * faceVertexIDs
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
         faceOrigins = numerix.repeat(faceVertexCoords[:,0], faceVertexIDs.shape[0], axis=0)
         faceOrigins = numerix.reshape(faceOrigins, MA.shape(faceVertexCoords))
@@ -197,29 +201,17 @@ class MeshGeometry(AbstractMeshGeometry):
         left = range(faceVertexIDs.shape[0])
         right = left[1:] + [left[0]]
         cross = numerix.sum(numerix.cross(faceVertexCoords, 
-                                          numerix.take(faceVertexCoords, right, 1), 
-                                          axis=0), 
-                            1)
+                                          numerix.take(faceVertexCoords, right, axis=1),
+                                          axis=0), 1)
         return numerix.sqrtDot(cross, cross) / 2.
     
     def _calcFaceCenters(self):
-        maskedFaceVertexIDs = MA.filled(self.faceVertexIDs, 0)
-
-        faceVertexCoords = numerix.take(self.vertexCoords, maskedFaceVertexIDs, axis=1)
-
-        if MA.getmask(self.faceVertexIDs) is False:
-            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
-        else:
-            faceVertexCoordsMask = \
-              numerix.repeat(MA.getmaskarray(self.faceVertexIDs)[numerix.newaxis,...], 
-                             self.dim, axis=0)
-            
-        faceVertexCoords = MA.array(data=faceVertexCoords, mask=faceVertexCoordsMask)
-
-        return MA.filled(MA.average(faceVertexCoords, axis=1))
+        faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
+        
+        return faceVertexCoords.mean(axis=1).filled()
      
     def _calcFaceNormals(self):
-        faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
+        faceVertexIDs = self.faceVertexIDs.filled(0)
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
         t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
         t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
@@ -230,19 +222,18 @@ class MeshGeometry(AbstractMeshGeometry):
         
         faceNormals = -norm
         
-        orientation = 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
+        orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.cellDistanceVectors) < 0)
         return faceNormals * orientation
 
     def _calcFaceCellToCellNormals(self):
         faceCellCentersUp = numerix.take(self._cellCenters, self.faceCellIDs[1], axis=1)
         faceCellCentersDown = numerix.take(self._cellCenters, self.faceCellIDs[0], axis=1)
-        faceCellCentersUp = numerix.where(MA.getmaskarray(faceCellCentersUp),
-                                          self._faceCenters,
-                                          faceCellCentersUp)
+        mask = faceCellCentersUp.getMaskArray()
+        faceCellCentersUp = mask * self.getFaceCenters() + ~mask * faceCellCentersUp.filled()
 
         diff = faceCellCentersDown - faceCellCentersUp
         mag = numerix.sqrt(numerix.sum(diff**2))
-        faceCellToCellNormals = diff / numerix.resize(mag, (self.dim, len(mag)))
+        faceCellToCellNormals = diff / mag
 
         orientation = 1 - 2 * (numerix.dot(self.faceNormals, faceCellToCellNormals) < 0)
         return faceCellToCellNormals * orientation
@@ -252,42 +243,52 @@ class MeshGeometry(AbstractMeshGeometry):
         
     def _calcCellVolumes(self):
         tmp = self._faceCenters[0] * self._faceAreas * self.faceNormals[0]
-        tmp = numerix.take(tmp, self.cellFaceIDs) * self.cellToFaceOrientations
-        return MA.filled(MA.sum(tmp, 0))
+        tmp = numerix.take(tmp, self.cellFaceIDs, axis=-1) * self.cellToFaceOrientations
+        cellVolumes = tmp.sum(0).filled()
+        cellVolumes.name = self.__class__.__name__ + ".cellVolumes"
+        return cellVolumes
 
     def _calcCellCenters(self):
         tmp = numerix.take(self._faceCenters, self.cellFaceIDs, axis=1)
-        return MA.filled(MA.average(tmp, 1))
+        cellCenters = tmp.mean(axis=1).filled()
+        cellCenters.name = self.__class__.__name__ + ".cellCenters"
+        return cellCenters
         
     def _calcFaceToCellDistAndVec(self):
-        tmp = MA.repeat(self._faceCenters[...,numerix.NewAxis,:], 2, 1)
+        tmp = self._faceCenters[...,numerix.newaxis,:]
         # array -= masked_array screws up masking for on numpy 1.1
 
         tmp = tmp - numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
         cellToFaceDistanceVectors = tmp
-        faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,0))
+        faceToCellDistances = cellToFaceDistanceVectors.mag
+        faceToCellDistances.name = self.__class__.__name__ + ".faceToCellDistances"
         return faceToCellDistances, cellToFaceDistanceVectors
 
     def _calcCellDistAndVec(self):
         tmp = numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
         tmp = tmp[...,1,:] - tmp[...,0,:]
-        tmp = MA.filled(MA.where(MA.getmaskarray(tmp), self.cellToFaceDistanceVectors[:,0], tmp))
-        cellDistanceVectors = tmp
-        cellDistances = MA.filled(MA.sqrt(MA.sum(tmp * tmp, 0)))
+        cellDistanceVectors = (tmp.getMask() * self.cellToFaceDistanceVectors[:,0].filled() 
+                               + ~tmp.getMask() * tmp.filled())
+        cellDistances = self.cellDistanceVectors.mag
+        cellDistances.name = self.__class__.__name__ + ".cellDistances"
         return cellDistances, cellDistanceVectors
 
     def _calcFaceTangents(self):
-        faceVertexCoord = numerix.array(numerix.take(self.vertexCoords, 
-                                                     self.faceVertexIDs[0], 
-                                                     axis=1))
-        tmp = self._faceCenters - faceVertexCoord
+        faceVertexCoord = numerix.take(self.vertexCoords, 
+                                       self.faceVertexIDs[0], 
+                                       axis=1)
+        tmp = (self.faceCenters - faceVertexCoord).filled()
         faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
-        tmp = numerix.cross(faceTangents1, self.faceNormals, axis=0)
+        tmp = numerix.cross(self.faceTangents1, self.faceNormals, axis=0)
         faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
+        faceTangents1.name = self.__class__.__name__ + ".faceTangents1"
+        faceTangents2.name = self.__class__.__name__ + ".faceTangents2"
         return faceTangents1, faceTangents2
         
     def _calcCellToCellDist(self):
-        return numerix.take(self._cellDistances, self.cellFaceIDs)
+        cellToCellDistances = numerix.take(self._cellDistances, self.cellFaceIDs, axis=-1)
+        cellToCellDistances.name = self.__class__.__name__ + ".cellToCellDistances"
+        return cellToCellDistances
 
     def _calcCellAreas(self):
         from fipy.tools.numerix import take
@@ -301,10 +302,10 @@ class MeshGeometry(AbstractMeshGeometry):
                                  axis=0)
         direction = (cellFaceCellIDs == cellIDs) * 2 - 1
         if self.maxFacesPerCell > 0:
-            return direction[numerix.newaxis, ...] * cellNormals
-        else:
-            return cellNormals   
-      
+            cellNormals = direction[numerix.newaxis, ...] * cellNormals
+        cellNormals.name = self.__class__.__name__ + ".cellNormals"      
+        return cellNormals
+        
     """settable geometry properties"""
     def _getFaceToCellDistances(self):
         return self._faceToCellDistances

@@ -85,9 +85,10 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
                                  
     @property
     def faceAreas(self):
-        return numerix.concatenate((numerix.repeat((self.dx * self.dy,), self.numberOfXYFaces),
-                                    numerix.repeat((self.dx * self.dz,), self.numberOfXZFaces),
-                                    numerix.repeat((self.dy * self.dz,), self.numberOfYZFaces)))
+        return FaceVariable(mesh=self.mesh, 
+                            value=numerix.concatenate((numerix.repeat((self.dx * self.dy,), self.numberOfXYFaces),
+                                                       numerix.repeat((self.dx * self.dz,), self.numberOfXZFaces),
+                                                       numerix.repeat((self.dy * self.dz,), self.numberOfYZFaces))))
 
     @property
     def faceNormals(self):
@@ -103,9 +104,10 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         YZnor[2,      ...] =  1
         YZnor[2, 0,   ...] = -1
         
-        return numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZnor[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self.mesh,
+                            value=numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                                       numerix.reshape(XZnor[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                                       numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1))
 
     @property
     def faceCellToCellNormals(self):
@@ -113,7 +115,7 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         
     @property
     def cellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy * self.dz
+        return CellVariable(mesh=self.mesh, value=self.dx * self.dy * self.dz)
 
     @property
     def cellCenters(self):
@@ -122,8 +124,8 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         centers[0] = (indices[0] + 0.5) * self.dx
         centers[1] = (indices[1] + 0.5) * self.dy
         centers[2] = (indices[2] + 0.5) * self.dz
-        ccs = numerix.reshape(centers.swapaxes(1,3), (3, self.numberOfCells)) + self.origin
-        return ccs
+        return CellVariable(mesh=self,
+                            value=numerix.reshape(centers.swapaxes(1,3), (3, self.numberOfCells)) + self.origin)
 
     @property
     def cellDistances(self):
@@ -142,9 +144,10 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         YZdis[..., 0] = self.dx / 2.
         YZdis[...,-1] = self.dx / 2.
 
-        return numerix.concatenate((numerix.ravel(XYdis),
-                                    numerix.ravel(XZdis),
-                                    numerix.ravel(YZdis)))
+        return FaceVariable(mesh=self.mesh, 
+                            value=numerix.concatenate((numerix.ravel(XYdis),
+                                                       numerix.ravel(XZdis),
+                                                       numerix.ravel(YZdis))))
 
     @property
     def faceToCellDistanceRatio(self):
@@ -163,9 +166,10 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         YZdis[ 0,...] = 1
         YZdis[-1,...] = 1
         
-        return numerix.concatenate((numerix.ravel(XYdis.swapaxes(0,2)),
-                                    numerix.ravel(XZdis.swapaxes(0,2)),
-                                    numerix.ravel(YZdis.swapaxes(0,2))), axis=1)
+        return FaceVariable(mesh=self.mesh, 
+                            value=numerix.concatenate((numerix.ravel(XYdis.swapaxes(0,2)),
+                                                       numerix.ravel(XZdis.swapaxes(0,2)),
+                                                       numerix.ravel(YZdis.swapaxes(0,2))), axis=1))
     
     @property
     def orientedFaceNormals(self):
@@ -182,9 +186,10 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
         YZtan[1,      ...] =  1
         
-        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self.mesh, 
+                            value=numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                                       numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                                       numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1))
         
     @property
     def faceTangents2(self):
@@ -197,9 +202,10 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
         YZtan[0,      ...] =  1
         
-        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
-                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return FaceVariable(mesh=self.mesh, 
+                            value=numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                                       numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)), 
+                                                       numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1))
     
     @property
     def cellToCellDistances(self):
@@ -218,11 +224,13 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         distances[4,...,      0] = self.dz / 2.
         distances[5,...,     -1] = self.dz / 2.
 
-        return numerix.reshape(distances.swapaxes(1,3), (self.numberOfCells, 6))
+        return CellVariable(mesh=self.mesh, 
+                            value=numerix.reshape(distances.swapaxes(1,3), (self.numberOfCells, 6)),
+                            elementshape=(6,))
         
     @property
     def cellNormals(self):
-        normals = numerix.zeros((3, 6, self.numberOfCells), 'd')
+        normals = CellVariable(mesh=self.mesh, value=0., elementshape=(3,6))
         normals[...,0,...] = [[-1], [ 0], [ 0]]
         normals[...,1,...] = [[ 1], [ 0], [ 0]]
         normals[...,2,...] = [[ 0], [-1], [ 0]]
@@ -234,7 +242,7 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         
     @property
     def cellAreas(self):
-        areas = numerix.ones((6, self.numberOfCells), 'd')
+        areas = CellVariable(mesh=self.mesh, value=0., elementshape=(6,))
         areas[0] = self.dy * self.dz
         areas[1] = self.dy * self.dz
         areas[2] = self.dx * self.dz
@@ -270,7 +278,10 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         YZcen[1] = (indices[1] + 0.5) * self.dy
         YZcen[2] = (indices[2] + 0.5) * self.dz
 
-        return numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)), 
-                                    numerix.reshape(XZcen.swapaxes(1,3), (3, self.numberOfXZFaces)),
-                                    numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1) + self.origin
+        return FaceVariable(mesh=self.mesh,
+                            value=(numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)), 
+                                                       numerix.reshape(XZcen.swapaxes(1,3), (3, self.numberOfXZFaces)),
+                                                       numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+                                   + self.origin),
+                            rank=1)
      

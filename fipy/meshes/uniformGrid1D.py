@@ -48,6 +48,9 @@ from fipy.tools import numerix
 from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
 
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+
 class UniformGrid1D(Grid1D):
     """
     Creates a 1D grid mesh.
@@ -155,7 +158,9 @@ class UniformGrid1D(Grid1D):
 
     @property
     def cellFaceIDs(self):
-        return MA.array(self._createCells())
+        return CellVariable(mesh=self, 
+                            value=MA.array(self._createCells()), 
+                            elementshape=(2,))
 
     @property
     def _maxFacesPerCell(self):
@@ -183,7 +188,7 @@ class UniformGrid1D(Grid1D):
             ids[0,0] = ids[1,0]
             ids[1,0] = MA.masked
             ids[1,-1] = MA.masked
-        return ids
+        return FaceVariable(mesh=self, value=ids, elementshape=(2,))
 
     @getsetDeprecated
     def _getCellVertexIDs(self):
@@ -192,7 +197,7 @@ class UniformGrid1D(Grid1D):
     @property
     def _cellVertexIDs(self):
         c1 = numerix.arange(self.numberOfCells)
-        return numerix.array((c1 + 1, c1))
+        return CellVariable(mesh=self, value=(c1 + 1, c1), elementshape=(2,))
 
 ##     scaling
     

@@ -86,7 +86,7 @@ class UniformGridScaledGeometry2D(AbstractScaledMeshGeometry):
         areaProjections = areaProjections,
         ni = self.numberOfFaces)
 
-        return areaProjections
+        return FaceVariable(mesh=self.mesh, value=areaProjections, rank=1)
         
     @property
     def faceAspectRatios(self):
@@ -127,14 +127,14 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
 
     @property
     def faceAreas(self):
-        faceAreas = numerix.zeros(self.numberOfFaces, 'd')
+        faceAreas = FaceVariable(mesh=self, value=0.)
         faceAreas[:self.numberOfHorizontalFaces] = self.dx
         faceAreas[self.numberOfHorizontalFaces:] = self.dy
         return faceAreas
 
     @property
     def faceNormals(self):
-        normals = numerix.zeros((2, self.numberOfFaces), 'd')
+        normals = FaceVariable(mesh=self, value=0., rank=1)
 
         normals[1, :self.numberOfHorizontalFaces] = 1
         normals[1, :self.nx] = -1
@@ -151,7 +151,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
         
     @property
     def cellVolumes(self):
-        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
+        return CellVariable(mesh=self, value=self.dx * self.dy)
 
     @property
     def cellCenters(self):
@@ -159,9 +159,9 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
         indices = numerix.indices((self.nx, self.ny))
         centers[0] = (indices[0] + 0.5) * self.dx
         centers[1] = (indices[1] + 0.5) * self.dy
-        ccs = centers.reshape((2, self.numberOfCells), 
-                               order="FORTRAN") + self.origin
-        return ccs
+        return CellVariable(mesh=self.mesh,
+                            value=centers.reshape((2, self.numberOfCells), order="FORTRAN") + self.origin,
+                            rank=1)
 
     @property
     def cellDistances(self):
@@ -177,13 +177,13 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
             Vdis[0,...] = self.dx / 2.
             Vdis[-1,...] = self.dx / 2.
 
-        return numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis,0,1), (self.numberOfHorizontalFaces,)), 
-                                    numerix.reshape(numerix.swapaxes(Vdis,0,1), (self.numberOfFaces - self.numberOfHorizontalFaces,))))
+        return FaceVariable(mesh=self.mesh, 
+                            value=numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis,0,1), (self.numberOfHorizontalFaces,)), 
+                                                       numerix.reshape(numerix.swapaxes(Vdis,0,1), (self.numberOfFaces - self.numberOfHorizontalFaces,)))))
 
     @property
     def faceToCellDistanceRatio(self):
-        faceToCellDistanceRatios = numerix.zeros(self.numberOfFaces, 'd')
-        faceToCellDistanceRatios[:] = 0.5
+        faceToCellDistanceRatios = FaceVariable(mesh=self, value=0.5)
         faceToCellDistanceRatios[:self.nx] = 1.
         faceToCellDistanceRatios[self.numberOfHorizontalFaces - self.nx:self.numberOfHorizontalFaces] = 1.
         if self.numberOfVerticalColumns > 0:
@@ -197,7 +197,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
             return self._faceToCellDistances
 
         else:
-            faceToCellDistances = numerix.zeros((2, self.numberOfFaces), 'd')
+            faceToCellDistances = FaceVariable(mesh=self, value=0., rank=1)
             distances = self.cellDistances
             ratios = self.faceToCellDistanceRatio
             faceToCellDistances[0] = distances * ratios
@@ -213,7 +213,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
      
     @property
     def faceTangents1(self):
-        tangents = numerix.zeros((2,self.numberOfFaces), 'd')
+        tangents = FaceVariable(mesh=self.mesh, value=0., rank=1)
 
         if self.numberOfFaces > 0:
             tangents[0, :self.numberOfHorizontalFaces] = -1
@@ -225,7 +225,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
         
     @property
     def faceTangents2(self):
-        return numerix.zeros((2, self.numberOfFaces), 'd')
+        return FaceVariable(mesh=self.mesh, value=0., rank=1)
     
     @property
     def cellToCellDistances(self):
@@ -242,12 +242,14 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
             distances[3, 0,...] = self.dx / 2.
             distances[1,-1,...] = self.dx / 2.
         
-        return distances.reshape((4, self.numberOfCells), order="FORTRAN")
+        return CellVariable(mesh=self.mesh, 
+                            value=distances.reshape((4, self.numberOfCells), order="FORTRAN"),
+                            elementshape=(4,))
 
 
     @property
     def cellNormals(self):
-        normals = numerix.zeros((2, 4, self.numberOfCells), 'd')
+        normals = CellVariable(mesh=self.mesh, value=0., elementshape=(2,4))
         normals[:, 0] = [[ 0], [-1]]
         normals[:, 1] = [[ 1], [ 0]]
         normals[:, 2] = [[ 0], [ 1]]
@@ -257,7 +259,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
         
     @property
     def cellAreas(self):
-        areas = numerix.ones((4, self.numberOfCells), 'd')
+        areas = CellVariable(mesh=self.mesh, value=0., elementshape=(4,))
         areas[0] = self.dx
         areas[1] = self.dy
         areas[2] = self.dx
@@ -280,8 +282,8 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
         Vcen[0,...] = indices[0] * self.dx
         Vcen[1,...] = (indices[1] + 0.5) * self.dy
         
-        return numerix.concatenate((Hcen.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
-                                    Vcen.reshape((2,
-                                        self.numberOfVerticalFaces),
-                                        order="FORTRAN")), axis=1) + self.origin
+        return FaceVariable(mesh=self.mesh,
+                            value=numerix.concatenate((Hcen.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
+                                                       Vcen.reshape((2, self.numberOfVerticalFaces), order="FORTRAN")), axis=1) + self.origin,
+                            rank=1)
   

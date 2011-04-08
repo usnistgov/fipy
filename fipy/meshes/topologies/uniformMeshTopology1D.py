@@ -41,6 +41,9 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+
 from abstractMeshTopology import AbstractMeshTopology
 
 """TODO: prettify"""
@@ -55,13 +58,12 @@ class UniformMeshTopology1D(AbstractMeshTopology):
         self.mesh = mesh
 
     def _getInteriorFaces(self):
-        from fipy.variables.faceVariable import FaceVariable
         interiorFaces = FaceVariable(mesh=self.mesh, value=False)
         interiorFaces[numerix.arange(self.numberOfFaces-2) + 1] = True
         return interiorFaces
             
     def _getCellToFaceOrientations(self):
-        orientations = numerix.ones((2, self.numberOfCells))
+        orientations = CellVariable(mesh=self, value=1., elementshape=(2,))
         if self.numberOfCells > 0:
             orientations[0] *= -1
             orientations[0,0] = 1
@@ -73,7 +75,8 @@ class UniformMeshTopology1D(AbstractMeshTopology):
         if self.numberOfFaces > 0:
             ids[0,0] = ids[1,0]
             ids[1,-1] = ids[0,-1]
-        return ids[0], ids[1]
+        return (FaceVariable(mesh=self, value=ids[0]), 
+                FaceVariable(mesh=self, value=ids[1]))
 
     def _getCellToCellIDs(self):
         c1 = numerix.arange(self.numberOfCells)
@@ -81,7 +84,7 @@ class UniformMeshTopology1D(AbstractMeshTopology):
         if self.numberOfCells > 0:
             ids[0,0] = MA.masked
             ids[1,-1] = MA.masked
-        return ids
+        return CellVariable(mesh=self, value=ids)
         
     def _getCellToCellIDsFilled(self):
         ids = self.cellToCellIDs.filled()
@@ -95,7 +98,7 @@ class UniformMeshTopology1D(AbstractMeshTopology):
 
     def _setExteriorFaces(self, e):
         self.exteriorFaces = e
-    
+        
     """Properties conforming to the MeshTopology interface."""
     interiorFaces = property(_getInteriorFaces)
     exteriorFaces = property(_getExteriorFaces, _setExteriorFaces)
