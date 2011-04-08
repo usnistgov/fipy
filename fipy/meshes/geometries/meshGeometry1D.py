@@ -42,9 +42,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
-from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
-from fipy.variables.vertexVariable import _VertexVariable
 
 from meshGeometry import MeshGeometry
 from meshGeometry import ScaledMeshGeometry
@@ -66,11 +64,10 @@ class MeshGeometry1D(MeshGeometry):
         super(MeshGeometry1D, self).__init__(*args, **kwargs)
 
     def _calcFaceAreas(self):
-        #TODO: self is not a mesh!!!
-        return FaceVariable(mesh=self, value=1.)
+        return FaceVariable(mesh=self.mesh, value=1.)
 
     def _calcFaceNormals(self):
-        faceNormals = FaceVariable(mesh=self, value=1., rank=1)
+        faceNormals = FaceVariable(mesh=self.mesh, value=1., rank=1)
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
         if self.numberOfFaces > 0:
@@ -78,8 +75,8 @@ class MeshGeometry1D(MeshGeometry):
         return faceNormals
 
     def _calcFaceTangents(self):
-        faceTangents1 = FaceVariable(mesh=self, value=0., rank=1)
-        faceTangents2 = FaceVariable(mesh=self, value=0., rank=1)
+        faceTangents1 = FaceVariable(mesh=self.mesh, value=0., rank=1)
+        faceTangents2 = FaceVariable(mesh=self.mesh, value=0., rank=1)
         return faceTangents1, faceTangents2
      
 if __name__ == "__main__":

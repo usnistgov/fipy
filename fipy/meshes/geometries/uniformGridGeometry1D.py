@@ -74,7 +74,8 @@ class UniformGridScaledGeometry1D(AbstractScaledMeshGeometry):
         return 1. / self._geom.cellDistances
      
 class UniformGridGeometry1D(AbstractUniformGridGeometry):
-    def __init__(self, origin, 
+    def __init__(self, mesh,
+                       origin, 
                        dx, 
                        numberOfFaces, 
                        numberOfCells, 
@@ -82,6 +83,7 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
                        ScaledGeomClass=UniformGridScaledGeometry1D):
         """TODO: Refactor args."""
 
+        self.mesh = mesh
         self.origin = origin
         self.dx = dx
         self.numberOfFaces = numberOfFaces
@@ -93,7 +95,7 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
     """Geometry properties"""
     @property
     def faceAreas(self):
-        return FaceVariable(mesh=self, value=1.)
+        return FaceVariable(mesh=self.mesh, value=1.)
 
     @property
     def faceCenters(self):
@@ -101,7 +103,7 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
 
     @property
     def faceNormals(self):
-        faceNormals = FaceVariable(mesh=self, value=1., rank=1)
+        faceNormals = FaceVariable(mesh=self.mesh, value=1., rank=1)
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
         if self.numberOfFaces > 0:
@@ -118,18 +120,18 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
         
     @property
     def cellVolumes(self):
-        return CellVariable(mesh=self, value=self.dx)
+        return CellVariable(mesh=self.mesh, value=self.dx)
 
     @property
     def cellCenters(self):
-        return CellVariable(mesh=self,
+        return CellVariable(mesh=self.mesh,
                             value=((numerix.arange(self.numberOfCells)[numerix.newaxis, ...] + 0.5) 
                                    * self.dx + self.origin) * self.scale['length'],
                             rank=1)
 
     @property
     def cellDistances(self):
-        distances = FaceVariable(mesh=self, value=0.)
+        distances = FaceVariable(mesh=self.mesh, value=0.)
         distances[1:-1] = self.dx
         if len(distances) > 0:
             distances[0] = self.dx / 2.
@@ -138,11 +140,11 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
 
     @property
     def faceTangents1(self):
-        return FaceVariable(mesh=self, value=0., rank=1)
+        return FaceVariable(mesh=self.mesh, value=0., rank=1)
 
     @property
     def faceTangents2(self):
-        return FaceVariable(mesh=self, value=0., rank=1)
+        return FaceVariable(mesh=self.mesh, value=0., rank=1)
     
     @property
     def cellToCellDistances(self):
@@ -151,28 +153,28 @@ class UniformGridGeometry1D(AbstractUniformGridGeometry):
         if self.numberOfCells > 0:
             distances[0,0] = self.dx / 2.
             distances[1,-1] = self.dx / 2.
-        return CellVariable(mesh=self, value=distances, elementshape=(2,))
+        return CellVariable(mesh=self.mesh, value=distances, elementshape=(2,))
 
     @property
     def cellNormals(self):
-        normals = CellVariable(mesh=self, value=1., elementshape=(1,2))
+        normals = CellVariable(mesh=self.mesh, value=1., elementshape=(1,2))
         if self.numberOfCells > 0:
             normals[:,0] = -1
         return normals
         
     @property
     def cellAreas(self):
-        return CellVariable(mesh=self, value=1, elementshape=(2,))
+        return CellVariable(mesh=self.mesh, value=1, elementshape=(2,))
 
     @property
     def cellAreaProjections(self):
-        return CellVariable(mesh=self,
+        return CellVariable(mesh=self.mesh,
                             value=MA.array(self.cellNormals.value),
                             elementshape=(1,2))
 
     @property
     def faceCenters(self):
-        return FaceVariable(mesh=self,
+        return FaceVariable(mesh=self.mesh,
                             value=numerix.arange(self.numberOfFaces)[numerix.newaxis, ...] * self.dx + self.origin,
                             rank=1)
      

@@ -701,7 +701,7 @@ class Mesh(object):
                                                 (faceCellIDs[0] == faceCellIDs[1]))),
                                axis=0)
                                
-        self.faceCellIDs = _FaceCellIDsVariable(mesh=self)
+        return _FaceCellIDsVariable(mesh=self)
 
     def _calcVertexFaceIDs(self):
         from fipy.variables.vertexVariable import _VertexVariable
@@ -725,7 +725,7 @@ class Mesh(object):
                 return MA.sort(MA.array(self.faceCellIDs, mask = mask),
                                axis=0)
                                
-        self.vertexFaceIDs = _VertexFaceIDsVariable(mesh=self)
+        return _VertexFaceIDsVariable(mesh=self)
 
     def _calcNumPts(self, d, n = None, axis = "x"):
         """

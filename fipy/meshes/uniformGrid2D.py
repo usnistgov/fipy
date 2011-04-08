@@ -49,6 +49,9 @@ from fipy.tools import inline
 from fipy.tools import parallel
 from fipy.tools.decorators import getsetDeprecated
 
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+
 class UniformGrid2D(Grid2D):
     """
     Creates a 2D grid mesh with horizontal faces numbered
@@ -124,7 +127,8 @@ class UniformGrid2D(Grid2D):
                                                 self._maxFacesPerCell,
                                                 self)
 
-        self._geometry = GeomClass(self.dx, self.dy,
+        self._geometry = GeomClass(self,
+                                   self.dx, self.dy,
                                    self.nx, self.ny,
                                    self.origin,
                                    self.numberOfFaces,

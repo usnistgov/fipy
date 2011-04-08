@@ -104,17 +104,18 @@ class UniformGrid1D(Grid1D):
             'volume': 1.
         }
 
-        self._geometry = GeomClass(self.origin,
-                                   self.dx,
-                                   self.numberOfFaces,
-                                   self.numberOfCells,
+        self._geometry = GeomClass(mesh=self,
+                                   origin=self.origin,
+                                   dx=self.dx,
+                                   numberOfFaces=self.numberOfFaces,
+                                   numberOfCells=self.numberOfCells,
                                    scale=self._scale)
 
-        self._topology = _UniformMeshTopology1D(self.facesLeft, 
-                                                self.facesRight, 
-                                                self.numberOfCells, 
-                                                self.numberOfFaces, 
-                                                self)
+        self._topology = _UniformMeshTopology1D(facesLeft=self.facesLeft, 
+                                                facesRight=self.facesRight, 
+                                                numberOfCells=self.numberOfCells, 
+                                                numberOfFaces=self.numberOfFaces, 
+                                                mesh=self)
         
         self.communicator = communicator
 

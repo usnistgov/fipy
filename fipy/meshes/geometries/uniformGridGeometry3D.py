@@ -63,12 +63,14 @@ class UniformGridScaledGeometry3D(AbstractScaledMeshGeometry):
     
 class UniformGridGeometry3D(AbstractUniformGridGeometry):
     
-    def __init__(self, dx, dy, dz,
+    def __init__(self, mesh,
+                       dx, dy, dz,
                        nx, ny, nz,
                        numberOfCells, 
                        numberOfXYFaces, numberOfXZFaces, numberOfYZFaces,
                        origin):
 
+        self.mesh = mesh
         self.dx = dx
         self.dy = dy
         self.dz = dz

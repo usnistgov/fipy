@@ -44,6 +44,9 @@ from fipy.tools.decorators import getsetDeprecated
 
 from fipy.tools import parallel
 
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+
 class UniformGrid3D(Grid3D):
     """
     3D rectangular-prism Mesh with uniform grid spacing in each dimension.

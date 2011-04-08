@@ -53,7 +53,8 @@ class ScaledGridGeometry3D(ScaledMeshGeometry):
 
 class GridGeometry3D(MeshGeometry):
 
-    def __init__(self, nx, ny, nz,
+    def __init__(self, mesh,
+                       nx, ny, nz,
                        numberOfFaces,
                        numberOfXYFaces,
                        numberOfXZFaces,

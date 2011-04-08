@@ -41,6 +41,9 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools import inline
 
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.cellVariable import CellVariable
+
 from abstractGeometries import AbstractScaledMeshGeometry
 from abstractUniformGeometries import AbstractUniformGridGeometry
  
@@ -86,7 +89,7 @@ class UniformGridScaledGeometry2D(AbstractScaledMeshGeometry):
         areaProjections = areaProjections,
         ni = self.numberOfFaces)
 
-        return FaceVariable(mesh=self.mesh, value=areaProjections, rank=1)
+        return FaceVariable(mesh=self._geom.mesh, value=areaProjections, rank=1)
         
     @property
     def faceAspectRatios(self):
@@ -94,7 +97,8 @@ class UniformGridScaledGeometry2D(AbstractScaledMeshGeometry):
 
 class UniformGridGeometry2D(AbstractUniformGridGeometry):
 
-    def __init__(self, dx, dy,
+    def __init__(self, mesh,
+                       dx, dy,
                        nx, ny,
                        origin,
                        numberOfFaces,
@@ -105,6 +109,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
                        numberOfCells,
                        UniformScaledGeom=UniformGridScaledGeometry2D):
 
+        self.mesh = mesh
         self.dx = dx
         self.dy = dy
         self.nx = nx
@@ -127,14 +132,14 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
 
     @property
     def faceAreas(self):
-        faceAreas = FaceVariable(mesh=self, value=0.)
+        faceAreas = FaceVariable(mesh=self.mesh, value=0.)
         faceAreas[:self.numberOfHorizontalFaces] = self.dx
         faceAreas[self.numberOfHorizontalFaces:] = self.dy
         return faceAreas
 
     @property
     def faceNormals(self):
-        normals = FaceVariable(mesh=self, value=0., rank=1)
+        normals = FaceVariable(mesh=self.mesh, value=0., rank=1)
 
         normals[1, :self.numberOfHorizontalFaces] = 1
         normals[1, :self.nx] = -1
@@ -151,7 +156,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
         
     @property
     def cellVolumes(self):
-        return CellVariable(mesh=self, value=self.dx * self.dy)
+        return CellVariable(mesh=self.mesh, value=self.dx * self.dy)
 
     @property
     def cellCenters(self):
@@ -183,7 +188,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
 
     @property
     def faceToCellDistanceRatio(self):
-        faceToCellDistanceRatios = FaceVariable(mesh=self, value=0.5)
+        faceToCellDistanceRatios = FaceVariable(mesh=self.mesh, value=0.5)
         faceToCellDistanceRatios[:self.nx] = 1.
         faceToCellDistanceRatios[self.numberOfHorizontalFaces - self.nx:self.numberOfHorizontalFaces] = 1.
         if self.numberOfVerticalColumns > 0:
@@ -197,7 +202,7 @@ class UniformGridGeometry2D(AbstractUniformGridGeometry):
             return self._faceToCellDistances
 
         else:
-            faceToCellDistances = FaceVariable(mesh=self, value=0., rank=1)
+            faceToCellDistances = FaceVariable(mesh=self.mesh, value=0., rank=1)
             distances = self.cellDistances
             ratios = self.faceToCellDistanceRatio
             faceToCellDistances[0] = distances * ratios

@@ -136,7 +136,8 @@ class ScaledMeshGeometry(AbstractScaledMeshGeometry):
     
 class MeshGeometry(AbstractMeshGeometry):
 
-    def __init__(self, dim, 
+    def __init__(self, mesh, 
+                       dim, 
                        faceVertexIDs,
                        vertexCoords,
                        faceCellIDs,
@@ -146,6 +147,7 @@ class MeshGeometry(AbstractMeshGeometry):
                        cellToFaceOrientations,
                        scaleLength, ScaledGeom=ScaledMeshGeometry):
 
+        self.mesh = mesh
         self.dim = dim
         self.faceVertexIDs = faceVertexIDs
         self.vertexCoords = vertexCoords

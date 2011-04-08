@@ -42,6 +42,8 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
+from fipy.variables.faceVariable import FaceVariable
+
 from meshGeometry import MeshGeometry
 from meshGeometry import ScaledMeshGeometry
 
@@ -81,6 +83,6 @@ class MeshGeometry2D(MeshGeometry):
                                       (-1, 0)))
         tmp = self.faceNormals.dot(rot)
         faceTangents1 = tmp / tmp.mag
-        faceTangents2 = FaceVariable(mesh=self, value=0., rank=1)
+        faceTangents2 = FaceVariable(mesh=self.mesh, value=0., rank=1)
         return faceTangents1, faceTangents2
     

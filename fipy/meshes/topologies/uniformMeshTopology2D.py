@@ -42,6 +42,9 @@ from fipy.tools import numerix
 from fipy.tools import inline
 from fipy.tools.numerix import MA
 
+from fipy.variables.cellVariable import CellVariable
+from fipy.variables.faceVariable import FaceVariable
+
 from abstractMeshTopology import AbstractMeshTopology  
 
 class UniformMeshTopology2D(AbstractMeshTopology):
@@ -72,7 +75,6 @@ class UniformMeshTopology2D(AbstractMeshTopology):
                                            numerix.arange(0, self.ny) * self.numberOfVerticalColumns + self.numberOfHorizontalFaces,
                                            numerix.arange(0, self.ny) * self.numberOfVerticalColumns + self.numberOfHorizontalFaces + self.nx))
                        
-        from fipy.variables.faceVariable import FaceVariable
         exteriorFaces = FaceVariable(mesh=self.mesh, value=False)
         exteriorFaces[exteriorIDs] = True
         return exteriorFaces
@@ -92,7 +94,6 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         interiorIDs = numerix.concatenate((numerix.reshape(Hids, (self.nx * (self.ny - 1),)), 
                                            numerix.reshape(Vids, ((self.nx - 1) * self.ny,))))
                                            
-        from fipy.variables.faceVariable import FaceVariable
         interiorFaces = FaceVariable(mesh=self.mesh, value=False)
         interiorFaces[interiorIDs] = True
         return interiorFaces
