@@ -87,7 +87,7 @@ class UniformMeshTopology1D(AbstractMeshTopology):
         return CellVariable(mesh=self.mesh, value=ids)
         
     def _getCellToCellIDsFilled(self):
-        ids = self.cellToCellIDs.filled()
+        ids = self.cellToCellIDs.filled().copy()
         if self.numberOfCells > 0:
             ids[0,0] = 0
             ids[1,-1] = self.numberOfCells - 1

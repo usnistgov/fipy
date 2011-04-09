@@ -67,4 +67,6 @@ class _VertexVariable(_MeshVariable):
 
         return self.arithmeticFaceValue
 
-
+    @property 
+    def _globalNumberOfElements(self): 
+        return self.mesh.globalNumberOfVertices

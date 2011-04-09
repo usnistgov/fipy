@@ -100,7 +100,7 @@ class Mesh2D(Mesh):
     @property
     def _orderedCellVertexIDs(self):
         cellVertexIDs = self.faceVertexIDs[..., self.cellFaceIDs]
-        pos = (self.cellToFaceOrientations > 0)
+        pos = (self._cellToFaceOrientations > 0)
         return (pos * cellVertexIDs[0] + ~pos * cellVertexIDs[1])
     
     @getsetDeprecated

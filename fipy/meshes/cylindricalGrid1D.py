@@ -83,7 +83,8 @@ class CylindricalGrid1D(Grid1D):
         self.args['origin'] = origin
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _CylindricalGridGeometry1D(self.origin,
+        self._geometry = _CylindricalGridGeometry1D(self,
+                                                    self.origin,
                                         self.numberOfFaces,
                                         self.dim, 
                                         self.faceVertexIDs,

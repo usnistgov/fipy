@@ -57,11 +57,11 @@ class ScaledMeshGeometry1D(ScaledMeshGeometry):
      
 class MeshGeometry1D(MeshGeometry):
      
-    def __init__(self, numberOfFaces, *args, **kwargs):
+    def __init__(self, mesh, numberOfFaces, *args, **kwargs):
         self.numberOfFaces = numberOfFaces
 
         kwargs['ScaledGeom'] = ScaledMeshGeometry1D
-        super(MeshGeometry1D, self).__init__(*args, **kwargs)
+        super(MeshGeometry1D, self).__init__(mesh, *args, **kwargs)
 
     def _calcFaceAreas(self):
         return FaceVariable(mesh=self.mesh, value=1.)

@@ -72,7 +72,7 @@ class GridGeometry3D(MeshGeometry):
         self.numberOfYZFaces = numberOfYZFaces
 
         kwargs['ScaledGeom'] = ScaledGridGeometry3D
-        super(GridGeometry3D, self).__init__(*args, **kwargs)
+        super(GridGeometry3D, self).__init__(mesh, *args, **kwargs)
 
     def _calcFaceNormals(self):
         XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces))
