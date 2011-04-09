@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 6/18/10 {9:23:07 AM}
+ #                                 last update: 4/8/11 {9:55:13 PM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -74,8 +74,8 @@ class _IndexVariable_(Variable):
     def _calcValue(self):
         return self._indexValue(self.index)
         
-    def _setValue(self, value, unit=None, array=None):
-        self.value = value
+    def _setValueInternal(self, value, unit=None, array=None):
+        self._value = value
 
     def _isItemMasked(x):
         return (isinstance(x, numerix.MA.MaskedArray)
@@ -278,6 +278,6 @@ class _SliceVariable(Variable):
                      _getValue(self.stop), 
                      _getValue(self.step))
 
-    def _setValue(self, value, unit=None, array=None):
-        self.value = value
+    def _setValueInternal(self, value, unit=None, array=None):
+        self._value = value
 
