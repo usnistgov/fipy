@@ -88,14 +88,18 @@ class Mesh(object):
 
         self.dim = self.vertexCoords.shape[0]
 
+        if not hasattr(self, "numberOfVertices"):
+            self.numberOfVertices = self.vertexCoords.shape[-1]
         if not hasattr(self, "numberOfFaces"):
             self.numberOfFaces = self.faceVertexIDs.shape[-1]
         if not hasattr(self, "numberOfCells"):
             self.numberOfCells = self.cellFaceIDs.shape[-1]
-        if not hasattr(self, "globalNumberOfCells"):
-            self.globalNumberOfCells = self.numberOfCells
+        if not hasattr(self, "globalNumberOfVertices"):
+            self.globalNumberOfVertices = self.numberOfVertices
         if not hasattr(self, "globalNumberOfFaces"):
             self.globalNumberOfFaces = self.numberOfFaces
+        if not hasattr(self, "globalNumberOfCells"):
+            self.globalNumberOfCells = self.numberOfCells
 
         self.faceCellIDs = self._calcFaceCellIDs() 
 
@@ -536,8 +540,8 @@ class Mesh(object):
                                           other_Xvertices[close]))
         
         # warn if meshes don't touch, but allow it
-        if (selfc._numberOfVertices > 0 
-            and other._numberOfVertices > 0 
+        if (selfc.numberOfVertices > 0 
+            and other.numberOfVertices > 0 
             and vertexCorrelates.shape[-1] == 0):
             import warnings
             warnings.warn("Vertices are not aligned", UserWarning, stacklevel=4)
@@ -572,9 +576,9 @@ class Mesh(object):
                                            
         # map other's Vertex IDs to new Vertex IDs, 
         # accounting for overlaps with self's Vertex IDs
-        vertex_map = numerix.empty(other._numberOfVertices, dtype=int)
-        verticesToAdd = numerix.delete(numerix.arange(other._numberOfVertices), vertexCorrelates[1])
-        vertex_map[verticesToAdd] = numerix.arange(other._numberOfVertices - len(vertexCorrelates[1])) + selfc._numberOfVertices
+        vertex_map = numerix.empty(other.numberOfVertices, dtype=int)
+        verticesToAdd = numerix.delete(numerix.arange(other.numberOfVertices), vertexCorrelates[1])
+        vertex_map[verticesToAdd] = numerix.arange(other.numberOfVertices - len(vertexCorrelates[1])) + selfc.numberOfVertices
         vertex_map[vertexCorrelates[1]] = vertexCorrelates[0]
 
         # calculate hashes of faceVertexIDs for comparing Faces
@@ -850,15 +854,8 @@ class Mesh(object):
     
     @getsetDeprecated
     def _getNumberOfVertices(self):
-        return self._numberOfVertices
+        return self.numberOfVertices
 
-    @property
-    def _numberOfVertices(self):
-        if hasattr(self, 'numberOfVertices'):
-            return self.numberOfVertices
-        else:
-            return self.vertexCoords.shape[-1]
-        
     @getsetDeprecated
     def _getAdjacentCellIDs(self):
         return self._adjacentCellIDs

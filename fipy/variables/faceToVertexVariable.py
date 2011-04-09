@@ -4,7 +4,7 @@
  # 
  # FILE: "faceToVertexVariable.py"
  #                                     created: 11/17/07 {9:54:32 AM}
- #                                 last update: 11/23/07 {8:22:30 AM}
+ #                                 last update: 4/9/11 {10:23:57 AM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -46,7 +46,7 @@ class _FaceToVertexVariable(_VertexVariable):
     def _calcValue(self):
         from fipy.tools import numerix, vector
         
-        V = self.mesh._getNumberOfVertices()
+        V = self.mesh.numberOfVertices
         value = numerix.zeros(self.var.shape[:-1] + (V,), 'd')
         weight = numerix.zeros((V,), 'l')
         M, F = self.mesh._getFaceVertexIDs().shape

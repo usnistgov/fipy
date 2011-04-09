@@ -42,7 +42,7 @@ class _VertexVariable(_MeshVariable):
         """
         Return the shape of this variable type, given a particular mesh.
         """
-        return (mesh._getNumberOfVertices(),)
+        return (mesh.numberOfVertices,)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
     
     def _getArithmeticBaseClass(self, other = None):
