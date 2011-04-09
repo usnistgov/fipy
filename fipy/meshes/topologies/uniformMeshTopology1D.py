@@ -63,7 +63,7 @@ class UniformMeshTopology1D(AbstractMeshTopology):
         return interiorFaces
             
     def _getCellToFaceOrientations(self):
-        orientations = CellVariable(mesh=self, value=1., elementshape=(2,))
+        orientations = CellVariable(mesh=self.mesh, value=1., elementshape=(2,))
         if self.numberOfCells > 0:
             orientations[0] *= -1
             orientations[0,0] = 1
@@ -75,8 +75,8 @@ class UniformMeshTopology1D(AbstractMeshTopology):
         if self.numberOfFaces > 0:
             ids[0,0] = ids[1,0]
             ids[1,-1] = ids[0,-1]
-        return (FaceVariable(mesh=self, value=ids[0]), 
-                FaceVariable(mesh=self, value=ids[1]))
+        return (FaceVariable(mesh=self.mesh, value=ids[0]), 
+                FaceVariable(mesh=self.mesh, value=ids[1]))
 
     def _getCellToCellIDs(self):
         c1 = numerix.arange(self.numberOfCells)
@@ -84,7 +84,7 @@ class UniformMeshTopology1D(AbstractMeshTopology):
         if self.numberOfCells > 0:
             ids[0,0] = MA.masked
             ids[1,-1] = MA.masked
-        return CellVariable(mesh=self, value=ids)
+        return CellVariable(mesh=self.mesh, value=ids)
         
     def _getCellToCellIDsFilled(self):
         ids = self.cellToCellIDs.filled()

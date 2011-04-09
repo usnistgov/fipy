@@ -201,7 +201,7 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         M = self.maxFacesPerCell
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self.cellToCellIDs
-        return CellVariable(mesh=self, 
+        return CellVariable(mesh=self.mesh, 
                             value=MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs))
 
     """Properties conforming to the MeshTopology interface."""

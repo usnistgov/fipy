@@ -78,7 +78,7 @@ class MeshGeometry2D(MeshGeometry):
         return faceNormals * orientation
 
     def _calcFaceTangents(self):
-        rot = numerix.eye(N=self.getDim())
+        rot = numerix.eye(N=self.dim)
         rot[0:2,0:2] = numerix.array((( 0, 1),
                                       (-1, 0)))
         tmp = self.faceNormals.dot(rot)

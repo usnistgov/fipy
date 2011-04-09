@@ -41,6 +41,9 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.cellVariable import CellVariable
+
 from abstractGeometries import AbstractScaledMeshGeometry
 from abstractUniformGeometries import AbstractUniformGridGeometry
 

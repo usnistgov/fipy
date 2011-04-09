@@ -231,7 +231,7 @@ class MeshGeometry(AbstractMeshGeometry):
         faceCellCentersUp = numerix.take(self._cellCenters, self.faceCellIDs[1], axis=1)
         faceCellCentersDown = numerix.take(self._cellCenters, self.faceCellIDs[0], axis=1)
         mask = faceCellCentersUp.getMaskArray()
-        faceCellCentersUp = mask * self.getFaceCenters() + ~mask * faceCellCentersUp.filled()
+        faceCellCentersUp = mask * self.faceCenters + ~mask * faceCellCentersUp.filled()
 
         diff = faceCellCentersDown - faceCellCentersUp
         mag = numerix.sqrt(numerix.sum(diff**2))
@@ -271,7 +271,7 @@ class MeshGeometry(AbstractMeshGeometry):
         tmp = tmp[...,1,:] - tmp[...,0,:]
         cellDistanceVectors = (tmp.getMask() * self.cellToFaceDistanceVectors[:,0].filled() 
                                + ~tmp.getMask() * tmp.filled())
-        cellDistances = self.cellDistanceVectors.mag
+        cellDistances = cellDistanceVectors.mag
         cellDistances.name = self.__class__.__name__ + ".cellDistances"
         return cellDistances, cellDistanceVectors
 

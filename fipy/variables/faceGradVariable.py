@@ -54,7 +54,7 @@ class _FaceGradVariable(FaceVariable):
         N2[..., faceMask] = self.var.faceValue.value[..., faceMask] 
         N = (N2 - numerix.take(self.var.value, id1, axis=-1)) / dAP
         
-        normals = self.mesh.orientedFaceNormals.value
+        normals = self.mesh._orientedFaceNormals.value
         
         tangents1 = self.mesh._faceTangents1.value
         tangents2 = self.mesh._faceTangents2.value

@@ -150,7 +150,8 @@ class UniformGrid3D(Grid3D):
                                                 self.cellFaceIDs,
                                                 self)
 
-        self._geometry = _UniformGridGeometry3D(self.dx, self.dy, self.dz,
+        self._geometry = _UniformGridGeometry3D(self,
+                                                self.dx, self.dy, self.dz,
                                                self.nx, self.ny, self.nz,
                                                self.numberOfCells,
                                                self.numberOfXYFaces,

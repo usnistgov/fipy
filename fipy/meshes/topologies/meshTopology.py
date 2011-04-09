@@ -106,7 +106,7 @@ class MeshTopology(AbstractMeshTopology):
       
     def _calcInteriorAndExteriorFaceIDs(self, mesh):
         exteriorFaces = self.faceCellIDs[1].getMaskArray()
-        interiorFaces = ~self.exteriorFaces
+        interiorFaces = ~exteriorFaces
 
         return interiorFaces, exteriorFaces
            
@@ -132,8 +132,8 @@ class MeshTopology(AbstractMeshTopology):
 
     def _calcCellToCellIDs(self):    
         cellToCellIDs = numerix.take(self.faceCellIDs, self.cellFaceIDs, axis=1)
-        cellToCellIDs = ((self.cellToFaceOrientations == 1) * self.cellToCellIDs[1] 
-                         + (self.cellToFaceOrientations != 1) * self.cellToCellIDs[0])
+        cellToCellIDs = ((self.cellToFaceOrientations == 1) * cellToCellIDs[1] 
+                         + (self.cellToFaceOrientations != 1) * cellToCellIDs[0])
         return cellToCellIDs 
      
     def _calcCellToCellIDsFilled(self, numCells, maxFacesPerCell):

@@ -156,7 +156,8 @@ class Grid3D(Mesh):
         self._setScale(scaleLength = scale)
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _GridGeometry3D(self.nx,
+        self._geometry = _GridGeometry3D(self,
+                                         self.nx,
                                         self.ny,
                                         self.nz,
                                         self.numberOfFaces,

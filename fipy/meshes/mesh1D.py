@@ -52,7 +52,8 @@ from fipy.meshes.geometries import _MeshGeometry1D
 class Mesh1D(Mesh):
     
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _MeshGeometry1D(self.numberOfFaces,
+        self._geometry = _MeshGeometry1D(self,
+                                         self.numberOfFaces,
                                         self.dim, 
                                         self.faceVertexIDs,
                                         self.vertexCoords,

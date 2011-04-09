@@ -68,7 +68,8 @@ def _orderVertices(vertexCoords, vertices):
 class Mesh2D(Mesh):
     
     def _setGeometry(self, scaleLength):
-        self._geometry = _MeshGeometry2D(self.dim, 
+        self._geometry = _MeshGeometry2D(self,
+                                         self.dim, 
                                         self.faceVertexIDs,
                                         self.vertexCoords,
                                         self.faceCellIDs,
@@ -98,7 +99,7 @@ class Mesh2D(Mesh):
 
     @property
     def _orderedCellVertexIDs(self):
-        cellVertexIDs = self.faceVertexIDs[..., cellFaceIDs]
+        cellVertexIDs = self.faceVertexIDs[..., self.cellFaceIDs]
         pos = (self.cellToFaceOrientations > 0)
         return (pos * cellVertexIDs[0] + ~pos * cellVertexIDs[1])
     
