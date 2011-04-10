@@ -339,9 +339,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
            - `dt`: The time step size.
            
 	"""
-
-        for coeff in self.coeffs:
-            coeff._updateDt(dt)
+        self.dt.value = dt
         if solver is None:
             solver = LinearPCGSolver()
         SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)

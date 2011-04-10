@@ -105,7 +105,11 @@ class PeriodicGrid1D(Grid1D):
 
     @property
     def _globalOverlappingCellIDs(self):
-        return super(PeriodicGrid1D, self)._globalOverlappingCellIDs % self.args['nx']
+        if self.args['nx'] is None:
+            nx = len(self.args['dx'])
+        else:
+            nx = self.args['nx']
+        return super(PeriodicGrid1D, self)._globalOverlappingCellIDs % nx
 
     @property
     def cellCenters(self):

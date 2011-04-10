@@ -41,6 +41,9 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
+from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.cellVariable import CellVariable
+
 from abstractMeshTopology import AbstractMeshTopology  
 
 class UniformMeshTopology3D(AbstractMeshTopology):
@@ -81,7 +84,6 @@ class UniformMeshTopology3D(AbstractMeshTopology):
                                            numerix.ravel(YZids[ 0,     ...]), 
                                            numerix.ravel(YZids[-1,     ...])))
                                                      
-        from fipy.variables.faceVariable import FaceVariable
         exteriorFaces = FaceVariable(mesh=self.mesh, value=False)
         exteriorFaces[exteriorIDs] = True
         return exteriorFaces
@@ -98,7 +100,6 @@ class UniformMeshTopology3D(AbstractMeshTopology):
                                            numerix.ravel(XZids[ ...,1:-1, ...]),
                                            numerix.ravel(YZids[1:-1,      ...].swapaxes(0,1))))
                                                      
-        from fipy.variables.faceVariable import FaceVariable
         interiorFaces = FaceVariable(mesh=self.mesh, value=False)
         interiorFaces[interiorIDs] = True
         return interiorFaces
