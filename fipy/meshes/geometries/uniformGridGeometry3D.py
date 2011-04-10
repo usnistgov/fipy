@@ -129,7 +129,7 @@ class UniformGridGeometry3D(AbstractUniformGridGeometry):
         centers[0] = (indices[0] + 0.5) * self.dx
         centers[1] = (indices[1] + 0.5) * self.dy
         centers[2] = (indices[2] + 0.5) * self.dz
-        return CellVariable(mesh=self,
+        return CellVariable(mesh=self.mesh,
                             value=numerix.reshape(centers.swapaxes(1,3), (3, self.numberOfCells)) + self.origin)
 
     @property

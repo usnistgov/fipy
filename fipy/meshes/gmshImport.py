@@ -1036,7 +1036,7 @@ class GmshGrid3D(Gmsh3D):
         >>> print numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
         True
 
-        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
+        >>> print numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
         True
 
         >>> mesh = GmshGrid3D(nx=2, ny=2, nz=2)
@@ -1052,7 +1052,7 @@ class GmshGrid3D(Gmsh3D):
         ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,
         ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]
 
-        >>> nx.allclose(mesh._faceAreas, faceAreas)
+        >>> print nx.allclose(mesh._faceAreas, faceAreas)
         True
 
         >>> cellAreas = [[ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
@@ -1062,7 +1062,7 @@ class GmshGrid3D(Gmsh3D):
         ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
         ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]]
 
-        >>> nx.allclose(mesh._cellAreas, cellAreas)
+        >>> print nx.allclose(mesh._cellAreas, cellAreas)
         True
         """
  

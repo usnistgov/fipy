@@ -224,7 +224,7 @@ class MeshGeometry(AbstractMeshGeometry):
         
         faceNormals = -norm
         
-        orientation = 1 - 2 * (numerix.dot(self.faceNormals, self.cellDistanceVectors) < 0)
+        orientation = 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
         return faceNormals * orientation
 
     def _calcFaceCellToCellNormals(self):
@@ -281,7 +281,7 @@ class MeshGeometry(AbstractMeshGeometry):
                                        axis=1)
         tmp = (self.faceCenters - faceVertexCoord).filled()
         faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
-        tmp = numerix.cross(self.faceTangents1, self.faceNormals, axis=0)
+        tmp = numerix.cross(faceTangents1, self.faceNormals, axis=0)
         faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
         faceTangents1.name = self.__class__.__name__ + ".faceTangents1"
         faceTangents2.name = self.__class__.__name__ + ".faceTangents2"

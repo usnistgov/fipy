@@ -45,10 +45,10 @@ from meshGeometry2D import MeshGeometry2D
 
 class CylindricalGridGeometry1D(MeshGeometry1D):
      
-    def __init__(self, origin, *args, **kwargs):
+    def __init__(self, mesh, origin, *args, **kwargs):
         self.origin = origin
 
-        super(CylindricalGridGeometry1D, self).__init__(*args, **kwargs)
+        super(CylindricalGridGeometry1D, self).__init__(mesh, *args, **kwargs)
      
     def _calcFaceCenters(self):
         faceCenters = super(CylindricalGridGeometry1D, self)._calcFaceCenters()
@@ -62,10 +62,10 @@ class CylindricalGridGeometry1D(MeshGeometry1D):
      
 class CylindricalGridGeometry2D(MeshGeometry2D):
      
-    def __init__(self, origin, *args, **kwargs):
+    def __init__(self, mesh, origin, *args, **kwargs):
         self.origin = origin
 
-        super(CylindricalGridGeometry2D, self).__init__(*args, **kwargs)
+        super(CylindricalGridGeometry2D, self).__init__(mesh, *args, **kwargs)
      
     @property
     def faceAreas(self):
