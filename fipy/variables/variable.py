@@ -464,24 +464,18 @@ class Variable(object):
                                 separator=separator)
         
     def __setitem__(self, index, value):
-        if self._value is None:
-            self._getValue()
-        self._value[index] = value
+        self.value[index] = value
         self._markFresh()
         
     def _putto(self, a, value):
         return numerix.put(a, self.getValue(), value)
             
     def itemset(self, value):
-        if self._value is None:
-            self._getValue()
-        self._value.itemset(value)
+        self.value.itemset(value)
         self._markFresh()
         
     def put(self, indices, value):
-        if self._value is None:
-            self._getValue()
-        numerix.put(self._value, indices, value)
+        numerix.put(self.value, indices, value)
         self._markFresh()
         
     def __call__(self):

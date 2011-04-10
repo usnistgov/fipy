@@ -262,7 +262,7 @@ class MeshGeometry(AbstractMeshGeometry):
 
         tmp = tmp - numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
         cellToFaceDistanceVectors = tmp
-        faceToCellDistances = cellToFaceDistanceVectors.mag
+        faceToCellDistances = (tmp * tmp).sum(axis=0).sqrt()
         faceToCellDistances.name = self.__class__.__name__ + ".faceToCellDistances"
         return faceToCellDistances, cellToFaceDistanceVectors
 

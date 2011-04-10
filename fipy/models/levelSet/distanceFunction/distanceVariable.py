@@ -263,7 +263,7 @@ class DistanceVariable(CellVariable):
 
         adjVals = numerix.take(self._value, cellToCellIDs, axis=-1).getValue()
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self._value) > 0)
-        dAP = self.mesh._cellToCellDistances().getValue()
+        dAP = self.mesh._cellToCellDistances.value
         distances = abs(self._value * dAP / (self._value - adjInterfaceValues))
         indices = MA.argsort(distances, 0)
         sign = (self._value > 0) * 2 - 1

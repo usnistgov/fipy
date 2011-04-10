@@ -35,7 +35,8 @@
 from fipy.variables.meshVariable import _MeshVariable
 
 class _VertexVariable(_MeshVariable):
-    def _getVariableClass(self):
+    @property
+    def _variableClass(self):
         return _VertexVariable
         
     def _getShapeFromMesh(mesh):
@@ -55,9 +56,10 @@ class _VertexVariable(_MeshVariable):
             
         return _MeshVariable._getArithmeticBaseClass(self, other)
 
-    def getGlobalValue(self):
-        return self._getGlobalValue(self.mesh._getLocalNonOverlappingVertexIDs(), 
-                                    self.mesh._getGlobalNonOverlappingVertexIDs())
+    @property
+    def globalValue(self):
+        return self._getGlobalValue(self.mesh._localNonOverlappingVertexIDs, 
+                                    self.mesh._globalNonOverlappingVertexIDs)
 
     def _getArithmeticFaceValue(self):
         if not hasattr(self, 'arithmeticFaceValue'):
@@ -70,3 +72,12 @@ class _VertexVariable(_MeshVariable):
     @property 
     def _globalNumberOfElements(self): 
         return self.mesh.globalNumberOfVertices
+
+    @property
+    def _globalOverlappingIDs(self):
+        return self.mesh._globalOverlappingVertexIDs
+
+    @property
+    def _localNonOverlappingIDs(self):
+        return self.mesh._localNonOverlappingVertexIDs
+

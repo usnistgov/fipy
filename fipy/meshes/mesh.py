@@ -434,7 +434,7 @@ class Mesh(object):
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
         assert numerix.allclose(numerix.take(self._areaProjections, faces0, axis=1),
-                               numerix.take(-self._areaProjections, faces1, axis=1))
+                                numerix.take(-self._areaProjections, faces1, axis=1))
 
         ## extract the adjacent cells for both sets of faces
         self.faceCellIDs = self.faceCellIDs.copy()
@@ -446,20 +446,20 @@ class Mesh(object):
         self.faceCellIDs[0].put(faces0, newFaces1)
         
         ## extract the face to cell distances for both sets of faces
-        self.faceToCellDistances = self.faceToCellDistances.copy()
+        self._faceToCellDistances = self._faceToCellDistances.copy()
         ## set the new faceToCellDistances for `faces0`
-        newDistances0 = self.faceToCellDistances[0].take(faces0)
-        newDistances1 = self.faceToCellDistances[0].take(faces1)
+        newDistances0 = self._faceToCellDistances[0].take(faces0)
+        newDistances1 = self._faceToCellDistances[0].take(faces1)
         
-        self.faceToCellDistances[1].put(faces0, newDistances0)
-        self.faceToCellDistances[0].put(faces0, newDistances1)
+        self._faceToCellDistances[1].put(faces0, newDistances0)
+        self._faceToCellDistances[0].put(faces0, newDistances1)
 
         ## change the direction of the face normals for faces0
-        self.faceNormals = self.faceNormals.copy()
+        self._faceNormals = self._faceNormals.copy()
         for dim in range(self.getDim()):
-            faceNormals = self.faceNormals[dim].copy()
+            faceNormals = self._faceNormals[dim].copy()
             numerix.put(faceNormals, faces0, faceNormals.take(faces1))
-            self.faceNormals[dim] = faceNormals
+            self._faceNormals[dim] = faceNormals
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
@@ -534,8 +534,8 @@ class Mesh(object):
         distance = numerix.sqrtDot(tmp, tmp)
         # only want vertex pairs that are 100x closer than the smallest 
         # cell-to-cell distance
-        close = distance < resolution * min(selfc._cellToCellDistances.min(), 
-                                            other._cellToCellDistances.min()).value
+        close = (distance < resolution * min(selfc._cellToCellDistances.min(), 
+                                             other._cellToCellDistances.min())).value
         vertexCorrelates = numerix.array((self_Xvertices[closest[close]],
                                           other_Xvertices[close]))
         
@@ -626,9 +626,9 @@ class Mesh(object):
 
         # map other's Face IDs to new Face IDs, 
         # accounting for overlaps with self's Face IDs
-        face_map = numerix.empty(other._numberOfFaces, dtype=int)
-        facesToAdd = numerix.delete(numerix.arange(other._numberOfFaces), faceCorrelates[1])
-        face_map[facesToAdd] = numerix.arange(other._numberOfFaces - len(faceCorrelates[1])) + selfc._numberOfFaces
+        face_map = numerix.empty(other.numberOfFaces, dtype=int)
+        facesToAdd = numerix.delete(numerix.arange(other.numberOfFaces), faceCorrelates[1])
+        face_map[facesToAdd] = numerix.arange(other.numberOfFaces - len(faceCorrelates[1])) + selfc.numberOfFaces
         face_map[faceCorrelates[1]] = faceCorrelates[0]
         
         other_faceVertexIDs = vertex_map[other.faceVertexIDs[..., facesToAdd].value]
@@ -1005,7 +1005,7 @@ class Mesh(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.numberOfFaces)
-
+        
     @getsetDeprecated
     def _getLocalNonOverlappingFaceIDs(self):
         return self._localNonOverlappingFaceIDs
@@ -1055,6 +1055,82 @@ class Mesh(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.numberOfFaces)
+
+    @property
+    def _globalNonOverlappingVertexIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 2, 5, 6, 7, 10, 11, 13] for mesh A
+
+            A        B
+       10--11---12--13---14
+        |   |   ||   |   |
+        5---6---7----8---9
+        |   |   ||   |   |
+        0---1---2----3---4
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self._getNumberOfVertices())
+
+    @property
+    def _globalOverlappingVertexIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13] for mesh A
+
+            A        B
+       10--11---12--13---14
+        |   |   ||   |   |
+        5---6---7----8---9
+        |   |   ||   |   |
+        0---1---2----3---4
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self._getNumberOfVertices())
+
+    @property
+    def _localNonOverlappingVertexIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6, 8, 9, 10] for mesh A
+
+            A        B
+        8---9--10/9--10--11
+        |   |   ||   |   |
+        4---5---6/5--6---7
+        |   |   ||   |   |
+        0---1---2/1--2---3
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self._getNumberOfVertices())
+
+    @property
+    def _localOverlappingVertexIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] for mesh A
+
+            A        B
+        8---9---10---11---
+        |   |   ||   |   |
+        4---5---6----7----
+        |   |   ||   |   |
+        0---1---2----3----
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return numerix.arange(self._getNumberOfVertices())
 
     @getsetDeprecated
     def getFacesLeft(self):
