@@ -454,6 +454,11 @@ class Mesh(object):
         self._faceToCellDistances[1].put(faces0, newDistances0)
         self._faceToCellDistances[0].put(faces0, newDistances1)
 
+        ## calculate new cell distances and add them to faces0
+        self._geometry.cellDistances = self._cellDistances.copy()
+        self._geometry.cellDistances.put(faces0, (self._faceToCellDistances[0] 
+                                                  + self._faceToCellDistances[1]).take(faces0))
+
         ## change the direction of the face normals for faces0
         self._faceNormals = self._faceNormals.copy()
         for dim in range(self.getDim()):
