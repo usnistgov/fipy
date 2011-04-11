@@ -41,6 +41,8 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
+from fipy.variables.cellVariable import CellVariable
+
 from abstractMeshTopology import AbstractMeshTopology
 
 class MeshTopology(AbstractMeshTopology):
@@ -50,13 +52,14 @@ class MeshTopology(AbstractMeshTopology):
 
     def __init__(self, cellFaceIDs, faceCellIDs, numCells, maxFacesPerCell, 
                  mesh):
+        self.mesh = mesh
         self.cellFaceIDs = cellFaceIDs
         self.faceCellIDs = faceCellIDs
 
         (self._interiorFaces,
         self._exteriorFaces) = self._calcInteriorAndExteriorFaceIDs(mesh)
         (self._interiorCellIDs,
-        self._exteriorCellIDs) = self._calcInteriorAndExteriorCellIDs(numCells, mesh)
+        self._exteriorCellIDs) = self._calcInteriorAndExteriorCellIDs(numCells)
         self._cellToFaceOrientations = self._calcCellToFaceOrientations()
         self._adjacentCellIDs = self._calcAdjacentCellIDs()
         self._cellToCellIDs = self._calcCellToCellIDs()
@@ -110,13 +113,12 @@ class MeshTopology(AbstractMeshTopology):
 
         return interiorFaces, exteriorFaces
            
-    def _calcInteriorAndExteriorCellIDs(self, numCells, mesh):
+    def _calcInteriorAndExteriorCellIDs(self, numCells):
         ids = numerix.take(self.faceCellIDs[0], self.exteriorFaces, axis=-1).filled().sorted()
         extras = numerix.array([True] * (len(ids) - len(ids[:-1])), dtype=bool)
         exteriorCellIDs = ids[(ids[:-1] != ids[1:]).append(extras)]
         
-        from fipy.variables.cellVariable import CellVariable
-        interiorCellIDs = CellVariable(mesh=mesh, value=numerix.arange(numCells)).delete(exteriorCellIDs)
+        interiorCellIDs = CellVariable(mesh=self.mesh, value=numerix.arange(numCells)).delete(exteriorCellIDs)
     
         return interiorCellIDs, exteriorCellIDs
        
@@ -139,7 +141,6 @@ class MeshTopology(AbstractMeshTopology):
     def _calcCellToCellIDsFilled(self, numCells, maxFacesPerCell):
         N = numCells
         M = maxFacesPerCell
-        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
-        return MA.where(MA.getmaskarray(self.cellToCellIDs), cellIDs, 
-                        self.cellToCellIDs)
-     
+        cellIDs = CellVariable(mesh=self.mesh, value=numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0))
+        mask = self.cellToCellIDs.getMask()
+        return mask * cellIDs  + ~mask * self._cellToCellIDs.filled()

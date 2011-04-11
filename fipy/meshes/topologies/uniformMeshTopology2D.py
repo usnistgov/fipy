@@ -200,7 +200,7 @@ class UniformMeshTopology2D(AbstractMeshTopology):
         N = self.numberOfCells
         M = self.maxFacesPerCell
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
-        cellToCellIDs = self.cellToCellIDs
+        cellToCellIDs = self.cellToCellIDs.value
         return CellVariable(mesh=self.mesh, 
                             value=MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs))
 
