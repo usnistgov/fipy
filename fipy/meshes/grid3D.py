@@ -422,7 +422,9 @@ class Grid3D(Mesh):
             ...                               1, 2, 3, 4, 5, 0, 0, 1, 2, 3, 3, 4, 5]),
             ...                numerix.array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3,
             ...                               4, 5, 3, 4, 5, 0, 1, 2, 2, 3, 4, 5, 5]))
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._adjacentCellIDs, adjacentCellIDs)
+            >>> print parallel.procID > 0 or numerix.allequal(mesh._adjacentCellIDs[0], adjacentCellIDs[0])
+            True
+            >>> print parallel.procID > 0 or numerix.allequal(mesh._adjacentCellIDs[1], adjacentCellIDs[1])
             True
 
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 
@@ -561,7 +563,7 @@ class Grid3D(Mesh):
             True
 
             >>> interiorCellIDs = numerix.array(())
-            >>> numerix.allequal(interiorCellIDs, mesh._interiorCellIDs)
+            >>> print numerix.allequal(interiorCellIDs, mesh._interiorCellIDs)
             True
 
             >>> exteriorCellIDs = numerix.array((0, 1, 2, 3, 4, 5))

@@ -261,7 +261,7 @@ class DistanceVariable(CellVariable):
             tmp = MA.logical_and(masksum == 4, self._value > 0)
             self._value = MA.where(tmp, -1, self._value)
 
-        adjVals = numerix.take(self._value, cellToCellIDs, axis=-1).getValue()
+        adjVals = numerix.take(self._value, cellToCellIDs, axis=-1).value
         adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self._value) > 0)
         dAP = self.mesh._cellToCellDistances.value
         distances = abs(self._value * dAP / (self._value - adjInterfaceValues))
@@ -325,7 +325,7 @@ class DistanceVariable(CellVariable):
             self._value = self.tmpValue.copy()
 
         ## evaluate the trialIDs
-        adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs, axis=-1).getValue()
+        adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs, axis=-1).value
         hasAdjInterface = (numerix.sum(MA.filled(adjInterfaceFlag, 0), 0) > 0).astype('l')
 
         trialFlag = numerix.logical_and(numerix.logical_not(interfaceFlag), hasAdjInterface).astype('l')
