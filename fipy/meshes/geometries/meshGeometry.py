@@ -234,7 +234,7 @@ class MeshGeometry(AbstractMeshGeometry):
         faceCellCentersUp = mask * self.faceCenters + ~mask * faceCellCentersUp.filled()
 
         diff = faceCellCentersDown - faceCellCentersUp
-        mag = numerix.sqrt(numerix.sum(diff**2))
+        mag = numerix.sqrtDot(diff, diff)
         faceCellToCellNormals = diff / mag
 
         orientation = 1 - 2 * (numerix.dot(self.faceNormals, faceCellToCellNormals) < 0)
