@@ -776,21 +776,21 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                 result.matrix.Scale(other)
                 return result
             else:
+                
                 if isinstance(other, Epetra.Vector):
                     other_map = other.Map()
                 else:
                     other_map = self.colMap
 
-                if other_map.SameAs(self.colMap):
-                    localNonOverlappingColIDs = self._localNonOverlappingRowIDs
+                if other_map.SameAs(self.colMap):                    
+##                    localNonOverlappingColIDs = self._localNonOverlappingRowIDs
+                    localNonOverlappingColIDs = self._localNonOverlappingColIDs
 
                     other = Epetra.Vector(self.domainMap, 
                                           other[localNonOverlappingColIDs])
 
                 if other.Map().SameAs(self.matrix.DomainMap()):
-
                     nonoverlapping_result = Epetra.Vector(self.rangeMap)
-
                     self.matrix.Multiply(False, other, nonoverlapping_result)
 
                     return nonoverlapping_result
