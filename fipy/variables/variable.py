@@ -534,7 +534,7 @@ class Variable(object):
                         try:
                             value[...,mask] = constraintValue
                         except:
-                            value[...,mask] = constraintValue[...,mask]
+                            value[...,mask] = numerix.array(constraintValue)[...,mask]
 
         return value
 

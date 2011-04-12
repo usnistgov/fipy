@@ -35,7 +35,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
-from fipy.terms import AlternativeMethodInBaseClass
 
 class TransientTerm(CellTerm):
     r"""
@@ -115,12 +114,6 @@ class TransientTerm(CellTerm):
         Test to ensure that _getTransientGeomCoeff is not returning None when a
         TransientTerm is defined.
 
-    def getTransientCoeff(self, mesh):
-        return self._getGeomCoeff(mesh)
-
-    def getTransientCoeff(self, mesh):
-        return self._getGeomCoeff(mesh)
-        
         >>> from fipy import *
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
@@ -129,7 +122,7 @@ class TransientTerm(CellTerm):
         [ 1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.matrix.asTrilinosMeshMatrix().numpyArray
+        >>> print eq.matrix.numpyArray
         [[ 1.]]
         
         >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
@@ -137,12 +130,10 @@ class TransientTerm(CellTerm):
         [-1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.matrix.asTrilinosMeshMatrix().numpyArray
+        >>> print eq.matrix.numpyArray
         [[-2.]]
 
         """
-        if CellTerm._getTransientGeomCoeff(self, var) is not None:
-            AlternativeMethodInBaseClass('_getTransientGeomCoeff()')
         if var is self.var or self.var is None:
             return self._getGeomCoeff(var.mesh)
         else:
@@ -150,8 +141,6 @@ class TransientTerm(CellTerm):
 
     @property
     def _transientVars(self):
-        if len(super(TransientTerm, self)._transientVars) != 0:
-            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')
         return self._vars
     
         

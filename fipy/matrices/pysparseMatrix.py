@@ -266,7 +266,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         indices = numerix.indices(shape)
         numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
         return numerix.reshape(numMatrix, shape)
-        
+                
     def matvec(self, x):
         """
         This method is required for scipy solvers.
@@ -353,6 +353,15 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         self.trilinosMatrix.finalize()
 
         return self.trilinosMatrix
+
+    @property
+    def numpyArray(self):
+        from fipy.tools import parallel
+        if parallel.Nproc == 1:
+            return super(_PysparseMeshMatrix, self).numpyArray
+        else:
+            return self.asTrilinosMeshMatrix().numpyArray
+
 
     def flush(self):
         """

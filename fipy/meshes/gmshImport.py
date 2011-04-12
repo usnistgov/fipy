@@ -50,10 +50,14 @@ import tempfile
 
 DEBUG = 0
 
+
 def parprint(str):
     if DEBUG:
         if parallel.procID == 0:
             print >> sys.stderr, str
+
+class GmshException(Exception):
+    pass
 
 class MshFile:
     """
@@ -93,9 +97,6 @@ class MshFile:
         if order > 1:
             self.communicator = serial
 
-        if self.communicator == serial:
-            parprint("SERIAL!")
-
         # much special-casing based on gmsh version
         gmshVersion = self._gmshVersion
         if gmshVersion < 2.0:
@@ -118,7 +119,8 @@ class MshFile:
         
         gmshFlags += " -format msh"
 
-        self.filename = self._parseFilename(filename, gmshFlags)
+        self.filename, self.gmshOutput = self._parseFilename(filename, 
+                                                             gmshFlags)
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
@@ -148,7 +150,7 @@ class MshFile:
         import subprocess as subp
         lowerFname = fname.lower()
         if '.msh' in lowerFname:
-            return fname
+            return fname, None
         else:
             if '.geo' in lowerFname or '.gmsh' in lowerFname:
                 geoFile = fname
@@ -165,7 +167,7 @@ class MshFile:
             parprint("gmsh out: %s" % gmshout)
             os.close(f)
 
-            return mshFile
+            return mshFile, gmshout
          
     def _getMetaData(self, f):
         """
@@ -351,6 +353,11 @@ class MshFile:
         allShapeTypes    = cellDataDict['shapes'] + ghostDataDict['shapes']
         allShapeTypes    = nx.array(allShapeTypes)
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
+
+        if numCellsTotal < 1:
+            errStr = "Gmsh hasn't produced any cells! Check your Gmsh code."
+            errStr += "\n\nGmsh output:\n%s" % "".join(self.gmshOutput).rstrip()
+            raise GmshException(errStr)
 
         parprint("Recovering coords.")
         parprint("numcells %d" % numCellsTotal)
@@ -685,6 +692,13 @@ class Gmsh2D(Mesh2D):
         
         >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
         True
+
+        >>> cmd = "Point(1) = {0, 0, 0, 0.05};"
+
+        >>> Gmsh2D(cmd) #doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        GmshException: Gmsh hasn't produced any cells! Check your Gmsh code.
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):

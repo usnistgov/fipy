@@ -37,7 +37,6 @@ import os
 
 from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
-from fipy.terms import AlternativeMethodInBaseClass
 from fipy.terms import SolutionVariableNumberError
 from fipy.terms import SolutionVariableRequiredError
 class _BinaryTerm(_BaseBinaryTerm):
@@ -77,9 +76,6 @@ class _BinaryTerm(_BaseBinaryTerm):
 	return (var, matrix, RHSvector)
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
-        if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
-            raise AlternativeMethodInBaseClass('_getDefaultSolver()')
-        
         for term in (self.term, self.other):
             defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
             if defaultSolver is not None:
@@ -98,13 +94,9 @@ class _BinaryTerm(_BaseBinaryTerm):
         return [self]
 
     def _getTransientGeomCoeff(self, var):
-        if _BaseBinaryTerm._getTransientGeomCoeff(self, var) is not None:
-            AlternativeMethodInBaseClass('_getTransientGeomCoeff()')
         return self._addNone(self.term._getTransientGeomCoeff(var), self.other._getTransientGeomCoeff(var))
 
     def _getDiffusionGeomCoeff(self, var):
-        if _BaseBinaryTerm._getDiffusionGeomCoeff(self, var) is not None:
-            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')
         return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var)) 
 
     __rmul__ = __mul__

@@ -38,7 +38,6 @@ from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.terms import SolutionVariableNumberError
-from fipy.terms import AlternativeMethodInBaseClass
 
 class _CoupledBinaryTerm(_BaseBinaryTerm):
     """
@@ -99,7 +98,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.globalValue
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
+        >>> print numerix.allequal(matrix.numpyArray,
         ...                        [[2, -1, 0, 2, -2, 0],
         ...                         [-1, 3, -1, -2, 4, -2],
         ...                         [0, -1, 2, 0, -2, 2],
@@ -121,7 +120,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.asTrilinosMeshMatrix().numpyArray,
+        >>> print numerix.allequal(matrix.numpyArray,
         ...                        [[ 2, -1,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0],
         ...                         [-1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0,  0],
         ...                         [ 0, -1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0],
@@ -146,7 +145,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
         >>> (eq0 & eq1).solve()
-        >>> print numerix.allequal(eq0.matrix.asTrilinosMeshMatrix().numpyArray,
+        >>> print numerix.allequal(eq0.matrix.numpyArray,
         ...                        [[ 0,  0,  0,  2, -2,  0],
         ...                         [ 0,  0,  0, -2,  4, -2],
         ...                         [ 0,  0,  0,  0, -2,  2],
@@ -212,9 +211,6 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
-        if _BaseBinaryTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
-            raise AlternativeMethodInBaseClass('getDefaultSolver()')
-
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)

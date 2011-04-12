@@ -262,7 +262,7 @@ Due to a quirk in :term:`FiPy`, the gradient of :math:`\mu^{NC}` needs to be
 constrained on the boundary.  This is because ``ConvectionTerm``'s will
 automatically assume a zero flux, which is not what we need in this case.
 
->>> potentialNC.faceGrad.constrain(value=0, where=mesh.exteriorFaces)
+>>> potentialNC.faceGrad.constrain(value=[0], where=mesh.exteriorFaces)
 
 All three equations are defined and an are combined together with
 

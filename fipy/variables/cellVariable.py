@@ -607,7 +607,7 @@ class CellVariable(_MeshVariable):
             >>> m = Grid1D(nx=3)
             >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
             >>> v.constrain(0., where=m.facesLeft)
-            >>> v.faceGrad.constrain(1., where=m.facesRight)
+            >>> v.faceGrad.constrain([1.], where=m.facesRight)
             >>> print v.faceGrad
             [[ 1.  1.  1.  1.]]
             >>> print v.faceValue

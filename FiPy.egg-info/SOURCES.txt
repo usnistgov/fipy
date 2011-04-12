@@ -552,6 +552,7 @@ fipy/viewers/gnuplotViewer/gnuplotViewer.py
 fipy/viewers/gnuplotViewer/test.py
 fipy/viewers/matplotlibViewer/__init__.py
 fipy/viewers/matplotlibViewer/matplotlib1DViewer.py
+fipy/viewers/matplotlibViewer/matplotlib2DContourViewer.py
 fipy/viewers/matplotlibViewer/matplotlib2DGridContourViewer.py
 fipy/viewers/matplotlibViewer/matplotlib2DGridViewer.py
 fipy/viewers/matplotlibViewer/matplotlib2DViewer.py

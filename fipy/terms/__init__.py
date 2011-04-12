@@ -2,10 +2,6 @@ class ExplicitVariableError(Exception):
     def __init__(self):
         Exception.__init__(self, 'Terms with explicit Variables cannot mix with Terms with implicit Variables.')
 
-class AlternativeMethodInBaseClass(AssertionError):
-    def __init__(self, method):
-        AssertionError.__init__(self, 'An alternate ' + method + ' is defined in a base class.')
-
 class TermMultiplyError(Exception):
     def __init__(self):
         Exception.__init__(self, 'Must multiply terms by int or float."')
