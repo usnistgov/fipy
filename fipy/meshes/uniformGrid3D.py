@@ -293,7 +293,7 @@ class UniformGrid3D(Grid3D):
 
     @property
     def faceVertexIDs(self):
-       return self._createFaces()
+       return self._createFaces()[1]
 
     @property
     def _orderedCellVertexIDs(self):

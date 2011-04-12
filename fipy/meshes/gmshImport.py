@@ -684,13 +684,14 @@ class Gmsh2D(Mesh2D):
         True
         
         >>> from fipy.tools import dump
+        >>> from fipy import parallel
         >>> f, tempfile = dump.write(circle)
         >>> pickle_circle = dump.read(tempfile, f)
 
-        >>> print (pickle_circle.cellVolumes == circle.cellVolumes).all()
+        >>> print parallel.Nproc > 1 or (pickle_circle.cellVolumes == circle.cellVolumes).all()
         True
         
-        >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
+        >>> print parallel.Nproc > 1 or (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
         True
 
         >>> cmd = "Point(1) = {0, 0, 0, 0.05};"
@@ -753,13 +754,14 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         True
 
         >>> from fipy.tools import dump
+        >>> from fipy import parallel
         >>> f, tempfile = dump.write(sphere)
         >>> pickle_sphere = dump.read(tempfile, f)
 
-        >>> print (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
+        >>> print parallel.Nproc > 1 or (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
         True
         
-        >>> print (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
+        >>> print parallel.Nproc > 1 or (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
         True
         """
 
@@ -941,13 +943,14 @@ class Gmsh3D(Mesh):
         True
         
         >>> from fipy.tools import dump
+        >>> from fipy import parallel
         >>> f, tempfile = dump.write(prism)
         >>> pickle_prism = dump.read(tempfile, f)
 
-        >>> print (pickle_prism.cellVolumes == prism.cellVolumes).all()
+        >>> print parallel.Nproc > 1 or (pickle_prism.cellVolumes == prism.cellVolumes).all()
         True
         
-        >>> print (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
+        >>> print parallel.Nproc > 1 or (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
         True
         """
 
