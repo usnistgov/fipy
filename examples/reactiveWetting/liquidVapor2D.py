@@ -71,15 +71,15 @@ A 2D version of the 1D example.
 >>> potentialNC = CellVariable(mesh=mesh, name=r'$\mu^{NC}$')
 
 >>> epsilon = 1e-16
->>> freeEnergy = (f(density) + epsilon * temperature / 2 * density.getGrad().getMag()**2).getCellVolumeAverage()
+>>> freeEnergy = (f(density) + epsilon * temperature / 2 * density.grad.mag**2).cellVolumeAverage
 
 >>> matrixDiagonal = CellVariable(mesh=mesh, name=r'$a_f$', value=1e+20, hasOld=True)
->>> correctionCoeff = mesh._getFaceAreas() * mesh._getCellDistances() / matrixDiagonal.getFaceValue()
+>>> correctionCoeff = mesh._faceAreas * mesh._cellDistances / matrixDiagonal.faceValue
 >>> massEqn = TransientTerm(var=density) \
-...           + VanLeerConvectionTerm(coeff=velocityVector.getFaceValue() + correctionCoeff \
-...                                         * (density * potentialNC.getGrad()).getFaceValue(), \
+...           + VanLeerConvectionTerm(coeff=velocityVector.faceValue + correctionCoeff \
+...                                         * (density * potentialNC.grad).faceValue, \
 ...                                   var=density) \
-...           - DiffusionTerm(coeff=correctionCoeff * density.getFaceValue()**2, var=potentialNC)
+...           - DiffusionTerm(coeff=correctionCoeff * density.faceValue**2, var=potentialNC)
 
 >>> viscosity = 1e-3
 >>> ConvectionTerm = CentralDifferenceConvectionTerm
@@ -92,21 +92,21 @@ A 2D version of the 1D example.
 >>> matXY = 0
 >>> matYX = 0
 >>> momentumXEqn = TransientTerm(coeff=density, var=velocityX) \
-...                + ConvectionTerm(coeff=density.getFaceValue() * velocityVector.getFaceValue(), var=velocityX) \
+...                + ConvectionTerm(coeff=density.faceValue * velocityVector.faceValue, var=velocityX) \
 ...                == DiffusionTerm(coeff=(viscosity * matXX,), var=velocityX) \
 ...                + DiffusionTerm(coeff=(viscosity * matXY,), var=velocityY) \
-...                - ConvectionTerm(coeff=density.getFaceValue() * [[1], [0]], var=potentialNC) \
-...                + ImplicitSourceTerm(coeff=density.getGrad()[0], var=potentialNC)
+...                - ConvectionTerm(coeff=density.faceValue * [[1], [0]], var=potentialNC) \
+...                + ImplicitSourceTerm(coeff=density.grad[0], var=potentialNC)
 
 >>> momentumYEqn = TransientTerm(coeff=density, var=velocityY) \
-...                + ConvectionTerm(coeff=density.getFaceValue() * velocityVector.getFaceValue(), var=velocityY) \
+...                + ConvectionTerm(coeff=density.faceValue * velocityVector.faceValue, var=velocityY) \
 ...                == DiffusionTerm(coeff=(viscosity * matYY,), var=velocityY) \
 ...                + DiffusionTerm(coeff=(viscosity * matYX,), var=velocityX) \
-...                - ConvectionTerm(coeff=density.getFaceValue() * [[0], [1]], var=potentialNC) \
-...                + ImplicitSourceTerm(coeff=density.getGrad()[1], var=potentialNC)
+...                - ConvectionTerm(coeff=density.faceValue * [[0], [1]], var=potentialNC) \
+...                + ImplicitSourceTerm(coeff=density.grad[1], var=potentialNC)
 
->>> velocityX.constrain(0, mesh.getFacesLeft() & mesh.getFacesRight())
->>> velocityY.constrain(0, mesh.getFacesTop() & mesh.getFacesBottom())
+>>> velocityX.constrain(0, mesh.facesLeft & mesh.facesRight)
+>>> velocityY.constrain(0, mesh.facesTop & mesh.facesBottom)
 
 >>> potentialDerivative = 2 * ee / molarWeight**2 + \
 ...                       gasConstant * temperature * molarWeight / density / (molarWeight - vbar * density)**2
@@ -119,12 +119,12 @@ A 2D version of the 1D example.
 ...                  - potentialDerivative * density \
 ...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
->>> potentialNC.getFaceGrad().constrain(value=0, where=mesh.getExteriorFaces())
+>>> potentialNC.faceGrad.constrain(value=0, where=mesh.exteriorFaces)
 
 >>> coupledEqn = massEqn & momentumXEqn & momentumYEqn & potentialNCEqn
 
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
-...    (1  + 0.01 * (2 * numerix.random.random(mesh.getNumberOfCells()) - 1))
+...    (1  + 0.01 * (2 * numerix.random.random(mesh.numberOfCells) - 1))
 
 >>> if __name__ == '__main__':
 ...     viewers = Viewer(density), Viewer(velocityVector), Viewer(potentialNC)
@@ -165,7 +165,7 @@ A 2D version of the 1D example.
 ...         velocityVector[0] = velocityX
 ...         velocityVector[1] = velocityY
 ...
-...         dt = min(dt, dx / max(abs(velocityVector.getMag())) * cfl)
+...         dt = min(dt, dx / max(abs(velocityVector.mag)) * cfl)
 ...         
 ...         coupledEqn.cacheMatrix()
 ...         residual = coupledEqn.sweep(dt=dt)
@@ -176,17 +176,17 @@ A 2D version of the 1D example.
 ...         residual = residual / initialResidual
 ...
 ...         if residual > previousResidual * 1.1 or sweep > 20:
-...             density[:] = density.getOld()
-...             velocityX[:] = velocityX.getOld()
-...             velocityY[:] = velocityY.getOld()
-...             matrixDiagonal[:] = matrixDiagonal.getOld()
+...             density[:] = density.old
+...             velocityX[:] = velocityX.old
+...             velocityY[:] = velocityY.old
+...             matrixDiagonal[:] = matrixDiagonal.old
 ...             dt = dt / 10.
 ...             if __name__ == '__main__':
 ...                 print 'Recalculate the time step'
 ...             timestep -= 1
 ...             break
 ...         else:
-...             matrixDiagonal[:] = coupledEqn.getMatrix().takeDiagonal()[mesh.getNumberOfCells():2 * mesh.getNumberOfCells()]
+...             matrixDiagonal[:] = coupledEqn.matrix.takeDiagonal()[mesh.numberOfCells:2 * mesh.numberOfCells]
 ...             density[:] = relaxation * density + (1 - relaxation) * densityPrevious
 ...             velocityX[:] = relaxation * velocityX + (1 - relaxation) * velocityXPrevious
 ...             velocityY[:] = relaxation * velocityY + (1 - relaxation) * velocityYPrevious

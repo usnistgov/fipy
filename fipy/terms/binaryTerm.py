@@ -44,7 +44,7 @@ class _BinaryTerm(_BaseBinaryTerm):
 
     def _verifyVar(self, var):
 
-        if var is None and len(self._getVars()) > 1:
+        if var is None and len(self._vars) > 1:
             raise SolutionVariableRequiredError
 
         return _BaseBinaryTerm._verifyVar(self, var)
@@ -93,7 +93,8 @@ class _BinaryTerm(_BaseBinaryTerm):
     def __mul__(self, other):
         return other * self.term + other * self.other
 
-    def _getUncoupledTerms(self):
+    @property
+    def _uncoupledTerms(self):
         return [self]
 
     def _getTransientGeomCoeff(self, var):

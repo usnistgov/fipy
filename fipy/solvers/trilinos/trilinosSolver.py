@@ -103,7 +103,7 @@ class TrilinosSolver(Solver):
                                                globalMatrix.nonOverlappingMap), 
                                  Epetra.Insert)
         
-        self.var.setValue(overlappingVector)
+        self.var.value = overlappingVector
 
         self._deleteGlobalMatrixAndVectors()
         del self.var

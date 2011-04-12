@@ -136,8 +136,8 @@ if __name__ == "__main__":
     v3.name = "v1.grad"
     v4 = v1.faceGrad
     v4.name = "v1.faceGrad"
-    v5 = v1.getHarmonicFaceValue()
-    v5.name = "v1.getHarmonicFaceValue()"
+    v5 = v1.harmonicFaceValue
+    v5.name = "v1.harmonicFaceValue"
     v6 = v1.arithmeticFaceValue
     v6.name = "v1.arithmeticFaceValue"
 

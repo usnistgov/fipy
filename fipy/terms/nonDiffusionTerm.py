@@ -69,7 +69,8 @@ class _NonDiffusionTerm(_UnaryTerm):
             
     __rmul__ = __mul__
 
-    def _getDiffusionVars(self):
+    @property
+    def _diffusionVars(self):
         return []
 
     def _test(self):
@@ -143,8 +144,7 @@ class _NonDiffusionTerm(_UnaryTerm):
             >>> eq1 & eq2
             ((__NonDiffusionTerm(coeff=1.0, var=A) + 10.0) & (__NonDiffusionTerm(coeff=2.0, var=B) + 20.0))
 
-
- 	""" 
+        """ 
 
         
 

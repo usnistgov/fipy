@@ -39,6 +39,8 @@ from fipy.terms.term import Term
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.terms import ExplicitVariableError
 
+from fipy.tools.decorators import getsetDeprecated
+
 class _BaseBinaryTerm(Term):
     def __init__(self, term, other):
 
@@ -55,9 +57,12 @@ class _BaseBinaryTerm(Term):
                 raise ExplicitVariableError
         else:
             if other.var is None:
-                raise ExplicitVariableError
+                if isinstance(other, _ExplicitSourceTerm):
+                    other.var = term.var
+                else:
+                    raise ExplicitVariableError
 
-	Term.__init__(self, var=self._getVars()[0])
+	Term.__init__(self, var=self._vars[0])
     
     def _addNone(self, arg0, arg1):
         if arg0 is None and arg1 is None:
@@ -81,18 +86,21 @@ class _BaseBinaryTerm(Term):
         return (-self.term) + (-self.other)
 
     def _calcVars(self):
-        return list(set(self.term._getVars() + self.other._getVars()))
+        return list(set(self.term._vars + self.other._vars))
 
-    def _getVars(self):
-        if not hasattr(self, '_vars'):
-            self._vars = self._calcVars()
-        return self._vars
+    @property
+    def _vars(self):
+        if not hasattr(self, '_internalVars'):
+            self._internalVars = self._calcVars()
+        return self._internalVars
 
-    def _getTransientVars(self):
-        return self.term._getTransientVars() + self.other._getTransientVars()
+    @property
+    def _transientVars(self):
+        return self.term._transientVars + self.other._transientVars
 
-    def _getDiffusionVars(self):
-        return self.term._getDiffusionVars() + self.other._getDiffusionVars() 
+    @property
+    def _diffusionVars(self):
+        return self.term._diffusionVars + self.other._diffusionVars
 
 
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm

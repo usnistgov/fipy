@@ -119,10 +119,10 @@ def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
             mod = sys.modules[module]
             klass = getattr(mod, name)
             
-            from fipy.meshes import numMesh
+            from fipy import meshes
             import types
             
-            if isinstance(klass, types.ClassType) and issubclass(klass, numMesh.mesh.Mesh):
+            if isinstance(klass, types.ClassType) and issubclass(klass, meshes.mesh.Mesh):
                 class UnmangledMesh(klass):
                     def __setstate__(self, dict):
                         if (dict.has_key('cellFaceIDs') 

@@ -491,7 +491,12 @@ class Mesh(object):
         
         self.scale = self.scale['length']
         
+    @getsetDeprecated
     def _getConcatenableMesh(self):
+        return self._concatenableMesh
+
+    @property
+    def _concatenableMesh(self):
         return self
         
     def _getAddedMeshValues(self, other, resolution=1e-2):
@@ -507,8 +512,8 @@ class Mesh(object):
           `faceVertexIDs`, and `cellFaceIDs`.
         """
         
-        selfc = self._getConcatenableMesh()
-        other = other._getConcatenableMesh()
+        selfc = self._concatenableMesh
+        other = other._concatenableMesh
 
         ## check dimensions
         if self.dim != other.dim:
@@ -1792,14 +1797,16 @@ class Mesh(object):
 
         """
 
-    def _getVTKCellType(self):
+    @property
+    def _VTKCellType(self):
         from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
                 
-    def getVTKCellDataSet(self):
+    @property
+    def VTKCellDataSet(self):
         """Returns a TVTK `DataSet` representing the cells of this mesh
         """
-        cvi = self._orderedCellVertexIDs.swapaxes(0,1)
+        cvi = self._orderedCellVertexIDs.value.swapaxes(0,1)
         from fipy.tools import numerix
         if type(cvi) is numerix.ma.masked_array:
             counts = cvi.count(axis=1)[:,None]
@@ -1811,7 +1818,7 @@ class Mesh(object):
         from enthought.tvtk.api import tvtk
         num = counts.shape[0]
 
-        cps_type = self._getVTKCellType()
+        cps_type = self._VTKCellType
         cell_types = numerix.array([cps_type]*num)
         cell_array = tvtk.CellArray()
         cell_array.set_cells(num, cells)
@@ -1827,7 +1834,8 @@ class Mesh(object):
 
         return ug
 
-    def getVTKFaceDataSet(self):
+    @property
+    def VTKFaceDataSet(self):
         """Returns a TVTK `DataSet` representing the face centers of this mesh
         """
         from enthought.tvtk.api import tvtk

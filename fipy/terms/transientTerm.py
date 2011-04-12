@@ -129,7 +129,7 @@ class TransientTerm(CellTerm):
         [ 1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.getMatrix().asTrilinosMeshMatrix().getNumpyArray()
+        >>> print eq.matrix.asTrilinosMeshMatrix().numpyArray
         [[ 1.]]
         
         >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
@@ -137,21 +137,22 @@ class TransientTerm(CellTerm):
         [-1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var)
-        >>> print eq.getMatrix().asTrilinosMeshMatrix().getNumpyArray() ##== -2
+        >>> print eq.matrix.asTrilinosMeshMatrix().numpyArray
         [[-2.]]
 
         """
         if CellTerm._getTransientGeomCoeff(self, var) is not None:
             AlternativeMethodInBaseClass('_getTransientGeomCoeff()')
         if var is self.var or self.var is None:
-            return self._getGeomCoeff(var.getMesh())
+            return self._getGeomCoeff(var.mesh)
         else:
             return None
 
-    def _getTransientVars(self):
-        if len(CellTerm._getTransientVars(self)) != 0:
+    @property
+    def _transientVars(self):
+        if len(super(TransientTerm, self)._transientVars) != 0:
             AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')
-        return self._getVars()
+        return self._vars
     
         
 def _test(): 

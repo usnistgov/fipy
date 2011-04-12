@@ -143,7 +143,8 @@ class UniformGrid1D(Grid1D):
                              origin=self.args['origin'] * factor,
                              overlap=self.args['overlap'])
 
-    def _getConcatenableMesh(self):
+    @property
+    def _concatenableMesh(self):
         from mesh1D import Mesh1D
         return Mesh1D(vertexCoords = self.vertexCoords, 
                       faceVertexIDs = self._createFaces(), 

@@ -294,7 +294,7 @@ solution. This argument cannot be passed to :meth:`solve`.
 ...     pressureCorrectionEq.cacheRHSvector()
 ...     ## left bottom point must remain at pressure 0, so no correction
 ...     pres = pressureCorrectionEq.sweep(var=pressureCorrection)
-...     rhs = pressureCorrectionEq.getRHSvector()
+...     rhs = pressureCorrectionEq.RHSvector
 ...
 ...     ## update the pressure using the corrected value
 ...     pressure.setValue(pressure + pressureRelaxation * pressureCorrection )

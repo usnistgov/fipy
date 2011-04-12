@@ -51,6 +51,7 @@ from fipy.tools.decorators import getsetDeprecated
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.vertexVariable import _VertexVariable
 
 class UniformGrid2D(Grid2D):
     """
@@ -153,7 +154,8 @@ class UniformGrid2D(Grid2D):
                              dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'], 
                              origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
 
-    def _getConcatenableMesh(self):
+    @property
+    def _concatenableMesh(self):
         from grid2D import Grid2D
         args = self.args.copy()
         origin = args['origin']

@@ -46,6 +46,7 @@ from fipy.tools import parallel
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
+from fipy.variables.vertexVariable import _VertexVariable
 
 class UniformGrid3D(Grid3D):
     """
@@ -173,7 +174,8 @@ class UniformGrid3D(Grid3D):
                              dz = self.dz * factor, nz = self.nz, 
                              origin = self.origin * factor)
 
-    def _getConcatenableMesh(self):
+    @property
+    def _concatenableMesh(self):
         from fipy.meshes.grid3D import Grid3D
         args = self.args.copy()
         origin = args['origin']
