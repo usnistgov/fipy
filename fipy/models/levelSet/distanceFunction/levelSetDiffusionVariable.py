@@ -75,7 +75,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
     
     if inline.doInline:
         def _calcValue_(self, alpha, id1, id2):
-            val = self._getArray().copy()
+            val = self._array.copy()
             
             inline._runInline("""
                 int ID1 = id1[i];

@@ -95,7 +95,7 @@ class _FaceGradVariable(FaceVariable):
     else:
         def _calcValue(self):
             #TODO: restore variableness of this branch and ditch the inline
-            dAP = self.mesh._cellDistances.getValue()
+            dAP = self.mesh._cellDistances.value
             id1, id2 = [id.value for id in self.mesh._adjacentCellIDs]
             N2 = numerix.take(self.var.value, id2, axis=-1) 
             faceMask = self.mesh.exteriorFaces.value

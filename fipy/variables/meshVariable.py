@@ -215,6 +215,16 @@ class _MeshVariable(Variable):
                 s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
             return s
         
+    @property
+    def constraintMask(self):
+        if hasattr(self, 'constraints'):
+            returnMask = False
+            for value, mask in self.constraints:
+                returnMask = returnMask | numerix.array(mask)
+            return self._variableClass(mesh=self.mesh, rank=0, value=returnMask)
+        else:
+            return None
+
     def _getShapeFromMesh(mesh):
         """
         Return the shape of this `MeshVariable` type, given a particular mesh.
@@ -385,7 +395,7 @@ class _MeshVariable(Variable):
         return Variable.rcross(other, self, axis=0)
         
     def _maxminparallel_(self, a, axis, default, fn, fnParallel):
-        a = a[self._localNonOverlappingIDs]
+        a = a[..., self._localNonOverlappingIDs]
         
         if numerix.multiply.reduce(a.shape) == 0:
             if axis is None:
@@ -430,7 +440,7 @@ class _MeshVariable(Variable):
     def all(self, axis=None):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def allParallel(a):
-                a = a[self._localNonOverlappingIDs]
+                a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.all(a, axis=axis)
                 
             return self._axisOperator(opname="allVar", 
@@ -442,7 +452,7 @@ class _MeshVariable(Variable):
     def any(self, axis=None):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def anyParallel(a):
-                a = a[self._localNonOverlappingIDs]
+                a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.any(a, axis=axis)
                 
             return self._axisOperator(opname="anyVar", 
@@ -454,7 +464,7 @@ class _MeshVariable(Variable):
     def sum(self, axis=None):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def sumParallel(a):
-                a = a[self._localNonOverlappingIDs]
+                a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.sum(a, axis=axis)
                 
             return self._axisOperator(opname="sumVar", 
@@ -502,12 +512,29 @@ class _MeshVariable(Variable):
         `Variable._shapeClassAndOther()`, but if that fails, and if each
         dimension of `other` is exactly the `Mesh` dimension, do what the user
         probably "meant" and project `other` onto the `Mesh`.
+        
+        >>> from fipy import *
+        >>> mesh = Grid1D(nx=5)
+        >>> A = numerix.arange(5)
+        >>> B = Variable(1.)
+        >>> import warnings
+        >>> warnings.simplefilter("error", UserWarning, append=True)
+        >>> C = CellVariable(mesh=mesh) * (A * B)
+        Traceback (most recent call last):
+          ...
+        UserWarning: The expression `(multiply([0 1 2 3 4], Variable(value=array(1.0))))` has been cast to a constant `CellVariable`
+        >>> junk = warnings.filters.pop()
         """
         if other is not None:
             otherShape = numerix.getShape(other)
             if (not isinstance(other, _MeshVariable) 
                 and otherShape is not () 
                 and otherShape[-1] == self._globalNumberOfElements):
+                if (isinstance(other, Variable) and len(other.requiredVariables) > 0):
+                    import warnings
+                    warnings.warn("The expression `%s` has been cast to a constant `%s`" 
+                                  % (repr(other), self._variableClass.__name__), 
+                                  UserWarning, stacklevel=4)
                 other = self._variableClass(value=other, mesh=self.mesh)
 
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)

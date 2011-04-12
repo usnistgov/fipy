@@ -272,7 +272,7 @@ def _testBinOp(self):
         >>> (Variable(value="1 m") / Variable(value="0 s")).unit
         <PhysicalUnit m/s>
 
-        >>> a = -((Variable() * Variable()).sin())
+        >>> a = -(numerix.sin(Variable() * Variable()))
 
     Check that getTypeCode() works as expected.
 

@@ -154,7 +154,7 @@ class UniformGrid1D(Grid1D):
 
 ##         from common/mesh
         
-    @getsetDeprecated
+    @getsetDeprecated(new_name="cellFaceIDs")
     def _getCellFaceIDs(self):
         return self.cellFaceIDs
 
@@ -170,7 +170,7 @@ class UniformGrid1D(Grid1D):
         
 ##         from numMesh/mesh
 
-    @getsetDeprecated
+    @getsetDeprecated(new_name="vertexCoords")
     def _getVertexCoords(self):
         return self.vertexCoords
 
