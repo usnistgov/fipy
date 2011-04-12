@@ -126,11 +126,11 @@ class Mesh2D(Mesh):
         # It is? Why?
         faceDisplacementVectors = ~self.getExteriorFaces() * (self.cellCenters[:,unmaskedFaceCellIDs[1]]
                                                               - self.cellCenters[:,unmaskedFaceCellIDs[0]])
-        faceCrossProducts = faceDisplacementVectors.cross(self.faceNormals)
+        faceCrossProducts = faceDisplacementVectors.cross(self._faceNormals)
         faceDisplacementVectorLengths = numerix.maximum(faceDisplacementVectors.getMag(), 1.e-100)
-        faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self.faceAreas
+        faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self._faceAreas
         cellFaceWeightedNonOrthogonalities = numerix.take(faceWeightedNonOrthogonalities, self.cellFaceIDs, axis=-1)
-        cellFaceAreas = numerix.take(self.faceAreas, self.cellFaceIDs)
+        cellFaceAreas = numerix.take(self._faceAreas, self.cellFaceIDs)
         cellTotalWeightedValues = numerix.add.reduce(cellFaceWeightedNonOrthogonalities, axis = 0)  
         cellTotalFaceAreas = numerix.add.reduce(cellFaceAreas, axis = 0)
   

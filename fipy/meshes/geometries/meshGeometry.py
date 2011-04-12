@@ -93,7 +93,7 @@ class ScaledMeshGeometry(AbstractScaledMeshGeometry):
         self._scale['area'] = self._calcAreaScale()
         self._scale['volume'] = self._calcVolumeScale()
         self._setScaledValues()
-
+        
     def _calcAreaScale(self):
         return self.scale['length']**2
 
@@ -186,7 +186,9 @@ class MeshGeometry(AbstractMeshGeometry):
     cellFaceIDs = property(_getCellFaceIDs, _setCellFaceIDs)
         
     def handleFaceConnection(self):
+        self._orientedFaceNormals = self._calcOrientedFaceNormals()
         self._cellToCellDistances = self._calcCellToCellDist()
+        self._scaledGeometry._setScaledValues()
      
     """internal `_calc*` methods"""
 
