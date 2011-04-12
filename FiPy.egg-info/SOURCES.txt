@@ -421,6 +421,7 @@ fipy/solvers/trilinos/linearLUSolver.py
 fipy/solvers/trilinos/linearPCGSolver.py
 fipy/solvers/trilinos/trilinosAztecOOSolver.py
 fipy/solvers/trilinos/trilinosMLTest.py
+fipy/solvers/trilinos/trilinosNonlinearSolver.py
 fipy/solvers/trilinos/trilinosSolver.py
 fipy/solvers/trilinos/preconditioners/__init__.py
 fipy/solvers/trilinos/preconditioners/domDecompPreconditioner.py

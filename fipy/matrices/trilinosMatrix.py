@@ -63,11 +63,11 @@ from fipy.tools.decorators import getsetDeprecated
 class _TrilinosMatrixBase(_SparseMatrix):
     """_TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
     
-    _TrilinosMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
-    def __init__(self, matrix, bandwidth=None, nonOverlappingMap=None, overlappingMap=None):
+    def __init__(self, matrix, bandwidth=None, 
+                 rowMap=None, colMap=None, domainMap=None):
         """
         :Parameters:
           - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
@@ -75,12 +75,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         self.matrix = matrix
 
-        if nonOverlappingMap is None:
-            self.nonOverlappingMap = matrix.RowMap()
-        else:
-            self.nonOverlappingMap = nonOverlappingMap
-            
-        self.overlappingMap = overlappingMap
+        self.rowMap = rowMap or matrix.RowMap()
+        self.colMap = colMap or self.rowMap
+        self.domainMap = domainMap or self.colMap
+        self.rangeMap = self.rowMap
         
         self.comm = matrix.Comm()
         if bandwidth is None:
@@ -99,29 +97,25 @@ class _TrilinosMatrixBase(_SparseMatrix):
     # FillComplete is implicitly called; there will only be warnings when
     # insertions fail.
     def copy(self):
-        if not self.matrix.Filled():
-            self.matrix.FillComplete()
+        self.fillComplete()
 
         return _TrilinosMatrixBase(matrix=Epetra.CrsMatrix(self.matrix))
             
         
     def __getitem__(self, index):
-        if not self.matrix.Filled():
-            self.matrix.FillComplete()
+        self.fillComplete()
 
         return self.matrix[index]
         
     def __str__(self):
-
-        if not self.matrix.Filled():
-            self.matrix.FillComplete()
+        self.fillComplete()
 
         from fipy.tools import parallel
         return ''.join(parallel.allgather(_SparseMatrix.__str__(self)))
 
     @property
     def _range(self):
-        return (range(self.nonOverlappingMap.NumGlobalElements()), self.nonOverlappingMap.MyGlobalElements())
+        return (range(self.rowMap.NumGlobalElements()), self.rowMap.MyGlobalElements())
 
     def __setitem__(self, index, value):
         self.matrix[index] = value
@@ -141,8 +135,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
     def __iadd__(self, other):
         if other != 0:
-            if not other.matrix.Filled():
-                other.matrix.FillComplete()
+            other.fillComplete()
             
             # Depending on which one is more filled, pick the order of operations 
             if self.matrix.Filled() and other.matrix.NumGlobalNonzeros() \
@@ -150,7 +143,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 tempBandwidth = other.matrix.NumGlobalNonzeros() \
                                  /self.matrix.NumGlobalRows()+1
 
-                tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, tempBandwidth)
+                tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, tempBandwidth)
                 
                 if EpetraExt.Add(other.matrix, False, 1, tempMatrix, 1) != 0:
                     import warnings
@@ -175,12 +168,8 @@ class _TrilinosMatrixBase(_SparseMatrix):
    
     # To add two things while modifying neither, both must be FillCompleted
     def _add(self, other, sign = 1):
-
-        if not self.matrix.Filled():
-            self.matrix.FillComplete()
-            
-        if not other.matrix.Filled():
-            other.matrix.FillComplete()
+        self.fillComplete()
+        other.fillComplete()
         
         # make the one with more nonzeros the right-hand operand
         # so addition is likely to succeed
@@ -198,7 +187,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         Add two sparse matrices. The nonempty spots of one of them must be a 
         subset of the nonempty spots of the other one.
         
-            >>> L = _TrilinosMatrix(size=3)
+            >>> L = _TrilinosMatrix(rows=3, cols=3)
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt([0,0,0], [0,1,2], [0,1,2])
             >>> print L + _TrilinosIdentityMatrix(size=3)
@@ -214,7 +203,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
             >>> print L + 3
             Traceback (most recent call last):
             ...
-            AttributeError: 'int' object has no attribute 'matrix'
+            AttributeError: 'int' object has no attribute 'fillComplete'
         """
 
         if other is 0:
@@ -236,7 +225,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
             >>> from fipy.tools import parallel
            
-            >>> L1 = _TrilinosMatrix(size=3)
+            >>> L1 = _TrilinosMatrix(rows=3, cols=3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L2 = _TrilinosIdentityMatrix(size=3)
             >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
@@ -268,14 +257,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
         if isinstance(other, _TrilinosMatrixBase):
             if isinstance(other.matrix, Epetra.RowMatrix):
-            
-                if not self.matrix.Filled():
-                    self.matrix.FillComplete()
-                    
-                if not other.matrix.Filled():
-                    other.matrix.FillComplete()
+                self.fillComplete()
+                other.fillComplete()
 
-                result = Epetra.CrsMatrix(Epetra.Copy, self.nonOverlappingMap, 0)
+                result = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, 0)
 
                 EpetraExt.Multiply(self.matrix, False, other.matrix, False, result)
                 copy = self.copy()
@@ -291,23 +276,23 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 result.matrix.Scale(other)
                 return result
             elif shape == (N,):
+                self.fillComplete()
 
-                if not self.matrix.Filled():
-                    self.matrix.FillComplete()
-
-                y = _numpyToTrilinosVector(other, self.nonOverlappingMap)
-                result = Epetra.Vector(self.nonOverlappingMap)
+                y = Epetra.Vector(self.domainMap, other)
+                result = Epetra.Vector(self.rangeMap)
                 self.matrix.Multiply(False, y, result)
-                return _trilinosToNumpyVector(result)
+                return numerix.array(result)
             else:
                 raise TypeError
            
     def __rmul__(self, other):
         if type(numerix.ones(1)) == type(other):
-            y = Epetra.Vector(other)
-            result = Epetra.Vector(self.nonOverlappingMap)
+            self.fillComplete()
+
+            y = Epetra.Vector(self.rangeMap, other)
+            result = Epetra.Vector(self.domainMap)
             self.matrix.Multiply(True, y, result)
-            return _trilinosToNumpyVector(result)
+            return numerix.array(result)
         else:
             return self * other
             
@@ -322,7 +307,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
-            >>> L = _TrilinosMatrix(size=3)
+            >>> L = _TrilinosMatrix(rows=3, cols=3)
             >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> print L
                 ---    10.000000   3.000000  
@@ -360,8 +345,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 self.matrix.InsertGlobalValues(id1, id2, vector)
             else:
                 self.matrix.InsertGlobalValues(id1, id2, numerix.zeros(len(vector)))
-                if not self.matrix.Filled():
-                    self.matrix.FillComplete()
+                self.fillComplete()
                 if self.matrix.ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings
                     warnings.warn("ReplaceGlobalValues returned error code in put", 
@@ -385,7 +369,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
         
-            >>> L = _TrilinosMatrix(size=3)
+            >>> L = _TrilinosMatrix(rows=3, cols=3)
             >>> L.putDiagonal((3.,10.,numerix.pi))
             >>> print L
              3.000000      ---        ---    
@@ -419,10 +403,9 @@ class _TrilinosMatrixBase(_SparseMatrix):
         raise TypeError
 
     def takeDiagonal(self):
-        if not self.matrix.Filled():
-            self.matrix.FillComplete()
+        self.fillComplete()
 
-        result = Epetra.Vector(self.nonOverlappingMap)
+        result = Epetra.Vector(self.rangeMap)
         self.matrix.ExtractDiagonalCopy(result)
         
         return result
@@ -431,7 +414,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
-            >>> L = _TrilinosMatrix(size=3)
+            >>> L = _TrilinosMatrix(rows=3, cols=3)
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt((1.73,2.2,8.4,3.9,1.23), (1,2,0,0,1), (2,2,0,0,2))
             >>> print L
@@ -485,8 +468,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Exports the matrix to a Matrix Market file of the given filename.
         """
-        if not self.matrix.Filled():
-            self.matrix.FillComplete()
+        self.fillComplete()
         EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     @property
@@ -501,6 +483,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
         self.exportMmf(mtxName)
 
+        parallel.Barrier()
         mtx = mmio.mmread(mtxName)
         parallel.Barrier()
         
@@ -509,7 +492,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
         coo = mtx.tocoo()
         trilinosMatrix = self.matrix
-        numpyArray = numerix.zeros((trilinosMatrix.NumGlobalRows(), trilinosMatrix.NumGlobalRows()), 'd')
+        numpyArray = numerix.zeros((trilinosMatrix.NumGlobalRows(), trilinosMatrix.NumGlobalCols()), 'd')
         numpyArray[coo.row, coo.col] = coo.data
         return numpyArray
 
@@ -526,7 +509,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
             totalElements = self.matrix.NumGlobalRows()
 
             DistributedMap = Epetra.Map(totalElements, 0, self.comm)
-            RootToDist = Epetra.Import(DistributedMap, self.nonOverlappingMap)
+            RootToDist = Epetra.Import(DistributedMap, self.rangeMap)
 
             DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, self.bandwidth*3/2)
 
@@ -534,75 +517,46 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
             return DistMatrix
 
-    def finalize(self):
+    def fillComplete(self):
         if not self.matrix.Filled():
-            self.matrix.FillComplete()
+            self.matrix.FillComplete(self.domainMap, self.rangeMap)
+
+    def finalize(self):
+        self.fillComplete()
         self.matrix.OptimizeStorage()
 
-def _numpyToTrilinosVector(v, map):
-    """
-    Takes a numpy vector and return an equivalent Trilinos vector, distributed
-    across all processors as specified by the map.
-    """
-    if(map.Comm().NumProc() == 1):
-        return Epetra.Vector(v)
-        # No redistribution necessary in serial mode
-    else:
-        if map.Comm().MyPID() == 0:
-            myElements=len(v)
-        else:
-            myElements=0
-        RootMap = Epetra.Map(-1, range(0, myElements), 0, map.Comm())
-
-        RootToDist = Epetra.Import(map, RootMap)
-
-        rootVector = Epetra.Vector(RootMap, v)
-        distVector = Epetra.Vector(map)
-        distVector.Import(rootVector, RootToDist, Epetra.Insert)
-        return distVector
-
-def _trilinosToNumpyVector(v):
-    """
-    Takes a distributed Trilinos vector and gives all processors a copy of it
-    in a numpy vector.
-    """
-
-    if(v.Comm().NumProc() == 1):
-        return numerix.array(v)
-    else:
-        PersonalMap = Epetra.Map(-1, range(0, v.GlobalLength()), 0, v.Comm())
-        DistToPers = Epetra.Import(PersonalMap, v.Map())
-
-        PersonalV = Epetra.Vector(PersonalMap)
-        PersonalV.Import(v, DistToPers, Epetra.Insert) 
-
-        return numerix.array(PersonalV)
-        
 class _TrilinosMatrix(_TrilinosMatrixBase):
-    def __init__(self, size, bandwidth=0, sizeHint=None, nonOverlappingMap=None, overlappingMap=None):
+    def __init__(self, rows, cols, bandwidth=1, sizeHint=None, 
+                 rowMap=None, colMap=None, domainMap=None):
         """Creates a `_TrilinosMatrix`.
 
         :Parameters:
-          - `size`: The size N for an N by N matrix. 
+          - `rows`: The number of matrix rows
+          - `cols`: The number of matrix columns
           - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: ???
+          - `sizeHint`: estimate of the number of non-zeros
           - `map`: The Epetra `Map` for the rows that this processor holds
         """
+        size = max(rows, cols)
         if sizeHint is not None and bandwidth == 0:
             bandwidth = (sizeHint + size - 1) / (size or 1) 
         else:
             bandwidth = bandwidth
             
-        if nonOverlappingMap is None:
-            comm = Epetra.PyComm()
+        comm = Epetra.PyComm()
+        
+        if rowMap is None:
             # Matrix building gets done on one processor - it gets the map for
             # all the rows
             if comm.MyPID() == 0:
-                nonOverlappingMap = Epetra.Map(size, range(0, size), 0, comm)
+                rowMap = Epetra.Map(rows, range(0, rows), 0, comm)
             else: 
-                nonOverlappingMap = Epetra.Map(size, [], 0, comm)
+                rowMap = Epetra.Map(rows, [], 0, comm)
 
-        matrix = Epetra.CrsMatrix(Epetra.Copy, nonOverlappingMap, bandwidth*3/2)
+        if colMap is None:
+           colMap = Epetra.Map(cols, range(0, cols), 0, comm)
+
+        matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, bandwidth*3/2)
 
         # Leave extra bandwidth, to handle multiple insertions into the
         # same spot. It's memory-inefficient, but it'll get cleaned up when
@@ -611,68 +565,56 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
         
         _TrilinosMatrixBase.__init__(self, 
                                      matrix=matrix, 
-                                     nonOverlappingMap=nonOverlappingMap, 
-                                     overlappingMap=overlappingMap, 
+                                     rowMap=rowMap, 
+                                     colMap=colMap, 
+                                     domainMap=domainMap, 
                                      bandwidth=bandwidth)
 
 class _TrilinosMeshMatrix(_TrilinosMatrix):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1, numberOfEquations=1):
         """Creates a `_TrilinosMatrix` associated with a `Mesh`
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: ???
-          
-        Tests
-
-        >>> from fipy import *
-        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3)
-        >>> GNO = matrix._globalNonOverlappingRowIDs
-        >>> GO = matrix._globalOverlappingRowIDs
-        >>> LNO = matrix._localNonOverlappingRowIDs
-        >>> print parallel.Nproc != 1 or numerix.allequal(GNO, numerix.arange(15))
-        True
-        >>> print parallel.Nproc != 1 or numerix.allequal(GO, numerix.arange(15))
-        True
-        >>> print parallel.Nproc != 1 or numerix.allequal(LNO, numerix.arange(15))
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GNO, [0, 1, 5, 6, 10, 11])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(GO, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 1 or numerix.allequal(LNO, [0, 1, 4, 5, 8, 9])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GNO, [2, 3, 4, 7, 8, 9, 12, 13, 14])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(GO, numerix.arange(15))
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID == 0 or numerix.allequal(LNO, [2, 3, 4, 7, 8, 9, 12, 13, 14])
-        True
-
+          - `sizeHint`: estimate of the number of non-zeros
+          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.globalNumberOfCells.
+          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.globalNumberOfCells.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
+        self.numberOfEquations = numberOfEquations
 
         comm = mesh.communicator.epetra_comm
-        globalNonOverlappingRowIDs = self._globalNonOverlappingRowIDs
-        globalOverlappingRowIDs = self._globalOverlappingRowIDs
-        nonOverlappingMap = Epetra.Map(-1, list(globalNonOverlappingRowIDs), 0, comm)
-        overlappingMap = Epetra.Map(-1, list(globalOverlappingRowIDs), 0, comm)
+        rowMap = Epetra.Map(-1, list(self._globalNonOverlappingRowIDs), 0, comm)
+        colMap = Epetra.Map(-1, list(self._globalOverlappingColIDs), 0, comm)
+        domainMap = Epetra.Map(-1, list(self._globalNonOverlappingColIDs), 0, comm)
 
         _TrilinosMatrix.__init__(self, 
-                                 size=self.numberOfVariables * self.mesh.globalNumberOfCells, 
+                                 rows=self.numberOfEquations * self.mesh.globalNumberOfCells, 
+                                 cols=self.numberOfVariables * self.mesh.globalNumberOfCells, 
                                  bandwidth=bandwidth, 
                                  sizeHint=sizeHint, 
-                                 nonOverlappingMap=nonOverlappingMap,
-                                 overlappingMap=overlappingMap)
+                                 rowMap=rowMap,
+                                 colMap=colMap,
+                                 domainMap=domainMap)
 
     def _cellIDsToGlobalRowIDs(self, IDs):
+         N = len(IDs)
+         M = self.numberOfEquations
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
+
+    def _cellIDsToGlobalColIDs(self, IDs):
          N = len(IDs)
          M = self.numberOfVariables
          return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
 
     def _cellIDsToLocalRowIDs(self, IDs):
+         M = self.numberOfEquations
+         N = len(IDs)
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
+
+    def _cellIDsToLocalColIDs(self, IDs):
          M = self.numberOfVariables
          N = len(IDs)
          return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
@@ -685,6 +627,10 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     def _globalNonOverlappingRowIDs(self):
         return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
 
+    @property
+    def _globalNonOverlappingColIDs(self):
+        return self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
+
     @getsetDeprecated
     def _getGlobalOverlappingRowIDs(self):
         return self._globalOverlappingRowIDs
@@ -693,6 +639,14 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     def _globalOverlappingRowIDs(self):
         return self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
 
+    @property
+    def _globalCommonColIDs(self):
+        return range(0, self.numberOfVariables, self.mesh.globalNumberOfCells)
+                     
+    @property
+    def _globalOverlappingColIDs(self):
+        return self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
+
     @getsetDeprecated
     def _getLocalNonOverlappingRowIDs(self):
         return self._localNonOverlappingRowIDs
@@ -700,6 +654,10 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     @property
     def _localNonOverlappingRowIDs(self):
         return self._cellIDsToLocalRowIDs(self.mesh._localNonOverlappingCellIDs)
+
+    @property
+    def _localNonOverlappingColIDs(self):
+        return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
 
     def copy(self):
         tmp = _TrilinosMatrix.copy(self)
@@ -712,15 +670,13 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         return self
 
     def _getStencil(self, id1, id2):
-        globalOverlappingRowIDs = self._globalOverlappingRowIDs
-        globalNonOverlappingRowIDs = self._globalNonOverlappingRowIDs
+        id1 = self._globalOverlappingRowIDs[id1]
+        id2 = self._globalOverlappingColIDs[id2]
             
-        id1 = globalOverlappingRowIDs[id1]
-        id2 = globalOverlappingRowIDs[id2]
-            
-        mask = numerix.in1d(id1, globalNonOverlappingRowIDs) 
+        mask = numerix.in1d(id1, self._globalNonOverlappingRowIDs) 
         id1 = id1[mask]
         id2 = id2[mask]
+        
         return id1, id2, mask
 
     def _globalNonOverlapping(self, vector, id1, id2):
@@ -747,7 +703,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         if not hasattr(self, '_matrix'):
             self._matrix = _TrilinosMeshMatrix(self.mesh,
                                                bandwidth=self.bandwidth,
-                                               numberOfVariables=self.numberOfVariables).matrix
+                                               numberOfVariables=self.numberOfVariables,
+                                               numberOfEquations=self.numberOfEquations).matrix
         return super(_TrilinosMeshMatrix, self).matrix
 
     matrix = property(_getMatrixProperty, _TrilinosMatrix._setMatrix)
@@ -763,15 +720,10 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
     def takeDiagonal(self):
         nonoverlapping_result = _TrilinosMatrix.takeDiagonal(self)
         
-        comm = self.mesh.communicator.epetra_comm
-        
-        globalOverlappingRowIDs = self._globalOverlappingRowIDs
-        overlappingMap = Epetra.Map(-1, list(globalOverlappingRowIDs), 0, comm)
-
-        overlapping_result = Epetra.Vector(overlappingMap)
+        overlapping_result = Epetra.Vector(self.colMap)
         overlapping_result.Import(nonoverlapping_result, 
-                                  Epetra.Import(overlappingMap, 
-                                                self.nonOverlappingMap), 
+                                  Epetra.Import(self.colMap, 
+                                                self.domainMap), 
                                   Epetra.Insert)
 
         return overlapping_result
@@ -782,7 +734,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
 
             >>> from fipy.tools import parallel
            
-            >>> L1 = _TrilinosMatrix(size=3)
+            >>> L1 = _TrilinosMatrix(rows=3, cols=3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L2 = _TrilinosIdentityMatrix(size=3)
             >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
@@ -809,9 +761,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
             True
 
         """
-
-        if not self.matrix.Filled():
-            self.matrix.FillComplete()
+        self.fillComplete()
 
         N = self.matrix.NumMyCols()
 
@@ -829,32 +779,507 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                 if isinstance(other, Epetra.Vector):
                     other_map = other.Map()
                 else:
-                    other_map = self.overlappingMap
+                    other_map = self.colMap
 
-                if other_map.SameAs(self.overlappingMap):
-                    localNonOverlappingRowIDs = self._localNonOverlappingRowIDs
+                if other_map.SameAs(self.colMap):
+                    localNonOverlappingColIDs = self._localNonOverlappingRowIDs
 
-                    other = Epetra.Vector(self.nonOverlappingMap, 
-                                          other[localNonOverlappingRowIDs])
+                    other = Epetra.Vector(self.domainMap, 
+                                          other[localNonOverlappingColIDs])
 
-                if other.Map().SameAs(self.matrix.RowMap()):
+                if other.Map().SameAs(self.matrix.DomainMap()):
 
-                    nonoverlapping_result = Epetra.Vector(self.nonOverlappingMap)
+                    nonoverlapping_result = Epetra.Vector(self.rangeMap)
 
                     self.matrix.Multiply(False, other, nonoverlapping_result)
 
-                    if other_map.SameAs(self.overlappingMap):
-                        overlapping_result = Epetra.Vector(self.overlappingMap)
-                        overlapping_result.Import(nonoverlapping_result, 
-                                                  Epetra.Import(self.overlappingMap, 
-                                                                self.nonOverlappingMap), 
-                                                  Epetra.Insert)
-
-                        return overlapping_result
-                    else:
-                        return nonoverlapping_result
+                    return nonoverlapping_result
                 else:
                     raise TypeError("%s: %s != (%d,)" % (self.__class__, str(shape), N))
+                    
+    def _test(self):
+        """Tests
+
+        >>> from fipy import *
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3, numberOfEquations=2)
+        >>> GOC = matrix._globalOverlappingColIDs
+        >>> GNOC = matrix._globalNonOverlappingColIDs
+        >>> LNOC = matrix._localNonOverlappingColIDs
+        >>> GOR = matrix._globalOverlappingRowIDs
+        >>> GNOR = matrix._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._localNonOverlappingRowIDs
+
+        5 cells, 3 variables, 1 processor
+                       
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:0
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalNonOverlappingColIDs:0
+        
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:0
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+
+        
+        5 cells, 2 equations, 1 processor
+                       
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:0
+
+        0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _globalNonOverlappingRowIDs:0
+        
+        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:0
+
+        0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+
+
+        5 cells, 3 variables, 2 processors
+                       
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        0  1  2  3     0  1  2  3     0  1  2  3      _globalOverlappingCellIDs:0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:1
+                    
+        0  1  2  3     5  6  7  8    10 11 12 13      _globalOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:1
+
+        0  1           0  1           0  1            _globalNonOverlappingCellIDs:0
+              2  3  4        2  3  4        2  3  4   _globalNonOverlappingCellIDs:1
+                    
+        0  1           5  6          10 11            _globalNonOverlappingColIDs:0
+              2  3  4        7  8  9       12 13 14   _globalNonOverlappingColIDs:1
+        
+        0  1  2  3     0  1  2  3     0  1  2  3      _localOverlappingCellIDs:0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:1
+                    
+        0  1  2  3     4  5  6  7     8  9 10 11      _localOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:1
+
+        0  1           0  1           0  1            _localNonOverlappingCellIDs:0
+              2  3  4        2  3  4        2  3  4   _localNonOverlappingCellIDs:1
+                    
+        0  1           4  5           8  9            _localNonOverlappingColIDs:0
+              2  3  4        7  8  9       12 13 14   _localNonOverlappingColIDs:1
+              
+              
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 5, 6, 10, 11])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+
+
+        5 cells, 2 equations, 2 processors
+                       
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        0  1  2  3     0  1  2  3      _globalOverlappingCellIDs:0
+        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:1
+                    
+        0  1  2  3     5  6  7  8      _globalOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:1
+
+        0  1           0  1            _globalNonOverlappingCellIDs:0
+              2  3  4        2  3  4   _globalNonOverlappingCellIDs:1
+                    
+        0  1           5  6            _globalNonOverlappingRowIDs:0
+              2  3  4        7  8  9   _globalNonOverlappingRowIDs:1
+        
+        0  1  2  3     0  1  2  3      _localOverlappingCellIDs:0
+        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:1
+                    
+        0  1  2  3     4  5  6  7      _localOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:1
+
+        0  1           0  1            _localNonOverlappingCellIDs:0
+              2  3  4        2  3  4   _localNonOverlappingCellIDs:1
+                    
+        0  1           4  5            _localNonOverlappingRowIDs:0
+              2  3  4        7  8  9   _localNonOverlappingRowIDs:1
+
+
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOR, [0, 1, 2, 3, 5, 6, 7, 8])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOR, [0, 1, 5, 6])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOR, [2, 3, 4, 7, 8, 9])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOR, [0, 1, 4, 5])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOR, [2, 3, 4, 7, 8, 9])
+        True
+        
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serial), numberOfVariables=3, numberOfEquations=2)
+        >>> GOC = matrix._globalOverlappingColIDs
+        >>> GNOC = matrix._globalNonOverlappingColIDs
+        >>> LNOC = matrix._localNonOverlappingColIDs
+        >>> GOR = matrix._globalOverlappingRowIDs
+        >>> GNOR = matrix._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._localNonOverlappingRowIDs
+
+        5 cells, 3 variables, 2 processor, serial
+                       
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:0
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalNonOverlappingColIDs:0
+        
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:0
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+
+        >>> print parallel.Nproc != 2 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+        >>> print parallel.Nproc != 2 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+        >>> print parallel.Nproc != 2 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        True
+
+        
+        5 cells, 2 equations, 2 processors, serial
+                       
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:0
+
+        0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _globalNonOverlappingRowIDs:0
+        
+        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:0
+
+        0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        
+        >>> print parallel.Nproc != 2 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        True
+        
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7), numberOfVariables=3, numberOfEquations=2)
+        >>> GOC = matrix._globalOverlappingColIDs
+        >>> GNOC = matrix._globalNonOverlappingColIDs
+        >>> LNOC = matrix._localNonOverlappingColIDs
+        >>> GOR = matrix._globalOverlappingRowIDs
+        >>> GNOR = matrix._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._localNonOverlappingRowIDs
+
+        7 cells, 3 variables, 1 processor
+                       
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _globalOverlappingColIDs:0
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _globalNonOverlappingColIDs:0
+        
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localOverlappingColIDs:0
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localNonOverlappingColIDs:0
+        
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        ...                                                     11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+        ...                                                      11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+        ...                                                      11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        True
+
+ 
+        7 cells, 2 equations, 1 processor
+                       
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _globalOverlappingRowIDs:0
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _globalNonOverlappingRowIDs:0
+        
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localOverlappingRowIDs:0
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
+                    
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localNonOverlappingRowIDs:0
+                 
+        >>> print parallel.Nproc != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        True
+        >>> print parallel.Nproc != 1 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        True
+
+                 
+        7 cells, 3 variables, 2 processors
+                       
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         _globalOverlappingCellIDs:0
+           1  2  3  4  5  6     1  2  3  4  5  6     1  2  3  4  5  6   _globalOverlappingCellIDs:1
+                    
+        0  1  2  3  4        7  8  9 10 11       14 15 16 17 18         _globalOverlappingColIDs:0
+           1  2  3  4  5  6     8  9 10 11 12 13    15 16 17 18 19 20   _globalOverlappingColIDs:1
+
+        0  1  2              0  1  2              0  1  2               _globalNonOverlappingCellIDs:0
+                 3  4  5  6           3  4  5  6           3  4  5  6   _globalNonOverlappingCellIDs:1
+                    
+        0  1  2              7  8  9             14 15 16               _globalNonOverlappingColIDs:0
+                 3  4  5  6          10 11 12 13          17 18 19 20   _globalNonOverlappingColIDs:1
+        
+        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         _localOverlappingCellIDs:0
+           0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5   _localOverlappingCellIDs:1
+                    
+        0  1  2  3  4        5  6  7  8  9       10 11 12 13 14         _localOverlappingColIDs:0
+           0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17   _localOverlappingColIDs:1
+
+        0  1  2              0  1  2              0  1  2               _localNonOverlappingCellIDs:0
+                 2  3  4  5           2  3  4  5           2  3  4  5   _localNonOverlappingCellIDs:1
+                    
+        0  1  2              5  6  7             10 11 12               _localNonOverlappingColIDs:0
+                 2  3  4  5           8  9 10 11          14 15 16 17   _localNonOverlappingColIDs:1
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOC, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 2, 7, 8, 9, 14, 15, 16])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOC, [3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 2, 5, 6, 7, 10, 11, 12])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 4, 5, 8, 9, 10, 11, 14, 15, 16, 17])
+        True
+      
+        7 cells, 2 equations, 2 processors
+        
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        0  1  2  3  4        0  1  2  3  4         _globalOverlappingCellIDs:0
+           1  2  3  4  5  6     1  2  3  4  5  6   _globalOverlappingCellIDs:1
+                    
+        0  1  2  3  4        7  8  9 10 11         _globalOverlappingRowIDs:0
+           1  2  3  4  5  6     8  9 10 11 12 13   _globalOverlappingRowIDs:1
+
+        0  1  2              0  1  2               _globalNonOverlappingCellIDs:0
+                 3  4  5  6           3  4  5  6   _globalNonOverlappingCellIDs:1
+                    
+        0  1  2              7  8  9               _globalNonOverlappingRowIDs:0
+                 3  4  5  6          10 11 12 13   _globalNonOverlappingRowIDs:1
+        
+        0  1  2  3  4        0  1  2  3  4         _localOverlappingCellIDs:0
+           0  1  2  3  4  5     0  1  2  3  4  5   _localOverlappingCellIDs:1
+                    
+        0  1  2  3  4        5  6  7  8  9         _localOverlappingRowIDs:0
+           0  1  2  3  4  5     6  7  8  9 10 11   _localOverlappingRowIDs:1
+
+        0  1  2              0  1  2               _localNonOverlappingCellIDs:0
+                 2  3  4  5           2  3  4  5   _localNonOverlappingCellIDs:1
+                    
+        0  1  2              5  6  7               _localNonOverlappingRowIDs:0
+                 2  3  4  5           8  9 10 11   _localNonOverlappingRowIDs:1
+ 
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOR, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOR, [0, 1, 2, 7, 8, 9])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOR, [3, 4, 5, 6, 10, 11, 12, 13])
+        True
+        
+        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOR, [0, 1, 2, 5, 6, 7])
+        True
+        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOR, [2, 3, 4, 5, 8, 9, 10, 11])
+        True
+
+        
+        7 cells, 3 variables, 3 processors
+                       
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        0  1  2  3           0  1  2  3           0  1  2  3            _globalOverlappingCellIDs:0
+        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      _globalOverlappingCellIDs:1
+              2  3  4  5  6        2  3  4  5  6        2  3  4  5  6   _globalOverlappingCellIDs:2
+                    
+        0  1  2  3           7  8  9 10          14 15 16 17            _globalOverlappingColIDs:0
+        0  1  2  3  4  5     7  8  9 10 11 12    14 15 16 17 18 19      _globalOverlappingColIDs:1
+              2  3  4  5  6        9 10 11 12 13       16 17 18 19 20   _globalOverlappingColIDs:2
+
+        0  1                 0  1                 0  1                  _globalNonOverlappingCellIDs:0
+              2  3                 2  3                 2  3            _globalNonOverlappingCellIDs:1
+                    4  5  6              4  5  6              4  5  6   _globalNonOverlappingCellIDs:2
+                    
+        0  1                 7  8                14 15                  _globalNonOverlappingColIDs:0
+              2  3                 9 10                16 17            _globalNonOverlappingColIDs:1
+                    4  5  6             11 12 13             18 19 20   _globalNonOverlappingColIDs:2
+        
+        0  1  2  3           0  1  2  3           0  1  2  3            _localOverlappingCellIDs:0
+        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      _localOverlappingCellIDs:1
+              0  1  2  3  4        0  1  2  3  4        0  1  2  3  4   _localOverlappingCellIDs:2
+                    
+        0  1  2  3           4  5  6  7           8  9 10 11            _localOverlappingColIDs:0
+        0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17      _localOverlappingColIDs:1
+              0  1  2  3  4        5  6  7  8  9       10 11 12 13 14   _localOverlappingColIDs:2
+
+        0  1                 0  1                 0  1                  _localNonOverlappingCellIDs:0
+              2  3                 2  3                 2  3            _localNonOverlappingCellIDs:1
+                    2  3  4              2  3  4              2  3  4   _localNonOverlappingCellIDs:2
+                    
+        0  1                 4  5                 8  9                  _localNonOverlappingColIDs:0
+              2  3                 8  9                14 15            _localNonOverlappingColIDs:1
+                    2  3  4              7  8  9             12 13 14   _localNonOverlappingColIDs:2
+        
+        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(GOC, [2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20])
+        True
+        
+        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 7, 8, 14, 15])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(GNOC, [2, 3, 9, 10, 16, 17])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(GNOC, [4, 5, 6, 11, 12, 13, 18, 19, 20])
+        True
+        
+        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 8, 9, 14, 15])
+        True
+        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        True
+
+                    
+        7 cells, 2 equations, 3 processors
+        
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        0  1  2  3           0  1  2  3            _globalOverlappingCellIDs:0
+        0  1  2  3  4  5     0  1  2  3  4  5      _globalOverlappingCellIDs:1
+              2  3  4  5  6        2  3  4  5  6   _globalOverlappingCellIDs:2
+                    
+        0  1  2  3           7  8  9 10            _globalOverlappingRowIDs:0
+        0  1  2  3  4  5     7  8  9 10 11 12      _globalOverlappingRowIDs:1
+              2  3  4  5  6        9 10 11 12 13   _globalOverlappingRowIDs:2
+
+        0  1                 0  1                  _globalNonOverlappingCellIDs:0
+              2  3                 2  3            _globalNonOverlappingCellIDs:1
+                    4  5  6              4  5  6   _globalNonOverlappingCellIDs:2
+                    
+        0  1                 7  8                  _globalNonOverlappingRowIDs:0
+              2  3                 9 10            _globalNonOverlappingRowIDs:1
+                    4  5  6             11 12 13   _globalNonOverlappingRowIDs:2
+        
+        0  1  2  3           0  1  2  3            _localOverlappingCellIDs:0
+        0  1  2  3  4  5     0  1  2  3  4  5      _localOverlappingCellIDs:1
+              0  1  2  3  4        0  1  2  3  4   _localOverlappingCellIDs:2
+                    
+        0  1  2  3           4  5  6  7            _localOverlappingRowIDs:0
+        0  1  2  3  4  5     6  7  8  9 10 11      _localOverlappingRowIDs:1
+              0  1  2  3  4        5  6  7  8  9   _localOverlappingRowIDs:2
+
+        0  1                 0  1                  _localNonOverlappingCellIDs:0
+              2  3                 2  3            _localNonOverlappingCellIDs:1
+                    2  3  4              2  3  4   _localNonOverlappingCellIDs:2
+                    
+        0  1                 4  5                  _localNonOverlappingRowIDs:0
+              2  3                 8  9            _localNonOverlappingRowIDs:1
+                    2  3  4              7  8  9   _localNonOverlappingRowIDs:2
+        
+        """
+        pass
+
 
 class _TrilinosIdentityMatrix(_TrilinosMatrix):
     """
@@ -869,7 +1294,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _TrilinosMatrix.__init__(self, size=size, bandwidth=1)
+        _TrilinosMatrix.__init__(self, rows=size, cols=size, bandwidth=1)
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size), ids, ids)
         

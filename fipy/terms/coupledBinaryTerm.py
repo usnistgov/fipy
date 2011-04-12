@@ -80,8 +80,11 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
         return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
     
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """
+    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """Build matrices of constituent Terms and collect them
+
+        Only called at top-level by `_prepareLinearSystem()`
+
         Offset tests
 
         >>> from fipy import *
@@ -93,7 +96,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq = eq0 & eq1
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
-        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -115,7 +118,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq = eq0 & eq1
         >>> var = eq._verifyVar(None)
         >>> solver = DefaultSolver()
-        >>> var, matrix, RHSvector = eq._buildMatrix(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=var, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -161,6 +164,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
         numberOfCells = var.mesh.numberOfCells
         numberOfVariables = len(self._vars)
+        numberOfEquations = len(self._uncoupledTerms)
         
         matrix = 0
         RHSvectorsJ = []
@@ -172,8 +176,10 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
             for j, tmpVar in enumerate(self._vars):
 
                 class OffsetSparseMatrix(SparseMatrix):
-                    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=numberOfVariables):
-                        SparseMatrix.__init__(self, mesh=mesh, bandwidth=bandwidth, sizeHint=sizeHint, numberOfVariables=numberOfVariables)
+                    def __init__(self, mesh, bandwidth=0, sizeHint=None, 
+                                 numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations):
+                        SparseMatrix.__init__(self, mesh=mesh, bandwidth=bandwidth, sizeHint=sizeHint, 
+                                              numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations) 
 
                     def put(self, vector, id1, id2):
                         SparseMatrix.put(self, vector, id1 + numberOfCells * i, id2 + numberOfCells * j)
