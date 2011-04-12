@@ -62,6 +62,6 @@ class _ArithmeticCellToFaceVariable(_CellToFaceVariable):
         def _calcValue_(self, alpha, id1, id2):
             cell1 = numerix.take(self.var, id1, axis=-1).value
             cell2 = numerix.take(self.var, id2, axis=-1).value
-            return (cell2 - cell1) * alpha + cell1
+            return (cell2 - cell1) * numerix.array(alpha) + cell1
 
         
