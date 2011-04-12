@@ -106,77 +106,75 @@ class UniformMeshTopology2D(AbstractMeshTopology):
             cellFaceOrientations[3, ::self.nx] = 1
         return cellFaceOrientations
 
-    def _getAdjacentCellIDs(self):
-        return inline._optionalInline(self._getAdjacentCellIDsIn, self._getAdjacentCellIDsPy)
-    
-    def _getAdjacentCellIDsIn(self):
-        faceCellIDs0 =  numerix.zeros(self.numberOfFaces)
-        faceCellIDs1 =  numerix.zeros(self.numberOfFaces)
+    if inline.doInline:
+        def _getAdjacentCellIDs(self):
+            faceCellIDs0 =  numerix.zeros(self.numberOfFaces)
+            faceCellIDs1 =  numerix.zeros(self.numberOfFaces)
 
-        inline._runInline("""
-            int ID = j * ni + i;
+            inline._runInline("""
+                int ID = j * ni + i;
 
-            faceCellIDs0[ID] = ID - ni;
-            faceCellIDs1[ID] = ID;
+                faceCellIDs0[ID] = ID - ni;
+                faceCellIDs1[ID] = ID;
 
-            faceCellIDs0[ID + Nhor + j] = ID - 1;
-            faceCellIDs1[ID + Nhor + j] = ID;
+                faceCellIDs0[ID + Nhor + j] = ID - 1;
+                faceCellIDs1[ID + Nhor + j] = ID;
 
-            if (j == 0) {
-                faceCellIDs0[ID] = ID;
-            }
+                if (j == 0) {
+                    faceCellIDs0[ID] = ID;
+                }
 
-            if (j == nj - 1) {
-                faceCellIDs0[ID + ni] = ID;
-                faceCellIDs1[ID + ni] = ID;
-            }
+                if (j == nj - 1) {
+                    faceCellIDs0[ID + ni] = ID;
+                    faceCellIDs1[ID + ni] = ID;
+                }
 
-            if (i == 0) {
-                faceCellIDs0[ID + Nhor + j] = ID;
-            }
+                if (i == 0) {
+                    faceCellIDs0[ID + Nhor + j] = ID;
+                }
 
-            if ( i == ni - 1 ) {
-                faceCellIDs0[ID + Nhor + j + 1] = ID;
-                faceCellIDs1[ID + Nhor + j + 1] = ID;
-            }
+                if ( i == ni - 1 ) {
+                    faceCellIDs0[ID + Nhor + j + 1] = ID;
+                    faceCellIDs1[ID + Nhor + j + 1] = ID;
+                }
+                
+            """,
+            Nhor=self.numberOfHorizontalFaces,
+            faceCellIDs0=faceCellIDs0,
+            faceCellIDs1=faceCellIDs1,
+            ni=self.nx,
+            nj=self.ny)
+
+            return (FaceVariable(mesh=self.mesh, value=faceCellIDs0), 
+                    FaceVariable(mesh=self.mesh, value=faceCellIDs1))
+    else:
+        def _getAdjacentCellIDs(self):
+            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2))
+            indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
             
-        """,
-        Nhor=self.numberOfHorizontalFaces,
-        faceCellIDs0=faceCellIDs0,
-        faceCellIDs1=faceCellIDs1,
-        ni=self.nx,
-        nj=self.ny)
+            Hids[...,1] = indices[1] + indices[0] * self.nx
+            Hids[...,0] = Hids[...,1] - self.nx
+            
+            if self.numberOfHorizontalRows > 0:
+                Hids[0,...,0] = Hids[0,...,1]
+                Hids[0,...,1] = Hids[0,...,0]
+                Hids[-1,...,1] = Hids[-1,...,0]
+          
+            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2))
+            indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
+            Vids[...,1] = indices[1] + indices[0] * self.nx
+            Vids[...,0] = Vids[...,1] - 1
+            
+            if self.numberOfVerticalColumns > 0:
+                Vids[...,0,0] = Vids[...,0,1]
+                Vids[...,0,1] = Vids[...,0,0]
+                Vids[...,-1,1] = Vids[...,-1,0]
 
-        return (FaceVariable(mesh=self.mesh, value=faceCellIDs0), 
-                FaceVariable(mesh=self.mesh, value=faceCellIDs1))
+            faceCellIDs =  numerix.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)), 
+                                                numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
 
-    def _getAdjacentCellIDsPy(self):
-        Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2))
-        indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
-        
-        Hids[...,1] = indices[1] + indices[0] * self.nx
-        Hids[...,0] = Hids[...,1] - self.nx
-        
-        if self.numberOfHorizontalRows > 0:
-            Hids[0,...,0] = Hids[0,...,1]
-            Hids[0,...,1] = Hids[0,...,0]
-            Hids[-1,...,1] = Hids[-1,...,0]
-      
-        Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2))
-        indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
-        Vids[...,1] = indices[1] + indices[0] * self.nx
-        Vids[...,0] = Vids[...,1] - 1
-        
-        if self.numberOfVerticalColumns > 0:
-            Vids[...,0,0] = Vids[...,0,1]
-            Vids[...,0,1] = Vids[...,0,0]
-            Vids[...,-1,1] = Vids[...,-1,0]
-
-        faceCellIDs =  numerix.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)), 
-                                            numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
-
-        return (FaceVariable(mesh=self.mesh, value=faceCellIDs[:,0]), 
-                FaceVariable(mesh=self.mesh, value=faceCellIDs[:,1]))
+            return (FaceVariable(mesh=self.mesh, value=faceCellIDs[:,0]), 
+                    FaceVariable(mesh=self.mesh, value=faceCellIDs[:,1]))
 
     def _getCellToCellIDs(self):
         ids = MA.zeros((4, self.nx, self.ny), 'l')

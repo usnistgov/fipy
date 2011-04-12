@@ -8,11 +8,7 @@ class _FixedBCFaceGradVariable(FaceVariable):
         self.var = self._requires(var)
         self.bcs = boundaryConditions
 
-    def _calcValue(self):        
-        from fipy.tools import inline
-        return inline._optionalInline(self._calcValueInline, self._calcValuePy)
-    
-    def _calcValuePy(self):
+    def _calcValue(self):
         dAP = self.mesh._cellDistances.value
         id1, id2 = [id.value for id in self.mesh._adjacentCellIDs]
         v1 = take(self.var.value, id1)
@@ -44,6 +40,3 @@ class _FixedBCFaceGradVariable(FaceVariable):
         T2 = (id1 == id2) * T2
 
         return normals * N + tangents1 * T1 + tangents2 * T2
-
-    def _calcValueInline(self):
-        return self._calcValuePy()

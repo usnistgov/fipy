@@ -81,6 +81,8 @@ except ImportError:
     from numpy import ma as MA
     numpy_version = 'new'
 
+from fipy.tools import inline
+
 def zeros(a, dtype='l'):
     return NUMERIX.zeros(a, dtype)
 def ones(a, dtype='l'):
@@ -895,78 +897,49 @@ def dot(a1, a2, axis=0, omit=()):
     else:
         return sum(a1*a2, axis)
 
-def sqrtDot(a1, a2):
-    """Return array of square roots of vector dot-products
-    for arrays a1 and a2 of vectors v1 and v2
-    
-    Usually used with v1==v2 to return magnitude of v1.
-    """
-    from fipy.tools import inline
+if inline.doInline:
+    def sqrtDot(a1, a2):
+        """Return array of square roots of vector dot-products
+        for arrays a1 and a2 of vectors v1 and v2
+        
+        Usually used with v1==v2 to return magnitude of v1.
+        """
+        unit1 = unit2 = 1
+        if _isPhysical(a1):
+            unit1 = a1.inBaseUnits().getUnit()
+            a1 = a1.getNumericValue()
+        if _isPhysical(a2):
+            unit2 = a2.inBaseUnits().getUnit()
+            a2 = a2.getNumericValue()
+        NJ, ni = NUMERIX.shape(a1)
+        result1 = NUMERIX.zeros((ni,),'d')
 
-    ## We can't use Numeric.dot on an array of vectors
-##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
-##    return fipy.tools.array.sqrt(fipy.tools.array.sum((a1*a2)[:],1))
-    return inline._optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
-
-def _sqrtDotPy(a1, a2):
-
-    return sqrt(dot(a1, a2))
-
-##def _sqrtDotIn(a1, a2):
-##    ni, nj = Numeric.shape(a1)
-##    result = Numeric.zeros((ni,),'d')
-##    inline.runInlineLoop1("""
-##      int j;
-##      result(i) = 0.;
-##      for (j = 0; j < nj; j++)
-##      {
-##          result(i) += a1(i,j) * a2(i,j);
-##      }
-##      result(i) = sqrt(result(i));
-##    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
-##    return result
-
-def _sqrtDotIn(a1, a2):
-    from fipy.tools import inline
-    
-    unit1 = unit2 = 1
-    if _isPhysical(a1):
-        unit1 = a1.inBaseUnits().unit
-        a1 = a1.numericValue
-    if _isPhysical(a2):
-        unit2 = a2.inBaseUnits().unit
-        a2 = a2.numericValue
-    NJ, ni = NUMERIX.shape(a1)
-    result1 = NUMERIX.zeros((ni,),'d')
-
-    inline._runInline("""
-        int j;
-        result1[i] = 0.;
-        for (j = 0; j < NJ; j++)
-        {
-            // result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
-            result1[i] += a1[i + j * ni] * a2[i + j * ni];
-        }
-        result1[i] = sqrt(result1[i]);        
-    """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
-
-
-    ##result = inline._runInline("""
-##        int j;
-##        ((double *) result->data)[i] = 0.;
-##        for (j = 0; j < NJ; j++)
-##        {
-##            ((double *) result->data)[i] += a1(i,j) * a2(i,j);
-##        }
-##        ((double *) result->data)[i] = sqrt(((double *) result->data)[i]);        
-##    """, a1 = a1, a2 = a2, ni = ni, NJ = nj)
-
-    
-    if unit1 != 1 or unit2 != 1:
-        from fipy.tools.dimensions.physicalField import PhysicalField
-        result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
-    return result1
-
+        inline._runInline("""
+            int j;
+            result1[i] = 0.;
+            for (j = 0; j < NJ; j++)
+            {
+                // result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
+                result1[i] += a1[i + j * ni] * a2[i + j * ni];
+            }
+            result1[i] = sqrt(result1[i]);        
+        """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
+        
+        if unit1 != 1 or unit2 != 1:
+            from fipy.tools.dimensions.physicalField import PhysicalField
+            result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
+            
+        return result1
+else:
+    def sqrtDot(a1, a2):
+        """Return array of square roots of vector dot-products
+        for arrays a1 and a2 of vectors v1 and v2
+        
+        Usually used with v1==v2 to return magnitude of v1.
+        """
+        ## We can't use Numeric.dot on an array of vectors
+        return sqrt(dot(a1, a2))
+        
 def nearest(data, points):
     """find the indices of `data` that are closest to `points`
     
@@ -1157,31 +1130,24 @@ def obj2sctype(rep, default=None):
 
 if not hasattr(NUMERIX, 'empty'):
     print 'defining empty'
-    def empty(shape, dtype='d', order='C'):
-        """
-        `ones()` and `zeros()` are really slow ways to create arrays. NumPy
-        provides a routine:
+    if inline.doInline:
+        def empty(shape, dtype='d', order='C'):
+            """
+            `ones()` and `zeros()` are really slow ways to create arrays. NumPy
+            provides a routine:
+              
+                empty((d1,...,dn),dtype=float,order='C') will return a new array of
+                shape (d1,...,dn) and given type with all its entries
+                uninitialized. This can be faster than zeros.
+              
+            We approximate this routine when unavailable, but note that `order` is
+            ignored when using Numeric.
+            """
+            from scipy import weave
           
-            empty((d1,...,dn),dtype=float,order='C') will return a new array of
-            shape (d1,...,dn) and given type with all its entries
-            uninitialized. This can be faster than zeros.
+            local_dict = {'shape': shape, 'dtype': dtype}
           
-        We approximate this routine when unavailable, but note that `order` is
-        ignored when using Numeric.
-        """
-        from fipy.tools import inline
-
-        return inline._optionalInline(_emptyIn, _emptyPy, shape, dtype)
-  
-    def _emptyPy(shape, dtype):
-        return NUMERIX.zeros(shape, dtype)
-
-    def _emptyIn(shape, dtype):
-        from scipy import weave
-      
-        local_dict = {'shape': shape, 'dtype': dtype}
-      
-        code = """
+            code = """
 PyObject *op;
 PyArrayObject *ret;
 
@@ -1222,16 +1188,30 @@ while (return_val.refcount() > 1) {
 }
 """
 
-        return weave.inline(code,
-                     local_dict.keys(),
-                     local_dict=local_dict,
-                     type_converters=weave.converters.blitz,
-                     compiler='gcc',
-                     verbose=0,
-                     support_code="""
+            return weave.inline(code,
+                         local_dict.keys(),
+                         local_dict=local_dict,
+                         type_converters=weave.converters.blitz,
+                         compiler='gcc',
+                         verbose=0,
+                         support_code="""
 #define MAX_DIMS 30
-                     """,
-                     extra_compile_args =['-O3'])
+                         """,
+                         extra_compile_args =['-O3'])
+    else:
+        def empty(shape, dtype='d', order='C'):
+            """
+            `ones()` and `zeros()` are really slow ways to create arrays. NumPy
+            provides a routine:
+              
+                empty((d1,...,dn),dtype=float,order='C') will return a new array of
+                shape (d1,...,dn) and given type with all its entries
+                uninitialized. This can be faster than zeros.
+              
+            We approximate this routine when unavailable, but note that `order` is
+            ignored when using Numeric.
+            """
+            return NUMERIX.zeros(shape, dtype)
 
 if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
     # if one is present, but not the other, something is wrong and
