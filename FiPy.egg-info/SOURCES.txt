@@ -308,6 +308,7 @@ fipy/generated/fipy/variables/gamma.jpg
 fipy/generated/fipy/variables/gaussian.jpg
 fipy/generated/fipy/variables/uniform.jpg
 fipy/matrices/__init__.py
+fipy/matrices/offsetSparseMatrix.py
 fipy/matrices/pysparseMatrix.py
 fipy/matrices/sparseMatrix.py
 fipy/matrices/test.py
