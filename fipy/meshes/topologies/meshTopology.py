@@ -108,7 +108,7 @@ class MeshTopology(AbstractMeshTopology):
     cellToCellIDsFilled = property(_getCellToCellIDsFilled)
       
     def _calcInteriorAndExteriorFaceIDs(self, mesh):
-        exteriorFaces = self.faceCellIDs[1].getMaskArray()
+        exteriorFaces = self.faceCellIDs[1].maskArray
         interiorFaces = ~exteriorFaces
 
         return interiorFaces, exteriorFaces
@@ -127,7 +127,7 @@ class MeshTopology(AbstractMeshTopology):
         return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
 
     def _calcAdjacentCellIDs(self):
-        mask = self.faceCellIDs[1].getMask()
+        mask = self.faceCellIDs[1].mask
         return (self.faceCellIDs[0].filled(),
                 (mask * self.faceCellIDs[0].filled(0) 
                  + ~mask * self.faceCellIDs[1].filled(0)))
@@ -142,5 +142,5 @@ class MeshTopology(AbstractMeshTopology):
         N = numCells
         M = maxFacesPerCell
         cellIDs = CellVariable(mesh=self.mesh, value=numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0))
-        mask = self.cellToCellIDs.getMask()
+        mask = self.cellToCellIDs.mask
         return mask * cellIDs  + ~mask * self._cellToCellIDs.filled()

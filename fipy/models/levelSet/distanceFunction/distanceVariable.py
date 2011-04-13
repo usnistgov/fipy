@@ -197,12 +197,9 @@ class DistanceVariable(CellVariable):
         self.narrowBandWidth = narrowBandWidth
 
 ##         self.cellToCellDistances = MA.filled(self.mesh._getCellToCellDistances(), 0)
-        self.cellToCellDistances = self.mesh._cellToCellDistances.filled(0).getValue()
-        self.cellNormals = self.mesh._cellNormals.filled(0).getValue()
-        self.cellAreas = self.mesh._cellAreas.filled(0).getValue()
-##         self.cellToCellDistances = numerix.array(MA.array(self.mesh._getCellToCellDistances()).filled(0))
-##         self.cellNormals = numerix.array(MA.array(self.mesh._getCellNormals()).filled(0))       
-##         self.cellAreas = numerix.array(MA.array(self.mesh._getCellAreas()).filled(0))
+        self.cellToCellDistances = self.mesh._cellToCellDistances.filled(0).value
+        self.cellNormals = self.mesh._cellNormals.filled(0).value
+        self.cellAreas = self.mesh._cellAreas.filled(0).value
         self.cellToCellIDs = numerix.array(self.mesh._cellToCellIDsFilled)
         self.adjacentCellIDs = self.mesh._adjacentCellIDs
         self.exteriorFaces = self.mesh.exteriorFaces
@@ -348,7 +345,7 @@ class DistanceVariable(CellVariable):
             evaluatedFlag[...,id] = 1
 
 
-            for adjID in MA.filled(cellToCellIDs[...,id].getValue(), -1):
+            for adjID in MA.filled(cellToCellIDs[...,id].value, -1):
                 if adjID != -1:
                     if not evaluatedFlag[...,adjID]:
                         self._value[...,adjID], extensionVariable[...,adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
@@ -489,12 +486,9 @@ class DistanceVariable(CellVariable):
         1.57984690073
         """        
         normals = numerix.array(MA.filled(self._cellInterfaceNormals, 0))
-        areas = self.mesh._cellAreaProjections.filled(0).getValue()
+        areas = self.mesh._cellAreaProjections.filled(0).value
         return CellVariable(mesh=self.mesh, 
                             value=numerix.sum(abs(numerix.dot(normals, areas)), axis=0))
-##         normals = numerix.array(MA.filled(self._getCellInterfaceNormals(), value=0))
-##         areas = numerix.array(MA.filled(self.mesh._getCellAreaProjections(), value=0))
-##         return numerix.sum(abs(numerix.dot(normals, areas)), axis=0)
 
     @getsetDeprecated
     def _getCellInterfaceNormals(self):

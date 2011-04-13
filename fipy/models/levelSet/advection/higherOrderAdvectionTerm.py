@@ -213,14 +213,14 @@ class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
 
         cellIDs = numerix.repeat(numerix.arange(mesh.numberOfCells)[numerix.newaxis, ...],
                                  mesh._maxFacesPerCell, axis=0)
-        cellIDs = MA.masked_array(cellIDs, mask=mesh._getCellToCellIDs().getMask())
+        cellIDs = MA.masked_array(cellIDs, mask=mesh._cellToCellIDs.mask)
         cellGradient = numerix.take(oldArray.grad, cellIDs, axis=-1)
         cellNormalGradient = numerix.dot(cellGradient, mesh._cellNormals, omit=(0,))
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
         
         cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2
 
-        adjacentLaplacian = (adjacentUpValues + cellValues - 2 * adjacentValues.getValue()) / dAP**2
+        adjacentLaplacian = (adjacentUpValues + cellValues - 2 * adjacentValues.value) / dAP**2
         adjacentLaplacian = adjacentLaplacian.filled(0)
         cellLaplacian = cellLaplacian.filled(0)
 

@@ -140,10 +140,10 @@ class CellVariable(_MeshVariable):
         return _CellOperatorVariable
         
     def copy(self):
-        return self._getVariableClass()(mesh=self.mesh, 
-                                        name=self.name + "_old", 
-                                        value=self,
-                                        hasOld=False)
+        return self._variableClass(mesh=self.mesh, 
+                                   name=self.name + "_old", 
+                                   value=self,
+                                   hasOld=False)
                 
     @property
     def _globalNumberOfElements(self):

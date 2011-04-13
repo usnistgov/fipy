@@ -70,7 +70,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         interiorFaceNormals = numerix.take(mesh._orientedFaceNormals, interiorIDs, axis=-1).value
         
         # Courant-Friedrichs-Levy number
-        interiorCFL = abs(numerix.take(self._getGeomCoeff(mesh), interiorIDs, axis=-1)).getValue() * dt
+        interiorCFL = abs(numerix.take(self._getGeomCoeff(mesh), interiorIDs, axis=-1)).value * dt
         
         gradUpwind = (oldArray2 - oldArray1) / numerix.take(mesh._cellDistances, interiorIDs, axis=-1).value
         

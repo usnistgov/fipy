@@ -124,10 +124,10 @@ class Mesh2D(Mesh):
         # hierarchy,
         # 
         # It is? Why?
-        faceDisplacementVectors = ~self.getExteriorFaces() * (self.cellCenters[:,unmaskedFaceCellIDs[1]]
-                                                              - self.cellCenters[:,unmaskedFaceCellIDs[0]])
+        faceDisplacementVectors = ~self.exteriorFaces * (self.cellCenters[:,unmaskedFaceCellIDs[1]]
+                                                         - self.cellCenters[:,unmaskedFaceCellIDs[0]])
         faceCrossProducts = faceDisplacementVectors.cross(self._faceNormals)
-        faceDisplacementVectorLengths = numerix.maximum(faceDisplacementVectors.getMag(), 1.e-100)
+        faceDisplacementVectorLengths = numerix.maximum(faceDisplacementVectors.mag, 1.e-100)
         faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self._faceAreas
         cellFaceWeightedNonOrthogonalities = numerix.take(faceWeightedNonOrthogonalities, self.cellFaceIDs, axis=-1)
         cellFaceAreas = numerix.take(self._faceAreas, self.cellFaceIDs)

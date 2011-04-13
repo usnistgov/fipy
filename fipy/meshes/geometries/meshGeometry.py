@@ -196,7 +196,7 @@ class MeshGeometry(AbstractMeshGeometry):
         faceVertexIDs = self.faceVertexIDs.filled(-1)
         substitute = numerix.repeat(faceVertexIDs[numerix.newaxis, 0], 
                                     faceVertexIDs.shape[0], axis=0)
-        mask = self.faceVertexIDs.getMaskArray()
+        mask = self.faceVertexIDs.maskArray
         faceVertexIDs = mask * substitute + ~mask * faceVertexIDs
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
         faceOrigins = numerix.repeat(faceVertexCoords[:,0], faceVertexIDs.shape[0], axis=0)
@@ -232,7 +232,7 @@ class MeshGeometry(AbstractMeshGeometry):
     def _calcFaceCellToCellNormals(self):
         faceCellCentersUp = numerix.take(self._cellCenters, self.faceCellIDs[1], axis=1)
         faceCellCentersDown = numerix.take(self._cellCenters, self.faceCellIDs[0], axis=1)
-        mask = faceCellCentersUp.getMaskArray()
+        mask = faceCellCentersUp.maskArray
         faceCellCentersUp = mask * self.faceCenters + ~mask * faceCellCentersUp.filled()
 
         diff = faceCellCentersDown - faceCellCentersUp
@@ -264,6 +264,7 @@ class MeshGeometry(AbstractMeshGeometry):
 
         tmp = tmp - numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
         cellToFaceDistanceVectors = tmp
+#         faceToCellDistances = numerix.sqrt((tmp * tmp).sum(axis=0))
         faceToCellDistances = (tmp * tmp).sum(axis=0).sqrt()
         faceToCellDistances.name = self.__class__.__name__ + ".faceToCellDistances"
         return faceToCellDistances, cellToFaceDistanceVectors
@@ -271,8 +272,8 @@ class MeshGeometry(AbstractMeshGeometry):
     def _calcCellDistAndVec(self):
         tmp = numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
         tmp = tmp[...,1,:] - tmp[...,0,:]
-        cellDistanceVectors = (tmp.getMask() * self.cellToFaceDistanceVectors[:,0].filled() 
-                               + ~tmp.getMask() * tmp.filled())
+        cellDistanceVectors = (tmp.mask * self.cellToFaceDistanceVectors[:,0].filled() 
+                               + ~tmp.mask * tmp.filled())
         cellDistances = cellDistanceVectors.mag
         cellDistances.name = self.__class__.__name__ + ".cellDistances"
         return cellDistances, cellDistanceVectors

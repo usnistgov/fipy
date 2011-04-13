@@ -64,7 +64,7 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
             cellToCellIDs = mesh._cellToCellIDs
 
             if NCells > 0:
-                mask = cellToCellIDs.getMask()
+                mask = cellToCellIDs.mask
                 cellToCellIDs = mask * cellIDs + ~mask * cellToCellIDs.filled()
 
                 adjacentValues = numerix.take(oldArray, cellToCellIDs, axis=-1)

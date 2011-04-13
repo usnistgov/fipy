@@ -462,7 +462,7 @@ class Mesh(object):
 
         ## change the direction of the face normals for faces0
         self._faceNormals = self._faceNormals.copy()
-        for dim in range(self.getDim()):
+        for dim in range(self.dim):
             faceNormals = self._faceNormals[dim].copy()
             numerix.put(faceNormals, faces0, faceNormals.take(faces1))
             self._faceNormals[dim] = faceNormals
@@ -522,12 +522,14 @@ class Mesh(object):
         ## compute vertex correlates
 
         ## only try to match exterior (X) vertices
-        self_Xvertices = numerix.unique(selfc._getFaceVertexIDs()
-                                        .filled()[..., selfc.getExteriorFaces()]
-                                        .flatten().value)
-        other_Xvertices = numerix.unique(other._getFaceVertexIDs()
-                                         .filled()[..., other.getExteriorFaces()]
-                                         .flatten().value)
+        self_Xvertices = selfc.faceVertexIDs.filled()
+        self_Xvertices = self_Xvertices[..., selfc.exteriorFaces]
+        self_Xvertices = self_Xvertices.flatten().value
+        self_Xvertices = numerix.unique(self_Xvertices)
+        other_Xvertices = other.faceVertexIDs.filled()
+        other_Xvertices = other_Xvertices[..., other.exteriorFaces]
+        other_Xvertices = other_Xvertices.flatten().value
+        other_Xvertices = numerix.unique(other_Xvertices)
 
         self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
         other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
@@ -707,7 +709,7 @@ class Mesh(object):
                 
             def _calcValue(self):
                 array = MA.array(MA.indices(self.mesh.cellFaceIDs.shape, 'l')[1], 
-                                 mask=self.mesh.cellFaceIDs.getMask())
+                                 mask=self.mesh.cellFaceIDs.mask)
                 faceCellIDs = MA.zeros((2, self.mesh.numberOfFaces), 'l')
 
                 numerix.put(faceCellIDs[0], self.mesh.cellFaceIDs[::-1,::-1], array[::-1,::-1])
@@ -1084,7 +1086,7 @@ class Mesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self._getNumberOfVertices())
+        return numerix.arange(self.numberOfVertices)
 
     @property
     def _globalOverlappingVertexIDs(self):
@@ -1103,7 +1105,7 @@ class Mesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self._getNumberOfVertices())
+        return numerix.arange(self.numberOfVertices)
 
     @property
     def _localNonOverlappingVertexIDs(self):
@@ -1122,7 +1124,7 @@ class Mesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self._getNumberOfVertices())
+        return numerix.arange(self.numberOfVertices)
 
     @property
     def _localOverlappingVertexIDs(self):
@@ -1437,7 +1439,7 @@ class Mesh(object):
         if cellVertexIDs.shape[-1] == 0:
             length = 0
         else:
-            length = cellVertexIDs.getMask().sum(axis=0).min()
+            length = cellVertexIDs.mask.sum(axis=0).min()
         return cellVertexIDs[length:][::-1]
 
 # #     Below is an ordered version of _getCellVertexIDs()
@@ -1863,7 +1865,7 @@ class Mesh(object):
     def _toVTK3D(self, arr, rank=1):
         from fipy.variables import Variable
         if isinstance(arr, Variable):
-            arr = arr.getValue()
+            arr = arr.value
         if arr.dtype.name is 'bool':
             # VTK can't do bool, and the exception isn't properly
             # thrown back to the user

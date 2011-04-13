@@ -146,9 +146,9 @@ class _MeshVariable(Variable):
         return False
         
     def copy(self):
-        return self._getVariableClass()(mesh=self.mesh, 
-                                        name=self.name, 
-                                        value=self)
+        return self._variableClass(mesh=self.mesh, 
+                                   name=self.name, 
+                                   value=self)
 
     def _globalToLocalValue(self, value):
         if value is not None:
@@ -549,7 +549,7 @@ class _MeshVariable(Variable):
         if (baseClass is not None
             and issubclass(baseClass, _MeshVariable) 
             and (len(newOpShape) == 0
-                 or newOpShape[-1] != baseClass._getShapeFromMesh(self.getMesh())[-1])):
+                 or newOpShape[-1] != baseClass._getShapeFromMesh(self.mesh)[-1])):
             baseClass = None
             
         return (newOpShape, baseClass, newOther)

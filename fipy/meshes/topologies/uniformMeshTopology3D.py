@@ -110,7 +110,7 @@ class UniformMeshTopology3D(AbstractMeshTopology):
 
     def _getAdjacentCellIDs(self):
         faceCellIDs = self.faceCellIDs
-        mask = faceCellIDs.getMask()
+        mask = faceCellIDs.mask
         faceCellIDs = faceCellIDs.filled()
         return ((mask[0] * faceCellIDs[1] + ~mask[0] * faceCellIDs[0]),
                 (mask[1] * faceCellIDs[0] + ~mask[1] * faceCellIDs[1]))

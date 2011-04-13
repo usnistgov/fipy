@@ -226,10 +226,10 @@ class Variable(object):
             Variable(value=array([0, 1, 2]))
             
         """
-        return self._getVariableClass()(value=self)
+        return self._variableClass(value=self)
 
     def _copyValue(self):
-        value = self.getValue()
+        value = self.value
         if hasattr(value, 'copy'):
             # idiot MaskedArray has a `copy` method, but it just throws
             # `NotImplemented`. What the #@%*! is the point of that?!?
@@ -470,7 +470,7 @@ class Variable(object):
         self._markFresh()
         
     def _putto(self, a, value):
-        return numerix.put(a, self.getValue(), value)
+        return numerix.put(a, self.value, value)
             
     def itemset(self, value):
         self.value.itemset(value)
@@ -742,7 +742,7 @@ class Variable(object):
             return value
             
     def _isMasked(self):
-        return numerix.MA.isMaskedArray(self.getValue())
+        return numerix.MA.isMaskedArray(self.value)
         
     @getsetDeprecated
     def getShape(self):
@@ -1570,7 +1570,6 @@ class Variable(object):
     def _reshapeClass(self, opShape):
         return None
         
-    @mathMethodDeprecated
     def reshape(self, shape):
         selfElements = numerix.multiply.reduce(self.shape)
         specificShape = [i for i in shape if i != -1]
@@ -1600,7 +1599,7 @@ class Variable(object):
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
         return self._UnaryOperatorVariable(lambda a: numerix.nonzero(a), 
                                            operatorClass=operatorClass,
-                                           opShape=numerix.array(numerix.nonzero(self.getValue())).shape,
+                                           opShape=numerix.array(numerix.nonzero(self.value)).shape,
                                            canInline=False)
 
     def sorted(self, axis=-1, kind='quick', order=None, fill_value=None):

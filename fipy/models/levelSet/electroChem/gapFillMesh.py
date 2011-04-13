@@ -126,7 +126,7 @@ class GapFillMesh(Mesh2D):
         dict['actualFineRegionHeight'] = self.actualFineRegionHeight
         dict['cellSize'] = self.cellSize
         dict['fineMesh'] = self.fineMesh
-        dict['faceVertexIDs'] = self.faceVertexIDs.getValue().filled()
+        dict['faceVertexIDs'] = self.faceVertexIDs.value.filled()
         return dict
             
     def __setstate__(self, dict):

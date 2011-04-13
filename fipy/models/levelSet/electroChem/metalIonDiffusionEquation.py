@@ -142,7 +142,7 @@ def buildMetalIonDiffusionEquation(ionVar=None,
                                          diffusionCoeff=diffusionCoeff)
     
     coeff = (depositionRate * distanceVar.cellInterfaceAreas
-             / (distanceVar.getMesh().cellVolumes * metalIonMolarVolume) 
+             / (distanceVar.mesh.cellVolumes * metalIonMolarVolume) 
              / ((ionVar > 1e-20) * ionVar + (ionVar <= 1e-20) * 1e-20))
 
     return eq + ImplicitSourceTerm(coeff)

@@ -286,7 +286,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         
         self.dt = Variable(name="dt")
         
-        mesh = distanceVar.getMesh()
+        mesh = distanceVar.mesh
 
         interfaceFlag = _CellInterfaceFlagVariable(distanceVar)
         interfaceAreaToVolume = _CellInterfaceAreasVariable(distanceVar) / mesh.cellVolumes
@@ -313,7 +313,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             
         total = 0
         for var in vars:
-            total += var.getInterfaceVar()
+            total += var.interfaceVar
         interface = (total > 1) * interfaceFlag
         
         spMaxCoeff = 1e20 * interface

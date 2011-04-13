@@ -1285,7 +1285,7 @@ def obj2sctype(rep, default=None):
     sctype = NUMERIX.obj2sctype(rep, default)
     if sctype is None:
         if _isPhysical(rep):
-            rep = rep.getNumericValue()
+            rep = rep.numericValue
             
         if MA.isMaskedArray(rep):
             sctype = NUMERIX.obj2sctype(rep.raw_data(), default)

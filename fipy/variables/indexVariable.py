@@ -4,7 +4,7 @@
  # 
  # FILE: "indexVariable.py"
  #                                     created: 10/25/07 {5:16:20 PM}
- #                                 last update: 4/8/11 {9:55:13 PM}
+ #                                 last update: 4/12/11 {9:55:44 PM}
  # Author: Jonathan Guyer
  # E-mail: <jguyer@his.com>
  #   mail: Alpha Cabal
@@ -66,7 +66,7 @@ class _IndexVariable_(Variable):
             
     def _indexValue(x):
         if isinstance(x, Variable):
-            return x.getValue()
+            return x.value
         else:
             return x
     _indexValue = staticmethod(_indexValue)
@@ -144,7 +144,7 @@ class _IndexVariable_(Variable):
         else:
             op = lambda a, b: b[a]
         
-        if not self.getUnit().isDimensionless():
+        if not self.unit.isDimensionless():
             raise IndexError, "Indices must be dimensionless"
             
         if not isinstance(other, Variable):
@@ -161,7 +161,7 @@ class _IndexVariable_(Variable):
         
         from fipy.variables.meshVariable import _MeshVariable
 
-        unit = other.getUnit()
+        unit = other.unit
 #         canInline=unit.isDimensionless() and not self._isMasked()
         canInline=False
         
@@ -187,7 +187,7 @@ class _IndexVariable_(Variable):
         from fipy.variables.meshVariable import _MeshVariable
         
         if isinstance(self.index, _MeshVariable) and opShape[-1] == self.index.shape[-1]:
-            return self.index._OperatorVariableClass(), self.index.getMesh()
+            return self.index._OperatorVariableClass(), self.index.mesh
         else:
             return None, None
 
@@ -200,7 +200,7 @@ class _IndexVariable_(Variable):
         mesh = None
         
         if opShape is None:
-            opShape = numerix._indexShape(index=self.getValue(), arrayShape=other.shape)
+            opShape = numerix._indexShape(index=self.value, arrayShape=other.shape)
             
         if operatorClass is None:
             operatorClass, mesh = self._meshOperatorClass(opShape)
@@ -250,8 +250,7 @@ class _ListIndexVariable(_IndexVariable_):
         
         for item in self.index:
             if isinstance(item, _MeshVariable) and opShape[-1] == item.shape[-1]:
-                return item._OperatorVariableClass(), item.getMesh()
-                
+                return item._OperatorVariableClass(), item.mesh                
         return None, None
         
     def __repr__(self):
@@ -270,7 +269,7 @@ class _SliceVariable(Variable):
     def _calcValue(self):
         def _getValue(x):
             if isinstance(x, Variable):
-                return x.getValue()
+                return x.value
             else:
                 return x
             
