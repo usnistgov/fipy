@@ -83,7 +83,8 @@ class ModularVariable(CellVariable):
     # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
     """
     
-    def _getVariableClass(self):
+    @property
+    def _variableClass(self):
         return ModularVariable
 
     def _setValueInternal(self, value, unit=None, array=None):
