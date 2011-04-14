@@ -67,7 +67,7 @@ class Term(object):
         self._cacheRHSvector = False
         self._RHSvector = None
         self.var = var
-
+        
     @getsetDeprecated
     def _getVars(self):
         return self._vars
@@ -89,7 +89,7 @@ class Term(object):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildAndAddMatrices(self, solutionVar, equationVars, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
         
     def _buildExplicitIfOtherVar(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
@@ -100,9 +100,9 @@ class Term(object):
             if self.var is None:
                 raise SolutionVariableRequiredError
             else:
-                return self.var
+                return self.var, []
         else:
-            return var
+            return var, []
 
     def _checkVar(self, var):
         if ((var is not None) 
@@ -129,8 +129,8 @@ class Term(object):
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         solver = self.getDefaultSolver(solver)
             
-        var = self._verifyVar(var)
-        self._checkVar(var)
+        solutionVar, equationVars = self._verifyVars(var)
+        self._checkVar(solutionVar)
 
         if numerix.getShape(dt) != ():
             raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
@@ -147,8 +147,9 @@ class Term(object):
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        var, matrix, RHSvector = self._buildAndAddMatrices(var=var, 
-                                                           SparseMatrix=self._getMatrixClass(solver), 
+        var, matrix, RHSvector = self._buildAndAddMatrices(solutionVar,
+                                                           equationVars,
+                                                           self._getMatrixClass(solver), 
                                                            boundaryConditions=boundaryConditions, 
                                                            dt=dt,
                                                            transientGeomCoeff=self._getTransientGeomCoeff(var),

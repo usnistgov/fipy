@@ -41,24 +41,27 @@ from fipy.variables.coupledCellVariable import _CoupledCellVariable
 
 class _BinaryTerm(_BaseBinaryTerm):
 
-    def _verifyVar(self, var):
+    def _verifyVars(self, var):
         if var is None:
             if len(self._vars) == 0:
                 raise SolutionVariableRequiredError
-            elif len(self._vars) == 1:
-                return _BaseBinaryTerm._verifyVar(self, self._vars[0])
-            else:
-                return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
-        else:
-            return var
+
+        return var, self._vars
+        ##     elif len(self._vars) == 1:
+        ##         return _BaseBinaryTerm._verifyVar(self, self._vars[0])
+        ##     else:
+        ##         return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
+        ## else:
+        ##     return var
 
     def _getMatrixClass(self, solver):
-        from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
-        return OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
-                                  numberOfVariables=len(self._vars) or 1,
-                                  numberOfEquations=1)
+        return solver._matrixClass
+##      from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+##      return OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
+##                                numberOfVariables=len(self._vars) or 1,
+##                                                                                              
         
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildAndAddMatrices(self, solutionVar, equationVars, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Build matrices of constituent Terms and collect them
         
         Only called at top-level by `_prepareLinearSystem()`
@@ -102,7 +105,6 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> m = Grid1D(nx=3)
         >>> v0 = CellVariable(mesh=m, value=(0., 1., 2.))
         >>> v1 = CellVariable(mesh=m, value=(3., 4., 5.))
-        >>> diffTerm = DiffusionTerm(coeff=1., var=v0)
         >>> eq00 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0)
         >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
         >>> eq0.cacheMatrix()
@@ -119,13 +121,14 @@ class _BinaryTerm(_BaseBinaryTerm):
         None
         
         """
-        
-        matrix = SparseMatrix(mesh=var.mesh)
+
+        matrix = SparseMatrix(mesh=solutionVar.mesh)
         RHSvector = 0
 
         for term in (self.term, self.other):
         
-            tmpVar, tmpMatrix, tmpRHSvector = term._buildAndAddMatrices(var,
+            tmpVar, tmpMatrix, tmpRHSvector = term._buildAndAddMatrices(solutionVar,
+                                                                        equationVars,
                                                                         SparseMatrix,
                                                                         boundaryConditions=boundaryConditions,
                                                                         dt=dt,
@@ -143,7 +146,7 @@ class _BinaryTerm(_BaseBinaryTerm):
              self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 
              raw_input()
 
-        return (var, matrix, RHSvector)
+        return (solutionVar, matrix, RHSvector)
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         for term in (self.term, self.other):

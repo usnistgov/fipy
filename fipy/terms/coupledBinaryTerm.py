@@ -72,14 +72,15 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     def _uncoupledTerms(self):
         return self.term._uncoupledTerms + self.other._uncoupledTerms
 
-    def _verifyVar(self, var):
+    def _verifyVars(self, var):
         if var is not None:
             raise Exception, 'The solution variable should not be specified.'
 
         if len(self._vars) != len(self._uncoupledTerms):
             raise SolutionVariableNumberError
 
-        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
+        return None, self._vars
+##        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
 
     def _getMatrixClass(self, solver):
         from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
@@ -87,7 +88,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
                                   numberOfVariables=len(self._vars),
                                   numberOfEquations=len(self._uncoupledTerms))
         
-    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildAndAddMatrices(self, solutionVar, equationsVars, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
@@ -172,7 +173,8 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
             SparseMatrix.equationIndex = equationIndex
 
-            tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildAndAddMatrices(var,
+            tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildAndAddMatrices(solutionVar,
+                                                                                 equationVars,
                                                                                  SparseMatrix,
                                                                                  boundaryConditions=(),
                                                                                  dt=dt,
@@ -186,8 +188,8 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
             RHSvectors += [CellVariable(value=tmpRHSvector, mesh=var.mesh)]
 
         RHSvector = _CoupledCellVariable(RHSvectors)
-
-	return (var, matrix, RHSvector)
+        
+	return (_CoupledCellVariable(self._vars), matrix, RHSvector)
 
     def __repr__(self):
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'

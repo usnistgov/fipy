@@ -66,7 +66,7 @@ class _UnaryTerm(Term):
 
         return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
 
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildAndAddMatrices(self, solutionVar, equationVars, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
@@ -142,20 +142,17 @@ class _UnaryTerm(Term):
         
         """
 
-        from fipy.variables.coupledCellVariable import _CoupledCellVariable
-        if isinstance(var, _CoupledCellVariable):
-            variables = var.vars
-        else:
-            variables = [var]
+        if len(equationVars) == 0:
+            equationVars = [solutionVar]
 
-        matrix = SparseMatrix(mesh=var.mesh)
+        matrix = SparseMatrix(mesh=solutionVar.mesh)
         RHSvector = 0
 
-        for varIndex, tmpVar in enumerate(variables):
+        for varIndex, tmpVar in enumerate(equationVars):
 
             SparseMatrix.varIndex = varIndex
 
-            if tmpVar is self.var or self.var is None:
+            if self.var is tmpVar or self.var is None:
                 
                 tmpVar, tmpMatrix, tmpRHSvector = self._buildMatrix(tmpVar,
                                                                     SparseMatrix,
@@ -164,10 +161,15 @@ class _UnaryTerm(Term):
                                                                     transientGeomCoeff=transientGeomCoeff,
                                                                     diffusionGeomCoeff=diffusionGeomCoeff)
 
-                matrix += tmpMatrix
-                RHSvector += tmpRHSvector
+                
+                if self.var is None or solutionVar is None or solutionVar is tmpVar:
+                    matrix += tmpMatrix
+                    RHSvector += tmpRHSvector
+                else:
+                    RHSvector += tmpRHSvector - tmpMatrix * tmpVar.value
+                
                              
-        return (var, matrix, RHSvector)
+        return (solutionVar, matrix, RHSvector)
 
     def _getMatrixClass(self, solver):
         return solver._matrixClass
