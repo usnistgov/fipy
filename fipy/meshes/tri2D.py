@@ -98,7 +98,7 @@ class Tri2D(Mesh2D):
         Mesh2D.__init__(self, vertices, faces, cells)
 
         self.scale = scale
-        
+
     def _createVertices(self):
         
         x = numerix.arange(self.nx + 1) * self.dx
@@ -169,10 +169,6 @@ class Tri2D(Mesh2D):
         topOfBoxCells = numerix.array([topFaces, upperLeftDiagonalFaces, upperRightDiagonalFaces])
         leftOfBoxCells = numerix.array([leftFaces, lowerLeftDiagonalFaces, upperLeftDiagonalFaces])
         return numerix.concatenate((rightOfBoxCells, topOfBoxCells, leftOfBoxCells, bottomOfBoxCells), axis=1)
-        
-    @getsetDeprecated
-    def getScale(self):
-        return self.scale['length']
         
     @property
     def physicalShape(self):
