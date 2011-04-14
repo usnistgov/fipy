@@ -57,6 +57,17 @@ class AbstractMesh(object):
     def _setGeometry(self):
         raise NotImplementedError
 
+    def exportToGmsh(self, filename):
+        """
+        Export this mesh to Gmsh's .msh format.
+
+        :Parameters:
+          - `filename`: A string indicating the path to which the mesh will be
+            output. Hopefully, this ends with '.msh'.
+        """
+        from fipy.meshes.gmshExport import GmshExporter
+        GmshExporter(self, filename).export()
+         
     """
     Scale business
     """
@@ -85,14 +96,14 @@ class AbstractMesh(object):
     def getNearestCell(self, point):
         return self._getCellsByID([self._getNearestCellID(point)])[0]
                   
-    def _getCellFaceIDs(self):
+    def _getCellFaceIDsInternal(self):
         return self._cellFaceIDs
 
-    def _setCellFaceIDs(self, newVal):
+    def _setCellFaceIDsInternal(self, newVal):
         self._cellFaceIDs = newVal
 
     """This is to enable `_connectFaces` to work properly."""
-    cellFaceIDs = property(_getCellFaceIDs, _setCellFaceIDs)
+    cellFaceIDs = property(_getCellFaceIDsInternal, _setCellFaceIDsInternal)
                     
     """Topology properties"""
 
@@ -189,33 +200,17 @@ class AbstractMesh(object):
         MA.put(faceToCellDistances1, faces0, MA.take(faceToCellDistances0, faces0))
         MA.put(faceToCellDistances0, faces0, MA.take(faceToCellDistances0, faces1))
 
-        """
-        Some very hacky stuff going on here with property assignment. Temporary
-        variables are often used because slice and index assignments DO NOT call
-        the property-setters, instead they act on the underlying numpy reference
-        directly.
+        self._faceToCellDistances[0] = faceToCellDistances0
+        self._faceToCellDistances[1] = faceToCellDistances1
 
-        Does Guido know about this?
-        """
-
-        connectedFaceToCellDs = self._faceToCellDistances
-        connectedFaceToCellDs[0] = faceToCellDistances0
-        connectedFaceToCellDs[1] = faceToCellDistances1
-        self._faceToCellDistances = connectedFaceToCellDs
-
-        tempCellDist = self._cellDistances
         ## calculate new cell distances and add them to faces0
-        numerix.put(tempCellDist, faces0, MA.take(faceToCellDistances0 + faceToCellDistances1, faces0))
-        self._cellDistances = tempCellDist
+        numerix.put(self._cellDistances, faces0, MA.take(faceToCellDistances0 + faceToCellDistances1, faces0))
 
-        tempFaceNormals = self._faceNormals
         ## change the direction of the face normals for faces0
         for dim in range(self.dim):
-            faceNormals = tempFaceNormals[dim].copy()
+            faceNormals = self._faceNormals[dim].copy()
             numerix.put(faceNormals, faces0, MA.take(faceNormals, faces1))
-            tempFaceNormals[dim] = faceNormals
-
-        self._faceNormals = tempFaceNormals
+            self._faceNormals[dim] = faceNormals
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
@@ -229,9 +224,7 @@ class AbstractMesh(object):
                                       faces0,
                                       cellFaceIDs[i])
             ## add those faces back to the main self.cellFaceIDs
-            tmpCellFaceIDs = self.cellFaceIDs
-            numerix.put(tmpCellFaceIDs[i], faceCellIDs, cellFaceIDs[i])
-            self.cellFaceIDs = tmpCellFaceIDs
+            numerix.put(self.cellFaceIDs[i], faceCellIDs, cellFaceIDs[i])
 
         ## calculate new topology
         self._setTopology()
@@ -1197,8 +1190,12 @@ class AbstractMesh(object):
     @getsetDeprecated
     def _getCellDistanceNormals(self):
         return self._cellDistanceNormals
- 
-    @getsetDeprecated
+        
+    @getsetDeprecated(new_name="cellFaceIDs")
+    def _getCellFaceIDs(self):
+        return self.cellFaceIDs
+
+    @getsetDeprecated(new_name="faceVertexIDs")
     def _getFaceVertexIDs(self):
         return self.faceVertexIDs
          
@@ -1209,8 +1206,8 @@ class AbstractMesh(object):
     @getsetDeprecated
     def _getNumberOfFacesPerCell(self):
         return self._numberOfFacesPerCell
-      
-    @getsetDeprecated
+    
+    @getsetDeprecated(new_name="vertexCoords")
     def getVertexCoords(self):
         """TODO: replace this with a warning."""
         if hasattr(self, 'vertexCoords'):

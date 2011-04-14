@@ -81,7 +81,6 @@ class Mesh(AbstractMesh):
         self._setTopology()
         self._setGeometry(scaleLength = 1.)
 
-
     """
     Topology set and calc
     """
@@ -344,6 +343,9 @@ class Mesh(AbstractMesh):
         self._scaledCellCenters = self._scale['length'] * self._cellCenters
         self._scaledFaceToCellDistances = self._scale['length'] * self._faceToCellDistances
         self._scaledCellDistances = self._scale['length'] * self._cellDistances
+        self._setFaceDependentScaledValues()
+
+    def _setFaceDependentScaledValues(self):
         self._scaledCellToCellDistances = self._scale['length'] * self._cellToCellDistances
         self._areaProjections = self._calcAreaProjections()
         self._orientedAreaProjections = self._calcOrientedAreaProjections()
@@ -426,6 +428,7 @@ class Mesh(AbstractMesh):
 
     def _handleFaceConnection(self):
         self._cellToCellDistances = self._calcCellToCellDist()   
+        self._setFaceDependentScaledValues()
 
     """calc Topology methods"""
 

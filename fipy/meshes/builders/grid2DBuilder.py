@@ -153,48 +153,46 @@ class Grid2DBuilder(AbstractGridBuilder):
         return (numerix.concatenate((horizontalFaces, verticalFaces), axis=1),
                 numberOfHorizontalFaces)
            
-    @staticmethod
-    def createCells(nx, ny, numFaces, numHorizFaces, numVertCols):
-        """
-        cells = (f1, f2, f3, f4) going anticlock wise.
-        f1 etc. refer to the faces
-        """
-        return inline._optionalInline(Grid2DBuilder._createCellsIn,
-                                      Grid2DBuilder._createCellsPy,
-                                      nx, ny, numFaces, numHorizFaces,
-                                      numVertCols)
+    if inline.doInline:
+        @staticmethod
+        def createCells(nx, ny, numFaces, numHorizFaces, numVertCols):
+            """
+            cells = (f1, f2, f3, f4) going anticlock wise.
+            f1 etc. refer to the faces
+            """ 
+            cellFaceIDs = numerix.zeros((4, nx * ny))
+            
+            inline._runInline("""
+                int ID = j * ni + i;
+                int NCELLS = ni * nj;
+                cellFaceIDs[ID + 0 * NCELLS] = ID;
+                cellFaceIDs[ID + 2 * NCELLS] = cellFaceIDs[ID + 0 * NCELLS] + ni;
+                cellFaceIDs[ID + 3 * NCELLS] = horizontalFaces + ID + j;
+                cellFaceIDs[ID + 1 * NCELLS] = cellFaceIDs[ID + 3 * NCELLS] + 1;
+            """,
+            horizontalFaces=numHorizFaces,
+            cellFaceIDs=cellFaceIDs,
+            ni=nx,
+            nj=ny)
 
-    
-    @staticmethod
-    def _createCellsPy(nx, ny, numFaces, numHorizFaces, numVertCols):
-        cellFaceIDs = numerix.zeros((4, nx * ny))
-        faceIDs = numerix.arange(numFaces)
-        if numFaces > 0:
-            cellFaceIDs[0,:] = faceIDs[:numHorizFaces - nx]
-            cellFaceIDs[2,:] = cellFaceIDs[0,:] + nx
-            cellFaceIDs[1,:] = vector.prune(faceIDs[numHorizFaces:], 
-                                            numVertCols)
-            cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
-        return cellFaceIDs
-
-    @staticmethod
-    def _createCellsIn(nx, ny, numFaces, numHorizFaces, numVertCols):
-        cellFaceIDs = numerix.zeros((4, nx * ny))
-        
-        inline._runInline("""
-            int ID = j * ni + i;
-            int NCELLS = ni * nj;
-            cellFaceIDs[ID + 0 * NCELLS] = ID;
-            cellFaceIDs[ID + 2 * NCELLS] = cellFaceIDs[ID + 0 * NCELLS] + ni;
-            cellFaceIDs[ID + 3 * NCELLS] = horizontalFaces + ID + j;
-            cellFaceIDs[ID + 1 * NCELLS] = cellFaceIDs[ID + 3 * NCELLS] + 1;
-        """,
-        horizontalFaces=numHorizFaces,
-        cellFaceIDs=cellFaceIDs,
-        ni=nx,
-        nj=ny)
-
-        return cellFaceIDs
+            return cellFaceIDs
+                           
+    else:
+        @staticmethod
+        def createCells(nx, ny, numFaces, numHorizFaces, numVertCols):
+            """
+            cells = (f1, f2, f3, f4) going anticlock wise.
+            f1 etc. refer to the faces
+            """ 
+            cellFaceIDs = numerix.zeros((4, nx * ny))
+            faceIDs = numerix.arange(numFaces)
+            if numFaces > 0:
+                cellFaceIDs[0,:] = faceIDs[:numHorizFaces - nx]
+                cellFaceIDs[2,:] = cellFaceIDs[0,:] + nx
+                cellFaceIDs[1,:] = vector.prune(faceIDs[numHorizFaces:], 
+                                                numVertCols)
+                cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
+            return cellFaceIDs
 
     def _packOverlap(self, first, second):
         return {'left': 0, 'right': 0, 'bottom': first, 'top': second}  

@@ -78,8 +78,13 @@ class CylindricalUniformGrid2D(UniformGrid2D):
         areas[3] = self.dy * (self._cellCenters[0] - self.dx / 2)
         return areas
  
+    """
     def _calcAreaProjections(self):
         return self._getAreaProjectionsPy()
+    """
+ 
+    def _calcAreaProjections(self):
+        return self._faceNormals * self._faceAreas
  
     @property
     def cellVolumes(self):

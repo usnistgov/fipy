@@ -39,13 +39,11 @@ from fipy.tools import numerix
 
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
-from fipy.tools.decorators import getsetDeprecated
 
 class _PysparseMatrixBase(_SparseMatrix):
     
     """
     _PysparseMatrix class wrapper for pysparse.
-    _PysparseMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
@@ -83,7 +81,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Add two sparse matrices
         
-            >>> L = _PysparseMatrix(size=3)
+            >>> L = _PysparseMatrix(rows=3, cols=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L + _PysparseIdentityMatrix(size=3)
              1.000000  10.000000   3.000000  
@@ -129,7 +127,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix
         
-            >>> L1 = _PysparseMatrix(size=3)
+            >>> L1 = _PysparseMatrix(rows=3, cols=3)
             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L2 = _PysparseIdentityMatrix(size=3)
             >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
@@ -155,7 +153,7 @@ class _PysparseMatrixBase(_SparseMatrix):
 
             
         """
-        N = self.matrix.shape[0]
+        N = self.matrix.shape[1]
 
         if isinstance(other, _PysparseMatrixBase):
             return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, other.matrix))
@@ -166,7 +164,7 @@ class _PysparseMatrixBase(_SparseMatrix):
                 L.put(other * numerix.ones(N))
                 return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
-                y = other.copy()
+                y = numerix.empty((self.matrix.shape[0],))
                 self.matrix.matvec(other, y)
                 return y
             else:
@@ -192,7 +190,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
-            >>> L = _PysparseMatrix(size=3)
+            >>> L = _PysparseMatrix(rows=3, cols=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L
                 ---    10.000000   3.000000  
@@ -205,7 +203,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
         
-            >>> L = _PysparseMatrix(size=3)
+            >>> L = _PysparseMatrix(rows=3, cols=3)
             >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print L
              3.000000      ---        ---    
@@ -239,7 +237,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
-            >>> L = _PysparseMatrix(size=3)
+            >>> L = _PysparseMatrix(rows=3, cols=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
             >>> print L
@@ -282,45 +280,52 @@ class _PysparseMatrix(_PysparseMatrixBase):
     
     """
     _PysparseMatrix class wrapper for pysparse.
-    _PysparseMatrix is always NxN.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
 
-    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseMatrix`.
 
         :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
+          - `rows`: The number of matrix rows
+          - `cols`: The number of matrix columns
           - `bandwidth`: The proposed band width of the matrix.
+          - `sizeHint`: estimate of the number of non-zeros
+          - `matrix`: pre-assembled `ll_mat` to use for storage
           - `storeZeros`: Instructs pysparse to store zero values if possible.
           
         """
-        sizeHint = sizeHint or size * bandwidth
+        sizeHint = sizeHint or max(rows, cols) * bandwidth
         if matrix is None:
             tmpMatrix = spmatrix.ll_mat(1, 1, 1)
             if hasattr(tmpMatrix, 'storeZeros'):
-                matrix = spmatrix.ll_mat(size, size, sizeHint, storeZeros)
+                matrix = spmatrix.ll_mat(rows, cols, sizeHint, storeZeros)
             else:
-                matrix = spmatrix.ll_mat(size, size, sizeHint)
+                matrix = spmatrix.ll_mat(rows, cols, sizeHint)
                 
         _PysparseMatrixBase.__init__(self, matrix=matrix)
 
 class _PysparseMeshMatrix(_PysparseMatrix):
-    
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, storeZeros=True):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, numberOfEquations=1, storeZeros=True):
 
-        """Creates a `_PysparseMatrix` associated with a `Mesh`.
+        """Creates a `_PysparseMatrix` associated with a `Mesh`. Allows for different number of equations and/or variables
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
-          - `numberOfVariables`: The size of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
+          - `sizeHint`: estimate of the number of non-zeros
+          - `matrix`: pre-assembled `ll_mat` to use for storage
+          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
+          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.numberOfCells.
           - `storeZeros`: Instructs pysparse to store zero values if possible.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
-        _PysparseMatrix.__init__(self, size=self.numberOfVariables * self.mesh.numberOfCells, bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
+        self.numberOfEquations = numberOfEquations
+        rows = numberOfEquations * self.mesh.numberOfCells
+        cols = numberOfVariables * self.mesh.numberOfCells
+        _PysparseMatrix.__init__(self, rows=rows, cols=cols, bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
 
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):
@@ -345,8 +350,11 @@ class _PysparseMeshMatrix(_PysparseMatrix):
                 bandwidth = 0
             else:
                 bandwidth = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
+            bandwidth = 1
             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
-            self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth, numberOfVariables=self.numberOfVariables)
+            self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth, 
+                                                                 numberOfVariables=self.numberOfVariables,
+                                                                 numberOfEquations=self.numberOfEquations)
 
         self.trilinosMatrix.addAt(values, irow, jcol)
         self.trilinosMatrix.finalize()
@@ -380,13 +388,13 @@ class _PysparseMeshMatrix(_PysparseMatrix):
         """
         Tests
         
-        >>> m = _PysparseMatrix(size=3, storeZeros=True)
+        >>> m = _PysparseMatrix(rows=3, cols=3, storeZeros=True)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> print not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0), (2, 2)])
         True
         >>> print not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.values(), [1., 2., 0.]) 
         True
-        >>> m = _PysparseMatrix(size=3, storeZeros=False)
+        >>> m = _PysparseMatrix(rows=3, cols=3, storeZeros=False)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> print numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0)])
         True
@@ -409,7 +417,7 @@ class _PysparseIdentityMatrix(_PysparseMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PysparseMatrix.__init__(self, size=size, bandwidth = 1)
+        _PysparseMatrix.__init__(self, rows=size, cols=size, bandwidth = 1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
         

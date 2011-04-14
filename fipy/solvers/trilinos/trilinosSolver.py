@@ -74,13 +74,13 @@ class TrilinosSolver(Solver):
             mesh = self.var.mesh
             localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
-            nonOverlappingVector = Epetra.Vector(globalMatrix.nonOverlappingMap, 
+            nonOverlappingVector = Epetra.Vector(globalMatrix.domainMap, 
                                                  self.var[localNonOverlappingCellIDs])
 
-            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.nonOverlappingMap, 
+            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.rangeMap, 
                                                     self.RHSvector[localNonOverlappingCellIDs])
 
-            overlappingVector = Epetra.Vector(globalMatrix.overlappingMap, self.var)
+            overlappingVector = Epetra.Vector(globalMatrix.colMap, self.var)
 
             self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
 
@@ -91,16 +91,22 @@ class TrilinosSolver(Solver):
         del self.globalVectors
         
     def _solve(self):
-
+        from fipy.terms import SolutionVariableNumberError
+        
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
 
+        if not (globalMatrix.rangeMap.SameAs(globalMatrix.domainMap)
+                and globalMatrix.rangeMap.SameAs(nonOverlappingVector.Map())):
+
+            raise SolutionVariableNumberError
+        
         self._solve_(globalMatrix.matrix, 
                      nonOverlappingVector, 
                      nonOverlappingRHSvector)
 
         overlappingVector.Import(nonOverlappingVector, 
-                                 Epetra.Import(globalMatrix.overlappingMap, 
-                                               globalMatrix.nonOverlappingMap), 
+                                 Epetra.Import(globalMatrix.colMap, 
+                                               globalMatrix.domainMap), 
                                  Epetra.Insert)
         
         self.var.value = overlappingVector

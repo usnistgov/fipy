@@ -36,17 +36,11 @@
 __docformat__ = 'restructuredtext'
 
 import os
-import sys
 
 from PyTrilinos import Epetra
-from PyTrilinos import EpetraExt
 from PyTrilinos import Amesos
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-from fipy.matrices.trilinosMatrix import _trilinosToNumpyVector
-from fipy.matrices.trilinosMatrix import _numpyToTrilinosVector
-
-from fipy.tools import numerix
 
 class LinearLUSolver(TrilinosSolver):
 
@@ -79,22 +73,25 @@ class LinearLUSolver(TrilinosSolver):
     def _solve_(self, L, x, b):
          
         for iteration in range(self.iterations):
-
              # errorVector = L*x - b
-             errorVector = Epetra.Vector(L.RowMap())
+             errorVector = Epetra.Vector(L.RangeMap())
              L.Multiply(False, x, errorVector)
-             errorVector = errorVector - b
+             # If A is an Epetra.Vector with map M
+             # and B is an Epetra.Vector with map M
+             # and C = A - B
+             # then C is an Epetra.Vector with *no map* !!!?!?!
+             errorVector -= b
 
-             tol = max(numerix.absolute(_trilinosToNumpyVector(errorVector)))
+             tol = errorVector.Norm1()
 
              if iteration == 0:
                  tol0 = tol
-
+                 
              if (tol / tol0) <= self.tolerance: 
                  break
 
-             xError = _numpyToTrilinosVector(numerix.zeros(errorVector.GlobalLength(), 'd'), L.RowMap())
-              
+             xError = Epetra.Vector(L.RowMap())
+             
              Problem = Epetra.LinearProblem(L, xError, errorVector)
              Solver = self.Factory.Create("Klu", Problem)
              Solver.Solve()
@@ -104,5 +101,5 @@ class LinearLUSolver(TrilinosSolver):
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iteration + 1, self.iterations))
-            PRINT('residual:', numerix.sqrt(numerix.sum(numerix.array(errorVector)**2)))
+            PRINT('residual:', errorVector.Norm2())
 

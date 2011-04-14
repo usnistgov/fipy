@@ -507,10 +507,6 @@ class UniformGrid3D(UniformGrid):
         del args['origin']
         return Grid3D(**args) + origin
 
-##     get topology methods
-
-##         from common/mesh
-
     @property
     def _cellFaceIDs(self):
         return MA.array(Grid3DBuilder.createCells(self.nx,
@@ -608,7 +604,7 @@ class UniformGrid3D(UniformGrid):
         ids[6] = ids[7] + 1
         
         return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
-     
+
     @property
     def faceVertexIDs(self):
        return Grid3DBuilder.createFaces(self.nx, self.ny, self.nz)[1]

@@ -56,33 +56,35 @@ class CylindricalGrid2D(Grid2D):
         self.origin /= scale
 
         Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
-
+                                     
         """
         This is an unfortunate block of code, but it's better than the
         alternatives.
         """
         oldFaceAreas = self._faceAreas
-        self._faceAreas *= self._faceCenters[0]
+        self._faceAreas *= self.faceCenters[0]
 
         self._scaledFaceAreas = self._scale['area'] * self._faceAreas
         self._areaProjections = self._faceNormals * oldFaceAreas
+        self._orientedAreaProjections = self._calcOrientedAreaProjections()
+        self._faceAspectRatios = self._calcFaceAspectRatios()
                                        
         self._cellAreas = self._calcCellAreas()
         self._cellNormals = self._calcCellNormals() 
-        
+          
         self.vertexCoords += self.origin
         self.args['origin'] = self.origin
-
+ 
     @property
     def cellCenters(self):
         from fipy.variables.cellVariable import CellVariable
         return CellVariable(mesh=self, 
                             value=self._scaledCellCenters + self.origin,
                             rank=1)
-
+                            
     @property
     def faceCenters(self):
-        return self._faceCenters + self.origin
+        return super(CylindricalGrid2D, self)._calcFaceCenters() + self.origin
          
     @property
     def cellVolumes(self):

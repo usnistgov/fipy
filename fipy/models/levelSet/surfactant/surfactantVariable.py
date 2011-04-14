@@ -129,7 +129,7 @@ class SurfactantVariable(CellVariable):
 
         return self.interfaceSurfactantVariable
 
-    @getsetDeprecated
+    @getsetDeprecated(new_name="distanceVar")
     def _getDistanceVar(self):
         return self.distanceVar
    

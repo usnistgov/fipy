@@ -57,18 +57,30 @@ class CylindricalUniformGrid1D(UniformGrid1D):
                                         nx=self.args['nx'],
                                         origin=self.args['origin'] + numerix.array(vector),
                                         overlap=self.args['overlap'])
+                 
+    @property
+    def _faceAreas(self):
+        return self.faceCenters[0]
 
     @property
-    def faceAspectRatios(self):
+    def _cellAreas(self):
+        return numerix.array((self.faceAreas[:-1], self.faceAreas[1:]))
+
+    @property
+    def _cellAreaProjections(self):
+        return MA.array(self.cellNormals) * self.cellAreas
+ 
+    @property
+    def _faceAspectRatios(self):
         return self._faceAreas / self._cellDistances
     
     @property
-    def areaProjections(self):
+    def _areaProjections(self):
         return self._faceNormals * self._faceAreas
  
     @property
     def cellVolumes(self):
-        return self._cellVolumes * self.cellCenters[0]
+        return self.dx * self.cellCenters[0]
 
     def _test(self):
         """

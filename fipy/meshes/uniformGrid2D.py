@@ -160,77 +160,77 @@ class UniformGrid2D(UniformGrid):
             cellFaceOrientations[3, :] = -1
             cellFaceOrientations[3, ::self.nx] = 1
         return cellFaceOrientations
+   
+    if inline.doInline:
+        @property
+        def _adjacentCellIDs(self):
+            faceCellIDs0 =  numerix.zeros(self.numberOfFaces)
+            faceCellIDs1 =  numerix.zeros(self.numberOfFaces)
 
-    @property
-    def _adjacentCellIDs(self):
-        return inline._optionalInline(self._getAdjacentCellIDsIn, self._getAdjacentCellIDsPy)
-    
-    def _getAdjacentCellIDsIn(self):
-        faceCellIDs0 =  numerix.zeros(self.numberOfFaces)
-        faceCellIDs1 =  numerix.zeros(self.numberOfFaces)
+            inline._runInline("""
+                int ID = j * ni + i;
 
-        inline._runInline("""
-            int ID = j * ni + i;
+                faceCellIDs0[ID] = ID - ni;
+                faceCellIDs1[ID] = ID;
 
-            faceCellIDs0[ID] = ID - ni;
-            faceCellIDs1[ID] = ID;
+                faceCellIDs0[ID + Nhor + j] = ID - 1;
+                faceCellIDs1[ID + Nhor + j] = ID;
 
-            faceCellIDs0[ID + Nhor + j] = ID - 1;
-            faceCellIDs1[ID + Nhor + j] = ID;
+                if (j == 0) {
+                    faceCellIDs0[ID] = ID;
+                }
 
-            if (j == 0) {
-                faceCellIDs0[ID] = ID;
-            }
+                if (j == nj - 1) {
+                    faceCellIDs0[ID + ni] = ID;
+                    faceCellIDs1[ID + ni] = ID;
+                }
 
-            if (j == nj - 1) {
-                faceCellIDs0[ID + ni] = ID;
-                faceCellIDs1[ID + ni] = ID;
-            }
+                if (i == 0) {
+                    faceCellIDs0[ID + Nhor + j] = ID;
+                }
 
-            if (i == 0) {
-                faceCellIDs0[ID + Nhor + j] = ID;
-            }
+                if ( i == ni - 1 ) {
+                    faceCellIDs0[ID + Nhor + j + 1] = ID;
+                    faceCellIDs1[ID + Nhor + j + 1] = ID;
+                }
+                
+            """,
+            Nhor=self.numberOfHorizontalFaces,
+            faceCellIDs0=faceCellIDs0,
+            faceCellIDs1=faceCellIDs1,
+            ni=self.nx,
+            nj=self.ny)
 
-            if ( i == ni - 1 ) {
-                faceCellIDs0[ID + Nhor + j + 1] = ID;
-                faceCellIDs1[ID + Nhor + j + 1] = ID;
-            }
+            return (faceCellIDs0, faceCellIDs1)
+
+    else:
+        @property
+        def _adjacentCellIDs(self):
+            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2))
+            indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
             
-        """,
-        Nhor=self.numberOfHorizontalFaces,
-        faceCellIDs0=faceCellIDs0,
-        faceCellIDs1=faceCellIDs1,
-        ni=self.nx,
-        nj=self.ny)
+            Hids[...,1] = indices[1] + indices[0] * self.nx
+            Hids[...,0] = Hids[...,1] - self.nx
+            
+            if self.numberOfHorizontalRows > 0:
+                Hids[0,...,0] = Hids[0,...,1]
+                Hids[0,...,1] = Hids[0,...,0]
+                Hids[-1,...,1] = Hids[-1,...,0]
+          
+            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2))
+            indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
+            Vids[...,1] = indices[1] + indices[0] * self.nx
+            Vids[...,0] = Vids[...,1] - 1
+            
+            if self.numberOfVerticalColumns > 0:
+                Vids[...,0,0] = Vids[...,0,1]
+                Vids[...,0,1] = Vids[...,0,0]
+                Vids[...,-1,1] = Vids[...,-1,0]
 
-        return (faceCellIDs0, faceCellIDs1)
+            faceCellIDs =  numerix.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)), 
+                                                numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
 
-    def _getAdjacentCellIDsPy(self):
-        Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2))
-        indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
-        
-        Hids[...,1] = indices[1] + indices[0] * self.nx
-        Hids[...,0] = Hids[...,1] - self.nx
-        
-        if self.numberOfHorizontalRows > 0:
-            Hids[0,...,0] = Hids[0,...,1]
-            Hids[0,...,1] = Hids[0,...,0]
-            Hids[-1,...,1] = Hids[-1,...,0]
-      
-        Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2))
-        indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
-        Vids[...,1] = indices[1] + indices[0] * self.nx
-        Vids[...,0] = Vids[...,1] - 1
-        
-        if self.numberOfVerticalColumns > 0:
-            Vids[...,0,0] = Vids[...,0,1]
-            Vids[...,0,1] = Vids[...,0,0]
-            Vids[...,-1,1] = Vids[...,-1,0]
-
-        faceCellIDs =  numerix.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)), 
-                                            numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
-
-        return (faceCellIDs[:,0], faceCellIDs[:,1])
+            return (faceCellIDs[:,0], faceCellIDs[:,1])
 
     @property
     def _cellToCellIDs(self):
@@ -342,36 +342,36 @@ class UniformGrid2D(UniformGrid):
     def _orientedAreaProjections(self):
         return self._areaProjections
 
-    @property
-    def _areaProjections(self):
-        return inline._optionalInline(self._getAreaProjectionsIn, self._getAreaProjectionsPy)
+    if inline.doInline:
+        @property
+        def _areaProjections(self):
+            areaProjections = numerix.zeros((2, self.numberOfFaces), 'd')
 
-    def _getAreaProjectionsPy(self):
-        return self._faceNormals * self._faceAreas
+            inline._runInline("""
+                if (i < nx) {
+                    areaProjections[i + 1 * ni] = -dx;
+                } else if (i < Nhor) {
+                    areaProjections[i + 1 * ni] = dx;
+                } else if ( (i - Nhor) % (nx + 1) == 0 ) {
+                    areaProjections[i + 0 * ni] = -dy;
+                } else {
+                    areaProjections[i + 0 * ni] = dy;
+               }
+            """,
+            dx = float(self.dx), # horrible hack to get around
+            dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
+            nx = self.nx,
+            Nhor = self.numberOfHorizontalFaces,
+            areaProjections = areaProjections,
+            ni = self.numberOfFaces)
 
-    def _getAreaProjectionsIn(self):
-        areaProjections = numerix.zeros((2, self.numberOfFaces), 'd')
-
-        inline._runInline("""
-            if (i < nx) {
-                areaProjections[i + 1 * ni] = -dx;
-            } else if (i < Nhor) {
-                areaProjections[i + 1 * ni] = dx;
-            } else if ( (i - Nhor) % (nx + 1) == 0 ) {
-                areaProjections[i + 0 * ni] = -dy;
-            } else {
-                areaProjections[i + 0 * ni] = dy;
-           }
-        """,
-        dx = float(self.dx), # horrible hack to get around
-        dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
-        nx = self.nx,
-        Nhor = self.numberOfHorizontalFaces,
-        areaProjections = areaProjections,
-        ni = self.numberOfFaces)
-
-        return areaProjections
-        
+            return areaProjections
+     
+    else:
+        @property
+        def _areaProjections(self):
+            return self._faceNormals * self._faceAreas
+                 
     @property
     def _faceAspectRatios(self):
         return self._faceAreas / self._cellDistances  
@@ -565,8 +565,6 @@ class UniformGrid2D(UniformGrid):
     def _maxFacesPerCell(self):
         return 4
         
-##         from numMesh/mesh
-
     @property
     def vertexCoords(self):
         return Grid2DBuilder.createVertices(self.nx, self.ny,
@@ -575,74 +573,73 @@ class UniformGrid2D(UniformGrid):
                                             self.numberOfVerticalColumns) \
                  + self.origin
 
-    @property
-    def faceCellIDs(self):
-        return inline._optionalInline(self._getFaceCellIDsIn, self._getFaceCellIDsPy)
+    if inline.doInline:
+        @property
+        def faceCellIDs(self):
+            faceCellIDs = numerix.zeros((2, self.numberOfFaces))
+            mask = numerix.zeros((2, self.numberOfFaces))
+            
+            inline._runInline("""
+                int ID = j * ni + i; 
+                int rowlength = ni * nj + Nhor + nj;
 
-    def _getFaceCellIDsIn(self):
-        faceCellIDs = numerix.zeros((2, self.numberOfFaces))
-        mask = numerix.zeros((2, self.numberOfFaces))
+                faceCellIDs[ID + 0 * rowlength] = ID - ni;
+                faceCellIDs[ID + 1 * rowlength] = ID;
+
+                faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID - 1;
+                faceCellIDs[ID + Nhor + j + 1 * rowlength] = ID;
+
+                if (j == 0) {
+                    faceCellIDs[ID + 0 * rowlength] = ID;
+                    mask[ID + 1 * rowlength] = 1;
+                }
+
+                if (j == nj - 1) {
+                    faceCellIDs[ID + ni + 0 * rowlength] = ID;
+                    mask[ID + ni + 1 * rowlength] = 1;
+                }
+
+                if (i == 0) {
+                    faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID;
+                    mask[ID + Nhor + j + 1 * rowlength] = 1;
+                }
+
+                if ( i == ni - 1 ) {
+                    faceCellIDs[ID + Nhor + j + 1 + 0 * rowlength] = ID;
+                    mask[ID + Nhor + j + 1 + 1 * rowlength] = 1;
+                }
+            """,
+            Nhor=self.numberOfHorizontalFaces,
+            mask=mask,
+            faceCellIDs=faceCellIDs,
+            ni=self.nx,
+            nj=self.ny)
+
+            return MA.masked_where(mask, faceCellIDs)
+    else:
+        @property
+        def faceCellIDs(self):
+            Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
+            indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
+            Hids[1] = indices[0] + indices[1] * self.nx
+            Hids[0] = Hids[1] - self.nx
+            if self.numberOfHorizontalRows > 0:
+                Hids[0,...,0] = Hids[1,...,0]
+                Hids[1,...,0] = -1
+                Hids[1,...,-1] = -1
+
+            Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny))
+            indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
+            Vids[1] = indices[0] + indices[1] * self.nx
+            Vids[0] = Vids[1] - 1
+            if self.numberOfVerticalColumns > 0:
+                Vids[0,0] = Vids[1,0]
+                Vids[1,0] = -1
+                Vids[1,-1] = -1
+            
+            return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
+                                                         Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
         
-        inline._runInline("""
-            int ID = j * ni + i; 
-            int rowlength = ni * nj + Nhor + nj;
-
-            faceCellIDs[ID + 0 * rowlength] = ID - ni;
-            faceCellIDs[ID + 1 * rowlength] = ID;
-
-            faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID - 1;
-            faceCellIDs[ID + Nhor + j + 1 * rowlength] = ID;
-
-            if (j == 0) {
-                faceCellIDs[ID + 0 * rowlength] = ID;
-                mask[ID + 1 * rowlength] = 1;
-            }
-
-            if (j == nj - 1) {
-                faceCellIDs[ID + ni + 0 * rowlength] = ID;
-                mask[ID + ni + 1 * rowlength] = 1;
-            }
-
-            if (i == 0) {
-                faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID;
-                mask[ID + Nhor + j + 1 * rowlength] = 1;
-            }
-
-            if ( i == ni - 1 ) {
-                faceCellIDs[ID + Nhor + j + 1 + 0 * rowlength] = ID;
-                mask[ID + Nhor + j + 1 + 1 * rowlength] = 1;
-            }
-        """,
-        Nhor=self.numberOfHorizontalFaces,
-        mask=mask,
-        faceCellIDs=faceCellIDs,
-        ni=self.nx,
-        nj=self.ny)
-
-        return MA.masked_where(mask, faceCellIDs)
-
-    def _getFaceCellIDsPy(self):
-        Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
-        indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
-        Hids[1] = indices[0] + indices[1] * self.nx
-        Hids[0] = Hids[1] - self.nx
-        if self.numberOfHorizontalRows > 0:
-            Hids[0,...,0] = Hids[1,...,0]
-            Hids[1,...,0] = -1
-            Hids[1,...,-1] = -1
-
-        Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny))
-        indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
-        Vids[1] = indices[0] + indices[1] * self.nx
-        Vids[0] = Vids[1] - 1
-        if self.numberOfVerticalColumns > 0:
-            Vids[0,0] = Vids[1,0]
-            Vids[1,0] = -1
-            Vids[1,-1] = -1
-        
-        return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
-                                                     Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
-    
     @property
     def _cellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))

@@ -461,7 +461,6 @@ class UniformGrid1D(UniformGrid):
                       faceVertexIDs = Grid1DBuilder.createFaces(self.numberOfVertices), 
                       cellFaceIDs = Grid1DBuilder.createCells(self.nx))
                       
-
     @property
     def _cellFaceIDs(self):
         return MA.array(Grid1DBuilder.createCells(self.nx))
@@ -469,7 +468,7 @@ class UniformGrid1D(UniformGrid):
     @property
     def _maxFacesPerCell(self):
         return 2
-        
+    
     @property
     def vertexCoords(self):
         return self.faceCenters
