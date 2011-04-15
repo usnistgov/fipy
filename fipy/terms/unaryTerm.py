@@ -67,19 +67,13 @@ class _UnaryTerm(Term):
 
         return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
 
-    def _buildMatrix_(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
         
         """
 
-##         print
-##         print 'buildExplicit',buildExplicit
-##         print 'var',var
-##         print 'self.var',self.var
-##         print 'true or false',(var is self.var and var is not None) or self.var is None
-        
         if buildExplicit:
             if var is self.var or self.var is None:
                 _var = var
@@ -110,22 +104,7 @@ class _UnaryTerm(Term):
                 matrix = SparseMatrix(mesh=var.mesh)
                 RHSvector = 0
 
-##        print 'matrix',matrix
-
         return var, matrix, RHSvector
-
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """Build matrices of constituent Terms and collect them
-
-        Only called at top-level by `_prepareLinearSystem()`
-        
-        """
-        return self._buildMatrix_(var,
-                                  SparseMatrix,
-                                  boundaryConditions=boundaryConditions,
-                                  dt=dt,
-                                  transientGeomCoeff=transientGeomCoeff,
-                                  diffusionGeomCoeff=diffusionGeomCoeff)
 
     def _test(self):
         """

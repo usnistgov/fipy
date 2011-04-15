@@ -43,22 +43,25 @@ from fipy.terms import IncorrectSolutionVariable
 
 class _BinaryTerm(_BaseBinaryTerm):
 
-    def _buildMatrix_(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
+    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=True):
+        """Build matrices of constituent Terms and collect them
 
-        mesh = var.mesh
+        Only called at top-level by `_prepareLinearSystem()`
         
-        matrix = SparseMatrix(mesh=mesh)
+        """
+
+        matrix = SparseMatrix(mesh=var.mesh)
         RHSvector = 0
 
         for term in (self.term, self.other):
 
-            tmpVar, tmpMatrix, tmpRHSvector = term._buildMatrix_(var,
-                                                                 SparseMatrix,
-                                                                 boundaryConditions=boundaryConditions,
-                                                                 dt=dt,
-                                                                 transientGeomCoeff=transientGeomCoeff,
-                                                                 diffusionGeomCoeff=diffusionGeomCoeff,
-                                                                 buildExplicit=buildExplicit)
+            tmpVar, tmpMatrix, tmpRHSvector = term._buildAndAddMatrices(var,
+                                                                        SparseMatrix,
+                                                                        boundaryConditions=boundaryConditions,
+                                                                        dt=dt,
+                                                                        transientGeomCoeff=transientGeomCoeff,
+                                                                        diffusionGeomCoeff=diffusionGeomCoeff,
+                                                                        buildExplicit=buildExplicit)
 
             matrix += tmpMatrix
             RHSvector += tmpRHSvector
@@ -72,23 +75,6 @@ class _BinaryTerm(_BaseBinaryTerm):
              raw_input()
              
         return (var, matrix, RHSvector)
-
-    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """Build matrices of constituent Terms and collect them
-
-        Only called at top-level by `_prepareLinearSystem()`
-        
-        """
-
-        var, matrix, RHSvector = self._buildMatrix_(var,
-                                                    SparseMatrix,
-                                                    boundaryConditions=boundaryConditions,
-                                                    dt=dt,
-                                                    transientGeomCoeff=transientGeomCoeff,
-                                                    diffusionGeomCoeff=diffusionGeomCoeff,
-                                                    buildExplicit=True)
-
-        return var, matrix, RHSvector
     
     def _getDefaultSolver(self, solver, *args, **kwargs):
         for term in (self.term, self.other):

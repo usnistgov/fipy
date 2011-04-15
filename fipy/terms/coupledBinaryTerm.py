@@ -81,7 +81,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
         return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
 
-    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
@@ -105,12 +105,13 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
                 SparseMatrix.varIndex = varIndex
                 
-                tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildMatrix_(tmpVar,
-                                                                              SparseMatrix,
-                                                                              boundaryConditions=(),
-                                                                              dt=dt,
-                                                                              transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(var),
-                                                                              diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(var))
+                tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildAndAddMatrices(tmpVar,
+                                                                                     SparseMatrix,
+                                                                                     boundaryConditions=(),
+                                                                                     dt=dt,
+                                                                                     transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(var),
+                                                                                     diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(var),
+                                                                                     buildExplicit=False)
 
                 termMatrix += tmpMatrix 
                 termRHSvector += tmpRHSvector
