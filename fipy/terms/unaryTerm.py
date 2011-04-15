@@ -74,37 +74,28 @@ class _UnaryTerm(Term):
         
         """
 
-        if buildExplicit:
-            if var is self.var or self.var is None:
-                _var = var
-            else:
-                _var = self.var
+        buildImplicit = False
+        if var is self.var or self.var is None:
+            _var = var
+            buildImplicit = True
+        elif buildExplicit:
+            _var = self.var
 
+        if buildImplicit or buildExplicit:
             _var, matrix, RHSvector = self._buildMatrix(_var,
                                                         SparseMatrix,
                                                         boundaryConditions=boundaryConditions,
                                                         dt=dt,
                                                         transientGeomCoeff=transientGeomCoeff,
                                                         diffusionGeomCoeff=diffusionGeomCoeff)
-            if var is self.var or self.var is None:
-                pass
-            else:
-                RHSvector = RHSvector - matrix * _var.value
-                matrix = SparseMatrix(mesh=_var.mesh)
-                
-        else:
-            if var is self.var or self.var is None:
-                var, matrix, RHSvector = self._buildMatrix(var,
-                                                           SparseMatrix,
-                                                           boundaryConditions=boundaryConditions,
-                                                           dt=dt,
-                                                           transientGeomCoeff=transientGeomCoeff,
-                                                           diffusionGeomCoeff=diffusionGeomCoeff)
-            else:
-                matrix = SparseMatrix(mesh=var.mesh)
-                RHSvector = 0
 
-        return var, matrix, RHSvector
+            if buildImplicit:
+                return var, matrix, RHSvector
+            else:
+                return var, SparseMatrix(mesh=var.mesh), RHSvector - matrix * _var.value
+            
+        else:
+            return var, SparseMatrix(mesh=var.mesh), 0
 
     def _test(self):
         """
