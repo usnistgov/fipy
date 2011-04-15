@@ -43,31 +43,10 @@ from fipy.terms import IncorrectSolutionVariable
 
 class _BinaryTerm(_BaseBinaryTerm):
 
-    def _verifyVar(self, var):
-        if var is None:
-            if len(self._vars) == 1:
-                if self._vars[0] is None:
-                    raise SolutionVariableRequiredError
-                else:
-                    var = self._vars[0]
-
-        else:
-            if len(self._vars) == 1 and self._vars[0] is None:
-                pass
-            elif var not in set(self._vars):
-                raise IncorrectSolutionVariable
-        return var
-    
-    def _getMatrixClass(self, solver):
-        return solver._matrixClass
-
     def _buildMatrix_(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
 
-        if var is not None:
-            mesh = var.mesh
-        else:
-            mesh = self._vars[0].mesh
-
+        mesh = var.mesh
+        
         matrix = SparseMatrix(mesh=mesh)
         RHSvector = 0
 
@@ -103,14 +82,11 @@ class _BinaryTerm(_BaseBinaryTerm):
 
         var, matrix, RHSvector = self._buildMatrix_(var,
                                                     SparseMatrix,
-                                                    boundaryConditions=(),
+                                                    boundaryConditions=boundaryConditions,
                                                     dt=dt,
                                                     transientGeomCoeff=transientGeomCoeff,
                                                     diffusionGeomCoeff=diffusionGeomCoeff,
                                                     buildExplicit=True)
-
-        if var is None:
-            var = self._vars[0]
 
         return var, matrix, RHSvector
     
@@ -147,26 +123,33 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> v0 = CellVariable(mesh=m, value=0.)
         >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=eq._getMatrixClass(DefaultSolver()))
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass)
         >>> print var
         [ 1.  1.  1.]
         >>> print CellVariable(mesh=m, value=RHSvector).globalValue
         [ 0.  0.  0.]
-        >>> print (matrix.numpyArray == 0).all()
+        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -2,  0],
+        ...                                            [-2,  4, -2],
+        ...                                            [ 0, -2,  2]])
         True
         
         >>> m = Grid1D(nx=6)
         >>> v0 = CellVariable(mesh=m, value=1.)
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=eq._getMatrixClass(DefaultSolver())) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var
         [ 0.  0.  0.  0.  0.  0.]
         >>> print CellVariable(mesh=m, value=RHSvector).globalValue
         [ 0.  0.  0.  0.  0.  0.]
-        >>> print (matrix.numpyArray == 0).all()
+        >>> print numerix.allequal(matrix.numpyArray, [[ 2,-2, 0, 0, 0, 0.],
+        ...                                            [-2, 4,-2, 0, 0, 0.],
+        ...                                            [ 0,-2, 4,-2, 0, 0.],
+        ...                                            [ 0, 0,-2, 4,-2, 0.],
+        ...                                            [ 0, 0, 0,-2, 4,-2.],
+        ...                                            [ 0, 0, 0, 0,-2, 2.]])
         True
-                
+
         >>> m = Grid1D(nx=3)
         >>> v0 = CellVariable(mesh=m, value=(0., 1., 2.))
         >>> v1 = CellVariable(mesh=m, value=(3., 4., 5.))
@@ -177,7 +160,9 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> diffTerm.cacheMatrix()
         >>> print eq0.justResidualVector()
         [-3.  0.  3.]
-        >>> print (eq0.matrix.numpyArray == 0).all(),
+        >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -2,  0],
+        ...                                                [-2,  4, -2],
+        ...                                                [ 0, -2,  2]])
         True
         >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
         >>> print diffTerm.matrix 

@@ -95,9 +95,6 @@ class Term(object):
     def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
         
-    def _verifyVar(self, var):
-        raise NotImplementedError
-
     def _checkVar(self, var):
         if ((var is not None) 
             and (numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float'])):
@@ -117,8 +114,14 @@ class Term(object):
         else:
             self._RHSvector = None
 
-    def _getMatrixClass(self, solver):
-        raise NotImplementedError
+    def _verifyVar(self, var):
+        if var is None:
+            if self.var is None:
+                raise SolutionVariableRequiredError
+            else:
+                return self.var
+        else:
+            return var
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         solver = self.getDefaultSolver(solver)
@@ -142,8 +145,8 @@ class Term(object):
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
         var, matrix, RHSvector = self._buildAndAddMatrices(var,
-                                                           self._getMatrixClass(solver), 
-                                                           boundaryConditions=boundaryConditions, 
+                                                           solver._matrixClass,
+                                                           boundaryConditions=boundaryConditions,
                                                            dt=dt,
                                                            transientGeomCoeff=self._getTransientGeomCoeff(var),
                                                            diffusionGeomCoeff=self._getDiffusionGeomCoeff(var))
@@ -505,9 +508,13 @@ class Term(object):
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 2, 3])
         True
         >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
-        Traceback (most recent call last):
-        ...
-        IncorrectSolutionVariable: The solution variable is incorrect.
+        >>> numpyMatrix = solver.matrix.numpyArray
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0]])
+        True
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 0, -1])
+        True
 
         >>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
         >>> print eq 
@@ -518,36 +525,38 @@ class Term(object):
         (TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
         >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or (numpyMatrix == 0.all())
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, -1, 0], 
+        ...                                                             [-1, 2, -1], 
+        ...                                                             [0, -1, 1]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [-1, 0, 1])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
         True
         >>> res = eq.justResidualVector(boundaryConditions=(), dt=1.)
         >>> print parallel.procID > 0 or numerix.allequal(res, [-1, 0, 1]) 
         True
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, 0, 0, 0, 0, 0], 
-        ...                                                             [0, 1, 0, 0, 0, 0], 
-        ...                                                             [0, 0, 1, 0, 0, 0]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, 0, 0], 
+        ...                                                             [0, 1, 0], 
+        ...                                                             [0, 0, 1]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 2, 3])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [2, 2, 2])
         True
         >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 1,-1, 0, 0, 0, 0], 
-        ...                                                             [-1, 2,-1, 0, 0, 0], 
-        ...                                                             [ 0,-1, 1, 0, 0, 0]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 1,-1, 0], 
+        ...                                                             [-1, 2,-1], 
+        ...                                                             [ 0,-1, 1]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0,])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
         True
         >>> solver = eq._prepareLinearSystem(var=C, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 0, 0, 0, 0, 0, 0], 
-        ...                                                             [ 0, 0, 0, 0, 0, 0], 
-        ...                                                             [ 0, 0, 0, 0, 0, 0]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0], 
+        ...                                                             [ 0, 0, 0]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 0, -1])
         True
 
         >>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
@@ -585,13 +594,7 @@ class Term(object):
             ...
         ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve()
-        Traceback (most recent call last):
-            ...
-        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A)
-        Traceback (most recent call last):
-            ...
-        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> DiffusionTerm() & DiffusionTerm()
         Traceback (most recent call last):
             ...

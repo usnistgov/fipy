@@ -79,21 +79,19 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         if len(self._vars) != len(self._uncoupledTerms):
             raise SolutionVariableNumberError
 
-        return _CoupledCellVariable(self._vars)
+        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
 
-    def _getMatrixClass(self, solver):
-        from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
-        return OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
-                                  numberOfVariables=len(self._vars),
-                                  numberOfEquations=len(self._uncoupledTerms))
-        
     def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
         
         """
-        
+
+        from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+        SparseMatrix =  OffsetSparseMatrix(SparseMatrix=SparseMatrix,
+                                           numberOfVariables=len(self._vars),
+                                           numberOfEquations=len(self._uncoupledTerms))        
         matrix = SparseMatrix(mesh=var.mesh)
         RHSvectors = []
 
@@ -227,7 +225,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=eq._getMatrixClass(DefaultSolver())) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -247,7 +245,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=eq._getMatrixClass(DefaultSolver())) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue

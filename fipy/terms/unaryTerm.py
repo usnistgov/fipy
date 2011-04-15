@@ -81,7 +81,7 @@ class _UnaryTerm(Term):
 ##         print 'true or false',(var is self.var and var is not None) or self.var is None
         
         if buildExplicit:
-            if self.var is None or var is self.var:
+            if var is self.var or self.var is None:
                 _var = var
             else:
                 _var = self.var
@@ -92,7 +92,7 @@ class _UnaryTerm(Term):
                                                         dt=dt,
                                                         transientGeomCoeff=transientGeomCoeff,
                                                         diffusionGeomCoeff=diffusionGeomCoeff)
-            if (var is self.var and var is not None) or self.var is None:
+            if var is self.var or self.var is None:
                 pass
             else:
                 RHSvector = RHSvector - matrix * _var.value
@@ -127,18 +127,6 @@ class _UnaryTerm(Term):
                                   transientGeomCoeff=transientGeomCoeff,
                                   diffusionGeomCoeff=diffusionGeomCoeff)
 
-    def _getMatrixClass(self, solver):
-        return solver._matrixClass
-
-    def _verifyVar(self, var):
-        if var is None:
-            if self.var is None:
-                raise SolutionVariableRequiredError
-            else:
-                return self.var
-        else:
-            return var
-
     def _test(self):
         """
         Offset tests
@@ -148,7 +136,7 @@ class _UnaryTerm(Term):
         >>> v0 = CellVariable(mesh=m, value=1.)
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) & DiffusionTerm(coeff=4., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=eq._getMatrixClass(DefaultSolver()))
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass)
         >>> print var.globalValue
         [ 1.  1.  1.  0.  0.  0.]
         >>> print RHSvector.globalValue
@@ -168,7 +156,7 @@ class _UnaryTerm(Term):
         >>> eq0 = DiffusionTerm(coeff=1., var=v0)
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=eq._getMatrixClass(DefaultSolver())) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
