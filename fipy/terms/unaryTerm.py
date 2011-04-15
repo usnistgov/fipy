@@ -67,33 +67,32 @@ class _UnaryTerm(Term):
 
         return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
 
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
+    @property
+    def _buildExplcitIfOther(self):
+        return False
+
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
         
         """
 
-        buildImplicit = False
         if var is self.var or self.var is None:
-            _var = var
-            buildImplicit = True
-        elif buildExplicit:
-            _var = self.var
-
-        if buildImplicit or buildExplicit:
-            _var, matrix, RHSvector = self._buildMatrix(_var,
-                                                        SparseMatrix,
-                                                        boundaryConditions=boundaryConditions,
-                                                        dt=dt,
-                                                        transientGeomCoeff=transientGeomCoeff,
-                                                        diffusionGeomCoeff=diffusionGeomCoeff)
-
-            if buildImplicit:
-                return var, matrix, RHSvector
-            else:
-                return var, SparseMatrix(mesh=var.mesh), RHSvector - matrix * _var.value
-            
+            return self._buildMatrix(var,
+                                     SparseMatrix,
+                                     boundaryConditions=boundaryConditions,
+                                     dt=dt,
+                                     transientGeomCoeff=transientGeomCoeff,
+                                     diffusionGeomCoeff=diffusionGeomCoeff)
+        elif buildExplicitIfOther:
+            tmp, matrix, RHSvector = self._buildMatrix(self.var,
+                                                       SparseMatrix,
+                                                       boundaryConditions=boundaryConditions,
+                                                       dt=dt,
+                                                       transientGeomCoeff=transientGeomCoeff,
+                                                       diffusionGeomCoeff=diffusionGeomCoeff)
+            return var, SparseMatrix(mesh=var.mesh), RHSvector - matrix * self.var.value
         else:
             return var, SparseMatrix(mesh=var.mesh), 0
 

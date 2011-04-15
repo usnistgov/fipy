@@ -89,7 +89,7 @@ class Term(object):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
         raise NotImplementedError
         
     def _checkVar(self, var):
@@ -120,6 +120,10 @@ class Term(object):
         else:
             return var
 
+    @property
+    def _buildExplcitIfOther(self):
+        raise NotImplementedError
+
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         solver = self.getDefaultSolver(solver)
             
@@ -146,7 +150,8 @@ class Term(object):
                                                            boundaryConditions=boundaryConditions,
                                                            dt=dt,
                                                            transientGeomCoeff=self._getTransientGeomCoeff(var),
-                                                           diffusionGeomCoeff=self._getDiffusionGeomCoeff(var))
+                                                           diffusionGeomCoeff=self._getDiffusionGeomCoeff(var),
+                                                           buildExplicitIfOther=self._buildExplcitIfOther)
 
         self._buildCache(matrix, RHSvector)
         
@@ -164,9 +169,9 @@ class Term(object):
             else:
                 RHSvector = solver.RHSvector
             self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
-            from fipy import raw_input
+            from fipy import raw_input            
             raw_input()
-
+            
         return solver
     
     def solve(self, var=None, solver=None, boundaryConditions=(), dt=1.):

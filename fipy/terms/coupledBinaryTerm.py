@@ -81,7 +81,11 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
         return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
 
-    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
+    @property
+    def _buildExplcitIfOther(self):
+        return False
+
+    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
@@ -111,7 +115,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
                                                                                      dt=dt,
                                                                                      transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(var),
                                                                                      diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(var),
-                                                                                     buildExplicit=False)
+                                                                                     buildExplicitIfOther=False)
 
                 termMatrix += tmpMatrix 
                 termRHSvector += tmpRHSvector

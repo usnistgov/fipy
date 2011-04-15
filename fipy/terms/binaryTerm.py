@@ -43,7 +43,11 @@ from fipy.terms import IncorrectSolutionVariable
 
 class _BinaryTerm(_BaseBinaryTerm):
 
-    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=True):
+    @property
+    def _buildExplcitIfOther(self):
+        return True
+
+    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=True):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
@@ -54,14 +58,14 @@ class _BinaryTerm(_BaseBinaryTerm):
         RHSvector = 0
 
         for term in (self.term, self.other):
-
+            
             tmpVar, tmpMatrix, tmpRHSvector = term._buildAndAddMatrices(var,
                                                                         SparseMatrix,
                                                                         boundaryConditions=boundaryConditions,
                                                                         dt=dt,
                                                                         transientGeomCoeff=transientGeomCoeff,
                                                                         diffusionGeomCoeff=diffusionGeomCoeff,
-                                                                        buildExplicit=buildExplicit)
+                                                                        buildExplicitIfOther=buildExplicitIfOther)
 
             matrix += tmpMatrix
             RHSvector += tmpRHSvector
