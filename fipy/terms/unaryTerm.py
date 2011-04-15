@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.terms.term import Term
+from fipy.terms import SolutionVariableRequiredError
 
 class _UnaryTerm(Term):
 
@@ -66,11 +67,80 @@ class _UnaryTerm(Term):
 
         return "%s(coeff=%s%s)" % (self.__class__.__name__, repr(self.coeff), varString)
 
-    def _buildAndAddMatrices(self, solutionVar, equationVars, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix_(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
+        
+        """
 
+##         print
+##         print 'buildExplicit',buildExplicit
+##         print 'var',var
+##         print 'self.var',self.var
+##         print 'true or false',(var is self.var and var is not None) or self.var is None
+        
+        if buildExplicit:
+            if self.var is None or var is self.var:
+                _var = var
+            else:
+                _var = self.var
+
+            _var, matrix, RHSvector = self._buildMatrix(_var,
+                                                        SparseMatrix,
+                                                        boundaryConditions=boundaryConditions,
+                                                        dt=dt,
+                                                        transientGeomCoeff=transientGeomCoeff,
+                                                        diffusionGeomCoeff=diffusionGeomCoeff)
+            if (var is self.var and var is not None) or self.var is None:
+                pass
+            else:
+                RHSvector = RHSvector - matrix * _var.value
+                matrix = SparseMatrix(mesh=_var.mesh)
+                
+        else:
+            if var is self.var or self.var is None:
+                var, matrix, RHSvector = self._buildMatrix(var,
+                                                           SparseMatrix,
+                                                           boundaryConditions=boundaryConditions,
+                                                           dt=dt,
+                                                           transientGeomCoeff=transientGeomCoeff,
+                                                           diffusionGeomCoeff=diffusionGeomCoeff)
+            else:
+                matrix = SparseMatrix(mesh=var.mesh)
+                RHSvector = 0
+
+##        print 'matrix',matrix
+
+        return var, matrix, RHSvector
+
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """Build matrices of constituent Terms and collect them
+
+        Only called at top-level by `_prepareLinearSystem()`
+        
+        """
+        return self._buildMatrix_(var,
+                                  SparseMatrix,
+                                  boundaryConditions=boundaryConditions,
+                                  dt=dt,
+                                  transientGeomCoeff=transientGeomCoeff,
+                                  diffusionGeomCoeff=diffusionGeomCoeff)
+
+    def _getMatrixClass(self, solver):
+        return solver._matrixClass
+
+    def _verifyVar(self, var):
+        if var is None:
+            if self.var is None:
+                raise SolutionVariableRequiredError
+            else:
+                return self.var
+        else:
+            return var
+
+    def _test(self):
+        """
         Offset tests
 
         >>> from fipy import *
@@ -139,41 +209,9 @@ class _UnaryTerm(Term):
         >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
         >>> print diffTerm.matrix 
         None
-        
+
         """
-
-        if len(equationVars) == 0:
-            equationVars = [solutionVar]
-
-        matrix = SparseMatrix(mesh=solutionVar.mesh)
-        RHSvector = 0
-
-        for varIndex, tmpVar in enumerate(equationVars):
-
-            SparseMatrix.varIndex = varIndex
-
-            if self.var is tmpVar or self.var is None:
-                
-                tmpVar, tmpMatrix, tmpRHSvector = self._buildMatrix(tmpVar,
-                                                                    SparseMatrix,
-                                                                    boundaryConditions=boundaryConditions,
-                                                                    dt=dt,
-                                                                    transientGeomCoeff=transientGeomCoeff,
-                                                                    diffusionGeomCoeff=diffusionGeomCoeff)
-
-                
-                if self.var is None or solutionVar is None or solutionVar is tmpVar:
-                    matrix += tmpMatrix
-                    RHSvector += tmpRHSvector
-                else:
-                    RHSvector += tmpRHSvector - tmpMatrix * tmpVar.value
-                
-                             
-        return (solutionVar, matrix, RHSvector)
-
-    def _getMatrixClass(self, solver):
-        return solver._matrixClass
-
+        
 class __UnaryTerm(_UnaryTerm): 
     """
     Dummy subclass for tests

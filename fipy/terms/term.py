@@ -89,20 +89,14 @@ class Term(object):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
-    def _buildAndAddMatrices(self, solutionVar, equationVars, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        raise NotImplementedError
-        
-    def _buildExplicitIfOtherVar(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix_(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicit=False):
         raise NotImplementedError
 
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        raise NotImplementedError
+        
     def _verifyVar(self, var):
-        if var is None:
-            if self.var is None:
-                raise SolutionVariableRequiredError
-            else:
-                return self.var, []
-        else:
-            return var, []
+        raise NotImplementedError
 
     def _checkVar(self, var):
         if ((var is not None) 
@@ -129,8 +123,8 @@ class Term(object):
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         solver = self.getDefaultSolver(solver)
             
-        solutionVar, equationVars = self._verifyVars(var)
-        self._checkVar(solutionVar)
+        var = self._verifyVar(var)
+        self._checkVar(var)
 
         if numerix.getShape(dt) != ():
             raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
@@ -147,8 +141,7 @@ class Term(object):
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        var, matrix, RHSvector = self._buildAndAddMatrices(solutionVar,
-                                                           equationVars,
+        var, matrix, RHSvector = self._buildAndAddMatrices(var,
                                                            self._getMatrixClass(solver), 
                                                            boundaryConditions=boundaryConditions, 
                                                            dt=dt,
@@ -512,13 +505,9 @@ class Term(object):
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 2, 3])
         True
         >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
-        >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 0, 0, 0], 
-        ...                                                             [ 0, 0, 0], 
-        ...                                                             [ 0, 0, 0]])
-        True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
-        True
+        Traceback (most recent call last):
+        ...
+        IncorrectSolutionVariable: The solution variable is incorrect.
 
         >>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=B) 
         >>> print eq 
@@ -529,11 +518,9 @@ class Term(object):
         (TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
         >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[ 1, -1,  0,  1,  0,  0],
-        ...                                                             [-1,  2, -1,  0,  1,  0],
-        ...                                                             [ 0, -1,  1,  0,  0,  1]])
+        >>> print parallel.procID > 0 or (numpyMatrix == 0.all())
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 2, 3])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [-1, 0, 1])
         True
         >>> res = eq.justResidualVector(boundaryConditions=(), dt=1.)
         >>> print parallel.procID > 0 or numerix.allequal(res, [-1, 0, 1]) 

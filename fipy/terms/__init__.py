@@ -22,6 +22,10 @@ class SolutionVariableRequiredError(Exception):
     def __init__(self):
         Exception.__init__(self, 'The solution variable needs to be specified.')
 
+class IncorrectSolutionVariable(Exception):
+    def __init__(self):
+        Exception.__init__(self, 'The solution variable is incorrect.')
+
 from transientTerm import TransientTerm
 
 from diffusionTerm import DiffusionTerm
