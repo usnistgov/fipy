@@ -115,7 +115,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
                                                                                      dt=dt,
                                                                                      transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(var),
                                                                                      diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(var),
-                                                                                     buildExplicitIfOther=False)
+                                                                                     buildExplicitIfOther=buildExplicitIfOther)
 
                 termMatrix += tmpMatrix 
                 termRHSvector += tmpRHSvector

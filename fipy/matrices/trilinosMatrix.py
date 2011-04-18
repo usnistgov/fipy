@@ -760,6 +760,12 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
             >>> parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
             True
 
+        Should be able to multiply an overlapping CellVariable and return the correct value.
+
+            >>> print False
+            True
+
+
         """
         self.fillComplete()
 
@@ -783,7 +789,6 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     other_map = self.colMap
 
                 if other_map.SameAs(self.colMap):                    
-##                    localNonOverlappingColIDs = self._localNonOverlappingRowIDs
                     localNonOverlappingColIDs = self._localNonOverlappingColIDs
 
                     other = Epetra.Vector(self.domainMap, 
@@ -793,7 +798,17 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     nonoverlapping_result = Epetra.Vector(self.rangeMap)
                     self.matrix.Multiply(False, other, nonoverlapping_result)
 
-                    return nonoverlapping_result
+                    if other_map.SameAs(self.colMap): 
+                        overlapping_result = Epetra.Vector(self.colMap) 
+                        overlapping_result.Import(nonoverlapping_result,  
+                                                  Epetra.Import(self.colMap,  
+                                                                self.domainMap),  
+                                                  Epetra.Insert) 
+	 	 
+                        return overlapping_result 
+                    else: 
+                        return nonoverlapping_result 
+                    
                 else:
                     raise TypeError("%s: %s != (%d,)" % (self.__class__, str(shape), N))
                     

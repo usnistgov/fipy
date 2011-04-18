@@ -39,7 +39,6 @@ from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.terms import SolutionVariableRequiredError
-from fipy.terms import IncorrectSolutionVariable
 
 class _BinaryTerm(_BaseBinaryTerm):
 
@@ -148,8 +147,9 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
-        >>> print eq0.justResidualVector()
+        >>> print CellVariable(mesh=m, value=eq0.justResidualVector()).globalValue
         [-3.  0.  3.]
+        >>> eq0.solve()
         >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -2,  0],
         ...                                                [-2,  4, -2],
         ...                                                [ 0, -2,  2]])
