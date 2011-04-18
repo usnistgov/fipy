@@ -312,7 +312,11 @@ class MayaviDaemon(Mayavi):
                     has_scale_bar = True
 
 signal.signal(signal.SIGINT, MayaviDaemon._sigint_handler)
-signal.signal(signal.SIGHUP, MayaviDaemon._sigint_handler)
+try:
+    signal.signal(signal.SIGHUP, MayaviDaemon._sigint_handler)
+except AttributeError:
+    # not available on Windows
+    pass
 signal.signal(signal.SIGTERM, MayaviDaemon._sigint_handler)
 
 def main(argv=None):
