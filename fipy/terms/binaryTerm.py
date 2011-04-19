@@ -38,96 +38,47 @@ import os
 from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
+from fipy.terms import SolutionVariableRequiredError
 
 class _BinaryTerm(_BaseBinaryTerm):
 
-    def _verifyVar(self, var):
-        if var is None:
-            if len(self._vars) == 0:
-                raise SolutionVariableRequiredError
-            elif len(self._vars) == 1:
-                return _BaseBinaryTerm._verifyVar(self, self._vars[0])
-            else:
-                return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
-        else:
-            return var
+    @property
+    def _buildExplcitIfOther(self):
+        return True
 
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=True):
         """Build matrices of constituent Terms and collect them
-        
+
         Only called at top-level by `_prepareLinearSystem()`
+        
         """
-        if isinstance(var, _CoupledCellVariable) and len(var.vars) > 1:
-            RHSvector = 0
-            for v in var.vars:
-                RHSvector += self._buildExplicitIfOtherVar(var=v, 
-                                                           SparseMatrix=SparseMatrix, 
-                                                           boundaryConditions=boundaryConditions, 
-                                                           dt=dt,
-                                                           transientGeomCoeff=transientGeomCoeff,
-                                                           diffusionGeomCoeff=diffusionGeomCoeff)
-                      
-            matrix = SparseMatrix(mesh=var.mesh, numberOfVariables=len(var.vars), numberOfEquations=1)
-        else:
-            var, matrix, RHSvector = self._buildMatrix(var=var, 
-                                                       SparseMatrix=SparseMatrix, 
-                                                       boundaryConditions=boundaryConditions, 
-                                                       dt=dt,
-                                                       transientGeomCoeff=transientGeomCoeff,
-                                                       diffusionGeomCoeff=diffusionGeomCoeff)
-                                                       
-            RHSvector += self._buildExplicitIfOtherVar(var=var, 
-                                                       SparseMatrix=SparseMatrix, 
-                                                       boundaryConditions=boundaryConditions, 
-                                                       dt=dt,
-                                                       transientGeomCoeff=transientGeomCoeff,
-                                                       diffusionGeomCoeff=diffusionGeomCoeff)
-                                                       
-        return (var, matrix, RHSvector)
 
-    def _buildMatrix(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-
-        matrix = 0
+        matrix = SparseMatrix(mesh=var.mesh)
         RHSvector = 0
 
         for term in (self.term, self.other):
-
-            termVar, termMatrix, termRHSvector = term._buildMatrix(var,
-                                                                   SparseMatrix,
-                                                                   boundaryConditions=boundaryConditions,
-                                                                   dt=dt,
-                                                                   transientGeomCoeff=transientGeomCoeff,
-                                                                   diffusionGeomCoeff=diffusionGeomCoeff)
-
-            matrix += termMatrix
-            RHSvector += termRHSvector
             
-            term._buildCache(termMatrix, termRHSvector)
+            tmpVar, tmpMatrix, tmpRHSvector = term._buildAndAddMatrices(var,
+                                                                        SparseMatrix,
+                                                                        boundaryConditions=boundaryConditions,
+                                                                        dt=dt,
+                                                                        transientGeomCoeff=transientGeomCoeff,
+                                                                        diffusionGeomCoeff=diffusionGeomCoeff,
+                                                                        buildExplicitIfOther=buildExplicitIfOther)
+
+            matrix += tmpMatrix
+            RHSvector += tmpRHSvector
+
+            term._buildCache(tmpMatrix, tmpRHSvector)
 
         if (os.environ.has_key('FIPY_DISPLAY_MATRIX')
-            and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
-            self._viewer.title = "%s %s" % (var.name, repr(self))
-            self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 
-            raw_input()
-
-	return (var, matrix, RHSvector)
-
-    def _buildExplicitIfOtherVar(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """return the residual vector if `var` is not `Term.var`, otherwise return 0
-        """
-        return (self.term._buildExplicitIfOtherVar(var=var, 
-                                                   SparseMatrix=SparseMatrix, 
-                                                   boundaryConditions=boundaryConditions, 
-                                                   dt=dt,
-                                                   transientGeomCoeff=transientGeomCoeff,
-                                                   diffusionGeomCoeff=diffusionGeomCoeff) 
-                + self.other._buildExplicitIfOtherVar(var=var, 
-                                                      SparseMatrix=SparseMatrix, 
-                                                      boundaryConditions=boundaryConditions, 
-                                                      dt=dt,
-                                                      transientGeomCoeff=transientGeomCoeff,
-                                                      diffusionGeomCoeff=diffusionGeomCoeff))
-
+             and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
+             self._viewer.title = "%s %s" % (var.name, repr(self))
+             self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 
+             raw_input()
+             
+        return (var, matrix, RHSvector)
+    
     def _getDefaultSolver(self, solver, *args, **kwargs):
         for term in (self.term, self.other):
             defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
@@ -153,6 +104,79 @@ class _BinaryTerm(_BaseBinaryTerm):
         return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var)) 
 
     __rmul__ = __mul__
+
+    def _test(self):
+        """
+        >>> from fipy import *
+        >>> m = Grid1D(nx=3)
+        >>> v0 = CellVariable(mesh=m, value=0.)
+        >>> v1 = CellVariable(mesh=m, value=1.)
+        >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass)
+        >>> print var
+        [ 1.  1.  1.]
+        >>> print CellVariable(mesh=m, value=RHSvector).globalValue
+        [ 0.  0.  0.]
+        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -2,  0],
+        ...                                            [-2,  4, -2],
+        ...                                            [ 0, -2,  2]])
+        True
+        
+        >>> m = Grid1D(nx=6)
+        >>> v0 = CellVariable(mesh=m, value=1.)
+        >>> v1 = CellVariable(mesh=m, value=0.)
+        >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> print var
+        [ 0.  0.  0.  0.  0.  0.]
+        >>> print CellVariable(mesh=m, value=RHSvector).globalValue
+        [ 0.  0.  0.  0.  0.  0.]
+        >>> print numerix.allequal(matrix.numpyArray, [[ 2,-2, 0, 0, 0, 0.],
+        ...                                            [-2, 4,-2, 0, 0, 0.],
+        ...                                            [ 0,-2, 4,-2, 0, 0.],
+        ...                                            [ 0, 0,-2, 4,-2, 0.],
+        ...                                            [ 0, 0, 0,-2, 4,-2.],
+        ...                                            [ 0, 0, 0, 0,-2, 2.]])
+        True
+
+        >>> m = Grid1D(nx=3)
+        >>> v0 = CellVariable(mesh=m, value=(0., 1., 2.))
+        >>> v1 = CellVariable(mesh=m, value=(3., 4., 5.))
+        >>> diffTerm = DiffusionTerm(coeff=1., var=v0)
+        >>> eq00 = TransientTerm(var=v0) - diffTerm
+        >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
+        >>> eq0.cacheMatrix()
+        >>> diffTerm.cacheMatrix()
+        >>> print CellVariable(mesh=m, value=eq0.justResidualVector()).globalValue
+        [-3.  0.  3.]
+        >>> eq0.solve()
+        >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -2,  0],
+        ...                                                [-2,  4, -2],
+        ...                                                [ 0, -2,  2]])
+        True
+        >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
+        >>> print diffTerm.matrix 
+        None
+
+        Testing solution for one variable in a multi-variable equation.
+
+        >>> from fipy import *
+        >>> L = 1.
+        >>> nx = 3
+        >>> m = Grid1D(nx=nx, dx=L / nx)
+        >>> x = m.cellCenters[0]
+        >>> v0 = CellVariable(mesh=m, value=0., name='v0')
+        >>> v0.constrain(0., where=m.facesLeft)
+        >>> v0.constrain(L, where=m.facesRight)
+        >>> v1 = CellVariable(mesh=m, value=-x**2, name='v1')
+        >>> v1.constrain(0.,  where=m.facesLeft)
+        >>> v1.constrain(-L,  where=m.facesRight)
+        >>> (DiffusionTerm(var=v0) + DiffusionTerm(var=v1)).solve(v0)
+        >>> print numerix.allclose(v0, -v1)
+        True
+        
+        """
+
 
 def _test(): 
     import doctest

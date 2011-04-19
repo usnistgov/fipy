@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
  # 
- #  FILE: "test.py"
+ #  FILE: "offsetSparseMatrix.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -17,7 +17,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this document is not subject to copyright
- # protection and is in the public domain.  test.py 
+ # protection and is in the public domain.  summationTerm.py
  # is an experimental work.  NIST assumes no responsibility whatsoever
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
@@ -33,29 +33,34 @@
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+from fipy.tools import numerix
 
-def _suite():
+def OffsetSparseMatrix(SparseMatrix, numberOfVariables, numberOfEquations):
+    """
+    Used in binary terms. equationIndex and varIndex need to be set statically before instantiation.
+    """
+    
+    class OffsetSparseMatrixClass(SparseMatrix):
+        equationIndex = 0
+        varIndex = 0
+        
+        def __init__(self, mesh, bandwidth=0, sizeHint=None, 
+                     numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations):
+            SparseMatrix.__init__(self, mesh=mesh, bandwidth=bandwidth, sizeHint=sizeHint, 
+                                  numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations) 
 
-    return _LateImportDocTestSuite(docTestModuleNames = (
-            'cellTerm',
-            'baseDiffusionTerm',
-            'diffusionTerm',
-            'term',
-            'baseConvectionTerm',
-            'transientTerm',
-            'powerLawConvectionTerm',
-            'exponentialConvectionTerm',
-            'upwindConvectionTerm',
-            'implicitSourceTerm',
-            'coupledBinaryTerm',
-            'baseBinaryTerm',
-            'unaryTerm',
-            'nonDiffusionTerm',
-            'asymmetricConvectionTerm',
-            'binaryTerm'
-            ), base = __name__)
+        def put(self, vector, id1, id2):
+            SparseMatrix.put(self, vector, id1 + self.mesh.numberOfCells * self.equationIndex, id2 + self.mesh.numberOfCells * self.varIndex)
 
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
+        def addAt(self, vector, id1, id2):
+            SparseMatrix.addAt(self, vector, id1 + self.mesh.numberOfCells * self.equationIndex, id2 + self.mesh.numberOfCells * self.varIndex)
+
+        def addAtDiagonal(self, vector):
+            if type(vector) in [type(1), type(1.)]:
+                tmp = numerix.zeros((self.mesh.numberOfCells,), 'd')
+                tmp[:] = vector
+                SparseMatrix.addAtDiagonal(self, tmp)
+            else:
+                SparseMatrix.addAtDiagonal(self, vector)
+
+    return OffsetSparseMatrixClass

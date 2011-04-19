@@ -67,7 +67,7 @@ class Term(object):
         self._cacheRHSvector = False
         self._RHSvector = None
         self.var = var
-
+        
     @getsetDeprecated
     def _getVars(self):
         return self._vars
@@ -88,31 +88,10 @@ class Term(object):
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
+
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
+        raise NotImplementedError
         
-    def _buildExplicitIfOtherVar(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """return the residual vector if `var` is not `Term.var`, otherwise return 0
-        """
-        if var is not self.var and self.var is not None:
-            var, matrix, RHSvector = self._buildMatrix(var=self.var, 
-                                                       SparseMatrix=SparseMatrix, 
-                                                       boundaryConditions=boundaryConditions, 
-                                                       dt=dt,
-                                                       transientGeomCoeff=transientGeomCoeff,
-                                                       diffusionGeomCoeff=diffusionGeomCoeff)
-                                                       
-            return RHSvector - matrix * var.value
-        else:
-            return 0
-
-    def _verifyVar(self, var):
-        if var is None:
-            if self.var is None:
-                raise SolutionVariableRequiredError
-            else:
-                return self.var
-        else:
-            return var
-
     def _checkVar(self, var):
         if ((var is not None) 
             and (numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float'])):
@@ -131,18 +110,19 @@ class Term(object):
             self._RHSvector = RHSvector
         else:
             self._RHSvector = None
-    
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """Build matrices of constituent Terms and collect them
-        
-        Only called at top-level by `_prepareLinearSystem()`
-        """
-        return self._buildMatrix(var=var, 
-                                 SparseMatrix=SparseMatrix, 
-                                 boundaryConditions=boundaryConditions, 
-                                 dt=dt,
-                                 transientGeomCoeff=transientGeomCoeff,
-                                 diffusionGeomCoeff=diffusionGeomCoeff)
+
+    def _verifyVar(self, var):
+        if var is None:
+            if self.var is None:
+                raise SolutionVariableRequiredError
+            else:
+                return self.var
+        else:
+            return var
+
+    @property
+    def _buildExplcitIfOther(self):
+        raise NotImplementedError
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         solver = self.getDefaultSolver(solver)
@@ -165,12 +145,13 @@ class Term(object):
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
-        var, matrix, RHSvector = self._buildAndAddMatrices(var=var, 
-                                                           SparseMatrix=solver._matrixClass, 
-                                                           boundaryConditions=boundaryConditions, 
+        var, matrix, RHSvector = self._buildAndAddMatrices(var,
+                                                           solver._matrixClass,
+                                                           boundaryConditions=boundaryConditions,
                                                            dt=dt,
                                                            transientGeomCoeff=self._getTransientGeomCoeff(var),
-                                                           diffusionGeomCoeff=self._getDiffusionGeomCoeff(var))
+                                                           diffusionGeomCoeff=self._getDiffusionGeomCoeff(var),
+                                                           buildExplicitIfOther=self._buildExplcitIfOther)
 
         self._buildCache(matrix, RHSvector)
         
@@ -188,9 +169,9 @@ class Term(object):
             else:
                 RHSvector = solver.RHSvector
             self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
-            from fipy import raw_input
+            from fipy import raw_input            
             raw_input()
-
+            
         return solver
     
     def solve(self, var=None, solver=None, boundaryConditions=(), dt=1.):
@@ -546,11 +527,11 @@ class Term(object):
         (TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
         >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[0, 0, 0, 0, 0, 0], 
-        ...                                                             [0, 0, 0, 0, 0, 0], 
-        ...                                                             [0, 0, 0, 0, 0, 0]])
+        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, -1, 0], 
+        ...                                                             [-1, 2, -1], 
+        ...                                                             [0, -1, 1]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 0, -1])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
         True
         >>> res = eq.justResidualVector(boundaryConditions=(), dt=1.)
         >>> print parallel.procID > 0 or numerix.allequal(res, [-1, 0, 1]) 
@@ -569,7 +550,7 @@ class Term(object):
         ...                                                             [-1, 2,-1], 
         ...                                                             [ 0,-1, 1]])
         True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0,])
+        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
         True
         >>> solver = eq._prepareLinearSystem(var=C, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
@@ -615,9 +596,6 @@ class Term(object):
             ...
         ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve()
-        Traceback (most recent call last):
-            ...
-        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A)
         >>> DiffusionTerm() & DiffusionTerm()
         Traceback (most recent call last):

@@ -760,6 +760,17 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
             >>> parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
             True
 
+        Should be able to multiply an overlapping value obtained from a
+        CellVariable. This is required to make the '--no-pysparse' flag
+        work correctly.
+
+            >>> from fipy import *
+            >>> m = Grid1D(nx=6)
+            >>> v0 = CellVariable(mesh=m, value=numerix.arange(m.globalNumberOfCells))
+            >>> v1 = CellVariable(mesh=m, value=_TrilinosIdentityMeshMatrix(mesh=m) * v0.value)
+            >>> print numerix.allclose(v0, v1)
+            True
+
         """
         self.fillComplete()
 
@@ -776,24 +787,33 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                 result.matrix.Scale(other)
                 return result
             else:
+                
                 if isinstance(other, Epetra.Vector):
                     other_map = other.Map()
                 else:
                     other_map = self.colMap
 
-                if other_map.SameAs(self.colMap):
-                    localNonOverlappingColIDs = self._localNonOverlappingRowIDs
+                if other_map.SameAs(self.colMap):                    
+                    localNonOverlappingColIDs = self._localNonOverlappingColIDs
 
                     other = Epetra.Vector(self.domainMap, 
                                           other[localNonOverlappingColIDs])
 
                 if other.Map().SameAs(self.matrix.DomainMap()):
-
                     nonoverlapping_result = Epetra.Vector(self.rangeMap)
-
                     self.matrix.Multiply(False, other, nonoverlapping_result)
 
-                    return nonoverlapping_result
+                    if other_map.SameAs(self.colMap): 
+                        overlapping_result = Epetra.Vector(self.colMap) 
+                        overlapping_result.Import(nonoverlapping_result,  
+                                                  Epetra.Import(self.colMap,  
+                                                                self.domainMap),  
+                                                  Epetra.Insert) 
+	 	 
+                        return overlapping_result 
+                    else: 
+                        return nonoverlapping_result 
+                    
                 else:
                     raise TypeError("%s: %s != (%d,)" % (self.__class__, str(shape), N))
                     

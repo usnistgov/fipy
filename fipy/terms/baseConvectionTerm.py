@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "convectionTerm.py"
+ #  FILE: "baseConvectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -45,13 +45,13 @@ from fipy.terms import VectorCoeffError
 
 from fipy.tools import numerix
 
-class ConvectionTerm(FaceTerm):
+class _BaseConvectionTerm(FaceTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.0, diffusionTerm=None, var=None):
         """
-        Create a `ConvectionTerm` object.
+        Create a `_BaseConvectionTerm` object.
         
             >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
@@ -100,7 +100,7 @@ class ConvectionTerm(FaceTerm):
           - `coeff` : The `Term`'s coefficient value.
           - `diffusionTerm` : **deprecated**. The Peclet number is calculated automatically.
         """
-        if self.__class__ is ConvectionTerm:
+        if self.__class__ is _BaseConvectionTerm:
             raise AbstractBaseClassError
             
         if diffusionTerm is not None:
@@ -161,45 +161,43 @@ class ConvectionTerm(FaceTerm):
 
         var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-        if var is self.var or self.var is None:
+        if not hasattr(self,  'constraintB'):
 
-            if not hasattr(self,  'constraintB'):
+            constraintMaskFG = var.faceGrad.constraintMask
+            constraintMaskFV = var.arithmeticFaceValue.constraintMask
 
-                constraintMaskFG = var.faceGrad.constraintMask
-                constraintMaskFV = var.arithmeticFaceValue.constraintMask
+            if constraintMaskFG is not None and constraintMaskFV is not None:
+                constraintMask = constraintMaskFG | constraintMaskFV
+            elif constraintMaskFG is not None:
+                constraintMask = constraintMaskFG
+            elif constraintMaskFV is not None:
+                constraintMask = constraintMaskFV
+            else:
+                constraintMask = None
 
-                if constraintMaskFG is not None and constraintMaskFV is not None:
-                    constraintMask = constraintMaskFG | constraintMaskFV
-                elif constraintMaskFG is not None:
-                    constraintMask = constraintMaskFG
-                elif constraintMaskFV is not None:
-                    constraintMask = constraintMaskFV
+            if constraintMask is not None:
+                mesh = var.mesh
+                weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
+
+                if weight.has_key('implicit'):
+                    alpha = weight['implicit']['cell 1 diag']
                 else:
-                    constraintMask = None
+                    alpha = 0.0
 
-                if constraintMask is not None:
-                    mesh = var.mesh
-                    weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
+                exteriorCoeff =  self.coeff * mesh.exteriorFaces
 
-                    if weight.has_key('implicit'):
-                        alpha = weight['implicit']['cell 1 diag']
-                    else:
-                        alpha = 0.0
+                self.constraintL = (constraintMask * alpha * exteriorCoeff).divergence * mesh.cellVolumes
+                self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+            else:
+                self.constraintL = 0
+                self.constraintB = 0
 
-                    exteriorCoeff =  self.coeff * mesh.exteriorFaces
-
-                    self.constraintL = (constraintMask * alpha * exteriorCoeff).divergence * mesh.cellVolumes
-                    self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
-                else:
-                    self.constraintL = 0
-                    self.constraintB = 0
-
-            L.addAtDiagonal(self.constraintL)
-            b += self.constraintB
+        L.addAtDiagonal(self.constraintL)
+        b += self.constraintB
 
         return (var, L, b)
 
-class __ConvectionTerm(ConvectionTerm): 
+class __ConvectionTerm(_BaseConvectionTerm): 
     """
     Dummy subclass for tests
     """

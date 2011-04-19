@@ -34,10 +34,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.solvers import DefaultAsymmetricSolver
 
-class _AsymmetricConvectionTerm(ConvectionTerm):
+class _AsymmetricConvectionTerm(_BaseConvectionTerm):
 
     def _getDefaultSolver(self, solver, *args, **kwargs):
         r"""

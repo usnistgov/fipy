@@ -152,29 +152,25 @@ class FaceTerm(_NonDiffusionTerm):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Implicit portion considers
         """
-        if var is self.var or self.var is None:
+        mesh = var.mesh
+        id1, id2 = mesh._adjacentCellIDs
+        interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
 
-            mesh = var.mesh
-            id1, id2 = mesh._adjacentCellIDs
-            interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
+        id1 = numerix.take(id1, interiorFaces)
+        id2 = numerix.take(id2, interiorFaces)
 
-            id1 = numerix.take(id1, interiorFaces)
-            id2 = numerix.take(id2, interiorFaces)
+        N = len(var)
+        b = numerix.zeros((N),'d')
+        L = SparseMatrix(mesh=mesh)
 
-            N = len(var)
-            b = numerix.zeros((N),'d')
-            L = SparseMatrix(mesh=mesh)
+        weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
-            weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
+        if weight.has_key('implicit'):
+            self.__implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
 
-            if weight.has_key('implicit'):
-                self.__implicitBuildMatrix(SparseMatrix, L, id1, id2, b, weight['implicit'], mesh, boundaryConditions, interiorFaces, dt)
+        if weight.has_key('explicit'):
+            self.__explicitBuildMatrix(SparseMatrix, var.old, id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
 
-            if weight.has_key('explicit'):
-                self.__explicitBuildMatrix(SparseMatrix, var.old, id1, id2, b, weight['explicit'], mesh, boundaryConditions, interiorFaces, dt)
+        return (var, L, b)
 
-            return (var, L, b)
-
-        else:
-            return (var, SparseMatrix(mesh=var.mesh), 0)
         
