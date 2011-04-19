@@ -273,6 +273,7 @@ close to the average density, but with some small amplitude noise. Under these
 circumstances, the final condition should be two separate phases of roughly equal
 volume. The initial condition for the density is defined by
 
+>>> numerix.random.seed(2011)
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.numberOfCells) - 1))
 
@@ -360,7 +361,7 @@ equation. This currently doesn't work properly in :term:`FiPy``.
 >>> if __name__ == '__main__':
 ...     raw_input('finished')
 
->>> print freeEnergy < 1.4e9
+>>> print freeEnergy < 1.5e9
 True
 
 """

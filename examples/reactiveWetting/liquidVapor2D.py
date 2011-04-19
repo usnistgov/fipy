@@ -123,6 +123,7 @@ A 2D version of the 1D example.
 
 >>> coupledEqn = massEqn & momentumXEqn & momentumYEqn & potentialNCEqn
 
+>>> numerix.random.seed(2012)
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.numberOfCells) - 1))
 
