@@ -45,9 +45,19 @@ Even if you don't read manuals...
 What's new in version |release|?
 --------------------------------
 
-The relatively small change in version number belies significant advances
-in :term:`FiPy` capabilities. This release did not receive a "full" version
-increment because it is completely (er... [#almost]_) compatible with older scripts.
+The significant changes since version 2.1.1 are:
+
+- :term:`Trilinos` efficiency improvements
+- Diagnostics of the parallel environment
+
+Tickets fixed in this release::
+
+   243 Concatenated :class:`Mesh` garbled by `dump.write`/:term:`read`
+   287 :file:`sphereDaemon.py` missing in FiPy 2.1 and from trunk
+   321 Windows interactive plotting mostly broken
+   322 :class:`MatplotlibViewer` fails if backend doesn't support `flush_events()`
+   328 Mayavi broken on windows becase it has no `SIGHUP`.
+
 
 The significant changes since version 2.1 are:
 
@@ -57,6 +67,10 @@ The significant changes since version 2.1 are:
 - :term:`PySparse` and :term:`Trilinos` are now completely independent.
 
 The significant changes since version 2.0.2 are:
+
+The relatively small change in version number belies significant advances
+in :term:`FiPy` capabilities. This release did not receive a "full" version
+increment because it is completely (er... [#almost]_) compatible with older scripts.
 
 - :term:`FiPy` can use :term:`Trilinos` for `solving in parallel`_.
 
