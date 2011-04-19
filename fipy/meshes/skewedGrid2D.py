@@ -38,6 +38,7 @@ from fipy.tools import numerix
 from fipy.tools.numerix import random
 from fipy.tools.decorators import getsetDeprecated
 from fipy.meshes.mesh2D import Mesh2D
+from fipy.meshes import Grid2D
 import fipy.tools.vector as vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -61,7 +62,6 @@ class SkewedGrid2D(Mesh2D):
         else:
             self.dy /= scale
 
-        from fipy import Grid2D
         self.grid = Grid2D(nx=nx, ny=ny, dx=dx, dy=dy)
 
         self.numberOfVertices = self.grid.numberOfVertices
@@ -86,10 +86,6 @@ class SkewedGrid2D(Mesh2D):
         Mesh2D.__init__(self, changedVertices, faces, cells)
         
         self.scale = scale
-            
-    @getsetDeprecated
-    def getScale(self):
-        return self.scale['length']
         
     @property
     def physicalShape(self):

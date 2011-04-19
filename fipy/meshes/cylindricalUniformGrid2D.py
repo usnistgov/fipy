@@ -38,7 +38,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid2D import UniformGrid2D
-from fipy.meshes.geometries import _CylindricalUniformGridGeometry2D
 from fipy.tools import numerix
 from fipy.tools import parallel
 
@@ -49,10 +48,9 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
                  overlap=2, communicator=parallel):
-        UniformGrid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, 
+        super(CylindricalUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny, 
                                origin=origin, overlap=overlap, 
-                               communicator=communicator,
-                               GeomClass=_CylindricalUniformGridGeometry2D)
+                               communicator=communicator)
 
     def _translate(self, vector):
         return CylindricalUniformGrid2D(dx = self.args['dx'], nx = self.args['nx'], 
@@ -61,8 +59,36 @@ class CylindricalUniformGrid2D(UniformGrid2D):
                                         overlap=self.args['overlap'])
 
     @property
+    def _faceAreas(self):
+        faceAreas = numerix.zeros(self.numberOfFaces, 'd')
+        faceAreas[:self.numberOfHorizontalFaces] = self.dx
+        faceAreas[self.numberOfHorizontalFaces:] = self.dy
+        return faceAreas * self._faceCenters[0]
+        
+    @property
+    def _cellVolumes(self):
+        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
+
+    @property
+    def _cellAreas(self):
+        areas = numerix.ones((4, self.numberOfCells), 'd')
+        areas[0] = self.dx * self._cellCenters[0]
+        areas[1] = self.dy * (self._cellCenters[0] + self.dx / 2)
+        areas[2] = self.dx * self._cellCenters[0]
+        areas[3] = self.dy * (self._cellCenters[0] - self.dx / 2)
+        return areas
+ 
+    """
+    def _calcAreaProjections(self):
+        return self._getAreaProjectionsPy()
+    """
+ 
+    def _calcAreaProjections(self):
+        return self._faceNormals * self._faceAreas
+ 
+    @property
     def cellVolumes(self):
-        return self._geometry.cellVolumes * self.cellCenters[0]
+        return self._cellVolumes * self.cellCenters[0]
 
     def _test(self):
         """
@@ -83,21 +109,24 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                           (0., 0., 0., 0., 1., 1., 
             ...                            1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array([[dx], [dy]])
-            >>> print parallel.procID > 0 or numerix.allequal(vertices, mesh._createVertices())
+            >>> print parallel.procID > 0 or numerix.allequal(vertices,
+            ...                                               mesh.vertexCoords)
             True
         
-            >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 
-            ...                         0, 5, 6, 7, 4, 9, 10, 11),
-            ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 
-            ...                         4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[0])
+            >>> faces = numerix.array([[1, 2, 3, 5, 6, 7, 9, 10, 11,  
+            ...                         4, 5, 6, 7, 8, 9, 10, 11], 
+            ...                        [0, 1, 2, 4, 5, 6, 8, 9, 10,  
+            ...                         0, 1, 2, 3, 4, 5, 6, 7]])            
+            >>> print parallel.procID > 0 or numerix.allequal(faces,
+            ...                                               mesh.faceVertexIDs)
             True
 
             >>> cells = numerix.array(((0,  1,  2,  3,  4,  5),
             ...                       (10, 11, 12, 14, 15, 16),
             ...                       ( 3,  4,  5,  6,  7,  8),
             ...                       ( 9, 10, 11, 13, 14, 15)))
-            >>> print parallel.procID > 0 or numerix.allequal(cells, mesh._createCells())
+            >>> print parallel.procID > 0 or numerix.allequal(cells,
+            ...                                               mesh.cellFaceIDs)
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
@@ -242,8 +271,8 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
             True
             
-            >>> faceVertexIDs = [[ 1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11],  
-            ...                  [ 0, 1, 2, 4, 5, 6, 8,  9, 10, 0, 1, 2, 3, 4, 5,  6,  7]]
+            >>> faceVertexIDs = [[ 1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11],   
+            ...                  [ 0, 1, 2, 4, 5, 6, 8,  9, 10, 0, 1, 2, 3, 4, 5,  6,  7]] 
             >>> print parallel.procID > 0 or numerix.allequal(mesh.faceVertexIDs, faceVertexIDs)
             True
 

@@ -50,8 +50,8 @@ from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.mesh import Mesh
-from fipy.meshes.geometries import _MeshGeometry2D
 
+from fipy.variables.faceVariable import FaceVariable
 
 def _orderVertices(vertexCoords, vertices):
     coordinates = numerix.take(vertexCoords, vertices, axis=-1)
@@ -67,17 +67,36 @@ def _orderVertices(vertexCoords, vertices):
 
 class Mesh2D(Mesh):
     
-    def _setGeometry(self, scaleLength):
-        self._geometry = _MeshGeometry2D(self,
-                                         self.dim, 
-                                        self.faceVertexIDs,
-                                        self.vertexCoords,
-                                        self.faceCellIDs,
-                                        self.cellFaceIDs,
-                                        self.numberOfCells,
-                                        self._maxFacesPerCell,
-                                        self._cellToFaceOrientations,
-                                        scaleLength)
+    def _calcScaleArea(self):
+        return self.scale['length']
+
+    def _calcScaleVolume(self):
+        return self.scale['length']**2   
+
+    def _calcFaceAreas(self):
+        faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
+        tangent = faceVertexCoords[:,1] - faceVertexCoords[:,0]
+        return numerix.sqrtDot(tangent, tangent)
+
+    def _calcFaceNormals(self):
+        faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
+        t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
+        rot = numerix.eye(N=self.dim) 
+        rot[0:2,0:2] = numerix.array((( 0, 1), 
+                                      (-1, 0))) 
+        faceNormals = t1.dot(rot) / t1.mag
+        
+        orientation = 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
+        return faceNormals * orientation
+
+    def _calcFaceTangents(self):
+        rot = numerix.eye(N=self.dim) 
+        rot[0:2,0:2] = numerix.array((( 0, 1), 
+                                      (-1, 0))) 
+        tmp = self._faceNormals.dot(rot) 
+        faceTangents1 = tmp / tmp.mag 
+        faceTangents2 = FaceVariable(mesh=self, value=0., rank=1)
+        return faceTangents1, faceTangents2
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
@@ -109,7 +128,6 @@ class Mesh2D(Mesh):
 
     @property
     def _nonOrthogonality(self):
-        from fipy.variables.faceVariable import FaceVariable
         exteriorFaceArray = FaceVariable(mesh=self, rank=1, value=0)
         exteriorFaceArray[:, self.exteriorFaces] = 1
         unmaskedFaceCellIDs = self.faceCellIDs.filled(0)

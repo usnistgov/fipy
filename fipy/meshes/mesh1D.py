@@ -47,22 +47,32 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
 from fipy.meshes.mesh import Mesh
-from fipy.meshes.geometries import _MeshGeometry1D
+
+from fipy.variables.faceVariable import FaceVariable
 
 class Mesh1D(Mesh):
     
-    def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _MeshGeometry1D(self,
-                                         self.numberOfFaces,
-                                        self.dim, 
-                                        self.faceVertexIDs,
-                                        self.vertexCoords,
-                                        self.faceCellIDs,
-                                        self.cellFaceIDs,
-                                        self.numberOfCells,
-                                        self._maxFacesPerCell,
-                                        self._cellToFaceOrientations,
-                                        scaleLength)
+    def _calcScaleArea(self):
+        return 1.
+
+    def _calcScaleVolume(self):
+        return self.scale['length']
+
+    def _calcFaceAreas(self):
+        return FaceVariable(mesh=self, value=1.)
+
+    def _calcFaceNormals(self):
+        faceNormals = FaceVariable(mesh=self, value=1., rank=1)
+        # The left-most face has neighboring cells None and the left-most cell.
+        # We must reverse the normal to make fluxes work correctly.
+        if self.numberOfFaces > 0:
+            faceNormals[...,0] *= -1
+        return faceNormals
+
+    def _calcFaceTangents(self):
+        faceTangents1 = FaceVariable(mesh=self, value=0., rank=1)
+        faceTangents2 = FaceVariable(mesh=self, value=0., rank=1)
+        return faceTangents1, faceTangents2    
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector

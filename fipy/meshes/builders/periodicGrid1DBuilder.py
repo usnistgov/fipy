@@ -5,8 +5,6 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "mesh.py"
- #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -38,48 +36,20 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.geometries.abstractGeometries import AbstractMeshGeometry
-        
-class AbstractUniformGridGeometry(AbstractMeshGeometry):
-
-    """Wrapped scaled geometry properties"""
-    @property
-    def scaledFaceAreas(self):
-        return self.faceAreas
-
-    @property
-    def scaledCellVolumes(self):
-        return self.cellVolumes
-
-    @property
-    def scaledCellCenters(self):
-        return self.cellCenters
-
-    @property
-    def scaledCellDistances(self):
-        return self.cellDistances
-
-    @property
-    def scaledCellToCellDistances(self):
-        return self.cellToCellDistances
-
-    @property
-    def scaledFaceToCellDistances(self):
-        return self.faceToCellDistances
-
-    """Geometry properties common to 1D, 2D, 3D"""
-    @property
-    def orientedFaceNormals(self):
-        return self.faceNormals
-
-    def _getFaceToCellDistances(self):
-        return self._faceToCellDistances
-
-    def _setFaceToCellDistances(self, v):
-        self._faceToCellDistances = v
-        self._scaledGeometry._setScaledValues()
-
-    faceToCellDistances = property(_getFaceToCellDistances,
-                                   _setFaceToCellDistances)
-     
+from grid1DBuilder import NonuniformGrid1DBuilder
  
+class PeriodicGrid1DBuilder(NonuniformGrid1DBuilder):
+
+    def buildGridData(self, *args, **kwargs):
+        kwargs["cacheOccupiedNodes"] = True
+        return super(PeriodicGrid1DBuilder, self).buildGridData(*args, 
+                                                                **kwargs)
+          
+    def _buildOverlap(self, overlap, procID, occupiedNodes):
+        if occupiedNodes == 1:
+            return super(PeriodicGrid1DBuilder, self)._buildOverlap(overlap, 
+                     procID, occupiedNodes)
+        else:
+            return (overlap, overlap, {'left': overlap, 'right': overlap})
+            
+

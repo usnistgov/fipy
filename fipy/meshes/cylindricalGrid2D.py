@@ -41,7 +41,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.meshes.grid2D import Grid2D
-from fipy.meshes.geometries import _CylindricalGridGeometry2D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
 
@@ -55,29 +54,45 @@ class CylindricalGrid2D(Grid2D):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
-        
-        Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
+        Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
+                                     
+        """
+        This is an unfortunate block of code, but it's better than the
+        alternatives.
+        """
+        oldFaceAreas = self._faceAreas
+        self._faceAreas *= self.faceCenters[0]
+
+        self._scaledFaceAreas = self._scale['area'] * self._faceAreas
+        # James is deranged
+        # self._areaProjections = self._faceNormals * oldFaceAreas
+        self._areaProjections = self._faceNormals * self._faceAreas
+        self._orientedAreaProjections = self._calcOrientedAreaProjections()
+        self._faceAspectRatios = self._calcFaceAspectRatios()
+                                       
+        self._cellAreas = self._calcCellAreas()
+        self._cellNormals = self._calcCellNormals() 
+          
         self.vertexCoords += self.origin
         self.args['origin'] = self.origin
-    
-    def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _CylindricalGridGeometry2D(self,
-                                        self.origin,
-                                        self.dim, 
-                                        self.faceVertexIDs,
-                                        self.vertexCoords,
-                                        self.faceCellIDs,
-                                        self.cellFaceIDs,
-                                        self.numberOfCells,
-                                        self._maxFacesPerCell,
-                                        self._cellToFaceOrientations,
-                                        scaleLength)
-
+ 
+    @property
+    def cellCenters(self):
+        from fipy.variables.cellVariable import CellVariable
+        return CellVariable(mesh=self, 
+                            value=self._scaledCellCenters + self.origin,
+                            rank=1)
+                            
+    @property
+    def faceCenters(self):
+        return super(CylindricalGrid2D, self)._calcFaceCenters() + self.origin
+         
     @property
     def cellVolumes(self):
-        return self._geometry.scaledCellVolumes * self.cellCenters[0]
-     
+        return super(CylindricalGrid2D, self).cellVolumes \
+                * self.cellCenters[0]
+  
     def _translate(self, vector):
         return CylindricalGrid2D(dx=self.args['dx'], nx=self.args['nx'], 
                                  dy=self.args['dy'], ny=self.args['ny'], 
@@ -110,19 +125,22 @@ class CylindricalGrid2D(Grid2D):
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array(((dx,), (dy,)))
-            >>> print parallel.procID > 0 or numerix.allequal(vertices, mesh._createVertices())
+            >>> print parallel.procID > 0 or numerix.allequal(vertices,
+            ...                                               mesh.vertexCoords)
             True
         
             >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
             ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[0])
+            >>> print parallel.procID > 0 or numerix.allequal(faces,
+            ...                                               mesh.faceVertexIDs)
             True
 
             >>> cells = numerix.array(((0, 1, 2, 3, 4, 5),
             ...                        (10, 11, 12, 14, 15, 16),
             ...                        (3, 4, 5, 6, 7, 8),
             ...                        (9, 10, 11, 13, 14, 15)))
-            >>> print parallel.procID > 0 or numerix.allequal(cells, mesh._createCells())
+            >>> print parallel.procID > 0 or numerix.allequal(cells,
+            ...                                               mesh.cellFaceIDs)
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))

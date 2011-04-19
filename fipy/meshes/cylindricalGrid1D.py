@@ -38,9 +38,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.meshes.geometries import _CylindricalGridGeometry1D
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools.decorators import getsetDeprecated
 from grid1D import Grid1D
 
 class CylindricalGrid1D(Grid1D):
@@ -82,20 +80,15 @@ class CylindricalGrid1D(Grid1D):
         self.vertexCoords += origin
         self.args['origin'] = origin
 
-    def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _CylindricalGridGeometry1D(self,
-                                                    self.origin,
-                                        self.numberOfFaces,
-                                        self.dim, 
-                                        self.faceVertexIDs,
-                                        self.vertexCoords,
-                                        self.faceCellIDs,
-                                        self.cellFaceIDs,
-                                        self.numberOfCells,
-                                        self._maxFacesPerCell,
-                                        self._cellToFaceOrientations,
-                                        scaleLength)
-                                         
+    def _calcFaceCenters(self):
+        faceCenters = super(CylindricalGrid1D, self)._calcFaceCenters()
+        return faceCenters + self.origin
+    
+    def _calcFaceAreas(self):
+        return self._calcFaceCenters()[0]
+
+    def _calcCellVolumes(self):
+        return super(CylindricalGrid1D, self)._calcCellVolumes() / 2.   
 
     def _translate(self, vector):
         return CylindricalGrid1D(dx=self.args['dx'], nx=self.args['nx'], 
@@ -104,10 +97,6 @@ class CylindricalGrid1D(Grid1D):
     def __mul__(self, factor):
         return CylindricalGrid1D(dx=self.args['dx'] * factor, nx=self.args['nx'], 
                                  origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
-
-    @getsetDeprecated
-    def getVertexCoords(self):
-        return self.vertexCoords
 
     def _test(self):
         """
