@@ -760,11 +760,16 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
             >>> parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
             True
 
-        Should be able to multiply an overlapping CellVariable and return the correct value.
+        Should be able to multiply an overlapping value obtained from a
+        CellVariable. This is required to make the '--no-pysparse' flag
+        work correctly.
 
-            >>> print False
+            >>> from fipy import *
+            >>> m = Grid1D(nx=6)
+            >>> v0 = CellVariable(mesh=m, value=numerix.arange(m.globalNumberOfCells))
+            >>> v1 = CellVariable(mesh=m, value=_TrilinosIdentityMeshMatrix(mesh=m) * v0.value)
+            >>> print numerix.allclose(v0, v1)
             True
-
 
         """
         self.fillComplete()
