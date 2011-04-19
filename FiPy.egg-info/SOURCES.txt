@@ -222,6 +222,7 @@ examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D.py
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
+examples/cahnHilliard/sphereDaemon.py
 examples/cahnHilliard/tanh1D.py
 examples/cahnHilliard/test.py
 examples/cahnHilliard/generated/.gitignore
