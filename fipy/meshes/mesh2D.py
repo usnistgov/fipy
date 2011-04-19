@@ -50,7 +50,6 @@ from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.mesh import Mesh
-from fipy.meshes.geometries import _MeshGeometry2D
 
 
 def _orderVertices(vertexCoords, vertices):
@@ -67,16 +66,36 @@ def _orderVertices(vertexCoords, vertices):
 
 class Mesh2D(Mesh):
     
-    def _setGeometry(self, scaleLength):
-        self._geometry = _MeshGeometry2D(self.dim, 
-                                        self.faceVertexIDs,
-                                        self.vertexCoords,
-                                        self.faceCellIDs,
-                                        self.cellFaceIDs,
-                                        self.numberOfCells,
-                                        self._maxFacesPerCell,
-                                        self._cellToFaceOrientations,
-                                        scaleLength)
+    def _calcScaleArea(self):
+        return self.scale['length']
+
+    def _calcScaleVolume(self):
+        return self.scale['length']**2   
+
+    def _calcFaceAreas(self):
+        faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
+        tangent = faceVertexCoords[:,1] - faceVertexCoords[:,0]
+        return numerix.sqrtDot(tangent, tangent)
+
+    def _calcFaceNormals(self):
+        faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
+        t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
+        faceNormals = t1.copy()
+        mag = numerix.sqrt(t1[1]**2 + t1[0]**2)
+        faceNormals[0] = -t1[1] / mag
+        faceNormals[1] = t1[0] / mag
+        
+        orientation = 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
+        return faceNormals * orientation
+
+    def _calcFaceTangents(self):
+        tmp = numerix.array((-self._faceNormals[1], self._faceNormals[0]))
+        # copy required to get internal memory ordering correct for inlining.
+        tmp = tmp.copy()
+        mag = numerix.sqrtDot(tmp, tmp)
+        faceTangents1 = tmp / mag
+        faceTangents2 = numerix.zeros(faceTangents1.shape, 'd')
+        return faceTangents1, faceTangents2
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
@@ -127,14 +146,12 @@ class Mesh2D(Mesh):
         # if it's an exterior face, make the "displacement vector" equal to zero 
         # so the cross product will be zero.
     
-        """TODO: This use of _getCellCenters is a symptom of the troubled mesh
-        hierarchy,"""
         faceDisplacementVectors = \
           numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)),
                         0.0, 
-                        numerix.take(self._getCellCenters().swapaxes(0,1), 
+                        numerix.take(self._scaledCellCenters.swapaxes(0,1), 
                                      unmaskedFaceCellIDs[1, :]) \
-                          - numerix.take(self._getCellCenters().swapaxes(0,1), 
+                          - numerix.take(self._scaledCellCenters.swapaxes(0,1), 
                         unmaskedFaceCellIDs[0, :]))
 
         faceDisplacementVectors = faceDisplacementVectors.swapaxes(0,1)

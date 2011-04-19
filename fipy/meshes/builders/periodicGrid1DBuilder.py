@@ -5,12 +5,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "mesh.py"
- #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
- #  Author: Alexander Mont <alexander.mont@nist.gov>
  #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
@@ -38,46 +35,21 @@
  ##
 
 __docformat__ = 'restructuredtext'
+
+from grid1DBuilder import NonuniformGrid1DBuilder
  
-from fipy.tools import numerix
-from fipy.tools.numerix import MA
+class PeriodicGrid1DBuilder(NonuniformGrid1DBuilder):
 
-from meshGeometry import MeshGeometry
-from meshGeometry import ScaledMeshGeometry
-
-class ScaledMeshGeometry1D(ScaledMeshGeometry):
-
-    def _calcScaleArea(self):
-        return 1.
-
-    def _calcScaleVolume(self):
-        return self.scale['length']
-     
-class MeshGeometry1D(MeshGeometry):
-     
-    def __init__(self, numberOfFaces, *args, **kwargs):
-        self.numberOfFaces = numberOfFaces
-
-        kwargs['ScaledGeom'] = ScaledMeshGeometry1D
-        super(MeshGeometry1D, self).__init__(*args, **kwargs)
-
-    def _calcFaceAreas(self):
-        return numerix.ones(self.numberOfFaces, 'd')
-
-    def _calcFaceNormals(self):
-        faceNormals = numerix.array((numerix.ones(self.numberOfFaces, 'd'),))
-        # The left-most face has neighboring cells None and the left-most cell.
-        # We must reverse the normal to make fluxes work correctly.
-        if self.numberOfFaces > 0:
-            faceNormals[...,0] = -faceNormals[...,0]
-        return faceNormals
-
-    def _calcFaceTangents(self):
-        faceTangents1 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-        faceTangents2 = numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-        return faceTangents1, faceTangents2
-     
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+    def buildGridData(self, *args, **kwargs):
+        kwargs["cacheOccupiedNodes"] = True
+        return super(PeriodicGrid1DBuilder, self).buildGridData(*args, 
+                                                                **kwargs)
+          
+    def _buildOverlap(self, overlap, procID, occupiedNodes):
+        if occupiedNodes == 1:
+            return super(PeriodicGrid1DBuilder, self)._buildOverlap(overlap, 
+                     procID, occupiedNodes)
+        else:
+            return (overlap, overlap, {'left': overlap, 'right': overlap})
+            
 

@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "mesh.py"
+ #  FILE: "uniformGrid.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -30,56 +29,54 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  # ###################################################################
  ##
-
 __docformat__ = 'restructuredtext'
+ 
+from fipy.meshes.abstractMesh import AbstractMesh
 
-from fipy.meshes.geometries.abstractGeometries import AbstractMeshGeometry
-        
-class AbstractUniformGridGeometry(AbstractMeshGeometry):
-
+class UniformGrid(AbstractMesh):
     """Wrapped scaled geometry properties"""
     @property
-    def scaledFaceAreas(self):
-        return self.faceAreas
+    def _scaledFaceAreas(self):
+        return self._faceAreas
 
     @property
-    def scaledCellVolumes(self):
-        return self.cellVolumes
+    def _scaledCellVolumes(self):
+        return self._cellVolumes
 
     @property
-    def scaledCellCenters(self):
-        return self.cellCenters
+    def _scaledCellCenters(self):
+        return self._cellCenters
 
     @property
-    def scaledCellDistances(self):
-        return self.cellDistances
+    def _scaledCellDistances(self):
+        return self._cellDistances
 
     @property
-    def scaledCellToCellDistances(self):
-        return self.cellToCellDistances
+    def _scaledCellToCellDistances(self):
+        return self._cellToCellDistances
 
     @property
-    def scaledFaceToCellDistances(self):
-        return self.faceToCellDistances
+    def _scaledFaceToCellDistances(self):
+        return self._faceToCellDistances
 
     """Geometry properties common to 1D, 2D, 3D"""
     @property
-    def orientedFaceNormals(self):
-        return self.faceNormals
+    def _orientedFaceNormals(self):
+        return self._faceNormals
 
-    def _getFaceToCellDistances(self):
-        return self._faceToCellDistances
-
-    def _setFaceToCellDistances(self, v):
-        self._faceToCellDistances = v
-        self._scaledGeometry._setScaledValues()
-
-    faceToCellDistances = property(_getFaceToCellDistances,
-                                   _setFaceToCellDistances)
-     
+    @property
+    def _faceCellToCellNormals(self):
+        return self._faceNormals
  
+    def _getFaceToCellDistances(self):
+        return self._internalFaceToCellDistances
+                      
+    def _setFaceToCellDistances(self, v):
+        self._internalFaceToCellDistances = v
+        self._setScaledValues()
+
+    _faceToCellDistances = property(_getFaceToCellDistances,
+                                    _setFaceToCellDistances)

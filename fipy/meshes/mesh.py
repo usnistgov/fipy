@@ -39,19 +39,17 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.topologies import _MeshTopology
-from fipy.meshes.geometries import _MeshGeometry
+from fipy.meshes.abstractMesh import AbstractMesh
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import serial
-from fipy.tools.decorators import getsetDeprecated
 
 class MeshAdditionError(Exception):
     pass
     
-class Mesh(object):
+class Mesh(AbstractMesh):
     """Generic mesh class using numerix to do the calculations
 
         Meshes contain cells, faces, and vertices.
@@ -83,246 +81,302 @@ class Mesh(object):
         self._setTopology()
         self._setGeometry(scaleLength = 1.)
 
-    @getsetDeprecated(new_name="faceVertexIDs")
-    def _getFaceVertexIDs(self):
-        return self.faceVertexIDs
+    """
+    Topology set and calc
+    """
 
-    def _getCellFaceIDs(self):
-        return self._cellFaceIDs
-
-    def _setCellFaceIDs(self, newVal):
-        """We must notify the helper classes."""
-        if hasattr(self, "_topology"): 
-            self._topology.cellFaceIDs = newVal
-        if hasattr(self, "_geometry"):
-            self._geometry.cellFaceIDs = newVal
-
-        self._cellFaceIDs = newVal
-
-    """TODO; This is all to enable `_connectFaces` to work properly. Yet another
-    reason why `_connectFaces` should be moved lower down the mesh hierarchy,
-    since only periodic grids use them."""
-    cellFaceIDs = property(_getCellFaceIDs, _setCellFaceIDs)
-
-
-    """Topology methods"""
     def _setTopology(self):
-        self._topology = _MeshTopology(self.cellFaceIDs, 
-                                       self.faceCellIDs, 
-                                       self.numberOfCells,
-                                       self._maxFacesPerCell,
-                                       self) # `self` only for int/ext face calc
+        (self._interiorFaces,
+         self._exteriorFaces) = self._calcInteriorAndExteriorFaceIDs()
+        (self._interiorCellIDs,
+         self._exteriorCellIDs) = self._calcInteriorAndExteriorCellIDs()
+        self._cellToFaceOrientations = self._calcCellToFaceOrientations()
+        self._adjacentCellIDs = self._calcAdjacentCellIDs()
+        self._cellToCellIDs = self._calcCellToCellIDs()
+        self._cellToCellIDsFilled = self._calcCellToCellIDsFilled()
+
+    def _calcInteriorAndExteriorFaceIDs(self):
+        from fipy.variables.faceVariable import FaceVariable
+        mask = MA.getmask(self.faceCellIDs[1])
+        exteriorFaces = FaceVariable(mesh=self, 
+                                     value=mask)
+        interiorFaces = FaceVariable(mesh=self, 
+                                     value=numerix.logical_not(mask))
+        return interiorFaces, exteriorFaces
+           
+    def _calcInteriorAndExteriorCellIDs(self):
+        try:
+            import sets
+            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self._exteriorFaces.value])
+            interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self._exteriorCellIDs)
+            exteriorCellIDs = list(self._exteriorCellIDs)
+        except:
+            exteriorCellIDs = self.faceCellIDs[0, self._exteriorFaces.value]
+            tmp = numerix.zeros(self.numberOfCells)
+            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs)))
+            exteriorCellIDs = numerix.nonzero(tmp)            
+            interiorCellIDs = numerix.nonzero(numerix.logical_not(tmp))
+        return interiorCellIDs, exteriorCellIDs
+       
+    def _calcCellToFaceOrientations(self):
+        tmp = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
+        return (tmp == MA.indices(tmp.shape)[-1]) * 2 - 1
+
+    def _calcAdjacentCellIDs(self):
+        return (MA.filled(self.faceCellIDs[0]), 
+                          MA.filled(MA.where(MA.getmaskarray(self.faceCellIDs[1]), 
+                              self.faceCellIDs[0], 
+                                             self.faceCellIDs[1])))
+
+    def _calcCellToCellIDs(self):    
+        cellToCellIDs = numerix.take(self.faceCellIDs, self.cellFaceIDs, axis=1)
+        cellToCellIDs = MA.where(self._cellToFaceOrientations == 1, 
+                                 cellToCellIDs[1], cellToCellIDs[0])
+        return cellToCellIDs 
+     
+    def _calcCellToCellIDsFilled(self):
+        N = self.numberOfCells
+        M = self._maxFacesPerCell
+        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
+        return MA.where(MA.getmaskarray(self._cellToCellIDs), cellIDs, 
+                        self._cellToCellIDs)
+
+    def _isOrthogonal(self):
+        return False          
+
+    """
+    Geometry set and calc
+    """
 
     def _setGeometry(self, scaleLength = 1.):
-        self._geometry = _MeshGeometry(self.dim,
-                                       self.faceVertexIDs,
-                                       self.vertexCoords,
-                                       self.faceCellIDs,
-                                       self.cellFaceIDs,
-                                       self.numberOfCells,
-                                       self._maxFacesPerCell,
-                                       self._cellToFaceOrientations,
-                                       scaleLength)
-                                      
-    @getsetDeprecated(new_name="_geometry.scale")
-    def setScale(self, scaleLength = 1.):
-        return self._setScale(scaleLength)
+        self._faceCenters = self._calcFaceCenters()
+        self._faceAreas = self._calcFaceAreas()
+        self._cellCenters = self._calcCellCenters()
+        (self._internalFaceToCellDistances,
+         self._cellToFaceDistanceVectors) = self._calcFaceToCellDistAndVec()
+        (self._internalCellDistances,
+         self._cellDistanceVectors) = self._calcCellDistAndVec()
+        self._faceNormals = self._calcFaceNormals()
+        self._orientedFaceNormals = self._calcOrientedFaceNormals()
+        self._cellVolumes = self._calcCellVolumes()
+        self._faceCellToCellNormals = self._calcFaceCellToCellNormals()
+        (self._faceTangents1,
+         self._faceTangents2) = self._calcFaceTangents()
+        self._cellToCellDistances = self._calcCellToCellDist()
 
-    def _setScale(self, scaleLength = 1.):
+        self._setScaledGeometry(self.scale['length'])
+
+        self._cellAreas = self._calcCellAreas()
+        self._cellNormals = self._calcCellNormals() 
+
+    def _calcFaceAreas(self):
+        faceVertexIDs = MA.filled(self.faceVertexIDs, -1)
+        substitute = numerix.repeat(faceVertexIDs[numerix.newaxis, 0], 
+                                    faceVertexIDs.shape[0], axis=0)
+        faceVertexIDs = numerix.where(MA.getmaskarray(self.faceVertexIDs), 
+                                      substitute, faceVertexIDs)
+        faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
+        faceOrigins = numerix.repeat(faceVertexCoords[:,0], faceVertexIDs.shape[0], axis=0)
+        faceOrigins = numerix.reshape(faceOrigins, MA.shape(faceVertexCoords))
+        faceVertexCoords = faceVertexCoords - faceOrigins
+        left = range(faceVertexIDs.shape[0])
+        right = left[1:] + [left[0]]
+        cross = numerix.sum(numerix.cross(faceVertexCoords, 
+                                          numerix.take(faceVertexCoords, right, 1), 
+                                          axis=0), 
+                            1)
+        return numerix.sqrtDot(cross, cross) / 2.
+    
+    def _calcFaceCenters(self):
+        maskedFaceVertexIDs = MA.filled(self.faceVertexIDs, 0)
+
+        faceVertexCoords = numerix.take(self.vertexCoords, maskedFaceVertexIDs, axis=1)
+
+        if MA.getmask(self.faceVertexIDs) is False:
+            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
+        else:
+            faceVertexCoordsMask = \
+              numerix.repeat(MA.getmaskarray(self.faceVertexIDs)[numerix.newaxis,...], 
+                             self.dim, axis=0)
+            
+        faceVertexCoords = MA.array(data=faceVertexCoords, mask=faceVertexCoordsMask)
+
+        return MA.filled(MA.average(faceVertexCoords, axis=1))
+     
+    def _calcFaceNormals(self):
+        faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
+        faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
+        t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
+        t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
+        norm = numerix.cross(t1, t2, axis=0)
+        ## reordering norm's internal memory for inlining
+        norm = norm.copy()
+        norm = norm / numerix.sqrtDot(norm, norm)
+        
+        faceNormals = -norm
+        
+        orientation = 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
+        return faceNormals * orientation
+
+    def _calcFaceCellToCellNormals(self):
+        faceCellCentersUp = numerix.take(self._cellCenters, self.faceCellIDs[1], axis=1)
+        faceCellCentersDown = numerix.take(self._cellCenters, self.faceCellIDs[0], axis=1)
+        faceCellCentersUp = numerix.where(MA.getmaskarray(faceCellCentersUp),
+                                          self._faceCenters,
+                                          faceCellCentersUp)
+
+        diff = faceCellCentersDown - faceCellCentersUp
+        mag = numerix.sqrt(numerix.sum(diff**2))
+        faceCellToCellNormals = diff / numerix.resize(mag, (self.dim, len(mag)))
+
+        orientation = 1 - 2 * (numerix.dot(self._faceNormals, faceCellToCellNormals) < 0)
+        return faceCellToCellNormals * orientation
+
+    def _calcOrientedFaceNormals(self):
+        return self._faceNormals
+        
+    def _calcCellVolumes(self):
+        tmp = self._faceCenters[0] * self._faceAreas * self._faceNormals[0]
+        tmp = numerix.take(tmp, self.cellFaceIDs) * self._cellToFaceOrientations
+        return MA.filled(MA.sum(tmp, 0))
+
+    def _calcCellCenters(self):
+        tmp = numerix.take(self._faceCenters, self.cellFaceIDs, axis=1)
+        return MA.filled(MA.average(tmp, 1))
+        
+    def _calcFaceToCellDistAndVec(self):
+        tmp = MA.repeat(self._faceCenters[...,numerix.NewAxis,:], 2, 1)
+        # array -= masked_array screws up masking for on numpy 1.1
+
+        tmp = tmp - numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
+        cellToFaceDistanceVectors = tmp
+        faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,0))
+        return faceToCellDistances, cellToFaceDistanceVectors
+
+    def _calcCellDistAndVec(self):
+        tmp = numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
+        tmp = tmp[...,1,:] - tmp[...,0,:]
+        tmp = MA.filled(MA.where(MA.getmaskarray(tmp), self._cellToFaceDistanceVectors[:,0], tmp))
+        cellDistanceVectors = tmp
+        cellDistances = MA.filled(MA.sqrt(MA.sum(tmp * tmp, 0)))
+        return cellDistances, cellDistanceVectors
+
+    def _calcFaceTangents(self):
+        faceVertexCoord = numerix.array(numerix.take(self.vertexCoords, 
+                                                     self.faceVertexIDs[0], 
+                                                     axis=1))
+        tmp = self._faceCenters - faceVertexCoord
+        faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
+        tmp = numerix.cross(faceTangents1, self._faceNormals, axis=0)
+        faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
+        return faceTangents1, faceTangents2
+        
+    def _calcCellToCellDist(self):
+        return numerix.take(self._cellDistances, self.cellFaceIDs)
+
+    def _calcCellAreas(self):
+        from fipy.tools.numerix import take
+        return take(self._faceAreas, self.cellFaceIDs)
+    
+    def _calcCellNormals(self):
+        cellNormals = numerix.take(self._faceNormals, self.cellFaceIDs, axis=1)
+        cellFaceCellIDs = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
+        cellIDs = numerix.repeat(numerix.arange(self.numberOfCells)[numerix.newaxis,...], 
+                                 self._maxFacesPerCell,
+                                 axis=0)
+        direction = (cellFaceCellIDs == cellIDs) * 2 - 1
+        if self._maxFacesPerCell > 0:
+            return direction[numerix.newaxis, ...] * cellNormals
+        else:
+            return cellNormals   
+      
+    """settable geometry properties"""
+    def _getFaceToCellDistances(self):
+        return self._internalFaceToCellDistances
+
+    def _setFaceToCellDistances(self, v):
+        self._internalFaceToCellDistances = v
+        self._setScaledValues()
+
+    _faceToCellDistances = property(_getFaceToCellDistances,
+                                    _setFaceToCellDistances)
+
+    def _getCellDistances(self):
+        return self._internalCellDistances
+
+    def _setCellDistances(self, v):
+        self._internalCellDistances = v
+        self._setScaledValues()
+
+    _cellDistances = property(_getCellDistances, _setCellDistances)
+
+    """
+    Scaled geometry set and calc
+    """
+ 
+    _scale = {
+        'length': 1.,
+        'area': 1.,
+        'volume': 1.,
+    }
+         
+    def _setScaledGeometry(self, val):
         """
-        Sets scale of geometry.
+        Set the scale by length.
 
         :Parameters:
-          - `scaleLength`: The desired scale length.
+          - `val`: The new scale length.
         """
-        self._geometry.scale = scaleLength
 
+        self._scale['length'] = PhysicalField(value=val)
+        
+        if self._scale['length'].unit.isDimensionless():
+            self._scale['length'] = 1    
+
+        self._scale['area'] = self._calcAreaScale()
+        self._scale['volume'] = self._calcVolumeScale()
+        self._setScaledValues() 
+
+    def _setScaledValues(self):
+        self._scaledFaceAreas = self._scale['area'] * self._faceAreas
+        self._scaledCellVolumes = self._scale['volume'] * self._cellVolumes
+        self._scaledCellCenters = self._scale['length'] * self._cellCenters
+        self._scaledFaceToCellDistances = self._scale['length'] * self._faceToCellDistances
+        self._scaledCellDistances = self._scale['length'] * self._cellDistances
+        self._setFaceDependentScaledValues()
+
+    def _setFaceDependentScaledValues(self):
+        self._scaledCellToCellDistances = self._scale['length'] * self._cellToCellDistances
+        self._areaProjections = self._calcAreaProjections()
+        self._orientedAreaProjections = self._calcOrientedAreaProjections()
+        self._faceToCellDistanceRatio = self._calcFaceToCellDistanceRatio()
+        self._faceAspectRatios = self._calcFaceAspectRatios() 
+
+    def _calcAreaScale(self):
+        return self.scale['length']**2
+
+    def _calcVolumeScale(self):
+        return self.scale['length']**3  
+ 
+    def _calcAreaProjections(self):
+        return self._faceNormals * self._faceAreas
+        
+    def _calcOrientedAreaProjections(self):
+        return self._areaProjections
+
+    def _calcFaceToCellDistanceRatio(self):
+        dAP = self._cellDistances
+        dFP = self._faceToCellDistances[0]
+        
+        return MA.filled(dFP / dAP)
+       
+    def _calcFaceAspectRatios(self):
+        return self._scaledFaceAreas / self._cellDistances
+    
     @property
     def _concatenatedClass(self):
         return Mesh
 
-    """Topology properties"""
-
-    interiorFaces          = property(lambda s: s._topology.interiorFaces)
-
-    def _setExteriorFaces(self, newExtFaces):
-        self._topology.exteriorFaces = newExtFaces
-
-    exteriorFaces          = property(lambda s: s._topology.exteriorFaces,
-                                      _setExteriorFaces)
-    _interiorCellIDs        = property(lambda s: s._topology.interiorCellIDs)
-    _exteriorCellIDs        = property(lambda s: s._topology.exteriorCellIDs)
-    _cellToFaceOrientations = property(lambda s: s._topology.cellToFaceOrientations)
-    _adjacentCellIDs        = property(lambda s: s._topology.adjacentCellIDs)
-    _cellToCellIDs          = property(lambda s: s._topology.cellToCellIDs)
-    _cellToCellIDsFilled    = property(lambda s: s._topology.cellToCellIDsFilled)
-
-    """geometry properties"""
-    _faceAreas                = property(lambda s: s._geometry.scaledFaceAreas)
-    faceCenters               = property(lambda s: s._geometry.faceCenters)
-
-    def _setFaceToCellDistances(self, v):
-        self._geometry.faceToCellDistances = v
-
-    _faceToCellDistances = property(lambda s: s._geometry.faceToCellDistances,
-                                   _setFaceToCellDistances)
-
-    def _setCellDistances(self, v):
-        self._geometry.cellDistances = v
-
-    _cellDistances = property(lambda s: s._geometry.scaledCellDistances,
-                             _setCellDistances)
-
-    def _setFaceNormals(self, v):
-        self._geometry.faceNormals = v
-
-    _faceNormals = property(lambda s: s._geometry.faceNormals,
-                           _setFaceNormals)
-
-    cellToFaceDistanceVectors  = property(lambda s: s._geometry.cellToFaceDistanceVectors)
-    cellDistanceVectors        = property(lambda s: s._geometry.cellDistanceVectors)
-    _orientedFaceNormals       = property(lambda s: s._geometry.orientedFaceNormals)
-    cellVolumes                = property(lambda s: s._geometry.scaledCellVolumes)
-
-    @property
-    def cellCenters(self):
-        from fipy.variables.cellVariable import CellVariable
-        return CellVariable(mesh=self, value=self._geometry.scaledCellCenters,
-                            rank=1)
-
-    _faceCellToCellNormals    = property(lambda s: s._geometry.faceCellToCellNormals)
-    _faceTangents1            = property(lambda s: s._geometry.faceTangents1)
-    _faceTangents2            = property(lambda s: s._geometry.faceTangents2)
-    _cellToCellDistances      = property(lambda s: s._geometry.scaledCellToCellDistances)
-    _cellAreas                 = property(lambda s: s._geometry.cellAreas)
-    _cellNormals               = property(lambda s: s._geometry.cellNormals)
-
-    """scaled geometery properties
-    
-    These should not exist."""
-    scale                     = property(lambda s: s._geometry.scale,
-                                         _setScale)
-    scaledFaceAreas           = property(lambda s: s._geometry.scaledFaceAreas)
-    scaledCellVolumes         = property(lambda s: s._geometry.scaledCellVolumes)
-    _scaledCellCenters         = property(lambda s: s._geometry.scaledCellCenters)
-    scaledFaceToCellDistances = property(lambda s: \
-                                         s._geometry.scaledFaceToCellDistances)
-    scaledCellDistances       = property(lambda s: \
-                                         s._geometry.scaledCellDistances)
-    scaledCellToCellDistances = property(lambda s: \
-                                         s._geometry.scaledCellToCellDistances)
-    _areaProjections          = property(lambda s: \
-                                         s._geometry.areaProjections)
-    _orientedAreaProjections  = property(lambda s: \
-                                         s._geometry.orientedAreaProjections)
-    _faceToCellDistanceRatio  = property(lambda s: \
-                                         s._geometry.faceToCellDistanceRatio)
-    _faceAspectRatios         = property(lambda s: \
-                                         s._geometry.faceAspectRatios)  
-        
-    def __add__(self, other):
-        """
-        Either translate a `Mesh` or concatenate two `Mesh` objects.
-        
-            >>> from fipy.meshes import Grid2D
-            >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-            >>> print baseMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5]
-             [ 0.5  0.5  1.5  1.5]]
-             
-        If a vector is added to a `Mesh`, a translated `Mesh` is returned
-        
-            >>> translatedMesh = baseMesh + ((5,), (10,))
-            >>> print translatedMesh.cellCenters
-            [[  5.5   6.5   5.5   6.5]
-             [ 10.5  10.5  11.5  11.5]]
-
-             
-        If a `Mesh` is added to a `Mesh`, a concatenation of the two 
-        `Mesh` objects is returned
-        
-            >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
-        
-        The two `Mesh` objects need not be properly aligned in order to concatenate them
-        but the resulting mesh may not have the intended connectivity
-        
-            >>> from fipy.meshes.mesh import MeshAdditionError
-            >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
-
-            >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
-             [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
-
-        No provision is made to avoid or consolidate overlapping `Mesh` objects
-        
-            >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
-            
-        Different `Mesh` classes can be concatenated
-         
-            >>> from fipy.meshes import Tri2D
-            >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
-            >>> triMesh = triMesh + ((2,), (0,))
-            >>> triAddedMesh = baseMesh + triMesh
-            >>> cellCenters = [[0.5, 1.5, 0.5, 1.5, 2.83333333,  3.83333333,
-            ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
-            ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
-            ...                 0.5, 0.5, 0.16666667, 0.16666667]]
-            >>> print numerix.allclose(triAddedMesh.cellCenters,
-            ...                        cellCenters)
-            True
-
-        again, their faces need not align, but the mesh may not have 
-        the desired connectivity
-        
-            >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
-            >>> triMesh = triMesh + ((2,), (0,))
-            >>> triAddedMesh = baseMesh + triMesh
-            >>> cellCenters = [[ 0.5, 1.5, 0.5, 1.5, 2.83333333, 3.83333333,
-            ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
-            ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
-            ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
-            >>> print numerix.allclose(triAddedMesh.cellCenters,
-            ...                        cellCenters)
-            True
-
-        `Mesh` concatenation is not limited to 2D meshes
-        
-            >>> from fipy.meshes import Grid3D
-            >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
-            ...                         nx = 2, ny = 2, nz = 2)
-            >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
-            ...                           nx = 1, ny = 1, nz = 1)
-            >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
-            >>> print threeDAddedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
-             [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
-
-        but the different `Mesh` objects must, of course, have the same 
-        dimensionality.
-        
-            >>> InvalidMesh = threeDBaseMesh + baseMesh
-            Traceback (most recent call last):
-            ...
-            MeshAdditionError: Dimensions do not match
-        """  
-        if(isinstance(other, Mesh)):
-            return self._concatenatedClass(**self._getAddedMeshValues(other=other))
-        else:
-            return self._translate(other)
-
-    __radd__ = __add__
-    
     def __mul__(self, factor):
         """
         Dilate a `Mesh` by `factor`.
@@ -362,368 +416,22 @@ class Mesh(object):
         return newmesh
 
     __rmul__ = __mul__
-
-    def __repr__(self):
-        return "%s()" % self.__class__.__name__
-     
-    """
-    TODO: Put this in a PeriodicGrid specific class.
-    """
-    def _connectFaces(self, faces0, faces1):
-        """
-        
-        Merge faces on the same mesh. This is used to create periodic
-        meshes. The first list of faces, `faces1`, will be the faces
-        that are used to add to the matrix diagonals. The faces in
-        `faces2` will not be used. They aren't deleted but their
-        adjacent cells are made to point at `faces1`. The list
-        `faces2` are not altered, they still remain as members of
-        exterior faces.
-
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
-
-           >>> from fipy.tools import parallel
-           >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
-           ...                                                           [7, 8, 10, 11],
-           ...                                                           [2, 3, 4, 5],
-           ...                                                           [6, 7, 9, 10]]).flatten().all()
-           True
-
-           >>> mesh._connectFaces(numerix.nonzero(mesh.facesLeft), numerix.nonzero(mesh.facesRight))
-
-           >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
-           ...                                                           [7, 6, 10, 9],
-           ...                                                           [2, 3, 4, 5],
-           ...                                                           [6, 7, 9, 10]]).flatten().all()
-           True
-
-        """
-        ## check for errors
-
-        ## check that faces are members of exterior faces
-        from fipy.variables.faceVariable import FaceVariable
-        faces = FaceVariable(mesh=self, value=False)
-        faces[faces0] = True
-        faces[faces1] = True
-        assert (faces | self.exteriorFaces == self.exteriorFaces).all()
-
-        ## following assert checks number of faces are equal, normals are opposite and areas are the same
-        assert numerix.allclose(numerix.take(self._areaProjections, faces0, axis=1),
-                               numerix.take(-self._areaProjections, faces1, axis=1))
-
-        ## extract the adjacent cells for both sets of faces
-        faceCellIDs0 = self.faceCellIDs[0]
-        faceCellIDs1 = self.faceCellIDs[1]
-        ## set the new adjacent cells for `faces0`
-        MA.put(faceCellIDs1, faces0, MA.take(faceCellIDs0, faces0))
-        MA.put(faceCellIDs0, faces0, MA.take(faceCellIDs0, faces1))
-        self.faceCellIDs[0] = faceCellIDs0
-        self.faceCellIDs[1] = faceCellIDs1
-        
-        ## extract the face to cell distances for both sets of faces
-        faceToCellDistances0 = self._faceToCellDistances[0]
-        faceToCellDistances1 = self._faceToCellDistances[1]
-        ## set the new faceToCellDistances for `faces0`
-        MA.put(faceToCellDistances1, faces0, MA.take(faceToCellDistances0, faces0))
-        MA.put(faceToCellDistances0, faces0, MA.take(faceToCellDistances0, faces1))
-
-        """
-        Abandon hope, all ye who enter.
-
-        Some very hacky stuff going on here with property assignment. Temporary
-        variables are often used because slice and index assignments DO NOT call
-        the property-setters, instead they act on the underlying numpy reference
-        directly.
-
-        Does Guido know about this?
-        """
-
-        connectedFaceToCellDs = self._faceToCellDistances
-        connectedFaceToCellDs[0] = faceToCellDistances0
-        connectedFaceToCellDs[1] = faceToCellDistances1
-        self._faceToCellDistances = connectedFaceToCellDs
-
-        tempCellDist = self._cellDistances
-        ## calculate new cell distances and add them to faces0
-        numerix.put(tempCellDist, faces0, MA.take(faceToCellDistances0 + faceToCellDistances1, faces0))
-        self._cellDistances = tempCellDist
-
-        tempFaceNormals = self._faceNormals
-        ## change the direction of the face normals for faces0
-        for dim in range(self.dim):
-            faceNormals = tempFaceNormals[dim].copy()
-            numerix.put(faceNormals, faces0, MA.take(faceNormals, faces1))
-            tempFaceNormals[dim] = faceNormals
-
-        self._faceNormals = tempFaceNormals
-
-        ## Cells that are adjacent to faces1 are changed to point at faces0
-        ## get the cells adjacent to faces1
-        faceCellIDs = MA.take(self.faceCellIDs[0], faces1)
-        ## get all the adjacent faces for those particular cells
-        cellFaceIDs = numerix.take(self.cellFaceIDs, faceCellIDs, axis=1)
-        for i in range(cellFaceIDs.shape[0]):
-            ## if the faces is a member of faces1 then change the face to point at
-            ## faces0
-            cellFaceIDs[i] = MA.where(cellFaceIDs[i] == faces1,
-                                      faces0,
-                                      cellFaceIDs[i])
-            ## add those faces back to the main self.cellFaceIDs
-            tmpCellFaceIDs = self.cellFaceIDs
-            numerix.put(tmpCellFaceIDs[i], faceCellIDs, cellFaceIDs[i])
-            self.cellFaceIDs = tmpCellFaceIDs
-
-        ## calculate new topology
-        self._setTopology()
-
-        ## calculate new geometry
-        self._geometry.handleFaceConnection()
-        
-        self.scale = self.scale['length']
-        
-    @getsetDeprecated
-    def _getConcatenableMesh(self):
-        return self._concatenableMesh
-
+    
     @property
     def _concatenableMesh(self):
         return self
-        
-    def _getAddedMeshValues(self, other, resolution=1e-2):
-        """Calculate the parameters to define a concatenation of `other` with `self`
-        
-        :Parameters:
-          - `other`: The :class:`~fipy.meshes.Mesh` to concatenate with `self`
-          - `resolution`: How close vertices have to be (relative to the smallest 
-            cell-to-cell distance in either mesh) to be considered the same
-
-        :Returns:
-          A `dict` with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs.
-        """
-        
-        selfc = self._concatenableMesh
-        other = other._concatenableMesh
-
-        selfNumFaces = selfc.faceVertexIDs.shape[-1]
-        selfNumVertices = selfc.vertexCoords.shape[-1]
-        otherNumFaces = other.faceVertexIDs.shape[-1]
-        otherNumVertices = other.vertexCoords.shape[-1]
-        ## check dimensions
-        if(selfc.vertexCoords.shape[0] != other.vertexCoords.shape[0]):
-            raise MeshAdditionError, "Dimensions do not match"
-            
-        ## compute vertex correlates
-
-        """
-        from fipy.tools.debug import PRINT
-        PRINT("selfNumFaces", selfNumFaces)
-        PRINT("otherNumFaces", otherNumVertices)
-        PRINT("selfNumVertices", selfNumVertices)
-        PRINT("otherNumVertices", otherNumVertices)
-
-        from fipy.tools.debug import PRINT
-        from fipy.tools.debug import PRINT
-        PRINT("otherExt", other.exteriorFaces.value)
-        raw_input()
-        PRINT("selfExt", selfc.exteriorFaces.value)
-
-        PRINT("self filled", selfc.faceVertexIDs.filled())
-        PRINT("othe filled", other.faceVertexIDs.filled())
-        raw_input()
-
-        PRINT("selfc.faceVertexIDs.filled()\n",selfc.faceVertexIDs.filled())
-        PRINT("flat\n",selfc.faceVertexIDs.filled()[...,
-            selfc.exteriorFaces.value].flatten())
-        PRINT("selfc.exteriorFaces.value\n",selfc.exteriorFaces.value) 
-        PRINT("extfaces type", type(selfc.exteriorFaces))
-        PRINT("extfaces mesh", selfc.exteriorFaces.mesh)
-        """
-
-        ## only try to match exterior (X) vertices
-        self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[...,
-            selfc.exteriorFaces.value].flatten())
-        other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[...,
-            other.exteriorFaces.value].flatten())
-
-        """
-        from fipy.tools.debug import PRINT
-        PRINT("self_Xvertices", self_Xvertices)
-        PRINT("other_Xvertices", other_Xvertices)
-        raw_input()
-        """
-
-        self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
-        other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
-        
-        # lifted from Mesh._getNearestCellID()
-        other_vertexCoordMap = numerix.resize(other_XvertexCoords, 
-                                              (self_XvertexCoords.shape[-1], 
-                                               other_XvertexCoords.shape[0], 
-                                               other_XvertexCoords.shape[-1])).swapaxes(0,1)
-        tmp = self_XvertexCoords[..., numerix.newaxis] - other_vertexCoordMap
-
-        """
-        import sys
-        print >> sys.stderr, "tmp", tmp
-        """
-                
-        closest = numerix.argmin(numerix.dot(tmp, tmp), axis=0)
-        
-        # just because they're closest, doesn't mean they're close
-        tmp = self_XvertexCoords[..., closest] - other_XvertexCoords
-        distance = numerix.sqrtDot(tmp, tmp)
-        # only want vertex pairs that are 100x closer than the smallest 
-        # cell-to-cell distance
-        close = distance < resolution * min(selfc._cellToCellDistances.min(), 
-                                            other._cellToCellDistances.min())
-        vertexCorrelates = numerix.array((self_Xvertices[closest[close]],
-                                          other_Xvertices[close]))
-        
-        # warn if meshes don't touch, but allow it
-        if (selfc._numberOfVertices > 0 
-            and other._numberOfVertices > 0 
-            and vertexCorrelates.shape[-1] == 0):
-            import warnings
-            warnings.warn("Vertices are not aligned", UserWarning, stacklevel=4)
-
-        ## compute face correlates
-
-        # ensure that both sets of faceVertexIDs have the same maximum number of (masked) elements
-        self_faceVertexIDs = selfc.faceVertexIDs
-        other_faceVertexIDs = other.faceVertexIDs
-
-        diff = self_faceVertexIDs.shape[0] - other_faceVertexIDs.shape[0]
-        if diff > 0:
-            other_faceVertexIDs = numerix.append(other_faceVertexIDs, 
-                                                 -1 * numerix.ones((diff,) 
-                                                                   + other_faceVertexIDs.shape[1:]),
-                                                 axis=0)
-            other_faceVertexIDs = MA.masked_values(other_faceVertexIDs, -1)
-        elif diff < 0:
-            self_faceVertexIDs = numerix.append(self_faceVertexIDs, 
-                                                -1 * numerix.ones((-diff,) 
-                                                                  + self_faceVertexIDs.shape[1:]),
-                                                axis=0)
-            self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
-
-        # want self's Faces for which all faceVertexIDs are in vertexCorrelates
-        self_matchingFaces = numerix.in1d(self_faceVertexIDs, 
-                                          vertexCorrelates[0]).reshape(self_faceVertexIDs.shape).all(axis=0).nonzero()[0]
-
-        # want other's Faces for which all faceVertexIDs are in vertexCorrelates
-        other_matchingFaces = numerix.in1d(other_faceVertexIDs, 
-                                           vertexCorrelates[1]).reshape(other_faceVertexIDs.shape).all(axis=0).nonzero()[0]
-                                           
-        # map other's Vertex IDs to new Vertex IDs, 
-        # accounting for overlaps with self's Vertex IDs
-        vertex_map = numerix.empty(otherNumVertices, dtype=int)
-        verticesToAdd = numerix.delete(numerix.arange(otherNumVertices), vertexCorrelates[1])
-        vertex_map[verticesToAdd] = numerix.arange(otherNumVertices - len(vertexCorrelates[1])) + selfNumVertices
-        vertex_map[vertexCorrelates[1]] = vertexCorrelates[0]
-
-        # calculate hashes of faceVertexIDs for comparing Faces
-        
-        if self_matchingFaces.shape[-1] == 0:
-            self_faceHash = numerix.empty(self_matchingFaces.shape[:-1] + (0,), dtype="str")
-        else:
-            # sort each of self's Face's vertexIDs for canonical comparison
-            self_faceHash = numerix.sort(self_faceVertexIDs[..., self_matchingFaces], axis=0)
-            # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
-            self_faceHash = numerix.apply_along_axis(str, axis=0, arr=self_faceHash)
-            
-        face_sort = numerix.argsort(self_faceHash)
-        self_faceHash = self_faceHash[face_sort]
-        self_matchingFaces = self_matchingFaces[face_sort]
-
-        if other_matchingFaces.shape[-1] == 0:
-            other_faceHash = numerix.empty(other_matchingFaces.shape[:-1] + (0,), dtype="str")
-        else:
-            # convert each of other's Face's vertexIDs to new IDs
-            other_faceHash = vertex_map[other_faceVertexIDs[..., other_matchingFaces]]
-            # sort each of other's Face's vertexIDs for canonical comparison
-            other_faceHash = numerix.sort(other_faceHash, axis=0)
-            # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
-            other_faceHash = numerix.apply_along_axis(str, axis=0, arr=other_faceHash)
-
-        face_sort = numerix.argsort(other_faceHash)
-        other_faceHash = other_faceHash[face_sort]
-        other_matchingFaces = other_matchingFaces[face_sort]
-
-        self_matchingFaces = self_matchingFaces[numerix.in1d(self_faceHash, 
-                                                             other_faceHash)]
-        other_matchingFaces = other_matchingFaces[numerix.in1d(other_faceHash, 
-                                                               self_faceHash)]
-        
-        faceCorrelates = numerix.array((self_matchingFaces,
-                                        other_matchingFaces))
-
-        # warn if meshes don't touch, but allow it
-        if (selfc.numberOfFaces > 0 
-            and other.numberOfFaces > 0 
-            and faceCorrelates.shape[-1] == 0):
-            import warnings
-            warnings.warn("Faces are not aligned", UserWarning, stacklevel=4)
-
-        # map other's Face IDs to new Face IDs, 
-        # accounting for overlaps with self's Face IDs
-        face_map = numerix.empty(otherNumFaces, dtype=int)
-        facesToAdd = numerix.delete(numerix.arange(otherNumFaces), faceCorrelates[1])
-        face_map[facesToAdd] = numerix.arange(otherNumFaces - len(faceCorrelates[1])) + selfNumFaces
-        face_map[faceCorrelates[1]] = faceCorrelates[0]
-        
-        other_faceVertexIDs = vertex_map[other.faceVertexIDs[..., facesToAdd]]
-        
-        # ensure that both sets of cellFaceIDs have the same maximum number of (masked) elements
-        self_cellFaceIDs = selfc.cellFaceIDs
-        other_cellFaceIDs = face_map[other.cellFaceIDs]
-        diff = self_cellFaceIDs.shape[0] - other_cellFaceIDs.shape[0]
-        if diff > 0:
-            other_cellFaceIDs = numerix.append(other_cellFaceIDs, 
-                                               -1 * numerix.ones((diff,) 
-                                                                 + other_cellFaceIDs.shape[1:]),
-                                               axis=0)
-            other_cellFaceIDs = MA.masked_values(other_cellFaceIDs, -1)
-        elif diff < 0:
-            self_cellFaceIDs = numerix.append(self_cellFaceIDs, 
-                                              -1 * numerix.ones((-diff,) 
-                                                                + self_cellFaceIDs.shape[1:]),
-                                              axis=0)
-            self_cellFaceIDs = MA.masked_values(self_cellFaceIDs, -1)
-
-        # concatenate everything and return
-        return {
-            'vertexCoords': numerix.concatenate((selfc.vertexCoords, 
-                                                 other.vertexCoords[..., verticesToAdd]), axis=1), 
-            'faceVertexIDs': numerix.concatenate((self_faceVertexIDs, 
-                                                  other_faceVertexIDs), axis=1), 
-            'cellFaceIDs': MA.concatenate((self_cellFaceIDs, 
-                                           other_cellFaceIDs), axis=1)
-            }
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
         newmesh = Mesh(newCoords, numerix.array(self.faceVertexIDs), numerix.array(self.cellFaceIDs))
         return newmesh
 
+    def _handleFaceConnection(self):
+        self._cellToCellDistances = self._calcCellToCellDist()   
+        self._setFaceDependentScaledValues()
+
     """calc Topology methods"""
 
-    @getsetDeprecated
-    def _getNumberOfFacesPerCell(self):
-        return self._numberOfFacesPerCell
-
-    @property
-    def _numberOfFacesPerCell(self):
-        cellFaceIDs = self.cellFaceIDs
-        if type(cellFaceIDs) is type(MA.array(0)):
-            ## bug in count returns float values when there is no mask
-            return numerix.array(cellFaceIDs.count(axis=0), 'l')
-        else:
-            return self._maxFacesPerCell * numerix.ones(cellFaceIDs.shape[-1], 'l')
-      
-    """
-    TODO: Does this really belong in mesh? I don't think so.
-    """
     def _calcFaceCellIDs(self):
         array = MA.array(MA.indices(self.cellFaceIDs.shape, 'l')[1], 
                          mask=MA.getmask(self.cellFaceIDs))
@@ -748,613 +456,11 @@ class Mesh(object):
         return MA.sort(MA.array(faceCellIDs, mask = mask),
                                    axis=0)
 
-    def _calcNumPts(self, d, n = None, axis = "x"):
-        """
-        Calculate the number of cells along the specified axis, based
-        on either the specified number or on the number elements in the
-        cell  `d` spacings.
-        
-        Used by the `Grid` meshes.
-
-        This tests a bug that was occuring with PeriodicGrid1D when
-        using a numpy float as the argument for the grid spacing.
-
-           >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
-           >>> PeriodicGrid1D(nx=2, dx=numerix.float32(1.))
-           PeriodicGrid1D(dx=1.0, nx=2)
-
-        """
-
-        if type(d) in [type(1), type(1.)] or not hasattr(d, '__len__'):
-            n = int(n or 1)
-        else:
-            n = int(n or len(d))
-            if n != len(d) and len(d) != 1:
-                raise IndexError, "n%s != len(d%s)" % (axis, axis)
-                
-        return n
-
-    def _calcVertexCoordinates(self, d, n):
-        """
-        Calculate the positions of the vertices along an axis, based on the 
-        specified `Cell` `d` spacing or list of `d` spacings.
-        
-        Used by the `Grid` meshes.
-        """
-        x = numerix.zeros((n + 1), 'd')
-        if n > 0:
-            x[1:] = d
-        return numerix.add.accumulate(x)
-
     """get Topology methods"""
     
-    @getsetDeprecated
-    def getVertexCoords(self):
-        """TODO: replace this with a warning."""
-        if hasattr(self, 'vertexCoords'):
-            return self.vertexCoords
-        else:
-            return self._createVertices()
-
-    @getsetDeprecated
-    def getExteriorFaces(self):
-        """
-        Return only the faces that have one neighboring cell.
-        TODO: replace with a warning.
-        """
-        return self.exteriorFaces
-            
-    @getsetDeprecated
-    def getInteriorFaces(self):
-        """
-        Return only the faces that have two neighboring cells.
-        TODO: replace with a warning.
-        """
-        return self.interiorFaces
-    
-    @getsetDeprecated
-    def getInteriorFaceIDs(self):
-        return self.interiorFaceIDs
-
-    @property
-    def interiorFaceIDs(self):
-        if not hasattr(self, '_interiorFaceIDs'):
-            self._interiorFaceIDs = numerix.nonzero(self.interiorFaces)[0]
-        return self._interiorFaceIDs
-
-    @getsetDeprecated
-    def getInteriorFaceCellIDs(self):
-        return self.interiorFaceCellIDs
-
-    @property
-    def interiorFaceCellIDs(self):
-        if not hasattr(self, '_interiorFaceCellIDs'):
-            ## Commented line is better, but doesn't work for zero length arrays
-            ##  self.interiorFaceCellIDs = self.getFaceCellIDs()[..., self.getInteriorFaceIDs()]
-            self._interiorFaceCellIDs = numerix.take(self.faceCellIDs,
-                                                     self.interiorFaceIDs, axis=1)
-        return self._interiorFaceCellIDs
-     
-    @getsetDeprecated
-    def getFaceCellIDs(self):
-        return self.faceCellIDs
-
-    @getsetDeprecated
-    def _getMaxFacesPerCell(self):
-        return self._maxFacesPerCell
-
     @property
     def _maxFacesPerCell(self):
         return self.cellFaceIDs.shape[0]
-
-    @getsetDeprecated
-    def _getExteriorCellIDs(self):
-        """ Why do we have this?!? It's only used for testing against itself? """
-        return self._exteriorCellIDs
-
-    @getsetDeprecated
-    def _getInteriorCellIDs(self):
-        """ Why do we have this?!? It's only used for testing against itself? """
-        return self._interiorCellIDs
-
-    @getsetDeprecated
-    def _getCellFaceOrientations(self):
-        return self._cellToFaceOrientations
-
-    @getsetDeprecated
-    def getNumberOfCells(self):
-        return self.numberOfCells
-
-    def _isOrthogonal(self):
-        return False
-    
-    @getsetDeprecated
-    def _getNumberOfVertices(self):
-        return self._numberOfVertices
-
-    @property
-    def _numberOfVertices(self):
-        if hasattr(self, 'numberOfVertices'):
-            return self.numberOfVertices
-        else:
-            return self.vertexCoords.shape[-1]
-        
-    @getsetDeprecated
-    def _getAdjacentCellIDs(self):
-        return self._adjacentCellIDs
-
-    @getsetDeprecated
-    def getDim(self):
-        return self.dim
-
-    @getsetDeprecated
-    def _getGlobalNonOverlappingCellIDs(self):
-        return self._globalNonOverlappingCellIDs
-
-    @property
-    def _globalNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
-
-        E.g., would return [0, 1, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.numberOfCells)
-
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
-
-    @property
-    def _globalOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.numberOfCells)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingCellIDs(self):
-        return self._localNonOverlappingCellIDs
-
-    @property
-    def _localNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 4 | 5 |
-        ------------------
-        | 0 | 1 || 1 | 2 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.numberOfCells)
-
-    @getsetDeprecated
-    def _getLocalOverlappingCellIDs(self):
-        return self._localOverlappingCellIDs
-
-    @property
-    def _localOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 5 |   |
-        ------------------
-        | 0 | 1 || 2 |   |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.numberOfCells)
-
-    @getsetDeprecated
-    def _getGlobalNonOverlappingFaceIDs(self):
-        return self._globalNonOverlappingFaceIDs
-
-    @property
-    def _globalNonOverlappingFaceIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
-
-        E.g., would return [0, 1, 4, 5, 8, 9, 12, 13, 14, 17, 18, 19]
-        for mesh A
-
-            A   ||   B
-        --8---9---10--11--
-       17   18  19  20   21
-        --4---5----6---7--
-       12   13  14  15   16
-        --0---1----2---3--
-                ||
-                
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.numberOfFaces)
-
-    @getsetDeprecated
-    def _getGlobalOverlappingFaceIDs(self):
-        return self._globalOverlappingFaceIDs
-
-    @property
-    def _globalOverlappingFaceIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 
-        14, 15, 17, 18, 19, 20] for mesh A
-
-            A   ||   B
-        --8---9---10--11--
-       17   18  19  20   21
-        --4---5----6---7--
-       12   13  14  15   16
-        --0---1----2---3--
-                ||
-                
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.numberOfFaces)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingFaceIDs(self):
-        return self._localNonOverlappingFaceIDs
-
-    @property
-    def _localNonOverlappingFaceIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
-        for mesh A
-
-            A   ||   B
-        --6---7-----7---8--
-       13   14 15/14 15   16
-        --3---4-----4---5--
-        9   10 11/10 11   12
-        --0---1-----1---2--
-                ||
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.numberOfFaces)
-
-    @getsetDeprecated
-    def _getLocalOverlappingFaceIDs(self):
-        return self._localOverlappingFaceIDs
-
-    @property
-    def _localOverlappingFaceIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 
-        12, 13, 14, 15, 16] for mesh A
-
-            A   ||   B
-        --6---7----8------
-       13   14  15  16   |
-        --3---4----5------
-        9   10  11  12   |
-        --0---1----2------
-                ||
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.numberOfFaces)
-
-    @getsetDeprecated
-    def getFacesLeft(self):
-        return self.facesLeft
-
-    @property
-    def facesLeft(self):
-        """
-        Return face on left boundary of Grid1D as list with the
-        x-axis running from left to right.
-
-            >>> from fipy import Grid2D, Grid3D
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((21, 25), 
-            ...                              numerix.nonzero(mesh.facesLeft)[0])
-            True
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print parallel.procID > 0 or numerix.allequal((9, 13), 
-            ...                              numerix.nonzero(mesh.facesLeft)[0])
-            True
-
-        """
-        x = self.faceCenters[0]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == _madmin(x))
-
-    @getsetDeprecated
-    def getFacesRight(self):
-        return self.facesRight
-
-    @property
-    def facesRight(self):
-        """
-        Return list of faces on right boundary of Grid3D with the
-        x-axis running from left to right. 
-
-            >>> from fipy import Grid2D, Grid3D, numerix
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((24, 28), 
-            ...                              numerix.nonzero(mesh.facesRight)[0])
-            True
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)    
-            >>> print parallel.procID > 0 or numerix.allequal((12, 16), 
-            ...                                               numerix.nonzero(mesh.facesRight)[0])
-            True
-            
-        """
-        x = self.faceCenters[0]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == _madmax(x))
-
-    @getsetDeprecated
-    def getFacesBottom(self):
-        return self.facesBottom
-
-    @property
-    def facesBottom(self):
-        """
-        Return list of faces on bottom boundary of Grid3D with the
-        y-axis running from bottom to top.
-
-            >>> from fipy import Grid2D, Grid3D, numerix
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((12, 13, 14), 
-            ...                              numerix.nonzero(mesh.facesBottom)[0])
-            1
-            >>> x, y, z = mesh.faceCenters
-            >>> print parallel.procID > 0 or numerix.allequal((12, 13), 
-            ...                              numerix.nonzero(mesh.facesBottom & (x < 1))[0])
-            1
-            
-        """
-        y = self.faceCenters[1]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == _madmin(y))
-
-
-    getFacesDown = getFacesBottom
-    facesDown = facesBottom
-
-    @getsetDeprecated
-    def getFacesTop(self):
-        return self.facesTop
-
-    @property
-    def facesTop(self):
-        """
-        Return list of faces on top boundary of Grid3D with the
-        y-axis running from bottom to top.
-
-            >>> from fipy import Grid2D, Grid3D, numerix
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((18, 19, 20), 
-            ...                              numerix.nonzero(mesh.facesTop)[0])
-            True
-            >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8), 
-            ...                              numerix.nonzero(mesh.facesTop)[0])
-            True
-            
-        """
-        y = self.faceCenters[1]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == _madmax(y))
-
-    getFacesUp = getFacesTop
-    facesUp = facesTop
-
-    @getsetDeprecated
-    def getFacesBack(self):
-        return self.facesBack
-
-    @property
-    def facesBack(self):
-        """
-        Return list of faces on back boundary of Grid3D with the
-        z-axis running from front to back. 
-
-            >>> from fipy import Grid3D, numerix
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8, 9, 10, 11), 
-            ...                              numerix.nonzero(mesh.facesBack)[0])
-            True
-
-        """
-        z = self.faceCenters[2] 
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == _madmax(z))
-
-    @getsetDeprecated
-    def getFacesFront(self):
-        return self.facesFront
-
-    @property
-    def facesFront(self):
-        """
-        Return list of faces on front boundary of Grid3D with the
-        z-axis running from front to back. 
-
-            >>> from fipy import Grid3D, numerix
-            >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((0, 1, 2, 3, 4, 5), 
-            ...                              numerix.nonzero(mesh.facesFront)[0])
-            True
-
-        """
-        z = self.faceCenters[2]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == _madmin(z))
-    
-    @getsetDeprecated
-    def _getNumberOfFaces(self):
-        return self.numberOfFaces
-
-    @getsetDeprecated
-    def _getCellToCellIDs(self):
-        return self._cellToCellIDs
-
-    @getsetDeprecated
-    def _getCellToCellIDsFilled(self):
-        return self._cellToCellIDsFilled
-     
-    """get geometry methods"""
-
-    @getsetDeprecated
-    def _getFaceAreas(self):
-        return self._faceAreas
-
-    @getsetDeprecated
-    def _getFaceNormals(self):
-        return self._faceNormals
-
-    @getsetDeprecated
-    def _getFaceCellToCellNormals(self):
-        return self._faceCellToCellNormals
-        
-    @getsetDeprecated
-    def getCellVolumes(self):
-        return self.cellVolumes
-
-    """
-    This shit has GOT TO GO.
-
-    This is yet another repercussion of UniformGrid inheriting from mesh.
-    """
-    def _getCellCenters(self):
-        return self._scaledCellCenters
-        
-    @getsetDeprecated
-    def getCellCenters(self):
-        return self.cellCenters
-
-    @getsetDeprecated
-    def _getFaceToCellDistances(self):
-        return self._faceToCellDistances
-
-    @getsetDeprecated
-    def _getCellDistances(self):
-        return self._cellDistances
-
-    @getsetDeprecated
-    def _getFaceToCellDistanceRatio(self):
-        return self._faceToCellDistanceRatio
-
-    @getsetDeprecated
-    def _getOrientedAreaProjections(self):
-        return self._orientedAreaProjections
-
-    @getsetDeprecated
-    def _getAreaProjections(self):
-        return self._areaProjections
-
-    @getsetDeprecated
-    def _getOrientedFaceNormals(self):
-        return self._orientedFaceNormals
-
-    @getsetDeprecated
-    def _getFaceTangents1(self):
-        return self._faceTangents1
-
-    @getsetDeprecated
-    def _getFaceTangents2(self):
-        return self._faceTangents2
-        
-    @getsetDeprecated
-    def _getFaceAspectRatios(self):
-        return self._faceAspectRatios
-    
-    @getsetDeprecated
-    def _getCellToCellDistances(self):
-        return self._cellToCellDistances
-
-    @getsetDeprecated
-    def _getCellNormals(self):
-        return self._cellNormals
-
-    @getsetDeprecated
-    def _getCellAreas(self):
-        return self._cellAreas
-
-    @property
-    def _cellAreaProjections(self):
-        return self._cellNormals * self._cellAreas
-
-    @getsetDeprecated
-    def _getCellAreaProjections(self):
-        return self._cellAreaProjections
-         
-    @getsetDeprecated
-    def getFaceCenters(self):
-        return self.faceCenters
-
-    @getsetDeprecated
-    def _getOrderedCellVertexIDs(self):
-        return self._orderedCellVertexIDs
-
-    @property
-    def _orderedCellVertexIDs(self):
-        return self._cellVertexIDs
-
-    @getsetDeprecated
-    def _getCellDistanceNormals(self):
-        return self._cellDistanceNormals
-
-    @property
-    def _cellDistanceNormals(self):
-        return self._cellDistanceNormals/ self._cellDistances
-        
-    @getsetDeprecated
-    def _getCellVertexIDs(self):
-        return self._cellVertexIDs
 
     @property
     def _cellVertexIDs(self):
@@ -1433,20 +539,7 @@ class Mesh(object):
 
 
     """scaling"""
-    def _calcScaleArea(self):
-        raise NotImplementedError
-
-    def _calcScaleVolume(self):
-        raise NotImplementedError
-     
-    def _getPointToCellDistances(self, point):
-        tmp = self.cellCenters - PhysicalField(point)
-        from fipy.tools import numerix
-        return numerix.sqrtDot(tmp, tmp)
-
-    def getNearestCell(self, point):
-        return self._getCellsByID([self._getNearestCellID(point)])[0]
-
+    
     def _getNearestCellID(self, points):
         """
         Test cases
@@ -1717,94 +810,6 @@ class Mesh(object):
 
         """
 
-    @property
-    def _VTKCellType(self):
-        from enthought.tvtk.api import tvtk
-        return tvtk.ConvexPointSet().cell_type
-                
-    @property
-    def VTKCellDataSet(self):
-        """Returns a TVTK `DataSet` representing the cells of this mesh
-        """
-        cvi = self._orderedCellVertexIDs.swapaxes(0,1)
-        from fipy.tools import numerix
-        if type(cvi) is numerix.ma.masked_array:
-            counts = cvi.count(axis=1)[:,None]
-            cells = numerix.ma.concatenate((counts,cvi),axis=1).compressed()
-        else:
-            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
-            cells = numerix.concatenate((counts,cvi),axis=1).flatten()
-        
-        from enthought.tvtk.api import tvtk
-        num = counts.shape[0]
-
-        cps_type = self._VTKCellType
-        cell_types = numerix.array([cps_type]*num)
-        cell_array = tvtk.CellArray()
-        cell_array.set_cells(num, cells)
-
-        points = self.vertexCoords
-        points = self._toVTK3D(points)
-        ug = tvtk.UnstructuredGrid(points=points)
-        
-        offset = numerix.cumsum(counts[:,0]+1)
-        if len(offset) > 0:
-            offset -= offset[0]
-        ug.set_cells(cell_types, offset, cell_array)
-
-        return ug
-
-    @property
-    def VTKFaceDataSet(self):
-        """Returns a TVTK `DataSet` representing the face centers of this mesh
-        """
-        from enthought.tvtk.api import tvtk
-        
-        points = self.faceCenters
-        points = self._toVTK3D(points)
-        ug = tvtk.UnstructuredGrid(points=points)
-        
-        num = len(points)
-        counts = numerix.array([1] * num)[..., numerix.newaxis]
-        cells = numerix.arange(self.numberOfFaces)[..., numerix.newaxis]
-        cells = numerix.concatenate((counts, cells), axis=1)
-        cell_types = numerix.array([tvtk.Vertex().cell_type]*num)
-        cell_array = tvtk.CellArray()
-        cell_array.set_cells(num, cells)
-
-        counts = numerix.array([1] * num)
-        offset = numerix.cumsum(counts+1)
-        if len(offset) > 0:
-            offset -= offset[0]
-        ug.set_cells(cell_types, offset, cell_array)
-
-        return ug
-
-    def _toVTK3D(self, arr, rank=1):
-        if arr.dtype.name is 'bool':
-            # VTK can't do bool, and the exception isn't properly
-            # thrown back to the user
-            arr = arr.astype('int')
-        if rank == 0:
-            return arr
-        else:
-            arr = numerix.concatenate((arr, 
-                                       numerix.zeros((3 - self.dim,) 
-                                                     + arr.shape[1:])))
-            return arr.swapaxes(-2, -1)
-
-def _madmin(x):
-    if len(x) == 0:
-        return 0
-    else:
-        return min(x)
-        
-def _madmax(x):
-    if len(x) == 0:
-        return 0
-    else:
-        return max(x)
- 
 def _test():
     import doctest
     return doctest.testmod()
