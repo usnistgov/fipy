@@ -195,7 +195,7 @@ Set up the no-slip boundary conditions
 Set up the viewers,
 
 .. index::
-   :module: fipy.viewers
+   module: fipy.viewers
    
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=(pressure, xVelocity, yVelocity, velocity))

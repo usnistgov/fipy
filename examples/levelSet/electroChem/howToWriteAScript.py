@@ -113,7 +113,7 @@ size.
 Build the mesh:
 
 .. index::
-   :module: parser
+   module: parser
 
 >>> from fipy.tools.parser import parse
 >>> numberOfElements = parse('--numberOfElements', action='store',

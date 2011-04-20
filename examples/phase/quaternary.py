@@ -372,7 +372,7 @@ the solidus and liquidus concentrations
 If we're running interactively, we create a viewer
     
 .. index:: 
-   :module: viewers
+   module: viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=([phase]

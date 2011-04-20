@@ -200,7 +200,7 @@ If the example is run interactively, we create viewers for the phase
 and orientation variables.
 
 .. index::
-   :module: fipy.viewers
+   module: fipy.viewers
    
 .. index:: :math:`\pi`, pi
 
