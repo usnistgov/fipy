@@ -1,6 +1,5 @@
 DISCLAIMER.txt
 INSTALLATION.txt
-Jorge.txt
 LICENSE.txt
 MACOSX-INSTALLATION.txt
 MANIFEST-WINDOWS.in
@@ -103,6 +102,7 @@ documentation/_build/html/_sources/examples/updating/index.txt
 documentation/_build/html/_sources/examples/updating/generated/examples.updating.update0_1to1_0.txt
 documentation/_build/html/_sources/examples/updating/generated/examples.updating.update1_0to2_0.txt
 documentation/_build/html/_sources/fipy/generated/boundaryConditions.txt
+documentation/_build/html/_sources/fipy/generated/matrices.txt
 documentation/_build/html/_sources/fipy/generated/meshes.common.txt
 documentation/_build/html/_sources/fipy/generated/meshes.numMesh.txt
 documentation/_build/html/_sources/fipy/generated/meshes.pyMesh.txt
@@ -131,6 +131,7 @@ documentation/_build/html/_sources/fipy/generated/viewers.matplotlibViewer.txt
 documentation/_build/html/_sources/fipy/generated/viewers.mayaviViewer.txt
 documentation/_build/html/_sources/fipy/generated/viewers.txt
 documentation/_build/html/_sources/fipy/generated/viewers.vtkViewer.txt
+documentation/_build/latex/fipy.pdf
 documentation/_static/favicon.ico
 documentation/_static/fipy.bib
 documentation/_static/fipy.png

@@ -4,6 +4,7 @@ Diffusion Examples
 
 .. autosummary::
    :toctree: generated
+   :template: example.rst
 
    examples.diffusion.mesh1D
    examples.diffusion.mesh20x20

@@ -4,6 +4,7 @@ Level Set Examples
 
 .. autosummary::
    :toctree: generated
+   :template: example.rst
 
    examples.levelSet.distanceFunction.mesh1D
    examples.levelSet.distanceFunction.circle
@@ -16,6 +17,7 @@ Level Set Examples
 
 .. autosummary::
    :toctree: generated
+   :template: example.rst
 
    examples.levelSet.electroChem.simpleTrenchSystem
    examples.levelSet.electroChem.gold
