@@ -404,9 +404,9 @@ and again iterate to equilibrium
    :width: 90%
    :align: center
 
-We can confirm that the far-field phases have remained separated
+.. .. index:: take, allclose
 
-.. index:: take, allclose
+We can confirm that the far-field phases have remained separated
 
 >>> X = mesh.getFaceCenters()[0]
 >>> print allclose(phase.getFaceValue()[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
