@@ -128,6 +128,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
             
     def _getSuitableVars(self, vars):
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.mesh.dim == 1]
+
         if len(vars) > 1:
             vars = [var for var in vars if var.mesh is vars[0].mesh]
         if len(vars) == 0:

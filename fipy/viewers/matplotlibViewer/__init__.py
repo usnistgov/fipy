@@ -94,7 +94,7 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     kwlimits.update(limits)
     
     from fipy.viewers import MeshDimensionError
-    
+
     try:
         return Matplotlib1DViewer(vars=vars, title=title, axes=axes, **kwlimits)
     except MeshDimensionError:

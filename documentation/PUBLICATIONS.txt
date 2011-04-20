@@ -18,6 +18,11 @@ to this list.
    on Interdigitated Back-Contacts,"
    *Electrochemical Society Transactions* (2010) *(submitted)*.
 
+* D. Wheeler,  and J. A. Warren & W. J. Boettinger,
+  "Modeling the early stages of reactive wetting"
+  *Physical Review E* **82** (5) pp. 051601 (2010),
+  `doi:10.1103/PhysRevE.82.051601 <http://dx.doi.org/10.1103/PhysRevE.82.051601>`_.
+
 * R. R. Mohanty, J. E. Guyer & Y. H. Sohn,
   "Diffusion under temperature gradient: A phase-field model study"
   *Journal of Applied Physics* **106** (3) pp. 034912 (2009),

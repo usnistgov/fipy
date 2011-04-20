@@ -40,6 +40,7 @@ __docformat__ = 'restructuredtext'
 from grid1D import Grid1D
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
+from fipy.meshes.builders import PeriodicGrid1DBuilder
 
 class PeriodicGrid1D(Grid1D):
     """
@@ -85,20 +86,14 @@ class PeriodicGrid1D(Grid1D):
         True
     """
     def __init__(self, dx = 1., nx = None):
-        Grid1D.__init__(self, dx = dx, nx = nx)
+        Grid1D.__init__(self, dx = dx, nx = nx,
+                        BuilderClass=PeriodicGrid1DBuilder)
         from fipy.tools import numerix
 
         if self.occupiedNodes == 1:
             self._connectFaces(numerix.nonzero(self.facesLeft),
                                numerix.nonzero(self.facesRight))
 
-    def _getOverlap(self, overlap, procID, occupiedNodes):
-        self.occupiedNodes = occupiedNodes
-        if occupiedNodes == 1:
-            return Grid1D._getOverlap(self, overlap, procID, occupiedNodes)
-        else:
-            return {'left': overlap, 'right': overlap}
-        
     @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
         return self._globalOverlappingCellIDs

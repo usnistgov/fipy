@@ -38,7 +38,6 @@ import os
 
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
-from fipy.terms import AlternativeMethodInBaseClass
 from fipy.terms import TermMultiplyError
 
 class _BaseDiffusionTerm(_UnaryTerm):
@@ -155,7 +154,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
                 rank = len(shape)
 
             if rank == 0 and self._treatMeshAsOrthogonal(mesh):
-                tmpBop = (coeff * mesh._faceAreas / mesh._cellDistances)[numerix.newaxis, :]
+                tmpBop = (coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas) / mesh._cellDistances)[numerix.newaxis, :]
             else:
 
                 if rank == 1 or rank == 0:
@@ -225,35 +224,31 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        if var is self.var or self.var is None:
-        
-            var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+        var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-            if self.order == 2:
-                if not hasattr(self, 'constraintB'):
+        if self.order == 2:
+            if not hasattr(self, 'constraintB'):
 
-                    mesh = var.mesh
-                    from fipy.variables.faceVariable import FaceVariable
-    ##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
-                    normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals) * self.nthCoeff
+                mesh = var.mesh
+                from fipy.variables.faceVariable import FaceVariable
+##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
+                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals) * self.nthCoeff
 
-                    self.constraintB = 0
-                    self.constraintL = 0
+                self.constraintB = 0
+                self.constraintL = 0
 
-                    if var.faceGrad.constraintMask is not None:
-                        self.constraintB -= (var.faceGrad.constraintMask * self.nthCoeff * var.faceGrad).divergence * mesh.cellVolumes
+                if var.faceGrad.constraintMask is not None:
+                    self.constraintB -= (var.faceGrad.constraintMask * self.nthCoeff * var.faceGrad).divergence * mesh.cellVolumes
 
-                    if var.arithmeticFaceValue.constraintMask is not None:
-                        constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * normalsDotCoeff / mesh._cellDistances
-                        self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
-                        self.constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+                if var.arithmeticFaceValue.constraintMask is not None:
+                    constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * normalsDotCoeff / mesh._cellDistances
+                    self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
+                    self.constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
 
-                L.addAtDiagonal(self.constraintL)
-                b += self.constraintB
+            L.addAtDiagonal(self.constraintL)
+            b += self.constraintB
 
-            return (var, L, b)
-        else:
-            return (var, SparseMatrix(mesh=var.mesh), 0)
+        return (var, L, b)
         
     def __higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.mesh
@@ -354,8 +349,6 @@ class _BaseDiffusionTerm(_UnaryTerm):
         return (var, L, b)
 
     def _getDiffusionGeomCoeff(self, var):
-        if _UnaryTerm._getDiffusionGeomCoeff(self, var) is not None:
-            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')       
         if var is self.var or self.var is None:
             return self._getGeomCoeff(var.mesh)
         else:

@@ -87,4 +87,24 @@ class PysparseSolver(_PysparseMatrixSolver):
                 PRINT('failure', self._warningList[info].__class__.__name__)
             PRINT('relres:', relres)
             
-    
+    def _solve(self):
+
+        if self.var.mesh.communicator.Nproc > 1:
+            raise Exception("PySparse solvers cannot be used with multiple processors")
+        
+        array = self.var.numericValue
+        
+        from fipy.terms import SolutionVariableNumberError
+        
+        if ((self.matrix == 0)
+            or (self.matrix.matrix.shape[0] != self.matrix.matrix.shape[1])
+            or (self.matrix.matrix.shape[0] != len(array))):
+
+            raise SolutionVariableNumberError
+
+        self._solve_(self.matrix, array, self.RHSvector)
+        factor = self.var.unit.factor
+        if factor != 1:
+            array /= self.var.unit.factor
+        self.var[:] = array 
+

@@ -39,24 +39,28 @@
 __docformat__ = 'restructuredtext'
 
 from grid2D import Grid2D
-from fipy.meshes.topologies import _UniformMeshTopology2D
-from fipy.meshes.geometries import _UniformGridGeometry2D
+from fipy.meshes.builders import Grid2DBuilder
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import parallel
-from fipy.tools.decorators import getsetDeprecated
 
-class UniformGrid2D(Grid2D):
+from fipy.meshes.builders import UniformGrid2DBuilder
+from fipy.meshes.gridlike import Gridlike2D
+from fipy.meshes.uniformGrid import UniformGrid
+
+class UniformGrid2D(UniformGrid):
     """
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
-                 overlap=2, communicator=parallel,
-                 GeomClass=_UniformGridGeometry2D):        
+                       overlap=2, communicator=parallel):
+
+        builder = UniformGrid2DBuilder()
+
         self.args = {
             'dx': dx, 
             'dy': dy, 
@@ -67,75 +71,466 @@ class UniformGrid2D(Grid2D):
             'communicator': communicator
         }
 
-        self.dim = 2
-        
-        self.dx = PhysicalField(value = dx)
-        scale = PhysicalField(value = 1, unit = self.dx.unit)
-        self.dx /= scale
-        
-        nx = int(nx)
-        
-        self.dy = PhysicalField(value = dy)
-        if self.dy.unit.isDimensionless():
-            self.dy = dy
-        else:
-            self.dy /= scale
-            
-        ny = int(ny)
-
-        self.globalNumberOfCells = nx * ny
-        self.globalNumberOfFaces = nx * (ny + 1) + ny * (nx + 1)
-        
-        (self.nx,
-         self.ny,
+        builder.buildGridData([dx, dy], [nx, ny], overlap, communicator, 
+                              origin)
+                                               
+        ([self.dx, self.dy],
+         [self.nx, self.ny],
+         self.dim,
+         scale,
+         self.globalNumberOfCells,
+         self.globalNumberOfFaces,
          self.overlap,
-         self.offset) = self._calcParallelGridInfo(nx, ny, overlap, communicator)
-        
-        self.origin = PhysicalField(value = origin)
-        self.origin /= scale
-
-        self.origin += ((self.offset[0] * float(self.dx),),
-                        (self.offset[1] * float(self.dy),))
-
-        if self.nx == 0:
-            self.ny = 0
-        if self.ny == 0:
-            self.nx = 0
-        if self.nx == 0 or self.ny == 0:
-            self.numberOfHorizontalRows = 0
-            self.numberOfVerticalColumns = 0
-        else:
-            self.numberOfHorizontalRows = (self.ny + 1)
-            self.numberOfVerticalColumns = (self.nx + 1)
-            
-        self.numberOfVertices = self.numberOfHorizontalRows * self.numberOfVerticalColumns
-
-        self.numberOfHorizontalFaces = self.nx * self.numberOfHorizontalRows
-        self.numberOfVerticalFaces = self.numberOfVerticalColumns * self.ny
-        self.numberOfFaces = self.numberOfHorizontalFaces + self.numberOfVerticalFaces
-        self.numberOfCells = self.nx * self.ny
-        
-        self._topology = _UniformMeshTopology2D(self.nx, self.ny,
-                                                self.numberOfFaces, 
-                                                self.numberOfCells,
-                                                self.numberOfVerticalColumns,
-                                                self.numberOfHorizontalFaces,
-                                                self.numberOfHorizontalRows,
-                                                self._maxFacesPerCell,
-                                                self)
-
-        self._geometry = GeomClass(self.dx, self.dy,
-                                   self.nx, self.ny,
-                                   self.origin,
-                                   self.numberOfFaces,
-                                   self.numberOfHorizontalFaces,
-                                   self.numberOfVerticalFaces,
-                                   self.numberOfHorizontalRows,
-                                   self.numberOfVerticalColumns,
-                                   self.numberOfCells)
+         self.offset,
+         self.numberOfVertices,
+         self.numberOfFaces,
+         self.numberOfCells,
+         self.shape,
+         self.physicalShape,
+         self._meshSpacing,
+         self.numberOfHorizontalRows,
+         self.numberOfVerticalColumns,
+         self.numberOfHorizontalFaces,
+         self.numberOfVerticalFaces,
+         self.origin) = builder.gridData
         
         self.communicator = communicator
+         
+    def __getstate__(self):
+        return Gridlike2D.__getstate__(self)
+
+    def __setstate__(self, dict):
+        return Gridlike2D.__setstate__(self, dict)
+
+    def __repr__(self):
+        return Gridlike2D.__repr__(self)
+
+    def _isOrthogonal(self):
+        return Gridlike2D._isOrthogonal(self)
+
+    @property
+    def _concatenatedClass(self):
+        return Gridlike2D._concatenatedClass
+
+    """
+    Topology set and calc
+    """
+
+    @property
+    def _exteriorFaces(self):
+        """
+        Return only the faces that have one neighboring cell.
+        """
+        exteriorIDs = numerix.concatenate((numerix.arange(0, self.nx),
+                                           numerix.arange(0, self.nx) + self.nx * self.ny,
+                                           numerix.arange(0, self.ny) * self.numberOfVerticalColumns + self.numberOfHorizontalFaces,
+                                           numerix.arange(0, self.ny) * self.numberOfVerticalColumns + self.numberOfHorizontalFaces + self.nx))
+                       
+        from fipy.variables.faceVariable import FaceVariable
+        exteriorFaces = FaceVariable(mesh=self, value=False)
+        exteriorFaces[exteriorIDs] = True
+        return exteriorFaces
+
+    @property
+    def _interiorFaces(self):
+        """
+        Return only the faces that have two neighboring cells.
+        """
+        Hids = numerix.arange(0, self.numberOfHorizontalFaces)
+        Hids = numerix.reshape(Hids, (self.numberOfHorizontalRows, self.nx))
+        Hids = Hids[1:-1,...]
         
+        Vids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces)
+        Vids = numerix.reshape(Vids, (self.ny, self.numberOfVerticalColumns))
+        Vids = Vids[...,1:-1]
+        
+        interiorIDs = numerix.concatenate((numerix.reshape(Hids, (self.nx * (self.ny - 1),)), 
+                                           numerix.reshape(Vids, ((self.nx - 1) * self.ny,))))
+                                           
+        from fipy.variables.faceVariable import FaceVariable
+        interiorFaces = FaceVariable(mesh=self, value=False)
+        interiorFaces[interiorIDs] = True
+        return interiorFaces
+
+    @property
+    def _cellToFaceOrientations(self):
+        cellFaceOrientations = numerix.ones((4, self.numberOfCells))
+        if self.numberOfCells > 0:
+            cellFaceOrientations[0, self.nx:] = -1
+            cellFaceOrientations[3, :] = -1
+            cellFaceOrientations[3, ::self.nx] = 1
+        return cellFaceOrientations
+   
+    if inline.doInline:
+        @property
+        def _adjacentCellIDs(self):
+            faceCellIDs0 =  numerix.zeros(self.numberOfFaces)
+            faceCellIDs1 =  numerix.zeros(self.numberOfFaces)
+
+            inline._runInline("""
+                int ID = j * ni + i;
+
+                faceCellIDs0[ID] = ID - ni;
+                faceCellIDs1[ID] = ID;
+
+                faceCellIDs0[ID + Nhor + j] = ID - 1;
+                faceCellIDs1[ID + Nhor + j] = ID;
+
+                if (j == 0) {
+                    faceCellIDs0[ID] = ID;
+                }
+
+                if (j == nj - 1) {
+                    faceCellIDs0[ID + ni] = ID;
+                    faceCellIDs1[ID + ni] = ID;
+                }
+
+                if (i == 0) {
+                    faceCellIDs0[ID + Nhor + j] = ID;
+                }
+
+                if ( i == ni - 1 ) {
+                    faceCellIDs0[ID + Nhor + j + 1] = ID;
+                    faceCellIDs1[ID + Nhor + j + 1] = ID;
+                }
+                
+            """,
+            Nhor=self.numberOfHorizontalFaces,
+            faceCellIDs0=faceCellIDs0,
+            faceCellIDs1=faceCellIDs1,
+            ni=self.nx,
+            nj=self.ny)
+
+            return (faceCellIDs0, faceCellIDs1)
+
+    else:
+        @property
+        def _adjacentCellIDs(self):
+            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2))
+            indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
+            
+            Hids[...,1] = indices[1] + indices[0] * self.nx
+            Hids[...,0] = Hids[...,1] - self.nx
+            
+            if self.numberOfHorizontalRows > 0:
+                Hids[0,...,0] = Hids[0,...,1]
+                Hids[0,...,1] = Hids[0,...,0]
+                Hids[-1,...,1] = Hids[-1,...,0]
+          
+            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2))
+            indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
+            Vids[...,1] = indices[1] + indices[0] * self.nx
+            Vids[...,0] = Vids[...,1] - 1
+            
+            if self.numberOfVerticalColumns > 0:
+                Vids[...,0,0] = Vids[...,0,1]
+                Vids[...,0,1] = Vids[...,0,0]
+                Vids[...,-1,1] = Vids[...,-1,0]
+
+            faceCellIDs =  numerix.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)), 
+                                                numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
+
+            return (faceCellIDs[:,0], faceCellIDs[:,1])
+
+    @property
+    def _cellToCellIDs(self):
+        ids = MA.zeros((4, self.nx, self.ny), 'l')
+        indices = numerix.indices((self.nx, self.ny))
+        ids[0] = indices[0] + (indices[1] - 1) * self.nx
+        ids[1] = (indices[0] + 1) + indices[1] * self.nx
+        ids[2] = indices[0] + (indices[1] + 1) * self.nx
+        ids[3] = (indices[0] - 1) + indices[1] * self.nx
+        
+        if self.ny > 0:
+            ids[0,..., 0] = MA.masked
+            ids[2,...,-1] = MA.masked
+        if self.nx > 0:
+            ids[1,-1,...] = MA.masked
+            ids[3, 0,...] = MA.masked
+        
+        return MA.reshape(ids.swapaxes(1,2), (4, self.numberOfCells))
+        
+    @property
+    def _cellToCellIDsFilled(self):
+        N = self.numberOfCells
+        M = self._maxFacesPerCell
+        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
+        cellToCellIDs = self._cellToCellIDs
+        return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
+ 
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike2D._globalNonOverlappingCellIDs(self)
+
+    @property
+    def _globalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike2D._globalOverlappingCellIDs(self)
+
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike2D._localNonOverlappingCellIDs(self)
+
+    @property
+    def _localOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return Gridlike2D._localOverlappingCellIDs(self)
+
+    """
+    Geometry set and calc
+    """
+
+    @property
+    def _orientedAreaProjections(self):
+        return self._areaProjections
+
+    if inline.doInline:
+        @property
+        def _areaProjections(self):
+            areaProjections = numerix.zeros((2, self.numberOfFaces), 'd')
+
+            inline._runInline("""
+                if (i < nx) {
+                    areaProjections[i + 1 * ni] = -dx;
+                } else if (i < Nhor) {
+                    areaProjections[i + 1 * ni] = dx;
+                } else if ( (i - Nhor) % (nx + 1) == 0 ) {
+                    areaProjections[i + 0 * ni] = -dy;
+                } else {
+                    areaProjections[i + 0 * ni] = dy;
+               }
+            """,
+            dx = float(self.dx), # horrible hack to get around
+            dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
+            nx = self.nx,
+            Nhor = self.numberOfHorizontalFaces,
+            areaProjections = areaProjections,
+            ni = self.numberOfFaces)
+
+            return areaProjections
+     
+    else:
+        @property
+        def _areaProjections(self):
+            return self._faceNormals * self._faceAreas
+                 
+    @property
+    def _faceAspectRatios(self):
+        return self._faceAreas / self._cellDistances  
+   
+    @property
+    def _faceAreas(self):
+        faceAreas = numerix.zeros(self.numberOfFaces, 'd')
+        faceAreas[:self.numberOfHorizontalFaces] = self.dx
+        faceAreas[self.numberOfHorizontalFaces:] = self.dy
+        return faceAreas
+
+    @property
+    def _faceNormals(self):
+        normals = numerix.zeros((2, self.numberOfFaces), 'd')
+
+        normals[1, :self.numberOfHorizontalFaces] = 1
+        normals[1, :self.nx] = -1
+
+        normals[0, self.numberOfHorizontalFaces:] = 1
+        if self.numberOfVerticalColumns > 0:
+            normals[0, self.numberOfHorizontalFaces::self.numberOfVerticalColumns] = -1
+
+        return normals
+
+    @property
+    def _cellVolumes(self):
+        return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
+
+    @property
+    def _cellCenters(self):
+        centers = numerix.zeros((2, self.nx, self.ny), 'd')
+        indices = numerix.indices((self.nx, self.ny))
+        centers[0] = (indices[0] + 0.5) * self.dx
+        centers[1] = (indices[1] + 0.5) * self.dy
+        ccs = centers.reshape((2, self.numberOfCells), 
+                               order="FORTRAN") + self.origin
+        return ccs
+
+    @property
+    def _cellDistances(self):
+        Hdis = numerix.repeat((self.dy,), self.numberOfHorizontalFaces)
+        Hdis = numerix.reshape(Hdis, (self.nx, self.numberOfHorizontalRows))
+        if self.numberOfHorizontalRows > 0:
+            Hdis[...,0] = self.dy / 2.
+            Hdis[...,-1] = self.dy / 2.
+        
+        Vdis = numerix.repeat((self.dx,), self.numberOfFaces - self.numberOfHorizontalFaces)
+        Vdis = numerix.reshape(Vdis, (self.numberOfVerticalColumns, self.ny))
+        if self.numberOfVerticalColumns > 0:
+            Vdis[0,...] = self.dx / 2.
+            Vdis[-1,...] = self.dx / 2.
+
+        return numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis,0,1), (self.numberOfHorizontalFaces,)), 
+                                    numerix.reshape(numerix.swapaxes(Vdis,0,1), (self.numberOfFaces - self.numberOfHorizontalFaces,))))
+
+    @property
+    def _faceToCellDistanceRatio(self):
+        faceToCellDistanceRatios = numerix.zeros(self.numberOfFaces, 'd')
+        faceToCellDistanceRatios[:] = 0.5
+        faceToCellDistanceRatios[:self.nx] = 1.
+        faceToCellDistanceRatios[self.numberOfHorizontalFaces - self.nx:self.numberOfHorizontalFaces] = 1.
+        if self.numberOfVerticalColumns > 0:
+            faceToCellDistanceRatios[self.numberOfHorizontalFaces::self.numberOfVerticalColumns] = 1.
+            faceToCellDistanceRatios[(self.numberOfHorizontalFaces + self.nx)::self.numberOfVerticalColumns] = 1.
+        return faceToCellDistanceRatios
+
+    def _getFaceToCellDistances(self):
+        if hasattr(self, "_internalFaceToCellDistances"):
+            """faces have been connected."""
+            return self._internalFaceToCellDistances
+        else:
+            faceToCellDistances = numerix.zeros((2, self.numberOfFaces), 'd')
+            distances = self._cellDistances
+            ratios = self._faceToCellDistanceRatio
+            faceToCellDistances[0] = distances * ratios
+            faceToCellDistances[1] = distances * (1 - ratios)
+            return faceToCellDistances
+    
+    def _setFaceToCellDistances(self, v):
+        """Exists only to allow `_connectFaces`."""
+        self._internalFaceToCellDistances = v
+
+    _faceToCellDistances = property(_getFaceToCellDistances,
+                                    _setFaceToCellDistances)
+     
+    @property
+    def _faceTangents1(self):
+        tangents = numerix.zeros((2,self.numberOfFaces), 'd')
+
+        if self.numberOfFaces > 0:
+            tangents[0, :self.numberOfHorizontalFaces] = -1
+            tangents[0, :self.nx] = 1        
+            tangents[1, self.numberOfHorizontalFaces:] = 1
+            tangents[1, self.numberOfHorizontalFaces::self.numberOfVerticalColumns] = -1
+
+        return tangents
+        
+    @property
+    def _faceTangents2(self):
+        return numerix.zeros((2, self.numberOfFaces), 'd')
+    
+    @property
+    def _cellToCellDistances(self):
+        distances = numerix.zeros((4, self.nx, self.ny), 'd')
+        distances[0] = self.dy
+        distances[1] = self.dx
+        distances[2] = self.dy
+        distances[3] = self.dx
+        
+        if self.ny > 0:
+            distances[0,..., 0] = self.dy / 2.
+            distances[2,...,-1] = self.dy / 2.
+        if self.nx > 0:
+            distances[3, 0,...] = self.dx / 2.
+            distances[1,-1,...] = self.dx / 2.
+        
+        return distances.reshape((4, self.numberOfCells), order="FORTRAN")
+
+
+    @property
+    def _cellNormals(self):
+        normals = numerix.zeros((2, 4, self.numberOfCells), 'd')
+        normals[:, 0] = [[ 0], [-1]]
+        normals[:, 1] = [[ 1], [ 0]]
+        normals[:, 2] = [[ 0], [ 1]]
+        normals[:, 3] = [[-1], [ 0]]
+
+        return normals
+        
+    @property
+    def _cellAreas(self):
+        areas = numerix.ones((4, self.numberOfCells), 'd')
+        areas[0] = self.dx
+        areas[1] = self.dy
+        areas[2] = self.dx
+        areas[3] = self.dy
+        return areas
+
+    @property
+    def _cellAreaProjections(self):
+        return self._cellAreas * self._cellNormals
+
+    @property
+    def _faceCenters(self):
+        Hcen = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'd')
+        indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
+        Hcen[0,...] = (indices[0] + 0.5) * self.dx
+        Hcen[1,...] = indices[1] * self.dy
+        
+        Vcen = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'd')
+        indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
+        Vcen[0,...] = indices[0] * self.dx
+        Vcen[1,...] = (indices[1] + 0.5) * self.dy
+        
+        return numerix.concatenate((Hcen.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
+                                    Vcen.reshape((2,
+                                        self.numberOfVerticalFaces),
+                                        order="FORTRAN")), axis=1) + self.origin   
+                            
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'], 
                               dy = self.args['dy'], ny = self.args['ny'], 
@@ -159,101 +554,92 @@ class UniformGrid2D(Grid2D):
         del args['origin']
         return Grid2D(**args) + origin
 
-    @getsetDeprecated
-    def _getCellFaceIDs(self):
-        return self.cellFaceIDs
-
     @property
-    def cellFaceIDs(self):
-        return self._createCells()
+    def _cellFaceIDs(self):
+        return Grid2DBuilder.createCells(self.nx, self.ny,
+                                         self.numberOfFaces,
+                                         self.numberOfHorizontalFaces,
+                                         self.numberOfVerticalColumns)
         
     @property
     def _maxFacesPerCell(self):
         return 4
         
-##         from numMesh/mesh
-
-    def _getVertexCoords(self):
-        return self._createVertices() + self.origin
-
-    vertexCoords = property(_getVertexCoords)
-
-    @getsetDeprecated
-    def getFaceCellIDs(self):
-        return self.faceCellIDs
-
     @property
-    def faceCellIDs(self):
-        return inline._optionalInline(self._getFaceCellIDsIn, self._getFaceCellIDsPy)
+    def vertexCoords(self):
+        return Grid2DBuilder.createVertices(self.nx, self.ny,
+                                            self.dx, self.dy,
+                                            self.numberOfVertices,
+                                            self.numberOfVerticalColumns) \
+                 + self.origin
 
-    def _getFaceCellIDsIn(self):
-        faceCellIDs = numerix.zeros((2, self.numberOfFaces))
-        mask = numerix.zeros((2, self.numberOfFaces))
+    if inline.doInline:
+        @property
+        def faceCellIDs(self):
+            faceCellIDs = numerix.zeros((2, self.numberOfFaces))
+            mask = numerix.zeros((2, self.numberOfFaces))
+            
+            inline._runInline("""
+                int ID = j * ni + i; 
+                int rowlength = ni * nj + Nhor + nj;
+
+                faceCellIDs[ID + 0 * rowlength] = ID - ni;
+                faceCellIDs[ID + 1 * rowlength] = ID;
+
+                faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID - 1;
+                faceCellIDs[ID + Nhor + j + 1 * rowlength] = ID;
+
+                if (j == 0) {
+                    faceCellIDs[ID + 0 * rowlength] = ID;
+                    mask[ID + 1 * rowlength] = 1;
+                }
+
+                if (j == nj - 1) {
+                    faceCellIDs[ID + ni + 0 * rowlength] = ID;
+                    mask[ID + ni + 1 * rowlength] = 1;
+                }
+
+                if (i == 0) {
+                    faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID;
+                    mask[ID + Nhor + j + 1 * rowlength] = 1;
+                }
+
+                if ( i == ni - 1 ) {
+                    faceCellIDs[ID + Nhor + j + 1 + 0 * rowlength] = ID;
+                    mask[ID + Nhor + j + 1 + 1 * rowlength] = 1;
+                }
+            """,
+            Nhor=self.numberOfHorizontalFaces,
+            mask=mask,
+            faceCellIDs=faceCellIDs,
+            ni=self.nx,
+            nj=self.ny)
+
+            return MA.masked_where(mask, faceCellIDs)
+    else:
+        @property
+        def faceCellIDs(self):
+            Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
+            indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
+            Hids[1] = indices[0] + indices[1] * self.nx
+            Hids[0] = Hids[1] - self.nx
+            if self.numberOfHorizontalRows > 0:
+                Hids[0,...,0] = Hids[1,...,0]
+                Hids[1,...,0] = -1
+                Hids[1,...,-1] = -1
+
+            Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny))
+            indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
+            Vids[1] = indices[0] + indices[1] * self.nx
+            Vids[0] = Vids[1] - 1
+            if self.numberOfVerticalColumns > 0:
+                Vids[0,0] = Vids[1,0]
+                Vids[1,0] = -1
+                Vids[1,-1] = -1
+            
+            return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
+                                                         Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
         
-        inline._runInline("""
-            int ID = j * ni + i; 
-            int rowlength = ni * nj + Nhor + nj;
-
-            faceCellIDs[ID + 0 * rowlength] = ID - ni;
-            faceCellIDs[ID + 1 * rowlength] = ID;
-
-            faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID - 1;
-            faceCellIDs[ID + Nhor + j + 1 * rowlength] = ID;
-
-            if (j == 0) {
-                faceCellIDs[ID + 0 * rowlength] = ID;
-                mask[ID + 1 * rowlength] = 1;
-            }
-
-            if (j == nj - 1) {
-                faceCellIDs[ID + ni + 0 * rowlength] = ID;
-                mask[ID + ni + 1 * rowlength] = 1;
-            }
-
-            if (i == 0) {
-                faceCellIDs[ID + Nhor + j + 0 * rowlength] = ID;
-                mask[ID + Nhor + j + 1 * rowlength] = 1;
-            }
-
-            if ( i == ni - 1 ) {
-                faceCellIDs[ID + Nhor + j + 1 + 0 * rowlength] = ID;
-                mask[ID + Nhor + j + 1 + 1 * rowlength] = 1;
-            }
-        """,
-        Nhor=self.numberOfHorizontalFaces,
-        mask=mask,
-        faceCellIDs=faceCellIDs,
-        ni=self.nx,
-        nj=self.ny)
-
-        return MA.masked_where(mask, faceCellIDs)
-
-    def _getFaceCellIDsPy(self):
-        Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
-        indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
-        Hids[1] = indices[0] + indices[1] * self.nx
-        Hids[0] = Hids[1] - self.nx
-        if self.numberOfHorizontalRows > 0:
-            Hids[0,...,0] = Hids[1,...,0]
-            Hids[1,...,0] = -1
-            Hids[1,...,-1] = -1
-
-        Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny))
-        indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
-        Vids[1] = indices[0] + indices[1] * self.nx
-        Vids[0] = Vids[1] - 1
-        if self.numberOfVerticalColumns > 0:
-            Vids[0,0] = Vids[1,0]
-            Vids[1,0] = -1
-            Vids[1,-1] = -1
-        
-        return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"), 
-                                                     Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
-    
-    @getsetDeprecated
-    def _getCellVertexIDs(self):
-        return self._cellVertexIDs
-
     @property
     def _cellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
@@ -264,11 +650,7 @@ class UniformGrid2D(Grid2D):
         ids[2] = ids[3] + 1
         
         return numerix.reshape(ids, (4, self.numberOfCells))
-        
-    @getsetDeprecated
-    def _getFaceVertexIDs(self):
-        return self.faceVertexIDs
-
+    
     @property
     def faceVertexIDs(self):
         Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
@@ -286,10 +668,6 @@ class UniformGrid2D(Grid2D):
                                                  order="FORTRAN")),
                                    axis=1)
 
-    @getsetDeprecated
-    def _getOrderedCellVertexIDs(self):
-        return self._orderedCellVertexIDs
-
     @property
     def _orderedCellVertexIDs(self):
         ids = numerix.zeros((4, self.nx, self.ny))
@@ -301,11 +679,6 @@ class UniformGrid2D(Grid2D):
         
         return ids.reshape((4, self.numberOfCells), order="FORTRAN")
         
-##     scaling
-    
-    def _setScaledGeometry(self):
-        pass
-
     def _getNearestCellID(self, points):
         """
         Test cases
@@ -359,19 +732,24 @@ class UniformGrid2D(Grid2D):
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array(((dx,), (dy,)))
             >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal(vertices, mesh._createVertices())
+            >>> print parallel.procID > 0 or numerix.allequal(vertices,
+            ...                                               mesh.vertexCoords)
             True
         
-            >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
-            ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print parallel.procID > 0 or numerix.allequal(faces, mesh._createFaces()[0])
+            >>> faces = numerix.array([[0, 1, 2, 4, 5, 6, 8, 9,10, 0, 1, 2, 3, 
+            ...                         4, 5, 6, 7],
+            ...                        [1, 2, 3, 5, 6, 7, 9,10,11, 4, 5, 6, 7,
+            ...                         8, 9, 10, 11]])
+            >>> print parallel.procID > 0 or numerix.allequal(faces,
+            ...                                               mesh.faceVertexIDs)
             True
 
             >>> cells = numerix.array(((0, 1, 2, 3, 4, 5),
             ...                        (10, 11, 12, 14, 15, 16),
             ...                        (3, 4, 5, 6, 7, 8),
             ...                        (9, 10, 11, 13, 14, 15)))
-            >>> print parallel.procID > 0 or numerix.allequal(cells, mesh._createCells())
+            >>> print parallel.procID > 0 or numerix.allequal(cells,
+            ...                                               mesh.cellFaceIDs)
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))

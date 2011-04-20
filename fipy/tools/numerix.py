@@ -48,7 +48,7 @@ Take the tangent of such a variable. The returned value is itself a
 
    >>> v = tan(var)
    >>> v
-   numerix.tan(Variable(value=array(0)))
+   tan(Variable(value=array(0)))
    >>> print float(v)
    0.0
 
@@ -80,6 +80,8 @@ except ImportError:
     # masked arrays have been moved in numpy 1.1
     from numpy import ma as MA
     numpy_version = 'new'
+
+from fipy.tools import inline
 
 def zeros(a, dtype='l'):
     return NUMERIX.zeros(a, dtype)
@@ -324,473 +326,6 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
     else:        
         raise TypeError, 'cannot convert ' + str(arr) + ' to string'
         
-################################################
-#                                              #
-#   mathematical and trigonometric functions   #
-#                                              #
-################################################
-
-def arccos(arr):
-    r"""
-    Inverse cosine of :math:`x`, :math:`\cos^{-1} x`
-    
-    >>> print tostring(arccos(0.0), precision=3)
-    1.571
-     
-    >>> isnan(arccos(2.0))
-    True
-
-    >>> print tostring(arccos(array((0,0.5,1.0))), precision=3)
-    [ 1.571  1.047  0.   ]
-    >>> from fipy.variables.variable import Variable
-    >>> arccos(Variable(value=(0,0.5,1.0)))
-    numerix.arccos(Variable(value=array([ 0. ,  0.5,  1. ])))
-        
-    .. attention:: 
-        
-       the next should really return radians, but doesn't
-       
-    >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3)
-    [ 1.571  1.047  0.   ]
-        
-    """
-    if _isPhysical(arr):
-        return arr.arccos()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.arccos(arr)
-    else:
-        return umath.arccos(arr)
-
-def arccosh(arr):
-    r"""
-    Inverse hyperbolic cosine of :math:`x`, :math:`\cosh^{-1} x`
-    
-    >>> print arccosh(1.0)
-    0.0
-
-    >>> isnan(arccosh(0.0))
-    True
-
-    >>> print tostring(arccosh(array((1,2,3))), precision=3)
-    [ 0.     1.317  1.763]
-    >>> from fipy.variables.variable import Variable
-    >>> arccosh(Variable(value=(1,2,3)))
-    numerix.arccosh(Variable(value=array([1, 2, 3])))
-    >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
-    [ 0.     1.317  1.763]
-    """
-    if _isPhysical(arr):
-        return arr.arccosh()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.arccosh(arr)
-    else:
-        return umath.arccosh(arr)
-
-def arcsin(arr):
-    r"""
-    Inverse sine of :math:`x`, :math:`\sin^{-1} x`
-    
-    >>> print tostring(arcsin(1.0), precision=3)
-    1.571
-     
-    >>> isnan(arcsin(2.0))
-    True
-
-    >>> print tostring(arcsin(array((0,0.5,1.0))), precision=3)
-    [ 0.     0.524  1.571]
-    >>> from fipy.variables.variable import Variable
-    >>> arcsin(Variable(value=(0,0.5,1.0)))
-    numerix.arcsin(Variable(value=array([ 0. ,  0.5,  1. ])))
-        
-    .. attention:: 
-        
-       the next should really return radians, but doesn't
-       
-    >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
-    [ 0.     0.524  1.571]
-    """
-    if _isPhysical(arr):
-        return arr.arcsin()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.arcsin(arr)
-    else:
-        return umath.arcsin(arr)
-
-def arcsinh(arr):
-    r"""
-    Inverse hyperbolic sine of :math:`x`, :math:`\sinh^{-1} x`
-
-    >>> print tostring(arcsinh(1.0), precision=3)
-    0.881
-    >>> print tostring(arcsinh(array((1,2,3))), precision=3)
-    [ 0.881  1.444  1.818]
-    >>> from fipy.variables.variable import Variable
-    >>> arcsinh(Variable(value=(1,2,3)))
-    numerix.arcsinh(Variable(value=array([1, 2, 3])))
-    >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
-    [ 0.881  1.444  1.818]
-    """
-    if _isPhysical(arr):
-        return arr.arcsinh()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.arcsinh(arr)
-    else:
-        return umath.arcsinh(arr)
-
-def arctan(arr):
-    r"""
-    Inverse tangent of :math:`x`, :math:`\tan^{-1} x`
-
-    >>> print tostring(arctan(1.0), precision=3)
-    0.785
-    >>> print tostring(arctan(array((0,0.5,1.0))), precision=3)
-    [ 0.     0.464  0.785]
-    >>> from fipy.variables.variable import Variable
-    >>> arctan(Variable(value=(0,0.5,1.0)))
-    numerix.arctan(Variable(value=array([ 0. ,  0.5,  1. ])))
-    
-    .. attention:: 
-        
-       the next should really return radians, but doesn't
-       
-    >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
-    [ 0.     0.464  0.785]
-    """
-    if _isPhysical(arr):
-        return arr.arctan()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.arctan(arr)
-    else:
-        return umath.arctan(arr)
-                
-def arctan2(arr, other):
-    r"""
-    Inverse tangent of a ratio :math:`x/y`, :math:`\tan^{-1} \frac{x}{y}`
-
-    >>> print tostring(arctan2(3.0, 3.0), precision=3)
-    0.785
-    >>> print tostring(arctan2(array((0, 1, 2)), 2), precision=3)
-    [ 0.     0.464  0.785]
-    >>> from fipy.variables.variable import Variable
-    >>> arctan2(Variable(value=(0, 1, 2)), 2)
-    (numerix.arctan2(Variable(value=array([0, 1, 2])), 2))
-        
-    .. attention:: 
-        
-       the next should really return radians, but doesn't
-       
-    >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
-    [ 0.     0.464  0.785]
-    """
-    if _isPhysical(arr):
-        return arr.arctan2(other)
-    elif _isPhysical(other):
-        from fipy.tools.dimensions import physicalField
-
-        return physicalField.PhysicalField(value=arr, unit="rad").arctan2(other)
-    elif type(arr) is type(array((0))):
-        return NUMERIX.arctan2(arr,other)
-    else:
-        return umath.arctan2(arr,other)
-        
-        
-def arctanh(arr):
-    r"""
-    Inverse hyperbolic tangent of :math:`x`, :math:`\tanh^{-1} x`
-
-    >>> print tostring(arctanh(0.5), precision=3)
-    0.549
-    >>> print tostring(arctanh(array((0,0.25,0.5))), precision=3)
-    [ 0.     0.255  0.549]
-    >>> from fipy.variables.variable import Variable
-    >>> arctanh(Variable(value=(0,0.25,0.5)))
-    numerix.arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
-    >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
-    [ 0.     0.255  0.549]
-    """
-    if _isPhysical(arr):
-        return arr.arctanh()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.arctanh(arr)
-    else:
-        return umath.arctanh(arr)
-        
-def cos(arr):
-    r"""
-    Cosine of :math:`x`, :math:`\cos x`
-
-    >>> print allclose(cos(2*pi/6), 0.5)
-    True
-    >>> print tostring(cos(array((0,2*pi/6,pi/2))), precision=3, suppress_small=1)
-    [ 1.   0.5  0. ]
-    >>> from fipy.variables.variable import Variable
-    >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad"))
-    numerix.cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
-    >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
-    [ 1.   0.5  0. ]
-    """
-    if _isPhysical(arr):
-        return arr.cos()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.cos(arr)
-    else:
-        return umath.cos(arr)
-
-def cosh(arr):
-    r"""
-    Hyperbolic cosine of :math:`x`, :math:`\cosh x`
-
-    >>> print cosh(0)
-    1.0
-    >>> print tostring(cosh(array((0,1,2))), precision=3)
-    [ 1.     1.543  3.762]
-    >>> from fipy.variables.variable import Variable
-    >>> cosh(Variable(value=(0,1,2)))
-    numerix.cosh(Variable(value=array([0, 1, 2])))
-    >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
-    [ 1.     1.543  3.762]
-    """
-    if _isPhysical(arr):
-        return arr.cosh()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.cosh(arr)
-    else:
-        return umath.cosh(arr)
-
-def tan(arr):
-    r"""
-    Tangent of :math:`x`, :math:`\tan x`
-
-    >>> print tostring(tan(pi/3), precision=3)
-    1.732
-    >>> print tostring(tan(array((0,pi/3,2*pi/3))), precision=3)
-    [ 0.     1.732 -1.732]
-    >>> from fipy.variables.variable import Variable
-    >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad"))
-    numerix.tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
-    >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
-    [ 0.     1.732 -1.732]
-    """
-    if _isPhysical(arr):
-        return arr.tan()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.tan(arr)
-    else:
-        return umath.tan(arr)
-
-def tanh(arr):
-    r"""
-    Hyperbolic tangent of :math:`x`, :math:`\tanh x`
-
-    >>> print tostring(tanh(1), precision=3)
-    0.762
-    >>> print tostring(tanh(array((0,1,2))), precision=3)
-    [ 0.     0.762  0.964]
-    >>> from fipy.variables.variable import Variable
-    >>> tanh(Variable(value=(0,1,2)))
-    numerix.tanh(Variable(value=array([0, 1, 2])))
-    >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
-    [ 0.     0.762  0.964]
-    """
-    if _isPhysical(arr):
-        return arr.tanh()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.tanh(arr)
-    else:
-        return umath.tanh(arr)
-
-def log10(arr):
-    r"""
-    Base-10 logarithm of :math:`x`, :math:`\log_{10} x`
-
-    >>> print log10(10)
-    1.0
-    >>> print log10(array((0.1,1,10)))
-    [-1.  0.  1.]
-    >>> from fipy.variables.variable import Variable
-    >>> log10(Variable(value=(0.1,1,10)))
-    numerix.log10(Variable(value=array([  0.1,   1. ,  10. ])))
-    >>> print log10(Variable(value=(0.1,1,10)))
-    [-1.  0.  1.]
-    """
-    if _isPhysical(arr):
-        return arr.log10()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.log10(arr)
-    else:
-        return umath.log10(arr)
-
-def sin(arr):
-    r"""
-    Sine of :math:`x`, :math:`\sin x`
-
-    >>> print sin(pi/6)
-    0.5
-    >>> print sin(array((0,pi/6,pi/2)))
-    [ 0.   0.5  1. ]
-    >>> from fipy.variables.variable import Variable
-    >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
-    numerix.sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
-    >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
-    [ 0.   0.5  1. ]
-    """
-    if _isPhysical(arr):
-        return arr.sin()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.sin(arr)
-    else:
-        return umath.sin(arr)
-
-def sinh(arr):
-    r"""
-    Hyperbolic sine of :math:`x`, :math:`\sinh x`
-
-    >>> print sinh(0)
-    0.0
-    >>> print tostring(sinh(array((0,1,2))), precision=3)
-    [ 0.     1.175  3.627]
-    >>> from fipy.variables.variable import Variable
-    >>> sinh(Variable(value=(0,1,2)))
-    numerix.sinh(Variable(value=array([0, 1, 2])))
-    >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
-    [ 0.     1.175  3.627]
-    """
-    if _isPhysical(arr):
-        return arr.sinh()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.sinh(arr)
-    else:
-        return umath.sinh(arr)
-
-def sqrt(arr):
-    r"""
-    Square root of :math:`x`, :math:`\sqrt{x}`
-
-    >>> print tostring(sqrt(2), precision=3)
-    1.414
-    >>> print tostring(sqrt(array((1,2,3))), precision=3)
-    [ 1.     1.414  1.732]
-    >>> from fipy.variables.variable import Variable
-    >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
-    numerix.sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
-    >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
-    [ 1.     1.414  1.732] m
-    """
-    if _isPhysical(arr):
-        return arr.sqrt()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.sqrt(arr)
-    else:
-        return umath.sqrt(arr)
-
-def floor(arr):
-    r"""
-    The largest integer :math:`\le x`, :math:`\lfloor x \rfloor`
-
-    >>> print floor(2.3)
-    2.0
-    >>> print floor(array((-1.5,2,2.5)))
-    [-2.  2.  2.]
-    >>> from fipy.variables.variable import Variable
-    >>> floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
-    numerix.floor(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-    >>> print floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
-    [-2.  2.  2.] m**2
-    """
-    if _isPhysical(arr):
-        return arr.floor()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.floor(arr)
-    else:
-        return umath.floor(arr)
-
-def ceil(arr):
-    r"""
-    The largest integer :math:`\ge x`, :math:`\lceil x \rceil`
-       
-    >>> print ceil(2.3)
-    3.0
-    >>> print ceil(array((-1.5,2,2.5)))
-    [-1.  2.  3.]
-    >>> from fipy.variables.variable import Variable
-    >>> ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
-    numerix.ceil(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-    >>> print ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
-    [-1.  2.  3.] m**2
-    """
-    if _isPhysical(arr):
-        return arr.ceil()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.ceil(arr)
-    else:
-        return umath.ceil(arr)
-
-
-def sign(arr):
-    if _isPhysical(arr):
-        return arr.sign()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.sign(arr)
-    else:
-        return umath.sign(arr)
-
-def exp(arr):
-    r"""
-    Natural exponent of :math:`x`, :math:`e^x`
-    """
-    if _isPhysical(arr):
-        return arr.exp()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.exp(arr)
-    else:
-        return umath.exp(arr)
-        
-
-def log(arr):
-    r"""
-    Natural logarithm of :math:`x`, :math:`\ln x \equiv \log_e x`
-
-    >>> print tostring(log(10), precision=3)
-    2.303
-    >>> print tostring(log(array((0.1,1,10))), precision=3)
-    [-2.303  0.     2.303]
-    >>> from fipy.variables.variable import Variable
-    >>> log(Variable(value=(0.1,1,10)))
-    numerix.log(Variable(value=array([  0.1,   1. ,  10. ])))
-    >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
-    [-2.303  0.     2.303]
-    """
-    if _isPhysical(arr):
-        return arr.log()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.log(arr)
-    else:
-        return umath.log(arr)
-
-def conjugate(arr):
-    r"""
-    Complex conjugate of :math:`z = x + i y`, :math:`z^\star = x - i y`
-       
-    >>> print conjugate(3 + 4j) == 3 - 4j
-    True
-    >>> print allclose(conjugate(array((3 + 4j, -2j, 10))), (3 - 4j, 2j, 10))
-    1
-    >>> from fipy.variables.variable import Variable
-    >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
-    >>> print var.unit
-    <PhysicalUnit ohm>
-    >>> print allclose(var.numericValue, (3 - 4j, 2j, 10))
-    1
-    """
-    if _isPhysical(arr):
-        return arr.conjugate()
-    elif type(arr) is type(array((0))):
-        return NUMERIX.conjugate(arr)
-    else:
-        return umath.conjugate(arr)
-
-        # conjugate
-        
 #########################
 #                       #
 #   Vector operations   #
@@ -847,78 +382,49 @@ def dot(a1, a2, axis=0):
     else:
         return sum(a1*a2, axis)
 
-def sqrtDot(a1, a2):
-    """Return array of square roots of vector dot-products
-    for arrays a1 and a2 of vectors v1 and v2
-    
-    Usually used with v1==v2 to return magnitude of v1.
-    """
-    from fipy.tools import inline
+if inline.doInline:
+    def sqrtDot(a1, a2):
+        """Return array of square roots of vector dot-products
+        for arrays a1 and a2 of vectors v1 and v2
+        
+        Usually used with v1==v2 to return magnitude of v1.
+        """
+        unit1 = unit2 = 1
+        if _isPhysical(a1):
+            unit1 = a1.inBaseUnits().getUnit()
+            a1 = a1.numericValue
+        if _isPhysical(a2):
+            unit2 = a2.inBaseUnits().getUnit()
+            a2 = a2.numericValue
+        NJ, ni = NUMERIX.shape(a1)
+        result1 = NUMERIX.zeros((ni,),'d')
 
-    ## We can't use Numeric.dot on an array of vectors
-##     return Numeric.sqrt(Numeric.sum((a1*a2)[:],1))
-##    return fipy.tools.array.sqrt(fipy.tools.array.sum((a1*a2)[:],1))
-    return inline._optionalInline(_sqrtDotIn, _sqrtDotPy, a1, a2)
-
-def _sqrtDotPy(a1, a2):
-
-    return sqrt(dot(a1, a2))
-
-##def _sqrtDotIn(a1, a2):
-##    ni, nj = Numeric.shape(a1)
-##    result = Numeric.zeros((ni,),'d')
-##    inline.runInlineLoop1("""
-##      int j;
-##      result(i) = 0.;
-##      for (j = 0; j < nj; j++)
-##      {
-##          result(i) += a1(i,j) * a2(i,j);
-##      }
-##      result(i) = sqrt(result(i));
-##    """,result = result, a1 = a1, a2 = a2, ni = ni, nj = nj) 
-##    return result
-
-def _sqrtDotIn(a1, a2):
-    from fipy.tools import inline
-    
-    unit1 = unit2 = 1
-    if _isPhysical(a1):
-        unit1 = a1.inBaseUnits().unit
-        a1 = a1.numericValue
-    if _isPhysical(a2):
-        unit2 = a2.inBaseUnits().unit
-        a2 = a2.numericValue
-    NJ, ni = NUMERIX.shape(a1)
-    result1 = NUMERIX.zeros((ni,),'d')
-
-    inline._runInline("""
-        int j;
-        result1[i] = 0.;
-        for (j = 0; j < NJ; j++)
-        {
-            // result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
-            result1[i] += a1[i + j * ni] * a2[i + j * ni];
-        }
-        result1[i] = sqrt(result1[i]);        
-    """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
-
-
-    ##result = inline._runInline("""
-##        int j;
-##        ((double *) result->data)[i] = 0.;
-##        for (j = 0; j < NJ; j++)
-##        {
-##            ((double *) result->data)[i] += a1(i,j) * a2(i,j);
-##        }
-##        ((double *) result->data)[i] = sqrt(((double *) result->data)[i]);        
-##    """, a1 = a1, a2 = a2, ni = ni, NJ = nj)
-
-    
-    if unit1 != 1 or unit2 != 1:
-        from fipy.tools.dimensions.physicalField import PhysicalField
-        result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
-    return result1
-
+        inline._runInline("""
+            int j;
+            result1[i] = 0.;
+            for (j = 0; j < NJ; j++)
+            {
+                // result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
+                result1[i] += a1[i + j * ni] * a2[i + j * ni];
+            }
+            result1[i] = sqrt(result1[i]);        
+        """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
+        
+        if unit1 != 1 or unit2 != 1:
+            from fipy.tools.dimensions.physicalField import PhysicalField
+            result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
+            
+        return result1
+else:
+    def sqrtDot(a1, a2):
+        """Return array of square roots of vector dot-products
+        for arrays a1 and a2 of vectors v1 and v2
+        
+        Usually used with v1==v2 to return magnitude of v1.
+        """
+        ## We can't use Numeric.dot on an array of vectors
+        return sqrt(dot(a1, a2))
+        
 def nearest(data, points):
     """find the indices of `data` that are closest to `points`
     
@@ -996,18 +502,6 @@ def all(a, axis=None, out=None):
     else:
         return MA.all(a=a, axis=axis, out=out)
 
-def isclose(first, second, rtol=1.e-5, atol=1.e-8):
-    r"""
-    Returns which elements of `first` and `second` are equal, subect to the given
-    relative and absolute tolerances, such that::
-        
-        |first - second| < atol + rtol * |second|
-
-    This means essentially that both elements are small compared to ``atol`` or
-    their difference divided by ``second``'s value is small compared to ``rtol``.
-    """
-    return abs(first - second) < atol + rtol * abs(second)
-
 def take(a, indices, axis=0, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
@@ -1080,48 +574,28 @@ def indices(dimensions, typecode=None):
 
     ## we don't turn the list back into an array because that is expensive and not required
     return lst
-
-def obj2sctype(rep, default=None):
-    if _isPhysical(rep):
-        sctype = rep.getsctype(default=default)
-    else:
-        if type(rep) in (type(()), type([])):
-            rep = array(rep)
-        sctype = NUMERIX.obj2sctype(rep=rep, default=default)
-        
-    if sctype is None:
-        return obj2sctype(type(rep), default=default)
-    else:
-        return sctype
         
 
 if not hasattr(NUMERIX, 'empty'):
     print 'defining empty'
-    def empty(shape, dtype='d', order='C'):
-        """
-        `ones()` and `zeros()` are really slow ways to create arrays. NumPy
-        provides a routine:
+    if inline.doInline:
+        def empty(shape, dtype='d', order='C'):
+            """
+            `ones()` and `zeros()` are really slow ways to create arrays. NumPy
+            provides a routine:
+              
+                empty((d1,...,dn),dtype=float,order='C') will return a new array of
+                shape (d1,...,dn) and given type with all its entries
+                uninitialized. This can be faster than zeros.
+              
+            We approximate this routine when unavailable, but note that `order` is
+            ignored when using Numeric.
+            """
+            from scipy import weave
           
-            empty((d1,...,dn),dtype=float,order='C') will return a new array of
-            shape (d1,...,dn) and given type with all its entries
-            uninitialized. This can be faster than zeros.
+            local_dict = {'shape': shape, 'dtype': dtype}
           
-        We approximate this routine when unavailable, but note that `order` is
-        ignored when using Numeric.
-        """
-        from fipy.tools import inline
-
-        return inline._optionalInline(_emptyIn, _emptyPy, shape, dtype)
-  
-    def _emptyPy(shape, dtype):
-        return NUMERIX.zeros(shape, dtype)
-
-    def _emptyIn(shape, dtype):
-        from scipy import weave
-      
-        local_dict = {'shape': shape, 'dtype': dtype}
-      
-        code = """
+            code = """
 PyObject *op;
 PyArrayObject *ret;
 
@@ -1162,16 +636,30 @@ while (return_val.refcount() > 1) {
 }
 """
 
-        return weave.inline(code,
-                     local_dict.keys(),
-                     local_dict=local_dict,
-                     type_converters=weave.converters.blitz,
-                     compiler='gcc',
-                     verbose=0,
-                     support_code="""
+            return weave.inline(code,
+                         local_dict.keys(),
+                         local_dict=local_dict,
+                         type_converters=weave.converters.blitz,
+                         compiler='gcc',
+                         verbose=0,
+                         support_code="""
 #define MAX_DIMS 30
-                     """,
-                     extra_compile_args =['-O3'])
+                         """,
+                         extra_compile_args =['-O3'])
+    else:
+        def empty(shape, dtype='d', order='C'):
+            """
+            `ones()` and `zeros()` are really slow ways to create arrays. NumPy
+            provides a routine:
+              
+                empty((d1,...,dn),dtype=float,order='C') will return a new array of
+                shape (d1,...,dn) and given type with all its entries
+                uninitialized. This can be faster than zeros.
+              
+            We approximate this routine when unavailable, but note that `order` is
+            ignored when using Numeric.
+            """
+            return NUMERIX.zeros(shape, dtype)
 
 if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
     # if one is present, but not the other, something is wrong and

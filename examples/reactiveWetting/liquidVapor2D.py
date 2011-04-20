@@ -119,10 +119,11 @@ A 2D version of the 1D example.
 ...                  - potentialDerivative * density \
 ...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
->>> potentialNC.faceGrad.constrain(value=0, where=mesh.exteriorFaces)
+>>> potentialNC.faceGrad.constrain(value=[[0], [0]], where=mesh.exteriorFaces)
 
 >>> coupledEqn = massEqn & momentumXEqn & momentumYEqn & potentialNCEqn
 
+>>> numerix.random.seed(2012)
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.numberOfCells) - 1))
 

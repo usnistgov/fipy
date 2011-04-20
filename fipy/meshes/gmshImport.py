@@ -50,10 +50,14 @@ import tempfile
 
 DEBUG = 0
 
+
 def parprint(str):
     if DEBUG:
         if parallel.procID == 0:
             print >> sys.stderr, str
+
+class GmshException(Exception):
+    pass
 
 class MshFile:
     """
@@ -115,7 +119,8 @@ class MshFile:
         
         gmshFlags += " -format msh"
 
-        self.filename = self._parseFilename(filename, gmshFlags)
+        self.filename, self.gmshOutput = self._parseFilename(filename, 
+                                                             gmshFlags)
 
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if dimensions == 2: 
@@ -145,7 +150,7 @@ class MshFile:
         import subprocess as subp
         lowerFname = fname.lower()
         if '.msh' in lowerFname:
-            return fname
+            return fname, None
         else:
             if '.geo' in lowerFname or '.gmsh' in lowerFname:
                 geoFile = fname
@@ -162,7 +167,7 @@ class MshFile:
             parprint("gmsh out: %s" % gmshout)
             os.close(f)
 
-            return mshFile
+            return mshFile, gmshout
          
     def _getMetaData(self, f):
         """
@@ -348,6 +353,11 @@ class MshFile:
         allShapeTypes    = cellDataDict['shapes'] + ghostDataDict['shapes']
         allShapeTypes    = nx.array(allShapeTypes)
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
+
+        if numCellsTotal < 1:
+            errStr = "Gmsh hasn't produced any cells! Check your Gmsh code."
+            errStr += "\n\nGmsh output:\n%s" % "".join(self.gmshOutput).rstrip()
+            raise GmshException(errStr)
 
         parprint("Recovering coords.")
         parprint("numcells %d" % numCellsTotal)
@@ -674,14 +684,22 @@ class Gmsh2D(Mesh2D):
         True
         
         >>> from fipy.tools import dump
+        >>> from fipy import parallel
         >>> f, tempfile = dump.write(circle)
         >>> pickle_circle = dump.read(tempfile, f)
 
-        >>> print (pickle_circle.cellVolumes == circle.cellVolumes).all()
+        >>> print parallel.Nproc > 1 or (pickle_circle.cellVolumes == circle.cellVolumes).all()
         True
         
-        >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
+        >>> print parallel.Nproc > 1 or (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
         True
+
+        >>> cmd = "Point(1) = {0, 0, 0, 0.05};"
+
+        >>> Gmsh2D(cmd) #doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        GmshException: Gmsh hasn't produced any cells! Check your Gmsh code.
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
@@ -736,13 +754,14 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         True
 
         >>> from fipy.tools import dump
+        >>> from fipy import parallel
         >>> f, tempfile = dump.write(sphere)
         >>> pickle_sphere = dump.read(tempfile, f)
 
-        >>> print (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
+        >>> print parallel.Nproc > 1 or (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
         True
         
-        >>> print (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
+        >>> print parallel.Nproc > 1 or (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
         True
         """
 
@@ -924,13 +943,14 @@ class Gmsh3D(Mesh):
         True
         
         >>> from fipy.tools import dump
+        >>> from fipy import parallel
         >>> f, tempfile = dump.write(prism)
         >>> pickle_prism = dump.read(tempfile, f)
 
-        >>> print (pickle_prism.cellVolumes == prism.cellVolumes).all()
+        >>> print parallel.Nproc > 1 or (pickle_prism.cellVolumes == prism.cellVolumes).all()
         True
         
-        >>> print (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
+        >>> print parallel.Nproc > 1 or (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
         True
         """
 

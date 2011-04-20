@@ -36,10 +36,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
-class CentralDifferenceConvectionTerm(ConvectionTerm):
+class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     r"""
 
     This :class:`~fipy.terms.term.Term` represents
@@ -56,5 +56,4 @@ class CentralDifferenceConvectionTerm(ConvectionTerm):
 
     class _Alpha(FaceVariable):
         def __init__(self, P):
-            FaceVariable.__init__(self, P.mesh)
-            self._value = 0.5
+            FaceVariable.__init__(self, P.mesh, value=0.5)
