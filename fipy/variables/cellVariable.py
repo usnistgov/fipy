@@ -606,6 +606,28 @@ class CellVariable(_MeshVariable):
             >>> print v.faceValue
             [ 0.   1.   2.   2.5]
             
+        Changing the constraint changes the dependencies
+        
+            >>> v.constrain(1., where=m.facesLeft)
+            >>> print v.faceGrad
+            [[-1.  1.  1.  1.]]
+            >>> print v.faceValue
+            [ 1.   1.   2.   2.5]
+
+        Constraints can be `Variable`
+        
+            >>> c = Variable(0.)
+            >>> v.constrain(c, where=m.facesLeft)
+            >>> print v.faceGrad
+            [[ 1.  1.  1.  1.]]
+            >>> print v.faceValue
+            [ 0.   1.   2.   2.5]
+            >>> c.value = 1.
+            >>> print v.faceGrad
+            [[-1.  1.  1.  1.]]
+            >>> print v.faceValue
+            [ 1.   1.   2.   2.5]
+            
         """
 
         if numerix.shape(where)[-1] == self.mesh.numberOfFaces:
