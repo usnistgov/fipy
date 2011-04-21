@@ -347,7 +347,8 @@ class Gridlike3D(Gridlike):
         .. note:: Trivial except for parallel meshes
         """
         
-        return numerix.arange(grid.offset[2] * grid.nx * grid.ny, (grid.offset[2] + grid.nz) * grid.nx * grid.ny)
+        return numerix.arange(grid.offset[2] * grid.nx * grid.ny, 
+                              (grid.offset[2] + grid.nz) * grid.nx * grid.ny)
 
     @staticmethod
     def _localNonOverlappingCellIDs(grid):
