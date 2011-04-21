@@ -8,3 +8,4 @@ from preconditioners import *
 
 DefaultSolver = LinearPCGSolver
 DefaultAsymmetricSolver = LinearLUSolver
+DummySolver=DefaultSolver

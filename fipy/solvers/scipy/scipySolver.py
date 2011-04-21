@@ -78,11 +78,8 @@ class ScipySolver(_PysparseMatrixSolver):
                                 tol=self.tolerance, 
                                 maxiter=self.iterations,
                                 M=M)
-        
+
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
-            from fipy.tools.debug import PRINT        
-            PRINT('iterations: %d / %d' % (iter, self.iterations))
-            
             if info < 0:
                 PRINT('failure', self._warningList[info].__class__.__name__) 
 

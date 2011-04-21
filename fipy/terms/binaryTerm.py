@@ -149,7 +149,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> diffTerm.cacheMatrix()
         >>> print CellVariable(mesh=m, value=eq0.justResidualVector()).globalValue
         [-3.  0.  3.]
-        >>> eq0.solve()
+        >>> eq0.solve(solver=DummySolver())
         >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -2,  0],
         ...                                                [-2,  4, -2],
         ...                                                [ 0, -2,  2]])

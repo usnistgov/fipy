@@ -5,6 +5,7 @@ from linearLUSolver import LinearLUSolver
 
 from fipy.solvers.pysparse.linearPCGSolver import LinearPCGSolver
 
-DefaultSolver = LinearGMRESSolver
+DefaultSolver = LinearLUSolver
+DummySolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearLUSolver
  

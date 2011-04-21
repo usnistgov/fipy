@@ -301,21 +301,23 @@ class _ScipyMatrix(_ScipyMatrixBase):
 
 class _ScipyMeshMatrix(_ScipyMatrix):
     
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, storeZeros=True):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, numberOfEquations=1, storeZeros=True):
 
         """Creates a `_ScipyMatrix` associated with a `Mesh`.
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
-          - `numberOfVariables`: The size of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
+          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
+          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.numberOfCells.
           - `storeZeros`: Instructs scipy to store zero values if possible.
+          
+          
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
-
         size = self.numberOfVariables * self.mesh.numberOfCells
-
+        assert numberOfEquations == self.numberOfVariables
         _ScipyMatrix.__init__(self, size=size, matrix=matrix)
 
     def __mul__(self, other):

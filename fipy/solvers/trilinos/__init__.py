@@ -35,6 +35,6 @@ from trilinosMLTest import TrilinosMLTest
 
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver
-
+DummySolver = DefaultSolver
 
 
