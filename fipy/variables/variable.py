@@ -510,6 +510,7 @@ class Variable(object):
             value = self._value
 
         if hasattr(self, 'constraints'):
+            value = value.copy()
             for constraintValue, mask in self.constraints:
                 if mask is None:
                     value[:] = constraintValue
@@ -544,6 +545,7 @@ class Variable(object):
         >>> print v
         [ 2 10 10 10]
         >>> v.constrain(5, numerix.array((False, False, True, False)))
+        >>> c1 = v.constraints[-1]
         >>> print v
         [ 2 10  5 10]
         >>> v[:] = 6
@@ -557,7 +559,10 @@ class Variable(object):
         [8 8 8 8]
         >>> del v.constraints[2]
         >>> print v
-        [2 8 5 8]
+        [ 2 10  5 10]
+        >>> v.constraints.remove(c1)
+        >>> print v
+        [ 2 10 10 10]
 
         >>> from fipy.variables.cellVariable import CellVariable
         >>> from fipy.meshes import Grid2D
