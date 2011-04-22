@@ -509,9 +509,10 @@ class Variable(object):
         else:
             value = self._value
 
-        if hasattr(self, 'constraints'):
+        constraints = self._allConstraints
+        if len(constraints) > 0:
             value = value.copy()
-            for constraintValue, mask in self.constraints:
+            for constraintValue, mask in constraints:
                 if mask is None:
                     value[:] = constraintValue
                 else:
@@ -584,11 +585,16 @@ class Variable(object):
             self.constraints = []
 
         self.constraints.append([value, where])
-
-    def applyConstraints(self, constraints):
-        for value, mask in constraints:
-            self.constrain(value, mask)
+        self._requires(value)
+        # self._requires(where) ???
+        self._markStale()
         
+    @property
+    def _allConstraints(self):
+        if not hasattr(self, 'constraints'):
+            self.constraints = []
+        return self.constraints
+
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
         

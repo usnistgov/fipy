@@ -48,6 +48,14 @@ class _CellToFaceVariable(FaceVariable):
         
         return self._calcValue_(alpha=alpha, id1=id1, id2=id2)
 
+    @property
+    def _allConstraints(self):
+        if hasattr(self.var, "faceConstraints"):
+            faceConstraints = self.var.faceConstraints
+        else:
+            faceConstraints = []
+        return super(FaceVariable, self)._allConstraints + faceConstraints
+
     def __getstate__(self):
         return dict(var=self.var)
         

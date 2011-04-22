@@ -367,9 +367,6 @@ class CellVariable(_MeshVariable):
             from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
             self._arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
-        if hasattr(self, 'faceConstraints'):
-            self._arithmeticFaceValue.applyConstraints(self.faceConstraints)
-            
         return self._arithmeticFaceValue
 
     getFaceValue = getArithmeticFaceValue
@@ -405,9 +402,6 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, '_minmodFaceValue'):
             from minmodCellToFaceVariable import _MinmodCellToFaceVariable
             self._minmodFaceValue = _MinmodCellToFaceVariable(self)
-
-        if hasattr(self, 'faceConstraints'):
-            self._minmodFaceValue.applyConstraints(self.faceConstraints)
 
         return self._minmodFaceValue
 
@@ -453,9 +447,6 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, '_harmonicFaceValue'):
             from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
             self._harmonicFaceValue = _HarmonicCellToFaceVariable(self)
-
-        if hasattr(self, 'faceConstraints'):
-            self._harmonicFaceValue.applyConstraints(self.faceConstraints)
 
         return self._harmonicFaceValue
 
@@ -635,6 +626,9 @@ class CellVariable(_MeshVariable):
             if not hasattr(self, 'faceConstraints'):
                 self.faceConstraints = []
             self.faceConstraints.append([value, where])
+            self._requires(value)
+            # self._requires(where) ???
+            self._markStale()
         else:
             _MeshVariable.constrain(value, where)
 
