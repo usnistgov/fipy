@@ -298,6 +298,7 @@ fipy/__init__.py
 fipy/test.py
 fipy/boundaryConditions/__init__.py
 fipy/boundaryConditions/boundaryCondition.py
+fipy/boundaryConditions/constraint.py
 fipy/boundaryConditions/fixedFlux.py
 fipy/boundaryConditions/fixedValue.py
 fipy/boundaryConditions/nthOrderBoundaryCondition.py

@@ -54,10 +54,10 @@ class _CellToFaceVariable(FaceVariable):
         >>> from fipy import *
         >>> m = Grid1D(nx=3)
         >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
-        >>> v.constrain(0., where=m.facesLeft)
-        >>> c0 = v.faceConstraints[-1] # this is evil
-        >>> v.faceValue.constrain(3., where=m.facesRight)
-        >>> c1 = v.faceValue.constraints[-1]
+        >>> c0 = Constraint(0., where=m.facesLeft)
+        >>> v.constrain(c0)
+        >>> c1 = Constraint(3., where=m.facesRight)
+        >>> v.faceValue.constrain(c1)
         >>> print v.faceValue
         [ 0.  1.  2.  3.]
         >>> v.faceValue.release(constraint=c0)

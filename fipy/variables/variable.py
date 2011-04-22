@@ -512,18 +512,19 @@ class Variable(object):
         constraints = self._allConstraints
         if len(constraints) > 0:
             value = value.copy()
-            for constraintValue, mask in constraints:
-                if mask is None:
-                    value[:] = constraintValue
+            for constraint in constraints:
+                if constraint.where is None:
+                    value[:] = constraint.value
                 else:
+                    mask = constraint.where
                     if not hasattr(mask, 'dtype') or mask.dtype != bool:
                         mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
 
                     if 0 not in value.shape:
                         try:
-                            value[...,mask] = constraintValue
+                            value[..., mask] = constraint.value
                         except:
-                            value[...,mask] = numerix.array(constraintValue)[...,mask]
+                            value[..., mask] = numerix.array(constraint.value)[..., mask]
 
         return value
 
@@ -546,7 +547,6 @@ class Variable(object):
         >>> print v
         [ 2 10 10 10]
         >>> v.constrain(5, numerix.array((False, False, True, False)))
-        >>> c1 = v.constraints[-1]
         >>> print v
         [ 2 10  5 10]
         >>> v[:] = 6
@@ -581,9 +581,12 @@ class Variable(object):
         if not hasattr(self, 'constraints'):
             self.constraints = []
 
-        self.constraints.append([value, where])
-        self._requires(value)
-        # self._requires(where) ???
+        from fipy.boundaryConditions.constraint import Constraint
+        if not isinstance(value, Constraint):
+            value = Constraint(value=value, where=where)
+        self.constraints.append(value)
+        self._requires(value.value)
+        # self._requires(value.where) ???
         self._markStale()
         
     def release(self, constraint):
@@ -592,8 +595,9 @@ class Variable(object):
         >>> v = Variable((0,1,2,3))
         >>> v.constrain(2, numerix.array((True, False, False, False)))
         >>> v[:] = 10
-        >>> v.constrain(5, numerix.array((False, False, True, False)))
-        >>> c1 = v.constraints[-1]
+        >>> from fipy.boundaryConditions.constraint import Constraint
+        >>> c1 = Constraint(5, numerix.array((False, False, True, False)))
+        >>> v.constrain(c1)
         >>> v[:] = 6
         >>> v.constrain(8)
         >>> v[:] = 10

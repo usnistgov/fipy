@@ -620,14 +620,17 @@ class CellVariable(_MeshVariable):
             [ 1.   1.   2.   2.5]
             
         """
-
-        if numerix.shape(where)[-1] == self.mesh.numberOfFaces:
+        from fipy.boundaryConditions.constraint import Constraint
+        if not isinstance(value, Constraint):
+            value = Constraint(value=value, where=where)
+            
+        if numerix.shape(value.where)[-1] == self.mesh.numberOfFaces:
             
             if not hasattr(self, 'faceConstraints'):
                 self.faceConstraints = []
-            self.faceConstraints.append([value, where])
-            self._requires(value)
-            # self._requires(where) ???
+            self.faceConstraints.append(value)
+            self._requires(value.value)
+            # self._requires(value.where) ???
             self._markStale()
         else:
             _MeshVariable.constrain(value, where)
@@ -638,8 +641,8 @@ class CellVariable(_MeshVariable):
         >>> from fipy import *
         >>> m = Grid1D(nx=3)
         >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
-        >>> v.constrain(0., where=m.facesLeft)
-        >>> c = v.faceConstraints[-1] # this is evil
+        >>> c = Constraint(0., where=m.facesLeft)
+        >>> v.constrain(c)
         >>> print v.faceValue
         [ 0.   1.   2.   2.5]
         >>> v.release(constraint=c)
