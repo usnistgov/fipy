@@ -44,3 +44,6 @@ class Constraint(object):
         """
         self.value = value
         self.where = where
+        
+    def __repr__(self):
+        return "Constraint(value=%s, where=%s)" % (repr(self.value), repr(self.where))
