@@ -227,26 +227,21 @@ class _BaseDiffusionTerm(_UnaryTerm):
         var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         if self.order == 2:
-            if not hasattr(self, 'constraintB'):
+            mesh = var.mesh
+            from fipy.variables.faceVariable import FaceVariable
+            normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals) * self.nthCoeff
 
-                mesh = var.mesh
-                from fipy.variables.faceVariable import FaceVariable
-##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
-                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals) * self.nthCoeff
+            constraintB = 0
+            constraintL = 0
+            
+            constraintB -= (var.faceGrad.constraintMask * self.nthCoeff * var.faceGrad).divergence * mesh.cellVolumes
 
-                self.constraintB = 0
-                self.constraintL = 0
+            constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * normalsDotCoeff / mesh._cellDistances
+            constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
+            constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
 
-                if var.faceGrad.constraintMask is not None:
-                    self.constraintB -= (var.faceGrad.constraintMask * self.nthCoeff * var.faceGrad).divergence * mesh.cellVolumes
-
-                if var.arithmeticFaceValue.constraintMask is not None:
-                    constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * normalsDotCoeff / mesh._cellDistances
-                    self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
-                    self.constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
-
-            L.addAtDiagonal(self.constraintL)
-            b += self.constraintB
+            L.addAtDiagonal(constraintL)
+            b += constraintB
 
         return (var, L, b)
         

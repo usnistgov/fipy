@@ -197,13 +197,10 @@ class _MeshVariable(Variable):
         
     @property
     def constraintMask(self):
-        if hasattr(self, 'constraints'):
-            returnMask = False
-            for value, mask in self.constraints:
-                returnMask = returnMask | numerix.array(mask)
-            return self._variableClass(mesh=self.mesh, rank=0, value=returnMask)
-        else:
-            return None
+        returnMask = False
+        for value, mask in self._allConstraints:
+            returnMask = returnMask | numerix.array(mask)
+        return self._variableClass(mesh=self.mesh, rank=0, value=returnMask)
 
     def _getShapeFromMesh(mesh):
         """
