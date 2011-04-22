@@ -374,7 +374,7 @@ def runLeveler(kLeveler=0.018,
 
     bulkLevelerVar.constrain(bulkLevelerConcentration, mesh.facesTop)
     
-    eqnTuple = ( (advectionEquation, distanceVar, (), GeneralSolver()),
+    eqnTuple = ( (advectionEquation, distanceVar, (), None),
                  (levelerSurfactantEquation, levelerVar, (), None),
                  (acceleratorSurfactantEquation, acceleratorVar, (), None),
                  (metalEquation, metalVar,  (), None),

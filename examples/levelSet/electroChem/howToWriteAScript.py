@@ -430,7 +430,7 @@ is calculated with the CFL number and the maximum extension velocity.
 ...     bulkCatalystVar.updateOld()
 ...     distanceVar.extendVariable(extensionVelocityVariable)
 ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
-...     advectionEquation.solve(distanceVar, dt=dt, solver=GeneralSolver())
+...     advectionEquation.solve(distanceVar, dt=dt)
 ...     surfactantEquation.solve(catalystVar, dt=dt)
 ...     metalEquation.solve(var=metalVar, dt=dt)
 ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt, solver=GeneralSolver())
