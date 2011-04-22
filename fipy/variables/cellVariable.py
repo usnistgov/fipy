@@ -631,6 +631,25 @@ class CellVariable(_MeshVariable):
             self._markStale()
         else:
             _MeshVariable.constrain(value, where)
+            
+    def release(self, constraint):
+        """Remove `constraint` from `self`
+        
+        >>> from fipy import *
+        >>> m = Grid1D(nx=3)
+        >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
+        >>> v.constrain(0., where=m.facesLeft)
+        >>> c = v.faceConstraints[-1] # this is evil
+        >>> print v.faceValue
+        [ 0.   1.   2.   2.5]
+        >>> v.release(constraint=c)
+        >>> print v.faceValue
+        [ 0.5  1.   2.   2.5]
+        """
+        try:
+            _MeshVariable.release(self, constraint=constraint)
+        except ValueError:
+            self.faceConstraints.remove(constraint)
 
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):

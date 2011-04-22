@@ -48,6 +48,30 @@ class _CellToFaceVariable(FaceVariable):
         
         return self._calcValue_(alpha=alpha, id1=id1, id2=id2)
 
+    def release(self, constraint):
+        """Remove `constraint` from `self`
+        
+        >>> from fipy import *
+        >>> m = Grid1D(nx=3)
+        >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
+        >>> v.constrain(0., where=m.facesLeft)
+        >>> c0 = v.faceConstraints[-1] # this is evil
+        >>> v.faceValue.constrain(3., where=m.facesRight)
+        >>> c1 = v.faceValue.constraints[-1]
+        >>> print v.faceValue
+        [ 0.  1.  2.  3.]
+        >>> v.faceValue.release(constraint=c0)
+        >>> print v.faceValue
+        [ 0.5  1.   2.   3. ]
+        >>> v.faceValue.release(constraint=c1)
+        >>> print v.faceValue
+        [ 0.5  1.   2.   2.5]
+        """
+        try:
+            self.constraints.remove(constraint)
+        except ValueError:
+            self.var.release(constraint=constraint)
+
     @property
     def _allConstraints(self):
         if hasattr(self.var, "faceConstraints"):
@@ -62,3 +86,9 @@ class _CellToFaceVariable(FaceVariable):
     def __setstate__(self, dict):
         self.__init__(**dict)
 
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

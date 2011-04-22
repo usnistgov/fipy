@@ -561,9 +561,6 @@ class Variable(object):
         >>> del v.constraints[2]
         >>> print v
         [ 2 10  5 10]
-        >>> v.constraints.remove(c1)
-        >>> print v
-        [ 2 10 10 10]
 
         >>> from fipy.variables.cellVariable import CellVariable
         >>> from fipy.meshes import Grid2D
@@ -588,6 +585,24 @@ class Variable(object):
         self._requires(value)
         # self._requires(where) ???
         self._markStale()
+        
+    def release(self, constraint):
+        """Remove `constraint` from `self`
+        
+        >>> v = Variable((0,1,2,3))
+        >>> v.constrain(2, numerix.array((True, False, False, False)))
+        >>> v[:] = 10
+        >>> v.constrain(5, numerix.array((False, False, True, False)))
+        >>> c1 = v.constraints[-1]
+        >>> v[:] = 6
+        >>> v.constrain(8)
+        >>> v[:] = 10
+        >>> del v.constraints[2]
+        >>> v.release(constraint=c1)
+        >>> print v
+        [ 2 10 10 10]
+        """
+        self.constraints.remove(constraint)
         
     @property
     def _allConstraints(self):
