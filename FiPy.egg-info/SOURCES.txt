@@ -196,6 +196,7 @@ examples/diffusion/steadyState/mesh1D/inputPeriodic.py
 examples/diffusion/steadyState/mesh1D/tri2Dinput.py
 examples/diffusion/steadyState/mesh20x20/__init__.py
 examples/diffusion/steadyState/mesh20x20/gmshinput.py
+examples/diffusion/steadyState/mesh20x20/isotropy.py
 examples/diffusion/steadyState/mesh20x20/modifiedMeshInput.py
 examples/diffusion/steadyState/mesh20x20/orthoerror.py
 examples/diffusion/steadyState/mesh20x20/tri2Dinput.py
