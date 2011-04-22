@@ -36,42 +36,22 @@
 
 __docformat__ = 'restructuredtext'
 
-import os
-
-try:
-    from pyamg import solveit
-except ImportError:
-    print "Couldn't import PyAMG's general solving function."
-
-from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.solver import Solver
-from fipy.tools.decorators import getsetDeprecated
-
+import os
+from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+from fipy.tools import numerix
+        
 class PyAMGSolver(Solver):
     """
     The base `PyAMGSolver` class.
     
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, *args, **kwargs):
-        if self.__class__ is PyAMGSolver:
-            raise NotImplementedError, \
-                  "can't instantiate abstract base class"
-
-        self.setupOptionsDict = None
-        self.solveOptionsDict = None
-                 
-        Solver.__init__(self, *args, **kwargs)
-
-    @getsetDeprecated
-    def _getMatrixClass(self):
-        return self._matrixClass
-
     @property
     def _matrixClass(self):
-        return _PysparseMeshMatrix
+        return _ScipyMeshMatrix
 
-    def _solve_(self, L, x, b, useSolveIt=False):
+    def _solve_(self, L, x, b):
         """
         Establishes a `pyamg.multilevel.multilevel_solver` object based on
         `self.solveFnc` and then solves, populating `relres` with
@@ -82,37 +62,21 @@ class PyAMGSolver(Solver):
             - `x`: A `numpy.ndarray`.
             - `b`: A `numpy.ndarray`.
         """
-        assert (L.__class__ == _PysparseMeshMatrix)
 
-        verbose = True if os.environ.has_key('FIPY_VERBOSE_SOLVER') else False
-        relres = []
-        A = L.asScipySparse.asformat('csr')
-
-        """
-        if useSolveIt:
-            x[:] = solveit(A, b, x0 = x, 
-                           tol = self.tolerance,
-                           maxiter = self.iterations,
-                           verb = verbose)
-
+        A = L.asformat('csr')
+        if self.preconditioner is None:
+            M = None
         else:
-            ml = self.solveFnc(A, **self.setupOptionsDict)
-            x[:] = ml.solve(b = b, residuals = relres, **self.solveOptionsDict)
-        """
+            M = self.preconditioner._applyToMatrix(A)
 
-        from scipy.sparse.linalg import cgs
-        from pyamg import smoothed_aggregation_solver
+##        from pyamg import solve
+##        x = solve(A,b,verb=True,tol=self.tolerance)
+            
+        x, info = self.solveFnc(A, b, x, tol=self.tolerance, maxiter=self.iterations, M=M)
 
-        ml = smoothed_aggregation_solver(A)
-        M = ml.aspreconditioner(cycle='V')
-        x, info = cgs(A, b, x, tol=self.tolerance, maxiter=self.iterations, M=M)
-
-        if verbose and not useSolveIt:
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
             from fipy.tools.debug import PRINT        
-            PRINT(ml)
-            PRINT('iterations: %d / %d' % (len(relres), self.iterations))
-            PRINT('relres:', relres)
-            PRINT('MG convergence factor: %g' % ((relres[-1])**(1.0/iter)))
+            PRINT('info:', info)
 
         return x
                         
@@ -121,10 +85,5 @@ class PyAMGSolver(Solver):
         if self.var.mesh.communicator.Nproc > 1:
             raise Exception("PyAMG solvers cannot be used with multiple processors")
         
-        array = self.var.numericValue
-        newArr = self._solve_(self.matrix, array, self.RHSvector)
-        factor = self.var.unit.factor
-        if factor != 1:
-            array /= self.var.unit.factor
-        self.var[:] = newArr
+        self.var[:] = self._solve_(self.matrix, self.var.value, numerix.array(self.RHSvector))
 

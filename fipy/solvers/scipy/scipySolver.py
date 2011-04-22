@@ -49,12 +49,12 @@ class ScipySolver(_PysparseMatrixSolver):
     
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, precon=None, *args, **kwargs):
         if self.__class__ is ScipySolver:
             raise NotImplementedError, \
                   "can't instantiate abstract base class"
-            
-        super(ScipySolver, self).__init__(*args, **kwargs)
+
+        super(ScipySolver, self).__init__(precon=precon, *args, **kwargs)
     
     @property
     def _matrixClass(self):
@@ -72,16 +72,15 @@ class ScipySolver(_PysparseMatrixSolver):
             - `b`: A `numpy.ndarray`.
         """
         A = L.matrix
-        M = None
 
         x, info = self.solveFnc(A, b, x, 
-                                tol=self.tolerance, 
+                                tol=self.tolerance,
                                 maxiter=self.iterations,
-                                M=M)
+                                M=None)
 
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
             if info < 0:
-                PRINT('failure', self._warningList[info].__class__.__name__) 
+                PRINT('failure', self._warningList[info].__class__.__name__)
 
         return x
 

@@ -4,8 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearCGSSolver.py"
+ #  FILE: "preconditioner.py"
  #
+ #  Author: James O'Beirne <james.obeirne@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,21 +32,29 @@
  #  
  # ###################################################################
  ##
+ 
+class Preconditioner:
+    """
+    Base preconditioner class
 
-__docformat__ = 'restructuredtext'
+    .. attention :: This class is abstract. Always
+    create one of its subclasses.
+    """
 
-from fipy.solvers.scipy.scipySolver import ScipySolver
-from scipy.sparse.linalg import gmres
-
-class LinearGMRESSolver(ScipySolver):
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """
-        :Parameters:
-          - `precon`: Preconditioner to use
+        Create a `Preconditioner` object.
         """
-        super(LinearGMRESSolver, self).__init__(*args, **kwargs)
-        self.solveFnc = gmres
+        if self.__class__ is Preconditioner:
+            raise NotImplementedError, \
+                  "can't instantiate abstract base class"
 
-    def _canSolveAssymetric(self):
-        return True
+    def _applyToMatrix(self, matrix):
+        """
+        Returns the function used for PyAMG
+        preconditioning.
+        """
+        raise NotImplementedError
+        
+
+

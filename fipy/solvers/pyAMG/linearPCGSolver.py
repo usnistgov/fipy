@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearCGSSolver.py"
+ #  FILE: "linearGMRESSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -17,7 +17,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental 
+ # protection and is in the public domain.  FiPy is an experimental
  # system.  NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
@@ -32,20 +32,15 @@
  # ###################################################################
  ##
 
-__docformat__ = 'restructuredtext'
+from fipy.solvers.pyAMG.pyAMGSolver import PyAMGSolver
+from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
+from scipy.sparse.linalg import cg
+    
+class LinearPCGSolver(PyAMGSolver):
 
-from fipy.solvers.scipy.scipySolver import ScipySolver
-from scipy.sparse.linalg import gmres
-
-class LinearGMRESSolver(ScipySolver):
-
-    def __init__(self, *args, **kwargs):
-        """
-        :Parameters:
-          - `precon`: Preconditioner to use
-        """
-        super(LinearGMRESSolver, self).__init__(*args, **kwargs)
-        self.solveFnc = gmres
-
+    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=SmoothedAggregationPreconditioner()):
+        PyAMGSolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+        self.solveFnc = cg
+        
     def _canSolveAssymetric(self):
-        return True
+        return False

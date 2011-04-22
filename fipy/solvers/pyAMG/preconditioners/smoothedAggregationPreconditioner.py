@@ -4,8 +4,9 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearCGSSolver.py"
+ #  FILE: "jacobiPreconditioner.py"
  #
+ #  Author: James O'Beirne <james.obeirne@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -31,21 +32,11 @@
  #  
  # ###################################################################
  ##
+ 
+from fipy.solvers.pyAMG.preconditioners.preconditioner import Preconditioner
+from pyamg import smoothed_aggregation_solver
 
-__docformat__ = 'restructuredtext'
+class SmoothedAggregationPreconditioner(Preconditioner):
+    def _applyToMatrix(self, A):
+        return smoothed_aggregation_solver(A).aspreconditioner(cycle='V')
 
-from fipy.solvers.scipy.scipySolver import ScipySolver
-from scipy.sparse.linalg import gmres
-
-class LinearGMRESSolver(ScipySolver):
-
-    def __init__(self, *args, **kwargs):
-        """
-        :Parameters:
-          - `precon`: Preconditioner to use
-        """
-        super(LinearGMRESSolver, self).__init__(*args, **kwargs)
-        self.solveFnc = gmres
-
-    def _canSolveAssymetric(self):
-        return True

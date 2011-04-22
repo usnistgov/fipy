@@ -1,13 +1,10 @@
-from smoothedAggregationSolver import SmoothedAggregationSolver
-from generalSolver import GeneralSolver
-from fipy.solvers.pysparse.linearPCGSolver import LinearPCGSolver
+from linearGMRESSolver import LinearGMRESSolver
+from linearCGSSolver import LinearCGSSolver
+from linearPCGSolver import LinearPCGSolver
+from fipy.solvers.scipy.linearLUSolver import LinearLUSolver
+from linearGeneralSolver import LinearGeneralSolver
 
-"""
-try:
-    from pyamg import solveit
-    DefaultSolver = GeneralSolver
-    DefaultAsymmetricSolver = GeneralSolver
-except ImportError:
-"""
-DefaultSolver = SmoothedAggregationSolver
-DefaultAsymmetricSolver = SmoothedAggregationSolver
+DefaultSolver = LinearGMRESSolver
+DefaultAsymmetricSolver = LinearGMRESSolver
+DummySolver = LinearGMRESSolver
+GeneralSolver = LinearGeneralSolver
