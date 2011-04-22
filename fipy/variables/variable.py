@@ -509,10 +509,9 @@ class Variable(object):
         else:
             value = self._value
 
-        constraints = self._allConstraints
-        if len(constraints) > 0:
+        if len(self.constraints) > 0:
             value = value.copy()
-            for constraint in constraints:
+            for constraint in self.constraints:
                 if constraint.where is None:
                     value[:] = constraint.value
                 else:
@@ -534,6 +533,12 @@ class Variable(object):
         self.setValue(newVal)
 
     value = property(_getValue, _setValueProperty)
+    
+    @property
+    def constraints(self):
+        if not hasattr(self, "_constraints"):
+            self._constraints = []
+        return self._constraints
             
     def constrain(self, value, where=None):
         """
@@ -578,13 +583,12 @@ class Variable(object):
 
         """
 
-        if not hasattr(self, 'constraints'):
-            self.constraints = []
-
         from fipy.boundaryConditions.constraint import Constraint
         if not isinstance(value, Constraint):
             value = Constraint(value=value, where=where)
-        self.constraints.append(value)
+        if not hasattr(self, "_constraints"):
+            self._constraints = []
+        self._constraints.append(value)
         self._requires(value.value)
         # self._requires(value.where) ???
         self._markStale()
@@ -608,12 +612,6 @@ class Variable(object):
         """
         self.constraints.remove(constraint)
         
-    @property
-    def _allConstraints(self):
-        if not hasattr(self, 'constraints'):
-            self.constraints = []
-        return self.constraints
-
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
         

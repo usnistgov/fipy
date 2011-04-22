@@ -68,17 +68,17 @@ class _CellToFaceVariable(FaceVariable):
         [ 0.5  1.   2.   2.5]
         """
         try:
-            self.constraints.remove(constraint)
+            super(FaceVariable, self).constraints.remove(constraint)
         except ValueError:
             self.var.release(constraint=constraint)
 
     @property
-    def _allConstraints(self):
+    def constraints(self):
         if hasattr(self.var, "faceConstraints"):
             faceConstraints = self.var.faceConstraints
         else:
             faceConstraints = []
-        return super(FaceVariable, self)._allConstraints + faceConstraints
+        return super(FaceVariable, self).constraints + faceConstraints
 
     def __getstate__(self):
         return dict(var=self.var)

@@ -198,7 +198,7 @@ class _MeshVariable(Variable):
     @property
     def constraintMask(self):
         returnMask = False
-        for constraint in self._allConstraints:
+        for constraint in self.constraints:
             returnMask = returnMask | numerix.array(constraint.where)
         return self._variableClass(mesh=self.mesh, rank=0, value=returnMask)
 
