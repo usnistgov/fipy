@@ -113,8 +113,8 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
                                                                                      SparseMatrix,
                                                                                      boundaryConditions=(),
                                                                                      dt=dt,
-                                                                                     transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(var),
-                                                                                     diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(var),
+                                                                                     transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(tmpVar),
+                                                                                     diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar),
                                                                                      buildExplicitIfOther=buildExplicitIfOther)
 
                 termMatrix += tmpMatrix 
