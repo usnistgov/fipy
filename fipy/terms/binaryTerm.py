@@ -112,7 +112,16 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> v0 = CellVariable(mesh=m, value=0.)
         >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass)
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass)
+        >>> print var
+        [ 0.  0.  0.]
+        >>> print CellVariable(mesh=m, value=RHSvector).globalValue
+        [ 0.  0.  0.]
+        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -1,  0],
+        ...                                            [-1,  3, -1],
+        ...                                            [ 0, -1,  2]])
+        True
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass)
         >>> print var
         [ 1.  1.  1.]
         >>> print CellVariable(mesh=m, value=RHSvector).globalValue
@@ -121,12 +130,26 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...                                            [-2,  4, -2],
         ...                                            [ 0, -2,  2]])
         True
+        >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.)).globalValue
+        [ 0.  0.  0.]
         
         >>> m = Grid1D(nx=6)
         >>> v0 = CellVariable(mesh=m, value=1.)
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> print var
+        [ 1.  1.  1.  1.  1.  1.]
+        >>> print CellVariable(mesh=m, value=RHSvector).globalValue
+        [ 1.  1.  1.  1.  1.  1.]
+        >>> print numerix.allequal(matrix.numpyArray, [[ 2,-1, 0, 0, 0, 0.],
+        ...                                            [-1, 3,-1, 0, 0, 0.],
+        ...                                            [ 0,-1, 3,-1, 0, 0.],
+        ...                                            [ 0, 0,-1, 3,-1, 0.],
+        ...                                            [ 0, 0, 0,-1, 3,-1.],
+        ...                                            [ 0, 0, 0, 0,-1, 2.]])
+        True
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var
         [ 0.  0.  0.  0.  0.  0.]
         >>> print CellVariable(mesh=m, value=RHSvector).globalValue
@@ -138,6 +161,8 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...                                            [ 0, 0, 0,-2, 4,-2.],
         ...                                            [ 0, 0, 0, 0,-2, 2.]])
         True
+        >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.)).globalValue
+        [ 0.  0.  0.  0.  0.  0.]
 
         >>> m = Grid1D(nx=3)
         >>> v0 = CellVariable(mesh=m, value=(0., 1., 2.))
@@ -147,9 +172,14 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
-        >>> print CellVariable(mesh=m, value=eq0.justResidualVector()).globalValue
+        >>> print CellVariable(mesh=m, value=eq0.justResidualVector(dt=1.)).globalValue
         [-3.  0.  3.]
-        >>> eq0.solve()
+        >>> eq0.solve(var=v0)
+        >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -1,  0],
+        ...                                                [-1,  3, -1],
+        ...                                                [ 0, -1,  2]])
+        True
+        >>> eq0.solve(var=v1)
         >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -2,  0],
         ...                                                [-2,  4, -2],
         ...                                                [ 0, -2,  2]])
