@@ -40,6 +40,9 @@ from fipy.tools import numerix
 
 class LinearGeneralSolver(Solver):
 
+    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=None): 
+        super(LinearGeneralSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+
     @property
     def _matrixClass(self):
         return _ScipyMeshMatrix    
