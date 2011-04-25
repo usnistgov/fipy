@@ -525,14 +525,6 @@ class Term(object):
         True
         >>> print (eq.term, eq.other) 
         (TransientTerm(coeff=1.0, var=A), DiffusionTerm(coeff=[-1.0], var=B))
-        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
-        >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[1, -1, 0], 
-        ...                                                             [-1, 2, -1], 
-        ...                                                             [0, -1, 1]])
-        True
-        >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [0, 0, 0])
-        True
         >>> res = eq.justResidualVector(boundaryConditions=(), dt=1.)
         >>> print parallel.procID > 0 or numerix.allequal(res, [-1, 0, 1]) 
         True
