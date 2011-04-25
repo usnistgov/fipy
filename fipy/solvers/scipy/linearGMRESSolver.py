@@ -46,6 +46,3 @@ class LinearGMRESSolver(ScipySolver):
         """
         super(LinearGMRESSolver, self).__init__(*args, **kwargs)
         self.solveFnc = gmres
-
-    def _canSolveAssymetric(self):
-        return True

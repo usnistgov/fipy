@@ -32,15 +32,10 @@
  # ###################################################################
  ##
 
-from fipy.solvers.pyAMG.pyAMGSolver import PyAMGSolver
+from fipy.solvers.scipy.linearPCGSolver import LinearPCGSolver as ScipyLinearPCGSolver
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
-from scipy.sparse.linalg import cg
-    
-class LinearPCGSolver(PyAMGSolver):
+
+class LinearPCGSolver(ScipyLinearPCGSolver):
 
     def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=SmoothedAggregationPreconditioner()):
-        PyAMGSolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
-        self.solveFnc = cg
-        
-    def _canSolveAssymetric(self):
-        return False
+        super(LinearPCGSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)

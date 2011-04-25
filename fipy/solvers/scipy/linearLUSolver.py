@@ -35,14 +35,9 @@
 __docformat__ = 'restructuredtext'
 
 import os
-import sys
-
 from scipy.sparse.linalg import splu
-
 from fipy.solvers.scipy.scipySolver import ScipySolver
 from fipy.tools import numerix
-
-DEBUG = False
 
 class LinearLUSolver(ScipySolver):
     """
@@ -92,10 +87,6 @@ class LinearLUSolver(ScipySolver):
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
 
-        if DEBUG:
-            import sys
-            print >> sys.stderr, l.matrix.todense()
-
         LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
                                             drop_tol=0.,
                                             relax=1,
@@ -117,4 +108,5 @@ class LinearLUSolver(ScipySolver):
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))
-      
+
+        return x

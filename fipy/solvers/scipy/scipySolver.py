@@ -37,24 +37,16 @@
 __docformat__ = 'restructuredtext'
 
 import os
-
 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
-from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
+from fipy.solvers.solver import Solver
+from fipy.tools import numerix
 
-from fipy.tools.decorators import getsetDeprecated
-
-class ScipySolver(_PysparseMatrixSolver):
+class ScipySolver(Solver):
     """
     The base `ScipySolver` class.
     
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, precon=None, *args, **kwargs):
-        if self.__class__ is ScipySolver:
-            raise NotImplementedError, \
-                  "can't instantiate abstract base class"
-
-        super(ScipySolver, self).__init__(precon=precon, *args, **kwargs)
     
     @property
     def _matrixClass(self):
@@ -62,9 +54,6 @@ class ScipySolver(_PysparseMatrixSolver):
                                    
     def _solve_(self, L, x, b):
         """
-        Establishes a `pyamg.multilevel.multilevel_solver` object based on
-        `self.solveFnc` and then solves, populating `relres` with
-        a list of residuals.
 
         :Parameters:
             - `L`: A `fipy.matrices.scipyMatrix._ScipyMeshMatrix`.
@@ -72,15 +61,26 @@ class ScipySolver(_PysparseMatrixSolver):
             - `b`: A `numpy.ndarray`.
         """
         A = L.matrix
-
+        if self.preconditioner is None:
+            M = None
+        else:
+            M = self.preconditioner._applyToMatrix(A)
+            
         x, info = self.solveFnc(A, b, x, 
                                 tol=self.tolerance,
                                 maxiter=self.iterations,
-                                M=None)
+                                M=M)
 
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
             if info < 0:
                 PRINT('failure', self._warningList[info].__class__.__name__)
 
         return x
+
+    def _solve(self):
+
+         if self.var.mesh.communicator.Nproc > 1:
+             raise Exception("PyAMG solvers cannot be used with multiple processors")
+        
+         self.var[:] = self._solve_(self.matrix, self.var.value, numerix.array(self.RHSvector))   
 

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearGMRESSolver.py"
+ #  FILE: "linearCGSSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -17,7 +17,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
+ # protection and is in the public domain.  FiPy is an experimental 
  # system.  NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
@@ -32,10 +32,16 @@
  # ###################################################################
  ##
 
-from fipy.solvers.scipy.linearCGSSolver import LinearCGSSolver as ScipyLinearCGSSolver
-from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
-    
-class LinearCGSSolver(ScipyLinearCGSSolver):
-    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=SmoothedAggregationPreconditioner()):
-        super(LinearCGSSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
-        
+__docformat__ = 'restructuredtext'
+
+from fipy.solvers.scipy.scipySolver import ScipySolver
+from scipy.sparse.linalg import cg
+
+class LinearPCGSolver(ScipySolver):
+
+    def __init__(self, *args, **kwargs):
+        super(LinearPCGSolver, self).__init__(*args, **kwargs)
+        self.solveFnc = cg
+
+    def _canSolveAssymetric(self):
+        return False

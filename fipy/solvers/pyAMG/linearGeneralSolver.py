@@ -31,19 +31,18 @@
  #  
  # ###################################################################
  ##
-
-from fipy.solvers.pyAMG.pyAMGSolver import PyAMGSolver
-from scipy.sparse.linalg import gmres
+ 
+from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+from fipy.solvers.solver import Solver
 from pyamg import solve
 import os
+from fipy.tools import numerix
 
-class LinearGeneralSolver(PyAMGSolver):
+class LinearGeneralSolver(Solver):
 
-    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=None):
-        PyAMGSolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
-        
-    def _canSolveAssymetric(self):
-        return True
+    @property
+    def _matrixClass(self):
+        return _ScipyMeshMatrix    
 
     def _solve_(self, L, x, b):
         """
@@ -54,15 +53,18 @@ class LinearGeneralSolver(PyAMGSolver):
             - `b`: A `numpy.ndarray`.
         """
 
-        A = L.asformat('csr')
-        if self.preconditioner is None:
-            M = None
-        else:
-            M = self.preconditioner._applyToMatrix(A)
+        
 
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
             verbosity = True
         else:
             verbosity = False
 
-        return solve(A, b, verb=verbosity, tol=self.tolerance)
+        return solve(L.matrix, b, verb=verbosity, tol=self.tolerance)
+
+    def _solve(self):
+
+        if self.var.mesh.communicator.Nproc > 1:
+            raise Exception("PyAMG solvers cannot be used with multiple processors")
+        
+        self.var[:] = self._solve_(self.matrix, self.var.value, numerix.array(self.RHSvector))

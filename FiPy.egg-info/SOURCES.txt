@@ -397,13 +397,10 @@ fipy/solvers/pysparseMatrixSolver.py
 fipy/solvers/solver.py
 fipy/solvers/test.py
 fipy/solvers/pyAMG/__init__.py
-fipy/solvers/pyAMG/generalSolver.py
 fipy/solvers/pyAMG/linearCGSSolver.py
 fipy/solvers/pyAMG/linearGMRESSolver.py
 fipy/solvers/pyAMG/linearGeneralSolver.py
-fipy/solvers/pyAMG/linearGenericSolver.py
 fipy/solvers/pyAMG/linearPCGSolver.py
-fipy/solvers/pyAMG/pyAMGSolver.py
 fipy/solvers/pyAMG/smoothedAggregationSolver.py
 fipy/solvers/pyAMG/preconditioners/MLpreconditioner.py
 fipy/solvers/pyAMG/preconditioners/__init__.py
@@ -425,6 +422,7 @@ fipy/solvers/scipy/linearBicgstabSolver.py
 fipy/solvers/scipy/linearCGSSolver.py
 fipy/solvers/scipy/linearGMRESSolver.py
 fipy/solvers/scipy/linearLUSolver.py
+fipy/solvers/scipy/linearPCGSolver.py
 fipy/solvers/scipy/scipySolver.py
 fipy/solvers/trilinos/__init__.py
 fipy/solvers/trilinos/linearBicgstabSolver.py

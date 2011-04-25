@@ -32,15 +32,9 @@
  # ###################################################################
  ##
 
-from fipy.solvers.pyAMG.pyAMGSolver import PyAMGSolver
+from fipy.solvers.scipy.linearGMRESSolver import LinearGMRESSolver as ScipyLinearGMRESSolver
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
-from scipy.sparse.linalg import gmres
     
-class LinearGMRESSolver(PyAMGSolver):
-
+class LinearGMRESSolver(ScipyLinearGMRESSolver):
     def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=SmoothedAggregationPreconditioner()):
-        PyAMGSolver.__init__(self, tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
-        self.solveFnc = gmres
-        
-    def _canSolveAssymetric(self):
-        return True
+        super(LinearGMRESSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
