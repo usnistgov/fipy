@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
+ #  FILE: "preconditioner.py"
  #
+ #  Author: James O'Beirne <james.obeirne@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -18,7 +18,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
+ # protection and is in the public domain.  FiPy is an experimental 
  # system.  NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
@@ -32,41 +32,29 @@
  #  
  # ###################################################################
  ##
-
-__docformat__ = 'restructuredtext'
-
-import sys
-
-from pysparse import itsolvers
-
-from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
-
-class LinearPCGSolver(PysparseSolver):
+ 
+class Preconditioner:
     """
-    
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning by default. Alternatively,
-    Jacobi preconditioning can be specified through `precon`.
-    The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
+    Base preconditioner class
 
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
-
-    .. _PySparse: http://pysparse.sourceforge.net
-    
+    .. attention :: This class is abstract. Always
+    create one of its subclasses.
     """
 
-    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
+    def __init__(self):
         """
-        :Parameters:
-          - `precon`: Preconditioner to use
+        Create a `Preconditioner` object.
         """
-        super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.pcg
+        if self.__class__ is Preconditioner:
+            raise NotImplementedError, \
+                  "can't instantiate abstract base class"
+
+    def _applyToMatrix(self, matrix):
+        """
+        Returns the function used for PyAMG
+        preconditioning.
+        """
+        raise NotImplementedError
         
-    def _canSolveAsymmetric(self):
-        return False
-                
+
+

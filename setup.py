@@ -63,7 +63,10 @@ def _TestClass(base):
             ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
             ('trilinos', None, "run FiPy using Trilinos solvers"),
             ('pysparse', None, "run FiPy using Pysparse solvers (default)"),
+            ('scipy', None, "run FiPy using SciPy solvers"),
+            ('Scipy', None, "run FiPy using SciPy solvers"),
             ('no-pysparse',None, "run FiPy without using the Pysparse solvers"),
+            ('pyamg',None, "run FiPy without using the PyAMG solvers"),
             ('all', None, "run all non-interactive FiPy tests (default)"),
             ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
             ('examples', None, "test FiPy examples"),
@@ -92,6 +95,8 @@ def _TestClass(base):
             self.trilinos = False
             self.pysparse = False
             self.no_pysparse = False
+            self.pyamg = False
+            self.scipy = False
             
         def finalize_options(self):
             noSuiteOrModule = (self.test_suite is None 

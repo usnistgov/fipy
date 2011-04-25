@@ -527,7 +527,7 @@ class UniformGrid1D(UniformGrid):
             >>> from fipy import *
             >>> mesh = Grid1D(nx=3., dx=1.)
             >>> var = CellVariable(mesh=mesh)
-            >>> DiffusionTerm().solve(var)
+            >>> DiffusionTerm().solve(var, solver=DummySolver())
 
         """
 

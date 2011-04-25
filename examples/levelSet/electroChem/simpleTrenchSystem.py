@@ -313,9 +313,8 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
         advectionEquation.solve(distanceVar, dt = dt)
         surfactantEquation.solve(catalystVar, dt = dt)
-        metalEquation.solve(metalVar, dt = dt) 
-        bulkCatalystEquation.solve(bulkCatalystVar, dt = dt)
-
+        metalEquation.solve(metalVar, dt = dt)
+        bulkCatalystEquation.solve(bulkCatalystVar, dt = dt, solver=GeneralSolver())
 
     try:
         import os

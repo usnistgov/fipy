@@ -35,17 +35,11 @@
 __docformat__ = 'restructuredtext'
 
 import os
-import sys
-
-from pysparse import itsolvers
-from pysparse import superlu
-
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from scipy.sparse.linalg import splu
+from fipy.solvers.scipy.scipySolver import ScipySolver
 from fipy.tools import numerix
 
-DEBUG = False
-
-class LinearLUSolver(PysparseSolver):
+class LinearLUSolver(ScipySolver):
     """
     
     The `LinearLUSolver` solves a linear system of equations using
@@ -80,17 +74,24 @@ class LinearLUSolver(PysparseSolver):
                                              steps = steps)
 
     def _solve_(self, L, x, b):
+        """
+        :Parameters:
+            - `L`: a `scipy.sparse.linalg.csr_matrix`.
+
+        TODO: This method doesn't mirror its Pysparse counterpart in that `L` is
+        a foreign sparse matrix instead of a FiPy sparse matrix.
+        """
         diag = L.takeDiagonal()
         maxdiag = max(numerix.absolute(diag))
 
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
 
-        LU = superlu.factorize(L.matrix.to_csr())
-
-        if DEBUG:
-            import sys
-            print >> sys.stderr, L.matrix
+        LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
+                                            drop_tol=0.,
+                                            relax=1,
+                                            panel_size=10,
+                                            permc_spec=3)
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
@@ -100,8 +101,7 @@ class LinearLUSolver(PysparseSolver):
             if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
                 break
 
-            xError = numerix.zeros(len(b),'d')
-            LU.solve(errorVector, xError)
+            xError = LU.solve(errorVector)
             x[:] = x - xError
             
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
@@ -109,3 +109,4 @@ class LinearLUSolver(PysparseSolver):
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))
 
+        return x

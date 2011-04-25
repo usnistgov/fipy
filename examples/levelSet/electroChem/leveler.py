@@ -378,8 +378,8 @@ def runLeveler(kLeveler=0.018,
                  (levelerSurfactantEquation, levelerVar, (), None),
                  (acceleratorSurfactantEquation, acceleratorVar, (), None),
                  (metalEquation, metalVar,  (), None),
-                 (bulkAcceleratorEquation, bulkAcceleratorVar, (), None),
-                 (bulkLevelerEquation, bulkLevelerVar, (), None))
+                 (bulkAcceleratorEquation, bulkAcceleratorVar, (), GeneralSolver()),
+                 (bulkLevelerEquation, bulkLevelerVar, (), GeneralSolver()))
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 

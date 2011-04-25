@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
+ #  FILE: "linearGeneralSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -32,41 +31,43 @@
  #  
  # ###################################################################
  ##
+ 
+from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+from fipy.solvers.solver import Solver
+from pyamg import solve
+import os
+from fipy.tools import numerix
 
-__docformat__ = 'restructuredtext'
+class LinearGeneralSolver(Solver):
 
-import sys
+    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=None): 
+        super(LinearGeneralSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
 
-from pysparse import itsolvers
+    @property
+    def _matrixClass(self):
+        return _ScipyMeshMatrix    
 
-from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
-
-class LinearPCGSolver(PysparseSolver):
-    """
-    
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning by default. Alternatively,
-    Jacobi preconditioning can be specified through `precon`.
-    The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
-
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
-
-    .. _PySparse: http://pysparse.sourceforge.net
-    
-    """
-
-    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
+    def _solve_(self, L, x, b):
         """
+
         :Parameters:
-          - `precon`: Preconditioner to use
+            - `L`: A `fipy.matrices.pysparseMatrix._PysparseMeshMatrix`.
+            - `x`: A `numpy.ndarray`.
+            - `b`: A `numpy.ndarray`.
         """
-        super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.pcg
+
         
-    def _canSolveAsymmetric(self):
-        return False
-                
+
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            verbosity = True
+        else:
+            verbosity = False
+
+        return solve(L.matrix, b, verb=verbosity, tol=self.tolerance)
+
+    def _solve(self):
+
+        if self.var.mesh.communicator.Nproc > 1:
+            raise Exception("PyAMG solvers cannot be used with multiple processors")
+        
+        self.var[:] = self._solve_(self.matrix, self.var.value, numerix.array(self.RHSvector))

@@ -65,7 +65,7 @@ class _SparseMatrix(object):
     @getsetDeprecated
     def getNumpyArray(self):
         return self.numpyArray
-                                                
+                                       
     def __array_wrap(self, arr, context=None):
         if context is None:
             return arr

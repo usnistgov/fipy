@@ -10,6 +10,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -36,75 +37,50 @@
 __docformat__ = 'restructuredtext'
 
 import os
+from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+from fipy.solvers.solver import Solver
+from fipy.tools import numerix
 
-from pysparse import precon
-
-from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
-
-class PysparseSolver(_PysparseMatrixSolver):
+class ScipySolver(Solver):
     """
-    The base `pysparseSolver` class.
+    The base `ScipySolver` class.
     
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, *args, **kwargs):
-        if self.__class__ is PysparseSolver:
-            raise NotImplementedError, \
-                  "can't instantiate abstract base class"
-            
-        super(PysparseSolver, self).__init__(*args, **kwargs)
-
+    
+    @property
+    def _matrixClass(self):
+        return _ScipyMeshMatrix
+                                   
     def _solve_(self, L, x, b):
         """
-        `_solve_` is only for use by solvers which may use
-        preconditioning. If you are writing a solver which
-        doesn't use preconditioning, this must be overridden.
 
         :Parameters:
-            - `L`: a `fipy.matrices.pysparseMatrix._PysparseMeshMatrix`.
-            - `x`: a `numpy.ndarray`.
-            - `b`: a `numpy.ndarray`.
+            - `L`: A `fipy.matrices.scipyMatrix._ScipyMeshMatrix`.
+            - `x`: A `numpy.ndarray`.
+            - `b`: A `numpy.ndarray`.
         """
-
         A = L.matrix
-
         if self.preconditioner is None:
-            P = None
+            M = None
         else:
-            P, A = self.preconditioner._applyToMatrix(A)
-
-        info, iter, relres = self.solveFnc(A, b, x, self.tolerance, 
-                                           self.iterations, P)
-        
-        self._raiseWarning(info, iter, relres)
-        
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
-            from fipy.tools.debug import PRINT        
-            PRINT('iterations: %d / %d' % (iter, self.iterations))
+            M = self.preconditioner._applyToMatrix(A)
             
+        x, info = self.solveFnc(A, b, x, 
+                                tol=self.tolerance,
+                                maxiter=self.iterations,
+                                M=M)
+
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
             if info < 0:
                 PRINT('failure', self._warningList[info].__class__.__name__)
-            PRINT('relres:', relres)
-            
+
+        return x
+
     def _solve(self):
 
-        if self.var.mesh.communicator.Nproc > 1:
-            raise Exception("PySparse solvers cannot be used with multiple processors")
+         if self.var.mesh.communicator.Nproc > 1:
+             raise Exception("PyAMG solvers cannot be used with multiple processors")
         
-        array = self.var.numericValue
-        
-        from fipy.terms import SolutionVariableNumberError
-        
-        if ((self.matrix == 0)
-            or (self.matrix.matrix.shape[0] != self.matrix.matrix.shape[1])
-            or (self.matrix.matrix.shape[0] != len(array))):
-
-            raise SolutionVariableNumberError
-
-        self._solve_(self.matrix, array, self.RHSvector)
-        factor = self.var.unit.factor
-        if factor != 1:
-            array /= self.var.unit.factor
-        self.var[:] = array 
+         self.var[:] = self._solve_(self.matrix, self.var.value, numerix.array(self.RHSvector))   
 
