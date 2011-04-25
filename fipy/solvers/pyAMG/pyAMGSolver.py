@@ -5,7 +5,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "pysparseSolver.py"
+ #  FILE: "pyAMGSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -69,13 +69,10 @@ class PyAMGSolver(Solver):
         else:
             M = self.preconditioner._applyToMatrix(A)
 
-##        from pyamg import solve
-##        x = solve(A,b,verb=True,tol=self.tolerance)
-            
         x, info = self.solveFnc(A, b, x, tol=self.tolerance, maxiter=self.iterations, M=M)
 
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
-            from fipy.tools.debug import PRINT        
+            from fipy.tools.debug import PRINT
             PRINT('info:', info)
 
         return x
