@@ -34,23 +34,23 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.scipy.scipySolver import ScipySolver
+from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
 from scipy.sparse.linalg import cgs
 
-class LinearCGSSolver(ScipySolver):
-
+class LinearCGSSolver(_ScipyKrylovSolver):
     """
-    The `LinearCGSSolver` solves a linear system of equations using
-    the conjugate gradient squared method (CGS), a variant of the
-    biconjugate gradient method (BiCG). CGS solves linear systems with
-    a general non-symmetric coefficient matrix.
+    The `LinearCGSSolver` is an interface to the CGS solver in Scipy,
+    with no preconditioning by default.
     """
 
-    def __init__(self, precon=None, *args, **kwargs):
+    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=None):
         """
         :Parameters:
-          - `precon`: Preconditioner to use
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
         """
-        super(LinearCGSSolver, self).__init__(precon=precon, 
-                                              *args, **kwargs)
+        
+        super(LinearCGSSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
         self.solveFnc = cgs

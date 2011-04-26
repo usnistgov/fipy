@@ -32,32 +32,19 @@
  # ###################################################################
  ##
  
-from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
-from fipy.solvers.solver import Solver
+from fipy.solvers.scipy.scipySolver import _ScipySolver
 from pyamg import solve
 import os
 from fipy.tools import numerix
 
-class LinearGeneralSolver(Solver):
-
-    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=None): 
-        super(LinearGeneralSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
-
-    @property
-    def _matrixClass(self):
-        return _ScipyMeshMatrix    
+class LinearGeneralSolver(_ScipySolver):
+    """
+    The `LinearGeneralSolver` is an interface to the generic pyAMG,
+    which solves the arbitrary system Ax=b with the best out-of-the box
+    choice for a solver. See `pyAMG.solve` for details.
+    """
 
     def _solve_(self, L, x, b):
-        """
-
-        :Parameters:
-            - `L`: A `fipy.matrices.pysparseMatrix._PysparseMeshMatrix`.
-            - `x`: A `numpy.ndarray`.
-            - `b`: A `numpy.ndarray`.
-        """
-
-        
-
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
             verbosity = True
         else:
@@ -65,9 +52,3 @@ class LinearGeneralSolver(Solver):
 
         return solve(L.matrix, b, verb=verbosity, tol=self.tolerance)
 
-    def _solve(self):
-
-        if self.var.mesh.communicator.Nproc > 1:
-            raise Exception("PyAMG solvers cannot be used with multiple processors")
-        
-        self.var[:] = self._solve_(self.matrix, self.var.value, numerix.array(self.RHSvector))

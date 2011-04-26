@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearGMRESSolver.py"
+ #  FILE: "linearCGSSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -36,6 +36,20 @@ from fipy.solvers.scipy.linearCGSSolver import LinearCGSSolver as ScipyLinearCGS
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
     
 class LinearCGSSolver(ScipyLinearCGSSolver):
+    """
+    The `LinearCGSSolver` is an interface to the CGS solver in Scipy,
+    using the pyAMG `SmoothedAggregationPreconditioner` by default.
+    """
+
     def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=SmoothedAggregationPreconditioner()):
+        """
+        :Parameters:
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
+
+        """
+        
         super(LinearCGSSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
         

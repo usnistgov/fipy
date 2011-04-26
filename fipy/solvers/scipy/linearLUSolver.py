@@ -36,51 +36,17 @@ __docformat__ = 'restructuredtext'
 
 import os
 from scipy.sparse.linalg import splu
-from fipy.solvers.scipy.scipySolver import ScipySolver
+from fipy.solvers.scipy.scipySolver import _ScipySolver
 from fipy.tools import numerix
 
-class LinearLUSolver(ScipySolver):
+class LinearLUSolver(_ScipySolver):
     """
-    
     The `LinearLUSolver` solves a linear system of equations using
-    LU-factorisation. This method solves systems with a general
-    non-symmetric coefficient matrix using partial pivoting.
-
-    The `LinearLUSolver` is a wrapper class for the the PySparse_
-    `superlu.factorize()` method.
-
-    .. _PySparse: http://pysparse.sourceforge.net
-    
+    LU-factorisation.  The `LinearLUSolver` is a wrapper class for the
+    the Scipy `scipy.sparse.linalg.splu` moduleq.
     """
     
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None,
-                       maxIterations=10, precon=None):
-        """
-        Creates a `LinearLUSolver`.
-
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The number of LU decompositions to perform.
-          - `steps`: A deprecated name for `iterations`.
-            For large systems a number of iterations is generally required.
-          - `precon`: not used but maintains a common interface.
-          
-        """
-
-        iterations = min(iterations, maxIterations)
-        
-        super(LinearLUSolver, self).__init__(tolerance = tolerance, 
-                                             iterations = iterations, 
-                                             steps = steps)
-
     def _solve_(self, L, x, b):
-        """
-        :Parameters:
-            - `L`: a `scipy.sparse.linalg.csr_matrix`.
-
-        TODO: This method doesn't mirror its Pysparse counterpart in that `L` is
-        a foreign sparse matrix instead of a FiPy sparse matrix.
-        """
         diag = L.takeDiagonal()
         maxdiag = max(numerix.absolute(diag))
 
@@ -95,7 +61,7 @@ class LinearLUSolver(ScipySolver):
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
-        for iteration in range(self.iterations):
+        for iteration in range(min(self.iterations, 10)):
             errorVector = L * x - b
 
             if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:

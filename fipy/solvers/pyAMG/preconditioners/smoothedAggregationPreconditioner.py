@@ -33,10 +33,9 @@
  # ###################################################################
  ##
  
-from fipy.solvers.pyAMG.preconditioners.preconditioner import Preconditioner
 from pyamg import smoothed_aggregation_solver
 
-class SmoothedAggregationPreconditioner(Preconditioner):
+class SmoothedAggregationPreconditioner():
     def _applyToMatrix(self, A):
         return smoothed_aggregation_solver(A).aspreconditioner(cycle='V')
 

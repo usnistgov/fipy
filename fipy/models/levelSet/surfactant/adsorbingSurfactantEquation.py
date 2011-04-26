@@ -363,7 +363,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             import fipy.solvers.solver
             if fipy.solvers.solver == 'pyamg':
                 from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
-                solver = LinearGeneralSolver()
+                solver = LinearGeneralSolver(tolerance=1e-15, iterations=2000)
             else:
                 solver = LinearPCGSolver()
             

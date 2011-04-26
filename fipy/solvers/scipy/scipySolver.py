@@ -36,12 +36,11 @@
 
 __docformat__ = 'restructuredtext'
 
-import os
 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
 from fipy.solvers.solver import Solver
 from fipy.tools import numerix
 
-class ScipySolver(Solver):
+class _ScipySolver(Solver):
     """
     The base `ScipySolver` class.
     
@@ -52,31 +51,6 @@ class ScipySolver(Solver):
     def _matrixClass(self):
         return _ScipyMeshMatrix
                                    
-    def _solve_(self, L, x, b):
-        """
-
-        :Parameters:
-            - `L`: A `fipy.matrices.scipyMatrix._ScipyMeshMatrix`.
-            - `x`: A `numpy.ndarray`.
-            - `b`: A `numpy.ndarray`.
-        """
-        A = L.matrix
-        if self.preconditioner is None:
-            M = None
-        else:
-            M = self.preconditioner._applyToMatrix(A)
-            
-        x, info = self.solveFnc(A, b, x, 
-                                tol=self.tolerance,
-                                maxiter=self.iterations,
-                                M=M)
-
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
-            if info < 0:
-                PRINT('failure', self._warningList[info].__class__.__name__)
-
-        return x
-
     def _solve(self):
 
          if self.var.mesh.communicator.Nproc > 1:

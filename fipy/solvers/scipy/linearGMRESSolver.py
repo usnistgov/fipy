@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearCGSSolver.py"
+ #  FILE: "linearGMRESSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,15 +34,23 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.scipy.scipySolver import ScipySolver
+from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
 from scipy.sparse.linalg import gmres
 
-class LinearGMRESSolver(ScipySolver):
-
-    def __init__(self, *args, **kwargs):
+class LinearGMRESSolver(_ScipyKrylovSolver):
+    """
+    The `LinearGMRESSolver` is an interface to the GMRES solver in
+    Scipy, with no preconditioning by default.
+    """
+    
+    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=None):
         """
         :Parameters:
-          - `precon`: Preconditioner to use
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
         """
-        super(LinearGMRESSolver, self).__init__(*args, **kwargs)
+        
+        super(LinearGMRESSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
         self.solveFnc = gmres

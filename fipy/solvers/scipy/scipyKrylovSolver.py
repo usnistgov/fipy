@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "preconditioner.py"
+ #  FILE: "scipyKrylovSolver.py"
  #
- #  Author: James O'Beirne <james.obeirne@nist.gov>
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -18,7 +19,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental 
+ # protection and is in the public domain.  FiPy is an experimental
  # system.  NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
@@ -32,29 +33,34 @@
  #  
  # ###################################################################
  ##
- 
-class Preconditioner:
+
+__docformat__ = 'restructuredtext'
+
+import os
+from fipy.solvers.scipy.scipySolver import _ScipySolver
+
+class _ScipyKrylovSolver(_ScipySolver):
     """
-    Base preconditioner class
-
-    .. attention :: This class is abstract. Always
-    create one of its subclasses.
+    The base `ScipyKrylovSolver` class.
+    
+    .. attention:: This class is abstract. Always create one of its subclasses.
     """
+    
+    def _solve_(self, L, x, b):
+        A = L.matrix
+        if self.preconditioner is None:
+            M = None
+        else:
+            M = self.preconditioner._applyToMatrix(A)
+            
+        x, info = self.solveFnc(A, b, x, 
+                                tol=self.tolerance,
+                                maxiter=self.iterations,
+                                M=M)
 
-    def __init__(self):
-        """
-        Create a `Preconditioner` object.
-        """
-        if self.__class__ is Preconditioner:
-            raise NotImplementedError, \
-                  "can't instantiate abstract base class"
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            if info < 0:
+                PRINT('failure', self._warningList[info].__class__.__name__)
 
-    def _applyToMatrix(self, matrix):
-        """
-        Returns the function used for PyAMG
-        preconditioning.
-        """
-        raise NotImplementedError
-        
-
+        return x
 

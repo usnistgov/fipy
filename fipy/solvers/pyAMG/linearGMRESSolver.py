@@ -36,5 +36,20 @@ from fipy.solvers.scipy.linearGMRESSolver import LinearGMRESSolver as ScipyLinea
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
     
 class LinearGMRESSolver(ScipyLinearGMRESSolver):
+    """
+    The `LinearGMRESSolver` is an interface to the GMRES solver in
+    Scipy, using the pyAMG `SmoothedAggregationPreconditioner` by
+    default.
+    """
+    
     def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=SmoothedAggregationPreconditioner()):
+        """
+        :Parameters:
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
+
+        """        
+        
         super(LinearGMRESSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
