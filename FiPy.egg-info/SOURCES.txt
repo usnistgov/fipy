@@ -500,10 +500,10 @@ fipy/solvers/pyAMG/__init__.py
 fipy/solvers/pyAMG/linearCGSSolver.py
 fipy/solvers/pyAMG/linearGMRESSolver.py
 fipy/solvers/pyAMG/linearGeneralSolver.py
+fipy/solvers/pyAMG/linearLUSolver.py
 fipy/solvers/pyAMG/linearPCGSolver.py
 fipy/solvers/pyAMG/smoothedAggregationSolver.py
 fipy/solvers/pyAMG/preconditioners/__init__.py
-fipy/solvers/pyAMG/preconditioners/preconditioner.py
 fipy/solvers/pyAMG/preconditioners/smoothedAggregationPreconditioner.py
 fipy/solvers/pysparse/__init__.py
 fipy/solvers/pysparse/linearCGSSolver.py
@@ -522,6 +522,7 @@ fipy/solvers/scipy/linearCGSSolver.py
 fipy/solvers/scipy/linearGMRESSolver.py
 fipy/solvers/scipy/linearLUSolver.py
 fipy/solvers/scipy/linearPCGSolver.py
+fipy/solvers/scipy/scipyKrylovSolver.py
 fipy/solvers/scipy/scipySolver.py
 fipy/solvers/trilinos/__init__.py
 fipy/solvers/trilinos/linearBicgstabSolver.py

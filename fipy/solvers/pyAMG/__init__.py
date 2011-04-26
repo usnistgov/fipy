@@ -1,7 +1,7 @@
 from linearGMRESSolver import LinearGMRESSolver
 from linearCGSSolver import LinearCGSSolver
 from linearPCGSolver import LinearPCGSolver
-from fipy.solvers.scipy.linearLUSolver import LinearLUSolver
+from linearLUSolver import LinearLUSolver
 from linearGeneralSolver import LinearGeneralSolver
 
 DefaultSolver = LinearGMRESSolver

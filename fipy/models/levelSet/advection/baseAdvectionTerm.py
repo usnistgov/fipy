@@ -98,7 +98,7 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
             return solver or LinearGMRESSolver(precon=JacobiPreconditioner(), *args, **kwargs)
         elif fipy.solvers.solver == 'pyamg':
             from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
-            return solver or LinearGeneralSolver(*args, **kwargs)
+            return solver or LinearGeneralSolver(tolerance=1e-15, iterations=2000, *args, **kwargs)
         else:
             from fipy.solvers import DefaultAsymmetricSolver
             return solver or DefaultAsymmetricSolver(*args, **kwargs)

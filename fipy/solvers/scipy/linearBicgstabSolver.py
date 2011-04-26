@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearCGSSolver.py"
+ #  FILE: "linearBicgstabSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,23 +34,23 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.scipy.scipySolver import ScipySolver
+from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
 from scipy.sparse.linalg import bicgstab
 
-class LinearBicgstabSolver(ScipySolver):
-
+class LinearBicgstabSolver(_ScipyKrylovSolver):
     """
-    The `LinearCGSSolver` solves a linear system of equations using
-    the conjugate gradient squared method (CGS), a variant of the
-    biconjugate gradient method (BiCG). CGS solves linear systems with
-    a general non-symmetric coefficient matrix.
+    The `LinearBicgstabSolver` is an interface to the Bicgstab solver in
+    Scipy, with no preconditioning by default.
     """
 
-    def __init__(self, precon=None, *args, **kwargs):
+    def __init__(self):
         """
         :Parameters:
-          - `precon`: Preconditioner to use
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
         """
-        super(LinearBicgstabSolver, self).__init__(precon=precon, 
-                                                   *args, **kwargs)
+        
+        super(LinearBicgstabSolver, self).__init__()
         self.solveFnc = bicgstab

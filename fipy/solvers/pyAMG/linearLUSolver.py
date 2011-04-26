@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
+ # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
@@ -9,6 +10,7 @@
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -34,45 +36,4 @@
 
 __docformat__ = 'restructuredtext'
 
-import os
-from scipy.sparse.linalg import splu
-from fipy.solvers.scipy.scipySolver import _ScipySolver
-from fipy.tools import numerix
-
-class LinearLUSolver(_ScipySolver):
-    """
-    The `LinearLUSolver` solves a linear system of equations using
-    LU-factorisation.  The `LinearLUSolver` is a wrapper class for the
-    the Scipy `scipy.sparse.linalg.splu` moduleq.
-    """
-    
-    def _solve_(self, L, x, b):
-        diag = L.takeDiagonal()
-        maxdiag = max(numerix.absolute(diag))
-
-        L = L * (1 / maxdiag)
-        b = b * (1 / maxdiag)
-
-        LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
-                                            drop_tol=0.,
-                                            relax=1,
-                                            panel_size=10,
-                                            permc_spec=3)
-
-        error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
-
-        for iteration in range(min(self.iterations, 10)):
-            errorVector = L * x - b
-
-            if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
-                break
-
-            xError = LU.solve(errorVector)
-            x[:] = x - xError
-            
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
-            from fipy.tools.debug import PRINT        
-            PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
-            PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))
-
-        return x
+from fipy.solvers.scipy.linearLUSolver import LinearLUSolver
