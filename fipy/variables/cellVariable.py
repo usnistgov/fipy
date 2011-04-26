@@ -633,8 +633,9 @@ class CellVariable(_MeshVariable):
             # self._requires(value.where) ???
             self._markStale()
         else:
-            _MeshVariable.constrain(value, where)
-            
+##            _MeshVariable.constrain(value, where)
+            super(CellVariable, self).constrain(value, where)
+
     def release(self, constraint):
         """Remove `constraint` from `self`
         

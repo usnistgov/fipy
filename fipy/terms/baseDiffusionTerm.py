@@ -39,6 +39,7 @@ import os
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
 from fipy.terms import TermMultiplyError
+from fipy.variables.faceVariable import FaceVariable
 
 class _BaseDiffusionTerm(_UnaryTerm):
 
@@ -99,7 +100,6 @@ class _BaseDiffusionTerm(_UnaryTerm):
     def __getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
 
-            from fipy.variables.faceVariable import FaceVariable
             rotationTensor = FaceVariable(mesh=mesh, rank=2)
             
             rotationTensor[:, 0] = self._getNormals(mesh)
@@ -147,7 +147,6 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
             shape = numerix.getShape(coeff)
 
-            from fipy.variables.faceVariable import FaceVariable
             if isinstance(coeff, FaceVariable):
                 rank = coeff.rank
             else:
@@ -228,15 +227,23 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
         if self.order == 2:
             mesh = var.mesh
-            from fipy.variables.faceVariable import FaceVariable
-            normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals) * self.nthCoeff
 
+            if isinstance(self.nthCoeff, FaceVariable):
+                rank = self.nthCoeff.rank
+            else:
+                rank = len(numerix.getShape(self.nthCoeff))
+
+            nthCoeff = FaceVariable(mesh=mesh, rank=rank, value=self.nthCoeff)
+            
+            normalsDotCoeff = nthCoeff.dot(FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals))
+            
             constraintB = 0
             constraintL = 0
-            
-            constraintB -= (var.faceGrad.constraintMask * self.nthCoeff * var.faceGrad).divergence * mesh.cellVolumes
+
+            constraintB -= (var.faceGrad.constraintMask * nthCoeff.dot(var.faceGrad)).divergence * mesh.cellVolumes
 
             constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * normalsDotCoeff / mesh._cellDistances
+            
             constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
             constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
 
