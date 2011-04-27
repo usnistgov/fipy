@@ -131,11 +131,8 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
         if not hasattr(self, 'anisotropySource'):
             if len(coeff) > 1:
-                if hasattr(var.arithmeticFaceValue, 'constraints'):                
-                    varNoConstraints = var.copy()
-                else:
-                    varNoConstraints = var
-                gradients = varNoConstraints.grad.harmonicFaceValue.dot(self.__getRotationTensor(mesh))
+                unconstrainedVar = var + 0
+                gradients = unconstrainedVar.grad.harmonicFaceValue.dot(self.__getRotationTensor(mesh))
                 from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
                 self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.cellVolumes
 
