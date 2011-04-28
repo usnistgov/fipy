@@ -498,6 +498,7 @@ fipy/variables/cellToFaceVariable.py
 fipy/variables/cellVariable.py
 fipy/variables/cellVolumeAverageVariable.py
 fipy/variables/constant.py
+fipy/variables/constraintMask.py
 fipy/variables/coupledCellVariable.py
 fipy/variables/exponentialNoiseVariable.py
 fipy/variables/faceGradContributionsVariable.py

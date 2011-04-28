@@ -163,19 +163,9 @@ class _BaseConvectionTerm(FaceTerm):
 
         mesh = var.mesh
         
-        if not hasattr(self, 'faceGradConstraintMask'):
-            self.faceGradConstraintMask = FaceVariable(mesh=mesh, value=var.faceGrad.constraintMask)
-        else:
-            self.faceGradConstraintMask[:] = var.faceGrad.constraintMask
-
-        if not hasattr(self, 'faceConstraintMask'):
-            self.faceConstraintMask = FaceVariable(mesh=mesh, value=var.arithmeticFaceValue.constraintMask)
-        else:
-            self.faceConstraintMask[:] = var.arithmeticFaceValue.constraintMask
-
         if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
 
-            constraintMask = self.faceGradConstraintMask | self.faceConstraintMask
+            constraintMask = var.faceGrad.constraintMask | var.arithmeticFaceValue.constraintMask
 
             weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 

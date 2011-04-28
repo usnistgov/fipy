@@ -194,13 +194,18 @@ class _MeshVariable(Variable):
             if len(self.name) == 0:
                 s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
             return s
-        
+
     @property
     def constraintMask(self):
-        returnMask = False
-        for constraint in self.constraints:
-            returnMask = returnMask | numerix.array(constraint.where)
-        return self._variableClass(mesh=self.mesh, rank=0, value=returnMask)
+        if not hasattr(self, '_constraintMask'):
+            from fipy.variables.constraintMask import ConstraintMask
+            self._constraintMask = ConstraintMask(self)
+        return self._constraintMask
+
+    def constrain(self, value, where=None):
+        super(_MeshVariable, self).constrain(value, where=where)
+        if hasattr(self, '_constraintMask'):
+            self._constraintMask._requires(self._constraints[-1].value.where)
 
     def _getShapeFromMesh(mesh):
         """
