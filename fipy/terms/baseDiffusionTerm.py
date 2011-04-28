@@ -223,29 +223,41 @@ class _BaseDiffusionTerm(_UnaryTerm):
         var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         if self.order == 2:
+
             mesh = var.mesh
-
-            if isinstance(self.nthCoeff, FaceVariable):
-                rank = self.nthCoeff.rank
-            else:
-                rank = len(numerix.getShape(self.nthCoeff))
-
-            nthCoeff = FaceVariable(mesh=mesh, rank=rank, value=self.nthCoeff)
             
-            normalsDotCoeff = nthCoeff.dot(FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals))
+            if not hasattr(self, 'faceGradConstraintMask'):
+                self.faceGradConstraintMask = FaceVariable(mesh=mesh, rank=1)
+
+            if not hasattr(self, 'faceConstraintMask'):
+                self.faceConstraintMask = FaceVariable(mesh=mesh)
+
+            self.faceGradConstraintMask[:] = var.faceGrad.constraintMask
+            self.faceConstraintMask[:] = var.arithmeticFaceValue.constraintMask
             
-            constraintB = 0
-            constraintL = 0
-
-            constraintB -= (var.faceGrad.constraintMask * nthCoeff.dot(var.faceGrad)).divergence * mesh.cellVolumes
-
-            constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * normalsDotCoeff / mesh._cellDistances
+            if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
             
-            constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
-            constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+                if isinstance(self.nthCoeff, FaceVariable):
+                    rank = self.nthCoeff.rank
+                else:
+                    rank = len(numerix.getShape(self.nthCoeff))
 
-            L.addAtDiagonal(constraintL)
-            b += constraintB
+                nthCoeff = FaceVariable(mesh=mesh, rank=rank, value=self.nthCoeff)
+
+                normalsDotCoeff = nthCoeff.dot(FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals))
+
+                self.constraintB = 0
+                self.constraintL = 0
+
+                self.constraintB -= (self.faceGradConstraintMask * nthCoeff.dot(var.faceGrad)).divergence * mesh.cellVolumes
+
+                constrainedNormalsDotCoeffOverdAP = self.faceConstraintMask * normalsDotCoeff / mesh._cellDistances
+
+                self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
+                self.constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+
+            L.addAtDiagonal(self.constraintL)
+            b += self.constraintB
 
         return (var, L, b)
         
