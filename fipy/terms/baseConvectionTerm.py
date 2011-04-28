@@ -161,23 +161,36 @@ class _BaseConvectionTerm(FaceTerm):
 
         var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-        constraintMask = var.faceGrad.constraintMask | var.arithmeticFaceValue.constraintMask
-        
         mesh = var.mesh
-        weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
-
-        if weight.has_key('implicit'):
-            alpha = weight['implicit']['cell 1 diag']
+        
+        if not hasattr(self, 'faceGradConstraintMask'):
+            self.faceGradConstraintMask = FaceVariable(mesh=mesh, value=var.faceGrad.constraintMask)
         else:
-            alpha = 0.0
+            self.faceGradConstraintMask[:] = var.faceGrad.constraintMask
 
-        exteriorCoeff =  self.coeff * mesh.exteriorFaces
+        if not hasattr(self, 'faceConstraintMask'):
+            self.faceConstraintMask = FaceVariable(mesh=mesh, value=var.arithmeticFaceValue.constraintMask)
+        else:
+            self.faceConstraintMask[:] = var.arithmeticFaceValue.constraintMask
 
-        constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
-        constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+        if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
 
-        L.addAtDiagonal(constraintL)
-        b += constraintB
+            constraintMask = self.faceGradConstraintMask | self.faceConstraintMask
+
+            weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
+
+            if weight.has_key('implicit'):
+                alpha = weight['implicit']['cell 1 diag']
+            else:
+                alpha = 0.0
+
+            exteriorCoeff =  self.coeff * mesh.exteriorFaces
+
+            self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+            self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+
+        L.addAtDiagonal(self.constraintL)
+        b += self.constraintB
 
         return (var, L, b)
 

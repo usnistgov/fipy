@@ -227,13 +227,14 @@ class _BaseDiffusionTerm(_UnaryTerm):
             mesh = var.mesh
             
             if not hasattr(self, 'faceGradConstraintMask'):
-                self.faceGradConstraintMask = FaceVariable(mesh=mesh, rank=1)
+                self.faceGradConstraintMask = FaceVariable(mesh=mesh, value=var.faceGrad.constraintMask)
+            else:
+                self.faceGradConstraintMask[:] = var.faceGrad.constraintMask
 
             if not hasattr(self, 'faceConstraintMask'):
-                self.faceConstraintMask = FaceVariable(mesh=mesh)
-
-            self.faceGradConstraintMask[:] = var.faceGrad.constraintMask
-            self.faceConstraintMask[:] = var.arithmeticFaceValue.constraintMask
+                self.faceConstraintMask = FaceVariable(mesh=mesh, value=var.arithmeticFaceValue.constraintMask)
+            else:
+                self.faceConstraintMask[:] = var.arithmeticFaceValue.constraintMask
             
             if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
             
