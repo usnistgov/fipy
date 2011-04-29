@@ -197,6 +197,36 @@ class _MeshVariable(Variable):
 
     @property
     def constraintMask(self):
+        r"""
+        Test that `constraintMask` returns a Variable that updates itself whenver the constraints change.
+
+        >>> from fipy import *
+
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> v0 = CellVariable(mesh=m)
+        >>> v0.constrain(1., where=m.facesLeft)
+        >>> print v0.faceValue.constraintMask
+        [False False False False False False  True False False  True False False]
+        >>> print v0.faceValue
+        [ 0.  0.  0.  0.  0.  0.  1.  0.  0.  1.  0.  0.]
+        >>> v0.constrain(3., where=m.facesRight)
+        >>> print v0.faceValue.constraintMask
+        [False False False False False False  True False  True  True False  True]
+        >>> print v0.faceValue
+        [ 0.  0.  0.  0.  0.  0.  1.  0.  3.  1.  0.  3.]
+        >>> v1 = CellVariable(mesh=m)
+        >>> v1.constrain(1., where=[True, False, False, False])
+        >>> print v1.constraintMask
+        [ True False False False]
+        >>> print v1
+        [ 1.  0.  0.  0.]
+        >>> v1.constrain(3., where=[False, False, False, True])
+        >>> print v1.constraintMask
+        [ True False False  True]
+        >>> print v1
+        [ 1.  0.  0.  3.]
+        
+        """
         if not hasattr(self, '_constraintMask'):
             from fipy.variables.constraintMask import ConstraintMask
             self._constraintMask = ConstraintMask(self)
@@ -205,7 +235,7 @@ class _MeshVariable(Variable):
     def constrain(self, value, where=None):
         super(_MeshVariable, self).constrain(value, where=where)
         if hasattr(self, '_constraintMask'):
-            self._constraintMask._requires(self._constraints[-1].value.where)
+            self._constraintMask._requires(self._constraints[-1].where)
 
     def _getShapeFromMesh(mesh):
         """

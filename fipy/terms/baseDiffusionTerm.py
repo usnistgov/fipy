@@ -219,6 +219,41 @@ class _BaseDiffusionTerm(_UnaryTerm):
         return coefficientMatrix, boundaryB
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """
+        Test to ensure that a changing coefficient influences the boundary conditions.
+
+        >>> from fipy import *
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> v = CellVariable(mesh=m)
+        >>> c0 = Variable(1.)
+        >>> v.constrain(c0, where=m.facesLeft)
+
+        Diffusion will only be in the y-direction
+        
+        >>> coeff = Variable([[0. , 0.], [0. , 1.]])
+        >>> eq = DiffusionTerm(coeff)
+        >>> eq.solve(v)
+        >>> print v
+        [ 0.  0.  0.  0.]
+        
+        Change the coefficient.
+
+        >>> coeff[0, 0] = 1.
+        >>> eq.solve(v)
+        >>> print v
+        [ 1.  1.  1.  1.]
+
+        Change the constraints.
+
+        >>> c0.setValue(2.)
+        >>> v.constrain(3., where=m.facesRight)
+        >>> print v.faceValue.constraintMask
+        [False False False False False False  True False  True  True False  True]
+        >>> eq.solve(v)
+        >>> print v
+        [ 2.25  2.75  2.25  2.75]
+        
+        """
 
         var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 

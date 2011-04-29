@@ -618,6 +618,17 @@ class CellVariable(_MeshVariable):
             [[-1.  1.  1.  1.]]
             >>> print v.faceValue
             [ 1.   1.   2.   2.5]
+
+        Constraints can have a `Variable` mask.
+
+            >>> v = CellVariable(mesh=m)
+            >>> mask = FaceVariable(mesh=m, value=m.facesLeft)
+            >>> v.constrain(1., where=mask)
+            >>> print v.faceValue
+            [ 1.  0.  0.  0.]
+            >>> mask[-1] = True
+            >>> print v.faceValue
+            [ 1.  0.  0.  1.]
             
         """
         from fipy.boundaryConditions.constraint import Constraint

@@ -78,8 +78,18 @@ class _CellToFaceVariable(FaceVariable):
             faceConstraints = self.var.faceConstraints
         else:
             faceConstraints = []
-        return super(FaceVariable, self).constraints + faceConstraints
+        
+        return super(_CellToFaceVariable, self).constraints + faceConstraints
 
+    @property
+    def constraintMask(self):
+        if hasattr(self, '_constraintMask'):
+            if hasattr(self.var, 'faceConstraints'):
+                for constraint in self.var.faceConstraints:
+                    self._constraintMask._requires(constraint.where)
+
+        return super(_CellToFaceVariable, self).constraintMask
+            
     def __getstate__(self):
         return dict(var=self.var)
         

@@ -45,9 +45,9 @@ def ConstraintMask(var):
             self.var = var
 
         def _calcValue(self):
-            returnMask = numerix.zeros(self.shape, dtype=bool)
+            returnMask = numerix.zeros(self.shape, dtype=bool)    
             for constraint in self.var.constraints:
-                 returnMask = returnMask | numerix.array(constraint.where)
+                returnMask = returnMask | numerix.array(constraint.where)
             return returnMask
 
     return _ConstraintMask(var)

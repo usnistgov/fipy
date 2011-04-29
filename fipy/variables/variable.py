@@ -586,11 +586,11 @@ class Variable(object):
         from fipy.boundaryConditions.constraint import Constraint
         if not isinstance(value, Constraint):
             value = Constraint(value=value, where=where)
+            
         if not hasattr(self, "_constraints"):
             self._constraints = []
         self._constraints.append(value)
         self._requires(value.value)
-        # self._requires(value.where) ???
         self._markStale()
         
     def release(self, constraint):
@@ -844,11 +844,10 @@ class Variable(object):
         if isinstance(var, Variable):
             self.requiredVariables.append(var)
             var._requiredBy(self)
-            self._markStale()
         else:
             from fipy.variables.constant import _Constant
             var = _Constant(value=var)
-            
+        self._markStale()
         return var
             
     def _requiredBy(self, var):
