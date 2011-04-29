@@ -225,22 +225,16 @@ class _BaseDiffusionTerm(_UnaryTerm):
         if self.order == 2:
             
             if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
-
-                mesh = var.mesh
             
-                if isinstance(self.nthCoeff, FaceVariable):
-                    normalsDotCoeff = self.nthCoeff.dot(FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals))
-                    faceGradDotCoeff = self.nthCoeff.dot(var.faceGrad)
-                else:
-                    normalsDotCoeff = self.nthCoeff * FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
-                    faceGradDotCoeff = self.nthCoeff * var.faceGrad
-
                 self.constraintB = 0
                 self.constraintL = 0
 
-                self.constraintB -= (var.faceGrad.constraintMask * faceGradDotCoeff).divergence * mesh.cellVolumes
+                mesh = var.mesh
 
-                constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * normalsDotCoeff / mesh._cellDistances
+                self.constraintB -= (var.faceGrad.constraintMask * var.faceGrad.dot(self.nthCoeff)).divergence * mesh.cellVolumes
+
+                constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
+                                                    FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals).dot(self.nthCoeff) / mesh._cellDistances
 
                 self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
                 self.constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
