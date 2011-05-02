@@ -509,19 +509,21 @@ class Variable(object):
         else:
             value = self._value
 
-        if hasattr(self, 'constraints'):
-            for constraintValue, mask in self.constraints:
-                if mask is None:
-                    value[:] = constraintValue
+        if len(self.constraints) > 0:
+            value = value.copy()
+            for constraint in self.constraints:
+                if constraint.where is None:
+                    value[:] = constraint.value
                 else:
+                    mask = constraint.where
                     if not hasattr(mask, 'dtype') or mask.dtype != bool:
                         mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
 
                     if 0 not in value.shape:
                         try:
-                            value[...,mask] = constraintValue
+                            value[..., mask] = constraint.value
                         except:
-                            value[...,mask] = numerix.array(constraintValue)[...,mask]
+                            value[..., mask] = numerix.array(constraint.value)[..., mask]
 
         return value
 
@@ -531,6 +533,12 @@ class Variable(object):
         self.setValue(newVal)
 
     value = property(_getValue, _setValueProperty)
+    
+    @property
+    def constraints(self):
+        if not hasattr(self, "_constraints"):
+            self._constraints = []
+        return self._constraints
             
     def constrain(self, value, where=None):
         """
@@ -557,7 +565,7 @@ class Variable(object):
         [8 8 8 8]
         >>> del v.constraints[2]
         >>> print v
-        [2 8 5 8]
+        [ 2 10  5 10]
 
         >>> from fipy.variables.cellVariable import CellVariable
         >>> from fipy.meshes import Grid2D
@@ -575,14 +583,34 @@ class Variable(object):
 
         """
 
-        if not hasattr(self, 'constraints'):
-            self.constraints = []
-
-        self.constraints.append([value, where])
-
-    def applyConstraints(self, constraints):
-        for value, mask in constraints:
-            self.constrain(value, mask)
+        from fipy.boundaryConditions.constraint import Constraint
+        if not isinstance(value, Constraint):
+            value = Constraint(value=value, where=where)
+            
+        if not hasattr(self, "_constraints"):
+            self._constraints = []
+        self._constraints.append(value)
+        self._requires(value.value)
+        self._markStale()
+        
+    def release(self, constraint):
+        """Remove `constraint` from `self`
+        
+        >>> v = Variable((0,1,2,3))
+        >>> v.constrain(2, numerix.array((True, False, False, False)))
+        >>> v[:] = 10
+        >>> from fipy.boundaryConditions.constraint import Constraint
+        >>> c1 = Constraint(5, numerix.array((False, False, True, False)))
+        >>> v.constrain(c1)
+        >>> v[:] = 6
+        >>> v.constrain(8)
+        >>> v[:] = 10
+        >>> del v.constraints[2]
+        >>> v.release(constraint=c1)
+        >>> print v
+        [ 2 10 10 10]
+        """
+        self.constraints.remove(constraint)
         
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
@@ -816,11 +844,10 @@ class Variable(object):
         if isinstance(var, Variable):
             self.requiredVariables.append(var)
             var._requiredBy(self)
-            self._markStale()
         else:
             from fipy.variables.constant import _Constant
             var = _Constant(value=var)
-            
+        self._markStale()
         return var
             
     def _requiredBy(self, var):

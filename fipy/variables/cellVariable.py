@@ -367,9 +367,6 @@ class CellVariable(_MeshVariable):
             from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
             self._arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
-        if hasattr(self, 'faceConstraints'):
-            self._arithmeticFaceValue.applyConstraints(self.faceConstraints)
-            
         return self._arithmeticFaceValue
 
     getFaceValue = getArithmeticFaceValue
@@ -405,9 +402,6 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, '_minmodFaceValue'):
             from minmodCellToFaceVariable import _MinmodCellToFaceVariable
             self._minmodFaceValue = _MinmodCellToFaceVariable(self)
-
-        if hasattr(self, 'faceConstraints'):
-            self._minmodFaceValue.applyConstraints(self.faceConstraints)
 
         return self._minmodFaceValue
 
@@ -453,9 +447,6 @@ class CellVariable(_MeshVariable):
         if not hasattr(self, '_harmonicFaceValue'):
             from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
             self._harmonicFaceValue = _HarmonicCellToFaceVariable(self)
-
-        if hasattr(self, 'faceConstraints'):
-            self._harmonicFaceValue.applyConstraints(self.faceConstraints)
 
         return self._harmonicFaceValue
 
@@ -627,16 +618,53 @@ class CellVariable(_MeshVariable):
             [[-1.  1.  1.  1.]]
             >>> print v.faceValue
             [ 1.   1.   2.   2.5]
+
+        Constraints can have a `Variable` mask.
+
+            >>> v = CellVariable(mesh=m)
+            >>> mask = FaceVariable(mesh=m, value=m.facesLeft)
+            >>> v.constrain(1., where=mask)
+            >>> print v.faceValue
+            [ 1.  0.  0.  0.]
+            >>> mask[:] = mask | m.facesRight
+            >>> print v.faceValue
+            [ 1.  0.  0.  1.]
             
         """
-
-        if numerix.shape(where)[-1] == self.mesh.numberOfFaces:
+        from fipy.boundaryConditions.constraint import Constraint
+        if not isinstance(value, Constraint):
+            value = Constraint(value=value, where=where)
+            
+        if numerix.shape(value.where)[-1] == self.mesh.numberOfFaces:
             
             if not hasattr(self, 'faceConstraints'):
                 self.faceConstraints = []
-            self.faceConstraints.append([value, where])
+            self.faceConstraints.append(value)
+            self._requires(value.value)
+            # self._requires(value.where) ???
+            self._markStale()
         else:
-            _MeshVariable.constrain(value, where)
+##            _MeshVariable.constrain(value, where)
+            super(CellVariable, self).constrain(value, where)
+
+    def release(self, constraint):
+        """Remove `constraint` from `self`
+        
+        >>> from fipy import *
+        >>> m = Grid1D(nx=3)
+        >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
+        >>> c = Constraint(0., where=m.facesLeft)
+        >>> v.constrain(c)
+        >>> print v.faceValue
+        [ 0.   1.   2.   2.5]
+        >>> v.release(constraint=c)
+        >>> print v.faceValue
+        [ 0.5  1.   2.   2.5]
+        """
+        try:
+            _MeshVariable.release(self, constraint=constraint)
+        except ValueError:
+            self.faceConstraints.remove(constraint)
 
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):

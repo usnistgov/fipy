@@ -39,6 +39,7 @@ import os
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
 from fipy.terms import TermMultiplyError
+from fipy.variables.faceVariable import FaceVariable
 
 class _BaseDiffusionTerm(_UnaryTerm):
 
@@ -99,7 +100,6 @@ class _BaseDiffusionTerm(_UnaryTerm):
     def __getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
 
-            from fipy.variables.faceVariable import FaceVariable
             rotationTensor = FaceVariable(mesh=mesh, rank=2)
             
             rotationTensor[:, 0] = self._getNormals(mesh)
@@ -131,11 +131,8 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
         if not hasattr(self, 'anisotropySource'):
             if len(coeff) > 1:
-                if hasattr(var.arithmeticFaceValue, 'constraints'):                
-                    varNoConstraints = var.copy()
-                else:
-                    varNoConstraints = var
-                gradients = varNoConstraints.grad.harmonicFaceValue.dot(self.__getRotationTensor(mesh))
+                unconstrainedVar = var + 0
+                gradients = unconstrainedVar.grad.harmonicFaceValue.dot(self.__getRotationTensor(mesh))
                 from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
                 self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.cellVolumes
 
@@ -147,7 +144,6 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
             shape = numerix.getShape(coeff)
 
-            from fipy.variables.faceVariable import FaceVariable
             if isinstance(coeff, FaceVariable):
                 rank = coeff.rank
             else:
@@ -223,27 +219,60 @@ class _BaseDiffusionTerm(_UnaryTerm):
         return coefficientMatrix, boundaryB
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """
+        Test to ensure that a changing coefficient influences the boundary conditions.
+
+        >>> from fipy import *
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> v = CellVariable(mesh=m)
+        >>> c0 = Variable(1.)
+        >>> v.constrain(c0, where=m.facesLeft)
+
+        Diffusion will only be in the y-direction
+        
+        >>> coeff = Variable([[0. , 0.], [0. , 1.]])
+        >>> eq = DiffusionTerm(coeff)
+        >>> eq.solve(v, solver=DummySolver())
+        >>> print v
+        [ 0.  0.  0.  0.]
+        
+        Change the coefficient.
+
+        >>> coeff[0, 0] = 1.
+        >>> eq.solve(v)
+        >>> print v
+        [ 1.  1.  1.  1.]
+
+        Change the constraints.
+
+        >>> c0.setValue(2.)
+        >>> v.constrain(3., where=m.facesRight)
+        >>> print v.faceValue.constraintMask
+        [False False False False False False  True False  True  True False  True]
+        >>> eq.solve(v)
+        >>> print v
+        [ 2.25  2.75  2.25  2.75]
+        
+        """
 
         var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         if self.order == 2:
-            if not hasattr(self, 'constraintB'):
-
-                mesh = var.mesh
-                from fipy.variables.faceVariable import FaceVariable
-##                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._getOrientedFaceNormals()) * self.nthCoeff
-                normalsDotCoeff = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals) * self.nthCoeff
-
+            
+            if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
+            
                 self.constraintB = 0
                 self.constraintL = 0
 
-                if var.faceGrad.constraintMask is not None:
-                    self.constraintB -= (var.faceGrad.constraintMask * self.nthCoeff * var.faceGrad).divergence * mesh.cellVolumes
+                mesh = var.mesh
 
-                if var.arithmeticFaceValue.constraintMask is not None:
-                    constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * normalsDotCoeff / mesh._cellDistances
-                    self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
-                    self.constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+                self.constraintB -= (var.faceGrad.constraintMask * var.faceGrad.dot(self.nthCoeff)).divergence * mesh.cellVolumes
+
+                constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
+                                                    FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals).dot(self.nthCoeff) / mesh._cellDistances
+
+                self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
+                self.constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
 
             L.addAtDiagonal(self.constraintL)
             b += self.constraintB

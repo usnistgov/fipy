@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "explicitSourceTerm.py"
+ #  FILE: "constraint.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -28,42 +28,22 @@
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  #  
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
-from fipy.variables.cellVariable import CellVariable
-
-class ResidualTerm(_ExplicitSourceTerm):
-    r"""
-
-    The `ResidualTerm` is a special form of explicit `SourceTerm` that adds the
-    residual of one equation to another equation. Useful for Newton's method.
-    """
-    def __init__(self, equation, underRelaxation=1.):
-        self.equation = equation
-        self.underRelaxation = underRelaxation
+class Constraint(object):
+    def __init__(self, value, where=None):
+        """Object to hold a `Variable` to `value` at `where`
         
-        _ExplicitSourceTerm.__init__(self, var=None)
+        see :method:`Variable.constrain`
+        """
+        self.value = value
+        self.where = where
         
     def __repr__(self):
-        return r"$\Delta$[" + repr(self.equation) + "]"
-
-    def _getGeomCoeff(self, mesh):
-        return self.coeff
-        
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-        vec = self.equation.justResidualVector(var=None, 
-                                               boundaryConditions=boundaryConditions,
-                                               dt=dt)
-
-        self.coeff = CellVariable(mesh=var.mesh, value=vec * self.underRelaxation)
-        self.geomCoeff = None
-        self.coeffVectors = None
-        
-        return _ExplicitSourceTerm._buildMatrix(self, var=var, SparseMatrix=SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-
-
+        return "Constraint(value=%s, where=%s)" % (repr(self.value), repr(self.where))
