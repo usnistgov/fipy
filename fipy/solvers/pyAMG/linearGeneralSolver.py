@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
+ #  FILE: "linearGeneralSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -32,41 +31,24 @@
  #  
  # ###################################################################
  ##
+ 
+from fipy.solvers.scipy.scipySolver import _ScipySolver
+from pyamg import solve
+import os
+from fipy.tools import numerix
 
-__docformat__ = 'restructuredtext'
-
-import sys
-
-from pysparse import itsolvers
-
-from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
-
-class LinearPCGSolver(PysparseSolver):
+class LinearGeneralSolver(_ScipySolver):
     """
-    
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning by default. Alternatively,
-    Jacobi preconditioning can be specified through `precon`.
-    The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
-
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
-
-    .. _PySparse: http://pysparse.sourceforge.net
-    
+    The `LinearGeneralSolver` is an interface to the generic pyAMG,
+    which solves the arbitrary system Ax=b with the best out-of-the box
+    choice for a solver. See `pyAMG.solve` for details.
     """
 
-    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
-        """
-        :Parameters:
-          - `precon`: Preconditioner to use
-        """
-        super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.pcg
-        
-    def _canSolveAsymmetric(self):
-        return False
-                
+    def _solve_(self, L, x, b):
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            verbosity = True
+        else:
+            verbosity = False
+
+        return solve(L.matrix, b, verb=verbosity, tol=self.tolerance)
+

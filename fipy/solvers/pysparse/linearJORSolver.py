@@ -57,8 +57,9 @@ class LinearJORSolver(PysparseSolver):
           - `relaxation`: The relaxation.
           
         """
-        PysparseSolver.__init__(self, tolerance=tolerance, 
-                                      iterations=iterations, steps=steps)
+        super(LinearJORSolver, self).__init__(tolerance=tolerance, 
+                                              iterations=iterations, 
+                                              steps=steps)
         self.relaxation = relaxation
         
     def _solve_(self, L, x, b):
@@ -85,4 +86,4 @@ class LinearJORSolver(PysparseSolver):
             tol = max(abs(residual))
 
             print iteration,tol
-            
+

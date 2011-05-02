@@ -232,7 +232,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
         
         >>> coeff = Variable([[0. , 0.], [0. , 1.]])
         >>> eq = DiffusionTerm(coeff)
-        >>> eq.solve(v)
+        >>> eq.solve(v, solver=DummySolver())
         >>> print v
         [ 0.  0.  0.  0.]
         

@@ -360,7 +360,13 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         for coeff in self.coeffs:
             coeff._updateDt(dt)
         if solver is None:
-            solver = LinearPCGSolver()
+            import fipy.solvers.solver
+            if fipy.solvers.solver == 'pyamg':
+                from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
+                solver = LinearGeneralSolver(tolerance=1e-15, iterations=2000)
+            else:
+                solver = LinearPCGSolver()
+            
         SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
 
     def sweep(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):

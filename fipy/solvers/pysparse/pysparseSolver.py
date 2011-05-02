@@ -40,10 +40,9 @@ import os
 from pysparse import precon
 
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-from fipy.solvers.solver import Solver
-from fipy.tools.decorators import getsetDeprecated
+from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
 
-class PysparseSolver(Solver):
+class PysparseSolver(_PysparseMatrixSolver):
     """
     The base `pysparseSolver` class.
     
@@ -54,15 +53,7 @@ class PysparseSolver(Solver):
             raise NotImplementedError, \
                   "can't instantiate abstract base class"
             
-        Solver.__init__(self, *args, **kwargs)
-
-    @getsetDeprecated
-    def _getMatrixClass(self):
-        return self._matrixClass
-
-    @property
-    def _matrixClass(self):
-        return _PysparseMeshMatrix
+        super(PysparseSolver, self).__init__(*args, **kwargs)
 
     def _solve_(self, L, x, b):
         """
@@ -96,7 +87,6 @@ class PysparseSolver(Solver):
                 PRINT('failure', self._warningList[info].__class__.__name__)
             PRINT('relres:', relres)
             
-         
     def _solve(self):
 
         if self.var.mesh.communicator.Nproc > 1:
@@ -117,3 +107,4 @@ class PysparseSolver(Solver):
         if factor != 1:
             array /= self.var.unit.factor
         self.var[:] = array 
+

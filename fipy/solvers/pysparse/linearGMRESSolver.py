@@ -59,5 +59,5 @@ class LinearGMRESSolver(PysparseSolver):
         :Parameters:
           - `precon`: Preconditioner to use
         """
-        PysparseSolver.__init__(self, precon=precon, *args, **kwargs)
+        super(LinearGMRESSolver, self).__init__(precon=precon, *args, **kwargs)
         self.solveFnc = itsolvers.gmres

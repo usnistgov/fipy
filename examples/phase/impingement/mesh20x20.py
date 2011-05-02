@@ -206,8 +206,8 @@ We step the solution in time, plotting as we go if running interactively,
 >>> for i in range(steps):
 ...     theta.updateOld()
 ...     phase.updateOld()
-...     thetaEq.solve(theta, dt=timeStepDuration)
-...     phaseEq.solve(phase, dt=timeStepDuration)
+...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
+...     phaseEq.solve(phase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 ...     if __name__ == '__main__':
 ...         phaseViewer.plot()
 ...         thetaProductViewer.plot()
@@ -236,8 +236,8 @@ Step through half the time steps.
 >>> for i in range(steps / 2):
 ...     theta.updateOld()
 ...     phase.updateOld()
-...     thetaEq.solve(theta, dt=timeStepDuration)
-...     phaseEq.solve(phase, dt=timeStepDuration)
+...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
+...     phaseEq.solve(phase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 
 We confirm that the solution has not yet converged to that given by 
 Ryo Kobayashi's FORTRAN code:
@@ -265,8 +265,8 @@ and finish the iterations,
 >>> for i in range(steps / 2):
 ...     newTheta.updateOld()
 ...     newPhase.updateOld()
-...     newThetaEq.solve(newTheta, dt=timeStepDuration)
-...     newPhaseEq.solve(newPhase, dt=timeStepDuration)
+...     newThetaEq.solve(newTheta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
+...     newPhaseEq.solve(newPhase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 
 The solution is compared against Ryo Kobayashi's test data
 

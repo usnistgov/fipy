@@ -5,11 +5,12 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
+ #  FILE: "scipyKrylovSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -35,38 +36,31 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
+import os
+from fipy.solvers.scipy.scipySolver import _ScipySolver
 
-from pysparse import itsolvers
-
-from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
-
-class LinearPCGSolver(PysparseSolver):
+class _ScipyKrylovSolver(_ScipySolver):
+    """
+    The base `ScipyKrylovSolver` class.
+    
+    .. attention:: This class is abstract. Always create one of its subclasses.
     """
     
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning by default. Alternatively,
-    Jacobi preconditioning can be specified through `precon`.
-    The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
+    def _solve_(self, L, x, b):
+        A = L.matrix
+        if self.preconditioner is None:
+            M = None
+        else:
+            M = self.preconditioner._applyToMatrix(A)
+            
+        x, info = self.solveFnc(A, b, x, 
+                                tol=self.tolerance,
+                                maxiter=self.iterations,
+                                M=M)
 
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
+        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+            if info < 0:
+                PRINT('failure', self._warningList[info].__class__.__name__)
 
-    .. _PySparse: http://pysparse.sourceforge.net
-    
-    """
+        return x
 
-    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
-        """
-        :Parameters:
-          - `precon`: Preconditioner to use
-        """
-        super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.pcg
-        
-    def _canSolveAsymmetric(self):
-        return False
-                

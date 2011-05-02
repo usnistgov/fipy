@@ -571,7 +571,7 @@ class Term(object):
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [-10, -10, -10]) 
         True
 
-        >>> eq.solve(var=B)
+        >>> eq.solve(var=B, solver=DummySolver())
 
         >>> m = Grid1D(nx=2)
         >>> A = CellVariable(mesh=m, name='A')
@@ -581,14 +581,14 @@ class Term(object):
         Traceback (most recent call last):
             ...
         SolutionVariableRequiredError: The solution variable needs to be specified.
-        >>> DiffusionTerm().solve(A)
-        >>> DiffusionTerm(var=A).solve(A)
+        >>> DiffusionTerm().solve(A, solver=DummySolver())
+        >>> DiffusionTerm(var=A).solve(A, solver=DummySolver())
         >>> (DiffusionTerm(var=A) + DiffusionTerm())
         Traceback (most recent call last):
             ...
         ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
-        >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve()
-        >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A)
+        >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(solver=DummySolver())
+        >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A, solver=DummySolver())
         >>> DiffusionTerm() & DiffusionTerm()
         Traceback (most recent call last):
             ...
@@ -605,7 +605,7 @@ class Term(object):
         >>> eq = (DiffusionTerm(coeff=1., var=A)) & (DiffusionTerm(coeff=2., var=B))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(solver=DefaultSolver())
+        >>> eq.solve(solver=DummySolver())
         >>> numpyMatrix = eq.matrix.numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], 
         ...                                                             [1, -1, 0, 0], 
@@ -650,7 +650,7 @@ class Term(object):
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(solver=DefaultSolver())
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(solver=DummySolver())
         >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(A)
         Traceback (most recent call last):
             ...
@@ -662,7 +662,7 @@ class Term(object):
         >>> eq = (DiffusionTerm(coeff=1., var=A) + DiffusionTerm(coeff=2., var=B)) & (DiffusionTerm(coeff=2., var=B) + DiffusionTerm(coeff=3., var=C)) & (DiffusionTerm(coeff=3., var=C) + DiffusionTerm(coeff=1., var=A))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(solver=DefaultSolver())
+        >>> eq.solve(solver=DummySolver())
         >>> numpyMatrix = eq.matrix.numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, -2, 2, 0, 0],
         ...                                                             [1, -1, 2, -2, 0, 0],
@@ -683,7 +683,7 @@ class Term(object):
         >>> eq &= DiffusionTerm(coeff=2., var=B)
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(solver=DefaultSolver())
+        >>> eq.solve(solver=DummySolver())
         >>> numpyMatrix = eq.matrix.numpyArray
         >>> print parallel.procID > 0 or numerix.allequal(numpyMatrix, [[-1, 1, 0, 0], 
         ...                                                             [1, -1, 0, 0], 

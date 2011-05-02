@@ -626,7 +626,7 @@ class CellVariable(_MeshVariable):
             >>> v.constrain(1., where=mask)
             >>> print v.faceValue
             [ 1.  0.  0.  0.]
-            >>> mask[-1] = True
+            >>> mask[:] = mask | m.facesRight
             >>> print v.faceValue
             [ 1.  0.  0.  1.]
             

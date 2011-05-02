@@ -53,9 +53,7 @@ class _BaseConvectionTerm(FaceTerm):
         """
         Create a `_BaseConvectionTerm` object.
         
-            >>> from fipy.meshes import Grid1D
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> from fipy.variables.faceVariable import FaceVariable
+            >>> from fipy import *
             >>> m = Grid1D(nx = 2)
             >>> cv = CellVariable(mesh = m)
             >>> fv = FaceVariable(mesh = m)
@@ -75,13 +73,11 @@ class _BaseConvectionTerm(FaceTerm):
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> __ConvectionTerm(coeff = (1,))
             __ConvectionTerm(coeff=(1,))
-            >>> from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
-            >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var = cv)
-            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var = cv)
+            >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var=cv, solver=DummySolver())
+            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var=cv, solver=DummySolver())
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
-            >>> from fipy.meshes import Grid2D
             >>> m2 = Grid2D(nx=2, ny=1)
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)
@@ -92,8 +88,8 @@ class _BaseConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff=vfv2)
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
                    [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
-            >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2)
-            >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2)
+            >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2, solver=DummySolver())
+            >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2, solver=DummySolver())
 
         
         :Parameters:

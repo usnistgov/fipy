@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-## 
- # -*-Pyth-*-
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "linearPCGSolver.py"
+ #  FILE: "linearCGSSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -33,40 +32,24 @@
  # ###################################################################
  ##
 
-__docformat__ = 'restructuredtext'
-
-import sys
-
-from pysparse import itsolvers
-
-from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
-
-class LinearPCGSolver(PysparseSolver):
+from fipy.solvers.scipy.linearCGSSolver import LinearCGSSolver as ScipyLinearCGSSolver
+from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
+    
+class LinearCGSSolver(ScipyLinearCGSSolver):
     """
-    
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning by default. Alternatively,
-    Jacobi preconditioning can be specified through `precon`.
-    The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
-
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
-
-    .. _PySparse: http://pysparse.sourceforge.net
-    
+    The `LinearCGSSolver` is an interface to the CGS solver in Scipy,
+    using the pyAMG `SmoothedAggregationPreconditioner` by default.
     """
 
-    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
+    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=SmoothedAggregationPreconditioner()):
         """
         :Parameters:
-          - `precon`: Preconditioner to use
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `steps`: A deprecated name for `iterations`.
+          - `precon`: Preconditioner to use.
+
         """
-        super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.pcg
         
-    def _canSolveAsymmetric(self):
-        return False
-                
+        super(LinearCGSSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+        

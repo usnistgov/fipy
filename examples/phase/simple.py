@@ -170,17 +170,17 @@ The source term is
 
 where
 :math:`m_\phi \equiv -[W(1-2\phi) + 30\phi(1-\phi)L\frac{T-T_M}{T_M}]`.
-  
+
 The simplest approach is to add this source explicitly
 
 >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
 >>> S0 = mPhi * phase * (1 - phase)
 >>> eq = S0 + DiffusionTerm(coeff=kappa)
-    
+
 After solving this equation
 
->>> eq.solve(var = phase)
-    
+>>> eq.solve(var = phase, solver=DummySolver())
+
 we obtain the surprising result that :math:`\phi` is zero everywhere.
 
 >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
@@ -193,7 +193,7 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
    :width: 50%
    :align: center
 
-On inspection, we can see that this occurs because, for our step-function initial condition, 
+On inspection, we can see that this occurs because, for our step-function initial condition,
 :math:`m_\phi = 0` everwhere,
 hence we are actually only solving the simple implicit diffusion equation
 :math:`\kappa_\phi \nabla^2\phi = 0`,

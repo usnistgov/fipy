@@ -203,6 +203,7 @@ class _MeshVariable(Variable):
         >>> from fipy import *
 
         >>> m = Grid2D(nx=2, ny=2)
+        >>> x, y = m.cellCenters
         >>> v0 = CellVariable(mesh=m)
         >>> v0.constrain(1., where=m.facesLeft)
         >>> print v0.faceValue.constraintMask
@@ -215,12 +216,12 @@ class _MeshVariable(Variable):
         >>> print v0.faceValue
         [ 0.  0.  0.  0.  0.  0.  1.  0.  3.  1.  0.  3.]
         >>> v1 = CellVariable(mesh=m)
-        >>> v1.constrain(1., where=[True, False, False, False])
+        >>> v1.constrain(1., where=(x < 1) & (y < 1))
         >>> print v1.constraintMask
         [ True False False False]
         >>> print v1
         [ 1.  0.  0.  0.]
-        >>> v1.constrain(3., where=[False, False, False, True])
+        >>> v1.constrain(3., where=(x > 1) & (y > 1))
         >>> print v1.constraintMask
         [ True False False  True]
         >>> print v1

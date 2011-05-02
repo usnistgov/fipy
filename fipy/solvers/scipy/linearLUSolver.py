@@ -35,50 +35,17 @@
 __docformat__ = 'restructuredtext'
 
 import os
-import sys
-
-from pysparse import itsolvers
-from pysparse import superlu
-
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from scipy.sparse.linalg import splu
+from fipy.solvers.scipy.scipySolver import _ScipySolver
 from fipy.tools import numerix
 
-DEBUG = False
-
-class LinearLUSolver(PysparseSolver):
+class LinearLUSolver(_ScipySolver):
     """
-    
     The `LinearLUSolver` solves a linear system of equations using
-    LU-factorisation. This method solves systems with a general
-    non-symmetric coefficient matrix using partial pivoting.
-
-    The `LinearLUSolver` is a wrapper class for the the PySparse_
-    `superlu.factorize()` method.
-
-    .. _PySparse: http://pysparse.sourceforge.net
-    
+    LU-factorisation.  The `LinearLUSolver` is a wrapper class for the
+    the Scipy `scipy.sparse.linalg.splu` moduleq.
     """
     
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None,
-                       maxIterations=10, precon=None):
-        """
-        Creates a `LinearLUSolver`.
-
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The number of LU decompositions to perform.
-          - `steps`: A deprecated name for `iterations`.
-            For large systems a number of iterations is generally required.
-          - `precon`: not used but maintains a common interface.
-          
-        """
-
-        iterations = min(iterations, maxIterations)
-        
-        super(LinearLUSolver, self).__init__(tolerance = tolerance, 
-                                             iterations = iterations, 
-                                             steps = steps)
-
     def _solve_(self, L, x, b):
         diag = L.takeDiagonal()
         maxdiag = max(numerix.absolute(diag))
@@ -86,22 +53,21 @@ class LinearLUSolver(PysparseSolver):
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
 
-        LU = superlu.factorize(L.matrix.to_csr())
-
-        if DEBUG:
-            import sys
-            print >> sys.stderr, L.matrix
+        LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
+                                            drop_tol=0.,
+                                            relax=1,
+                                            panel_size=10,
+                                            permc_spec=3)
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
-        for iteration in range(self.iterations):
+        for iteration in range(min(self.iterations, 10)):
             errorVector = L * x - b
 
             if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
                 break
 
-            xError = numerix.zeros(len(b),'d')
-            LU.solve(errorVector, xError)
+            xError = LU.solve(errorVector)
             x[:] = x - xError
             
         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
@@ -109,3 +75,4 @@ class LinearLUSolver(PysparseSolver):
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))
 
+        return x
