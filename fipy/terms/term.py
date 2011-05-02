@@ -232,6 +232,14 @@ class Term(object):
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
            - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
 
+        `justResidualVector` returns the overlapping local value in parallel (not the non-overlapping value).
+
+        >>> from fipy import *
+        >>> m = Grid1D(nx=10)
+        >>> v = CellVariable(mesh=m)
+        >>> len(DiffusionTerm().justResidualVector(v)) == m.numberOfCells
+        True
+
         """
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         solver._applyUnderRelaxation(underRelaxation)

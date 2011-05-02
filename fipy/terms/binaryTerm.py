@@ -115,7 +115,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass)
         >>> print var
         [ 0.  0.  0.]
-        >>> print CellVariable(mesh=m, value=RHSvector).globalValue
+        >>> print CellVariable(mesh=m, value=RHSvector) 
         [ 0.  0.  0.]
         >>> print numerix.allequal(matrix.numpyArray, [[ 2, -1,  0],
         ...                                            [-1,  3, -1],
@@ -124,13 +124,13 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass)
         >>> print var
         [ 1.  1.  1.]
-        >>> print CellVariable(mesh=m, value=RHSvector).globalValue
+        >>> print CellVariable(mesh=m, value=RHSvector)
         [ 0.  0.  0.]
         >>> print numerix.allequal(matrix.numpyArray, [[ 2, -2,  0],
         ...                                            [-2,  4, -2],
         ...                                            [ 0, -2,  2]])
         True
-        >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.)).globalValue
+        >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.))
         [ 0.  0.  0.]
         
         >>> m = Grid1D(nx=6)
@@ -140,7 +140,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var
         [ 1.  1.  1.  1.  1.  1.]
-        >>> print CellVariable(mesh=m, value=RHSvector).globalValue
+        >>> print CellVariable(mesh=m, value=RHSvector)
         [ 1.  1.  1.  1.  1.  1.]
         >>> print numerix.allequal(matrix.numpyArray, [[ 2,-1, 0, 0, 0, 0.],
         ...                                            [-1, 3,-1, 0, 0, 0.],
@@ -152,7 +152,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass) 
         >>> print var
         [ 0.  0.  0.  0.  0.  0.]
-        >>> print CellVariable(mesh=m, value=RHSvector).globalValue
+        >>> print CellVariable(mesh=m, value=RHSvector)
         [ 0.  0.  0.  0.  0.  0.]
         >>> print numerix.allequal(matrix.numpyArray, [[ 2,-2, 0, 0, 0, 0.],
         ...                                            [-2, 4,-2, 0, 0, 0.],
@@ -161,7 +161,8 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...                                            [ 0, 0, 0,-2, 4,-2.],
         ...                                            [ 0, 0, 0, 0,-2, 2.]])
         True
-        >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.)).globalValue
+        >>> value = eq.justResidualVector(dt=1.)
+        >>> print CellVariable(mesh=m, value=value)
         [ 0.  0.  0.  0.  0.  0.]
 
         >>> m = Grid1D(nx=3)
@@ -172,7 +173,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
-        >>> print CellVariable(mesh=m, value=eq0.justResidualVector(dt=1.)).globalValue
+        >>> print CellVariable(mesh=m, value=eq0.justResidualVector(dt=1.))
         [-3.  0.  3.]
         >>> eq0.solve(var=v0, solver=DummySolver())
         >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -1,  0],

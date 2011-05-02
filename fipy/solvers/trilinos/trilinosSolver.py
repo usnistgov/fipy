@@ -136,8 +136,14 @@ class TrilinosSolver(Solver):
             # then C is an Epetra.Vector with *no map* !!!?!?!
             residual = globalMatrix * nonOverlappingVector
             residual -= nonOverlappingRHSvector
+
+            overlappingResidual = Epetra.Vector(globalMatrix.colMap)
+            overlappingResidual.Import(residual, 
+                                       Epetra.Import(globalMatrix.colMap, 
+                                                     globalMatrix.domainMap), 
+                                       Epetra.Insert)
             
-            return residual
+            return overlappingResidual
             
     def _calcResidual(self, residualFn=None):
         if residualFn is not None:
