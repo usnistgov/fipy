@@ -62,11 +62,8 @@ elif solver == "no-pysparse":
 elif solver is None:
     # If no argument or environment variable, try importing them and seeing
     # what works
-    try: 
-        from fipy.tools import parallel
-        if parallel.Nproc > 1:
-            raise Exception("PySparse solvers cannot be used with multiple processors")
-
+   
+    try:
         from fipy.solvers.pysparse import *
         solver = "pysparse"
         from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
@@ -83,18 +80,12 @@ elif solver is None:
                 _MeshMatrix =  _TrilinosMeshMatrix
         except:
             try:
-                from fipy.tools import parallel
-                if parallel.Nproc > 1:
-                    raise Exception("PyAMG solvers cannot be used with multiple processors")
-                
                 from fipy.solvers.pyAMG import *
                 solver = "pyamg"
                 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
                 _MeshMatrix = _ScipyMeshMatrix
             except:
                 try:
-                    if parallel.Nproc > 1:
-                        raise Exception("Scipy solvers cannot be used with multiple processors")
                     from fipy.solvers.scipy import *
                     solver = "scipy"
                     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
@@ -104,3 +95,4 @@ elif solver is None:
 else:
     raise ImportError, 'Unknown solver package %s' % solver
 
+    
