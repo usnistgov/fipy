@@ -13,16 +13,17 @@ from solver import SolverConvergenceWarning, \
 args = [s.lower() for s in sys.argv[1:]]
 
 # any command-line specified solver takes precedence over environment variables
-if '--trilinos' in args:
+
+if '--no-pysparse' in args:
+    solver = "no-pysparse"
+elif '--trilinos' in args:
     solver = "trilinos"
 elif '--pysparse' in args:
     solver = "pysparse"
-elif '--no-pysparse' in args:
-    solver = "no-pysparse"
+elif '--pyamg' in args:
+    solver = 'pyamg'             
 elif '--scipy' in args:
     solver = 'scipy'
-elif '--pyamg' in args:
-    solver = 'pyamg'
 elif os.environ.has_key('FIPY_SOLVERS'):
     solver = os.environ['FIPY_SOLVERS'].lower()
 else:
@@ -32,7 +33,7 @@ if solver in ["scipy" or "pyamg"]:
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
      
-if solver == "pysparse":
+elif solver == "pysparse":
     from fipy.solvers.pysparse import *
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
     _MeshMatrix =  _PysparseMeshMatrix
