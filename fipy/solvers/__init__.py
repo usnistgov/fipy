@@ -29,11 +29,7 @@ elif os.environ.has_key('FIPY_SOLVERS'):
 else:
     solver = None
 
-if solver in ["scipy" or "pyamg"]:
-    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
-    _MeshMatrix = _ScipyMeshMatrix
-     
-elif solver == "pysparse":
+if solver == "pysparse":
     from fipy.solvers.pysparse import *
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
     _MeshMatrix =  _PysparseMeshMatrix
@@ -50,10 +46,14 @@ elif solver == "trilinos":
 
 elif solver == "scipy":
     from fipy.solvers.scipy import *
-
+    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+    _MeshMatrix = _ScipyMeshMatrix
+    
 elif solver == "pyamg":
     from fipy.solvers.pyAMG import *
-
+    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+    _MeshMatrix = _ScipyMeshMatrix
+    
 elif solver == "no-pysparse":
     from fipy.solvers.trilinos import *
     from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
@@ -82,7 +82,25 @@ elif solver is None:
                 from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
                 _MeshMatrix =  _TrilinosMeshMatrix
         except:
-            raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
+            try:
+                from fipy.tools import parallel
+                if parallel.Nproc > 1:
+                    raise Exception("PyAMG solvers cannot be used with multiple processors")
+                
+                from fipy.solvers.pyAMG import *
+                solver = "pyamg"
+                from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+                _MeshMatrix = _ScipyMeshMatrix
+            except:
+                try:
+                    if parallel.Nproc > 1:
+                        raise Exception("Scipy solvers cannot be used with multiple processors")
+                    from fipy.solvers.scipy import *
+                    solver = "scipy"
+                    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+                    _MeshMatrix = _ScipyMeshMatrix
+                except:
+                    raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
 else:
     raise ImportError, 'Unknown solver package %s' % solver
 

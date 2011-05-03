@@ -180,14 +180,14 @@ class _Viewer(object):
         This routine attempts to be savvy about running in parallel.
         """
         try:
-            from PyTrilinos import Epetra
-            Epetra.PyComm().Barrier()
+            from fipy.tools import parallel
+            parallel.Barrier()
             _Viewer._saved_stdout.flush()
-            if Epetra.PyComm().MyPID() == 0:
+            if parallel.procID == 0:
                 txt = _Viewer._serial_doctest_raw_input(prompt)
             else:
                 txt = ""
-            Epetra.PyComm().Barrier()
+            parallel.Barrier()
         except ImportError:
             txt = _Viewer._serial_doctest_raw_input(prompt)
         return txt
