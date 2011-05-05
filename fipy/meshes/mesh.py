@@ -571,7 +571,6 @@ class Mesh(AbstractMesh):
         """
         These tests are not useful as documentation, but are here to ensure
         everything works as expected.
-
         
             >>> dx = 2.
             >>> dy = 1.23456
