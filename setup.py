@@ -164,7 +164,6 @@ def _TestClass(base):
                 print pkg,'is not installed'       
             except Exception, e:
                 print pkg, 'version check failed:', e
-
                 
         def run_tests(self):
             import sys
@@ -564,7 +563,7 @@ dist = setup(	name = "FiPy",
         long_description = long_description,
         cmdclass = {
             'build_docs':build_docs,
-            'upload':upload_products,
+            'upload_products':upload_products,
             'test':test,
             'unittest':unittest,
             'copy_script': copy_script,

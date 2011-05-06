@@ -161,19 +161,24 @@ Making a Release
 Source
 ------
 
-Change the version number in :file:`setup.py`
-
 Check items in the tickets_.
-
-Check out a clean copy of the desired release::
-
-    $ svn co $FIPYROOT/trunk CLEAN
-    $ cd CLEAN
 
 .. attention::
 
-   If Bitten_ doesn't show all green boxes for this release, make sure to
-   add appropriate notes in :file:`README.txt` or :file:`INSTALLATION.txt`!
+   If Bitten_ doesn't show all green boxes for this release, make sure
+   to add appropriate notes in :file:`README.txt` or
+   :file:`INSTALLATION.txt`!
+
+Make branch for the release.
+
+    $ FIPY_VERSION=X_Y_Z	
+    $ svn copy $FIPYROOT/trunk  $FIPYROOT/branches/version-${FIPY_VERSION}
+    $ cd version-${FIPY_VERSION}
+
+Change `release` to `True` in setup.py.
+  
+    $ svn ci -m "Changed release to True"
+    $ svn copy $FIPYROOT/branches/version-${VERSION} $FIPYROOT/tags/version-${VERSION} 
 
 Build the documentation and the web pages::
 
@@ -196,7 +201,7 @@ Build a windows executable installer::
 Combine the windows installer and examples into one archive::
 
     $ rm MANIFEST
-    $ FIPY_VERSION=XXX
+    $ FIPY_VERSION=X_Y_Z
     $ ln dist/FiPy-${FIPY_VERSION}.win32.exe .
     $ cp MANIFEST.in MANIFEST.in.bkup
     $ cp MANIFEST-WINDOWS.in MANIFEST.in
@@ -224,7 +229,7 @@ Tag the repository as appropriate (see `SVN practices`_ above).
 Upload the build products and documentation from :file:`dist/` to MatForge and 
 the web site to CTCMS ::
 
-    $ python setup.py upload --pdf --html --tarball --winzip
+    $ python setup.py upload_products --pdf --html --tarball --winzip
 
 .. note::
 
@@ -246,12 +251,26 @@ Make an announcement to `fipy@nist.gov`_
 Build (``python setup.py bdist --formats=wininst``) a Windows `PyVTK`_
 executable and upload to download page.
 
+Upload to pypi by checking out a clean copy (CLEAN_PYPI) and running
+
+    $ svn co $FIPYROOT/tags/version-${FIPY_VERSION} CLEAN_PYPI
+    $ cd CLEAN_PYPI
+    $ python setup.py sdist register
+    $ python setup.py sdist upload
+
 .. _tickets: http://matforge.org/fipy/report
 .. _Bitten: http://matforge.org/fipy/build
 .. _fipy@nist.gov: mailto:fipy@nist.gov
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
 .. _stdeb: http://github.com/astraw/stdeb
 .. _debhelper: http://kitenet.net/~joey/code/debhelper/
+
+------------------------
+Bump the version numbers
+------------------------
+
+Bump the version number in setup.py on trunk to X_(Y + 1) and on the
+version-X_Y branch to X_Y_(Z + 1) and commit.
 
 ==========================================
 Making a Windows Distribution for Pysparse
