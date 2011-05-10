@@ -136,8 +136,9 @@ class _BaseDiffusionTerm(_UnaryTerm):
                 from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
                 self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.cellVolumes
 
-    def _calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, var):
 
+        mesh = var.mesh
         if self.nthCoeff is not None:
           
             coeff = self.nthCoeff
@@ -304,7 +305,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
             if not hasattr(self, 'coeffDict'):
 
-                coeff = self._getGeomCoeff(mesh)[0]
+                coeff = self._getGeomCoeff(var)[0]
                 minusCoeff = -coeff
                 
                 coeff.dontCacheMe()
@@ -338,7 +339,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
             if not hasattr(self, 'coeffDict'):
 
-                coeff = self._getGeomCoeff(mesh)
+                coeff = self._getGeomCoeff(var)
                 minusCoeff = -coeff[0]
 
                 coeff[0].dontCacheMe()
@@ -379,7 +380,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
     def _getDiffusionGeomCoeff(self, var):
         if var is self.var or self.var is None:
-            return self._getGeomCoeff(var.mesh)
+            return self._getGeomCoeff(var)
         else:
             return None
 

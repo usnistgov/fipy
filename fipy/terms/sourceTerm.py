@@ -47,5 +47,6 @@ class SourceTerm(CellTerm):
             raise AbstractBaseClassError
 	CellTerm.__init__(self, coeff=coeff, var=var) 
 	
-    def _calcGeomCoeff(self, mesh):
-	return self.coeff * CellVariable(mesh=mesh, value=mesh.cellVolumes)
+    def _calcGeomCoeff(self, var):
+        self._checkCoeff(var)
+	return self.coeff * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)

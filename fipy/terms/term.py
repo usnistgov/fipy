@@ -75,6 +75,9 @@ class Term(object):
     def _calcVars(self):
         raise NotImplementedError
 
+    def _checkCoeff(self, var):
+        raise NotImplementedError
+
     @getsetDeprecated
     def _getTransientVars(self):
         return self._transientVars
@@ -124,6 +127,17 @@ class Term(object):
     def _buildExplcitIfOther(self):
         raise NotImplementedError
 
+    def _getMatrixClass(self, solver, var):
+        if var.rank == 1:
+            from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+            SparseMatrix =  OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
+                                               numberOfVariables=var.shape[0],
+                                               numberOfEquations=var.shape[0])
+        else:
+            SparseMatrix = solver._matrixClass
+
+        return SparseMatrix
+
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
         solver = self.getDefaultSolver(solver)
             
@@ -146,7 +160,7 @@ class Term(object):
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
         var, matrix, RHSvector = self._buildAndAddMatrices(var,
-                                                           solver._matrixClass,
+                                                           self._getMatrixClass(solver, var),
                                                            boundaryConditions=boundaryConditions,
                                                            dt=dt,
                                                            transientGeomCoeff=self._getTransientGeomCoeff(var),
@@ -379,12 +393,12 @@ class Term(object):
     def __repr__(self):
         raise NotImplementedError
 
-    def _calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, var):
         raise NotImplementedError
         
-    def _getGeomCoeff(self, mesh):
+    def _getGeomCoeff(self, var):
         if self.geomCoeff is None:
-            self.geomCoeff = self._calcGeomCoeff(mesh)
+            self.geomCoeff = self._calcGeomCoeff(var)
             if self.geomCoeff is not None:
                 self.geomCoeff.dontCacheMe()
 

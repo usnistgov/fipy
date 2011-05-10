@@ -113,7 +113,8 @@ class _BaseConvectionTerm(FaceTerm):
 
         FaceTerm.__init__(self, coeff=coeff, var=var)
         
-    def _calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, var):
+        mesh = var.mesh
         if not isinstance(self.coeff, FaceVariable):
             self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
 
@@ -137,7 +138,7 @@ class _BaseConvectionTerm(FaceTerm):
                     diffCoeff = diffCoeff.numericValue
                     diffCoeff = (diffCoeff == 0) * small + diffCoeff
 
-            alpha = self._Alpha(-self._getGeomCoeff(var.mesh) / diffCoeff)
+            alpha = self._Alpha(-self._getGeomCoeff(var) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),

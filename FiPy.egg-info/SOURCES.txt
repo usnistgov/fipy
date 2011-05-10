@@ -523,7 +523,6 @@ fipy/variables/exponentialNoiseVariable.py
 fipy/variables/faceGradContributionsVariable.py
 fipy/variables/faceGradVariable.py
 fipy/variables/faceVariable.py
-fipy/variables/fixedBCFaceGradVariable.py
 fipy/variables/gammaNoiseVariable.py
 fipy/variables/gaussCellGradVariable.py
 fipy/variables/gaussianNoiseVariable.py

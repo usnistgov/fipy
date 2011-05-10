@@ -35,6 +35,8 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
+from fipy.variables.cellVariable import CellVariable
+from fipy.tools import numerix
 
 class TransientTerm(CellTerm):
     r"""
@@ -106,8 +108,9 @@ class TransientTerm(CellTerm):
             'diagonal': 0
 	}
 	
-    def _calcGeomCoeff(self, mesh):
-	return self.coeff * mesh.cellVolumes
+    def _calcGeomCoeff(self, var):
+        self._checkCoeff(var)
+	return self.coeff * numerix.resize(var.mesh.cellVolumes, var.shape)
 
     def _getTransientGeomCoeff(self, var):
         """
@@ -136,15 +139,43 @@ class TransientTerm(CellTerm):
 
         """
         if var is self.var or self.var is None:
-            return self._getGeomCoeff(var.mesh)
+            return self._getGeomCoeff(var)
         else:
             return None
 
     @property
     def _transientVars(self):
         return self._vars
-    
-        
+
+    def _test(self):
+        """
+        >>> from fipy import *
+        >>> m = Grid1D(nx=6)
+        >>> v = CellVariable(mesh=m, rank=1, elementshape=(2,))
+        >>> eq = TransientTerm()
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve(v)
+        >>> print eq.matrix._shape
+        (12, 12)
+        >>> print len(eq.RHSvector)
+        12
+        >>> v[0] = 1.
+        >>> v[1] = 0.5
+        >>> coeff = CellVariable(mesh=m, rank=1, elementshape=(2,))
+        >>> coeff[0] = 2.
+        >>> coeff[1] = 1.
+        >>> eq = TransientTerm(coeff)
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve(v)
+        >>> print eq.matrix.takeDiagonal()
+        [ 2.  2.  2.  2.  2.  2.  1.  1.  1.  1.  1.  1.]
+        >>> print eq.RHSvector
+        [ 2.   2.   2.   2.   2.   2.   0.5  0.5  0.5  0.5  0.5  0.5]
+        """
+        pass
+            
 def _test(): 
     import doctest
     return doctest.testmod()

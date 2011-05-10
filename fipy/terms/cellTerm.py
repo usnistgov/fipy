@@ -39,7 +39,8 @@ from fipy.tools import inline
 from fipy.tools import numerix
 from fipy.terms import AbstractBaseClassError
 from fipy.matrices.sparseMatrix import _SparseMatrix
-
+from fipy.variables.cellVariable import CellVariable
+        
 class CellTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -53,18 +54,21 @@ class CellTerm(_NonDiffusionTerm):
             from fipy.variables.constant import _Constant
             coeff = _Constant(value=coeff)
 
-        from fipy.variables.cellVariable import CellVariable
-        if ((isinstance(coeff, CellVariable) and coeff.rank != 0)
+        if ((isinstance(coeff, CellVariable) and coeff.rank > 1)
             or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
-                raise TypeError, "The coefficient must be a rank-0 CellVariable or a scalar value."
+                raise TypeError, "The coefficient must be a rank-0 or rank-1 CellVariable or a scalar value."
 
         _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
         self._var = None
 
-    def __calcCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        mesh = var.mesh
-        coeff = self._getGeomCoeff(mesh)
+    def _checkCoeff(self, var):
+        if isinstance(self.coeff, CellVariable) and (self.coeff.rank != var.rank):
+            raise TypeError, "The coefficient must have the same rank as the solution variable."
+            
+            
+    def _calcCoeffVectors_(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        coeff = self._getGeomCoeff(var)
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
         if hasattr(coeff, "getOld"):
             old = coeff.old
@@ -78,16 +82,15 @@ class CellTerm(_NonDiffusionTerm):
             'new value': coeff * weight['new value']
         }
 
-    def __getCoeffVectors(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _getCoeffVectors_(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         if self.coeffVectors is None or var is not self._var:
-##        if self.coeffVectors is None or var != self._var:
             self._var = var
-            self.__calcCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+            self._calcCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         return self.coeffVectors
         
     if inline.doInline:
-        def __buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
+        def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
             N = oldArray.mesh.numberOfCells
             updatePyArray = numerix.zeros((N),'d')
 
@@ -98,7 +101,6 @@ class CellTerm(_NonDiffusionTerm):
                 updatePyArray[i] += diagCoeff[i];
             """,b=b,
                 oldArray=oldArray.numericValue,
-    ##            oldArray=numerix.array(oldArray),
                 oldCoeff=numerix.array(coeffVectors['old value']),
                 bCoeff=numerix.array(coeffVectors['b vector']),
                 newCoeff=numerix.array(coeffVectors['new value']),
@@ -109,26 +111,23 @@ class CellTerm(_NonDiffusionTerm):
 
             L.addAtDiagonal(updatePyArray)
     else:
-        def __buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
+        def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
+            oldArray = oldArray.value.ravel()
             N = len(oldArray)
 
-            b += numerix.array(oldArray) * numerix.array(coeffVectors['old value']) / dt
-            b += numerix.ones([N]) * numerix.array(coeffVectors['b vector'])
-            L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
-            L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
+            b += oldArray * numerix.array(coeffVectors['old value']).ravel() / dt
+            b += numerix.ones([N]) * numerix.array(coeffVectors['b vector']).ravel()
+            L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']).ravel() / dt)
+            L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']).ravel())
             
-    ##      L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']) / dt)
-    ##         L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']))
-
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        N = len(var)
-        b = numerix.zeros((N),'d')
+        b = numerix.zeros(var.shape,'d').ravel()
         L = SparseMatrix(mesh=var.mesh)
         
-        coeffVectors = self.__getCoeffVectors(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+        coeffVectors = self._getCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
         
-        self.__buildMatrix_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
+        self._buildMatrix_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
         
         return (var, L, b)
         
@@ -140,6 +139,7 @@ class CellTerm(_NonDiffusionTerm):
             >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
+            >>> from fipy.terms.transientTerm import TransientTerm
             >>> m = Grid1D(nx=2)
             >>> cv = CellVariable(mesh=m)
             >>> fv = FaceVariable(mesh=m)
@@ -153,19 +153,19 @@ class CellTerm(_NonDiffusionTerm):
             >>> __CellTerm(coeff=fv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
-            >>> __CellTerm(coeff=vcv)
+            TypeError: The coefficient must be a rank-0 or rank-1 CellVariable or a scalar value.
+            >>> TransientTerm(coeff=vcv).solve(cv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
+            TypeError: The coefficient must have the same rank as the solution variable.
             >>> __CellTerm(coeff=vfv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
+            TypeError: The coefficient must be a rank-0 or rank-1 CellVariable or a scalar value.
             >>> __CellTerm(coeff=(1,))
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a rank-0 CellVariable or a scalar value.
+            TypeError: The coefficient must be a rank-0 or rank-1 CellVariable or a scalar value.
 
         """
         pass

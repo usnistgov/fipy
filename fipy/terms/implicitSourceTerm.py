@@ -84,7 +84,7 @@ class ImplicitSourceTerm(SourceTerm):
         else:
             diagonalSign = 1
 
-        coeff = self._getGeomCoeff(var.mesh)
+        coeff = self._getGeomCoeff(var)
         combinedSign = diagonalSign * numerix.sign(coeff)
 
         return {'diagonal' : (combinedSign >= 0),

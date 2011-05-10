@@ -72,7 +72,7 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
             minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
             maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
 
-            coeff = numerix.array(self._getGeomCoeff(mesh))
+            coeff = numerix.array(self._getGeomCoeff(var))
 
             coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
         else:

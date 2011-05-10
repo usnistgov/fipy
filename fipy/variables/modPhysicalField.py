@@ -57,3 +57,6 @@ class _ModPhysicalField(PhysicalField):
             return self.__class__(value = self.mod(argument=other.inRadians() - self.inRadians()), unit="rad")
         else:
             return self._sum(other, sign1 = lambda a: -a)
+
+    def ravel(self):
+        return self.value.ravel()

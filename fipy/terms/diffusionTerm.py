@@ -78,10 +78,11 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> from fipy.meshes import Grid1D
         >>> from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix as SparseMatrix
         >>> from fipy.tools import parallel
+        >>> from fipy.variables.cellVariable import CellVariable
         >>> procID = parallel.procID
         >>> mesh = Grid1D(dx = 1., nx = 2)
         >>> term = DiffusionTerm(coeff = (1,))
-        >>> coeff = term._getGeomCoeff(mesh)
+        >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
@@ -101,7 +102,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         
         >>> from fipy.variables.faceVariable import FaceVariable
         >>> term = DiffusionTerm(coeff=FaceVariable(mesh=mesh, value=1))
-        >>> coeff = term._getGeomCoeff(mesh)
+        >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
@@ -116,7 +117,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         True
 
         >>> term = DiffusionTerm(coeff=CellVariable(mesh=mesh, value=1))
-        >>> coeff = term._getGeomCoeff(mesh)
+        >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
@@ -132,7 +133,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
         >>> from fipy.variables.variable import Variable
         >>> term = DiffusionTerm(coeff = Variable(value = 1))
-        >>> coeff = term._getGeomCoeff(mesh)
+        >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
@@ -157,7 +158,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> var.faceGrad.constrain([-3.], mesh.facesLeft)
         >>> var.constrain(4., mesh.facesRight)
         >>> term = DiffusionTerm(coeff = (1.,))
-        >>> coeff = term._getGeomCoeff(mesh)
+        >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
@@ -183,7 +184,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> var.constrain(4., mesh.facesRight)
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.facesRight, 0., 2)
         >>> term = DiffusionTerm(coeff = (1., 1.))
-        >>> coeff = term._getGeomCoeff(mesh)
+        >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
@@ -210,7 +211,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> var.constrain(4., mesh.facesRight)
 
         >>> term = DiffusionTerm(coeff = (-1., 1.))
-        >>> coeff = term._getGeomCoeff(mesh)
+        >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        ((-1.,  1.), 
@@ -241,7 +242,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> var.constrain(0., mesh.facesLeft)
         
         >>> term = DiffusionTerm(coeff = (1., 1.))
-        >>> coeff = term._getGeomCoeff(mesh)
+        >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 2., -2.), 
@@ -265,28 +266,28 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> from fipy.meshes.tri2D import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
         >>> term = DiffusionTerm(CellVariable(value = 1, mesh = mesh))
-        >>> print term._getGeomCoeff(mesh)[0]
+        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
         >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
-        >>> print term._getGeomCoeff(mesh)[0]
+        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
         >>> term = DiffusionTerm(CellVariable(value=(0.5, 1), mesh=mesh, rank=1))
         >>> term = DiffusionTerm(CellVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
-        >>> print term._getGeomCoeff(mesh)[0]
+        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
         >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
         >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
-        >>> print term._getGeomCoeff(mesh)[0]
+        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
         >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
         >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
         >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
         >>> val = (60., 60., 0.3, 0.3, 0.22277228, 0.22277228, 0.22277228, 0.22277228)
-        >>> print numerix.allclose(term._getGeomCoeff(mesh)[0], val)
+        >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh))[0], val)
         1
         >>> term = DiffusionTerm(((0.5, 1),))
         >>> term = DiffusionTerm((((0.5,), (1,)),))
-        >>> print numerix.allclose(term._getGeomCoeff(mesh)[0], val)
+        >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh))[0], val)
         Traceback (most recent call last):
             ...
         IndexError: diffusion coefficent tensor is not an appropriate shape for this mesh
@@ -296,7 +297,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> from fipy.meshes.tri2D import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
         >>> term = DiffusionTerm((((1, 2), (3, 4)),))
-        >>> print term._getGeomCoeff(mesh)
+        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))
         [[ 24.          24.           6.           6.           0.           7.5
             7.5          0.        ]
          [ -3.          -3.           2.           2.          -1.41421356
