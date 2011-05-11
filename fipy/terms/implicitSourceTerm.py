@@ -88,9 +88,9 @@ class ImplicitSourceTerm(SourceTerm):
         combinedSign = diagonalSign * numerix.sign(coeff)
 
         return {'diagonal' : (combinedSign >= 0),
-                'old value' : numerix.zeros(var.mesh.numberOfCells, 'd'),
+                'old value' : numerix.zeros(var.shape, 'd'),
                 'b vector' :  -var * (combinedSign < 0),
-                'new value' : numerix.zeros(var.mesh.numberOfCells, 'd')}
+                'new value' : numerix.zeros(var.shape, 'd')}
     
 def _test(): 
     import doctest

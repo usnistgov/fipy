@@ -212,14 +212,18 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> v = CellVariable(mesh=m, elementshape=(2,))
         >>> v[0] = 1.
         >>> v[1] = 2.
+        >>> (TransientTerm(v) == ImplicitSourceTerm(-v)).solve(v, dt=1.)
+        >>> print v
+        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
+         [ 1.   1.   1.   1.   1.   1. ]]
+        >>> (TransientTerm() == v).solve(v, dt=1.)
+        >>> print v
+        [[ 1.  1.  1.  1.  1.  1.]
+         [ 2.  2.  2.  2.  2.  2.]]
         >>> (TransientTerm(v) == v).solve(v, dt=1.)
         >>> print v
         [[ 2.  2.  2.  2.  2.  2.]
          [ 3.  3.  3.  3.  3.  3.]]
-        >>> (TransientTerm() == v).solve(v, dt=1.)
-        >>> print v
-        [[ 4.  4.  4.  4.  4.  4.]
-         [ 6.  6.  6.  6.  6.  6.]]
 
         """
 
