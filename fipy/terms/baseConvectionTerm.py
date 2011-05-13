@@ -105,8 +105,8 @@ class _BaseConvectionTerm(FaceTerm):
 
         self.stencil = None
         
-##        if isinstance(coeff, _MeshVariable) and coeff.rank != 1:
-##            raise VectorCoeffError
+        if isinstance(coeff, _MeshVariable) and coeff.rank < 1:
+            raise VectorCoeffError
 
         if isinstance(coeff, CellVariable):
             coeff = coeff.arithmeticFaceValue

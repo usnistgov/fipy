@@ -228,12 +228,55 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> v = CellVariable(mesh=m, elementshape=(2,))
         >>> v[0] = 1
         >>> v[1] = 2
-        >>> coeff = FaceVariable(mesh=m, rank=3, elementshape= (1, 2, 2))
+        >>> coeff = FaceVariable(mesh=m, elementshape=(1, 2, 2))
         >>> coeff[0,0,1] = 1
         >>> coeff[0,1,0] = 2
         >>> eqn = TransientTerm() + CentralDifferenceConvectionTerm(coeff=coeff)
-        >>> eqn.solve(v, dt=1)
-        >>> print v
+        >>> eqn.cacheMatrix()
+        >>> eqn.cacheRHSvector()
+        >>> eqn.solve(v, dt=1, solver=DefaultAsymmetricSolver())
+        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        ... [[ 1.0,   0,    0,    0,    0,    0,   0.5,  0.5,   0,    0,    0,    0,  ],
+        ...  [  0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,    0,  ],
+        ...  [  0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,  ],
+        ...  [  0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,  ],
+        ...  [  0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5, ],
+        ...  [  0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5, -0.5, ],
+        ...  [ 1.0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,    0,    0,  ],
+        ...  [-1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,    0,  ],
+        ...  [  0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,  ],
+        ...  [  0,    0,  -1.0,    0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
+        ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
+        ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]])
+        True
+        >>> print numerix.allclose(eqn.matrix.matvec(v.value.ravel()),eqn.RHSvector)
+        True
+
+        >>> X = m.faceCenters[0]
+        >>> v[0] = 1
+        >>> v[1] = 2
+        >>> coeff[0,0,1] = numerix.sign(X - 3)
+        >>> coeff[0,1,0] = -2 * numerix.sign(X - 3)        
+        >>> eqn = TransientTerm() + UpwindConvectionTerm(coeff=coeff)
+        >>> eqn.cacheMatrix()
+        >>> eqn.cacheRHSvector()
+        >>> eqn.solve(v, dt=1, solver=DefaultAsymmetricSolver())
+        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        ... [[ 1.0,   0,    0,    0,    0,    0,    0,  -1.0,   0,    0,    0,    0,  ],
+        ...  [  0,   1.0,   0,    0,    0,    0,    0,   1.0, -1.0,   0,    0,    0,  ],
+        ...  [  0,    0,   1.0,   0,    0,    0,    0,    0,   1.0,   0,    0,    0,  ],
+        ...  [  0,    0,    0,   1.0,   0,    0,    0,    0,    0,   1.0,   0,    0,  ],
+        ...  [  0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -1.0,  1.0,   0, ],
+        ...  [  0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -1.0,   0, ],
+        ...  [ 2.0,   0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,    0,  ],
+        ...  [-2.0,  2.0,   0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,  ],
+        ...  [  0,  -2.0,   0,    0,    0,    0,    0,    0,   1.0,   0,    0,    0,  ],
+        ...  [  0,    0,    0,    0,  -2.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
+        ...  [  0,    0,    0,    0,   2.0, -2.0,   0,    0,    0,    0,   1.0,   0,  ],
+        ...  [  0,    0,    0,    0,    0,   2.0,   0,    0,    0,    0,    0,   1.0, ]])
+        True
+        >>> print numerix.allclose(eqn.matrix.matvec(v.value.ravel()),eqn.RHSvector)
+        True
 
         """
 
