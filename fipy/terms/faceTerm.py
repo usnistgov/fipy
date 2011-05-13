@@ -62,7 +62,7 @@ class FaceTerm(_NonDiffusionTerm):
         return self.coeffMatrix
 
     def _reshapeIDs(self, var, ids):
-        shape = (self._vectroSize(var), self._vectorSize(var), ids.shape[-1])
+        shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
         ids = numerix.resize(ids, shape)
         X, Y =  numerix.indices(shape[:-1])
         X *= var.mesh.numberOfCells

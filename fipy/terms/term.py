@@ -137,11 +137,14 @@ class Term(object):
             return 1
         
     def _getMatrixClass(self, solver, var):
-        from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
-        SparseMatrix =  OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
-                                           numberOfVariables=self._vectorSize(var),
-                                           numberOfEquations=self._vectorSize(var))
-
+        if self._vectorSize(var) > 1:
+            from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+            SparseMatrix =  OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
+                                               numberOfVariables=self._vectorSize(var),
+                                               numberOfEquations=self._vectorSize(var))
+        else:
+            SparseMatrix = solver._matrixClass
+            
         return SparseMatrix
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
