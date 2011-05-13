@@ -79,9 +79,9 @@ class _BinaryTerm(_BaseBinaryTerm):
              
         return (var, matrix, RHSvector)
     
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
         for term in (self.term, self.other):
-            defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
+            defaultSolver = term._getDefaultSolver(var, solver, *args, **kwargs)
             if defaultSolver is not None:
                 solver = defaultSolver
                 
@@ -234,7 +234,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> eqn = TransientTerm() + CentralDifferenceConvectionTerm(coeff=coeff)
         >>> eqn.cacheMatrix()
         >>> eqn.cacheRHSvector()
-        >>> eqn.solve(v, dt=1, solver=DefaultAsymmetricSolver())
+        >>> eqn.solve(v, dt=1)
         >>> print numerix.allequal(eqn.matrix.numpyArray,
         ... [[ 1.0,   0,    0,    0,    0,    0,   0.5,  0.5,   0,    0,    0,    0,  ],
         ...  [  0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,    0,  ],
@@ -260,7 +260,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> eqn = TransientTerm() + UpwindConvectionTerm(coeff=coeff)
         >>> eqn.cacheMatrix()
         >>> eqn.cacheRHSvector()
-        >>> eqn.solve(v, dt=1, solver=DefaultAsymmetricSolver())
+        >>> eqn.solve(v, dt=1)
         >>> print numerix.allequal(eqn.matrix.numpyArray,
         ... [[ 1.0,   0,    0,    0,    0,    0,    0,  -1.0,   0,    0,    0,    0,  ],
         ...  [  0,   1.0,   0,    0,    0,    0,    0,   1.0, -1.0,   0,    0,    0,  ],

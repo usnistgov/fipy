@@ -148,7 +148,7 @@ class Term(object):
         return SparseMatrix
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        solver = self.getDefaultSolver(solver)
+        solver = self.getDefaultSolver(var, solver)
             
         var = self._verifyVar(var)
         self._checkVar(var)
@@ -346,11 +346,11 @@ class Term(object):
 
         return self._RHSvector
     
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
         return None
         
-    def getDefaultSolver(self, solver=None, *args, **kwargs):
-        return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
+    def getDefaultSolver(self, var=None, solver=None, *args, **kwargs):
+        return self._getDefaultSolver(var, solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
                          
     def __add__(self, other):
         if isinstance(other, (int, float)) and other == 0:

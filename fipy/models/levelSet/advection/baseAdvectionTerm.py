@@ -83,8 +83,8 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._cellToCellDistances
         
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        if _NonDiffusionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        if _NonDiffusionTerm._getDefaultSolver(self, var, solver, *args, **kwargs) is not None:
             raise AssertionError, 'An alternate _getDefaultSolver() is defined in a base class'
         
         if solver and not solver._canSolveAsymmetric():

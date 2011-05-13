@@ -38,6 +38,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
+from fipy.solvers import DefaultAsymmetricSolver
 
 class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     r"""
@@ -57,3 +58,12 @@ class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     class _Alpha(FaceVariable):
         def __init__(self, P):
             FaceVariable.__init__(self, P.mesh, value=0.5)
+
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        if self._vectorSize(var) == 1:
+            return solver
+        else:
+            if solver and not solver._canSolveAsymmetric():
+                import warnings
+                warnings.warn("%s cannot solve assymetric matrices" % solver)
+            return solver or DefaultAsymmetricSolver(*args, **kwargs)

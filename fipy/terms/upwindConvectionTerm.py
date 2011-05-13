@@ -53,7 +53,7 @@ class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
     For further details see :ref:`sec:NumericalSchemes`.
     """
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
