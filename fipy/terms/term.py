@@ -127,14 +127,20 @@ class Term(object):
     def _buildExplcitIfOther(self):
         raise NotImplementedError
 
-    def _getMatrixClass(self, solver, var):
+    def _reshapeIDs(self, var, ids):
+        raise NotImplementedError
+
+    def _vectorSize(self, var):
         if var.rank == 1:
-            from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
-            SparseMatrix =  OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
-                                               numberOfVariables=var.shape[0],
-                                               numberOfEquations=var.shape[0])
+            return var.shape[0]
         else:
-            SparseMatrix = solver._matrixClass
+            return 1
+        
+    def _getMatrixClass(self, solver, var):
+        from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+        SparseMatrix =  OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
+                                           numberOfVariables=self._vectorSize(var),
+                                           numberOfEquations=self._vectorSize(var))
 
         return SparseMatrix
 
