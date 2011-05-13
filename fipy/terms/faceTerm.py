@@ -61,23 +61,26 @@ class FaceTerm(_NonDiffusionTerm):
                                 'cell 2 offdiag': coeff * weight['cell 2 offdiag']}
         return self.coeffMatrix
 
-    def _implicitBuildMatrix_(self, SparseMatrix, L, id1, id2, b, weight, var, boundaryConditions, interiorFaces, dt):
-        mesh = var.mesh
-        coeffMatrix = self._getCoeffMatrix_(var, weight)
-
+    def _reshapeIDs(self, var, ids):
         if var.rank == 1:
             varShape = var.shape[0]
         else:
             varShape = 1
 
-        shape = (varShape, varShape, id1.shape[-1])
+        shape = (varShape, varShape, ids.shape[-1])
 
-        id1 = numerix.resize(id1, shape)
-        id2 = numerix.resize(id2, shape)
+        ids = numerix.resize(ids, shape)
         X, Y =  numerix.indices(shape[:-1])
-        X *= mesh.numberOfCells
-        id1 += X[...,numerix.newaxis]
-        id2 += X[...,numerix.newaxis]
+        X *= var.mesh.numberOfCells
+        ids += X[...,numerix.newaxis]
+        return ids
+
+    def _implicitBuildMatrix_(self, SparseMatrix, L, id1, id2, b, weight, var, boundaryConditions, interiorFaces, dt):
+        mesh = var.mesh
+        coeffMatrix = self._getCoeffMatrix_(var, weight)
+
+        id1 = self._reshapeIDs(var, id1)
+        id2 = self._reshapeIDs(var, id2)
 
         L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id1.swapaxes(0,1).ravel())
         L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id2.swapaxes(0,1).ravel())
@@ -104,7 +107,7 @@ class FaceTerm(_NonDiffusionTerm):
         mesh = var.mesh
         coeffMatrix = self._getCoeffMatrix_(var, weight)
 
-        self._explicitBuildMatrixInline_(oldArray=oldArray, id1=id1, id2=id2, b=b, coeffMatrix=coeffMatrix, 
+        self._explicitBuildMatrixInline_(oldArray=oldArray, id1=id1, id2=id2, b=b, coeffMatrix=coeffMatrix,
                                          mesh=var.mesh, interiorFaces=interiorFaces, dt=dt, weight=weight)
 
         N = mesh.numberOfCells
@@ -189,5 +192,3 @@ class FaceTerm(_NonDiffusionTerm):
             self._explicitBuildMatrix_(SparseMatrix, var.old, id1, id2, b, weight['explicit'], var, boundaryConditions, interiorFaces, dt)
 
         return (var, L, b)
-
-        

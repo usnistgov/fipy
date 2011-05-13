@@ -158,28 +158,29 @@ class _BaseConvectionTerm(FaceTerm):
         
         var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-        if var.rank != 1:
+##        if var.rank != 1:
 
-            mesh = var.mesh
+        mesh = var.mesh
 
-            if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
+        if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
 
-                constraintMask = var.faceGrad.constraintMask | var.arithmeticFaceValue.constraintMask
+            constraintMask = var.faceGrad.constraintMask | var.arithmeticFaceValue.constraintMask
 
-                weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
+            weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
-                if weight.has_key('implicit'):
-                    alpha = weight['implicit']['cell 1 diag']
-                else:
-                    alpha = 0.0
+            if weight.has_key('implicit'):
+                alpha = weight['implicit']['cell 1 diag']
+            else:
+                alpha = 0.0
 
-                exteriorCoeff =  self.coeff * mesh.exteriorFaces
+            exteriorCoeff =  self.coeff * mesh.exteriorFaces
 
-                self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
-                self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+            self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+            self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
 
-            L.addAtDiagonal(self.constraintL)
-            b += self.constraintB
+        ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
+        L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
+        b += numerix.reshape(self.constraintB.value, ids.shape).sum(0).ravel()
 
         return (var, L, b)
 
