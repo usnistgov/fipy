@@ -225,6 +225,16 @@ class _BinaryTerm(_BaseBinaryTerm):
         [[ 2.  2.  2.  2.  2.  2.]
          [ 3.  3.  3.  3.  3.  3.]]
 
+        >>> v = CellVariable(mesh=m, elementshape=(2,))
+        >>> v[0] = 1
+        >>> v[1] = 2
+        >>> coeff = FaceVariable(mesh=m, rank=3, elementshape= (1, 2, 2))
+        >>> coeff[0,0,1] = 1
+        >>> coeff[0,1,0] = 2
+        >>> eqn = TransientTerm() + CentralDifferenceConvectionTerm(coeff=coeff)
+        >>> eqn.solve(v, dt=1)
+        >>> print v
+
         """
 
 

@@ -65,10 +65,24 @@ class FaceTerm(_NonDiffusionTerm):
         mesh = var.mesh
         coeffMatrix = self._getCoeffMatrix_(var, weight)
 
-        L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces),    id1, id1)
-        L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces), id1, id2)
-        L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces), id2, id1)
-        L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces),    id2, id2)
+        if var.rank == 1:
+            varShape = var.shape[0]
+        else:
+            varShape = 1
+
+        shape = (varShape, varShape, id1.shape[-1])
+
+        id1 = numerix.resize(id1, shape)
+        id2 = numerix.resize(id2, shape)
+        X, Y =  numerix.indices(shape[:-1])
+        X *= mesh.numberOfCells
+        id1 += X[...,numerix.newaxis]
+        id2 += X[...,numerix.newaxis]
+
+        L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id1.swapaxes(0,1).ravel())
+        L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id2.swapaxes(0,1).ravel())
+        L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces, axis=-1).ravel(), id2.ravel(), id1.swapaxes(0,1).ravel())
+        L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces, axis=-1).ravel(), id2.ravel(), id2.swapaxes(0,1).ravel())
 
         N = mesh.numberOfCells
         M = mesh._maxFacesPerCell
@@ -141,7 +155,9 @@ class FaceTerm(_NonDiffusionTerm):
                 ni = len(interiorFaces))
     else:
         def _explicitBuildMatrixInline_(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
+
             oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt=dt)
+            
 
             cell1diag = numerix.take(coeffMatrix['cell 1 diag'], interiorFaces)
             cell1offdiag = numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces)
@@ -157,12 +173,11 @@ class FaceTerm(_NonDiffusionTerm):
         mesh = var.mesh
         id1, id2 = mesh._adjacentCellIDs
         interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
-
+    
         id1 = numerix.take(id1, interiorFaces)
         id2 = numerix.take(id2, interiorFaces)
-
-        N = len(var)
-        b = numerix.zeros((N),'d')
+        
+        b = numerix.zeros(var.shape,'d').ravel()      
         L = SparseMatrix(mesh=mesh)
 
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)

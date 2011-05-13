@@ -105,8 +105,8 @@ class _BaseConvectionTerm(FaceTerm):
 
         self.stencil = None
         
-        if isinstance(coeff, _MeshVariable) and coeff.rank != 1:
-            raise VectorCoeffError
+##        if isinstance(coeff, _MeshVariable) and coeff.rank != 1:
+##            raise VectorCoeffError
 
         if isinstance(coeff, CellVariable):
             coeff = coeff.arithmeticFaceValue
@@ -119,7 +119,7 @@ class _BaseConvectionTerm(FaceTerm):
             self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
 
         projectedCoefficients = self.coeff * mesh._orientedAreaProjections
-        
+
         return projectedCoefficients.sum(0)
         
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
@@ -155,29 +155,31 @@ class _BaseConvectionTerm(FaceTerm):
             raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-
+        
         var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-        mesh = var.mesh
-        
-        if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
+        if var.rank != 1:
 
-            constraintMask = var.faceGrad.constraintMask | var.arithmeticFaceValue.constraintMask
+            mesh = var.mesh
 
-            weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
+            if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
 
-            if weight.has_key('implicit'):
-                alpha = weight['implicit']['cell 1 diag']
-            else:
-                alpha = 0.0
+                constraintMask = var.faceGrad.constraintMask | var.arithmeticFaceValue.constraintMask
 
-            exteriorCoeff =  self.coeff * mesh.exteriorFaces
+                weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
-            self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
-            self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+                if weight.has_key('implicit'):
+                    alpha = weight['implicit']['cell 1 diag']
+                else:
+                    alpha = 0.0
 
-        L.addAtDiagonal(self.constraintL)
-        b += self.constraintB
+                exteriorCoeff =  self.coeff * mesh.exteriorFaces
+
+                self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+                self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+
+            L.addAtDiagonal(self.constraintL)
+            b += self.constraintB
 
         return (var, L, b)
 
