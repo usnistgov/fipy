@@ -115,10 +115,10 @@ class CellTerm(_NonDiffusionTerm):
             oldArray = oldArray.value.ravel()
             N = len(oldArray)
 
-            b += oldArray * numerix.array(coeffVectors['old value']).ravel() / dt
-            b += numerix.ones([N]) * numerix.array(coeffVectors['b vector']).ravel()
-            L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['new value']).ravel() / dt)
-            L.addAtDiagonal(numerix.ones([N]) * numerix.array(coeffVectors['diagonal']).ravel())
+            b += oldArray * coeffVectors['old value'].ravel() / dt
+            b += numerix.resize(coeffVectors['b vector'], [N])
+            L.addAtDiagonal(numerix.resize(coeffVectors['new value'], [N]) / dt)
+            L.addAtDiagonal(numerix.resize(coeffVectors['diagonal'], [N]))
             
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 

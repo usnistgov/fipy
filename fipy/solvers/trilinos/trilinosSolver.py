@@ -74,11 +74,19 @@ class TrilinosSolver(Solver):
             mesh = self.var.mesh
             localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
-            nonOverlappingVector = Epetra.Vector(globalMatrix.domainMap, 
-                                                 self.var[localNonOverlappingCellIDs])
+            nonOverlappingVector = Epetra.Vector(globalMatrix.domainMap,
+                                                 self.var[...,localNonOverlappingCellIDs].ravel())
 
-            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.rangeMap, 
-                                                    self.RHSvector[localNonOverlappingCellIDs])
+            from fipy.variables.coupledCellVariable import _CoupledCellVariable
+            if isinstance(self.RHSvector, _CoupledCellVariable):
+                RHSvector = self.RHSvector[localNonOverlappingCellIDs]
+            else:
+                RHSvector = numerix.reshape(numerix.array(self.RHSvector), self.var.shape)[...,localNonOverlappingCellIDs].ravel()
+            
+            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.rangeMap,
+                                                    RHSvector)
+
+            del RHSvector
 
             overlappingVector = Epetra.Vector(globalMatrix.colMap, self.var)
 
@@ -109,7 +117,7 @@ class TrilinosSolver(Solver):
                                                globalMatrix.domainMap), 
                                  Epetra.Insert)
         
-        self.var.value = overlappingVector
+        self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
 
         self._deleteGlobalMatrixAndVectors()
         del self.var

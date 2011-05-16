@@ -1456,6 +1456,9 @@ class Variable(object):
     @mathMethodDeprecated
     def reshape(self, shape):
         return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opShape=shape, canInline=False)
+
+    def ravel(self):
+        return self.value.ravel()
         
     def transpose(self):
         """
