@@ -89,3 +89,19 @@ Start the slave.
 
     slave$ buildslave start
 
+---------------
+Adding a branch
+---------------
+
+Modify `master.cfg` to include the name of the branch in the `branches` list at
+the top of the file like so:
+
+    branches = [
+                'trunk',
+                ...,
+                'branches/newBranch',
+               ]
+
+Push `master.cfg` and ensure that buildbot reconfigured correctly by checking
+the website.
+
