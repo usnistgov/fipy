@@ -73,7 +73,7 @@ If not, get it.
 
     slave$ easy_install buildbot-slave
 
-Then, set up the buildslave with all of FiPy's dependancies.
+Then, set up the buildslave with all of FiPy's dependencies.
 
 Ask `buildslave` to create the slave.
 
