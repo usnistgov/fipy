@@ -2,6 +2,12 @@
 Buildbot maintenance
 ====================
 
+---------------
+Website address
+---------------
+
+http://build.cmi.kent.edu:8010/
+
 ---------------------------
 Modifying the configuration
 ---------------------------
