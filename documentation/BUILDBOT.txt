@@ -67,7 +67,7 @@ to the master over the same port.
 
 Ensure that `buildslave` is installed on the slave.
 
-    slave$ buildslave -h
+    slave$ buildslave --version
 
 If not, get it.
 
