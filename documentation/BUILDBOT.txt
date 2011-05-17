@@ -82,6 +82,7 @@ Ask `buildslave` to create the slave.
                                    
 Modify admin and host information.
 
+    slave$ uname -a > newDir/info/host
     slave$ $EDITOR newDir/info/admin
     slave$ $EDITOR newDir/info/host
 
