@@ -249,7 +249,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
         ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]])
         True
-        >>> print numerix.allclose(eqn.matrix.matvec(v.value.ravel()),eqn.RHSvector)
+        >>> print numerix.allclose(eqn.matrix * v.value.ravel(),eqn.RHSvector)
         True
 
         >>> X = m.faceCenters[0]
@@ -275,7 +275,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...  [  0,    0,    0,    0,   2.0, -2.0,   0,    0,    0,    0,   1.0,   0,  ],
         ...  [  0,    0,    0,    0,    0,   2.0,   0,    0,    0,    0,    0,   1.0, ]])
         True
-        >>> print numerix.allclose(eqn.matrix.matvec(v.value.ravel()),eqn.RHSvector)
+        >>> print numerix.allclose(eqn.matrix * v.value.ravel(),eqn.RHSvector)
         True
 
         """
