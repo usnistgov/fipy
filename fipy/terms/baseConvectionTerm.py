@@ -138,7 +138,7 @@ class _BaseConvectionTerm(FaceTerm):
                     diffCoeff = diffCoeff.numericValue
                     diffCoeff = (diffCoeff == 0) * small + diffCoeff
 
-            alpha = self._Alpha(-self._getGeomCoeff(var) / diffCoeff)
+            alpha = self._alpha(-self._getGeomCoeff(var) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),

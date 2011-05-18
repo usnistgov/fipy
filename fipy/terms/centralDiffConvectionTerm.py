@@ -40,6 +40,10 @@ from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.solvers import DefaultAsymmetricSolver
 
+class _CentralDifferenceConvectionTermAlpha(FaceVariable):
+    def __init__(self, P):
+        FaceVariable.__init__(self, P.mesh, value=0.5)
+
 class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     r"""
 
@@ -54,10 +58,8 @@ class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     :math:`\alpha_f` is calculated using the central differencing scheme.
     For further details see :ref:`sec:NumericalSchemes`.
     """
-
-    class _Alpha(FaceVariable):
-        def __init__(self, P):
-            FaceVariable.__init__(self, P.mesh, value=0.5)
+    def _alpha(self, P):
+        return _CentralDifferenceConvectionTermAlpha(P)
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
         if self._vectorSize(var) == 1:
@@ -67,3 +69,4 @@ class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
                 import warnings
                 warnings.warn("%s cannot solve assymetric matrices" % solver)
             return solver or DefaultAsymmetricSolver(*args, **kwargs)
+    

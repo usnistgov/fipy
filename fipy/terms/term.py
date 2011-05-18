@@ -434,6 +434,9 @@ class Term(object):
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         raise NotImplementedError
 
+    def _alpha(self, P):
+        raise NotImplementedError
+
     def _test(self):
         """
         Test stuff.
