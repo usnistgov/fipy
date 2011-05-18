@@ -1065,7 +1065,7 @@ class Variable(object):
             return NotImplemented
     
         for v in [self, other]:
-            if not v.unit.isDimensionless():
+            if not v.unit.isDimensionless() or len(v.shape) > 3:
                 canInline = False
                 
         # obtain a general operator class with the desired base class
@@ -1103,7 +1103,7 @@ class Variable(object):
             return self._BinaryOperatorVariable(lambda a,b: a*b, other)
 
     __rmul__ = __mul__
-            
+    
     def __mod__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: numerix.fmod(a, b), other)
             

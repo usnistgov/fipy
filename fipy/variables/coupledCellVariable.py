@@ -156,6 +156,9 @@ class _CoupledCellVariable(object):
             self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)        
         return self.typecode
 
+    def ravel(self):
+        return self.value.ravel()
+
 def _test(): 
     import doctest
     return doctest.testmod()

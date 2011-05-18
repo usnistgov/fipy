@@ -54,6 +54,7 @@ class FaceTerm(_NonDiffusionTerm):
 
     def _getCoeffMatrix_(self, var, weight):
         coeff = self._getGeomCoeff(var)
+
         if self.coeffMatrix is None:
             self.coeffMatrix = {'cell 1 diag' : coeff * weight['cell 1 diag'],
                                 'cell 1 offdiag': coeff * weight['cell 1 offdiag'],
@@ -75,6 +76,8 @@ class FaceTerm(_NonDiffusionTerm):
 
         id1 = self._reshapeIDs(var, id1)
         id2 = self._reshapeIDs(var, id2)
+
+        numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1).ravel()
 
         L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id1.swapaxes(0,1).ravel())
         L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id2.swapaxes(0,1).ravel())
@@ -119,7 +122,7 @@ class FaceTerm(_NonDiffusionTerm):
         def _explicitBuildMatrixInline_(self, oldArray, id1, id2, b, coeffMatrix, mesh, interiorFaces, dt, weight):
 
             oldArrayId1, oldArrayId2 = self._getOldAdjacentValues(oldArray, id1, id2, dt)
-            coeff = numerix.array(self._getGeomCoeff(var))
+            coeff = numerix.array(self._getGeomCoeff(oldArray))
             Nfac = mesh.numberOfFaces
 
             cell1Diag = numerix.zeros((Nfac,),'d')

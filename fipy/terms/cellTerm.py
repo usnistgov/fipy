@@ -91,7 +91,8 @@ class CellTerm(_NonDiffusionTerm):
         
     if inline.doInline:
         def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
-            N = oldArray.mesh.numberOfCells
+            oldArray = oldArray.value.ravel()
+            N = len(oldArray)
             updatePyArray = numerix.zeros((N),'d')
 
             inline._runInline("""
@@ -100,11 +101,11 @@ class CellTerm(_NonDiffusionTerm):
                 updatePyArray[i] += newCoeff[i] / dt;
                 updatePyArray[i] += diagCoeff[i];
             """,b=b,
-                oldArray=oldArray.numericValue,
-                oldCoeff=numerix.array(coeffVectors['old value']),
-                bCoeff=numerix.array(coeffVectors['b vector']),
-                newCoeff=numerix.array(coeffVectors['new value']),
-                diagCoeff=numerix.array(coeffVectors['diagonal']),
+                oldArray=oldArray,
+                oldCoeff=coeffVectors['old value'].ravel(),
+                bCoeff=coeffVectors['b vector'].ravel(),
+                newCoeff=coeffVectors['new value'].ravel(),
+                diagCoeff=coeffVectors['diagonal'].ravel(),
                 updatePyArray=updatePyArray,
                 ni=len(updatePyArray),
                 dt=dt)

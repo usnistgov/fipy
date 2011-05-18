@@ -68,7 +68,7 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
             True
         """
 	def __init__(self, P):
-	    FaceVariable.__init__(self, mesh = P.mesh)
+	    FaceVariable.__init__(self, mesh = P.mesh, elementshape=P.shape[:-1])
 	    self.P = self._requires(P)
             self.eps = 1e-3
 	    
@@ -100,7 +100,7 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
                     }
                 """,
                 alpha = alpha, eps = eps, P = P,
-                ni = self.mesh.numberOfFaces
+                ni = len(P.flat)
                 )
 
                 return self._makeValue(value = alpha)

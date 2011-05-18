@@ -56,5 +56,5 @@ class _ScipySolver(Solver):
          if self.var.mesh.communicator.Nproc > 1:
              raise Exception("PyAMG solvers cannot be used with multiple processors")
         
-         self.var[:] = self._solve_(self.matrix, self.var.value, numerix.array(self.RHSvector))   
+         self.var[:] = numerix.reshape(self._solve_(self.matrix, self.var.ravel(), numerix.array(self.RHSvector)), self.var.shape)   
 

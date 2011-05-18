@@ -44,13 +44,14 @@ class _BaseUpwindConvectionTerm(_BaseConvectionTerm):
 
     class _Alpha(FaceVariable):
         def __init__(self, P):
-            FaceVariable.__init__(self, mesh = P.mesh)
+            FaceVariable.__init__(self, mesh=P.mesh, elementshape=P.shape[:-1])
             self.P = self._requires(P)
             
         if inline.doInline:
             def _calcValue(self):
                 P  = self.P.numericValue
                 alpha = self._array.copy()
+
                 inline._runInline("""
                     alpha[i] = 0.5;
                     
@@ -60,10 +61,9 @@ class _BaseUpwindConvectionTerm(_BaseConvectionTerm):
                         alpha[i] = 0.;
                     }
                 """,
-                alpha = alpha, P = P,
-                ni = self.mesh.numberOfFaces
-                )
-
+                alpha=alpha, P=P,
+                ni = len(P.flat))
+                
                 return self._makeValue(value=alpha)
         else:
             def _calcValue(self):

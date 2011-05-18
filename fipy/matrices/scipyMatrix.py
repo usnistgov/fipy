@@ -112,9 +112,7 @@ class _ScipyMatrixBase(_SparseMatrix):
         if other == 0:
             return self
         else:
-            L = self.matrix.copy()
-            L += other.matrix
-            return _ScipyMatrixBase(matrix=L)
+            return _ScipyMatrixBase(matrix=self.matrix + other.matrix)
         
     __radd__ = __add__
     
@@ -206,7 +204,7 @@ class _ScipyMatrixBase(_SparseMatrix):
         assert(len(id1) == len(id2) == len(vector))
 
         # done in such a way to vectorize everything
-        tempVec = numerix.array(vector) - self.matrix[id1, id2]
+        tempVec = numerix.array(vector) - self.matrix[id1, id2].flat
         tempMat = sp.csr_matrix((tempVec, (id1, id2)), self.matrix.shape)
 
         self.matrix = self.matrix + tempMat
@@ -385,7 +383,7 @@ class _ScipyMeshMatrix(_ScipyMatrix):
         >>> nonZeroIdx = m.matrix.nonzero()
         >>> print numerix.allequal(nonZeroIdx, [(0, 1), (1, 0)])
         True
-        >>> print numerix.allequal(m.matrix[nonZeroIdx].toarray(), numerix.array([1.0, 2.0]))
+        >>> print numerix.allequal(numerix.array(m.matrix[nonZeroIdx]), numerix.array([1.0, 2.0]))
         True
         
         """
