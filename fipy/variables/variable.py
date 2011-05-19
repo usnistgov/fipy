@@ -408,6 +408,20 @@ class Variable(object):
              '(var0 * var1[i])'
 
          freshen is ignored
+
+         Testing when a cell variable multiplies an array that has a
+         shape, but has olny one element. This works regullarly,
+         but fails when inlining.
+
+         >>> from fipy import *
+         >>> m = Grid1D(nx=3)
+         >>> x = m.cellCenters[0]
+         >>> tmp = m.cellCenters[0] * array(((0.,), (1.,)))[1]
+         >>> print numerix.allclose(tmp, x)
+         True
+         >>> print numerix.allclose(tmp, x)
+         True
+         
          """
          
          identifier = 'var%s' % (id)
@@ -435,8 +449,9 @@ class Variable(object):
              shape = self.shape
 
          if len(shape) == 0:
-##             return identifier + '(0)'         
              return identifier
+         elif len(shape) == 1 and shape[0] == 1:
+             return identifier + '[0]'
          else:
              return identifier + self._getCIndexString(shape)
 
@@ -1060,10 +1075,10 @@ class Variable(object):
             other = _Constant(value=other)
 
         opShape, baseClass, other = self._shapeClassAndOther(opShape, operatorClass, other)
-        
+
         if opShape is None or baseClass is None:
             return NotImplemented
-    
+        
         for v in [self, other]:
             if not v.unit.isDimensionless() or len(v.shape) > 3:
                 canInline = False
