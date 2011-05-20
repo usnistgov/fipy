@@ -316,12 +316,21 @@ class _MeshVariable(Variable):
         >>> print tmp.value.shape
         (2, 12)
         
-        The value shouldn't change shape the sond time it's
+        The value shouldn't change shape the second time it's
         evaluated. The second time is inline and the inline code does
         not have the correct shape.
         
         >>> print tmp.value.shape
         (2, 12)
+
+        More inconsistent shape problems.
+
+        >>> m = Grid2D(nx=3, ny=3)
+        >>> v0 = FaceVariable(mesh=m, rank=1, value=m._orientedFaceNormals)
+        >>> print v0.dot(m.faceCenters[0]).shape
+        (2, 24)
+        >>> print v0.dot(m.faceCenters[0]).value.shape
+        (2, 24)
         
         """
         rankA = len(A.shape) - 1
