@@ -183,7 +183,8 @@ def reshape(arr, shape):
     elif type(arr) is type(MA.array((0))):
         return MA.reshape(arr, shape)
     else:
-        raise TypeError, 'cannot reshape object ' + str(arr)
+        return NUMERIX.reshape(array(arr), tuple(shape))
+##        raise TypeError, 'cannot reshape object ' + str(arr)
 
 def getShape(arr):
     """

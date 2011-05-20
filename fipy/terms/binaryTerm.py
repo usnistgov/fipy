@@ -249,7 +249,9 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
         ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]])
         True
-        >>> print numerix.allclose(eqn.matrix * v.value.ravel(),eqn.RHSvector)
+        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print numerix.allclose(LHS, RHS)
         True
 
         >>> X = m.faceCenters[0]
@@ -275,7 +277,9 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...  [  0,    0,    0,    0,   2.0, -2.0,   0,    0,    0,    0,   1.0,   0,  ],
         ...  [  0,    0,    0,    0,    0,   2.0,   0,    0,    0,    0,    0,   1.0, ]])
         True
-        >>> print numerix.allclose(eqn.matrix * v.value.ravel(),eqn.RHSvector)
+        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print numerix.allclose(LHS, RHS)
         True
 
         """

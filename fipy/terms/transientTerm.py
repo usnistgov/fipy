@@ -156,22 +156,22 @@ class TransientTerm(CellTerm):
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v)
-        >>> print eq.matrix._shape
+        >>> print eq.matrix.numpyArray.shape
         (12, 12)
-        >>> print len(eq.RHSvector)
+        >>> print len(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
         12
         >>> v[0] = 1.
         >>> v[1] = 0.5
         >>> coeff = CellVariable(mesh=m, rank=1, elementshape=(2,))
-        >>> coeff[0] = 2.
+        >>> coeff[0] = 2
         >>> coeff[1] = 1.
         >>> eq = TransientTerm(coeff)
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v)
-        >>> print eq.matrix.takeDiagonal()
+        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.matrix.takeDiagonal(), (2, -1))).globalValue.ravel()
         [ 2.  2.  2.  2.  2.  2.  1.  1.  1.  1.  1.  1.]
-        >>> print eq.RHSvector
+        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
         [ 2.   2.   2.   2.   2.   2.   0.5  0.5  0.5  0.5  0.5  0.5]
         """
         pass

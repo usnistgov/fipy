@@ -308,28 +308,28 @@ class _MeshVariable(Variable):
         >>> m = Grid2D(nx=2, ny=2)
         >>> v = FaceVariable(mesh=m, rank=1, value=m._orientedFaceNormals)
         
-        >>> print v.dot(1.).shape
-        (2, 12)
-        >>> print v.dot(1.).value.shape
+        >>> print len(v.dot(1.).shape)
+        2
+        >>> print v.dot(1.).globalValue.shape
         (2, 12)
         >>> tmp = m._cellDistances * v.dot(1.)
-        >>> print tmp.value.shape
+        >>> print tmp.globalValue.shape
         (2, 12)
         
         The value shouldn't change shape the second time it's
         evaluated. The second time is inline and the inline code does
         not have the correct shape.
         
-        >>> print tmp.value.shape
+        >>> print tmp.globalValue.shape
         (2, 12)
 
         More inconsistent shape problems.
 
         >>> m = Grid2D(nx=3, ny=3)
         >>> v0 = FaceVariable(mesh=m, rank=1, value=m._orientedFaceNormals)
-        >>> print v0.dot(m.faceCenters[0]).shape
-        (2, 24)
-        >>> print v0.dot(m.faceCenters[0]).value.shape
+        >>> print len(v0.dot(m.faceCenters[0]).shape)
+        2
+        >>> print v0.dot(m.faceCenters[0]).globalValue.shape
         (2, 24)
         
         """
