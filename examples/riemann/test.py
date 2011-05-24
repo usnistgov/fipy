@@ -7,8 +7,6 @@
  #  FILE: "test.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -32,27 +30,17 @@
  # ###################################################################
  ##
 
-"""Run all the test cases in examples/
-"""
-
-from fipy.tests.lateImportTest import _LateImportTestSuite
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
 def _suite():
-    return _LateImportTestSuite(testModuleNames = (
-            'phase.test',
-            'convection.test',
-            'diffusion.test',
-            'elphf.test',
-            'levelSet.test',
-            'chemotaxis.test',  
-            'cahnHilliard.test',
-            'flow.test',
-            'meshing.test',
-            'reactiveWetting.test',
-            'riemann.test'
-        ), base = __name__)
-
+    return _LateImportDocTestSuite(docTestModuleNames = (
+                                       'acoustics',
+                                   ), 
+                                   base = __name__)
+    
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
 
+            
+            
