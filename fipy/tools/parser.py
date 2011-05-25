@@ -35,8 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 import optparse
-
-import sys
+import sys, os
 
 def parse(larg, action = None, type = None, default = None):
     """
@@ -71,3 +70,22 @@ def parse(larg, action = None, type = None, default = None):
 
     return options.dest
 
+def parseSolver():
+    args = [s.lower() for s in sys.argv[1:]]
+    # any command-line specified solver takes precedence over environment variables
+    if '--no-pysparse' in args:
+        return "no-pysparse"
+    elif '--trilinos' in args:
+        return "trilinos"
+    elif '--pysparse' in args:
+        return "pysparse"
+    elif '--pyamg' in args:
+        return 'pyamg'             
+    elif '--scipy' in args:
+        return 'scipy'
+    elif os.environ.has_key('FIPY_SOLVERS'):
+        return os.environ['FIPY_SOLVERS'].lower()
+    else:
+        return None
+
+    
