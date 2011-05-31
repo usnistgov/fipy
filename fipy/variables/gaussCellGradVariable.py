@@ -41,8 +41,33 @@ from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 
 class _GaussCellGradVariable(CellVariable):
+    """
+    Test case for a vector cell variable
+
+    >>> from fipy import *
+    >>> m = Grid2D(nx=3, ny=3)
+    >>> x, y = m.cellCenters
+    >>> v = CellVariable(mesh=m, elementshape=(3,))
+    >>> v[0] = x
+    >>> v[1] = y
+    >>> v[2] = x**2
+    >>> v0 = CellVariable(mesh=m, value=x)
+    >>> v1 = CellVariable(mesh=m, value=y)
+    >>> v2 = CellVariable(mesh=m, value=x**2)
+    >>> v.grad.shape
+    (2, 3, 9)
+    >>> print v0.grad
+    >>> print (v0.grad == v.grad[:,0]).all()
+    True
+    >>> print (v1.grad == v.grad[:,1]).all()
+    True
+    >>> print (v2.grad == v.grad[:,2]).all()
+    True
+        
+    """
+    
     def __init__(self, var, name=''):
-        CellVariable.__init__(self, mesh=var.mesh, name=name, rank=var.rank + 1)
+        CellVariable.__init__(self, mesh=var.mesh, name=name, elementshape=(var.mesh.dim,) + var.shape[:-1])
         self.var = self._requires(var)
         self.faceGradientContributions = _FaceGradContributions(self.var)
         
@@ -73,10 +98,8 @@ class _GaussCellGradVariable(CellVariable):
             return self._makeValue(value = val)
     else:
         def _calcValue_(self, N, M, ids, orientations, volumes):
-            contributions = numerix.take(self.faceGradientContributions, ids, axis=1)
-
-            grad = numerix.array(numerix.sum(orientations * contributions, 1))
-
+            contributions = numerix.take(self.faceGradientContributions, ids, axis=-1)
+            grad = numerix.array(numerix.sum(orientations * contributions, -2))
             return grad / volumes
 
     def _calcValue(self):
@@ -85,3 +108,10 @@ class _GaussCellGradVariable(CellVariable):
                                 ids=self.mesh.cellFaceIDs, 
                                 orientations=self.mesh._cellToFaceOrientations, 
                                 volumes=self.mesh.cellVolumes)
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

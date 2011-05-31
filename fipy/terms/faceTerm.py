@@ -77,8 +77,6 @@ class FaceTerm(_NonDiffusionTerm):
         id1 = self._reshapeIDs(var, id1)
         id2 = self._reshapeIDs(var, id2)
 
-        numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1).ravel()
-
         L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id1.swapaxes(0,1).ravel())
         L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id2.swapaxes(0,1).ravel())
         L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces, axis=-1).ravel(), id2.ravel(), id1.swapaxes(0,1).ravel())

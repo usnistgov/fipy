@@ -310,7 +310,17 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
         >>> -DiffusionTerm()
         DiffusionTerm(coeff=[-1.0])
-           
+
+        Testing vector diffusion terms by comparing with coupled solutions.
+
+        >>> m = Grid1D(nx=6)
+        >>> v0 = CellVariable(mesh=m)
+        >>> v1 = CellVariable(mesh=m)
+        >>> eq = (DiffusionTerm(coeff=1., var=v0) + DiffusionTerm(coeff=2., var=v1)) & (DiffusionTerm(coeff=3., var=v0) + DiffusionTerm(coeff=4., var=v1))
+        >>> eq.cacheMatrix()
+        >>> eq.solve()
+        >>> print eq.matrix
+
         """
         pass            
 
