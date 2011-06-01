@@ -83,7 +83,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> mesh = Grid1D(dx = 1., nx = 2)
         >>> term = DiffusionTerm(coeff = (1,))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
+        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
@@ -103,7 +103,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> from fipy.variables.faceVariable import FaceVariable
         >>> term = DiffusionTerm(coeff=FaceVariable(mesh=mesh, value=1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
+        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
@@ -118,7 +118,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
         >>> term = DiffusionTerm(coeff=CellVariable(mesh=mesh, value=1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
+        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
@@ -134,7 +134,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> from fipy.variables.variable import Variable
         >>> term = DiffusionTerm(coeff = Variable(value = 1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
+        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
@@ -159,7 +159,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> var.constrain(4., mesh.facesRight)
         >>> term = DiffusionTerm(coeff = (1.,))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
+        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
@@ -185,7 +185,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.facesRight, 0., 2)
         >>> term = DiffusionTerm(coeff = (1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
+        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 1., -1.), 
         ...                         (-1.,  1.))) or procID != 0
@@ -212,7 +212,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
         >>> term = DiffusionTerm(coeff = (-1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
+        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        ((-1.,  1.), 
         ...                         ( 1., -1.))) or procID != 0
@@ -243,7 +243,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         
         >>> term = DiffusionTerm(coeff = (1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, mesh, coeff[0])
+        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> print numerix.allclose(M.numpyArray, 
         ...                        (( 2., -2.), 
         ...                         (-2.,  2.))) or procID != 0
@@ -313,13 +313,39 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
         Testing vector diffusion terms by comparing with coupled solutions.
 
-        >>> m = Grid1D(nx=6)
+        >>> from fipy import *
+        >>> m = Grid1D(nx=6)        
+        >>> q = CellVariable(mesh=m, elementshape=(2,))
+        >>> coeff = FaceVariable(mesh=m, elementshape=(2, 2), value=[[1, 2], [3, 4]])
+        >>> vectorEq = DiffusionTerm(coeff) == 0
+        >>> vectorEq.cacheMatrix()
+        >>> vectorEq.solve(q, solver=DummySolver())
+
         >>> v0 = CellVariable(mesh=m)
         >>> v1 = CellVariable(mesh=m)
-        >>> eq = (DiffusionTerm(coeff=1., var=v0) + DiffusionTerm(coeff=2., var=v1)) & (DiffusionTerm(coeff=3., var=v0) + DiffusionTerm(coeff=4., var=v1))
-        >>> eq.cacheMatrix()
-        >>> eq.solve()
-        >>> print eq.matrix
+        >>> coupledEq = ((DiffusionTerm(coeff=1., var=v0) + DiffusionTerm(coeff=2., var=v1)) & (DiffusionTerm(coeff=3., var=v0) + DiffusionTerm(coeff=4., var=v1)))((v0, v1))
+        >>> coupledEq.cacheMatrix()
+        >>> coupledEq.solve(solver=DummySolver())
+        >>> print (coupledEq.matrix.numpyArray == vectorEq.matrix.numpyArray).all()
+        True
+
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> q = CellVariable(mesh=m, elementshape=(3,))
+        >>> coeff = FaceVariable(mesh=m, elementshape=(3, 3), value=[[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        >>> vectorEq = DiffusionTerm(coeff) == 0
+        >>> vectorEq.cacheMatrix()
+        >>> vectorEq.solve(q, solver=DummySolver())
+
+        >>> v0 = CellVariable(mesh=m)
+        >>> v1 = CellVariable(mesh=m)
+        >>> v2 = CellVariable(mesh=m)
+        >>> coupledEq = ((DiffusionTerm(coeff=1., var=v0) + DiffusionTerm(coeff=2., var=v1) + DiffusionTerm(coeff=3., var=v2)) & \
+        ...              (DiffusionTerm(coeff=4., var=v0) + DiffusionTerm(coeff=5., var=v1) + DiffusionTerm(coeff=6., var=v2)) & \
+        ...              (DiffusionTerm(coeff=7., var=v0) + DiffusionTerm(coeff=8., var=v1) + DiffusionTerm(coeff=9, var=v2)))((v0, v1, v2))
+        >>> coupledEq.cacheMatrix()
+        >>> coupledEq.solve(solver=DummySolver())
+        >>> print (coupledEq.matrix.numpyArray == vectorEq.matrix.numpyArray).all()
+        True
 
         """
         pass            

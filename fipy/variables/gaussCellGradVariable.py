@@ -57,6 +57,8 @@ class _GaussCellGradVariable(CellVariable):
     >>> v.grad.shape
     (2, 3, 9)
     >>> print v0.grad
+    [[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5]
+     [ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]]
     >>> print (v0.grad == v.grad[:,0]).all()
     True
     >>> print (v1.grad == v.grad[:,1]).all()

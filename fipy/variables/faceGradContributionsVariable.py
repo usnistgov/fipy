@@ -52,8 +52,10 @@ class _FaceGradContributions(FaceVariable):
     >>> v0 = CellVariable(mesh=m, value=x)
     >>> v1 = CellVariable(mesh=m, value=y)
     >>> v2 = CellVariable(mesh=m, value=x**2)
-    >>> print _FaceGradContributions(v0).shape
+    >>> print _FaceGradContributions(v).shape
     (2, 3, 24)
+    >>> print _FaceGradContributions(v0).shape
+    (2, 24)
     >>> print _FaceGradContributions(v0)
     [[ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.  -0.5  1.   2.
        2.5 -0.5  1.   2.   2.5 -0.5  1.   2.   2.5]

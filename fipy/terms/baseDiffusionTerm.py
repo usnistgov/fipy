@@ -308,34 +308,37 @@ class _BaseDiffusionTerm(_UnaryTerm):
         """
 
         var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-
+        mesh = var.mesh
+        
         if self.order == 2:
             
             if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
             
-                self.constraintB = 0
-                self.constraintL = 0
-
-                mesh = var.mesh
-
-                self.constraintB -= (var.faceGrad.constraintMask * (self.nthCoeff[numerix.newaxis] * var.faceGrad[:,numerix.newaxis])).divergence * mesh.cellVolumes
-
                 normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
-                s = (slice(0,None,None),) + (numerix.newaxis,) * (len(self.nthCoeff.shape) - 1) + (slice(0,None,None),)
+
+                if len(var.shape) == 1 and (self.nthCoeff.shape) > 1:
+                    nthCoeffFaceGrad = var.faceGrad.dot(self.nthCoeff)
+                    normalsNthCoeff =  normals.dot(self.nthCoeff)
+                else:
+
+                    nthCoeffFaceGrad = self.nthCoeff[numerix.newaxis] * var.faceGrad[:,numerix.newaxis]
+                    s = (slice(0,None,None),) + (numerix.newaxis,) * (len(self.nthCoeff.shape) - 1) + (slice(0,None,None),)
+                    normalsNthCoeff = self.nthCoeff[numerix.newaxis] * normals[s]
+
+                self.constraintB = -(var.faceGrad.constraintMask * nthCoeffFaceGrad).divergence * mesh.cellVolumes
 
                 constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
-                                                    (self.nthCoeff[numerix.newaxis] * normals[s]) / mesh._cellDistances
-
-                print 'constrainedNormalsDotCoeffOverdAP',constrainedNormalsDotCoeffOverdAP.shape
+                                                    normalsNthCoeff / mesh._cellDistances
 
                 self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
-                self.constraintL -= constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
 
+                ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
+
+                self.constraintL = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+                
             ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
-            print 'self.constraintB.value',self.constraintB.value.shape
-            print 'ids.shape',ids.shape
             L.addAt(self.constraintL.ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
-            b += numerix.reshape(self.constraintB.value, ids.shape).sum(-1).ravel()
+            b += numerix.reshape(self.constraintB.ravel(), ids.shape).sum(-2).ravel()
             
         return (var, L, b)
         
@@ -348,9 +351,9 @@ class _BaseDiffusionTerm(_UnaryTerm):
         if self.order > 2:
 
             higherOrderBCs, lowerOrderBCs = self.__getBoundaryConditions(boundaryConditions)
-            
+    
             var, lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
-                                                                                      boundaryConditions = lowerOrderBCs, 
+                                                                                      boundaryConditions = lowerOrderBCs,
                                                                                       dt = dt, transientGeomCoeff=transientGeomCoeff,
                                                                                       diffusionGeomCoeff=diffusionGeomCoeff)
             del lowerOrderBCs
@@ -383,7 +386,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
 
             mm = self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag'])
             L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
-                               mm, numerix.zeros(N,'d'))
+                               mm, numerix.zeros(len(var.ravel()),'d'))
                                
             del higherOrderBCs
             del mm
@@ -421,7 +424,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             del lowerOrderBCs
 
             L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
-                               self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag']), numerix.zeros(N,'d'))
+                               self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag']), numerix.zeros(len(var.ravel()),'d'))
 
             if hasattr(self, 'anisotropySource'):
                 b -= self.anisotropySource
@@ -433,7 +436,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
             L = SparseMatrix(mesh=mesh)
             L.addAtDiagonal(mesh.cellVolumes)
-            b = numerix.zeros((N),'d')
+            b = numerix.zeros(len(var.ravel()),'d')
             
         return (var, L, b)
 
