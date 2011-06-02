@@ -35,7 +35,7 @@
 r"""
 Test
 
->>> print (0.4 < max(q[0]) < 0.5)
+>>> print (0.4 < max(q.globalValue[0]) < 0.5)
 True
 
 """
