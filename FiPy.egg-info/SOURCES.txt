@@ -388,6 +388,7 @@ examples/reactiveWetting/index.txt
 examples/reactiveWetting/liquidVapor1D.py
 examples/reactiveWetting/liquidVapor2D.py
 examples/reactiveWetting/test.py
+examples/riemann/__init__.py
 examples/riemann/acoustics.py
 examples/riemann/test.py
 examples/updating/.gitignore
