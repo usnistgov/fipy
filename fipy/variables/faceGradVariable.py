@@ -63,6 +63,13 @@ class _FaceGradVariable(FaceVariable):
     True
     >>> print (v1.faceGrad.globalValue  == v.faceGrad.globalValue[:,1]).all()
     True
+
+    >>> print v.faceValue
+    
+    >>> print v2.faceGrad.globalValue
+
+    >>> print v.faceGrad.globalValue[:,2]
+    
     >>> print (v2.faceGrad.globalValue  == v.faceGrad.globalValue[:,2]).all()
     True
      
@@ -71,98 +78,103 @@ class _FaceGradVariable(FaceVariable):
         FaceVariable.__init__(self, mesh=var.mesh, elementshape=(var.mesh.dim,) + var.shape[:-1])
         self.var = self._requires(var)
 
-    if inline.doInline:
-        def _calcValue(self):
+    def _calcValue(self):
+        if inline.doInline and self.var.rank == 0:
+            return self._calcValueInline_()
+        else:
+            return self._calcValueNoInline_()
 
-            id1, id2 = self.mesh._adjacentCellIDs
-            
-            tangents1 = self.mesh._faceTangents1
-            tangents2 = self.mesh._faceTangents2
-     
-            val = self._array.copy()
+    def _calcValueInline_(self):
 
-            inline._runIterateElementInline("""
-                int j;
-                double t1grad1, t1grad2, t2grad1, t2grad2, N, N2;
-                int ID1 = ITEM(id1, i, NULL);
-                int ID2 = ITEM(id2, i, NULL);
-                                          
-                if ITEM(exteriorFaces, i, NULL) {
-                     N2 = ITEM(facevar, i, NULL);
-                } else {
-                     N2 = ITEM(var, ID2, NULL);
-                }
-                
-                N = (N2 - ITEM(var, ID1, NULL)) / ITEM(dAP, i, NULL);
+        id1, id2 = self.mesh._adjacentCellIDs
 
-                t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
-                
-                t1grad1 += ITEM(tangents1, i, vec) * ITEM(cellGrad, ID1, vec);
-                t1grad2 += ITEM(tangents1, i, vec) * ITEM(cellGrad, ID2, vec);
-                t2grad1 += ITEM(tangents2, i, vec) * ITEM(cellGrad, ID1, vec);
-                t2grad2 += ITEM(tangents2, i, vec) * ITEM(cellGrad, ID2, vec);
-                
-                ITEM(val, i, vec) =  ITEM(normals, i, vec) * N;
-                ITEM(val, i, vec) += ITEM(tangents1, i, vec) * (t1grad1 + t1grad2) / 2.;
-                ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
-            """,tangents1 = tangents1,
-                tangents2 = tangents2,
-                cellGrad = self.var.grad.numericValue,
-                normals = self.mesh._orientedFaceNormals,
-                id1 = id1,
-                id2 = id2,
-                dAP = numerix.array(self.mesh._cellDistances),
-                var = self.var.numericValue,
-                facevar = self.var.faceValue.numericValue,
-                exteriorFaces = self.mesh.exteriorFaces.numericValue,
-                val = val,
-                ni = tangents1.shape[1],
-                shape=numerix.array(numerix.shape(tangents1)))
-                
-            return self._makeValue(value = val)
-    else:
-        def _calcValue(self):
-            dAP = self.mesh._cellDistances
-            id1, id2 = self.mesh._adjacentCellIDs
-            
-            N2 = numerix.take(self.var.value,id2, axis=-1)
+        tangents1 = self.mesh._faceTangents1
+        tangents2 = self.mesh._faceTangents2
 
-            faceMask = numerix.array(self.mesh.exteriorFaces)
+        val = self._array.copy()
 
-            ## The following conditional is required because empty
-            ## indexing is not altogether functional.  This
-            ## numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]]
-            ## both work, but this numpy.empty((3, 0))[...,[]] is
-            ## broken.
+        inline._runIterateElementInline("""
+            int j;
+            double t1grad1, t1grad2, t2grad1, t2grad2, N, N2;
+            int ID1 = ITEM(id1, i, NULL);
+            int ID2 = ITEM(id2, i, NULL);
 
-            if self.var.faceValue.shape[-1] != 0:
-                s = (Ellipsis, faceMask)
-            else:
-                s = (faceMask,)
-                
-            N2[s] = self.var.faceValue[s]
+            if ITEM(exteriorFaces, i, NULL) {
+                 N2 = ITEM(facevar, i, NULL);
+            } else {
+                 N2 = ITEM(var, ID2, NULL);
+            }
 
-            N = (N2 - numerix.take(self.var,id1, axis=-1)) / dAP
+            N = (N2 - ITEM(var, ID1, NULL)) / ITEM(dAP, i, NULL);
 
-            normals = self.mesh._orientedFaceNormals
-            
-            tangents1 = self.mesh._faceTangents1
-            tangents2 = self.mesh._faceTangents2
-            cellGrad = self.var.grad.numericValue
-            
-            grad1 = numerix.take(cellGrad, id1, axis=-1)
-            grad2 = numerix.take(cellGrad, id2, axis=-1)
+            t1grad1 = t1grad2 = t2grad1 = t2grad2 = 0.;
 
-            s = (slice(0,None,None),) + (numerix.newaxis,) * (len(grad1.shape) - 2) + (slice(0,None,None),)
-            t1grad1 = numerix.sum(tangents1[s] * grad1, 0)
-            t1grad2 = numerix.sum(tangents1[s] * grad2, 0)
-            t2grad1 = numerix.sum(tangents2[s] * grad1, 0)
-            t2grad2 = numerix.sum(tangents2[s] * grad2, 0)
-            
-            T1 = (t1grad1 + t1grad2) / 2.
-            T2 = (t2grad1 + t2grad2) / 2.
+            t1grad1 += ITEM(tangents1, i, vec) * ITEM(cellGrad, ID1, vec);
+            t1grad2 += ITEM(tangents1, i, vec) * ITEM(cellGrad, ID2, vec);
+            t2grad1 += ITEM(tangents2, i, vec) * ITEM(cellGrad, ID1, vec);
+            t2grad2 += ITEM(tangents2, i, vec) * ITEM(cellGrad, ID2, vec);
 
-            return normals[s] * N[numerix.newaxis] + tangents1[s] * T1[numerix.newaxis] + tangents2[s] * T2[numerix.newaxis]
+            ITEM(val, i, vec) =  ITEM(normals, i, vec) * N;
+            ITEM(val, i, vec) += ITEM(tangents1, i, vec) * (t1grad1 + t1grad2) / 2.;
+            ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
+        """,tangents1 = tangents1,
+            tangents2 = tangents2,
+            cellGrad = self.var.grad.numericValue,
+            normals = self.mesh._orientedFaceNormals,
+            id1 = id1,
+            id2 = id2,
+            dAP = numerix.array(self.mesh._cellDistances),
+            var = self.var.numericValue,
+            facevar = self.var.faceValue.numericValue,
+            exteriorFaces = self.mesh.exteriorFaces.numericValue,
+            val = val,
+            ni = tangents1.shape[1],
+            shape=numerix.array(numerix.shape(tangents1)))
+
+        return self._makeValue(value = val)
+
+    def _calcValueNoInline_(self):
+        dAP = self.mesh._cellDistances
+        id1, id2 = self.mesh._adjacentCellIDs
+
+        N2 = numerix.take(self.var.value,id2, axis=-1)
+
+        faceMask = numerix.array(self.mesh.exteriorFaces)
+
+        ## The following conditional is required because empty
+        ## indexing is not altogether functional.  This
+        ## numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]]
+        ## both work, but this numpy.empty((3, 0))[...,[]] is
+        ## broken.
+
+        if self.var.faceValue.shape[-1] != 0:
+            s = (Ellipsis, faceMask)
+        else:
+            s = (faceMask,)
+
+        N2[s] = self.var.faceValue[s]
+
+        N = (N2 - numerix.take(self.var,id1, axis=-1)) / dAP
+
+        normals = self.mesh._orientedFaceNormals
+
+        tangents1 = self.mesh._faceTangents1
+        tangents2 = self.mesh._faceTangents2
+        cellGrad = self.var.grad.numericValue
+
+        grad1 = numerix.take(cellGrad, id1, axis=-1)
+        grad2 = numerix.take(cellGrad, id2, axis=-1)
+
+        s = (slice(0,None,None),) + (numerix.newaxis,) * (len(grad1.shape) - 2) + (slice(0,None,None),)
+        t1grad1 = numerix.sum(tangents1[s] * grad1, 0)
+        t1grad2 = numerix.sum(tangents1[s] * grad2, 0)
+        t2grad1 = numerix.sum(tangents2[s] * grad1, 0)
+        t2grad2 = numerix.sum(tangents2[s] * grad2, 0)
+
+        T1 = (t1grad1 + t1grad2) / 2.
+        T2 = (t2grad1 + t2grad2) / 2.
+
+        return normals[s] * N[numerix.newaxis] + tangents1[s] * T1[numerix.newaxis] + tangents2[s] * T2[numerix.newaxis]
 
 def _test(): 
     import doctest

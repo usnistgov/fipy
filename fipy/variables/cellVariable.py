@@ -666,6 +666,27 @@ class CellVariable(_MeshVariable):
         except ValueError:
             self.faceConstraints.remove(constraint)
 
+    def _test(self):
+        """
+        Tests
+
+        >>> from fipy import *
+        >>> m = Grid1D(nx=6)        
+        >>> q = CellVariable(mesh=m, elementshape=(2,))
+        >>> print q.faceGrad.value.shape
+
+        >>> from fipy import *
+        >>> m = Grid2D(nx=3, ny=3)
+        >>> x, y = m.cellCenters
+        >>> v = CellVariable(mesh=m, elementshape=(3,))
+        >>> v[0] = x
+        >>> v[1] = y
+        >>> v[2] = x**2
+        >>> print v.faceGrad
+
+
+        """
+
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):
         newValues = oldVar.getValue(points = newMesh.cellCenters)
