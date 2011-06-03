@@ -73,7 +73,7 @@ class _ModCellGradVariable(_GaussCellGradVariable):
         return self._makeValue(value = val)
 
     def _calcValueNoInline(self, N, M, ids, orientations, volumes):
-        value = _GaussCellGradVariable._calcValue_(self, N, M, ids, orientations, volumes)
+        value = _GaussCellGradVariable._calcValueNoInline(self, N, M, ids, orientations, volumes)
         gridSpacing = self.mesh._meshSpacing
         return self.modPy(value * gridSpacing) / gridSpacing
 
