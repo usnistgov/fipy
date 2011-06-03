@@ -819,7 +819,13 @@ class Variable(object):
     
     def _calcValue(self):
         return self._value
-        
+
+    def _calcValueNoInline(self):
+        raise NotImplementedError
+
+    def _calcValueInline(self):
+        raise NotImplementedError
+    
     @getsetDeprecated
     def getSubscribedVariables(self):
         return self.subscribedVariables

@@ -63,13 +63,6 @@ class _FaceGradVariable(FaceVariable):
     True
     >>> print (v1.faceGrad.globalValue  == v.faceGrad.globalValue[:,1]).all()
     True
-
-    >>> print v.faceValue
-    
-    >>> print v2.faceGrad.globalValue
-
-    >>> print v.faceGrad.globalValue[:,2]
-    
     >>> print (v2.faceGrad.globalValue  == v.faceGrad.globalValue[:,2]).all()
     True
      
@@ -80,11 +73,11 @@ class _FaceGradVariable(FaceVariable):
 
     def _calcValue(self):
         if inline.doInline and self.var.rank == 0:
-            return self._calcValueInline_()
+            return self._calcValueInline()
         else:
-            return self._calcValueNoInline_()
+            return self._calcValueNoInline()
 
-    def _calcValueInline_(self):
+    def _calcValueInline(self):
 
         id1, id2 = self.mesh._adjacentCellIDs
 
@@ -133,7 +126,7 @@ class _FaceGradVariable(FaceVariable):
 
         return self._makeValue(value = val)
 
-    def _calcValueNoInline_(self):
+    def _calcValueNoInline(self):
         dAP = self.mesh._cellDistances
         id1, id2 = self.mesh._adjacentCellIDs
 

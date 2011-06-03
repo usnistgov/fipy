@@ -46,11 +46,11 @@ class _AddOverFacesVariable(CellVariable):
 
     def _calcValue(self):
         if inline.doInline and self.faceVariable.rank < 2:
-            return self._calcValueInline_()
+            return self._calcValueInline()
         else:
-            return self._calcValueNotInline_()
+            return self._calcValueNoInline()
                 
-    def _calcValueInline_(self):
+    def _calcValueInline(self):
         
         NCells = self.mesh.numberOfCells
         ids = self.mesh.cellFaceIDs
@@ -87,7 +87,7 @@ class _AddOverFacesVariable(CellVariable):
         return self._makeValue(value = val)
     ##         return self._makeValue(value = val, unit = self.getUnit())
 
-    def _calcValueNotInline_(self):
+    def _calcValueNoInline(self):
         ids = self.mesh.cellFaceIDs
 
         contributions = numerix.take(self.faceVariable, ids, axis=-1)
