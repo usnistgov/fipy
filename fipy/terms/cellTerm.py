@@ -40,7 +40,8 @@ from fipy.tools import numerix
 from fipy.terms import AbstractBaseClassError
 from fipy.matrices.sparseMatrix import _SparseMatrix
 from fipy.variables.cellVariable import CellVariable
-        
+from fipy.variables.faceVariable import FaceVariable
+
 class CellTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -50,23 +51,49 @@ class CellTerm(_NonDiffusionTerm):
             raise AbstractBaseClassError
             
         from fipy.variables.variable import Variable
+
         if not isinstance(coeff, Variable):
             from fipy.variables.constant import _Constant
             coeff = _Constant(value=coeff)
 
-        if ((isinstance(coeff, CellVariable) and coeff.rank > 1)
-            or (not isinstance(coeff, CellVariable) and coeff.shape != ())):
-                raise TypeError, "The coefficient must be a rank-0 or rank-1 CellVariable or a scalar value."
+        if isinstance(coeff, FaceVariable):
+             raise TypeError, "The coefficient can not be a FaceVariable."
 
         _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
         self._var = None
 
     def _checkCoeff(self, var):
-        if isinstance(self.coeff, CellVariable) and (self.coeff.rank != var.rank):
-            raise TypeError, "The coefficient must have the same rank as the solution variable."
-            
-            
+        if isinstance(self.coeff, CellVariable):
+            shape = self.coeff.shape[:-1]
+        else:
+            shape = self.coeff.shape
+
+        if var.rank == 1 and (shape == () or len(shape) == 1):
+            if len(self.coeff.shape) == 2 and isinstance(self.coeff, CellVariable):
+                self.coeff *= numerix.identity(var.shape[0])[...,numerix.newaxis]
+            else:
+                self.coeff *= numerix.identity(var.shape[0])
+            if isinstance(self.coeff, CellVariable):
+                shape = self.coeff.shape[:-1]
+            else:
+                shape = self.coeff.shape
+
+        if var.rank == 0:
+            if shape != ():
+                raise TypeError, "The coefficient must be rank 0 for a rank 0 solution variable."
+
+        if shape != () and len(shape) != 2 and shape[0] != shape[1]:
+            raise TypeError, "The coefficient must be a rank-0 or rank-2 vector or a scalar value."
+
+        if var.rank == 1:
+            if shape == ():
+                pass
+            elif len(shape) != 2:
+                raise TypeError, "The coefficient must be rank 2 or rank 0 for a rank 1 solution variable."
+            elif var.shape[0] != shape[0]:
+                raise TypeError, "The coefficient (N , N) shape must match the the solution variable (N,) shape."
+        
     def _calcCoeffVectors_(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         coeff = self._getGeomCoeff(var)
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
@@ -112,14 +139,20 @@ class CellTerm(_NonDiffusionTerm):
 
             L.addAtDiagonal(updatePyArray)
     else:
-        def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
-            oldArray = oldArray.value.ravel()
-            N = len(oldArray)
+        def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):            
+            ids = self._reshapeIDs(oldArray, numerix.arange(oldArray.shape[-1]))
+            b += (oldArray.value[numerix.newaxis] * coeffVectors['old value']).sum(-2).ravel() / dt
+            b += coeffVectors['b vector'][numerix.newaxis].sum(-2).ravel()
+            L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0,1).ravel())
+            L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
 
-            b += oldArray * coeffVectors['old value'].ravel() / dt
-            b += numerix.resize(coeffVectors['b vector'], [N])
-            L.addAtDiagonal(numerix.resize(coeffVectors['new value'], [N]) / dt)
-            L.addAtDiagonal(numerix.resize(coeffVectors['diagonal'], [N]))
+    def _reshapeIDs(self, var, ids):
+        shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
+        ids = numerix.resize(ids, shape)
+        X, Y =  numerix.indices(shape[:-1])
+        X *= var.mesh.numberOfCells
+        ids += X[...,numerix.newaxis]
+        return ids
             
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
@@ -154,19 +187,19 @@ class CellTerm(_NonDiffusionTerm):
             >>> __CellTerm(coeff=fv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a rank-0 or rank-1 CellVariable or a scalar value.
+            TypeError: The coefficient can not be a FaceVariable.
             >>> TransientTerm(coeff=vcv).solve(cv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must have the same rank as the solution variable.
+            TypeError: The coefficient must be rank 0 for a rank 0 solution variable.
             >>> __CellTerm(coeff=vfv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a rank-0 or rank-1 CellVariable or a scalar value.
-            >>> __CellTerm(coeff=(1,))
+            TypeError: The coefficient can not be a FaceVariable.
+            >>> TransientTerm(coeff=(1,)).solve(cv)
             Traceback (most recent call last):
                 ...
-            TypeError: The coefficient must be a rank-0 or rank-1 CellVariable or a scalar value.
+            TypeError: The coefficient must be rank 0 for a rank 0 solution variable.
 
         """
         pass

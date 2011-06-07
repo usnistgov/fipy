@@ -110,8 +110,11 @@ class TransientTerm(CellTerm):
 	
     def _calcGeomCoeff(self, var):
         self._checkCoeff(var)
-	return self.coeff * numerix.resize(var.mesh.cellVolumes, var.shape)
-
+        if var.rank != 0 and not isinstance(self.coeff, CellVariable):            
+            return self.coeff[...,numerix.newaxis] * numerix.resize(var.mesh.cellVolumes, var.shape)
+        else:
+            return self.coeff * numerix.resize(var.mesh.cellVolumes, var.shape)
+        
     def _getTransientGeomCoeff(self, var):
         """
         Test to ensure that _getTransientGeomCoeff is not returning None when a
@@ -160,19 +163,55 @@ class TransientTerm(CellTerm):
         (12, 12)
         >>> print len(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
         12
+        
         >>> v[0] = 1.
         >>> v[1] = 0.5
-        >>> coeff = CellVariable(mesh=m, rank=1, elementshape=(2,))
-        >>> coeff[0] = 2
-        >>> coeff[1] = 1.
+        >>> coeff = CellVariable(mesh=m, elementshape=(2, 2))
+        >>> coeff[0, 0] = 1.
+        >>> coeff[0, 1] = 2.
+        >>> coeff[1, 0] = 3.
+        >>> coeff[1, 1] = 4.
         >>> eq = TransientTerm(coeff)
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v)
-        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.matrix.takeDiagonal(), (2, -1))).globalValue.ravel()
-        [ 2.  2.  2.  2.  2.  2.  1.  1.  1.  1.  1.  1.]
-        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
-        [ 2.   2.   2.   2.   2.   2.   0.5  0.5  0.5  0.5  0.5  0.5]
+        >>> print eq.matrix.numpyArray
+        [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
+         [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
+         [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
+         [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.]
+         [ 0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.]
+         [ 0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.]
+         [ 3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.  0.]
+         [ 0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.]
+         [ 0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.]
+         [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
+         [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
+         [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
+        >>> print eq.RHSvector
+        [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
+        >>> v[0] = 1.
+        >>> v[1] = 0.5
+        >>> eq = TransientTerm(((1., 2.), (3. , 4.)))
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve(v)
+        >>> print eq.matrix.numpyArray
+        [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
+         [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
+         [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
+         [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.]
+         [ 0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.]
+         [ 0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.]
+         [ 3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.  0.]
+         [ 0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.]
+         [ 0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.]
+         [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
+         [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
+         [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
+        >>> print eq.RHSvector 
+        [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
+
         """
         pass
             
