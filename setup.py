@@ -6,9 +6,10 @@
  # 
  #  FILE: "setup.py"
  #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Jonathan Guyer   <guyer@nist.gov>
+ #  Author: Daniel Wheeler   <daniel.wheeler@nist.gov>
+ #  Author: James Warren     <jwarren@nist.gov>
+ #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -39,6 +40,7 @@ import sys
 import string
 
 from distutils.core import Command
+from fipy.tools.efficiency_test import Efficiency_test
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup
@@ -386,104 +388,6 @@ class copy_script(Command):
         
         print "Script code exported from '%s' to '%s'"%(self.From, self.To)
 
-class efficiency_test(Command):
-    description = "run FiPy efficiency tests"
-    
-    user_options = [ ('minimumelements=', None, 'minimum number of elements'),
-                     ('factor=', None, 'factor by which the number of elements is increased'),
-                     ('inline', None, 'turn on inlining for the efficiency tests'),
-                     ('cache', None, 'turn on variable caching'),
-                     ('maximumelements=', None, 'maximum number of elements'),
-                     ('sampleTime=', None, 'sampling interval for memory high-water'),
-                     ('path=', None, 'directory to place output results in')]
-    
-    def initialize_options(self):
-        self.factor = 10
-        self.inline = 0
-        self.cache = 0
-        self.maximumelements = 10000
-        self.minimumelements = 100
-        self.sampleTime = 1
-        self.path = None
-        self.cases = ['examples/benchmarking/cahnHilliard.py', 'examples/benchmarking/superfill.py', 'examples/benchmarking/phaseImpingement.py', 'examples/benchmarking/mesh.py']
-        
-    def finalize_options(self):
-        self.factor = int(self.factor)
-        self.maximumelements = int(self.maximumelements)
-        self.minimumelements = int(self.minimumelements)
-        self.sampleTime = float(self.sampleTime)
-
-    def run(self):
-
-        import time
-        import os
-        
-        for case in self.cases:
-            print "case: %s" % case
-            
-            if self.path is None:
-                testPath = os.path.split(case)[0]
-            else:
-                testPath = self.path
-                
-            if not os.access(testPath, os.F_OK):
-                os.makedirs(testPath)
-                
-            testPath = os.path.join(testPath, '%s.dat' % os.path.split(case)[1])
-            
-            if not os.path.isfile(testPath):
-                f = open(testPath, 'w')
-
-                f.write("\t".join(["--inline", "--cache", "Date", "Elements", \
-                                  "mesh (s)", "variables (s)", "terms (s)", \
-                                  "solver (s)", "BCs (s)", "solve (s)", \
-                                  "total (s)", "per step (s)", \
-                                  \
-                                  "mesh (KiB)", "variables (KiB)", \
-                                  "terms (KiB)", "solver (KiB)", "BCs (KiB)", \
-                                  "solve (KiB)", "max (KiB)", \
-                                  "per element (KiB)"]))
-                f.write("\n")
-                f.flush()
-            else:
-                f = open(testPath, 'a')
-            
-            numberOfElements = self.minimumelements
-
-            while numberOfElements <= self.maximumelements:
-                print "\tnumberOfElements: %i" % numberOfElements
-                
-                cmd = [case, '--numberOfElements=%i' % numberOfElements]
-                
-                if self.inline:
-                    cmd += ['--inline']
-                    
-                if self.cache:
-                    cmd += ['--cache']
-                else:
-                    cmd += ['--no-cache']
-
-                output = "\t".join([str(self.inline), str(self.cache), time.ctime(), str(numberOfElements)])
-                
-                timeCmd = cmd + ['--measureTime']
-                w, r = os.popen4(' '.join(timeCmd))
-                output += '\t' + ''.join(r.readlines()).strip()
-                r.close()
-                w.close()
-
-                memCmd = cmd + ['--measureMemory', '--sampleTime=%f' % self.sampleTime]
-                w, r = os.popen4(' '.join(memCmd))
-                output += '\t' + ''.join(r.readlines()).strip()
-                r.close()
-                w.close()
-                    
-                f.write(output + '\n')
-                f.flush()
-
-                numberOfElements *= self.factor
-
-            f.close()
-
 try:            
     f = open('README.txt', 'r')
     long_description = '\n' + f.read() + '\n'
@@ -496,8 +400,7 @@ try:
     license = '\n' + ''.join([' '*8 + l for l in f])
     f.close()
 except IOError, e:
-    license = ''
-    
+    license = ''    
 # The following doesn't work reliably, because it requires fipy
 # to already be installed (or at least egged), which is kind of 
 # obnoxious. We use cmdclass instead.
@@ -567,7 +470,7 @@ dist = setup(	name = "FiPy",
             'test':test,
             'unittest':unittest,
             'copy_script': copy_script,
-            'efficiency_test': efficiency_test
+            'efficiency_test': Efficiency_test
         },
         test_suite="fipy.test._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
