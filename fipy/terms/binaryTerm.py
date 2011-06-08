@@ -225,6 +225,28 @@ class _BinaryTerm(_BaseBinaryTerm):
         [[ 2.  2.  2.  2.  2.  2.]
          [ 3.  3.  3.  3.  3.  3.]]
 
+        >>> v[0] = 1.
+        >>> v[1] = 2.
+        >>> (TransientTerm(v) == ImplicitSourceTerm(-v * numerix.identity(2)[...,numerix.newaxis])).solve(v, dt=1.)
+        >>> print v
+        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
+         [ 1.   1.   1.   1.   1.   1. ]]
+        >>> (TransientTerm() == numerix.array((0.5, 1.))).solve(v, dt=1.)
+        >>> print v
+        [[ 1.  1.  1.  1.  1.  1.]
+         [ 2.  2.  2.  2.  2.  2.]]
+        >>> (TransientTerm(v * numerix.identity(2)[...,numerix.newaxis]) == v).solve(v, dt=1.)
+        >>> print v
+        [[ 2.  2.  2.  2.  2.  2.]
+         [ 3.  3.  3.  3.  3.  3.]]
+
+        >>> v[0] = 1.
+        >>> v[1] = 2.
+        >>> (TransientTerm(v) == -ImplicitSourceTerm(((1, 0), (0, 2)))).solve(v, dt=1.)
+        >>> print v
+        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
+         [ 1.   1.   1.   1.   1.   1. ]]
+
         >>> v = CellVariable(mesh=m, elementshape=(2,))
         >>> v[0] = 1
         >>> v[1] = 2
