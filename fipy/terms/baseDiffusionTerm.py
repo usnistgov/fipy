@@ -159,7 +159,12 @@ class _BaseDiffusionTerm(_UnaryTerm):
                 raise IndexError, 'the solution variable has the wrong rank'
                 
             if anisotropicRank == 0 and self._treatMeshAsOrthogonal(mesh):
+                
+                if coeff.shape != () and not isinstance(coeff, FaceVariable):
+                    coeff = coeff[...,numerix.newaxis]
+
                 tmpBop = (coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas) / mesh._cellDistances)[numerix.newaxis, :]
+
             else:
 
                 if anisotropicRank == 1 or anisotropicRank == 0:
@@ -313,9 +318,14 @@ class _BaseDiffusionTerm(_UnaryTerm):
                     normalsNthCoeff =  normals.dot(self.nthCoeff)
                 else:
 
-                    nthCoeffFaceGrad = self.nthCoeff[numerix.newaxis] * var.faceGrad[:,numerix.newaxis]
-                    s = (slice(0,None,None),) + (numerix.newaxis,) * (len(self.nthCoeff.shape) - 1) + (slice(0,None,None),)
-                    normalsNthCoeff = self.nthCoeff[numerix.newaxis] * normals[s]
+                    if self.nthCoeff.shape != () and not isinstance(self.nthCoeff, FaceVariable):
+                        coeff = self.nthCoeff[...,numerix.newaxis]
+                    else:
+                        coeff = self.nthCoeff
+                    
+                    nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:,numerix.newaxis]
+                    s = (slice(0,None,None),) + (numerix.newaxis,) * (len(coeff.shape) - 1) + (slice(0,None,None),)
+                    normalsNthCoeff = coeff[numerix.newaxis] * normals[s]
 
                 self.constraintB = -(var.faceGrad.constraintMask * nthCoeffFaceGrad).divergence * mesh.cellVolumes
 
