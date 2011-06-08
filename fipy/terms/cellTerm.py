@@ -115,44 +115,35 @@ class CellTerm(_NonDiffusionTerm):
             self._calcCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         return self.coeffVectors
-        
-    if inline.doInline:
-        def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):
-            oldArray = oldArray.value.ravel()
-            N = len(oldArray)
-            updatePyArray = numerix.zeros((N),'d')
 
-            inline._runInline("""
-                b[i] += oldArray[i] * oldCoeff[i] / dt;
-                b[i] += bCoeff[i];
-                updatePyArray[i] += newCoeff[i] / dt;
-                updatePyArray[i] += diagCoeff[i];
-            """,b=b,
-                oldArray=oldArray,
-                oldCoeff=coeffVectors['old value'].ravel(),
-                bCoeff=coeffVectors['b vector'].ravel(),
-                newCoeff=coeffVectors['new value'].ravel(),
-                diagCoeff=coeffVectors['diagonal'].ravel(),
-                updatePyArray=updatePyArray,
-                ni=len(updatePyArray),
-                dt=dt)
+    def _buildMatrixInline_(self, L, oldArray, b, dt, coeffVectors):
+        oldArray = oldArray.value.ravel()
+        N = len(oldArray)
+        updatePyArray = numerix.zeros((N),'d')
 
-            L.addAtDiagonal(updatePyArray)
-    else:
-        def _buildMatrix_(self, L, oldArray, b, dt, coeffVectors):            
-            ids = self._reshapeIDs(oldArray, numerix.arange(oldArray.shape[-1]))
-            b += (oldArray.value[numerix.newaxis] * coeffVectors['old value']).sum(-2).ravel() / dt
-            b += coeffVectors['b vector'][numerix.newaxis].sum(-2).ravel()
-            L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0,1).ravel())
-            L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
+        inline._runInline("""
+            b[i] += oldArray[i] * oldCoeff[i] / dt;
+            b[i] += bCoeff[i];
+            updatePyArray[i] += newCoeff[i] / dt;
+            updatePyArray[i] += diagCoeff[i];
+        """,b=b,
+            oldArray=oldArray,
+            oldCoeff=coeffVectors['old value'].ravel(),
+            bCoeff=coeffVectors['b vector'].ravel(),
+            newCoeff=coeffVectors['new value'].ravel(),
+            diagCoeff=coeffVectors['diagonal'].ravel(),
+            updatePyArray=updatePyArray,
+            ni=len(updatePyArray),
+            dt=dt)
 
-    def _reshapeIDs(self, var, ids):
-        shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
-        ids = numerix.resize(ids, shape)
-        X, Y =  numerix.indices(shape[:-1])
-        X *= var.mesh.numberOfCells
-        ids += X[...,numerix.newaxis]
-        return ids
+        L.addAtDiagonal(updatePyArray)
+
+    def _buildMatrixNoInline_(self, L, oldArray, b, dt, coeffVectors):            
+        ids = self._reshapeIDs(oldArray, numerix.arange(oldArray.shape[-1]))
+        b += (oldArray.value[numerix.newaxis] * coeffVectors['old value']).sum(-2).ravel() / dt
+        b += coeffVectors['b vector'][numerix.newaxis].sum(-2).ravel()
+        L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0,1).ravel())
+        L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
             
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
@@ -160,8 +151,11 @@ class CellTerm(_NonDiffusionTerm):
         L = SparseMatrix(mesh=var.mesh)
         
         coeffVectors = self._getCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-        
-        self._buildMatrix_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
+
+        if inline.doInline and var.rank == 0:                    
+            self._buildMatrixInline_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
+        else:
+            self._buildMatrixNoInline_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
         
         return (var, L, b)
         

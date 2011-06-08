@@ -62,14 +62,6 @@ class FaceTerm(_NonDiffusionTerm):
                                 'cell 2 offdiag': coeff * weight['cell 2 offdiag']}
         return self.coeffMatrix
 
-    def _reshapeIDs(self, var, ids):
-        shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
-        ids = numerix.resize(ids, shape)
-        X, Y =  numerix.indices(shape[:-1])
-        X *= var.mesh.numberOfCells
-        ids += X[...,numerix.newaxis]
-        return ids
-
     def _implicitBuildMatrix_(self, SparseMatrix, L, id1, id2, b, weight, var, boundaryConditions, interiorFaces, dt):
         mesh = var.mesh
         coeffMatrix = self._getCoeffMatrix_(var, weight)

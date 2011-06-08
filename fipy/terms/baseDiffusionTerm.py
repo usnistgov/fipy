@@ -189,14 +189,6 @@ class _BaseDiffusionTerm(_UnaryTerm):
         """
         return self.__getCoefficientMatrix(SparseMatrix, var, coeff)
 
-    def _reshapeIDs(self, var, ids):
-        shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
-        ids = numerix.resize(ids, shape)
-        X, Y =  numerix.indices(shape[:-1])
-        X *= var.mesh.numberOfCells
-        ids += X[...,numerix.newaxis]
-        return ids
-    
     def __getCoefficientMatrix(self, SparseMatrix, var, coeff):
         mesh = var.mesh
 
