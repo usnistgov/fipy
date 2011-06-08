@@ -276,6 +276,32 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> print numerix.allclose(LHS, RHS)
         True
 
+        >>> v[0] = 1
+        >>> v[1] = 2
+        >>> eqn = TransientTerm() + CentralDifferenceConvectionTerm(coeff=(((0, 1), (2, 0)),))
+        >>> eqn.cacheMatrix()
+        >>> eqn.cacheRHSvector()
+        >>> eqn.solve(v, dt=1)
+        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        ... [[ 1.0,   0,    0,    0,    0,    0,   0.5,  0.5,   0,    0,    0,    0,  ],
+        ...  [  0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,    0,  ],
+        ...  [  0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,  ],
+        ...  [  0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,  ],
+        ...  [  0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5, ],
+        ...  [  0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5, -0.5, ],
+        ...  [ 1.0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,    0,    0,  ],
+        ...  [-1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,    0,  ],
+        ...  [  0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,  ],
+        ...  [  0,    0,  -1.0,    0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
+        ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
+        ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]])
+        True
+        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print numerix.allclose(LHS, RHS)
+        True
+        
+
         >>> X = m.faceCenters[0]
         >>> v[0] = 1
         >>> v[1] = 2

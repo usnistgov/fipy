@@ -115,8 +115,13 @@ class _BaseConvectionTerm(FaceTerm):
         
     def _calcGeomCoeff(self, var):
         mesh = var.mesh
+
         if not isinstance(self.coeff, FaceVariable):
-            self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
+            shape = numerix.array(self.coeff).shape
+            if shape != () and shape[-1] == 1:
+                shape = shape[:-1]
+            
+            self.coeff = FaceVariable(mesh=mesh, elementshape=shape, value=self.coeff)
 
         projectedCoefficients = self.coeff * mesh._orientedAreaProjections
 
