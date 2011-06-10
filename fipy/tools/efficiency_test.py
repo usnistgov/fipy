@@ -109,34 +109,60 @@ class Efficiency_test(Command):
                     print "Hello, world"
                     import urllib, urllib2
                     import time 
-                    import pysvn 
+                    import pysvn
+                    from datetime import datetime
                     CODESPEED_URL = "http://localhost:8000/"
                     revnum = pysvn.Client().info('.')['revision'].number
-                    revdate =  time.ctime(pysvn.Client().info('.')['commit_time'])
-                    from datetime import datetime
-                    data = {
-                        'commitid': revnum,
-                        'branch' : 'efficiency_test',
-                        'project': 'FiPy',
-                        'revision_date': revdate,
-                        'executable': 'setup.py efficiency_test',
-                        'benchmark': 'float',
-                        'environment': "Test",
-                        'result_value': runtime[0],
-                        'result_date': time.ctime(),
-                        }
+                    revdate  = pysvn.Client().info('.')['commit_time']
+
+#                    data = {
+#                        'commitid': revnum,
+#                        'branch' : 'efficiency_test',
+#                        'project': 'FiPy',
+#                        'revision_date': revdate,
+#                        'executable': 'setup.py efficiency_test',
+#                        'benchmark': 'float',
+#                        'environment': "Test",
+#                        'result_value': runtime[0],
+#                        'result_date': datetime.today()
+#                        }
                        
                     def add(data):
-                       print data
-                       params = urllib.urlencode(data)
-                       response = "None"
-                       print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
-                                                           data['commitid'], data['benchmark']) 
-                       g = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)  
-                #    print type(f) , '\n' , f
-                       response = g.read()
-                       g.close()
-                       print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
+                        print data
+                        params = urllib.urlencode(data)
+                        response = "None"
+                        print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
+                                                            data['commitid'], data['benchmark']) 
+                        g = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)  
+                        response = g.read()
+                        g.close()
+                        print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
+                    data = {
+ #                       'commitid': revnum,
+#                        'commitid' : '4586',
+#                        'branch' : 'default',
+#                        'project': 'FiPy',
+#                        'revision_date': datetime.fromtimestamp(revdate),
+#                        'revision_date': datetime.today(),
+#                        'revision_date': '',
+#                        'executable': 'setup.py efficiency_test',
+#                        'benchmark': 'float',
+#                        'environment': "Test",
+#                        'result_value': runtime[0],
+#                        'result_date': datetime.fromtimestamp(revdate) 
+#                        'result_date': datetime.today(), # Optional
+                        }
+                    data = {
+                        'commitid': '6',
+                        'branch': 'default',#Always use default for trunk/master/tip
+                        'project': 'Prototype Test',
+                        'revision_date': '', # Optional. Default is taken either
+                        'executable': 'datatest.py',
+                        'benchmark': 'float',
+                        'environment': "Test",
+                        'result_value': .15,
+                        'result_date': datetime.today(), # Optional
+                        }                                     
                     add(data)   
             f.close()
             
