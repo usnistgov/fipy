@@ -104,9 +104,8 @@ class Efficiency_test(Command):
                 else:
                     f.write(output + '\n')
                     f.flush()
-                numberOfElements *= self.factor
+ 
                 if self.uploadToCodespeed:
-                    print "Hello, world"
                     import urllib, urllib2
                     import time 
                     import pysvn
@@ -128,7 +127,7 @@ class Efficiency_test(Command):
 #                        }
                        
                     def add(data):
-                        print data
+                        #print data
                         params = urllib.urlencode(data)
                         response = "None"
                         print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
@@ -156,13 +155,14 @@ class Efficiency_test(Command):
                         'commitid':revnum,
                         'branch': 'default',#Always use default for trunk/master/tip
                         'project': 'Prototype Test',
-                        'revision_date': '', # Optional. Default is taken either
-                        'executable': 'datatest.py',
+                        'revision_date': datetime.fromtimestamp(revdate) , # Optional. Default is taken either
+                        'executable': 'setup.py efficiency_test %i' %numberOfElements,
                         'benchmark': 'float',
                         'environment': "Test",
-                        'result_value': .15,
+                        'result_value': runtime[0],
                         'result_date': datetime.today(), # Optional
                         }                                     
                     add(data)   
-            f.close()
+                numberOfElements *= self.factor
+                f.close
             
