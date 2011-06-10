@@ -1,0 +1,7 @@
+
+            [fipy.viewers]
+            gist = fipy.viewers.gistViewer:GistViewer
+            gnuplot = fipy.viewers.gnuplotViewer:GnuplotViewer
+            matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
+            mayavi = fipy.viewers.mayaviViewer:MayaviClient
+        
