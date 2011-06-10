@@ -106,35 +106,37 @@ class Efficiency_test(Command):
                     f.flush()
                 numberOfElements *= self.factor
                 if self.uploadToCodespeed:
-                    from fipy.tools import save_efficiency_test_result
-                    
-#                    print "Hello, world"
-#                    import urllib, urllib2
+                    print "Hello, world"
+                    import urllib, urllib2
                     import time 
                     import pysvn 
-
+                    CODESPEED_URL = "http://localhost:8000/"
                     revnum = pysvn.Client().info('.')['revision'].number
                     revdate =  time.ctime(pysvn.Client().info('.')['commit_time'])
                     from datetime import datetime
                     data = {
-#                        'commitid': revnum,
-                        'commitid': '60',
-                        'branch': 'default',
-#                        'branch' : 'efficiency_test'
-#                        'project': 'FiPy',
-                        'project': 'Prototype Test',
-#                        'revision_date': revdate,
-#                        'executable': 'setup.py efficiency_test',
-                        'executable': 'datatest.py',
+                        'commitid': revnum,
+                        'branch' : 'efficiency_test',
+                        'project': 'FiPy',
+                        'revision_date': revdate,
+                        'executable': 'setup.py efficiency_test',
                         'benchmark': 'float',
                         'environment': "Test",
-#                        'result_value': runtime[0],
-                        'result_value': 1.0,
-                        'result_date': datetime.today(),
-##                        'result_date': time.ctime(),
+                        'result_value': runtime[0],
+                        'result_date': time.ctime(),
                         }
                        
-                    save_efficiency_test_result.add(data)
-                   
+                    def add(data):
+                       print data
+                       params = urllib.urlencode(data)
+                       response = "None"
+                       print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
+                                                           data['commitid'], data['benchmark']) 
+                       g = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)  
+                #    print type(f) , '\n' , f
+                       response = g.read()
+                       g.close()
+                       print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
+                    add(data)   
             f.close()
             
