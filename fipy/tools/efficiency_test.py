@@ -87,7 +87,7 @@ class Efficiency_test(Command):
                 outputlines = r.readlines()
                 outputlist=outputlines[0].split()
                 runtime = [outputlist[outputlist.index("runtime:")+1]]
-                print runtime
+ #               print runtime
                 output += '\t' + ''.join(runtime).strip()
                 r.close()
                 w.close()
@@ -113,21 +113,8 @@ class Efficiency_test(Command):
                     CODESPEED_URL = "http://localhost:8000/"
                     revnum = pysvn.Client().info('.')['revision'].number
                     revdate  = pysvn.Client().info('.')['commit_time']
-
-#                    data = {
-#                        'commitid': revnum,
-#                        'branch' : 'efficiency_test',
-#                        'project': 'FiPy',
-#                        'revision_date': revdate,
-#                        'executable': 'setup.py efficiency_test',
-#                        'benchmark': 'float',
-#                        'environment': "Test",
-#                        'result_value': runtime[0],
-#                        'result_date': datetime.today()
-#                        }
                        
                     def add(data):
-                        #print data
                         params = urllib.urlencode(data)
                         response = "None"
                         print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
@@ -136,31 +123,17 @@ class Efficiency_test(Command):
                         response = g.read()
                         g.close()
                         print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
-                    data = {
- #                       'commitid': revnum,
-#                        'commitid' : '4587',
-#                        'branch' : 'default',
-#                        'project': 'FiPy',
-#                        'revision_date': datetime.fromtimestamp(revdate),
-#                        'revision_date': datetime.today(),
-#                        'revision_date': '',
-#                        'executable': 'setup.py efficiency_test',
-#                        'benchmark': 'float',
-#                        'environment': "Test",
-#                        'result_value': runtime[0],
-#                        'result_date': datetime.fromtimestamp(revdate) 
-#                        'result_date': datetime.today(), # Optional
-                        }
+ 
                     data = {
                         'commitid':revnum,
-                        'branch': 'default',#Always use default for trunk/master/tip
+                        'branch': 'efficiency_test',#Always use default for trunk/master/tip
                         'project': 'Prototype Test',
-                        'revision_date': datetime.fromtimestamp(revdate) , # Optional. Default is taken either
+                        'revision_date': datetime.fromtimestamp(revdate) ,
                         'executable': 'setup.py efficiency_test %i' %numberOfElements,
                         'benchmark': 'float',
                         'environment': "Test",
                         'result_value': runtime[0],
-                        'result_date': datetime.today(), # Optional
+                        'result_date': datetime.today(),
                         }                                     
                     add(data)   
                 numberOfElements *= self.factor
