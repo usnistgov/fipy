@@ -139,7 +139,7 @@ class Efficiency_test(Command):
                         print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
                     data = {
  #                       'commitid': revnum,
-#                        'commitid' : '4586',
+#                        'commitid' : '4587',
 #                        'branch' : 'default',
 #                        'project': 'FiPy',
 #                        'revision_date': datetime.fromtimestamp(revdate),
@@ -153,7 +153,7 @@ class Efficiency_test(Command):
 #                        'result_date': datetime.today(), # Optional
                         }
                     data = {
-                        'commitid': '6',
+                        'commitid':revnum,
                         'branch': 'default',#Always use default for trunk/master/tip
                         'project': 'Prototype Test',
                         'revision_date': '', # Optional. Default is taken either
