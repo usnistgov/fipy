@@ -81,7 +81,13 @@ class _BaseDiffusionTerm(_UnaryTerm):
     
     def __neg__(self):
         negatedCoeff = list(self.coeff)
-        negatedCoeff[0] = -negatedCoeff[0]
+
+        from fipy.variables.variable import Variable
+        if isinstance(negatedCoeff[0], (list, tuple)):
+            negatedCoeff[0] = -numerix.array(negatedCoeff[0])
+        else:
+            negatedCoeff[0] = -negatedCoeff[0]
+
         return self.__class__(coeff=negatedCoeff, var=self.var)
             
     def __getBoundaryConditions(self, boundaryConditions):

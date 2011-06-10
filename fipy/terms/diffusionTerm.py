@@ -329,6 +329,8 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> print (coupledEq.matrix.numpyArray == vectorEq.matrix.numpyArray).all()
         True
 
+        Test vector diffusion terms.
+
         >>> m = Grid2D(nx=2, ny=2)
         >>> q = CellVariable(mesh=m, elementshape=(3,))
         >>> coeff = FaceVariable(mesh=m, elementshape=(3, 3), value=[[1, 2, 3], [4, 5, 6], [7, 8, 9]])
@@ -336,12 +338,24 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> vectorEq0.cacheMatrix()
         >>> vectorEq0.solve(q, solver=DummySolver())
 
+        Test vector diffusion terms when the coefficient is a tuple or list.
+
         >>> m = Grid2D(nx=2, ny=2)
         >>> q = CellVariable(mesh=m, elementshape=(3,))
         >>> vectorEq1 = DiffusionTerm(([[1, 2, 3], [4, 5, 6], [7, 8, 9]],)) == 0
         >>> vectorEq1.cacheMatrix()
         >>> vectorEq1.solve(q, solver=DummySolver())
 
+        The following test tests for negating a tuple/list coefficient for the diffusion term.
+        
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> q = CellVariable(mesh=m, elementshape=(3,))
+        >>> vectorEq2 = TransientTerm(1e-20) == DiffusionTerm(([[1, 2, 3], [4, 5, 6], [7, 8, 9]],))
+        >>> vectorEq2.cacheMatrix()
+        >>> vectorEq2.solve(q, solver=DummySolver())
+
+        Test the previous three vector examples against coupled.
+        
         >>> v0 = CellVariable(mesh=m)
         >>> v1 = CellVariable(mesh=m)
         >>> v2 = CellVariable(mesh=m)
@@ -353,6 +367,8 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> print (coupledEq.matrix.numpyArray == vectorEq0.matrix.numpyArray).all()
         True
         >>> print (coupledEq.matrix.numpyArray == vectorEq1.matrix.numpyArray).all()
+        True
+        >>> print (coupledEq.matrix.numpyArray == -vectorEq2.matrix.numpyArray).all()
         True
 
         """
