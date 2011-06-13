@@ -46,6 +46,7 @@ documentation/_build/html/_sources/README.txt
 documentation/_build/html/_sources/WINDOWS-INSTALLATION.txt
 documentation/_build/html/_sources/documentation/ADMINISTRATA.txt
 documentation/_build/html/_sources/documentation/API.txt
+documentation/_build/html/_sources/documentation/BUILDBOT.txt
 documentation/_build/html/_sources/documentation/CREDITS.txt
 documentation/_build/html/_sources/documentation/EFFICIENCY.txt
 documentation/_build/html/_sources/documentation/FAQ.txt
