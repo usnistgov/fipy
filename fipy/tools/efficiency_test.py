@@ -87,7 +87,7 @@ class Efficiency_test(Command):
                 outputlines = r.readlines()
                 outputlist=outputlines[0].split()
                 runtime = [outputlist[outputlist.index("runtime:")+1]]
- #               print runtime
+                print "runtime: ", runtime
                 output += '\t' + ''.join(runtime).strip()
                 r.close()
                 w.close()
@@ -110,10 +110,11 @@ class Efficiency_test(Command):
                     import time 
                     import pysvn
                     from datetime import datetime
+      
                     CODESPEED_URL = "http://localhost:8000/"
                     revnum = pysvn.Client().info('.')['revision'].number
                     revdate  = pysvn.Client().info('.')['commit_time']
-                       
+
                     def add(data):
                         params = urllib.urlencode(data)
                         response = "None"
@@ -127,13 +128,14 @@ class Efficiency_test(Command):
                     data = {
                         'commitid':revnum,
                         'branch': 'efficiency_test',#Always use default for trunk/master/tip
-                        'project': 'Prototype Test',
-                        'revision_date': datetime.fromtimestamp(revdate) ,
-                        'executable': 'setup.py efficiency_test %i' %numberOfElements,
+                        'project': 'FiPy',
+##                        'revision_date': datetime.fromtimestamp(revdate),
+##                        'revision_date': datetime.today(),
+                        'executable': 'mesh2D %i' %numberOfElements,
                         'benchmark': 'float',
-                        'environment': "Test",
+                        'environment': "FiPy",
                         'result_value': runtime[0],
-                        'result_date': datetime.today(),
+##                        'result_date': datetime.today(),
                         }                                     
                     add(data)   
                 numberOfElements *= self.factor

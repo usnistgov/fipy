@@ -9,6 +9,7 @@ WINDOWS-INSTALLATION.txt
 ez_setup.py
 setup.py
 stdeb.cfg
+.efficiency_test/examples/cahnHilliard.mesh2D.py.dat
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
 FiPy.egg-info/dependency_links.txt
@@ -127,6 +128,7 @@ examples/cahnHilliard/__init__.py
 examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D-coupled.py
 examples/cahnHilliard/mesh2D.py
+examples/cahnHilliard/mesh2D.py.dat
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
 examples/cahnHilliard/sphereDaemon.py
@@ -501,6 +503,7 @@ fipy/tools/memoryUsage.py
 fipy/tools/mpi4pyCommWrapper.py
 fipy/tools/numerix.py
 fipy/tools/parser.py
+fipy/tools/save_efficiency_test_result.py
 fipy/tools/serialCommWrapper.py
 fipy/tools/test.py
 fipy/tools/vector.py
