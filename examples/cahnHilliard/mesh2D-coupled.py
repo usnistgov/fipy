@@ -76,13 +76,11 @@ much is augmented for :term:`FiPy`\'s needs.)
 
 We start the problem with random fluctuations about :math:`\phi = 1/2`
 
->>> noise = numerix.random.random(mesh.numberOfCells)
+>>> noise = GaussianNoiseVariable(mesh=mesh,
+...                               mean=0.5,
+...                               variance=0.01).value
 
->>> ##noise = GaussianNoiseVariable(mesh=mesh,
-... ##                              mean=0.5,
-... ##                              variance=0.01).value
-
->>> phi.setValue(noise)
+>>> phi[:] = noise
 
 :term:`FiPy` doesn't plot or output anything unless you tell it to:
 
@@ -130,13 +128,11 @@ evolution of their problem.
 >>> dexp = -5
 >>> elapsed = 0.
 >>> if __name__ == "__main__":
-...     duration = 1e-2
+...     duration = .5e-1
 ... else:
-...     duration = 1e-2
+...     duration = .5e-1
 
 >>> while elapsed < duration:
-...     print elapsed, duration
-...     print psi[0]
 ...     dt = min(100, exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
@@ -165,9 +161,9 @@ a single variable
 
 >>> D = a = epsilon = 1.
 >>> v0 = var[0]
->>> dfdv0 = a**2 * 2 * v0 * (1 - v0) * (1 - 2 * v0)
->>> dfdv0_ = a**2 * 2 * (1 - v0) * (1 - 2 * v0)
->>> d2fdv02 = a**2 * 2 * (1 - 6 * v0 * (1 - v0))
+>>> dfdphi = a**2 * 2 * v0 * (1 - v0) * (1 - 2 * v0)
+>>> dfdphi_ = a**2 * 2 * (1 - v0) * (1 - 2 * v0)
+>>> d2fdphi2 = a**2 * 2 * (1 - 6 * v0 * (1 - v0))
 
 The source terms have to be shaped correctly for a vector. The implicit source
 coefficient has to have a shape of `(2, 2)` while the explicit source
@@ -185,18 +181,12 @@ a vector format.
 >>> elapsed = 0.
 
 >>> while elapsed < duration:
-...     print elapsed, duration
-...     print var[1, 0]
 ...     dt = min(100, exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
 ...     eq.solve(var=var, dt=dt, solver=LinearLUSolver())
 ...     if __name__ == "__main__":
 ...         viewer.plot()
-
->>> print numerix.argmax(abs(var.ravel() - numerix.array((phi, psi)).ravel()))
-
-
 
 >>> print numerix.allclose(var, (phi, psi))
 True
