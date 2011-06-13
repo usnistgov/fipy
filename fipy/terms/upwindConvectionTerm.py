@@ -54,6 +54,7 @@ class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
     """
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        solver = solver or super(UpwindConvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)

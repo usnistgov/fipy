@@ -61,12 +61,4 @@ class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     def _alpha(self, P):
         return _CentralDifferenceConvectionTermAlpha(P)
 
-    def _getDefaultSolver(self, var, solver, *args, **kwargs):
-        if self._vectorSize(var) == 1:
-            return solver
-        else:
-            if solver and not solver._canSolveAsymmetric():
-                import warnings
-                warnings.warn("%s cannot solve assymetric matrices" % solver)
-            return solver or DefaultAsymmetricSolver(*args, **kwargs)
     

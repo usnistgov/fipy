@@ -136,7 +136,7 @@ evolution of their problem.
 ...     dt = min(100, exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(dt=dt, solver=LinearLUSolver())
+...     eq.solve(dt=dt)
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
@@ -184,7 +184,7 @@ a vector format.
 ...     dt = min(100, exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(var=var, dt=dt, solver=LinearLUSolver())
+...     eq.solve(var=var, dt=dt)
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 

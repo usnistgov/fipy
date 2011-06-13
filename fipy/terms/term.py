@@ -130,11 +130,11 @@ class Term(object):
     def _reshapeIDs(self, var, ids):
         raise NotImplementedError
 
-    def _vectorSize(self, var):
-        if var.rank == 1:
-            return var.shape[0]
-        else:
+    def _vectorSize(self, var=None):
+        if var is None or var.rank != 1:
             return 1
+        else:
+            return var.shape[0]
         
     def _getMatrixClass(self, solver, var):
         if self._vectorSize(var) > 1:
@@ -347,10 +347,10 @@ class Term(object):
         return self._RHSvector
     
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
-        return None
+        return NotImplementedError
         
     def getDefaultSolver(self, var=None, solver=None, *args, **kwargs):
-        return self._getDefaultSolver(var, solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
+        return solver or self._getDefaultSolver(var, solver, *args, **kwargs) or DefaultSolver(*args, **kwargs)
                          
     def __add__(self, other):
         if isinstance(other, (int, float)) and other == 0:
