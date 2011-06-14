@@ -16,7 +16,8 @@ class Efficiency_test(Command):
                      ('maximumelements=', None, 'maximum number of elements'),
                      ('sampleTime=', None, 'sampling interval for memory high-water'),
                      ('path=', None, 'directory to place output results in'),
-                     ('uploadToCodespeed', None, 'flag to upload data to Codespeed')]
+                     ('uploadToCodespeed', None, 'flag to upload data to Codespeed')
+                     ('example=', None, 'prompts the example to be benchmarked')]
     
     def initialize_options(self):
         self.factor = 10
@@ -28,6 +29,7 @@ class Efficiency_test(Command):
         self.path = None
         self.cases = ['examples/cahnHilliard/mesh2D.py']
         self.uploadToCodespeed = False
+        self.example = "examples/cahnHilliard/mesh2D.py"
     
     def finalize_options(self):
         self.factor = int(self.factor)
