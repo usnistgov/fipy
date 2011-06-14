@@ -364,11 +364,12 @@ class DiffusionTerm(_BaseDiffusionTerm):
         ...              (DiffusionTerm(coeff=7., var=v0) + DiffusionTerm(coeff=8., var=v1) + DiffusionTerm(coeff=9, var=v2)))((v0, v1, v2))
         >>> coupledEq.cacheMatrix()
         >>> coupledEq.solve(solver=DummySolver())
-        >>> print (coupledEq.matrix.numpyArray == vectorEq0.matrix.numpyArray).all()
+        >>> coupledMatrix = coupledEq.matrix.numpyArray 
+        >>> print (coupledMatrix == vectorEq0.matrix.numpyArray).all()
         True
-        >>> print (coupledEq.matrix.numpyArray == vectorEq1.matrix.numpyArray).all()
+        >>> print (coupledMatrix == vectorEq1.matrix.numpyArray).all()
         True
-        >>> print (coupledEq.matrix.numpyArray == -vectorEq2.matrix.numpyArray).all()
+        >>> print (coupledMatrix == -vectorEq2.matrix.numpyArray).all()
         True
 
         """

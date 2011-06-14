@@ -188,7 +188,7 @@ class TransientTerm(CellTerm):
          [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
          [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
          [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
-        >>> print eq.RHSvector
+        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
         [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
         >>> v[0] = 1.
         >>> v[1] = 0.5
@@ -209,7 +209,7 @@ class TransientTerm(CellTerm):
          [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
          [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
          [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
-        >>> print eq.RHSvector 
+        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
         [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
 
         """

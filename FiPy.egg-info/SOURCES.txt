@@ -138,6 +138,7 @@ documentation/_build/html/_sources/fipy/generated/viewers.matplotlibViewer.txt
 documentation/_build/html/_sources/fipy/generated/viewers.mayaviViewer.txt
 documentation/_build/html/_sources/fipy/generated/viewers.txt
 documentation/_build/html/_sources/fipy/generated/viewers.vtkViewer.txt
+documentation/_build/latex/fipy.pdf
 documentation/_static/favicon.ico
 documentation/_static/fipy.bib
 documentation/_static/fipy.png
