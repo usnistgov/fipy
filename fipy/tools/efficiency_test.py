@@ -17,7 +17,7 @@ class Efficiency_test(Command):
                      ('sampleTime=', None, 'sampling interval for memory high-water'),
                      ('path=', None, 'directory to place output results in'),
                      ('uploadToCodespeed', None, 'flag to upload data to Codespeed')
-                     ('example=', None, 'prompts the example to be benchmarked')]
+#                     ('example=', None, 'prompts the example to be benchmarked')]
     
     def initialize_options(self):
         self.factor = 10
@@ -29,7 +29,7 @@ class Efficiency_test(Command):
         self.path = None
         self.cases = ['examples/cahnHilliard/mesh2D.py']
         self.uploadToCodespeed = False
-        self.example = "examples/cahnHilliard/mesh2D.py"
+#        self.example = "examples/cahnHilliard/mesh2D.py"
     
     def finalize_options(self):
         self.factor = int(self.factor)
