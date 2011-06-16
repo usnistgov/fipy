@@ -241,7 +241,7 @@ def sum(arr, axis=0):
     elif type(arr) is type(MA.array((0))):
         return MA.sum(arr, axis)
     else:
-        if type(arr) in (float, int) or len(arr) == 0:
+        if type(arr) in (float, int) or len(arr) == 0 or 0 in arr.shape:
             return NUMERIX.sum(arr, axis)
         else:
             if axis is None:
