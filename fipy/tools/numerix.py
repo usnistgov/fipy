@@ -183,7 +183,8 @@ def reshape(arr, shape):
     elif type(arr) is type(MA.array((0))):
         return MA.reshape(arr, shape)
     else:
-        raise TypeError, 'cannot reshape object ' + str(arr)
+        return NUMERIX.reshape(array(arr), tuple(shape))
+##        raise TypeError, 'cannot reshape object ' + str(arr)
 
 def getShape(arr):
     """
@@ -239,8 +240,14 @@ def sum(arr, axis=0):
         return arr.sum(axis)
     elif type(arr) is type(MA.array((0))):
         return MA.sum(arr, axis)
-    else:  
-        return NUMERIX.sum(arr, axis)
+    else:
+        if type(arr) in (float, int) or len(arr) == 0 or 0 in arr.shape:
+            return NUMERIX.sum(arr, axis)
+        else:
+            if axis is None:
+                axis = 0
+            return NUMERIX.tensordot(NUMERIX.ones(arr.shape[axis], 'l'), arr, (0, axis))
+        
         
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):

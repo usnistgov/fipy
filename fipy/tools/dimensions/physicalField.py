@@ -223,6 +223,9 @@ class PhysicalField(object):
 
     _number = re.compile('[+-]?[0-9]+(\\.[0-9]*)?([eE][+-]?[0-9]+)?')
 
+    def ravel(self):
+        return self.value.ravel()
+
     def copy(self):
         """
         Make a duplicate.

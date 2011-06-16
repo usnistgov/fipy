@@ -79,9 +79,9 @@ class _BinaryTerm(_BaseBinaryTerm):
              
         return (var, matrix, RHSvector)
     
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
         for term in (self.term, self.other):
-            defaultSolver = term._getDefaultSolver(solver, *args, **kwargs)
+            defaultSolver = term._getDefaultSolver(var, solver, *args, **kwargs)
             if defaultSolver is not None:
                 solver = defaultSolver
                 
@@ -205,7 +205,131 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> (DiffusionTerm(var=v0) + DiffusionTerm(var=v1)).solve(v0)
         >>> print numerix.allclose(v0, -v1)
         True
+
+        Testing for vector equations.
+
+        >>> m = Grid1D(nx=6)
+        >>> v = CellVariable(mesh=m, elementshape=(2,))
+        >>> v[0] = 1.
+        >>> v[1] = 2.
+        >>> (TransientTerm(v) == ImplicitSourceTerm(-v)).solve(v, dt=1.)
+        >>> print v
+        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
+         [ 1.   1.   1.   1.   1.   1. ]]
+        >>> (TransientTerm() == v).solve(v, dt=1.)
+        >>> print v
+        [[ 1.  1.  1.  1.  1.  1.]
+         [ 2.  2.  2.  2.  2.  2.]]
+        >>> (TransientTerm(v) == v).solve(v, dt=1.)
+        >>> print v
+        [[ 2.  2.  2.  2.  2.  2.]
+         [ 3.  3.  3.  3.  3.  3.]]
+
+        >>> v[0] = 1.
+        >>> v[1] = 2.
+        >>> (TransientTerm(v) == ImplicitSourceTerm(-v * numerix.identity(2)[...,numerix.newaxis])).solve(v, dt=1.)
+        >>> print v
+        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
+         [ 1.   1.   1.   1.   1.   1. ]]
+        >>> (TransientTerm() == numerix.array((0.5, 1.))).solve(v, dt=1.)
+        >>> print v
+        [[ 1.  1.  1.  1.  1.  1.]
+         [ 2.  2.  2.  2.  2.  2.]]
+        >>> (TransientTerm(v * numerix.identity(2)[...,numerix.newaxis]) == v).solve(v, dt=1.)
+        >>> print v
+        [[ 2.  2.  2.  2.  2.  2.]
+         [ 3.  3.  3.  3.  3.  3.]]
+
+        >>> v[0] = 1.
+        >>> v[1] = 2.
+        >>> (TransientTerm(v) == -ImplicitSourceTerm(((1, 0), (0, 2)))).solve(v, dt=1.)
+        >>> print v
+        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
+         [ 1.   1.   1.   1.   1.   1. ]]
+
+        >>> v = CellVariable(mesh=m, elementshape=(2,))
+        >>> v[0] = 1
+        >>> v[1] = 2
+        >>> coeff = FaceVariable(mesh=m, elementshape=(1, 2, 2))
+        >>> coeff[0,0,1] = 1
+        >>> coeff[0,1,0] = 2
+        >>> eqn = TransientTerm() + CentralDifferenceConvectionTerm(coeff=coeff)
+        >>> eqn.cacheMatrix()
+        >>> eqn.cacheRHSvector()
+        >>> eqn.solve(v, dt=1)
+        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        ... [[ 1.0,   0,    0,    0,    0,    0,   0.5,  0.5,   0,    0,    0,    0,  ],
+        ...  [  0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,    0,  ],
+        ...  [  0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,  ],
+        ...  [  0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,  ],
+        ...  [  0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5, ],
+        ...  [  0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5, -0.5, ],
+        ...  [ 1.0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,    0,    0,  ],
+        ...  [-1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,    0,  ],
+        ...  [  0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,  ],
+        ...  [  0,    0,  -1.0,    0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
+        ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
+        ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]])
+        True
+        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print numerix.allclose(LHS, RHS)
+        True
+
+        >>> v[0] = 1
+        >>> v[1] = 2
+        >>> eqn = TransientTerm() + CentralDifferenceConvectionTerm(coeff=(((0, 1), (2, 0)),))
+        >>> eqn.cacheMatrix()
+        >>> eqn.cacheRHSvector()
+        >>> eqn.solve(v, dt=1)
+        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        ... [[ 1.0,   0,    0,    0,    0,    0,   0.5,  0.5,   0,    0,    0,    0,  ],
+        ...  [  0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,    0,  ],
+        ...  [  0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,  ],
+        ...  [  0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,  ],
+        ...  [  0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5, ],
+        ...  [  0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -0.5, -0.5, ],
+        ...  [ 1.0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,    0,    0,  ],
+        ...  [-1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,    0,  ],
+        ...  [  0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,  ],
+        ...  [  0,    0,  -1.0,    0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
+        ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
+        ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]])
+        True
+        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print numerix.allclose(LHS, RHS)
+        True
         
+
+        >>> X = m.faceCenters[0]
+        >>> v[0] = 1
+        >>> v[1] = 2
+        >>> coeff[0,0,1] = numerix.sign(X - 3)
+        >>> coeff[0,1,0] = -2 * numerix.sign(X - 3)        
+        >>> eqn = TransientTerm() + UpwindConvectionTerm(coeff=coeff)
+        >>> eqn.cacheMatrix()
+        >>> eqn.cacheRHSvector()
+        >>> eqn.solve(v, dt=1)
+        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        ... [[ 1.0,   0,    0,    0,    0,    0,    0,  -1.0,   0,    0,    0,    0,  ],
+        ...  [  0,   1.0,   0,    0,    0,    0,    0,   1.0, -1.0,   0,    0,    0,  ],
+        ...  [  0,    0,   1.0,   0,    0,    0,    0,    0,   1.0,   0,    0,    0,  ],
+        ...  [  0,    0,    0,   1.0,   0,    0,    0,    0,    0,   1.0,   0,    0,  ],
+        ...  [  0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -1.0,  1.0,   0, ],
+        ...  [  0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,  -1.0,   0, ],
+        ...  [ 2.0,   0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,    0,  ],
+        ...  [-2.0,  2.0,   0,    0,    0,    0,    0,   1.0,   0,    0,    0,    0,  ],
+        ...  [  0,  -2.0,   0,    0,    0,    0,    0,    0,   1.0,   0,    0,    0,  ],
+        ...  [  0,    0,    0,    0,  -2.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
+        ...  [  0,    0,    0,    0,   2.0, -2.0,   0,    0,    0,    0,   1.0,   0,  ],
+        ...  [  0,    0,    0,    0,    0,   2.0,   0,    0,    0,    0,    0,   1.0, ]])
+        True
+        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print numerix.allclose(LHS, RHS)
+        True
+
         """
 
 

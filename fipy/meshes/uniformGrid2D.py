@@ -348,23 +348,25 @@ class UniformGrid2D(UniformGrid):
             areaProjections = numerix.zeros((2, self.numberOfFaces), 'd')
 
             inline._runInline("""
-                if (i < nx) {
-                    areaProjections[i + 1 * ni] = -dx;
-                } else if (i < Nhor) {
-                    areaProjections[i + 1 * ni] = dx;
-                } else if ( (i - Nhor) % (nx + 1) == 0 ) {
-                    areaProjections[i + 0 * ni] = -dy;
-                } else {
-                    areaProjections[i + 0 * ni] = dy;
-               }
-            """,
-            dx = float(self.dx), # horrible hack to get around
-            dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
-            nx = self.nx,
-            Nhor = self.numberOfHorizontalFaces,
-            areaProjections = areaProjections,
-            ni = self.numberOfFaces)
-
+                              if (i < nx) {
+                                  areaProjections[i + 1 * ni] = faceAreas[i] * faceNormals[i + 1 * ni];
+                              } else if (i < Nhor) {
+                                  areaProjections[i + 1 * ni] = faceAreas[i] * faceNormals[i + 1 * ni];
+                              } else if ( (i - Nhor) % (nx + 1) == 0 ) {
+                                  areaProjections[i + 0 * ni] = faceAreas[i] * faceNormals[i + 0 * ni];
+                              } else {
+                                  areaProjections[i + 0 * ni] = faceAreas[i] * faceNormals[i + 0 * ni];
+                              }
+                              """,
+                              dx = float(self.dx), # horrible hack to get around
+                              dy = float(self.dy), # http://www.scipy.org/scipy/scipy/ticket/496
+                              nx = self.nx,
+                              Nhor = self.numberOfHorizontalFaces,
+                              areaProjections = areaProjections,
+                              ni = self.numberOfFaces,
+                              faceNormals = self._faceNormals,
+                              faceAreas = self._faceAreas)
+            
             return areaProjections
      
     else:

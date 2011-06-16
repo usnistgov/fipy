@@ -7,7 +7,6 @@ MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
 ez_setup.py
-log.txt
 setup.py
 stdeb.cfg
 FiPy.egg-info/PKG-INFO
@@ -45,9 +44,9 @@ documentation/_build/html/_sources/LICENSE.txt
 documentation/_build/html/_sources/MACOSX-INSTALLATION.txt
 documentation/_build/html/_sources/README.txt
 documentation/_build/html/_sources/WINDOWS-INSTALLATION.txt
-documentation/_build/html/_sources/log.txt
 documentation/_build/html/_sources/documentation/ADMINISTRATA.txt
 documentation/_build/html/_sources/documentation/API.txt
+documentation/_build/html/_sources/documentation/BUILDBOT.txt
 documentation/_build/html/_sources/documentation/CREDITS.txt
 documentation/_build/html/_sources/documentation/EFFICIENCY.txt
 documentation/_build/html/_sources/documentation/FAQ.txt
@@ -108,9 +107,8 @@ documentation/_build/html/_sources/examples/updating/generated/examples.updating
 documentation/_build/html/_sources/examples/updating/generated/examples.updating.update1_0to2_0.txt
 documentation/_build/html/_sources/fipy/generated/boundaryConditions.txt
 documentation/_build/html/_sources/fipy/generated/matrices.txt
-documentation/_build/html/_sources/fipy/generated/meshes.geometries.txt
+documentation/_build/html/_sources/fipy/generated/meshes.builders.txt
 documentation/_build/html/_sources/fipy/generated/meshes.numMesh.txt
-documentation/_build/html/_sources/fipy/generated/meshes.topologies.txt
 documentation/_build/html/_sources/fipy/generated/meshes.txt
 documentation/_build/html/_sources/fipy/generated/models.levelSet.advection.txt
 documentation/_build/html/_sources/fipy/generated/models.levelSet.distanceFunction.txt
@@ -119,8 +117,11 @@ documentation/_build/html/_sources/fipy/generated/models.levelSet.surfactant.txt
 documentation/_build/html/_sources/fipy/generated/models.levelSet.txt
 documentation/_build/html/_sources/fipy/generated/models.txt
 documentation/_build/html/_sources/fipy/generated/modules.txt
+documentation/_build/html/_sources/fipy/generated/solvers.pyAMG.preconditioners.txt
+documentation/_build/html/_sources/fipy/generated/solvers.pyAMG.txt
 documentation/_build/html/_sources/fipy/generated/solvers.pysparse.preconditioners.txt
 documentation/_build/html/_sources/fipy/generated/solvers.pysparse.txt
+documentation/_build/html/_sources/fipy/generated/solvers.scipy.txt
 documentation/_build/html/_sources/fipy/generated/solvers.trilinos.preconditioners.txt
 documentation/_build/html/_sources/fipy/generated/solvers.trilinos.txt
 documentation/_build/html/_sources/fipy/generated/solvers.txt
@@ -137,6 +138,7 @@ documentation/_build/html/_sources/fipy/generated/viewers.matplotlibViewer.txt
 documentation/_build/html/_sources/fipy/generated/viewers.mayaviViewer.txt
 documentation/_build/html/_sources/fipy/generated/viewers.txt
 documentation/_build/html/_sources/fipy/generated/viewers.vtkViewer.txt
+documentation/_build/latex/fipy.pdf
 documentation/_static/favicon.ico
 documentation/_static/fipy.bib
 documentation/_static/fipy.png
@@ -389,7 +391,9 @@ examples/reactiveWetting/index.txt
 examples/reactiveWetting/liquidVapor1D.py
 examples/reactiveWetting/liquidVapor2D.py
 examples/reactiveWetting/test.py
+examples/riemann/__init__.py
 examples/riemann/acoustics.py
+examples/riemann/test.py
 examples/updating/.gitignore
 examples/updating/__init__.py
 examples/updating/index.txt

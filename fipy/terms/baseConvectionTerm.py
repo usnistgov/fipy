@@ -105,7 +105,7 @@ class _BaseConvectionTerm(FaceTerm):
 
         self.stencil = None
         
-        if isinstance(coeff, _MeshVariable) and coeff.rank != 1:
+        if isinstance(coeff, _MeshVariable) and coeff.rank < 1:
             raise VectorCoeffError
 
         if isinstance(coeff, CellVariable):
@@ -113,12 +113,18 @@ class _BaseConvectionTerm(FaceTerm):
 
         FaceTerm.__init__(self, coeff=coeff, var=var)
         
-    def _calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, var):
+        mesh = var.mesh
+
         if not isinstance(self.coeff, FaceVariable):
-            self.coeff = FaceVariable(mesh=mesh, value=self.coeff, rank=1)
+            shape = numerix.array(self.coeff).shape
+            if shape != () and shape[-1] == 1:
+                shape = shape[:-1]
+            
+            self.coeff = FaceVariable(mesh=mesh, elementshape=shape, value=self.coeff)
 
         projectedCoefficients = self.coeff * mesh._orientedAreaProjections
-        
+
         return projectedCoefficients.sum(0)
         
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
@@ -137,7 +143,7 @@ class _BaseConvectionTerm(FaceTerm):
                     diffCoeff = diffCoeff.numericValue
                     diffCoeff = (diffCoeff == 0) * small + diffCoeff
 
-            alpha = self._Alpha(-self._getGeomCoeff(var.mesh) / diffCoeff)
+            alpha = self._alpha(-self._getGeomCoeff(var) / diffCoeff)
             
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),
@@ -154,11 +160,13 @@ class _BaseConvectionTerm(FaceTerm):
             raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-
+        
         var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
+##        if var.rank != 1:
+
         mesh = var.mesh
-        
+
         if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
 
             constraintMask = var.faceGrad.constraintMask | var.arithmeticFaceValue.constraintMask
@@ -175,8 +183,9 @@ class _BaseConvectionTerm(FaceTerm):
             self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
             self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
 
-        L.addAtDiagonal(self.constraintL)
-        b += self.constraintB
+        ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
+        L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
+        b += numerix.reshape(self.constraintB.value, ids.shape).sum(0).ravel()
 
         return (var, L, b)
 

@@ -75,6 +75,9 @@ class Term(object):
     def _calcVars(self):
         raise NotImplementedError
 
+    def _checkCoeff(self, var):
+        raise NotImplementedError
+
     @getsetDeprecated
     def _getTransientVars(self):
         return self._transientVars
@@ -124,8 +127,28 @@ class Term(object):
     def _buildExplcitIfOther(self):
         raise NotImplementedError
 
+    def _reshapeIDs(self, var, ids):
+        raise NotImplementedError
+
+    def _vectorSize(self, var=None):
+        if var is None or var.rank != 1:
+            return 1
+        else:
+            return var.shape[0]
+        
+    def _getMatrixClass(self, solver, var):
+        if self._vectorSize(var) > 1:
+            from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+            SparseMatrix =  OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
+                                               numberOfVariables=self._vectorSize(var),
+                                               numberOfEquations=self._vectorSize(var))
+        else:
+            SparseMatrix = solver._matrixClass
+            
+        return SparseMatrix
+
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
-        solver = self.getDefaultSolver(solver)
+        solver = self.getDefaultSolver(var, solver)
             
         var = self._verifyVar(var)
         self._checkVar(var)
@@ -146,7 +169,7 @@ class Term(object):
                 Term._viewer = MatplotlibSparseMatrixViewer()
 
         var, matrix, RHSvector = self._buildAndAddMatrices(var,
-                                                           solver._matrixClass,
+                                                           self._getMatrixClass(solver, var),
                                                            boundaryConditions=boundaryConditions,
                                                            dt=dt,
                                                            transientGeomCoeff=self._getTransientGeomCoeff(var),
@@ -323,11 +346,11 @@ class Term(object):
 
         return self._RHSvector
     
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        return None
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        return NotImplementedError
         
-    def getDefaultSolver(self, solver=None, *args, **kwargs):
-        return self._getDefaultSolver(solver, *args, **kwargs) or solver or DefaultSolver(*args, **kwargs)
+    def getDefaultSolver(self, var=None, solver=None, *args, **kwargs):
+        return solver or self._getDefaultSolver(var, solver, *args, **kwargs) or DefaultSolver(*args, **kwargs)
                          
     def __add__(self, other):
         if isinstance(other, (int, float)) and other == 0:
@@ -379,12 +402,12 @@ class Term(object):
     def __repr__(self):
         raise NotImplementedError
 
-    def _calcGeomCoeff(self, mesh):
+    def _calcGeomCoeff(self, var):
         raise NotImplementedError
         
-    def _getGeomCoeff(self, mesh):
+    def _getGeomCoeff(self, var):
         if self.geomCoeff is None:
-            self.geomCoeff = self._calcGeomCoeff(mesh)
+            self.geomCoeff = self._calcGeomCoeff(var)
             if self.geomCoeff is not None:
                 self.geomCoeff.dontCacheMe()
 
@@ -409,6 +432,9 @@ class Term(object):
         raise NotImplementedError
 
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
+        raise NotImplementedError
+
+    def _alpha(self, P):
         raise NotImplementedError
 
     def _test(self):
