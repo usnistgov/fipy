@@ -5,6 +5,7 @@ import sys
 import glob
 import ez_setup
 from setuptools.command.test import test as _test
+##from . import generator
 
 class Efficiency_test(Command):
     description = "run FiPy efficiency tests"
@@ -16,7 +17,7 @@ class Efficiency_test(Command):
                      ('maximumelements=', None, 'maximum number of elements'),
                      ('sampleTime=', None, 'sampling interval for memory high-water'),
                      ('path=', None, 'directory to place output results in'),
-                     ('uploadToCodespeed', None, 'flag to upload data to Codespeed')
+                     ('uploadToCodespeed', None, 'flag to upload data to Codespeed')]
 #                     ('example=', None, 'prompts the example to be benchmarked')]
     
     def initialize_options(self):
@@ -28,6 +29,7 @@ class Efficiency_test(Command):
         self.sampleTime = 1
         self.path = None
         self.cases = ['examples/cahnHilliard/mesh2D.py']
+##        self.cases = [get file name from generator function]
         self.uploadToCodespeed = False
 #        self.example = "examples/cahnHilliard/mesh2D.py"
     
