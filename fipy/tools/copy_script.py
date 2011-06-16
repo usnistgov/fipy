@@ -32,11 +32,12 @@ class Copy_script():
         
         mod = imp.load_source("copy_script_module", self.From)
         script = fipy.tests.doctestPlus._getScript(name = "copy_script_module")
-        
+        print 'script',script
         script = "#!/usr/bin/env python\n\n## This script was derived from\n## '%s'\n\n%s"%(self.From, script)
-        
+        raw_input('stopped 1')
+        print 'script',script
         f = file(self.To, "w")
         f.write(script)
-        f.close
+        f.close()
         
         print "Script code exported from '%s' to '%s'"%(self.From, self.To)
