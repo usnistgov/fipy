@@ -5,7 +5,6 @@ import sys
 import glob
 import ez_setup
 from setuptools.command.test import test as _test
-##from . import generator
 
 class Efficiency_test(Command):
     description = "run FiPy efficiency tests"
@@ -72,14 +71,6 @@ class Efficiency_test(Command):
                 print "\tnumberOfElements: %i" % numberOfElements
                 
                 cmd = ["python", "-W ignore", case, '--numberOfElements=%i' % numberOfElements, '--no-display nodisp']
-                
-#                if self.inline:
-#                    cmd += ['--inline']
-                    
-#                if self.cache:
-#                    cmd += ['--cache']
-#                else:
-#                    cmd += ['--no-cache']
 
                 output = "\t".join([str(self.inline).center(10), str(self.cache).center(10),\
                                    (time.ctime()).center(25), str(numberOfElements).center(10)])
