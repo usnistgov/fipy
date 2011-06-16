@@ -85,7 +85,6 @@ class _AddOverFacesVariable(CellVariable):
                           cellVolume = numerix.array(self.mesh.cellVolumes))
         
         return self._makeValue(value = val)
-    ##         return self._makeValue(value = val, unit = self.getUnit())
 
     def _calcValueNoInline(self):
         ids = self.mesh.cellFaceIDs
@@ -94,7 +93,11 @@ class _AddOverFacesVariable(CellVariable):
 
         # FIXME: numerix.MA.filled casts away dimensions
         s = (numerix.newaxis,) * (len(contributions.shape) - 2) + (slice(0,None,None),) + (slice(0,None,None),)
-        return numerix.MA.filled((contributions * self.mesh._cellToFaceOrientations[s]).sum(-2)) / self.mesh.cellVolumes
+
+        faceContributions = contributions * self.mesh._cellToFaceOrientations[s]
+        
+        return numerix.tensordot(numerix.ones(faceContributions.shape[-2], 'd'),
+                                 numerix.MA.filled(faceContributions, 0.), (0, -2)) / self.mesh.cellVolumes
 
 
 
