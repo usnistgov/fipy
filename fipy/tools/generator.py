@@ -35,9 +35,11 @@ for index, line in enumerate(flist):
             flist.insert(index + 1, whitespaces * ' ' + 'times += time.time()\n')
         else:
             flist.insert(index + 1, 4 * ' ' + 'times += time.time()\n')
-    elif "__name__ == '__main__':" in line:
-        split_line = line.split(':')
-        commentedline = 'False or ' + split_line[0] + ":"
+    elif "__name__ == '__main__':" in line and not '#' in line:
+        whitespaces = len(line) - len(line.lstrip())
+        line = line.lstrip()
+        split_line = line.lstrip('if ').split(':')
+        commentedline = whitespaces * ' ' + 'if False or ' + split_line[0] + ":\n"
         flist.insert(index, commentedline)
         del flist[index+1]
 
