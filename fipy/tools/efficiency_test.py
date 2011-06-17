@@ -29,7 +29,7 @@ class Efficiency_test(Command):
         self.sampleTime = 1
         self.path = None
 ##        self.cases = ['examples/cahnHilliard/mesh2D.py']
-        self.cases = ['fipy/tools/mesh1D.py']
+        self.cases = ['./mesh1D.py']
         print self.cases
         self.uploadToCodespeed = False
 #        self.example = "examples/cahnHilliard/mesh2D.py"
@@ -84,7 +84,6 @@ class Efficiency_test(Command):
 ##                print "' '.join(timeCmd): ", ' '.join(timeCmd)
 ##                raw_input()
                 outputlist= r.read().split()
-                print outputlist
                 runtime = outputlist[outputlist.index('runtime:')+1]
                 print "runtime: ", runtime
                 output += '\t' + ''.join(runtime).strip()
