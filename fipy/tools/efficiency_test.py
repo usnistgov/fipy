@@ -32,7 +32,7 @@ class Efficiency_test(Command):
         self.path = None
 ##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/reactiveWetting/liquidVapor2D.py', \
 ##                      'examples/phase/anisotropy.py', 'examples/diffusion/circle.py']
-        self.cases = ['./mesh1D.py']
+        self.cases = ['./mesh2D.py']
         print self.cases
         self.uploadToCodespeed = False
 #        self.example = "examples/cahnHilliard/mesh2D.py"
