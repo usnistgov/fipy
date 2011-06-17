@@ -94,7 +94,14 @@ Modify admin and host information.
 
 Start the slave.
 
+    slave$ cd newDir
     slave$ buildslave start
+
+Add buildslave command to the crontab
+
+    slave$ crontab -e
+    # m  h dom mon dow command
+    */10 * *   *   *   cd .../newDir ; buildslave start > /dev/null 2>&1 &
 
 ---------------
 Adding a branch
