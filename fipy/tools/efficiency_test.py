@@ -30,7 +30,8 @@ class Efficiency_test(Command):
         self.minimumelements = 100
         self.sampleTime = 1
         self.path = None
-##        self.cases = ['examples/cahnHilliard/mesh2D.py']
+##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/reactiveWetting/liquidVapor2D.py', \
+##                      'examples/phase/anisotropy.py', 'examples/diffusion/circle.py']
         self.cases = ['./mesh1D.py']
         print self.cases
         self.uploadToCodespeed = False
@@ -71,61 +72,50 @@ class Efficiency_test(Command):
             
             numberOfElements = self.minimumelements
 
-            while numberOfElements <= self.maximumelements:
-                print "\tnumberOfElements: %i" % numberOfElements
-                
+##            while numberOfElements <= self.maximumelements:
+##                print "\tnumberOfElements: %i" % numberOfElements
+            print "Running example:"
 ##                cmd = ["python", "-W ignore", case, '--numberOfElements=%i' % numberOfElements, '--no-display nodisp']
-                cmd = ["python", "-W ignore", case]
+            cmd = ["python", "-W ignore", case]
 
-                output = "\t".join([str(self.inline).center(10), str(self.cache).center(10),\
-                                   (time.ctime()).center(25), str(numberOfElements).center(10)])
-                w, r = os.popen2(cmd)
+            output = "\t".join([str(self.inline).center(10), str(self.cache).center(10),\
+                                    (time.ctime()).center(25), str(numberOfElements).center(10)])
+            w, r = os.popen2(cmd)
                 
 ##                timeCmd = cmd + ['--measureTime runtime']
 ##                w, r = os.popen2(' '.join(timeCmd))
 ##                print "' '.join(timeCmd): ", ' '.join(timeCmd)
 ##                raw_input()
-                outputlist= r.read().split()
-                runtime = outputlist[outputlist.index('runtime:')+1]
-                print "runtime: ", runtime
-                output += '\t' + ''.join(runtime).strip()
-                r.close()
-                w.close()
+            outputlist= r.read().split()
+            runtime = outputlist[outputlist.index('runtime:')+1]
+            print "runtime: ", runtime
+            output += '\t' + ''.join(runtime).strip()
+            r.close()
+            w.close()
 
 #                memCmd = cmd + ['--measureMemory', '--sampleTime=%f' % self.sampleTime]
 
 #                w, r = os.popen4(' '.join(memCmd))
 #                output += '\t' + ''.join(r.readlines()).strip()
-                r.close()
-                w.close()
-                if numberOfElements == self.maximumelements:    
-                    f.write(output + '\n' + "-"*100 + '\n')
-                    f.flush()
-                else:
-                    f.write(output + '\n')
-                    f.flush()
+            r.close()
+            w.close()
+            if numberOfElements == self.maximumelements:    
+                f.write(output + '\n' + "-"*100 + '\n')
+                f.flush()
+            else:
+                f.write(output + '\n')
+                f.flush()
  
-                if self.uploadToCodespeed:
-                    import urllib, urllib2
-                    import time 
-                    import pysvn
-                    from datetime import datetime
-      
-                    CODESPEED_URL = "http://localhost:8000/"
-                    revnum = pysvn.Client().info('.')['revision'].number
-                    revdate  = pysvn.Client().info('.')['commit_time']
-
-                    def add(data):
-                        params = urllib.urlencode(data)
-                        response = "None"
-                        print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
-                                                            data['commitid'], data['benchmark']) 
-                        g = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)  
-                        response = g.read()
-                        g.close()
-                        print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
- 
-                    data = {
+            if self.uploadToCodespeed:
+                import urllib, urllib2
+                import time 
+                import pysvn
+                from datetime import datetime
+                
+                CODESPEED_URL = "http://localhost:8000/"
+                revnum = pysvn.Client().info('.')['revision'].number
+                revdate  = pysvn.Client().info('.')['commit_time']
+                data = {
                         'commitid':revnum,
                         'branch': 'efficiency_test',#Always use default for trunk/master/tip
                         'project': 'FiPy',
@@ -135,8 +125,29 @@ class Efficiency_test(Command):
                         'environment': "FiPy",
                         'result_value': runtime,
                         'result_date': datetime.today(),
-                        }                                     
-                    add(data)   
-                numberOfElements *= self.factor
-                f.close
+                        }    
+                def add(data):
+                    params = urllib.urlencode(data)
+                    response = "None"
+                    print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
+                                                                            data['commitid'], data['benchmark']) 
+                    g = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)  
+                    response = g.read()
+                    g.close()
+                    print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
+                    
+#                    data = {
+#                        'commitid':revnum,
+#                        'branch': 'efficiency_test',#Always use default for trunk/master/tip
+#                        'project': 'FiPy',
+#                        'revision_date': datetime.fromtimestamp(revdate),
+#                        'executable': case,
+#                        'benchmark': 'float',
+#                        'environment': "FiPy",
+#                        'result_value': runtime,
+#                        'result_date': datetime.today(),
+#                        }                                     
+                add(data)   
+            numberOfElements *= self.factor
+            f.close()
             

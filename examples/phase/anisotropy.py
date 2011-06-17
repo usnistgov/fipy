@@ -211,7 +211,7 @@ and iterate the solution in time, plotting as we go,
 >>> if __name__ == '__main__':
 ...     steps = 10000
 ... else:
-...     steps = 10
+...     steps = 10000
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     dT.updateOld()
