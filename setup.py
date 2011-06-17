@@ -41,6 +41,7 @@ import string
 from distutils.core import Command
 from fipy.tools.efficiency_test import Efficiency_test
 
+
 # bootstrap setuptools for users that don't already have it
 import ez_setup
 ez_setup.use_setuptools()
@@ -353,39 +354,12 @@ class copy_script(Command):
         self.To = None
 
     def finalize_options(self):
-        if self.From == None:
-            raise "Please specify a '--From' input script file"
-         
-        if self.To == None:
-            raise "Please specify a '--To' output script file"
-            
-        if os.path.exists(os.path.expanduser(self.To)):
-            ans = "junk"
-            
-            while (len(ans) > 0) and ("yes".find(ans.lower()) is not 0) and ("no".find(ans.lower()) is not 0):
-                ans = raw_input("The file '%s' already exists. Overwrite? [n] "%self.To)
-                
-            if ans is '':
-                ans = 'no'
-                
-            if ("no".find(ans.lower()) is 0):
-                self.To = raw_input("Please give a name for the ouput file: ")
-                self.finalize_options()
+        from fipy.tools.copy_script import Copy_script
+        self.copy = Copy_script(From=self.From, To=self.To)          
+        self.copy.finalize_options()
 
     def run(self):
-        import imp
-        import fipy.tests.doctestPlus
-        
-        mod = imp.load_source("copy_script_module", self.From)
-        script = fipy.tests.doctestPlus._getScript(name = "copy_script_module")
-        
-        script = "#!/usr/bin/env python\n\n## This script was derived from\n## '%s'\n\n%s"%(self.From, script)
-        
-        f = file(self.To, "w")
-        f.write(script)
-        f.close
-        
-        print "Script code exported from '%s' to '%s'"%(self.From, self.To)
+        self.copy.run()
 
 try:            
     f = open('README.txt', 'r')

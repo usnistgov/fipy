@@ -20,6 +20,7 @@ class Efficiency_test(Command):
 #                     ('example=', None, 'prompts the example to be benchmarked')]
     
     def initialize_options(self):
+        w,r = os.popen2('python fipy/tools/generator.py')
         self.factor = 10
         self.inline = 0
         self.cache = 0
@@ -27,8 +28,9 @@ class Efficiency_test(Command):
         self.minimumelements = 100
         self.sampleTime = 1
         self.path = None
-        self.cases = ['examples/cahnHilliard/mesh2D.py']
-##        self.cases = [get file name from generator function]
+##        self.cases = ['examples/cahnHilliard/mesh2D.py']
+        self.cases = ['fipy/tools/mesh1D.py']
+        print self.cases
         self.uploadToCodespeed = False
 #        self.example = "examples/cahnHilliard/mesh2D.py"
     
@@ -70,18 +72,20 @@ class Efficiency_test(Command):
             while numberOfElements <= self.maximumelements:
                 print "\tnumberOfElements: %i" % numberOfElements
                 
-                cmd = ["python", "-W ignore", case, '--numberOfElements=%i' % numberOfElements, '--no-display nodisp']
+##                cmd = ["python", "-W ignore", case, '--numberOfElements=%i' % numberOfElements, '--no-display nodisp']
+                cmd = ["python", "-W ignore", case]
 
                 output = "\t".join([str(self.inline).center(10), str(self.cache).center(10),\
                                    (time.ctime()).center(25), str(numberOfElements).center(10)])
+                w, r = os.popen2(cmd)
                 
-                timeCmd = cmd + ['--measureTime runtime']
-                w, r = os.popen2(' '.join(timeCmd))
+##                timeCmd = cmd + ['--measureTime runtime']
+##                w, r = os.popen2(' '.join(timeCmd))
 ##                print "' '.join(timeCmd): ", ' '.join(timeCmd)
 ##                raw_input()
-                outputlines = r.readlines()
-                outputlist=outputlines[0].split()
-                runtime = [outputlist[outputlist.index("runtime:")+1]]
+                outputlist= r.read().split()
+                print outputlist
+                runtime = outputlist[outputlist.index('runtime:')+1]
                 print "runtime: ", runtime
                 output += '\t' + ''.join(runtime).strip()
                 r.close()
@@ -124,13 +128,12 @@ class Efficiency_test(Command):
                         'commitid':revnum,
                         'branch': 'efficiency_test',#Always use default for trunk/master/tip
                         'project': 'FiPy',
-##                        'revision_date': datetime.fromtimestamp(revdate),
-##                        'revision_date': datetime.today(),
-                        'executable': 'mesh2D %i' %numberOfElements,
+                        'revision_date': datetime.fromtimestamp(revdate),
+                        'executable': case,
                         'benchmark': 'float',
                         'environment': "FiPy",
-                        'result_value': runtime[0],
-##                        'result_date': datetime.today(),
+                        'result_value': runtime,
+                        'result_date': datetime.today(),
                         }                                     
                     add(data)   
                 numberOfElements *= self.factor

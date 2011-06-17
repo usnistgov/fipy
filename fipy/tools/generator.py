@@ -39,12 +39,12 @@ for index, line in enumerate(flist):
         whitespaces = len(line) - len(line.lstrip())
         line = line.lstrip()
         split_line = line.lstrip('if ').split(':')
-        commentedline = whitespaces * ' ' + 'if False or ' + split_line[0] + ":\n"
+        commentedline = whitespaces * ' ' + 'if False and ' + split_line[0] + ":\n"
         flist.insert(index, commentedline)
         del flist[index+1]
 
 flist.append('\ntimes.append(time.time())\n')
-flist.append('\nruntime = times[len(times)-1]-time[0]')
+flist.append('\nruntime = times[len(times)-1]-times[0]')
 flist.append("\nprint 'runtime:', runtime") 
 
 f.close()
