@@ -54,6 +54,4 @@ g=open('mesh1D.py', 'w')
 g.write("".join(flist))
 g.close()
 
-##run benchmarks for fipy/tools/mesh1D.py, uploading results to Codespeed.
-
 

@@ -20,7 +20,9 @@ class Efficiency_test(Command):
 #                     ('example=', None, 'prompts the example to be benchmarked')]
     
     def initialize_options(self):
-        w,r = os.popen2('python fipy/tools/generator.py')
+        from fipy.tools import generator
+        path = generator.__file__
+        w,r = os.popen2('python ', path)
         self.factor = 10
         self.inline = 0
         self.cache = 0
