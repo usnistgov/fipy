@@ -17,7 +17,6 @@ class Efficiency_test(Command):
                      ('sampleTime=', None, 'sampling interval for memory high-water'),
                      ('path=', None, 'directory to place output results in'),
                      ('uploadToCodespeed', None, 'flag to upload data to Codespeed')]
-#                     ('example=', None, 'prompts the example to be benchmarked')]
     
     def initialize_options(self):
         from fipy.tools import generator
@@ -32,10 +31,10 @@ class Efficiency_test(Command):
         self.path = None
 ##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/reactiveWetting/liquidVapor2D.py', \
 ##                      'examples/phase/anisotropy.py', 'examples/diffusion/circle.py']
-        self.cases = ['./mesh2D.py']
+##        self.cases = ['./mesh2D.py']
+        self.cases = ['./liquidVapor2D.py']
         print self.cases
         self.uploadToCodespeed = False
-#        self.example = "examples/cahnHilliard/mesh2D.py"
     
     def finalize_options(self):
         self.factor = int(self.factor)

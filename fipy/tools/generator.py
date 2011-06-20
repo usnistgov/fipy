@@ -4,13 +4,13 @@ import time
 import os
 from copy_script import Copy_script
 
-if os.path.exists('mesh2D.py'):
-    os.remove('mesh2D.py')
+if os.path.exists('liquidVapor2D.py'):
+    os.remove('liquidVapor2D.py')
 
-DocProg = Copy_script(To='mesh2D.py', From='examples/cahnHilliard/mesh2D.py')
+DocProg = Copy_script(To='liquidVapor2D.py', From='examples/reactiveWetting/liquidVapor2D.py')
 DocProg.finalize_options()
 DocProg.run()
-f = open('mesh2D.py','r+w')
+f = open('liquidVapor2D.py','r+w')
 flist = f.readlines()
 
 
@@ -52,9 +52,9 @@ flist.append('\nruntime = times[len(times)-1]-times[0]')
 flist.append("\nprint 'runtime:', runtime") 
 
 f.close()
-os.remove('mesh2D.py')
+os.remove('liquidVapor2D.py')
 
-g=open('mesh2D.py', 'w')
+g=open('liquidVapor2D.py', 'w')
 g.write("".join(flist))
 g.close()
 
