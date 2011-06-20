@@ -16,17 +16,10 @@ class Efficiency_test(Command):
                      ('maximumelements=', None, 'maximum number of elements'),
                      ('sampleTime=', None, 'sampling interval for memory high-water'),
                      ('path=', None, 'directory to place output results in'),
-                     ('uploadToCodespeed', None, 'flag to upload data to Codespeed')]
+                     ('uploadToCodespeed', None, 'flag to upload data to Codespeed'),
+                     ('otherExample=', None, 'designate examples other than the default ones to benchmark')]
     
     def initialize_options(self):
-
-        #from generator import do_something
-        #do_something(cases)
-        from fipy.tools import generator
-        other_examples = ['examples/diffusion/mesh1D.py']
-        generator.run(other_examples)
-##        path = generator.__file__
-##        w,r = os.popen2('python ', path)
         self.factor = 10
         self.inline = 0
         self.cache = 0
@@ -34,17 +27,9 @@ class Efficiency_test(Command):
         self.minimumelements = 100
         self.sampleTime = 1
         self.path = None
-##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/reactiveWetting/liquidVapor2D.py', \
-##                      'examples/phase/anisotropy.py', 'examples/diffusion/circle.py']
-##        self.cases = ['./mesh2D.py']
-        if other_examples == []:
-            self.cases = ['./mesh2D.py', './anisotropy.py', './liquidVapor2D.py']
-        else:
-            self.cases = []
-            for i in other_examples:
-                deconstruct = i.split('/')
-                self.cases.append('./%s' % deconstruct[len(deconstruct)-1])
-        print self.cases
+        self.otherExample = None
+        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
+                          'examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
     
     def finalize_options(self):
@@ -52,12 +37,17 @@ class Efficiency_test(Command):
         self.maximumelements = int(self.maximumelements)
         self.minimumelements = int(self.minimumelements)
         self.sampleTime = float(self.sampleTime)
+        if self.otherExample is not None:
+            self.cases = [self.otherExample]
 
     def run(self):
         import time
+        from fipy.tools import generator
         import os
 
-        for case in self.cases:
+        newCases = generator.run(self.cases)
+
+        for case in newCases:
             print "case: %s" % case
             
             if self.path is None:

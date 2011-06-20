@@ -40,27 +40,17 @@ import time
 import os
 from copy_script import Copy_script
 
-
-##fromScripts = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
-##                   'examples/reactiveWetting/liquidVapor2D.py']
-##toScripts= ['mesh2D.py', 'anisotropy.py', 'liquidVapor2D.py']
-
-def run(other_examples):
-    if other_examples == []:
-        fromScripts = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
-                           'examples/reactiveWetting/liquidVapor2D.py']
-        toScripts= ['mesh2D.py', 'anisotropy.py', 'liquidVapor2D.py']
-    else:
-        fromScripts = other_examples
-        toScripts = []
-        for i in other_examples:
-            deconstruct = i.split('/')
-            toScripts.append(deconstruct[len(deconstruct)-1])
-    for i in range(len(fromScripts)):
+def run(cases): 
+    toScripts = []
+    for i in cases:
+        deconstruct = i.split('/')
+        toScripts.append('./%s' % deconstruct[len(deconstruct)-1])
+    
+    for i in range(len(cases)):
         if os.path.exists(toScripts[i]):
             os.remove(toScripts[i])
-        print 'Running on file', fromScripts[i]
-        DocProg = Copy_script(To=toScripts[i], From=fromScripts[i])
+        print 'Running on file', cases[i]
+        DocProg = Copy_script(To=toScripts[i], From=cases[i])
         DocProg.finalize_options()
         DocProg.run()
         f = open(toScripts[i],'r+w')
@@ -111,6 +101,9 @@ def run(other_examples):
         g.write("".join(flist))
         g.close()
 
+    return toScripts
+
 if __name__ == "__main__":
-    run([])
+    run(['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
+                           'examples/reactiveWetting/liquidVapor2D.py'])
  
