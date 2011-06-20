@@ -55,7 +55,7 @@ def run(other_examples):
         toScripts = []
         for i in other_examples:
             deconstruct = i.split('/')
-            toScripts.append(deconstruct[len(decsontruct)-1])
+            toScripts.append(deconstruct[len(deconstruct)-1])
     for i in range(len(fromScripts)):
         if os.path.exists(toScripts[i]):
             os.remove(toScripts[i])

@@ -23,7 +23,8 @@ class Efficiency_test(Command):
         #from generator import do_something
         #do_something(cases)
         from fipy.tools import generator
-        generator.run([])
+        other_examples = ['examples/diffusion/mesh1D.py']
+        generator.run(other_examples)
 ##        path = generator.__file__
 ##        w,r = os.popen2('python ', path)
         self.factor = 10
@@ -36,7 +37,13 @@ class Efficiency_test(Command):
 ##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/reactiveWetting/liquidVapor2D.py', \
 ##                      'examples/phase/anisotropy.py', 'examples/diffusion/circle.py']
 ##        self.cases = ['./mesh2D.py']
-        self.cases = ['./mesh2D.py', './anisotropy.py', './liquidVapor2D.py']
+        if other_examples == []:
+            self.cases = ['./mesh2D.py', './anisotropy.py', './liquidVapor2D.py']
+        else:
+            self.cases = []
+            for i in other_examples:
+                deconstruct = i.split('/')
+                self.cases.append('./%s' % deconstruct[len(deconstruct)-1])
         print self.cases
         self.uploadToCodespeed = False
     
