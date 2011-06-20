@@ -23,8 +23,9 @@ class Efficiency_test(Command):
         #from generator import do_something
         #do_something(cases)
         from fipy.tools import generator
-        path = generator.__file__
-        w,r = os.popen2('python ', path)
+        generator.run(extra_examples = [])
+##        path = generator.__file__
+##        w,r = os.popen2('python ', path)
         self.factor = 10
         self.inline = 0
         self.cache = 0
