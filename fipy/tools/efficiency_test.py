@@ -19,6 +19,9 @@ class Efficiency_test(Command):
                      ('uploadToCodespeed', None, 'flag to upload data to Codespeed')]
     
     def initialize_options(self):
+
+        #from generator import do_something
+        #do_something(cases)
         from fipy.tools import generator
         path = generator.__file__
         w,r = os.popen2('python ', path)
@@ -32,7 +35,7 @@ class Efficiency_test(Command):
 ##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/reactiveWetting/liquidVapor2D.py', \
 ##                      'examples/phase/anisotropy.py', 'examples/diffusion/circle.py']
 ##        self.cases = ['./mesh2D.py']
-        self.cases = ['./liquidVapor2D.py']
+        self.cases = ['./mesh2D.py', './anisotropy.py', './liquidVapor2D.py']
         print self.cases
         self.uploadToCodespeed = False
     
