@@ -45,14 +45,17 @@ from copy_script import Copy_script
 ##                   'examples/reactiveWetting/liquidVapor2D.py']
 ##toScripts= ['mesh2D.py', 'anisotropy.py', 'liquidVapor2D.py']
 
-def run(extra_examples):
-    fromScripts = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
-                   'examples/reactiveWetting/liquidVapor2D.py']
-    toScripts= ['mesh2D.py', 'anisotropy.py', 'liquidVapor2D.py']
-    fromScripts += extra_examples
-    for i in extra_examples:
-        deconstruct = i.split('/')
-        toScripts += deconstruct[1+len(decsontruct)]
+def run(other_examples):
+    if other_examples == []:
+        fromScripts = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
+                           'examples/reactiveWetting/liquidVapor2D.py']
+        toScripts= ['mesh2D.py', 'anisotropy.py', 'liquidVapor2D.py']
+    else:
+        fromScripts = other_examples
+        toScripts = []
+        for i in other_examples:
+            deconstruct = i.split('/')
+            toScripts.append(deconstruct[len(decsontruct)-1])
     for i in range(len(fromScripts)):
         if os.path.exists(toScripts[i]):
             os.remove(toScripts[i])
