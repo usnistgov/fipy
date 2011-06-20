@@ -150,5 +150,6 @@ class Efficiency_test(Command):
             numberOfElements *= self.factor
             f.close()
             os.remove(case)
+            os.remove("%s.dat" % case)
             print "Deleted temporary file ", case
             
