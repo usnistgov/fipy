@@ -75,7 +75,7 @@ Using this mesh, we can construct a solution variable
    object: fipy.variables.cellVariable.CellVariable
 
 >>> phi = CellVariable(name = "solution variable",
-...                    mesh = mesh,
+...                    mesh= mesh,
 ...                    value = 0.)
 
 We can now create a :class:`~fipy.viewers.viewer.Viewer` to see the mesh

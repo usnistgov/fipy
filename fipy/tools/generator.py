@@ -74,7 +74,7 @@ def run(cases, elements):
                     flist.insert(index + 2, 'times.append(time.time())\n')
                 else:
                     flist.insert(index + 1, 'times.append(time.time())\n')
-            elif 'while' in line and not '#' in line:
+            elif 'while' in line and not ('#' or ',' in line):
                 if whitespaces != 0:
                     flist.insert(index + 1, (whitespaces + 4) * ' ' + 'times.append(time.time())\n')
                 else:
@@ -111,7 +111,7 @@ def run(cases, elements):
         flist.append('\ntimes.append(time.time())\n')
         flist.append('\nruntime = times[len(times)-1]-times[0]')
         flist.append("\nprint 'runtime:', runtime") 
-
+##        print flist
         f.close()
         os.remove(toScripts[i])
             
@@ -122,6 +122,6 @@ def run(cases, elements):
     return toScripts
 
 if __name__ == "__main__":
-    run(['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
-                           'examples/reactiveWetting/liquidVapor2D.py'])
+    Scripts = run(['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
+                           'examples/reactiveWetting/liquidVapor2D.py','examples/diffusion/circle.py'],None)
  
