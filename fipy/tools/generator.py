@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "serialCommWrapper.py"
+ #  FILE: "generator.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -38,6 +38,7 @@
 import string
 import time
 import os
+import numpy
 from copy_script import Copy_script
 
 def run(cases, elements): 
@@ -91,11 +92,19 @@ def run(cases, elements):
                 flist.insert(index, commentedline)
                 del flist[index+1]
             elif elements is not None and 'nx = ny = ' in line:
-                elements = str(elements)
+                elements = str(numpy.sqrt(float(elements)))
                 linelist = line.split('=')
                 linelist.insert(2, elements)
                 del linelist[3]
-                newvalue = '='.join(linelist)
+                newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
+                flist.insert(index, newvalue)
+                del flist[index+1]
+            elif elements is not None and 'nx = ' in line:
+                elements = str(elements)
+                linelist = line.split('=')
+                linelist.insert(1, elements)
+                del linelist[2]
+                newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
                 flist.insert(index, newvalue)
                 del flist[index+1]
                 
