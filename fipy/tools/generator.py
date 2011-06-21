@@ -40,7 +40,7 @@ import time
 import os
 from copy_script import Copy_script
 
-def run(cases): 
+def run(cases, elements): 
     toScripts = []
     for i in cases:
         deconstruct = i.split('/')
@@ -90,6 +90,15 @@ def run(cases):
                 commentedline = whitespaces * ' ' + 'if False and ' + split_line[0] + ":\n"
                 flist.insert(index, commentedline)
                 del flist[index+1]
+            elif elements is not None and 'nx = ny = ' in line:
+                elements = str(elements)
+                linelist = line.split('=')
+                linelist.insert(2, elements)
+                del linelist[3]
+                newvalue = '='.join(linelist)
+                flist.insert(index, newvalue)
+                del flist[index+1]
+                
         flist.append('\ntimes.append(time.time())\n')
         flist.append('\nruntime = times[len(times)-1]-times[0]')
         flist.append("\nprint 'runtime:', runtime") 

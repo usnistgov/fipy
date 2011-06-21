@@ -17,7 +17,8 @@ class Efficiency_test(Command):
                      ('sampleTime=', None, 'sampling interval for memory high-water'),
                      ('path=', None, 'directory to place output results in'),
                      ('uploadToCodespeed', None, 'flag to upload data to Codespeed'),
-                     ('otherExample=', None, 'designate examples other than the default ones to benchmark')]
+                     ('otherExample=', None, 'designate examples other than the default ones to benchmark'),
+                     ('newElements=', None, 'alter the number of elements. NB: will not work on all examples')]
     
     def initialize_options(self):
         self.factor = 10
@@ -28,6 +29,7 @@ class Efficiency_test(Command):
         self.sampleTime = 1
         self.path = None
         self.otherExample = None
+        self.newElements = None
         self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
                           'examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
@@ -39,13 +41,14 @@ class Efficiency_test(Command):
         self.sampleTime = float(self.sampleTime)
         if self.otherExample is not None:
             self.cases = [self.otherExample]
+                     
 
     def run(self):
         import time
         from fipy.tools import generator
         import os
 
-        newCases = generator.run(self.cases)
+        newCases = generator.run(self.cases,self.newElements)
 
         for case in newCases:
             print "case: %s" % case
