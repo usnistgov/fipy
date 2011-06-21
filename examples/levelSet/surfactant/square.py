@@ -42,7 +42,6 @@ Advect the interface and check the position.
    >>> distanceVariable.calcDistanceFunction()
    >>> initialSurfactant = sum(surfactantVariable)
    >>> for step in range(steps):
-   ...     surfactantVariable.updateOld()
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
@@ -108,7 +107,6 @@ if __name__ == '__main__':
 
     for step in range(steps):
         print sum(surfactantVariable)
-        surfactantVariable.updateOld()
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)

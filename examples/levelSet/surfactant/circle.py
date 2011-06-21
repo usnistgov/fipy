@@ -56,7 +56,6 @@ The result can be tested with the following code:
 
 >>> surfactantBefore = sum(surfactantVariable * mesh.cellVolumes)
 >>> for step in range(steps):
-...     surfactantVariable.updateOld()
 ...     distanceVariable.updateOld()
 ...     surfactantEquation.solve(surfactantVariable)
 ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
@@ -125,7 +124,6 @@ if __name__ == '__main__':
     print 'total surfactant before:', sum(surfactantVariable * mesh.cellVolumes)
     
     for step in range(steps):
-        surfactantVariable.updateOld()
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)

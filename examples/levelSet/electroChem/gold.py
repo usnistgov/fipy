@@ -223,10 +223,6 @@ def runGold(faradaysConstant=9.6e4,
         dt = cflNumber * cellSize / extensionVelocityVariable[argmx]
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
         
-        distanceVar.updateOld()
-        catalystVar.updateOld()
-        metalVar.updateOld()
-
         advectionEquation.solve(distanceVar, dt = dt)
         catalystSurfactantEquation.solve(catalystVar, dt = dt)
 

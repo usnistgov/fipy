@@ -133,8 +133,8 @@ class CellVariable(_MeshVariable):
         
     def copy(self):
         
-        return self._getArithmeticBaseClass()(mesh=self.mesh, 
-                                              name=self.name + "_old", 
+        return self._getArithmeticBaseClass()(mesh=self.mesh,
+                                              name=self.name + "_old",
                                               value=self.value,
                                               hasOld=False)
                 
@@ -523,10 +523,21 @@ class CellVariable(_MeshVariable):
 
     def updateOld(self):
         """
-        Set the values of the previous solution sweep to the current values.
+        Set the values of the previous solution sweep to the current
+        values.
+        
+        >>> from fipy import *
+        >>> v = CellVariable(mesh=Grid1D(), hasOld=False)
+        >>> v.updateOld()
+        Traceback (most recent call last):
+           ...
+        AssertionError: The updateOld method requires the CellVariable to have an old value. Set hasOld to True when instantiating the CellVariable.
+
         """
-        if self._old is not None:
-            self._old.value = (self.value.copy())
+        if self._old is None:
+            raise AssertionError, 'The updateOld method requires the CellVariable to have an old value. Set hasOld to True when instantiating the CellVariable.'
+        else:
+            self._old.value = self.value.copy()
 
     def _resetToOld(self):
         if self._old is not None:

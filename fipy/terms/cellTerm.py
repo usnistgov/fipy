@@ -97,7 +97,7 @@ class CellTerm(_NonDiffusionTerm):
     def _calcCoeffVectors_(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         coeff = self._getGeomCoeff(var)
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
-        if hasattr(coeff, "getOld"):
+        if hasattr(coeff, 'old'):
             old = coeff.old
         else:
             old = coeff

@@ -425,9 +425,6 @@ is calculated with the CFL number and the maximum extension velocity.
 ...     extensionVelocityVariable.setValue(depositionRateVariable())
 ...
 ...     distanceVar.updateOld()
-...     catalystVar.updateOld()
-...     metalVar.updateOld()
-...     bulkCatalystVar.updateOld()
 ...     distanceVar.extendVariable(extensionVelocityVariable)
 ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
 ...     advectionEquation.solve(distanceVar, dt=dt)

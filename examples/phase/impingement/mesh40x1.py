@@ -216,7 +216,6 @@ we iterate the solution in time, plotting as we go if running interactively,
 >>> steps = 10
 >>> for i in range(steps):
 ...     theta.updateOld()
-...     phase.updateOld()
 ...     thetaEq.solve(theta, dt = timeStepDuration)
 ...     phaseEq.solve(phase, dt = timeStepDuration)
 ...     if __name__ == '__main__':
