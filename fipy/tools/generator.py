@@ -62,8 +62,6 @@ def run(cases, elements):
             whitespaces = len(line) - len(line.lstrip())
             if 'from fipy import *' in line:
                 flist.insert(index + 1, 'import time \ntimes = [] \ntimes.append(time.time())\n')
-            elif 'mesh =' in line and not '#' in line:
-                flist.insert(index + 1, whitespaces * ' ' + 'times.append(time.time())\n')
             elif ('.sweep' in line or '.solve' in line) and not '#' in line:
                 if whitespaces != 0:
                     if '(' in line and not ')' in line:
@@ -91,19 +89,12 @@ def run(cases, elements):
                 commentedline = whitespaces * ' ' + 'if False and ' + split_line[0] + ":\n"
                 flist.insert(index, commentedline)
                 del flist[index+1]
-            elif elements is not None and 'nx = ny = ' in line:
-                elements = str(numpy.sqrt(float(elements)))
-                linelist = line.split('=')
-                linelist.insert(2, elements)
-                del linelist[3]
-                newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
-                flist.insert(index, newvalue)
-                del flist[index+1]
             elif elements is not None and 'nx = ' in line:
-                elements = str(elements)
                 linelist = line.split('=')
-                linelist.insert(1, elements)
-                del linelist[2]
+                dimensions = len(linelist)-1
+                root_elements = str(elements ** (float(1)/dimensions))
+                linelist.insert((len(linelist)-1), elements)
+                del linelist[len(linelist)-1]
                 newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
                 flist.insert(index, newvalue)
                 del flist[index+1]
