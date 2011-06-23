@@ -127,7 +127,11 @@ class Efficiency_test(Command):
 ##                print "' '.join(timeCmd): ", ' '.join(timeCmd)
 ##                raw_input()
             outputlist= r.read().split()
-            runtime = outputlist[outputlist.index('runtime:')+1]
+            print outputlist
+            init_time = outputlist[outputlist.index('Initialization-time:')+1]
+            frst_timestp = outputlist[outputlist.index('First-timestep:')+1]
+            avg_timestp = outputlist[outputlist.index('Average-timestep:')+1]
+            runtime = outputlist[outputlist.index('Runtime:')+1]
             print "runtime: ", runtime
             output += '\t' + ''.join(runtime).strip()
             r.close()
@@ -155,17 +159,7 @@ class Efficiency_test(Command):
                 CODESPEED_URL = "http://localhost:8000/"
                 revnum = pysvn.Client().info('.')['revision'].number
                 revdate  = pysvn.Client().info('.')['commit_time']
-                data = {
-                        'commitid':revnum,
-                        'branch': 'efficiency_test',#Always use default for trunk/master/tip
-                        'project': 'FiPy',
-                        'revision_date': datetime.fromtimestamp(revdate),
-                        'executable': case,
-                        'benchmark': 'float',
-                        'environment': "FiPy",
-                        'result_value': runtime,
-                        'result_date': datetime.today(),
-                        }    
+
                 def add(data):
                     params = urllib.urlencode(data)
                     response = "None"
@@ -175,19 +169,23 @@ class Efficiency_test(Command):
                     response = g.read()
                     g.close()
                     print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
-                    
-#                    data = {
-#                        'commitid':revnum,
-#                        'branch': 'efficiency_test',#Always use default for trunk/master/tip
-#                        'project': 'FiPy',
-#                        'revision_date': datetime.fromtimestamp(revdate),
-#                        'executable': case,
-#                        'benchmark': 'float',
-#                        'environment': "FiPy",
-#                        'result_value': runtime,
-#                        'result_date': datetime.today(),
-#                        }                                     
-                add(data)   
+                benchmarks = ['Initialization', 'First timestep', 'Average of remaining timesteps',\
+                                  'Total Runtime']
+                results = [init_time, frst_timestp, avg_timestp, runtime]
+                for i in range(len(benchmarks)):
+                    data = {
+                        'commitid':revnum,
+                        'branch': 'efficiency_test',#Always use default for trunk/master/tip
+                        'project': 'FiPy',
+                        'revision_date': datetime.fromtimestamp(revdate),
+                        'executable': case,
+                        'benchmark': benchmarks[i],
+                        'environment': "FiPy",
+                        'result_value': results[i],
+##                        'total_runtime': runtime,
+                        'result_date': datetime.today(),
+                        }  
+                    add(data)   
             numberOfElements *= self.factor
             f.close()
             os.remove(case)

@@ -56,8 +56,7 @@ def run(cases, elements):
         DocProg.run()
         f = open(toScripts[i],'r+w')
         flist = f.readlines()
-    
-    
+        
         for index, line in enumerate(flist):
             whitespaces = len(line) - len(line.lstrip())
             if 'from fipy import *' in line:
@@ -100,8 +99,15 @@ def run(cases, elements):
                 del flist[index+1]
                 
         flist.append('\ntimes.append(time.time())\n')
+        flist.append('\nprint times')
+        flist.append('\nInitialization_time = times[1]-times[0]')
+        flist.append('\nFirst_timestep = times[2]-times[1]')
+        flist.append('\navg_timesteps = (times[(len(times)-2)]-times[1])/((len(times)-3))')
         flist.append('\nruntime = times[len(times)-1]-times[0]')
-        flist.append("\nprint 'runtime:', runtime") 
+        flist.append("\nprint 'Initialization-time:', Initialization_time")
+        flist.append("\nprint 'First-timestep:', First_timestep")
+        flist.append("\nprint 'Average-timestep:', avg_timesteps")
+        flist.append("\nprint 'Runtime:', runtime") 
 ##        print flist
         f.close()
         os.remove(toScripts[i])
