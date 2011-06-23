@@ -127,7 +127,7 @@ class Efficiency_test(Command):
 ##                print "' '.join(timeCmd): ", ' '.join(timeCmd)
 ##                raw_input()
             outputlist= r.read().split()
-            print outputlist
+##            print outputlist
             init_time = outputlist[outputlist.index('Initialization-time:')+1]
             frst_timestp = outputlist[outputlist.index('First-timestep:')+1]
             avg_timestp = outputlist[outputlist.index('Average-timestep:')+1]
