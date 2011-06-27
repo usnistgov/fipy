@@ -157,8 +157,8 @@ class Efficiency_test(Command):
                 from datetime import datetime
                 
                 CODESPEED_URL = "http://localhost:8000/"
-                revnum = pysvn.Client().info('.')['revision'].number
-                revdate  = pysvn.Client().info('.')['commit_time']
+                revnum = pysvn.Client().info('./examples')['revision'].number
+                revdate  = pysvn.Client().info('./examples')['commit_time']
 
                 def add(data):
                     params = urllib.urlencode(data)
@@ -183,7 +183,7 @@ class Efficiency_test(Command):
                         'environment': "FiPy",
                         'result_value': results[i],
 ##                        'total_runtime': runtime,
-                        'result_date': datetime.today(),
+                        'result_date': datetime.fromtimestamp(revdate)
                         }  
                     add(data)   
             numberOfElements *= self.factor

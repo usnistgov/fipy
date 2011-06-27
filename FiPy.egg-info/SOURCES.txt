@@ -128,7 +128,9 @@ examples/cahnHilliard/__init__.py
 examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D-coupled.py
 examples/cahnHilliard/mesh2D.py
+examples/cahnHilliard/mesh2D.py.4579
 examples/cahnHilliard/mesh2D.py.dat
+examples/cahnHilliard/mesh2D.py.extracted
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
 examples/cahnHilliard/sphereDaemon.py
@@ -491,11 +493,13 @@ fipy/tests/testBase.py
 fipy/tests/testProgram.py
 fipy/tools/__init__.py
 fipy/tools/commWrapper.py
+fipy/tools/copy_script.py
 fipy/tools/debug.py
 fipy/tools/decorators.py
 fipy/tools/dummyComm.py
 fipy/tools/dump.py
 fipy/tools/efficiency_test.py
+fipy/tools/generator.py
 fipy/tools/inline.py
 fipy/tools/memoryLeak.py
 fipy/tools/memoryLogger.py

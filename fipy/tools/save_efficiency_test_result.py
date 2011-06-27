@@ -1,3 +1,5 @@
+##None of this is relevant as it's been merged directly into efficienct_test.py
+
 import urllib, urllib2
               
 CODESPEED_URL = "http://localhost:8000/"
