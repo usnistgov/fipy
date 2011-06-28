@@ -120,7 +120,7 @@ class PeriodicGrid2D(Grid2D):
 class PeriodicGrid2DLeftRight(PeriodicGrid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
-        self.nonPeriodicCellVertexIDs = Grid2D.cellVertexIDs
+        self.nonPeriodicCellVertexIDs = Grid2D._cellVertexIDs
         self.nonPeriodicOrderedCellVertexIDs = Grid2D._orderedCellVertexIDs
         from fipy.tools import numerix
         self._connectFaces(numerix.nonzero(self.facesLeft), 
@@ -129,7 +129,7 @@ class PeriodicGrid2DLeftRight(PeriodicGrid2D):
 class PeriodicGrid2DTopBottom(PeriodicGrid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
         Grid2D.__init__(self, dx = dx, dy = dy, nx = nx, ny = ny)
-        self.nonPeriodicCellVertexIDs = Grid2D.cellVertexIDs
+        self.nonPeriodicCellVertexIDs = Grid2D._cellVertexIDs
         self.nonPeriodicOrderedCellVertexIDs = Grid2D._orderedCellVertexIDs
         from fipy.tools import numerix
         self._connectFaces(numerix.nonzero(self.facesBottom), 

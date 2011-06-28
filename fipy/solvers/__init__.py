@@ -1,5 +1,6 @@
 import os
-import sys
+from fipy.tools.parser import parseSolver
+from fipy.tools  import parallel
 
 from solver import SolverConvergenceWarning, \
      PreconditionerWarning, \
@@ -10,21 +11,14 @@ from solver import SolverConvergenceWarning, \
      IllConditionedPreconditionerWarning, \
      MaximumIterationWarning
 
-args = [s.lower() for s in sys.argv[1:]]
+solver = parseSolver()
 
-# any command-line specified solver takes precedence over environment variables
-if '--trilinos' in args:
-    solver = "trilinos"
-elif '--pysparse' in args:
-    solver = "pysparse"
-elif '--no-pysparse' in args:
-    solver = "no-pysparse"
-elif os.environ.has_key('FIPY_SOLVERS'):
+if solver is None and os.environ.has_key('FIPY_SOLVERS'):
     solver = os.environ['FIPY_SOLVERS'].lower()
-else:
-    solver = None
-    
+
 if solver == "pysparse":
+    if parallel.Nproc > 1:
+        raise  Exception('pysparse solvers do not run in parallel')
     from fipy.solvers.pysparse import *
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
     _MeshMatrix =  _PysparseMeshMatrix
@@ -38,18 +32,35 @@ elif solver == "trilinos":
     except ImportError:
         from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
         _MeshMatrix =  _TrilinosMeshMatrix
+
+elif solver == "scipy":
+    if parallel.Nproc > 1:
+        raise  Exception('scipy solvers do not run in parallel')
+    from fipy.solvers.scipy import *
+    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+    _MeshMatrix = _ScipyMeshMatrix
+    
+elif solver == "pyamg":
+    if parallel.Nproc > 1:
+        raise  Exception('pyamg solvers do not run in parallel')
+    from fipy.solvers.pyAMG import *
+    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+    _MeshMatrix = _ScipyMeshMatrix
+    
 elif solver == "no-pysparse":
     from fipy.solvers.trilinos import *
     from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
     _MeshMatrix =  _TrilinosMeshMatrix 
+
 elif solver is None:
     # If no argument or environment variable, try importing them and seeing
     # what works
-    try: 
-        from fipy.tools import parallel
-        if parallel.Nproc > 1:
-            raise Exception("PySparse solvers cannot be used with multiple processors")
 
+    
+   
+    try:
+        if parallel.Nproc > 1:
+            raise  Exception('pysparse solvers do not run in parallel')
         from fipy.solvers.pysparse import *
         solver = "pysparse"
         from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
@@ -62,10 +73,27 @@ elif solver is None:
                 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
                 _MeshMatrix =  _PysparseMeshMatrix
             except ImportError:
+                solver = "no-pysparse"
                 from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
                 _MeshMatrix =  _TrilinosMeshMatrix
         except:
-            raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
+            try:
+                if parallel.Nproc > 1:
+                    raise  Exception('pyamg solvers do not run in parallel')
+                from fipy.solvers.pyAMG import *
+                solver = "pyamg"
+                from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+                _MeshMatrix = _ScipyMeshMatrix
+            except:
+                try:
+                    if parallel.Nproc > 1:
+                        raise  Exception('scipy solvers do not run in parallel')
+                    from fipy.solvers.scipy import *
+                    solver = "scipy"
+                    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+                    _MeshMatrix = _ScipyMeshMatrix
+                except:
+                    raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
 else:
     raise ImportError, 'Unknown solver package %s' % solver
 

@@ -194,16 +194,49 @@ class _MeshVariable(Variable):
             if len(self.name) == 0:
                 s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
             return s
-        
+
     @property
     def constraintMask(self):
-        if hasattr(self, 'constraints'):
-            returnMask = False
-            for value, mask in self.constraints:
-                returnMask = returnMask | numerix.array(mask)
-            return self._variableClass(mesh=self.mesh, rank=0, value=returnMask)
-        else:
-            return None
+        r"""
+        Test that `constraintMask` returns a Variable that updates itself whenver the constraints change.
+
+        >>> from fipy import *
+
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> x, y = m.cellCenters
+        >>> v0 = CellVariable(mesh=m)
+        >>> v0.constrain(1., where=m.facesLeft)
+        >>> print v0.faceValue.constraintMask
+        [False False False False False False  True False False  True False False]
+        >>> print v0.faceValue
+        [ 0.  0.  0.  0.  0.  0.  1.  0.  0.  1.  0.  0.]
+        >>> v0.constrain(3., where=m.facesRight)
+        >>> print v0.faceValue.constraintMask
+        [False False False False False False  True False  True  True False  True]
+        >>> print v0.faceValue
+        [ 0.  0.  0.  0.  0.  0.  1.  0.  3.  1.  0.  3.]
+        >>> v1 = CellVariable(mesh=m)
+        >>> v1.constrain(1., where=(x < 1) & (y < 1))
+        >>> print v1.constraintMask
+        [ True False False False]
+        >>> print v1
+        [ 1.  0.  0.  0.]
+        >>> v1.constrain(3., where=(x > 1) & (y > 1))
+        >>> print v1.constraintMask
+        [ True False False  True]
+        >>> print v1
+        [ 1.  0.  0.  3.]
+        
+        """
+        if not hasattr(self, '_constraintMask'):
+            from fipy.variables.constraintMask import ConstraintMask
+            self._constraintMask = ConstraintMask(self)
+        return self._constraintMask
+
+    def constrain(self, value, where=None):
+        super(_MeshVariable, self).constrain(value, where=where)
+        if hasattr(self, '_constraintMask'):
+            self._constraintMask._requires(self._constraints[-1].where)
 
     def _getShapeFromMesh(mesh):
         """
@@ -268,6 +301,37 @@ class _MeshVariable(Variable):
            
         Both `A` and `B` can be of arbitrary rank, but at this point, both must
         be appropriately broadcast `_MeshVariable` objects.
+
+        Test for inline bug
+
+        >>> from fipy import *
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> v = FaceVariable(mesh=m, rank=1, value=m._orientedFaceNormals)
+        
+        >>> print len(v.dot(1.).shape)
+        2
+        >>> print v.dot(1.).globalValue.shape
+        (2, 12)
+        >>> tmp = m._cellDistances * v.dot(1.)
+        >>> print tmp.globalValue.shape
+        (2, 12)
+        
+        The value shouldn't change shape the second time it's
+        evaluated. The second time is inline and the inline code does
+        not have the correct shape.
+        
+        >>> print tmp.globalValue.shape
+        (2, 12)
+
+        More inconsistent shape problems.
+
+        >>> m = Grid2D(nx=3, ny=3)
+        >>> v0 = FaceVariable(mesh=m, rank=1, value=m._orientedFaceNormals)
+        >>> print len(v0.dot(m.faceCenters[0]).shape)
+        2
+        >>> print v0.dot(m.faceCenters[0]).globalValue.shape
+        (2, 24)
+        
         """
         rankA = len(A.shape) - 1
         rankB = len(B.shape) - 1
@@ -275,9 +339,10 @@ class _MeshVariable(Variable):
         index = (numerix.index_exp[...] + (numerix.newaxis,) * (rankB - 1) 
                  + numerix.index_exp[:])
         opShape = numerix._broadcastShape(A[index].shape, B.shape)
-        if rankA > 0:
+
+        if rankA > 0 and rankB > (rankA - 1):
             opShape = opShape[:rankA-1] + opShape[rankA:]
-        
+
         return A._BinaryOperatorVariable(lambda a,b: _MeshVariable._dot(a, b, index), 
                                          B, 
                                          opShape=opShape,
@@ -301,7 +366,7 @@ class _MeshVariable(Variable):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
-        
+
         return _MeshVariable.__dot(self, other, self._OperatorVariableClass(baseClass))
 
     def rdot(self, other, opShape=None, operatorClass=None):
@@ -566,81 +631,82 @@ class _MeshVariable(Variable):
 
 def _testDot(self):
     """
-        >>> from fipy import *
-        >>> mesh = Grid2D(nx=2, ny=3)
+    >>> from fipy import *
+    >>> mesh = Grid2D(nx=2, ny=3)
 
-        >>> s1 = CellVariable(mesh=mesh, value=2)
-        >>> s2 = CellVariable(mesh=mesh, value=3)
+    >>> s1 = CellVariable(mesh=mesh, value=2)
+    >>> s2 = CellVariable(mesh=mesh, value=3)
 
-        >>> v1 = CellVariable(mesh=mesh, rank=1, 
-        ...                   value=array([2,3])[..., newaxis])
-        >>> v2 = CellVariable(mesh=mesh, rank=1, 
-        ...                   value=array([3,4])[..., newaxis])
-        
-        >>> t21 = CellVariable(mesh=mesh, rank=2, 
-        ...                    value=array([[2, 3],
-        ...                                 [4, 5]])[..., newaxis])
-        >>> t22 = CellVariable(mesh=mesh, rank=2, 
-        ...                    value=array([[3, 4],
-        ...                                 [5, 6]])[..., newaxis])
+    >>> v1 = CellVariable(mesh=mesh, rank=1, 
+    ...                   value=array([2,3])[..., newaxis])
+    >>> v2 = CellVariable(mesh=mesh, rank=1, 
+    ...                   value=array([3,4])[..., newaxis])
+    
+    >>> t21 = CellVariable(mesh=mesh, rank=2, 
+    ...                    value=array([[2, 3],
+    ...                                 [4, 5]])[..., newaxis])
+    >>> t22 = CellVariable(mesh=mesh, rank=2, 
+    ...                    value=array([[3, 4],
+    ...                                 [5, 6]])[..., newaxis])
 
-        >>> t31 = CellVariable(mesh=mesh, rank=3, 
-        ...                    value=array([[[3, 4],
-        ...                                  [5, 6]],
-        ...                                 [[5, 6],
-        ...                                  [7, 8]]])[..., newaxis])
-        >>> t32 = CellVariable(mesh=mesh, rank=3, 
-        ...                    value=array([[[2, 3],
-        ...                                  [4, 5]],
-        ...                                 [[4, 5],
-        ...                                  [6, 7]]])[..., newaxis])
+    >>> t31 = CellVariable(mesh=mesh, rank=3, 
+    ...                    value=array([[[3, 4],
+    ...                                  [5, 6]],
+    ...                                 [[5, 6],
+    ...                                  [7, 8]]])[..., newaxis])
+    >>> t32 = CellVariable(mesh=mesh, rank=3, 
+    ...                    value=array([[[2, 3],
+    ...                                  [4, 5]],
+    ...                                 [[4, 5],
+    ...                                  [6, 7]]])[..., newaxis])
 
-        >>> def P(a):
-        ...     a = a.globalValue
-        ...     print a[...,0], a.shape
-        
-        >>> P(v1.dot(v2))
-        18 (6,)
-        >>> P(v1.dot(t22))
-        [21 26] (2, 6)
-        >>> P(v1.dot(t31))
-        [[21 26]
-         [31 36]] (2, 2, 6)
-        
-        >>> P(t21.dot(v1))
-        [13 23] (2, 6)
-        >>> P(t21.dot(t22))
-        [[21 26]
-         [37 46]] (2, 2, 6)
-        >>> P(t21.dot(t31))
-        [[[21 26]
-          [31 36]]
-        <BLANKLINE>
-         [[37 46]
-          [55 64]]] (2, 2, 2, 6)
-          
-        >>> P(t31.dot(v1))
-        [[18 28]
-         [28 38]] (2, 2, 6)
-        >>> P(t31.dot(t21))
-        [[[22 29]
-          [34 45]]
-        <BLANKLINE>
-         [[34 45]
-          [46 61]]] (2, 2, 2, 6)
-        >>> P(t31.dot(t32))
-        [[[[22 29]
-           [36 43]]
-        <BLANKLINE>
-          [[34 45]
-           [56 67]]]
-        <BLANKLINE>
-        <BLANKLINE>
-         [[[34 45]
-           [56 67]]
-        <BLANKLINE>
-          [[46 61]
-           [76 91]]]] (2, 2, 2, 2, 6)
+    >>> def P(a):
+    ...     a = a.globalValue
+    ...     print a[...,0], a.shape
+    
+    >>> P(v1.dot(v2))
+    18 (6,)
+    >>> P(v1.dot(t22))
+    [21 26] (2, 6)
+    >>> P(v1.dot(t31))
+    [[21 26]
+     [31 36]] (2, 2, 6)
+    
+    >>> P(t21.dot(v1))
+    [13 23] (2, 6)
+    >>> P(t21.dot(t22))
+    [[21 26]
+     [37 46]] (2, 2, 6)
+    >>> P(t21.dot(t31))
+    [[[21 26]
+      [31 36]]
+    <BLANKLINE>
+     [[37 46]
+      [55 64]]] (2, 2, 2, 6)
+      
+    >>> P(t31.dot(v1))
+    [[18 28]
+     [28 38]] (2, 2, 6)
+    >>> P(t31.dot(t21))
+    [[[22 29]
+      [34 45]]
+    <BLANKLINE>
+     [[34 45]
+      [46 61]]] (2, 2, 2, 6)
+    >>> P(t31.dot(t32))
+    [[[[22 29]
+       [36 43]]
+    <BLANKLINE>
+      [[34 45]
+       [56 67]]]
+    <BLANKLINE>
+    <BLANKLINE>
+     [[[34 45]
+       [56 67]]
+    <BLANKLINE>
+      [[46 61]
+       [76 91]]]] (2, 2, 2, 2, 6)
+
     """
     pass
 

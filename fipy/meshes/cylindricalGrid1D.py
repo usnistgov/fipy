@@ -40,6 +40,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 from grid1D import Grid1D
+from fipy.tools import parallel
 
 class CylindricalGrid1D(Grid1D):
     """
@@ -70,12 +71,12 @@ class CylindricalGrid1D(Grid1D):
         True
         
     """
-    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2):
+    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallel):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
     
-        Grid1D.__init__(self, dx=dx, nx=nx, overlap=overlap)
+        Grid1D.__init__(self, dx=dx, nx=nx, overlap=overlap, communicator=communicator)
 
         self.vertexCoords += origin
         self.args['origin'] = origin

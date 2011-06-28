@@ -38,6 +38,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
+from fipy.solvers import DefaultAsymmetricSolver
+
+class _CentralDifferenceConvectionTermAlpha(FaceVariable):
+    def __init__(self, P):
+        FaceVariable.__init__(self, P.mesh, value=0.5)
 
 class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     r"""
@@ -53,7 +58,7 @@ class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     :math:`\alpha_f` is calculated using the central differencing scheme.
     For further details see :ref:`sec:NumericalSchemes`.
     """
+    def _alpha(self, P):
+        return _CentralDifferenceConvectionTermAlpha(P)
 
-    class _Alpha(FaceVariable):
-        def __init__(self, P):
-            FaceVariable.__init__(self, P.mesh, value=0.5)
+    

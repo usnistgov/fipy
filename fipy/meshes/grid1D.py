@@ -287,11 +287,10 @@ class Grid1D(Mesh1D):
         everything works as expected. Fixed a bug where the following throws
         an error on solve() when nx is a float.
 
-            >>> # from fipy import *
-            >>> from fipy import CellVariable, DiffusionTerm
+            >>> from fipy import *
             >>> mesh = Grid1D(nx=3., dx=(1., 2., 3.))
             >>> var = CellVariable(mesh=mesh)
-            >>> DiffusionTerm().solve(var)
+            >>> DiffusionTerm().solve(var, solver=DummySolver())
 
         """
 

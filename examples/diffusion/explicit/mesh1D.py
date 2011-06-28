@@ -83,7 +83,6 @@ required to execute the necessary time steps:
 >>> timeStepDuration = 0.1
 >>> steps = 100
 >>> for step in range(steps):
-...     var.updateOld()     
 ...     eq.solve(var=var, dt=timeStepDuration)
 
 The analytical solution for this transient diffusion problem is given

@@ -93,7 +93,7 @@ We perform one implicit timestep to achieve steady state
 
 >>> eq.solve(var=var,
 ...          boundaryConditions=BCs,
-...          solver=DefaultAsymmetricSolver())
+...          solver=GeneralSolver())
 
 The analytical solution is:
 

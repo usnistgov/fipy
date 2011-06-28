@@ -40,6 +40,7 @@ from fipy.tools import numerix
 
 from gnuplotViewer import _GnuplotViewer
 from fipy.meshes import Grid2D
+from fipy.variables.faceVariable import FaceVariable
 
 class Gnuplot2DViewer(_GnuplotViewer):
     """
@@ -93,15 +94,20 @@ class Gnuplot2DViewer(_GnuplotViewer):
         self.g('set pm3d at st solid')
         mesh = self.vars[0].mesh
 
-        if isinstance(mesh, Grid2D.__class__):
-            nx, ny = mesh.shape
+        if self.vars[0]._variableClass is FaceVariable:
+            x, y = mesh.faceCenters
+            if isinstance(mesh, Grid2D.__class__):
+                nx, ny = mesh.shape
+            else:
+                N = int(numerix.sqrt(mesh.numberOfCells))
+                nx, ny = N, N
         else:
-            N = int(numerix.sqrt(mesh.numberOfCells))
+            x, y = mesh.cellCenters
+            N = int(numerix.sqrt(mesh.numberOfFaces))
             nx, ny = N, N
-            
+
         self.g('set dgrid3d %i, %i, 2' % (ny, nx))
 
-        x, y = mesh.cellCenters
         import Gnuplot
         data = Gnuplot.Data(numerix.array(x), numerix.array(y),
                             self.vars[0].value)

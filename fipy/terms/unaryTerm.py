@@ -96,6 +96,24 @@ class _UnaryTerm(Term):
         else:
             return var, SparseMatrix(mesh=var.mesh), 0
 
+    def _reshapeIDs(self, var, ids):
+        shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
+        ids = numerix.resize(ids, shape)
+        X, Y =  numerix.indices(shape[:-1])
+        X *= var.mesh.numberOfCells
+        ids += X[...,numerix.newaxis]
+        return ids
+
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)        
+        if self._vectorSize(var) > 1:
+            from fipy.solvers import DefaultAsymmetricSolver
+            return solver or DefaultAsymmetricSolver(*args, **kwargs)
+        else:
+            return solver
+
     def _test(self):
         """
         Offset tests

@@ -40,10 +40,10 @@ import os
 from pysparse import precon
 
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
-from fipy.solvers.solver import Solver
-from fipy.tools.decorators import getsetDeprecated
+from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
+from fipy.tools import numerix
 
-class PysparseSolver(Solver):
+class PysparseSolver(_PysparseMatrixSolver):
     """
     The base `pysparseSolver` class.
     
@@ -54,15 +54,7 @@ class PysparseSolver(Solver):
             raise NotImplementedError, \
                   "can't instantiate abstract base class"
             
-        Solver.__init__(self, *args, **kwargs)
-
-    @getsetDeprecated
-    def _getMatrixClass(self):
-        return self._matrixClass
-
-    @property
-    def _matrixClass(self):
-        return _PysparseMeshMatrix
+        super(PysparseSolver, self).__init__(*args, **kwargs)
 
     def _solve_(self, L, x, b):
         """
@@ -96,16 +88,15 @@ class PysparseSolver(Solver):
                 PRINT('failure', self._warningList[info].__class__.__name__)
             PRINT('relres:', relres)
             
-         
     def _solve(self):
 
         if self.var.mesh.communicator.Nproc > 1:
             raise Exception("PySparse solvers cannot be used with multiple processors")
-        
-        array = self.var.numericValue
+
+        array = self.var.numericValue.ravel()
         
         from fipy.terms import SolutionVariableNumberError
-        
+
         if ((self.matrix == 0)
             or (self.matrix.matrix.shape[0] != self.matrix.matrix.shape[1])
             or (self.matrix.matrix.shape[0] != len(array))):
@@ -116,4 +107,6 @@ class PysparseSolver(Solver):
         factor = self.var.unit.factor
         if factor != 1:
             array /= self.var.unit.factor
-        self.var[:] = array 
+
+        self.var[:] = array.reshape(self.var.shape)
+

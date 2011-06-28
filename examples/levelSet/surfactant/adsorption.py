@@ -81,8 +81,6 @@ Start time steping:
 
 >>> currentTime = 0.
 >>> for i in range(totalTimeSteps):
-...     surfactantVar.updateOld()
-...     bulkVar.updateOld()
 ...     surfEqn.solve(surfactantVar, dt = dt)
 ...     bulkEqn.solve(bulkVar, dt = dt)
 ...     currentTime += dt
@@ -178,8 +176,6 @@ if __name__ == "__main__":
         print "theta:",theta
 
         ## do a time step
-        surfactantVar.updateOld()
-        bulkVar.updateOld()
         surfEqn.solve(surfactantVar, dt = dt)
         bulkEqn.solve(bulkVar, dt = dt)
         currentTime += dt

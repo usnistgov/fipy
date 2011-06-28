@@ -67,30 +67,25 @@ class ImplicitSourceTerm(SourceTerm):
             [-0.5]
             
         """
-        if transientGeomCoeff is not None:
-            if numerix.all(transientGeomCoeff >= 0):
-                diagonalSign = 1
-            elif numerix.all(transientGeomCoeff <= 0):
-                diagonalSign = -1
-            else:
-                raise Exception, "Transient coefficient has both positive and negative values"
+        
+        if transientGeomCoeff is not None and diffusionGeomCoeff is not None:
+            diagonalSign = numerix.where(numerix.array(numerix.all(transientGeomCoeff == 0, axis=-1)),
+                                         numerix.array(2 * numerix.all(diffusionGeomCoeff[0] <= 0, axis=-1) - 1),
+                                         numerix.array(2 * numerix.all(transientGeomCoeff >= 0, axis=-1) - 1))
+        elif transientGeomCoeff is not None:
+            diagonalSign = 2 * numerix.all(transientGeomCoeff >= 0, axis=-1) - 1
         elif diffusionGeomCoeff is not None:
-            if numerix.all(diffusionGeomCoeff[0] <= 0):
-                diagonalSign = 1
-            elif numerix.all(diffusionGeomCoeff >= 0):
-                diagonalSign = -1
-            else:
-                raise Exception, "Diffusion coefficient has both positive and negative values"
+            diagonalSign = 2 * numerix.all(diffusionGeomCoeff[0] <= 0, axis=-1) - 1            
         else:
             diagonalSign = 1
-
-        coeff = self._getGeomCoeff(var.mesh)
-        combinedSign = diagonalSign * numerix.sign(coeff)
+            
+        coeff = self._getGeomCoeff(var)
+        combinedSign = numerix.array(diagonalSign)[...,numerix.newaxis] * numerix.sign(coeff)
 
         return {'diagonal' : (combinedSign >= 0),
-                'old value' : numerix.zeros(var.mesh.numberOfCells, 'd'),
+                'old value' : numerix.zeros(var.shape, 'd'),
                 'b vector' :  -var * (combinedSign < 0),
-                'new value' : numerix.zeros(var.mesh.numberOfCells, 'd')}
+                'new value' : numerix.zeros(var.shape, 'd')}
     
 def _test(): 
     import doctest

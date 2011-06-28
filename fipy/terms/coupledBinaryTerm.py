@@ -113,8 +113,8 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
                                                                                      SparseMatrix,
                                                                                      boundaryConditions=(),
                                                                                      dt=dt,
-                                                                                     transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(var),
-                                                                                     diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(var),
+                                                                                     transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(tmpVar),
+                                                                                     diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar),
                                                                                      buildExplicitIfOther=buildExplicitIfOther)
 
                 termMatrix += tmpMatrix 
@@ -129,7 +129,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     def __repr__(self):
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
@@ -236,12 +236,12 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> print RHSvector.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print numerix.allequal(matrix.numpyArray,
-        ...                        [[2, -1, 0, 2, -2, 0],
-        ...                         [-1, 3, -1, -2, 4, -2],
-        ...                         [0, -1, 2, 0, -2, 2],
-        ...                         [3, -3, 0, 5, -4, 0],
-        ...                         [-3, 6, -3, -4, 9, -4],                
-        ...                         [0, -3, 3, 0, -4, 5]])
+        ...                        [[ 2, -1,  0,  2, -2,  0],
+        ...                         [-1,  3, -1, -2,  4, -2],
+        ...                         [ 0, -1,  2,  0, -2,  2],
+        ...                         [ 3, -3,  0,  5, -4,  0],
+        ...                         [-3,  6, -3, -4,  9, -4],                
+        ...                         [ 0, -3,  3,  0, -4,  5]])
         True
 
         >>> m = Grid1D(nx=6)
@@ -292,6 +292,27 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> print diffTerm.matrix 
         None
         
+        Check `diffusionGeomCoeff` is determined correctly (ticket:329)
+        
+        >>> m = Grid1D(nx=3)
+        >>> v0 = CellVariable(mesh=m, value=0.)
+        >>> v1 = CellVariable(mesh=m, value=1.)
+        >>> eq0 = PowerLawConvectionTerm(coeff=100., var=v0) - DiffusionTerm(coeff=1., var=v0)
+        >>> eq1 = PowerLawConvectionTerm(coeff=-0.001, var=v1) - DiffusionTerm(coeff=3., var=v1)
+        >>> eq = eq0 & eq1
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> print var.globalValue
+        [ 0.  0.  0.  1.  1.  1.]
+        >>> print RHSvector.globalValue
+        [ 0.  0.  0.  0.  0.  0.]
+        >>> print numerix.allclose(matrix.numpyArray,
+        ...                        [[ 100, 1e-15,      0,       0,       0,       0],
+        ...                         [-100,   100,  1e-15,       0,       0,       0],
+        ...                         [   0,  -100, -1e-15,       0,       0,       0],
+        ...                         [   0,     0,      0,  2.9995, -3.0005,       0],
+        ...                         [   0,     0,      0, -2.9995,  6.0000, -3.0005],                
+        ...                         [   0,     0,      0,       0, -2.9995,  3.0005]])
+        True
         """
 
 def _test(): 

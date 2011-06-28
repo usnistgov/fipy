@@ -43,15 +43,16 @@ class ResidualTerm(_ExplicitSourceTerm):
     The `ResidualTerm` is a special form of explicit `SourceTerm` that adds the
     residual of one equation to another equation. Useful for Newton's method.
     """
-    def __init__(self, equation):
+    def __init__(self, equation, underRelaxation=1.):
         self.equation = equation
+        self.underRelaxation = underRelaxation
         
         _ExplicitSourceTerm.__init__(self, var=None)
         
     def __repr__(self):
         return r"$\Delta$[" + repr(self.equation) + "]"
 
-    def _getGeomCoeff(self, mesh):
+    def _getGeomCoeff(self, var):
         return self.coeff
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
@@ -59,7 +60,7 @@ class ResidualTerm(_ExplicitSourceTerm):
                                                boundaryConditions=boundaryConditions,
                                                dt=dt)
 
-        self.coeff = CellVariable(mesh=var.mesh, value=vec)
+        self.coeff = CellVariable(mesh=var.mesh, value=vec * self.underRelaxation)
         self.geomCoeff = None
         self.coeffVectors = None
         

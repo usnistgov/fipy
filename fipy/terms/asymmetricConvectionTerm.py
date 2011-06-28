@@ -39,12 +39,13 @@ from fipy.solvers import DefaultAsymmetricSolver
 
 class _AsymmetricConvectionTerm(_BaseConvectionTerm):
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
         r"""
         Make sure the method actually does something.
         >>> print _AsymmetricConvectionTerm((1,)).getDefaultSolver().__repr__()[:6]
         Linear
         """
+        solver = solver or super(_AsymmetricConvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
