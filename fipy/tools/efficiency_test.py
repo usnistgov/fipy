@@ -67,8 +67,8 @@ class Efficiency_test(Command):
         self.path = None
         self.otherExample = None
         self.newElements = None
-        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
-                          'examples/reactiveWetting/liquidVapor2D.py']
+        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py']#, \
+##                          '../trunk/examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
     
     def finalize_options(self):
@@ -115,7 +115,6 @@ class Efficiency_test(Command):
 ##            while numberOfElements <= self.maximumelements:
 ##                print "\tnumberOfElements: %i" % numberOfElements
             print "Running example:"
-##                cmd = ["python", "-W ignore", case, '--numberOfElements=%i' % numberOfElements, '--no-display nodisp']
             cmd = ["python", "-W ignore", case]
 
             output = "\t".join([str(self.inline).center(10), str(self.cache).center(10),\
@@ -137,12 +136,12 @@ class Efficiency_test(Command):
             r.close()
             w.close()
 
-#                memCmd = cmd + ['--measureMemory', '--sampleTime=%f' % self.sampleTime]
+##                memCmd = cmd + ['--measureMemory', '--sampleTime=%f' % self.sampleTime]
 
-#                w, r = os.popen4(' '.join(memCmd))
-#                output += '\t' + ''.join(r.readlines()).strip()
-            r.close()
-            w.close()
+##                w, r = os.popen4(' '.join(memCmd))
+##                output += '\t' + ''.join(r.readlines()).strip()
+##           r.close()
+##            w.close()
             if numberOfElements == self.maximumelements:    
                 f.write(output + '\n' + "-"*100 + '\n')
                 f.flush()
@@ -157,8 +156,8 @@ class Efficiency_test(Command):
                 from datetime import datetime
                 
                 CODESPEED_URL = "http://localhost:8000/"
-                revnum = pysvn.Client().info('./examples')['revision'].number
-                revdate  = pysvn.Client().info('./examples')['commit_time']
+                revnum = pysvn.Client().info('../trunk/examples')['revision'].number
+                revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
 
                 def add(data):
                     params = urllib.urlencode(data)
@@ -178,7 +177,7 @@ class Efficiency_test(Command):
                         'branch': 'efficiency_test',#Always use default for trunk/master/tip
                         'project': 'FiPy',
                         'revision_date': datetime.fromtimestamp(revdate),
-                        'executable': case,
+                        'executable': "Trunk" + case,
                         'benchmark': benchmarks[i],
                         'environment': "FiPy",
                         'result_value': results[i],

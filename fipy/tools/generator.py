@@ -91,7 +91,7 @@ def run(cases, elements):
             elif elements is not None and 'nx = ' in line:
                 linelist = line.split('=')
                 dimensions = len(linelist)-1
-                root_elements = str(elements ** (float(1)/dimensions))
+                root_elements = str(float(elements) ** (float(1)/dimensions))
                 linelist.insert((len(linelist)-1), elements)
                 del linelist[len(linelist)-1]
                 newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
@@ -99,7 +99,7 @@ def run(cases, elements):
                 del flist[index+1]
                 
         flist.append('\ntimes.append(time.time())\n')
-        flist.append('\nprint times')
+##        flist.append('\nprint times')
         flist.append('\nInitialization_time = times[1]-times[0]')
         flist.append('\nFirst_timestep = times[2]-times[1]')
         flist.append('\navg_timesteps = (times[(len(times)-2)]-times[1])/((len(times)-3))')
