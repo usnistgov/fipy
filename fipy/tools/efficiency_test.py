@@ -55,7 +55,8 @@ class Efficiency_test(Command):
                      ('path=', None, 'directory to place output results in'),
                      ('uploadToCodespeed', None, 'flag to upload data to Codespeed'),
                      ('otherExample=', None, 'designate examples other than the default ones to benchmark'),
-                     ('newElements=', None, 'alter the number of elements. NB: will not work on all examples')]
+                     ('newElements=', None, 'alter the number of elements. NB: will not work on all examples'),
+                     ('revisionNumber=', None, 'generate history of example(s) from given revision number')]
     
     def initialize_options(self):
         self.factor = 10
