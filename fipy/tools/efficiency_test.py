@@ -68,8 +68,8 @@ class Efficiency_test(Command):
         self.path = None
         self.otherExample = None
         self.newElements = None
-        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py']#, \
-##                          '../trunk/examples/reactiveWetting/liquidVapor2D.py']
+        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py', \
+                          '../trunk/examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
         self.revisionNumber = None
     
@@ -87,6 +87,7 @@ class Efficiency_test(Command):
         import os
 
         if self.revisionNumber is not None:
+            self.revisionNumber = int(self.revisionNumber)
             from fipy.tools import efficiencyTestHistory
             import sys
             efficiencyTestHistory.run(self.revisionNumber)
@@ -161,7 +162,8 @@ class Efficiency_test(Command):
                 import pysvn
                 from datetime import datetime
                 
-                CODESPEED_URL = "http://localhost:8000/"
+##                CODESPEED_URL = "http://localhost:8000/"
+                CODESPEED_URL = 'http://build.cmi.kent.edu/codespeed/'
                 revnum = pysvn.Client().info('../trunk/examples')['revision'].number
                 revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
 
@@ -180,14 +182,13 @@ class Efficiency_test(Command):
                 for i in range(len(benchmarks)):
                     data = {
                         'commitid':revnum,
-                        'branch': 'efficiency_test',#Always use default for trunk/master/tip
+                        'branch': 'efficiency_test',
                         'project': 'FiPy',
                         'revision_date': datetime.fromtimestamp(revdate),
                         'executable': "Trunk" + case,
                         'benchmark': benchmarks[i],
                         'environment': "FiPy",
                         'result_value': results[i],
-##                        'total_runtime': runtime,
                         'result_date': datetime.fromtimestamp(revdate)
                         }  
                     add(data)   
