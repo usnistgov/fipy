@@ -35,6 +35,8 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
+from fipy.variables.meshVariable import _MeshVariable
+from fipy.terms.faceTerm import FaceTerm
 
 class RoeConvectionTerm(_BaseConvectionTerm):
     r"""
@@ -85,7 +87,17 @@ class RoeConvectionTerm(_BaseConvectionTerm):
                                 'cell 2 diag': -coeff[1],
                                 'cell 2 offdiag': -coeff[0]}
         return self.coeffMatrix
+
+    def _getWeight(self, var, transientGeomCoeff, diffusionGeomCoeff):
+        return {'implicit' : {'cell 1 diag' : 1}}
     
     def _calcGeomCoeff(self, var):
         from fipy.variables.roeVariable import _RoeVariable
         return _RoeVariable(var, self.coeff)
+
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+
+        from fipy.terms.faceTerm import FaceTerm
+        return FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+

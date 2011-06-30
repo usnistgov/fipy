@@ -43,5 +43,6 @@ from hybridConvectionTerm import HybridConvectionTerm
 from powerLawConvectionTerm import PowerLawConvectionTerm
 from upwindConvectionTerm import UpwindConvectionTerm
 from vanLeerConvectionTerm import VanLeerConvectionTerm
+from roeConvectionTerm import RoeConvectionTerm
 ConvectionTerm = PowerLawConvectionTerm
 

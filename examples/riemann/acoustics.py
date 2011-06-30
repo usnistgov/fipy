@@ -60,9 +60,9 @@ q = CellVariable(mesh=m, rank=1, elementshape=(2,))
 q[0,:] = numerix.exp(-50 * (x - 0.3)**2) * numerix.cos(20 * (x - 0.3))
 q[0, x > 0.3] = 0.
 
-Ax = FaceVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
+Ax = CellVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
 
-eqn = TransientTerm() + CentralDifferenceConvectionTerm(Ax) == 0
+eqn = TransientTerm() + RoeConvectionTerm(Ax) == 0
 
 if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer

@@ -36,15 +36,17 @@
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools import numerix
+from fipy.variables.faceVariable import FaceVariable
 
 class _RoeVariable(FaceVariable):
     def __init__(self, var, coeff):
-        super(FaceVariable, self).__init__(var=var, elementshape=(2,) + var.shape[:-1])
+        super(FaceVariable, self).__init__(mesh=var.mesh, elementshape=(2,) + var.shape[:-1])
         self.var = self._requires(var)
         self.coeff = self._requires(coeff)
         
     def _calcValue(self):
         id1, id2 = self.mesh._adjacentCellIDs
+        mesh = self.var.mesh
         
         ## varDown.shape = (Nequ, Nfac)
         varDown = numerix.take(self.var, id1, axis=-1)
@@ -56,10 +58,14 @@ class _RoeVariable(FaceVariable):
         
         ## Anumerator.shape = (Nequ, Nface)
         Anumerator = (coeffUp * varUp[:, numerix.newaxis] \
-                      - coeffDown * varDown[:, numerix.newaxis]).sum(-2)
+                      - coeffDown * varDown[:, numerix.newaxis]).sum(1)
 
         ## Adenominator.shape = (Nequ, Nfac)
         Adenominator = varUp - varDown
+        Adenominator = numerix.where(Adenominator == 0,
+                                     1e-10,
+                                     Adenominator)
+
 
         ## A.shape = (Nequ, Nequ, Nfac)
         A = Anumerator[:, numerix.newaxis] / Adenominator[numerix.newaxis]
@@ -70,8 +76,8 @@ class _RoeVariable(FaceVariable):
             eigenvalues, R = numerix.linalg.eig(A[...,ifac])
             argsort = numerix.argsort(eigenvalues)
             eigenvalues, R = eigenvalues[argsort], R[:, argsort]
-            Rinv = numerix.inv(R)
-            Abar[....ifac] = R.dot(abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])).dot(Rinv)
+            Rinv = numerix.linalg.inv(R)
+            Abar[...,ifac] = numerix.dot(numerix.dot(R, abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])), Rinv)
 
         ## value.shape = (2, Nequ, Nequ, Nfac)
         value = numerix.zeros((2,) + A.shape)
