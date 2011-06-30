@@ -71,6 +71,7 @@ class Efficiency_test(Command):
         self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py']#, \
 ##                          '../trunk/examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
+        self.revisionNumber = None
     
     def finalize_options(self):
         self.factor = int(self.factor)
@@ -79,13 +80,17 @@ class Efficiency_test(Command):
         self.sampleTime = float(self.sampleTime)
         if self.otherExample is not None:
             self.cases = [self.otherExample]
-                     
 
     def run(self):
         import time
         from fipy.tools import generator
         import os
 
+        if self.revisionNumber is not None:
+            from fipy.tools import efficiencyTestHistory
+            import sys
+            efficiencyTestHistory.run(self.revisionNumber)
+            sys.exit()
         newCases = generator.run(self.cases,self.newElements)
 
         for case in newCases:
