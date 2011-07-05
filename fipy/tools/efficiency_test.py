@@ -162,36 +162,66 @@ class Efficiency_test(Command):
                 import pysvn
                 from datetime import datetime
                 
-##                CODESPEED_URL = "http://localhost:8000/"
-                CODESPEED_URL = 'http://build.cmi.kent.edu/codespeed/'
+                CODESPEED_URL = "http://localhost:8000/"
+##                CODESPEED_URL = 'http://build.cmi.kent.edu/codespeed/'
                 revnum = pysvn.Client().info('../trunk/examples')['revision'].number
                 revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
+
+                # def add(data):
+                #     params = urllib.urlencode(data)
+                #     response = "None"
+                #     print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
+                #                                                             data['commitid'], data['benchmark']) 
+                #     g = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)  
+                #     response = g.read()
+                #     g.close()
+                #     print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
+                # benchmarks = ['Initialization', 'First timestep', 'Average of remaining timesteps',\
+                #                   'Total Runtime']
+                # results = [init_time, frst_timestp, avg_timestp, runtime]
+                # for i in range(len(benchmarks)):
+                #     data = {
+                #         'commitid':revnum,
+                #         'branch': 'efficiency_test',
+                #         'project': 'FiPy',
+                #         'revision_date': datetime.fromtimestamp(revdate),
+                #         'executable': "Trunk" + case,
+                #         'benchmark': benchmarks[i],
+                #         'environment': "FiPy",
+                #         'result_value': results[i],
+                #         'result_date': datetime.fromtimestamp(revdate)
+                #         }                     
 
                 def add(data):
                     params = urllib.urlencode(data)
                     response = "None"
-                    print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
-                                                                            data['commitid'], data['benchmark']) 
-                    g = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)  
-                    response = g.read()
-                    g.close()
-                    print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
-                benchmarks = ['Initialization', 'First timestep', 'Average of remaining timesteps',\
-                                  'Total Runtime']
+                    print "Saving result for executable %s, revision %s, benchmark %s" % (
+                        data['executable'], data['commitid'], data['benchmark'])
+                    try:
+                        f = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)
+                    except urllib2.HTTPError as e:
+                        print str(e)
+                        print e.read()
+                        return
+                    response = f.read()
+                    f.close()
+                    print "Server (%s) response: %s\n" % (CODESPEED_URL, response) 
+ 
+                benchmarks = ['Initialization', 'First timestep',\
+                                  'Average of remaining timesteps', 'Total Runtime']
                 results = [init_time, frst_timestp, avg_timestp, runtime]
                 for i in range(len(benchmarks)):
                     data = {
-                        'commitid':revnum,
-                        'branch': 'efficiency_test',
+                        'commitid': revnum,
+                        'branch': 'efficiency_test', #Always use default for trunk/master/tip
                         'project': 'FiPy',
-                        'revision_date': datetime.fromtimestamp(revdate),
-                        'executable': "Trunk" + case,
+                        'executable': case,
                         'benchmark': benchmarks[i],
                         'environment': "FiPy",
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
-                        }  
-                    add(data)   
+                        }                
+                    add(data)
             numberOfElements *= self.factor
             f.close()
             os.remove(case)
