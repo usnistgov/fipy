@@ -168,32 +168,7 @@ class Efficiency_test(Command):
 ##                revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
 
                 revnum = pysvn.Client().info('.')['revision'].number
-                revdate  = pysvn.Client().info('.')['commit_time']
-
-                # def add(data):
-                #     params = urllib.urlencode(data)
-                #     response = "None"
-                #     print "Executable %s, revision %s, benchmark %s" % (data['executable'],\
-                #                                                             data['commitid'], data['benchmark']) 
-                #     g = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)  
-                #     response = g.read()
-                #     g.close()
-                #     print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
-                # benchmarks = ['Initialization', 'First timestep', 'Average of remaining timesteps',\
-                #                   'Total Runtime']
-                # results = [init_time, frst_timestp, avg_timestp, runtime]
-                # for i in range(len(benchmarks)):
-                #     data = {
-                #         'commitid':revnum,
-                #         'branch': 'efficiency_test',
-                #         'project': 'FiPy',
-                #         'revision_date': datetime.fromtimestamp(revdate),
-                #         'executable': "Trunk" + case,
-                #         'benchmark': benchmarks[i],
-                #         'environment': "FiPy",
-                #         'result_value': results[i],
-                #         'result_date': datetime.fromtimestamp(revdate)
-                #         }                     
+                revdate  = pysvn.Client().info('.')['commit_time']                   
 
                 def add(data):
                     params = urllib.urlencode(data)
@@ -218,7 +193,7 @@ class Efficiency_test(Command):
                         'commitid': revnum,
                         'branch': 'default', #Always use default for trunk/master/tip
                         'project': 'FiPy',
-                        'revision_date': datetime.fromtimestamp(revdate), #optional
+#                        'revision_date': datetime.fromtimestamp(revdate), #optional
                         'executable': case,
                         'benchmark': benchmarks[i],
                         'environment': "FiPy",
