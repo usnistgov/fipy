@@ -52,6 +52,7 @@ K = 4.
 rho = 1.
 
 dx = L / nx
+
 m = Grid1D(nx=nx, dx=dx) + X0
 x, = m.cellCenters
 
@@ -67,14 +68,15 @@ eqn = TransientTerm() + RoeConvectionTerm(Ax) == 0
 if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer
     vi = Viewer((q[0], q[1]))
-    vi.plot()
+    vi.plot() 
     raw_input('press key')
     
 for step in range(500):
-    eqn.solve(q, dt=cfl * dx)
-    if step % 10 ==  0 and  __name__ == '__main__':
-        print 'step',step
+    eqn.solve(q, dt=0.000125)
+    print 'step',step
+    if step % 100 ==  0 and  __name__ == '__main__':
         vi.plot()
+        raw_input('wait')
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

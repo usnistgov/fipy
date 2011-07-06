@@ -93,11 +93,18 @@ class RoeConvectionTerm(_BaseConvectionTerm):
     
     def _calcGeomCoeff(self, var):
         from fipy.variables.roeVariable import _RoeVariable
+        
         return _RoeVariable(var, self.coeff)
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-
         from fipy.terms.faceTerm import FaceTerm
         return FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        solver = solver or super(RoeConvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
+        if solver and not solver._canSolveAsymmetric():
+            import warnings
+            warnings.warn("%s cannot solve assymetric matrices" % solver)
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
 
 

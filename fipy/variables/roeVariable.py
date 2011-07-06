@@ -56,19 +56,21 @@ class _RoeVariable(FaceVariable):
         coeffDown = (numerix.take(self.coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0)
         coeffUp = (numerix.take(self.coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0)
         
-        ## Anumerator.shape = (Nequ, Nface)
-        Anumerator = (coeffUp * varUp[:, numerix.newaxis] \
-                      - coeffDown * varDown[:, numerix.newaxis]).sum(1)
+##         ## Anumerator.shape = (Nequ, Nface)
+##         Anumerator = (coeffUp * varUp[:, numerix.newaxis] \
+##                       - coeffDown * varDown[:, numerix.newaxis]).sum(1)
 
-        ## Adenominator.shape = (Nequ, Nfac)
-        Adenominator = varUp - varDown
-        Adenominator = numerix.where(Adenominator == 0,
-                                     1e-10,
-                                     Adenominator)
+##         ## Adenominator.shape = (Nequ, Nfac)
+##         Adenominator = varUp - varDown
+##         Adenominator = numerix.where(Adenominator == 0,
+##                                      1e-10,
+##                                      Adenominator)
 
+##         ## A.shape = (Nequ, Nequ, Nfac)
+##         A = Anumerator[:, numerix.newaxis] / Adenominator[numerix.newaxis]
 
         ## A.shape = (Nequ, Nequ, Nfac)
-        A = Anumerator[:, numerix.newaxis] / Adenominator[numerix.newaxis]
+        A = (coeffUp + coeffDown) / 2.
 
         ## Needs to be vectorized.
         Abar = numerix.zeros(A.shape, 'd')
@@ -76,14 +78,15 @@ class _RoeVariable(FaceVariable):
             eigenvalues, R = numerix.linalg.eig(A[...,ifac])
             argsort = numerix.argsort(eigenvalues)
             eigenvalues, R = eigenvalues[argsort], R[:, argsort]
+            DOT = numerix.NUMERIX.dot
             Rinv = numerix.linalg.inv(R)
-            Abar[...,ifac] = numerix.dot(numerix.dot(R, abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])), Rinv)
-
+            Abar[...,ifac] = DOT(DOT(R, abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])), Rinv)
+            
         ## value.shape = (2, Nequ, Nequ, Nfac)
-        value = numerix.zeros((2,) + A.shape)
+        value = numerix.zeros((2,) + A.shape, 'd')
         value[0] = (coeffDown + Abar) / 2
         value[1] = (coeffUp - Abar) / 2
-        
+
         return value    
 
             
