@@ -14,17 +14,18 @@ def run(startRev):
     while(startRev not in revisions):
         startRev += 1 
     index = revisions.index(startRev)
-    os.chdir("../trunk/examples")
+    os.chdir("../../../trunk/examples")
     for k in revisions[index:]:
         revisionNumber = pysvn.Client().update(".", revision=pysvn.Revision(pysvn.opt_revision_kind.number, k))
         print "pysvn.Client().info('.')['revision'].number: ", pysvn.Client().info('.')['revision'].number
         os.chdir("../../efficiency_test")
+        print 'hello'
         w, r = os.popen2("python setup.py efficiency_test --uploadToCodespeed")
         os.wait()
         os.chdir("../trunk/examples")
 
 if __name__ == '__main__':
-    run(4150)
+    run(4300)
 
 
 
