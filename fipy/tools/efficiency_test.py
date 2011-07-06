@@ -164,8 +164,11 @@ class Efficiency_test(Command):
                 
 ##                CODESPEED_URL = "http://localhost:8000/"
                 CODESPEED_URL = 'http://build.cmi.kent.edu/codespeed/'
-                revnum = pysvn.Client().info('../trunk/examples')['revision'].number
-                revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
+##                revnum = pysvn.Client().info('../trunk/examples')['revision'].number
+##                revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
+
+                revnum = pysvn.Client().info('.')['revision'].number
+                revdate  = pysvn.Client().info('.')['commit_time']
 
                 # def add(data):
                 #     params = urllib.urlencode(data)
@@ -215,6 +218,7 @@ class Efficiency_test(Command):
                         'commitid': revnum,
                         'branch': 'default', #Always use default for trunk/master/tip
                         'project': 'FiPy',
+                        'revision_date': datetime.fromtimestamp(revdate), #optional
                         'executable': case,
                         'benchmark': benchmarks[i],
                         'environment': "FiPy",
