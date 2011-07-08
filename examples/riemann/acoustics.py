@@ -70,13 +70,22 @@ if  __name__ == '__main__':
     vi = Viewer((q[0], q[1]))
     vi.plot() 
     raw_input('press key')
-    
-for step in range(500):
+
+from profiler import Profiler
+from profiler import calibrate_profiler
+
+fudge = calibrate_profiler(10000)
+profile = Profiler('profile', fudge=fudge)
+
+for step in range(10):
     eqn.solve(q, dt=0.000125)
     print 'step',step
+
     if step % 100 ==  0 and  __name__ == '__main__':
         vi.plot()
-        raw_input('wait')
+
+
+profile.stop()
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

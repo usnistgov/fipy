@@ -79,9 +79,8 @@ class RoeConvectionTerm(_BaseConvectionTerm):
         FaceTerm.__init__(self, coeff=coeff, var=var)
         
     def _getCoeffMatrix_(self, var, weight):
-        coeff = self._getGeomCoeff(var)
-
         if self.coeffMatrix is None:
+            coeff = self._getGeomCoeff(var, dontCacheMe=False)
             self.coeffMatrix = {'cell 1 diag' : coeff[0],
                                 'cell 1 offdiag': coeff[1],
                                 'cell 2 diag': -coeff[1],
@@ -92,8 +91,7 @@ class RoeConvectionTerm(_BaseConvectionTerm):
         return {'implicit' : {'cell 1 diag' : 1}}
     
     def _calcGeomCoeff(self, var):
-        from fipy.variables.roeVariable import _RoeVariable
-        
+        from fipy.variables.roeVariable import _RoeVariable        
         return _RoeVariable(var, self.coeff)
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):

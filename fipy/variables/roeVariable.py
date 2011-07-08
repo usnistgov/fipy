@@ -40,7 +40,8 @@ from fipy.variables.faceVariable import FaceVariable
 
 class _RoeVariable(FaceVariable):
     def __init__(self, var, coeff):
-        super(FaceVariable, self).__init__(mesh=var.mesh, elementshape=(2,) + var.shape[:-1])
+        super(FaceVariable, self).__init__(mesh=var.mesh, elementshape=(2,) + var.shape[:-1], cached=True)
+##        self.var = self._requires(var)
         self.var = self._requires(var)
         self.coeff = self._requires(coeff)
         
@@ -48,9 +49,9 @@ class _RoeVariable(FaceVariable):
         id1, id2 = self.mesh._adjacentCellIDs
         mesh = self.var.mesh
         
-        ## varDown.shape = (Nequ, Nfac)
-        varDown = numerix.take(self.var, id1, axis=-1)
-        varUp = numerix.take(self.var, id2, axis=-1)
+##        ## varDown.shape = (Nequ, Nfac)
+##        varDown = numerix.take(self.var, id1, axis=-1)
+##        varUp = numerix.take(self.var, id2, axis=-1)
 
         ## coeffDown.shape = (Nequ, Nequ, Nfac)
         coeffDown = (numerix.take(self.coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0)
@@ -82,7 +83,7 @@ class _RoeVariable(FaceVariable):
             Rinv = numerix.linalg.inv(R)
             Abar[...,ifac] = DOT(DOT(R, abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])), Rinv)
             
-        ## value.shape = (2, Nequ, Nequ, Nfac)
+        ## value.shape = (2, Nequ, Nequ, Nfac)+
         value = numerix.zeros((2,) + A.shape, 'd')
         value[0] = (coeffDown + Abar) / 2
         value[1] = (coeffUp - Abar) / 2
