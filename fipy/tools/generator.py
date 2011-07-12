@@ -83,8 +83,7 @@ def run(cases, elements):
                 flist.insert(index, commentedline)
                 del flist[index+1]
             elif '__name__ == "__main__"' in line and not '#' in line:
-                line = line.lstrip()
-                split_line = line.lstrip('if ').split(':')
+                split_line = line.lstrip().lstrip('if ').split(':')
                 commentedline = whitespaces * ' ' + 'if False and ' + split_line[0] + ":\n"
                 flist.insert(index, commentedline)
                 del flist[index+1]
