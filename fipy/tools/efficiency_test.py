@@ -68,8 +68,10 @@ class Efficiency_test(Command):
         self.path = None
         self.otherExample = None
         self.newElements = None
-        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py', \
-                          '../trunk/examples/reactiveWetting/liquidVapor2D.py']
+##        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py']#, \
+##                          '../trunk/examples/reactiveWetting/liquidVapor2D.py']
+        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
+                          'examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
         self.revisionNumber = None
     
@@ -164,11 +166,11 @@ class Efficiency_test(Command):
                 
 ##                CODESPEED_URL = "http://localhost:8000/"
                 CODESPEED_URL = 'http://build.cmi.kent.edu/codespeed/'
-                revnum = pysvn.Client().info('../trunk/examples')['revision'].number
-                revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
+##                revnum = pysvn.Client().info('../trunk/examples')['revision'].number
+##                revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
 
-##                revnum = pysvn.Client().info('.')['revision'].number
-##                revdate  = pysvn.Client().info('.')['commit_time']                   
+                revnum = pysvn.Client().info('.')['revision'].number
+                revdate  = pysvn.Client().info('.')['commit_time']                   
 
                 def add(data):
                     params = urllib.urlencode(data)
@@ -199,7 +201,8 @@ class Efficiency_test(Command):
                         'environment': "FiPy",
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
-                        }                
+                        }     
+                    print datetime.fromtimestamp(revdate)
                     add(data)
             numberOfElements *= self.factor
             f.close()
