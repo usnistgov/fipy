@@ -39,6 +39,66 @@ from fipy.variables.meshVariable import _MeshVariable
 from fipy.terms.faceTerm import FaceTerm
 from fipy.tools import numerix
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
+from fipy.variables.faceVariable import FaceVariable
+
+class _RoeVariable(FaceVariable):
+    def __init__(self, var, coeff):
+        super(FaceVariable, self).__init__(mesh=var.mesh, elementshape=(2,) + var.shape[:-1], cached=True)
+        self.var = var
+
+        self.coeff = self._requires(coeff)
+        
+    def _calcValue(self):
+        id1, id2 = self.mesh._adjacentCellIDs
+        mesh = self.var.mesh
+        
+        coeffDown = (numerix.take(self.coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0)
+        coeffUp = (numerix.take(self.coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0)
+        
+        ## Helper functions
+        def mul(A, B):
+            """
+            Matrix multiply N MxM matrices, A.shape = B.shape = (M, M, N).
+            """
+            return numerix.sum(A.swapaxes(0,1)[:, :, numerix.newaxis] * B[:, numerix.newaxis], 0)
+
+        def inv(A):
+            """
+            Inverts N MxM matrices, A.shape = (M, M, N).
+            """
+            return numerix.array(map(numerix.linalg.inv, A.transpose(2, 0, 1))).transpose(1, 2, 0)
+
+        def eig(A):
+            """
+            Calculate the eigenvalues and eigenvectors of N MxM matrices, A.shape = (M, M, N).
+            """
+            tmp = zip(*map(numerix.linalg.eig, A.transpose(2, 0, 1)))
+            return numerix.array(tmp[0]).swapaxes(0,1), numerix.array(tmp[1]).transpose(1,2,0)
+
+        def sortedeig(A):
+            """
+            Caclulates the sorted eigenvalues and eigenvectors of N MxM matrices, A.shape = (M, M, N).
+            """
+            N = A.shape[-1]
+            eigenvalues, R = eig(A)
+            order = eigenvalues.argsort(0).swapaxes(0, 1)
+            Nlist = [[i] for i in xrange(N)]
+            return (eigenvalues[order, Nlist].swapaxes(0, 1),
+                    R[:, order, Nlist].swapaxes(1, 2))
+
+        ## A.shape = (Nequ, Nequ, Nfac)
+        A = (coeffUp + coeffDown) / 2.
+        
+        eigenvalues, R = sortedeig(A)
+        E = abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])[..., numerix.newaxis]
+        Abar = mul(mul(R, E), inv(R))
+
+        ## value.shape = (2, Nequ, Nequ, Nfac)+
+        value = numerix.zeros((2,) + A.shape, 'd')
+        value[0] = (coeffDown + Abar) / 2
+        value[1] = (coeffUp - Abar) / 2
+
+        return value
 
 class _CellFaceValue(_CellToFaceVariable):
     def _calcValue_(self, alpha, id1, id2):
@@ -101,7 +161,6 @@ class RoeConvectionTerm(_BaseConvectionTerm):
         return {'implicit' : {'cell 1 diag' : 1}}
     
     def _calcGeomCoeff(self, var):
-        from fipy.variables.roeVariable import _RoeVariable        
         return _RoeVariable(var, self.coeff)
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
