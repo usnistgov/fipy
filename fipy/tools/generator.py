@@ -8,7 +8,6 @@
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
@@ -119,5 +118,5 @@ def run(cases, elements):
 
 if __name__ == "__main__":
     Scripts = run(['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
-                           'examples/reactiveWetting/liquidVapor2D.py','examples/diffusion/circle.py'],None)
+                           'examples/reactiveWetting/liquidVapor2D.py'],None)
  

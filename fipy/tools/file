@@ -1,4 +1,48 @@
 <logentry
+   revision="4632">
+<author>wd15</author>
+<date>2011-06-21T17:16:45.249307Z</date>
+<msg>Fixing ticket:85</msg>
+</logentry>
+<logentry
+   revision="4608">
+<author>wd15</author>
+<date>2011-06-16T19:50:17.980424Z</date>
+<msg>merged source:branches/vectorEquation@ to source:trunk@</msg>
+</logentry>
+<logentry
+   revision="4519">
+<author>wd15</author>
+<date>2011-05-02T17:43:57.429501Z</date>
+<msg>merged source:branches/reconstrain@4518 to source:trunk@4518</msg>
+</logentry>
+<logentry
+   revision="4509">
+<author>wd15</author>
+<date>2011-04-26T16:37:02.218056Z</date>
+<msg>merged source:branches/pyAMG-doc@ to source:trunk@</msg>
+</logentry>
+<logentry
+   revision="4505">
+<author>wd15</author>
+<date>2011-04-25T21:38:38.211671Z</date>
+<msg>merged source:branches/pyAMG@4504 to source:trunk@4504</msg>
+</logentry>
+<logentry
+   revision="4491">
+<author>guyer</author>
+<date>2011-04-22T18:50:10.676456Z</date>
+<msg>r4483 added a test for ticket:332, but neglected to add it to the test suite
+</msg>
+</logentry>
+<logentry
+   revision="4483">
+<author>guyer</author>
+<date>2011-04-22T13:29:37.848684Z</date>
+<msg>Example to demonstrate that anisotropic diffusion and constraints don't mix (ticket:332)
+</msg>
+</logentry>
+<logentry
    revision="4466">
 <author>wd15</author>
 <date>2011-04-19T18:37:24.776985Z</date>
