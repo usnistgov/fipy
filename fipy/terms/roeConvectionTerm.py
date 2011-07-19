@@ -81,6 +81,7 @@ class _RoeVariable(FaceVariable):
             """
             N = A.shape[-1]
             eigenvalues, R = eig(A)
+
             order = eigenvalues.argsort(0).swapaxes(0, 1)
             Nlist = [[i] for i in xrange(N)]
             return (eigenvalues[order, Nlist].swapaxes(0, 1),
@@ -90,6 +91,8 @@ class _RoeVariable(FaceVariable):
         A = (coeffUp + coeffDown) / 2.
         
         eigenvalues, R = sortedeig(A)
+        self._maxeigenvalue = max(abs(eigenvalues).flat)
+        
         E = abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])[..., numerix.newaxis]
         Abar = mul(mul(R, E), inv(R))
 
@@ -99,6 +102,13 @@ class _RoeVariable(FaceVariable):
         value[1] = (coeffUp - Abar) / 2
 
         return value
+
+    @property
+    def maxeigenvalue(self):
+        if not hasattr(self, '_maxeigenvalue'):
+            self.value
+
+        return self._maxeigenvalue
 
 class _CellFaceValue(_CellToFaceVariable):
     def _calcValue_(self, alpha, id1, id2):
@@ -162,6 +172,9 @@ class RoeConvectionTerm(FaceTerm):
     
     def _calcGeomCoeff(self, var):
         return _RoeVariable(var, self.coeff)
+
+    def maxeigenvalue(self, var):
+        return self._getGeomCoeff(var, dontCacheMe=False).maxeigenvalue
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 

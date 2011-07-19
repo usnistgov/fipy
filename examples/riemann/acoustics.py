@@ -67,25 +67,29 @@ q.constrain(0, [X == -10, X == -1])
 
 Ax = CellVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
 
-eqn = TransientTerm() + RoeConvectionTerm(Ax) == 0
+roeConvectionTerm = RoeConvectionTerm(Ax)
+eqn = TransientTerm() + roeConvectionTerm == 0
 
 if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer
     vi = Viewer((q[0], q[1]))
-    vi.plot() 
+    vi.plot()
     raw_input('press key')
 
-##from profiler import Profiler
-##from profiler import calibrate_profiler
+from profiler import Profiler
+from profiler import calibrate_profiler
+
+
+elapsedTime = 0.0
+dt = 0.1 * dx / roeConvectionTerm.maxeigenvalue(q)
 
 ##fudge = calibrate_profiler(10000)
 ##profile = Profiler('profile', fudge=fudge)
-elapsedTime = 0.0
-dt = 1.25e-2 * 8. / nx
-for step in range(10000):
+
+for step in range(100):
     eqn.solve(q, dt=dt)
     elapsedTime += dt
-    if step % 100 ==  0 and  __name__ == '__main__':
+    if step % 10 ==  0 and  __name__ == '__main__':
         vi.plot()
         print 'step',step
         print 'elapsedTime',elapsedTime
