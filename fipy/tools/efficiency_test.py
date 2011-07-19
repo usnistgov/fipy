@@ -199,7 +199,7 @@ class Efficiency_test(Command):
                         'revision_date': datetime.fromtimestamp(revdate), #optional
                         'executable': case,
                         'benchmark': benchmarks[i],
-                        'environment': "FiPy",
+                        'environment': "Debian A203166",
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
                         }     

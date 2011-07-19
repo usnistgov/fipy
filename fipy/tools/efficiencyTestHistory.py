@@ -25,6 +25,6 @@ def run(startRev):
         os.chdir("../trunk/examples")
 
 if __name__ == '__main__':
-    run(4500)
+    run(3500)
 
 
