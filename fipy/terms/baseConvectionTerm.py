@@ -111,7 +111,7 @@ class _BaseConvectionTerm(FaceTerm):
         if isinstance(coeff, CellVariable):
             coeff = coeff.arithmeticFaceValue
 
-        FaceTerm.__init__(self, coeff=coeff, var=var)
+        super(_BaseConvectionTerm, self).__init__(coeff=coeff, var=var)
         
     def _calcGeomCoeff(self, var):
         mesh = var.mesh
@@ -152,16 +152,9 @@ class _BaseConvectionTerm(FaceTerm):
 
         return self.stencil
 
-    def _checkVar(self, var):
-        FaceTerm._checkVar(self, var)
-        
-        if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1) \
-        and numerix.getShape(self.coeff) != (var.mesh.dim,):
-            raise VectorCoeffError
-
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         
-        var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+        var, L, b = super(_BaseConvectionTerm, self)._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         mesh = var.mesh
 
@@ -176,7 +169,7 @@ class _BaseConvectionTerm(FaceTerm):
             else:
                 alpha = 0.0
 
-            exteriorCoeff =  self.coeff.faceValue * mesh.exteriorFaces
+            exteriorCoeff =  self.coeff * mesh.exteriorFaces
 
             self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
             self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes

@@ -34,7 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
+##from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.terms.faceTerm import FaceTerm
 from fipy.tools import numerix
@@ -108,7 +108,7 @@ class _CellFaceValue(_CellToFaceVariable):
     def constraints(self):
         return super(_CellToFaceVariable, self).constraints
 
-class RoeConvectionTerm(_BaseConvectionTerm):
+class RoeConvectionTerm(FaceTerm):
     r"""
     A convection term implementing the Roe approximate Riemann flux update of the form
 
@@ -146,7 +146,7 @@ class RoeConvectionTerm(_BaseConvectionTerm):
         if isinstance(coeff, _MeshVariable) and coeff.rank < 1:
             raise VectorCoeffError
 
-        FaceTerm.__init__(self, coeff=coeff, var=var)
+        super(RoeConvectionTerm, self).__init__(coeff=coeff, var=var)
         
     def _getCoeffMatrix_(self, var, weight):
         if self.coeffMatrix is None:
@@ -164,8 +164,8 @@ class RoeConvectionTerm(_BaseConvectionTerm):
         return _RoeVariable(var, self.coeff)
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
-        from fipy.terms.faceTerm import FaceTerm
-        var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+        var, L, b = super(RoeConvectionTerm, self)._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         mesh = var.mesh
 

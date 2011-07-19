@@ -40,6 +40,8 @@ from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import vector
 from fipy.tools import numerix
 from fipy.tools import inline
+from fipy.variables.faceVariable import FaceVariable
+from fipy.terms import VectorCoeffError
 
 class FaceTerm(_NonDiffusionTerm):
     """
@@ -179,3 +181,8 @@ class FaceTerm(_NonDiffusionTerm):
             self._explicitBuildMatrix_(SparseMatrix, var.old, id1, id2, b, weight['explicit'], var, boundaryConditions, interiorFaces, dt)
 
         return (var, L, b)
+
+    def _checkVar(self, var):
+        if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1) \
+               and numerix.getShape(self.coeff) != (var.mesh.dim,):
+            raise VectorCoeffError
