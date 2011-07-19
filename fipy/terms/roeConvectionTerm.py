@@ -37,6 +37,16 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.terms.faceTerm import FaceTerm
+from fipy.tools import numerix
+from fipy.variables.cellToFaceVariable import _CellToFaceVariable
+
+class _CellFaceValue(_CellToFaceVariable):
+    def _calcValue_(self, alpha, id1, id2):
+        return numerix.take(self.var, id1, axis=-1)
+
+    @property
+    def constraints(self):
+        return super(_CellToFaceVariable, self).constraints
 
 class RoeConvectionTerm(_BaseConvectionTerm):
     r"""
@@ -96,7 +106,30 @@ class RoeConvectionTerm(_BaseConvectionTerm):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
         from fipy.terms.faceTerm import FaceTerm
-        return FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+        var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+        mesh = var.mesh
+
+        if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
+
+            constraintMask = var.faceGrad.constraintMask | var.faceValue.constraintMask
+
+            diag =  self._getCoeffMatrix_(var, None)['cell 1 diag'] * constraintMask
+            offdiag = self._getCoeffMatrix_(var, None)['cell 2 diag'] * constraintMask
+
+            cellValue = _CellFaceValue(var)
+            ghostValue = (cellValue + 2 * (var.faceValue - cellValue)) * constraintMask
+
+            from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
+            self.constraintL = _AddOverFacesVariable(diag) * mesh.cellVolumes
+            self.constraintB = _AddOverFacesVariable(offdiag * ghostValue) * mesh.cellVolumes
+
+        ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
+        L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
+        b += numerix.reshape(self.constraintB.value, ids.shape).sum(1).ravel()
+##        b -= L * var.ravel()
+##        L.matrix[:,:] = 0
+        return (var, L, b)
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
         solver = solver or super(RoeConvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)

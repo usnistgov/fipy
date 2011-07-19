@@ -55,11 +55,15 @@ dx = L / nx
 
 m = Grid1D(nx=nx, dx=dx) + X0
 x, = m.cellCenters
+X, = m.faceCenters
 
 q = CellVariable(mesh=m, rank=1, elementshape=(2,))
 
 q[0,:] = numerix.exp(-50 * (x - 0.3)**2) * numerix.cos(20 * (x - 0.3))
 q[0, x > 0.3] = 0.
+
+q.faceGrad.constrain(0, [(X == -1) | (X == 1), X == 1])
+q.constrain(0, [X == -10, X == -1])
 
 Ax = CellVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
 
@@ -71,21 +75,22 @@ if  __name__ == '__main__':
     vi.plot() 
     raw_input('press key')
 
-from profiler import Profiler
-from profiler import calibrate_profiler
+##from profiler import Profiler
+##from profiler import calibrate_profiler
 
-fudge = calibrate_profiler(10000)
-profile = Profiler('profile', fudge=fudge)
-
-for step in range(10):
-    eqn.solve(q, dt=0.000125)
-    print 'step',step
-
+##fudge = calibrate_profiler(10000)
+##profile = Profiler('profile', fudge=fudge)
+elapsedTime = 0.0
+dt = 1.25e-2 * 8. / nx
+for step in range(10000):
+    eqn.solve(q, dt=dt)
+    elapsedTime += dt
     if step % 100 ==  0 and  __name__ == '__main__':
         vi.plot()
-
-
-profile.stop()
+        print 'step',step
+        print 'elapsedTime',elapsedTime
+##        raw_input('press key')
+##profile.stop()
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

@@ -163,8 +163,6 @@ class _BaseConvectionTerm(FaceTerm):
         
         var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
-##        if var.rank != 1:
-
         mesh = var.mesh
 
         if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
@@ -178,7 +176,7 @@ class _BaseConvectionTerm(FaceTerm):
             else:
                 alpha = 0.0
 
-            exteriorCoeff =  self.coeff * mesh.exteriorFaces
+            exteriorCoeff =  self.coeff.faceValue * mesh.exteriorFaces
 
             self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
             self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
