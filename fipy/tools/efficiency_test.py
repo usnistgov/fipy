@@ -180,7 +180,7 @@ class Efficiency_test(Command):
                         data['executable'], data['commitid'], data['benchmark'])
                     try:
                         f = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)
-                    except urllib2.HTTPError as e:
+                    except urllib2.HTTPError, e: ##as e:
                         print str(e)
                         print e.read()
                         return
