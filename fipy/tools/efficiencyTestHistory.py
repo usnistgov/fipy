@@ -1,12 +1,53 @@
 ##This script runs on using "file", which is created with the command $svn log --xml --incremental > file
 ##Update file if there is a new revision to /trunk/examples. Otherwise you may ignore this.
 
+## -*-Pyth-*-
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
+ # 
+ #  FILE: "efficiency_test.py"
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Andrew Acquaviva <andrewa@nist.gov>
+ #    mail: NIST
+ #     www: http://www.ctcms.nist.gov/fipy/
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  FiPy is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ #  
+ # ###################################################################
+ ##
+
 from datetime import datetime
 import os
 import pysvn
 import subprocess
+from fipy.tools.efficiency_test import Efficiency_test
 
 def run(startRev):
+    dummyCommand = setup(name='dummy')
+    test = Efficiency_test(dummyCommand)
+    test.initialize_options()
+    test.uploadToCodespeed = True
+    test.newElements = 1000
     datafile = open("file", 'r')
     datafilelist = datafile.readlines()
     revisions = [int(line.lstrip('   revision="').rstrip('">\n')) for line in datafilelist if 'revision="' in line]
@@ -20,7 +61,8 @@ def run(startRev):
         print "pysvn.Client().info('.')['revision'].number: ", pysvn.Client().info('.')['revision'].number
         os.chdir("../../efficiency_test")
         print 'hello'
-        w, r = os.popen2("python setup.py efficiency_test --uploadToCodespeed")
+        test.run()
+##        w, r = os.popen2("python setup.py efficiency_test --uploadToCodespeed")
         os.wait()
         os.chdir("../trunk/examples")
 
