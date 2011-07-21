@@ -42,10 +42,10 @@ from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.variables.faceVariable import FaceVariable
 
 class _RoeVariable(FaceVariable):
-    def __init__(self, var, coeff):
+    def __init__(self, var, coeff, dt):
         super(FaceVariable, self).__init__(mesh=var.mesh, elementshape=(2,) + var.shape[:-1], cached=True)
-        self.var = var
-
+        self.var = self._requires(var)
+        self.dt = self._requires(dt)
         self.coeff = self._requires(coeff)
         
     def _calcValue(self):
@@ -58,26 +58,26 @@ class _RoeVariable(FaceVariable):
         ## Helper functions
         def mul(A, B):
             """
-            Matrix multiply N MxM matrices, A.shape = B.shape = (M, M, N).
+            Matrix multiply N, MxM matrices, A.shape = B.shape = (M, M, N).
             """
             return numerix.sum(A.swapaxes(0,1)[:, :, numerix.newaxis] * B[:, numerix.newaxis], 0)
 
         def inv(A):
             """
-            Inverts N MxM matrices, A.shape = (M, M, N).
+            Inverts N, MxM matrices, A.shape = (M, M, N).
             """
             return numerix.array(map(numerix.linalg.inv, A.transpose(2, 0, 1))).transpose(1, 2, 0)
 
         def eig(A):
             """
-            Calculate the eigenvalues and eigenvectors of N MxM matrices, A.shape = (M, M, N).
+            Calculate the eigenvalues and eigenvectors of N, MxM matrices, A.shape = (M, M, N).
             """
             tmp = zip(*map(numerix.linalg.eig, A.transpose(2, 0, 1)))
             return numerix.array(tmp[0]).swapaxes(0,1), numerix.array(tmp[1]).transpose(1,2,0)
 
         def sortedeig(A):
             """
-            Caclulates the sorted eigenvalues and eigenvectors of N MxM matrices, A.shape = (M, M, N).
+            Caclulates the sorted eigenvalues and eigenvectors of N, MxM matrices, A.shape = (M, M, N).
             """
             N = A.shape[-1]
             eigenvalues, R = eig(A)
@@ -87,19 +87,54 @@ class _RoeVariable(FaceVariable):
             return (eigenvalues[order, Nlist].swapaxes(0, 1),
                     R[:, order, Nlist].swapaxes(1, 2))
 
+        def matvec(A, v):
+            """
+            Multiply N, MxM matrices by N, M length vectors, A.shape = (M, M, N), v.shape = (M, N).
+            """
+            return numerix.sum(A * v, 1)
+
+        def dot(v0, v1):
+            """
+            Dot product of two N, M-length vectors, v0.shape = (M, N), v1.shape = (M, N).
+            """
+            return numerix.sum(v0 * v1, 0)
+
+        def MClimiter(theta):
+            return numerix.maximum(0, numerix.minimum((1 + theta) / 2, 2, 2 * theta))
+                               
         ## A.shape = (Nequ, Nequ, Nfac)
         A = (coeffUp + coeffDown) / 2.
         
         eigenvalues, R = sortedeig(A)
         self._maxeigenvalue = max(abs(eigenvalues).flat)
-        
+        Rinv = inv(R)
         E = abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])[..., numerix.newaxis]
         Abar = mul(mul(R, E), inv(R))
 
-        ## value.shape = (2, Nequ, Nequ, Nfac)+
+        ## value.shape = (2, Nequ, Nequ, Nfac), first order 
         value = numerix.zeros((2,) + A.shape, 'd')
         value[0] = (coeffDown + Abar) / 2
         value[1] = (coeffUp - Abar) / 2
+
+        ## second order correction with limiter
+        varDown = numerix.take(self.var, id1, axis=-1)
+        varUp = numerix.take(self.var, id2, axis=-1)
+        varDownGrad = dot(numerix.take(self.var.grad(), id1, axis=-1), mesh._orientedFaceNormals)
+        varUpGrad = dot(numerix.take(self.var.grad(), id2, axis=-1), mesh._orientedFaceNormals)
+        
+        varUpUp = varDown + 2 * mesh._cellDistances * varUpGrad
+        varDownDown = varUp - 2 * mesh._cellDistances * varDownGrad
+        
+        alpha = matvec(Rinv, varUp - varDown)
+        alphaUp = matvec(Rinv, varUpUp - varUp)
+        alphaDown = matvec(Rinv, varDown - varDownDown)
+        alphaOther = numerix.where(eigenvalues > 0, alphaDown, alphaUp)
+        theta = alphaOther / (alpha + 1e-20 * (alpha == 0))
+
+        correctionImplicit = mul(mul(0.5 * E * (1 - float(self.dt) / mesh._cellDistances * E), R), (MClimiter(theta)[:, numerix.newaxis] * Rinv))
+
+        value[0] -= correctionImplicit
+        value[1] += correctionImplicit
 
         return value
 
@@ -144,7 +179,7 @@ class RoeConvectionTerm(FaceTerm):
 
     """
 
-    def __init__(self, coeff=1.0, var=None):
+    def __init__(self, coeff=1.0, var=None, dt=1.0):
         """
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
@@ -157,6 +192,8 @@ class RoeConvectionTerm(FaceTerm):
             raise VectorCoeffError
 
         super(RoeConvectionTerm, self).__init__(coeff=coeff, var=var)
+
+        self.dt = dt
         
     def _getCoeffMatrix_(self, var, weight):
         if self.coeffMatrix is None:
@@ -171,7 +208,7 @@ class RoeConvectionTerm(FaceTerm):
         return {'implicit' : {'cell 1 diag' : 1}}
     
     def _calcGeomCoeff(self, var):
-        return _RoeVariable(var, self.coeff)
+        return _RoeVariable(var, self.coeff, self.dt)
 
     def maxeigenvalue(self, var):
         return self._getGeomCoeff(var, dontCacheMe=False).maxeigenvalue
@@ -201,6 +238,7 @@ class RoeConvectionTerm(FaceTerm):
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(1).ravel()
 ##        b -= L * var.ravel()
 ##        L.matrix[:,:] = 0
+
         return (var, L, b)
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):

@@ -53,6 +53,8 @@ rho = 1.
 
 dx = L / nx
 
+dt = Variable(1.)
+
 m = Grid1D(nx=nx, dx=dx) + X0
 x, = m.cellCenters
 X, = m.faceCenters
@@ -67,7 +69,7 @@ q.constrain(0, [X == -10, X == -1])
 
 Ax = CellVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
 
-roeConvectionTerm = RoeConvectionTerm(Ax)
+roeConvectionTerm = RoeConvectionTerm(Ax, dt=dt)
 eqn = TransientTerm() + roeConvectionTerm == 0
 
 if  __name__ == '__main__':
@@ -81,15 +83,16 @@ from profiler import calibrate_profiler
 
 
 elapsedTime = 0.0
-dt = 0.1 * dx / roeConvectionTerm.maxeigenvalue(q)
+dt.setValue(0.1 * dx / roeConvectionTerm.maxeigenvalue(q))
 
 ##fudge = calibrate_profiler(10000)
 ##profile = Profiler('profile', fudge=fudge)
 
-for step in range(100):
-    eqn.solve(q, dt=dt)
-    elapsedTime += dt
-    if step % 10 ==  0 and  __name__ == '__main__':
+for step in range(10000):
+    eqn.solve(q, dt=float(dt))
+    print 'max(max(q[0]), max(q[1]))',max(max(q[0]), max(q[1]))
+    elapsedTime += float(dt)
+    if step % 100 ==  0 and  __name__ == '__main__':
         vi.plot()
         print 'step',step
         print 'elapsedTime',elapsedTime
