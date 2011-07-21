@@ -67,7 +67,7 @@ class Efficiency_test(Command):
         self.sampleTime = 1
         self.path = None
         self.otherExample = None
-        self.newElements = None
+        self.newElements = 1000
 ##        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py'], '../trunk/examples/reactiveWetting/liquidVapor2D.py']
         self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py']
 ##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
@@ -180,7 +180,7 @@ class Efficiency_test(Command):
                         data['executable'], data['commitid'], data['benchmark'])
                     try:
                         f = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)
-                    except urllib2.HTTPError as e:
+                    except urllib2.HTTPError, e:
                         print str(e)
                         print e.read()
                         return
@@ -199,7 +199,7 @@ class Efficiency_test(Command):
                         'revision_date': datetime.fromtimestamp(revdate), #optional
                         'executable': case,
                         'benchmark': benchmarks[i],
-                        'environment': "FiPy",
+                        'environment': "Debian A203166",
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
                         }    

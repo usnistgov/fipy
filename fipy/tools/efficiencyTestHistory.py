@@ -41,9 +41,10 @@ import os
 import pysvn
 import subprocess
 from fipy.tools.efficiency_test import Efficiency_test
+from setuptools import setup
 
 def run(startRev):
-    dummyCommand = setup(name='dummy')
+    dummyCommand = setup(name='dummy', script_name = 'setup.py', script_args = ['test', '--dry-run'])
     test = Efficiency_test(dummyCommand)
     test.initialize_options()
     test.uploadToCodespeed = True
@@ -67,6 +68,6 @@ def run(startRev):
         os.chdir("../trunk/examples")
 
 if __name__ == '__main__':
-    run(3500)
+    run(3875)
 
 

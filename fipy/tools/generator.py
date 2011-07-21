@@ -87,11 +87,13 @@ def run(cases, elements):
                 flist.insert(index, commentedline)
                 del flist[index+1]
             elif elements is not None and 'nx = ' in line:
+                elements = str(elements)
                 linelist = line.split('=')
                 dimensions = len(linelist)-1
                 root_elements = str(float(elements) ** (float(1)/dimensions))
                 linelist.insert((len(linelist)-1), elements)
                 del linelist[len(linelist)-1]
+                print 'linelist',linelist
                 newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
                 flist.insert(index, newvalue)
                 del flist[index+1]
