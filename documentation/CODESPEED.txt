@@ -92,8 +92,9 @@ for uploading data:
 As I've mentioned, the date has to be in the form of current_date.
 Luckily, commitid, branch, project, executable, and benchmark will all
 be created for you if they do not already exist.  However, environment
-must already exist or there will be an error message.  All of these
-can be created in the admin page of Codespeed.
+must already exist or there will be an error message. Set environment to
+whatever computer is running the test. All of these can 
+be created in the admin page of Codespeed.
 
 Codespeed is quite customizable but all of that is in Java, so beyond
 adding the FiPy logo and changing the titles of pages, we may not want
