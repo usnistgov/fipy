@@ -91,13 +91,13 @@ def run(cases, elements):
                 linelist = line.split('=')
                 dimensions = len(linelist)-1
                 root_elements = str(float(elements) ** (float(1)/dimensions))
-                linelist.insert((len(linelist)-1), elements)
+                linelist.insert((len(linelist)-1), root_elements)
                 del linelist[len(linelist)-1]
-                print 'linelist',linelist
                 newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
+                print 'newvalue:', newvalue
                 flist.insert(index, newvalue)
                 del flist[index+1]
-            elif 'steps =' in line and not '#' in line:
+            elif ('steps =' in line) or ('totalSteps =' in line):
                 linelist = line.split('=')
                 linelist.insert((len(linelist)-1), '10')
                 del linelist[len(linelist)-1]
