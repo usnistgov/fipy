@@ -69,7 +69,7 @@ class Efficiency_test(Command):
         self.otherExample = None
         self.newElements = 1000
 ##        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py'], '../trunk/examples/reactiveWetting/liquidVapor2D.py']
-        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py']
+        self.cases = ['examples/phase/anisotropy.py']
 ##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
 ##                          'examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
@@ -199,7 +199,7 @@ class Efficiency_test(Command):
                         'revision_date': datetime.fromtimestamp(revdate), #optional
                         'executable': case,
                         'benchmark': benchmarks[i],
-                        'environment': "Debian A203166",
+                        'environment': "Sandbox A201590",##"Debian A203166",
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
                         }    

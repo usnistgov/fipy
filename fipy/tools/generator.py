@@ -97,6 +97,15 @@ def run(cases, elements):
                 newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
                 flist.insert(index, newvalue)
                 del flist[index+1]
+            elif 'steps =' in line and not '#' in line:
+                linelist = line.split('=')
+                linelist.insert((len(linelist)-1), '10')
+                del linelist[len(linelist)-1]
+                newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
+                flist.insert(index, newvalue)
+                del flist[index+1]
+                                
+                
                 
         flist.append('\ntimes.append(time.time())\n')
 ##        flist.append('\nprint times')

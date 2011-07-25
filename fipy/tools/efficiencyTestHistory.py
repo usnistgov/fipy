@@ -48,7 +48,7 @@ def run(startRev):
     test = Efficiency_test(dummyCommand)
     test.initialize_options()
     test.uploadToCodespeed = True
-    test.newElements = 1000
+    test.newElements = 500
     datafile = open("file", 'r')
     datafilelist = datafile.readlines()
     revisions = [int(line.lstrip('   revision="').rstrip('">\n')) for line in datafilelist if 'revision="' in line]
