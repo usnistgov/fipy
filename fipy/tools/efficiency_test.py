@@ -67,9 +67,9 @@ class Efficiency_test(Command):
         self.sampleTime = 1
         self.path = None
         self.otherExample = None
-        self.newElements = 1000
+        self.newElements = None
 ##        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py'], '../trunk/examples/reactiveWetting/liquidVapor2D.py']
-        self.cases = ['examples/phase/anisotropy.py']
+        self.cases = ['examples/reactiveWetting/liquidVapor2D.py']
 ##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
 ##                          'examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
@@ -128,14 +128,15 @@ class Efficiency_test(Command):
 
             output = "\t".join([str(self.inline).center(10), str(self.cache).center(10),\
                                     (time.ctime()).center(25), str(numberOfElements).center(10)])
+            print 'cmd',cmd
             w, r = os.popen2(cmd)
-                
+            
 ##                timeCmd = cmd + ['--measureTime runtime']
 ##                w, r = os.popen2(' '.join(timeCmd))
 ##                print "' '.join(timeCmd): ", ' '.join(timeCmd)
 ##                raw_input()
             outputlist= r.read().split()
-##            print outputlist
+            print outputlist
             init_time = outputlist[outputlist.index('Initialization-time:')+1]
             frst_timestp = outputlist[outputlist.index('First-timestep:')+1]
             avg_timestp = outputlist[outputlist.index('Average-timestep:')+1]
@@ -199,7 +200,7 @@ class Efficiency_test(Command):
                         'revision_date': datetime.fromtimestamp(revdate), #optional
                         'executable': case,
                         'benchmark': benchmarks[i],
-                        'environment': "Sandbox A201590",##"Debian A203166",
+                        'environment': "Debian A203166",
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
                         }    

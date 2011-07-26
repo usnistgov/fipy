@@ -5,11 +5,10 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "efficiency_test.py"
+ #  FILE: "efficiencyTestHistory.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
@@ -48,7 +47,7 @@ def run(startRev):
     test = Efficiency_test(dummyCommand)
     test.initialize_options()
     test.uploadToCodespeed = True
-    test.newElements = 500
+    test.newElements = 100
     datafile = open("file", 'r')
     datafilelist = datafile.readlines()
     revisions = [int(line.lstrip('   revision="').rstrip('">\n')) for line in datafilelist if 'revision="' in line]
@@ -57,7 +56,7 @@ def run(startRev):
         startRev += 1 
     index = revisions.index(startRev)
     os.chdir("../../../trunk/examples")
-    for k in revisions[index:]:
+    for k in revisions[index:3511]:
         revisionNumber = pysvn.Client().update(".", revision=pysvn.Revision(pysvn.opt_revision_kind.number, k))
         print "pysvn.Client().info('.')['revision'].number: ", pysvn.Client().info('.')['revision'].number
         os.chdir("../../efficiency_test")
@@ -68,6 +67,6 @@ def run(startRev):
         os.chdir("../trunk/examples")
 
 if __name__ == '__main__':
-    run(3875)
+    run(3000)
 
 

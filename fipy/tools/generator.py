@@ -90,7 +90,7 @@ def run(cases, elements):
                 elements = str(elements)
                 linelist = line.split('=')
                 dimensions = len(linelist)-1
-                root_elements = str(float(elements) ** (float(1)/dimensions))
+                root_elements = str(int(float(elements) ** (float(1)/dimensions)))
                 linelist.insert((len(linelist)-1), root_elements)
                 del linelist[len(linelist)-1]
                 newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
