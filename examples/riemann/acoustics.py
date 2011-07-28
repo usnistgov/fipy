@@ -90,7 +90,7 @@ dt.setValue(0.1 * dx / roeConvectionTerm.maxeigenvalue(q))
 
 for step in range(10000):
     eqn.solve(q, dt=float(dt))
-    print 'max(max(q[0]), max(q[1]))',max(max(q[0]), max(q[1]))
+##    print 'max(max(q[0]), max(q[1]))',max(max(q[0]), max(q[1]))
     elapsedTime += float(dt)
     if step % 100 ==  0 and  __name__ == '__main__':
         vi.plot()
