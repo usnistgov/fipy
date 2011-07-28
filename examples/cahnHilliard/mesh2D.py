@@ -65,13 +65,11 @@ We can simulate this process in :term:`FiPy` with a simple script:
 
 (Note that all of the functionality of NumPy is imported along with :term:`FiPy`, although
 much is augmented for :term:`FiPy`\'s needs.)
->>> from optparse import OptionParser  
->>> import time
->>> import string
+
 >>> if __name__ == "__main__":
 ...     nx = ny = 1000
 ... else:
-...     nx = ny = 1000
+...     nx = ny = 10
 >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
 >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 

@@ -322,12 +322,12 @@ For example, to have
 
 we will need to declare time :math:`t` as a :class:`~fipy.variables.variable.Variable`
 
->>> VarTime = Variable()
+>>> time = Variable()
 
 and then declare our boundary condition as a function of this :class:`~fipy.variables.variable.Variable`
 
 >>> del phi.faceConstraints
->>> valueLeft = 0.5 * (1 + sin(VarTime))
+>>> valueLeft = 0.5 * (1 + sin(time))
 >>> phi.constrain(valueLeft, mesh.facesLeft)
 >>> phi.constrain(0., mesh.facesRight)
 
@@ -337,8 +337,8 @@ When we update ``time`` at each timestep, the left-hand boundary
 condition will automatically update,
 
 >>> dt = .1
->>> while VarTime() < 15:
-...     VarTime.setValue(VarTime() + dt)
+>>> while time() < 15:
+...     time.setValue(time() + dt)
 ...     eqI.solve(var=phi, dt=dt)
 ...     if __name__ == '__main__':
 ...         viewer.plot()

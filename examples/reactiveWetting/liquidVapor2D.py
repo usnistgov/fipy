@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "liquidVapor2D.py"
+ #  FILE: "liquidVapor1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -143,11 +143,10 @@ A 2D version of the 1D example.
 >>> if __name__ == '__main__':
 ...     totalSteps = 1e+10
 ... else:
-...     totalSteps = 10
+...     totalSteps = 4
 
 >>> while timestep < totalSteps:
-...
-...     print timestep
+... 
 ...     sweep = 0
 ...     dt *= 1.1
 ...     residual = 1.
