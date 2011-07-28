@@ -40,9 +40,10 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.tools import numerix
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.variables.faceVariable import FaceVariable
-import scipy
-import scipy.sparse
-import scipy.sparse.linalg
+from fipy.tools import smallMatrixTools as smt
+
+def MClimiter(theta):
+    return numerix.maximum(0, numerix.minimum((1 + theta) / 2, 2, 2 * theta))
 
 class _RoeVariable(FaceVariable):
     def __init__(self, var, coeff, dt):
@@ -59,141 +60,15 @@ class _RoeVariable(FaceVariable):
         coeffUp = (numerix.take(self.coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0)
         
         ## Helper functions
-        def mul(A, B):
-            """
-            Matrix multiply N, MxM matrices, A.shape = B.shape = (M, M, N).
-            """
-            return numerix.sum(A.swapaxes(0,1)[:, :, numerix.newaxis] * B[:, numerix.newaxis], 0)
-
-        def inv(A):
-            """
-            Inverts N, MxM matrices, A.shape = (M, M, N).
-            """
-            return numerix.array(map(numerix.linalg.inv, A.transpose(2, 0, 1))).transpose(1, 2, 0)
-
-        def mulinv(A, B):
-            """
-            Calculates the product (A.B^-1) of N, MxM matrices (A) and the inverse of N, MxM matrices (B).
-            A.shape = (M, M, N), B.shape = (M, M, N).
-            """
-            tmp = B.transpose(2, 0, 1)
-            N, M, M = tmp.shape
-            import scipy
-            BT = scipy.sparse.bsr_matrix((tmp, numerix.arange(N), numerix.arange(N + 1)), shape=(M * N, M * N)).transpose()
-            PT = numerix.zeros((N, M, M), 'd')
-            AT = A.transpose(2, 1, 0)
-            
-            for iCol in range(M):
-                import scipy.sparse.linalg
-                PT[:,:,iCol] = scipy.sparse.linalg.spsolve(BT.asformat("csc"), AT[:,:,iCol].ravel()).reshape((N, M))
-            return PT.transpose(2, 1, 0)
-
-        def invmul(A, B):
-            """
-            Calculates the product (A^-1.B) of N, MxM matrices (B) and the inverse of N, MxM matrices (A).
-            A.shape = (M, M, N), B.shape = (M, M, N).
-            """
-            tmp = A.transpose(2, 0, 1)
-            N, M, M = tmp.shape
-            import scipy
-            Amat = scipy.sparse.bsr_matrix((tmp, numerix.arange(N), numerix.arange(N + 1)), shape=(M * N, M * N))
-            P = numerix.zeros((N, M, M), 'd')
-            Bvec = B.transpose(2, 0, 1)
-            
-            for iCol in range(M):
-                import scipy.sparse.linalg
-                P[:,:,iCol] = scipy.sparse.linalg.spsolve(Amat.asformat("csc"), Bvec[:,:,iCol].ravel()).reshape((N, M))
-            return P.transpose(1, 2, 0)
-
-        def invmatvec(A, v):
-            """
-            Calculates the product (A^-1.v) of N, MxM matrices (B) and the inverse of N, MxM matrices (A).
-            A.shape = (M, M, N), v.shape = (M, N).
-            """
-            M, M, N = A.shape
-            tmp = A.transpose(2, 0, 1)
-            import scipy
-            Amat = scipy.sparse.bsr_matrix((tmp, numerix.arange(N), numerix.arange(N + 1)), shape=(M * N, M * N))
-            P = scipy.sparse.linalg.spsolve(Amat.asformat("csc"), v.transpose(1, 0).ravel()).reshape((N, M))
-            return P.transpose(1, 0)
-            
-        def eigvecN(A):
-            """
-            Calculate the eigenvalues and eigenvectors of N, MxM matrices, A.shape = (M, M, N).
-            """
-            tmp = zip(*map(numerix.linalg.eig, A.transpose(2, 0, 1)))
-            return numerix.array(tmp[0]).swapaxes(0,1), numerix.array(tmp[1]).transpose(1,2,0)
-
-        def vecN(A, eigs):
-            """
-            Calculates the eigenvectors for N, MxM matrices (A) using the eigenvalues (eigs).
-            A.shape = (M, M, N), eigs.shape = (M, N).
-            """
-            M, M, N = A.shape
-            vectors = numerix.zeros((N, M, M), 'd')
-            for iCol in range(M):
-                Amod = A - eigs[iCol] * numerix.identity(M)[..., numerix.newaxis]
-                tmp = Amod.transpose(2, 0, 1)
-                Amat = scipy.sparse.bsr_matrix((tmp, numerix.arange(N), numerix.arange(N + 1)), shape=(M * N, M * N))
-                X = numerix.zeros((N, M), 'd')
-                X[:,iCol] = 1.
-                vectors[:,:,iCol] = scipy.sparse.linalg.gmres(Amat.asformat("csc"), numerix.zeros(M * N), X.ravel())[0].reshape((N, M))
-                vectors[:,:,iCol] = vectors[:,:,iCol] / numerix.sqrt(numerix.sum(vectors[:,:,iCol]**2, 1))[...,numerix.newaxis]
-            return vectors.transpose(1, 2, 0)
-
-        def eigvec2(A):
-            """
-            Calculates the eigenvalues and eigenvectors of N, 2x2 matrices, A.shape = (2, 2, N).
-            """
-            tr = A[0,0] + A[1,1]
-            det = A[0,0] * A[1,1] - A[1,0] * A[0,1]
-            DeltaRt = numerix.sqrt(tr**2 - 4 * det)
-            eigs = numerix.array(((tr + DeltaRt) / 2., (tr - DeltaRt) / 2.))
-            return eigs, vecN(A, eigs)
-
-        def eigvec(A):
-            M, M, N = A.shape
-            if M == 2:
-                return eigvec2(A)
-            else:
-                return eigvecN(A)
-
-        def sortedeig(A):
-            """
-            Caclulates the sorted eigenvalues and eigenvectors of N, MxM matrices, A.shape = (M, M, N).
-            """
-            N = A.shape[-1]
-            
-            eigenvalues, R = eigvec(A)
-
-            order = eigenvalues.argsort(0).swapaxes(0, 1)
-            Nlist = [[i] for i in xrange(N)]
-            return (eigenvalues[order, Nlist].swapaxes(0, 1),
-                    R[:, order, Nlist].swapaxes(1, 2))
-
-        def matvec(A, v):
-            """
-            Multiply N, MxM matrices by N, M length vectors, A.shape = (M, M, N), v.shape = (M, N).
-            """
-            return numerix.sum(A * v, 1)
-
-        def dot(v0, v1):
-            """
-            Dot product of two N, M-length vectors, v0.shape = (M, N), v1.shape = (M, N).
-            """
-            return numerix.sum(v0 * v1, 0)
-
-        def MClimiter(theta):
-            return numerix.maximum(0, numerix.minimum((1 + theta) / 2, 2, 2 * theta))
                                
         ## A.shape = (Nequ, Nequ, Nfac)
         A = (coeffUp + coeffDown) / 2.
         
-        eigenvalues, R = sortedeig(A)        
+        eigenvalues, R = smt.sortedeig(A)        
         self._maxeigenvalue = max(abs(eigenvalues).flat)
         E = abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])[..., numerix.newaxis]
         
-        Abar = mulinv(mul(R, E), R)
+        Abar = smt.mulinv(smt.mul(R, E), R)
 
         ## value.shape = (2, Nequ, Nequ, Nfac), first order 
         value = numerix.zeros((2,) + A.shape, 'd')
@@ -203,21 +78,21 @@ class _RoeVariable(FaceVariable):
         ## second order correction with limiter
         varDown = numerix.take(self.var, id1, axis=-1)
         varUp = numerix.take(self.var, id2, axis=-1)
-        varDownGrad = dot(numerix.take(self.var.grad(), id1, axis=-1), mesh._orientedFaceNormals)
-        varUpGrad = dot(numerix.take(self.var.grad(), id2, axis=-1), mesh._orientedFaceNormals)
+        varDownGrad = smt.dot(numerix.take(self.var.grad(), id1, axis=-1), mesh._orientedFaceNormals)
+        varUpGrad = smt.dot(numerix.take(self.var.grad(), id2, axis=-1), mesh._orientedFaceNormals)
         
         varUpUp = varDown + 2 * mesh._cellDistances * varUpGrad
         varDownDown = varUp - 2 * mesh._cellDistances * varDownGrad
 
-        alpha = invmatvec(R, varUp - varDown)
-        alphaDown = invmatvec(R, varDown - varDownDown)
-        alphaUp = invmatvec(R, varUpUp - varUp)
+        alpha = smt.invmatvec(R, varUp - varDown)
+        alphaDown = smt.invmatvec(R, varDown - varDownDown)
+        alphaUp = smt.invmatvec(R, varUpUp - varUp)
         
         alphaOther = numerix.where(eigenvalues > 0, alphaDown, alphaUp)
         theta = alphaOther / (alpha + 1e-20 * (alpha == 0))
 
-        A = mul(0.5 * E * (1 - float(self.dt) / mesh._cellDistances * E), R)
-        correctionImplicit = invmul(R.transpose(1, 0, 2), MClimiter(theta)[:, numerix.newaxis] * A.transpose(1, 0, 2)).transpose(1, 0, 2)
+        A = smt.mul(0.5 * E * (1 - float(self.dt) / mesh._cellDistances * E), R)
+        correctionImplicit = smt.invmul(R.transpose(1, 0, 2), MClimiter(theta)[:, numerix.newaxis] * A.transpose(1, 0, 2)).transpose(1, 0, 2)
 
         value[0] -= correctionImplicit
         value[1] += correctionImplicit
@@ -323,8 +198,8 @@ class RoeConvectionTerm(FaceTerm):
         L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(1).ravel()
         ## explicit
-##        b -= L * var.ravel()
-##        L.matrix[:,:] = 0
+        b -= L * var.ravel()
+        L.matrix[:,:] = 0
 
         return (var, L, b)
 
