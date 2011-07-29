@@ -64,11 +64,20 @@ class _RoeVariable(FaceVariable):
         ## A.shape = (Nequ, Nequ, Nfac)
         A = (coeffUp + coeffDown) / 2.
         
-        eigenvalues, R = smt.sortedeig(A)        
+        eigenvalues, R = smt.sortedeig(A.transpose(2, 0, 1))
+##        eigenvalues = eigenvalues.transpose(1, 0)
+##        R = R.transpose(1, 2, 0)
+            
         self._maxeigenvalue = max(abs(eigenvalues).flat)
-        E = abs(eigenvalues) * numerix.identity(eigenvalues.shape[0])[..., numerix.newaxis]
-        
-        Abar = smt.mulinv(smt.mul(R, E), R)
+        E = abs(eigenvalues)[:,:,numerix.newaxis] * numerix.identity(eigenvalues.shape[1])
+
+        Abar = smt.mulinvNew(smt.mulNew(R, E), R)
+
+        E = E.transpose(1, 2, 0)
+        eigenvalues = eigenvalues.transpose(1, 0)
+        R = R.transpose(1, 2, 0)
+        Abar = Abar.transpose(1, 2, 0)
+##        Abar = smt.mulinv(smt.mul(R, E), R)
 
         ## value.shape = (2, Nequ, Nequ, Nfac), first order 
         value = numerix.zeros((2,) + A.shape, 'd')
