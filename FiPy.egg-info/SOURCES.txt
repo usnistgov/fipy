@@ -9,7 +9,6 @@ WINDOWS-INSTALLATION.txt
 ez_setup.py
 setup.py
 stdeb.cfg
-.efficiency_test/examples/cahnHilliard.mesh2D.py.dat
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
 FiPy.egg-info/dependency_links.txt
@@ -19,6 +18,7 @@ documentation/.gitignore
 documentation/ADMINISTRATA.txt
 documentation/API.txt
 documentation/BUILDBOT.txt
+documentation/CODESPEED.txt
 documentation/CREDITS.txt
 documentation/EFFICIENCY.txt
 documentation/FAQ.txt
@@ -128,9 +128,6 @@ examples/cahnHilliard/__init__.py
 examples/cahnHilliard/index.txt
 examples/cahnHilliard/mesh2D-coupled.py
 examples/cahnHilliard/mesh2D.py
-examples/cahnHilliard/mesh2D.py.4579
-examples/cahnHilliard/mesh2D.py.dat
-examples/cahnHilliard/mesh2D.py.extracted
 examples/cahnHilliard/mesh3D.py
 examples/cahnHilliard/sphere.py
 examples/cahnHilliard/sphereDaemon.py
@@ -498,6 +495,7 @@ fipy/tools/debug.py
 fipy/tools/decorators.py
 fipy/tools/dummyComm.py
 fipy/tools/dump.py
+fipy/tools/efficiencyTestHistory.py
 fipy/tools/efficiency_test.py
 fipy/tools/generator.py
 fipy/tools/inline.py
@@ -507,7 +505,6 @@ fipy/tools/memoryUsage.py
 fipy/tools/mpi4pyCommWrapper.py
 fipy/tools/numerix.py
 fipy/tools/parser.py
-fipy/tools/save_efficiency_test_result.py
 fipy/tools/serialCommWrapper.py
 fipy/tools/test.py
 fipy/tools/vector.py

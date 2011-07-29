@@ -40,7 +40,7 @@ import string
 
 from distutils.core import Command
 from fipy.tools.efficiency_test import Efficiency_test
-
+from fipy.tools.copy_script import Copy_script
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup
@@ -336,30 +336,30 @@ class upload_products(Command):
             if self.pdf:
                 webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
 
-class copy_script(Command):
-    description = "copy an example script into a new editable file"
+# class copy_script(Command):
+#     description = "copy an example script into a new editable file"
 
-    # List of option tuples: long name, short name (None if no short
-    # name), and help string.
-    user_options = [
-        # Select installation scheme and set base director(y|ies)
-        ('From=', None,
-         "path and file name containing script to copy"),
-        ('To=', None,
-         "path and file name to save script to")
-     ]
+#     # List of option tuples: long name, short name (None if no short
+#     # name), and help string.
+#     user_options = [
+#         # Select installation scheme and set base director(y|ies)
+#         ('From=', None,
+#          "path and file name containing script to copy"),
+#         ('To=', None,
+#          "path and file name to save script to")
+#      ]
 
-    def initialize_options(self):
-        self.From = None
-        self.To = None
+#     def initialize_options(self):
+#         self.From = None
+#         self.To = None
 
-    def finalize_options(self):
-        from fipy.tools.copy_script import Copy_script
-        self.copy = Copy_script(From=self.From, To=self.To)          
-        self.copy.finalize_options()
+#     def finalize_options(self):
+#         from fipy.tools.copy_script import Copy_script
+#         self.copy = Copy_script(From=self.From, To=self.To)          
+#         self.copy.finalize_options()
 
-    def run(self):
-        self.copy.run()
+#     def run(self):
+#         self.copy.run()
 
 try:            
     f = open('README.txt', 'r')
@@ -442,7 +442,7 @@ dist = setup(	name = "FiPy",
             'upload_products':upload_products,
             'test':test,
             'unittest':unittest,
-            'copy_script': copy_script,
+            'copy_script': Copy_script,
             'efficiency_test': Efficiency_test
         },
         test_suite="fipy.test._suite",

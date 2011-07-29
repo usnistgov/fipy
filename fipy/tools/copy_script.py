@@ -1,10 +1,25 @@
 import os
+from distutils.core import Command
 
-class Copy_script():
+class Copy_script(Command):
+    description = "copy an example script into a new editable file"
+
+    # List of option tuples: long name, short name (None if no short
+    # name), and help string.
+    user_options = [
+        # Select installation scheme and set base director(y|ies)
+        ('From=', None,
+         "path and file name containing script to copy"),
+        ('To=', None,
+         "path and file name to save script to")
+     ]
     
-    def __init__(self, To=None, From=None):
-        self.To = To
-        self.From = From
+##    def __init__(self, To=None, From=None):
+##        self.To = To
+##        self.From = From
+    def initialize_options(self):
+        self.From = None
+        self.To = None
 
     def finalize_options(self):
         if self.From == None:

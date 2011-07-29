@@ -39,18 +39,23 @@ import time
 import os
 import numpy
 from copy_script import Copy_script
+from setuptools import setup
 
 def run(cases, elements): 
     toScripts = []
     for i in cases:
         deconstruct = i.split('/')
         toScripts.append('./%s' % deconstruct[len(deconstruct)-1])
-    
+    dummyCommand = setup(name='dummy', script_name = 'setup.py', script_args = ['test', '--dry-run'])
     for i in range(len(cases)):
         if os.path.exists(toScripts[i]):
             os.remove(toScripts[i])
         print 'Running on file', cases[i]
-        DocProg = Copy_script(To=toScripts[i], From=cases[i])
+        
+##        DocProg = Copy_script(To=toScripts[i], From=cases[i])
+        DocProg = Copy_script(dummyCommand)
+        DocProg.From = cases[i]
+        DocProg.To = toScripts[i]
         DocProg.finalize_options()
         DocProg.run()
         f = open(toScripts[i],'r+w')
