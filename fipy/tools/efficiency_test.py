@@ -68,10 +68,8 @@ class Efficiency_test(Command):
         self.path = None
         self.otherExample = None
         self.newElements = None
-##        self.cases = ['../trunk/examples/cahnHilliard/mesh2D.py', '../trunk/examples/phase/anisotropy.py'], '../trunk/examples/reactiveWetting/liquidVapor2D.py']
-        self.cases = ['examples/reactiveWetting/liquidVapor2D.py']
-##        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
-##                          'examples/reactiveWetting/liquidVapor2D.py']
+        self.cases = ['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py', \
+                          'examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
         self.revisionNumber = None
     
@@ -121,8 +119,6 @@ class Efficiency_test(Command):
             
             numberOfElements = self.minimumelements
 
-##            while numberOfElements <= self.maximumelements:
-##                print "\tnumberOfElements: %i" % numberOfElements
             print "Running example:"
             cmd = ["python", "-W ignore", case]
 
@@ -131,10 +127,6 @@ class Efficiency_test(Command):
             print 'cmd',cmd
             w, r = os.popen2(cmd)
             
-##                timeCmd = cmd + ['--measureTime runtime']
-##                w, r = os.popen2(' '.join(timeCmd))
-##                print "' '.join(timeCmd): ", ' '.join(timeCmd)
-##                raw_input()
             outputlist= r.read().split()
             print outputlist
             init_time = outputlist[outputlist.index('Initialization-time:')+1]
@@ -146,12 +138,6 @@ class Efficiency_test(Command):
             r.close()
             w.close()
 
-##                memCmd = cmd + ['--measureMemory', '--sampleTime=%f' % self.sampleTime]
-
-##                w, r = os.popen4(' '.join(memCmd))
-##                output += '\t' + ''.join(r.readlines()).strip()
-##           r.close()
-##            w.close()
             if numberOfElements == self.maximumelements:    
                 f.write(output + '\n' + "-"*100 + '\n')
                 f.flush()
@@ -165,14 +151,11 @@ class Efficiency_test(Command):
                 import pysvn
                 from datetime import datetime
                 
-##                CODESPEED_URL = "http://localhost:8000/"
                 CODESPEED_URL = 'http://build.cmi.kent.edu/codespeed/'
-                revnum = pysvn.Client().info('../trunk/examples')['revision'].number
-                revdate  = pysvn.Client().info('../trunk/examples')['commit_time']
                 print 'revdate: ', datetime.fromtimestamp(revdate)
 
-##                revnum = pysvn.Client().info('.')['revision'].number
-##                revdate  = pysvn.Client().info('.')['commit_time']                   
+                revnum = pysvn.Client().info('.')['revision'].number
+                revdate  = pysvn.Client().info('.')['commit_time']                   
 
                 def add(data):
                     params = urllib.urlencode(data)
@@ -197,7 +180,7 @@ class Efficiency_test(Command):
                         'commitid': revnum,
                         'branch': 'default', #Always use default for trunk/master/tip
                         'project': 'FiPy',
-                        'revision_date': datetime.fromtimestamp(revdate), #optional
+                        'revision_date': datetime.fromtimestamp(revdate),
                         'executable': case,
                         'benchmark': benchmarks[i],
                         'environment': "Debian A203166",

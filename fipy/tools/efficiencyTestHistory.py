@@ -62,7 +62,6 @@ def run(startRev):
         os.chdir("../../efficiency_test")
         print 'hello'
         test.run()
-##        w, r = os.popen2("python setup.py efficiency_test --uploadToCodespeed")
         os.wait()
         os.chdir("../trunk/examples")
 
