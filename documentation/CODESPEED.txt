@@ -17,7 +17,7 @@ Using Codespeed 0.8.1
 To download it, go to https://github.com/tobami/codespeed and use the
 downloads button on the right side to get the latest stable
 version. Below that on the page is the readme document which does a
-pretty good job at letting you know how to get started. Basically once
+pretty good job at letting you know how to get started. Once
 the package is downloaded, you'll need to cd into the speedcenter/
 directory and do three commands:
 
@@ -25,7 +25,7 @@ directory and do three commands:
 
 In this command they'll prompt you to make a superuser.  Take this
 opportunity because I don't think you'll get another one (at least, I
-couldn't find one after hitting no).
+couldn't find one after typing no).
 
     $ python manage.py migrate
 
