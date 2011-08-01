@@ -152,10 +152,10 @@ class Efficiency_test(Command):
                 from datetime import datetime
                 
                 CODESPEED_URL = 'http://build.cmi.kent.edu/codespeed/'
-                print 'revdate: ', datetime.fromtimestamp(revdate)
 
                 revnum = pysvn.Client().info('.')['revision'].number
                 revdate  = pysvn.Client().info('.')['commit_time']                   
+                print 'revdate: ', datetime.fromtimestamp(revdate)
 
                 def add(data):
                     params = urllib.urlencode(data)
@@ -183,7 +183,7 @@ class Efficiency_test(Command):
                         'revision_date': datetime.fromtimestamp(revdate),
                         'executable': case,
                         'benchmark': benchmarks[i],
-                        'environment': "Debian A203166",
+                        'environment': 'Sandbox A201590', ##"Debian A203166",
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
                         }    
