@@ -73,12 +73,29 @@ class TrilinosSolver(Solver):
 
             mesh = self.var.mesh
             localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
+            
+            ## The following conditional is required because empty indexing is not altogether functional.
+            ## This numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]] both work, but this
+            ## numpy.empty((3, 0))[...,[]] is broken.
+            if self.var.shape[-1] != 0:
+                s = (Ellipsis, localNonOverlappingCellIDs)
+            else:
+                s = (localNonOverlappingCellIDs,)
+                
+            nonOverlappingVector = Epetra.Vector(globalMatrix.domainMap,
+                                                 self.var[s].ravel())
+            from fipy.variables.coupledCellVariable import _CoupledCellVariable
 
-            nonOverlappingVector = Epetra.Vector(globalMatrix.domainMap, 
-                                                 self.var[localNonOverlappingCellIDs])
+            if isinstance(self.RHSvector, _CoupledCellVariable):
+                RHSvector = self.RHSvector[localNonOverlappingCellIDs]
+            else:
+                RHSvector = numerix.reshape(numerix.array(self.RHSvector), self.var.shape)[s].ravel()
+                
+                    
+            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.rangeMap,
+                                                    RHSvector)
 
-            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.rangeMap, 
-                                                    self.RHSvector[localNonOverlappingCellIDs])
+            del RHSvector
 
             overlappingVector = Epetra.Vector(globalMatrix.colMap, self.var)
 
@@ -109,7 +126,7 @@ class TrilinosSolver(Solver):
                                                globalMatrix.domainMap), 
                                  Epetra.Insert)
         
-        self.var.value = overlappingVector
+        self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
 
         self._deleteGlobalMatrixAndVectors()
         del self.var

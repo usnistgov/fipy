@@ -427,7 +427,17 @@ class Mesh(AbstractMesh):
         return newmesh
 
     def _handleFaceConnection(self):
-        self._cellToCellDistances = self._calcCellToCellDist()   
+        """
+        The _faceCellToCellNormals were added to ensure _faceNormals == _faceCellToCellNormals for periodic grids.
+        
+        >>> from fipy import *
+        >>> m = PeriodicGrid2DLeftRight(nx=2, ny=2)
+        >>> (m._faceNormals == m._faceCellToCellNormals).all()
+        True
+        
+        """
+        self._cellToCellDistances = self._calcCellToCellDist()
+        self._faceCellToCellNormals = self._calcFaceCellToCellNormals()
         self._setFaceDependentScaledValues()
 
     """calc Topology methods"""

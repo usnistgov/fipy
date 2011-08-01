@@ -7,6 +7,7 @@ MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
 ez_setup.py
+junk.txt
 setup.py
 stdeb.cfg
 FiPy.egg-info/PKG-INFO
@@ -290,7 +291,9 @@ examples/reactiveWetting/index.txt
 examples/reactiveWetting/liquidVapor1D.py
 examples/reactiveWetting/liquidVapor2D.py
 examples/reactiveWetting/test.py
+examples/riemann/__init__.py
 examples/riemann/acoustics.py
+examples/riemann/test.py
 examples/updating/.gitignore
 examples/updating/__init__.py
 examples/updating/index.txt

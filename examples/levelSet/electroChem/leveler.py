@@ -416,9 +416,6 @@ def runLeveler(kLeveler=0.018,
         extensionVelocityVariable[mesh.fineMesh.numberOfCells:] = 0.
 
         for eqn, var, BCs, solver in eqnTuple:
-            var.updateOld()
-
-        for eqn, var, BCs, solver in eqnTuple:
             eqn.solve(var, boundaryConditions = BCs, dt = dt, solver=solver)
 
         totalTime += dt

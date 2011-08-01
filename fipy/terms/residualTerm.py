@@ -52,7 +52,7 @@ class ResidualTerm(_ExplicitSourceTerm):
     def __repr__(self):
         return r"$\Delta$[" + repr(self.equation) + "]"
 
-    def _getGeomCoeff(self, mesh):
+    def _getGeomCoeff(self, var):
         return self.coeff
         
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):

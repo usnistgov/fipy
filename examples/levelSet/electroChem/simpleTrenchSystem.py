@@ -304,9 +304,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         extensionVelocityVariable.setValue(depositionRateVariable())
 
         distanceVar.updateOld()
-        catalystVar.updateOld()
-        metalVar.updateOld()
-        bulkCatalystVar.updateOld()
 
         distanceVar.extendVariable(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()

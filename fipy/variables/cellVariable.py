@@ -133,8 +133,8 @@ class CellVariable(_MeshVariable):
         
     def copy(self):
         
-        return self._getArithmeticBaseClass()(mesh=self.mesh, 
-                                              name=self.name + "_old", 
+        return self._getArithmeticBaseClass()(mesh=self.mesh,
+                                              name=self.name + "_old",
                                               value=self.value,
                                               hasOld=False)
                 
@@ -523,10 +523,21 @@ class CellVariable(_MeshVariable):
 
     def updateOld(self):
         """
-        Set the values of the previous solution sweep to the current values.
+        Set the values of the previous solution sweep to the current
+        values.
+        
+        >>> from fipy import *
+        >>> v = CellVariable(mesh=Grid1D(), hasOld=False)
+        >>> v.updateOld()
+        Traceback (most recent call last):
+           ...
+        AssertionError: The updateOld method requires the CellVariable to have an old value. Set hasOld to True when instantiating the CellVariable.
+
         """
-        if self._old is not None:
-            self._old.value = (self.value.copy())
+        if self._old is None:
+            raise AssertionError, 'The updateOld method requires the CellVariable to have an old value. Set hasOld to True when instantiating the CellVariable.'
+        else:
+            self._old.value = self.value.copy()
 
     def _resetToOld(self):
         if self._old is not None:
@@ -665,6 +676,47 @@ class CellVariable(_MeshVariable):
             _MeshVariable.release(self, constraint=constraint)
         except ValueError:
             self.faceConstraints.remove(constraint)
+
+    def _test(self):
+        """
+        Tests
+
+        >>> from fipy import *
+        >>> m = Grid1D(nx=6)        
+        >>> q = CellVariable(mesh=m, elementshape=(2,))
+        >>> print q.faceGrad.globalValue.shape
+        (1, 2, 7)
+        >>> from fipy import *
+        >>> m = Grid2D(nx=3, ny=3)
+        >>> x, y = m.cellCenters
+        >>> v = CellVariable(mesh=m, elementshape=(3,))
+        >>> v[0] = x
+        >>> v[1] = y
+        >>> v[2] = x**2
+        >>> print v.faceGrad
+        [[[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5  0.   1.   1.
+            0.   0.   1.   1.   0.   0.   1.   1.   0. ]
+          [ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+            0.   0.   0.   0.   0.   0.   0.   0.   0. ]
+          [ 1.   3.   2.   1.   3.   2.   1.   3.   2.   1.   3.   2.   0.   2.   4.
+            0.   0.   2.   4.   0.   0.   2.   4.   0. ]]
+        <BLANKLINE>
+         [[ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+            0.   0.   0.   0.   0.   0.   0.   0.   0. ]
+          [ 0.   0.   0.   1.   1.   1.   1.   1.   1.   0.   0.   0.   0.5  0.5
+            0.5  0.5  1.   1.   1.   1.   0.5  0.5  0.5  0.5]
+          [ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+            0.   0.   0.   0.   0.   0.   0.   0.   0. ]]]
+        >>> print v.grad
+        [[[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5]
+          [ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]
+          [ 1.   3.   2.   1.   3.   2.   1.   3.   2. ]]
+        <BLANKLINE>
+         [[ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]
+          [ 0.5  0.5  0.5  1.   1.   1.   0.5  0.5  0.5]
+          [ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]]]
+        
+        """
 
 class _ReMeshedCellVariable(CellVariable):
     def __init__(self, oldVar, newMesh):

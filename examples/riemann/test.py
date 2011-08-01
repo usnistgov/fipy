@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
-## -*-Pyth-*-
+## 
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "modPhysicalField.py"
+ #  FILE: "test.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -29,34 +27,20 @@
  # they have been modified.
  # ========================================================================
  #  
- #  Description: 
- # 
- # Physical fields or quantities with units
- #
  # ###################################################################
  ##
 
-from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tests.doctestPlus import _LateImportDocTestSuite
+import fipy.tests.testProgram
 
-from fipy.tools import numerix
-
-class _ModPhysicalField(PhysicalField):
-
-    def mod(argument):
-        return numerix.fmod(argument + 3. * numerix.pi, 2. * numerix.pi) - numerix.pi
-    mod = staticmethod(mod)
-
-    def __sub__(self, other):
-        if isinstance(other, _ModPhysicalField):
-            return self.__class__(value= self.mod(self.inRadians() - other.inRadians()), unit="rad")
-        else:
-            return self._sum(other, sign2 = lambda b: -b)
+def _suite():
+    return _LateImportDocTestSuite(docTestModuleNames = (
+                                       'acoustics',
+                                   ), 
+                                   base = __name__)
     
-    def __rsub__(self, other):
-        if isinstance(other, _ModPhysicalField):
-            return self.__class__(value = self.mod(argument=other.inRadians() - self.inRadians()), unit="rad")
-        else:
-            return self._sum(other, sign1 = lambda a: -a)
+if __name__ == '__main__':
+    fipy.tests.testProgram.main(defaultTest='_suite')
 
-    def ravel(self):
-        return self.value.ravel()
+            
+            

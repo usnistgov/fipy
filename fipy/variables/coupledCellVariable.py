@@ -40,6 +40,14 @@ from fipy.tools.decorators import getsetDeprecated
 class _CoupledCellVariable(object):
     def __init__(self, vars):
         self.vars = vars
+
+    @property
+    def shape(self):
+        return (len(self.vars) * self.mesh.numberOfCells,)
+        
+    @property
+    def rank(self):
+        return self.vars[0].rank
         
     def __repr__(self):
         return "(" + ", ".join([repr(var) for var in self.vars]) + ")"
@@ -147,6 +155,9 @@ class _CoupledCellVariable(object):
         if not hasattr(self, 'typecode'):
             self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)        
         return self.typecode
+
+    def ravel(self):
+        return self.value.ravel()
 
 def _test(): 
     import doctest

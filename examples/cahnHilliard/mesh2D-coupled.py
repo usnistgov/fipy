@@ -76,9 +76,11 @@ much is augmented for :term:`FiPy`\'s needs.)
 
 We start the problem with random fluctuations about :math:`\phi = 1/2`
 
->>> phi.setValue(GaussianNoiseVariable(mesh=mesh,
-...                                    mean=0.5,
-...                                    variance=0.01))
+>>> noise = GaussianNoiseVariable(mesh=mesh,
+...                               mean=0.5,
+...                               variance=0.01).value
+
+>>> phi[:] = noise
 
 :term:`FiPy` doesn't plot or output anything unless you tell it to:
 
@@ -126,9 +128,10 @@ evolution of their problem.
 >>> dexp = -5
 >>> elapsed = 0.
 >>> if __name__ == "__main__":
-...     duration = 1000.
+...     duration = .5e-1
 ... else:
-...     duration = 1e-2
+...     duration = .5e-1
+
 >>> while elapsed < duration:
 ...     dt = min(100, exp(dexp))
 ...     elapsed += dt
@@ -137,9 +140,56 @@ evolution of their problem.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
+>>> if __name__ == '__main__':
+...     raw_input("Coupled equations. Press <return> to proceed...")
+
 .. image:: mesh2D.*
    :width: 90%
    :align: center
+
+-----
+
+These equations can also be solved in :term:`FiPy` using a vector
+equation. The variables :math:`\phi` and :math:`\psi` are now stored in
+a single variable
+
+>>> var = CellVariable(mesh=mesh, elementshape=(2,))
+>>> var[0] = noise
+
+>>> if __name__ == "__main__":
+...     viewer = Viewer(vars=(var[0], var[1]))
+
+>>> D = a = epsilon = 1.
+>>> v0 = var[0]
+>>> dfdphi = a**2 * 2 * v0 * (1 - v0) * (1 - 2 * v0)
+>>> dfdphi_ = a**2 * 2 * (1 - v0) * (1 - 2 * v0)
+>>> d2fdphi2 = a**2 * 2 * (1 - 6 * v0 * (1 - v0))
+
+The source terms have to be shaped correctly for a vector. The implicit source
+coefficient has to have a shape of `(2, 2)` while the explicit source
+has a shape `(2,)`
+
+>>> source = (- d2fdphi2 * v0 + dfdphi) * (0, 1)
+>>> impCoeff = -d2fdphi2 * ((0, 0), (1., 0)) + ((0, 0), (0, -1.))
+
+This is the same equation as the previous definition of `eq`, but now in
+a vector format.
+
+>>> eq = TransientTerm(((1., 0.), (0., 0.))) == DiffusionTerm([((0., D), (-epsilon**2, 0.))]) + ImplicitSourceTerm(impCoeff) + source
+
+>>> dexp = -5
+>>> elapsed = 0.
+
+>>> while elapsed < duration:
+...     dt = min(100, exp(dexp))
+...     elapsed += dt
+...     dexp += 0.01
+...     eq.solve(var=var, dt=dt)
+...     if __name__ == "__main__":
+...         viewer.plot()
+
+>>> print numerix.allclose(var, (phi, psi))
+True
 
 """
 __docformat__ = 'restructuredtext'

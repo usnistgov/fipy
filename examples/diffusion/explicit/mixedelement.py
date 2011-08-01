@@ -54,7 +54,6 @@ time steps.
 A loop is required to execute the necessary time steps:
 
     >>> for step in range(steps):
-    ...     var.updateOld()
     ...     eqn.solve(var, dt=timeStepDuration)
     
 The result is again tested in the same way:

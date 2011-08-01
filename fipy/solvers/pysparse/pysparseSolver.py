@@ -41,6 +41,7 @@ from pysparse import precon
 
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
+from fipy.tools import numerix
 
 class PysparseSolver(_PysparseMatrixSolver):
     """
@@ -91,11 +92,11 @@ class PysparseSolver(_PysparseMatrixSolver):
 
         if self.var.mesh.communicator.Nproc > 1:
             raise Exception("PySparse solvers cannot be used with multiple processors")
-        
-        array = self.var.numericValue
+
+        array = self.var.numericValue.ravel()
         
         from fipy.terms import SolutionVariableNumberError
-        
+
         if ((self.matrix == 0)
             or (self.matrix.matrix.shape[0] != self.matrix.matrix.shape[1])
             or (self.matrix.matrix.shape[0] != len(array))):
@@ -106,5 +107,6 @@ class PysparseSolver(_PysparseMatrixSolver):
         factor = self.var.unit.factor
         if factor != 1:
             array /= self.var.unit.factor
-        self.var[:] = array 
+
+        self.var[:] = array.reshape(self.var.shape)
 
