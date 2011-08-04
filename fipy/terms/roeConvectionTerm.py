@@ -56,42 +56,37 @@ class _RoeVariable(FaceVariable):
         id1, id2 = self.mesh._adjacentCellIDs
         mesh = self.var.mesh
         
-        coeffDown = (numerix.take(self.coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0)
-        coeffUp = (numerix.take(self.coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0)
+        coeffDown = (numerix.take(self.coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
+        coeffUp = (numerix.take(self.coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
         
-        ## Helper functions
-                               
-        ## A.shape = (Nequ, Nequ, Nfac)
+        ## A.shape = (Nfac, Nequ, Nequ)
         A = (coeffUp + coeffDown) / 2.
         
-        eigenvalues, R = smt.sortedeig(A.transpose(2, 0, 1))
-##        eigenvalues = eigenvalues.transpose(1, 0)
-##        R = R.transpose(1, 2, 0)
+        eigenvalues, R = smt.sortedeig(A)
             
         self._maxeigenvalue = max(abs(eigenvalues).flat)
         E = abs(eigenvalues)[:,:,numerix.newaxis] * numerix.identity(eigenvalues.shape[1])
 
-        Abar = smt.mulinvNew(smt.mulNew(R, E), R)
+        Abar = smt.mulinv(smt.mul(R, E), R)
 
-        E = E.transpose(1, 2, 0)
-        eigenvalues = eigenvalues.transpose(1, 0)
-        R = R.transpose(1, 2, 0)
-        Abar = Abar.transpose(1, 2, 0)
-##        Abar = smt.mulinv(smt.mul(R, E), R)
-
-        ## value.shape = (2, Nequ, Nequ, Nfac), first order 
+        ## value.shape = (2, Nfac, Nequ, Nequ), first order 
         value = numerix.zeros((2,) + A.shape, 'd')
         value[0] = (coeffDown + Abar) / 2
         value[1] = (coeffUp - Abar) / 2
 
         ## second order correction with limiter
-        varDown = numerix.take(self.var, id1, axis=-1)
-        varUp = numerix.take(self.var, id2, axis=-1)
-        varDownGrad = smt.dot(numerix.take(self.var.grad(), id1, axis=-1), mesh._orientedFaceNormals)
-        varUpGrad = smt.dot(numerix.take(self.var.grad(), id2, axis=-1), mesh._orientedFaceNormals)
+        varT = numerix.array(self.var).transpose(1,0)
+        varGradT = numerix.array(self.var.grad).transpose(2, 0, 1)
+        faceNormalsT = numerix.array(mesh._orientedFaceNormals).transpose(1,0)
+        cellDistances = numerix.array(mesh._cellDistances)[:,numerix.newaxis]
+
+        varDown = numerix.take(varT, id1, axis=0)
+        varUp = numerix.take(varT, id2, axis=0)
+        varDownGrad = smt.dot(numerix.take(varGradT, id1, axis=0), faceNormalsT[...,numerix.newaxis])
+        varUpGrad = smt.dot(numerix.take(varGradT, id2, axis=0), faceNormalsT[...,numerix.newaxis])
         
-        varUpUp = varDown + 2 * mesh._cellDistances * varUpGrad
-        varDownDown = varUp - 2 * mesh._cellDistances * varDownGrad
+        varUpUp = varDown + 2 * cellDistances * varUpGrad
+        varDownDown = varUp - 2 * cellDistances * varDownGrad
 
         alpha = smt.invmatvec(R, varUp - varDown)
         alphaDown = smt.invmatvec(R, varDown - varDownDown)
@@ -100,13 +95,14 @@ class _RoeVariable(FaceVariable):
         alphaOther = numerix.where(eigenvalues > 0, alphaDown, alphaUp)
         theta = alphaOther / (alpha + 1e-20 * (alpha == 0))
 
-        A = smt.mul(0.5 * E * (1 - float(self.dt) / mesh._cellDistances * E), R)
-        correctionImplicit = smt.invmul(R.transpose(1, 0, 2), MClimiter(theta)[:, numerix.newaxis] * A.transpose(1, 0, 2)).transpose(1, 0, 2)
+        A = smt.mul(0.5 * E * (1 - float(self.dt) / cellDistances[...,numerix.newaxis] * E), R)
+
+        correctionImplicit = smt.mulinv(MClimiter(theta)[:,numerix.newaxis] * A, R)
 
         value[0] -= correctionImplicit
         value[1] += correctionImplicit
 
-        return value
+        return value.transpose(0, 2, 3, 1)
 
     @property
     def maxeigenvalue(self):
