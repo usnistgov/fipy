@@ -144,6 +144,10 @@ class MshFile:
         self.version, self.fileType, self.dataSize = self._getMetaData(f)
         self.nodesFile = self._isolateData("Nodes", f)
         self.elemsFile = self._isolateData("Elements", f)
+        try:
+            self.namesFile = self._isolateData("PhysicalNames", f)
+        except EOFError, e:
+            self.namesFile = None
 
     def _parseFilename(self, fname, gmshFlags):
         """
@@ -235,7 +239,7 @@ class MshFile:
             elif (("$%s" % title) not in line): continue
             else: break # found header
 
-    def _deriveCellsAndFaces(self, cellsToVertIDs, shapeTypes, numCells, entities):
+    def _deriveCellsAndFaces(self, cellsToVertIDs, shapeTypes, numCells):
         """
         Uses element information obtained from `_parseElementFile` to deliver
         `facesToVertices` and `cellsToFaces`.
@@ -278,15 +282,9 @@ class MshFile:
                     uniqueFaces.append(currFace)
                     currNumFaces += 1
                
-        newEntities = entities.copy()
-        for key, group in entities['physical']['face'].iteritems():
-            newEntities['physical']['face'][key] = [facesDict[' '.join([str(x-1) for x in face])] for face in group]
-        for key, group in entities['geometrical']['face'].iteritems():
-            newEntities['geometrical']['face'][key] = [facesDict[' '.join([str(x-1) for x in face])] for face in group]
-
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
-        return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces), newEntities
+        return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces), facesDict
  
     def _translateVertIDToIdx(self, cellsToVertIDs, vertexMap):
         """
@@ -342,7 +340,7 @@ class MshFile:
 
         return faces
 
-    def buildMeshData(self, parseGeometricalEntities):
+    def buildMeshData(self):
         """
         0. Build cellsToVertices
         1. Recover needed vertexCoords and mapping from file using 
@@ -358,13 +356,15 @@ class MshFile:
         parprint("Parsing elements.")
         (cellsData, 
          ghostsData, 
-         entities) = self._parseElementFile(parseGeometricalEntities=parseGeometricalEntities)
+         facesData) = self._parseElementFile()
         
-        cellsToGmshVerts = cellsData.cells + ghostsData.cells
-        numCellsTotal    = len(cellsData.cells) + len(ghostsData.cells)
+        cellsToGmshVerts = cellsData.nodes + ghostsData.nodes
+        numCellsTotal    = len(cellsData.nodes) + len(ghostsData.nodes)
         allShapeTypes    = cellsData.shapes + ghostsData.shapes
         allShapeTypes    = nx.array(allShapeTypes)
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
+        physicalCellMap  = cellsData.physicalEntities + ghostsData.physicalEntities
+        geometricalCellMap = cellsData.geometricalEntities + ghostsData.geometricalEntities
 
         if numCellsTotal < 1:
             errStr = "Gmsh hasn't produced any cells! Check your Gmsh code."
@@ -382,15 +382,40 @@ class MshFile:
         parprint("Building cells and faces.")
         (facesToV, 
          cellsToF,
-         entities) = self._deriveCellsAndFaces(cellsToVertIDs,
-                                               allShapeTypes,
-                                               numCellsTotal,
-                                               entities)
+         facesDict) = self._deriveCellsAndFaces(cellsToVertIDs,
+                                                allShapeTypes,
+                                                numCellsTotal)
+            
+        # cell entities were easy to record on parsing
+        # but we don't use Gmsh faces, so we need to correlate the nodes 
+        # that make up the Gmsh faces with the vertex IDs of the FiPy faces
+        faceEntitiesDict = dict()
+        
+        # translate Gmsh IDs to `vertexCoord` indices
+        facesToVertIDs = self._translateVertIDToIdx(facesData.nodes,
+                                                    vertIDtoIdx)
+                                                    
+        for face, physicalEntity, geometricalEntity in zip(facesToVertIDs, 
+                                                           facesData.physicalEntities, 
+                                                           facesData.geometricalEntities):
+            faceEntitiesDict[' '.join([str(x) for x in sorted(face)])] = (physicalEntity, geometricalEntity)
+            
+        physicalFaceMap = nx.zeros(facesToV.shape[-1:])
+        geometricalFaceMap = nx.zeros(facesToV.shape[-1:])
+        for face in facesDict.keys():
+            # not all faces are necessarily tagged
+            if faceEntitiesDict.has_key(face):
+                physicalFaceMap[facesDict[face]] = faceEntitiesDict[face][0]
+                geometricalFaceMap[facesDict[face]] = faceEntitiesDict[face][1]
+                
+        physicalNames = self._parseNamesFile()
                                           
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF, 
                 cellsData.idmap, ghostsData.idmap, 
-                entities)
+                nx.array(physicalCellMap), nx.array(geometricalCellMap), 
+                nx.array(physicalFaceMap), nx.array(geometricalFaceMap),
+                physicalNames)
 
     def _vertexCoordsAndMap(self, cellsToGmshVerts):
         """
@@ -435,31 +460,21 @@ class MshFile:
         transCoords = vertexCoords.swapaxes(0,1)
         return transCoords, vertGIDtoIdx
 
-    def _parseElementFile(self, parseGeometricalEntities):
+    def _parseElementFile(self):
         """
-        Return two objects, the first for non-ghost cells and the second for
-        ghost cells.
+        Return three objects, the first for non-ghost cells, the second for
+        ghost cells, and the third for faces.
 
         All nastiness concerning ghost cell
         calculation is consolidated here: if we were ever to need to CALCULATE
         GHOST CELLS OURSELVES, the only code we'd have to change is in here.
         """
-        cellsData = _CellsData()
-        ghostsData = _CellsData()
+        cellsData = _ElementData()
+        ghostsData = _ElementData()
+        facesData = _ElementData()
         
-        entities = {
-            'physical': {
-                'cell': _DictOfLists(),
-                'face': _DictOfLists()
-            },
-            'geometrical': {
-                'cell': _DictOfLists(),
-                'face': _DictOfLists()
-            }
-        }
-        
-        cellOffset = -1 # this will be subtractd from gmsh ID to obtain global ID
-        faceOffset = -1 # this will be subtractd from gmsh ID to obtain global ID
+        cellOffset = -1 # this will be subtracted from gmsh ID to obtain global ID
+        faceOffset = -1 # this will be subtracted from gmsh ID to obtain global ID
         pid = self.communicator.procID + 1
         
         self.elemsFile.readline() # skip number of elements
@@ -478,32 +493,32 @@ class MshFile:
                 tags    = currLineInts[3:(3+numTags)]
                 
                 physicalEntity = tags.pop(0)
-                if physicalEntity > 0:
-                    entities['physical']['cell'][physicalEntity].append(currLineInts[0])
-                if parseGeometricalEntities:
-                    # these consume a lot of memory and the user probably doesn't want them
-                    geometricalEntity = tags.pop(0)
-                    if geometricalEntity > 0:
-                        entities['geometrical']['cell'][geometricalEntity].append(currLineInts[0])
+                geometricalEntity = tags.pop(0)
 
+                if len(tags) > 0:
+                    # next item is a count
+                    if tags[0] != len(tags) - 1:
+                        warnings.warn("Partition count %d does not agree with number of remaining tags %d." % (tags[0], len(tags) - 1), 
+                                      SyntaxWarning, stacklevel=2)
+                    tags = tags[1:]
+            
                 if self.communicator.Nproc > 1:
-                    if len(tags) > 0:
-                        # next item is a count
-                        if tags[0] != len(tags) - 1:
-                            warnings.warn("Partition count %d does not agree with number of remaining tags %d." % (tags[0], len(tags) - 1), 
-                                          SyntaxWarning, stacklevel=2)
-                        tags = tags[1:]
-                
                     for tag in tags:
                         if -tag == pid: 
                             # if we're collecting ghost cells and this is our ghost cell
-                            ghostsData.add(currLine=currLineInts, elType=elemType)
+                            ghostsData.add(currLine=currLineInts, elType=elemType, 
+                                           physicalEntity=physicalEntity, 
+                                           geometricalEntity=geometricalEntity)
                         elif tag == pid:
-                            # el is in this processor's partition
-                            cellsData.add(currLine=currLineInts, elType=elemType)
+                            # el is in this processor's partition or we collect all cells
+                            cellsData.add(currLine=currLineInts, elType=elemType, 
+                                          physicalEntity=physicalEntity, 
+                                          geometricalEntity=geometricalEntity)
                 else:
                     # we collect all cells
-                    cellsData.add(currLine=currLineInts, elType=elemType)
+                    cellsData.add(currLine=currLineInts, elType=elemType, 
+                                  physicalEntity=physicalEntity, 
+                                  geometricalEntity=geometricalEntity)
             elif elemType in self.numVertsPerFace.keys():
                 # element is a face
                 if faceOffset == -1:
@@ -514,56 +529,94 @@ class MshFile:
                 numTags = currLineInts[2]
                 tags    = currLineInts[3:(3+numTags)]
                 
+                # the partition tags for faces don't seem to always be present 
+                # and don't always make much sense when they are
+                
                 physicalEntity = tags.pop(0)
-                if physicalEntity > 0:
-                    entities['physical']['face'][physicalEntity].append(sorted(currLineInts[(numTags+3):]))
-                if parseGeometricalEntities:
-                    # these consume a lot of memory and the user probably doesn't want them
-                    geometricalEntity = tags.pop(0)
-                    if geometricalEntity > 0:
-                        entities['geometrical']['face'][geometricalEntity].append(sorted(currLineInts[(numTags+3):]))
+                geometricalEntity = tags.pop(0)
 
+                facesData.add(currLine=currLineInts, elType=elemType, 
+                              physicalEntity=physicalEntity, 
+                              geometricalEntity=geometricalEntity)
+                              
         self.elemsFile.close() # tempfile trashed
 
-        return cellsData, ghostsData, entities
+        return cellsData, ghostsData, facesData
 
-class _CellsData(object):
+
+    def _parseNamesFile(self):
+        physicalNames = {
+            1: dict(),
+            2: dict(),
+            3: dict()
+        }
+        if self.namesFile is not None:
+            self.namesFile.readline() # skip number of elements
+            for nm in self.namesFile:
+                nm = nm.split()
+                dim = int(nm.pop(0))
+                num = int(nm.pop(0))
+                name = " ".join(nm)[1:-1]
+                physicalNames[dim][name] = int(num)
+                
+        return physicalNames
+
+class _ElementData(object):
     """
     Bookkeeping for cells. Declared as own class for generality.
-    
-    "cells": A cellToVertID Python list
+
+    "nodes": A Python list of the vertices that make up this element
     "shapes": A shapeTypes Python list
     "idmap": A Python list which maps vertexCoords idx -> global ID
-    "IDOffset": The Gmsh index of the fist cell
+    "physicalEntities": A Python list of the Gmsh physical entities each element is in
+    "geometricalEntities": A Python list of the Gmsh geometrical entities each element is in
     """
     def __init__(self):
-        self.cells = []
+        self.nodes = []
         self.shapes = []
         self.idmap = [] # vertexCoords idx -> gmsh ID (global ID)
+        self.physicalEntities = []
+        self.geometricalEntities = []
         
-    def add(self, currLine, elType):
+    def add(self, currLine, elType, physicalEntity, geometricalEntity):
         numTags = currLine[2]
-        self.cells.append(currLine[(numTags+3):])
+        self.nodes.append(currLine[(numTags+3):])
         self.shapes.append(elType)
         self.idmap.append(currLine[0])
+        self.physicalEntities.append(physicalEntity)
+        self.geometricalEntities.append(geometricalEntity)
 
-class _DictOfLists(dict):
-    """dict that hashes lists
+def _makeMapVariables(mesh, physicalCellMap, geometricalCellMap, physicalFaceMap, 
+                      geometricalFaceMap, physicalNames, faceDim, cellDim):
+    """Utility function to make MeshVariables that define different domains in the mesh
     
-    getting a hash item automatically creates an empty list if needed
+    Separate function because Gmsh2D and Gmsh3D don't have a common ancestor and mixins are evil
     """
-    def __getitem__(self, item):
-        if not self.has_key(item):
-            self[item] = []
-        return dict.__getitem__(self, item)
+    from fipy.variables.cellVariable import CellVariable
+    from fipy.variables.faceVariable import FaceVariable
+
+    physicalCellMap = CellVariable(mesh=mesh, value=physicalCellMap)
+    geometricalCellMap = CellVariable(mesh=mesh, value=geometricalCellMap)
+    physicalFaceMap = FaceVariable(mesh=mesh, value=physicalFaceMap)
+    geometricalFaceMap = FaceVariable(mesh=mesh, value=geometricalFaceMap)
+
+    physicalCells = dict()
+    for name in physicalNames[cellDim].keys():
+        physicalCells[name] = physicalCellMap == physicalNames[cellDim][name]
+        
+    physicalFaces = dict()
+    for name in physicalNames[faceDim].keys():
+        physicalFaces[name] = physicalFaceMap == physicalNames[faceDim][name]
+        
+    return (physicalCellMap, geometricalCellMap, physicalCells,
+            physicalFaceMap, geometricalFaceMap, physicalFaces)
 
 class Gmsh2D(Mesh2D):
     def __init__(self, 
                  arg, 
                  coordDimensions=2, 
                  communicator=parallel, 
-                 order=1,
-                 parseGeometricalEntities=False):
+                 order=1):
         self.communicator = communicator 
         self.mshFile  = MshFile(arg, 
                                 dimensions=2, 
@@ -575,7 +628,11 @@ class Gmsh2D(Mesh2D):
          cells,
          self.cellGlobalIDs, 
          self.gCellGlobalIDs,
-         self.entities) = self.mshFile.buildMeshData(parseGeometricalEntities=parseGeometricalEntities)
+         self.physicalCellMap, 
+         self.geometricalCellMap, 
+         self.physicalFaceMap, 
+         self.geometricalFaceMap,
+         physicalNames) = self.mshFile.buildMeshData()
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
@@ -585,6 +642,20 @@ class Gmsh2D(Mesh2D):
         Mesh2D.__init__(self, vertexCoords=verts,
                               faceVertexIDs=faces,
                               cellFaceIDs=cells)
+                         
+        (self.physicalCellMap,
+         self.geometricalCellMap,
+         self.physicalCells,
+         self.physicalFaceMap,
+         self.geometricalFaceMap,
+         self.physicalFaces) = _makeMapVariables(mesh=self, 
+                                                 physicalCellMap=self.physicalCellMap,
+                                                 geometricalCellMap=self.geometricalCellMap,
+                                                 physicalFaceMap=self.physicalFaceMap,
+                                                 geometricalFaceMap=self.geometricalFaceMap,
+                                                 physicalNames=physicalNames,
+                                                 faceDim=1, cellDim=2)
+
         parprint("Exiting Gmsh2D")
 
     def __setstate__(self, dict):
@@ -689,7 +760,7 @@ class Gmsh2D(Mesh2D):
     
     def _test(self):
         """
-        First, we'll test GmshImporter2D on a small circle with triangular
+        First, we'll test Gmsh2D on a small circle with triangular
         cells.
 
         >>> circ = Gmsh2D('''
@@ -711,7 +782,7 @@ class Gmsh2D(Mesh2D):
         >>> print circ.cellVolumes[0] > 0
         True
 
-        Now we'll test GmshImporter2D again, but on a rectangle.
+        Now we'll test Gmsh2D again, but on a rectangle.
 
         >>> rect = Gmsh2D('''
         ... cellSize = 0.5;
@@ -770,6 +841,115 @@ class Gmsh2D(Mesh2D):
         Traceback (most recent call last):
             ...
         GmshException: Gmsh hasn't produced any cells! Check your Gmsh code.
+        
+        Testing element labeling
+        
+        >>> radius = 5.
+        >>> side = 4.
+        >>> squaredCircle = Gmsh2D('''
+        ... // A mesh consisting of a square inside a circle inside a circle
+        ...                        
+        ... // define the basic dimensions of the mesh
+        ...                        
+        ... cellSize = 1;
+        ... radius = %(radius)g;
+        ... side = %(side)g;
+        ...                        
+        ... // define the compass points of the inner circle
+        ...                        
+        ... Point(1) = {0, 0, 0, cellSize};
+        ... Point(2) = {-radius, 0, 0, cellSize};
+        ... Point(3) = {0, radius, 0, cellSize};
+        ... Point(4) = {radius, 0, 0, cellSize};
+        ... Point(5) = {0, -radius, 0, cellSize};
+        ...                        
+        ... // define the compass points of the outer circle
+        ... 
+        ... Point(6) = {-2*radius, 0, 0, cellSize};
+        ... Point(7) = {0, 2*radius, 0, cellSize};
+        ... Point(8) = {2*radius, 0, 0, cellSize};
+        ... Point(9) = {0, -2*radius, 0, cellSize};
+        ... 
+        ... // define the corners of the square
+        ... 
+        ... Point(10) = {side/2, side/2, 0, cellSize/2};
+        ... Point(11) = {-side/2, side/2, 0, cellSize/2};
+        ... Point(12) = {-side/2, -side/2, 0, cellSize/2};
+        ... Point(13) = {side/2, -side/2, 0, cellSize/2};
+        ... 
+        ... // define the inner circle
+        ... 
+        ... Circle(1) = {2, 1, 3};
+        ... Circle(2) = {3, 1, 4};
+        ... Circle(3) = {4, 1, 5};
+        ... Circle(4) = {5, 1, 2};
+        ... 
+        ... // define the outer circle
+        ... 
+        ... Circle(5) = {6, 1, 7};
+        ... Circle(6) = {7, 1, 8};
+        ... Circle(7) = {8, 1, 9};
+        ... Circle(8) = {9, 1, 6};
+        ... 
+        ... // define the square
+        ... 
+        ... Line(9) = {10, 13};
+        ... Line(10) = {13, 12};
+        ... Line(11) = {12, 11};
+        ... Line(12) = {11, 10};
+        ... 
+        ... // define the three boundaries
+        ... 
+        ... Line Loop(1) = {1, 2, 3, 4};
+        ... Line Loop(2) = {5, 6, 7, 8};
+        ... Line Loop(3) = {9, 10, 11, 12};
+        ... 
+        ... // define the three domains
+        ... 
+        ... Plane Surface(1) = {2, 1};
+        ... Plane Surface(2) = {1, 3};
+        ... Plane Surface(3) = {3};
+        ... 
+        ... // label the three domains
+        ... 
+        ... // attention: if you use any "Physical" labels, you *must* label 
+        ... // all elements that correspond to FiPy Cells (Physical Surace in 2D 
+        ... // and Physical Volume in 3D) or Gmsh will not include them and FiPy
+        ... // will not be able to include them in the Mesh. 
+        ... 
+        ... // note: if you do not use any labels, all Cells will be included.
+        ... 
+        ... Physical Surface("Outer") = {1};
+        ... Physical Surface("Middle") = {2};
+        ... Physical Surface("Inner") = {3};
+        ... 
+        ... // label the "north-west" part of the exterior boundary
+        ... 
+        ... // note: you only need to label the Face elements 
+        ... // (Physical Line in 2D and Physical Surface in 3D) that correspond
+        ... // to boundaries you are interested in. FiPy does not need them to
+        ... // construct the Mesh.
+        ... 
+        ... Physical Line("NW") = {5};
+        ... ''' % locals())
+
+        >>> x, y = squaredCircle.cellCenters
+
+        >>> middle = ((x**2 + y**2 <= radius**2) 
+        ...           & ~((x > -side/2) & (x < side/2)
+        ...               & (y > -side/2) & (y < side/2)))
+
+        >>> print (middle == squaredCircle.physicalCells["Middle"]).all()
+        True
+        
+        >>> X, Y = squaredCircle.faceCenters
+
+        >>> NW = ((X**2 + Y**2 > (1.99*radius)**2) 
+        ...       & (X**2 + Y**2 < (2.01*radius)**2)
+        ...       & (X <= 0) & (Y >= 0))
+
+        >>> print (NW == squaredCircle.physicalFaces["NW"]).all()
+        True
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
@@ -840,15 +1020,18 @@ class Gmsh3D(Mesh):
         self.mshFile  = MshFile(arg, 
                                 dimensions=3, 
                                 communicator=communicator,
-                                order=order,
-                                parseGeometricalEntities=False)
+                                order=order)
 
         (verts,
          faces,
          cells,
          self.cellGlobalIDs,
          self.gCellGlobalIDs,
-         self.entities) = self.mshFile.buildMeshData(parseGeometricalEntities=parseGeometricalEntities)
+         self.physicalCellMap, 
+         self.geometricalCellMap, 
+         self.physicalFaceMap, 
+         self.geometricalFaceMap,
+         physicalNames) = self.mshFile.buildMeshData()
 
         Mesh.__init__(self, vertexCoords=verts,
                             faceVertexIDs=faces,
@@ -858,6 +1041,19 @@ class Gmsh3D(Mesh):
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
+            
+        (self.physicalCellMap,
+         self.geometricalCellMap,
+         self.physicalCells,
+         self.physicalFaceMap,
+         self.geometricalFaceMap,
+         self.physicalFaces) = _makeMapVariables(mesh=self, 
+                                                 physicalCellMap=self.physicalCellMap,
+                                                 geometricalCellMap=self.geometricalCellMap,
+                                                 physicalFaceMap=self.physicalFaceMap,
+                                                 geometricalFaceMap=self.geometricalFaceMap,
+                                                 physicalNames=physicalNames,
+                                                 faceDim=2, cellDim=3)
 
     def __setstate__(self, dict):
         Mesh.__init__(self, **dict)
