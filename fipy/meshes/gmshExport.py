@@ -138,13 +138,14 @@ class GmshExporter(object):
                 faces than others. If this is the case, ignore the
                 '--' entries."""
                 if type(faceNum) not in [numerix.int32, 
+                                         numerix.int64,
                                          numerix.float32,
                                          numerix.float64]:
                     continue
                 for vertexNum in faceVertexIDs[..., faceNum]:
                     if vertexNum not in vertexList:
                         vertexList.append(vertexNum)
-
+                        
             if dimensions == 2:
                 vertexList = self._orderVertices(coords, vertexList)
 
