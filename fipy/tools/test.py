@@ -41,6 +41,7 @@ def _suite():
             'numerix',
             'dump',
             'vector',
+            'smallMatrixVectorOps'
         ), base = __name__)
 
     return theSuite

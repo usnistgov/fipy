@@ -1,15 +1,80 @@
+#!/usr/bin/env python
+
+## -*-Pyth-*-
+ # ###################################################################
+ #  FiPy - Python-based finite volume PDE solver
+ # 
+ #  FILE: "smallMatrixVectorOps.py"
+ #
+ #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #    mail: NIST
+ #     www: http://www.ctcms.nist.gov/fipy/
+ #  
+ # ========================================================================
+ # This software was developed at the National Institute of Standards
+ # and Technology by employees of the Federal Government in the course
+ # of their official duties.  Pursuant to title 17 Section 105 of the
+ # United States Code this software is not subject to copyright
+ # protection and is in the public domain.  FiPy is an experimental
+ # system.  NIST assumes no responsibility whatsoever for its use by
+ # other parties, and makes no guarantees, expressed or implied, about
+ # its quality, reliability, or any other characteristic.  We would
+ # appreciate acknowledgement if the software is used.
+ # 
+ # This software can be redistributed and/or modified freely
+ # provided that any derivative works bear some notice that they are
+ # derived from it, and any modified versions bear some notice that
+ # they have been modified.
+ # ========================================================================
+ #  See the file "license.terms" for information on usage and  redistribution
+ #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ #  
+ # ###################################################################
+ ##
+
+"""
+>>> import numpy as np
+
+>>> np.random.seed(1)
+>>> N = 5
+>>> def test(M):
+...     A = -np.random.random((N, M, M))
+...     for i in range(M):
+...         A[i, i] += 1 + M
+...     B = np.random.random((N, M, M))
+...     I = np.identity(A.shape[-1])
+...
+...     e, R = sortedeig(A)
+...     eslow, Rslow = sortedeig(A, slow=True)
+...     E = e[:,:,np.newaxis] * I
+...     return np.all([np.allclose(invmul(A, A), I[np.newaxis]),
+...                    np.allclose(e, eslow),
+...                    np.allclose(mul(A, R), e[:,np.newaxis] * R),
+...                    np.allclose(A, mulinv(mul(R, E), R))])
+
+>>> b = []
+>>> for M in (2, 3, 4, 5):
+...     b += [test(M)]
+>>> np.all(b)
+True
+
+"""
+
 import numpy as np
 import pyximport
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
+import os
 
-ext_modules = [Extension('smt', ['smt.pyx'],
-                         libraries=['lapack'])]
+extFile = os.path.join(os.path.split(__file__)[0], 'smallMatrixVectorOpsExt.pyx')
 
-pyximport.install(setup_args = {'cmdclass' : {'build_ext' : build_ext},
-                                'ext_modules' : ext_modules})
+ext_modules = [Extension('smallMatrixVectorOpsExt', [extFile], libraries=['lapack'])]
+
+pyximport.install(build_dir='.', setup_args = {'options' : {'build_ext' : {'libraries' : 'lapack'}}})
                              
-from smt import solve, fasteigvec
+from smallMatrixVectorOpsExt import solve, fasteigvec
 
 def fastsum(arr, axis=0):
     if type(arr) in (float, int) or len(arr) == 0 or 0 in arr.shape:
@@ -88,3 +153,10 @@ def sortedeig(A, slow=False):
     order = eigenvalues.argsort(1)
     Nlist = np.arange(N).reshape((N, 1))
     return eigenvalues[Nlist, order], R[Nlist, :, order].transpose(0, 2, 1)
+
+def _test(): 
+    import doctest
+    return doctest.testmod()
+ 
+if __name__ == "__main__":
+    _test()

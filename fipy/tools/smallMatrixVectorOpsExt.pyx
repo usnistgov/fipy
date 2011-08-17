@@ -1,9 +1,9 @@
-#cython: profile=True
 import cython
 import numpy as np
 from numpy.core import intc	
 cimport numpy as np
 from numpy.compat import asbytes
+from fipy.tools.clapack cimport zgesv_, dgesv_, dgeev_
 
 @cython.boundscheck(False)
 cdef np.ndarray[complex, ndim=3] zsolve(np.ndarray[complex, ndim=3] A, np.ndarray[complex, ndim=3] B):
@@ -15,7 +15,7 @@ cdef np.ndarray[complex, ndim=3] zsolve(np.ndarray[complex, ndim=3] A, np.ndarra
     cdef np.ndarray[complex, ndim=2] Bi = np.zeros((M, M), dtype=complex)
     cdef np.ndarray[complex, ndim=2] Ai = np.zeros((M, M), dtype=complex)
     cdef int NRHS = B.shape[1]
-    cdef int info = 0     
+    cdef int info = 0
     cdef np.ndarray ipiv = np.zeros(M, intc)
 
     for i from 0 <= i < N:
