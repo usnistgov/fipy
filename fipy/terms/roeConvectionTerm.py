@@ -40,7 +40,7 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.tools import numerix
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.variables.faceVariable import FaceVariable
-from fipy.tools import smallMatrixTools as smt
+from fipy.tools import smallMatrixVectorOps as smv
 
 def MClimiter(theta):
     return numerix.maximum(0, numerix.minimum((1 + theta) / 2, 2, 2 * theta))
@@ -62,12 +62,12 @@ class _RoeVariable(FaceVariable):
         ## A.shape = (Nfac, Nequ, Nequ)
         A = (coeffUp + coeffDown) / 2.
         
-        eigenvalues, R = smt.sortedeig(A)
+        eigenvalues, R = smv.sortedeig(A)
             
         self._maxeigenvalue = max(abs(eigenvalues).flat)
         E = abs(eigenvalues)[:,:,numerix.newaxis] * numerix.identity(eigenvalues.shape[1])
 
-        Abar = smt.mulinv(smt.mul(R, E), R)
+        Abar = smv.mulinv(smv.mul(R, E), R)
 
         ## value.shape = (2, Nfac, Nequ, Nequ), first order 
         value = numerix.zeros((2,) + A.shape, 'd')
@@ -82,22 +82,22 @@ class _RoeVariable(FaceVariable):
 
         varDown = numerix.take(varT, id1, axis=0)
         varUp = numerix.take(varT, id2, axis=0)
-        varDownGrad = smt.dot(numerix.take(varGradT, id1, axis=0), faceNormalsT[...,numerix.newaxis])
-        varUpGrad = smt.dot(numerix.take(varGradT, id2, axis=0), faceNormalsT[...,numerix.newaxis])
+        varDownGrad = smv.dot(numerix.take(varGradT, id1, axis=0), faceNormalsT[...,numerix.newaxis])
+        varUpGrad = smv.dot(numerix.take(varGradT, id2, axis=0), faceNormalsT[...,numerix.newaxis])
         
         varUpUp = varDown + 2 * cellDistances * varUpGrad
         varDownDown = varUp - 2 * cellDistances * varDownGrad
 
-        alpha = smt.invmatvec(R, varUp - varDown)
-        alphaDown = smt.invmatvec(R, varDown - varDownDown)
-        alphaUp = smt.invmatvec(R, varUpUp - varUp)
+        alpha = smv.invmatvec(R, varUp - varDown)
+        alphaDown = smv.invmatvec(R, varDown - varDownDown)
+        alphaUp = smv.invmatvec(R, varUpUp - varUp)
         
         alphaOther = numerix.where(eigenvalues > 0, alphaDown, alphaUp)
         theta = alphaOther / (alpha + 1e-20 * (alpha == 0))
 
-        A = smt.mul(0.5 * E * (1 - float(self.dt) / cellDistances[...,numerix.newaxis] * E), R)
+        A = smv.mul(0.5 * E * (1 - float(self.dt) / cellDistances[...,numerix.newaxis] * E), R)
 
-        correctionImplicit = smt.mulinv(MClimiter(theta)[:,numerix.newaxis] * A, R)
+        correctionImplicit = smv.mulinv(MClimiter(theta)[:,numerix.newaxis] * A, R)
 
         value[0] -= correctionImplicit
         value[1] += correctionImplicit
