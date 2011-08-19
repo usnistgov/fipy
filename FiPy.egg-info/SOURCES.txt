@@ -292,7 +292,6 @@ examples/reactiveWetting/test.py
 examples/riemann/__init__.py
 examples/riemann/acoustics.py
 examples/riemann/test.py
-examples/riemann/tmp.py
 examples/updating/.gitignore
 examples/updating/__init__.py
 examples/updating/index.txt
@@ -522,7 +521,6 @@ fipy/variables/arithmeticCellToFaceVariable.py
 fipy/variables/betaNoiseVariable.py
 fipy/variables/binaryOperatorVariable.py
 fipy/variables/cellToFaceVariable.py
-fipy/variables/cellToFaceVariableDown.py
 fipy/variables/cellVariable.py
 fipy/variables/cellVolumeAverageVariable.py
 fipy/variables/constant.py
@@ -535,7 +533,6 @@ fipy/variables/faceVariable.py
 fipy/variables/gammaNoiseVariable.py
 fipy/variables/gaussCellGradVariable.py
 fipy/variables/gaussianNoiseVariable.py
-fipy/variables/ghostValue.py
 fipy/variables/harmonicCellToFaceVariable.py
 fipy/variables/histogramVariable.py
 fipy/variables/leastSquaresCellGradVariable.py

@@ -40,11 +40,11 @@ def _suite():
         'solvers.test',
         'models.test',
         'terms.test',
-        'tools.test',
         'matrices.test',
         'meshes.test',
         'variables.test',
         'viewers.test',
+        'tools.test',
 	'boundaryConditions.test',
     ), base = __name__)
     

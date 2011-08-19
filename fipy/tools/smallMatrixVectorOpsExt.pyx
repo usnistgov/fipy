@@ -34,13 +34,15 @@
  # ###################################################################
  ##
 
-
 import cython
 import numpy as np
 from numpy.core import intc	
 cimport numpy as np
 from numpy.compat import asbytes
 from fipy.tools.clapack cimport zgesv_, dgesv_, dgeev_
+from numpy import complex, int
+COMPLEX = np.complex128
+ctypedef np.complex128_t COMPLEX_T
 
 @cython.boundscheck(False)
 cdef np.ndarray[complex, ndim=3] zsolve(np.ndarray[complex, ndim=3] A, np.ndarray[complex, ndim=3] B):
@@ -62,7 +64,7 @@ cdef np.ndarray[complex, ndim=3] zsolve(np.ndarray[complex, ndim=3] A, np.ndarra
                 Ai[j, k] = A[i, j, k]
                 Bi[j, k] = B[i, j, k]
 
-        zgesv_(&M, &NRHS, <complex *> Ai.data, &M, <int *> ipiv.data, <complex *> Bi.data, &M, &info)
+        zgesv_(&M, &NRHS, <COMPLEX_T *> Ai.data, &M, <int *> ipiv.data, <COMPLEX_T *> Bi.data, &M, &info)
 
         for j from 0 <= j < M:
             for k from 0 <= k < M:
@@ -125,10 +127,10 @@ def fasteigvec(A):
     cdef np.ndarray[double, ndim=2] Ieigs = np.zeros((N, M))
     cdef np.ndarray[double, ndim=3] vr = np.zeros((N, M, M))
     cdef np.ndarray[double, ndim=1] dummy = np.zeros((1,), 'd')
-    cdef np.ndarray[complex, ndim=3] zvecs
+    cdef np.ndarray[complex, ndim=3] zvecs = np.zeros((N, M, M), dtype=complex)
 
-    cdef np.ndarray[int, ndim=1] indi
-    cdef np.ndarray[int, ndim=1] indj
+    cdef np.ndarray[long int, ndim=1] indi
+    cdef np.ndarray[long int, ndim=1] indj
 
     cdef unsigned int i = 0
     cdef unsigned int j = 0
@@ -182,7 +184,6 @@ def fasteigvec(A):
 
     if (Ieigs.flatten() != 0).any():
         zeigs = eigs + 1j * Ieigs
-        zvecs = np.array(vr, dtype=complex)
         indi, indj = np.nonzero(Ieigs != 0)
         i = 0
         while i < (len(indi) - 1):

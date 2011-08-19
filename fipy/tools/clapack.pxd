@@ -34,9 +34,11 @@
  # ###################################################################
  ##
 
-
 import numpy as np
 cimport numpy as np
+from numpy import complex, int
+COMPLEX = np.complex128
+ctypedef np.complex128_t COMPLEX_T
 
 cdef extern void dgeev_(char* jobvl, char* jobvr, int* n, double a[],
                         int* lda, double wr[], double wi[], double vl[], int* ldvl,
@@ -46,6 +48,6 @@ cdef extern void dgeev_(char* jobvl, char* jobvr, int* n, double a[],
 cdef extern void dgesv_(int* n, int* nrhs, double a[], int* lda, int ipiv[],
                         double b[], int* ldb, int* info)
 
-cdef extern void zgesv_(int* n, int* nrhs, complex a[], int* lda, int ipiv[],
-                        complex b[], int* ldb, int* info)
+cdef extern void zgesv_(int* n, int* nrhs, COMPLEX_T a[], int* lda, int ipiv[],
+                        COMPLEX_T b[], int* ldb, int* info)
 
