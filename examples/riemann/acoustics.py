@@ -35,7 +35,9 @@
 r"""
 Test
 
->>> print (0.4 < max(q.globalValue[0]) < 0.5)
+>>> print (0.65 < max(q.globalValue[0]) < 0.68)
+True
+>>> print (-0.31 < min(q.globalValue[0]) < -0.29)
 True
 
 """
@@ -78,26 +80,18 @@ if  __name__ == '__main__':
     vi.plot()
     raw_input('press key')
 
-from profiler import Profiler
-from profiler import calibrate_profiler
 
 
 elapsedTime = 0.0
 dt.setValue(0.1 * dx / roeConvectionTerm.maxeigenvalue(q))
 
-##fudge = calibrate_profiler(10000)
-##profile = Profiler('profile', fudge=fudge)
-
-for step in range(10000):
+elapsedTime = 0.0
+for step in range(100):
     eqn.solve(q, dt=float(dt))
-##    print 'max(max(q[0]), max(q[1]))',max(max(q[0]), max(q[1]))
     elapsedTime += float(dt)
     if step % 100 ==  0 and  __name__ == '__main__':
         vi.plot()
-        print 'step',step
         print 'elapsedTime',elapsedTime
-##        raw_input('press key')
-##profile.stop()
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

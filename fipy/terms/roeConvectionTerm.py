@@ -40,7 +40,6 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.tools import numerix
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.variables.faceVariable import FaceVariable
-from fipy.tools import smallMatrixVectorOps as smv
 
 def MClimiter(theta):
     return numerix.maximum(0, numerix.minimum((1 + theta) / 2, 2, 2 * theta))
@@ -53,6 +52,9 @@ class _RoeVariable(FaceVariable):
         self.coeff = self._requires(coeff)
         
     def _calcValue(self):
+        ## Imported when used to avoid calling cython unnecessarily.
+        from fipy.tools import smallMatrixVectorOps as smv
+        
         id1, id2 = self.mesh._adjacentCellIDs
         mesh = self.var.mesh
         
@@ -203,8 +205,8 @@ class RoeConvectionTerm(FaceTerm):
         L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(1).ravel()
         ## explicit
-        b -= L * var.ravel()
-        L.matrix[:,:] = 0
+##        b -= L * var.ravel()
+##        L.matrix[:,:] = 0
 
         return (var, L, b)
 

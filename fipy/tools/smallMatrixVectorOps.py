@@ -68,11 +68,8 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import os
 
-extFile = os.path.join(os.path.split(__file__)[0], 'smallMatrixVectorOpsExt.pyx')
-
-ext_modules = [Extension('smallMatrixVectorOpsExt', [extFile], libraries=['lapack'])]
-
-pyximport.install(build_dir='.', setup_args = {'options' : {'build_ext' : {'libraries' : 'lapack'}}})
+pyximport.install(build_dir=os.path.join(os.path.expanduser('~'), '.pyxbld'),
+                  setup_args = {'options' : {'build_ext' : {'libraries' : 'lapack'}}})
                              
 from smallMatrixVectorOpsExt import solve, fasteigvec
 

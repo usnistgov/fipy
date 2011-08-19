@@ -506,7 +506,6 @@ fipy/tools/mpi4pyCommWrapper.py
 fipy/tools/numerix.py
 fipy/tools/parser.py
 fipy/tools/serialCommWrapper.py
-fipy/tools/smallMatrixTools.py
 fipy/tools/smallMatrixVectorOps.py
 fipy/tools/smallMatrixVectorOpsExt.pyx
 fipy/tools/test.py
