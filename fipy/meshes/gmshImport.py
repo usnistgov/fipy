@@ -7,6 +7,7 @@
 #  FILE: "gmshImport.py"
 #
 #  Author: James O'Beirne <james.obeirne@nist.gov>
+#  Author: Alexander Mont <alexander.mont@nist.gov>
 #  Author: Jonathan Guyer <guyer@nist.gov>
 #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
 #  Author: James Warren   <jwarren@nist.gov>
@@ -38,9 +39,11 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
 import os
+import subprocess as subp
+import sys
 import tempfile
+from textwrap import dedent
 import warnings
 
 from fipy.tools import numerix as nx
@@ -60,8 +63,494 @@ def parprint(str):
 
 class GmshException(Exception):
     pass
+    
+def _gmshVersion():
+    """Determine the version of Gmsh.
+    
+    We can't trust the generated msh file for the correct version number, so
+    we have to retrieve it from the gmsh binary.
+    """
+    import re
 
-class MshFile:
+    verStr = "\n".join(subp.Popen("gmsh --version", 
+                                  stderr=subp.PIPE, shell=True).stderr.readlines())
+
+    m = re.search(r'\d+.\d+', verStr)
+
+    if m:
+        return float(m.group(0))
+    else:
+        return 0
+    
+def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallel, order=1, mode='r', background=None):
+    """Open a Gmsh MSH file
+
+    :Parameters:
+      - `filename`: a string indicating gmsh output file
+      - `dimensions`: an integer indicating dimension of mesh
+      - `coordDimensions`: an integer indicating dimension of shapes
+      - `order`: ???
+      - `mode`: a string beginning with 'r' for reading and 'w' for writing. 
+        The file will be created if it doesn't exist when opened for writing; 
+        it will be truncated when opened for writing.  
+        Add a 'b' to the mode for binary files.
+    """
+    
+    if order > 1:
+        communicator = serial
+
+    # Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
+    gmshVersion = _gmshVersion()
+    if gmshVersion < 2.0:
+        raise EnvironmentError("Gmsh version must be >= 2.0.")
+
+    # If we're being passed a .msh file, leave it be. Otherwise,
+    # we've gotta compile a .msh file from either (i) a .geo file, 
+    # or (ii) a gmsh script passed as a string.
+    
+    if mode.startswith('r'):
+        if not os.path.exists(name):
+            # we must have been passed a Gmsh script
+            (f, geoFile) = tempfile.mkstemp('.geo')
+            file = open(geoFile, 'w')
+            file.writelines(name)
+            file.close() 
+            os.close(f)
+        else:
+            # Gmsh isn't picky about file extensions, 
+            # so we peek at the start of the file to deduce the type
+            f = open(name, 'r')
+            filetype = f.readline()
+            f.close()
+            if filetype == "$MeshFormat":
+                geoFile = None
+                mshFile = name
+                gmshOutput = None
+            elif filetype == "$NOD":
+                raise SyntaxError("Gmsh MSH file format version 1.0 is not supported")
+            elif filetype == "$PostFormat":
+                raise SyntaxError("Gmsh POS post-processing format cannot be used to generate a Mesh")
+            else:
+                # must be a Gmsh script file
+                geoFile = name
+                
+        if geoFile is not None:
+            if communicator.Nproc > 1:
+                if gmshVersion < 2.5:
+                    warnstr = "Cannot partition with Gmsh version < 2.5. " \
+                               + "Reverting to serial."
+                    warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
+                    communicator = serial
+                    
+                    dimensions = dimensions or coordDimensions
+                    
+                    if dimensions is None:
+                        raise ValueError("'dimensions' must be specified to generate a mesh from a geometry script")
+
+                    gmshFlags = "-%d" % (dimensions)
+                else: # gmsh version is adequate for partitioning
+                    gmshFlags = "-%d -part %d" % (dimensions,
+                                                  communicator.Nproc)
+            else: # we're running serial
+                gmshFlags = "-%d" % (dimensions)
+            
+            gmshFlags += " -format msh"
+            
+            if background is not None:
+                bgmf = tempfile.NamedTemporaryFile(mode='w', suffix='.pos', delete=False)
+                f = openPOSFile(name=bgmf, mode='w')
+                f.write(background)
+                f.close()
+
+                gmshFlags += " -bgm %s" % bgmf.name
+
+            (f, mshFile) = tempfile.mkstemp('.msh')
+            gmshOutput = subp.Popen("gmsh %s %s -o %s"
+                                    % (geoFile, gmshFlags, mshFile),
+                                    stdout=subp.PIPE, shell=True).stdout.readlines()
+            parprint("gmsh out: %s" % gmshOutput)
+            os.close(f)
+    elif mode.startswith('w'):
+        mshFile = name
+        gmshOutput = None
+    else:
+        raise ValueError("mode string must begin with one of 'r' or 'w', not '%s'" % mode[0])
+                
+    return MSHFile(filename=mshFile, 
+                   dimensions=dimensions, 
+                   coordDimensions=coordDimensions,
+                   communicator=communicator, 
+                   gmshOutput=gmshOutput,
+                   mode=mode)
+    
+def openPOSFile(name, communicator=parallel, mode='w'):
+    """Open a Gmsh POS post-processing file
+    """
+    if not mode.startswith('w'):
+        raise ValueError("mode string must begin with 'w', not '%s'" % mode[0])
+                
+    return POSFile(filename=name, 
+                   communicator=communicator, 
+                   mode=mode)
+    
+class GmshFile:
+    def __init__(self, filename, communicator, mode):
+        self.filename = filename
+        self.communicator = communicator
+        self.mode = mode
+        
+        self.formatWritten = False
+        
+        # open the .msh file
+        if (isinstance(self.filename, file) 
+            or (hasattr(self.filename, "file") 
+                and isinstance(self.filename.file, file))):
+            self.fileobj = self.filename
+            self.filename = self.fileobj.name
+        else:
+            self.fileobj = open(name=self.filename, mode=mode)
+
+    def _getElementType(self, vertices, dimensions):
+        if(vertices == 3 and dimensions == 2):
+            return 2 ## triangle
+        elif(vertices == 4 and dimensions == 2):
+            return 3 ## quadrangle
+        elif(vertices == 4 and dimensions == 3):
+            return 4 ## tetrahedron
+        elif(vertices == 8 and dimensions == 3):
+            return 5 ## hexahedron
+        elif(vertices == 6 and dimensions == 3):
+            return 6 ## prism
+        elif(vertices == 5 and dimensions == 3):
+            return 7 ## pyramid
+        else:
+            raise MeshExportError, "Element type unsupported by Gmsh"
+    
+    def _orderVertices(self, vertexCoords, vertices):
+        coordinates = nx.take(vertexCoords, vertices, axis=1)
+        centroid = nx.add.reduce(coordinates, axis=1) / coordinates.shape[1]
+        coordinates = coordinates - centroid[..., nx.newaxis]
+
+        # to prevent div by zero
+        coordinates = nx.where(coordinates == 0, 1.e-10, coordinates)
+
+        # angles go from -pi / 2 to 3*pi / 2
+        angles = nx.arctan(coordinates[1] / coordinates[0]) \
+                + nx.where(coordinates[0] < 0, nx.pi, 0) 
+        sortorder = nx.argsort(angles)
+        return nx.take(vertices, sortorder)
+        
+    def write(self, obj, time=0.0, timeindex=0):
+        pass
+        
+    def close(self):
+        self.fileobj.close()
+
+class POSFile(GmshFile):
+    def write(self, obj, time=0.0, timeindex=0):
+        if not self.formatWritten:
+            self._writeMeshFormat()
+            self.formatWritten = True
+
+        from fipy.variables.cellVariable import CellVariable
+        
+        if not isinstance(obj, CellVariable):
+            raise TypeError("Unable to write %s to a POS file" % type(obj))
+            
+        coords = obj.mesh.vertexCoords
+        dimensions, numNodes = coords.shape
+
+        self._writeValues(var=obj, dimensions=dimensions, time=time, timeindex=timeindex)
+        
+    def _writeMeshFormat(self):
+        versionNumber = 1.4
+        sizeOfDouble = 8
+        lines = ["$PostFormat\n",
+                 "%g 0 %d\n" % (versionNumber, sizeOfDouble),
+                 "$EndPostFormat\n"]
+        self.fileobj.writelines(lines)
+        
+    def _writeValues(self, var, dimensions, time=0.0, timeindex=0):
+        self.fileobj.write("$View\n")
+              
+        # view-name nb-time-steps
+        self.fileobj.write("%s %d\n" % (var.name.replace(" ", "_"), 1))
+        
+        # what a silly format
+        
+        # initialize all counts to zero
+        nb_scalar_points = nb_vector_points = nb_tensor_points = 0
+        nb_scalar_lines = nb_vector_lines = nb_tensor_lines = 0
+	nb_scalar_triangles = nb_vector_triangles = nb_tensor_triangles = 0
+        nb_scalar_quadrangles = nb_vector_quadrangles = nb_tensor_quadrangles = 0
+        nb_scalar_tetrahedra = nb_vector_tetrahedra = nb_tensor_tetrahedra = 0
+        nb_scalar_hexahedra = nb_vector_hexahedra = nb_tensor_hexahedra = 0
+        nb_scalar_prisms = nb_vector_prisms = nb_tensor_prisms = 0
+        nb_scalar_pyramids = nb_vector_pyramids = nb_tensor_pyramids = 0
+        nb_scalar_lines2 = nb_vector_lines2 = nb_tensor_lines2 = 0
+        nb_scalar_triangles2 = nb_vector_triangles2 = nb_tensor_triangles2 = 0
+        nb_scalar_quadrangles2 = nb_vector_quadrangles2 = nb_tensor_quadrangles2 = 0
+        nb_scalar_tetrahedra2 = nb_vector_tetrahedra2 = nb_tensor_tetrahedra2 = 0
+        nb_scalar_hexahedra2 = nb_vector_hexahedra2 = nb_tensor_hexahedra2 = 0
+        nb_scalar_prisms2 = nb_vector_prisms2 = nb_tensor_prisms2 = 0
+        nb_scalar_pyramids2 = nb_vector_pyramids2 = nb_tensor_pyramids2 = 0
+        nb_text2d = nb_text2d_chars = nb_text3d = nb_text3d_chars = 0
+        
+        maxFacesPerCell = var.mesh.cellFaceIDs.shape[0]
+        if nx.MA.is_masked(var.mesh.cellFaceIDs):
+            facesPerCell = (~nx.MA.getmask(var.mesh.cellFaceIDs)).sum(axis=0)
+        else:
+            facesPerCell = nx.empty((var.mesh.numberOfCells,), dtype=int)
+            facesPerCell[:] = maxFacesPerCell
+            
+        cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
+        # argsort does not work as documented:
+        #   Array of indices that sort a along the specified axis. In other words, a[index_array] yields a sorted a.
+        # No, it's not.
+        # We need both the sorted values and the sort order.
+        if nx.MA.is_masked(cellFaceVertices):
+            nodesPerFace = (~cellFaceVertices.mask).sum(axis=0)
+        else:
+            nodesPerFace = nx.empty(cellFaceVertices.shape[1:], dtype=int)
+            nodesPerFace[:] = var.mesh.faceVertexIDs.shape[0]
+        faceOrder = nx.argsort(nodesPerFace, axis=0)[::-1]
+        nodesPerFace = nx.sort(nodesPerFace, axis=0)[::-1]
+        
+        if dimensions == 2:
+            triangles = (facesPerCell == 3)
+            quadrangles = (facesPerCell == 4)
+            tetrahedra = nx.array([False])
+            hexahedra = nx.array([False])
+            prisms = nx.array([False])
+            pyramids = nx.array([False])
+            if var.rank == 0:
+                nb_scalar_triangles = triangles.sum()
+                nb_scalar_quadrangles = quadrangles.sum()
+            elif var.rank == 1:
+                nb_vector_triangles = triangles.sum()
+                nb_vector_quadrangles = quadrangles.sum()
+            elif var.rank == 2:
+                nb_tensor_triangles = triangles.sum()
+                nb_tensor_quadrangles = quadrangles.sum()
+            else:
+                raise ValueError("rank must be 0, 1, or 2")
+        elif dimensions == 3:
+            def faceNodeCount(counts):
+                counts = counts + [0] * (maxFacesPerCell - len(counts))
+                return nx.array(counts)[..., nx.newaxis]
+                
+            triangles = nx.array([False])
+            quadrangles = nx.array([False])
+            tetrahedra = ((facesPerCell == 4) 
+                          & (nodesPerFace == faceNodeCount([3, 3, 3, 3])).any(axis=0))
+            hexahedra = ((facesPerCell == 6) 
+                         & (nodesPerFace == faceNodeCount([4, 4, 4, 4, 4, 4])).any(axis=0))
+            prisms = ((facesPerCell == 5) 
+                      & (nodesPerFace == faceNodeCount([4, 4, 4, 3, 3])).any(axis=0))
+            pyramids = ((facesPerCell == 5) 
+                        & (nodesPerFace == faceNodeCount([4, 3, 3, 3, 3])).any(axis=0))
+        else:
+            raise ValueError("dimensions must be 2 or 3")
+            
+        if var.rank == 0:
+            nb_scalar_triangles = triangles.sum()
+            nb_scalar_quadrangles = quadrangles.sum()
+            nb_scalar_tetrahedra = tetrahedra.sum()
+            nb_scalar_hexahedra = hexahedra.sum()
+            nb_scalar_prisms = prisms.sum()
+            nb_scalar_pyramids = pyramids.sum()
+        elif var.rank == 1:
+            nb_vector_triangles = triangles.sum()
+            nb_vector_quadrangles = quadrangles.sum()
+            nb_vector_tetrahedra = tetrahedra.sum()
+            nb_vector_hexahedra = hexahedra.sum()
+            nb_vector_prisms = prisms.sum()
+            nb_vector_pyramids = pyramids.sum()
+        elif var.rank == 2:
+            nb_tensor_triangles = triangles.sum()
+            nb_tensor_quadrangles = quadrangles.sum()
+            nb_tensor_tetrahedra = tetrahedra.sum()
+            nb_tensor_hexahedra = hexahedra.sum()
+            nb_tensor_prisms = prisms.sum()
+            nb_tensor_pyramids = pyramids.sum()
+        else:
+            raise ValueError("rank must be 0, 1, or 2")
+
+
+        self.fileobj.write(dedent("""\
+            %(nb_scalar_points)d %(nb_vector_points)d %(nb_tensor_points)d
+            %(nb_scalar_lines)d %(nb_vector_lines)d %(nb_tensor_lines)d
+            %(nb_scalar_triangles)d %(nb_vector_triangles)d %(nb_tensor_triangles)d
+            %(nb_scalar_quadrangles)d %(nb_vector_quadrangles)d %(nb_tensor_quadrangles)d
+            %(nb_scalar_tetrahedra)d %(nb_vector_tetrahedra)d %(nb_tensor_tetrahedra)d
+            %(nb_scalar_hexahedra)d %(nb_vector_hexahedra)d %(nb_tensor_hexahedra)d
+            %(nb_scalar_prisms)d %(nb_vector_prisms)d %(nb_tensor_prisms)d
+            %(nb_scalar_pyramids)d %(nb_vector_pyramids)d %(nb_tensor_pyramids)d
+            %(nb_scalar_lines2)d %(nb_vector_lines2)d %(nb_tensor_lines2)d
+            %(nb_scalar_triangles2)d %(nb_vector_triangles2)d %(nb_tensor_triangles2)d
+            %(nb_scalar_quadrangles2)d %(nb_vector_quadrangles2)d %(nb_tensor_quadrangles2)d
+            %(nb_scalar_tetrahedra2)d %(nb_vector_tetrahedra2)d %(nb_tensor_tetrahedra2)d
+            %(nb_scalar_hexahedra2)d %(nb_vector_hexahedra2)d %(nb_tensor_hexahedra2)d
+            %(nb_scalar_prisms2)d %(nb_vector_prisms2)d %(nb_tensor_prisms2)d
+            %(nb_scalar_pyramids2)d %(nb_vector_pyramids2)d %(nb_tensor_pyramids2)d
+            %(nb_text2d)d %(nb_text2d_chars)d %(nb_text3d)d %(nb_text3d_chars)d
+            """ % locals()))
+
+        # time-step-values
+        self.fileobj.write("%g\n" % time)
+        
+        value = var.value
+
+        for i in triangles.nonzero()[0]:
+            triangle = cellFaceVertices[..., faceOrder[..., i], i]
+            self._writeTriangle(mesh=var.mesh, triangle=triangle, value=value[..., i])
+                                
+        for i in quadrangles.nonzero()[0]:
+            quadrangle = cellFaceVertices[..., faceOrder[..., i], i]
+            self._writeQuadrangle(mesh=var.mesh, quadrangle=quadrangle, value=value[..., i])
+
+        for i in tetrahedra.nonzero()[0]:
+            tetrahedron = cellFaceVertices[..., faceOrder[..., i], i]
+            self._writeTetrahedron(mesh=var.mesh, tetrahedron=tetrahedron, value=value[..., i])
+
+        for i in hexahedra.nonzero()[0]:
+            hexahedron = cellFaceVertices[..., faceOrder[..., i], i]
+            self._writeHexahedron(mesh=var.mesh, hexahedron=hexahedron, value=value[..., i])
+
+        for  i in prisms.nonzero()[0]:
+            prism = cellFaceVertices[..., faceOrder[..., i], i]
+            self._writePrism(mesh=var.mesh, prism=prism, value=value[..., i])
+
+        for i in pyramids.nonzero()[0]:
+            pyramid = cellFaceVertices[..., faceOrder[..., i], i]
+            self._writePyramid(mesh=var.mesh, pyramid=pyramid, value=value[..., i])
+
+        self.fileobj.write("$EndView\n")
+        
+        
+    # lists of double precision numbers giving the node coordinates and the
+    # values associated with the nodes of the nb-scalar-points scalar points,
+    # nb-vector-points vector points, ..., for each of the time-step-values.
+    # For example, vector-triangle-value is defined as:
+    # 
+    #           coord1-node1 coord1-node2 coord1-node3
+    #           coord2-node1 coord2-node2 coord2-node3
+    #           coord3-node1 coord3-node2 coord3-node3
+    #           comp1-node1-time1 comp2-node1-time1 comp3-node1-time1
+    #           comp1-node2-time1 comp2-node2-time1 comp3-node2-time1
+    #           comp1-node3-time1 comp2-node3-time1 comp3-node3-time1
+    #           comp1-node1-time2 comp2-node1-time2 comp3-node1-time2
+    #           comp1-node2-time2 comp2-node2-time2 comp3-node2-time2
+    #           comp1-node3-time2 comp2-node3-time2 comp3-node3-time2
+    
+    def _writeTriangle(self, mesh, triangle, value):
+        # triangle is defined by one face and the remaining point 
+        # from either of the other faces
+        nodes = triangle[..., 0]
+        nodes = nx.concatenate((nodes, triangle[~nx.in1d(triangle[..., 1], nodes), 1]))
+                        
+        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+
+    def _writeQuadrangle(self, mesh, quadrangle, value):
+        # quadrangle is defined by one face and the opposite face
+        face0 = quadrangle[..., 0]
+        for face1 in quadrangle[..., 1:].swapaxes(0, 1):
+            if not nx.in1d(face1, face0).any():
+                break
+                
+        # need to ensure face1 is oriented same way as face0
+        cross01 = nx.cross((mesh.vertexCoords[..., face1[0]] 
+                            - mesh.vertexCoords[..., face0[0]]),
+                           (mesh.vertexCoords[..., face1[1]] 
+                            - mesh.vertexCoords[..., face0[0]]))
+        
+        cross10 = nx.cross((mesh.vertexCoords[..., face0[0]] 
+                            - mesh.vertexCoords[..., face1[0]]),
+                           (mesh.vertexCoords[..., face0[1]] 
+                            - mesh.vertexCoords[..., face1[0]]))
+
+        if ((mesh.dim == 2 and cross01 * cross10 < 0)
+            or (mesh.dim == 3 and nx.dot(cross01, cross10) < 0)):
+            face1 = face1[::-1]
+                
+        nodes = nx.concatenate((face0, face1))
+         
+        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        
+    def _writeTetrahedron(self, mesh, tetrahedron, value):
+        # tetrahedron is defined by one face and the remaining point 
+        # from any of the other faces
+        nodes = tetrahedron[..., 0]
+        nodes = nx.concatenate((nodes, tetrahedron[~nx.in1d(tetrahedron[..., 1], nodes), 1]))
+                
+        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+
+    @profile
+    def _reorientFace(self, mesh, face0, face1):
+        # need to ensure face1 is oriented same way as face0
+        cross01 = nx.cross((mesh.vertexCoords[..., face0[1]] 
+                            - mesh.vertexCoords[..., face0[0]]),
+                           (mesh.vertexCoords[..., face0[2]] 
+                            - mesh.vertexCoords[..., face0[0]]))
+                    
+        cross10 = nx.cross((mesh.vertexCoords[..., face1[1]] 
+                            - mesh.vertexCoords[..., face1[0]]),
+                           (mesh.vertexCoords[..., face1[2]] 
+                            - mesh.vertexCoords[..., face1[0]]))
+                            
+        if nx.dot(cross01, cross10) < 0:
+            face1 = face1[::-1]
+            
+        return face1
+
+    @profile
+    def _writeHexahedron(self, mesh, hexahedron, value):
+        # hexahedron is defined by one face and the opposite face
+        face0 = hexahedron[..., 0]
+        for face1 in hexahedron[..., 1:].swapaxes(0, 1):
+            if not nx.in1d(face1, face0).any():
+                break
+
+        face1 = self._reorientFace(mesh=mesh, face0=face0, face1=face1)
+
+        nodes = nx.concatenate((face0, face1))
+
+        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+
+    def _writePrism(self, mesh, prism, value):
+        # prism is defined by the two three-sided faces 
+        face0 = pyramid[..., 3]
+        face1 = pyramid[..., 4]
+        
+        face1 = self._reorientFace(mesh=mesh, face0=face0, face1=face1)
+
+        nodes = nx.concatenate((face0, face1))
+
+        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+
+
+    def _writePyramid(self, mesh, pyramid, value):
+        # pyramid is defined by four-sided face and the remaining point 
+        # from any of the other faces
+        nodes = pyramid[..., 0]
+        nodes = nx.concatenate((nodes, pyramid[~nx.in1d(pyramid[..., 1], nodes), 1]))
+                       
+        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        
+    def _writeNodesAndValues(self, mesh, nodes, value):
+        numNodes = len(nodes)
+        data = []
+        # this might be calculated (e.g. UniformGrid...)
+        vertexCoords = mesh.vertexCoords
+        data = [[str(vertexCoords[..., j, nodes[i]]) for i in range(numNodes)] for j in range(mesh.dim)]
+        if mesh.dim == 2:
+            data += [["0.0"] * numNodes]
+        data += [[str(value)] * numNodes]
+        self.fileobj.write("\n".join([" ".join(datum) for datum in data]) + "\n")
+
+
+
+class MSHFile(GmshFile):
     """
     Class responsible for parsing a Gmsh file and then readying
     its contents for use by a `Mesh` constructor. 
@@ -80,111 +569,37 @@ class MshFile:
                        dimensions, 
                        coordDimensions=None,
                        communicator=parallel,
-                       order=1):
+                       gmshOutput=None,
+                       mode='r'):
         """
-        Isolate relevant data into two files, store in 
-        `self.nodesFile` for $Nodes,
-        `self.elemsFile` for $Elements. 
-
         :Parameters:
           - `filename`: a string indicating gmsh output file
           - `dimensions`: an integer indicating dimension of mesh
-          - `coordDimension`: an integer indicating dimension of shapes
+          - `coordDimensions`: an integer indicating dimension of shapes
+          - `communictator`: ???
+          - `gmshOutput`: output (if any) from Gmsh run that created .msh file
+          - `mode`: a string beginning with 'r' for reading and 'w' for writing. 
+            The file will be created if it doesn't exist when opened for writing; 
+            it will be truncated when opened for writing.  
+            Add a 'b' to the mode for binary files.
         """
+        self.dimensions = dimensions
+        self.coordDimensions = coordDimensions
+        self.gmshOutput = gmshOutput
         
-        self.communicator    = communicator
-        self.coordDimensions = coordDimensions or dimensions
-        self.dimensions      = dimensions
+        self.mesh = None
+        self.meshWritten = False
 
-        if order > 1:
-            self.communicator = serial
-
-        # much special-casing based on gmsh version
-        gmshVersion = self._gmshVersion
-        if gmshVersion < 2.0:
-            errStr = "Gmsh version must be >= 2.0."
-            raise EnvironmentError(errStr)
-        if self.communicator.Nproc > 1:
-            if gmshVersion < 2.5:
-                warnstr = "Cannot partition with Gmsh version < 2.5. " \
-                           + "Reverting to serial."
-                warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
-                self.communicator = serial
-
-                gmshFlags = "-%d" % (self.dimensions)
-            else: # gmsh version is adequate for partitioning
-                gmshFlags = "-%d -part %d" % (self.dimensions,
-                                              self.communicator.Nproc)
-        else: # we're running serial
-            gmshFlags = "-%d" % (self.dimensions)
+        GmshFile.__init__(self, filename=filename, communictator=communictator, mode=mode)
         
-        gmshFlags += " -format msh"
-
-        self.filename, self.gmshOutput = self._parseFilename(filename, 
-                                                             gmshFlags)
-
-        # we need a conditional here so we don't pick up 2D shapes in 3D
-        if dimensions == 2: 
-            self.numVertsPerFace = {1: 2} # line:       2 vertices
-            self.numFacesPerCell = {2: 3, # triangle:   3 sides
-                                    3: 4} # quadrangle: 4 sides
-        else: # 3D
-            self.numVertsPerFace = {2: 3, # triangle:   3 vertices
-                                    3: 4} # quadrangle: 4 vertices
-            self.numFacesPerCell = {4: 4, # tet:        4 sides
-                                    5: 6} # hexahedron: 6 sides
-
-        self.faceLenForShape = {2: 2, # triangle:   2 verts per face
-                                3: 2, # quadrangle: 2 verts per face
-                                4: 3, # tet:        3 verts per face
-                                5: 4} # hexahedron: 4 verts per face
-
-        f = open(self.filename, "r") # open the msh file
-
-        self.version, self.fileType, self.dataSize = self._getMetaData(f)
-        self.nodesFile = self._isolateData("Nodes", f)
-        self.elemsFile = self._isolateData("Elements", f)
-        try:
-            self.namesFile = self._isolateData("PhysicalNames", f)
-        except EOFError, e:
-            self.namesFile = None
-
-    def _parseFilename(self, fname, gmshFlags):
-        """
-        If we're being passed a .msh file, leave it be. Otherwise,
-        we've gotta compile a .msh file from either (i) a .geo file, 
-        or (ii) a gmsh script passed as a string.
-        """
-        import subprocess as subp
-        lowerFname = fname.lower()
-        if '.msh' in lowerFname:
-            return fname, None
-        else:
-            if '.geo' in lowerFname or '.gmsh' in lowerFname:
-                geoFile = fname
-            else: # fname must be a full script, not a file
-                (f, geoFile) = tempfile.mkstemp('.geo')
-                file = open(geoFile, 'w')
-                file.writelines(fname)
-                file.close(); os.close(f)
-
-            (f, mshFile) = tempfile.mkstemp('.msh')
-            gmshout = subp.Popen("gmsh %s %s -o %s" \
-                      % (geoFile, gmshFlags, mshFile),
-                      stdout=subp.PIPE, shell=True).stdout.readlines()
-            parprint("gmsh out: %s" % gmshout)
-            os.close(f)
-
-            return mshFile, gmshout
-         
-    def _getMetaData(self, f):
+    def _getMetaData(self):
         """
         Extracts gmshVersion, file-type, and data-size in that
         order.
         """
-        self._seekForHeader("MeshFormat", f)
-        metaData = f.readline().split()
-        f.seek(0)
+        self._seekForHeader("MeshFormat")
+        metaData = self.fileobj.readline().split()
+        self.fileobj.seek(0)
         return [float(x) for x in metaData]
 
     @property
@@ -208,36 +623,39 @@ class MshFile:
         else:
             return 0
      
-    def _isolateData(self, title, f):
+    def _isolateData(self, title):
         """
         Gets all data between $[title] and $End[title], writes
         it out to its own file.
         """
         newF = tempfile.TemporaryFile()
-        self._seekForHeader(title, f)
+        self._seekForHeader(title)
         
         # extract the actual data within section
         while True:
-            line = f.readline()
+            line = self.fileobj.readline()
             if ("$End%s" % title) not in line: 
                 newF.write(line) 
             else: break
 
-        f.seek(0); newF.seek(0) # restore file positions
+        self.fileobj.seek(0) 
+        newF.seek(0) # restore file positions
         return newF
 
-    def _seekForHeader(self, title, f):
+    def _seekForHeader(self, title):
         """
         Iterate through a file until we end up at the section header
-        for `title`. Function has obvious side-effects on `f`.
+        for `title`. Function has obvious side-effects on `self.fileobj`.
         """
         while True:
-            line = f.readline()
+            line = self.fileobj.readline()
             if len(line) == 0:
                 raise EOFError("No `%s' header found!" % title)
                 break
-            elif (("$%s" % title) not in line): continue
-            else: break # found header
+            elif (("$%s" % title) not in line): 
+                continue
+            else: 
+                break # found header
 
     def _deriveCellsAndFaces(self, cellsToVertIDs, shapeTypes, numCells):
         """
@@ -340,7 +758,7 @@ class MshFile:
 
         return faces
 
-    def buildMeshData(self):
+    def read(self):
         """
         0. Build cellsToVertices
         1. Recover needed vertexCoords and mapping from file using 
@@ -348,11 +766,60 @@ class MshFile:
         2. Build cellsToVertIDs proper from vertexCoords and vertex map
         3. Build faces
         4. Build cellsToFaces
+        
+        Isolate relevant data into three files, store in 
+        `self.nodesFile` for $Nodes,
+        `self.elemsFile` for $Elements. 
+        `self.namesFile` for $PhysicalNames. 
 
         Returns vertexCoords, facesToVertexID, cellsToFaceID, 
                 cellGlobalIDMap, ghostCellGlobalIDMap.
         """
-     
+        self.version, self.fileType, self.dataSize = self._getMetaData()
+        self.nodesFile = self._isolateData("Nodes")
+        self.elemsFile = self._isolateData("Elements")
+        try:
+            self.namesFile = self._isolateData("PhysicalNames")
+        except EOFError, e:
+            self.namesFile = None
+            
+        if self.dimensions is None:
+            self.nodesFile.readline() # skip number of nodes
+
+            # We assume we have a 2D file unless we find a node 
+            # with a non-zero Z coordinate
+            self.dimensions = 2
+            for node in self.nodesFile:
+                line   = node.split()
+                
+                newVert = [float(x) for x in line]
+                
+                if newVert[2] != 0.0:
+                    self.dimensions = 3
+                    break
+                    
+            self.nodesFile.seek(0)
+            
+        self.coordDimensions = self.coordDimensions or self.dimensions
+            
+        # we need a conditional here so we don't pick up 2D shapes in 3D
+        if self.dimensions == 2: 
+            self.numVertsPerFace = {1: 2} # line:       2 vertices
+            self.numFacesPerCell = {2: 3, # triangle:   3 sides
+                                    3: 4} # quadrangle: 4 sides
+        elif self.dimensions == 3:
+            self.numVertsPerFace = {2: 3, # triangle:   3 vertices
+                                    3: 4} # quadrangle: 4 vertices
+            self.numFacesPerCell = {4: 4, # tet:        4 sides
+                                    5: 6} # hexahedron: 6 sides
+        else:
+            raise GmshException("Mesh has fewer than 2 or more than 3 dimensions")
+
+        self.faceLenForShape = {2: 2, # triangle:   2 verts per face
+                                3: 2, # quadrangle: 2 verts per face
+                                4: 3, # tet:        3 verts per face
+                                5: 4} # hexahedron: 4 verts per face
+
         parprint("Parsing elements.")
         (cellsData, 
          ghostsData, 
@@ -363,8 +830,10 @@ class MshFile:
         allShapeTypes    = cellsData.shapes + ghostsData.shapes
         allShapeTypes    = nx.array(allShapeTypes)
         allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
-        physicalCellMap  = cellsData.physicalEntities + ghostsData.physicalEntities
-        geometricalCellMap = cellsData.geometricalEntities + ghostsData.geometricalEntities
+        self.physicalCellMap = nx.array(cellsData.physicalEntities 
+                                        + ghostsData.physicalEntities)
+        self.geometricalCellMap = nx.array(cellsData.geometricalEntities 
+                                           + ghostsData.geometricalEntities)
 
         if numCellsTotal < 1:
             errStr = "Gmsh hasn't produced any cells! Check your Gmsh code."
@@ -400,27 +869,154 @@ class MshFile:
                                                            facesData.geometricalEntities):
             faceEntitiesDict[' '.join([str(x) for x in sorted(face)])] = (physicalEntity, geometricalEntity)
             
-        physicalFaceMap = nx.zeros(facesToV.shape[-1:])
-        geometricalFaceMap = nx.zeros(facesToV.shape[-1:])
+        self.physicalFaceMap = nx.zeros(facesToV.shape[-1:])
+        self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:])
         for face in facesDict.keys():
             # not all faces are necessarily tagged
             if faceEntitiesDict.has_key(face):
-                physicalFaceMap[facesDict[face]] = faceEntitiesDict[face][0]
-                geometricalFaceMap[facesDict[face]] = faceEntitiesDict[face][1]
+                self.physicalFaceMap[facesDict[face]] = faceEntitiesDict[face][0]
+                self.geometricalFaceMap[facesDict[face]] = faceEntitiesDict[face][1]
                 
-        physicalNames = self._parseNamesFile()
+        self.physicalNames = self._parseNamesFile()
                                           
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF, 
-                cellsData.idmap, ghostsData.idmap, 
-                nx.array(physicalCellMap), nx.array(geometricalCellMap), 
-                nx.array(physicalFaceMap), nx.array(geometricalFaceMap),
-                physicalNames)
+                cellsData.idmap, ghostsData.idmap)
+                
+    def write(self, obj, time=0.0, timeindex=0):
+        if not self.formatWritten:
+            self._writeMeshFormat()
+            self.formatWritten = True
+
+        from fipy.meshes.abstractMesh import AbstractMesh
+        from fipy.variables.cellVariable import CellVariable
+        
+        if isinstance(obj, AbstractMesh):
+            mesh = obj
+        elif isinstance(obj, CellVariable):
+            mesh = obj.mesh
+        else:
+            raise TypeError("Unable to write %s to a MSH file" % type(obj))
+            
+        if self.mesh is None:
+            self.mesh = mesh
+        elif mesh is not self.mesh:
+            # Section 9.1 of the Gmsh manual: 
+            #   http://geuz.org/gmsh/doc/texinfo/#MSH-ASCII-file-format
+            # says "Sections can be repeated in the same file", 
+            # but this seems to only apply to $NodeData, $ElementData, 
+            # and $ElementNodeData. Even if Gmsh understood it, 
+            # it's not worth the bookkeeping to be able to write more thean one.
+            raise ValueError("Only one Mesh can be written to a MSH file")
+            
+        coords = mesh.vertexCoords
+        dimensions, numNodes = coords.shape
+
+        if not self.meshWritten:
+            self._writeNodes(coords=coords, dimensions=dimensions, numNodes=numNodes)
+            self._writeElements(mesh=self.mesh, coords=coords, dimensions=dimensions, numNodes=numNodes)
+            
+            self.meshWritten = True
+            
+        if isinstance(obj, CellVariable):
+            self._writeValues(var=obj, dimensions=dimensions, time=time, timeindex=timeindex)
+        
+    def _writeMeshFormat(self):
+        versionNumber = 2.2
+        sizeOfDouble = 8
+        lines = ["$MeshFormat\n",
+                 "%f 0 %d\n" % (versionNumber, sizeOfDouble),
+                 "$EndMeshFormat\n"]
+        self.fileobj.writelines(lines)
+
+    def _writeNodes(self, coords, dimensions, numNodes):
+        self.fileobj.write("$Nodes\n")
+        self.fileobj.write(str(numNodes) + '\n')
+
+        for i in range(numNodes):
+            self.fileobj.write("%s %s %s " % (str(i + 1),
+                                              str(coords[0, i]),
+                                              str(coords[1, i])))
+            if dimensions == 2:
+                self.fileobj.write("0 \n")
+            elif dimensions == 3:
+                self.fileobj.write(str(coords[2, i]))
+                self.fileobj.write (" \n")
+            else:
+                raise MeshExportError, "Mesh has fewer than 2 or more than 3 dimensions" 
+
+        self.fileobj.write("$EndNodes\n")
+
+    def _writeElements(self, mesh, coords, dimensions, numNodes):
+        self.fileobj.write("$Elements\n")
+
+        faceVertexIDs = mesh.faceVertexIDs
+        cellFaceIDs = mesh.cellFaceIDs
+        numCells = cellFaceIDs.shape[1]
+        self.fileobj.write(str(numCells) + '\n')
+
+        for i in range(numCells):
+            ## build the vertex list
+            vertexList = []
+
+            for faceNum in cellFaceIDs[..., i]:
+                """For more complicated meshes, some cells may have fewer
+                faces than others. If this is the case, ignore the
+                '--' entries."""
+                if type(faceNum) not in [nx.int32, 
+                                         nx.int64,
+                                         nx.float32,
+                                         nx.float64]:
+                    continue
+                for vertexNum in faceVertexIDs[..., faceNum]:
+                    if vertexNum not in vertexList:
+                        vertexList.append(vertexNum)
+                        
+            if dimensions == 2:
+                vertexList = self._orderVertices(coords, vertexList)
+
+            numVertices = len(vertexList)
+            elementType = self._getElementType(numVertices, dimensions)
+            self.fileobj.write("%s %s 0" % (str(i + 1), str(elementType)))
+
+            self.fileobj.write(" ".join([str(a + 1) for a in vertexList]) + "\n")
+
+        self.fileobj.write("$EndElements\n") 
+        
+    def _writeValues(self, var, dimensions, time=0.0, timeindex=0):
+        self.fileobj.write("$ElementData\n")
+               
+        # string-tags
+        # "By default the first string-tag is interpreted as the name of the 
+        # post-processing view."
+        self.fileobj.writelines([s + "\n" for s in ["1", "\"%s\"" % var.name]])
+               
+        # real-tags
+        # "By default the first real-tag is interpreted as a time value 
+        # associated with the dataset."
+        self.fileobj.writelines([s + "\n" for s in ["1", str(time)]])
+               
+        # integer-tags
+        # "By default the first integer-tag is interpreted as a time step index
+        # (starting at 0), the second as the number of field components of the
+        # data in the view (1, 3 or 9), the third as the number of entities (nodes
+        # or elements) in the view, and the fourth as the partition index for the
+        # view data (0 for no partition)."
+        self.fileobj.writelines([s + "\n" for s in ["4", 
+                                                    str(timeindex), 
+                                                    str(3**var.rank), 
+                                                    str(var.mesh.numberOfCells), 
+                                                    str(0)]])
+                                                    
+        for i in range(var.mesh.numberOfCells):
+            self.fileobj.write(" ".join([str(s) for s in [i+1] + list(var[..., i].value.flat)]) + "\n")
+
+        self.fileobj.write("$EndElementData\n")
 
     def _vertexCoordsAndMap(self, cellsToGmshVerts):
         """
         Returns `vertexCoords` and mapping from Gmsh ID to `vertexCoords`
-        indices (same as in MshFile). 
+        indices (same as in MSHFile). 
         
         Unlike parent, doesn't use genfromtxt
         because we want to avoid loading the entire msh file into memory.
@@ -441,8 +1037,7 @@ class MshFile:
         # now we walk through node file with a sorted unique list of vertices
         # in hand. When we encounter 0th element in `allVerts`, save it 
         # to `vertexCoords` then pop its ID off `allVerts`.
-        node = self.nodesFile.readline()
-        while node != "":
+        for node in self.nodesFile:
             line   = node.split()
             nodeID = int(line[0])
 
@@ -453,8 +1048,6 @@ class MshFile:
 
             if len(allVerts) == nodeCount: 
                 break
-
-            node = self.nodesFile.readline()
 
         # transpose for FiPy
         transCoords = vertexCoords.swapaxes(0,1)
@@ -560,6 +1153,76 @@ class MshFile:
                 physicalNames[dim][name] = int(num)
                 
         return physicalNames
+        
+    def makeMapVariables(self, mesh):
+        """Utility function to make MeshVariables that define different domains in the mesh
+        """
+        from fipy.variables.cellVariable import CellVariable
+        from fipy.variables.faceVariable import FaceVariable
+
+        self.physicalCellMap = CellVariable(mesh=mesh, value=self.physicalCellMap)
+        self.geometricalCellMap = CellVariable(mesh=mesh, value=self.geometricalCellMap)
+        self.physicalFaceMap = FaceVariable(mesh=mesh, value=self.physicalFaceMap)
+        self.geometricalFaceMap = FaceVariable(mesh=mesh, value=self.geometricalFaceMap)
+
+        physicalCells = dict()
+        for name in self.physicalNames[self.dimensions].keys():
+            physicalCells[name] = (self.physicalCellMap == self.physicalNames[self.dimensions][name])
+            
+        physicalFaces = dict()
+        for name in self.physicalNames[self.dimensions-1].keys():
+            physicalFaces[name] = (self.physicalFaceMap == self.physicalNames[self.dimensions-1][name])
+            
+        return (self.physicalCellMap,
+                self.geometricalCellMap,
+                physicalCells,
+                self.physicalFaceMap,
+                self.geometricalFaceMap,
+                physicalFaces)
+                
+    def _test(self):
+        """
+        Test exporting
+        
+        >>> import os
+        >>> import subprocess
+        >>> import tempfile
+        
+        >>> dir = tempfile.mkdtemp()
+        
+        >>> from fipy.meshes.grid2D import Grid2D
+        >>> g = Grid2D(nx = 10, ny = 10)
+        >>> f = openMSHFile(name=os.path.join(dir, "g.msh"), mode='w')
+        >>> f.write(g)
+        >>> f.close()
+
+        >>> from fipy.meshes.uniformGrid2D import UniformGrid2D
+        >>> ug = UniformGrid2D(nx = 10, ny = 10)
+        >>> f = openMSHFile(name=os.path.join(dir, "ug.msh"), mode='w')
+        >>> f.write(ug)
+        >>> f.close()
+
+        >>> from fipy.meshes import Tri2D
+        >>> t = Tri2D(nx = 10, ny = 10)
+        >>> f = openMSHFile(name=os.path.join(dir, "t.msh"), mode='w')
+        >>> f.write(t)
+        >>> f.close()
+
+        >>> concat = ug + (t + ([10], [0]))
+        >>> f = openMSHFile(name=os.path.join(dir, "concat.msh"), mode='w')
+        >>> f.write(concat)
+        >>> f.close()
+
+        >>> from fipy.meshes import Grid3D
+        >>> g3d = Grid3D(nx=10, ny=10, nz=30)
+        >>> f = openMSHFile(name=os.path.join(dir, "g3d.msh"), mode='w')
+        >>> f.write(g3d)
+        >>> f.close()
+
+        >>> import shutil
+        >>> shutil.rmtree(dir)
+        """
+        pass
 
 class _ElementData(object):
     """
@@ -732,46 +1395,42 @@ class Gmsh2D(Mesh2D):
                  arg, 
                  coordDimensions=2, 
                  communicator=parallel, 
-                 order=1):
-        self.communicator = communicator 
-        self.mshFile  = MshFile(arg, 
-                                dimensions=2, 
-                                coordDimensions=coordDimensions,
-                                communicator=communicator,
-                                order=order)
+                 order=1,
+                 background=None):
+                     
+        self.mshFile = openMSHFile(arg, 
+                                   dimensions=2, 
+                                   coordDimensions=coordDimensions,
+                                   communicator=communicator,
+                                   order=order,
+                                   mode='r',
+                                   background=background)
+                                    
         (verts,
          faces,
          cells,
          self.cellGlobalIDs, 
-         self.gCellGlobalIDs,
-         self.physicalCellMap, 
-         self.geometricalCellMap, 
-         self.physicalFaceMap, 
-         self.geometricalFaceMap,
-         physicalNames) = self.mshFile.buildMeshData()
+         self.gCellGlobalIDs) = self.mshFile.read()
+         
+        self.mshFile.close()
 
-        if self.communicator.Nproc > 1:
-            self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
+        if communicator.Nproc > 1:
+            self.globalNumberOfCells = communicator.sumAll(len(self.cellGlobalIDs))
             parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
             parprint("  Got global number of cells")
 
         Mesh2D.__init__(self, vertexCoords=verts,
                               faceVertexIDs=faces,
-                              cellFaceIDs=cells)
-                         
+                              cellFaceIDs=cells,
+                              communicator=communicator)
+                   
         (self.physicalCellMap,
          self.geometricalCellMap,
          self.physicalCells,
          self.physicalFaceMap,
          self.geometricalFaceMap,
-         self.physicalFaces) = _makeMapVariables(mesh=self, 
-                                                 physicalCellMap=self.physicalCellMap,
-                                                 geometricalCellMap=self.geometricalCellMap,
-                                                 physicalFaceMap=self.physicalFaceMap,
-                                                 geometricalFaceMap=self.geometricalFaceMap,
-                                                 physicalNames=physicalNames,
-                                                 faceDim=1, cellDim=2)
-
+         self.physicalFaces) = self.mshFile.makeMapVariables(mesh=self)
+        
         parprint("Exiting Gmsh2D")
 
     def __setstate__(self, dict):
@@ -1024,44 +1683,35 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
 class Gmsh3D(Mesh):
     def __init__(self, arg, communicator=parallel, order=1):
-        self.mshFile  = MshFile(arg, 
-                                dimensions=3, 
-                                communicator=communicator,
-                                order=order)
+        self.mshFile  = openMSHFile(arg, 
+                                    dimensions=3, 
+                                    communicator=communicator,
+                                    order=order,
+                                    mode='r')
 
         (verts,
          faces,
          cells,
          self.cellGlobalIDs,
-         self.gCellGlobalIDs,
-         self.physicalCellMap, 
-         self.geometricalCellMap, 
-         self.physicalFaceMap, 
-         self.geometricalFaceMap,
-         physicalNames) = self.mshFile.buildMeshData()
+         self.gCellGlobalIDs) = self.mshFile.read()
+         
+        self.mshFile.close()
 
         Mesh.__init__(self, vertexCoords=verts,
                             faceVertexIDs=faces,
-                            cellFaceIDs=cells)
-
-        self.communicator = communicator
+                            cellFaceIDs=cells,
+                            communicator=communicator)
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
-            
+   
         (self.physicalCellMap,
          self.geometricalCellMap,
          self.physicalCells,
          self.physicalFaceMap,
          self.geometricalFaceMap,
-         self.physicalFaces) = _makeMapVariables(mesh=self, 
-                                                 physicalCellMap=self.physicalCellMap,
-                                                 geometricalCellMap=self.geometricalCellMap,
-                                                 physicalFaceMap=self.physicalFaceMap,
-                                                 geometricalFaceMap=self.geometricalFaceMap,
-                                                 physicalNames=physicalNames,
-                                                 faceDim=2, cellDim=3)
-
+         self.physicalFaces) = self.mshFile.makeMapVariables(mesh=self)
+        
     def __setstate__(self, dict):
         Mesh.__init__(self, **dict)
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
@@ -1232,7 +1882,8 @@ class Gmsh3D(Mesh):
 class GmshGrid2D(Gmsh2D):
     """Should serve as a drop-in replacement for Grid2D."""
     def __init__(self, dx=1., dy=1., nx=1, ny=None, 
-                 coordDimensions=2, communicator=parallel, order=1):
+                 coordDimensions=2, communicator=parallel, order=1,
+                 background=None):
         self.dx = dx
         self.dy = dy or dx
         self.nx = nx
@@ -1240,7 +1891,7 @@ class GmshGrid2D(Gmsh2D):
 
         arg = self._makeGridGeo(self.dx, self.dy, self.nx, self.ny)
 
-        Gmsh2D.__init__(self, arg, coordDimensions, communicator, order)
+        Gmsh2D.__init__(self, arg, coordDimensions, communicator, order, background)
     
     @getsetDeprecated
     def _getMeshSpacing(self):
@@ -1427,3 +2078,104 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+    
+    from fipy.meshes import Grid2D
+    from fipy.meshes import Tri2D
+    from fipy.meshes import Grid3D
+    from fipy.meshes import CylindricalGrid2D
+    from fipy.meshes import Gmsh2D
+    from fipy.meshes import GmshGrid2D
+    from fipy.variables.cellVariable import CellVariable
+    
+    import tempfile
+    import subprocess
+    
+    dir = tempfile.mkdtemp()
+
+    a = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
+    a2 = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10) + ([10], [0])
+    
+    x, y = a.cellCenters
+    avar = CellVariable(mesh=a, name="binky", value=1. / (x+y))
+    
+    f1 = openMSHFile(name=os.path.join(dir, "a.msh"), mode='w')
+    f1.write(a)
+    f1.write(avar)
+    f1.close()
+    
+    subprocess.Popen(["gmsh", os.path.join(dir, "a.msh")])
+    raw_input("Grid2D... Press enter.")
+    
+    a_ref = GmshGrid2D(dx=1., dy=1., nx=10, ny=10, background=avar)
+    
+    f1 = openMSHFile(name=os.path.join(dir, "a_ref.msh"), mode='w')
+    f1.write(a_ref)
+    f1.close()
+
+    subprocess.Popen(["gmsh", os.path.join(dir, "a_ref.msh")])
+    raw_input("Refined Grid2D... Press enter.")
+
+    b = Tri2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
+    
+    f2 = openMSHFile(name=os.path.join(dir, "b.msh"), mode='w')
+    f2.write(b)
+    f2.close()
+
+    c = Grid3D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, nz = 40)
+    
+    f3 = openMSHFile(name=os.path.join(dir, "c.msh"), mode='w')
+    f3.write(c)
+    f3.close()
+
+    subprocess.Popen(["gmsh", os.path.join(dir, "c.msh")])
+    raw_input("Grid3D... Press enter.")
+
+    d = a + a2
+    f4 = openMSHFile(name=os.path.join(dir, "d.msh"), mode='w')
+    f4.write(d)
+    f4.close()
+
+    subprocess.Popen(["gmsh", os.path.join(dir, "d.msh")])
+    raw_input("Concatenated grid... Press enter.")
+ 
+    e = a + (b + ([0], [10]))
+    f5 = openMSHFile(name=os.path.join(dir, "e.msh"), mode='w')
+    f5.write(e)
+    f5.close()
+
+    subprocess.Popen(["gmsh", os.path.join(dir, "e.msh")])
+    raw_input("Tri2D + Grid2D... Press enter.")
+
+    cyl = CylindricalGrid2D(nx = 10, ny = 10)
+    f6 = openMSHFile(name=os.path.join(dir, "cyl.msh"), mode='w')
+    f6.write(cyl)
+    f6.close()
+    
+    subprocess.Popen(["gmsh", os.path.join(dir, "cyl.msh")])
+    raw_input("CylindricalGrid2D... Press enter.")
+
+    circle = Gmsh2D('''
+         cellSize = 0.05;
+         radius = 1;
+         Point(1) = {0, 0, 0, cellSize};
+         Point(2) = {-radius, 0, 0, cellSize};
+         Point(3) = {0, radius, 0, cellSize};
+         Point(4) = {radius, 0, 0, cellSize};
+         Point(5) = {0, -radius, 0, cellSize};
+         Circle(6) = {2, 1, 3};
+         Circle(7) = {3, 1, 4};
+         Circle(8) = {4, 1, 5};
+         Circle(9) = {5, 1, 2};
+         Line Loop(10) = {6, 7, 8, 9};
+         Plane Surface(11) = {10};
+         Recombine Surface{11};
+    ''')   
+    f7 = openMSHFile(name=os.path.join(dir, "cir.msh"), mode='w')
+    f7.write(circle)
+    f7.close()
+    
+    subprocess.Popen(["gmsh", os.path.join(dir, "cir.msh")])
+    raw_input("Circle... Press enter.")
+    
+    import shutil
+    shutil.rmtree(dir)
