@@ -85,7 +85,7 @@ class CellVariable(_MeshVariable):
             >>> b = c.old + 3
             >>> print b
             [2]
-            >>> print b.getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            >>> print str(b.getsctype()) == str(numerix.NUMERIX.obj2sctype(numerix.array(1)))
             True
 	    
         replacing with the same thing is no problem
