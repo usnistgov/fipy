@@ -184,6 +184,7 @@ def fasteigvec(A):
 
     if (Ieigs.flatten() != 0).any():
         zeigs = eigs + 1j * Ieigs
+        zvecs = np.array(vr, dtype=complex)
         indi, indj = np.nonzero(Ieigs != 0)
         i = 0
         while i < (len(indi) - 1):
