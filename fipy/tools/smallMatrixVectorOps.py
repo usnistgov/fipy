@@ -68,9 +68,12 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import os
 
-pyximport.install(build_dir=os.path.join(os.path.expanduser('~'), '.pyxbld'),
-                  setup_args = {'options' : {'build_ext' : {'libraries' : 'lapack'}}})
-                             
+pyximport.install(setup_args = {'options' :
+                                {'build_ext' :
+                                 {'libraries' : 'lapack',
+                                  'include_dirs' : np.get_include(),
+                                  }}})
+
 from smallMatrixVectorOpsExt import solve, fasteigvec
 
 def fastsum(arr, axis=0):
