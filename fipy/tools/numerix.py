@@ -509,6 +509,18 @@ def all(a, axis=None, out=None):
     else:
         return MA.all(a=a, axis=axis, out=out)
 
+def isclose(first, second, rtol=1.e-5, atol=1.e-8):
+    r"""
+    Returns which elements of `first` and `second` are equal, subect to the given
+    relative and absolute tolerances, such that::
+        
+        |first - second| < atol + rtol * |second|
+        
+    This means essentially that both elements are small compared to ``atol`` or
+    their difference divided by ``second``'s value is small compared to ``rtol``.
+    """
+    return abs(first - second) < atol + rtol * abs(second)
+    
 def take(a, indices, axis=0, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
