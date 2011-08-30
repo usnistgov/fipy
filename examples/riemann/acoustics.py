@@ -78,15 +78,17 @@ if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer
     vi = Viewer((q[0], q[1]))
     vi.plot()
+    timesteps = 10000
     raw_input('press key')
-
+else:
+    timesteps = 100
 
 
 elapsedTime = 0.0
 dt.setValue(0.1 * dx / roeConvectionTerm.maxeigenvalue(q))
 
 elapsedTime = 0.0
-for step in range(100):
+for step in range(timesteps):
     eqn.solve(q, dt=float(dt))
     elapsedTime += float(dt)
     if step % 100 ==  0 and  __name__ == '__main__':

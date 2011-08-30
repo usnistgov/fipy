@@ -41,29 +41,42 @@ from fipy.tools import numerix
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.variables.faceVariable import FaceVariable
 
+        
 def MClimiter(theta):
     return numerix.maximum(0, numerix.minimum((1 + theta) / 2, 2, 2 * theta))
 
 class _RoeVariable(FaceVariable):
-    def __init__(self, var, coeff, dt):
+    def __init__(self, var, coeff, dt, algorithm='DCU', order=2):
         super(FaceVariable, self).__init__(mesh=var.mesh, elementshape=(2,) + var.shape[:-1], cached=True)
         self.var = self._requires(var)
         self.dt = self._requires(dt)
         self.coeff = self._requires(coeff)
+        self.algorithm = algorithm
+        self.order = order
         
     def _calcValue(self):
+        ## value[0] is the down implicit value
+        ## value[1] is the up implicit value
+        ## value[2] is the explicit value
         ## Imported when used to avoid calling cython unnecessarily.
         from fipy.tools import smallMatrixVectorOps as smv
         
         id1, id2 = self.mesh._adjacentCellIDs
         mesh = self.var.mesh
         
-        coeffDown = (numerix.take(self.coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
-        coeffUp = (numerix.take(self.coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
-        
+        if len(self.coeff.shape) == 2:
+            coeff = numerix.array(self.coeff)[:,numerix.newaxis,numerix.newaxis]
+        else:
+            coeff = numerix.array(self.coeff)
+            
+        ## coeff.shape = (Ndim, Nequ, Nequ, Ncell)
+
+        coeffDown = (numerix.take(coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
+        coeffUp = (numerix.take(coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
+
         ## A.shape = (Nfac, Nequ, Nequ)
         A = (coeffUp + coeffDown) / 2.
-        
+
         eigenvalues, R = smv.sortedeig(A)
             
         self._maxeigenvalue = max(abs(eigenvalues).flat)
@@ -73,12 +86,39 @@ class _RoeVariable(FaceVariable):
 
         ## value.shape = (2, Nfac, Nequ, Nequ), first order 
         value = numerix.zeros((2,) + A.shape, 'd')
+
         value[0] = (coeffDown + Abar) / 2
         value[1] = (coeffUp - Abar) / 2
 
+##        if self.algorithm == 'CTU':
+##            value[2] = 0
+        
+        
         ## second order correction with limiter
-        varT = numerix.array(self.var).transpose(1,0)
-        varGradT = numerix.array(self.var.grad).transpose(2, 0, 1)
+        ## self.var.grad = (Ndim, Nequ, Ncell)
+
+        if self.order == 2:
+            correctionImplicit = self.getImplicitCorrection(mesh, R, eigenvalues, id1, id2, E)
+            value[0] -= correctionImplicit
+            value[1] += correctionImplicit
+
+        return value.transpose(0, 2, 3, 1)
+
+    @property
+    def maxeigenvalue(self):
+        if not hasattr(self, '_maxeigenvalue'):
+            self.value
+        return self._maxeigenvalue
+
+    def getImplicitCorrection(self, mesh, R, eigenvalues, id1, id2, E):
+        from fipy.tools import smallMatrixVectorOps as smv
+        if len(self.var.shape) == 1:
+            varT = numerix.array(self.var)[numerix.newaxis].transpose(1,0)
+            varGradT = numerix.array(self.var.grad)[:,numerix.newaxis].transpose(2, 0, 1)
+        else:
+            varT = numerix.array(self.var).transpose(1,0)
+            varGradT = numerix.array(self.var.grad).transpose(2, 0, 1)
+
         faceNormalsT = numerix.array(mesh._orientedFaceNormals).transpose(1,0)
         cellDistances = numerix.array(mesh._cellDistances)[:,numerix.newaxis]
 
@@ -86,7 +126,7 @@ class _RoeVariable(FaceVariable):
         varUp = numerix.take(varT, id2, axis=0)
         varDownGrad = smv.dot(numerix.take(varGradT, id1, axis=0), faceNormalsT[...,numerix.newaxis])
         varUpGrad = smv.dot(numerix.take(varGradT, id2, axis=0), faceNormalsT[...,numerix.newaxis])
-        
+
         varUpUp = varDown + 2 * cellDistances * varUpGrad
         varDownDown = varUp - 2 * cellDistances * varDownGrad
 
@@ -99,19 +139,8 @@ class _RoeVariable(FaceVariable):
 
         A = smv.mul(0.5 * E * (1 - float(self.dt) / cellDistances[...,numerix.newaxis] * E), R)
 
-        correctionImplicit = smv.mulinv(MClimiter(theta)[:,numerix.newaxis] * A, R)
+        return smv.mulinv(MClimiter(theta)[:,numerix.newaxis] * A, R)
 
-        value[0] -= correctionImplicit
-        value[1] += correctionImplicit
-
-        return value.transpose(0, 2, 3, 1)
-
-    @property
-    def maxeigenvalue(self):
-        if not hasattr(self, '_maxeigenvalue'):
-            self.value
-
-        return self._maxeigenvalue
 
 class _CellFaceValue(_CellToFaceVariable):
     def _calcValue_(self, alpha, id1, id2):
@@ -205,12 +234,13 @@ class RoeConvectionTerm(FaceTerm):
         L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(1).ravel()
         ## explicit
-##        b -= L * var.ravel()
-##        L.matrix[:,:] = 0
+        b -= L * var.ravel()
+        L.matrix[:,:] = 0
 
         return (var, L, b)
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        from fipy.solvers import DefaultAsymmetricSolver
         solver = solver or super(RoeConvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
         if solver and not solver._canSolveAsymmetric():
             import warnings
