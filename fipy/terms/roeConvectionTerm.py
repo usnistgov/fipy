@@ -46,13 +46,11 @@ def MClimiter(theta):
     return numerix.maximum(0, numerix.minimum((1 + theta) / 2, 2, 2 * theta))
 
 class _RoeVariable(FaceVariable):
-    def __init__(self, var, coeff, dt, algorithm='DCU', order=2):
+    def __init__(self, var, coeff, dt):
         super(FaceVariable, self).__init__(mesh=var.mesh, elementshape=(2,) + var.shape[:-1], cached=True)
         self.var = self._requires(var)
         self.dt = self._requires(dt)
         self.coeff = self._requires(coeff)
-        self.algorithm = algorithm
-        self.order = order
         
     def _calcValue(self):
         ## value[0] is the down implicit value
@@ -93,14 +91,12 @@ class _RoeVariable(FaceVariable):
 ##        if self.algorithm == 'CTU':
 ##            value[2] = 0
         
-        
         ## second order correction with limiter
         ## self.var.grad = (Ndim, Nequ, Ncell)
 
-        if self.order == 2:
-            correctionImplicit = self.getImplicitCorrection(mesh, R, eigenvalues, id1, id2, E)
-            value[0] -= correctionImplicit
-            value[1] += correctionImplicit
+        correctionImplicit = self.getImplicitCorrection(mesh, R, eigenvalues, id1, id2, E)
+        value[0] -= correctionImplicit
+        value[1] += correctionImplicit
 
         return value.transpose(0, 2, 3, 1)
 
@@ -176,7 +172,7 @@ class RoeConvectionTerm(FaceTerm):
 
     """
 
-    def __init__(self, coeff=1.0, var=None, dt=1.0):
+    def __init__(self, coeff=1.0, var=None):
         """
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
@@ -190,11 +186,9 @@ class RoeConvectionTerm(FaceTerm):
 
         super(RoeConvectionTerm, self).__init__(coeff=coeff, var=var)
 
-        self.dt = dt
-        
-    def _getCoeffMatrix_(self, var, weight):
+    def _getCoeffMatrix_(self, var, weight, dt):
         if self.coeffMatrix is None:
-            coeff = self._getGeomCoeff(var, dontCacheMe=False)
+            coeff = self._getGeomCoeff(var, dt, dontCacheMe=False)
             self.coeffMatrix = {'cell 1 diag' : coeff[0],
                                 'cell 1 offdiag': coeff[1],
                                 'cell 2 diag': -coeff[1],
@@ -205,23 +199,23 @@ class RoeConvectionTerm(FaceTerm):
         return {'implicit' : {'cell 1 diag' : 1}}
     
     def _calcGeomCoeff(self, var):
-        return _RoeVariable(var, self.coeff, self.dt)
+        return _RoeVariable(var, self.coeff, dt)
 
-    def maxeigenvalue(self, var):
-        return self._getGeomCoeff(var, dontCacheMe=False).maxeigenvalue
+    def maxeigenvalue(self, var, dt):
+        return self._getGeomCoeff(var, dt, dontCacheMe=False).maxeigenvalue
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         var, L, b = super(RoeConvectionTerm, self)._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-
+        
         mesh = var.mesh
 
         if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
 
             constraintMask = var.faceGrad.constraintMask | var.faceValue.constraintMask
 
-            diag =  self._getCoeffMatrix_(var, None)['cell 1 diag'] * constraintMask
-            offdiag = self._getCoeffMatrix_(var, None)['cell 2 diag'] * constraintMask
+            diag =  self._getCoeffMatrix_(var, None, dt)['cell 1 diag'] * constraintMask
+            offdiag = self._getCoeffMatrix_(var, None, dt)['cell 2 diag'] * constraintMask
 
             cellValue = _CellFaceValue(var)
             ghostValue = (cellValue + 2 * (var.faceValue - cellValue)) * constraintMask

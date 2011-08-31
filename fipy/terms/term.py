@@ -395,6 +395,9 @@ class Term(object):
             
     __rand__ = __and__
 
+    def maxeigenvalue(self, var, dt):
+        raise NotImplementedError
+
     @getsetDeprecated
     def _getUncoupledTerms(self):
         return self._uncoupledTerms
@@ -405,7 +408,7 @@ class Term(object):
     def _calcGeomCoeff(self, var):
         raise NotImplementedError
         
-    def _getGeomCoeff(self, var, dontCacheMe=True):
+    def _getGeomCoeff(self, var, dt=None, dontCacheMe=True):
         if self.geomCoeff is None:
             self.geomCoeff = self._calcGeomCoeff(var)
             if self.geomCoeff is not None and dontCacheMe:

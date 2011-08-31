@@ -71,8 +71,7 @@ q.constrain(0, [X == -10, X == -1])
 
 Ax = CellVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
 
-roeConvectionTerm = RoeConvectionTerm(Ax, dt=dt)
-eqn = TransientTerm() + roeConvectionTerm == 0
+eqn = TransientTerm() + RoeConvectionTerm(Ax) == 0
 
 if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer
@@ -85,7 +84,7 @@ else:
 
 
 elapsedTime = 0.0
-dt.setValue(0.1 * dx / roeConvectionTerm.maxeigenvalue(q))
+dt.setValue(0.1 * dx / eqn.maxeigenvalue(var, dt))
 
 elapsedTime = 0.0
 for step in range(timesteps):

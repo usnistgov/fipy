@@ -114,6 +114,9 @@ class _UnaryTerm(Term):
         else:
             return solver
 
+    def maxeigenvalue(self, var, dt):
+        return None
+
     def _test(self):
         """
         Offset tests
