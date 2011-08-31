@@ -120,9 +120,11 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
 
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
+        from fipy.meshes.uniformGrid2D import UniformGrid2D
 
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-                if (isinstance(var.mesh, Mesh2D) \
+                if ((isinstance(var.mesh, Mesh2D) 
+                     or isinstance(var.mesh, UniformGrid2D))\
                     and (isinstance(var, FaceVariable) \
                          or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:
