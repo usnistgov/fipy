@@ -262,17 +262,17 @@ class _Viewer(object):
             >>> mesh = %(mesh)s
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k", value=0.)
+            >>> k = Variable(name="k", value=1.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar).grad, 
             ...                 title="%(viewer)s test")
-            >>> for kval in range(10):
+            >>> for kval in arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
 
             >>> viewer = %(viewer)s(vars=sin(k * xyVar).faceGrad, 
             ...                 title="%(viewer)s test")
-            >>> for kval in range(10):
+            >>> for kval in arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
