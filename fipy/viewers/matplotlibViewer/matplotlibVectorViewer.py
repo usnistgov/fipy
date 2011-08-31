@@ -116,6 +116,9 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         
         U = V = numerix.ones(X.shape)
         
+        if hasattr(self, "_quiver"):
+            self._quiver.remove()
+        
         self._quiver = self.axes.quiver(X, Y, U, V, scale=scale, pivot='middle')
 
     def _getSuitableVars(self, vars):
