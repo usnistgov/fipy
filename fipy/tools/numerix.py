@@ -465,12 +465,11 @@ def nearest(data, points, max_mem=1e8):
     # than about 100 MiB for D x N x C, and there is a substantial penalty 
     # for going much above that (presumably due to swapping, even 
     # though this is vastly less than the 4 GiB I had available)
-    # see ticket:???
+    # see ticket:348
     
     numChunks = int(round(D * N * data.itemsize * M / int(max_mem) + 0.5))
 
     nearestIndices = empty((M,), dtype=int)
-#     numChunks = int(round(M / chunk_size + 0.5))
     for chunk in array_split(arange(points.shape[-1]), numChunks):
         # last chunk can be empty, but numpy (1.5.0.dev8716, anyway)
         # returns array([], dtype=float64), which can't be used for indexing

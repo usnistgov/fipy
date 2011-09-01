@@ -97,17 +97,18 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
 
         if isinstance(var, FaceVariable):
             N = mesh.numberOfFaces 
-            W = mesh._faceAreas
-            W = (W / min(W))**0.05
             X, Y = mesh.faceCenters
+
         elif isinstance(var, CellVariable):
             N = mesh.numberOfCells 
-            W = mesh.cellVolumes
             X, Y = mesh.cellCenters
-
+            
         if sparsity is not None and N > sparsity:
-            self.indices = numerix.random.rand(N) * W
-            self.indices = self.indices.argsort()[-sparsity:]
+            XYrand = numerix.random.random((2, sparsity))
+            XYrand = numerix.array([[min(X)], 
+                                    [min(Y)]]) + XYrand * numerix.array([[max(X) - min(X)],
+                                                                         [max(Y) - min(Y)]])
+            self.indices = numerix.nearest(numerix.array([X, Y]), XYrand)
         else:
             self.indices = numerix.arange(N)
 
