@@ -816,7 +816,11 @@ class Variable(object):
             self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)
         
         return self.typecode
-    
+        
+    @property
+    def itemsize(self):
+        return self.value.itemsize
+        
     def _calcValue(self):
         return self._value
 

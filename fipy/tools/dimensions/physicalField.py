@@ -1369,6 +1369,10 @@ class PhysicalField(object):
         from fipy.tools import numerix
         return numerix.getShape(self.value)
         
+    @property
+    def itemsize(self):
+        return self.value.itemsize
+        
     def reshape(self, shape):
         """
         Changes the shape of `self` to that specified in `shape`

@@ -431,8 +431,8 @@ else:
         """
         ## We can't use Numeric.dot on an array of vectors
         return sqrt(dot(a1, a2))
-        
-def nearest(data, points):
+
+def nearest(data, points, max_mem=1e8):
     """find the indices of `data` that are closest to `points`
     
     >>> from fipy import *
@@ -440,21 +440,63 @@ def nearest(data, points):
     >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
     >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue)
     [4 5 7 8]
+    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100)
+    [4 5 7 8]
+    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000)
+    [4 5 7 8]
     """
+    D = data.shape[0]
     N = data.shape[-1]
-    
+    M = points.shape[-1]
+
     if N == 0:
         return arange(0)
         
-    points = resize(points, (N, len(points), len(points[0]))).swapaxes(0,1)
+    # given (D, N) data and (D, M) points, 
+    # break points into (D, C) chunks of points
+    # calculatate the full factorial (D, N, C) distances between them
+    # and then reduce to the indices of the C closest values of data 
+    # then assemble chunks C into total M closest indices
+        
+    # (D, N) -> (D, N, 1)
     data = data[..., newaxis]
     
-    try:
-        tmp = data - points
-    except TypeError:
-        tmp = data - PhysicalField(points)
+    # there appears to be no benefit to taking chunks that use more 
+    # than about 100 MiB for D x N x C, and there is a substantial penalty 
+    # for going much above that (presumably due to swapping, even 
+    # though this is vastly less than the 4 GiB I had available)
+    # see ticket:???
+    
+    numChunks = int(round(D * N * data.itemsize * M / int(max_mem) + 0.5))
 
-    return argmin(dot(tmp, tmp, axis=0), axis=0)
+    nearestIndices = empty((M,), dtype=int)
+#     numChunks = int(round(M / chunk_size + 0.5))
+    for chunk in array_split(arange(points.shape[-1]), numChunks):
+        # last chunk can be empty, but numpy (1.5.0.dev8716, anyway)
+        # returns array([], dtype=float64), which can't be used for indexing
+        chunk = chunk.astype(int)
+        
+        # (D, M) -> (D, C)
+        chunkOfPoints = points[..., chunk]
+        # (D, C) -> (D, 1, C)
+        chunkOfPoints = chunkOfPoints[..., newaxis, :]
+        # (D, 1, C) -> (D, N, C)
+        chunkOfPoints = repeat(chunkOfPoints, N, axis=1)
+        
+#         print "chunkOfPoints size: ", chunkOfPoints.shape, chunkOfPoints.size, chunkOfPoints.itemsize, chunkOfPoints.size * chunkOfPoints.itemsize
+        
+        try:
+            tmp = data - chunkOfPoints
+        except TypeError:
+            tmp = data - PhysicalField(chunkOfPoints)
+
+        # (D, N, C) -> (N, C)
+        tmp = dot(tmp, tmp, axis=0)
+        
+        # (N, C) -> C
+        nearestIndices[chunk] = argmin(tmp, axis=0)
+        
+    return nearestIndices 
 
 def allequal(first, second):
     """
