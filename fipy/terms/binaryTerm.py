@@ -103,8 +103,8 @@ class _BinaryTerm(_BaseBinaryTerm):
     def _getDiffusionGeomCoeff(self, var):
         return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var))
 
-    def maxeigenvalue(self, var, dt):
-        return self.term.maxeigenvalue(var, dt) or self.other.maxeigenvalue(var, dt)
+    def maxeigenvalue(self, var):
+        return self.term.maxeigenvalue(var) or self.other.maxeigenvalue(var)
 
     __rmul__ = __mul__
 

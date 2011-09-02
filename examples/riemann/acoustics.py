@@ -55,8 +55,6 @@ rho = 1.
 
 dx = L / nx
 
-dt = Variable(1.)
-
 m = Grid1D(nx=nx, dx=dx) + X0
 x, = m.cellCenters
 X, = m.faceCenters
@@ -84,11 +82,12 @@ else:
 
 
 elapsedTime = 0.0
-dt.setValue(0.1 * dx / eqn.maxeigenvalue(var, dt))
+dt = Variable(0.1 * dx / eqn.maxeigenvalue(q))
+dt = 0.009
 
 elapsedTime = 0.0
 for step in range(timesteps):
-    eqn.solve(q, dt=float(dt))
+    eqn.solve(q, dt=dt)
     elapsedTime += float(dt)
     if step % 100 ==  0 and  __name__ == '__main__':
         vi.plot()

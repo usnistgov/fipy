@@ -114,7 +114,7 @@ class _UnaryTerm(Term):
         else:
             return solver
 
-    def maxeigenvalue(self, var, dt):
+    def maxeigenvalue(self, var):
         return None
 
     def _test(self):

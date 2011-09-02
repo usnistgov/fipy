@@ -40,19 +40,21 @@ from fipy.terms.faceTerm import FaceTerm
 from fipy.tools import numerix
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.variables.faceVariable import FaceVariable
-
         
 def MClimiter(theta):
+    """
+    Monotonized center limiter.
+    """
     return numerix.maximum(0, numerix.minimum((1 + theta) / 2, 2, 2 * theta))
 
 class _RoeVariable(FaceVariable):
-    def __init__(self, var, coeff, dt):
+    def __init__(self, var, coeff):
         super(FaceVariable, self).__init__(mesh=var.mesh, elementshape=(2,) + var.shape[:-1], cached=True)
         self.var = self._requires(var)
-        self.dt = self._requires(dt)
         self.coeff = self._requires(coeff)
-        
-    def _calcValue(self):
+        from fipy.variables.variable import Variable
+
+    def _calcEigenvalues_(self):
         ## value[0] is the down implicit value
         ## value[1] is the up implicit value
         ## value[2] is the explicit value
@@ -72,41 +74,57 @@ class _RoeVariable(FaceVariable):
         coeffDown = (numerix.take(coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
         coeffUp = (numerix.take(coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
 
+##        coeffDownB = (numerix.take(coeff, id1, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)
+##        coeffUpB = (numerix.take(coeff, id2, axis=-1) * mesh._orientedAreaProjections[:, numerix.newaxis, numerix.newaxis]).sum(0).transpose(2, 0, 1)        
+
         ## A.shape = (Nfac, Nequ, Nequ)
         A = (coeffUp + coeffDown) / 2.
 
         eigenvalues, R = smv.sortedeig(A)
+
+        return eigenvalues, R, coeffDown, coeffUp, A.shape, id1, id2
+
+    @property
+    def maxeigenvalue(self):
+        eigenvalues, R, coeffDown, coeffUp, Ashape, id1, id2 = self._calcEigenvalues_()
+        return  max(abs(eigenvalues).flat)
+        
+    def _calcValue(self):
+        from fipy.tools import smallMatrixVectorOps as smv
+        
+        eigenvalues, R, coeffDown, coeffUp, Ashape, id1, id2 = self._calcEigenvalues_()
+
+        ## first order roe
             
-        self._maxeigenvalue = max(abs(eigenvalues).flat)
         E = abs(eigenvalues)[:,:,numerix.newaxis] * numerix.identity(eigenvalues.shape[1])
 
         Abar = smv.mulinv(smv.mul(R, E), R)
 
         ## value.shape = (2, Nfac, Nequ, Nequ), first order 
-        value = numerix.zeros((2,) + A.shape, 'd')
+        value = numerix.zeros((2,) + Ashape, 'd')
+
+##         print 'self.var.mesh._cellFaceIDs[...,2462]',self.var.mesh._cellFaceIDs[...,2462]
 
         value[0] = (coeffDown + Abar) / 2
         value[1] = (coeffUp - Abar) / 2
 
-##        if self.algorithm == 'CTU':
-##            value[2] = 0
+##         print 'value[:,2462]',value[:,2462]
+
+        ## CTU additions
         
         ## second order correction with limiter
         ## self.var.grad = (Ndim, Nequ, Ncell)
 
-        correctionImplicit = self.getImplicitCorrection(mesh, R, eigenvalues, id1, id2, E)
+        correctionImplicit = self.getImplicitCorrection(R, eigenvalues, id1, id2, E)
+##         print 'correctionImplicit[2462]',correctionImplicit[2462]
+        
         value[0] -= correctionImplicit
         value[1] += correctionImplicit
 
         return value.transpose(0, 2, 3, 1)
 
-    @property
-    def maxeigenvalue(self):
-        if not hasattr(self, '_maxeigenvalue'):
-            self.value
-        return self._maxeigenvalue
-
-    def getImplicitCorrection(self, mesh, R, eigenvalues, id1, id2, E):
+    def getImplicitCorrection(self, R, eigenvalues, id1, id2, E):
+        mesh = self.var.mesh
         from fipy.tools import smallMatrixVectorOps as smv
         if len(self.var.shape) == 1:
             varT = numerix.array(self.var)[numerix.newaxis].transpose(1,0)
@@ -117,6 +135,7 @@ class _RoeVariable(FaceVariable):
 
         faceNormalsT = numerix.array(mesh._orientedFaceNormals).transpose(1,0)
         cellDistances = numerix.array(mesh._cellDistances)[:,numerix.newaxis]
+        faceAreas = numerix.array(mesh._faceAreas)[:,numerix.newaxis]
 
         varDown = numerix.take(varT, id1, axis=0)
         varUp = numerix.take(varT, id2, axis=0)
@@ -131,11 +150,25 @@ class _RoeVariable(FaceVariable):
         alphaUp = smv.invmatvec(R, varUpUp - varUp)
         
         alphaOther = numerix.where(eigenvalues > 0, alphaDown, alphaUp)
+
+        print 'alpha.shape',alpha.shape
+        print 'alpha[2463]',alpha[2463]
         theta = alphaOther / (alpha + 1e-20 * (alpha == 0))
 
-        A = smv.mul(0.5 * E * (1 - float(self.dt) / cellDistances[...,numerix.newaxis] * E), R)
+        A = smv.mul(0.5 * E * (1 - float(self._dt) / (faceAreas * cellDistances)[...,numerix.newaxis] * E), R)
 
         return smv.mulinv(MClimiter(theta)[:,numerix.newaxis] * A, R)
+
+    def _setdt(self, dt):
+        if hasattr(self, '_dt') and not numerix.allclose(dt, self._dt):
+            self._markStale()
+        self._dt = dt
+
+    def _getdt(self):
+        return self._dt
+
+    dt = property(_getdt, _setdt)
+
 
 
 class _CellFaceValue(_CellToFaceVariable):
@@ -187,22 +220,28 @@ class RoeConvectionTerm(FaceTerm):
         super(RoeConvectionTerm, self).__init__(coeff=coeff, var=var)
 
     def _getCoeffMatrix_(self, var, weight, dt):
+        
+        coeff = self._getGeomCoeff(var, dontCacheMe=False)
+        coeff.dt = dt
+        
         if self.coeffMatrix is None:
-            coeff = self._getGeomCoeff(var, dt, dontCacheMe=False)
             self.coeffMatrix = {'cell 1 diag' : coeff[0],
                                 'cell 1 offdiag': coeff[1],
                                 'cell 2 diag': -coeff[1],
                                 'cell 2 offdiag': -coeff[0]}
+
         return self.coeffMatrix
 
     def _getWeight(self, var, transientGeomCoeff, diffusionGeomCoeff):
         return {'implicit' : {'cell 1 diag' : 1}}
     
     def _calcGeomCoeff(self, var):
-        return _RoeVariable(var, self.coeff, dt)
+        return _RoeVariable(var, self.coeff)
 
-    def maxeigenvalue(self, var, dt):
-        return self._getGeomCoeff(var, dt, dontCacheMe=False).maxeigenvalue
+    def maxeigenvalue(self, var):
+        coeff = self._getGeomCoeff(var, dontCacheMe=False)
+        coeff.dt = 1.
+        return coeff.maxeigenvalue
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
 
@@ -227,7 +266,18 @@ class RoeConvectionTerm(FaceTerm):
         ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
         L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(1).ravel()
+
         ## explicit
+
+        print 'in roe term'
+##         print 'var.mesh._cellToCellIDs[...,2462]',var.mesh._cellToCellIDs[...,2462]
+##         print 'var[2462]',var[2462]
+        print 'L[2462,2462]',L[2462,2462]
+        for ID in var.mesh._cellToCellIDs[...,2462]:
+            print 'ID',ID,'var[ID]',var[ID]
+            print 'L[2462,ID]',L[2462,ID]
+##         print 'var.mesh.cellCenters[...,2462]',var.mesh.cellCenters[...,2462]
+            
         b -= L * var.ravel()
         L.matrix[:,:] = 0
 

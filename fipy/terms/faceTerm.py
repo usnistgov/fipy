@@ -54,7 +54,7 @@ class FaceTerm(_NonDiffusionTerm):
         _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffMatrix = None
 
-    def _getCoeffMatrix_(self, var, weight):
+    def _getCoeffMatrix_(self, var, weight, dt):
         coeff = self._getGeomCoeff(var)
 
         if self.coeffMatrix is None:
@@ -66,7 +66,7 @@ class FaceTerm(_NonDiffusionTerm):
 
     def _implicitBuildMatrix_(self, SparseMatrix, L, id1, id2, b, weight, var, boundaryConditions, interiorFaces, dt):
         mesh = var.mesh
-        coeffMatrix = self._getCoeffMatrix_(var, weight)
+        coeffMatrix = self._getCoeffMatrix_(var, weight, dt)
 
         id1 = self._reshapeIDs(var, id1)
         id2 = self._reshapeIDs(var, id2)
@@ -94,7 +94,7 @@ class FaceTerm(_NonDiffusionTerm):
     def _explicitBuildMatrix_(self, SparseMatrix, oldArray, id1, id2, b, weight, var, boundaryConditions, interiorFaces, dt):
 
         mesh = var.mesh
-        coeffMatrix = self._getCoeffMatrix_(var, weight)
+        coeffMatrix = self._getCoeffMatrix_(var, weight, dt)
 
         self._explicitBuildMatrixInline_(oldArray=oldArray, id1=id1, id2=id2, b=b, coeffMatrix=coeffMatrix,
                                          mesh=var.mesh, interiorFaces=interiorFaces, dt=dt, weight=weight)
