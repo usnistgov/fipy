@@ -34,7 +34,10 @@ class Vitals(Document):
         pyth = self.createElement("python")
         
         implementation = self.createElement("implementation")
-        implementation.appendChild(self.createTextNode(platform.python_implementation()))
+        if hasattr(platform, "python_implementation"):
+            implementation.appendChild(self.createTextNode(platform.python_implementation()))
+        else:
+            implementation.appendChild(self.createTextNode("unknown"))
         pyth.appendChild(implementation)
 
         pversion = self.createElement("version")
