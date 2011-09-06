@@ -445,6 +445,9 @@ def nearest(data, points, max_mem=1e8):
     >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000)
     [4 5 7 8]
     """
+    data = asanyarray(data)
+    points = asanyarray(points)
+    
     D = data.shape[0]
     N = data.shape[-1]
     M = points.shape[-1]
