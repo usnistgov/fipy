@@ -80,10 +80,10 @@ if  __name__ == '__main__':
 else:
     timesteps = 100
 
-
 elapsedTime = 0.0
-dt = Variable(0.1 * dx / eqn.maxeigenvalue(q))
-dt = 0.009
+dt = float(Variable(0.1 * dx / eqn.maxeigenvalue(q)))
+print dt
+##dt = 0.009
 
 elapsedTime = 0.0
 for step in range(timesteps):

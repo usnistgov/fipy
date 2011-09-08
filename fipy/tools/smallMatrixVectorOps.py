@@ -64,9 +64,6 @@ True
 
 import numpy as np
 import pyximport
-from distutils.extension import Extension
-from Cython.Distutils import build_ext
-import os
 
 pyximport.install(setup_args = {'options' :
                                 {'build_ext' :
@@ -97,7 +94,7 @@ def slowinv(A):
 def invmul(A, B):
     """
     Calculates the product (A^-1.B) of N, M (rows) x P (cols) matrices (B) and the inverse of N, MxM matrices (A).
-    A.shape = (N, M, N), B.shape = (N, M, P).
+    A.shape = (N, M, M), B.shape = (N, M, P).
     """
     N, M, P = B.shape
     N, M, M = A.shape

@@ -22,19 +22,23 @@ vel[1] = -2 * x
 
 dt = 0.1 * dx / max(vel[0])
 dt = 0.0009
-print 'dt',dt
+##print 'dt',dt
 eqn = TransientTerm() + RoeConvectionTerm(vel)
 ##print  roeConvectionTerm.maxeigenvalue(var)
 
 viewer = Viewer(var)
 
-for i in range(10000):
-    var.updateOld()
-    eqn.solve(var, dt=dt)
-    print max(var)
-    print numerix.argmax(var)
-    raw_input('stopped')
-    if i % 10 == 0:
-        viewer.plot()
+def run():
+    for i in range(100):
+        print 'i',i
+        var.updateOld()
+        eqn.solve(var, dt=dt)
+##    if i % 10 == 0:
+##        viewer.plot()
 
-raw_input('stopped')
+import cProfile
+cProfile.runctx("run()", globals(), locals(), "Profile.prof")
+
+
+
+##raw_input('stopped')
