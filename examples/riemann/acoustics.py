@@ -81,14 +81,12 @@ else:
     timesteps = 100
 
 elapsedTime = 0.0
-dt = float(Variable(0.1 * dx / eqn.maxeigenvalue(q)))
-print dt
-##dt = 0.009
+dt = 0.1 * dx / eqn.maxeigenvalue(q)
 
 elapsedTime = 0.0
 for step in range(timesteps):
     eqn.solve(q, dt=dt)
-    elapsedTime += float(dt)
+    elapsedTime += dt
     if step % 100 ==  0 and  __name__ == '__main__':
         vi.plot()
         print 'elapsedTime',elapsedTime

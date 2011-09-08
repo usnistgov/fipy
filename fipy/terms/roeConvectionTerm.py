@@ -118,10 +118,9 @@ class _RoeVariable(FaceVariable):
         return self.firstOrderRoeVariable.maxeigenvalue
         
     def _calcValue(self):
-        value = self.firstOrderRoeVariable.value.transpose(0, 3, 1, 2)
+        value = self.firstOrderRoeVariable.value.transpose(0, 3, 1, 2).copy()
 
         ## second order correction with limiter
-        ## self.var.grad = (Ndim, Nequ, Ncell)
         correctionImplicit = self.getImplicitCorrection()
         
         value[0] -= correctionImplicit
@@ -164,7 +163,6 @@ class _RoeVariable(FaceVariable):
         alpha = smv.invmatvec(R, varUp - varDown)
         alphaDown = smv.invmatvec(R, varDown - varDownDown)
         alphaUp = smv.invmatvec(R, varUpUp - varUp)
-
         
         ##alpha = smv.invmul(R, varDiff[...,0][...,numerix.newaxis])
         ##alphaDown = smv.invmul(R, varDiff[...,1][...,numerix.newaxis])
@@ -289,6 +287,7 @@ class RoeConvectionTerm(FaceTerm):
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(1).ravel()
 
         ## explicit
+        
         b -= L * var.ravel()
         L = SparseMatrix(mesh=mesh)
 
