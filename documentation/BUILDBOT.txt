@@ -101,7 +101,7 @@ Add buildslave command to the crontab
 
     slave$ crontab -e
     # m  h dom mon dow command
-    */10 * *   *   *   cd .../newDir ; buildslave start > /dev/null 2>&1 &
+    */10 * *   *   *   cd .../newDir ; .../buildslave start > /dev/null 2>&1 &
 
 ---------------
 Adding a branch
