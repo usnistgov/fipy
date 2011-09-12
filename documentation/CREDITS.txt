@@ -43,7 +43,7 @@ Daniel Stiles
     worked on adding :term:`Trilinos` parallel computations while he was
     a student at `Montgomery Blair High School`_.
 
-James O'Bierne
+James O'Beirne
     added full mesh partitioning using :term:`Gmsh`. James also greatly
     improved the :term:`Gmsh`-:term:`FiPy` pipeline. Other contributions
     include updating :term:`FiPy` to use properties pervasively,
