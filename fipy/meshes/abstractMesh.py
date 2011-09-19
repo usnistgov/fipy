@@ -903,7 +903,10 @@ class AbstractMesh(object):
      
     @property
     def _VTKCellType(self):
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
                 
     @property
@@ -919,7 +922,10 @@ class AbstractMesh(object):
             counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
             cells = numerix.concatenate((counts,cvi),axis=1).flatten()
         
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         num = counts.shape[0]
 
         cps_type = self._VTKCellType
@@ -942,7 +948,10 @@ class AbstractMesh(object):
     def VTKFaceDataSet(self):
         """Returns a TVTK `DataSet` representing the face centers of this mesh
         """
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         
         points = self.faceCenters
         points = self._toVTK3D(points)

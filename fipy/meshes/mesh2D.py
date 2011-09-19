@@ -270,7 +270,10 @@ class Mesh2D(Mesh):
 
     @property
     def _VTKCellType(self):
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         return tvtk.Polygon().cell_type
         
     def _test(self):
