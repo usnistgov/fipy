@@ -761,7 +761,7 @@ class PhysicalField(object):
         
         And so must array dimensions
         
-            >>> print a > PhysicalField(((3.,13.,4.),(17.,6.,2.)),"ft")
+            >>> print a > PhysicalField(((3.,13.,4.),(17.,6.,2.)),"ft") #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
@@ -1368,6 +1368,10 @@ class PhysicalField(object):
         """Tuple of array dimensions."""
         from fipy.tools import numerix
         return numerix.getShape(self.value)
+        
+    @property
+    def itemsize(self):
+        return self.value.itemsize
         
     def reshape(self, shape):
         """

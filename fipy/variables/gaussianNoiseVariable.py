@@ -81,6 +81,11 @@ class GaussianNoiseVariable(NoiseVariable):
     >>> mean = 0.
     >>> variance = 4.
 
+    Seed the random module for the sake of deterministic test results.
+
+    >>> from fipy import numerix
+    >>> numerix.random.seed(3)
+
     We generate noise on a non-uniform cartesian mesh with cell dimensions of
     :math:`x^2` and :math:`y^3`.
            

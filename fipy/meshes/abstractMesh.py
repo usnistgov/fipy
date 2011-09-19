@@ -254,14 +254,14 @@ class AbstractMesh(object):
         """
         
         selfc = self._concatenableMesh
-        other = other._concatenableMesh
+        otherc = other._concatenableMesh
 
         selfNumFaces = selfc.faceVertexIDs.shape[-1]
         selfNumVertices = selfc.vertexCoords.shape[-1]
-        otherNumFaces = other.faceVertexIDs.shape[-1]
-        otherNumVertices = other.vertexCoords.shape[-1]
+        otherNumFaces = otherc.faceVertexIDs.shape[-1]
+        otherNumVertices = otherc.vertexCoords.shape[-1]
         ## check dimensions
-        if(selfc.vertexCoords.shape[0] != other.vertexCoords.shape[0]):
+        if(selfc.vertexCoords.shape[0] != otherc.vertexCoords.shape[0]):
             raise MeshAdditionError, "Dimensions do not match"
             
         ## compute vertex correlates
@@ -275,12 +275,12 @@ class AbstractMesh(object):
 
         from fipy.tools.debug import PRINT
         from fipy.tools.debug import PRINT
-        PRINT("otherExt", other.exteriorFaces.value)
+        PRINT("otherExt", otherc.exteriorFaces.value)
         raw_input()
         PRINT("selfExt", selfc.exteriorFaces.value)
 
         PRINT("self filled", selfc.faceVertexIDs.filled())
-        PRINT("othe filled", other.faceVertexIDs.filled())
+        PRINT("othe filled", otherc.faceVertexIDs.filled())
         raw_input()
 
         PRINT("selfc.faceVertexIDs.filled()\n",selfc.faceVertexIDs.filled())
@@ -291,35 +291,26 @@ class AbstractMesh(object):
         PRINT("extfaces mesh", selfc.exteriorFaces.mesh)
         """
 
+        ## only try to match along the operation manifold
+        if hasattr(self, "opManifold"):
+            self_faces = self.opManifold(selfc)
+        else:
+            self_faces = selfc.exteriorFaces.value
+        if hasattr(other, "opManifold"):
+            other_faces = other.opManifold(otherc)
+        else:
+            other_faces = otherc.exteriorFaces.value
+            
         ## only try to match exterior (X) vertices
         self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[...,
-            selfc.exteriorFaces.value].flatten())
-        other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[...,
-            other.exteriorFaces.value].flatten())
-
-        """
-        from fipy.tools.debug import PRINT
-        PRINT("self_Xvertices", self_Xvertices)
-        PRINT("other_Xvertices", other_Xvertices)
-        raw_input()
-        """
+            self_faces].flatten())
+        other_Xvertices = numerix.unique(otherc.faceVertexIDs.filled()[...,
+            other_faces].flatten())
 
         self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
-        other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
+        other_XvertexCoords = otherc.vertexCoords[..., other_Xvertices]
         
-        # lifted from Mesh._getNearestCellID()
-        other_vertexCoordMap = numerix.resize(other_XvertexCoords, 
-                                              (self_XvertexCoords.shape[-1], 
-                                               other_XvertexCoords.shape[0], 
-                                               other_XvertexCoords.shape[-1])).swapaxes(0,1)
-        tmp = self_XvertexCoords[..., numerix.newaxis] - other_vertexCoordMap
-
-        """
-        import sys
-        print >> sys.stderr, "tmp", tmp
-        """
-                
-        closest = numerix.argmin(numerix.dot(tmp, tmp), axis=0)
+        closest = numerix.nearest(self_XvertexCoords, other_XvertexCoords)
         
         # just because they're closest, doesn't mean they're close
         tmp = self_XvertexCoords[..., closest] - other_XvertexCoords
@@ -327,13 +318,13 @@ class AbstractMesh(object):
         # only want vertex pairs that are 100x closer than the smallest 
         # cell-to-cell distance
         close = distance < resolution * min(selfc._cellToCellDistances.min(), 
-                                            other._cellToCellDistances.min())
+                                            otherc._cellToCellDistances.min())
         vertexCorrelates = numerix.array((self_Xvertices[closest[close]],
                                           other_Xvertices[close]))
         
         # warn if meshes don't touch, but allow it
         if (selfc._numberOfVertices > 0 
-            and other._numberOfVertices > 0 
+            and otherc._numberOfVertices > 0 
             and vertexCorrelates.shape[-1] == 0):
             import warnings
             warnings.warn("Vertices are not aligned", UserWarning, stacklevel=4)
@@ -342,7 +333,7 @@ class AbstractMesh(object):
 
         # ensure that both sets of faceVertexIDs have the same maximum number of (masked) elements
         self_faceVertexIDs = selfc.faceVertexIDs
-        other_faceVertexIDs = other.faceVertexIDs
+        other_faceVertexIDs = otherc.faceVertexIDs
 
         diff = self_faceVertexIDs.shape[0] - other_faceVertexIDs.shape[0]
         if diff > 0:
@@ -411,7 +402,7 @@ class AbstractMesh(object):
 
         # warn if meshes don't touch, but allow it
         if (selfc.numberOfFaces > 0 
-            and other.numberOfFaces > 0 
+            and otherc.numberOfFaces > 0 
             and faceCorrelates.shape[-1] == 0):
             import warnings
             warnings.warn("Faces are not aligned", UserWarning, stacklevel=4)
@@ -423,11 +414,11 @@ class AbstractMesh(object):
         face_map[facesToAdd] = numerix.arange(otherNumFaces - len(faceCorrelates[1])) + selfNumFaces
         face_map[faceCorrelates[1]] = faceCorrelates[0]
         
-        other_faceVertexIDs = vertex_map[other.faceVertexIDs[..., facesToAdd]]
+        other_faceVertexIDs = vertex_map[otherc.faceVertexIDs[..., facesToAdd]]
         
         # ensure that both sets of cellFaceIDs have the same maximum number of (masked) elements
         self_cellFaceIDs = selfc.cellFaceIDs
-        other_cellFaceIDs = face_map[other.cellFaceIDs]
+        other_cellFaceIDs = face_map[otherc.cellFaceIDs]
         diff = self_cellFaceIDs.shape[0] - other_cellFaceIDs.shape[0]
         if diff > 0:
             other_cellFaceIDs = numerix.append(other_cellFaceIDs, 
@@ -445,7 +436,7 @@ class AbstractMesh(object):
         # concatenate everything and return
         return {
             'vertexCoords': numerix.concatenate((selfc.vertexCoords, 
-                                                 other.vertexCoords[..., verticesToAdd]), axis=1), 
+                                                 otherc.vertexCoords[..., verticesToAdd]), axis=1), 
             'faceVertexIDs': numerix.concatenate((self_faceVertexIDs, 
                                                   other_faceVertexIDs), axis=1), 
             'cellFaceIDs': MA.concatenate((self_cellFaceIDs, 
@@ -912,7 +903,10 @@ class AbstractMesh(object):
      
     @property
     def _VTKCellType(self):
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
                 
     @property
@@ -928,7 +922,10 @@ class AbstractMesh(object):
             counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
             cells = numerix.concatenate((counts,cvi),axis=1).flatten()
         
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         num = counts.shape[0]
 
         cps_type = self._VTKCellType
@@ -951,7 +948,10 @@ class AbstractMesh(object):
     def VTKFaceDataSet(self):
         """Returns a TVTK `DataSet` representing the face centers of this mesh
         """
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         
         points = self.faceCenters
         points = self._toVTK3D(points)

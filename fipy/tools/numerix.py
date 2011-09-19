@@ -431,8 +431,8 @@ else:
         """
         ## We can't use Numeric.dot on an array of vectors
         return sqrt(dot(a1, a2))
-        
-def nearest(data, points):
+
+def nearest(data, points, max_mem=1e8):
     """find the indices of `data` that are closest to `points`
     
     >>> from fipy import *
@@ -440,21 +440,65 @@ def nearest(data, points):
     >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
     >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue)
     [4 5 7 8]
+    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100)
+    [4 5 7 8]
+    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000)
+    [4 5 7 8]
     """
-    N = data.shape[-1]
+    data = asanyarray(data)
+    points = asanyarray(points)
     
+    D = data.shape[0]
+    N = data.shape[-1]
+    M = points.shape[-1]
+
     if N == 0:
         return arange(0)
         
-    points = resize(points, (N, len(points), len(points[0]))).swapaxes(0,1)
+    # given (D, N) data and (D, M) points, 
+    # break points into (D, C) chunks of points
+    # calculatate the full factorial (D, N, C) distances between them
+    # and then reduce to the indices of the C closest values of data 
+    # then assemble chunks C into total M closest indices
+        
+    # (D, N) -> (D, N, 1)
     data = data[..., newaxis]
     
-    try:
-        tmp = data - points
-    except TypeError:
-        tmp = data - PhysicalField(points)
+    # there appears to be no benefit to taking chunks that use more 
+    # than about 100 MiB for D x N x C, and there is a substantial penalty 
+    # for going much above that (presumably due to swapping, even 
+    # though this is vastly less than the 4 GiB I had available)
+    # see ticket:348
+    
+    numChunks = int(round(D * N * data.itemsize * M / int(max_mem) + 0.5))
 
-    return argmin(dot(tmp, tmp, axis=0), axis=0)
+    nearestIndices = empty((M,), dtype=int)
+    for chunk in array_split(arange(points.shape[-1]), numChunks):
+        # last chunk can be empty, but numpy (1.5.0.dev8716, anyway)
+        # returns array([], dtype=float64), which can't be used for indexing
+        chunk = chunk.astype(int)
+        
+        # (D, M) -> (D, C)
+        chunkOfPoints = points[..., chunk]
+        # (D, C) -> (D, 1, C)
+        chunkOfPoints = chunkOfPoints[..., newaxis, :]
+        # (D, 1, C) -> (D, N, C)
+        chunkOfPoints = repeat(chunkOfPoints, N, axis=1)
+        
+#         print "chunkOfPoints size: ", chunkOfPoints.shape, chunkOfPoints.size, chunkOfPoints.itemsize, chunkOfPoints.size * chunkOfPoints.itemsize
+        
+        try:
+            tmp = data - chunkOfPoints
+        except TypeError:
+            tmp = data - PhysicalField(chunkOfPoints)
+
+        # (D, N, C) -> (N, C)
+        tmp = dot(tmp, tmp, axis=0)
+        
+        # (N, C) -> C
+        nearestIndices[chunk] = argmin(tmp, axis=0)
+        
+    return nearestIndices 
 
 def allequal(first, second):
     """
@@ -509,6 +553,18 @@ def all(a, axis=None, out=None):
     else:
         return MA.all(a=a, axis=axis, out=out)
 
+def isclose(first, second, rtol=1.e-5, atol=1.e-8):
+    r"""
+    Returns which elements of `first` and `second` are equal, subect to the given
+    relative and absolute tolerances, such that::
+        
+        |first - second| < atol + rtol * |second|
+        
+    This means essentially that both elements are small compared to ``atol`` or
+    their difference divided by ``second``'s value is small compared to ``rtol``.
+    """
+    return abs(first - second) < atol + rtol * abs(second)
+    
 def take(a, indices, axis=0, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
@@ -924,7 +980,7 @@ def _indexShape(index, arrayShape):
     objects, or the Ellipsis (``...``) object"
     
         >>> _indexShape(index=NUMERIX.index_exp[...,2,"text"], 
-        ...             arrayShape=(10,20,30,40,50))
+        ...             arrayShape=(10,20,30,40,50))            #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         ValueError: setting an array element with a sequence.

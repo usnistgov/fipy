@@ -19,13 +19,13 @@ Contributors
     and the electrochemical interface.
 
 Alex Mont
-    developed the `PyxViewer` and the `Gmsh` import and export modules while 
-    he was a student at `Montgomery Blair High School`_.
+    developed the :term:`PyxViewer` and the :term:`Gmsh` import and export
+    modules while he was a student at `Montgomery Blair High School`_.
 
 Katie Travis
-    developed the automated :option:`--inline` optimization code for
-    :class:`~fipy.variables.variable.Variable` objects while she was a
-    SURF_ student from `Smith College`_.
+    developed the automated 
+    :option:`--inline` optimization code for ``Variable`` objects 
+    while she was a SURF_ student from `Smith College`_.
   
 Max Gibiansky
     added support for the :term:`Trilinos` solvers while he was a SURF_ student
@@ -40,10 +40,15 @@ Olivia Buzek
     from the `University of Maryland`_
 
 Daniel Stiles
-    worked on adding :term:`Trilinos` parallel computations and
-    :term:`Mayavi` 2 while he was a student at `Montgomery Blair High
-    School`_.
+    worked on adding :term:`Trilinos` parallel computations while he was
+    a student at `Montgomery Blair High School`_.
 
+James O'Beirne
+    added full mesh partitioning using :term:`Gmsh`. James also greatly
+    improved the :term:`Gmsh`-:term:`FiPy` pipeline. Other contributions
+    include updating :term:`FiPy` to use properties pervasively,
+    deployment of a :term:`Buildbot` server to automate :term:`FiPy`
+    testing and a full refactor of the ``Mesh`` classes.
 
 .. |MML| replace:: the `Material Measurement Laboratory`_
 .. |CTCMS| replace:: the `Center for Theoretical and Computational Materials Science`_
