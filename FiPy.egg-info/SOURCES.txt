@@ -255,6 +255,7 @@ examples/levelSet/surfactant/expandingCircle.py
 examples/levelSet/surfactant/square.py
 examples/levelSet/surfactant/test.py
 examples/meshing/__init__.py
+examples/meshing/gmshRefinement.py
 examples/meshing/inputGrid2D.py
 examples/meshing/sphere.gmsh
 examples/meshing/sphere.py
@@ -327,7 +328,6 @@ fipy/meshes/cylindricalGrid2D.py
 fipy/meshes/cylindricalUniformGrid1D.py
 fipy/meshes/cylindricalUniformGrid2D.py
 fipy/meshes/factoryMeshes.py
-fipy/meshes/gmshExport.py
 fipy/meshes/gmshImport.py
 fipy/meshes/grid1D.py
 fipy/meshes/grid2D.py

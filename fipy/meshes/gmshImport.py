@@ -401,29 +401,31 @@ class POSFile(GmshFile):
         
         value = var.value
 
+        vertexCoords = var.mesh.vertexCoords
+        
         for i in triangles.nonzero()[0]:
             triangle = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeTriangle(mesh=var.mesh, triangle=triangle, value=value[..., i])
+            self._writeTriangle(vertexCoords=vertexCoords, triangle=triangle, value=value[..., i])
                                 
         for i in quadrangles.nonzero()[0]:
             quadrangle = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeQuadrangle(mesh=var.mesh, quadrangle=quadrangle, value=value[..., i])
+            self._writeQuadrangle(vertexCoords=vertexCoords, quadrangle=quadrangle, value=value[..., i])
 
         for i in tetrahedra.nonzero()[0]:
             tetrahedron = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeTetrahedron(mesh=var.mesh, tetrahedron=tetrahedron, value=value[..., i])
+            self._writeTetrahedron(vertexCoords=vertexCoords, tetrahedron=tetrahedron, value=value[..., i])
 
         for i in hexahedra.nonzero()[0]:
             hexahedron = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeHexahedron(mesh=var.mesh, hexahedron=hexahedron, value=value[..., i])
+            self._writeHexahedron(vertexCoords=vertexCoords, hexahedron=hexahedron, value=value[..., i])
 
         for  i in prisms.nonzero()[0]:
             prism = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writePrism(mesh=var.mesh, prism=prism, value=value[..., i])
+            self._writePrism(vertexCoords=vertexCoords, prism=prism, value=value[..., i])
 
         for i in pyramids.nonzero()[0]:
             pyramid = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writePyramid(mesh=var.mesh, pyramid=pyramid, value=value[..., i])
+            self._writePyramid(vertexCoords=vertexCoords, pyramid=pyramid, value=value[..., i])
 
         self.fileobj.write("$EndView\n")
         
@@ -443,15 +445,15 @@ class POSFile(GmshFile):
     #           comp1-node2-time2 comp2-node2-time2 comp3-node2-time2
     #           comp1-node3-time2 comp2-node3-time2 comp3-node3-time2
     
-    def _writeTriangle(self, mesh, triangle, value):
+    def _writeTriangle(self, vertexCoords, triangle, value):
         # triangle is defined by one face and the remaining point 
         # from either of the other faces
         nodes = triangle[..., 0]
         nodes = nx.concatenate((nodes, triangle[~nx.in1d(triangle[..., 1], nodes), 1]))
                         
-        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-    def _writeQuadrangle(self, mesh, quadrangle, value):
+    def _writeQuadrangle(self, vertexCoords, quadrangle, value):
         # quadrangle is defined by one face and the opposite face
         face0 = quadrangle[..., 0]
         for face1 in quadrangle[..., 1:].swapaxes(0, 1):
@@ -459,63 +461,65 @@ class POSFile(GmshFile):
                 break
                 
         # need to ensure face1 is oriented same way as face0
-        cross01 = nx.cross((mesh.vertexCoords[..., face1[0]] 
-                            - mesh.vertexCoords[..., face0[0]]),
-                           (mesh.vertexCoords[..., face1[1]] 
-                            - mesh.vertexCoords[..., face0[0]]))
+        cross01 = nx.cross((vertexCoords[..., face1[0]] 
+                            - vertexCoords[..., face0[0]]),
+                           (vertexCoords[..., face1[1]] 
+                            - vertexCoords[..., face0[0]]))
         
-        cross10 = nx.cross((mesh.vertexCoords[..., face0[0]] 
-                            - mesh.vertexCoords[..., face1[0]]),
-                           (mesh.vertexCoords[..., face0[1]] 
-                            - mesh.vertexCoords[..., face1[0]]))
+        cross10 = nx.cross((vertexCoords[..., face0[0]] 
+                            - vertexCoords[..., face1[0]]),
+                           (vertexCoords[..., face0[1]] 
+                            - vertexCoords[..., face1[0]]))
 
-        if ((mesh.dim == 2 and cross01 * cross10 < 0)
-            or (mesh.dim == 3 and nx.dot(cross01, cross10) < 0)):
+        dim = vertexCoords.shape[0]
+        if ((dim == 2 and cross01 * cross10 < 0)
+            or (dim == 3 and nx.dot(cross01, cross10) < 0)):
             face1 = face1[::-1]
                 
         nodes = nx.concatenate((face0, face1))
          
-        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
         
-    def _writeTetrahedron(self, mesh, tetrahedron, value):
+    def _writeTetrahedron(self, vertexCoords, tetrahedron, value):
         # tetrahedron is defined by one face and the remaining point 
         # from any of the other faces
         nodes = tetrahedron[..., 0]
         nodes = nx.concatenate((nodes, tetrahedron[~nx.in1d(tetrahedron[..., 1], nodes), 1]))
                 
-        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-    @profile
-    def _reorientFace(self, mesh, face0, face1):
+#     @profile
+    def _reorientFace(self, vertexCoords, face0, face1):
         # need to ensure face1 is oriented same way as face0
-        cross01 = nx.cross((mesh.vertexCoords[..., face0[1]] 
-                            - mesh.vertexCoords[..., face0[0]]),
-                           (mesh.vertexCoords[..., face0[2]] 
-                            - mesh.vertexCoords[..., face0[0]]))
+        cross01 = nx.cross((vertexCoords[..., face0[1]] 
+                            - vertexCoords[..., face0[0]]),
+                           (vertexCoords[..., face0[2]] 
+                            - vertexCoords[..., face0[0]]))
                     
-        cross10 = nx.cross((mesh.vertexCoords[..., face1[1]] 
-                            - mesh.vertexCoords[..., face1[0]]),
-                           (mesh.vertexCoords[..., face1[2]] 
-                            - mesh.vertexCoords[..., face1[0]]))
+        cross10 = nx.cross((vertexCoords[..., face1[1]] 
+                            - vertexCoords[..., face1[0]]),
+                           (vertexCoords[..., face1[2]] 
+                            - vertexCoords[..., face1[0]]))
                             
         if nx.dot(cross01, cross10) < 0:
             face1 = face1[::-1]
             
         return face1
 
-    @profile
-    def _writeHexahedron(self, mesh, hexahedron, value):
+#     @profile
+    def _writeHexahedron(self, vertexCoords, hexahedron, value):
         # hexahedron is defined by one face and the opposite face
         face0 = hexahedron[..., 0]
         for face1 in hexahedron[..., 1:].swapaxes(0, 1):
-            if not nx.in1d(face1, face0).any():
+            if not nx.any([node in face1 for node in face0]):
+#             if not nx.in1d(face1, face0).any():
                 break
 
-        face1 = self._reorientFace(mesh=mesh, face0=face0, face1=face1)
+        face1 = self._reorientFace(vertexCoords=vertexCoords, face0=face0, face1=face1)
 
         nodes = nx.concatenate((face0, face1))
 
-        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
     def _writePrism(self, mesh, prism, value):
         # prism is defined by the two three-sided faces 
@@ -537,13 +541,12 @@ class POSFile(GmshFile):
                        
         self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
         
-    def _writeNodesAndValues(self, mesh, nodes, value):
+    def _writeNodesAndValues(self, vertexCoords, nodes, value):
         numNodes = len(nodes)
         data = []
-        # this might be calculated (e.g. UniformGrid...)
-        vertexCoords = mesh.vertexCoords
-        data = [[str(vertexCoords[..., j, nodes[i]]) for i in range(numNodes)] for j in range(mesh.dim)]
-        if mesh.dim == 2:
+        dim = vertexCoords.shape[0]
+        data = [[str(vertexCoords[..., j, nodes[i]]) for i in range(numNodes)] for j in range(dim)]
+        if dim == 2:
             data += [["0.0"] * numNodes]
         data += [[str(value)] * numNodes]
         self.fileobj.write("\n".join([" ".join(datum) for datum in data]) + "\n")
@@ -576,7 +579,7 @@ class MSHFile(GmshFile):
           - `filename`: a string indicating gmsh output file
           - `dimensions`: an integer indicating dimension of mesh
           - `coordDimensions`: an integer indicating dimension of shapes
-          - `communictator`: ???
+          - `communicator`: ???
           - `gmshOutput`: output (if any) from Gmsh run that created .msh file
           - `mode`: a string beginning with 'r' for reading and 'w' for writing. 
             The file will be created if it doesn't exist when opened for writing; 
@@ -590,7 +593,7 @@ class MSHFile(GmshFile):
         self.mesh = None
         self.meshWritten = False
 
-        GmshFile.__init__(self, filename=filename, communictator=communictator, mode=mode)
+        GmshFile.__init__(self, filename=filename, communicator=communicator, mode=mode)
         
     def _getMetaData(self):
         """
@@ -977,7 +980,7 @@ class MSHFile(GmshFile):
 
             numVertices = len(vertexList)
             elementType = self._getElementType(numVertices, dimensions)
-            self.fileobj.write("%s %s 0" % (str(i + 1), str(elementType)))
+            self.fileobj.write("%s %s 0 " % (str(i + 1), str(elementType)))
 
             self.fileobj.write(" ".join([str(a + 1) for a in vertexList]) + "\n")
 
@@ -1682,12 +1685,13 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         """
 
 class Gmsh3D(Mesh):
-    def __init__(self, arg, communicator=parallel, order=1):
+    def __init__(self, arg, communicator=parallel, order=1, background=None):
         self.mshFile  = openMSHFile(arg, 
                                     dimensions=3, 
                                     communicator=communicator,
                                     order=order,
-                                    mode='r')
+                                    mode='r',
+                                    background=background)
 
         (verts,
          faces,

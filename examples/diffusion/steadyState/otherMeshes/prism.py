@@ -40,6 +40,15 @@ being that it uses a triangular mesh loaded in using the Gmsh.
 
 The result is again tested in the same way:
 
+    >>> def parallelExceptHook(type, value, traceback):
+    ...     sys.__excepthook__(type, value, traceback)
+    ...     print >>sys.stderr, "*"*60
+    ...     print >>sys.stderr, "exception on processor", parallel.procID
+    ...     print >>sys.stderr, "*"*60
+    ...     parallel.MPI.COMM_WORLD.Abort(1)
+        
+    >>> sys.excepthook = parallelExceptHook
+
     >>> DiffusionTerm().solve(var)
     >>> Lx = 20
     >>> x = mesh.cellCenters[0]
@@ -51,6 +60,15 @@ The result is again tested in the same way:
 import sys
 
 from fipy import *
+
+def parallelExceptHook(type, value, traceback):
+    sys.__excepthook__(type, value, traceback)
+    print >>sys.stderr, "*"*60
+    print >>sys.stderr, "exception on processor", parallel.procID
+    print >>sys.stderr, "*"*60
+    parallel.MPI.COMM_WORLD.Abort(1)
+    
+sys.excepthook = parallelExceptHook
 
 valueLeft = 0.
 valueRight = 1.
