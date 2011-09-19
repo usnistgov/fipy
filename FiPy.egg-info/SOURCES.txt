@@ -49,6 +49,8 @@ documentation/_build/html/_sources/WINDOWS-INSTALLATION.txt
 documentation/_build/html/_sources/log.txt
 documentation/_build/html/_sources/documentation/ADMINISTRATA.txt
 documentation/_build/html/_sources/documentation/API.txt
+documentation/_build/html/_sources/documentation/BUILDBOT.txt
+documentation/_build/html/_sources/documentation/CODESPEED.txt
 documentation/_build/html/_sources/documentation/CREDITS.txt
 documentation/_build/html/_sources/documentation/EFFICIENCY.txt
 documentation/_build/html/_sources/documentation/FAQ.txt
@@ -109,6 +111,7 @@ documentation/_build/html/_sources/examples/updating/generated/examples.updating
 documentation/_build/html/_sources/examples/updating/generated/examples.updating.update1_0to2_0.txt
 documentation/_build/html/_sources/fipy/generated/boundaryConditions.txt
 documentation/_build/html/_sources/fipy/generated/matrices.txt
+documentation/_build/html/_sources/fipy/generated/meshes.builders.txt
 documentation/_build/html/_sources/fipy/generated/meshes.geometries.txt
 documentation/_build/html/_sources/fipy/generated/meshes.numMesh.txt
 documentation/_build/html/_sources/fipy/generated/meshes.topologies.txt
@@ -120,8 +123,11 @@ documentation/_build/html/_sources/fipy/generated/models.levelSet.surfactant.txt
 documentation/_build/html/_sources/fipy/generated/models.levelSet.txt
 documentation/_build/html/_sources/fipy/generated/models.txt
 documentation/_build/html/_sources/fipy/generated/modules.txt
+documentation/_build/html/_sources/fipy/generated/solvers.pyAMG.preconditioners.txt
+documentation/_build/html/_sources/fipy/generated/solvers.pyAMG.txt
 documentation/_build/html/_sources/fipy/generated/solvers.pysparse.preconditioners.txt
 documentation/_build/html/_sources/fipy/generated/solvers.pysparse.txt
+documentation/_build/html/_sources/fipy/generated/solvers.scipy.txt
 documentation/_build/html/_sources/fipy/generated/solvers.trilinos.preconditioners.txt
 documentation/_build/html/_sources/fipy/generated/solvers.trilinos.txt
 documentation/_build/html/_sources/fipy/generated/solvers.txt

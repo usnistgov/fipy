@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: FiPy
-Version: 2.1.3-dev4752
+Version: 2.2-dev4758
 Summary: A finite volume PDE solver in Python
 Home-page: http://www.ctcms.nist.gov/fipy/
 Author: Jonathan Guyer, Daniel Wheeler, & Jim Warren
@@ -78,32 +78,11 @@ Description:
         What's new in version |release|?
         --------------------------------
         
-        The significant changes since version 2.1.1 are:
-        
-        - :term:`Trilinos` efficiency improvements
-        - Diagnostics of the parallel environment
-        
-        Tickets fixed in this release::
-        
-        243 Concatenated :class:`Mesh` garbled by `dump.write`/:term:`read`
-        287 :file:`sphereDaemon.py` missing in FiPy 2.1 and from trunk
-        321 Windows interactive plotting mostly broken
-        322 :class:`MatplotlibViewer` fails if backend doesn't support `flush_events()`
-        328 Mayavi broken on windows becase it has no `SIGHUP`.
-        
-        
-        The significant changes since version 2.1 are:
-        
-        - :class:`~fipy.viewers.matplotlibViewer.MatplotlibViewer` can display
-        into an existing set of Matplotlib axes.
-        
-        - :term:`PySparse` and :term:`Trilinos` are now completely independent.
-        
-        The significant changes since version 2.0.2 are:
-        
         The relatively small change in version number belies significant advances
         in :term:`FiPy` capabilities. This release did not receive a "full" version
         increment because it is completely (er... [#almost]_) compatible with older scripts.
+        
+        The significant changes since version 2.0.2 are:
         
         - :term:`FiPy` can use :term:`Trilinos` for `solving in parallel`_.
         
@@ -118,10 +97,16 @@ Description:
         
         Tickets fixed in this release::
         
-        293 How to tell if parallel is configured properly?
-        294 bug problem with CylindricalGrid1D
-        295 dummy viewer results in "NotImplementedError: can't instantiate abstract base class"
-        243 Concatenated `Mesh` garbled by `dump.write`/`read`
+        171	update the mayavi viewer to use  mayavi 2
+        286	'matplotlib: list index out of range' when no title given, but only sometimes
+        197	~binOp doesn't work on branches/version-2_0
+        194	`easy_install` instructions for MacOSX are broken
+        192	broken setuptools url with python 2.6
+        184	The FiPy webpage seems to be broken on Internet Explorer
+        168	Switch documentation to use `:math:` directive
+        198	FiPy2.0.2 LinearJORSolver.__init__  calls Solver rather than PysparseSolver
+        199	`gmshExport.exportAsMesh()` doesn't work
+        195	broken arithmetic face to cell distance calculations
         
         .. warning::
         
