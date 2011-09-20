@@ -75,6 +75,15 @@ class _UnaryTerm(Term):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
+
+        Test for ticket:343.
+
+        >>> from fipy import *
+        >>> m = Grid1D(nx=2)
+        >>> v0 = CellVariable(mesh=m)
+        >>> v1 = CellVariable(mesh=m)
+        >>> (TransientTerm(var=v0) - DiffusionTerm(var=v0)).solve(var=v1)
+        >>> DiffusionTerm(var=v0).solve(var=v1)
         
         """
 
@@ -94,7 +103,7 @@ class _UnaryTerm(Term):
                                                        diffusionGeomCoeff=diffusionGeomCoeff)
             return var, SparseMatrix(mesh=var.mesh), RHSvector - matrix * self.var.value
         else:
-            return var, SparseMatrix(mesh=var.mesh), 0
+            return var, SparseMatrix(mesh=var.mesh), numerix.zeros(len(var.ravel()),'d')
 
     def _reshapeIDs(self, var, ids):
         shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
