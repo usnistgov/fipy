@@ -37,11 +37,7 @@
 
 from distutils.core import Command
 import os
-import string
 import sys
-import glob
-import ez_setup
-from setuptools.command.test import test as _test
 
 class Efficiency_test(Command):
     description = "run FiPy efficiency tests"
@@ -84,7 +80,6 @@ class Efficiency_test(Command):
     def run(self):
         import time
         from fipy.tools import generator
-        import os
 
         if self.revisionNumber is not None:
             self.revisionNumber = int(self.revisionNumber)

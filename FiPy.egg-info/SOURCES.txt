@@ -428,6 +428,7 @@ fipy/matrices/test.py
 fipy/matrices/trilinosMatrix.py
 fipy/meshes/__init__.py
 fipy/meshes/abstractMesh.py
+fipy/meshes/before.msh
 fipy/meshes/cylindricalGrid1D.py
 fipy/meshes/cylindricalGrid2D.py
 fipy/meshes/cylindricalUniformGrid1D.py
@@ -444,6 +445,7 @@ fipy/meshes/mesh1D.py
 fipy/meshes/mesh2D.py
 fipy/meshes/periodicGrid1D.py
 fipy/meshes/periodicGrid2D.py
+fipy/meshes/raw.msh
 fipy/meshes/skewedGrid2D.py
 fipy/meshes/test.py
 fipy/meshes/tri2D.py
