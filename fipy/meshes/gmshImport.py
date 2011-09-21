@@ -1142,6 +1142,7 @@ class MSHFile(GmshFile):
 
     def _parseNamesFile(self):
         physicalNames = {
+            0: dict(),
             1: dict(),
             2: dict(),
             3: dict()
@@ -1150,10 +1151,17 @@ class MSHFile(GmshFile):
             self.namesFile.readline() # skip number of elements
             for nm in self.namesFile:
                 nm = nm.split()
-                dim = int(nm.pop(0))
+                if self.version > 2.0:
+                    dim = [int(nm.pop(0))]
+                else:
+                    # Gmsh format prior to 2.1 did not unambiguously tie 
+                    # physical names to physical entities of different dimensions
+                    # http://article.gmane.org/gmane.comp.cad.gmsh.general/1601
+                    dim = [0, 1, 2, 3]
                 num = int(nm.pop(0))
                 name = " ".join(nm)[1:-1]
-                physicalNames[dim][name] = int(num)
+                for d in dim:
+                    physicalNames[dim][name] = int(num)
                 
         return physicalNames
         
