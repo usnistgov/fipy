@@ -1161,7 +1161,7 @@ class MSHFile(GmshFile):
                 num = int(nm.pop(0))
                 name = " ".join(nm)[1:-1]
                 for d in dim:
-                    physicalNames[dim][name] = int(num)
+                    physicalNames[d][name] = int(num)
                 
         return physicalNames
         
