@@ -158,13 +158,12 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             
             if background is not None:
                 f, bgmf = tempfile.mkstemp(suffix=".pos")
-                f.close()
-#                 bgmf = tempfile.NamedTemporaryFile(mode='w', suffix='.pos', delete=False)
+                os.close(f)
                 f = openPOSFile(name=bgmf, mode='w')
                 f.write(background)
                 f.close()
 
-                gmshFlags += " -bgm %s" % bgmf.name
+                gmshFlags += " -bgm %s" % bgmf
 
             (f, mshFile) = tempfile.mkstemp('.msh')
             gmshOutput = subp.Popen("gmsh %s %s -o %s"
