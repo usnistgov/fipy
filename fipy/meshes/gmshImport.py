@@ -157,7 +157,9 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags += " -format msh"
             
             if background is not None:
-                bgmf = tempfile.NamedTemporaryFile(mode='w', suffix='.pos', delete=False)
+                f, bgmf = tempfile.mkstemp(suffix=".pos")
+                f.close()
+#                 bgmf = tempfile.NamedTemporaryFile(mode='w', suffix='.pos', delete=False)
                 f = openPOSFile(name=bgmf, mode='w')
                 f.write(background)
                 f.close()
