@@ -39,10 +39,11 @@ __docformat__ = 'restructuredtext'
 
 from grid2D import Grid2D
 from fipy.tools import numerix
+from fipy.tools import parallel
 
 class _BasePeriodicGrid2D(Grid2D):
-    def __init__(self, dx = 1., dy = 1., nx = None, ny = None):
-        super(_BasePeriodicGrid2D, self).__init__(dx = dx, dy = dy, nx = nx, ny = ny)
+    def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallel):
+        super(_BasePeriodicGrid2D, self).__init__(dx = dx, dy = dy, nx = nx, ny = ny, overlap=overlap, communicator=communicator)
         self.nonPeriodicCellVertexIDs = super(_BasePeriodicGrid2D, self)._cellVertexIDs
         self.nonPeriodicOrderedCellVertexIDs = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs        
         self.nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid2D, self).cellFaceIDs)
@@ -57,11 +58,24 @@ class _BasePeriodicGrid2D(Grid2D):
         return self.nonPeriodicOrderedCellVertexIDs
 
     def _translate(self, vector):
+        """
+        Test for ticket:298.
+
+        >>> from fipy import *
+        >>> m = PeriodicGrid2DLeftRight(nx=2, ny=2) + [[-1], [0]]
+        >>> print m._orderedCellVertexIDs
+        [[1 2 4 5]
+         [4 5 7 8]
+         [3 4 6 7]
+         [0 1 3 4]]
+
+        """
         newCoords = self.vertexCoords + vector
+        newmesh = self.__class__(**self.args)
         from fipy.meshes.mesh2D import Mesh2D
-        Mesh2D.__init__(self, newCoords, self.faceVertexIDs, self.nonPeriodicCellFaceIDs)
-        self._makePeriodic()
-        return self
+        Mesh2D.__init__(newmesh, newCoords, self.faceVertexIDs, self.nonPeriodicCellFaceIDs)
+        newmesh._makePeriodic()
+        return newmesh
 
 class PeriodicGrid2D(_BasePeriodicGrid2D):
     """
