@@ -38,12 +38,10 @@
 """
 __docformat__ = 'restructuredtext'
 
-from grid2D import Grid2D
 from fipy.meshes.builders import Grid2DBuilder
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import parallel
 

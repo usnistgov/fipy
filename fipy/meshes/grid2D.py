@@ -39,12 +39,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.mesh2D import Mesh2D
-from fipy.tools import inline
-from fipy.tools import numerix
-from fipy.tools import vector
-from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
-from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.builders import NonuniformGrid2DBuilder
 from fipy.meshes.gridlike import Gridlike2D
@@ -200,7 +195,7 @@ class Grid2D(Mesh2D):
             >>> ny = 2
             
             >>> mesh = Grid2D(nx = nx, ny = ny, dx = dx, dy = dy)     
-            
+            >>> from fipy import numerix
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array(((dx,), (dy,)))
