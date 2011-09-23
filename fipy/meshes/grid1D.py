@@ -38,10 +38,6 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
-from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools.decorators import getsetDeprecated
 from mesh1D import Mesh1D
 from fipy.tools import parallel
 

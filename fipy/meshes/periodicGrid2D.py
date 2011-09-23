@@ -68,7 +68,8 @@ class _BasePeriodicGrid2D(Grid2D):
          [4 5 7 8]
          [3 4 6 7]
          [0 1 3 4]]
-
+        >>> print CellVariable(mesh=m, value=m.cellCenters[0])
+        [-0.5  0.5 -0.5  0.5]
         """
         newCoords = self.vertexCoords + vector
         newmesh = self.__class__(**self.args)
