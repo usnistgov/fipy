@@ -39,7 +39,8 @@ from fipy.tools import serial
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
- 
+from fipy.tools.dimensions.physicalField import PhysicalField
+
 class MeshAdditionError(Exception):
     pass
  
@@ -90,7 +91,6 @@ class AbstractMesh(object):
      
     def _getPointToCellDistances(self, point):
         tmp = self.cellCenters - PhysicalField(point)
-        from fipy.tools import numerix
         return numerix.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
@@ -178,6 +178,7 @@ class AbstractMesh(object):
         faces = FaceVariable(mesh=self, value=False)
         faces[faces0] = True
         faces[faces1] = True
+
         assert (faces | self.exteriorFaces == self.exteriorFaces).all()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
@@ -1285,6 +1286,9 @@ class AbstractMesh(object):
             return self.shape
         else:
             return None
+
+    def _malePeriodic(self):
+        raise NotImplementedError
      
 def _madmin(x):
     if len(x) == 0:
