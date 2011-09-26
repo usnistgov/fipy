@@ -76,6 +76,7 @@ def _TestClass(base):
             ('viewers', None, "test FiPy viewer modules (requires user input)"),
             ('cache', None, "run FiPy with Variable caching"),
             ('no-cache', None, "run FiPy without Variable caching"),
+            ('timetests=', None, "file in which to put time spent on each test"),
            ]
 
 
@@ -99,6 +100,7 @@ def _TestClass(base):
             self.no_pysparse = False
             self.pyamg = False
             self.scipy = False
+            self.timetests = None
             
         def finalize_options(self):
             noSuiteOrModule = (self.test_suite is None 
@@ -197,9 +199,27 @@ def _TestClass(base):
                 os.environ['PYTHONCOMPILED'] = self.pythoncompiled
 
             self.printPackageInfo()
+            
+            from pkg_resources import EntryPoint
+            import unittest
+            loader_ep = EntryPoint.parse("x="+self.test_loader)
+            loader_class = loader_ep.load(require=False)
+            main = unittest.main(
+                None, None, [unittest.__file__]+self.test_args,
+                testLoader = loader_class(),
+                exit=False
+            )
 
-            base.run_tests(self)
-
+            from fipy.tests.doctestPlus import _DocTestTimes
+            
+            if self.timetests is not None:
+                import numpy
+                _DocTestTimes = numpy.rec.fromrecords(_DocTestTimes, formats='f8,S255', names='time,test')
+                _DocTestTimes.sort(order=('time', 'test'))
+                numpy.savetxt(self.timetests, _DocTestTimes[::-1], fmt="%8.4f\t%s")
+                
+            sys.exit(not main.result.wasSuccessful())
+    
     return _test                    
             
 test = _TestClass(_test)

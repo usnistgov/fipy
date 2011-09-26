@@ -34,7 +34,10 @@
  ##
 
 import sys
+import time
 import doctest
+
+_DocTestTimes = []
 
 from lateImportTest import _LateImportTestCase, _LateImportTestSuite
 
@@ -76,7 +79,18 @@ def execButNoTest(name='__main__'):
         
 class _LateImportDocTestCase(_LateImportTestCase):
     def _getTestSuite(self, module):
-        return doctest.DocTestSuite(module)
+        return doctest.DocTestSuite(module, setUp=self._setUp, tearDown=self._tearDown)
+        
+    @staticmethod
+    def _setUp(docTestObj):
+        docTestObj._startTime = time.time()
+        docTestObj._endTime = docTestObj._startTime
+
+    @staticmethod
+    def _tearDown(docTestObj):
+        docTestObj._endTime = time.time()
+        _DocTestTimes.append((docTestObj._endTime - docTestObj._startTime, docTestObj.name))
+
 
 class _LateImportDocTestSuite(_LateImportTestSuite):
     def __init__(self, testModuleNames=(), 
