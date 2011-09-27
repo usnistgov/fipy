@@ -204,21 +204,27 @@ def _TestClass(base):
             import unittest
             loader_ep = EntryPoint.parse("x="+self.test_loader)
             loader_class = loader_ep.load(require=False)
-            main = unittest.main(
-                None, None, [unittest.__file__]+self.test_args,
-                testLoader = loader_class(),
-                exit=False
-            )
-
-            from fipy.tests.doctestPlus import _DocTestTimes
             
+            try:
+                unittest.main(
+                    None, None, [unittest.__file__]+self.test_args,
+                    testLoader = loader_class()
+                    )
+            except SystemExit, exitErr:
+                # unittest.main(..., exit=...) not available until Python 2.7
+                if self.timetests is not None:
+                    pass
+                else:
+                    raise
+
             if self.timetests is not None:
+                from fipy.tests.doctestPlus import _DocTestTimes
                 import numpy
                 _DocTestTimes = numpy.rec.fromrecords(_DocTestTimes, formats='f8,S255', names='time,test')
                 _DocTestTimes.sort(order=('time', 'test'))
                 numpy.savetxt(self.timetests, _DocTestTimes[::-1], fmt="%8.4f\t%s")
                 
-            sys.exit(not main.result.wasSuccessful())
+            raise exitErr
     
     return _test                    
             
