@@ -10,6 +10,11 @@ ez_setup.py
 log.txt
 setup.py
 stdeb.cfg
+timetests.txt
+timetests1.txt
+timetests2.txt
+timetests3.txt
+timetests4.txt
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
 FiPy.egg-info/dependency_links.txt

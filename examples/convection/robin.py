@@ -92,13 +92,20 @@ where
 ...     C.name = 'C'
 ...     viewer = Viewer(vars=(C, CAnalytical))
 
+>>> if __name__ == '__main__':
+...     restol = 1e-5
+...     anstol = 1e-3
+... else:
+...     restol = 0.03
+...     anstol = 1e-2
+
 >>> res = 1e+10
->>> while res > 1e-5:
+>>> while res > restol:
 ...     res = eq.sweep(var=C)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> print C.allclose(CAnalytical, rtol=1.e-3, atol=1.e-3)
+>>> print C.allclose(CAnalytical, rtol=anstol, atol=anstol)
 True
 
 """

@@ -297,9 +297,9 @@ max(velocity)``.
 >>> timestep = 0
 >>> relaxation = 0.5
 >>> if __name__ == '__main__':
-...     totalSteps = 1e+10
+...     totalSteps = 1e10
 ... else:
-...     totalSteps = 150
+...     totalSteps = 10
 
 In the following time stepping scheme a time step is recalculated if the residual
 increases between sweeps or the required tolerance is not attained within 20
