@@ -160,15 +160,20 @@ def _TestClass(base):
                     print pkg, 'version check failed:', e
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
-            pkg = 'enthought.mayavi'
             try:
-                from enthought.mayavi.__version__ import __version__ as mayaviversion
-                print pkg,'version',mayaviversion
+                from mayavi.__version__ import __version__ as mayaviversion
+                print 'mayavi version', mayaviversion
             except ImportError, e:
-                print pkg,'is not installed'       
+                try:
+                    from enthought.mayavi.__version__ import __version__ as mayaviversion
+                    print 'enthought.mayavi version', mayaviversion
+                except ImportError, e:
+                    print pkg,'is not installed'       
+                except Exception, e:
+                    print pkg, 'version check failed:', e
             except Exception, e:
                 print pkg, 'version check failed:', e
-                
+
         def run_tests(self):
             import sys
             if self.Trilinos or self.trilinos or self.no_pysparse:
