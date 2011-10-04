@@ -7,9 +7,13 @@ MANIFEST.in
 README.txt
 WINDOWS-INSTALLATION.txt
 ez_setup.py
-log.txt
 setup.py
 stdeb.cfg
+timetests.txt
+timetests1.txt
+timetests2.txt
+timetests3.txt
+timetests4.txt
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
 FiPy.egg-info/dependency_links.txt
@@ -46,7 +50,6 @@ documentation/_build/html/_sources/LICENSE.txt
 documentation/_build/html/_sources/MACOSX-INSTALLATION.txt
 documentation/_build/html/_sources/README.txt
 documentation/_build/html/_sources/WINDOWS-INSTALLATION.txt
-documentation/_build/html/_sources/log.txt
 documentation/_build/html/_sources/documentation/ADMINISTRATA.txt
 documentation/_build/html/_sources/documentation/API.txt
 documentation/_build/html/_sources/documentation/CREDITS.txt
@@ -102,16 +105,14 @@ documentation/_build/html/_sources/examples/phase/generated/examples.phase.impin
 documentation/_build/html/_sources/examples/phase/generated/examples.phase.impingement.mesh40x1.txt
 documentation/_build/html/_sources/examples/phase/generated/examples.phase.quaternary.txt
 documentation/_build/html/_sources/examples/phase/generated/examples.phase.simple.txt
-documentation/_build/html/_sources/examples/reactiveWetting/index.txt
-documentation/_build/html/_sources/examples/reactiveWetting/generated/examples.reactiveWetting.liquidVapor1D.txt
 documentation/_build/html/_sources/examples/updating/index.txt
 documentation/_build/html/_sources/examples/updating/generated/examples.updating.update0_1to1_0.txt
 documentation/_build/html/_sources/examples/updating/generated/examples.updating.update1_0to2_0.txt
 documentation/_build/html/_sources/fipy/generated/boundaryConditions.txt
 documentation/_build/html/_sources/fipy/generated/matrices.txt
-documentation/_build/html/_sources/fipy/generated/meshes.geometries.txt
+documentation/_build/html/_sources/fipy/generated/meshes.common.txt
 documentation/_build/html/_sources/fipy/generated/meshes.numMesh.txt
-documentation/_build/html/_sources/fipy/generated/meshes.topologies.txt
+documentation/_build/html/_sources/fipy/generated/meshes.pyMesh.txt
 documentation/_build/html/_sources/fipy/generated/meshes.txt
 documentation/_build/html/_sources/fipy/generated/models.levelSet.advection.txt
 documentation/_build/html/_sources/fipy/generated/models.levelSet.distanceFunction.txt
@@ -120,7 +121,6 @@ documentation/_build/html/_sources/fipy/generated/models.levelSet.surfactant.txt
 documentation/_build/html/_sources/fipy/generated/models.levelSet.txt
 documentation/_build/html/_sources/fipy/generated/models.txt
 documentation/_build/html/_sources/fipy/generated/modules.txt
-documentation/_build/html/_sources/fipy/generated/solvers.pysparse.preconditioners.txt
 documentation/_build/html/_sources/fipy/generated/solvers.pysparse.txt
 documentation/_build/html/_sources/fipy/generated/solvers.trilinos.preconditioners.txt
 documentation/_build/html/_sources/fipy/generated/solvers.trilinos.txt
@@ -423,6 +423,7 @@ fipy/matrices/test.py
 fipy/matrices/trilinosMatrix.py
 fipy/meshes/__init__.py
 fipy/meshes/abstractMesh.py
+fipy/meshes/before.msh
 fipy/meshes/cylindricalGrid1D.py
 fipy/meshes/cylindricalGrid2D.py
 fipy/meshes/cylindricalUniformGrid1D.py
@@ -438,6 +439,7 @@ fipy/meshes/mesh1D.py
 fipy/meshes/mesh2D.py
 fipy/meshes/periodicGrid1D.py
 fipy/meshes/periodicGrid2D.py
+fipy/meshes/raw.msh
 fipy/meshes/skewedGrid2D.py
 fipy/meshes/test.py
 fipy/meshes/tri2D.py

@@ -227,13 +227,12 @@ After 13 time steps, the solution has converged to the analytical solution
    :width: 50%
    :align: center
 
-.. note:: The solution is only found accurate to
-   :math:`\approx 4.3\times 10^{-5}`
-   because the infinite-domain analytical solution 
-   :eq:`eq-phase:simple:analytical`
+.. note:: The solution is only found accurate 
+   to :math:`\approx 4.3\times 10^{-5}`
+   because the infinite-domain analytical 
+   solution :eq:`eq-phase:simple:analytical`
    is not an exact representation for the solution in a finite domain of
-   length
-   :math:`L`.
+   length :math:`L`.
 
 Setting fixed-value boundary conditions of 1 and 0 would still require the
 relaxation method with the fully explicit source.

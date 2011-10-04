@@ -39,7 +39,8 @@ from fipy.tools import serial
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
- 
+from fipy.tools.dimensions.physicalField import PhysicalField
+
 class MeshAdditionError(Exception):
     pass
  
@@ -90,7 +91,6 @@ class AbstractMesh(object):
      
     def _getPointToCellDistances(self, point):
         tmp = self.cellCenters - PhysicalField(point)
-        from fipy.tools import numerix
         return numerix.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
@@ -178,6 +178,7 @@ class AbstractMesh(object):
         faces = FaceVariable(mesh=self, value=False)
         faces[faces0] = True
         faces[faces1] = True
+
         assert (faces | self.exteriorFaces == self.exteriorFaces).all()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
@@ -819,7 +820,6 @@ class AbstractMesh(object):
         The two `Mesh` objects need not be properly aligned in order to concatenate them
         but the resulting mesh may not have the intended connectivity
         
-            >>> from fipy.meshes.nonuniformMesh import MeshAdditionError
             >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
             >>> print addedMesh.cellCenters
             [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
@@ -886,7 +886,7 @@ class AbstractMesh(object):
             ...
             MeshAdditionError: Dimensions do not match
         """  
-        if(isinstance(other, AbstractMesh)):
+        if isinstance(other, AbstractMesh):
             return self._concatenatedClass(**self._getAddedMeshValues(other=other))
         else:
             return self._translate(other)
@@ -897,7 +897,30 @@ class AbstractMesh(object):
         raise NotImplementedError
 
     __rmul__ = __mul__
-     
+
+    def __sub__(self, other):
+        """
+        Tests.
+        >>> from fipy import *
+        >>> m = Grid1D()
+        >>> print (m - ((1,))).cellCenters
+        [[-0.5]]
+        >>> ((1,)) - m
+        Traceback (most recent call last):
+        ...
+        TypeError: unsupported operand type(s) for -: 'tuple' and 'UniformGrid1D'
+        
+        """
+        if isinstance(other, AbstractMesh):
+            raise TypeError, "'-' is unsupported for meshes, use '+'"
+        else:
+            return self._translate(-numerix.array(other))
+
+    def __div__(self, other): 
+ 	raise TypeError, "'/' is unsupported for meshes, use '*'"
+
+    __rdiv__ = __div__
+
     def __repr__(self):
         return "%s()" % self.__class__.__name__
      
@@ -1263,6 +1286,9 @@ class AbstractMesh(object):
             return self.shape
         else:
             return None
+
+    def _malePeriodic(self):
+        raise NotImplementedError
      
 def _madmin(x):
     if len(x) == 0:
@@ -1275,4 +1301,10 @@ def _madmax(x):
         return 0
     else:
         return max(x)
-      
+
+def _test():
+    import doctest
+    return doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
