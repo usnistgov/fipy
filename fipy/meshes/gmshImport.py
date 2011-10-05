@@ -40,7 +40,7 @@
 __docformat__ = 'restructuredtext'
 
 import os
-import subprocess as subp
+from subprocess import Popen, PIPE
 import sys
 import tempfile
 from textwrap import dedent
@@ -72,8 +72,17 @@ def _gmshVersion():
     """
     import re
 
-    verStr = "\n".join(subp.Popen("gmsh --version", 
-                                  stderr=subp.PIPE, shell=True).stderr.readlines())
+    while True:
+        p = Popen(["gmsh", "--version"], stderr=PIPE)
+        
+        try:
+            out, verStr = p.communicate()
+            break
+        except IOError:
+            # some weird conflict with things like PyQT can cause 
+            # this to fail sometimes. 
+            # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
+            pass
 
     m = re.search(r'\d+.\d+', verStr)
 
@@ -135,6 +144,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                 geoFile = name
                 
         if geoFile is not None:
+            gmshFlags = ["-%d" % dimensions]
+            
             if communicator.Nproc > 1:
                 if gmshVersion < 2.5:
                     warnstr = "Cannot partition with Gmsh version < 2.5. " \
@@ -146,15 +157,10 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                     
                     if dimensions is None:
                         raise ValueError("'dimensions' must be specified to generate a mesh from a geometry script")
-
-                    gmshFlags = "-%d" % (dimensions)
                 else: # gmsh version is adequate for partitioning
-                    gmshFlags = "-%d -part %d" % (dimensions,
-                                                  communicator.Nproc)
-            else: # we're running serial
-                gmshFlags = "-%d" % (dimensions)
+                    gmshFlags += ["-part" "%d" % communicator.Nproc]
             
-            gmshFlags += " -format msh"
+            gmshFlags += ["-format", "msh"]
             
             if background is not None:
                 f, bgmf = tempfile.mkstemp(suffix=".pos")
@@ -163,12 +169,23 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                 f.write(background)
                 f.close()
 
-                gmshFlags += " -bgm %s" % bgmf
+                gmshFlags += ["-bgm", bgmf]
 
             (f, mshFile) = tempfile.mkstemp('.msh')
-            gmshOutput = subp.Popen("gmsh %s %s -o %s"
-                                    % (geoFile, gmshFlags, mshFile),
-                                    stdout=subp.PIPE, shell=True).stdout.readlines()
+            
+            while True:
+                p = Popen(["gmsh", geoFile] + gmshFlags + ["-o", mshFile],
+                          stdout=PIPE)
+                
+                try:
+                    gmshOutput, gmshError = p.communicate()
+                    break
+                except IOError:
+                    # some weird conflict with things like PyQT can cause 
+                    # this to fail sometimes. 
+                    # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
+                    pass
+                      
             parprint("gmsh out: %s" % gmshOutput)
             os.close(f)
     elif mode.startswith('w'):
@@ -606,27 +623,6 @@ class MSHFile(GmshFile):
         self.fileobj.seek(0)
         return [float(x) for x in metaData]
 
-    @property
-    def _gmshVersion(self):
-        """
-        Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
-        
-        We can't trust the generated msh file for the correct version number, so
-        we have to retrieve it from the gmsh binary.
-        """
-        import subprocess as subp
-        import re
-
-        verStr = "\n".join(subp.Popen("gmsh --version", 
-            stderr=subp.PIPE, shell=True).stderr.readlines())
-
-        m = re.search(r'\d+.\d+', verStr)
-
-        if m:
-            return float(m.group(0))
-        else:
-            return 0
-     
     def _isolateData(self, title):
         """
         Gets all data between $[title] and $End[title], writes
@@ -1197,7 +1193,6 @@ class MSHFile(GmshFile):
         Test exporting
         
         >>> import os
-        >>> import subprocess
         >>> import tempfile
         
         >>> dir = tempfile.mkdtemp()
@@ -2101,7 +2096,7 @@ if __name__ == "__main__":
     from fipy.variables.cellVariable import CellVariable
     
     import tempfile
-    import subprocess
+    from subprocess import Popen, PIPE
     
     dir = tempfile.mkdtemp()
 
@@ -2116,7 +2111,7 @@ if __name__ == "__main__":
     f1.write(avar)
     f1.close()
     
-    subprocess.Popen(["gmsh", os.path.join(dir, "a.msh")])
+    Popen(["gmsh", os.path.join(dir, "a.msh")])
     raw_input("Grid2D... Press enter.")
     
     a_ref = GmshGrid2D(dx=1., dy=1., nx=10, ny=10, background=avar)
@@ -2125,7 +2120,7 @@ if __name__ == "__main__":
     f1.write(a_ref)
     f1.close()
 
-    subprocess.Popen(["gmsh", os.path.join(dir, "a_ref.msh")])
+    Popen(["gmsh", os.path.join(dir, "a_ref.msh")])
     raw_input("Refined Grid2D... Press enter.")
 
     b = Tri2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
@@ -2140,7 +2135,7 @@ if __name__ == "__main__":
     f3.write(c)
     f3.close()
 
-    subprocess.Popen(["gmsh", os.path.join(dir, "c.msh")])
+    Popen(["gmsh", os.path.join(dir, "c.msh")])
     raw_input("Grid3D... Press enter.")
 
     d = a + a2
@@ -2148,7 +2143,7 @@ if __name__ == "__main__":
     f4.write(d)
     f4.close()
 
-    subprocess.Popen(["gmsh", os.path.join(dir, "d.msh")])
+    Popen(["gmsh", os.path.join(dir, "d.msh")])
     raw_input("Concatenated grid... Press enter.")
  
     e = a + (b + ([0], [10]))
@@ -2156,7 +2151,7 @@ if __name__ == "__main__":
     f5.write(e)
     f5.close()
 
-    subprocess.Popen(["gmsh", os.path.join(dir, "e.msh")])
+    Popen(["gmsh", os.path.join(dir, "e.msh")])
     raw_input("Tri2D + Grid2D... Press enter.")
 
     cyl = CylindricalGrid2D(nx = 10, ny = 10)
@@ -2164,7 +2159,7 @@ if __name__ == "__main__":
     f6.write(cyl)
     f6.close()
     
-    subprocess.Popen(["gmsh", os.path.join(dir, "cyl.msh")])
+    Popen(["gmsh", os.path.join(dir, "cyl.msh")])
     raw_input("CylindricalGrid2D... Press enter.")
 
     circle = Gmsh2D('''
@@ -2187,7 +2182,7 @@ if __name__ == "__main__":
     f7.write(circle)
     f7.close()
     
-    subprocess.Popen(["gmsh", os.path.join(dir, "cir.msh")])
+    Popen(["gmsh", os.path.join(dir, "cir.msh")])
     raw_input("Circle... Press enter.")
     
     import shutil
