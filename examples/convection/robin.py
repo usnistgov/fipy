@@ -96,10 +96,11 @@ where
 ...     restol = 1e-5
 ...     anstol = 1e-3
 ... else:
-...     restol = 0.03
-...     anstol = 1e-2
-
+...     restol = 0.5
+...     anstol = 0.15
+ 
 >>> res = 1e+10
+
 >>> while res > restol:
 ...     res = eq.sweep(var=C)
 ...     if __name__ == '__main__':

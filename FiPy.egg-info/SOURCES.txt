@@ -14,6 +14,7 @@ timetests.txt
 timetests1.txt
 timetests10.txt
 timetests11.txt
+timetests12.txt
 timetests2.txt
 timetests3.txt
 timetests4.txt
