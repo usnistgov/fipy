@@ -14,6 +14,11 @@ timetests1.txt
 timetests2.txt
 timetests3.txt
 timetests4.txt
+timetests5.txt
+timetests6.txt
+timetests7.txt
+timetests8.txt
+timetests9.txt
 FiPy.egg-info/PKG-INFO
 FiPy.egg-info/SOURCES.txt
 FiPy.egg-info/dependency_links.txt

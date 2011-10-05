@@ -395,8 +395,13 @@ We take :math:`\delta \approx \Delta x`.
 >>> W = 6 * sigma / delta # J / cm**3
 >>> Mphi = Tm * beta / (6. * Lv * delta) # cm**3 / (J s)
 
+>>> if __name__ == '__main__':
+...     displacement = L * 0.1
+... else:
+...     displacement = L * 0.025
+
 >>> analyticalArray = CellVariable(name="tanh", mesh=mesh,
-...                                value=0.5 * (1 - tanh((x - (L / 2. + L / 10.)) 
+...                                value=0.5 * (1 - tanh((x - (L / 2. + displacement)) 
 ...                                                      / (2 * delta))))
 
 and make a new viewer
@@ -445,7 +450,7 @@ Again we use the :meth:`sweep` method as a replacement for :meth:`solve`.
 >>> velocity = beta * abs(Tm - T()) # cm / s
 >>> timeStep = .1 * dx / velocity # s
 >>> elapsed = 0
->>> while elapsed < 0.1 * L / velocity:
+>>> while elapsed < displacement / velocity:
 ...     phase.updateOld()
 ...     res = 1e+10
 ...     while res > 1e-5:
@@ -483,7 +488,7 @@ thickness
 ...     print "The SciPy library is unavailable to fit the interface \
 ... thickness and velocity"
 
->>> print abs(1 - V_fit / velocity) < 3.3e-2
+>>> print abs(1 - V_fit / velocity) < 4.1e-2
 True
 >>> print abs(1 - d_fit / delta) < 2e-2
 True

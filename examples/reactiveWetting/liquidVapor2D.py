@@ -120,7 +120,7 @@ A 2D version of the 1D example.
 ...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
 >>> potentialNC.faceGrad.constrain(value=[[0], [0]], where=mesh.exteriorFaces)
-
+                 
 >>> coupledEqn = massEqn & momentumXEqn & momentumYEqn & potentialNCEqn
 
 >>> numerix.random.seed(2012)
@@ -143,7 +143,7 @@ A 2D version of the 1D example.
 >>> if __name__ == '__main__':
 ...     totalSteps = 1e+10
 ... else:
-...     totalSteps = 4
+...     totalSteps = 1
 
 >>> while timestep < totalSteps:
 ... 
