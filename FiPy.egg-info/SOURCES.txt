@@ -11,6 +11,8 @@ log.txt
 setup.py
 stdeb.cfg
 timetests-no-pysparse.txt
+timetests-no-pysparse1.txt
+timetests-no-pysparse2.txt
 timetests.txt
 timetests1.txt
 timetests10.txt
