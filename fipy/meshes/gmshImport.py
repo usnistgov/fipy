@@ -64,7 +64,7 @@ def parprint(str):
 class GmshException(Exception):
     pass
     
-def _gmshVersion():
+def _gmshVersion(communicator):
     """Determine the version of Gmsh.
     
     We can't trust the generated msh file for the correct version number, so
@@ -72,17 +72,22 @@ def _gmshVersion():
     """
     import re
 
-    while True:
-        p = Popen(["gmsh", "--version"], stderr=PIPE)
-        
-        try:
-            out, verStr = p.communicate()
-            break
-        except IOError:
-            # some weird conflict with things like PyQT can cause 
-            # this to fail sometimes. 
-            # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
-            pass
+    if communicator.procID == 0:
+        while True:
+            p = Popen(["gmsh", "--version"], stderr=PIPE)
+            
+            try:
+                out, verStr = p.communicate()
+                break
+            except IOError:
+                # some weird conflict with things like PyQT can cause 
+                # this to fail sometimes. 
+                # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
+                pass
+    else:
+        verStr = None
+            
+    verStr = communicator.bcast(verStr)
 
     m = re.search(r'\d+.\d+', verStr)
 
@@ -109,7 +114,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
         communicator = serial
 
     # Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
-    gmshVersion = _gmshVersion()
+    gmshVersion = _gmshVersion(communicator=communicator)
     if gmshVersion < 2.0:
         raise EnvironmentError("Gmsh version must be >= 2.0.")
 
@@ -158,36 +163,42 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                     if dimensions is None:
                         raise ValueError("'dimensions' must be specified to generate a mesh from a geometry script")
                 else: # gmsh version is adequate for partitioning
-                    gmshFlags += ["-part" "%d" % communicator.Nproc]
+                    gmshFlags += ["-part", "%d" % communicator.Nproc]
             
             gmshFlags += ["-format", "msh"]
             
-            if background is not None:
-                f, bgmf = tempfile.mkstemp(suffix=".pos")
-                os.close(f)
-                f = openPOSFile(name=bgmf, mode='w')
-                f.write(background)
-                f.close()
+            if communicator.procID == 0:
+                if background is not None:
+                    f, bgmf = tempfile.mkstemp(suffix=".pos")
+                    os.close(f)
+                    f = openPOSFile(name=bgmf, mode='w')
+                    f.write(background)
+                    f.close()
 
-                gmshFlags += ["-bgm", bgmf]
+                    gmshFlags += ["-bgm", bgmf]
 
-            (f, mshFile) = tempfile.mkstemp('.msh')
-            
-            while True:
-                p = Popen(["gmsh", geoFile] + gmshFlags + ["-o", mshFile],
-                          stdout=PIPE)
+                (f, mshFile) = tempfile.mkstemp('.msh')
                 
-                try:
-                    gmshOutput, gmshError = p.communicate()
-                    break
-                except IOError:
-                    # some weird conflict with things like PyQT can cause 
-                    # this to fail sometimes. 
-                    # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
-                    pass
-                      
-            parprint("gmsh out: %s" % gmshOutput)
-            os.close(f)
+                while True:
+                    p = Popen(["gmsh", geoFile] + gmshFlags + ["-o", mshFile],
+                              stdout=PIPE)
+                    
+                    try:
+                        gmshOutput, gmshError = p.communicate()
+                        break
+                    except IOError:
+                        # some weird conflict with things like PyQT can cause 
+                        # this to fail sometimes. 
+                        # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
+                        pass
+                          
+                parprint("gmsh out: %s" % gmshOutput)
+                os.close(f)
+            else:
+                mshFile = gmshOutput = None
+                
+            mshFile = communicator.bcast(mshFile)
+            gmshOutput = communicator.bcast(gmshOutput)
     elif mode.startswith('w'):
         mshFile = name
         gmshOutput = None
