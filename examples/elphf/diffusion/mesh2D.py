@@ -132,15 +132,20 @@ We create one diffusion equation for each substitutional component
 
 If we are running interactively, we create a viewer to see the results 
 
-    >>> if __name__ == '__main__':
+    >>> if __name__ == '__main__': 
     ...     viewers = [Viewer(vars=field, datamin=0, datamax=1) 
     ...                for field in [solvent] + substitutionals]
     ...     for viewer in viewers:
     ...         viewer.plot()
+    ...     steps = 40
+    ...     tol = 1e-7
+    ... else:
+    ...     steps = 20
+    ...     tol = 1e-4
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
-    >>> for i in range(40):
+    >>> for i in range(steps):
     ...     for Cj in substitutionals:
     ...         Cj.equation.solve(var = Cj, 
     ...                           dt = 10000)
@@ -151,9 +156,9 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem, 
 we verify that the concentrations have become uniform
 
-    >>> substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7).value
+    >>> substitutionals[0].allclose(0.45, rtol = tol, atol = tol).value
     1
-    >>> substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7).value
+    >>> substitutionals[1].allclose(0.45, rtol = tol, atol = tol).value
     1
     
 We now rerun the problem with an initial condition that only has a
@@ -167,7 +172,7 @@ concentration step in one corner.
     
 We iterate the problem to equilibrium again
 
-    >>> for i in range(40):
+    >>> for i in range(steps):
     ...     for Cj in substitutionals:
     ...         Cj.equation.solve(var = Cj, 
     ...                           dt = 10000)
@@ -177,9 +182,9 @@ We iterate the problem to equilibrium again
 
 and verify that the correct uniform concentrations are achieved
 
-    >>> substitutionals[0].allclose(0.375, rtol = 1e-7, atol = 1e-7).value
+    >>> substitutionals[0].allclose(0.375, rtol = tol, atol = tol).value
     1
-    >>> substitutionals[1].allclose(0.525, rtol = 1e-7, atol = 1e-7).value
+    >>> substitutionals[1].allclose(0.525, rtol = tol, atol = tol).value
     1
 
 

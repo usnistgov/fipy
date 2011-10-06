@@ -15,6 +15,7 @@ timetests-no-pysparse1.txt
 timetests-no-pysparse2.txt
 timetests-no-pysparse3.txt
 timetests-no-pysparse4.txt
+timetests-no-pysparse5.txt
 timetests.txt
 timetests1.txt
 timetests10.txt
@@ -344,6 +345,7 @@ examples/elphf/test.py
 examples/elphf/diffusion/__init__.py
 examples/elphf/diffusion/mesh1D.py
 examples/elphf/diffusion/mesh1Ddimensional.py
+examples/elphf/diffusion/mesh2D-prof.py
 examples/elphf/diffusion/mesh2D.py
 examples/flow/__init__.py
 examples/flow/index.txt

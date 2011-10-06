@@ -61,7 +61,7 @@ encapsulated by functions.
 Any argument parameter can be changed. For example if the initial
 catalyst coverage is not 0, then it can be reset,
 
->>> runSimpleTrenchSystem(catalystCoverage=0.1, displayViewers=False)
+>>> runSimpleTrenchSystem(numberOfSteps=2, catalystCoverage=0.1, displayViewers=False)
 0
 
 The following image shows a schematic of a trench geometry along with
