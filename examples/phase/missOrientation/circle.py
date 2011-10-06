@@ -79,18 +79,23 @@ The solution is allowed to evolve for ``steps = 100`` time steps.
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
 modeling. The following code opens the file :file:`circle.gz` extracts the
-data and compares it with the ``theta`` variable.
+data and compares it with the ``phase`` variable.
 
 >>> import os
 >>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> print phase.allclose(testData)
 1
+
 """
 __docformat__ = 'restructuredtext'
 
 from fipy import *
 
-steps = 100
+if __name__ == '__main__':
+    steps = 100
+else:
+    steps = 10
+
 timeStepDuration = 0.02
 L = 1.5
 nx = 100

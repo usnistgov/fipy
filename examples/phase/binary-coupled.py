@@ -584,7 +584,12 @@ diffusion and of phase transformation compete with each other).
 
 >>> dt = 1.e-6
 
->>> for i in range(100):
+>>> if __name__ == '__main__': 
+...     timesteps = 100
+... else:
+...     timesteps = 10
+
+>>> for i in range(timesteps):
 ...     phase.updateOld()
 ...     C.updateOld()
 ...     res = 1e+10

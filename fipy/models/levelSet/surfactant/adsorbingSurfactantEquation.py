@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from fipy.variables.cellVariable import CellVariable
-from surfactantEquation import SurfactantEquation
+from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 
@@ -51,6 +51,7 @@ class _AdsorptionCoeff(CellVariable):
         self.rateConstant = rateConstant
         self.dt = 0
 
+        
     def _calcValue(self):
         return numerix.array(self.dt * self.bulkVar
                              * self.rateConstant * self._multiplier())
@@ -170,7 +171,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> theta1 = 0.
     >>> c0 = 1.
     >>> c1 = 1.
-    >>> totalSteps = 100
+    >>> totalSteps = 10
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
     >>> distanceVar = DistanceVariable(mesh = mesh, 
     ...                                value = dx * (numerix.arange(5) - 1.5),
@@ -235,6 +236,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> eqn0.solve(var0, dt = dt)
     >>> answer = CellVariable(mesh=mesh, value=var0.interfaceVar)
     >>> answer[x==1.25] = 0.
+    
     >>> print var0.interfaceVar.allclose(answer)
     True
 
@@ -310,7 +312,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
           - `otherBulkVar`: The value of the `otherVar` in the bulk.
           - `otherRateConstant`: The adsorption rate of the `otherVar`.
           - `consumptionCoeff`: The rate that the `surfactantVar` is consumed during deposition.
-
+                             
         """
 
           

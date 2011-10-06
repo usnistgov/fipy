@@ -120,7 +120,7 @@ A 2D version of the 1D example.
 ...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
 >>> potentialNC.faceGrad.constrain(value=[[0], [0]], where=mesh.exteriorFaces)
-
+                 
 >>> coupledEqn = massEqn & momentumXEqn & momentumYEqn & potentialNCEqn
 
 >>> numerix.random.seed(2012)
@@ -143,7 +143,8 @@ A 2D version of the 1D example.
 >>> if __name__ == '__main__':
 ...     totalSteps = 1e+10
 ... else:
-...     totalSteps = 4
+...     totalSteps = 1
+>>> totalSweeps = 0
 
 >>> while timestep < totalSteps:
 ... 
@@ -157,8 +158,8 @@ A 2D version of the 1D example.
 ...     velocityY.updateOld()
 ...     matrixDiagonal.updateOld()
 ...
-...     while residual > tolerance:
-...
+...     while residual > tolerance  and ((__name__ == '__main__') or (totalSweeps < 2)):
+...         totalSweeps += 1
 ...         densityPrevious[:] = density
 ...         velocityXPrevious[:] = velocityX
 ...         velocityYPrevious[:] = velocityY
