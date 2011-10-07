@@ -120,7 +120,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         if FIPY_VIEWER is not None:
             raise ImportError, "`%s` viewer not found" % FIPY_VIEWER
         else:
-            raise ImportError, "No viewers found"
+            raise ImportError, "No viewers found. Run `python setup.py egg_info` or similar."
     
     if len(vars) > 0:
         raise ImportError, "Failed to import a viewer: %s" % str(errors)
