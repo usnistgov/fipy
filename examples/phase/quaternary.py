@@ -311,7 +311,7 @@ The canonical form of the substitutional diffusion equations is
     }_{\text{diffusion}} \\
     & \qquad + \underbrace{
         D_{j}\nabla\cdot 
-        \frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
+        \frac{C_j}{1 - \sum_{\substack{k=M+1\\ k \neq j}}^{N-1} C_k}
         \left\{
            \overbrace{ 
                 \frac{C_N}{R T}
@@ -319,11 +319,11 @@ The canonical form of the substitutional diffusion equations is
                     \left(\mu_j^{\circ SL} - \mu_N^{\circ SL}\right) \nabla p(\phi)
                     + \frac{W_j - W_N}{2} \nabla g(\phi) 
                 \right] 
-                \vphantom{\sum_{\substack{i=M+1\\ i \neq j}}^{N} \nabla C_i}
+                \vphantom{\sum_{\substack{i=M+1\\ i \neq j}}^{N-1} \nabla C_i}
            }^{\text{phase transformation}}
            +
            \overbrace{
-               \sum_{\substack{i=M+1\\ i \neq j}}^{N} \nabla C_i
+               \sum_{\substack{i=M+1\\ i \neq j}}^{N-1} \nabla C_i
            }^{\text{counter diffusion}}
         \right\}
     }_{\text{convection}}
