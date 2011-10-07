@@ -37,7 +37,7 @@ Input file for chemotaxis modeling.
 
 Here are some test cases for the model.
 
-    >>> for i in range(30):
+    >>> for i in range(10):
     ...     for var, eqn in eqs:
     ...         var.updateOld()
     ...     for var, eqn in eqs:

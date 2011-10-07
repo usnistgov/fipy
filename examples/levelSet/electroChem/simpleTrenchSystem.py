@@ -49,7 +49,7 @@ number of time steps change the ``numberOfSteps`` argument as follows,
 
 .. index:: runSimpleTrenchSystem
 
->>> runSimpleTrenchSystem(numberOfSteps=5, displayViewers=False)
+>>> runSimpleTrenchSystem(numberOfSteps=2, displayViewers=False)
 1
 
 Change the ``displayViewers`` argument to ``True`` if you wish to see the
@@ -61,7 +61,7 @@ encapsulated by functions.
 Any argument parameter can be changed. For example if the initial
 catalyst coverage is not 0, then it can be reset,
 
->>> runSimpleTrenchSystem(catalystCoverage=0.1, displayViewers=False)
+>>> runSimpleTrenchSystem(numberOfSteps=2, catalystCoverage=0.1, displayViewers=False)
 0
 
 The following image shows a schematic of a trench geometry along with
@@ -316,7 +316,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     try:
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
-        
         print catalystVar.allclose(loadtxt(filepath), rtol = 1e-4)
 
     except:

@@ -158,7 +158,7 @@ A 2D version of the 1D example.
 ...     velocityY.updateOld()
 ...     matrixDiagonal.updateOld()
 ...
-...     while residual > tolerance  and ((__name__ == '__main__') or (totalSweeps < 2)):
+...     while residual > tolerance  and ((__name__ == '__main__') or (totalSweeps < 1)):
 ...         totalSweeps += 1
 ...         densityPrevious[:] = density
 ...         velocityXPrevious[:] = velocityX

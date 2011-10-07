@@ -119,7 +119,7 @@ Build the mesh:
 >>> numberOfElements = parse('--numberOfElements', action='store',
 ...     type='int', default=-1)
 >>> numberOfSteps = parse('--numberOfSteps', action='store',
-...     type='int', default=5)
+...     type='int', default=2)
 
 .. index:: sqrt, exp
 
