@@ -714,23 +714,21 @@ class MSHFile(GmshFile):
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
         return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces), facesDict
- 
-    def _translateVertIDToIdx(self, cellsToVertIDs, vertexMap):
-        """
-        Translates cellToIds from Gmsh output IDs to `vertexCoords`
-        indices. 
-        
-        NB: Takes in Python array, outputs numpy array.
-        """
-        cellsToVertIdxs = []
 
-        # translate gmsh vertex IDs to vertexCoords indices
-        for cell in cellsToVertIDs:
-            vertIndices = vertexMap[nx.array(cell)]
-            cellsToVertIdxs.append(vertIndices)
+    def _translateNodesToVertices(self, entitiesNodes, vertexMap):
+        """Translates entitiesNodes from Gmsh node IDs to `vertexCoords` indices.
+        """
+        entitiesVertices = []
 
-        return cellsToVertIdxs
-     
+        for entity in entitiesNodes:
+            try:
+                vertIndices = vertexMap[nx.array(entity)]
+            except IndexError:
+                vertIndices = nx.ones((len(entity),)) * -1
+            entitiesVertices.append(vertIndices)
+
+        return entitiesVertices
+
     def _extractFaces(self, faceLen, facesPerCell, cell):
         """
         Given `cell`, a cell in terms of vertices, returns an array of
@@ -856,8 +854,8 @@ class MSHFile(GmshFile):
         vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
 
         # translate Gmsh IDs to `vertexCoord` indices
-        cellsToVertIDs = self._translateVertIDToIdx(cellsToGmshVerts,
-                                                    vertIDtoIdx)
+        cellsToVertIDs = self._translateNodesToVertices(cellsToGmshVerts,
+                                                        vertIDtoIdx)
 
         parprint("Building cells and faces.")
         (facesToV, 
@@ -869,11 +867,16 @@ class MSHFile(GmshFile):
         # cell entities were easy to record on parsing
         # but we don't use Gmsh faces, so we need to correlate the nodes 
         # that make up the Gmsh faces with the vertex IDs of the FiPy faces
+        # so that we can check if any are named
         faceEntitiesDict = dict()
         
         # translate Gmsh IDs to `vertexCoord` indices
-        facesToVertIDs = self._translateVertIDToIdx(facesData.nodes,
-                                                    vertIDtoIdx)
+#         from fipy.tools.debug import PRINT
+#         PRINT(facesData.nodes)
+#         PRINT(vertIDtoIdx)
+#         PRINT(len(vertIDtoIdx))
+        facesToVertIDs = self._translateNodesToVertices(facesData.nodes,
+                                                        vertIDtoIdx)
                                                     
         for face, physicalEntity, geometricalEntity in zip(facesToVertIDs, 
                                                            facesData.physicalEntities, 
