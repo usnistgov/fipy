@@ -16,6 +16,8 @@ timetests-no-pysparse2.txt
 timetests-no-pysparse3.txt
 timetests-no-pysparse4.txt
 timetests-no-pysparse5.txt
+timetests-no-pysparse6.txt
+timetests-no-pysparse7.txt
 timetests.txt
 timetests1.txt
 timetests10.txt
@@ -297,6 +299,7 @@ examples/convection/powerLaw1D/tri2D.py
 examples/diffusion/__init__.py
 examples/diffusion/anisotropy.msh
 examples/diffusion/anisotropy.py
+examples/diffusion/before.msh
 examples/diffusion/circle.py
 examples/diffusion/circleQuad.py
 examples/diffusion/electrostatics.py
@@ -304,6 +307,7 @@ examples/diffusion/index.txt
 examples/diffusion/mesh1D.py
 examples/diffusion/mesh20x20-coupled.py
 examples/diffusion/mesh20x20.py
+examples/diffusion/raw.msh
 examples/diffusion/test.py
 examples/diffusion/variable.py
 examples/diffusion/explicit/__init__.py
