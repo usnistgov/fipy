@@ -1,2 +1,0 @@
-tvtk_classes
-fipy
