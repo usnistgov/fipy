@@ -916,8 +916,19 @@ class AbstractMesh(object):
         else:
             return self._translate(-numerix.array(other))
 
-    def __div__(self, other): 
- 	raise TypeError, "'/' is unsupported for meshes, use '*'"
+    def __div__(self, other):
+        """
+        Tests.
+        >>> from fipy import *
+        >>> print (Grid1D(nx=1) / 2.).cellCenters
+        [[ 0.25]]
+        >>> AbstractMesh(None, None, None) / 2.
+        Traceback (most recent call last):
+        ...
+        NotImplementedError
+        
+        """
+ 	return self.__mul__(1 / other)
 
     __rdiv__ = __div__
 
