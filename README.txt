@@ -28,7 +28,7 @@ Overview
    [BoettingerReview:2002]_ [ChenReview:2002]_ [McFaddenReview:2002]_ treatments of
    polycrystalline, dendritic, and electrochemical phase transformations as
    well as a level set treatment of the electrodeposition process
-   [NIST:damascene:2001]_.
+   [NIST:damascene:2001]_. 
 
 .. only:: latex
   
