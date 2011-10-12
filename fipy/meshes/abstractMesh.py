@@ -1298,7 +1298,7 @@ class AbstractMesh(object):
         else:
             return None
 
-    def _malePeriodic(self):
+    def _makePeriodic(self):
         raise NotImplementedError
      
 def _madmin(x):
