@@ -134,7 +134,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             # Gmsh isn't picky about file extensions, 
             # so we peek at the start of the file to deduce the type
             f = open(name, 'r')
-            filetype = f.readline()
+            filetype = f.readline().strip()
             f.close()
             if filetype == "$MeshFormat":
                 geoFile = None
@@ -240,17 +240,17 @@ class GmshFile:
             self.fileobj = open(name=self.filename, mode=mode)
 
     def _getElementType(self, vertices, dimensions):
-        if(vertices == 3 and dimensions == 2):
+        if (vertices == 3 and dimensions == 2):
             return 2 ## triangle
-        elif(vertices == 4 and dimensions == 2):
+        elif (vertices == 4 and dimensions == 2):
             return 3 ## quadrangle
-        elif(vertices == 4 and dimensions == 3):
+        elif (vertices == 4 and dimensions == 3):
             return 4 ## tetrahedron
-        elif(vertices == 8 and dimensions == 3):
+        elif (vertices == 8 and dimensions == 3):
             return 5 ## hexahedron
-        elif(vertices == 6 and dimensions == 3):
+        elif (vertices == 6 and dimensions == 3):
             return 6 ## prism
-        elif(vertices == 5 and dimensions == 3):
+        elif (vertices == 5 and dimensions == 3):
             return 7 ## pyramid
         else:
             raise MeshExportError, "Element type unsupported by Gmsh"
@@ -517,7 +517,6 @@ class POSFile(GmshFile):
                 
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-#     @profile
     def _reorientFace(self, vertexCoords, face0, face1):
         # need to ensure face1 is oriented same way as face0
         cross01 = nx.cross((vertexCoords[..., face0[1]] 
@@ -535,13 +534,11 @@ class POSFile(GmshFile):
             
         return face1
 
-#     @profile
     def _writeHexahedron(self, vertexCoords, hexahedron, value):
         # hexahedron is defined by one face and the opposite face
         face0 = hexahedron[..., 0]
         for face1 in hexahedron[..., 1:].swapaxes(0, 1):
             if not nx.any([node in face1 for node in face0]):
-#             if not nx.in1d(face1, face0).any():
                 break
 
         face1 = self._reorientFace(vertexCoords=vertexCoords, face0=face0, face1=face1)
@@ -674,7 +671,7 @@ class MSHFile(GmshFile):
         `facesToVertices` and `cellsToFaces`.
         """
 
-        def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
+        def formatForFiPy(arr): return arr.swapaxes(0,1) # [::-1]
 
         allShapes  = nx.unique(shapeTypes).tolist()
         maxFaces   = max([self.numFacesPerCell[x] for x in allShapes])
@@ -688,17 +685,44 @@ class MSHFile(GmshFile):
         # we now build `cellsToFaces` and `uniqueFaces`,
         # the latter will result in `facesToVertices`.
         for cellIdx in range(numCells):
-            shapeType    = shapeTypes[cellIdx]
-            faceLength   = self.faceLenForShape[shapeType]
-            cell         = cellsToVertIDs[cellIdx]
-            facesPerCell = self.numFacesPerCell[shapeType]
+            shapeType = shapeTypes[cellIdx]
+            cell = cellsToVertIDs[cellIdx]
 
-            if shapeType == 5: # we need to special case for hexahedron
-                faces = self._extractHexahedronFaces(cell)
+            if shapeType in [5, 12, 17]: # hexahedron
+                faces = self._extractOrderedFaces(cell=cell, 
+                                                  faceOrderings=[[0, 1, 2, 3], # ordering of vertices gleaned from
+                                                                 [4, 5, 6, 7], # a one-cube Grid3D example
+                                                                 [0, 1, 5, 4],
+                                                                 [3, 2, 6, 7],
+                                                                 [0, 3, 7, 4],
+                                                                 [1, 2, 6, 5]])
+            elif shapeType in [6, 13, 18]: # prism
+                faces = self._extractOrderedFaces(cell=cell, 
+                                                  faceOrderings=[[0, 1, 2],
+                                                                 [5, 4, 3],
+                                                                 [3, 4, 1, 0],
+                                                                 [4, 5, 2, 1],
+                                                                 [5, 3, 0, 2]])
+            elif shapeType in [7, 14, 19]: # pyramid
+                faces = self._extractOrderedFaces(cell=cell, 
+                                                  faceOrderings=[[0, 1, 2, 3],
+                                                                 [0, 1, 4],
+                                                                 [1, 2, 4],
+                                                                 [2, 3, 4],
+                                                                 [3, 0, 4]])
             else:
-                faces = self._extractFaces(faceLength, facesPerCell, cell)
+                if shapeType in [2, 9, 20, 21, 22, 23, 24, 25]:
+                    faceLength = 2 # triangle
+                elif shapeType in [3, 10, 16]:
+                    faceLength = 2 # quadrangle
+                elif shapeType in [4, 11, 29, 30, 31]:
+                    faceLength = 3 # tetrahedron
+                
+                faces = self._extractRegularFaces(cell=cell, 
+                                                  faceLength=faceLength, 
+                                                  facesPerCell=self.numFacesPerCell[shapeType])
 
-            for faceIdx in range(facesPerCell):
+            for faceIdx in range(len(faces)):
                 # NB: currFace is sorted for the key to spot duplicates
                 currFace = faces[faceIdx]
                 keyStr   = ' '.join([str(x) for x in sorted(currFace)])
@@ -710,6 +734,11 @@ class MSHFile(GmshFile):
                     cellsToFaces[cellIdx][faceIdx] = currNumFaces
                     uniqueFaces.append(currFace)
                     currNumFaces += 1
+                    
+        # pad short faces with -1
+        maxFaceLen = max([len(f) for f in uniqueFaces])
+#         uniqueFaces = [[-1] * (maxFaceLen - len(f)) + f for f in uniqueFaces]
+        uniqueFaces = [f + [-1] * (maxFaceLen - len(f)) for f in uniqueFaces]
                
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
@@ -729,23 +758,23 @@ class MSHFile(GmshFile):
 
         return entitiesVertices
 
-    def _extractFaces(self, faceLen, facesPerCell, cell):
-        """
-        Given `cell`, a cell in terms of vertices, returns an array of
-        `facesPerCell` faces of length `faceLen` in terms of vertices.
+    def _extractRegularFaces(self, cell, faceLength, facesPerCell):
+        """Return faces for a regular poly(gon|hedron)
+        
+        Given `cell`, defined by node IDs, returns an array of
+        `facesPerCell` faces of length `faceLength` in terms of nodes.
         """
         faces = []
         for i in range(facesPerCell):
             aFace = []
-            for j in range(faceLen):
+            for j in range(faceLength):
                 aVertex = (i + j) % len(cell) # we may wrap
                 aFace.append(int(cell[aVertex]))
             faces.append(aFace)
         return faces
 
-    def _extractHexahedronFaces(self, cell):
-        """
-        SPECIAL CASE: return faces for a hexahedron cell.
+    def _extractOrderedFaces(self, cell, faceOrderings):
+        """Return faces for a 8-node hexahedron cell.
         """
         def orderingToFace(vertList):
             aFace = []
@@ -753,19 +782,7 @@ class MSHFile(GmshFile):
                 aFace.append(int(cell[i]))
             return aFace
 
-        # six orderings for six faces
-        faces = []
-        orderings = [[0, 1, 2, 3], # ordering of vertices gleaned from
-                     [4, 5, 6, 7], # a one-cube Grid3D example
-                     [0, 1, 5, 4],
-                     [3, 2, 6, 7],
-                     [0, 3, 7, 4],
-                     [1, 2, 6, 5]]
-
-        for o in orderings:
-            faces.append(orderingToFace(o))
-
-        return faces
+        return [orderingToFace(o) for o in faceOrderings]
 
     def read(self):
         """
@@ -813,21 +830,47 @@ class MSHFile(GmshFile):
             
         # we need a conditional here so we don't pick up 2D shapes in 3D
         if self.dimensions == 2: 
-            self.numVertsPerFace = {1: 2} # line:       2 vertices
-            self.numFacesPerCell = {2: 3, # triangle:   3 sides
-                                    3: 4} # quadrangle: 4 sides
+            self.numVertsPerFace = {1: 2, # 2-node line
+                                    8: 2} # 3-node line
+            self.numFacesPerCell = { 2: 3, # 3-node triangle (3 faces)
+                                     9: 3, # 6-node triangle (we only read 1st 3)
+                                    20: 3, # 9-node triangle (we only read 1st 3) 
+                                    21: 3, # 10-node triangle (we only read 1st 3) 
+                                    22: 3, # 12-node triangle (we only read 1st 3) 
+                                    23: 3, # 15-node triangle (we only read 1st 3) 
+                                    24: 3, # 15-node triangle (we only read 1st 3) 
+                                    25: 3, # 21-node triangle (we only read 1st 3) 
+                                     3: 4, # 4-node quadrangle (4 faces)
+                                    10: 4, # 9-node quadrangle (we only read 1st 4)
+                                    16: 4} # 8-node quadrangle (we only read 1st 4)
         elif self.dimensions == 3:
-            self.numVertsPerFace = {2: 3, # triangle:   3 vertices
-                                    3: 4} # quadrangle: 4 vertices
-            self.numFacesPerCell = {4: 4, # tet:        4 sides
-                                    5: 6} # hexahedron: 6 sides
+            self.numVertsPerFace = { 2: 3, # 3-node triangle (3 vertices)
+                                     9: 3, # 6-node triangle (we only read 1st 3)
+                                    20: 3, # 9-node triangle (we only read 1st 3) 
+                                    21: 3, # 10-node triangle (we only read 1st 3) 
+                                    22: 3, # 12-node triangle (we only read 1st 3) 
+                                    23: 3, # 15-node triangle (we only read 1st 3) 
+                                    24: 3, # 15-node triangle (we only read 1st 3) 
+                                    25: 3, # 21-node triangle (we only read 1st 3) 
+                                     3: 4, # 4-node quadrangle (4 vertices)
+                                    10: 4, # 9-node quadrangle (we only read 1st 4)
+                                    16: 4} # 8-node quadrangle (we only read 1st 4)
+            self.numFacesPerCell = { 4: 4, # 4-node tetrahedron (4 faces)
+                                    11: 4, # 10-node tetrahedron (we only read 1st 4)
+                                    29: 4, # 20-node tetrahedron (we only read 1st 4)
+                                    30: 4, # 35-node tetrahedron (we only read 1st 4)
+                                    31: 4, # 56-node tetrahedron (we only read 1st 4)
+                                     5: 6, # 8-node hexahedron (6 faces)
+                                    12: 6, # 27-node tetrahedron (we only read 1st 6)
+                                    17: 6, # 20-node tetrahedron (we only read 1st 6)
+                                     6: 5, # 6-node prism (5 faces)
+                                    13: 5, # 18-node prism (we only read 1st 6)
+                                    18: 5, # 15-node prism (we only read 1st 6)
+                                     7: 5, # 5-node pyramid (5 faces)
+                                    14: 5, # 14-node pyramid (we only read 1st 5)
+                                    19: 5} # 13-node pyramid (we only read 1st 5)
         else:
             raise GmshException("Mesh has fewer than 2 or more than 3 dimensions")
-
-        self.faceLenForShape = {2: 2, # triangle:   2 verts per face
-                                3: 2, # quadrangle: 2 verts per face
-                                4: 3, # tet:        3 verts per face
-                                5: 4} # hexahedron: 4 verts per face
 
         parprint("Parsing elements.")
         (cellsData, 
@@ -871,10 +914,6 @@ class MSHFile(GmshFile):
         faceEntitiesDict = dict()
         
         # translate Gmsh IDs to `vertexCoord` indices
-#         from fipy.tools.debug import PRINT
-#         PRINT(facesData.nodes)
-#         PRINT(vertIDtoIdx)
-#         PRINT(len(vertIDtoIdx))
         facesToVertIDs = self._translateNodesToVertices(facesData.nodes,
                                                         vertIDtoIdx)
                                                     
@@ -1270,31 +1309,6 @@ class _ElementData(object):
         self.physicalEntities.append(physicalEntity)
         self.geometricalEntities.append(geometricalEntity)
 
-def _makeMapVariables(mesh, physicalCellMap, geometricalCellMap, physicalFaceMap, 
-                      geometricalFaceMap, physicalNames, faceDim, cellDim):
-    """Utility function to make MeshVariables that define different domains in the mesh
-    
-    Separate function because Gmsh2D and Gmsh3D don't have a common ancestor and mixins are evil
-    """
-    from fipy.variables.cellVariable import CellVariable
-    from fipy.variables.faceVariable import FaceVariable
-
-    physicalCellMap = CellVariable(mesh=mesh, value=physicalCellMap)
-    geometricalCellMap = CellVariable(mesh=mesh, value=geometricalCellMap)
-    physicalFaceMap = FaceVariable(mesh=mesh, value=physicalFaceMap)
-    geometricalFaceMap = FaceVariable(mesh=mesh, value=geometricalFaceMap)
-
-    physicalCells = dict()
-    for name in physicalNames[cellDim].keys():
-        physicalCells[name] = physicalCellMap == physicalNames[cellDim][name]
-        
-    physicalFaces = dict()
-    for name in physicalNames[faceDim].keys():
-        physicalFaces[name] = physicalFaceMap == physicalNames[faceDim][name]
-        
-    return (physicalCellMap, geometricalCellMap, physicalCells,
-            physicalFaceMap, geometricalFaceMap, physicalFaces)
-
 class Gmsh2D(Mesh2D):
     """Construct a 2D Mesh using Gmsh
     
@@ -1451,7 +1465,7 @@ class Gmsh2D(Mesh2D):
          self.physicalFaceMap,
          self.geometricalFaceMap,
          self.physicalFaces) = self.mshFile.makeMapVariables(mesh=self)
-        
+         
         parprint("Exiting Gmsh2D")
 
     def __setstate__(self, dict):
@@ -1622,8 +1636,8 @@ class Gmsh2D(Mesh2D):
         
         >>> from fipy.tools import dump
         >>> from fipy import parallel
-        >>> f, tempfile = dump.write(circle)
-        >>> pickle_circle = dump.read(tempfile, f)
+        >>> f, tmpfile = dump.write(circle)
+        >>> pickle_circle = dump.read(tmpfile, f)
 
         >>> print parallel.Nproc > 1 or (pickle_circle.cellVolumes == circle.cellVolumes).all()
         True
@@ -1692,8 +1706,8 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
         >>> from fipy.tools import dump
         >>> from fipy import parallel
-        >>> f, tempfile = dump.write(sphere)
-        >>> pickle_sphere = dump.read(tempfile, f)
+        >>> f, tmpfile = dump.write(sphere)
+        >>> pickle_sphere = dump.read(tmpfile, f)
 
         >>> print parallel.Nproc > 1 or (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
         True
@@ -1891,13 +1905,46 @@ class Gmsh3D(Mesh):
         
         >>> from fipy.tools import dump
         >>> from fipy import parallel
-        >>> f, tempfile = dump.write(prism)
-        >>> pickle_prism = dump.read(tempfile, f)
+        >>> f, tmpfile = dump.write(prism)
+        >>> pickle_prism = dump.read(tmpfile, f)
 
         >>> print parallel.Nproc > 1 or (pickle_prism.cellVolumes == prism.cellVolumes).all()
         True
         
         >>> print parallel.Nproc > 1 or (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
+        True
+        
+        Load a mesh consisting of a tetrahedron, prism, and pyramid
+        
+        >>> (f, mshFile) = tempfile.mkstemp('.msh')
+        >>> file = open(mshFile, 'w')
+        >>> file.write('''$MeshFormat
+        ... 2.2 0 8
+        ... $EndMeshFormat
+        ... $Nodes
+        ... 8                  
+        ... 1 0.0 0.0 0.0
+        ... 2 1.0 0.0 0.0
+        ... 3 1.0 1.0 0.0
+        ... 4 1.0 0.0 1.0
+        ... 5 3.0 0.0 0.0
+        ... 6 3.0 1.0 0.0
+        ... 7 3.0 0.0 1.0
+        ... 8 2.0 0.5 -1.0
+        ... $EndNodes
+        ... $Elements
+        ... 3         
+        ... 1 4 2 99 2 1 3 4 2       
+        ... 2 6 2 98 2 2 3 4 5 6 7
+        ... 3 7 2 97 2 2 3 6 5 8
+        ... $EndElements
+        ... ''')
+        >>> file.close() 
+        >>> os.close(f)
+
+        >>> tetPriPyr = Gmsh3D(mshFile)
+
+        >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2. / 3])
         True
         """
 
