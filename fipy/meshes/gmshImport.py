@@ -671,7 +671,7 @@ class MSHFile(GmshFile):
         `facesToVertices` and `cellsToFaces`.
         """
 
-        def formatForFiPy(arr): return arr.swapaxes(0,1) # [::-1]
+        def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
 
         allShapes  = nx.unique(shapeTypes).tolist()
         maxFaces   = max([self.numFacesPerCell[x] for x in allShapes])
@@ -737,8 +737,7 @@ class MSHFile(GmshFile):
                     
         # pad short faces with -1
         maxFaceLen = max([len(f) for f in uniqueFaces])
-#         uniqueFaces = [[-1] * (maxFaceLen - len(f)) + f for f in uniqueFaces]
-        uniqueFaces = [f + [-1] * (maxFaceLen - len(f)) for f in uniqueFaces]
+        uniqueFaces = [[-1] * (maxFaceLen - len(f)) + f for f in uniqueFaces]
                
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
