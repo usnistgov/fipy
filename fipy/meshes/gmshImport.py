@@ -139,7 +139,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             if filetype == "$MeshFormat":
                 geoFile = None
                 mshFile = name
-                gmshOutput = None
+                gmshOutput = ""
             elif filetype == "$NOD":
                 raise SyntaxError("Gmsh MSH file format version 1.0 is not supported")
             elif filetype == "$PostFormat":
@@ -195,13 +195,14 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                 parprint("gmsh out: %s" % gmshOutput)
                 os.close(f)
             else:
-                mshFile = gmshOutput = None
+                mshFile = None
+                gmshOutput = ""
                 
             mshFile = communicator.bcast(mshFile)
             gmshOutput = communicator.bcast(gmshOutput)
     elif mode.startswith('w'):
         mshFile = name
-        gmshOutput = None
+        gmshOutput = ""
     else:
         raise ValueError("mode string must begin with one of 'r' or 'w', not '%s'" % mode[0])
                 
@@ -598,7 +599,7 @@ class MSHFile(GmshFile):
                        dimensions, 
                        coordDimensions=None,
                        communicator=parallel,
-                       gmshOutput=None,
+                       gmshOutput="",
                        mode='r'):
         """
         :Parameters:
@@ -1917,6 +1918,13 @@ class Gmsh3D(Mesh):
         
         >>> (f, mshFile) = tempfile.mkstemp('.msh')
         >>> file = open(mshFile, 'w')
+
+        We need to do a little fancy footwork to account for multiple processes
+        
+        >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallel.Nproc)]
+        >>> numtags = 2 + 1 + len(partitions)
+        >>> partitions = " ".join([str(i) for i in [parallel.Nproc] + partitions])
+
         >>> file.write('''$MeshFormat
         ... 2.2 0 8
         ... $EndMeshFormat
@@ -1933,17 +1941,17 @@ class Gmsh3D(Mesh):
         ... $EndNodes
         ... $Elements
         ... 3         
-        ... 1 4 2 99 2 1 3 4 2       
-        ... 2 6 2 98 2 2 3 4 5 6 7
-        ... 3 7 2 97 2 2 3 6 5 8
+        ... 1 4 %(numtags)s 99 2 %(partitions)s 1 3 4 2       
+        ... 2 6 %(numtags)s 98 2 %(partitions)s 2 3 4 5 6 7
+        ... 3 7 %(numtags)s 97 2 %(partitions)s 2 3 6 5 8
         ... $EndElements
-        ... ''')
+        ... ''' % locals())
         >>> file.close() 
         >>> os.close(f)
 
         >>> tetPriPyr = Gmsh3D(mshFile)
 
-        >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2. / 3])
+        >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3])
         True
         """
 
