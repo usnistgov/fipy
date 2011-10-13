@@ -73,14 +73,31 @@ class TrilinosSolver(Solver):
 
             mesh = self.var.mesh
             localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
+            
+            ## The following conditional is required because empty indexing is not altogether functional.
+            ## This numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]] both work, but this
+            ## numpy.empty((3, 0))[...,[]] is broken.
+            if self.var.shape[-1] != 0:
+                s = (Ellipsis, localNonOverlappingCellIDs)
+            else:
+                s = (localNonOverlappingCellIDs,)
+                
+            nonOverlappingVector = Epetra.Vector(globalMatrix.domainMap,
+                                                 self.var[s].ravel())
+            from fipy.variables.coupledCellVariable import _CoupledCellVariable
 
-            nonOverlappingVector = Epetra.Vector(globalMatrix.nonOverlappingMap, 
-                                                 self.var[localNonOverlappingCellIDs])
+            if isinstance(self.RHSvector, _CoupledCellVariable):
+                RHSvector = self.RHSvector[localNonOverlappingCellIDs]
+            else:
+                RHSvector = numerix.reshape(numerix.array(self.RHSvector), self.var.shape)[s].ravel()
+                
+                    
+            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.rangeMap,
+                                                    RHSvector)
 
-            nonOverlappingRHSvector = Epetra.Vector(globalMatrix.nonOverlappingMap, 
-                                                    self.RHSvector[localNonOverlappingCellIDs])
+            del RHSvector
 
-            overlappingVector = Epetra.Vector(globalMatrix.overlappingMap, self.var)
+            overlappingVector = Epetra.Vector(globalMatrix.colMap, self.var)
 
             self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
 
@@ -91,19 +108,25 @@ class TrilinosSolver(Solver):
         del self.globalVectors
         
     def _solve(self):
-
+        from fipy.terms import SolutionVariableNumberError
+        
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
 
+        if not (globalMatrix.rangeMap.SameAs(globalMatrix.domainMap)
+                and globalMatrix.rangeMap.SameAs(nonOverlappingVector.Map())):
+
+            raise SolutionVariableNumberError
+        
         self._solve_(globalMatrix.matrix, 
                      nonOverlappingVector, 
                      nonOverlappingRHSvector)
 
         overlappingVector.Import(nonOverlappingVector, 
-                                 Epetra.Import(globalMatrix.overlappingMap, 
-                                               globalMatrix.nonOverlappingMap), 
+                                 Epetra.Import(globalMatrix.colMap, 
+                                               globalMatrix.domainMap), 
                                  Epetra.Insert)
         
-        self.var.value = overlappingVector
+        self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
 
         self._deleteGlobalMatrixAndVectors()
         del self.var
@@ -130,8 +153,14 @@ class TrilinosSolver(Solver):
             # then C is an Epetra.Vector with *no map* !!!?!?!
             residual = globalMatrix * nonOverlappingVector
             residual -= nonOverlappingRHSvector
+
+            overlappingResidual = Epetra.Vector(globalMatrix.colMap)
+            overlappingResidual.Import(residual, 
+                                       Epetra.Import(globalMatrix.colMap, 
+                                                     globalMatrix.domainMap), 
+                                       Epetra.Insert)
             
-            return residual
+            return overlappingResidual
             
     def _calcResidual(self, residualFn=None):
         if residualFn is not None:

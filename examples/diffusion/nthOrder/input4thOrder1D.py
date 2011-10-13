@@ -80,7 +80,7 @@ or
 
 >>> BCs = (NthOrderBoundaryCondition(faces=mesh.facesLeft, value=alpha3, order=2),
 ...        NthOrderBoundaryCondition(faces=mesh.facesRight, value=alpha4, order=3))
->>> var.faceGrad.constrain(alpha2, mesh.facesRight)
+>>> var.faceGrad.constrain([alpha2], mesh.facesRight)
 >>> var.constrain(alpha1, mesh.facesLeft)
 
 We initialize the steady-state equation
@@ -93,7 +93,7 @@ We perform one implicit timestep to achieve steady state
 
 >>> eq.solve(var=var,
 ...          boundaryConditions=BCs,
-...          solver=DefaultAsymmetricSolver())
+...          solver=GeneralSolver())
 
 The analytical solution is:
 

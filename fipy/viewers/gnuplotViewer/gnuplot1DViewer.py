@@ -39,6 +39,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 
 from gnuplotViewer import _GnuplotViewer
+from fipy.variables.faceVariable import FaceVariable
 
 class Gnuplot1DViewer(_GnuplotViewer):
     """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
@@ -77,8 +78,14 @@ class Gnuplot1DViewer(_GnuplotViewer):
         for var in self.vars:
             # Python 2.6 made 'with' a keyward (deprecation warnings have been issued since 2.5)
             # this was addressed in Gnuplot.py in r299, in 2007
-            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(var.mesh.cellCenters[0]), 
-                                                numerix.array(var.value),
+            
+            if var._variableClass is not FaceVariable:
+                X = var.mesh.cellCenters[0]
+            else:
+                X = var.mesh.faceCenters[0]
+
+            tupleOfGnuplotData += (Gnuplot.Data(numerix.array(X), 
+                                                numerix.array(var),
                                                 title=var.name,
                                                 with_='lines'),)
                               

@@ -74,8 +74,8 @@ where
 >>> D = 2.0
 >>> P = 3.0
 
->>> C.faceGrad.constrain(-P + P * C.faceValue, mesh.facesLeft)
->>> C.faceGrad.constrain(0, mesh.facesRight)
+>>> C.faceGrad.constrain([-P + P * C.faceValue], mesh.facesLeft)
+>>> C.faceGrad.constrain([0], mesh.facesRight)
 
 >>> eq = PowerLawConvectionTerm((P,)) == \
 ...      DiffusionTerm() - ImplicitSourceTerm(D)
@@ -92,13 +92,21 @@ where
 ...     C.name = 'C'
 ...     viewer = Viewer(vars=(C, CAnalytical))
 
+>>> if __name__ == '__main__':
+...     restol = 1e-5
+...     anstol = 1e-3
+... else:
+...     restol = 0.5
+...     anstol = 0.15
+ 
 >>> res = 1e+10
->>> while res > 1e-5:
+
+>>> while res > restol:
 ...     res = eq.sweep(var=C)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> print C.allclose(CAnalytical, rtol=1.e-3, atol=1.e-3)
+>>> print C.allclose(CAnalytical, rtol=anstol, atol=anstol)
 True
 
 """

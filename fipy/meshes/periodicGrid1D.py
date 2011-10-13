@@ -40,11 +40,11 @@ __docformat__ = 'restructuredtext'
 from grid1D import Grid1D
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
+from fipy.meshes.builders import PeriodicGrid1DBuilder
 
 class PeriodicGrid1D(Grid1D):
     """
     
-        >>> from fipy import numerix
         >>> from fipy.tools import parallel
 
     Creates a Periodic grid mesh.
@@ -84,21 +84,17 @@ class PeriodicGrid1D(Grid1D):
         ...                             [0, 1, 0]]))
         True
     """
-    def __init__(self, dx = 1., nx = None):
-        Grid1D.__init__(self, dx = dx, nx = nx)
-        from fipy.tools import numerix
+    def __init__(self, dx = 1., nx = None, overlap=2):
+        Grid1D.__init__(self, dx = dx, nx = nx, overlap=overlap,
+                        BuilderClass=PeriodicGrid1DBuilder)
+        self.nonPeriodicCellFaceIDs = numerix.array(super(Grid1D, self).cellFaceIDs)
+        self._makePeriodic()
 
+    def _makePeriodic(self):
         if self.occupiedNodes == 1:
             self._connectFaces(numerix.nonzero(self.facesLeft),
                                numerix.nonzero(self.facesRight))
 
-    def _getOverlap(self, overlap, procID, occupiedNodes):
-        self.occupiedNodes = occupiedNodes
-        if occupiedNodes == 1:
-            return Grid1D._getOverlap(self, overlap, procID, occupiedNodes)
-        else:
-            return {'left': overlap, 'right': overlap}
-        
     @getsetDeprecated
     def _getGlobalOverlappingCellIDs(self):
         return self._globalOverlappingCellIDs
@@ -114,7 +110,25 @@ class PeriodicGrid1D(Grid1D):
         fipy.meshes.mesh and not in any geometry (since a `CellVariable` requires
         a reference to a mesh)."""
         return super(PeriodicGrid1D, self).cellCenters \
-                % numerix.sum(self.globalNumberOfCells * self.args['dx']) 
+                % numerix.sum(self.globalNumberOfCells * self.args['dx'])
+
+    def _translate(self, vector):
+        """
+        Test for ticket:298.
+
+        >>> from fipy import *
+        >>> m = PeriodicGrid1D(nx=2) + [[-1]]
+        >>> print CellVariable(mesh=m, value=m.cellCenters[0])
+        [-0.5  0.5]
+        
+        """
+        newCoords = self.vertexCoords + vector
+        newmesh = self.__class__(**self.args)
+        from fipy.meshes.mesh1D import Mesh1D
+        Mesh1D.__init__(newmesh, newCoords, numerix.array(self.faceVertexIDs), self.nonPeriodicCellFaceIDs)
+        newmesh._makePeriodic()
+        return newmesh
+    
 def _test():
     import doctest
     return doctest.testmod()

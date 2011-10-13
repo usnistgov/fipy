@@ -44,7 +44,8 @@ def _suite():
             'mesh50x50.tri2Dinput',
             'otherMeshes.grid3Dinput',
             'otherMeshes.prism',
-            'mesh20x20.modifiedMeshInput'
+            'mesh20x20.modifiedMeshInput',
+            'mesh20x20.isotropy'
         ), base = __name__)
     
 if __name__ == '__main__':

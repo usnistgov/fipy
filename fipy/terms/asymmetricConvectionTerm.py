@@ -34,20 +34,18 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.convectionTerm import ConvectionTerm
+from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.solvers import DefaultAsymmetricSolver
-from fipy.terms import AlternativeMethodInBaseClass
 
-class _AsymmetricConvectionTerm(ConvectionTerm):
+class _AsymmetricConvectionTerm(_BaseConvectionTerm):
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
         r"""
         Make sure the method actually does something.
         >>> print _AsymmetricConvectionTerm((1,)).getDefaultSolver().__repr__()[:6]
         Linear
         """
-        if ConvectionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
-            AlternativeMethodInBaseClass('_getDefaultSolver()')
+        solver = solver or super(_AsymmetricConvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)

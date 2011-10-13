@@ -34,14 +34,21 @@
 
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
+from fipy.solvers import solver
+
+if solver == 'trilinos':
+    docTestModuleNames = ('trilinosMatrix', 'pysparseMatrix')
+elif solver == 'no-pysparse':
+    docTestModuleNames = ('trilinosMatrix',)
+elif solver == 'scipy' or solver == 'pyamg':
+    docTestModuleNames = ('scipyMatrix',)
+elif solver == 'pysparse':
+    docTestModuleNames = ('pysparseMatrix',)
+else:
+    raise ImportError, 'Unknown solver package %s' % solver
 
 def _suite():
-    theSuite = _LateImportDocTestSuite(docTestModuleNames = (
-            'pysparseMatrix',
-            'trilinosMatrix'
-        ), base = __name__)
-
-    return theSuite
+    return _LateImportDocTestSuite(docTestModuleNames=docTestModuleNames, base=__name__)
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')

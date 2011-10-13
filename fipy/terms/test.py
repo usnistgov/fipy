@@ -43,7 +43,7 @@ def _suite():
             'baseDiffusionTerm',
             'diffusionTerm',
             'term',
-            'convectionTerm',
+            'baseConvectionTerm',
             'transientTerm',
             'powerLawConvectionTerm',
             'exponentialConvectionTerm',
@@ -53,7 +53,8 @@ def _suite():
             'baseBinaryTerm',
             'unaryTerm',
             'nonDiffusionTerm',
-            'asymmetricConvectionTerm'
+            'asymmetricConvectionTerm',
+            'binaryTerm'
             ), base = __name__)
 
 if __name__ == '__main__':

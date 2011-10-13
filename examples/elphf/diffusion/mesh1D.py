@@ -139,8 +139,6 @@ Now, we iterate the problem to equilibrium, plotting as we go
 
 >>> for i in range(40):
 ...     for Cj in substitutionals:
-...         Cj.updateOld()
-...     for Cj in substitutionals:
 ...         Cj.equation.solve(var=Cj, 
 ...                           dt=10000.,
 ...                           solver=Cj.solver)

@@ -49,6 +49,7 @@ can abort whenever it has problems with::
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
+from fipy.tools.decorators import getsetDeprecated
 
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):
@@ -86,7 +87,7 @@ class ScalarQuantityOutOfRangeWarning(SolverConvergenceWarning):
     def __str__(self):
         return "A scalar quantity became too small or too large to continue computing. Iterations: %g. Relative error: %g" % (self.iter, self.relres)
 
-class Solver:
+class Solver(object):
     """
     The base `LinearXSolver` class.
     
@@ -173,5 +174,7 @@ class Solver:
     def _canSolveAsymmetric(self):
         return True
 
+    @getsetDeprecated
     def _getMatrixClass(self):
-        raise NotImplementedError
+        return self._matrixClass
+        

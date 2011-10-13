@@ -44,17 +44,10 @@ class _ModCellGradVariable(_GaussCellGradVariable):
         self.modIn = modIn
         self.modPy = modPy
 
-    ##def _calcValue(self):
-##        try:
-##            canInline = self.canInline
-##            if not self.canInline:
-##                return self._calcValuePy(self,N, M, ids, orientations, volumes)
-##        except AttributeError:
-            
 
-    def _calcValueIn(self, N, M, ids, orientations, volumes):
+    def _calcValueInline(self, N, M, ids, orientations, volumes):
         val = self._array.copy()
-        
+
         inline._runIterateElementInline(self.modIn + """
             ITEM(val, i, vec) = 0.;
 
@@ -63,7 +56,7 @@ class _ModCellGradVariable(_GaussCellGradVariable):
                 int id = ITEM(ids, i, &k);
                 ITEM(val, i, vec) += ITEM(orientations, i, &k) * ITEM(areaProj, id, vec) * ITEM(faceValues, id, NULL);
             }
-                
+
             ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
             ITEM(val, i, vec) = mod(ITEM(val, i, vec) * gridSpacing[vec[0]]) /  gridSpacing[vec[0]];
         """,val = val,
@@ -76,12 +69,11 @@ class _ModCellGradVariable(_GaussCellGradVariable):
             ni = N, 
             gridSpacing = numerix.array(self.mesh._meshSpacing),
             shape=numerix.array(numerix.shape(val)))
-            
-        return self._makeValue(value = val)
-##         return self._makeValue(value = val, unit = self.unit)
 
-    def _calcValuePy(self, N, M, ids, orientations, volumes):
-        value = _GaussCellGradVariable._calcValuePy(self, N, M, ids, orientations, volumes)
+        return self._makeValue(value = val)
+
+    def _calcValueNoInline(self, N, M, ids, orientations, volumes):
+        value = _GaussCellGradVariable._calcValueNoInline(self, N, M, ids, orientations, volumes)
         gridSpacing = self.mesh._meshSpacing
         return self.modPy(value * gridSpacing) / gridSpacing
 

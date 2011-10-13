@@ -262,7 +262,7 @@ Due to a quirk in :term:`FiPy`, the gradient of :math:`\mu^{NC}` needs to be
 constrained on the boundary.  This is because ``ConvectionTerm``'s will
 automatically assume a zero flux, which is not what we need in this case.
 
->>> potentialNC.faceGrad.constrain(value=0, where=mesh.exteriorFaces)
+>>> potentialNC.faceGrad.constrain(value=[0], where=mesh.exteriorFaces)
 
 All three equations are defined and an are combined together with
 
@@ -273,6 +273,7 @@ close to the average density, but with some small amplitude noise. Under these
 circumstances, the final condition should be two separate phases of roughly equal
 volume. The initial condition for the density is defined by
 
+>>> numerix.random.seed(2011)
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.numberOfCells) - 1))
 
@@ -296,9 +297,9 @@ max(velocity)``.
 >>> timestep = 0
 >>> relaxation = 0.5
 >>> if __name__ == '__main__':
-...     totalSteps = 1e+10
+...     totalSteps = 1e10
 ... else:
-...     totalSteps = 150
+...     totalSteps = 10
 
 In the following time stepping scheme a time step is recalculated if the residual
 increases between sweeps or the required tolerance is not attained within 20
@@ -360,7 +361,7 @@ equation. This currently doesn't work properly in :term:`FiPy``.
 >>> if __name__ == '__main__':
 ...     raw_input('finished')
 
->>> print freeEnergy < 1.4e9
+>>> print freeEnergy < 1.5e9
 True
 
 """

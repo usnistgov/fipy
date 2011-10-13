@@ -39,7 +39,8 @@ try:
 except:
     pass
 
-try:
+def parallelImport():
+
     from PyTrilinos import Epetra
     from fipy.tools.commWrapper import CommWrapper
 
@@ -52,15 +53,23 @@ try:
             from fipy.tools.mpi4pyCommWrapper import Mpi4pyCommWrapper
             parallel = Mpi4pyCommWrapper(Epetra=Epetra, MPI=MPI)
         except ImportError:
-            raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos in parallel. Try installing using 'easy_install mpi4py'.")
+            raise ImportError("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos in parallel. Try installing using 'easy_install mpi4py'.")
 
     from fipy.tools.serialCommWrapper import SerialCommWrapper
-    serial = SerialCommWrapper(Epetra=Epetra)
+    return SerialCommWrapper(Epetra=Epetra), parallel
 
-except ImportError:
+from fipy.tools.parser import parseSolver
+if parseSolver() in ("trilinos",  "no-pysparse"):
+    serial, parallel = parallelImport()
+elif parseSolver() is None:
+    try:
+        serial, parallel = parallelImport()
+    except ImportError:
+        from fipy.tools.dummyComm import DummyComm
+        serial, parallel = DummyComm(), DummyComm()
+else:
     from fipy.tools.dummyComm import DummyComm
-    parallel = DummyComm()
-    serial = DummyComm()
+    serial, parallel = DummyComm(), DummyComm()
 
 import dump
 import numerix

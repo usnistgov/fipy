@@ -239,7 +239,7 @@ you substitute the Python version. E.g., Python 2.4 takes ":samp:`-py24`", Pytho
 A few changes are needed to allow matplotlib_ to run::
 
     $ mkdir ~/.matplotlib
-    $ curl http://matplotlib.sourceforge.net/matplotlibrc \
+    $ curl http://matplotlib.sourceforge.net/_static/matplotlibrc \
     > ~/.matplotlib/matplotlibrc
 
 You may now choose to either edit the "backend" configuration in

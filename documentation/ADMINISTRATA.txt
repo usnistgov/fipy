@@ -33,6 +33,7 @@ merge from trunk::
 
     $ cd ../trunk
     $ svn update
+    $ svn diff
 
 Set ``$LRN`` based on the updated revision of trunk::
 
@@ -47,9 +48,16 @@ which the branch was created::
 
     $ IRN=...
 
-Merge updated state of trunk to the branch::
+Go to the branch::
 
     $ cd ../$BRANCH
+   
+Check that it is up to date::
+
+    $ svn diff
+
+Merge updated state of trunk to the branch::
+
     $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
     $ svn diff
 
@@ -67,6 +75,7 @@ First, follow the instructions for
 Find the ``HEAD`` revision number::
 
     $ cd trunk
+    $ svn diff
     $ svn update
     $ HRN=...
 
@@ -215,6 +224,8 @@ Tag the repository as appropriate (see `SVN practices`_ above).
 Upload the build products and documentation from :file:`dist/` to MatForge and 
 the web site to CTCMS ::
 
+    $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
+    $ export FIPY_WWWACTIVATE=updatewww
     $ python setup.py upload --pdf --html --tarball --winzip
 
 .. note::

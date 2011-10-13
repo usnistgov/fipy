@@ -53,7 +53,11 @@ def _suite():
             'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.modularVariable',
             'fipy.variables.binaryOperatorVariable',
-            'fipy.variables.coupledCellVariable'
+            'fipy.variables.coupledCellVariable',
+            'fipy.variables.cellToFaceVariable',
+            'fipy.variables.faceGradVariable',
+            'fipy.variables.gaussCellGradVariable',
+            'fipy.variables.faceGradContributionsVariable'
         ))
     
 if __name__ == '__main__':

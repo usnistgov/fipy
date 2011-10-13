@@ -52,6 +52,11 @@ class BetaNoiseVariable(NoiseVariable):
     with a shape parameter :math:`\alpha`, a rate parameter :math:`\beta`, and 
     :math:`\Gamma(z) = \int_0^\infty t^{z - 1}e^{-t}\,dt`.
 
+    Seed the random module for the sake of deterministic test results.
+
+    >>> from fipy import numerix
+    >>> numerix.random.seed(1)
+
     We generate noise on a uniform cartesian mesh
            
     >>> from fipy.variables.variable import Variable

@@ -36,6 +36,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
 from fipy.terms import AbstractBaseClassError
+from fipy.variables.cellVariable import CellVariable
+from fipy.tools import numerix
 
 class SourceTerm(CellTerm):
     """
@@ -46,5 +48,10 @@ class SourceTerm(CellTerm):
             raise AbstractBaseClassError
 	CellTerm.__init__(self, coeff=coeff, var=var) 
 	
-    def _calcGeomCoeff(self, mesh):
-	return self.coeff * mesh.cellVolumes
+    def _calcGeomCoeff(self, var):
+        self._checkCoeff(var)
+
+        if self.coeff.shape != () and self.coeff.shape[-1] != len(var.mesh.cellVolumes):        
+            return self.coeff[...,numerix.newaxis] * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)
+        else:
+            return self.coeff * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)

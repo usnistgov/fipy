@@ -6,9 +6,10 @@
  # 
  #  FILE: "setup.py"
  #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: Jonathan Guyer   <guyer@nist.gov>
+ #  Author: Daniel Wheeler   <daniel.wheeler@nist.gov>
+ #  Author: James Warren     <jwarren@nist.gov>
+ #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -32,13 +33,14 @@
  # ###################################################################
  ##
 
-
 import glob
 import os
 import sys
 import string
 
 from distutils.core import Command
+from fipy.tools.efficiency_test import Efficiency_test
+from fipy.tools.copy_script import Copy_script
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup
@@ -63,7 +65,10 @@ def _TestClass(base):
             ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
             ('trilinos', None, "run FiPy using Trilinos solvers"),
             ('pysparse', None, "run FiPy using Pysparse solvers (default)"),
+            ('scipy', None, "run FiPy using SciPy solvers"),
+            ('Scipy', None, "run FiPy using SciPy solvers"),
             ('no-pysparse',None, "run FiPy without using the Pysparse solvers"),
+            ('pyamg',None, "run FiPy without using the PyAMG solvers"),
             ('all', None, "run all non-interactive FiPy tests (default)"),
             ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
             ('examples', None, "test FiPy examples"),
@@ -71,6 +76,7 @@ def _TestClass(base):
             ('viewers', None, "test FiPy viewer modules (requires user input)"),
             ('cache', None, "run FiPy with Variable caching"),
             ('no-cache', None, "run FiPy without Variable caching"),
+            ('timetests=', None, "file in which to put time spent on each test"),
            ]
 
 
@@ -92,6 +98,9 @@ def _TestClass(base):
             self.trilinos = False
             self.pysparse = False
             self.no_pysparse = False
+            self.pyamg = False
+            self.scipy = False
+            self.timetests = None
             
         def finalize_options(self):
             noSuiteOrModule = (self.test_suite is None 
@@ -151,16 +160,20 @@ def _TestClass(base):
                     print pkg, 'version check failed:', e
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
-            pkg = 'enthought.mayavi'
             try:
-                from enthought.mayavi.__version__ import __version__ as mayaviversion
-                print pkg,'version',mayaviversion
+                from mayavi.__version__ import __version__ as mayaviversion
+                print 'mayavi version', mayaviversion
             except ImportError, e:
-                print pkg,'is not installed'       
+                try:
+                    from enthought.mayavi.__version__ import __version__ as mayaviversion
+                    print 'enthought.mayavi version', mayaviversion
+                except ImportError, e:
+                    print pkg,'is not installed'       
+                except Exception, e:
+                    print pkg, 'version check failed:', e
             except Exception, e:
                 print pkg, 'version check failed:', e
 
-                
         def run_tests(self):
             import sys
             if self.Trilinos or self.trilinos or self.no_pysparse:
@@ -191,9 +204,33 @@ def _TestClass(base):
                 os.environ['PYTHONCOMPILED'] = self.pythoncompiled
 
             self.printPackageInfo()
+            
+            from pkg_resources import EntryPoint
+            import unittest
+            loader_ep = EntryPoint.parse("x="+self.test_loader)
+            loader_class = loader_ep.load(require=False)
+            
+            try:
+                unittest.main(
+                    None, None, [unittest.__file__]+self.test_args,
+                    testLoader = loader_class()
+                    )
+            except SystemExit, exitErr:
+                # unittest.main(..., exit=...) not available until Python 2.7
+                if self.timetests is not None:
+                    pass
+                else:
+                    raise
 
-            base.run_tests(self)
-
+            if self.timetests is not None:
+                from fipy.tests.doctestPlus import _DocTestTimes
+                import numpy
+                _DocTestTimes = numpy.rec.fromrecords(_DocTestTimes, formats='f8,S255', names='time,test')
+                _DocTestTimes.sort(order=('time', 'test'))
+                numpy.savetxt(self.timetests, _DocTestTimes[::-1], fmt="%8.4f\t%s")
+                
+            raise exitErr
+    
     return _test                    
             
 test = _TestClass(_test)
@@ -330,156 +367,6 @@ class upload_products(Command):
             if self.pdf:
                 webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
 
-class copy_script(Command):
-    description = "copy an example script into a new editable file"
-
-    # List of option tuples: long name, short name (None if no short
-    # name), and help string.
-    user_options = [
-        # Select installation scheme and set base director(y|ies)
-        ('From=', None,
-         "path and file name containing script to copy"),
-        ('To=', None,
-         "path and file name to save script to")
-     ]
-
-    def initialize_options(self):
-        self.From = None
-        self.To = None
-
-    def finalize_options(self):
-        if self.From == None:
-            raise "Please specify a '--From' input script file"
-         
-        if self.To == None:
-            raise "Please specify a '--To' output script file"
-            
-        if os.path.exists(os.path.expanduser(self.To)):
-            ans = "junk"
-            
-            while (len(ans) > 0) and ("yes".find(ans.lower()) is not 0) and ("no".find(ans.lower()) is not 0):
-                ans = raw_input("The file '%s' already exists. Overwrite? [n] "%self.To)
-                
-            if ans is '':
-                ans = 'no'
-                
-            if ("no".find(ans.lower()) is 0):
-                self.To = raw_input("Please give a name for the ouput file: ")
-                self.finalize_options()
-
-    def run(self):
-        import imp
-        import fipy.tests.doctestPlus
-        
-        mod = imp.load_source("copy_script_module", self.From)
-        script = fipy.tests.doctestPlus._getScript(name = "copy_script_module")
-        
-        script = "#!/usr/bin/env python\n\n## This script was derived from\n## '%s'\n\n%s"%(self.From, script)
-        
-        f = file(self.To, "w")
-        f.write(script)
-        f.close
-        
-        print "Script code exported from '%s' to '%s'"%(self.From, self.To)
-
-class efficiency_test(Command):
-    description = "run FiPy efficiency tests"
-    
-    user_options = [ ('minimumelements=', None, 'minimum number of elements'),
-                     ('factor=', None, 'factor by which the number of elements is increased'),
-                     ('inline', None, 'turn on inlining for the efficiency tests'),
-                     ('cache', None, 'turn on variable caching'),
-                     ('maximumelements=', None, 'maximum number of elements'),
-                     ('sampleTime=', None, 'sampling interval for memory high-water'),
-                     ('path=', None, 'directory to place output results in')]
-    
-    def initialize_options(self):
-        self.factor = 10
-        self.inline = 0
-        self.cache = 0
-        self.maximumelements = 10000
-        self.minimumelements = 100
-        self.sampleTime = 1
-        self.path = None
-        self.cases = ['examples/benchmarking/cahnHilliard.py', 'examples/benchmarking/superfill.py', 'examples/benchmarking/phaseImpingement.py', 'examples/benchmarking/mesh.py']
-        
-    def finalize_options(self):
-        self.factor = int(self.factor)
-        self.maximumelements = int(self.maximumelements)
-        self.minimumelements = int(self.minimumelements)
-        self.sampleTime = float(self.sampleTime)
-
-    def run(self):
-
-        import time
-        import os
-        
-        for case in self.cases:
-            print "case: %s" % case
-            
-            if self.path is None:
-                testPath = os.path.split(case)[0]
-            else:
-                testPath = self.path
-                
-            if not os.access(testPath, os.F_OK):
-                os.makedirs(testPath)
-                
-            testPath = os.path.join(testPath, '%s.dat' % os.path.split(case)[1])
-            
-            if not os.path.isfile(testPath):
-                f = open(testPath, 'w')
-
-                f.write("\t".join(["--inline", "--cache", "Date", "Elements", \
-                                  "mesh (s)", "variables (s)", "terms (s)", \
-                                  "solver (s)", "BCs (s)", "solve (s)", \
-                                  "total (s)", "per step (s)", \
-                                  \
-                                  "mesh (KiB)", "variables (KiB)", \
-                                  "terms (KiB)", "solver (KiB)", "BCs (KiB)", \
-                                  "solve (KiB)", "max (KiB)", \
-                                  "per element (KiB)"]))
-                f.write("\n")
-                f.flush()
-            else:
-                f = open(testPath, 'a')
-            
-            numberOfElements = self.minimumelements
-
-            while numberOfElements <= self.maximumelements:
-                print "\tnumberOfElements: %i" % numberOfElements
-                
-                cmd = [case, '--numberOfElements=%i' % numberOfElements]
-                
-                if self.inline:
-                    cmd += ['--inline']
-                    
-                if self.cache:
-                    cmd += ['--cache']
-                else:
-                    cmd += ['--no-cache']
-
-                output = "\t".join([str(self.inline), str(self.cache), time.ctime(), str(numberOfElements)])
-                
-                timeCmd = cmd + ['--measureTime']
-                w, r = os.popen4(' '.join(timeCmd))
-                output += '\t' + ''.join(r.readlines()).strip()
-                r.close()
-                w.close()
-
-                memCmd = cmd + ['--measureMemory', '--sampleTime=%f' % self.sampleTime]
-                w, r = os.popen4(' '.join(memCmd))
-                output += '\t' + ''.join(r.readlines()).strip()
-                r.close()
-                w.close()
-                    
-                f.write(output + '\n')
-                f.flush()
-
-                numberOfElements *= self.factor
-
-            f.close()
-
 try:            
     f = open('README.txt', 'r')
     long_description = '\n' + f.read() + '\n'
@@ -492,8 +379,7 @@ try:
     license = '\n' + ''.join([' '*8 + l for l in f])
     f.close()
 except IOError, e:
-    license = ''
-    
+    license = ''    
 # The following doesn't work reliably, because it requires fipy
 # to already be installed (or at least egged), which is kind of 
 # obnoxious. We use cmdclass instead.
@@ -559,11 +445,11 @@ dist = setup(	name = "FiPy",
         long_description = long_description,
         cmdclass = {
             'build_docs':build_docs,
-            'upload':upload_products,
+            'upload_products':upload_products,
             'test':test,
             'unittest':unittest,
-            'copy_script': copy_script,
-            'efficiency_test': efficiency_test
+            'copy_script': Copy_script,
+            'efficiency_test': Efficiency_test
         },
         test_suite="fipy.test._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),

@@ -49,6 +49,11 @@ class ExponentialNoiseVariable(NoiseVariable):
        
     with a mean parameter :math:`\mu`.
 
+    Seed the random module for the sake of deterministic test results.
+
+    >>> from fipy import numerix
+    >>> numerix.random.seed(1)
+
     We generate noise on a uniform cartesian mesh
            
     >>> from fipy.variables.variable import Variable

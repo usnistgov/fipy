@@ -41,12 +41,40 @@ from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
 
 
 class _GaussCellGradVariable(CellVariable):
+    """
+    Test case for a vector cell variable
+
+    >>> from fipy import *
+    >>> m = Grid2D(nx=3, ny=3)
+    >>> x, y = m.cellCenters
+    >>> v = CellVariable(mesh=m, elementshape=(3,))
+    >>> v[0] = x
+    >>> v[1] = y
+    >>> v[2] = x**2
+    >>> v0 = CellVariable(mesh=m, value=x)
+    >>> v1 = CellVariable(mesh=m, value=y)
+    >>> v2 = CellVariable(mesh=m, value=x**2)
+    >>> v.grad.globalValue.shape
+    (2, 3, 9)
+    >>> print v0.grad
+    [[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5]
+     [ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]]
+    >>> print (v0.grad.globalValue == v.grad.globalValue[:,0]).all()
+    True
+    >>> print (v1.grad.globalValue == v.grad.globalValue[:,1]).all()
+    True
+    >>> print (v2.grad.globalValue == v.grad.globalValue[:,2]).all()
+    True
+        
+    """
+    
     def __init__(self, var, name=''):
-        CellVariable.__init__(self, mesh=var.mesh, name=name, rank=var.rank + 1)
+        CellVariable.__init__(self, mesh=var.mesh, name=name, elementshape=(var.mesh.dim,) + var.shape[:-1])
         self.var = self._requires(var)
         self.faceGradientContributions = _FaceGradContributions(self.var)
-        
-    def _calcValueIn(self, N, M, ids, orientations, volumes):
+
+
+    def _calcValueInline(self, N, M, ids, orientations, volumes):
         val = self._array.copy()
 
         inline._runIterateElementInline("""
@@ -57,7 +85,7 @@ class _GaussCellGradVariable(CellVariable):
                 int id = ITEM(ids, i, &k);
                 ITEM(val, i, vec) += ITEM(orientations, i, &k) * ITEM(areaProj, id, vec) * ITEM(faceValues, id, NULL);
             }
-                
+
             ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
         """,val = val,
             ids = numerix.array(numerix.MA.filled(ids, 0)),
@@ -70,21 +98,30 @@ class _GaussCellGradVariable(CellVariable):
             shape=numerix.array(numerix.shape(val)))
 
         return self._makeValue(value = val)
-            
-    def _calcValuePy(self, N, M, ids, orientations, volumes):
-        contributions = numerix.take(self.faceGradientContributions, ids, axis=1)
 
-        grad = numerix.array(numerix.sum(orientations * contributions, 1))
-
+    def _calcValueNoInline(self, N, M, ids, orientations, volumes):
+        contributions = numerix.take(self.faceGradientContributions, ids, axis=-1)
+        grad = numerix.array(numerix.sum(orientations * contributions, -2))
         return grad / volumes
 
     def _calcValue(self):
-        N = self.mesh.numberOfCells
-        M = self.mesh._maxFacesPerCell
+        if inline.doInline and self.var.rank == 0:
+            return self._calcValueInline(N=self.mesh.numberOfCells, 
+                                         M=self.mesh._maxFacesPerCell, 
+                                         ids=self.mesh.cellFaceIDs, 
+                                         orientations=self.mesh._cellToFaceOrientations, 
+                                         volumes=self.mesh.cellVolumes)
+        else:
+            return self._calcValueNoInline(N=self.mesh.numberOfCells, 
+                                           M=self.mesh._maxFacesPerCell, 
+                                           ids=self.mesh.cellFaceIDs, 
+                                           orientations=self.mesh._cellToFaceOrientations, 
+                                           volumes=self.mesh.cellVolumes)
         
-        ids = self.mesh.cellFaceIDs
 
-        orientations = self.mesh._cellToFaceOrientations
-        volumes = self.mesh.cellVolumes
-
-        return inline._optionalInline(self._calcValueIn, self._calcValuePy, N, M, ids, orientations, volumes)
+def _test(): 
+    import doctest
+    return doctest.testmod()
+    
+if __name__ == "__main__": 
+    _test() 

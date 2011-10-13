@@ -43,6 +43,8 @@ from pysparse import superlu
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.tools import numerix
 
+DEBUG = False
+
 class LinearLUSolver(PysparseSolver):
     """
     
@@ -73,8 +75,9 @@ class LinearLUSolver(PysparseSolver):
 
         iterations = min(iterations, maxIterations)
         
-        PysparseSolver.__init__(self, tolerance = tolerance, 
-                                      iterations=iterations, steps = steps)
+        super(LinearLUSolver, self).__init__(tolerance = tolerance, 
+                                             iterations = iterations, 
+                                             steps = steps)
 
     def _solve_(self, L, x, b):
         diag = L.takeDiagonal()
@@ -84,6 +87,10 @@ class LinearLUSolver(PysparseSolver):
         b = b * (1 / maxdiag)
 
         LU = superlu.factorize(L.matrix.to_csr())
+
+        if DEBUG:
+            import sys
+            print >> sys.stderr, L.matrix
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 

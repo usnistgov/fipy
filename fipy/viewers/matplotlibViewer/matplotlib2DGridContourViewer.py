@@ -78,7 +78,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
         self._plot()
         
     def _getSuitableVars(self, vars):
-        from fipy.meshes import Grid2D
+        from fipy.meshes.grid2D import Grid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.mesh, Grid2D) and isinstance(var, CellVariable))]
@@ -105,6 +105,9 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
         zmin, zmax = self._autoscale(vars=self.vars,
                                      datamin=self._getLimit(('datamin', 'zmin')),
                                      datamax=self._getLimit(('datamax', 'zmax')))
+                      
+        self.norm.vmin = zmin
+        self.norm.vmax = zmax
 
         numberOfContours = 10
         smallNumber = 1e-7
@@ -124,7 +127,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
                            ymax=self._getLimit('ymax'))
                    
         if self.colorbar is not None:
-            self.colorbar.plot(vmin=zmin, vmax=zmax)
+            self.colorbar.plot() 
 
                    
 def _test():

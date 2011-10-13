@@ -81,6 +81,11 @@ class GaussianNoiseVariable(NoiseVariable):
     >>> mean = 0.
     >>> variance = 4.
 
+    Seed the random module for the sake of deterministic test results.
+
+    >>> from fipy import numerix
+    >>> numerix.random.seed(3)
+
     We generate noise on a non-uniform cartesian mesh with cell dimensions of
     :math:`x^2` and :math:`y^3`.
            
@@ -104,7 +109,7 @@ class GaussianNoiseVariable(NoiseVariable):
     >>> gauss.value = ((1/(sqrt(variance * 2 * pi))) * exp(-(x - mean)**2 / (2 * variance)))
     
     >>> if __name__ == '__main__':
-    ...     from fipy import viewers
+    ...     from fipy.viewers import Viewer
     ...     viewer = Viewer(vars=noise, 
     ...                     datamin=-5, datamax=5)
     ...     histoplot = Viewer(vars=(histogram, gauss))

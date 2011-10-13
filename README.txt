@@ -28,7 +28,7 @@ Overview
    [BoettingerReview:2002]_ [ChenReview:2002]_ [McFaddenReview:2002]_ treatments of
    polycrystalline, dendritic, and electrochemical phase transformations as
    well as a level set treatment of the electrodeposition process
-   [NIST:damascene:2001]_.
+   [NIST:damascene:2001]_. 
 
 .. only:: latex
   
@@ -212,7 +212,7 @@ long as they are defined on a "``Grid``" mesh
    A design wart presently *also* requires that :term:`PySparse` be
    installed. We hope to alleviate this requirement in a future release.
 
-* It should not generally be necessary to change anything in your script. s
+* It should not generally be necessary to change anything in your script.
   Simply invoke::
 
      $ mpirun -np {# of processors} python myScript.py
@@ -238,9 +238,9 @@ long as they are defined on a "``Grid``" mesh
 
   should print out::
 
-     5 cells on processor 0 of 3
-     7 cells on processor 1 of 3
-     6 cells on processor 2 of 3
+     mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 3 :: FiPy: 5 cells on processor 0 of 3
+     mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
+     mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
 
 A complete list of the changes to FiPy's examples needed for parallel 
 can be found at

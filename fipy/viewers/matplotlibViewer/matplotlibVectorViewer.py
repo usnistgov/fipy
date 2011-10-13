@@ -97,17 +97,18 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
 
         if isinstance(var, FaceVariable):
             N = mesh.numberOfFaces 
-            W = mesh._faceAreas
-            W = (W / min(W))**0.05
             X, Y = mesh.faceCenters
+
         elif isinstance(var, CellVariable):
             N = mesh.numberOfCells 
-            W = mesh.cellVolumes
             X, Y = mesh.cellCenters
-
+            
         if sparsity is not None and N > sparsity:
-            self.indices = numerix.random.rand(N) * W
-            self.indices = self.indices.argsort()[-sparsity:]
+            XYrand = numerix.random.random((2, sparsity))
+            XYrand = numerix.array([[min(X)], 
+                                    [min(Y)]]) + XYrand * numerix.array([[max(X) - min(X)],
+                                                                         [max(Y) - min(Y)]])
+            self.indices = numerix.nearest(numerix.array([X, Y]), XYrand)
         else:
             self.indices = numerix.arange(N)
 
@@ -116,13 +117,18 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         
         U = V = numerix.ones(X.shape)
         
+        if hasattr(self, "_quiver"):
+            self._quiver.remove()
+        
         self._quiver = self.axes.quiver(X, Y, U, V, scale=scale, pivot='middle')
 
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
+        from fipy.meshes.uniformGrid2D import UniformGrid2D
 
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-                if (isinstance(var.mesh, Mesh2D) \
+                if ((isinstance(var.mesh, Mesh2D) 
+                     or isinstance(var.mesh, UniformGrid2D))\
                     and (isinstance(var, FaceVariable) \
                          or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:

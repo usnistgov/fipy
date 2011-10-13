@@ -70,10 +70,16 @@ import signal
 import sys
 
 # Enthought library imports
-from enthought.mayavi.plugins.app import Mayavi
-from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
-from enthought.pyface.timer.api import Timer
-from enthought.mayavi import mlab
+try:
+    from mayavi.plugins.app import Mayavi
+    from mayavi.sources.vtk_file_reader import VTKFileReader
+    from pyface.timer.api import Timer
+    from mayavi import mlab
+except ImportError, e:
+    from enthought.mayavi.plugins.app import Mayavi
+    from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
+    from enthought.pyface.timer.api import Timer
+    from enthought.mayavi import mlab
 
 # FiPy library imports
 from fipy.tools.numerix import array, concatenate, where, zeros
@@ -312,7 +318,11 @@ class MayaviDaemon(Mayavi):
                     has_scale_bar = True
 
 signal.signal(signal.SIGINT, MayaviDaemon._sigint_handler)
-signal.signal(signal.SIGHUP, MayaviDaemon._sigint_handler)
+try:
+    signal.signal(signal.SIGHUP, MayaviDaemon._sigint_handler)
+except AttributeError:
+    # not available on Windows
+    pass
 signal.signal(signal.SIGTERM, MayaviDaemon._sigint_handler)
 
 def main(argv=None):

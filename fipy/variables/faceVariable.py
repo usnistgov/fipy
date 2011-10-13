@@ -90,8 +90,10 @@ class FaceVariable(_MeshVariable):
         """
         if not hasattr(self, '_divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
-            self._divergence = _AddOverFacesVariable(self.dot(self.mesh._orientedAreaProjections))
-            
+
+            s = (slice(0,None,None),) + (numerix.newaxis,) * (len(self.shape) - 2) + (slice(0,None,None),)
+            self._divergence = _AddOverFacesVariable((self * self.mesh._orientedAreaProjections[s]).sum(0))
+
         return self._divergence
 
     @property

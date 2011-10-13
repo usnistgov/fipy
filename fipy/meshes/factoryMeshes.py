@@ -90,7 +90,9 @@ def Grid1D(dx=1., nx=None, overlap=2, communicator=parallel):
 def CylindricalGrid2D(dr=None, dz=None, 
                       nr=None, nz=None, 
                       dx=1., dy=1., 
-                      nx=None, ny=None, 
+                      nx=None, ny=None,
+                      origin=((0,),(0,)),
+                      overlap=2,
                       communicator=parallel):
     import cylindricalUniformGrid2D
     import cylindricalGrid2D
@@ -110,11 +112,11 @@ def CylindricalGrid2D(dr=None, dz=None,
         dy = 1.
     
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
-        return cylindricalUniformGrid2D.CylindricalUniformGrid2D(dx=dx, dy=dy, nx=nx or 1, ny=ny or 1, communicator=communicator)
+        return cylindricalUniformGrid2D.CylindricalUniformGrid2D(dx=dx, dy=dy, nx=nx or 1, ny=ny or 1, origin=origin, overlap=overlap, communicator=communicator)
     else:
-        return cylindricalGrid2D.CylindricalGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=communicator)
+        return cylindricalGrid2D.CylindricalGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, origin=origin, overlap=overlap, communicator=communicator)
 
-def CylindricalGrid1D(dr=None, nr=None, dx=1., nx=None):
+def CylindricalGrid1D(dr=None, nr=None, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallel):
     import cylindricalUniformGrid1D
     import cylindricalGrid1D
 
@@ -124,7 +126,7 @@ def CylindricalGrid1D(dr=None, nr=None, dx=1., nx=None):
     nx = nr or nx
 
     if numerix.getShape(dx) == ():
-        return cylindricalUniformGrid1D.CylindricalUniformGrid1D(dx=dx, nx=nx or 1)
+        return cylindricalUniformGrid1D.CylindricalUniformGrid1D(dx=dx, nx=nx or 1, origin=origin, overlap=overlap, communicator=parallel)
     else:
-        return cylindricalGrid1D.CylindricalGrid1D(dx=dx, nx=nx)
+        return cylindricalGrid1D.CylindricalGrid1D(dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=parallel)
 

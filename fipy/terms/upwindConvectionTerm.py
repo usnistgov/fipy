@@ -38,7 +38,6 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.baseUpwindConvectionTerm import _BaseUpwindConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.solvers import DefaultAsymmetricSolver
-from fipy.terms import AlternativeMethodInBaseClass
 
 class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
     r"""
@@ -54,9 +53,8 @@ class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
     For further details see :ref:`sec:NumericalSchemes`.
     """
 
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        if _BaseUpwindConvectionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
-            AlternativeMethodInBaseClass('_getDefaultSolver()')
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        solver = solver or super(UpwindConvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)

@@ -65,15 +65,15 @@ def _OperatorVariableClass(baseClass=object):
         
         def _calcValue(self):
             if not self.canInline:
-                return self._calcValuePy()
+                return self._calcValue_()
             else:
                 from fipy.tools import inline
-                return inline._optionalInline(self._calcValueIn, self._calcValuePy)
+                if inline.doInline:
+                    return self._execInline(comment=self.comment)
+                else:
+                    return self._calcValue_()
 
-        def _calcValueIn(self):
-            return self._execInline(comment=self.comment)
-
-        def _calcValuePy(self):
+        def _calcValue_(self):
             pass
 
         def _isCached(self):
@@ -265,7 +265,7 @@ def _testBinOp(self):
         >>> (Variable(value="1 m") / Variable(value="0 s")).unit
         <PhysicalUnit m/s>
 
-        >>> a = -((Variable() * Variable()).sin())
+        >>> a = -(numerix.sin(Variable() * Variable()))
 
     Check that getTypeCode() works as expected.
 

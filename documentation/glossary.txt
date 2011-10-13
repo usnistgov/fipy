@@ -5,6 +5,11 @@ Glossary
 
 .. glossary::
 
+   Buildbot
+      The BuildBot is a system to automate the compile/test cycle
+      required by most software projects to validate code changes.
+      See http://trac.buildbot.net/.
+
    FiPy
       The eponymous software package. 
       See http://www.ctcms.nist.gov/fipy.
@@ -73,6 +78,9 @@ Glossary
       written in. See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/.
 
+   PyxViewer
+      A now defunct python viewer.
+
    ScientificPython
       A collection of useful utilities for scientists. See 
       http://dirac.cnrs-orleans.fr/plone/software/scientificpython.
@@ -95,5 +103,3 @@ Glossary
       :term:`Trilinos` preconditioning allows for iterative solutions to
       some difficult problems that :term:`PySparse` cannot solve. See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov.
-
-

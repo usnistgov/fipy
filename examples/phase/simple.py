@@ -170,17 +170,17 @@ The source term is
 
 where
 :math:`m_\phi \equiv -[W(1-2\phi) + 30\phi(1-\phi)L\frac{T-T_M}{T_M}]`.
-  
+
 The simplest approach is to add this source explicitly
 
 >>> mPhi = -((1 - 2 * phase) * W + 30 * phase * (1 - phase) * enthalpy)
 >>> S0 = mPhi * phase * (1 - phase)
 >>> eq = S0 + DiffusionTerm(coeff=kappa)
-    
+
 After solving this equation
 
->>> eq.solve(var = phase)
-    
+>>> eq.solve(var = phase, solver=DummySolver())
+
 we obtain the surprising result that :math:`\phi` is zero everywhere.
 
 >>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
@@ -193,7 +193,7 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
    :width: 50%
    :align: center
 
-On inspection, we can see that this occurs because, for our step-function initial condition, 
+On inspection, we can see that this occurs because, for our step-function initial condition,
 :math:`m_\phi = 0` everwhere,
 hence we are actually only solving the simple implicit diffusion equation
 :math:`\kappa_\phi \nabla^2\phi = 0`,
@@ -227,13 +227,12 @@ After 13 time steps, the solution has converged to the analytical solution
    :width: 50%
    :align: center
 
-.. note:: The solution is only found accurate to
-   :math:`\approx 4.3\times 10^{-5}`
-   because the infinite-domain analytical solution 
-   :eq:`eq-phase:simple:analytical`
+.. note:: The solution is only found accurate 
+   to :math:`\approx 4.3\times 10^{-5}`
+   because the infinite-domain analytical 
+   solution :eq:`eq-phase:simple:analytical`
    is not an exact representation for the solution in a finite domain of
-   length
-   :math:`L`.
+   length :math:`L`.
 
 Setting fixed-value boundary conditions of 1 and 0 would still require the
 relaxation method with the fully explicit source.
@@ -396,8 +395,13 @@ We take :math:`\delta \approx \Delta x`.
 >>> W = 6 * sigma / delta # J / cm**3
 >>> Mphi = Tm * beta / (6. * Lv * delta) # cm**3 / (J s)
 
+>>> if __name__ == '__main__':
+...     displacement = L * 0.1
+... else:
+...     displacement = L * 0.025
+
 >>> analyticalArray = CellVariable(name="tanh", mesh=mesh,
-...                                value=0.5 * (1 - tanh((x - (L / 2. + L / 10.)) 
+...                                value=0.5 * (1 - tanh((x - (L / 2. + displacement)) 
 ...                                                      / (2 * delta))))
 
 and make a new viewer
@@ -446,7 +450,7 @@ Again we use the :meth:`sweep` method as a replacement for :meth:`solve`.
 >>> velocity = beta * abs(Tm - T()) # cm / s
 >>> timeStep = .1 * dx / velocity # s
 >>> elapsed = 0
->>> while elapsed < 0.1 * L / velocity:
+>>> while elapsed < displacement / velocity:
 ...     phase.updateOld()
 ...     res = 1e+10
 ...     while res > 1e-5:
@@ -484,7 +488,7 @@ thickness
 ...     print "The SciPy library is unavailable to fit the interface \
 ... thickness and velocity"
 
->>> print abs(1 - V_fit / velocity) < 3.3e-2
+>>> print abs(1 - V_fit / velocity) < 4.1e-2
 True
 >>> print abs(1 - d_fit / delta) < 2e-2
 True

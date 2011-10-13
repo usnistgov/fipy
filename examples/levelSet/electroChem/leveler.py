@@ -378,8 +378,8 @@ def runLeveler(kLeveler=0.018,
                  (levelerSurfactantEquation, levelerVar, (), None),
                  (acceleratorSurfactantEquation, acceleratorVar, (), None),
                  (metalEquation, metalVar,  (), None),
-                 (bulkAcceleratorEquation, bulkAcceleratorVar, (), None),
-                 (bulkLevelerEquation, bulkLevelerVar, (), None))
+                 (bulkAcceleratorEquation, bulkAcceleratorVar, (), GeneralSolver()),
+                 (bulkLevelerEquation, bulkLevelerVar, (), GeneralSolver()))
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 
@@ -414,9 +414,6 @@ def runLeveler(kLeveler=0.018,
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
 
         extensionVelocityVariable[mesh.fineMesh.numberOfCells:] = 0.
-
-        for eqn, var, BCs, solver in eqnTuple:
-            var.updateOld()
 
         for eqn, var, BCs, solver in eqnTuple:
             eqn.solve(var, boundaryConditions = BCs, dt = dt, solver=solver)

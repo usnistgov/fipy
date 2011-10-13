@@ -55,6 +55,7 @@ conservation of surfactant:
 
 >>> surfactantBefore = sum(surfactantVariable * mesh.cellVolumes)
 >>> totalTime = 0
+>>> steps = 5
 >>> for step in range(steps):
 ...     velocity.setValue(surfactantVariable.interfaceVar * k)
 ...     distanceVariable.extendVariable(velocity)

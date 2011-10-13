@@ -50,47 +50,41 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, equation=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        if var is self.var or self.var is None:
+        oldArray = var.old
 
-            oldArray = var.old
+        mesh = var.mesh
+        NCells = mesh.numberOfCells
+        NCellFaces = mesh._maxFacesPerCell
 
-            mesh = var.mesh
-            NCells = mesh.numberOfCells
-            NCellFaces = mesh._maxFacesPerCell
+        cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
 
-            cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
+        cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
+        cellToCellIDs = mesh._cellToCellIDs
 
-            cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
-            cellToCellIDs = mesh._cellToCellIDs
+        if NCells > 0:
+            cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
 
-            if NCells > 0:
-                cellToCellIDs = MA.where(MA.getmask(cellToCellIDs), cellIDs, cellToCellIDs) 
+            adjacentValues = numerix.take(oldArray, cellToCellIDs)
 
-                adjacentValues = numerix.take(oldArray, cellToCellIDs)
+            differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
+            differences = MA.filled(differences, 0)
 
-                differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
-                differences = MA.filled(differences, 0)
+            minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
+            maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
 
-                minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
-                maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
+            coeff = numerix.array(self._getGeomCoeff(var))
 
-                coeff = numerix.array(self._getGeomCoeff(mesh))
-
-                coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
-            else:
-                coeffXdiffereneces = 0.
-
-            return (var, SparseMatrix(mesh=var.mesh), -coeffXdiffereneces * mesh.cellVolumes)
-
+            coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
         else:
-            return (var, SparseMatrix(mesh=var.mesh), 0)
+            coeffXdiffereneces = 0.
+
+        return (var, SparseMatrix(mesh=var.mesh), -coeffXdiffereneces * mesh.cellVolumes)
 
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._cellToCellDistances
         
-    def _getDefaultSolver(self, solver, *args, **kwargs):
-        if _NonDiffusionTerm._getDefaultSolver(self, solver, *args, **kwargs) is not None:
-            raise AssertionError, 'An alternate _getDefaultSolver() is defined in a base class'
+    def _getDefaultSolver(self, var, solver, *args, **kwargs):
+        solver = solver or super(_BaseAdvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
         
         if solver and not solver._canSolveAsymmetric():
             import warnings
@@ -101,6 +95,9 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
             from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
             from fipy.solvers.trilinos.linearGMRESSolver import LinearGMRESSolver
             return solver or LinearGMRESSolver(precon=JacobiPreconditioner(), *args, **kwargs)
+        elif fipy.solvers.solver == 'pyamg':
+            from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
+            return solver or LinearGeneralSolver(tolerance=1e-15, iterations=2000, *args, **kwargs)
         else:
             from fipy.solvers import DefaultAsymmetricSolver
             return solver or DefaultAsymmetricSolver(*args, **kwargs)

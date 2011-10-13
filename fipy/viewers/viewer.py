@@ -80,6 +80,7 @@ class _Viewer(object):
     def _getSuitableVars(self, vars):
         if type(vars) not in [type([]), type(())]:
             vars = [vars]
+
         return [var for var in vars]
         
     def setLimits(self, limits={}, **kwlimits):
@@ -179,14 +180,14 @@ class _Viewer(object):
         This routine attempts to be savvy about running in parallel.
         """
         try:
-            from PyTrilinos import Epetra
-            Epetra.PyComm().Barrier()
+            from fipy.tools import parallel
+            parallel.Barrier()
             _Viewer._saved_stdout.flush()
-            if Epetra.PyComm().MyPID() == 0:
+            if parallel.procID == 0:
                 txt = _Viewer._serial_doctest_raw_input(prompt)
             else:
                 txt = ""
-            Epetra.PyComm().Barrier()
+            parallel.Barrier()
         except ImportError:
             txt = _Viewer._serial_doctest_raw_input(prompt)
         return txt
@@ -261,17 +262,17 @@ class _Viewer(object):
             >>> mesh = %(mesh)s
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
-            >>> k = Variable(name="k", value=0.)
+            >>> k = Variable(name="k", value=1.)
             >>> viewer = %(viewer)s(vars=sin(k * xyVar).grad, 
             ...                 title="%(viewer)s test")
-            >>> for kval in range(10):
+            >>> for kval in arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
 
             >>> viewer = %(viewer)s(vars=sin(k * xyVar).faceGrad, 
             ...                 title="%(viewer)s test")
-            >>> for kval in range(10):
+            >>> for kval in arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()

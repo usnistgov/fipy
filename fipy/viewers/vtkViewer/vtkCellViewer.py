@@ -63,7 +63,10 @@ class VTKCellViewer(_VTKViewer):
         >>> f, fname = mkstemp(".vtk")
         >>> os.close(f)
 
-        >>> from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
+        >>> try:
+        ...     from mayavi.sources.vtk_file_reader import VTKFileReader
+        ... except ImportError, e:
+        ...     from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
 
         >>> from fipy import *
         >>> from fipy.viewers.vtkViewer import VTKCellViewer

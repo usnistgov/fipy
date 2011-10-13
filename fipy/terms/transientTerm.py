@@ -35,7 +35,8 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
-from fipy.terms import AlternativeMethodInBaseClass
+from fipy.variables.cellVariable import CellVariable
+from fipy.tools import numerix
 
 class TransientTerm(CellTerm):
     r"""
@@ -107,15 +108,20 @@ class TransientTerm(CellTerm):
             'diagonal': 0
 	}
 	
-    def _calcGeomCoeff(self, mesh):
-	return self.coeff * mesh.cellVolumes
-
+    def _calcGeomCoeff(self, var):
+        self._checkCoeff(var)
+        if var.rank != 0 and not isinstance(self.coeff, CellVariable):            
+            return self.coeff[...,numerix.newaxis] * numerix.resize(var.mesh.cellVolumes, var.shape)
+        else:
+            return self.coeff * numerix.resize(var.mesh.cellVolumes, var.shape)
+        
     def _getTransientGeomCoeff(self, var):
         """
         Test to ensure that _getTransientGeomCoeff is not returning None when a
         TransientTerm is defined.
 
         >>> from fipy import *
+        >>> from fipy.matrices.pysparseMatrix import _PysparseMatrix
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
         >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
@@ -135,20 +141,80 @@ class TransientTerm(CellTerm):
         [[-2.]]
 
         """
-        if CellTerm._getTransientGeomCoeff(self, var) is not None:
-            AlternativeMethodInBaseClass('_getTransientGeomCoeff()')
         if var is self.var or self.var is None:
-            return self._getGeomCoeff(var.mesh)
+            return self._getGeomCoeff(var)
         else:
             return None
 
     @property
     def _transientVars(self):
-        if len(super(TransientTerm, self)._transientVars) != 0:
-            AlternativeMethodInBaseClass('_getDiffusionGeomCoeff()')
         return self._vars
-    
+
+    def _test(self):
+        """
+        >>> from fipy import *
+        >>> m = Grid1D(nx=6)
+        >>> v = CellVariable(mesh=m, rank=1, elementshape=(2,))
+        >>> eq = TransientTerm()
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve(v)
+        >>> print eq.matrix.numpyArray.shape
+        (12, 12)
+        >>> print len(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
+        12
         
+        >>> v[0] = 1.
+        >>> v[1] = 0.5
+        >>> coeff = CellVariable(mesh=m, elementshape=(2, 2))
+        >>> coeff[0, 0] = 1.
+        >>> coeff[0, 1] = 2.
+        >>> coeff[1, 0] = 3.
+        >>> coeff[1, 1] = 4.
+        >>> eq = TransientTerm(coeff)
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve(v)
+        >>> print eq.matrix.numpyArray
+        [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
+         [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
+         [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
+         [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.]
+         [ 0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.]
+         [ 0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.]
+         [ 3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.  0.]
+         [ 0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.]
+         [ 0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.]
+         [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
+         [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
+         [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
+        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
+        [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
+        >>> v[0] = 1.
+        >>> v[1] = 0.5
+        >>> eq = TransientTerm(((1., 2.), (3. , 4.)))
+        >>> eq.cacheMatrix()
+        >>> eq.cacheRHSvector()
+        >>> eq.solve(v)
+        >>> print eq.matrix.numpyArray
+        [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
+         [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
+         [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
+         [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.]
+         [ 0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.]
+         [ 0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.]
+         [ 3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.  0.]
+         [ 0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.]
+         [ 0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.]
+         [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
+         [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
+         [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
+        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
+        [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
+
+        """
+        pass
+            
 def _test(): 
     import doctest
     return doctest.testmod()

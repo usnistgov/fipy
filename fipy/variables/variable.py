@@ -42,7 +42,7 @@ from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
 from fipy.tools import inline
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.decorators import getsetDeprecated, mathMethodDeprecated
 
 class Variable(object):
     """
@@ -64,7 +64,7 @@ class Variable(object):
     >>> a.setValue(5)
     >>> b
     (Variable(value=array(5)) * 4)
-    >>> b()
+    >>> print b()
     20
     """
 
@@ -153,10 +153,12 @@ class Variable(object):
                 return v
             args = [__makeVariable(arg) for arg in args]
 
+            cannotInline = ["expi", "logical_and", "logical_or", "logical_not", "logical_xor", "sign", 
+                            "conjugate", "dot", "allclose", "allequal"]
             if len(args) == 1:
-                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape)
+                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape, canInline=func.__name__ not in cannotInline)
             elif len(args) == 2:
-                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape)
+                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape, canInline=func.__name__ not in cannotInline)
             else:
                 result = NotImplemented
 
@@ -406,6 +408,20 @@ class Variable(object):
              '(var0 * var1[i])'
 
          freshen is ignored
+
+         Testing when a cell variable multiplies an array that has a
+         shape, but has olny one element. This works regullarly,
+         but fails when inlining.
+
+         >>> from fipy import *
+         >>> m = Grid1D(nx=3)
+         >>> x = m.cellCenters[0]
+         >>> tmp = m.cellCenters[0] * array(((0.,), (1.,)))[1]
+         >>> print numerix.allclose(tmp, x)
+         True
+         >>> print numerix.allclose(tmp, x)
+         True
+         
          """
          
          identifier = 'var%s' % (id)
@@ -433,8 +449,9 @@ class Variable(object):
              shape = self.shape
 
          if len(shape) == 0:
-##             return identifier + '(0)'         
              return identifier
+         elif len(shape) == 1 and shape[0] == 1:
+             return identifier + '[0]'
          else:
              return identifier + self._getCIndexString(shape)
 
@@ -507,19 +524,21 @@ class Variable(object):
         else:
             value = self._value
 
-        if hasattr(self, 'constraints'):
-            for constraintValue, mask in self.constraints:
-                if mask is None:
-                    value[:] = constraintValue
+        if len(self.constraints) > 0:
+            value = value.copy()
+            for constraint in self.constraints:
+                if constraint.where is None:
+                    value[:] = constraint.value
                 else:
+                    mask = constraint.where
                     if not hasattr(mask, 'dtype') or mask.dtype != bool:
                         mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
 
                     if 0 not in value.shape:
                         try:
-                            value[...,mask] = constraintValue
+                            value[..., mask] = constraint.value
                         except:
-                            value[...,mask] = constraintValue[...,mask]
+                            value[..., mask] = numerix.array(constraint.value)[..., mask]
 
         return value
 
@@ -529,6 +548,12 @@ class Variable(object):
         self.setValue(newVal)
 
     value = property(_getValue, _setValueProperty)
+    
+    @property
+    def constraints(self):
+        if not hasattr(self, "_constraints"):
+            self._constraints = []
+        return self._constraints
             
     def constrain(self, value, where=None):
         """
@@ -555,7 +580,7 @@ class Variable(object):
         [8 8 8 8]
         >>> del v.constraints[2]
         >>> print v
-        [2 8 5 8]
+        [ 2 10  5 10]
 
         >>> from fipy.variables.cellVariable import CellVariable
         >>> from fipy.meshes import Grid2D
@@ -573,28 +598,34 @@ class Variable(object):
 
         """
 
-        if not hasattr(self, 'constraints'):
-            self.constraints = []
-
-        self.constraints.append([value, where])
-
-    @getsetDeprecated
-    def getConstraintMask(self):
-        return self.constraintMask
-
-    @property
-    def constraintMask(self):
-        if hasattr(self, 'constraints'):
-            returnMask = numerix.zeros(numerix.shape(self)[-1], dtype=numerix.bool_)
-            for value, mask in self.constraints:
-                returnMask = returnMask | numerix.array(mask)
-            return returnMask
-        else:
-            return None
+        from fipy.boundaryConditions.constraint import Constraint
+        if not isinstance(value, Constraint):
+            value = Constraint(value=value, where=where)
+            
+        if not hasattr(self, "_constraints"):
+            self._constraints = []
+        self._constraints.append(value)
+        self._requires(value.value)
+        self._markStale()
         
-    def applyConstraints(self, constraints):
-        for value, mask in constraints:
-            self.constrain(value, mask)
+    def release(self, constraint):
+        """Remove `constraint` from `self`
+        
+        >>> v = Variable((0,1,2,3))
+        >>> v.constrain(2, numerix.array((True, False, False, False)))
+        >>> v[:] = 10
+        >>> from fipy.boundaryConditions.constraint import Constraint
+        >>> c1 = Constraint(5, numerix.array((False, False, True, False)))
+        >>> v.constrain(c1)
+        >>> v[:] = 6
+        >>> v.constrain(8)
+        >>> v[:] = 10
+        >>> del v.constraints[2]
+        >>> v.release(constraint=c1)
+        >>> print v
+        [ 2 10 10 10]
+        """
+        self.constraints.remove(constraint)
         
     def _isCached(self):
         return self._cacheAlways or (self._cached and not self._cacheNever)
@@ -684,7 +715,7 @@ class Variable(object):
             >>> print b
             [3 4 5]
 
-            >>> a.setValue((4,5,6), where=(1, 0))
+            >>> a.setValue((4,5,6), where=(1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ....
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
@@ -785,10 +816,20 @@ class Variable(object):
             self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)
         
         return self.typecode
-    
+        
+    @property
+    def itemsize(self):
+        return self.value.itemsize
+        
     def _calcValue(self):
         return self._value
-        
+
+    def _calcValueNoInline(self):
+        raise NotImplementedError
+
+    def _calcValueInline(self):
+        raise NotImplementedError
+    
     @getsetDeprecated
     def getSubscribedVariables(self):
         return self.subscribedVariables
@@ -828,11 +869,10 @@ class Variable(object):
         if isinstance(var, Variable):
             self.requiredVariables.append(var)
             var._requiredBy(self)
-            self._markStale()
         else:
             from fipy.variables.constant import _Constant
             var = _Constant(value=var)
-            
+        self._markStale()
         return var
             
     def _requiredBy(self, var):
@@ -1045,12 +1085,12 @@ class Variable(object):
             other = _Constant(value=other)
 
         opShape, baseClass, other = self._shapeClassAndOther(opShape, operatorClass, other)
-        
+
         if opShape is None or baseClass is None:
             return NotImplemented
-    
+        
         for v in [self, other]:
-            if not v.unit.isDimensionless():
+            if not v.unit.isDimensionless() or len(v.shape) > 3:
                 canInline = False
                 
         # obtain a general operator class with the desired base class
@@ -1088,9 +1128,9 @@ class Variable(object):
             return self._BinaryOperatorVariable(lambda a,b: a*b, other)
 
     __rmul__ = __mul__
-            
+    
     def __mod__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: a%b, other)
+        return self._BinaryOperatorVariable(lambda a,b: numerix.fmod(a, b), other)
             
     def __pow__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: pow(a,b), other)
@@ -1120,9 +1160,7 @@ class Variable(object):
             1.1
 
         """
-        
-        fabs = abs
-        return self._UnaryOperatorVariable(lambda a: fabs(a))
+        return self._UnaryOperatorVariable(lambda a: numerix.fabs(a))
 
     def __invert__(self):
         """
@@ -1333,18 +1371,23 @@ class Variable(object):
                                            opShape=(),
                                            canInline=False)
 
+    @mathMethodDeprecated
     def arccos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))
 
+    @mathMethodDeprecated
     def arccosh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arccosh(a))
 
+    @mathMethodDeprecated
     def arcsin(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arcsin(a))
 
+    @mathMethodDeprecated
     def arcsinh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arcsinh(a))
 
+    @mathMethodDeprecated
     def sqrt(self):
         """
         
@@ -1359,51 +1402,67 @@ class Variable(object):
         """
         return self._UnaryOperatorVariable(lambda a: numerix.sqrt(a))
         
+    @mathMethodDeprecated
     def tan(self):
         return self._UnaryOperatorVariable(lambda a: numerix.tan(a))
 
+    @mathMethodDeprecated
     def tanh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.tanh(a))
 
+    @mathMethodDeprecated
     def arctan(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arctan(a))
 
+    @mathMethodDeprecated
     def arctanh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.arctanh(a))
             
+    @mathMethodDeprecated
     def exp(self):
         return self._UnaryOperatorVariable(lambda a: numerix.exp(a))
 
+    @mathMethodDeprecated
     def log(self):
         return self._UnaryOperatorVariable(lambda a: numerix.log(a))
 
+    @mathMethodDeprecated
     def log10(self):
         return self._UnaryOperatorVariable(lambda a: numerix.log10(a))
 
+    @mathMethodDeprecated
     def sin(self):
         return self._UnaryOperatorVariable(lambda a: numerix.sin(a))
                 
+    @mathMethodDeprecated
     def sinh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.sinh(a))
 
+    @mathMethodDeprecated
     def cos(self):
         return self._UnaryOperatorVariable(lambda a: numerix.cos(a))
         
+    @mathMethodDeprecated
     def cosh(self):
         return self._UnaryOperatorVariable(lambda a: numerix.cosh(a))
 
+    @mathMethodDeprecated
     def floor(self):
         return self._UnaryOperatorVariable(lambda a: numerix.floor(a))
 
+    @mathMethodDeprecated
     def ceil(self):
         return self._UnaryOperatorVariable(lambda a: numerix.ceil(a))
 
+    @mathMethodDeprecated
     def sign(self):
         return self._UnaryOperatorVariable(lambda a: numerix.sign(a), canInline=False)
         
+    @mathMethodDeprecated
     def conjugate(self):
         return self._UnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline=False)
 
+    @mathMethodDeprecated
     def arctan2(self, other):
         return self._BinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
         
@@ -1419,8 +1478,12 @@ class Variable(object):
                                             operatorClass=operatorClass,
                                             canInline=False)
         
+    @mathMethodDeprecated
     def reshape(self, shape):
         return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opShape=shape, canInline=False)
+
+    def ravel(self):
+        return self.value.ravel()
         
     def transpose(self):
         """
@@ -1466,6 +1529,7 @@ class Variable(object):
         return self._axisOperator(opname="minVar", 
                                   op=lambda a: a.min(axis=axis), 
                                   axis=axis)
+                                  
     def _getitemClass(self, index):
         return self._OperatorVariableClass()
 
@@ -1533,7 +1597,7 @@ class Variable(object):
     @property
     def mag(self):
         if not hasattr(self, "_mag"):
-            self._mag = self.dot(self).sqrt()
+            self._mag = numerix.sqrt(self.dot(self))
             
         return self._mag
     
@@ -1565,6 +1629,167 @@ class Variable(object):
         
         return Attribute.from_array(document=document, name=self.name, 
                                     data=self.value.copy(), h5filename=h5filename)
+
+    def _test(self):
+        """
+        Inverse cosine of :math:`x`, :math:`\cos^{-1} x`
+        
+        >>> from fipy.tools.numerix import *
+
+        >>> arccos(Variable(value=(0,0.5,1.0)))
+        arccos(Variable(value=array([ 0. ,  0.5,  1. ])))
+            
+        .. attention:: 
+            
+           the next should really return radians, but doesn't
+           
+        >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3)
+        [ 1.571  1.047  0.   ]
+
+        Inverse hyperbolic cosine of :math:`x`, :math:`\cosh^{-1} x`
+        
+        >>> arccosh(Variable(value=(1,2,3)))
+        arccosh(Variable(value=array([1, 2, 3])))
+        >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
+        [ 0.     1.317  1.763]
+        
+        Inverse sine of :math:`x`, :math:`\sin^{-1} x`
+        
+        >>> arcsin(Variable(value=(0,0.5,1.0)))
+        arcsin(Variable(value=array([ 0. ,  0.5,  1. ])))
+            
+        .. attention:: 
+            
+           the next should really return radians, but doesn't
+           
+        >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
+        [ 0.     0.524  1.571]
+
+        Inverse hyperbolic sine of :math:`x`, :math:`\sinh^{-1} x`
+
+        >>> arcsinh(Variable(value=(1,2,3)))
+        arcsinh(Variable(value=array([1, 2, 3])))
+        >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
+        [ 0.881  1.444  1.818]
+        
+        Inverse tangent of :math:`x`, :math:`\tan^{-1} x`
+
+        >>> arctan(Variable(value=(0,0.5,1.0)))
+        arctan(Variable(value=array([ 0. ,  0.5,  1. ])))
+        
+        .. attention:: 
+            
+           the next should really return radians, but doesn't
+           
+        >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
+        [ 0.     0.464  0.785]
+
+        Inverse tangent of a ratio :math:`x/y`, :math:`\tan^{-1} \frac{x}{y}`
+
+        >>> arctan2(Variable(value=(0, 1, 2)), 2)
+        (arctan2(Variable(value=array([0, 1, 2])), 2))
+            
+        .. attention:: 
+            
+           the next should really return radians, but doesn't
+           
+        >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
+        [ 0.     0.464  0.785]
+
+        Inverse hyperbolic tangent of :math:`x`, :math:`\tanh^{-1} x`
+
+        >>> arctanh(Variable(value=(0,0.25,0.5)))
+        arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
+        >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
+        [ 0.     0.255  0.549]
+
+        Cosine of :math:`x`, :math:`\cos x`
+
+        >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad"))
+        cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
+        >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
+        [ 1.   0.5  0. ]
+        
+        Hyperbolic cosine of :math:`x`, :math:`\cosh x`
+
+        >>> cosh(Variable(value=(0,1,2)))
+        cosh(Variable(value=array([0, 1, 2])))
+        >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
+        [ 1.     1.543  3.762]
+        
+        Tangent of :math:`x`, :math:`\tan x`
+
+        >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad"))
+        tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
+        >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
+        [ 0.     1.732 -1.732]
+        
+        Hyperbolic tangent of :math:`x`, :math:`\tanh x`
+
+        >>> tanh(Variable(value=(0,1,2)))
+        tanh(Variable(value=array([0, 1, 2])))
+        >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
+        [ 0.     0.762  0.964]
+        
+        Base-10 logarithm of :math:`x`, :math:`\log_{10} x`
+
+        >>> log10(Variable(value=(0.1,1,10)))
+        log10(Variable(value=array([  0.1,   1. ,  10. ])))
+        >>> print log10(Variable(value=(0.1,1,10)))
+        [-1.  0.  1.]
+        
+        Sine of :math:`x`, :math:`\sin x`
+
+        >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
+        >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        [ 0.   0.5  1. ]
+        
+        Hyperbolic sine of :math:`x`, :math:`\sinh x`
+
+        >>> sinh(Variable(value=(0,1,2)))
+        sinh(Variable(value=array([0, 1, 2])))
+        >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
+        [ 0.     1.175  3.627]
+
+        Square root of :math:`x`, :math:`\sqrt{x}`
+
+        >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
+        sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
+        >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
+        [ 1.     1.414  1.732] m
+        
+        The largest integer :math:`\le x`, :math:`\lfloor x \rfloor`
+
+        >>> floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        floor(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
+        >>> print floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        [-2.  2.  2.] m**2
+        
+        The largest integer :math:`\ge x`, :math:`\lceil x \rceil`
+           
+        >>> ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        ceil(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
+        >>> print ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        [-1.  2.  3.] m**2
+        
+        Natural logarithm of :math:`x`, :math:`\ln x \equiv \log_e x`
+
+        >>> log(Variable(value=(0.1,1,10)))
+        log(Variable(value=array([  0.1,   1. ,  10. ])))
+        >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
+        [-2.303  0.     2.303]
+        
+        Complex conjugate of :math:`z = x + i y`, :math:`z^\star = x - i y`
+           
+        >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
+        >>> print var.unit
+        <PhysicalUnit ohm>
+        >>> print allclose(var.numericValue, (3 - 4j, 2j, 10))
+        1
+        """
+        pass
+        
 
 def _test(): 
     import doctest
