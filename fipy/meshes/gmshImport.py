@@ -149,7 +149,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                 geoFile = name
                 
         if geoFile is not None:
-            gmshFlags = ["-%d" % dimensions]
+            gmshFlags = ["-%d" % dimensions, "-nopopup"]
             
             if communicator.Nproc > 1:
                 if gmshVersion < 2.5:
