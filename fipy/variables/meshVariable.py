@@ -411,7 +411,7 @@ class _MeshVariable(Variable):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def maxParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
-                                             fn=a.max, fnParallel=self.mesh.communicator.epetra_comm.MaxAll)
+                                             fn=a.max, fnParallel=self.mesh.communicator.MaxAll)
                 
             return self._axisOperator(opname="maxVar", 
                                       op=maxParallel, 

@@ -34,6 +34,8 @@
  # ###################################################################
  ##
 
+from fipy.tools import numerix
+
 class CommWrapper(object):
     """MPI Communicator wrapper
     
@@ -79,10 +81,10 @@ class CommWrapper(object):
         return recvobj
                     
     def sumAll(self, a):
-        return self.epetra_comm.SumAll(a)
+        return self.epetra_comm.SumAll(numerix.array(a))
 
     def sum(self, a, axis=None):
-        return self.epetra_comm.SumAll(a.sum(axis=axis))
+        return self.epetra_comm.SumAll(numerix.array(a.sum(axis=axis)))
         
     def __getstate__(self):
         return {'dummy': 0}
@@ -94,4 +96,5 @@ class CommWrapper(object):
     def Norm2(self, vec):
         return vec.Norm2()
 
-
+    def MaxAll(self, vec):
+	return self.epetra_comm.MaxAll(numerix.array(vec))

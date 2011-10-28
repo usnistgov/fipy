@@ -17,7 +17,6 @@ __docformat__ = 'restructuredtext'
 from fipy.meshes import Gmsh2D
 from fipy.meshes import Grid2D
 from fipy.meshes.mesh2D import Mesh2D
-import os
 from fipy.tools import numerix
 from fipy.tools import serial
 from fipy.tools.decorators import getsetDeprecated

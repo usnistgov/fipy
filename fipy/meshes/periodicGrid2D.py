@@ -74,7 +74,7 @@ class _BasePeriodicGrid2D(Grid2D):
         newCoords = self.vertexCoords + vector
         newmesh = self.__class__(**self.args)
         from fipy.meshes.mesh2D import Mesh2D
-        Mesh2D.__init__(newmesh, newCoords, self.faceVertexIDs, self.nonPeriodicCellFaceIDs)
+        Mesh2D.__init__(newmesh, newCoords, self.faceVertexIDs, self.nonPeriodicCellFaceIDs, communicator=self.communicator)
         newmesh._makePeriodic()
         return newmesh
 

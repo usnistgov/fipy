@@ -85,6 +85,7 @@ class PeriodicGrid1D(Grid1D):
         True
     """
     def __init__(self, dx = 1., nx = None, overlap=2):
+
         Grid1D.__init__(self, dx = dx, nx = nx, overlap=overlap,
                         BuilderClass=PeriodicGrid1DBuilder)
         self.nonPeriodicCellFaceIDs = numerix.array(super(Grid1D, self).cellFaceIDs)
@@ -125,7 +126,7 @@ class PeriodicGrid1D(Grid1D):
         newCoords = self.vertexCoords + vector
         newmesh = self.__class__(**self.args)
         from fipy.meshes.mesh1D import Mesh1D
-        Mesh1D.__init__(newmesh, newCoords, numerix.array(self.faceVertexIDs), self.nonPeriodicCellFaceIDs)
+        Mesh1D.__init__(newmesh, newCoords, numerix.array(self.faceVertexIDs), self.nonPeriodicCellFaceIDs, communicator=self.communicator)
         newmesh._makePeriodic()
         return newmesh
     
