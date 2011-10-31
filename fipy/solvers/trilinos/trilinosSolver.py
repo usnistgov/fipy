@@ -157,6 +157,10 @@ class TrilinosSolver(Solver):
 
     def _calcResidualVectorNonOverlapping_(self):
 	globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
+	# If A is an Epetra.Vector with map M 
+	# and B is an Epetra.Vector with map M 
+        # and C = A - B 
+        # then C is an Epetra.Vector with *no map* !!!?!?! 
 	residual = globalMatrix * nonOverlappingVector
 	residual -= nonOverlappingRHSvector
 	return residual, globalMatrix
