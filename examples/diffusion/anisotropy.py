@@ -103,7 +103,7 @@ Choose an orientation for the anisotropy.
 
 Make the equation, viewer and solve.
 
->>> eqn = TransientTerm() == DiffusionTerm((gamma,))
+>>> eqn = TransientTerm() == DiffusionTermCorrection((gamma,))
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(var, datamin=0.0, datamax=0.001)

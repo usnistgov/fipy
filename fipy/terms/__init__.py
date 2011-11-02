@@ -29,6 +29,8 @@ class IncorrectSolutionVariable(Exception):
 from transientTerm import TransientTerm
 
 from diffusionTerm import DiffusionTerm
+from diffusionTerm import DiffusionTermCorrection
+
 from explicitDiffusionTerm import ExplicitDiffusionTerm
 from implicitDiffusionTerm import ImplicitDiffusionTerm
 

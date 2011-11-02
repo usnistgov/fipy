@@ -34,10 +34,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
+from fipy.terms.diffusionTermNoCorrection import DiffusionTermNoCorrection
+from fipy.terms.diffusionTermCorrection import DiffusionTermCorrection
 from fipy.tools import numerix
 
-class DiffusionTerm(_BaseDiffusionTerm):
+class DiffusionTerm(DiffusionTermNoCorrection):
     r"""
     
     This term represents a higher order diffusion term. The order of the term is determined
@@ -64,12 +65,6 @@ class DiffusionTerm(_BaseDiffusionTerm):
     and so on.
 
     """
-
-    def _getNormals(self, mesh):
-        return mesh._faceCellToCellNormals
-
-    def _treatMeshAsOrthogonal(self, mesh):        
-        return mesh._isOrthogonal()
 
     def _test(self):
         r"""
@@ -265,27 +260,23 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
         >>> from fipy.meshes.tri2D import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
-        >>> term = DiffusionTerm(CellVariable(value = 1, mesh = mesh))
+        >>> term = DiffusionTermCorrection(CellVariable(value = 1, mesh = mesh))
         >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
         >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
         >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
-        >>> term = DiffusionTerm(CellVariable(value=(0.5, 1), mesh=mesh, rank=1))
         >>> term = DiffusionTerm(CellVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
         >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
-        >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
         >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
         >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
         >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
-        >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
-        >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
+        >>> term = DiffusionTermCorrection(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
         >>> val = (60., 60., 0.3, 0.3, 0.22277228, 0.22277228, 0.22277228, 0.22277228)
         >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh))[0], val)
         1
-        >>> term = DiffusionTerm(((0.5, 1),))
         >>> term = DiffusionTerm((((0.5,), (1,)),))
         >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh))[0], val)
         Traceback (most recent call last):
@@ -375,7 +366,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         """
         pass            
 
-from fipy.terms.diffusionTermNoCorrection import DiffusionTermNoCorrection 
+
         
 def _test(): 
     import doctest
@@ -383,3 +374,6 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+
+
