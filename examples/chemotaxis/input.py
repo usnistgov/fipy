@@ -37,11 +37,12 @@ Input file for chemotaxis modeling.
 
 Here are some test cases for the model.
 
-    >>> for i in range(30):
+    >>> for i in range(28):
     ...     for var, eqn in eqs:
     ...         var.updateOld()
     ...     for var, eqn in eqs:
     ...         eqn.solve(var, dt = 1.0)
+
     >>> accuracy = 1e-2
     >>> print KMVar.allclose(params['KM'], atol = accuracy)
     1

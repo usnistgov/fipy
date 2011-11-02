@@ -63,18 +63,20 @@ class _BasePeriodicGrid2D(Grid2D):
 
         >>> from fipy import *
         >>> m = PeriodicGrid2DLeftRight(nx=2, ny=2) + [[-1], [0]]
-        >>> print m._orderedCellVertexIDs
-        [[1 2 4 5]
-         [4 5 7 8]
-         [3 4 6 7]
-         [0 1 3 4]]
+        >>> orderedCellVertexIDs = [[1, 2, 4, 5],
+        ...                         [4, 5, 7, 8],
+        ...                         [3, 4, 6, 7],
+        ...                         [0, 1, 3, 4]]
+        >>> print (parallel.procID > 0 
+        ...        or numerix.allclose(m._orderedCellVertexIDs, orderedCellVertexIDs))
+	True
         >>> print CellVariable(mesh=m, value=m.cellCenters[0])
         [-0.5  0.5 -0.5  0.5]
         """
         newCoords = self.vertexCoords + vector
         newmesh = self.__class__(**self.args)
         from fipy.meshes.mesh2D import Mesh2D
-        Mesh2D.__init__(newmesh, newCoords, self.faceVertexIDs, self.nonPeriodicCellFaceIDs)
+        Mesh2D.__init__(newmesh, newCoords, self.faceVertexIDs, self.nonPeriodicCellFaceIDs, communicator=self.communicator)
         newmesh._makePeriodic()
         return newmesh
 
