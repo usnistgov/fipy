@@ -131,6 +131,50 @@ class AbstractMesh(object):
         from fipy.variables.cellVariable import CellVariable
         return CellVariable(mesh=self, value=self._scaledCellCenters,
                             rank=1)
+    
+    @property
+    def x(self):
+        """
+        Equivant to using ``cellCenters[0]``.        
+        >>> from fipy import *
+        >>> print Grid1D(nx=2).x
+        [ 0.5  1.5]
+        """
+        return self.cellCenters[0]
+    
+    @property
+    def y(self):
+        """
+        Equivant to using ``cellCenters[1]``.        
+        >>> from fipy import *
+        >>> print Grid2D(nx=2, ny=2).y
+        [ 0.5  0.5  1.5  1.5]
+        >>> print Grid1D(nx=2).y
+        Traceback (most recent call last):
+          ...
+        AttributeError: 1D meshes do not have a "y" attribute.
+        """
+        if self.dim > 1:
+            return self.cellCenters[1]
+        else:
+            raise AttributeError, '1D meshes do not have a "y" attribute.'
+
+    @property
+    def z(self):
+        """
+        Equivant to using ``cellCenters[2]``.        
+        >>> from fipy import *
+        >>> print Grid3D(nx=2, ny=2, nz=2).z
+        [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]
+        >>> print Grid2D(nx=2, ny=2).z
+        Traceback (most recent call last):
+          ...
+        AttributeError: 1D and 2D meshes do not have a "z" attribute.
+        """
+        if self.dim > 2:
+            return self.cellCenters[2]
+        else:
+            raise AttributeError, '1D and 2D meshes do not have a "z" attribute.'
 
     """scaled geometery properties
     
