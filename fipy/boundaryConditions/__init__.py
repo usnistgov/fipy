@@ -1,4 +1,10 @@
-from constraint import Constraint
-from fixedFlux import FixedFlux
-from fixedValue import FixedValue
-from nthOrderBoundaryCondition import NthOrderBoundaryCondition
+from constraint import *
+from fixedFlux import *
+from fixedValue import *
+from nthOrderBoundaryCondition import *
+
+__all__ = []
+__all__.extend(constraint.__all__)
+__all__.extend(fixedFlux.__all__)
+__all__.extend(fixedValue.__all__)
+__all__.extend(nthOrderBoundaryCondition.__all__)

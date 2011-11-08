@@ -81,3 +81,13 @@ import vector
 from dimensions.physicalField import PhysicalField
 from numerix import *
 from vitals import Vitals
+
+__all__ = ["serial",
+           "parallel",
+           "dump",
+           "numerix",
+           "vector",
+           "PhysicalField",
+           "Vitals"]
+           
+__all__.extend(numerix.__all__)

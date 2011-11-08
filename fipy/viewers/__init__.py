@@ -1,29 +1,38 @@
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 try:
     from gistViewer import *
+    __all__.extend(gistViewer.__all__)
 except:
     pass
 
 try:
     from gnuplotViewer import *
+    __all__.extend(gnuplotViewer.__all__)
 except:
     pass
 
 try:
     from matplotlibViewer import *
+    __all__.extend(matplotlibViewer.__all__)
 except:
     pass
 
 try:
     from mayaviViewer import *
+    __all__.extend(mayaviViewer.__all__)
 except:
     pass
 
-from multiViewer import MultiViewer
-from tsvViewer import TSVViewer
-from vtkViewer import VTKViewer
+from multiViewer import *
+from tsvViewer import *
+from vtkViewer import *
 
+__all__.extend(multiViewer.__all__)
+__all__.extend(tsvViewer.__all__)
+__all__.extend(vtkViewer.__all__)
 
 # what about vector variables?
 
@@ -124,3 +133,5 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         return MultiViewer(viewers = viewers)
     else:
         return viewers[0]
+        
+__all__.extend(["MeshDimensionError", "DummyViewer", "Viewer"])

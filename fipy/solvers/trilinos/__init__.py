@@ -28,16 +28,28 @@ _dealWithTrilinosImportPathologies()
 
 from preconditioners import *
 
-from linearCGSSolver import LinearCGSSolver
-from linearPCGSolver import LinearPCGSolver
-from linearGMRESSolver import LinearGMRESSolver
-from linearLUSolver import LinearLUSolver
-from linearBicgstabSolver import LinearBicgstabSolver
+from linearCGSSolver import *
+from linearPCGSolver import *
+from linearGMRESSolver import *
+from linearLUSolver import *
+from linearBicgstabSolver import *
 
-from trilinosMLTest import TrilinosMLTest
+from trilinosMLTest import *
 
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver
 DummySolver = DefaultSolver
 GeneralSolver = DefaultSolver
 
+__all__ = ["DefaultSolver",
+           "DummySolver",
+           "DefaultAsymmetricSolver",
+           "GeneralSolver"]
+           
+__all__.extend(linearCGSSolver.__all__)
+__all__.extend(linearPCGSolver.__all__)
+__all__.extend(linearGMRESSolver.__all__)
+__all__.extend(linearLUSolver.__all__)
+__all__.extend(linearBicgstabSolver.__all__)
+__all__.extend(trilinosMLTest.__all__)
+__all__.extend(preconditioners.__all__)

@@ -21,7 +21,6 @@ from fipy.tools import numerix
 from fipy.tools import serial
 from fipy.tools.decorators import getsetDeprecated, public
 
-@public
 class GapFillMesh(Mesh2D):
     """
     

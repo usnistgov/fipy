@@ -1,14 +1,10 @@
 from fipy.tools.parser import _parseSolver
 from fipy.tools  import parallel as _parallel
 
-from solver import SolverConvergenceWarning, \
-     PreconditionerWarning, \
-     ScalarQuantityOutOfRangeWarning, \
-     StagnatedSolverWarning, \
-     MatrixIllConditionedWarning, \
-     PreconditionerNotPositiveDefiniteWarning, \
-     IllConditionedPreconditionerWarning, \
-     MaximumIterationWarning
+__all__ = []
+
+from solver import *
+__all__.extend(solver.__all__)
 
 solver = _parseSolver()
 
@@ -24,11 +20,13 @@ if solver == "pysparse":
     if _parallel.Nproc > 1:
         raise  Exception('pysparse solvers do not run in parallel')
     from fipy.solvers.pysparse import *
+    __all__.extend(pysparse.__all__)
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
     _MeshMatrix =  _PysparseMeshMatrix
 
 elif solver == "trilinos":
     from fipy.solvers.trilinos import *
+    __all__.extend(trilinos.__all__)
 
     try:
         from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
@@ -41,6 +39,7 @@ elif solver == "scipy":
     if _parallel.Nproc > 1:
         raise  Exception('scipy solvers do not run in parallel')
     from fipy.solvers.scipy import *
+    __all__.extend(scipy.__all__)
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
     
@@ -48,11 +47,13 @@ elif solver == "pyamg":
     if _parallel.Nproc > 1:
         raise  Exception('pyamg solvers do not run in parallel')
     from fipy.solvers.pyAMG import *
+    __all__.extend(pyAMG.__all__)
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
     
 elif solver == "no-pysparse":
     from fipy.solvers.trilinos import *
+    __all__.extend(trilinos.__all__)
     from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
     _MeshMatrix =  _TrilinosMeshMatrix 
 
@@ -66,12 +67,14 @@ elif solver is None:
         if _parallel.Nproc > 1:
             raise  Exception('pysparse solvers do not run in parallel')
         from fipy.solvers.pysparse import *
+        __all__.extend(pysparse.__all__)
         solver = "pysparse"
         from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
         _MeshMatrix =  _PysparseMeshMatrix
     except:
         try:
             from fipy.solvers.trilinos import *
+            __all__.extend(trilinos.__all__)
             solver = "trilinos"
             try:
                 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
@@ -85,6 +88,7 @@ elif solver is None:
                 if _parallel.Nproc > 1:
                     raise  Exception('pyamg solvers do not run in parallel')
                 from fipy.solvers.pyAMG import *
+                __all__.extend(pyAMG.__all__)
                 solver = "pyamg"
                 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
                 _MeshMatrix = _ScipyMeshMatrix
@@ -93,6 +97,7 @@ elif solver is None:
                     if _parallel.Nproc > 1:
                         raise  Exception('scipy solvers do not run in parallel')
                     from fipy.solvers.scipy import *
+                    __all__.extend(scipy.__all__)
                     solver = "scipy"
                     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
                     _MeshMatrix = _ScipyMeshMatrix
