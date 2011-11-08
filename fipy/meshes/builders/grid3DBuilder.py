@@ -230,10 +230,10 @@ class _UniformGrid3DBuilder(_Grid3DBuilder):
     def __init__(self):
         self.NumPtsCalcClass = _UniformNumPts
 
-        super(_NonuniformGrid3DBuilder, self).__init__()
+        super(_UniformGrid3DBuilder, self).__init__()
 
     def buildGridData(self, ds, ns, overlap, communicator, origin):
-        super(_NonuniformGrid3DBuilder, self).buildGridData(ds, ns, overlap,
+        super(_UniformGrid3DBuilder, self).buildGridData(ds, ns, overlap,
                                                         communicator)
          
         self.origin = _UniformOrigin.calcOrigin(origin, 
@@ -247,7 +247,7 @@ class _UniformGrid3DBuilder(_Grid3DBuilder):
 
     @property
     def _specificGridData(self):
-        return super(_NonuniformGrid3DBuilder, self)._specificGridData \
+        return super(_UniformGrid3DBuilder, self)._specificGridData \
                 + [self.origin]
 
                                   

@@ -41,7 +41,7 @@ from fipy.tools import numerix
 def _ConstraintMask(var):
     class _ConstraintMaskVariable(var._variableClass):
         def __init__(self, var):
-            super(_ConstraintMask, self).__init__(mesh=var.mesh, rank=0, value=False)
+            super(_ConstraintMaskVariable, self).__init__(mesh=var.mesh, rank=0, value=False)
             for constraint in var.constraints:
                 self._requires(constraint.where)
             self.var = var

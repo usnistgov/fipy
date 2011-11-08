@@ -41,7 +41,7 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools.decorators import getsetDeprecated, public
 from fipy.tools import parallel
 
-from fipy.meshes.builders import _NonuniformGrid3DBuilder
+from fipy.meshes.builders import _UniformGrid3DBuilder
 from fipy.meshes.gridlike import _Gridlike3D
 from fipy.meshes.uniformGrid import UniformGrid
 
@@ -67,7 +67,7 @@ class UniformGrid3D(UniformGrid):
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, 
                  origin = [[0], [0], [0]], overlap=2, communicator=parallel):
 
-        builder = _NonuniformGrid3DBuilder()
+        builder = _UniformGrid3DBuilder()
 
         self.args = {
             'dx': dx, 

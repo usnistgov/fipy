@@ -69,6 +69,7 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
+from numpy.core import umath
 from numpy import newaxis as NewAxis
 from numpy import *
 try:
@@ -84,7 +85,7 @@ from fipy.tools.decorators import public
 
 # we want NumPy's __all__, with adjustments
 import sys
-__all__ = sys.modules[f.__module__].__dict__.setdefault('__all__', []).copy()
+__all__ = list(sys.modules['numpy'].__dict__.setdefault('__all__', []))
 __all__.extend(['NUMERIX', 'NewAxis', 'MA', 'numpy_version'])
 
 @public

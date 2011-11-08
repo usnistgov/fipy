@@ -39,7 +39,7 @@ from fipy.tools.numerix import random
 from fipy.tools.decorators import getsetDeprecated, public
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes import Grid2D
-from import fipy.tools import vector
+from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 @public
