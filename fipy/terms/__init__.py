@@ -28,6 +28,8 @@ class IncorrectSolutionVariable(Exception):
 
 from transientTerm import *
 from diffusionTerm import *
+from diffusionTermCorrection import *
+from diffusionTermNoCorrection import *
 from explicitDiffusionTerm import *
 from implicitDiffusionTerm import *
 from implicitSourceTerm import *
@@ -52,6 +54,8 @@ __all__ = ["ExplicitVariableError",
            
 __all__.extend(transientTerm.__all__)
 __all__.extend(diffusionTerm.__all__)
+__all__.extend(diffusionTermCorrection.__all__)
+__all__.extend(diffusionTermNoCorrection.__all__)
 __all__.extend(explicitDiffusionTerm.__all__)
 __all__.extend(implicitDiffusionTerm.__all__)
 __all__.extend(implicitSourceTerm.__all__)
