@@ -1,9 +1,14 @@
 __docformat__ = 'restructuredtext'
 
 
-from gist1DViewer import Gist1DViewer
-from gist2DViewer import Gist2DViewer
-from gistVectorViewer import GistVectorViewer
+from gist1DViewer import *
+from gist2DViewer import *
+from gistVectorViewer import *
+
+__all__ = ["GistViewer"]
+__all__.extend(gist1DViewer.__all__)
+__all__.extend(gist2DViewer.__all__)
+__all__.extend(gistVectorViewer.__all__)
 
 def GistViewer(vars, title=None, limits={}, **kwlimits):
     r"""Generic function for creating a `GistViewer`. 
