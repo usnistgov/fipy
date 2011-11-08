@@ -40,11 +40,3 @@ def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
         return Gnuplot2DViewer(vars=vars, title=title, **kwlimits)
     else:
         raise IndexError, "Gnuplot can only plot 1D and 2D data"
-
-def make(*args, **kwargs):
-    """
-    A deprecated synonym for `GnuplotViewer`
-    """
-    import warnings
-    warnings.warn("'GnuplotViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
-    return GnuplotViewer(*args, **kwargs)

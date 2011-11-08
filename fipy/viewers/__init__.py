@@ -124,11 +124,3 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         return MultiViewer(viewers = viewers)
     else:
         return viewers[0]
-        
-def make(*args, **kwargs):
-    """
-    A deprecated synonym for `Viewer`
-    """
-    import warnings
-    warnings.warn("'Viewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
-    return Viewer(*args, **kwargs)

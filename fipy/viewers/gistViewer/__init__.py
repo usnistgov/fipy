@@ -38,11 +38,3 @@ def GistViewer(vars, title=None, limits={}, **kwlimits):
             return Gist2DViewer(vars=vars, title=title, **kwlimits)
         except MeshDimensionError:
             return GistVectorViewer(vars=vars, title=title, **kwlimits)
-            
-def make(*args, **kwargs):
-    """
-    A deprecated synonym for `GistViewer`
-    """
-    import warnings
-    warnings.warn("'GistViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
-    return GistViewer(*args, **kwargs)

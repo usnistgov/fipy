@@ -106,11 +106,3 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
             except MeshDimensionError:
                 from matplotlibVectorViewer import MatplotlibVectorViewer
                 return MatplotlibVectorViewer(vars=vars, title=title, axes=axes, **kwlimits)
-
-def make(*args, **kwargs):
-    """
-    A deprecated synonym for `MatplotlibViewer`
-    """
-    import warnings
-    warnings.warn("'MatplotlibViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
-    return MatplotlibViewer(*args, **kwargs)

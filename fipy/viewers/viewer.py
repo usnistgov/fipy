@@ -311,7 +311,3 @@ class _Viewer(object):
             >>> viewer._promptForOpinion()
         """ % kwargs
     _test3D = staticmethod(_test3D)
-
-def make(vars, title=None, limits=None):
-    return _Viewer(vars=vars, title=title, limits=limits)
-        
