@@ -55,3 +55,6 @@ class SourceTerm(CellTerm):
             return self.coeff[...,numerix.newaxis] * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)
         else:
             return self.coeff * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)
+
+    def _checkDt(self, dt):
+        return 1.

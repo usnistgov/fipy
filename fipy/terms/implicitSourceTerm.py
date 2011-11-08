@@ -58,11 +58,11 @@ class ImplicitSourceTerm(SourceTerm):
             >>> m = Grid1D(nx=1)
             >>> v = CellVariable(mesh=m, value=1.)
             >>> eq = TransientTerm() == ImplicitSourceTerm(v)
-            >>> eq.solve(v)
+            >>> eq.solve(v, dt=1.)
             >>> print v
             [ 2.]
             >>> v.setValue(-1.)
-            >>> eq.solve(v)
+            >>> eq.solve(v, dt=1.)
             >>> print v
             [-0.5]
             
