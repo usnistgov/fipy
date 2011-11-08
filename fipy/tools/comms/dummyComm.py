@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "serialCommWrapper.py"
+ #  FILE: "dummyComm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,20 +34,19 @@
  # ###################################################################
  ##
 
-from fipy.tools.commWrapper import CommWrapper
+from fipy.tools.comms.serialCommWrapper import SerialCommWrapper
 from fipy.tools.decorators import public
 
 @public
-class SerialCommWrapper(CommWrapper):
-    @property
-    def procID(self):
-        return 0
-       
-    @property
-    def Nproc(self):
-        return 1
-       
-    def Norm2(self, vec):
-        from fipy.tools import numerix
-        return numerix.L2norm(vec)
+class DummyComm(SerialCommWrapper):
+    def __init__(self):
+        pass
+    
+    def Barrier(self):
+        pass
+     
+    def sum(self, a, axis=None):
+        return a.sum(axis=axis)
 
+    def __setstate__(self, dict):
+        self.__init__()

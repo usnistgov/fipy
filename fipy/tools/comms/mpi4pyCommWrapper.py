@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "dummyComm.py"
+ #  FILE: "mpi4pyCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,19 +34,42 @@
  # ###################################################################
  ##
 
-from fipy.tools.serialCommWrapper import SerialCommWrapper
+from fipy.tools.comms.commWrapper import CommWrapper
+from fipy.tools import numerix
 from fipy.tools.decorators import public
 
 @public
-class DummyComm(SerialCommWrapper):
-    def __init__(self):
-        pass
+class Mpi4pyCommWrapper(CommWrapper):
+    """MPI Communicator wrapper
     
-    def Barrier(self):
-        pass
-     
-    def sum(self, a, axis=None):
-        return a.sum(axis=axis)
-
+    Encapsulates capabilities needed for both Epetra and mpi4py.
+    
+    """
+    
+    def __init__(self, Epetra, MPI):
+        self.MPI = MPI
+        self.mpi4py_comm = self.MPI.COMM_WORLD
+        CommWrapper.__init__(self, Epetra)
+        
     def __setstate__(self, dict):
-        self.__init__()
+        from PyTrilinos import Epetra
+        from mpi4py import MPI
+        self.__init__(Epetra=Epetra, MPI=MPI)
+        
+    def all(self, a, axis=None):
+        return self.mpi4py_comm.allreduce(a.all(axis=axis), op=self.MPI.LAND)
+
+    def any(self, a, axis=None):
+        return self.mpi4py_comm.allreduce(a.any(axis=axis), op=self.MPI.LOR)
+
+    def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
+        return self.mpi4py_comm.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=self.MPI.LAND)
+
+    def allequal(self, a, b):
+        return self.mpi4py_comm.allreduce(numerix.allequal(a, b), op=self.MPI.LAND)
+
+    def bcast(self, obj=None, root=0):
+        return self.mpi4py_comm.bcast(obj=obj, root=root)
+
+    def allgather(self, sendobj=None, recvobj=None):
+        return self.mpi4py_comm.allgather(sendobj=sendobj, recvobj=recvobj)
