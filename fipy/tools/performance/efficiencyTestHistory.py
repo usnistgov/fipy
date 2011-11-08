@@ -43,7 +43,7 @@ from datetime import datetime
 import os
 import pysvn
 import subprocess
-from fipy.tools.efficiency_test import Efficiency_test
+from fipy.tools.performance.efficiency_test import Efficiency_test
 from setuptools import setup
 
 def run(startRev):

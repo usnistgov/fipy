@@ -82,7 +82,7 @@ class Efficiency_test(Command):
 
     def run(self):
         import time
-        from fipy.tools import generator
+        from fipy.tools.performance import efficiencyTestGenerator
 
         if self.revisionNumber is not None:
             self.revisionNumber = int(self.revisionNumber)
@@ -90,7 +90,7 @@ class Efficiency_test(Command):
             import sys
             efficiencyTestHistory.run(self.revisionNumber)
             sys.exit()
-        newCases = generator.run(self.cases,self.newElements)
+        newCases = efficiencyTestGenerator.run(self.cases,self.newElements)
 
         for case in newCases:
             print "case: %s" % case
