@@ -55,7 +55,7 @@ class ResidualTerm(_ExplicitSourceTerm):
     def _getGeomCoeff(self, var):
         return self.coeff
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         vec = self.equation.justResidualVector(var=None, 
                                                boundaryConditions=boundaryConditions,
                                                dt=dt)

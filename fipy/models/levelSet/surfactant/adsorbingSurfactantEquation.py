@@ -36,7 +36,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
 from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -347,7 +346,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         if consumptionCoeff is not None:
             self.eq += ImplicitSourceTerm(consumptionCoeff)
 
-    def solve(self, var, boundaryConditions=(), solver=None, dt = 1.):
+    def solve(self, var, boundaryConditions=(), solver=None, dt=None):
         """
         Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
         	
@@ -371,7 +370,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             
         SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
 
-    def sweep(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `AdsorbingSurfactantEquation`'s linear
         system once. This method also recalculates and returns the

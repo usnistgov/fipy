@@ -212,7 +212,7 @@ transient term from Equation :eq:`eq-phase:simple`
 >>> phase.setValue(0., where=x > L/2)
 
 >>> for i in range(13):
-...     eq.solve(var = phase)
+...     eq.solve(var = phase, dt=1.)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 

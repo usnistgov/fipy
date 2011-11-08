@@ -45,7 +45,7 @@ class _NOXInterface(NOX.Epetra.Interface.Required, NOX.Epetra.Interface.Jacobian
         NOX.Epetra.Interface.Jacobian.__init__(self)
         self.solver = solver
         
-    def solve(self, dt=1.):
+    def solve(self, dt=None):
         self.dt = dt
         
         self.solver.equation._prepareLinearSystem(var=None, solver=self.solver, boundaryConditions=(), dt=1.)
@@ -162,7 +162,7 @@ class TrilinosNonlinearSolver(TrilinosSolver):
         
         self.nox = _NOXInterface(solver=self)
 
-    def solve(self, dt=1.):
+    def solve(self, dt=None):
         output = self.nox.solve(dt=dt)
         
 #         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):

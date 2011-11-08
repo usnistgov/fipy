@@ -343,7 +343,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> q = CellVariable(mesh=m, elementshape=(3,))
         >>> vectorEq2 = TransientTerm(1e-20) == DiffusionTerm(([[1, 2, 3], [4, 5, 6], [7, 8, 9]],))
         >>> vectorEq2.cacheMatrix()
-        >>> vectorEq2.solve(q, solver=DummySolver())
+        >>> vectorEq2.solve(q, solver=DummySolver(), dt=1.)
 
         Test the previous three vector examples against coupled.
         

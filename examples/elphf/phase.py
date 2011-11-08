@@ -154,7 +154,7 @@ Even though we are solving the steady-state problem (:math:`M_\phi = \infty`) we
 still must sweep the solution several times to equilibrate
 
 >>> for step in range(10):
-...     phase.equation.solve(var = phase)
+...     phase.equation.solve(var = phase, dt=1.)
 
 Since we have only a single component :math:`n`, with :math:`\Delta\mu_n^\circ =
 0`, and the electrostatic potential is uniform, Eq. :eq:`elphf:phase` reduces to
