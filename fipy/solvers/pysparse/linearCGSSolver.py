@@ -39,7 +39,9 @@ import sys
 from pysparse import itsolvers
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from fipy.tools.decorators import public
 
+@public
 class LinearCGSSolver(PysparseSolver):
 
     """

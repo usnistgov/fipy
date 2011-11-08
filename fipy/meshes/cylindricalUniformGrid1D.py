@@ -40,7 +40,9 @@ __docformat__ = 'restructuredtext'
 from fipy.meshes.uniformGrid1D import UniformGrid1D
 from fipy.tools import numerix
 from fipy.tools import parallel
+from fipy.tools.decorators import public
 
+@public
 class CylindricalUniformGrid1D(UniformGrid1D):
     """
     Creates a 1D cylindrical grid mesh.

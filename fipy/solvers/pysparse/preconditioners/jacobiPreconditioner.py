@@ -32,10 +32,13 @@
  #  
  # ###################################################################
  ##
- 
-from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
+
 from pysparse import precon
 
+from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
+from fipy.tools.decorators import public
+
+@public
 class JacobiPreconditioner(Preconditioner):
     """
     Jacobi preconditioner for PySparse.

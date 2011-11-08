@@ -37,8 +37,11 @@
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import AztecOO
-from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
+from fipy.tools.decorators import public
+
+@public
 class JacobiPreconditioner(Preconditioner):
     """
     Jacobi Preconditioner for Trilinos solvers.

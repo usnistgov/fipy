@@ -32,6 +32,8 @@
  # ###################################################################
  ##
 
+__all__ = []
+
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 from fipy.solvers import solver

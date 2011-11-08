@@ -34,8 +34,12 @@
  # ###################################################################
  ##
 
-from fipy.tools import numerix
+__docformat__ = 'restructuredtext'
 
+from fipy.tools import numerix
+from fipy.tools.decorators import public
+
+@public
 class CommWrapper(object):
     """MPI Communicator wrapper
     

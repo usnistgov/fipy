@@ -40,10 +40,12 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.tools import parallel
+from fipy.tools.decorators import public
 
-from fipy.meshes.builders import NonuniformGrid2DBuilder
-from fipy.meshes.gridlike import Gridlike2D
+from fipy.meshes.builders import _NonuniformGrid2DBuilder
+from fipy.meshes.gridlike import _Gridlike2D
 
+@public
 class Grid2D(Mesh2D):
     """
     Creates a 2D grid mesh with horizontal faces numbered
@@ -51,7 +53,7 @@ class Grid2D(Mesh2D):
     """
     def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
 
-        builder = NonuniformGrid2DBuilder()
+        builder = _NonuniformGrid2DBuilder()
         
         self.args = {
             'dx': dx, 
@@ -91,20 +93,20 @@ class Grid2D(Mesh2D):
         self.scale = scale
 
     def __getstate__(self):
-        return Gridlike2D.__getstate__(self)
+        return _Gridlike2D.__getstate__(self)
 
     def __setstate__(self, dict):
-        return Gridlike2D.__setstate__(self, dict)
+        return _Gridlike2D.__setstate__(self, dict)
 
     def __repr__(self):
-        return Gridlike2D.__repr__(self)
+        return _Gridlike2D.__repr__(self)
 
     def _isOrthogonal(self):
-        return Gridlike2D._isOrthogonal(self)
+        return _Gridlike2D._isOrthogonal(self)
 
     @property
     def _concatenatedClass(self):
-        return Gridlike2D._concatenatedClass
+        return _Gridlike2D._concatenatedClass
                                                                 
     @property
     def _globalNonOverlappingCellIDs(self):
@@ -123,7 +125,7 @@ class Grid2D(Mesh2D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._globalNonOverlappingCellIDs(self)
+        return _Gridlike2D._globalNonOverlappingCellIDs(self)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -142,7 +144,7 @@ class Grid2D(Mesh2D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._globalOverlappingCellIDs(self)
+        return _Gridlike2D._globalOverlappingCellIDs(self)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -161,7 +163,7 @@ class Grid2D(Mesh2D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._localNonOverlappingCellIDs(self)
+        return _Gridlike2D._localNonOverlappingCellIDs(self)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -180,7 +182,7 @@ class Grid2D(Mesh2D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._localOverlappingCellIDs(self)
+        return _Gridlike2D._localOverlappingCellIDs(self)
  
 ## pickling
 

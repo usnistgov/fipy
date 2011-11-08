@@ -36,12 +36,13 @@ __docformat__ = 'restructuredtext'
  
 from fipy.tools import numerix
 from fipy.tools.numerix import random
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.decorators import getsetDeprecated, public
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes import Grid2D
-import fipy.tools.vector as vector
+from import fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 
+@public
 class SkewedGrid2D(Mesh2D):
     """
     Creates a 2D grid mesh with horizontal faces numbered first and then

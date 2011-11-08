@@ -36,6 +36,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import sys
 
 from fipy.tools.decorators import getsetDeprecated

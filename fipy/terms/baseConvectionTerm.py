@@ -34,7 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
+__all__ = []
 
 from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.meshVariable import _MeshVariable
@@ -42,7 +42,6 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import VectorCoeffError
-
 from fipy.tools import numerix
 
 class _BaseConvectionTerm(FaceTerm):

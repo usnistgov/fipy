@@ -41,6 +41,8 @@ object.
 
 """
 
+__all__ = []
+
 import sys
 import types
 

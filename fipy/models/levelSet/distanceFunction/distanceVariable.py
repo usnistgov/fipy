@@ -36,10 +36,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.decorators import getsetDeprecated, public
 
 from fipy.variables.cellVariable import CellVariable
 
+@public
 class DistanceVariable(CellVariable):
     r"""
     A `DistanceVariable` object calculates :math:`\phi` so it satisfies,

@@ -38,6 +38,7 @@ http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/286222/index_txt
 
 """
 
+__all__ = []
 
 import os
 

@@ -31,7 +31,9 @@
  ##
 
 from fipy.steppers.stepper import Stepper
+from fipy.tools.decorators import public
 
+@public
 class PIDStepper(Stepper):
     """
     Adaptive stepper using a PID controller, based on::

@@ -34,7 +34,9 @@
 
 from fipy.solvers.scipy.linearGMRESSolver import LinearGMRESSolver as ScipyLinearGMRESSolver
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
-    
+from fipy.tools.decorators import public
+
+@public
 class LinearGMRESSolver(ScipyLinearGMRESSolver):
     """
     The `LinearGMRESSolver` is an interface to the GMRES solver in

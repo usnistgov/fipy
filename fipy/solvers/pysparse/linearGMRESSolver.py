@@ -38,7 +38,9 @@ from fipy.solvers.pysparse.preconditioners import JacobiPreconditioner
 from pysparse import itsolvers
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from fipy.tools.decorators import public
 
+@public
 class LinearGMRESSolver(PysparseSolver):
     """
     

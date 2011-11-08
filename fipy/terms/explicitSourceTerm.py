@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.terms.sourceTerm import SourceTerm
 
 class _ExplicitSourceTerm(SourceTerm):

@@ -37,7 +37,9 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.diffusionTermNoCorrection import DiffusionTermNoCorrection
 from fipy.terms.diffusionTermCorrection import DiffusionTermCorrection
 from fipy.tools import numerix
+from fipy.tools.decorators import public
 
+@publics
 class DiffusionTerm(DiffusionTermNoCorrection):
     r"""
     

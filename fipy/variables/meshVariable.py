@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
@@ -229,8 +231,8 @@ class _MeshVariable(Variable):
         
         """
         if not hasattr(self, '_constraintMask'):
-            from fipy.variables.constraintMask import ConstraintMask
-            self._constraintMask = ConstraintMask(self)
+            from fipy.variables.constraintMask import _ConstraintMask
+            self._constraintMask = _ConstraintMask(self)
         return self._constraintMask
 
     def constrain(self, value, where=None):

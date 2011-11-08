@@ -35,7 +35,9 @@
  ##
 
 from fipy.tools.commWrapper import CommWrapper
+from fipy.tools.decorators import public
 
+@public
 class SerialCommWrapper(CommWrapper):
     @property
     def procID(self):

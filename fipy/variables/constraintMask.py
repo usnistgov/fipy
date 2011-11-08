@@ -34,10 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import numerix
 
-def ConstraintMask(var):
-    class _ConstraintMask(var._variableClass):
+def _ConstraintMask(var):
+    class _ConstraintMaskVariable(var._variableClass):
         def __init__(self, var):
             super(_ConstraintMask, self).__init__(mesh=var.mesh, rank=0, value=False)
             for constraint in var.constraints:
@@ -50,4 +52,4 @@ def ConstraintMask(var):
                 returnMask = returnMask | numerix.array(constraint.where)
             return returnMask
 
-    return _ConstraintMask(var)
+    return _ConstraintMaskVariable(var)

@@ -37,6 +37,9 @@ __docformat__ = 'restructuredtext'
 import optparse
 import sys, os
 
+from fipy.tools.decorators import public
+
+@public
 def parse(larg, action = None, type = None, default = None):
     """
     This is a wrapper function for the python `optparse` module.
@@ -70,7 +73,7 @@ def parse(larg, action = None, type = None, default = None):
 
     return options.dest
 
-def parseSolver():
+def _parseSolver():
     args = [s.lower() for s in sys.argv[1:]]
     # any command-line specified solver takes precedence over environment variables
     if '--no-pysparse' in args:

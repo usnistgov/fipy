@@ -39,9 +39,10 @@ __docformat__ = 'restructuredtext'
 
 from grid1D import Grid1D
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
-from fipy.meshes.builders import PeriodicGrid1DBuilder
+from fipy.tools.decorators import getsetDeprecated, public
+from fipy.meshes.builders import _PeriodicGrid1DBuilder
 
+@public
 class PeriodicGrid1D(Grid1D):
     """
     
@@ -87,7 +88,7 @@ class PeriodicGrid1D(Grid1D):
     def __init__(self, dx = 1., nx = None, overlap=2):
 
         Grid1D.__init__(self, dx = dx, nx = nx, overlap=overlap,
-                        BuilderClass=PeriodicGrid1DBuilder)
+                        _BuilderClass=_PeriodicGrid1DBuilder)
         self.nonPeriodicCellFaceIDs = numerix.array(super(Grid1D, self).cellFaceIDs)
         self._makePeriodic()
 

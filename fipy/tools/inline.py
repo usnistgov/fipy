@@ -1,3 +1,5 @@
+__all__ = ["doInline"]
+
 import inspect
 import os
 import sys
@@ -7,7 +9,7 @@ if '--inline' in sys.argv[1:]:
 else:
     doInline = os.environ.has_key('FIPY_INLINE')
     
-inlineFrameComment = os.environ.has_key('FIPY_INLINE_COMMENT')
+_inlineFrameComment = os.environ.has_key('FIPY_INLINE_COMMENT')
 
 def _getframeinfo(level, context=1):
     """
@@ -20,7 +22,7 @@ def _getframeinfo(level, context=1):
     return (frame,) + inspect.getframeinfo(frame, context=context)
 
 def _rawCodeComment(code, level=2):
-    if inlineFrameComment:
+    if _inlineFrameComment:
         finfo = _getframeinfo(level=level)
         
         # note: 
@@ -39,7 +41,7 @@ def _rawCodeComment(code, level=2):
         return ""
 
 def _operatorVariableComment(canInline=True, level=3):
-    if canInline and doInline and inlineFrameComment:
+    if canInline and doInline and _inlineFrameComment:
         finfo = _getframeinfo(level=level)
 
         # note: 

@@ -34,6 +34,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 import unittest
 
 class _TestProgram(unittest.TestProgram):

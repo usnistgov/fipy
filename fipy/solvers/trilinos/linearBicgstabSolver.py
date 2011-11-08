@@ -35,11 +35,13 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
-
 from PyTrilinos import AztecOO
 
+from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
+from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from fipy.tools.decorators import public
+
+@public
 class LinearBicgstabSolver(TrilinosAztecOOSolver):
 
     """

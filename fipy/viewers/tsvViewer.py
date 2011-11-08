@@ -39,11 +39,12 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.tools import numerix
- 
+from fipy.tools.decorators import public
 from fipy.viewers.viewer import _Viewer
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
+@public
 class TSVViewer(_Viewer):
     """
     "Views" one or more variables in tab-separated-value format.

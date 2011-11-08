@@ -43,12 +43,14 @@ from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 from fipy.tools import parallel
+from fipy.tools.decorators import public
 
-from fipy.meshes.builders import UniformGrid1DBuilder
-from fipy.meshes.builders import Grid1DBuilder
-from fipy.meshes.gridlike import Gridlike1D
+from fipy.meshes.builders import _UniformGrid1DBuilder
+from fipy.meshes.builders import _Grid1DBuilder
+from fipy.meshes.gridlike import _Gridlike1D
 from fipy.meshes.uniformGrid import UniformGrid
 
+@public
 class UniformGrid1D(UniformGrid):
     """
     Creates a 1D grid mesh.
@@ -60,7 +62,7 @@ class UniformGrid1D(UniformGrid):
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,
                        communicator=parallel):
-        builder = UniformGrid1DBuilder()
+        builder = _UniformGrid1DBuilder()
 
         origin = numerix.array(origin)
         
@@ -101,20 +103,20 @@ class UniformGrid1D(UniformGrid):
         self._setTopology()
  
     def __getstate__(self):
-        return Gridlike1D.__getstate__(self)
+        return _Gridlike1D.__getstate__(self)
 
     def __setstate__(self, dict):
-        return Gridlike1D.__setstate__(self, dict)
+        return _Gridlike1D.__setstate__(self, dict)
 
     def __repr__(self):
-        return Gridlike1D.__repr__(self)
+        return _Gridlike1D.__repr__(self)
 
     def _isOrthogonal(self):
-        return Gridlike1D._isOrthogonal(self)
+        return _Gridlike1D._isOrthogonal(self)
 
     @property
     def _concatenatedClass(self):
-        return Gridlike1D._concatenatedClass
+        return _Gridlike1D._concatenatedClass
                                                                 
     @property
     def _globalNonOverlappingCellIDs(self):
@@ -133,7 +135,7 @@ class UniformGrid1D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._globalNonOverlappingCellIDs(self)
+        return _Gridlike1D._globalNonOverlappingCellIDs(self)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -152,7 +154,7 @@ class UniformGrid1D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._globalOverlappingCellIDs(self)
+        return _Gridlike1D._globalOverlappingCellIDs(self)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -171,7 +173,7 @@ class UniformGrid1D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._localNonOverlappingCellIDs(self)
+        return _Gridlike1D._localNonOverlappingCellIDs(self)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -190,7 +192,7 @@ class UniformGrid1D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._localOverlappingCellIDs(self)
+        return _Gridlike1D._localOverlappingCellIDs(self)
 
     @property
     def _globalNonOverlappingFaceIDs(self):
@@ -211,7 +213,7 @@ class UniformGrid1D(UniformGrid):
                 
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._globalNonOverlappingFaceIDs(self)
+        return _Gridlike1D._globalNonOverlappingFaceIDs(self)
 
     @property
     def _globalOverlappingFaceIDs(self):
@@ -232,7 +234,7 @@ class UniformGrid1D(UniformGrid):
                 
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._globalOverlappingFaceIDs(self)
+        return _Gridlike1D._globalOverlappingFaceIDs(self)
 
     @property
     def _localNonOverlappingFaceIDs(self):
@@ -253,7 +255,7 @@ class UniformGrid1D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._localNonOverlappingFaceIDs(self)
+        return _Gridlike1D._localNonOverlappingFaceIDs(self)
 
     @property
     def _localOverlappingFaceIDs(self):
@@ -274,7 +276,7 @@ class UniformGrid1D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._localOverlappingFaceIDs(self)
+        return _Gridlike1D._localOverlappingFaceIDs(self)
      
     """
     Topology set and calc
@@ -458,12 +460,12 @@ class UniformGrid1D(UniformGrid):
     def _concatenableMesh(self):
         from mesh1D import Mesh1D
         return Mesh1D(vertexCoords = self.vertexCoords, 
-                      faceVertexIDs = Grid1DBuilder.createFaces(self.numberOfVertices), 
-                      cellFaceIDs = Grid1DBuilder.createCells(self.nx))
+                      faceVertexIDs = _Grid1DBuilder.createFaces(self.numberOfVertices), 
+                      cellFaceIDs = _Grid1DBuilder.createCells(self.nx))
                       
     @property
     def _cellFaceIDs(self):
-        return MA.array(Grid1DBuilder.createCells(self.nx))
+        return MA.array(_Grid1DBuilder.createCells(self.nx))
 
     @property
     def _maxFacesPerCell(self):

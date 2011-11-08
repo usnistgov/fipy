@@ -33,8 +33,11 @@
  # ###################################################################
  ##
  
+from fipy.tools.decorators import public
+
 from pyamg import smoothed_aggregation_solver
 
+@public
 class SmoothedAggregationPreconditioner():
     def __init__(self):
         pass

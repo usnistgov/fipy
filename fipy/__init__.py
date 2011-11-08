@@ -30,14 +30,19 @@ treatment of the electrodeposition process |citeCEAC|.
 """
 __docformat__ = 'restructuredtext'
 
-from pkg_resources import get_distribution, DistributionNotFound
+def _getFiPyAndVersion():
+    from pkg_resources import get_distribution, DistributionNotFound
 
-try:
-    FiPy = get_distribution(__name__)
+    try:
+        FiPy = get_distribution(__name__)
+        
+        __version__ = FiPy.version
+    except DistributionNotFound:
+        __version__ = "unknown, try running `python setup.py egg_info`"
+        
+    return FiPy, __version__
     
-    __version__ = FiPy.version
-except DistributionNotFound:
-    __version__ = "unknown, try running `python setup.py egg_info`"
+FiPy, __version__ = _getFiPyAndVersion()
 
 from boundaryConditions import *
 from meshes import *

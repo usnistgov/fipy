@@ -34,9 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
+from fipy.tools.decorators import public
+
 from higherOrderAdvectionTerm import _HigherOrderAdvectionTerm
 from advectionEquation import buildAdvectionEquation
 
+@public
 def buildHigherOrderAdvectionEquation(advectionCoeff = None):
     r"""
 

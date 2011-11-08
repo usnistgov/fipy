@@ -34,8 +34,9 @@
  # ###################################################################
  ##
 
-
 __docformat__ = 'restructuredtext'
+
+__all__ = []
 
 from fipy.viewers.viewer import _Viewer
 

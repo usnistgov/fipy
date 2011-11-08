@@ -69,10 +69,8 @@ Eventually, this module will be the only place in the code where `Numeric` (or
 __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
-from numpy.core import umath
 from numpy import newaxis as NewAxis
 from numpy import *
-from numpy import oldnumeric
 try:
     from numpy.core import ma as MA
     numpy_version = 'old'
@@ -82,9 +80,17 @@ except ImportError:
     numpy_version = 'new'
 
 from fipy.tools import inline
+from fipy.tools.decorators import public
 
+# we want NumPy's __all__, with adjustments
+import sys
+__all__ = sys.modules[f.__module__].__dict__.setdefault('__all__', []).copy()
+__all__.extend(['NUMERIX', 'NewAxis', 'MA', 'numpy_version'])
+
+@public
 def zeros(a, dtype='l'):
     return NUMERIX.zeros(a, dtype)
+@public
 def ones(a, dtype='l'):
     return NUMERIX.ones(a, dtype)    
 
@@ -97,6 +103,7 @@ def _isPhysical(arr):
 
     return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
+@public
 def getUnit(arr):
     if hasattr(arr, "getUnit") and callable(arr.getUnit):
         return arr.unit
@@ -104,6 +111,7 @@ def getUnit(arr):
         from fipy.tools.dimensions import physicalField
         return physicalField._unity
         
+@public
 def put(arr, ids, values):
     """
     The opposite of `take`.  The values of `arr` at the locations
@@ -153,6 +161,7 @@ def put(arr, ids, values):
     else:
         NUMERIX.put(arr, ids, values)
         
+@public
 def reshape(arr, shape):
     """
     Change the shape of `arr` to `shape`, as long as the product of all the
@@ -186,6 +195,7 @@ def reshape(arr, shape):
         return NUMERIX.reshape(array(arr), tuple(shape))
 ##        raise TypeError, 'cannot reshape object ' + str(arr)
 
+@public
 def getShape(arr):
     """
     Return the shape of `arr`
@@ -213,6 +223,7 @@ def getShape(arr):
     else:
         raise AttributeError, "No attribute 'shape'"
 
+@public
 def rank(a):
     """
     Get the rank of sequence a (the number of dimensions, not a matrix rank)
@@ -232,6 +243,7 @@ def rank(a):
     else:
         return NUMERIX.rank(a)
         
+@public
 def sum(arr, axis=0):
     """
     The sum of all the elements of `arr` along the specified axis.
@@ -248,19 +260,21 @@ def sum(arr, axis=0):
                 axis = 0
             return NUMERIX.tensordot(NUMERIX.ones(arr.shape[axis], 'l'), arr, (0, axis))
         
-        
+@public
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
         return NUMERIX.issubclass_(arr.dtype.type, float)
     else:
         return NUMERIX.issubclass_(arr.__class__, float)
 
+@public
 def isInt(arr):
     if isinstance(arr, NUMERIX.ndarray):
         return NUMERIX.issubclass_(arr.dtype.type, int)
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
     
+@public
 def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separator=' ', array_output=0):
     r"""
     Returns a textual representation of a number or field of numbers.  Each
@@ -339,6 +353,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
 #                       #
 #########################
 
+@public
 def dot(a1, a2, axis=0):
     """
     return array of vector dot-products of v1 and v2
@@ -390,6 +405,7 @@ def dot(a1, a2, axis=0):
         return sum(a1*a2, axis)
 
 if inline.doInline:
+    @public
     def sqrtDot(a1, a2):
         """Return array of square roots of vector dot-products
         for arrays a1 and a2 of vectors v1 and v2
@@ -423,6 +439,7 @@ if inline.doInline:
             
         return result1
 else:
+    @public
     def sqrtDot(a1, a2):
         """Return array of square roots of vector dot-products
         for arrays a1 and a2 of vectors v1 and v2
@@ -432,6 +449,7 @@ else:
         ## We can't use Numeric.dot on an array of vectors
         return sqrt(dot(a1, a2))
 
+@public
 def nearest(data, points, max_mem=1e8):
     """find the indices of `data` that are closest to `points`
     
@@ -500,6 +518,7 @@ def nearest(data, points, max_mem=1e8):
         
     return nearestIndices 
 
+@public
 def allequal(first, second):
     """
     Returns `true` if every element of `first` is equal to the corresponding
@@ -512,6 +531,7 @@ def allequal(first, second):
     else:
         return MA.allequal(first, second)
             
+@public
 def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     r"""
     Tests whether or not `first` and `second` are equal, subect to the given
@@ -529,6 +549,7 @@ def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     else:
         return MA.allclose(first, second, atol=atol, rtol=rtol)
 
+@public
 def all(a, axis=None, out=None):
     r"""
     Test whether all array elements along a given axis evaluate to True.
@@ -553,6 +574,7 @@ def all(a, axis=None, out=None):
     else:
         return MA.all(a=a, axis=axis, out=out)
 
+@public
 def isclose(first, second, rtol=1.e-5, atol=1.e-8):
     r"""
     Returns which elements of `first` and `second` are equal, subect to the given
@@ -565,6 +587,7 @@ def isclose(first, second, rtol=1.e-5, atol=1.e-8):
     """
     return abs(first - second) < atol + rtol * abs(second)
     
+@public
 def take(a, indices, axis=0, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
@@ -606,6 +629,7 @@ def take(a, indices, axis=0, fill_value=None):
         
     return taken
 
+@public
 def indices(dimensions, typecode=None):
     """indices(dimensions,typecode=None) returns an array representing a grid
     of indices with row-only, and column-only variation.
@@ -642,6 +666,7 @@ def indices(dimensions, typecode=None):
 if not hasattr(NUMERIX, 'empty'):
     print 'defining empty'
     if inline.doInline:
+        @public
         def empty(shape, dtype='d', order='C'):
             """
             `ones()` and `zeros()` are really slow ways to create arrays. NumPy
@@ -710,6 +735,7 @@ while (return_val.refcount() > 1) {
                          """,
                          extra_compile_args =['-O3'])
     else:
+        @public
         def empty(shape, dtype='d', order='C'):
             """
             `ones()` and `zeros()` are really slow ways to create arrays. NumPy
@@ -752,6 +778,7 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
         except (TypeError, ValueError): return 0 
         return 1 
      
+    @public
     def loadtxt(fname, dtype=float, comments='#', delimiter=None, converters=None, 
                 skiprows=0, usecols=None, unpack=False): 
         """ 
@@ -853,6 +880,7 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
      
     # adjust so that fmt can change across columns if desired.  
      
+    @public
     def savetxt(fname, X, fmt='%.18e',delimiter=' '): 
         """ 
         Save the data in X to file fname using fmt string to convert the 
@@ -897,6 +925,7 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
             X.shape = origShape 
 
     
+@public
 def L1norm(arr):
     r"""
     :Parameters:
@@ -908,6 +937,7 @@ def L1norm(arr):
     """
     return add.reduce(abs(arr))
     
+@public
 def L2norm(arr):
     r"""
     :Parameters:
@@ -919,6 +949,7 @@ def L2norm(arr):
     """
     return sqrt(add.reduce(arr**2))
     
+@public
 def LINFnorm(arr):
     r"""
     :Parameters:
@@ -1179,6 +1210,7 @@ if not hasattr(NUMERIX, "in1d"):
     # this handy function was introduced at some point (but it's not in 1.4.1)
     # we define if necessary
     
+    @public
     def in1d(ar1, ar2, assume_unique=False):
         """
         Test whether each element of a 1D array is also present in a second array.

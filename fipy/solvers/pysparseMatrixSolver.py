@@ -35,6 +35,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.solvers.solver import Solver
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 

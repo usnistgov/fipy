@@ -7,7 +7,7 @@
  # 
  #  FILE: "multilevelNSSAPreconditioner.py"
  #                                    created: 06/25/07
- #                                last update: 06/25/07
+ #                                last update: 11/8/11 {8:50:19 AM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -45,8 +45,11 @@
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import ML
-from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
+from fipy.tools.decorators import public
+
+@public
 class MultilevelNSSAPreconditioner(Preconditioner):
     """
     Energy-based minimizing smoothed aggregation suitable for highly

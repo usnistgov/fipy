@@ -5,7 +5,9 @@ import sys
 from xml.dom.minidom import Document
 
 import fipy
+from fipy.tools.decorators import public
 
+@public
 class Vitals(Document):
     """Returns XML formatted information about current FiPy environment
     """

@@ -37,9 +37,10 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
-
+from fipy.tools.decorators import public
 from fipy.variables.noiseVariable import NoiseVariable
 
+@public
 class BetaNoiseVariable(NoiseVariable):
     r"""
     Represents a beta distribution of random numbers with the probability

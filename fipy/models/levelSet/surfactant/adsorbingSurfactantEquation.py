@@ -41,6 +41,7 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
+from fipy.tools.decorators import public
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
@@ -94,6 +95,7 @@ class _ScMaxCoeff(_MaxCoeff):
 
         return 1e20 * self._calcMax() * numerix.where(val < 0, 0, val)
 
+@public
 class AdsorbingSurfactantEquation(SurfactantEquation):
     r"""
 

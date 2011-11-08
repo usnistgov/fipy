@@ -36,11 +36,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.numerix import random
-
+from fipy.tools.numerix import random, sqrt
+from fipy.tools.decorators import public
 from fipy.variables.noiseVariable import NoiseVariable
-from fipy.tools.numerix import sqrt
 
+@public
 class GaussianNoiseVariable(NoiseVariable):
     r"""
     

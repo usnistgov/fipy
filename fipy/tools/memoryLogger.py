@@ -6,6 +6,9 @@ import signal
 import threading
 import time
 
+from fipy.tools.decorators import public
+
+@public
 class MemoryHighWaterThread(threading.Thread):
     def __init__(self, pid, sampleTime = 1):
         threading.Thread.__init__(self)
@@ -35,6 +38,7 @@ class MemoryHighWaterThread(threading.Thread):
         
         return self.maxMem
         
+@public
 class MemoryLogger:
     def __init__(self, sampleTime = 1):
         self.pid = os.getpid()

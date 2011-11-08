@@ -3,8 +3,6 @@ __docformat__ = 'restructuredtext'
 from vtkCellViewer import VTKCellViewer
 from vtkFaceViewer import VTKFaceViewer
 
-__all__ = ["VTKViewer", "VTKCellViewer", "VTKFaceViewer"]
-
 def VTKViewer(vars, title=None, limits={}, **kwlimits):
     """Generic function for creating a `MatplotlibViewer`. 
     

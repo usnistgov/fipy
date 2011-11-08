@@ -40,13 +40,14 @@ from fipy.tools import numerix
 from fipy.meshes.mesh import Mesh
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.decorators import getsetDeprecated, public
 
 from fipy.tools import parallel
 
-from fipy.meshes.builders import NonuniformGrid3DBuilder
-from fipy.meshes.gridlike import Gridlike3D
+from fipy.meshes.builders import _NonuniformGrid3DBuilder
+from fipy.meshes.gridlike import _Gridlike3D
 
+@public
 class Grid3D(Mesh):
     """
     3D rectangular-prism Mesh
@@ -65,7 +66,7 @@ class Grid3D(Mesh):
     """
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
 
-        builder = NonuniformGrid3DBuilder()
+        builder = _NonuniformGrid3DBuilder()
         
         self.args = {
             'dx': dx, 
@@ -111,20 +112,20 @@ class Grid3D(Mesh):
         self._setScale(scaleLength = scale)
          
     def __getstate__(self):
-        return Gridlike3D.__getstate__(self)
+        return _Gridlike3D.__getstate__(self)
 
     def __setstate__(self, dict):
-        return Gridlike3D.__setstate__(self, dict)
+        return _Gridlike3D.__setstate__(self, dict)
 
     def __repr__(self):
-        return Gridlike3D.__repr__(self)
+        return _Gridlike3D.__repr__(self)
 
     def _isOrthogonal(self):
-        return Gridlike3D._isOrthogonal(self)
+        return _Gridlike3D._isOrthogonal(self)
 
     @property
     def _concatenatedClass(self):
-        return Gridlike3D._concatenatedClass
+        return _Gridlike3D._concatenatedClass
                                                                 
     @property
     def _globalNonOverlappingCellIDs(self):
@@ -143,7 +144,7 @@ class Grid3D(Mesh):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike3D._globalNonOverlappingCellIDs(self)
+        return _Gridlike3D._globalNonOverlappingCellIDs(self)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -162,7 +163,7 @@ class Grid3D(Mesh):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike3D._globalOverlappingCellIDs(self)
+        return _Gridlike3D._globalOverlappingCellIDs(self)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -181,7 +182,7 @@ class Grid3D(Mesh):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike3D._localNonOverlappingCellIDs(self)
+        return _Gridlike3D._localNonOverlappingCellIDs(self)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -200,7 +201,7 @@ class Grid3D(Mesh):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike3D._localOverlappingCellIDs(self)
+        return _Gridlike3D._localOverlappingCellIDs(self)
  
     def _calcScaleArea(self):
         return self.scale['length']**2

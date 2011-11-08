@@ -35,6 +35,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+ 
 from datetime import datetime
 import os
 import pysvn

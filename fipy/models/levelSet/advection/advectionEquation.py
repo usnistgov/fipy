@@ -34,9 +34,12 @@
  
 __docformat__ = 'restructuredtext'
 
+from fipy.tools.decorators import public
+
 from fipy.terms.transientTerm import TransientTerm
 from advectionTerm import _AdvectionTerm
 
+@public
 def buildAdvectionEquation(advectionCoeff=None,
                            advectionTerm=None):
     r"""

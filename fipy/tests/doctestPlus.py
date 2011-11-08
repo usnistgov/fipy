@@ -37,6 +37,8 @@ import sys
 import time
 import doctest
 
+from fipy.tools.decorators import public
+
 _DocTestTimes = []
 
 from lateImportTest import _LateImportTestCase, _LateImportTestSuite
@@ -53,6 +55,7 @@ def _getScript(name = '__main__'):
     else:
         return doctest.testsource(module, "")
         
+@public
 def execButNoTest(name='__main__'):
     module = sys.modules.get(name)
     

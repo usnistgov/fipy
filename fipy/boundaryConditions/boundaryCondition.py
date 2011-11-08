@@ -35,10 +35,11 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools.decorators import public
 
+@public
 class BoundaryCondition(object):
     """
     Generic boundary condition base class. 

@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import numerix
 from fipy.terms.term import Term
 from fipy.terms import SolutionVariableRequiredError

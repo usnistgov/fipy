@@ -35,10 +35,14 @@
 __docformat__ = 'restructuredtext'
 
 import os
+
 from scipy.sparse.linalg import splu
+
 from fipy.solvers.scipy.scipySolver import _ScipySolver
 from fipy.tools import numerix
+from fipy.tools.decorators import public
 
+@public
 class LinearLUSolver(_ScipySolver):
     """
     The `LinearLUSolver` solves a linear system of equations using

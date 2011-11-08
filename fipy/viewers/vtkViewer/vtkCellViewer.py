@@ -39,9 +39,11 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
+from fipy.tools.decorators import public
 
 from vtkViewer import _VTKViewer
 
+@public
 class VTKCellViewer(_VTKViewer):
     """Renders `CellVariable` data in VTK format
     """

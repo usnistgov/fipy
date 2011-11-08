@@ -36,20 +36,22 @@
 
 __docformat__ = 'restructuredtext'
  
-from abstractGridBuilder import AbstractGridBuilder
+__all__ = []
+
+from abstractGridBuilder import _AbstractGridBuilder
 
 from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.meshes.builders.utilityClasses import (UniformNumPts,
-                                                 DOffsets,
-                                                 UniformOrigin,
-                                                 NonuniformNumPts)
+from fipy.meshes.builders.utilityClasses import (_UniformNumPts,
+                                                 _DOffsets,
+                                                 _UniformOrigin,
+                                                 _NonuniformNumPts)
 
-class Grid3DBuilder(AbstractGridBuilder):
+class _Grid3DBuilder(_AbstractGridBuilder):
 
     def buildGridData(self, *args, **kwargs):
-        super(Grid3DBuilder, self).buildGridData(*args, **kwargs)
+        super(_Grid3DBuilder, self).buildGridData(*args, **kwargs)
 
         self.numberOfHorizontalRows = self.spatialDict["numHorizontalRows"]
         self.numberOfVerticalColumns = self.spatialDict["numVerticalCols"]
@@ -81,14 +83,14 @@ class Grid3DBuilder(AbstractGridBuilder):
     @staticmethod
     def createVertices(dx, dy, dz, nx, ny, nz,
                        numVertices, numHorizRows, numVertCols):
-        x = AbstractGridBuilder.calcVertexCoordinates(dx, nx)
+        x = _AbstractGridBuilder.calcVertexCoordinates(dx, nx)
         x = numerix.resize(x, (numVertices,))
         
-        y = AbstractGridBuilder.calcVertexCoordinates(dy, ny)
+        y = _AbstractGridBuilder.calcVertexCoordinates(dy, ny)
         y = numerix.repeat(y, numVertCols)
         y = numerix.resize(y, (numVertices,))
         
-        z = AbstractGridBuilder.calcVertexCoordinates(dz, nz)
+        z = _AbstractGridBuilder.calcVertexCoordinates(dz, nz)
         z = numerix.repeat(z, numHorizRows * numVertCols)
         z = numerix.resize(z, (numVertices,))
         
@@ -102,7 +104,7 @@ class Grid3DBuilder(AbstractGridBuilder):
         ## do the XY faces
         v1 = numerix.arange((nx + 1) * (ny))
         v1 = vector.prune(v1, nx + 1, nx)
-        v1 = Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz + 1) 
+        v1 = _Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz + 1) 
         v2 = v1 + 1
         v3 = v1 + (nx + 2)
         v4 = v1 + (nx + 1)
@@ -111,7 +113,7 @@ class Grid3DBuilder(AbstractGridBuilder):
         ## do the XZ faces
         v1 = numerix.arange((nx + 1) * (ny + 1))
         v1 = vector.prune(v1, nx + 1, nx)
-        v1 = Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz)
+        v1 = _Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz)
         v2 = v1 + 1
         v3 = v1 + ((nx + 1)*(ny + 1)) + 1
         v4 = v1 + ((nx + 1)*(ny + 1))
@@ -119,7 +121,7 @@ class Grid3DBuilder(AbstractGridBuilder):
         
         ## do the YZ faces
         v1 = numerix.arange((nx + 1) * ny)
-        v1 = Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz)
+        v1 = _Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz)
         v2 = v1 + (nx + 1)
         v3 = v1 + ((nx + 1)*(ny + 1)) + (nx + 1)                                  
         v4 = v1 + ((nx + 1)*(ny + 1))
@@ -149,7 +151,7 @@ class Grid3DBuilder(AbstractGridBuilder):
 
         ## left and right faces
         leftFaces = numerix.arange(nx * ny)
-        leftFaces = Grid3DBuilder._repeatWithOffset(leftFaces, nx * (ny + 1), nz)
+        leftFaces = _Grid3DBuilder._repeatWithOffset(leftFaces, nx * (ny + 1), nz)
         leftFaces = numerix.ravel(leftFaces)
         leftFaces = leftFaces + numXYFaces
         rightFaces = leftFaces + nx
@@ -175,67 +177,67 @@ class Grid3DBuilder(AbstractGridBuilder):
     def _packOffset(self, arg):
         return (0, 0, arg)
 
-class NonuniformGrid3DBuilder(Grid3DBuilder):
+class _NonuniformGrid3DBuilder(_Grid3DBuilder):
 
     def __init__(self):
-        self.NumPtsCalcClass = NonuniformNumPts
+        self.NumPtsCalcClass = _NonuniformNumPts
 
-        super(NonuniformGrid3DBuilder, self).__init__()
+        super(_NonuniformGrid3DBuilder, self).__init__()
 
     def buildGridData(self, *args, **kwargs):
-        super(NonuniformGrid3DBuilder, self).buildGridData(*args, **kwargs)
+        super(_NonuniformGrid3DBuilder, self).buildGridData(*args, **kwargs)
                       
         ([self.Xoffset, self.Yoffset, self.Zoffset],
-         self.ds) = DOffsets.calcDOffsets(self.ds, 
-                                          self.ns, 
-                                          self.offset)
+         self.ds) = _DOffsets.calcDOffsets(self.ds, 
+                                           self.ns, 
+                                           self.offset)
 
-        self.vertices = Grid3DBuilder.createVertices(self.ds[0], self.ds[1],
-                                                     self.ds[2],
-                                                     self.ns[0], self.ns[1],
-                                                     self.ns[2],
-                                                     self.numberOfVertices,
-                                                     self.numberOfHorizontalRows,
-                                                     self.numberOfVerticalColumns) \
+        self.vertices = _Grid3DBuilder.createVertices(self.ds[0], self.ds[1],
+                                                      self.ds[2],
+                                                      self.ns[0], self.ns[1],
+                                                      self.ns[2],
+                                                      self.numberOfVertices,
+                                                      self.numberOfHorizontalRows,
+                                                      self.numberOfVerticalColumns) \
                          + ((self.Xoffset,), (self.Yoffset,), (self.Zoffset,))
 
-        numFacesList, self.faces = Grid3DBuilder.createFaces(self.ns[0],
-                                                             self.ns[1],
-                                                             self.ns[2])
+        numFacesList, self.faces = _Grid3DBuilder.createFaces(self.ns[0],
+                                                              self.ns[1],
+                                                              self.ns[2])
 
         self.numberOfXYFaces = numFacesList[0]
         self.numberOfXZFaces = numFacesList[1]
         self.numberOfYZFaces = numFacesList[2]
         self.numberOfFaces   = numFacesList[3]
 
-        self.cells = Grid3DBuilder.createCells(self.ns[0], 
-                                               self.ns[1],
-                                               self.ns[2],
-                                               self.numberOfXYFaces,
-                                               self.numberOfXZFaces,
-                                               self.numberOfYZFaces)
+        self.cells = _Grid3DBuilder.createCells(self.ns[0], 
+                                                self.ns[1],
+                                                self.ns[2],
+                                                self.numberOfXYFaces,
+                                                self.numberOfXZFaces,
+                                                self.numberOfYZFaces)
 
     @property
     def _specificGridData(self):
-        return super(NonuniformGrid3DBuilder, self)._specificGridData \
+        return super(_NonuniformGrid3DBuilder, self)._specificGridData \
                 + [self.vertices,
                    self.faces,
                    self.cells,
                    self.Xoffset, self.Yoffset, self.Zoffset]
 
-class UniformGrid3DBuilder(Grid3DBuilder):
+class _UniformGrid3DBuilder(_Grid3DBuilder):
 
     def __init__(self):
-        self.NumPtsCalcClass = UniformNumPts
+        self.NumPtsCalcClass = _UniformNumPts
 
-        super(UniformGrid3DBuilder, self).__init__()
+        super(_NonuniformGrid3DBuilder, self).__init__()
 
     def buildGridData(self, ds, ns, overlap, communicator, origin):
-        super(UniformGrid3DBuilder, self).buildGridData(ds, ns, overlap,
+        super(_NonuniformGrid3DBuilder, self).buildGridData(ds, ns, overlap,
                                                         communicator)
          
-        self.origin = UniformOrigin.calcOrigin(origin, 
-                                               self.offset, self.ds, self.scale)
+        self.origin = _UniformOrigin.calcOrigin(origin, 
+                                                self.offset, self.ds, self.scale)
         
         self.numberOfXYFaces = self.ns[0] * self.ns[1] * (self.ns[2] + 1)
         self.numberOfXZFaces = self.ns[0] * (self.ns[1] + 1) * self.ns[2]
@@ -245,7 +247,7 @@ class UniformGrid3DBuilder(Grid3DBuilder):
 
     @property
     def _specificGridData(self):
-        return super(UniformGrid3DBuilder, self)._specificGridData \
+        return super(_NonuniformGrid3DBuilder, self)._specificGridData \
                 + [self.origin]
 
                                   

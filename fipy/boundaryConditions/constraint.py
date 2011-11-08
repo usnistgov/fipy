@@ -36,6 +36,9 @@
 
 __docformat__ = 'restructuredtext'
 
+from fipy.tools.decorators import public
+
+@public
 class Constraint(object):
     def __init__(self, value, where=None):
         """Object to hold a `Variable` to `value` at `where`

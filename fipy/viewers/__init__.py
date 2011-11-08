@@ -1,11 +1,5 @@
 __docformat__ = 'restructuredtext'
 
-import os
-import sys
-import string
-import glob
-import imp
-
 try:
     from gistViewer import *
 except:
@@ -79,7 +73,8 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         (default) value of `None` will autoscale.
       
     """
-    
+    import os
+
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
     vars = list(vars)

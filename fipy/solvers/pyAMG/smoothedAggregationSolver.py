@@ -38,7 +38,9 @@ import sys
 
 from pyamg import smoothed_aggregation_solver
 from fipy.solvers.pyAMG.pyAMGSolver import PyAMGSolver
+from fipy.tools.decorators import public
 
+@public
 class SmoothedAggregationSolver(PyAMGSolver):
 
     def __init__(self, *args, **kwargs):

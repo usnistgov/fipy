@@ -42,9 +42,11 @@ import sys
 import gzip
 
 from fipy.tools import parallel
+from fipy.tools.decorators import public
 
 # TODO: add test to show that round trip pickle of mesh doesn't work properly
 # FIXME: pickle fails to work properly on numpy 1.1 (run gapFillMesh.py)
+@public
 def write(data, filename = None, extension = '', communicator=parallel):
     """
     Pickle an object and write it to a file. Wrapper for
@@ -84,6 +86,7 @@ def write(data, filename = None, extension = '', communicator=parallel):
     if filename is None:
         return (f, _filename)
 
+@public
 def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
     """
     Read a pickled object from a file. Returns the unpickled object.

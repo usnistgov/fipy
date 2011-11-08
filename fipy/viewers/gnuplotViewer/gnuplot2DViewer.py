@@ -36,12 +36,14 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
-from gnuplotViewer import _GnuplotViewer
 from fipy.meshes import Grid2D
 from fipy.variables.faceVariable import FaceVariable
+from fipy.tools import numerix
+from fipy.tools.decorators import public
 
+from gnuplotViewer import _GnuplotViewer
+
+@public
 class Gnuplot2DViewer(_GnuplotViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    

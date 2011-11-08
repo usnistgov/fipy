@@ -42,8 +42,9 @@ from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
 from fipy.tools import inline
-from fipy.tools.decorators import getsetDeprecated, mathMethodDeprecated
+from fipy.tools.decorators import getsetDeprecated, mathMethodDeprecated, public
 
+@public
 class Variable(object):
     """
     Lazily evaluated quantity with units. 

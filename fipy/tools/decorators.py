@@ -84,6 +84,22 @@ else:
         func.__name__ = name
         return func
 
+def public(f):
+    """"Use a decorator to avoid retyping function/class names.
+
+    * Lifted from Sam Denton:
+    http://code.activestate.com/recipes/576993-public-decorator-adds-an-item-to-__all__
+    * Based on an idea by Duncan Booth:
+    http://groups.google.com/group/comp.lang.python/msg/11cbb03e09611b8a
+    * Improved via a suggestion by Dave Angel:
+    http://groups.google.com/group/comp.lang.python/msg/3d400fb22d8a42e1
+    """
+    all = sys.modules[f.__module__].__dict__.setdefault('__all__', [])
+    if f.__name__ not in all:  # Prevent duplicates if run from an IDE.
+        all.append(f.__name__)
+    return f
+public(public)
+
 class _Deprecate(object):
     """
     Decorator class to deprecate old functions.
@@ -174,6 +190,7 @@ class _GetSetDeprecated(_Deprecate):
                 new_name = RE.group(1) + RE.group(3).lower() + RE.group(4)
         return new_name
 
+@public
 def getsetDeprecated(*args, **kwargs):
     """Issues a `DeprecationWarning` to use the appropriate property, rather than the get/set method of the same name
 
@@ -215,6 +232,7 @@ class _MathMethodDeprecated(_Deprecate):
             new_name = "numerix.%s" % old_name
         return new_name
 
+@public
 def mathMethodDeprecated(*args, **kwargs):
     """Issues a `DeprecationWarning` to use the appropriate ufunc from
     `numerix`, rather than the method of the same name

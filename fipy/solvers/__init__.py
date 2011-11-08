@@ -1,6 +1,5 @@
-import os
-from fipy.tools.parser import parseSolver
-from fipy.tools  import parallel
+from fipy.tools.parser import _parseSolver
+from fipy.tools  import parallel as _parallel
 
 from solver import SolverConvergenceWarning, \
      PreconditionerWarning, \
@@ -11,13 +10,18 @@ from solver import SolverConvergenceWarning, \
      IllConditionedPreconditionerWarning, \
      MaximumIterationWarning
 
-solver = parseSolver()
+solver = _parseSolver()
 
-if solver is None and os.environ.has_key('FIPY_SOLVERS'):
-    solver = os.environ['FIPY_SOLVERS'].lower()
+def _envSolver(solver):
+    import os
+    if solver is None and os.environ.has_key('FIPY_SOLVERS'):
+        solver = os.environ['FIPY_SOLVERS'].lower()
+    return solver
+    
+solver = _envSolver(solver)
 
 if solver == "pysparse":
-    if parallel.Nproc > 1:
+    if _parallel.Nproc > 1:
         raise  Exception('pysparse solvers do not run in parallel')
     from fipy.solvers.pysparse import *
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
@@ -34,14 +38,14 @@ elif solver == "trilinos":
         _MeshMatrix =  _TrilinosMeshMatrix
 
 elif solver == "scipy":
-    if parallel.Nproc > 1:
+    if _parallel.Nproc > 1:
         raise  Exception('scipy solvers do not run in parallel')
     from fipy.solvers.scipy import *
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
     
 elif solver == "pyamg":
-    if parallel.Nproc > 1:
+    if _parallel.Nproc > 1:
         raise  Exception('pyamg solvers do not run in parallel')
     from fipy.solvers.pyAMG import *
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
@@ -59,7 +63,7 @@ elif solver is None:
     
    
     try:
-        if parallel.Nproc > 1:
+        if _parallel.Nproc > 1:
             raise  Exception('pysparse solvers do not run in parallel')
         from fipy.solvers.pysparse import *
         solver = "pysparse"
@@ -78,7 +82,7 @@ elif solver is None:
                 _MeshMatrix =  _TrilinosMeshMatrix
         except:
             try:
-                if parallel.Nproc > 1:
+                if _parallel.Nproc > 1:
                     raise  Exception('pyamg solvers do not run in parallel')
                 from fipy.solvers.pyAMG import *
                 solver = "pyamg"
@@ -86,7 +90,7 @@ elif solver is None:
                 _MeshMatrix = _ScipyMeshMatrix
             except:
                 try:
-                    if parallel.Nproc > 1:
+                    if _parallel.Nproc > 1:
                         raise  Exception('scipy solvers do not run in parallel')
                     from fipy.solvers.scipy import *
                     solver = "scipy"

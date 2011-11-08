@@ -37,10 +37,13 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import _MatplotlibViewer
+from fipy.tools.decorators import public
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
+from matplotlibViewer import _MatplotlibViewer
+
+@public
 class MatplotlibVectorViewer(_MatplotlibViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using Matplotlib_

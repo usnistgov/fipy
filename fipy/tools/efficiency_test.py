@@ -39,6 +39,9 @@ from distutils.core import Command
 import os
 import sys
 
+from fipy.tools.decorators import public
+
+@public
 class Efficiency_test(Command):
     description = "run FiPy efficiency tests"
 

@@ -37,7 +37,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
+from fipy.tools.decorators import public
 from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
@@ -56,6 +56,7 @@ class _HybridConvectionTermAlpha(FaceVariable):
 
         return alpha
 
+@public
 class HybridConvectionTerm(_AsymmetricConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by

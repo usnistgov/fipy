@@ -38,11 +38,13 @@
 
 __docformat__ = 'restructuredtext'
 
+from fipy.tools.decorators import public
 from fipy.variables.faceVariable import FaceVariable
 from fipy.viewers.viewer import _Viewer
 
 from vtkViewer import _VTKViewer
 
+@public
 class VTKFaceViewer(_VTKViewer):
     """Renders `_MeshVariable` data in VTK format
     """

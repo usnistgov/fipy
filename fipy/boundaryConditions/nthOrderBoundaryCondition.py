@@ -39,7 +39,9 @@ from fipy.tools import numerix
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.boundaryConditions.fixedValue import FixedValue
+from fipy.tools.decorators import public
 
+@public
 class NthOrderBoundaryCondition(BoundaryCondition):
     """
 

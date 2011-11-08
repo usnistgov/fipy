@@ -3,8 +3,6 @@ __docformat__ = 'restructuredtext'
 from gnuplot1DViewer import Gnuplot1DViewer
 from gnuplot2DViewer import Gnuplot2DViewer
 
-__all__ = ["GnuplotViewer", "Gnuplot1DViewer", "Gnuplot2DViewer"]
-
 def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
     """Generic function for creating a `GnuplotViewer`. 
     

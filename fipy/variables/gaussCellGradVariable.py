@@ -34,11 +34,14 @@
  # ###################################################################
  ##
  
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.tools import inline
 from fipy.variables.faceGradContributionsVariable import _FaceGradContributions
-
 
 class _GaussCellGradVariable(CellVariable):
     """

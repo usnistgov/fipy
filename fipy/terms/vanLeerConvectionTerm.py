@@ -39,11 +39,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
+from fipy.tools.decorators import public
 from fipy.tools import numerix
 
+@public
 class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 
     def __getGradient(self, normalGradient, gradUpwind):

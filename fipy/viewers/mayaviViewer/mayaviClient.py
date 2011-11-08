@@ -35,7 +35,6 @@
  # ###################################################################
  ##
 
-
 __docformat__ = 'restructuredtext'
 
 import os
@@ -43,8 +42,10 @@ import subprocess
 import tempfile
 import time
 
+from fipy.tools.decorators import public
 from fipy.viewers.viewer import _Viewer
 
+@public
 class MayaviClient(_Viewer):
     """
     The `MayaviClient` uses the Mayavi_ python plotting package.

@@ -34,6 +34,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 from fipy.variables.faceGradVariable import _FaceGradVariable
 from fipy.tools import inline
 from fipy.tools import numerix

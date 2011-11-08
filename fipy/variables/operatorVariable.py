@@ -30,6 +30,10 @@
  # #############################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 from fipy.variables.variable import Variable
 
 from fipy.tools import numerix

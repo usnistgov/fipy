@@ -34,6 +34,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 import unittest
 
 from fipy.tools import numerix

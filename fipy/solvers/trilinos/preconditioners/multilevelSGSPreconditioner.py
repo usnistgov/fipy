@@ -37,8 +37,11 @@
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import ML
-from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
+from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
+from fipy.tools.decorators import public
+
+@public
 class MultilevelSGSPreconditioner(Preconditioner):
     """
     Multilevel preconditioner for Trilinos solvers using Symmetric Gauss-Seidel smoothing.

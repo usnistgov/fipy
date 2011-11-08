@@ -19,8 +19,9 @@ from fipy.meshes import Grid2D
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.tools import numerix
 from fipy.tools import serial
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.decorators import getsetDeprecated, public
 
+@public
 class GapFillMesh(Mesh2D):
     """
     
@@ -174,6 +175,7 @@ class GapFillMesh(Mesh2D):
     def getFineMesh(self):
         return self.fineMesh
         
+@public
 class TrenchMesh(GapFillMesh):
     """
 

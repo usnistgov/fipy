@@ -37,7 +37,9 @@ __docformat__ = 'restructuredtext'
 from fipy.variables.cellVariable import CellVariable
 from fipy.meshes import Grid1D
 from fipy.tools import numerix
+from fipy.tools.decorators import public
 
+@public
 class HistogramVariable(CellVariable):
     def __init__(self, distribution, dx = 1., nx = None, offset = 0.):
         r"""

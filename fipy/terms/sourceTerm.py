@@ -38,7 +38,9 @@ from fipy.terms.cellTerm import CellTerm
 from fipy.terms import AbstractBaseClassError
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
+from fipy.tools.decorators import public
 
+@public
 class SourceTerm(CellTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.

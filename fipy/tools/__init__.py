@@ -34,12 +34,11 @@
  # ###################################################################
  ##
 
-try:
-    import scipy
-except:
-    pass
-
-def parallelImport():
+def _parallelImport():
+    try:
+        import scipy
+    except:
+        pass
 
     from PyTrilinos import Epetra
     from fipy.tools.commWrapper import CommWrapper
@@ -58,18 +57,23 @@ def parallelImport():
     from fipy.tools.serialCommWrapper import SerialCommWrapper
     return SerialCommWrapper(Epetra=Epetra), parallel
 
-from fipy.tools.parser import parseSolver
-if parseSolver() in ("trilinos",  "no-pysparse"):
-    serial, parallel = parallelImport()
-elif parseSolver() is None:
-    try:
-        serial, parallel = parallelImport()
-    except ImportError:
+def _getComms():
+    from fipy.tools.parser import _parseSolver
+    if _parseSolver() in ("trilinos",  "no-pysparse"):
+        serial, parallel = _parallelImport()
+    elif _parseSolver() is None:
+        try:
+            serial, parallel = _parallelImport()
+        except ImportError:
+            from fipy.tools.dummyComm import DummyComm
+            serial, parallel = DummyComm(), DummyComm()
+    else:
         from fipy.tools.dummyComm import DummyComm
         serial, parallel = DummyComm(), DummyComm()
-else:
-    from fipy.tools.dummyComm import DummyComm
-    serial, parallel = DummyComm(), DummyComm()
+        
+    return serial, parallel
+    
+serial, parallel = _getComms()
 
 import dump
 import numerix
@@ -77,12 +81,3 @@ import vector
 from dimensions.physicalField import PhysicalField
 from numerix import *
 from vitals import Vitals
-
-def uniqueList(seq):
-    """
-    Returns the unique memebers of a list ordered in the same way as seq. Simply
-    doing list(set(seq)) doesn't retain the ordering.
-    """    
-    seen = set()
-    return [x for x in seq if x not in seen and not seen.add(x)]
-

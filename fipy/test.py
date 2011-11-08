@@ -32,6 +32,8 @@
  # ###################################################################
  ##
 
+__all__ = []
+
 from fipy.tests.lateImportTest import _LateImportTestSuite
 import fipy.tests.testProgram
 

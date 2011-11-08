@@ -34,9 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
 from scipy.sparse.linalg import gmres
 
+from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
+from fipy.tools.decorators import public
+
+@public
 class LinearGMRESSolver(_ScipyKrylovSolver):
     """
     The `LinearGMRESSolver` is an interface to the GMRES solver in

@@ -35,6 +35,9 @@
 import os
 from distutils.core import Command
 
+from fipy.tools.decorators import public
+
+@public
 class Copy_script(Command):
     description = "copy an example script into a new editable file"
 

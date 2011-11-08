@@ -41,7 +41,9 @@ from pysparse import itsolvers
 
 from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from fipy.tools.decorators import public
 
+@public
 class LinearPCGSolver(PysparseSolver):
     """
     
