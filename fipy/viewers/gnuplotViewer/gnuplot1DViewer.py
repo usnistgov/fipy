@@ -39,9 +39,9 @@ __docformat__ = 'restructuredtext'
 from gnuplotViewer import _GnuplotViewer
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["Gnuplot1DViewer"]
+
 class Gnuplot1DViewer(_GnuplotViewer):
     """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
 

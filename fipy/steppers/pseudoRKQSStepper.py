@@ -31,9 +31,9 @@
  ##
 
 from fipy.steppers.stepper import Stepper
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["PseudoRKQSStepper"]
+
 class PseudoRKQSStepper(Stepper):
     """
     Adaptive stepper based on the ``rkqs`` (Runge-Kutta

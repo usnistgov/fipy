@@ -40,9 +40,9 @@ from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import vector
 from fipy.tools import numerix
 from fipy.tools import inline
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["FaceTerm"]
+
 class FaceTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.

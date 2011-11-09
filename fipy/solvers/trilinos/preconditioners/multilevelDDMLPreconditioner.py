@@ -7,7 +7,7 @@
  # 
  #  FILE: "multilevelDDMLPreconditioner.py"
  #                                    created: 06/25/07
- #                                last update: 11/8/11 {8:49:56 AM}
+ #                                last update: 11/8/11 {4:09:08 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -47,9 +47,9 @@ __docformat__ = 'restructuredtext'
 from PyTrilinos import ML
 
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["MultilevelDDMLPreconditioner"]
+
 class MultilevelDDMLPreconditioner(Preconditioner):
     """
     Multilevel preconditioner for Trilinos solvers. 3-level algebraic domain decomposition.

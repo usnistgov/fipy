@@ -40,12 +40,12 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.tools import parallel
-from fipy.tools.decorators import public
 
 from fipy.meshes.builders import _NonuniformGrid2DBuilder
 from fipy.meshes.gridlike import _Gridlike2D
 
-@public
+__all__ = ["Grid2D"]
+
 class Grid2D(Mesh2D):
     """
     Creates a 2D grid mesh with horizontal faces numbered

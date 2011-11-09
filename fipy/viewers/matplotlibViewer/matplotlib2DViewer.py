@@ -37,11 +37,11 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
 from matplotlibViewer import _MatplotlibViewer, _ColorBar
 
-@public
+__all__ = ["Matplotlib2DViewer"]
+
 class Matplotlib2DViewer(_MatplotlibViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    

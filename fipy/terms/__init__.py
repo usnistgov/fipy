@@ -28,8 +28,6 @@ class IncorrectSolutionVariable(Exception):
 
 from transientTerm import *
 from diffusionTerm import *
-from diffusionTermCorrection import *
-from diffusionTermNoCorrection import *
 from explicitDiffusionTerm import *
 from implicitDiffusionTerm import *
 from implicitSourceTerm import *

@@ -40,9 +40,10 @@ from fipy.tools import numerix
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
-@public
+__all__ = ["Tri2D"]
+
 class Tri2D(Mesh2D):
     """
     This class creates a mesh made out of triangles.  It does this by

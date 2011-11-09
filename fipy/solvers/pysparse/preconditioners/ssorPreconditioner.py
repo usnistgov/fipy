@@ -36,9 +36,9 @@
 from pysparse import precon
 
 from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["SsorPreconditioner"]
+
 class SsorPreconditioner(Preconditioner):
     """
     SSOR preconditioner for PySparse.

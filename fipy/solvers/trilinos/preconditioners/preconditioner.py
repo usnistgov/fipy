@@ -36,9 +36,8 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.decorators import public
+__all__ = ["Preconditioner"]
 
-@public
 class Preconditioner:
     """
     The base Preconditioner class.

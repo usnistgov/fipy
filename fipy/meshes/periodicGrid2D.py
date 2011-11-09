@@ -37,10 +37,12 @@
 """
 __docformat__ = 'restructuredtext'
 
-from grid2D import Grid2D
 from fipy.tools import numerix
 from fipy.tools import parallel
-from fipy.tools.decorators import public
+
+from grid2D import Grid2D
+
+__all__ = ["PeriodicGrid2D", "PeriodicGrid2DLeftRight", "PeriodicGrid2DTopBottom"]
 
 class _BasePeriodicGrid2D(Grid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallel):
@@ -81,7 +83,6 @@ class _BasePeriodicGrid2D(Grid2D):
         newmesh._makePeriodic()
         return newmesh
 
-@public
 class PeriodicGrid2D(_BasePeriodicGrid2D):
     """
     Creates a periodic2D grid mesh with horizontal faces numbered
@@ -147,13 +148,11 @@ class PeriodicGrid2D(_BasePeriodicGrid2D):
         self._connectFaces(numerix.nonzero(self.facesBottom), 
                            numerix.nonzero(self.facesTop))
 
-@public
 class PeriodicGrid2DLeftRight(_BasePeriodicGrid2D):
     def _makePeriodic(self):
         self._connectFaces(numerix.nonzero(self.facesLeft),
                            numerix.nonzero(self.facesRight))
 
-@public
 class PeriodicGrid2DTopBottom(_BasePeriodicGrid2D):
     def _makePeriodic(self):
         self._connectFaces(numerix.nonzero(self.facesBottom),

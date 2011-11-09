@@ -35,9 +35,9 @@
  ##
 
 from fipy.tools.comms.serialCommWrapper import SerialCommWrapper
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["DummyComm"]
+
 class DummyComm(SerialCommWrapper):
     def __init__(self):
         pass

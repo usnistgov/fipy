@@ -83,10 +83,10 @@ except ImportError, e:
 
 # FiPy library imports
 from fipy.tools.numerix import array, concatenate, where, zeros
-from fipy.tools.decorators import public
+
+__all__ = ["MayaviDaemon"]
 
 ######################################################################
-@public
 class MayaviDaemon(Mayavi):
     """Given a file name and a mayavi2 data reader object, this class
     polls the file for any changes and automatically updates the

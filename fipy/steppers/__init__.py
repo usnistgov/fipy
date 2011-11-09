@@ -30,11 +30,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.decorators import public
-
 from stepper import Stepper
 from pseudoRKQSStepper import PseudoRKQSStepper
 from pidStepper import PIDStepper
+
+__all__ = ["L1error", "L2error", "LINFerror", "sweepMonotonic"]
 
 def residual(var, matrix, RHSvector):
     r"""
@@ -79,7 +79,6 @@ def error(var, matrix, RHSvector, norm):
     denom = L1norm(var.old)
     return L1norm(var - var.old) / (denom + (denom == 0))
 
-@public
 def L1error(var, matrix, RHSvector):
     r"""
     :Parameters:
@@ -98,7 +97,6 @@ def L1error(var, matrix, RHSvector):
     from fipy.tools.numerix import L1norm
     return error(var, matrix, RHSvector, L1norm)
       
-@public
 def L2error(var, matrix, RHSvector):
     r"""
     :Parameters:
@@ -117,7 +115,6 @@ def L2error(var, matrix, RHSvector):
     from fipy.tools.numerix import L2norm
     return error(var, matrix, RHSvector, L2norm)
       
-@public
 def LINFerror(var, matrix, RHSvector):
     r"""
     :Parameters:
@@ -136,7 +133,6 @@ def LINFerror(var, matrix, RHSvector):
     from fipy.tools.numerix import LINFnorm
     return error(var, matrix, RHSvector, LINFnorm)
              
-@public
 def sweepMonotonic(fn, *args, **kwargs):
     """
     Repeatedly calls :func:`fn(*args, **kwargs)` until the residual returned by

@@ -38,9 +38,10 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
-@public
+__all__ = ["CellVariable"]
+
 class CellVariable(_MeshVariable):
     """
     Represents the field of values of a variable on a `Mesh`.

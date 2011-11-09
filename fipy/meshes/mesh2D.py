@@ -47,7 +47,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.mesh import Mesh
 
@@ -63,7 +63,8 @@ def _orderVertices(vertexCoords, vertices):
     sortorder = numerix.argsort(angles)
     return numerix.take(vertices, sortorder)
 
-@public
+__all__ = ["Mesh2D"]
+
 class Mesh2D(Mesh):
     
     def _calcScaleArea(self):

@@ -38,14 +38,15 @@ from fipy.tools.numerix import MA
 from fipy.meshes.builders import _Grid3DBuilder
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 from fipy.tools import parallel
 
 from fipy.meshes.builders import _UniformGrid3DBuilder
 from fipy.meshes.gridlike import _Gridlike3D
 from fipy.meshes.uniformGrid import UniformGrid
 
-@public
+__all__ = ["UniformGrid3D"]
+
 class UniformGrid3D(UniformGrid):
     """
     3D rectangular-prism Mesh with uniform grid spacing in each dimension.

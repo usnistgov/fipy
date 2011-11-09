@@ -36,7 +36,8 @@
 """
 
 from fipy.tools import inline, numerix
-from fipy.tools.decorators import public
+
+__all__ = ["putAdd", "prune"]
 
 # Factored out for fipy.models.levelSet.surfactant.convectionCoeff._ConvectionCoeff
 # for some reason
@@ -69,7 +70,6 @@ def _putAdd(vector, ids, additionVector, mask=False):
 if inline.doInline:
     ## FIXME: inline version doesn't account for all of the conditions that Python 
     ## version does.
-    @public
     def putAdd(vector, ids, additionVector):
         """ This is a temporary replacement for Numeric.put as it was not doing
         what we thought it was doing.
@@ -83,14 +83,12 @@ if inline.doInline:
                           additionVector=numerix.array(additionVector),
         ni = len(ids.flat))
 else:
-    @public
     def putAdd(vector, ids, additionVector):
         """ This is a temporary replacement for Numeric.put as it was not doing
         what we thought it was doing.
         """
         _putAdd(vector, ids, additionVector)
 
-@public
 def prune(array, shift, start=0, axis=0):
     """
     removes elements with indices i = start + shift * n

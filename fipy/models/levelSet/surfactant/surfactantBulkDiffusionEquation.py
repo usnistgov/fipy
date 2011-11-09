@@ -38,8 +38,9 @@ from fipy.tools import numerix
 
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.tools.decorators import public
 from fipy.variables.cellVariable import CellVariable
+
+__all__ = ["buildSurfactantBulkDiffusionEquation"]
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, rateConstant = None, distanceVar = None):
@@ -62,7 +63,6 @@ class _ScAdsorptionCoeff(_AdsorptionCoeff):
         val = numerix.array(value)
         return val * bulk * numerix.array(self.surfactantVar.interfaceVar)
 
-@public
 def buildSurfactantBulkDiffusionEquation(bulkVar = None,
                                          distanceVar = None,
                                          surfactantVar = None,

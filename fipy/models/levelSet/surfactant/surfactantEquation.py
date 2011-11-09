@@ -37,12 +37,12 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
-from fipy.tools.decorators import public
 from fipy.solvers import DefaultAsymmetricSolver
 
 from convectionCoeff import _ConvectionCoeff
 
-@public
+__all__ = ["SurfactantEquation"]
+
 class SurfactantEquation:
     """
 

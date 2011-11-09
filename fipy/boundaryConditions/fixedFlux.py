@@ -40,9 +40,9 @@ from fipy.tools import numerix
 from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.tools import vector
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["FixedFlux"]
+
 class FixedFlux(BoundaryCondition):
     r"""
 

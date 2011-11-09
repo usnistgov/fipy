@@ -40,7 +40,8 @@ from matplotlib.patches import Rectangle
 from scipy.io import mmio
 
 from fipy.tools import numerix
-from fipy.tools.decorators import public
+
+__all__ = ["MatplotlibSparseMatrixViewer"]
 
 class SignedLogFormatter(ticker.LogFormatter):
     """Format signed values for log axis
@@ -188,7 +189,6 @@ class SignedLogLocator(ticker.LogLocator):
 
         return nonsingular(vmin, vmax)
                    
-@public
 class MatplotlibSparseMatrixViewer:
     def __init__(self, title="Sparsity"):
         self.title = title

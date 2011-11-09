@@ -32,9 +32,8 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.decorators import public
+__all__ = ["Stepper"]
 
-@public
 class Stepper:
     def __init__(self, vardata=()):
         self.vardata = vardata

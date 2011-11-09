@@ -38,9 +38,9 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.baseUpwindConvectionTerm import _BaseUpwindConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.solvers import DefaultAsymmetricSolver
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["UpwindConvectionTerm"]
+
 class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by

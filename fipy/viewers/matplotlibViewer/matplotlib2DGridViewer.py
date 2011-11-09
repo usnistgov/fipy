@@ -36,11 +36,12 @@
  
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
 from matplotlibViewer import _MatplotlibViewer, _ColorBar
 
-@public
+__all__ = ["Matplotlib2DGridViewer"]
+
 class Matplotlib2DGridViewer(_MatplotlibViewer):
     """
     Displays an image plot of a 2D `CellVariable` object using Matplotlib_.

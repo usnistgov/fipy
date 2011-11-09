@@ -39,9 +39,9 @@ from PyTrilinos import AztecOO
 
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["LinearBicgstabSolver"]
+
 class LinearBicgstabSolver(TrilinosAztecOOSolver):
 
     """

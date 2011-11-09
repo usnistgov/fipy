@@ -44,13 +44,13 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools import inline
 from fipy.tools import parallel
-from fipy.tools.decorators import public
 
 from fipy.meshes.builders import _UniformGrid2DBuilder
 from fipy.meshes.gridlike import _Gridlike2D
 from fipy.meshes.uniformGrid import UniformGrid
 
-@public
+__all__ = ["UniformGrid2D"]
+
 class UniformGrid2D(UniformGrid):
     """
     Creates a 2D grid mesh with horizontal faces numbered

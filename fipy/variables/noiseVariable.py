@@ -35,9 +35,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["NoiseVariable"]
+
 class NoiseVariable(CellVariable):
     r"""
     .. attention:: This class is abstract. Always create one of its subclasses.

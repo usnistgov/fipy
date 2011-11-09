@@ -49,9 +49,13 @@ can abort whenever it has problems with::
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
-@public
+__all__ = ["SolverConvergenceWarning", "MaximumIterationWarning", 
+           "PreconditionerWarning", "IllConditionedPreconditionerWarning", 
+           "PreconditionerNotPositiveDefiniteWarning", "MatrixIllConditionedWarning",
+           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning"]
+
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):
         self.solver = solver
@@ -61,36 +65,29 @@ class SolverConvergenceWarning(Warning):
     def __str__(self):
         return "%s failed. Iterations: %g. Relative error: %g" % (str(self.solver), self.iter, self.relres)
 
-@public
 class MaximumIterationWarning(SolverConvergenceWarning):
     def __str__(self):
         return "Iterations: %g. Relative error: %g" % (self.iter, self.relres)
         
-@public
 class PreconditionerWarning(SolverConvergenceWarning):
     pass
     
-@public
 class IllConditionedPreconditionerWarning(PreconditionerWarning):
     def __str__(self):
         return "The system involving the preconditioner was ill-conditioned. Relative error: %g" % (self.relres)
     
-@public
 class PreconditionerNotPositiveDefiniteWarning(PreconditionerWarning):
     def __str__(self):
         return "The preconditioning matrix does not appear to be positive definite. Relative error: %g" % (self.relres)
     
-@public
 class MatrixIllConditionedWarning(SolverConvergenceWarning):
     def __str__(self):
         return "The matrix appears to be very ill-conditioned. Relative error: %g" % (self.relres)
   
-@public
 class StagnatedSolverWarning(SolverConvergenceWarning):
     def __str__(self):
         return "The solver stagnated. Iterations: %g. Relative error: %g" % (self.iter, self.relres)
     
-@public
 class ScalarQuantityOutOfRangeWarning(SolverConvergenceWarning):
     def __str__(self):
         return "A scalar quantity became too small or too large to continue computing. Iterations: %g. Relative error: %g" % (self.iter, self.relres)

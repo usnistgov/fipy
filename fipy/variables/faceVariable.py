@@ -36,9 +36,10 @@
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
-@public
+__all__ = ["FaceVariable"]
+
 class FaceVariable(_MeshVariable):
     @property
     def _variableClass(self):

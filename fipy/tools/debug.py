@@ -1,6 +1,5 @@
-from fipy.tools.decorators import public
+__all__ = ["PRINT"]
 
-@public
 def PRINT(label, arg="", stall=True):
     import sys
     from fipy import parallel

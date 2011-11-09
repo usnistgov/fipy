@@ -36,9 +36,9 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.upwindConvectionTerm import _BaseUpwindConvectionTerm
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["ExplicitUpwindConvectionTerm"]
+
 class ExplicitUpwindConvectionTerm(_BaseUpwindConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by

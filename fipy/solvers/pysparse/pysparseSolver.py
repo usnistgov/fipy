@@ -42,9 +42,9 @@ from pysparse import precon
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["PysparseSolver"]
+
 class PysparseSolver(_PysparseMatrixSolver):
     """
     The base `pysparseSolver` class.

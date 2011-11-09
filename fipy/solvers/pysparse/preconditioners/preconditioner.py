@@ -33,9 +33,8 @@
  # ###################################################################
  ##
  
-from fipy.tools.decorators import public
+__all__ = ["Preconditioner"]
 
-@public
 class Preconditioner:
     """
     Base preconditioner class

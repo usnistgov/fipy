@@ -36,9 +36,9 @@ __docformat__ = 'restructuredtext'
 
 from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
 from scipy.sparse.linalg import bicgstab
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["LinearBicgstabSolver"]
+
 class LinearBicgstabSolver(_ScipyKrylovSolver):
     """
     The `LinearBicgstabSolver` is an interface to the Bicgstab solver in

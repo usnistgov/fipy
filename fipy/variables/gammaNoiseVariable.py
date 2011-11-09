@@ -35,10 +35,10 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
-from fipy.tools.decorators import public
 from fipy.variables.noiseVariable import NoiseVariable
 
-@public
+__all__ = ["GammaNoiseVariable"]
+
 class GammaNoiseVariable(NoiseVariable):
     r"""
     Represents a gamma distribution of random numbers with the probability

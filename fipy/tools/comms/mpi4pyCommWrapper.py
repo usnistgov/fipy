@@ -36,9 +36,9 @@
 
 from fipy.tools.comms.commWrapper import CommWrapper
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["Mpi4pyCommWrapper"]
+
 class Mpi4pyCommWrapper(CommWrapper):
     """MPI Communicator wrapper
     

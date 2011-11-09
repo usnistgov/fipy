@@ -39,9 +39,9 @@
  
 from fipy.tools import parallel
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["Grid3D", "Grid2D", "Grid1D", "CylindricalGrid2D", "CylindricalGrid1D"]
+
 def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
     import uniformGrid3D
     import grid3D
@@ -62,7 +62,6 @@ def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2
         return grid3D.Grid3D(dx = dx, dy = dy, dz = dz, nx = nx, ny = ny, nz = nz,
                              overlap=overlap, communicator=communicator) 
 
-@public
 def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
     import uniformGrid2D
     import grid2D
@@ -79,7 +78,6 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
     else:
         return grid2D.Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
-@public
 def Grid1D(dx=1., nx=None, overlap=2, communicator=parallel):
     import uniformGrid1D
     import grid1D
@@ -91,7 +89,6 @@ def Grid1D(dx=1., nx=None, overlap=2, communicator=parallel):
     else:
         return grid1D.Grid1D(dx=dx, nx=nx, overlap=overlap, communicator=communicator)
 
-@public
 def CylindricalGrid2D(dr=None, dz=None, 
                       nr=None, nz=None, 
                       dx=1., dy=1., 
@@ -121,7 +118,6 @@ def CylindricalGrid2D(dr=None, dz=None,
     else:
         return cylindricalGrid2D.CylindricalGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, origin=origin, overlap=overlap, communicator=communicator)
 
-@public
 def CylindricalGrid1D(dr=None, nr=None, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallel):
     import cylindricalUniformGrid1D
     import cylindricalGrid1D

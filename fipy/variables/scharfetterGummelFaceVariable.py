@@ -2,9 +2,9 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools.numerix import exp, take, where
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["ScharfetterGummelFaceVariable"]
+
 class ScharfetterGummelFaceVariable(_CellToFaceVariable):
     def __init__(self, var, boundaryConditions=()):
         _CellToFaceVariable.__init__(self, var)

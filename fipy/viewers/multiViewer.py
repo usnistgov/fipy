@@ -31,9 +31,10 @@
  ##
 
 from fipy.viewers.viewer import _Viewer
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
-@public
+__all__ = ["MultiViewer"]
+
 class MultiViewer(_Viewer):
     """
     Treat a collection of different viewers (such for different 2D plots 

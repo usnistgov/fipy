@@ -37,9 +37,9 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.cellTerm import CellTerm
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["TransientTerm"]
+
 class TransientTerm(CellTerm):
     r"""
     The `TransientTerm` represents

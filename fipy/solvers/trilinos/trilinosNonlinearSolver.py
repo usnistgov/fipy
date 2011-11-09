@@ -38,7 +38,6 @@ from PyTrilinos import NOX
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import parallel
-from fipy.tools.decorators import public
 
 class _NOXInterface(NOX.Epetra.Interface.Required, NOX.Epetra.Interface.Jacobian):
     def __init__(self, solver):
@@ -130,7 +129,8 @@ class _NOXInterface(NOX.Epetra.Interface.Required, NOX.Epetra.Interface.Jacobian
 class _DummyJacobianSolver(TrilinosSolver):
     pass
     
-@public
+__all__ = ["TrilinosNonlinearSolver"]
+
 class TrilinosNonlinearSolver(TrilinosSolver):
     def __init__(self, equation, jacobian=None, tolerance=1e-10, iterations=1000, 
                  printingOptions=None, solverOptions=None, linearSolverOptions=None, 

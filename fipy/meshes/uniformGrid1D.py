@@ -43,14 +43,14 @@ from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 from fipy.tools import parallel
-from fipy.tools.decorators import public
 
 from fipy.meshes.builders import _UniformGrid1DBuilder
 from fipy.meshes.builders import _Grid1DBuilder
 from fipy.meshes.gridlike import _Gridlike1D
 from fipy.meshes.uniformGrid import UniformGrid
 
-@public
+__all__ = ["UniformGrid1D"]
+
 class UniformGrid1D(UniformGrid):
     """
     Creates a 1D grid mesh.

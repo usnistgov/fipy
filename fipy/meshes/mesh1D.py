@@ -45,11 +45,11 @@
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.decorators import public
 
 from fipy.meshes.mesh import Mesh
 
-@public
+__all__ = ["Mesh1D"]
+
 class Mesh1D(Mesh):
     
     def _calcScaleArea(self):

@@ -40,14 +40,15 @@ from fipy.tools import numerix
 from fipy.meshes.mesh import Mesh
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
 from fipy.tools import parallel
 
 from fipy.meshes.builders import _NonuniformGrid3DBuilder
 from fipy.meshes.gridlike import _Gridlike3D
 
-@public
+__all__ = ["Grid3D"]
+
 class Grid3D(Mesh):
     """
     3D rectangular-prism Mesh

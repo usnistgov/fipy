@@ -37,15 +37,15 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
-from fipy.tools.decorators import public
 from fipy.variables.faceVariable import FaceVariable
 from fipy.solvers import DefaultAsymmetricSolver
+
+__all__ = ["CentralDifferenceConvectionTerm"]
 
 class _CentralDifferenceConvectionTermAlpha(FaceVariable):
     def __init__(self, P):
         FaceVariable.__init__(self, P.mesh, value=0.5)
 
-@public
 class CentralDifferenceConvectionTerm(_BaseConvectionTerm):
     r"""
 

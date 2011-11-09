@@ -39,14 +39,14 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import parallel
-from fipy.tools.decorators import public
 
 from fipy.meshes.builders import _NonuniformGrid1DBuilder
 from fipy.meshes.gridlike import _Gridlike1D
 
 from mesh1D import Mesh1D
 
-@public
+__all__ = ["Grid1D"]
+
 class Grid1D(Mesh1D):
     """
     Creates a 1D grid mesh.

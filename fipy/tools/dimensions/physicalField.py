@@ -100,13 +100,14 @@ import re, string
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.numerix import umath
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
 from NumberDict import _NumberDict
 
+__all__ = ["PhysicalField", "PhysicalUnit"]
+
 # Class definitions
 
-@public
 class PhysicalField(object):
     """
     Physical field or quantity with units
@@ -1427,7 +1428,6 @@ class PhysicalField(object):
         other = self._inMyUnits(other)
         return MA.allequal(self.value, other.value)
 
-@public
 class PhysicalUnit:
     """
     A `PhysicalUnit` represents the units of a `PhysicalField`.

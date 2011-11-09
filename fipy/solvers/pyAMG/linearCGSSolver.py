@@ -35,9 +35,8 @@
 from fipy.solvers.scipy.linearCGSSolver import LinearCGSSolver as ScipyLinearCGSSolver
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
     
-from fipy.tools.decorators import public
+__all__ = ["LinearCGSSolver"]
 
-@public
 class LinearCGSSolver(ScipyLinearCGSSolver):
     """
     The `LinearCGSSolver` is an interface to the CGS solver in Scipy,

@@ -45,9 +45,10 @@ from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.variables.variable import Variable
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
-@public
+__all__ = ["FixedValue"]
+
 class FixedValue(BoundaryCondition):
     r"""
     The `FixedValue` boundary condition adds a contribution, equivalent to a

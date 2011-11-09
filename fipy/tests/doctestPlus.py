@@ -37,7 +37,7 @@ import sys
 import time
 import doctest
 
-from fipy.tools.decorators import public
+__all__ = ["execButNoTest"]
 
 _DocTestTimes = []
 
@@ -55,7 +55,6 @@ def _getScript(name = '__main__'):
     else:
         return doctest.testsource(module, "")
         
-@public
 def execButNoTest(name='__main__'):
     module = sys.modules.get(name)
     

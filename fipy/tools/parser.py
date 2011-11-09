@@ -37,9 +37,8 @@ __docformat__ = 'restructuredtext'
 import optparse
 import sys, os
 
-from fipy.tools.decorators import public
+__all__ = ["parse"]
 
-@public
 def parse(larg, action = None, type = None, default = None):
     """
     This is a wrapper function for the python `optparse` module.

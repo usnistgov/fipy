@@ -44,9 +44,9 @@ from PyTrilinos import IFPACK
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["TrilinosMLTest"]
+
 class TrilinosMLTest(TrilinosSolver):
 
     """

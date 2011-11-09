@@ -38,9 +38,9 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.implicitDiffusionTerm import ImplicitDiffusionTerm
 from fipy.terms.explicitDiffusionTerm import ExplicitDiffusionTerm
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["NthOrderDiffusionTerm", "ExplicitNthOrderDiffusionTerm"]
+
 class NthOrderDiffusionTerm(ImplicitDiffusionTerm):
     def __init__(self, coeff, var=None):
         """
@@ -50,7 +50,6 @@ class NthOrderDiffusionTerm(ImplicitDiffusionTerm):
         warnings.warn("ImplicitDiffusionTerm should be used instead of NthOrderDiffusionTerm", DeprecationWarning, stacklevel=2)
         ImplicitDiffusionTerm.__init__(self, coeff=coeff, var=var)
        
-@public
 class ExplicitNthOrderDiffusionTerm(ExplicitDiffusionTerm):
     def __init__(self, coeff, var=None):
         """

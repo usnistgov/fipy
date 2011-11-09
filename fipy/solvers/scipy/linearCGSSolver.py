@@ -37,9 +37,9 @@ __docformat__ = 'restructuredtext'
 from scipy.sparse.linalg import cgs
 
 from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["LinearCGSSolver"]
+
 class LinearCGSSolver(_ScipyKrylovSolver):
     """
     The `LinearCGSSolver` is an interface to the CGS solver in Scipy,

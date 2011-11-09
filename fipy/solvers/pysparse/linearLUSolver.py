@@ -42,11 +42,11 @@ from pysparse import superlu
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.tools import numerix
-from fipy.tools.decorators import public
 
 DEBUG = False
 
-@public
+__all__ = ["LinearLUSolver"]
+
 class LinearLUSolver(PysparseSolver):
     """
     

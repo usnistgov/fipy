@@ -39,9 +39,9 @@ __docformat__ = 'restructuredtext'
 from PyTrilinos import AztecOO
 
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["DomDecompPreconditioner"]
+
 class DomDecompPreconditioner(Preconditioner):
     """
     Domain Decomposition preconditioner for Trilinos solvers.

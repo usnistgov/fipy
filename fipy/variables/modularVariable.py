@@ -37,9 +37,10 @@
 __docformat__ = 'restructuredtext'
  
 from fipy.variables.cellVariable import CellVariable
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 
-@public
+__all__ = ["ModularVariable"]
+
 class ModularVariable(CellVariable):
     r"""
     The `ModularVariable` defines a variable that exisits on the circle between

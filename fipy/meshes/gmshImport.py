@@ -49,9 +49,14 @@ import warnings
 from fipy.tools import numerix as nx
 from fipy.tools import parallel
 from fipy.tools import serial
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
+
+__all__ = ["openMSHFile", "openPOSFile", 
+           "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D", 
+           "GmshGrid2D", "GmshGrid3D",
+           "GmshImporter2D", "GmshImporter2DIn3DSpace", "GmshImporter3D"]
 
 DEBUG = False
 
@@ -96,7 +101,6 @@ def _gmshVersion(communicator):
     else:
         return 0
     
-@public
 def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallel, order=1, mode='r', background=None):
     """Open a Gmsh MSH file
 
@@ -214,7 +218,6 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                    gmshOutput=gmshOutput,
                    mode=mode)
     
-@public
 def openPOSFile(name, communicator=parallel, mode='w'):
     """Open a Gmsh POS post-processing file
     """
@@ -1309,7 +1312,6 @@ class _ElementData(object):
         self.physicalEntities.append(physicalEntity)
         self.geometricalEntities.append(geometricalEntity)
 
-@public
 class Gmsh2D(Mesh2D):
     """Construct a 2D Mesh using Gmsh
     
@@ -1654,7 +1656,6 @@ class Gmsh2D(Mesh2D):
         GmshException: Gmsh hasn't produced any cells! Check your Gmsh code.
         """
 
-@public
 class Gmsh2DIn3DSpace(Gmsh2D):
     def __init__(self, arg, communicator=parallel, order=1):
         Gmsh2D.__init__(self, 
@@ -1719,7 +1720,6 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         """
         pass
 
-@public
 class Gmsh3D(Mesh):
     def __init__(self, arg, communicator=parallel, order=1, background=None):
         self.mshFile  = openMSHFile(arg, 
@@ -1959,7 +1959,6 @@ class Gmsh3D(Mesh):
         True
         """
 
-@public
 class GmshGrid2D(Gmsh2D):
     """Should serve as a drop-in replacement for Grid2D."""
     def __init__(self, dx=1., dy=1., nx=1, ny=None, 
@@ -2031,7 +2030,6 @@ class GmshGrid2D(Gmsh2D):
         True
         """
 
-@public
 class GmshGrid3D(Gmsh3D):
     """Should serve as a drop-in replacement for Grid3D."""
     def __init__(self, dx=1., dy=1., dz=1., nx=1, ny=None, nz=None,
@@ -2138,19 +2136,16 @@ def deprecation(old, new):
     warnings.warn("%s has been replaced by %s." % (old, new), 
                   DeprecationWarning, stacklevel=3)
 
-@public
 class GmshImporter2D(Gmsh2D):
     def __init__(self, arg, coordDimensions=2):
         deprecation("GmshImporter2D", "Gmsh2D")
         Gmsh2D.__init__(self, arg, coordDimensions=coordDimensions)
 
-@public
 class GmshImporter2DIn3DSpace(Gmsh2DIn3DSpace):
     def __init__(self, arg):
         deprecation("GmshImporter2DIn3DSpace", "Gmsh2DIn3DSpace")
         Gmsh2DIn3DSpace.__init__(self, arg)
 
-@public
 class GmshImporter3D(Gmsh3D):
     def __init__(self, arg):
         deprecation("GmshImporter3D", "Gmsh3D")

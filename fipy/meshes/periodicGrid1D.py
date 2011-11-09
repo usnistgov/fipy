@@ -39,10 +39,11 @@ __docformat__ = 'restructuredtext'
 
 from grid1D import Grid1D
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated, public
+from fipy.tools.decorators import getsetDeprecated
 from fipy.meshes.builders import _PeriodicGrid1DBuilder
 
-@public
+__all__ = ["PeriodicGrid1D"]
+
 class PeriodicGrid1D(Grid1D):
     """
     

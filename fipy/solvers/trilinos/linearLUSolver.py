@@ -41,9 +41,9 @@ from PyTrilinos import Epetra
 from PyTrilinos import Amesos
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-from fipy.tools.decorators import public
 
-@public
+__all__ = ["LinearLUSolver"]
+
 class LinearLUSolver(TrilinosSolver):
 
     """
