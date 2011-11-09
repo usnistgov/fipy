@@ -514,12 +514,14 @@ class _MeshVariable(Variable):
         >>> A = numerix.arange(5)
         >>> B = Variable(1.)
         >>> import warnings
+        >>> savedFilters = list(warnings.filters)
+        >>> warnings.resetwarnings()
         >>> warnings.simplefilter("error", UserWarning, append=True)
         >>> C = CellVariable(mesh=mesh) * (A * B)
         Traceback (most recent call last):
           ...
         UserWarning: The expression `(multiply([0 1 2 3 4], Variable(value=array(1.0))))` has been cast to a constant `CellVariable`
-        >>> junk = warnings.filters.pop()
+        >>> warnings.filters = savedFilters
         """
         otherShape = numerix.getShape(other)
         if (not isinstance(other, _MeshVariable) 
