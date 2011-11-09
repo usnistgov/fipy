@@ -67,7 +67,7 @@ The following items **must** be changed in your scripts
    we feel it improves readability. You should feel free to use whichever form
    you find most comfortable.
    
-   .. note:: the old behavior can be obtained, at least for now, but setting the
+   .. note:: the old behavior can be obtained, at least for now, by setting the
              :envvar:`FIPY_INCLUDE_NUMERIX_ALL` environment variable.
    
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
