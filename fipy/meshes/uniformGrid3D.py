@@ -294,15 +294,15 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _faceNormals(self):
-        XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'l')
         XYnor[0,      ...] =  1
         XYnor[0,  ...,  0] = -1
 
-        XZnor = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZnor = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'l')
         XZnor[1,      ...] =  1
         XZnor[1,...,0,...] = -1
 
-        YZnor = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZnor = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZnor[2,      ...] =  1
         YZnor[2, 0,   ...] = -1
         
@@ -372,13 +372,13 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _faceTangents1(self):
-        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'l')
         XYtan[2,      ...] =  1
         
-        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'l')
         XZtan[2,      ...] =  1
         
-        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZtan[1,      ...] =  1
         
         return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
@@ -387,13 +387,13 @@ class UniformGrid3D(UniformGrid):
         
     @property
     def _faceTangents2(self):
-        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'l')
         XYtan[1,      ...] =  1
         
-        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'l')
         XZtan[0,      ...] =  1
         
-        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZtan[0,      ...] =  1
         
         return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
@@ -592,7 +592,7 @@ class UniformGrid3D(UniformGrid):
      
     @property
     def _cellVertexIDs(self):
-        ids = numerix.zeros((8, self.nx, self.ny, self.nz))
+        ids = numerix.zeros((8, self.nx, self.ny, self.nz), 'l')
         indices = numerix.indices((self.nx, self.ny, self.nz))
         ids[1] = indices[0] + (indices[1] + (indices[2] + 1) * (self.ny + 1) + 1) * (self.nx + 1)
         ids[0] = ids[1] + 1

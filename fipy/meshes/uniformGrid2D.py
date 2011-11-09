@@ -162,8 +162,8 @@ class UniformGrid2D(UniformGrid):
     if inline.doInline:
         @property
         def _adjacentCellIDs(self):
-            faceCellIDs0 =  numerix.zeros(self.numberOfFaces)
-            faceCellIDs1 =  numerix.zeros(self.numberOfFaces)
+            faceCellIDs0 =  numerix.zeros(self.numberOfFaces, 'l')
+            faceCellIDs1 =  numerix.zeros(self.numberOfFaces, 'l')
 
             inline._runInline("""
                 int ID = j * ni + i;
@@ -204,7 +204,7 @@ class UniformGrid2D(UniformGrid):
     else:
         @property
         def _adjacentCellIDs(self):
-            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2))
+            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2), 'l')
             indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
             
             Hids[...,1] = indices[1] + indices[0] * self.nx
@@ -215,7 +215,7 @@ class UniformGrid2D(UniformGrid):
                 Hids[0,...,1] = Hids[0,...,0]
                 Hids[-1,...,1] = Hids[-1,...,0]
           
-            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2))
+            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2), 'l')
             indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
             Vids[...,1] = indices[1] + indices[0] * self.nx
             Vids[...,0] = Vids[...,1] - 1
@@ -576,8 +576,8 @@ class UniformGrid2D(UniformGrid):
     if inline.doInline:
         @property
         def faceCellIDs(self):
-            faceCellIDs = numerix.zeros((2, self.numberOfFaces))
-            mask = numerix.zeros((2, self.numberOfFaces))
+            faceCellIDs = numerix.zeros((2, self.numberOfFaces), 'l')
+            mask = numerix.zeros((2, self.numberOfFaces), 'l')
             
             inline._runInline("""
                 int ID = j * ni + i; 
@@ -619,7 +619,7 @@ class UniformGrid2D(UniformGrid):
     else:
         @property
         def faceCellIDs(self):
-            Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
+            Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'l')
             indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
             Hids[1] = indices[0] + indices[1] * self.nx
             Hids[0] = Hids[1] - self.nx
@@ -628,7 +628,7 @@ class UniformGrid2D(UniformGrid):
                 Hids[1,...,0] = -1
                 Hids[1,...,-1] = -1
 
-            Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny))
+            Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'l')
             indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
             Vids[1] = indices[0] + indices[1] * self.nx
             Vids[0] = Vids[1] - 1
@@ -642,7 +642,7 @@ class UniformGrid2D(UniformGrid):
         
     @property
     def _cellVertexIDs(self):
-        ids = numerix.zeros((4, self.nx, self.ny))
+        ids = numerix.zeros((4, self.nx, self.ny), 'l')
         indices = numerix.indices((self.nx, self.ny))
         ids[1] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns
         ids[0] = ids[1] + 1
@@ -653,12 +653,12 @@ class UniformGrid2D(UniformGrid):
     
     @property
     def faceVertexIDs(self):
-        Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
+        Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'l')
         indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
         Hids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
         Hids[1] = Hids[0] + 1
 
-        Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny))
+        Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'l')
         indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
         Vids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
         Vids[1] = Vids[0] + self.numberOfVerticalColumns
@@ -670,7 +670,7 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _orderedCellVertexIDs(self):
-        ids = numerix.zeros((4, self.nx, self.ny))
+        ids = numerix.zeros((4, self.nx, self.ny), 'l')
         indices = numerix.indices((self.nx, self.ny))
         ids[2] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns
         ids[1] = ids[2] + 1

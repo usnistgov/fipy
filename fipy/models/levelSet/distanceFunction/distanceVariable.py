@@ -278,8 +278,8 @@ class DistanceVariable(CellVariable):
                 ns = self.cellNormals[..., indices[0], numerix.arange(indices.shape[1])]
                 nt = self.cellNormals[..., indices[1], numerix.arange(indices.shape[1])]
             else:
-                ns = MA.zeros(self.cellNormals.shape[:-1] + (0,))
-                nt = MA.zeros(self.cellNormals.shape[:-1] + (0,))
+                ns = MA.zeros(self.cellNormals.shape[:-1] + (0,), 'l')
+                nt = MA.zeros(self.cellNormals.shape[:-1] + (0,), 'l')
 
             signedDistance = MA.where(MA.getmask(s),
                                       self._value,

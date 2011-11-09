@@ -922,8 +922,8 @@ class MSHFile(GmshFile):
                                                            facesData.geometricalEntities):
             faceEntitiesDict[' '.join([str(x) for x in sorted(face)])] = (physicalEntity, geometricalEntity)
             
-        self.physicalFaceMap = nx.zeros(facesToV.shape[-1:])
-        self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:])
+        self.physicalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
+        self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
         for face in facesDict.keys():
             # not all faces are necessarily tagged
             if faceEntitiesDict.has_key(face):

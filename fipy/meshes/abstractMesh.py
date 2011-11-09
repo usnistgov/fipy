@@ -1061,7 +1061,7 @@ class AbstractMesh(object):
         else:
             arr = numerix.concatenate((arr, 
                                        numerix.zeros((3 - self.dim,) 
-                                                     + arr.shape[1:])))
+                                                     + arr.shape[1:], 'l')))
             return arr.swapaxes(-2, -1)
                                                                           
     """

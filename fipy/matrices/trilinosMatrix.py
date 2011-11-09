@@ -344,7 +344,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
             if self.matrix.NumGlobalNonzeros() == 0:
                 self.matrix.InsertGlobalValues(id1, id2, vector)
             else:
-                self.matrix.InsertGlobalValues(id1, id2, numerix.zeros(len(vector)))
+                self.matrix.InsertGlobalValues(id1, id2, numerix.zeros(len(vector), 'l'))
                 self.fillComplete()
                 if self.matrix.ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings

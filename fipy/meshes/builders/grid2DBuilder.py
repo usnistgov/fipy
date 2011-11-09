@@ -160,7 +160,7 @@ class Grid2DBuilder(AbstractGridBuilder):
             cells = (f1, f2, f3, f4) going anticlock wise.
             f1 etc. refer to the faces
             """ 
-            cellFaceIDs = numerix.zeros((4, nx * ny))
+            cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
             
             inline._runInline("""
                 int ID = j * ni + i;
@@ -184,7 +184,7 @@ class Grid2DBuilder(AbstractGridBuilder):
             cells = (f1, f2, f3, f4) going anticlock wise.
             f1 etc. refer to the faces
             """ 
-            cellFaceIDs = numerix.zeros((4, nx * ny))
+            cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
             faceIDs = numerix.arange(numFaces)
             if numFaces > 0:
                 cellFaceIDs[0,:] = faceIDs[:numHorizFaces - nx]

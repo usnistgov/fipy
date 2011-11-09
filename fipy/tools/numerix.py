@@ -83,9 +83,6 @@ except ImportError:
 
 from fipy.tools import inline
 
-def zeros(a, dtype='l'):
-    return NUMERIX.zeros(a, dtype)
-
 def _isPhysical(arr):
     """
     Returns `True` if arr is a `Variable` or `PhysicalField`.

@@ -209,16 +209,16 @@ class Grid3D(Mesh):
         return self.scale['length']**3  
 
     def _calcFaceNormals(self):
-        XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces))
+        XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces), 'l')
         XYFaceNormals[2, (self.nx * self.ny):] = 1
         XYFaceNormals[2, :(self.nx * self.ny)] = -1
-        XZFaceNormals = numerix.zeros((3, self.numberOfXZFaces))
+        XZFaceNormals = numerix.zeros((3, self.numberOfXZFaces), 'l')
         xzd = numerix.arange(self.numberOfXZFaces)
         xzd = xzd % (self.nx * (self.ny + 1))
         xzd = (xzd < self.nx)
         xzd = 1 - (2 * xzd)
         XZFaceNormals[1, :] = xzd
-        YZFaceNormals = numerix.zeros((3, self.numberOfYZFaces))
+        YZFaceNormals = numerix.zeros((3, self.numberOfYZFaces), 'l')
         YZFaceNormals[0, :] = 1
         YZFaceNormals[0, ::self.nx + 1] = -1
         return numerix.concatenate((XYFaceNormals, 

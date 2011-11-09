@@ -112,7 +112,7 @@ class Mesh(AbstractMesh):
             exteriorCellIDs = list(self._exteriorCellIDs)
         except:
             exteriorCellIDs = self.faceCellIDs[0, self._exteriorFaces.value]
-            tmp = numerix.zeros(self.numberOfCells)
+            tmp = numerix.zeros(self.numberOfCells, 'l')
             numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs), 'l'))
             exteriorCellIDs = numerix.nonzero(tmp)            
             interiorCellIDs = numerix.nonzero(numerix.logical_not(tmp))
@@ -193,7 +193,7 @@ class Mesh(AbstractMesh):
         faceVertexCoords = numerix.take(self.vertexCoords, maskedFaceVertexIDs, axis=1)
 
         if MA.getmask(self.faceVertexIDs) is False:
-            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
+            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords), 'l')
         else:
             faceVertexCoordsMask = \
               numerix.repeat(MA.getmaskarray(self.faceVertexIDs)[numerix.newaxis,...], 
