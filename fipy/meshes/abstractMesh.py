@@ -384,13 +384,13 @@ class AbstractMesh(object):
         if diff > 0:
             other_faceVertexIDs = numerix.append(other_faceVertexIDs, 
                                                  -1 * numerix.ones((diff,) 
-                                                                   + other_faceVertexIDs.shape[1:]),
+                                                                   + other_faceVertexIDs.shape[1:], 'l'),
                                                  axis=0)
             other_faceVertexIDs = MA.masked_values(other_faceVertexIDs, -1)
         elif diff < 0:
             self_faceVertexIDs = numerix.append(self_faceVertexIDs, 
                                                 -1 * numerix.ones((-diff,) 
-                                                                  + self_faceVertexIDs.shape[1:]),
+                                                                  + self_faceVertexIDs.shape[1:], 'l'),
                                                 axis=0)
             self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
 
@@ -468,13 +468,13 @@ class AbstractMesh(object):
         if diff > 0:
             other_cellFaceIDs = numerix.append(other_cellFaceIDs, 
                                                -1 * numerix.ones((diff,) 
-                                                                 + other_cellFaceIDs.shape[1:]),
+                                                                 + other_cellFaceIDs.shape[1:], 'l'),
                                                axis=0)
             other_cellFaceIDs = MA.masked_values(other_cellFaceIDs, -1)
         elif diff < 0:
             self_cellFaceIDs = numerix.append(self_cellFaceIDs, 
                                               -1 * numerix.ones((-diff,) 
-                                                                + self_cellFaceIDs.shape[1:]),
+                                                                + self_cellFaceIDs.shape[1:], 'l'),
                                               axis=0)
             self_cellFaceIDs = MA.masked_values(self_cellFaceIDs, -1)
 

@@ -679,7 +679,7 @@ class MSHFile(GmshFile):
 
         # `cellsToFaces` must be padded with -1; see mesh.py
         currNumFaces = 0
-        cellsToFaces = nx.ones((numCells, maxFaces)) * -1
+        cellsToFaces = nx.ones((numCells, maxFaces), 'l') * -1
         facesDict    = {}
         uniqueFaces  = []
 
@@ -753,7 +753,7 @@ class MSHFile(GmshFile):
             try:
                 vertIndices = vertexMap[nx.array(entity)]
             except IndexError:
-                vertIndices = nx.ones((len(entity),)) * -1
+                vertIndices = nx.ones((len(entity),), 'l') * -1
             entitiesVertices.append(vertIndices)
 
         return entitiesVertices
@@ -1078,7 +1078,7 @@ class MSHFile(GmshFile):
         allVerts     = nx.unique(nx.array(allVerts, dtype=int)) # remove dups
         allVerts     = nx.sort(allVerts)
         maxVertIdx   = allVerts[-1] + 1 # add one to offset zero
-        vertGIDtoIdx = nx.ones(maxVertIdx) * -1 # gmsh ID -> vertexCoords idx
+        vertGIDtoIdx = nx.ones(maxVertIdx, 'l') * -1 # gmsh ID -> vertexCoords idx
         vertexCoords = nx.empty((len(allVerts), self.coordDimensions))
         nodeCount    = 0
 

@@ -173,7 +173,7 @@ class _ScipyMatrixBase(_SparseMatrix):
                 raise TypeError
             
     def __rmul__(self, other):
-        if type(numerix.ones(1)) == type(other):
+        if type(numerix.ones(1, 'l')) == type(other):
             y = self.matrix.transpose() * other.copy()
             return y
         else:

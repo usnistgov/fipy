@@ -152,7 +152,7 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _cellToFaceOrientations(self):
-        cellFaceOrientations = numerix.ones((4, self.numberOfCells))
+        cellFaceOrientations = numerix.ones((4, self.numberOfCells), 'l')
         if self.numberOfCells > 0:
             cellFaceOrientations[0, self.nx:] = -1
             cellFaceOrientations[3, :] = -1

@@ -85,8 +85,6 @@ from fipy.tools import inline
 
 def zeros(a, dtype='l'):
     return NUMERIX.zeros(a, dtype)
-def ones(a, dtype='l'):
-    return NUMERIX.ones(a, dtype)    
 
 def _isPhysical(arr):
     """

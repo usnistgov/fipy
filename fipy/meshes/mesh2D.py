@@ -215,7 +215,7 @@ class Mesh2D(Mesh):
 
         ## set up the initial data arrays
         new_shape = (max(NFacPerCell, 4), (1 + layers)*NCells + layers*NFac)
-        faces = numerix.MA.masked_values(-numerix.ones(new_shape), value = -1)
+        faces = numerix.MA.masked_values(-numerix.ones(new_shape, 'l'), value = -1)
         orderedVertices = mesh._orderedCellVertexIDs
         faces[:NFacPerCell, :NCells] = orderedVertices
         vertices = oldVertices

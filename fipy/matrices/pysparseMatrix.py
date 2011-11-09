@@ -161,7 +161,7 @@ class _PysparseMatrixBase(_SparseMatrix):
             shape = numerix.shape(other)
             if shape == ():
                 L = spmatrix.ll_mat(N, N, N)
-                L.put(other * numerix.ones(N))
+                L.put(other * numerix.ones(N, 'l'))
                 return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
                 y = numerix.empty((self.matrix.shape[0],))
@@ -171,7 +171,7 @@ class _PysparseMatrixBase(_SparseMatrix):
                 raise TypeError
             
     def __rmul__(self, other):
-        if type(numerix.ones(1)) == type(other):
+        if type(numerix.ones(1, 'l')) == type(other):
             y = other.copy()
             self.matrix.matvec_transp(other, y)
             return y

@@ -113,7 +113,7 @@ class Mesh(AbstractMesh):
         except:
             exteriorCellIDs = self.faceCellIDs[0, self._exteriorFaces.value]
             tmp = numerix.zeros(self.numberOfCells)
-            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs)))
+            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs), 'l'))
             exteriorCellIDs = numerix.nonzero(tmp)            
             interiorCellIDs = numerix.nonzero(numerix.logical_not(tmp))
         return interiorCellIDs, exteriorCellIDs
@@ -459,6 +459,7 @@ class Mesh(AbstractMesh):
 ##         MA.put(secondRow, cellFaceIDsFlat, array)
         firstRow = faceCellIDs[0]
         secondRow = faceCellIDs[1]
+
         numerix.put(firstRow, self.cellFaceIDs[::-1,::-1], array[::-1,::-1])
         numerix.put(secondRow, self.cellFaceIDs, array)
         

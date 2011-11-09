@@ -286,7 +286,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 raise TypeError
            
     def __rmul__(self, other):
-        if type(numerix.ones(1)) == type(other):
+        if type(numerix.ones(1, 'l')) == type(other):
             self.fillComplete()
 
             y = Epetra.Vector(self.rangeMap, other)
@@ -1316,7 +1316,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrix):
         """
         _TrilinosMatrix.__init__(self, rows=size, cols=size, bandwidth=1)
         ids = numerix.arange(size)
-        self.addAt(numerix.ones(size), ids, ids)
+        self.addAt(numerix.ones(size, 'l'), ids, ids)
         
 class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
     def __init__(self, mesh):
@@ -1333,7 +1333,7 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
         _TrilinosMeshMatrix.__init__(self, mesh=mesh, bandwidth=1)
         size = mesh.numberOfCells
         ids = numerix.arange(size)
-        self.addAt(numerix.ones(size), ids, ids)
+        self.addAt(numerix.ones(size, 'l'), ids, ids)
 
 class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
 
