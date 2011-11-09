@@ -53,7 +53,7 @@ class ExplicitDiffusionTerm(_BaseDiffusionTerm):
 
     """
     
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         if hasattr(var, 'old'):
             varOld = var.old
         else:

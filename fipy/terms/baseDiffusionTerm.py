@@ -275,7 +275,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
         return coefficientMatrix, boundaryB
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
         Test to ensure that a changing coefficient influences the boundary conditions.
 
@@ -352,7 +352,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
         return (var, L, b)
         
-    def __higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def __higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.mesh
         
         N = mesh.numberOfCells

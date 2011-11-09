@@ -50,7 +50,7 @@ class _BinaryTerm(_BaseBinaryTerm):
     def _buildExplcitIfOther(self):
         return True
 
-    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=True):
+    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=True):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
@@ -116,7 +116,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> v0 = CellVariable(mesh=m, value=0.)
         >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass)
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var
         [ 0.  0.  0.]
         >>> print CellVariable(mesh=m, value=RHSvector) 
@@ -125,7 +125,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...                                            [-1,  3, -1],
         ...                                            [ 0, -1,  2]])
         True
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass)
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var
         [ 1.  1.  1.]
         >>> print CellVariable(mesh=m, value=RHSvector)
@@ -141,7 +141,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> v0 = CellVariable(mesh=m, value=1.)
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
         >>> print var
         [ 1.  1.  1.  1.  1.  1.]
         >>> print CellVariable(mesh=m, value=RHSvector)
@@ -153,7 +153,7 @@ class _BinaryTerm(_BaseBinaryTerm):
         ...                                            [ 0, 0, 0,-1, 3,-1.],
         ...                                            [ 0, 0, 0, 0,-1, 2.]])
         True
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
         >>> print var
         [ 0.  0.  0.  0.  0.  0.]
         >>> print CellVariable(mesh=m, value=RHSvector)
@@ -179,12 +179,12 @@ class _BinaryTerm(_BaseBinaryTerm):
         >>> diffTerm.cacheMatrix()
         >>> print CellVariable(mesh=m, value=eq0.justResidualVector(dt=1.))
         [-3.  0.  3.]
-        >>> eq0.solve(var=v0, solver=DummySolver())
+        >>> eq0.solve(var=v0, solver=DummySolver(), dt=1.)
         >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -1,  0],
         ...                                                [-1,  3, -1],
         ...                                                [ 0, -1,  2]])
         True
-        >>> eq0.solve(var=v1, solver=DummySolver())
+        >>> eq0.solve(var=v1, solver=DummySolver(), dt=1.)
         >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -2,  0],
         ...                                                [-2,  4, -2],
         ...                                                [ 0, -2,  2]])

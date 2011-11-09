@@ -130,7 +130,7 @@ class TransientTerm(CellTerm):
         >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
         [ 1.]
         >>> eq.cacheMatrix()
-        >>> eq.solve(var)
+        >>> eq.solve(var, dt=1.)
         >>> print eq.matrix.numpyArray
         [[ 1.]]
         
@@ -138,7 +138,7 @@ class TransientTerm(CellTerm):
         >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
         [-1.]
         >>> eq.cacheMatrix()
-        >>> eq.solve(var)
+        >>> eq.solve(var, dt=1.)
         >>> print eq.matrix.numpyArray
         [[-2.]]
 
@@ -152,6 +152,13 @@ class TransientTerm(CellTerm):
     def _transientVars(self):
         return self._vars
 
+    def _checkDt(self, dt):
+        if dt is None:
+            raise TypeError, "`dt` must be specified."
+        if numerix.getShape(dt) != ():
+            raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
+        return float(dt)
+
     def _test(self):
         """
         >>> from fipy import *
@@ -160,7 +167,7 @@ class TransientTerm(CellTerm):
         >>> eq = TransientTerm()
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(v)
+        >>> eq.solve(v, dt=1.)
         >>> print eq.matrix.numpyArray.shape
         (12, 12)
         >>> print len(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
@@ -176,7 +183,7 @@ class TransientTerm(CellTerm):
         >>> eq = TransientTerm(coeff)
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(v)
+        >>> eq.solve(v, dt=1.)
         >>> print eq.matrix.numpyArray
         [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
          [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
@@ -197,7 +204,7 @@ class TransientTerm(CellTerm):
         >>> eq = TransientTerm(((1., 2.), (3. , 4.)))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(v)
+        >>> eq.solve(v, dt=1.)
         >>> print eq.matrix.numpyArray
         [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
          [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]

@@ -91,10 +91,10 @@ class Term(object):
     def copy(self):
         return self.__class__(self.coeff, var=self.var)
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
 
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
         raise NotImplementedError
         
     def _checkVar(self, var):
@@ -155,10 +155,6 @@ class Term(object):
         var = self._verifyVar(var)
         self._checkVar(var)
 
-        if numerix.getShape(dt) != ():
-            raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
-        dt = float(dt)
-    
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
 
@@ -199,7 +195,7 @@ class Term(object):
             
         return solver
     
-    def solve(self, var=None, solver=None, boundaryConditions=(), dt=1.):
+    def solve(self, var=None, solver=None, boundaryConditions=(), dt=None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         does not return the residual. It should be used when the
@@ -218,7 +214,7 @@ class Term(object):
         
         solver._solve()
 
-    def sweep(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -242,7 +238,7 @@ class Term(object):
 
         return residual
 
-    def justResidualVector(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def justResidualVector(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
         r"""
         Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -271,7 +267,7 @@ class Term(object):
 
         return solver._calcResidualVector(residualFn=residualFn)
 
-    def residualVectorAndNorm(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def residualVectorAndNorm(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
         r"""
         Builds the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -437,6 +433,9 @@ class Term(object):
         raise NotImplementedError
 
     def _alpha(self, P):
+        raise NotImplementedError
+
+    def _checkDt(self, dt):
         raise NotImplementedError
 
     def _test(self):
