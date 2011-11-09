@@ -184,7 +184,8 @@ and a liquid phase rich in the two substitutional species.
 .. index:: log
 
 >>> for Cj in interstitials + substitutionals + [solvent]:
-...     Cj.standardPotential = R * T * (log(Cj.L/rhoL) - log(Cj.S/rhoS))
+...     Cj.standardPotential = R * T * (numerix.log(Cj.L/rhoL) 
+...                                     - numerix.log(Cj.S/rhoS))
 
 >>> for Cj in interstitials:
 ...     Cj.diffusivity = 1.
@@ -406,12 +407,12 @@ and again iterate to equilibrium
 
 We can confirm that the far-field phases have remained separated
 
-.. index:: take, allclose
+.. index:: allclose
 
 >>> X = mesh.faceCenters[0]
->>> print allclose(phase.faceValue[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
+>>> print numerix.allclose(phase.faceValue[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
 True
->>> print allclose(phase.faceValue[X==L], 0.0, rtol = 1e-5, atol = 1e-5)
+>>> print numerix.allclose(phase.faceValue[X==L], 0.0, rtol = 1e-5, atol = 1e-5)
 True
     
 and that the concentration fields have appropriately segregated into 
@@ -419,8 +420,8 @@ their equilibrium values in each phase
 
 >>> equilibrium = True
 >>> for Cj in interstitials + substitutionals:
-...     equilibrium &= allclose(Cj.faceValue[X==0], Cj.S, rtol = 3e-3, atol = 3e-3).value
-...     equilibrium &= allclose(Cj.faceValue[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
+...     equilibrium &= numerix.allclose(Cj.faceValue[X==0], Cj.S, rtol = 3e-3, atol = 3e-3).value
+...     equilibrium &= numerix.allclose(Cj.faceValue[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
 >>> print equilibrium
 True
 """

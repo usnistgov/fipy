@@ -85,7 +85,7 @@ method of the equation.
 
 The result can be tested with the following commands.
 
->>> print allclose(var, x - dx * nx / 2)
+>>> print numerix.allclose(var, x - dx * nx / 2)
 1
 
 """

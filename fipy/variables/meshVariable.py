@@ -640,27 +640,27 @@ def _testDot(self):
     >>> s2 = CellVariable(mesh=mesh, value=3)
 
     >>> v1 = CellVariable(mesh=mesh, rank=1, 
-    ...                   value=array([2,3])[..., newaxis])
+    ...                   value=numerix.array([2,3])[..., numerix.newaxis])
     >>> v2 = CellVariable(mesh=mesh, rank=1, 
-    ...                   value=array([3,4])[..., newaxis])
+    ...                   value=numerix.array([3,4])[..., numerix.newaxis])
     
     >>> t21 = CellVariable(mesh=mesh, rank=2, 
-    ...                    value=array([[2, 3],
-    ...                                 [4, 5]])[..., newaxis])
+    ...                    value=numerix.array([[2, 3],
+    ...                                         [4, 5]])[..., numerix.newaxis])
     >>> t22 = CellVariable(mesh=mesh, rank=2, 
-    ...                    value=array([[3, 4],
-    ...                                 [5, 6]])[..., newaxis])
+    ...                    value=numerix.array([[3, 4],
+    ...                                         [5, 6]])[..., numerix.newaxis])
 
     >>> t31 = CellVariable(mesh=mesh, rank=3, 
-    ...                    value=array([[[3, 4],
-    ...                                  [5, 6]],
-    ...                                 [[5, 6],
-    ...                                  [7, 8]]])[..., newaxis])
+    ...                    value=numerix.array([[[3, 4],
+    ...                                         [5, 6]],
+    ...                                        [[5, 6],
+    ...                                         [7, 8]]])[..., numerix.newaxis])
     >>> t32 = CellVariable(mesh=mesh, rank=3, 
-    ...                    value=array([[[2, 3],
-    ...                                  [4, 5]],
-    ...                                 [[4, 5],
-    ...                                  [6, 7]]])[..., newaxis])
+    ...                    value=numerix.array([[[2, 3],
+    ...                                         [4, 5]],
+    ...                                        [[4, 5],
+    ...                                         [6, 7]]])[..., numerix.newaxis])
 
     >>> def P(a):
     ...     a = a.globalValue

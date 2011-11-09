@@ -418,7 +418,7 @@ class Variable(object):
          >>> from fipy import *
          >>> m = Grid1D(nx=3)
          >>> x = m.cellCenters[0]
-         >>> tmp = m.cellCenters[0] * array(((0.,), (1.,)))[1]
+         >>> tmp = m.cellCenters[0] * numerix.array(((0.,), (1.,)))[1]
          >>> print numerix.allclose(tmp, x)
          True
          >>> print numerix.allclose(tmp, x)

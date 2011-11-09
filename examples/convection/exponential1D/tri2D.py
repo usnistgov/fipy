@@ -62,7 +62,7 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 >>> var.constrain(valueTop, mesh.facesTop)
 
 >>> diffCoeff = 1.
->>> convCoeff = array(((0.,), (10.,)))
+>>> convCoeff = numerix.array(((0.,), (10.,)))
 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
@@ -74,8 +74,8 @@ The analytical solution test for this problem is given by:
 
 >>> axis = 1
 >>> y = mesh.cellCenters[axis]
->>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
->>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
+>>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
 
 >>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6) 

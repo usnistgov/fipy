@@ -805,6 +805,11 @@ importing anything from the :mod:`fipy` package.
    :samp:`fipy.viewers.{<viewer>}Viewer`
    modules. The special value of ``dummy`` will allow the script
    to run without displaying anything.
+
+.. envvar:: FIPY_INCLUDE_NUMERIX_ALL
+
+   If present, causes the inclusion of all funcions and variables of the
+   :mod:`~fipy.tools.numerix` module in the :mod:`fipy` namespace.
    
 How can I tell if I'm running in parallel?
 ------------------------------------------

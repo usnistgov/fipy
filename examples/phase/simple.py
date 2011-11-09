@@ -146,7 +146,7 @@ or
 .. index:: tanh, sqrt
 
 >>> x = mesh.cellCenters[0]
->>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
+>>> analyticalArray = 0.5*(1 - numerix.tanh((x - L/2)/(2*numerix.sqrt(kappa/W))))
 
 We treat the diffusion term
 :math:`\kappa_\phi \nabla^2\phi`
@@ -401,8 +401,8 @@ We take :math:`\delta \approx \Delta x`.
 ...     displacement = L * 0.025
 
 >>> analyticalArray = CellVariable(name="tanh", mesh=mesh,
-...                                value=0.5 * (1 - tanh((x - (L / 2. + displacement)) 
-...                                                      / (2 * delta))))
+...                                value=0.5 * (1 - numerix.tanh((x - (L / 2. + displacement)) 
+...                                                              / (2 * delta))))
 
 and make a new viewer
 
@@ -478,7 +478,7 @@ thickness
 >>> try:
 ...     def tanhResiduals(p, y, x, t):
 ...         V, d = p
-...         return y - 0.5 * (1 - tanh((x - V * t - L / 2.) / (2*d)))
+...         return y - 0.5 * (1 - numerix.tanh((x - V * t - L / 2.) / (2*d)))
 ...     from scipy.optimize import leastsq
 ...     x =  mesh.cellCenters[0]
 ...     (V_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., delta], 

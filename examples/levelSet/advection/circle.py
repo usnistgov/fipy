@@ -78,7 +78,7 @@ Construct a `distanceVariable` object.
 Initialise the `distanceVariable` to be a circular distance function.
 
 >>> x, y = mesh.cellCenters
->>> initialArray = sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
+>>> initialArray = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
 >>> var.setValue(initialArray)
 
 The :class:`~fipy.models.levelSet.advection.advectionEquation.AdvectionEquation`
@@ -102,12 +102,12 @@ The result can be tested with the following commands.
 >>> for step in range(steps):
 ...     var.updateOld()
 ...     advEqn.solve(var, dt=timeStepDuration)
->>> x = array(mesh.cellCenters[0])
+>>> x = numerix.array(mesh.cellCenters[0])
 >>> distanceTravelled = timeStepDuration * steps * velocity
 >>> answer = initialArray - distanceTravelled
->>> answer = where(answer < 0., -1001., answer)
->>> solution = where(answer < 0., -1001., array(var))
->>> allclose(answer, solution, atol=4.7e-3)
+>>> answer = numerix.where(answer < 0., -1001., answer)
+>>> solution = numerix.where(answer < 0., -1001., numerix.array(var))
+>>> numerix.allclose(answer, solution, atol=4.7e-3)
 1
 
 If the
@@ -122,8 +122,8 @@ the result is more accurate,
 >>> for step in range(steps):
 ...     var.updateOld()
 ...     advEqn.solve(var, dt=timeStepDuration)
->>> solution = where(answer < 0., -1001., array(var))
->>> allclose(answer, solution, atol=1.02e-3)
+>>> solution = numerix.where(answer < 0., -1001., numerix.array(var))
+>>> numerix.allclose(answer, solution, atol=1.02e-3)
 1
 
 """

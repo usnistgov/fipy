@@ -133,7 +133,7 @@ evolution of their problem.
 ...     duration = .5e-1
 
 >>> while elapsed < duration:
-...     dt = min(100, exp(dexp))
+...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
 ...     eq.solve(dt=dt)
@@ -181,7 +181,7 @@ a vector format.
 >>> elapsed = 0.
 
 >>> while elapsed < duration:
-...     dt = min(100, exp(dexp))
+...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
 ...     eq.solve(var=var, dt=dt)

@@ -412,9 +412,9 @@ deduce the liquidus and solidus compositions as
 
 .. index:: exp
    
->>> Cl = (1. - exp(-enthalpyA * Vm / (R * T))) \
-...   / (exp(-enthalpyB * Vm / (R * T)) - exp(-enthalpyA * Vm / (R * T)))
->>> Cs = exp(-enthalpyB * Vm / (R * T)) * Cl
+>>> Cl = (1. - numerix.exp(-enthalpyA * Vm / (R * T))) \
+...   / (numerix.exp(-enthalpyB * Vm / (R * T)) - numerix.exp(-enthalpyA * Vm / (R * T)))
+>>> Cs = numerix.exp(-enthalpyB * Vm / (R * T)) * Cl
 
 The phase fraction is predicted by the lever rule
 
@@ -446,8 +446,12 @@ We'll need a function to return the two conditions for equilibrium
 .. index:: log, array
 
 >>> def equilibrium(C):
-...     return [array(enthalpyA * Vm + R * T * log(1 - C[0]) - R * T * log(1 - C[1])),
-...             array(enthalpyB * Vm + R * T * log(C[0]) - R * T * log(C[1]))]
+...     return [numerix.array(enthalpyA * Vm 
+...                           + R * T * numerix.log(1 - C[0]) 
+...                           - R * T * numerix.log(1 - C[1])),
+...             numerix.array(enthalpyB * Vm 
+...                           + R * T * numerix.log(C[0]) 
+...                           - R * T * numerix.log(C[1]))]
                
 and we'll have much better luck if we also supply the Jacobian
 
@@ -466,8 +470,8 @@ and we'll have much better luck if we also supply the Jacobian
    \end{matrix}\right]
    
 >>> def equilibriumJacobian(C):
-...     return R * T * array([[-1. / (1 - C[0]), 1. / (1 - C[1])],
-...                           [ 1. / C[0],      -1. / C[1]]])
+...     return R * T * numerix.array([[-1. / (1 - C[0]), 1. / (1 - C[1])],
+...                                   [ 1. / C[0],      -1. / C[1]]])
 
 .. index:: SciPy
 

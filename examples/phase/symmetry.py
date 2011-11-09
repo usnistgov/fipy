@@ -92,10 +92,10 @@ The bottom-left quadrant is mirrored into each of the other three quadrants
 
 The following code tests the results with a different algorithm:
 
->>> testResult = zeros((N / 2, N / 2), 'd')
->>> bottomRight = zeros((N / 2, N / 2), 'd')
->>> topLeft = zeros((N / 2, N / 2), 'd')
->>> topRight = zeros((N / 2, N / 2), 'd')
+>>> testResult = numerix.zeros((N / 2, N / 2), 'd')
+>>> bottomRight = numerix.zeros((N / 2, N / 2), 'd')
+>>> topLeft = numerix.zeros((N / 2, N / 2), 'd')
+>>> topRight = numerix.zeros((N / 2, N / 2), 'd')
 >>> for j in range(N / 2):
 ...     for i in range(N / 2):
 ...         x = dx * (i + 0.5)
@@ -104,11 +104,11 @@ The following code tests the results with a different algorithm:
 ...         bottomRight[i,j] = var(((L - x,), (y,)))
 ...         topLeft[i,j] = var(((x,), (L - y,)))
 ...         topRight[i,j] = var(((L - x,), (L - y,)))
->>> allclose(testResult, bottomRight, atol = 1e-10)
+>>> numerix.allclose(testResult, bottomRight, atol = 1e-10)
 1
->>> allclose(testResult,topLeft, atol = 1e-10)
+>>> numerix.allclose(testResult,topLeft, atol = 1e-10)
 1
->>> allclose(testResult,topRight, atol = 1e-10)
+>>> numerix.allclose(testResult,topRight, atol = 1e-10)
 1
 """
 __docformat__ = 'restructuredtext'

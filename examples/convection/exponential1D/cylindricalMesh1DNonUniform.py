@@ -111,7 +111,7 @@ or
 ...     U = convCoeff[0][0]
 ...     from scipy.special import expi
 ...     r = mesh.cellCenters[axis]
-...     AA = exp(U / diffCoeff * (r1 - r))
+...     AA = numerix.exp(U / diffCoeff * (r1 - r))
 ...     BB = expi(U * r0 / diffCoeff) - expi(U * r / diffCoeff)
 ...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff)
 ...     analyticalArray = AA * BB / CC

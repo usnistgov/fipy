@@ -166,7 +166,7 @@ the result is tested against the expected profile:
 
 >>> try:
 ...     from scipy.special import erf
-...     phiAnalytical.setValue(1 - erf(x / (2 * sqrt(D * t))))
+...     phiAnalytical.setValue(1 - erf(x / (2 * numerix.sqrt(D * t))))
 ... except ImportError:
 ...     print "The SciPy library is not available to test the solution to \
 ... the transient diffusion equation"
@@ -327,7 +327,7 @@ we will need to declare time :math:`t` as a :class:`~fipy.variables.variable.Var
 and then declare our boundary condition as a function of this :class:`~fipy.variables.variable.Variable`
 
 >>> del phi.faceConstraints
->>> valueLeft = 0.5 * (1 + sin(time))
+>>> valueLeft = 0.5 * (1 + numerix.sin(time))
 >>> phi.constrain(valueLeft, mesh.facesLeft)
 >>> phi.constrain(0., mesh.facesRight)
 
@@ -514,7 +514,7 @@ can be solved in steady-state, with
    \phi(x) = 1 - \sqrt{\frac{x}{L}}
 
 >>> x = mesh.cellCenters[0]
->>> phiAnalytical.setValue(1. - sqrt(x/L))
+>>> phiAnalytical.setValue(1. - numerix.sqrt(x/L))
 
 We create a viewer to compare the different numbers of sweeps with the
 analytical solution from before.

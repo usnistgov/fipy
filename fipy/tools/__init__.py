@@ -90,4 +90,15 @@ __all__ = ["serial",
            "PhysicalField",
            "Vitals"]
            
-__all__.extend(numerix.__all__)
+import os
+if os.environ.has_key('FIPY_INCLUDE_NUMERIX_ALL'):
+    import warnings
+    class FiPyDeprecationWarning(DeprectationWarning):
+        pass
+    warnings.warn("""
+The ability to include `numerix` functions in the `fipy` namespace
+with the FIPY_INCLUDE_NUMERIX_ALL environment variable will
+likely be removed in the future. If needed, the same effect can be 
+accomplished with `from fipy.tools.numerix import *`
+""", FutureWarning)
+    __all__.extend(numerix.__all__)

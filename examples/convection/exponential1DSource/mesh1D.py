@@ -105,8 +105,8 @@ or
 >>> x = mesh.cellCenters[axis]
 >>> AA = -sourceCoeff * x / convCoeff[axis]
 >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
->>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
->>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
+>>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = AA + BB * CC / DD
 >>> print var.allclose(analyticalArray, rtol=1e-4, atol=1e-4)
 1

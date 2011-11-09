@@ -82,9 +82,12 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
         
     def _getSuitableVars(self, vars):
         from fipy.meshes.grid2D import Grid2D
+        from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-          if (isinstance(var.mesh, Grid2D) and isinstance(var, CellVariable))]
+          if ((isinstance(var.mesh, Grid2D) 
+               or isinstance(var.mesh, UniformGrid2D))
+              and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
             raise MeshDimensionError, "The mesh must be a Grid2D instance"

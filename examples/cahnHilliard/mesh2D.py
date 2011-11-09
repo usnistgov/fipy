@@ -121,7 +121,7 @@ evolution of their problem.
 ... else:
 ...     duration = 1e-2
 >>> while elapsed < duration:
-...     dt = min(100, exp(dexp))
+...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
 ...     eq.solve(phi, dt=dt)

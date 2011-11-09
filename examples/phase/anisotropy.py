@@ -125,10 +125,10 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 >>> alpha = 0.015
 >>> c = 0.02
 >>> N = 6.
->>> theta = pi / 8.
->>> psi = theta + arctan2(phase.faceGrad[1], 
-...                       phase.faceGrad[0])
->>> Phi = tan(N * psi / 2)
+>>> theta = numerix.pi / 8.
+>>> psi = theta + numerix.arctan2(phase.faceGrad[1], 
+...                               phase.faceGrad[0])
+>>> Phi = numerix.tan(N * psi / 2)
 >>> PhiSq = Phi**2
 >>> beta = (1. - PhiSq) / (1. + PhiSq)
 >>> DbetaDpsi = -N * 2 * Phi / (1 + PhiSq)
@@ -146,7 +146,7 @@ as
 >>> kappa2 = 20.
 >>> phaseEq = (TransientTerm(tau)
 ...            == DiffusionTerm(D)
-...            + ImplicitSourceTerm((phase - 0.5 - kappa1 / pi * arctan(kappa2 * dT))
+...            + ImplicitSourceTerm((phase - 0.5 - kappa1 / numerix.pi * numerix.arctan(kappa2 * dT))
 ...                                 * (1 - phase)))
 
 We seed a circular solidified region in the center

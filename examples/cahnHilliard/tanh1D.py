@@ -146,8 +146,8 @@ or
 
 .. index:: sqrt, exp
       
->>> a = sqrt(asq)
->>> answer = 1 / (1 + exp(-a * (mesh.cellCenters[0]) / epsilon))
+>>> a = numerix.sqrt(asq)
+>>> answer = 1 / (1 + numerix.exp(-a * (mesh.cellCenters[0]) / epsilon))
 
 If we are running interactively, we create a viewer to see the results
 
@@ -163,7 +163,7 @@ we update the display and output data about the progression of the solution
 
 >>> dexp=-5
 >>> for step in range(100):
-...     dt = exp(dexp)
+...     dt = numerix.exp(dexp)
 ...     dt = min(10, dt)
 ...     dexp += 0.5
 ...     eqch.solve(var=var, boundaryConditions=BCs, solver=solver, dt=dt)
