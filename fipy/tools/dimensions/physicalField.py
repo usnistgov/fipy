@@ -95,7 +95,9 @@ recommended values from CODATA_. Other conversion factors
 """
 __docformat__ = 'restructuredtext'
 
-import re, string
+import re
+import string
+import collections
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -638,7 +640,7 @@ class PhysicalField(object):
             args = [__makePhysical(arg) for arg in args]
             
             meth = getattr(args[0], func.__name__, None)
-            if meth is not None and callable(meth):
+            if meth is not None and isinstance(meth, collections.Callable):
                 result = meth(*args[1:])
 
         return result
