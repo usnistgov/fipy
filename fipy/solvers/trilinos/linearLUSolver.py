@@ -99,7 +99,7 @@ class LinearLUSolver(TrilinosSolver):
 
              x[:] = x - xError
              
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iteration + 1, self.iterations))
             PRINT('residual:', errorVector.Norm2())

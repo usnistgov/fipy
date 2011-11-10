@@ -72,13 +72,13 @@ class TrilinosMLTest(TrilinosSolver):
                                 iterations=iterations)
 
         self.MLOptions = MLOptions
-        if not self.MLOptions.has_key("output"):
+        if "output" not in self.MLOptions:
             self.MLOptions["output"] = 0
             
-        if not self.MLOptions.has_key("test: max iters"):
+        if "test: max iters" not in self.MLOptions:
             self.MLOptions["test: max iters"] = iterations
         
-        if not self.MLOptions.has_key("test: tolerance"):
+        if "test: tolerance" not in self.MLOptions:
             self.MLOptions["test: tolerance"] = tolerance
 
         
@@ -86,7 +86,7 @@ class TrilinosMLTest(TrilinosSolver):
 
         if not testUnsupported:
             for smoother in unsupportedSmoothers:
-                if not self.MLOptions.has_key("test: " + smoother):
+                if ("test: " + smoother) not in self.MLOptions:
                     self.MLOptions["test: " + smoother] = False
             
         

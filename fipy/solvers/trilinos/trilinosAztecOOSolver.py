@@ -86,7 +86,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             if hasattr(self.preconditioner, 'Prec'):
                 del self.preconditioner.Prec
 
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             status = Solver.GetAztecStatus()
 
             from fipy.tools.debug import PRINT        

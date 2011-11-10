@@ -88,7 +88,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         vars = [vars]
     vars = list(vars)
     
-    if FIPY_VIEWER is None and os.environ.has_key('FIPY_VIEWER'):
+    if FIPY_VIEWER is None and 'FIPY_VIEWER' in os.environ:
         FIPY_VIEWER = os.environ['FIPY_VIEWER']
 
     if FIPY_VIEWER == "dummy":

@@ -127,8 +127,8 @@ def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
             if isinstance(klass, types.ClassType) and issubclass(klass, meshes.mesh.Mesh):
                 class UnmangledMesh(klass):
                     def __setstate__(self, dict):
-                        if (dict.has_key('cellFaceIDs') 
-                            and dict.has_key('faceVertexIDs')):
+                        if ('cellFaceIDs' in dict 
+                            and 'faceVertexIDs' in dict):
                                 
                             dict = dict.copy()
                             for key in ('cellFaceIDs', 'faceVertexIDs'):

@@ -167,7 +167,7 @@ class TrilinosNonlinearSolver(TrilinosSolver):
     def solve(self, dt=None):
         output = self.nox.solve(dt=dt)
         
-#         if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+#         if 'FIPY_VERBOSE_SOLVER' in os.environ:
 #             status = Solver.GetAztecStatus()
 # 
 #             from fipy.tools.debug import PRINT        

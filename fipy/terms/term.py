@@ -161,7 +161,7 @@ class Term(object):
         for bc in boundaryConditions:
             bc._resetBoundaryConditionApplied()
 
-        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+        if 'FIPY_DISPLAY_MATRIX' in os.environ:
             if not hasattr(self, "_viewer"):
                 from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
                 Term._viewer = MatplotlibSparseMatrixViewer()
@@ -178,7 +178,7 @@ class Term(object):
         
         solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
         
-        if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+        if 'FIPY_DISPLAY_MATRIX' in os.environ:
             if var is None:
                 name = ""
             else:

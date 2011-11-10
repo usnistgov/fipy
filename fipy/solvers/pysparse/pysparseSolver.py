@@ -82,7 +82,7 @@ class PysparseSolver(_PysparseMatrixSolver):
         
         self._raiseWarning(info, iter, relres)
         
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iter, self.iterations))
             

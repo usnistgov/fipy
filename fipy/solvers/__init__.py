@@ -10,7 +10,7 @@ solver = _parseSolver()
 
 def _envSolver(solver):
     import os
-    if solver is None and os.environ.has_key('FIPY_SOLVERS'):
+    if solver is None and 'FIPY_SOLVERS' in os.environ:
         solver = os.environ['FIPY_SOLVERS'].lower()
     return solver
     

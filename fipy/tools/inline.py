@@ -7,9 +7,9 @@ import sys
 if '--inline' in sys.argv[1:]:
     doInline = True
 else:
-    doInline = os.environ.has_key('FIPY_INLINE')
+    doInline = 'FIPY_INLINE' in os.environ
     
-_inlineFrameComment = os.environ.has_key('FIPY_INLINE_COMMENT')
+_inlineFrameComment = 'FIPY_INLINE_COMMENT' in os.environ
 
 def _getframeinfo(level, context=1):
     """

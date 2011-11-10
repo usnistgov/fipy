@@ -91,7 +91,7 @@ __all__ = ["serial",
            "Vitals"]
            
 import os
-if os.environ.has_key('FIPY_INCLUDE_NUMERIX_ALL'):
+if 'FIPY_INCLUDE_NUMERIX_ALL' in os.environ:
     import warnings
     class FiPyDeprecationWarning(DeprectationWarning):
         pass
