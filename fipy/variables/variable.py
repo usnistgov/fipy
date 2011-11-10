@@ -1495,7 +1495,7 @@ class Variable(object):
             setattr(self, opname, {})
             
         opdict = getattr(self, opname)
-        if not opdict.has_key(axis):
+        if axis not in opdict:
             if axis is None:
                 opShape = ()
             else:

@@ -731,7 +731,7 @@ class MSHFile(GmshFile):
                 currFace = faces[faceIdx]
                 keyStr   = ' '.join([str(x) for x in sorted(currFace)])
 
-                if facesDict.has_key(keyStr):
+                if keyStr in facesDict:
                     cellsToFaces[cellIdx][faceIdx] = facesDict[keyStr]
                 else: # new face
                     facesDict[keyStr] = currNumFaces
@@ -929,7 +929,7 @@ class MSHFile(GmshFile):
         self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
         for face in facesDict.keys():
             # not all faces are necessarily tagged
-            if faceEntitiesDict.has_key(face):
+            if face in faceEntitiesDict:
                 self.physicalFaceMap[facesDict[face]] = faceEntitiesDict[face][0]
                 self.geometricalFaceMap[facesDict[face]] = faceEntitiesDict[face][1]
                 

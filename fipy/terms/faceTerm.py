@@ -174,10 +174,10 @@ class FaceTerm(_NonDiffusionTerm):
 
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
-        if weight.has_key('implicit'):
+        if 'implicit' in weight:
             self._implicitBuildMatrix_(SparseMatrix, L, id1, id2, b, weight['implicit'], var, boundaryConditions, interiorFaces, dt)
 
-        if weight.has_key('explicit'):
+        if 'explicit' in weight:
             self._explicitBuildMatrix_(SparseMatrix, var.old, id1, id2, b, weight['explicit'], var, boundaryConditions, interiorFaces, dt)
 
         return (var, L, b)

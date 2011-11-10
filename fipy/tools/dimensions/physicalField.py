@@ -2007,7 +2007,7 @@ for unit in _base_units:
     _unit_table[unit[0]] = unit[1]
 
 def _addUnit(name, unit):
-    if _unit_table.has_key(name):
+    if name in _unit_table:
         raise KeyError, 'Unit ' + name + ' already defined'
     if type(unit) == type(''):
         unit = eval(unit, _unit_table)
@@ -2169,7 +2169,7 @@ def _getUnitStrings():
         keys = unitDict.keys()
         keys.sort(lambda x,y: cmp(x.lower(), y.lower()))
         for key in keys:
-            if unitDict.has_key(key):
+            if key in unitDict:
                 unit = unitDict[key]
                 if isinstance(unit, PhysicalUnit):
                     tmp = PhysicalField(value = 1, unit = unit)
@@ -2181,7 +2181,7 @@ def _getUnitStrings():
         
     def _deleteFactors(unit):
         for prefix, factor in _prefixes:
-            if working_table.has_key(prefix + unit.name()):
+            if (prefix + unit.name()) in working_table:
                 del working_table[prefix + unit.name()]
         
     
@@ -2190,7 +2190,7 @@ def _getUnitStrings():
     units.append("\nBase SI units::\n")
     units.append("\t%s" % ", ".join(_base_names))
     for name in _base_names:
-        if working_table.has_key(name):
+        if name in working_table:
             del working_table[name]
     for name, unit in _base_units:
         _deleteFactors(unit)
@@ -2202,7 +2202,7 @@ def _getUnitStrings():
     units.append("\nUnits derived from SI (accepting SI prefixes)::\n")
     derived = {}
     for key in working_table.keys():
-        if working_table.has_key(key):
+        if key in working_table:
             unit = working_table[key]
             if isinstance(unit, PhysicalUnit) and unit.factor == 1:
                 derived[unit.name()] = unit
@@ -2213,12 +2213,12 @@ def _getUnitStrings():
     units.append("\nOther units that accept SI prefixes::\n")
     prefixed = {}
     for key in working_table.keys():
-        if working_table.has_key(key):
+        if key in working_table:
             unit = working_table[key]
             isPrefixed = 1
             if isinstance(unit, PhysicalUnit):
                 for prefix, factor in _prefixes:
-                    if not working_table.has_key(prefix + key):
+                    if (prefix + key) not in working_table:
                         isPrefixed = 0
                         break
                 if isPrefixed:

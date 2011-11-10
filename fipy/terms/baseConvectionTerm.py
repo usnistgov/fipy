@@ -167,7 +167,7 @@ class _BaseConvectionTerm(FaceTerm):
 
             weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
-            if weight.has_key('implicit'):
+            if 'implicit' in weight:
                 alpha = weight['implicit']['cell 1 diag']
             else:
                 alpha = 0.0

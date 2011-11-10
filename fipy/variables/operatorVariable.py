@@ -196,9 +196,9 @@ def _OperatorVariableClass(baseClass=object):
                 elif opcode.opname[bytecode] == 'LOAD_DEREF':
                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                     stack.append(free[_popIndex()])
-                elif unop.has_key(bytecode):
+                elif bytecode in unop:
                     stack.append(unop[bytecode] + '(' + stack.pop() + ')')
-                elif binop.has_key(bytecode):
+                elif bytecode in binop:
                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
                 else:
                     raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`,`"FIXME"`)

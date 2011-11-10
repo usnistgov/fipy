@@ -116,7 +116,7 @@ class _MeshVariable(Variable):
                 
         self.elementshape = elementshape
         
-        if not locals().has_key("array"):
+        if not "array" in locals():
             if numerix._isPhysical(value):
                 dtype = numerix.obj2sctype(value.value)
             else:
