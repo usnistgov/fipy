@@ -64,7 +64,7 @@ class _BaseBinaryTerm(Term):
                 else:
                     raise ExplicitVariableError
 
-	Term.__init__(self, var=self._vars[0])
+        Term.__init__(self, var=self._vars[0])
     
     def _addNone(self, arg0, arg1):
         if arg0 is None and arg1 is None:

@@ -128,7 +128,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
             RHSvectors += [CellVariable(value=termRHSvector, mesh=var.mesh)]
             matrix += termMatrix
             
-	return (var, matrix, _CoupledCellVariable(RHSvectors))
+        return (var, matrix, _CoupledCellVariable(RHSvectors))
 
     def __repr__(self):
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
@@ -168,21 +168,21 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._vars
         [v1, v2, v0]
         >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars
-  	Traceback (most recent call last): 
- 	    ... 
- 	SolutionVariableNumberError: Different number of solution variables and equations.
+        Traceback (most recent call last): 
+            ... 
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars
-  	Traceback (most recent call last): 
- 	    ... 
- 	Exception: Variable not in previously defined variables for this coupled equation.
+        Traceback (most recent call last): 
+            ... 
+        Exception: Variable not in previously defined variables for this coupled equation.
         >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars
- 	Traceback (most recent call last): 
- 	    ... 
- 	SolutionVariableNumberError: Different number of solution variables and equations.
+        Traceback (most recent call last): 
+            ... 
+        SolutionVariableNumberError: Different number of solution variables and equations.
         >>> print (eq2 & eq0 & eq1)([v1, v2])._vars
- 	Traceback (most recent call last): 
- 	    ... 
- 	SolutionVariableNumberError: Different number of solution variables and equations.
+        Traceback (most recent call last): 
+            ... 
+        SolutionVariableNumberError: Different number of solution variables and equations.
 
         """
     
