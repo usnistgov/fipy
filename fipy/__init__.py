@@ -81,3 +81,18 @@ if parallel.Nproc > 1:
     raw_input = mpi_raw_input
     
 __all__.extend(['raw_input', 'raw_input_original'])
+
+def test():
+    from setuptools import setup
+    from fipy.tools.testClass import _TestClass
+    from setuptools.command.test import test as _test
+    tmp0 = _TestClass(_test)
+    setup(name='dummy', script_name = 'dummy.py', script_args = ['test', '--modules'], cmdclass={'test': tmp0})
+#    dummyCommand = setup(name='dummy', script_name = 'dummy.py', script_args = ['test'], cmdclass={'test': tmp0})
+    # tmp = tmp0(dummyCommand)
+
+    # tmp.initialize_options()
+    # tmp.modules = True
+    # tmp.finalize_options()
+    # tmp.run()
+    # # pass
