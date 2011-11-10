@@ -201,7 +201,10 @@ def _OperatorVariableClass(baseClass=object):
                 elif bytecode in binop:
                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
                 else:
-                    raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`,`"FIXME"`)
+                    raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (
+                       repr(bytecode), 
+                       repr([ord(byte) for byte in self.op.func_code.co_code]),
+                       "FIXME")
                 
         def __repr__(self):
             return self._getRepresentation()
