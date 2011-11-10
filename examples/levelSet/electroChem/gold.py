@@ -128,7 +128,7 @@ def runGold(faradaysConstant=9.6e4,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = pi * taperAngle / 180.,
+                      angle = numerix.pi * taperAngle / 180.,
                       bowWidth = 0.,
                       overBumpRadius = 0.,
                       overBumpWidth = 0.)
@@ -198,7 +198,7 @@ def runGold(faradaysConstant=9.6e4,
                     self.var = self._requires(var)
 
                 def _calcValue(self):
-                    return array(self.var[:self.mesh.numberOfCells])
+                    return numerix.array(self.var[:self.mesh.numberOfCells])
 
             viewer = MultiViewer(viewers=(
                 Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
@@ -218,8 +218,8 @@ def runGold(faradaysConstant=9.6e4,
             
             distanceVar.calcDistanceFunction(deleteIslands = True)
             
-        extensionVelocityVariable.setValue(array(depositionRateVariable))
-        argmx = argmax(extensionVelocityVariable)
+        extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
+        argmx = numerix.argmax(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable[argmx]
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
         

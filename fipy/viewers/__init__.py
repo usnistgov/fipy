@@ -1,35 +1,38 @@
 __docformat__ = 'restructuredtext'
 
-import os
-import sys
-import string
-import glob
-import imp
+__all__ = []
 
 try:
     from gistViewer import *
+    __all__.extend(gistViewer.__all__)
 except:
     pass
 
 try:
     from gnuplotViewer import *
+    __all__.extend(gnuplotViewer.__all__)
 except:
     pass
 
 try:
     from matplotlibViewer import *
+    __all__.extend(matplotlibViewer.__all__)
 except:
     pass
 
 try:
     from mayaviViewer import *
+    __all__.extend(mayaviViewer.__all__)
 except:
     pass
 
-from multiViewer import MultiViewer
-from tsvViewer import TSVViewer
-from vtkViewer import VTKViewer
+from multiViewer import *
+from tsvViewer import *
+from vtkViewer import *
 
+__all__.extend(multiViewer.__all__)
+__all__.extend(tsvViewer.__all__)
+__all__.extend(vtkViewer.__all__)
 
 # what about vector variables?
 
@@ -79,7 +82,8 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         (default) value of `None` will autoscale.
       
     """
-    
+    import os
+
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
     vars = list(vars)
@@ -130,10 +134,4 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     else:
         return viewers[0]
         
-def make(*args, **kwargs):
-    """
-    A deprecated synonym for `Viewer`
-    """
-    import warnings
-    warnings.warn("'Viewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
-    return Viewer(*args, **kwargs)
+__all__.extend(["MeshDimensionError", "DummyViewer", "Viewer"])

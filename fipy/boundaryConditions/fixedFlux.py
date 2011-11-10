@@ -41,6 +41,8 @@ from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.tools import vector
 
+__all__ = ["FixedFlux"]
+
 class FixedFlux(BoundaryCondition):
     r"""
 

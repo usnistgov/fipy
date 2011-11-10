@@ -6,6 +6,8 @@ import signal
 import threading
 import time
 
+__all__ = ["MemoryHighWaterThread", "MemoryLogger"]
+
 class MemoryHighWaterThread(threading.Thread):
     def __init__(self, pid, sampleTime = 1):
         threading.Thread.__init__(self)

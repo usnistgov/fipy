@@ -35,7 +35,6 @@
  # ###################################################################
  ##
 
-
 __docformat__ = 'restructuredtext'
 
 import os
@@ -44,6 +43,8 @@ import tempfile
 import time
 
 from fipy.viewers.viewer import _Viewer
+
+__all__ = ["MayaviClient"]
 
 class MayaviClient(_Viewer):
     """

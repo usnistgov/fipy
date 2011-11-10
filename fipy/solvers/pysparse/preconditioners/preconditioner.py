@@ -33,6 +33,8 @@
  # ###################################################################
  ##
  
+__all__ = ["Preconditioner"]
+
 class Preconditioner:
     """
     Base preconditioner class

@@ -111,7 +111,7 @@ or
 ...     U = convCoeff[0][0]
 ...     from scipy.special import expi
 ...     r = mesh.cellCenters[axis]
-...     AA = exp(U / diffCoeff * (r1 - r))
+...     AA = numerix.exp(U / diffCoeff * (r1 - r))
 ...     BB = expi(U * r0 / diffCoeff) - expi(U * r / diffCoeff)
 ...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff)
 ...     analyticalArray = AA * BB / CC
@@ -127,7 +127,7 @@ If the problem is run interactively, we can view the result:
    module: viewers
 
 >>> if __name__ == '__main__':
-...     viewer = viewers.make(vars=var)
+...     viewer = Viewer(vars=var)
 ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.tools.numerix import random
 from fipy.variables.noiseVariable import NoiseVariable
 
+__all__ = ["UniformNoiseVariable"]
+
 class UniformNoiseVariable(NoiseVariable):
     r"""
     Represents a uniform distribution of random numbers.

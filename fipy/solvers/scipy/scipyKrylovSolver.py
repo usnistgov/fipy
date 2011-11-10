@@ -36,7 +36,10 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import os
+
 from fipy.solvers.scipy.scipySolver import _ScipySolver
 
 class _ScipyKrylovSolver(_ScipySolver):

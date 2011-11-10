@@ -82,7 +82,7 @@ modeling. The following code opens the file :file:`circle.gz` extracts the
 data and compares it with the ``phase`` variable.
 
 >>> import os
->>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> print phase.allclose(testData)
 1
 

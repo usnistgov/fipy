@@ -72,7 +72,6 @@ import numpy as NUMERIX
 from numpy.core import umath
 from numpy import newaxis as NewAxis
 from numpy import *
-from numpy import oldnumeric
 try:
     from numpy.core import ma as MA
     numpy_version = 'old'
@@ -82,6 +81,16 @@ except ImportError:
     numpy_version = 'new'
 
 from fipy.tools import inline
+
+# we want NumPy's __all__, with adjustments
+import sys
+__all__ = list(sys.modules['numpy'].__dict__.setdefault('__all__', []))
+__all__.extend(["NUMERIX", "NewAxis", "MA", "numpy_version"])
+__all__.extend(["zeros", "ones", "getUnit", "put", "reshape", "getShape",
+                "rank", "sum", "isFloat", "isInt", "tostring", "dot", 
+                "sqrtDot", "nearest", "allequal", "allclose", "all",
+                "isclose", "take", "indices", "empty", "loadtxt", 
+                "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"])
 
 def zeros(a, dtype='l'):
     return NUMERIX.zeros(a, dtype)
@@ -247,7 +256,6 @@ def sum(arr, axis=0):
             if axis is None:
                 axis = 0
             return NUMERIX.tensordot(NUMERIX.ones(arr.shape[axis], 'l'), arr, (0, axis))
-        
         
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):

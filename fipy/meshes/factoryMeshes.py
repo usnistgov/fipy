@@ -40,6 +40,8 @@
 from fipy.tools import parallel
 from fipy.tools import numerix
 
+__all__ = ["Grid3D", "Grid2D", "Grid1D", "CylindricalGrid2D", "CylindricalGrid1D"]
+
 def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
     import uniformGrid3D
     import grid3D

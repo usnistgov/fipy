@@ -34,6 +34,8 @@
  
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import numerix
 
 def _BinaryOperatorVariable(operatorClass=None):

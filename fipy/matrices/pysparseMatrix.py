@@ -34,9 +34,10 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from pysparse import spmatrix
 from fipy.tools import numerix
-
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
 

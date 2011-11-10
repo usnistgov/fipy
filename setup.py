@@ -39,7 +39,7 @@ import sys
 import string
 
 from distutils.core import Command
-from fipy.tools.efficiency_test import Efficiency_test
+from fipy.tools.performance.efficiency_test import Efficiency_test
 from fipy.tools.copy_script import Copy_script
 
 # bootstrap setuptools for users that don't already have it

@@ -79,7 +79,7 @@ mesh = Grid1D(dx = dx, nx = nx)
 
 periodicMesh = PeriodicGrid1D(dx = dx, nx = nx / 2)
 
-startingArray = zeros(nx, 'd')
+startingArray = numerix.zeros(nx, 'd')
 startingArray[2 * nx / 10: 3 * nx / 10] = 1. 
 
 var1 = CellVariable(

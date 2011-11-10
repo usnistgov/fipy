@@ -37,9 +37,12 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import _MatplotlibViewer
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
+
+from matplotlibViewer import _MatplotlibViewer
+
+__all__ = ["MatplotlibVectorViewer"]
 
 class MatplotlibVectorViewer(_MatplotlibViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
@@ -52,7 +55,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
     __doc__ += _MatplotlibViewer._test2Dvector(viewer="MatplotlibVectorViewer")
     __doc__ += """
     
-            >>> for sparsity in arange(5000, 0, -500):
+            >>> for sparsity in numerix.arange(5000, 0, -500):
             ...     viewer.quiver(sparsity=sparsity)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()

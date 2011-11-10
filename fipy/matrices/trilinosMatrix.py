@@ -35,6 +35,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 

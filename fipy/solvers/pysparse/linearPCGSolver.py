@@ -42,6 +42,8 @@ from pysparse import itsolvers
 from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
+__all__ = ["LinearPCGSolver"]
+
 class LinearPCGSolver(PysparseSolver):
     """
     

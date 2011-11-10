@@ -36,12 +36,14 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import itertools 
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
  
-class AbstractGridBuilder(object):
+class _AbstractGridBuilder(object):
 
     NumPtsCalcClass = None
 
@@ -227,15 +229,15 @@ class AbstractGridBuilder(object):
 
         >>> from fipy.meshes.builders import *
 
-        >>> gb = Grid1DBuilder()
+        >>> gb = _Grid1DBuilder()
         >>> gb._calcGlobalNumFaces([1])
         2
 
-        >>> gb2 = Grid2DBuilder()
+        >>> gb2 = _Grid2DBuilder()
         >>> gb2._calcGlobalNumFaces([2, 3])
         17
 
-        >>> gb3 = Grid3DBuilder()
+        >>> gb3 = _Grid3DBuilder()
         >>> gb3._calcGlobalNumFaces([2, 3, 2])
         52
         """

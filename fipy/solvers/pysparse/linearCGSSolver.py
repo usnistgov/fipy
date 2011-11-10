@@ -40,6 +40,8 @@ from pysparse import itsolvers
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
+__all__ = ["LinearCGSSolver"]
+
 class LinearCGSSolver(PysparseSolver):
 
     """

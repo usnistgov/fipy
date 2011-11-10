@@ -39,6 +39,8 @@ __docformat__ = 'restructuredtext'
 from matplotlibViewer import _MatplotlibViewer
 from fipy.tools.decorators import getsetDeprecated
 
+__all__ = ["Matplotlib1DViewer"]
+
 class Matplotlib1DViewer(_MatplotlibViewer):
     """
     Displays a y vs.  x plot of one or more 1D `CellVariable` objects using

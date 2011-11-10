@@ -35,10 +35,12 @@
 
 __docformat__ = 'restructuredtext'
 
+from PyTrilinos import AztecOO
+
 from fipy.solvers.trilinos.trilinosAztecOOSolver import TrilinosAztecOOSolver
 from fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner import MultilevelDDPreconditioner
 
-from PyTrilinos import AztecOO
+__all__ = ["LinearGMRESSolver"]
 
 class LinearGMRESSolver(TrilinosAztecOOSolver):
 

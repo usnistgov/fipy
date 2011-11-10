@@ -36,11 +36,13 @@
 
 __docformat__ = 'restructuredtext'
 
+from fipy.meshes import Grid2D
+from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 
 from gnuplotViewer import _GnuplotViewer
-from fipy.meshes import Grid2D
-from fipy.variables.faceVariable import FaceVariable
+
+__all__ = ["Gnuplot2DViewer"]
 
 class Gnuplot2DViewer(_GnuplotViewer):
     """

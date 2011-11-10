@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "mpi4pyCommWrapper.py"
+ #  FILE: "commWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,40 +34,71 @@
  # ###################################################################
  ##
 
-from fipy.tools.commWrapper import CommWrapper
+__docformat__ = 'restructuredtext'
+
 from fipy.tools import numerix
 
-class Mpi4pyCommWrapper(CommWrapper):
+__all__ = ["CommWrapper"]
+
+class CommWrapper(object):
     """MPI Communicator wrapper
     
-    Encapsulates capabilities needed for both Epetra and mpi4py.
+    Encapsulates capabilities needed for Epetra. Some capabilities are not parallel.
     
     """
     
-    def __init__(self, Epetra, MPI):
-        self.MPI = MPI
-        self.mpi4py_comm = self.MPI.COMM_WORLD
-        CommWrapper.__init__(self, Epetra)
+    def __init__(self, Epetra=None):
+        self.epetra_comm = Epetra.PyComm()
+        
+    @property
+    def procID(self):
+        return self.epetra_comm.MyPID()
+        
+    @property
+    def Nproc(self):
+        return self.epetra_comm.NumProc()
+        
+    def Barrier(self):
+        self.epetra_comm.Barrier()
+
+    def all(self, a, axis=None):
+        return a.all(axis=axis)
+
+    def any(self, a, axis=None):
+        return a.any(axis=axis)
+
+    def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
+        return numerix.allclose(a, b, rtol=rtol, atol=atol)
+     
+    def allequal(self, a, b):
+        return numerix.allequal(a, b)
+     
+    def bcast(self, obj=None, root=0):
+        return obj
+     
+    def allgather(self, sendobj=None, recvobj=None):
+        if recvobj is not None:
+            recvobj[:] = sendobj
+        else:
+            recvobj = sendobj
+         
+        return recvobj
+                    
+    def sumAll(self, a):
+        return self.epetra_comm.SumAll(numerix.array(a))
+
+    def sum(self, a, axis=None):
+        return self.epetra_comm.SumAll(numerix.array(a.sum(axis=axis)))
+        
+    def __getstate__(self):
+        return {'dummy': 0}
         
     def __setstate__(self, dict):
         from PyTrilinos import Epetra
-        from mpi4py import MPI
-        self.__init__(Epetra=Epetra, MPI=MPI)
+        self.__init__(Epetra=Epetra)
         
-    def all(self, a, axis=None):
-        return self.mpi4py_comm.allreduce(a.all(axis=axis), op=self.MPI.LAND)
+    def Norm2(self, vec):
+        return vec.Norm2()
 
-    def any(self, a, axis=None):
-        return self.mpi4py_comm.allreduce(a.any(axis=axis), op=self.MPI.LOR)
-
-    def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
-        return self.mpi4py_comm.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=self.MPI.LAND)
-
-    def allequal(self, a, b):
-        return self.mpi4py_comm.allreduce(numerix.allequal(a, b), op=self.MPI.LAND)
-
-    def bcast(self, obj=None, root=0):
-        return self.mpi4py_comm.bcast(obj=obj, root=root)
-
-    def allgather(self, sendobj=None, recvobj=None):
-        return self.mpi4py_comm.allgather(sendobj=sendobj, recvobj=recvobj)
+    def MaxAll(self, vec):
+	return self.epetra_comm.MaxAll(numerix.array(vec))

@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
@@ -229,8 +231,8 @@ class _MeshVariable(Variable):
         
         """
         if not hasattr(self, '_constraintMask'):
-            from fipy.variables.constraintMask import ConstraintMask
-            self._constraintMask = ConstraintMask(self)
+            from fipy.variables.constraintMask import _ConstraintMask
+            self._constraintMask = _ConstraintMask(self)
         return self._constraintMask
 
     def constrain(self, value, where=None):
@@ -512,12 +514,14 @@ class _MeshVariable(Variable):
         >>> A = numerix.arange(5)
         >>> B = Variable(1.)
         >>> import warnings
+        >>> savedFilters = list(warnings.filters)
+        >>> warnings.resetwarnings()
         >>> warnings.simplefilter("error", UserWarning, append=True)
         >>> C = CellVariable(mesh=mesh) * (A * B)
         Traceback (most recent call last):
           ...
         UserWarning: The expression `(multiply([0 1 2 3 4], Variable(value=array(1.0))))` has been cast to a constant `CellVariable`
-        >>> junk = warnings.filters.pop()
+        >>> warnings.filters = savedFilters
         """
         otherShape = numerix.getShape(other)
         if (not isinstance(other, _MeshVariable) 
@@ -638,27 +642,27 @@ def _testDot(self):
     >>> s2 = CellVariable(mesh=mesh, value=3)
 
     >>> v1 = CellVariable(mesh=mesh, rank=1, 
-    ...                   value=array([2,3])[..., newaxis])
+    ...                   value=numerix.array([2,3])[..., numerix.newaxis])
     >>> v2 = CellVariable(mesh=mesh, rank=1, 
-    ...                   value=array([3,4])[..., newaxis])
+    ...                   value=numerix.array([3,4])[..., numerix.newaxis])
     
     >>> t21 = CellVariable(mesh=mesh, rank=2, 
-    ...                    value=array([[2, 3],
-    ...                                 [4, 5]])[..., newaxis])
+    ...                    value=numerix.array([[2, 3],
+    ...                                         [4, 5]])[..., numerix.newaxis])
     >>> t22 = CellVariable(mesh=mesh, rank=2, 
-    ...                    value=array([[3, 4],
-    ...                                 [5, 6]])[..., newaxis])
+    ...                    value=numerix.array([[3, 4],
+    ...                                         [5, 6]])[..., numerix.newaxis])
 
     >>> t31 = CellVariable(mesh=mesh, rank=3, 
-    ...                    value=array([[[3, 4],
-    ...                                  [5, 6]],
-    ...                                 [[5, 6],
-    ...                                  [7, 8]]])[..., newaxis])
+    ...                    value=numerix.array([[[3, 4],
+    ...                                         [5, 6]],
+    ...                                        [[5, 6],
+    ...                                         [7, 8]]])[..., numerix.newaxis])
     >>> t32 = CellVariable(mesh=mesh, rank=3, 
-    ...                    value=array([[[2, 3],
-    ...                                  [4, 5]],
-    ...                                 [[4, 5],
-    ...                                  [6, 7]]])[..., newaxis])
+    ...                    value=numerix.array([[[2, 3],
+    ...                                         [4, 5]],
+    ...                                        [[4, 5],
+    ...                                         [6, 7]]])[..., numerix.newaxis])
 
     >>> def P(a):
     ...     a = a.globalValue

@@ -42,6 +42,8 @@ from PyTrilinos import Amesos
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 
+__all__ = ["LinearLUSolver"]
+
 class LinearLUSolver(TrilinosSolver):
 
     """

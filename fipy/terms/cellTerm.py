@@ -42,6 +42,8 @@ from fipy.matrices.sparseMatrix import _SparseMatrix
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
+__all__ = ["CellTerm"]
+
 class CellTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.

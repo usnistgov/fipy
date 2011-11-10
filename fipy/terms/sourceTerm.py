@@ -39,6 +39,8 @@ from fipy.terms import AbstractBaseClassError
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
+__all__ = ["SourceTerm"]
+
 class SourceTerm(CellTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.

@@ -36,6 +36,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import sys
 
 from fipy.tools.decorators import getsetDeprecated
@@ -215,7 +217,7 @@ class _Viewer(object):
             >>> x, = mesh.cellCenters
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = %(viewer)s(vars=(sin(k * xVar), cos(k * xVar / pi)), 
+            >>> viewer = %(viewer)s(vars=(numerix.sin(k * xVar), numerix.cos(k * xVar / numerix.pi)), 
             ...                 limits={'xmin': 10, 'xmax': 90}, 
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="%(viewer)s test")
@@ -233,7 +235,7 @@ class _Viewer(object):
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = %(viewer)s(vars=sin(k * xyVar), 
+            >>> viewer = %(viewer)s(vars=numerix.sin(k * xyVar), 
             ...                 limits={'ymin': 0.1, 'ymax': 0.9}, 
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="%(viewer)s test")
@@ -263,16 +265,16 @@ class _Viewer(object):
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=1.)
-            >>> viewer = %(viewer)s(vars=sin(k * xyVar).grad, 
+            >>> viewer = %(viewer)s(vars=numerix.sin(k * xyVar).grad, 
             ...                 title="%(viewer)s test")
-            >>> for kval in arange(1, 10):
+            >>> for kval in numerix.arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
 
-            >>> viewer = %(viewer)s(vars=sin(k * xyVar).faceGrad, 
+            >>> viewer = %(viewer)s(vars=numerix.sin(k * xyVar).faceGrad, 
             ...                 title="%(viewer)s test")
-            >>> for kval in arange(1, 10):
+            >>> for kval in numerix.arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
@@ -299,7 +301,7 @@ class _Viewer(object):
             >>> x, y, z = mesh.cellCenters
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = %(viewer)s(vars=sin(k * xyzVar), 
+            >>> viewer = %(viewer)s(vars=numerix.sin(k * xyzVar), 
             ...                     limits={'ymin': 0.1, 'ymax': 0.9}, 
             ...                     datamin=-0.9, datamax=2.0,
             ...                     title="%(viewer)s test")
@@ -309,7 +311,3 @@ class _Viewer(object):
             >>> viewer._promptForOpinion()
         """ % kwargs
     _test3D = staticmethod(_test3D)
-
-def make(vars, title=None, limits=None):
-    return _Viewer(vars=vars, title=title, limits=limits)
-        

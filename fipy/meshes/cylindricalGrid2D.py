@@ -44,6 +44,8 @@ from fipy.meshes.grid2D import Grid2D
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
 
+__all__ = ["CylindricalGrid2D"]
+
 class CylindricalGrid2D(Grid2D):
     """
     Creates a 2D cylindrical grid mesh with horizontal faces numbered

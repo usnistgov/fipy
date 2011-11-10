@@ -36,6 +36,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 from fipy.tools import numerix

@@ -37,9 +37,12 @@
 """
 __docformat__ = 'restructuredtext'
 
-from grid2D import Grid2D
 from fipy.tools import numerix
 from fipy.tools import parallel
+
+from grid2D import Grid2D
+
+__all__ = ["PeriodicGrid2D", "PeriodicGrid2DLeftRight", "PeriodicGrid2DTopBottom"]
 
 class _BasePeriodicGrid2D(Grid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallel):

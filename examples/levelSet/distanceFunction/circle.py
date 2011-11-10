@@ -84,12 +84,12 @@ The result can be tested with the following commands.
 >>> dY = dy / 2.
 >>> dX = dx / 2.
 >>> mm = min (dX, dY)
->>> m1 = dY * dX / sqrt(dY**2 + dX**2)
+>>> m1 = dY * dX / numerix.sqrt(dY**2 + dX**2)
 >>> def evalCell(phix, phiy, dx, dy):
 ...     aa = dy**2 + dx**2
 ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
 ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-...     sqr = sqrt(bb**2 - 4. * aa * cc)
+...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
 ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
 >>> v1 = evalCell(-dY, -m1, dx, dy)[0] 
 >>> v2 = evalCell(-m1, -dX, dx, dy)[0]

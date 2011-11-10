@@ -37,6 +37,8 @@ import sys
 import time
 import doctest
 
+__all__ = ["execButNoTest"]
+
 _DocTestTimes = []
 
 from lateImportTest import _LateImportTestCase, _LateImportTestSuite

@@ -89,9 +89,9 @@ Compare the analaytical and numerical results:
 
 >>> theta = surfactantVar.interfaceVar[1]
 
->>> allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
+>>> numerix.allclose(currentTimeFunc(theta), currentTime, rtol = 1e-4)()
 1
->>> allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
+>>> numerix.allclose(concentrationFunc(theta), bulkVar[1:], rtol = 1e-4)()
 1
 
 
@@ -154,7 +154,7 @@ def concentrationFunc(theta):
     return cinf * (1 + rateConstant * siteDensity * (1 - theta) * x / diffusion) / tmp
 
 def currentTimeFunc(theta):
-    tmp = -diffusion * log(1 - theta) + rateConstant * siteDensity * L * theta
+    tmp = -diffusion * numerix.log(1 - theta) + rateConstant * siteDensity * L * theta
     return tmp / rateConstant / diffusion/ cinf
 
 ## set up the comparison arrays

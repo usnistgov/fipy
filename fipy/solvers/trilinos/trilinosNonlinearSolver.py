@@ -129,6 +129,8 @@ class _NOXInterface(NOX.Epetra.Interface.Required, NOX.Epetra.Interface.Jacobian
 class _DummyJacobianSolver(TrilinosSolver):
     pass
     
+__all__ = ["TrilinosNonlinearSolver"]
+
 class TrilinosNonlinearSolver(TrilinosSolver):
     def __init__(self, equation, jacobian=None, tolerance=1e-10, iterations=1000, 
                  printingOptions=None, solverOptions=None, linearSolverOptions=None, 

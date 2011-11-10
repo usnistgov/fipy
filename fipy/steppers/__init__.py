@@ -34,6 +34,8 @@ from stepper import Stepper
 from pseudoRKQSStepper import PseudoRKQSStepper
 from pidStepper import PIDStepper
 
+__all__ = ["L1error", "L2error", "LINFerror", "sweepMonotonic"]
+
 def residual(var, matrix, RHSvector):
     r"""
     Determines the residual for the current solution matrix and variable.
@@ -77,7 +79,6 @@ def error(var, matrix, RHSvector, norm):
     denom = L1norm(var.old)
     return L1norm(var - var.old) / (denom + (denom == 0))
 
-    
 def L1error(var, matrix, RHSvector):
     r"""
     :Parameters:
@@ -95,7 +96,7 @@ def L1error(var, matrix, RHSvector):
     """
     from fipy.tools.numerix import L1norm
     return error(var, matrix, RHSvector, L1norm)
-             
+      
 def L2error(var, matrix, RHSvector):
     r"""
     :Parameters:
@@ -113,7 +114,7 @@ def L2error(var, matrix, RHSvector):
     """
     from fipy.tools.numerix import L2norm
     return error(var, matrix, RHSvector, L2norm)
-             
+      
 def LINFerror(var, matrix, RHSvector):
     r"""
     :Parameters:
@@ -132,7 +133,6 @@ def LINFerror(var, matrix, RHSvector):
     from fipy.tools.numerix import LINFnorm
     return error(var, matrix, RHSvector, LINFnorm)
              
-
 def sweepMonotonic(fn, *args, **kwargs):
     """
     Repeatedly calls :func:`fn(*args, **kwargs)` until the residual returned by

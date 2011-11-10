@@ -35,6 +35,8 @@
 
 from fipy.tools import numerix
 
+__all__ = ["OffsetSparseMatrix"]
+
 def OffsetSparseMatrix(SparseMatrix, numberOfVariables, numberOfEquations):
     """
     Used in binary terms. equationIndex and varIndex need to be set statically before instantiation.

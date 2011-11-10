@@ -43,6 +43,8 @@ from fipy.viewers.viewer import _Viewer
 
 from vtkViewer import _VTKViewer
 
+__all__ = ["VTKFaceViewer"]
+
 class VTKFaceViewer(_VTKViewer):
     """Renders `_MeshVariable` data in VTK format
     """

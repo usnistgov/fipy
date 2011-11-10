@@ -49,20 +49,20 @@ Do the tests:
 
 >>> dX = dx / 2.
 >>> dY = dy / 2.
->>> mm = dX * dY / sqrt(dX**2 + dY**2) 
+>>> mm = dX * dY / numerix.sqrt(dX**2 + dY**2) 
 >>> def evalCell(phix, phiy, dx, dy):
 ...     aa = dy**2 + dx**2
 ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
 ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
-...     sqr = sqrt(bb**2 - 4. * aa * cc)
+...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
 ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
 >>> v1 = evalCell(dY, dX, dx, dy)[1]
 >>> v2 = max(-dY*3, -dX*3)   
->>> values = array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
-...                   dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
-...                   dX  ,   -dX ,   -v1 ,  -dX ,  dX  ,
-...                   dX  ,   -mm ,   -dY ,  -mm ,  dX  ,
-...                   v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
+>>> values = numerix.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
+...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
+...                           dX  ,  -dX ,   -v1 ,  -dX ,   dX  ,
+...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
+...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
 >>> print var.allclose(values, atol = 1e-10)
 1
 

@@ -34,15 +34,14 @@
  # ###################################################################
  ##
 
-try:
-    import scipy
-except:
-    pass
-
-def parallelImport():
+def _parallelImport():
+    try:
+        import scipy
+    except:
+        pass
 
     from PyTrilinos import Epetra
-    from fipy.tools.commWrapper import CommWrapper
+    from fipy.tools.comms.commWrapper import CommWrapper
 
     parallel = CommWrapper(Epetra=Epetra)
 
@@ -50,26 +49,31 @@ def parallelImport():
 
         try:
             from mpi4py import MPI
-            from fipy.tools.mpi4pyCommWrapper import Mpi4pyCommWrapper
+            from fipy.tools.comms.mpi4pyCommWrapper import Mpi4pyCommWrapper
             parallel = Mpi4pyCommWrapper(Epetra=Epetra, MPI=MPI)
         except ImportError:
             raise ImportError("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos in parallel. Try installing using 'easy_install mpi4py'.")
 
-    from fipy.tools.serialCommWrapper import SerialCommWrapper
+    from fipy.tools.comms.serialCommWrapper import SerialCommWrapper
     return SerialCommWrapper(Epetra=Epetra), parallel
 
-from fipy.tools.parser import parseSolver
-if parseSolver() in ("trilinos",  "no-pysparse"):
-    serial, parallel = parallelImport()
-elif parseSolver() is None:
-    try:
-        serial, parallel = parallelImport()
-    except ImportError:
-        from fipy.tools.dummyComm import DummyComm
+def _getComms():
+    from fipy.tools.parser import _parseSolver
+    if _parseSolver() in ("trilinos",  "no-pysparse"):
+        serial, parallel = _parallelImport()
+    elif _parseSolver() is None:
+        try:
+            serial, parallel = _parallelImport()
+        except ImportError:
+            from fipy.tools.comms.dummyComm import DummyComm
+            serial, parallel = DummyComm(), DummyComm()
+    else:
+        from fipy.tools.comms.dummyComm import DummyComm
         serial, parallel = DummyComm(), DummyComm()
-else:
-    from fipy.tools.dummyComm import DummyComm
-    serial, parallel = DummyComm(), DummyComm()
+        
+    return serial, parallel
+    
+serial, parallel = _getComms()
 
 import dump
 import numerix
@@ -78,11 +82,23 @@ from dimensions.physicalField import PhysicalField
 from numerix import *
 from vitals import Vitals
 
-def uniqueList(seq):
-    """
-    Returns the unique memebers of a list ordered in the same way as seq. Simply
-    doing list(set(seq)) doesn't retain the ordering.
-    """    
-    seen = set()
-    return [x for x in seq if x not in seen and not seen.add(x)]
-
+__all__ = ["serial",
+           "parallel",
+           "dump",
+           "numerix",
+           "vector",
+           "PhysicalField",
+           "Vitals"]
+           
+import os
+if os.environ.has_key('FIPY_INCLUDE_NUMERIX_ALL'):
+    import warnings
+    class FiPyDeprecationWarning(DeprectationWarning):
+        pass
+    warnings.warn("""
+The ability to include `numerix` functions in the `fipy` namespace
+with the FIPY_INCLUDE_NUMERIX_ALL environment variable will
+likely be removed in the future. If needed, the same effect can be 
+accomplished with `from fipy.tools.numerix import *`
+""", FutureWarning)
+    __all__.extend(numerix.__all__)

@@ -37,7 +37,10 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
+
 from matplotlibViewer import _MatplotlibViewer
+
+__all__ = ["Matplotlib2DContourViewer"]
 
 class Matplotlib2DContourViewer(_MatplotlibViewer):
     """Displays a contour plot of a 2D `CellVariable` object.    

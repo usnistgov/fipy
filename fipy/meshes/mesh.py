@@ -46,9 +46,11 @@ from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import serial
 
+__all__ = ["MeshAdditionError", "Mesh"]
+
 class MeshAdditionError(Exception):
     pass
-    
+
 class Mesh(AbstractMesh):
     """Generic mesh class using numerix to do the calculations
 

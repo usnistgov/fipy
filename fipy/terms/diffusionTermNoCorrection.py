@@ -36,6 +36,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
 
+__all__ = ["DiffusionTermNoCorrection"]
+
 class DiffusionTermNoCorrection(_BaseDiffusionTerm):
     def _getNormals(self, mesh):
         return mesh._faceNormals

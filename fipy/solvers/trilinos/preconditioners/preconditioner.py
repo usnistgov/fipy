@@ -36,6 +36,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = ["Preconditioner"]
+
 class Preconditioner:
     """
     The base Preconditioner class.

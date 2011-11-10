@@ -38,16 +38,18 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.builders import Grid2DBuilder
+from fipy.meshes.builders import _Grid2DBuilder
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools import inline
 from fipy.tools import parallel
 
-from fipy.meshes.builders import UniformGrid2DBuilder
-from fipy.meshes.gridlike import Gridlike2D
+from fipy.meshes.builders import _UniformGrid2DBuilder
+from fipy.meshes.gridlike import _Gridlike2D
 from fipy.meshes.uniformGrid import UniformGrid
+
+__all__ = ["UniformGrid2D"]
 
 class UniformGrid2D(UniformGrid):
     """
@@ -57,7 +59,7 @@ class UniformGrid2D(UniformGrid):
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
                        overlap=2, communicator=parallel):
 
-        builder = UniformGrid2DBuilder()
+        builder = _UniformGrid2DBuilder()
 
         self.args = {
             'dx': dx, 
@@ -95,20 +97,20 @@ class UniformGrid2D(UniformGrid):
         self.communicator = communicator
          
     def __getstate__(self):
-        return Gridlike2D.__getstate__(self)
+        return _Gridlike2D.__getstate__(self)
 
     def __setstate__(self, dict):
-        return Gridlike2D.__setstate__(self, dict)
+        return _Gridlike2D.__setstate__(self, dict)
 
     def __repr__(self):
-        return Gridlike2D.__repr__(self)
+        return _Gridlike2D.__repr__(self)
 
     def _isOrthogonal(self):
-        return Gridlike2D._isOrthogonal(self)
+        return _Gridlike2D._isOrthogonal(self)
 
     @property
     def _concatenatedClass(self):
-        return Gridlike2D._concatenatedClass
+        return _Gridlike2D._concatenatedClass
 
     """
     Topology set and calc
@@ -273,7 +275,7 @@ class UniformGrid2D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._globalNonOverlappingCellIDs(self)
+        return _Gridlike2D._globalNonOverlappingCellIDs(self)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -292,7 +294,7 @@ class UniformGrid2D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._globalOverlappingCellIDs(self)
+        return _Gridlike2D._globalOverlappingCellIDs(self)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -311,7 +313,7 @@ class UniformGrid2D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._localNonOverlappingCellIDs(self)
+        return _Gridlike2D._localNonOverlappingCellIDs(self)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -330,7 +332,7 @@ class UniformGrid2D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._localOverlappingCellIDs(self)
+        return _Gridlike2D._localOverlappingCellIDs(self)
 
     """
     Geometry set and calc
@@ -556,10 +558,10 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _cellFaceIDs(self):
-        return Grid2DBuilder.createCells(self.nx, self.ny,
-                                         self.numberOfFaces,
-                                         self.numberOfHorizontalFaces,
-                                         self.numberOfVerticalColumns)
+        return _Grid2DBuilder.createCells(self.nx, self.ny,
+                                          self.numberOfFaces,
+                                          self.numberOfHorizontalFaces,
+                                          self.numberOfVerticalColumns)
         
     @property
     def _maxFacesPerCell(self):
@@ -567,10 +569,10 @@ class UniformGrid2D(UniformGrid):
         
     @property
     def vertexCoords(self):
-        return Grid2DBuilder.createVertices(self.nx, self.ny,
-                                            self.dx, self.dy,
-                                            self.numberOfVertices,
-                                            self.numberOfVerticalColumns) \
+        return _Grid2DBuilder.createVertices(self.nx, self.ny,
+                                             self.dx, self.dy,
+                                             self.numberOfVertices,
+                                             self.numberOfVerticalColumns) \
                  + self.origin
 
     if inline.doInline:

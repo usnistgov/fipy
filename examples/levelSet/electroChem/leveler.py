@@ -261,7 +261,7 @@ def runLeveler(kLeveler=0.018,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = pi * 4. / 180.,
+                      angle = numerix.pi * 4. / 180.,
                       bowWidth = 0.,
                       overBumpRadius = 0.,
                       overBumpWidth = 0.)
@@ -301,8 +301,8 @@ def runLeveler(kLeveler=0.018,
         value = bulkMetalConcentration)
 
     def depositionCoeff(alpha, i0):
-        expo = exp(-alpha * etaPrime)
-        return 2 * i0 * (expo - expo * exp(etaPrime))
+        expo = numerix.exp(-alpha * etaPrime)
+        return 2 * i0 * (expo - expo * numerix.exp(etaPrime))
 
     coeffSuppressor = depositionCoeff(alphaSuppressor, i0Suppressor)
     coeffAccelerator = depositionCoeff(alphaAccelerator, i0Accelerator)
@@ -318,8 +318,8 @@ def runLeveler(kLeveler=0.018,
         mesh = mesh,
         value = depositionRateVariable)   
 
-    kAccelerator = rateConstant * exp(-alphaAdsorption * etaPrime)
-    kAcceleratorConsumption =  Bd + A / (exp(Ba * (overpotential + Vd)) + exp(Bb * (overpotential + Vd)))
+    kAccelerator = rateConstant * numerix.exp(-alphaAdsorption * etaPrime)
+    kAcceleratorConsumption =  Bd + A / (numerix.exp(Ba * (overpotential + Vd)) + numerix.exp(Bb * (overpotential + Vd)))
     q = m * overpotential + b
 
     levelerSurfactantEquation = AdsorbingSurfactantEquation(
@@ -402,15 +402,15 @@ def runLeveler(kLeveler=0.018,
 
         extensionVelocityVariable.setValue(depositionRateVariable)
 
-        extOnInt = where(distanceVar > 0,
-                         where(distanceVar < 2 * cellSize,
-                               extensionVelocityVariable,
-                               0),
-                         0)
+        extOnInt = numerix.where(distanceVar > 0,
+                                 numerix.where(distanceVar < 2 * cellSize,
+                                               extensionVelocityVariable,
+                                               0),
+                                 0)
 
         dt = cflNumber * cellSize / extOnInt.max()
 
-        id = nonzero(distanceVar._interfaceFlag)[0].max()
+        id = numerix.nonzero(distanceVar._interfaceFlag)[0].max()
         distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
 
         extensionVelocityVariable[mesh.fineMesh.numberOfCells:] = 0.

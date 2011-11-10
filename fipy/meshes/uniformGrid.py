@@ -36,6 +36,8 @@ __docformat__ = 'restructuredtext'
  
 from fipy.meshes.abstractMesh import AbstractMesh
 
+__all__ = ["UniformGrid"]
+
 class UniformGrid(AbstractMesh):
     """Wrapped scaled geometry properties"""
     @property

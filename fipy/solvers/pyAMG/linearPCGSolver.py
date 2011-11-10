@@ -35,6 +35,8 @@
 from fipy.solvers.scipy.linearPCGSolver import LinearPCGSolver as ScipyLinearPCGSolver
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
 
+__all__ = ["LinearPCGSolver"]
+
 class LinearPCGSolver(ScipyLinearPCGSolver):
     """
     The `LinearPCGSolver` is an interface to the PCG solver in Scipy,

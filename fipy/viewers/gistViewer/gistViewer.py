@@ -36,6 +36,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import os
 
 from fipy.tools import numerix

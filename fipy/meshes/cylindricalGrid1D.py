@@ -39,8 +39,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
-from grid1D import Grid1D
 from fipy.tools import parallel
+
+from grid1D import Grid1D
+
+__all__ = ["CylindricalGrid1D"]
 
 class CylindricalGrid1D(Grid1D):
     """

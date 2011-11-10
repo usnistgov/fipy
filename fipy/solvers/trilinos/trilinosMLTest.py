@@ -35,8 +35,6 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 from PyTrilinos import Amesos
@@ -44,7 +42,10 @@ from PyTrilinos import AztecOO
 from PyTrilinos import ML
 from PyTrilinos import IFPACK
 
+from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import numerix
+
+__all__ = ["TrilinosMLTest"]
 
 class TrilinosMLTest(TrilinosSolver):
 
