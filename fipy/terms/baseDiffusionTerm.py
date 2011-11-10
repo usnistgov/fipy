@@ -321,7 +321,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
                 normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
 
-                if len(var.shape) == 1 and (self.nthCoeff.shape) > 1:
+                if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
                     nthCoeffFaceGrad = var.faceGrad.dot(self.nthCoeff)
                     normalsNthCoeff =  normals.dot(self.nthCoeff)
                 else:
