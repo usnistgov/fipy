@@ -39,6 +39,8 @@ from pysparse import itsolvers
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
+__all__ = ["LinearGMRESSolver"]
+
 class LinearGMRESSolver(PysparseSolver):
     """
     

@@ -94,7 +94,7 @@ When completely done with the branch::
 
     $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk" \
         ${FIPYROOT}/branches/${BRANCH}
-    
+
 --------
 Versions
 --------
@@ -152,6 +152,15 @@ Again, merge n.m.q+1 changes back to main trunk::
     $ cd ../trunk
     $ svn merge -r${PRN}:${LRN} $FIPYROOT/branches/$BRANCH
     $ svn ci -m "merged version n.m.q+1, log:branches/${BRANCH}@${PRN}:${LRN} to source:trunk@${LRN}"
+
+--------------------------
+Miscellaneous svn commands
+--------------------------
+
+Revising svn log comments.
+
+    $ REV=...
+    $ svn propedit --revprop -r ${REV} svn:log
 
 ================
 Making a Release

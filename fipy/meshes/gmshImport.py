@@ -53,6 +53,11 @@ from fipy.tools.decorators import getsetDeprecated
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
 
+__all__ = ["openMSHFile", "openPOSFile", 
+           "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D", 
+           "GmshGrid2D", "GmshGrid3D",
+           "GmshImporter2D", "GmshImporter2DIn3DSpace", "GmshImporter3D"]
+
 DEBUG = False
 
 
@@ -577,8 +582,6 @@ class POSFile(GmshFile):
             data += [["0.0"] * numNodes]
         data += [[str(value)] * numNodes]
         self.fileobj.write("\n".join([" ".join(datum) for datum in data]) + "\n")
-
-
 
 class MSHFile(GmshFile):
     """
@@ -1715,6 +1718,7 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         >>> print parallel.Nproc > 1 or (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
         True
         """
+        pass
 
 class Gmsh3D(Mesh):
     def __init__(self, arg, communicator=parallel, order=1, background=None):
@@ -2025,7 +2029,6 @@ class GmshGrid2D(Gmsh2D):
         >>> len(mesh.faceCenters[0]) == 12
         True
         """
-
 
 class GmshGrid3D(Gmsh3D):
     """Should serve as a drop-in replacement for Grid3D."""

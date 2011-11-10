@@ -32,6 +32,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = ["Stepper"]
+
 class Stepper:
     def __init__(self, vardata=()):
         self.vardata = vardata

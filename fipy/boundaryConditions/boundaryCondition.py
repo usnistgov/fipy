@@ -35,9 +35,10 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
 from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
+
+__all__ = ["BoundaryCondition"]
 
 class BoundaryCondition(object):
     """

@@ -40,6 +40,8 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import numerix
 
+__all__ = ["PowerLawConvectionTerm"]
+
 class _PowerLawConvectionTermAlpha(FaceVariable):
     """
 
@@ -110,7 +112,6 @@ class _PowerLawConvectionTermAlpha(FaceVariable):
             alpha = numerix.where(                 P < -10.,                          -1. / P, alpha)
 
             return PhysicalField(value = alpha)
-
 
 class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     r"""

@@ -34,6 +34,10 @@
  # ###################################################################
  ##
  
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 from fipy.variables.gaussCellGradVariable import _GaussCellGradVariable
 from fipy.tools import inline
 from fipy.tools import numerix

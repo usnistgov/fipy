@@ -100,8 +100,8 @@ The result can be tested with the following code:
 >>> x = mesh.cellCenters[0]
 >>> distanceTravelled = timeStepDuration * steps * velocity
 >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
->>> answer = where(x < distanceTravelled, 
-...                x[0] - interfacePosition, answer)
+>>> answer = numerix.where(x < distanceTravelled, 
+...                        x[0] - interfacePosition, answer)
 >>> print var.allclose(answer)
 1
    

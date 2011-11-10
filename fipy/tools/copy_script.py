@@ -2,7 +2,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "generator.py"
+ #  FILE: "copy_script.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,6 +34,8 @@
 
 import os
 from distutils.core import Command
+
+__all__ = ["Copy_script"]
 
 class Copy_script(Command):
     description = "copy an example script into a new editable file"

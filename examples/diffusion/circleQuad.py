@@ -158,12 +158,12 @@ vertical positions
     module: scipy
     single: sqrt; arcsin; cos
 
->>> x0 = radius * cos(arcsin(y))
+>>> x0 = radius * numerix.cos(numerix.arcsin(y))
 >>> try:
 ...     from scipy.special import erf ## This function can sometimes throw nans on OS X
 ...                                   ## see http://projects.scipy.org/scipy/scipy/ticket/325
-...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * sqrt(D * t))) 
-...                                  - erf((x0-x) / (2 * sqrt(D * t)))))
+...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * numerix.sqrt(D * t))) 
+...                                  - erf((x0-x) / (2 * numerix.sqrt(D * t)))))
 ... except ImportError:
 ...     print "The SciPy library is not available to test the solution to \
 ... the transient diffusion equation"

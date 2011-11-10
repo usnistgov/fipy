@@ -40,10 +40,10 @@ Test case for the Grid3D.
  
    >>> DiffusionTerm().solve(var)
    >>> DiffusionTerm().solve(var2)
-   >>> a = array(var.globalValue)
-   >>> b = array(var2.globalValue)
-   >>> c = ravel(array((b, b, b)))
-   >>> print allclose(a, c)
+   >>> a = numerix.array(var.globalValue)
+   >>> b = numerix.array(var2.globalValue)
+   >>> c = numerix.ravel(numerix.array((b, b, b)))
+   >>> print numerix.allclose(a, c)
    1
    
 """

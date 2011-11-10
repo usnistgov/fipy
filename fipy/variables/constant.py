@@ -34,6 +34,8 @@
  # ###################################################################
  ##
 
+__all__ = []
+
 from fipy.variables.variable import Variable
 
 class _Constant(Variable):

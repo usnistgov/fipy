@@ -37,6 +37,8 @@ from pyamg import solve
 import os
 from fipy.tools import numerix
 
+__all__ = ["LinearGeneralSolver"]
+
 class LinearGeneralSolver(_ScipySolver):
     """
     The `LinearGeneralSolver` is an interface to the generic pyAMG,

@@ -40,6 +40,8 @@ from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _bui
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.variables.cellVariable import CellVariable
 
+__all__ = ["buildSurfactantBulkDiffusionEquation"]
+
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, rateConstant = None, distanceVar = None):
         CellVariable.__init__(self, mesh = distanceVar.mesh)

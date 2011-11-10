@@ -32,6 +32,8 @@
 
 from fipy.steppers.stepper import Stepper
 
+__all__ = ["PIDStepper"]
+
 class PIDStepper(Stepper):
     """
     Adaptive stepper using a PID controller, based on::

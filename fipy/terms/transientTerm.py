@@ -38,6 +38,8 @@ from fipy.terms.cellTerm import CellTerm
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
+__all__ = ["TransientTerm"]
+
 class TransientTerm(CellTerm):
     r"""
     The `TransientTerm` represents

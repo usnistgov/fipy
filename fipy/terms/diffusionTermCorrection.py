@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
 from fipy.tools import numerix
 
+__all__ = ["DiffusionTermCorrection"]
+
 class DiffusionTermCorrection(_BaseDiffusionTerm):
 
     def _getNormals(self, mesh):

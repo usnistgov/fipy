@@ -21,6 +21,8 @@ from fipy.tools import numerix
 from fipy.tools import serial
 from fipy.tools.decorators import getsetDeprecated
 
+__all__ = ["TrenchMesh"]
+
 class GapFillMesh(Mesh2D):
     """
     

@@ -71,6 +71,8 @@ import re
 import sys
 import warnings
 
+__all__ = ["getsetDeprecated", "mathMethodDeprecated"]
+
 # Stolen from `numpy.lib.utils`
 if sys.version_info < (2, 4):
     # Can't set __name__ in 2.3

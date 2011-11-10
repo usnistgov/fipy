@@ -34,6 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
 
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionVariable import _LevelSetDiffusionVariable
 from fipy.terms.transientTerm import TransientTerm

@@ -40,6 +40,8 @@ from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.boundaryConditions.fixedValue import FixedValue
 
+__all__ = ["NthOrderBoundaryCondition"]
+
 class NthOrderBoundaryCondition(BoundaryCondition):
     """
 

@@ -84,6 +84,8 @@ except ImportError, e:
 # FiPy library imports
 from fipy.tools.numerix import array, concatenate, where, zeros
 
+__all__ = ["MayaviDaemon"]
+
 ######################################################################
 class MayaviDaemon(Mayavi):
     """Given a file name and a mayavi2 data reader object, this class

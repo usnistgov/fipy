@@ -35,8 +35,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
-
 from fipy.variables.noiseVariable import NoiseVariable
+
+__all__ = ["GammaNoiseVariable"]
 
 class GammaNoiseVariable(NoiseVariable):
     r"""

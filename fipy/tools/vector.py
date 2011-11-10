@@ -37,6 +37,8 @@
 
 from fipy.tools import inline, numerix
 
+__all__ = ["putAdd", "prune"]
+
 # Factored out for fipy.models.levelSet.surfactant.convectionCoeff._ConvectionCoeff
 # for some reason
 def _putAdd(vector, ids, additionVector, mask=False):

@@ -36,6 +36,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
 from fipy.solvers.solver import Solver
 from fipy.tools import numerix

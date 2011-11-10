@@ -84,6 +84,7 @@ mass.
 
 Import a mesh previously created using :term:`Gmsh`.
 
+>>> import os
 >>> mesh = Gmsh2D(os.path.splitext(__file__)[0] + '.msh', communicator=serial)
 
 Set the center most cell to have a value.

@@ -35,6 +35,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import scipy.sparse as sp
 from fipy.tools import numerix
 

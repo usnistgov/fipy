@@ -67,8 +67,8 @@ We test the solution against the analytical result:
 
 >>> axis = 0
 >>> x = mesh.cellCenters[axis]
->>> CC = 1. - exp(-convCoeff[axis] * x / diffCoeff)
->>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
+>>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
 >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10) 
 1

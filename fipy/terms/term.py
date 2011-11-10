@@ -35,12 +35,14 @@
 __docformat__ = 'restructuredtext'
 
 import os
+
 from fipy.tools import numerix
 from fipy.solvers import DefaultSolver
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
-
 from fipy.tools.decorators import getsetDeprecated
+
+__all__ = ["Term"]
 
 class Term(object):
     """

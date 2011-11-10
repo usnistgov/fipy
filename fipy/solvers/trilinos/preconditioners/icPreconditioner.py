@@ -37,7 +37,10 @@
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import IFPACK
+
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
+
+__all__ = ["ICPreconditioner"]
 
 class ICPreconditioner(Preconditioner):
     """

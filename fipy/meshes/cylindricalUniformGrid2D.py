@@ -41,6 +41,8 @@ from fipy.meshes.uniformGrid2D import UniformGrid2D
 from fipy.tools import numerix
 from fipy.tools import parallel
 
+__all__ = ["CylindricalUniformGrid2D"]
+
 class CylindricalUniformGrid2D(UniformGrid2D):
     r"""
     Creates a 2D cylindrical grid in the radial and axial directions,

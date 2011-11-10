@@ -34,6 +34,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools import numerix
 from fipy.tools import inline

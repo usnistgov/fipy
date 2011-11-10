@@ -43,6 +43,8 @@ import gzip
 
 from fipy.tools import parallel
 
+__all__ = ["write", "read"]
+
 # TODO: add test to show that round trip pickle of mesh doesn't work properly
 # FIXME: pickle fails to work properly on numpy 1.1 (run gapFillMesh.py)
 def write(data, filename = None, extension = '', communicator=parallel):

@@ -38,6 +38,8 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.meshes import Grid1D
 from fipy.tools import numerix
 
+__all__ = ["HistogramVariable"]
+
 class HistogramVariable(CellVariable):
     def __init__(self, distribution, dx = 1., nx = None, offset = 0.):
         r"""

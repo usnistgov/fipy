@@ -42,6 +42,8 @@ from PyTrilinos import AztecOO
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
+__all__ = ["TrilinosAztecOOSolver"]
+
 class TrilinosAztecOOSolver(TrilinosSolver):
 
     """

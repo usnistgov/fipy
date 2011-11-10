@@ -45,6 +45,8 @@ from fipy.tools import numerix
 
 DEBUG = False
 
+__all__ = ["LinearLUSolver"]
+
 class LinearLUSolver(PysparseSolver):
     """
     

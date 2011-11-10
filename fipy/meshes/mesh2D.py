@@ -51,7 +51,6 @@ from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.mesh import Mesh
 
-
 def _orderVertices(vertexCoords, vertices):
     coordinates = numerix.take(vertexCoords, vertices)
     centroid = numerix.add.reduce(coordinates) / coordinates.shape[0]
@@ -63,6 +62,8 @@ def _orderVertices(vertexCoords, vertices):
                + numerix.where(coordinates[:, 0] < 0, numerix.pi, 0) 
     sortorder = numerix.argsort(angles)
     return numerix.take(vertices, sortorder)
+
+__all__ = ["Mesh2D"]
 
 class Mesh2D(Mesh):
     

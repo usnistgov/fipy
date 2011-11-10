@@ -35,13 +35,18 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import serial
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
 
+from fipy.meshes.mesh1D import Mesh1D
+from fipy.meshes.mesh2D import Mesh2D
+from fipy.meshes.mesh import Mesh
  
-class Gridlike(object):
+class _Gridlike(object):
 
     @staticmethod
     def __getstate__(grid):
@@ -63,9 +68,7 @@ class Gridlike(object):
     def _isOrthogonal(grid):
         return True
                                
-from fipy.meshes.mesh1D import Mesh1D
-
-class Gridlike1D(Gridlike):
+class _Gridlike1D(_Gridlike):
 
     @staticmethod
     def __repr__(grid):
@@ -220,9 +223,7 @@ class Gridlike1D(Gridlike):
         """
         return numerix.arange(0, grid.numberOfFaces)
      
-from fipy.meshes.mesh2D import Mesh2D
-
-class Gridlike2D(Gridlike):
+class _Gridlike2D(_Gridlike):
 
     @staticmethod
     def __repr__(grid):
@@ -314,9 +315,7 @@ class Gridlike2D(Gridlike):
         """
         return numerix.arange(0, grid.ny * grid.nx)
 
-from fipy.meshes.mesh import Mesh
-
-class Gridlike3D(Gridlike):
+class _Gridlike3D(_Gridlike):
  
     @staticmethod
     def __repr__(grid):

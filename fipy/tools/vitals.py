@@ -6,6 +6,8 @@ from xml.dom.minidom import Document
 
 import fipy
 
+__all__ = ["Vitals"]
+
 class Vitals(Document):
     """Returns XML formatted information about current FiPy environment
     """

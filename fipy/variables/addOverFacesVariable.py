@@ -32,6 +32,8 @@
  # ###################################################################
  ##
 
+__all__ = []
+
 from fipy.tools import numerix
 from fipy.tools import inline
 from fipy.variables.cellVariable import CellVariable

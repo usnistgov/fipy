@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.sourceTerm import SourceTerm
 from fipy.tools import numerix
 
+__all__ = ["ImplicitSourceTerm"]
+
 class ImplicitSourceTerm(SourceTerm):
     r"""
 

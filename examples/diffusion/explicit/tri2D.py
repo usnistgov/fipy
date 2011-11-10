@@ -88,7 +88,7 @@ solver = DefaultSolver(tolerance=1e-6, iterations=1000)
 var.constrain(valueLeft, mesh.facesLeft)
 var.constrain(valueRight, mesh.facesRight)
 
-answer = array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
+answer = numerix.array([  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
                           0.00000000e+00,  0.00000000e+00,  1.58508452e-07,  6.84325019e-04,
                           7.05111362e-02,  7.81376523e-01,  0.00000000e+00,  0.00000000e+00,
                           0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,

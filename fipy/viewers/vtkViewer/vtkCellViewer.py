@@ -42,6 +42,8 @@ from fipy.variables.cellVariable import CellVariable
 
 from vtkViewer import _VTKViewer
 
+__all__ = ["VTKCellViewer"]
+
 class VTKCellViewer(_VTKViewer):
     """Renders `CellVariable` data in VTK format
     """

@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.variables.cellVariable import CellVariable
 
+__all__ = ["ResidualTerm"]
+
 class ResidualTerm(_ExplicitSourceTerm):
     r"""
 

@@ -41,6 +41,8 @@ from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquatio
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 
+__all__ = ["AdsorbingSurfactantEquation"]
+
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
         CellVariable.__init__(self, mesh = distanceVar.mesh)

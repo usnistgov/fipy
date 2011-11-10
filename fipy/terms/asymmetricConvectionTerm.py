@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.solvers import DefaultAsymmetricSolver
 

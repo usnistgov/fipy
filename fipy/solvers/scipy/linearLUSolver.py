@@ -35,9 +35,13 @@
 __docformat__ = 'restructuredtext'
 
 import os
+
 from scipy.sparse.linalg import splu
+
 from fipy.solvers.scipy.scipySolver import _ScipySolver
 from fipy.tools import numerix
+
+__all__ = ["LinearLUSolver"]
 
 class LinearLUSolver(_ScipySolver):
     """

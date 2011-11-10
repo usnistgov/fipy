@@ -36,19 +36,19 @@
 
 __docformat__ = 'restructuredtext'
 
-from abstractGridBuilder import AbstractGridBuilder
+from abstractGridBuilder import _AbstractGridBuilder
 
-from fipy.meshes.builders.utilityClasses import (UniformNumPts,
-                                                 NonuniformNumPts,
-                                                 DOffsets,
-                                                 UniformOrigin)
+from fipy.meshes.builders.utilityClasses import (_UniformNumPts,
+                                                 _NonuniformNumPts,
+                                                 _DOffsets,
+                                                 _UniformOrigin)
 from fipy.tools import numerix
  
-class Grid1DBuilder(AbstractGridBuilder):
+class _Grid1DBuilder(_AbstractGridBuilder):
 
     def buildGridData(self, *args, **kwargs):
         kwargs["cacheOccupiedNodes"] = True
-        super(Grid1DBuilder, self).buildGridData(*args, **kwargs)
+        super(_Grid1DBuilder, self).buildGridData(*args, **kwargs)
 
     def _packOverlap(self, first, second):
         return {'left': first, 'right': second}
@@ -73,7 +73,7 @@ class Grid1DBuilder(AbstractGridBuilder):
 
     @staticmethod
     def createVertices(dx, nx):
-        x = AbstractGridBuilder.calcVertexCoordinates(dx, nx)
+        x = _AbstractGridBuilder.calcVertexCoordinates(dx, nx)
         return x[numerix.newaxis,...]
     
     @staticmethod
@@ -93,46 +93,46 @@ class Grid1DBuilder(AbstractGridBuilder):
         f2 = f1 + 1
         return numerix.array((f1, f2))
       
-class NonuniformGrid1DBuilder(Grid1DBuilder):
+class _NonuniformGrid1DBuilder(_Grid1DBuilder):
 
     def __init__(self):
-        self.NumPtsCalcClass = NonuniformNumPts
+        self.NumPtsCalcClass = _NonuniformNumPts
 
-        super(NonuniformGrid1DBuilder, self).__init__()
+        super(_NonuniformGrid1DBuilder, self).__init__()
  
     def buildGridData(self, *args, **kwargs):
         # call super for side-effects
-        super(NonuniformGrid1DBuilder, self).buildGridData(*args, **kwargs)
+        super(_NonuniformGrid1DBuilder, self).buildGridData(*args, **kwargs)
 
         (self.offsets, 
-         self.ds) = DOffsets.calcDOffsets(self.ds, self.ns, self.offset)
+         self.ds) = _DOffsets.calcDOffsets(self.ds, self.ns, self.offset)
 
-        self.vertices = Grid1DBuilder.createVertices(self.ds[0], self.ns[0]) \
+        self.vertices = _Grid1DBuilder.createVertices(self.ds[0], self.ns[0]) \
                          + ((self.offsets[0],),) 
-        self.faces = Grid1DBuilder.createFaces(self.numberOfVertices)
+        self.faces = _Grid1DBuilder.createFaces(self.numberOfVertices)
         self.numberOfFaces = len(self.faces[0])
-        self.cells = Grid1DBuilder.createCells(self.ns[0])
+        self.cells = _Grid1DBuilder.createCells(self.ns[0])
 
     @property
     def _specificGridData(self):
-        return super(NonuniformGrid1DBuilder, self)._specificGridData \
+        return super(_NonuniformGrid1DBuilder, self)._specificGridData \
                 + [self.vertices,
                    self.faces,
                    self.cells]
                                      
-class UniformGrid1DBuilder(Grid1DBuilder):
+class _UniformGrid1DBuilder(_Grid1DBuilder):
 
     def __init__(self):
-        self.NumPtsCalcClass = UniformNumPts
+        self.NumPtsCalcClass = _UniformNumPts
 
-        super(UniformGrid1DBuilder, self).__init__()
+        super(_UniformGrid1DBuilder, self).__init__()
 
     def buildGridData(self, ns, ds, overlap, communicator, origin):
-        super(UniformGrid1DBuilder, self).buildGridData(ns, ds, overlap,
+        super(_UniformGrid1DBuilder, self).buildGridData(ns, ds, overlap,
                                                         communicator)
 
-        self.origin = UniformOrigin.calcOrigin(origin, 
-                                               self.offset, self.ds, self.scale)
+        self.origin = _UniformOrigin.calcOrigin(origin, 
+                                                self.offset, self.ds, self.scale)
 
         if 0 in self.ns:
             self.numberOfFaces = 0
@@ -143,7 +143,7 @@ class UniformGrid1DBuilder(Grid1DBuilder):
 
     @property
     def _specificGridData(self):
-        return super(UniformGrid1DBuilder, self)._specificGridData \
+        return super(_UniformGrid1DBuilder, self)._specificGridData \
                 + [self.origin]
 
 

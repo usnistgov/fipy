@@ -104,8 +104,9 @@ from fipy.tools.decorators import getsetDeprecated
 
 from NumberDict import _NumberDict
 
-# Class definitions
+__all__ = ["PhysicalField", "PhysicalUnit"]
 
+# Class definitions
 
 class PhysicalField(object):
     """
@@ -1426,7 +1427,7 @@ class PhysicalField(object):
         """
         other = self._inMyUnits(other)
         return MA.allequal(self.value, other.value)
-        
+
 class PhysicalUnit:
     """
     A `PhysicalUnit` represents the units of a `PhysicalField`.

@@ -38,6 +38,8 @@ from fipy.terms.diffusionTermNoCorrection import DiffusionTermNoCorrection
 from fipy.terms.diffusionTermCorrection import DiffusionTermCorrection
 from fipy.tools import numerix
 
+__all__ = ["DiffusionTerm", "DiffusionTermCorrection", "DiffusionTermNoCorrection"]
+
 class DiffusionTerm(DiffusionTermNoCorrection):
     r"""
     

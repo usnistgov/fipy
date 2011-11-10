@@ -6,7 +6,7 @@
  # 
  #  FILE: "mayaviSurfactantViewer.py"
  #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/3/08 {5:38:27 PM}
+ #                                last update: 11/8/11 {4:41:04 PM}
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,6 +44,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+
+__all__ = ["MatplotlibSurfactantViewer"]
 
 class MatplotlibSurfactantViewer(_MatplotlibViewer):
     

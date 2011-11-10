@@ -30,14 +30,17 @@ treatment of the electrodeposition process |citeCEAC|.
 """
 __docformat__ = 'restructuredtext'
 
-from pkg_resources import get_distribution, DistributionNotFound
+def _getVersion():
+    from pkg_resources import get_distribution, DistributionNotFound
 
-try:
-    FiPy = get_distribution(__name__)
+    try:
+        version = get_distribution(__name__).version
+    except DistributionNotFound:
+        version = "unknown, try running `python setup.py egg_info`"
+        
+    return version
     
-    __version__ = FiPy.version
-except DistributionNotFound:
-    __version__ = "unknown, try running `python setup.py egg_info`"
+__version__ = _getVersion()
 
 from boundaryConditions import *
 from meshes import *
@@ -49,11 +52,22 @@ from variables import *
 from viewers import *
 from models import *
 
+__all__ = []
+__all__.extend(boundaryConditions.__all__)
+__all__.extend(meshes.__all__)
+__all__.extend(solvers.__all__)
+__all__.extend(steppers.__all__)
+__all__.extend(terms.__all__)
+__all__.extend(tools.__all__)
+__all__.extend(variables.__all__)
+__all__.extend(viewers.__all__)
+__all__.extend(models.__all__)
+
 # fipy needs to export raw_input whether or not parallel
 raw_input = raw_input
+raw_input_original = raw_input
 
 if parallel.Nproc > 1:
-    raw_input_original = raw_input
     def mpi_raw_input(prompt=""):
         import sys
         parallel.Barrier()
@@ -65,3 +79,5 @@ if parallel.Nproc > 1:
         else:
             return ""
     raw_input = mpi_raw_input
+    
+__all__.extend(['raw_input', 'raw_input_original'])

@@ -30,6 +30,10 @@
  # #############################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 def _UnaryOperatorVariable(operatorClass=None):
     class unOp(operatorClass):
         def _calcValue_(self):

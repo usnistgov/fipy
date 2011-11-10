@@ -34,6 +34,8 @@
  # ###################################################################
  ##
 
+__all__ = []
+
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 

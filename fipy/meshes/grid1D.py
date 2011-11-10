@@ -38,11 +38,14 @@
 """
 __docformat__ = 'restructuredtext'
 
-from mesh1D import Mesh1D
 from fipy.tools import parallel
 
-from fipy.meshes.builders import NonuniformGrid1DBuilder
-from fipy.meshes.gridlike import Gridlike1D
+from fipy.meshes.builders import _NonuniformGrid1DBuilder
+from fipy.meshes.gridlike import _Gridlike1D
+
+from mesh1D import Mesh1D
+
+__all__ = ["Grid1D"]
 
 class Grid1D(Mesh1D):
     """
@@ -64,9 +67,9 @@ class Grid1D(Mesh1D):
     """
     def __init__(self, dx=1., nx=None, overlap=2, 
                  communicator=parallel,
-                 BuilderClass=NonuniformGrid1DBuilder):
+                 _BuilderClass=_NonuniformGrid1DBuilder):
 
-        builder = BuilderClass()
+        builder = _BuilderClass()
 
         self.args = {
             'dx': dx, 
@@ -100,20 +103,20 @@ class Grid1D(Mesh1D):
         self.scale = scale
 
     def __getstate__(self):
-        return Gridlike1D.__getstate__(self)
+        return _Gridlike1D.__getstate__(self)
 
     def __setstate__(self, dict):
-        return Gridlike1D.__setstate__(self, dict)
+        return _Gridlike1D.__setstate__(self, dict)
 
     def __repr__(self):
-        return Gridlike1D.__repr__(self)
+        return _Gridlike1D.__repr__(self)
 
     def _isOrthogonal(self):
-        return Gridlike1D._isOrthogonal(self)
+        return _Gridlike1D._isOrthogonal(self)
 
     @property
     def _concatenatedClass(self):
-        return Gridlike1D._concatenatedClass
+        return _Gridlike1D._concatenatedClass
                                                                 
     @property
     def _globalNonOverlappingCellIDs(self):
@@ -132,7 +135,7 @@ class Grid1D(Mesh1D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._globalNonOverlappingCellIDs(self)
+        return _Gridlike1D._globalNonOverlappingCellIDs(self)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -151,7 +154,7 @@ class Grid1D(Mesh1D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._globalOverlappingCellIDs(self)
+        return _Gridlike1D._globalOverlappingCellIDs(self)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -170,7 +173,7 @@ class Grid1D(Mesh1D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._localNonOverlappingCellIDs(self)
+        return _Gridlike1D._localNonOverlappingCellIDs(self)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -189,7 +192,7 @@ class Grid1D(Mesh1D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._localOverlappingCellIDs(self)
+        return _Gridlike1D._localOverlappingCellIDs(self)
 
     @property
     def _globalNonOverlappingFaceIDs(self):
@@ -210,7 +213,7 @@ class Grid1D(Mesh1D):
                 
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._globalNonOverlappingFaceIDs(self)
+        return _Gridlike1D._globalNonOverlappingFaceIDs(self)
 
     @property
     def _globalOverlappingFaceIDs(self):
@@ -231,7 +234,7 @@ class Grid1D(Mesh1D):
                 
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._globalOverlappingFaceIDs(self)
+        return _Gridlike1D._globalOverlappingFaceIDs(self)
 
     @property
     def _localNonOverlappingFaceIDs(self):
@@ -252,7 +255,7 @@ class Grid1D(Mesh1D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._localNonOverlappingFaceIDs(self)
+        return _Gridlike1D._localNonOverlappingFaceIDs(self)
 
     @property
     def _localOverlappingFaceIDs(self):
@@ -273,7 +276,7 @@ class Grid1D(Mesh1D):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike1D._localOverlappingFaceIDs(self)
+        return _Gridlike1D._localOverlappingFaceIDs(self)
           
 ## pickling
 

@@ -33,6 +33,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 import os
 
 from fipy.terms.term import Term

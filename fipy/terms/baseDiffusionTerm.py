@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import os
 
 from fipy.terms.unaryTerm import _UnaryTerm

@@ -1,5 +1,7 @@
 # A dictionary with default values for non-existing entries
 
+__all__ = []
+
 import UserDict, copy
 
 class _DictWithDefault(UserDict.UserDict):

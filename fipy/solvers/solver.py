@@ -51,6 +51,11 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 
+__all__ = ["SolverConvergenceWarning", "MaximumIterationWarning", 
+           "PreconditionerWarning", "IllConditionedPreconditionerWarning", 
+           "PreconditionerNotPositiveDefiniteWarning", "MatrixIllConditionedWarning",
+           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning"]
+
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):
         self.solver = solver
@@ -78,7 +83,7 @@ class PreconditionerNotPositiveDefiniteWarning(PreconditionerWarning):
 class MatrixIllConditionedWarning(SolverConvergenceWarning):
     def __str__(self):
         return "The matrix appears to be very ill-conditioned. Relative error: %g" % (self.relres)
-    
+  
 class StagnatedSolverWarning(SolverConvergenceWarning):
     def __str__(self):
         return "The solver stagnated. Iterations: %g. Relative error: %g" % (self.iter, self.relres)

@@ -35,6 +35,8 @@
 Test implementation of the viewers
 """
 
+__all__ = []
+
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 

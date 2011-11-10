@@ -26,24 +26,42 @@ class IncorrectSolutionVariable(Exception):
     def __init__(self):
         Exception.__init__(self, 'The solution variable is incorrect.')
 
-from transientTerm import TransientTerm
-
-from diffusionTerm import DiffusionTerm
-from diffusionTerm import DiffusionTermCorrection
-
-from explicitDiffusionTerm import ExplicitDiffusionTerm
-from implicitDiffusionTerm import ImplicitDiffusionTerm
-
-from implicitSourceTerm import ImplicitSourceTerm
-
-from residualTerm import ResidualTerm
-
-from centralDiffConvectionTerm import CentralDifferenceConvectionTerm
-from explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
-from exponentialConvectionTerm import ExponentialConvectionTerm
-from hybridConvectionTerm import HybridConvectionTerm
-from powerLawConvectionTerm import PowerLawConvectionTerm
-from upwindConvectionTerm import UpwindConvectionTerm
-from vanLeerConvectionTerm import VanLeerConvectionTerm
+from transientTerm import *
+from diffusionTerm import *
+from explicitDiffusionTerm import *
+from implicitDiffusionTerm import *
+from implicitSourceTerm import *
+from residualTerm import *
+from centralDiffConvectionTerm import *
+from explicitUpwindConvectionTerm import *
+from exponentialConvectionTerm import *
+from hybridConvectionTerm import *
+from powerLawConvectionTerm import *
+from upwindConvectionTerm import *
+from vanLeerConvectionTerm import *
 ConvectionTerm = PowerLawConvectionTerm
 
+__all__ = ["ExplicitVariableError",
+           "TermMultiplyError",
+           "AbstractBaseClassError",
+           "VectorCoeffError",
+           "SolutionVariableNumberError",
+           "SolutionVariableRequiredError",
+           "IncorrectSolutionVariable",
+           "ConvectionTerm"]
+           
+__all__.extend(transientTerm.__all__)
+__all__.extend(diffusionTerm.__all__)
+__all__.extend(diffusionTermCorrection.__all__)
+__all__.extend(diffusionTermNoCorrection.__all__)
+__all__.extend(explicitDiffusionTerm.__all__)
+__all__.extend(implicitDiffusionTerm.__all__)
+__all__.extend(implicitSourceTerm.__all__)
+__all__.extend(residualTerm.__all__)
+__all__.extend(centralDiffConvectionTerm.__all__)
+__all__.extend(explicitUpwindConvectionTerm.__all__)
+__all__.extend(exponentialConvectionTerm.__all__)
+__all__.extend(hybridConvectionTerm.__all__)
+__all__.extend(powerLawConvectionTerm.__all__)
+__all__.extend(upwindConvectionTerm.__all__)
+__all__.extend(vanLeerConvectionTerm.__all__)

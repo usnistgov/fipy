@@ -81,8 +81,8 @@ The analytical solution test for this problem is given by:
 >>> y = mesh.cellCenters[axis]
 >>> AA = -sourceCoeff * y / convCoeff[axis]
 >>> BB = 1. + sourceCoeff * L / convCoeff[axis]
->>> CC = 1. - exp(-convCoeff[axis] * y / diffCoeff)
->>> DD = 1. - exp(-convCoeff[axis] * L / diffCoeff)
+>>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
+>>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = AA + BB * CC / DD
 >>> print var.allclose(analyticalArray, atol = 1e-5) 
 1

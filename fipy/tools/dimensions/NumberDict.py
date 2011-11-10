@@ -8,6 +8,8 @@
 # last revision: 1999-7-23
 #
 
+__all__ = []
+
 import DictWithDefault
 
 class _NumberDict(DictWithDefault._DictWithDefault):
