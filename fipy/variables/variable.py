@@ -1487,15 +1487,6 @@ class Variable(object):
     def ravel(self):
         return self.value.ravel()
         
-    def transpose(self):
-        """
-        .. attention: This routine is deprecated. 
-           It is not longer needed.
-        """
-        import warnings
-        warnings.warn("transpose() is no longer needed", DeprecationWarning, stacklevel=2)
-        return self
-
     def _axisClass(self, axis):
         return self._OperatorVariableClass()
 
