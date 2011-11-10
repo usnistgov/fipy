@@ -48,7 +48,7 @@ class _BaseConvectionTerm(FaceTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.0, diffusionTerm=None, var=None):
+    def __init__(self, coeff=1.0, var=None):
         """
         Create a `_BaseConvectionTerm` object.
         
@@ -93,15 +93,10 @@ class _BaseConvectionTerm(FaceTerm):
         
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
-          - `diffusionTerm` : **deprecated**. The Peclet number is calculated automatically.
         """
         if self.__class__ is _BaseConvectionTerm:
             raise AbstractBaseClassError
             
-        if diffusionTerm is not None:
-            import warnings
-            warnings.warn("The Peclet number is calculated automatically. diffusionTerm will be ignored.", DeprecationWarning, stacklevel=2)
-
         self.stencil = None
         
         if isinstance(coeff, _MeshVariable) and coeff.rank < 1:

@@ -51,19 +51,18 @@ class LinearLUSolver(TrilinosSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None, maxIterations=10):
+    def __init__(self, tolerance=1e-10, iterations=10, precon=None, maxIterations=10):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
 
         """
 
         iterations = min(iterations, maxIterations)
         
         TrilinosSolver.__init__(self, tolerance=tolerance, 
-                                iterations=iterations, steps=steps, precon=None)
+                                iterations=iterations, precon=None)
 
         if precon is not None:
             import warnings

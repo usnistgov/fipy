@@ -54,12 +54,11 @@ class TrilinosMLTest(TrilinosSolver):
     information about what ML preconditioner settings will work best.
     """
     
-    def __init__(self, tolerance=1e-10, iterations=5, steps=None, MLOptions={}, testUnsupported = False):
+    def __init__(self, tolerance=1e-10, iterations=5, MLOptions={}, testUnsupported = False):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterations to perform per test.
-          - `steps`: A deprecated name for `iterations`.
           - `MLOptions`: Options to pass to ML. A dictionary of {option:value} pairs. This will be passed to ML.SetParameterList. 
           - `testUnsupported`: test smoothers that are not currently implemented in preconditioner objects.
 
@@ -70,7 +69,7 @@ class TrilinosMLTest(TrilinosSolver):
          """
                 
         TrilinosSolver.__init__(self, tolerance=tolerance, 
-                                iterations=iterations, steps=steps)
+                                iterations=iterations)
 
         self.MLOptions = MLOptions
         if not self.MLOptions.has_key("output"):
