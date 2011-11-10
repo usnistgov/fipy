@@ -36,6 +36,8 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
+import functools
+
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
@@ -548,8 +550,8 @@ class _MeshVariable(Variable):
         class _MeshOperatorVariable(baseClass):
             def __init__(self, op, var, opShape=None, canInline=True,
                          *args, **kwargs):
-                mesh = reduce(lambda a, b: a or b, 
-                              [getattr(v, "mesh", None) for v in var])
+                mesh = functools.reduce(lambda a, b: a or b, 
+                                        [getattr(v, "mesh", None) for v in var])
                 for shape in [opShape] + [getattr(v, "opShape", None) for v in var]:
                     if shape is not None:
                         opShape = shape

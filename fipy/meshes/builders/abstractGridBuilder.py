@@ -39,6 +39,7 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 import itertools 
+import functools
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
@@ -98,7 +99,7 @@ class _AbstractGridBuilder(object):
 
         newNs = self._calcNs(ns, newDs)
 
-        globalNumCells = reduce(self._mult, newNs)
+        globalNumCells = functools.reduce(self._mult, newNs)
         globalNumFaces = self._calcGlobalNumFaces(newNs)
 
         """
@@ -149,8 +150,8 @@ class _AbstractGridBuilder(object):
                                 "numLayersDeep"][:len(spatialNums)],
                                spatialNums))
 
-        numVertices = reduce(self._mult, spatialNums)
-        numCells = reduce(self._mult, newNs)
+        numVertices = functools.reduce(self._mult, spatialNums)
+        numCells = functools.reduce(self._mult, newNs)
              
         """
         Side-effects
