@@ -71,7 +71,7 @@ def execButNoTest(name='__main__'):
     else:
         tests = [doc for (dummy, doc, dummy, dummy) in doctest._find_tests(module, "")]
         tests = [doctest._extract_examples(t) for t in tests]
-	tests = ["\n".join([source for source, expect, dummy in t]) for t in tests]
+        tests = ["\n".join([source for source, expect, dummy in t]) for t in tests]
 
     if not tests:
         raise ValueError("no tests found")
