@@ -50,7 +50,6 @@ class LinearBicgstabSolver(_ScipyKrylovSolver):
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
           - `precon`: Preconditioner to use.
         """
         
