@@ -317,7 +317,7 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tangents2 = numerix.zeros((2, 41))
+            >>> tangents2 = numerix.zeros((2, 41), 'l')
             >>> numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10)
             1
 

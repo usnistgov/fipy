@@ -118,7 +118,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         X = numerix.take(X, self.indices)
         Y = numerix.take(Y, self.indices)
         
-        U = V = numerix.ones(X.shape)
+        U = V = numerix.ones(X.shape, 'l')
         
         if hasattr(self, "_quiver"):
             self._quiver.remove()

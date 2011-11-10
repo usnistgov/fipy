@@ -89,7 +89,7 @@ class Variable(object):
             Variable(value=array(3))
             >>> Variable(value=3, unit="m")
             Variable(value=PhysicalField(3,'m'))
-            >>> Variable(value=3, unit="m", array=numerix.zeros((3,2)))
+            >>> Variable(value=3, unit="m", array=numerix.zeros((3,2), 'l'))
             Variable(value=PhysicalField(array([[3, 3],
                    [3, 3],
                    [3, 3]]),'m'))
@@ -1564,7 +1564,7 @@ class Variable(object):
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
-           >>> print var.allclose(numerix.zeros(10000))
+           >>> print var.allclose(numerix.zeros(10000, 'l'))
            False
            
         """

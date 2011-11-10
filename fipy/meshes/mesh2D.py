@@ -137,7 +137,7 @@ class Mesh2D(Mesh):
     @property
     def _nonOrthogonality(self):
         
-        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],))
+        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],), 'l')
         numerix.put(exteriorFaceArray, numerix.nonzero(self.exteriorFaces), 1)
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) 
         # what we put in for the "fill" doesn't matter because only exterior 
@@ -216,7 +216,7 @@ class Mesh2D(Mesh):
 
         ## set up the initial data arrays
         new_shape = (max(NFacPerCell, 4), (1 + layers)*NCells + layers*NFac)
-        faces = numerix.MA.masked_values(-numerix.ones(new_shape), value = -1)
+        faces = numerix.MA.masked_values(-numerix.ones(new_shape, 'l'), value = -1)
         orderedVertices = mesh._orderedCellVertexIDs
         faces[:NFacPerCell, :NCells] = orderedVertices
         vertices = oldVertices

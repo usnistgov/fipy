@@ -164,7 +164,7 @@ class MayaviDaemon(Mayavi):
         
         mlab.clf()
 
-        bounds = zeros((0, 6))
+        bounds = zeros((0, 6), 'l')
         
         self.cellsource = self.setup_source(self.cellfname)
         if self.cellsource is not None:

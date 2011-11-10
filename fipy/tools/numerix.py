@@ -92,11 +92,6 @@ __all__.extend(["zeros", "ones", "getUnit", "put", "reshape", "getShape",
                 "isclose", "take", "indices", "empty", "loadtxt", 
                 "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"])
 
-def zeros(a, dtype='l'):
-    return NUMERIX.zeros(a, dtype)
-def ones(a, dtype='l'):
-    return NUMERIX.ones(a, dtype)    
-
 def _isPhysical(arr):
     """
     Returns `True` if arr is a `Variable` or `PhysicalField`.
