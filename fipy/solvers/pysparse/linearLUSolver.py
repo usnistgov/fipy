@@ -61,7 +61,7 @@ class LinearLUSolver(PysparseSolver):
     
     """
     
-    def __init__(self, tolerance=1e-10, iterations=10
+    def __init__(self, tolerance=1e-10, iterations=10,
                        maxIterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
