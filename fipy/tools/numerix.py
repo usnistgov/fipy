@@ -486,7 +486,7 @@ def nearest(data, points, max_mem=1e8):
         # (D, C) -> (D, 1, C)
         chunkOfPoints = chunkOfPoints[..., newaxis, :]
         # (D, 1, C) -> (D, N, C)
-        chunkOfPoints = repeat(chunkOfPoints, N, axis=1)
+        chunkOfPoints = NUMERIX.repeat(chunkOfPoints, N, axis=1)
         
 #         print "chunkOfPoints size: ", chunkOfPoints.shape, chunkOfPoints.size, chunkOfPoints.itemsize, chunkOfPoints.size * chunkOfPoints.itemsize
         
