@@ -316,7 +316,7 @@ class POSFile(GmshFile):
         # initialize all counts to zero
         nb_scalar_points = nb_vector_points = nb_tensor_points = 0
         nb_scalar_lines = nb_vector_lines = nb_tensor_lines = 0
-	nb_scalar_triangles = nb_vector_triangles = nb_tensor_triangles = 0
+        nb_scalar_triangles = nb_vector_triangles = nb_tensor_triangles = 0
         nb_scalar_quadrangles = nb_vector_quadrangles = nb_tensor_quadrangles = 0
         nb_scalar_tetrahedra = nb_vector_tetrahedra = nb_tensor_tetrahedra = 0
         nb_scalar_hexahedra = nb_vector_hexahedra = nb_tensor_hexahedra = 0
