@@ -73,5 +73,5 @@ class _NumberDict(DictWithDefault._DictWithDefault):
     def __div__(self, other):
 	new = _NumberDict()
 	for key in self.keys():
-	    new[key] = self[key]/other
+	    new[key] = self[key]//other
 	return new

@@ -215,7 +215,7 @@ reset the problem
 and rerun with much larger time steps
 
 >>> timeStepDuration *= 10
->>> steps /= 10
+>>> steps //= 10
 >>> for step in range(steps):
 ...     eqI.solve(var=phi,
 ...               dt=timeStepDuration)

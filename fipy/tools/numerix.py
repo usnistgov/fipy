@@ -473,7 +473,7 @@ def nearest(data, points, max_mem=1e8):
     # though this is vastly less than the 4 GiB I had available)
     # see ticket:348
     
-    numChunks = int(round(D * N * data.itemsize * M / int(max_mem) + 0.5))
+    numChunks = int(round(D * N * data.itemsize * M // int(max_mem) + 0.5))
 
     nearestIndices = empty((M,), dtype=int)
     for chunk in array_split(arange(points.shape[-1]), numChunks):
@@ -1140,7 +1140,7 @@ def _indexShape(index, arrayShape):
             indexShape += (1,)
         elif isinstance(element, slice):
             start, stop, stride = element.indices(arrayShape[arrayIndices[j]])
-            indexShape += ((stop - start) / stride,)
+            indexShape += ((stop - start) // stride,)
             j += 1
         else:
             raise IndexError, "invalid index"

@@ -1984,7 +1984,7 @@ class GmshGrid2D(Gmsh2D):
     def _makeGridGeo(self, dx, dy, nx, ny):
         height = ny * dy
         width  = nx * dx
-        numLayers = int(ny / dy)
+        numLayers = int(ny / float(dy))
 
         # kludge: must offset cellSize by `eps` to work properly
         eps = float(dx)/(nx * 10) 

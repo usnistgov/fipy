@@ -232,7 +232,7 @@ data. First, reset the variables to their original values.
 
 Step through half the time steps.
 
->>> for i in range(steps / 2):
+>>> for i in range(steps // 2):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 ...     phaseEq.solve(phase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
@@ -260,7 +260,7 @@ and then recall them to test the data pickling mechanism
 
 and finish the iterations,
 
->>> for i in range(steps / 2):
+>>> for i in range(steps // 2):
 ...     newTheta.updateOld()
 ...     newThetaEq.solve(newTheta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 ...     newPhaseEq.solve(newPhase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
