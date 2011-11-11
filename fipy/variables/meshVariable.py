@@ -193,10 +193,10 @@ class _MeshVariable(Variable):
             return self.name
         else:
             s = self.__class__.__name__ + '('
-            s += 'value=' + `self.globalValue`
+            s += 'value=' + repr(self.globalValue)
             s += ')'
             if len(self.name) == 0:
-                s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
+                s = s[:-1] + ', mesh=' + repr(self.mesh) + s[-1]
             return s
 
     @property

@@ -366,7 +366,7 @@ class Variable(object):
             return self.name
         else:
             s = self.__class__.__name__ + '('
-            s += 'value=' + `self.value`
+            s += 'value=' + repr(self.value)
             s += ')'
             return s
 

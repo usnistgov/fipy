@@ -286,7 +286,7 @@ class PhysicalField(object):
             return value
         else:
             return (self.__class__.__name__ + '(' + value + ',' + 
-                    `self.unit.name()` + ')')
+                    repr(self.unit.name()) + ')')
 
     def tostring(self, max_line_width=75, precision=8, suppress_small=False, separator=' '):
         """
@@ -1954,8 +1954,8 @@ def _Scale(quantity, scaling):
         dimensionless = quantity
                 
     if isinstance(dimensionless,PhysicalField) and not dimensionless.unit.isDimensionless():
-        raise TypeError, `quantity.inBaseUnits().unit` + ' and ' \
-        + `scaling.inBaseUnits().unit` \
+        raise TypeError, repr(quantity.inBaseUnits().unit) + ' and ' \
+        + repr(scaling.inBaseUnits().unit) \
         + ' are incompatible'
         
     return dimensionless
