@@ -2168,7 +2168,7 @@ def _getUnitStrings():
     def _getSortedUnitStrings(unitDict):
         strings = []
         keys = unitDict.keys()
-        keys.sort(lambda x,y: cmp(x.lower(), y.lower()))
+        keys.sort(key=str.lower)
         for key in keys:
             if key in unitDict:
                 unit = unitDict[key]
