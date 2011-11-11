@@ -98,7 +98,7 @@ __docformat__ = 'restructuredtext'
 import re
 import string
 import collections
-import functools
+from functools import reduce
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -1665,9 +1665,9 @@ class PhysicalUnit:
             if numerix.logical_and.reduce(self.powers % rounded == 0):
                 f = pow(self.factor, other)
                 p = self.powers / rounded
-                if functools.reduce(lambda a, b: a and b,
-                                    map(lambda x, e=rounded: x%e == 0,
-                                        self.names.values())):
+                if reduce(lambda a, b: a and b,
+                          map(lambda x, e=rounded: x%e == 0,
+                              self.names.values())):
                     names = self.names/rounded
                 else:
                     names = _NumberDict()
