@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mayaviSurfactantViewer.py"
- #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 11/8/11 {4:02:02 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -43,6 +42,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import _Viewer
+from fipy.viewers imoprt MeshDimensionError
 from fipy.tools import numerix
 
 __all__ = ["MayaviSurfactantViewer"]
@@ -127,7 +127,7 @@ class MayaviSurfactantViewer(_Viewer):
             self._initialCondition = None
 
         if distanceVar.mesh.dim != 2:
-            raise 'The MayaviIsoViewer only works for 2D meshes.'
+            raise MeshDimensionError('The MayaviIsoViewer only works for 2D meshes.')
 
     def _getStructure(self):
 

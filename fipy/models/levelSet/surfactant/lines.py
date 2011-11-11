@@ -88,7 +88,7 @@ class _Line:
         if seedVertex.getUp() is not None or \
            seedVertex.getDown() is not None or \
            seedVertex.getInLine():
-            raise 'bad seedVertex'
+            raise ValueError('bad seedVertex')
 
         setVs = []
 
