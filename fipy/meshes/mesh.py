@@ -108,9 +108,11 @@ class Mesh(AbstractMesh):
            
     def _calcInteriorAndExteriorCellIDs(self):
         try:
-            import sets
-            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self._exteriorFaces.value])
-            interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self._exteriorCellIDs)
+            import sys
+            if sys.version_info < (2, 6):
+                from sets import Set as set
+            exteriorCellIDs = set(self.faceCellIDs[0, self._exteriorFaces.value])
+            interiorCellIDs = list(set(range(self.numberOfCells)) - self._exteriorCellIDs)
             exteriorCellIDs = list(self._exteriorCellIDs)
         except:
             exteriorCellIDs = self.faceCellIDs[0, self._exteriorFaces.value]
