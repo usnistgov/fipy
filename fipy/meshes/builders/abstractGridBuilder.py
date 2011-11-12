@@ -39,7 +39,9 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 import itertools 
-from functools import reduce
+import sys
+if print sys.version_info >= (2, 6):
+    from functools import reduce
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
