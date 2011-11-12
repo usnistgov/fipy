@@ -97,7 +97,6 @@ __docformat__ = 'restructuredtext'
 
 import re
 import string
-import collections
 import sys
 if sys.version_info >= (2, 6):
     from functools import reduce
@@ -643,7 +642,15 @@ class PhysicalField(object):
             args = [__makePhysical(arg) for arg in args]
             
             meth = getattr(args[0], func.__name__, None)
-            if meth is not None and isinstance(meth, collections.Callable):
+            
+            def _callable(object):
+                if sys.version_info < (2, 6):
+                    return callable(object)
+                else:
+                    import collections
+                    return isinstance(object, collections.Callable)
+                    
+            if meth is not None and _callable(meth):
                 result = meth(*args[1:])
 
         return result
