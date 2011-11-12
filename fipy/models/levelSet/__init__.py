@@ -1,7 +1,7 @@
-from distanceFunction import *
-from surfactant import *
-from advection import *
-from electroChem import *
+from fipy.models.levelSet.distanceFunction import *
+from fipy.models.levelSet.surfactant import *
+from fipy.models.levelSet.advection import *
+from fipy.models.levelSet.electroChem import *
 
 __all__ = []
 __all__.extend(distanceFunction.__all__)

@@ -41,7 +41,7 @@ __docformat__ = 'restructuredtext'
 from fipy.variables.faceVariable import FaceVariable
 from fipy.viewers.viewer import _Viewer
 
-from vtkViewer import _VTKViewer
+from fipy.viewers.vtkViewer.vtkViewer import _VTKViewer
 
 __all__ = ["VTKFaceViewer"]
 

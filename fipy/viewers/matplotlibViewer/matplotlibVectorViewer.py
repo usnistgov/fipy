@@ -40,7 +40,7 @@ from fipy.tools import numerix
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
-from matplotlibViewer import _MatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
 
 __all__ = ["MatplotlibVectorViewer"]
 

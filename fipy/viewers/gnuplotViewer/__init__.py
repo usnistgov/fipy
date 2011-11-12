@@ -1,7 +1,7 @@
 __docformat__ = 'restructuredtext'
 
-from gnuplot1DViewer import *
-from gnuplot2DViewer import *
+from fipy.viewers.gnuplotViewer.gnuplot1DViewer import *
+from fipy.viewers.gnuplotViewer.gnuplot2DViewer import *
 
 __all__ = ["GnuplotViewer"]
 __all__.extend(gnuplot1DViewer.__all__)

@@ -36,7 +36,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from abstractGridBuilder import _AbstractGridBuilder
+from fipy.meshes.builders.abstractGridBuilder import _AbstractGridBuilder
 
 from fipy.meshes.builders.utilityClasses import (_UniformNumPts,
                                                  _NonuniformNumPts,

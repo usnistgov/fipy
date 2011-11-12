@@ -1,9 +1,9 @@
 __docformat__ = 'restructuredtext'
 
 
-from gist1DViewer import *
-from gist2DViewer import *
-from gistVectorViewer import *
+from fipy.viewers.gistViewer.gist1DViewer import *
+from fipy.viewers.gistViewer.gist2DViewer import *
+from fipy.viewers.gistViewer.gistVectorViewer import *
 
 __all__ = ["GistViewer"]
 __all__.extend(gist1DViewer.__all__)

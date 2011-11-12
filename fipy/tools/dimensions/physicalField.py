@@ -105,7 +105,7 @@ from fipy.tools.numerix import MA
 from fipy.tools.numerix import umath
 from fipy.tools.decorators import getsetDeprecated
 
-from NumberDict import _NumberDict
+from fipy.tools.dimensions.NumberDict import _NumberDict
 
 __all__ = ["PhysicalField", "PhysicalUnit"]
 

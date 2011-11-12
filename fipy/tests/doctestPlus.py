@@ -41,7 +41,7 @@ __all__ = ["execButNoTest"]
 
 _DocTestTimes = []
 
-from lateImportTest import _LateImportTestCase, _LateImportTestSuite
+from fipy.tests.lateImportTest import _LateImportTestCase, _LateImportTestSuite
 
 def _getScript(name = '__main__'):
     module = sys.modules.get(name)

@@ -43,8 +43,8 @@ from fipy.tools import numerix
 __all__ = ["Grid3D", "Grid2D", "Grid1D", "CylindricalGrid2D", "CylindricalGrid1D"]
 
 def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel):
-    import uniformGrid3D
-    import grid3D
+    from fipy.meshes import uniformGrid3D
+    from fipy.meshes import grid3D
 
     if numerix.getShape(dx) == () \
       and numerix.getShape(dy) == () \
@@ -63,8 +63,8 @@ def Grid3D(dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2
                              overlap=overlap, communicator=communicator) 
 
 def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
-    import uniformGrid2D
-    import grid2D
+    from fipy.meshes import uniformGrid2D
+    from fipy.meshes import grid2D
 
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
         if nx is None:
@@ -79,8 +79,8 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
         return grid2D.Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
 def Grid1D(dx=1., nx=None, overlap=2, communicator=parallel):
-    import uniformGrid1D
-    import grid1D
+    from fipy.meshes import uniformGrid1D
+    from fipy.meshes import grid1D
     
     if numerix.getShape(dx) == ():
         if nx is None:
@@ -96,8 +96,8 @@ def CylindricalGrid2D(dr=None, dz=None,
                       origin=((0,),(0,)),
                       overlap=2,
                       communicator=parallel):
-    import cylindricalUniformGrid2D
-    import cylindricalGrid2D
+    from fipy.meshes import cylindricalUniformGrid2D
+    from fipy.meshes import cylindricalGrid2D
 
     if dr is not None:
         dx = dr
@@ -119,8 +119,8 @@ def CylindricalGrid2D(dr=None, dz=None,
         return cylindricalGrid2D.CylindricalGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, origin=origin, overlap=overlap, communicator=communicator)
 
 def CylindricalGrid1D(dr=None, nr=None, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallel):
-    import cylindricalUniformGrid1D
-    import cylindricalGrid1D
+    from fipy.meshes import cylindricalUniformGrid1D
+    from fipy.meshes import cylindricalGrid1D
 
     if dr is not None:
         dx = dr

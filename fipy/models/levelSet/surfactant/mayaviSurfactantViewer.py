@@ -42,7 +42,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import _Viewer
-from fipy.viewers imoprt MeshDimensionError
+from fipy.viewers import MeshDimensionError
 from fipy.tools import numerix
 
 __all__ = ["MayaviSurfactantViewer"]
@@ -145,7 +145,7 @@ class MayaviSurfactantViewer(_Viewer):
         shiftedCoords[:,0] = -coordinates[:,0] ##+ (maxX - minX)
         coordinates = numerix.concatenate((coordinates, shiftedCoords))
 
-        from lines import _getOrderedLines
+        from fipy.models.levelSet.surfactant.lines import _getOrderedLines
 
         lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
 

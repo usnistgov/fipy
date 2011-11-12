@@ -1,1 +1,1 @@
-from smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
+from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner

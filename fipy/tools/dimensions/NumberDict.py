@@ -10,7 +10,7 @@
 
 __all__ = []
 
-import DictWithDefault
+from fipy.tools.dimensions import DictWithDefault
 
 class _NumberDict(DictWithDefault._DictWithDefault):
 

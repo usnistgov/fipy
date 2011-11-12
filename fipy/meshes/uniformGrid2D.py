@@ -548,7 +548,7 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _concatenableMesh(self):
-        from grid2D import Grid2D
+        from fipy.meshes.grid2D import Grid2D
         args = self.args.copy()
         origin = args['origin']
         from fipy.tools import serial

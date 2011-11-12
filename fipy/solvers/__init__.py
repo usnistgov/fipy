@@ -1,10 +1,8 @@
 from fipy.tools.parser import _parseSolver
 from fipy.tools  import parallel as _parallel
 
-__all__ = []
-
-from solver import *
-__all__.extend(solver.__all__)
+from fipy.solvers.solver import *
+__all__ = list(solver.__all__)
 
 solver = _parseSolver()
 

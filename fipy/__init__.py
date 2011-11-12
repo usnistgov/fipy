@@ -42,15 +42,15 @@ def _getVersion():
     
 __version__ = _getVersion()
 
-from boundaryConditions import *
-from meshes import *
-from solvers import *
-from steppers import *
-from terms import *
-from tools import *
-from variables import *
-from viewers import *
-from models import *
+from fipy.boundaryConditions import *
+from fipy.meshes import *
+from fipy.solvers import *
+from fipy.steppers import *
+from fipy.terms import *
+from fipy.tools import *
+from fipy.variables import *
+from fipy.viewers import *
+from fipy.models import *
 
 __all__ = []
 __all__.extend(boundaryConditions.__all__)

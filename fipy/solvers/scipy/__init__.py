@@ -1,8 +1,8 @@
-from linearCGSSolver import *
-from linearGMRESSolver import *
-from linearBicgstabSolver import *
-from linearLUSolver import *
-from linearPCGSolver import *
+from fipy.solvers.scipy.linearCGSSolver import *
+from fipy.solvers.scipy.linearGMRESSolver import *
+from fipy.solvers.scipy.linearBicgstabSolver import *
+from fipy.solvers.scipy.linearLUSolver import *
+from fipy.solvers.scipy.linearPCGSolver import *
 
 DefaultSolver = LinearLUSolver
 DummySolver = LinearGMRESSolver

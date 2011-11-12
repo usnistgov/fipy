@@ -26,19 +26,19 @@ class IncorrectSolutionVariable(Exception):
     def __init__(self):
         Exception.__init__(self, 'The solution variable is incorrect.')
 
-from transientTerm import *
-from diffusionTerm import *
-from explicitDiffusionTerm import *
-from implicitDiffusionTerm import *
-from implicitSourceTerm import *
-from residualTerm import *
-from centralDiffConvectionTerm import *
-from explicitUpwindConvectionTerm import *
-from exponentialConvectionTerm import *
-from hybridConvectionTerm import *
-from powerLawConvectionTerm import *
-from upwindConvectionTerm import *
-from vanLeerConvectionTerm import *
+from fipy.terms.transientTerm import *
+from fipy.terms.diffusionTerm import *
+from fipy.terms.explicitDiffusionTerm import *
+from fipy.terms.implicitDiffusionTerm import *
+from fipy.terms.implicitSourceTerm import *
+from fipy.terms.residualTerm import *
+from fipy.terms.centralDiffConvectionTerm import *
+from fipy.terms.explicitUpwindConvectionTerm import *
+from fipy.terms.exponentialConvectionTerm import *
+from fipy.terms.hybridConvectionTerm import *
+from fipy.terms.powerLawConvectionTerm import *
+from fipy.terms.upwindConvectionTerm import *
+from fipy.terms.vanLeerConvectionTerm import *
 ConvectionTerm = PowerLawConvectionTerm
 
 __all__ = ["ExplicitVariableError",

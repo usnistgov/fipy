@@ -39,7 +39,7 @@ __all__ = []
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
-from baseAdvectionTerm import _BaseAdvectionTerm
+from fipy.models.levelSet.advection.baseAdvectionTerm import _BaseAdvectionTerm
 
 class _AdvectionTerm(_BaseAdvectionTerm):
     r"""

@@ -1,8 +1,8 @@
-from linearGMRESSolver import *
-from linearCGSSolver import *
-from linearPCGSolver import *
-from linearLUSolver import *
-from linearGeneralSolver import *
+from fipy.solvers.pyAMG.linearGMRESSolver import *
+from fipy.solvers.pyAMG.linearCGSSolver import *
+from fipy.solvers.pyAMG.linearPCGSolver import *
+from fipy.solvers.pyAMG.linearLUSolver import *
+from fipy.solvers.pyAMG.linearGeneralSolver import *
 
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver

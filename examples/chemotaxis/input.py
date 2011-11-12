@@ -59,7 +59,7 @@ Here are some test cases for the model.
 
 """
 
-from parameters import parameters
+from examples.chemotaxis.parameters import parameters
 
 from fipy import *
 

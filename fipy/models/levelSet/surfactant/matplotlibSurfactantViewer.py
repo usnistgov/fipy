@@ -43,7 +43,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
-from fipy.viewers imoprt MeshDimensionError
+from fipy.viewers import MeshDimensionError
 
 __all__ = ["MatplotlibSurfactantViewer"]
 

@@ -39,8 +39,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools import parallel
-
-from grid2D import Grid2D
+from fipy.meshes.grid2D import Grid2D
 
 __all__ = ["PeriodicGrid2D", "PeriodicGrid2DLeftRight", "PeriodicGrid2DTopBottom"]
 

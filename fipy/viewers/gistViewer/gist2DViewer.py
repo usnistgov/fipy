@@ -132,7 +132,7 @@ class Gist2DViewer(_GistViewer):
         import Numeric
         gist.plfp(Numeric.array(numerix.array(self.vars[0])), yCoords, xCoords, self.mesh._numberOfFacesPerCell, cmin=datamin, cmax=datamax)
 
-        import colorbar
+        import fipy.viewers.gistViewer.colorbar
 
         colorbar._color_bar(minz=datamin, maxz=datamax, ncol=240, zlabel=self.vars[0].name)
 

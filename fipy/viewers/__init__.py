@@ -3,32 +3,32 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 try:
-    from gistViewer import *
+    from fipy.viewers.gistViewer import *
     __all__.extend(gistViewer.__all__)
 except:
     pass
 
 try:
-    from gnuplotViewer import *
+    from fipy.viewers.gnuplotViewer import *
     __all__.extend(gnuplotViewer.__all__)
 except:
     pass
 
 try:
-    from matplotlibViewer import *
+    from fipy.viewers.matplotlibViewer import *
     __all__.extend(matplotlibViewer.__all__)
 except:
     pass
 
 try:
-    from mayaviViewer import *
+    from fipy.viewers.mayaviViewer import *
     __all__.extend(mayaviViewer.__all__)
 except:
     pass
 
-from multiViewer import *
-from tsvViewer import *
-from vtkViewer import *
+from fipy.viewers.multiViewer import *
+from fipy.viewers.tsvViewer import *
+from fipy.viewers.vtkViewer import *
 
 __all__.extend(multiViewer.__all__)
 __all__.extend(tsvViewer.__all__)
@@ -39,7 +39,7 @@ __all__.extend(vtkViewer.__all__)
 class MeshDimensionError(IndexError):
     pass
     
-from viewer import _Viewer
+from fipy.viewers.viewer import _Viewer
 class DummyViewer(_Viewer):
     def plot(self, filename=None):
         pass

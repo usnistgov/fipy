@@ -38,8 +38,7 @@ __docformat__ = 'restructuredtext'
  
 __all__ = []
 
-from abstractGridBuilder import _AbstractGridBuilder
-
+from fipy.meshes.builders.abstractGridBuilder import _AbstractGridBuilder
 from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField

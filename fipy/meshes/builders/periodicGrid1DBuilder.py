@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from grid1DBuilder import _NonuniformGrid1DBuilder
+from fipy.meshes.builders.grid1DBuilder import _NonuniformGrid1DBuilder
  
 class _PeriodicGrid1DBuilder(_NonuniformGrid1DBuilder):
 

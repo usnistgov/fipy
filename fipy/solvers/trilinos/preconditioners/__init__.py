@@ -1,12 +1,12 @@
-from multilevelDDPreconditioner import *
-from multilevelSAPreconditioner import *
-from multilevelDDMLPreconditioner import *
-from multilevelNSSAPreconditioner import *
-from jacobiPreconditioner import *
-from icPreconditioner import *
-from domDecompPreconditioner import *
-from multilevelSGSPreconditioner import *
-from multilevelSolverSmootherPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.multilevelSAPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.multilevelDDMLPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.multilevelNSSAPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.icPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.domDecompPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner import *
+from fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner import *
 
 __all__ = []
 __all__.extend(multilevelDDPreconditioner.__all__)

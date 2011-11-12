@@ -1,9 +1,9 @@
-from surfactantVariable import *
-from surfactantEquation import *
-from adsorbingSurfactantEquation import *
-from surfactantBulkDiffusionEquation import *
-from mayaviSurfactantViewer import *
-from matplotlibSurfactantViewer import *
+from fipy.models.levelSet.surfactant.surfactantVariable import *
+from fipy.models.levelSet.surfactant.surfactantEquation import *
+from fipy.models.levelSet.surfactant.adsorbingSurfactantEquation import *
+from fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation import *
+from fipy.models.levelSet.surfactant.mayaviSurfactantViewer import *
+from fipy.models.levelSet.surfactant.matplotlibSurfactantViewer import *
 
 __all__ = []
 __all__.extend(surfactantVariable.__all__)
