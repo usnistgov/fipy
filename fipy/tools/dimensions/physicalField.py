@@ -99,7 +99,7 @@ import re
 import string
 import collections
 import sys
-if print sys.version_info >= (2, 6):
+if sys.version_info >= (2, 6):
     from functools import reduce
 
 from fipy.tools import numerix

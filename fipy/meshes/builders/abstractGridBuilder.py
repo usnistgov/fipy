@@ -40,7 +40,7 @@ __all__ = []
 
 import itertools 
 import sys
-if print sys.version_info >= (2, 6):
+if sys.version_info >= (2, 6):
     from functools import reduce
 
 from fipy.tools.dimensions.physicalField import PhysicalField

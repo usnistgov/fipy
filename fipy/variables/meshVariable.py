@@ -37,7 +37,7 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 import sys
-if print sys.version_info >= (2, 6):
+if sys.version_info >= (2, 6):
     from functools import reduce
 
 from fipy.variables.variable import Variable
