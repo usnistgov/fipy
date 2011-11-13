@@ -53,13 +53,12 @@ def _get_refcounts(theClass = None):
     for m in list(sys.modules.values()):
         for sym in dir(m):
             o = getattr (m, sym)
-            if type(o) is type:
+            if isinstance(o, type):
                 if theClass is not None and o is not theClass:
                     continue
                 d[o] = sys.getrefcount (o)
     # sort by refcount
-    pairs = [(x[1],x[0]) for x in list(d.items())]
-    pairs.sort()
+    pairs = sorted([(x[1],x[0]) for x in list(d.items())])
     pairs.reverse()
     return pairs
 

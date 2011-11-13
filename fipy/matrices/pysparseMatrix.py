@@ -65,7 +65,7 @@ class _PysparseMatrixBase(_SparseMatrix):
         
     def __getitem__(self, index):
         m = self.matrix[index]
-        if type(m) is type(0) or type(m) is type(0.):
+        if isinstance(m, type(0)) or isinstance(m, type(0.)):
             return m
         else:
             return _PysparseMatrixBase(matrix=m)
@@ -172,7 +172,7 @@ class _PysparseMatrixBase(_SparseMatrix):
                 raise TypeError
             
     def __rmul__(self, other):
-        if type(numerix.ones(1, 'l')) == type(other):
+        if isinstance(numerix.ones(1, 'l'), type(other)):
             y = other.copy()
             self.matrix.matvec_transp(other, y)
             return y

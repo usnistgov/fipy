@@ -74,7 +74,7 @@ class MemoryLogger:
             signal.signal(signal.SIGUSR2, stopHandler)
             signal.signal(signal.SIGHUP, hupHandler)
             
-            while 1:
+            while True:
                 time.sleep(10000000)
             
         else:

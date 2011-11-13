@@ -288,7 +288,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 raise TypeError
            
     def __rmul__(self, other):
-        if type(numerix.ones(1, 'l')) == type(other):
+        if isinstance(numerix.ones(1, 'l'), type(other)):
             self.fillComplete()
 
             y = Epetra.Vector(self.rangeMap, other)

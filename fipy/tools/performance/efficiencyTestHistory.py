@@ -58,8 +58,7 @@ def run(startRev):
     test.newElements = 100
     datafile = open("file", 'r')
     datafilelist = datafile.readlines()
-    revisions = [int(line.lstrip('   revision="').rstrip('">\n')) for line in datafilelist if 'revision="' in line]
-    revisions.sort()
+    revisions = sorted([int(line.lstrip('   revision="').rstrip('">\n')) for line in datafilelist if 'revision="' in line])
     while(startRev not in revisions):
         startRev += 1 
     index = revisions.index(startRev)
