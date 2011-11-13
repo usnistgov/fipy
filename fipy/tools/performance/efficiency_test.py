@@ -94,7 +94,7 @@ class Efficiency_test(Command):
         newCases = efficiencyTestGenerator.run(self.cases,self.newElements)
 
         for case in newCases:
-            print "case: %s" % case
+            print("case: %s" % case)
             
             if self.path is None:
                 testPath = os.path.split(case)[0]
@@ -118,7 +118,7 @@ class Efficiency_test(Command):
             
             numberOfElements = self.minimumelements
 
-            print "Running example:"
+            print("Running example:")
             cmd = ["python", "-W ignore", case]
 
             output = "\t".join([str(self.inline).center(10), str(self.cache).center(10),\
@@ -145,7 +145,7 @@ class Efficiency_test(Command):
                 f.flush()
  
             if self.uploadToCodespeed:
-                import urllib, urllib2
+                import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse
                 import time 
                 import pysvn
                 from datetime import datetime
@@ -157,19 +157,19 @@ class Efficiency_test(Command):
                 print_('revdate: ', datetime.fromtimestamp(revdate))
 
                 def add(data):
-                    params = urllib.urlencode(data)
+                    params = urllib.parse.urlencode(data)
                     response = "None"
-                    print "Saving result for executable %s, revision %s, benchmark %s" % (
-                        data['executable'], data['commitid'], data['benchmark'])
+                    print("Saving result for executable %s, revision %s, benchmark %s" % (
+                        data['executable'], data['commitid'], data['benchmark']))
                     try:
-                        f = urllib2.urlopen(CODESPEED_URL + 'result/add/', params)
-                    except urllib2.HTTPError, e:
-                        print str(e)
-                        print e.read()
+                        f = urllib.request.urlopen(CODESPEED_URL + 'result/add/', params)
+                    except urllib.error.HTTPError as e:
+                        print(str(e))
+                        print(e.read())
                         return
                     response = f.read()
                     f.close()
-                    print "Server (%s) response: %s\n" % (CODESPEED_URL, response) 
+                    print("Server (%s) response: %s\n" % (CODESPEED_URL, response)) 
  
                 benchmarks = ['Initialization', 'First timestep',\
                                   'Average of remaining timesteps', 'Total Runtime']
@@ -186,7 +186,7 @@ class Efficiency_test(Command):
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
                         }    
-                    print datetime.fromtimestamp(revdate)
+                    print(datetime.fromtimestamp(revdate))
                     add(data)
             numberOfElements *= self.factor
             f.close()

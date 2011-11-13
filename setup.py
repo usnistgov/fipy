@@ -123,13 +123,13 @@ def _TestClass(base):
             
                 
             if self.viewers:
-                print "*" * 60
-                print "*" + "".center(58) + "*"
-                print "*" + "ATTENTION".center(58) + "*"
-                print "*" + "".center(58) + "*"
-                print "*" + "Some of the following tests require user interaction".center(58) + "*"
-                print "*" + "".center(58) + "*"
-                print "*" * 60
+                print("*" * 60)
+                print("*" + "".center(58) + "*")
+                print("*" + "ATTENTION".center(58) + "*")
+                print("*" + "".center(58) + "*")
+                print("*" + "Some of the following tests require user interaction".center(58) + "*")
+                print("*" + "".center(58) + "*")
+                print("*" * 60)
                 
                 self.test_args.append("fipy.viewers.testinteractive._suite")
 
@@ -155,25 +155,25 @@ def _TestClass(base):
                     else:
                         print_(pkg,'version not available')
                         
-                except ImportError, e:
+                except ImportError as e:
                     print_(pkg,'is not installed')
                     
-                except Exception, e:
+                except Exception as e:
                     print_(pkg, 'version check failed:', e)
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
             try:
                 from mayavi.__version__ import __version__ as mayaviversion
                 print_('mayavi version', mayaviversion)
-            except ImportError, e:
+            except ImportError as e:
                 try:
                     from enthought.mayavi.__version__ import __version__ as mayaviversion
                     print_('enthought.mayavi version', mayaviversion)
-                except ImportError, e:
+                except ImportError as e:
                     print_(pkg,'is not installed')
-                except Exception, e:
+                except Exception as e:
                     print_(pkg, 'version check failed:', e)
-            except Exception, e:
+            except Exception as e:
                 print_(pkg, 'version check failed:', e)
 
         def run_tests(self):
@@ -190,14 +190,14 @@ def _TestClass(base):
                     except:
                         pass
                     import PyTrilinos
-                except ImportError, a:
+                except ImportError as a:
                     print_("!!! Trilinos library is not installed", file=sys.stderr)
                     return
 
             if self.inline:
                 try:
                     from scipy import weave
-                except ImportError, a:
+                except ImportError as a:
                     print_("!!! weave library is not installed", file=sys.stderr)
                     return
                     
@@ -217,7 +217,7 @@ def _TestClass(base):
                     None, None, [unittest.__file__]+self.test_args,
                     testLoader = loader_class()
                     )
-            except SystemExit, exitErr:
+            except SystemExit as exitErr:
                 # unittest.main(..., exit=...) not available until Python 2.7
                 if self.timetests is not None:
                     pass
@@ -242,7 +242,7 @@ try:
     # (and we're running as a bitten.slave)
     from bitten.util.testrunner import unittest as _unittest
     unittest = _TestClass(_unittest)
-except ImportError, e:
+except ImportError as e:
     unittest = test
 
 
@@ -329,41 +329,41 @@ class upload_products(Command):
 
     def run(self):
         if self.pdf:
-            print "setting permissions of manual..."
+            print("setting permissions of manual...")
             os.system('chmod -R g+w documentation/_build/latex/fipy.pdf')
             
-            print "linking manual to `dist/`..."
+            print("linking manual to `dist/`...")
             os.system('mkdir dist/')
             os.system('ln -f documentation/_build/latex/fipy.pdf dist/fipy-%s.pdf'%self.distribution.metadata.get_version())
             
         if self.html:
-            print "setting group and ownership of web pages..."
+            print("setting group and ownership of web pages...")
             os.system('chmod -R g+w documentation/_build/html/')
             
-            print "uploading web pages..."
+            print("uploading web pages...")
             # The -t flag (implicit in -a) is suddenly causing problems
             # os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
             os.system('rsync -rlpgoDLC -e ssh %s %s'%('documentation/_build/html/', os.environ['FIPY_WWWHOST']))
 
-            print "activating web pages..."
+            print("activating web pages...")
             os.system(os.environ['FIPY_WWWACTIVATE'])
 
         if self.tarball:
             file = 'dist/FiPy-%s.tar.gz' % self.distribution.metadata.get_version()
-            print "setting permissions for %s ..." % file
+            print("setting permissions for %s ..." % file)
             os.system('chmod -R g+w %s' % file)
 
         if self.winzip:
             file = 'dist/FiPy-%s.win32.zip' % self.distribution.metadata.get_version()
-            print "setting permissions for %s ..." % file
+            print("setting permissions for %s ..." % file)
             os.system('chmod -R g+w %s' % file)
 
         if self.pdf or self.tarball or self.winzip:
-            print "build products in `dist/` must be manually uploaded to MatForge"
+            print("build products in `dist/` must be manually uploaded to MatForge")
             import webbrowser
             webbrowser.open("http://matforge.org/fipy/admin/general/downloader", autoraise=False)
             
-            print "please update the current links, as appropriate"
+            print("please update the current links, as appropriate")
             if self.tarball or self.winzip:
                 webbrowser.open("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit", autoraise=False)
             if self.pdf:
@@ -373,14 +373,14 @@ try:
     f = open('README.txt', 'r')
     long_description = '\n' + f.read() + '\n'
     f.close()
-except IOError, e:
+except IOError as e:
     long_description = ''
         
 try:
     f = open('LICENSE.txt', 'r') 
     license = '\n' + ''.join([' '*8 + l for l in f])
     f.close()
-except IOError, e:
+except IOError as e:
     license = ''    
 # The following doesn't work reliably, because it requires fipy
 # to already be installed (or at least egged), which is kind of 
@@ -484,23 +484,23 @@ if 'install' in dist.commands:
     for pkg in ['numpy', 'pysparse']:
         try:
             __import__(pkg)
-        except ImportError, exc:
+        except ImportError as exc:
             req.append(pkg)
             
     if len(req) > 0:
-        print "!!!!!!"
-        print "The required module(s) " + str(req) + " cannot be loaded."
-        print "FiPy will not work properly until these modules are installed."
+        print("!!!!!!")
+        print("The required module(s) " + str(req) + " cannot be loaded.")
+        print("FiPy will not work properly until these modules are installed.")
 
     opt = []
     
     for pkg in ['scipy', 'matplotlib', 'gist', 'mayavi']:
         try:
             __import__(pkg)
-        except ImportError, exc:
+        except ImportError as exc:
             opt.append(pkg)
         
     if len(opt) > 0:
-        print "------"
-        print "The optional module(s) " + str(opt) + " cannot be loaded."
-        print "FiPy will have improved capabilities if these modules are installed."
+        print("------")
+        print("The optional module(s) " + str(opt) + " cannot be loaded.")
+        print("FiPy will have improved capabilities if these modules are installed.")

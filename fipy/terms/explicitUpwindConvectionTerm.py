@@ -58,7 +58,7 @@ class ExplicitUpwindConvectionTerm(_BaseUpwindConvectionTerm):
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         weight = _BaseUpwindConvectionTerm._getWeight(self, var, transientGeomCoeff, diffusionGeomCoeff)
-        if 'implicit' in weight.keys():
+        if 'implicit' in list(weight.keys()):
             weight['explicit'] = weight['implicit']
             del weight['implicit']
 

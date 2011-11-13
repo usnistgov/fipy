@@ -66,7 +66,7 @@ class Vitals(Document):
         
     def dictToXML(self, d, name):
         elem = self.createElement(name)
-        for key, value in d.items():
+        for key, value in list(d.items()):
             keyelem = self.createElement(key)
             keyelem.appendChild(self.createTextNode(str(value)))
             elem.appendChild(keyelem)
@@ -130,4 +130,4 @@ if __name__ == "__main__":
     solar.appendChild(v.svn("/Users/guyer/Documents/research/codes/solar-dimensionless"))
     v.appendChild(solar)
 
-    print v
+    print(v)

@@ -148,7 +148,7 @@ class Mesh2D(Mesh):
         # so the cross product will be zero.
     
         faceDisplacementVectors = \
-          numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)),
+          numerix.where(numerix.array(list(zip(exteriorFaceArray, exteriorFaceArray))),
                         0.0, 
                         numerix.take(self._scaledCellCenters.swapaxes(0,1), 
                                      unmaskedFaceCellIDs[1, :]) \
@@ -273,7 +273,7 @@ class Mesh2D(Mesh):
     def _VTKCellType(self):
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
         return tvtk.Polygon().cell_type
         

@@ -102,7 +102,7 @@ def _BinaryOperatorVariable(operatorClass=None):
             Allows binOps to be pickled
             """
             state =  self.__getstate__()
-            if 'mesh' in state.keys():
+            if 'mesh' in list(state.keys()):
                 args = (state['mesh'],)
             else:
                 args = ()

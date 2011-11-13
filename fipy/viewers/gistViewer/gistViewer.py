@@ -69,7 +69,7 @@ class _GistViewer(_Viewer):
             (default) value of `None` will autoscale.
         """
         if self.__class__ is _GistViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
     
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
         

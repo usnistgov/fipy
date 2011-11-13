@@ -101,9 +101,9 @@ class _NOXInterface(NOX.Epetra.Interface.Required, NOX.Epetra.Interface.Jacobian
             
             return True
             
-        except Exception, e:
-            print "TrilinosNonlinearSolver.computeJacobian() has thrown an exception:"
-            print str(type(e))[18:-2] + ":", e
+        except Exception as e:
+            print("TrilinosNonlinearSolver.computeJacobian() has thrown an exception:")
+            print(str(type(e))[18:-2] + ":", e)
             return False
 
         
@@ -121,9 +121,9 @@ class _NOXInterface(NOX.Epetra.Interface.Required, NOX.Epetra.Interface.Jacobian
             
             return True
             
-        except Exception, e:
-            print "TrilinosNonlinearSolver.computeF() has thrown an exception:"
-            print str(type(e))[18:-2] + ":", e
+        except Exception as e:
+            print("TrilinosNonlinearSolver.computeF() has thrown an exception:")
+            print(str(type(e))[18:-2] + ":", e)
             return False
             
 class _DummyJacobianSolver(TrilinosSolver):

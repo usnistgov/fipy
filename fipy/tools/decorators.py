@@ -128,7 +128,7 @@ class _Deprecate(object):
         old_name = self.old_name
         if old_name is None:
             try:
-                old_name = func.func_name
+                old_name = func.__name__
             except AttributeError:
                 old_name = func.__name__
         return old_name

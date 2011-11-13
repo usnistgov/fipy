@@ -190,7 +190,7 @@ class _ScipyMatrixBase(_SparseMatrix):
 
     @property
     def _range(self):
-        return range(self._shape[1]), range(self._shape[0])
+        return list(range(self._shape[1])), list(range(self._shape[0]))
         
     def put(self, vector, id1, id2):
         """

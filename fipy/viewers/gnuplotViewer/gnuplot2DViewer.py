@@ -86,7 +86,7 @@ class Gnuplot2DViewer(_GnuplotViewer):
         _GnuplotViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         if len(self.vars) != 1:
-            raise IndexError, "A 2D Gnuplot viewer can only display one Variable"
+            raise IndexError("A 2D Gnuplot viewer can only display one Variable")
             
     def _plot(self):
 

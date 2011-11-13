@@ -77,7 +77,7 @@ def execButNoTest(name='__main__'):
         raise ValueError("no tests found")
 
     for t in tests:
-        exec t
+        exec(t)
         
 class _LateImportDocTestCase(_LateImportTestCase):
     def _getTestSuite(self, module):

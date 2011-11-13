@@ -64,10 +64,10 @@ def _OperatorVariableClass(baseClass=object):
             self.comment = inlineComment
 
         def __setitem__(self, index, value):
-            raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
+            raise TypeError("The value of an `_OperatorVariable` cannot be assigned")
             
         def setValue(self, value, unit=None, where=None):
-            raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
+            raise TypeError("The value of an `_OperatorVariable` cannot be assigned")
         
         def _calcValue(self):
             if not self.canInline:
@@ -127,7 +127,7 @@ def _OperatorVariableClass(baseClass=object):
                         result = "<...>"
 
                 elif style == "TeX":
-                    raise Exception, "TeX style not yet implemented"
+                    raise Exception("TeX style not yet implemented")
                 elif style == "C":
                     if not v._isCached():
                         result = v._getCstring(argDict, id=id + str(i), freshen=freshen)
@@ -140,7 +140,7 @@ def _OperatorVariableClass(baseClass=object):
                                                                    id=id + str(i),
                                                                    freshen=False)
                 else:
-                    raise SyntaxError, "Unknown style: %s" % style
+                    raise SyntaxError("Unknown style: %s" % style)
                     
                 return result
 
@@ -204,10 +204,10 @@ def _OperatorVariableClass(baseClass=object):
                 elif bytecode in binop:
                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
                 else:
-                    raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (
+                    raise SyntaxError("Unknown bytecode: %s in %s: %s" % (
                        repr(bytecode), 
                        repr([ord(byte) for byte in op_code.co_code]),
-                       "FIXME")
+                       "FIXME"))
                 
         def __repr__(self):
             return self._getRepresentation()

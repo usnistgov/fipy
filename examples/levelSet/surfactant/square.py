@@ -106,7 +106,7 @@ if __name__ == '__main__':
     distanceVariable.calcDistanceFunction()
 
     for step in range(steps):
-        print numerix.sum(surfactantVariable)
+        print(numerix.sum(surfactantVariable))
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
@@ -117,5 +117,5 @@ if __name__ == '__main__':
 
     distanceViewer.plot()
     surfactantViewer.plot()
-    print surfactantVariable
+    print(surfactantVariable)
     raw_input('finished')

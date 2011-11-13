@@ -78,7 +78,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
     def _verifyVar(self, var):
         if var is not None:
-            raise Exception, 'The solution variable should not be specified.'
+            raise Exception('The solution variable should not be specified.')
 
         if len(self._vars) != len(self._uncoupledTerms):
             raise SolutionVariableNumberError
@@ -218,7 +218,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
         for var in _vars:
             if var not in set(self._vars):
-                raise Exception, 'Variable not in previously defined variables for this coupled equation.'
+                raise Exception('Variable not in previously defined variables for this coupled equation.')
 
         self._internalVars = _vars
         return self

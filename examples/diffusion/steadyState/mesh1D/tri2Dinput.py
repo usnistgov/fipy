@@ -92,5 +92,5 @@ if __name__ == '__main__':
     x = mesh.cellCenters[0]
     Lx = nx * dx
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    print var.allclose(analyticalArray)
+    print(var.allclose(analyticalArray))
     raw_input("finished")

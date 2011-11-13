@@ -114,7 +114,7 @@ class _VTKViewer(_Viewer):
 
         try:
             from tvtk.misc import write_data
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.misc import write_data
         write_data(self.dataset, filename)
         

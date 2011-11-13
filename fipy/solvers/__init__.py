@@ -100,7 +100,7 @@ elif solver is None:
                     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
                     _MeshMatrix = _ScipyMeshMatrix
                 except:
-                    raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
+                    raise ImportError("Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK.") 
 else:
-    raise ImportError, 'Unknown solver package %s' % solver
+    raise ImportError('Unknown solver package %s' % solver)
 

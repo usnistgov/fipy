@@ -183,7 +183,7 @@ class _MatplotlibViewer(_Viewer):
             whether to logarithmically scale the data
         """
         if self.__class__ is _MatplotlibViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
             
         _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
 
