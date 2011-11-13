@@ -36,10 +36,11 @@
 
 __docformat__ = 'restructuredtext'
 
-import cPickle
 import os
 import sys
 import gzip
+
+from six.moves import cPickle
 
 from fipy.tools import parallel
 
@@ -111,8 +112,8 @@ def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
     if communicator.Nproc > 1:
         data = communicator.bcast(data, root=0)
 
-    import StringIO
-    f = StringIO.StringIO(data)
+    from six import StringIO
+    f = StringIO(data)
     unpickler = cPickle.Unpickler(f)
     
     if mesh_unmangle:

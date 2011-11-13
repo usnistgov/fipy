@@ -90,6 +90,8 @@ Test for the correct position of the interface:
 """
 __docformat__ = 'restructuredtext'
 
+from six import print_
+
 from fipy import *
 
 L = 1.
@@ -142,7 +144,7 @@ if __name__ == '__main__':
     totalTime = 0
 
     for step in range(steps):
-        print 'step',step
+        print_('step',step)
         velocity.setValue(surfactantVariable.interfaceVar * k)
         distanceVariable.extendVariable(velocity)
         timeStepDuration = cfl * dx / velocity.max()
@@ -160,7 +162,7 @@ if __name__ == '__main__':
         answer = initialSurfactantValue * initialRadius / finalRadius
         coverage = surfactantVariable.interfaceVar
         error = (coverage / answer - 1)**2 * (coverage > 1e-3)
-        print 'error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
+        print_('error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)))
 
 
         

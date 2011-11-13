@@ -39,6 +39,8 @@ from distutils.core import Command
 import os
 import sys
 
+from six import _
+
 __all__ = ["Efficiency_test"]
 
 class Efficiency_test(Command):
@@ -121,16 +123,16 @@ class Efficiency_test(Command):
 
             output = "\t".join([str(self.inline).center(10), str(self.cache).center(10),\
                                     (time.ctime()).center(25), str(numberOfElements).center(10)])
-            print 'cmd',cmd
+            print_('cmd',cmd)
             w, r = os.popen2(cmd)
             
             outputlist= r.read().split()
-            print outputlist
+            print_(outputlist)
             init_time = outputlist[outputlist.index('Initialization-time:')+1]
             frst_timestp = outputlist[outputlist.index('First-timestep:')+1]
             avg_timestp = outputlist[outputlist.index('Average-timestep:')+1]
             runtime = outputlist[outputlist.index('Runtime:')+1]
-            print "runtime: ", runtime
+            print_("runtime: ", runtime)
             output += '\t' + ''.join(runtime).strip()
             r.close()
             w.close()
@@ -152,7 +154,7 @@ class Efficiency_test(Command):
 
                 revnum = pysvn.Client().info('.')['revision'].number
                 revdate  = pysvn.Client().info('.')['commit_time']                   
-                print 'revdate: ', datetime.fromtimestamp(revdate)
+                print_('revdate: ', datetime.fromtimestamp(revdate))
 
                 def add(data):
                     params = urllib.urlencode(data)
@@ -190,5 +192,5 @@ class Efficiency_test(Command):
             f.close()
             os.remove(case)
             os.remove("%s.dat" % case)
-            print "Deleted temporary file ", case
+            print_("Deleted temporary file ", case)
             

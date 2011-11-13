@@ -63,8 +63,8 @@ DEBUG = False
 
 def parprint(str):
     if DEBUG:
-        if parallel.procID == 0:
-            print >> sys.stderr, str
+        from fipy.tools.debug import PRINT
+        PRINT(str)
 
 class GmshException(Exception):
     pass

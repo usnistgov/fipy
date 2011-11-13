@@ -39,6 +39,8 @@ import sys
 import string
 
 from distutils.core import Command
+from six import print_
+
 from fipy.tools.performance.efficiency_test import Efficiency_test
 from fipy.tools.copy_script import Copy_script
 
@@ -149,30 +151,30 @@ def _TestClass(base):
                     mod = __import__(pkg)
                     
                     if hasattr(mod, '__version__'):
-                        print pkg,'version',mod.__version__
+                        print_(pkg,'version',mod.__version__)
                     else:
-                        print pkg,'version not available'
+                        print_(pkg,'version not available')
                         
                 except ImportError, e:
-                    print pkg,'is not installed'
+                    print_(pkg,'is not installed')
                     
                 except Exception, e:
-                    print pkg, 'version check failed:', e
+                    print_(pkg, 'version check failed:', e)
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
             try:
                 from mayavi.__version__ import __version__ as mayaviversion
-                print 'mayavi version', mayaviversion
+                print_('mayavi version', mayaviversion)
             except ImportError, e:
                 try:
                     from enthought.mayavi.__version__ import __version__ as mayaviversion
-                    print 'enthought.mayavi version', mayaviversion
+                    print_('enthought.mayavi version', mayaviversion)
                 except ImportError, e:
-                    print pkg,'is not installed'       
+                    print_(pkg,'is not installed')
                 except Exception, e:
-                    print pkg, 'version check failed:', e
+                    print_(pkg, 'version check failed:', e)
             except Exception, e:
-                print pkg, 'version check failed:', e
+                print_(pkg, 'version check failed:', e)
 
         def run_tests(self):
             import sys
@@ -189,14 +191,14 @@ def _TestClass(base):
                         pass
                     import PyTrilinos
                 except ImportError, a:
-                    print >>sys.stderr, "!!! Trilinos library is not installed"
+                    print_("!!! Trilinos library is not installed", file=sys.stderr)
                     return
 
             if self.inline:
                 try:
                     from scipy import weave
                 except ImportError, a:
-                    print >>sys.stderr, "!!! weave library is not installed"
+                    print_("!!! weave library is not installed", file=sys.stderr)
                     return
                     
             if self.pythoncompiled is not None:

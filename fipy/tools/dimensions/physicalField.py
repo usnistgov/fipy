@@ -100,6 +100,8 @@ import string
 import sys
 if sys.version_info >= (2, 6):
     from functools import reduce
+    
+from six import callable
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -642,15 +644,8 @@ class PhysicalField(object):
             args = [__makePhysical(arg) for arg in args]
             
             meth = getattr(args[0], func.__name__, None)
-            
-            def _callable(object):
-                if sys.version_info < (2, 6):
-                    return callable(object)
-                else:
-                    import collections
-                    return isinstance(object, collections.Callable)
                     
-            if meth is not None and _callable(meth):
+            if meth is not None and callable(meth):
                 result = meth(*args[1:])
 
         return result
@@ -2241,6 +2236,12 @@ def _getUnitStrings():
     units.extend(_getSortedUnitStrings(working_table))
 
     return "\n".join(units)
+
+def getUnit(arr):
+    if hasattr(arr, "getUnit") and callable(arr.getUnit):
+        return arr.unit
+    else:
+        return _unity
 
 __doc__ += _getUnitStrings()
 

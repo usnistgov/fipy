@@ -225,6 +225,14 @@ installers`_ are available.
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
 .. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
 
+six
+===
+
+http://pypi.python.org/pypi/six
+
+Obtain and install the :term:`six` package to work around some tricky
+incompatibilities between :term:`Python` 2.x and :term:`Python` 3.x.
+
 Viewers
 =======
 

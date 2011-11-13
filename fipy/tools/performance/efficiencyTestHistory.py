@@ -41,10 +41,14 @@ __all__ = []
  
 from datetime import datetime
 import os
-import pysvn
 import subprocess
-from fipy.tools.performance.efficiency_test import Efficiency_test
+
+import pysvn
 from setuptools import setup
+from six import print_
+
+from fipy.tools.performance.efficiency_test import Efficiency_test
+
 
 def run(startRev):
     dummyCommand = setup(name='dummy', script_name = 'setup.py', script_args = ['test', '--dry-run'])
@@ -62,7 +66,7 @@ def run(startRev):
     os.chdir("../../../trunk/examples")
     for k in revisions[index:3511]:
         revisionNumber = pysvn.Client().update(".", revision=pysvn.Revision(pysvn.opt_revision_kind.number, k))
-        print "pysvn.Client().info('.')['revision'].number: ", pysvn.Client().info('.')['revision'].number
+        print_("pysvn.Client().info('.')['revision'].number: ", pysvn.Client().info('.')['revision'].number)
         os.chdir("../../efficiency_test")
         print 'hello'
         test.run()

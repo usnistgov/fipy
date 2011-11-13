@@ -34,6 +34,8 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
+import six
+    ... 
 from fipy.variables.variable import Variable
 
 from fipy.tools import numerix
@@ -145,7 +147,8 @@ def _OperatorVariableClass(baseClass=object):
             if isinstance(self.op, numerix.ufunc):
                 return "%s(%s)" % (self.op.__name__, ", ".join([__var(i) for i in range(len(self.var))]))
             
-            bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
+            op_code = six.get_function_code(self.op)
+            bytecodes = [ord(byte) for byte in op_code.co_code]
                 
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
@@ -174,14 +177,14 @@ def _OperatorVariableClass(baseClass=object):
                     else:
                         return s
                 elif opcode.opname[bytecode] == 'LOAD_CONST':
-                    stack.append(self.op.func_code.co_consts[_popIndex()])
+                    stack.append(op_code.co_consts[_popIndex()])
                 elif opcode.opname[bytecode] == 'LOAD_ATTR':
-                    stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
+                    stack.append(stack.pop() + "." + op_code.co_names[_popIndex()])
                 elif opcode.opname[bytecode] == 'COMPARE_OP':
                     stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
                 elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
                     counter = _popIndex()
-                    stack.append(self.op.func_code.co_names[counter])
+                    stack.append(op_code.co_names[counter])
                 elif opcode.opname[bytecode] == 'LOAD_FAST':
                     stack.append(__var(_popIndex()))
                 elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
@@ -194,7 +197,7 @@ def _OperatorVariableClass(baseClass=object):
                         args.insert(0, stack.pop())
                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
                 elif opcode.opname[bytecode] == 'LOAD_DEREF':
-                    free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
+                    free = op_code.co_cellvars + op_code.co_freevars
                     stack.append(free[_popIndex()])
                 elif bytecode in unop:
                     stack.append(unop[bytecode] + '(' + stack.pop() + ')')
@@ -203,7 +206,7 @@ def _OperatorVariableClass(baseClass=object):
                 else:
                     raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (
                        repr(bytecode), 
-                       repr([ord(byte) for byte in self.op.func_code.co_code]),
+                       repr([ord(byte) for byte in op_code.co_code]),
                        "FIXME")
                 
         def __repr__(self):

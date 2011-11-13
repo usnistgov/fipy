@@ -42,6 +42,8 @@ True
 
 __docformat__ = 'restructuredtext'
 
+from six import print_
+
 from fipy import *
 
 L = 2.
@@ -73,7 +75,7 @@ if  __name__ == '__main__':
 for step in range(500):
     eqn.solve(q, dt=cfl * dx)
     if step % 10 ==  0 and  __name__ == '__main__':
-        print 'step',step
+        print_('step',step)
         vi.plot()
 
 if __name__ == '__main__':

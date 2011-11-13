@@ -77,9 +77,25 @@ __all__ = ["getsetDeprecated", "mathMethodDeprecated"]
 if sys.version_info < (2, 4):
     # Can't set __name__ in 2.3
     import new
+    import operator
+    
+    import six
+    
     def _set_function_name(func, name):
-        func = new.function(func.func_code, func.func_globals,
-                            name, func.func_defaults, func.func_closure)
+        if six.PY3:
+            _func_globals = "__globals__"
+            _func_closure = "__closure__"
+        else:
+            _func_globals = "func_globals"
+            _func_closure = "func_closure"
+        get_function_globals = operator.attrgetter(_func_globals)
+        get_function_closure = operator.attrgetter(_func_closure)
+    
+        func = new.function(six.get_function_code(func), 
+                            get_function_globals(func),
+                            name, 
+                            six.get_function_defaults(func), 
+                            get_function_closure(func))
         return func
 else:
     def _set_function_name(func, name):

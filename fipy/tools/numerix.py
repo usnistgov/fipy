@@ -102,11 +102,8 @@ def _isPhysical(arr):
     return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
 
 def getUnit(arr):
-    if hasattr(arr, "getUnit") and callable(arr.getUnit):
-        return arr.unit
-    else:
-        from fipy.tools.dimensions import physicalField
-        return physicalField._unity
+    from fipy.tools.dimensions import physicalField
+    return physicalField.getUnit(arr)
         
 def put(arr, ids, values):
     """
