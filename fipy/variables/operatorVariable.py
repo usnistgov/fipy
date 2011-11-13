@@ -35,7 +35,7 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 import six
-    ... 
+
 from fipy.variables.variable import Variable
 
 from fipy.tools import numerix

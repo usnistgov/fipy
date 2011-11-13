@@ -39,7 +39,7 @@ from distutils.core import Command
 import os
 import sys
 
-from six import _
+from six import print_
 
 __all__ = ["Efficiency_test"]
 
