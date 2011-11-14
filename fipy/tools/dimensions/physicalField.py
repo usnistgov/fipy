@@ -98,7 +98,6 @@ __docformat__ = 'restructuredtext'
 import re
 import string
 import collections
-from functools import reduce
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
