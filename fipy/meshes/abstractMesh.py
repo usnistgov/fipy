@@ -974,7 +974,7 @@ class AbstractMesh(object):
         NotImplementedError
         
         """
- 	return self.__mul__(1 / other)
+        return self.__mul__(1 / other)
         
     __div__ = __truediv__
         
