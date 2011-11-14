@@ -962,7 +962,7 @@ class AbstractMesh(object):
         else:
             return self._translate(-numerix.array(other))
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         Tests.
         >>> from fipy import *
@@ -975,7 +975,9 @@ class AbstractMesh(object):
         
         """
  	return self.__mul__(1 / other)
-
+        
+    __div__ = __truediv__
+        
     def __repr__(self):
         return "%s()" % self.__class__.__name__
      

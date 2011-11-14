@@ -70,8 +70,10 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     __rmul__ = __mul__
 
-    def __div__(self, other):
+    def __floordiv__(self, other):
         new = _NumberDict()
         for key in self.keys():
             new[key] = self[key]//other
         return new
+
+    __div__ = __floordiv__

@@ -379,9 +379,11 @@ class Term(object):
 
     __rmul__ = __mul__
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         return (1 / other) * self
 
+    __div__ = __truediv__
+    
     def __and__(self, other):
         if isinstance(other, Term):
             from fipy.terms.coupledBinaryTerm import _CoupledBinaryTerm

@@ -1140,12 +1140,16 @@ class Variable(object):
     def __rpow__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other)
             
-    def __div__(self, other):
+    def __truediv__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: a/b, other)
         
-    def __rdiv__(self, other):
+    __div__ = __truediv__
+    
+    def __rtruediv__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: b/a, other)
             
+    __rdiv__ = __rtruediv__
+    
     def __neg__(self):
         return self._UnaryOperatorVariable(lambda a: -a)
         

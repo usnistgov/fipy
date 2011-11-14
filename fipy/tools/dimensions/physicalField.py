@@ -394,7 +394,7 @@ class PhysicalField(object):
     __rmul__ = __mul__
     multiply = __mul__
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         Divide two physical quantities.  The unit of the result is the
         unit of the first operand divided by the unit of the second.
@@ -415,7 +415,7 @@ class PhysicalField(object):
         .. _Numeric: http://www.numpy.org
         """
         if _isVariable(other):
-            return other.__rdiv__(self)
+            return other.__rtruediv__(self)
         if type(other) is type(''):
             other = self.__class__(value = other)
         if not isinstance(other,PhysicalField):
@@ -429,11 +429,12 @@ class PhysicalField(object):
         else:
             return self.__class__(value = value, unit = unit)
 
-    divide = __div__
+    __div__ = __truediv__
+    divide = __truediv__
     
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         if _isVariable(other):
-            return other.__div__(self)
+            return other.__truediv__(self)
         if type(other) is type(''):
             other = PhysicalField(value = other)
         if not isinstance(other,PhysicalField):
@@ -447,6 +448,8 @@ class PhysicalField(object):
         else:
             return self.__class__(value = value, unit = unit)
 
+    __rdiv__ = __rtruediv__
+    
     def __mod__(self, other):
         """
         Return the remainder of dividing two physical quantities.  The unit of the result is the
@@ -1542,7 +1545,7 @@ class PhysicalUnit:
 
     __rmul__ = __mul__
     
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         Divide one unit by another
         
@@ -1585,7 +1588,9 @@ class PhysicalUnit:
             return PhysicalUnit(self.names+{str(other): -1},
                                 self.factor/other, self.powers)
 
-    def __rdiv__(self, other):
+    __div__ = __truediv__
+    
+    def __rtruediv__(self, other):
         """
         Divide something by a unit
         
@@ -1614,6 +1619,8 @@ class PhysicalUnit:
             return PhysicalUnit({str(other): 1}-self.names,
                                 other/self.factor,
                                 -self.powers)
+                                
+    __rdiv__ = __rtruediv__
 
     def __pow__(self, other):
         """
