@@ -101,4 +101,4 @@ class CommWrapper(object):
         return vec.Norm2()
 
     def MaxAll(self, vec):
-	return self.epetra_comm.MaxAll(numerix.array(vec))
+        return self.epetra_comm.MaxAll(numerix.array(vec))
