@@ -976,8 +976,6 @@ class AbstractMesh(object):
         """
  	return self.__mul__(1 / other)
 
-    __rdiv__ = __div__
-
     def __repr__(self):
         return "%s()" % self.__class__.__name__
      
