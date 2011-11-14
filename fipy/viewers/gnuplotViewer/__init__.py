@@ -43,4 +43,4 @@ def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
     elif dim == 2:
         return Gnuplot2DViewer(vars=vars, title=title, **kwlimits)
     else:
-        raise IndexError("Gnuplot can only plot 1D and 2D data")
+        raise IndexError, "Gnuplot can only plot 1D and 2D data"

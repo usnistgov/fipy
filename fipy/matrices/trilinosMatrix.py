@@ -117,7 +117,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
 
     @property
     def _range(self):
-        return (list(range(self.rowMap.NumGlobalElements())), self.rowMap.MyGlobalElements())
+        return (range(self.rowMap.NumGlobalElements()), self.rowMap.MyGlobalElements())
 
     def __setitem__(self, index, value):
         self.matrix[index] = value
@@ -288,7 +288,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 raise TypeError
            
     def __rmul__(self, other):
-        if isinstance(numerix.ones(1, 'l'), type(other)):
+        if type(numerix.ones(1, 'l')) == type(other):
             self.fillComplete()
 
             y = Epetra.Vector(self.rangeMap, other)
@@ -551,12 +551,12 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
             # Matrix building gets done on one processor - it gets the map for
             # all the rows
             if comm.MyPID() == 0:
-                rowMap = Epetra.Map(rows, list(range(0, rows)), 0, comm)
+                rowMap = Epetra.Map(rows, range(0, rows), 0, comm)
             else: 
                 rowMap = Epetra.Map(rows, [], 0, comm)
 
         if colMap is None:
-           colMap = Epetra.Map(cols, list(range(0, cols)), 0, comm)
+           colMap = Epetra.Map(cols, range(0, cols), 0, comm)
 
         matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, (bandwidth*3)//2)
 
@@ -643,7 +643,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
 
     @property
     def _globalCommonColIDs(self):
-        return list(range(0, self.numberOfVariables, self.mesh.globalNumberOfCells))
+        return range(0, self.numberOfVariables, self.mesh.globalNumberOfCells)
                      
     @property
     def _globalOverlappingColIDs(self):

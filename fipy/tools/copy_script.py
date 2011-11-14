@@ -85,4 +85,4 @@ class Copy_script(Command):
         f.write(script)
         f.close()
         
-        print("Script code exported from '%s' to '%s'"%(self.From, self.To))
+        print "Script code exported from '%s' to '%s'"%(self.From, self.To)

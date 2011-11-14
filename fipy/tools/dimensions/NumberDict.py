@@ -35,7 +35,7 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 	return repr(self.data)
 
     def __coerce__(self, other):
-	if isinstance(other, type({})):
+	if type(other) == type({}):
 	    new = _NumberDict()
 	    new.data = other
 	    other = new
@@ -43,9 +43,9 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     def __add__(self, other):
 	sum = _NumberDict()
-	for key in list(self.keys()):
+	for key in self.keys():
 	    sum[key] = self[key]
-	for key in list(other.keys()):
+	for key in other.keys():
 	    sum[key] = sum[key] + other[key]
 	return sum
 
@@ -53,9 +53,9 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     def __sub__(self, other):
 	sum = _NumberDict()
-	for key in list(self.keys()):
+	for key in self.keys():
 	    sum[key] = self[key]
-	for key in list(other.keys()):
+	for key in other.keys():
 	    sum[key] = sum[key] - other[key]
 	return sum
 
@@ -64,7 +64,7 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     def __mul__(self, other):
 	new = _NumberDict()
-	for key in list(self.keys()):
+	for key in self.keys():
 	    new[key] = other*self[key]
 	return new
 
@@ -72,6 +72,6 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     def __div__(self, other):
 	new = _NumberDict()
-	for key in list(self.keys()):
+	for key in self.keys():
 	    new[key] = self[key]//other
 	return new

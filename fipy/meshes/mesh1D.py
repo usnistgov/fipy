@@ -95,7 +95,7 @@ class Mesh1D(Mesh):
     def _VTKCellType(self):
         try:
             from tvtk.api import tvtk
-        except ImportError as e:
+        except ImportError, e:
             from enthought.tvtk.api import tvtk
         return tvtk.Line().cell_type
 

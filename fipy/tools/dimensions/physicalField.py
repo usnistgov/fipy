@@ -97,12 +97,8 @@ __docformat__ = 'restructuredtext'
 
 import re
 import string
-import sys
 import collections
-if sys.version_info >= (2, 6):
-    from functools import reduce
-    
-from six import callable
+from functools import reduce
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -179,7 +175,7 @@ class PhysicalField(object):
         """
         if hasattr(value, "value") and not isinstance(value, PhysicalField):
             value = value.value
-        elif hasattr(value, "getValue") and isinstance(value.getValue, collections.Callable):
+        elif hasattr(value, "getValue") and callable(value.getValue):
             value = value.getValue()
             
         if isinstance(value, PhysicalField):
@@ -196,7 +192,7 @@ class PhysicalField(object):
                 value = value.value
         elif unit is not None:
             unit = _findUnit(unit)
-        elif isinstance(value, type('')):
+        elif type(value) is type(''):
             s = string.strip(value)
             match = PhysicalField._number.match(s)
             if match is None:
@@ -314,7 +310,7 @@ class PhysicalField(object):
         if _isVariable(other):
             return sign2(other) + self.__class__(value = sign1(selfValue), unit = self.unit)
             
-        if isinstance(other, type('')):
+        if type(other) is type(''):
             other = PhysicalField(value = other)
             
         if not isinstance(other,PhysicalField):
@@ -323,7 +319,7 @@ class PhysicalField(object):
             elif self.unit.isDimensionlessOrAngle() or self.unit.isInverseAngle():
                 new_value = sign1(selfValue) + sign2(other)
             else:
-                raise TypeError(str(self) + ' and ' + str(other) + ' are incompatible.')
+                raise TypeError, str(self) + ' and ' + str(other) + ' are incompatible.'
         else:
             new_value = (sign1(selfValue)
                          + sign2(other.value) * other.unit.conversionFactorTo(self.unit))
@@ -384,7 +380,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__mul__(self)
-        if isinstance(other, type('')):
+        if type(other) is type(''):
             other = PhysicalField(value = other)
         if not isinstance(other,PhysicalField):
             return self.__class__(value = self.value*other, unit = self.unit)
@@ -423,7 +419,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__rdiv__(self)
-        if isinstance(other, type('')):
+        if type(other) is type(''):
             other = self.__class__(value = other)
         if not isinstance(other,PhysicalField):
             value = self.value/other 
@@ -441,7 +437,7 @@ class PhysicalField(object):
     def __rdiv__(self, other):
         if _isVariable(other):
             return other.__div__(self)
-        if isinstance(other, type('')):
+        if type(other) is type(''):
             other = PhysicalField(value = other)
         if not isinstance(other,PhysicalField):
             value = other/self.value
@@ -464,7 +460,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__rmod__(self)
-        if isinstance(other, type('')):
+        if type(other) is type(''):
             other = self.__class__(value = other)
         if not isinstance(other,PhysicalField):
             value = self.value % other 
@@ -484,7 +480,7 @@ class PhysicalField(object):
             >>> print PhysicalField(10., 'm')**2
             100.0 m**2
         """
-        if isinstance(other, type('')):
+        if type(other) is type(''):
             other = PhysicalField(value = other)
         return self.__class__(value = pow(self.value, float(other)), unit = pow(self.unit, other))
 
@@ -538,12 +534,12 @@ class PhysicalField(object):
             other = other.value
             
         if not isinstance(other, PhysicalField):
-            if isinstance(other, type('')):
+            if type(other) is type(''):
                 other = PhysicalField(other)
             elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
                 other = PhysicalField(value = other, unit = self.unit)
             else:
-                raise TypeError('Incompatible units')
+                raise TypeError, 'Incompatible units'
         return other.inUnitsOf(self.unit)
         
     def __getitem__(self, index): 
@@ -572,7 +568,7 @@ class PhysicalField(object):
                 ...
             TypeError: Incompatible units
         """
-        if isinstance(value, type('')):
+        if type(value) is type(''):
             value = PhysicalField(value)
         if isinstance(value, PhysicalField) or _isVariable(value):
             value = self._inMyUnits(value).value
@@ -597,7 +593,7 @@ class PhysicalField(object):
                 ...
             TypeError: Incompatible units
         """
-        if isinstance(value, type('')):
+        if type(value) is type(''):
             value = PhysicalField(value)
         if isinstance(value, PhysicalField) or _isVariable(value):
             value = self._inMyUnits(value).value
@@ -645,7 +641,6 @@ class PhysicalField(object):
             args = [__makePhysical(arg) for arg in args]
             
             meth = getattr(args[0], func.__name__, None)
-                    
             if meth is not None and isinstance(meth, collections.Callable):
                 result = meth(*args[1:])
 
@@ -702,7 +697,7 @@ class PhysicalField(object):
         if self.unit.isDimensionlessOrAngle():
             return self.value
         else:
-            raise TypeError('Numeric array value must be dimensionless')
+            raise TypeError, 'Numeric array value must be dimensionless'
 	
     def __float__(self):
         """
@@ -736,7 +731,7 @@ class PhysicalField(object):
         if self.unit.isDimensionlessOrAngle():
             return float(self.numericValue)
         else:
-            raise TypeError('Not possible to convert a PhysicalField with dimensions to float')
+            raise TypeError, 'Not possible to convert a PhysicalField with dimensions to float'
                     
     def __gt__(self,other):
         """
@@ -870,7 +865,7 @@ class PhysicalField(object):
         if self.unit.isDimensionless():
             return self.value
         else:
-            raise TypeError('Incompatible units')
+            raise TypeError, 'Incompatible units'
 
     def inUnitsOf(self, *units):
         """
@@ -895,7 +890,7 @@ class PhysicalField(object):
             >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
             ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
         """
-        units = list(map(_findUnit, units))
+        units = map(_findUnit, units)
         if len(units) == 1:
             unit = units[0]
             value = _convertValue (self.value, self.unit, unit)
@@ -995,7 +990,7 @@ class PhysicalField(object):
             new_value = self.value
         num = ''
         denom = ''
-        for i in range(9):
+        for i in xrange(9):
             unit = _base_names[i]
             power = self.unit.powers[i]
             if power < 0:
@@ -1456,7 +1451,7 @@ class PhysicalUnit:
             
         .. _Numeric: http://www.numpy.org
         """
-        if isinstance(names, type('')):
+        if type(names) == type(''):
             self.names = _NumberDict()
             self.names[names] = 1
         else:
@@ -1498,9 +1493,9 @@ class PhysicalUnit:
             if other == 1:
                 return self.isDimensionless()
             else:
-                raise TypeError('PhysicalUnits can only be compared with other PhysicalUnits')
+                raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
         if not numerix.alltrue(self.powers == other.powers):
-            raise TypeError('Incompatible units')
+            raise TypeError, 'Incompatible units'
         return cmp(self.factor, other.factor)
 
     def __mul__(self, other):
@@ -1537,7 +1532,7 @@ class PhysicalUnit:
             <PhysicalUnit kB*K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
-            raise TypeError("cannot multiply units with non-zero offset")
+            raise TypeError, "cannot multiply units with non-zero offset"
         if isinstance(other,PhysicalUnit):
             return PhysicalUnit(self.names+other.names,
                                 self.factor*other.factor,
@@ -1584,7 +1579,7 @@ class PhysicalUnit:
             <PhysicalUnit J/K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
-            raise TypeError("cannot divide units with non-zero offset")
+            raise TypeError, "cannot divide units with non-zero offset"
         if isinstance(other,PhysicalUnit):
             return PhysicalUnit(self.names-other.names,
                                 self.factor/other.factor,
@@ -1612,12 +1607,12 @@ class PhysicalUnit:
             <PhysicalUnit 3.0/K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
-            raise TypeError("cannot divide units with non-zero offset")
+            raise TypeError, "cannot divide units with non-zero offset"
         if isinstance(other,PhysicalUnit):
             return PhysicalUnit(other.names-self.names,
                                 other.factor/self.factor,
-                                list(map(lambda a,b: a-b,
-                                    other.powers, self.powers)))
+                                map(lambda a,b: a-b,
+                                    other.powers, self.powers))
         else:
             return PhysicalUnit({str(other): 1}-self.names,
                                 other/self.factor,
@@ -1651,8 +1646,8 @@ class PhysicalUnit:
             <PhysicalUnit K**2>
         """
         if self.offset != 0:
-            raise TypeError("cannot exponentiate units with non-zero offset")
-        if isinstance(other, type(0)):
+            raise TypeError, "cannot exponentiate units with non-zero offset"
+        if type(other) == type(0):
             return PhysicalUnit(other*self.names, pow(self.factor, other),
                                 self.powers*other)
                                 
@@ -1671,8 +1666,8 @@ class PhysicalUnit:
                 f = pow(self.factor, other)
                 p = self.powers / rounded
                 if reduce(lambda a, b: a and b,
-                          list(map(lambda x, e=rounded: x%e == 0,
-                              list(self.names.values())))):
+                          map(lambda x, e=rounded: x%e == 0,
+                              self.names.values())):
                     names = self.names/rounded
                 else:
                     names = _NumberDict()
@@ -1682,8 +1677,8 @@ class PhysicalUnit:
                         names[_base_names[i]] = p[i]
                 return PhysicalUnit(names, f, p)
             else:
-                raise TypeError('Illegal exponent')
-        raise TypeError('Only integer and inverse integer exponents allowed')
+                raise TypeError, 'Illegal exponent'
+        raise TypeError, 'Only integer and inverse integer exponents allowed'
 
     def conversionFactorTo(self, other):
         """
@@ -1717,11 +1712,12 @@ class PhysicalUnit:
             if self.isDimensionlessOrAngle() and other.isDimensionlessOrAngle():
                 return self.factor/other.factor
             else:
-                raise TypeError('Incompatible units')
+                raise TypeError, 'Incompatible units'
         if self.offset != other.offset and self.factor != other.factor:
-            raise TypeError(('Unit conversion (%s to %s) cannot be expressed ' +
+            raise TypeError, \
+                  ('Unit conversion (%s to %s) cannot be expressed ' +
                    'as a simple multiplicative factor') % \
-                  (self.name(), other.name()))
+                  (self.name(), other.name())
         return self.factor/other.factor
 
     def conversionTupleTo(self, other): # added 1998/09/29 GPW
@@ -1734,7 +1730,7 @@ class PhysicalUnit:
             ['0.555556', '459.67']
         """
         if not numerix.alltrue(self.powers == other.powers):
-            raise TypeError('Incompatible units')
+            raise TypeError, 'Incompatible units'
 
         # let (s1,d1) be the conversion tuple from 'self' to base units
         #   (ie. (x+d1)*s1 converts a value x from 'self' to base units,
@@ -1854,7 +1850,7 @@ class PhysicalUnit:
         """
         num = ''
         denom = ''
-        for unit in list(self.names.keys()):
+        for unit in self.names.keys():
             power = self.names[unit]
             if power < 0:
                 denom = denom + '/' + unit
@@ -1891,7 +1887,7 @@ def _findUnit(unit):
     """
 ##     print unit, type(unit)
     
-    if isinstance(unit, type('')):
+    if type(unit) == type(''):
         name = string.strip(unit)
         if len(name) == 0 or unit == '1':
             unit = _unity
@@ -1905,7 +1901,7 @@ def _findUnit(unit):
         if unit == 1:
             unit = _unity
         else:
-            raise TypeError(str(unit) + ' is not a unit')
+            raise TypeError, str(unit) + ' is not a unit'
     return unit
 
 def _round(x):
@@ -1959,9 +1955,9 @@ def _Scale(quantity, scaling):
         dimensionless = quantity
                 
     if isinstance(dimensionless,PhysicalField) and not dimensionless.unit.isDimensionless():
-        raise TypeError(repr(quantity.inBaseUnits().unit) + ' and ' \
+        raise TypeError, repr(quantity.inBaseUnits().unit) + ' and ' \
         + repr(scaling.inBaseUnits().unit) \
-        + ' are incompatible')
+        + ' are incompatible'
         
     return dimensionless
   
@@ -2013,8 +2009,8 @@ for unit in _base_units:
 
 def _addUnit(name, unit):
     if name in _unit_table:
-        raise KeyError('Unit ' + name + ' already defined')
-    if isinstance(unit, type('')):
+        raise KeyError, 'Unit ' + name + ' already defined'
+    if type(unit) == type(''):
         unit = eval(unit, _unit_table)
         for cruft in ['__builtins__', '__args__']:
             try: del _unit_table[cruft]
@@ -2053,7 +2049,7 @@ _addUnit('Sv', 'J/kg')               # Sievert
 
 del _unit_table['kg']
 
-for unit in list(_unit_table.keys()):
+for unit in _unit_table.keys():
     _addPrefixed(unit)
 
 # Fundamental constants
@@ -2171,7 +2167,7 @@ def _getUnitStrings():
     
     def _getSortedUnitStrings(unitDict):
         strings = []
-        keys = list(unitDict.keys())
+        keys = unitDict.keys()
         keys.sort(key=str.lower)
         for key in keys:
             if key in unitDict:
@@ -2206,7 +2202,7 @@ def _getUnitStrings():
 
     units.append("\nUnits derived from SI (accepting SI prefixes)::\n")
     derived = {}
-    for key in list(working_table.keys()):
+    for key in working_table.keys():
         if key in working_table:
             unit = working_table[key]
             if isinstance(unit, PhysicalUnit) and unit.factor == 1:
@@ -2217,7 +2213,7 @@ def _getUnitStrings():
 
     units.append("\nOther units that accept SI prefixes::\n")
     prefixed = {}
-    for key in list(working_table.keys()):
+    for key in working_table.keys():
         if key in working_table:
             unit = working_table[key]
             isPrefixed = 1
@@ -2236,12 +2232,6 @@ def _getUnitStrings():
     units.extend(_getSortedUnitStrings(working_table))
 
     return "\n".join(units)
-
-def getUnit(arr):
-    if hasattr(arr, "getUnit") and isinstance(arr.getUnit, collections.Callable):
-        return arr.unit
-    else:
-        return _unity
 
 __doc__ += _getUnitStrings()
 

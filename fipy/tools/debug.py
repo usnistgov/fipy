@@ -5,11 +5,9 @@ def PRINT(label, arg="", stall=True):
     from fipy import parallel
     import time
     
-    from six import print_
-    
     for procID in range(parallel.Nproc):
         if procID == parallel.procID:
-            print_(parallel.procID, label, arg, file=sys.stderr)
+            print >>sys.stderr, parallel.procID, label, arg
         sys.stderr.flush()
         if stall:
             time.sleep(0.1)

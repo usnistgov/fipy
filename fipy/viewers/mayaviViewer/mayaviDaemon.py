@@ -75,7 +75,7 @@ try:
     from mayavi.sources.vtk_file_reader import VTKFileReader
     from pyface.timer.api import Timer
     from mayavi import mlab
-except ImportError as e:
+except ImportError, e:
     from enthought.mayavi.plugins.app import Mayavi
     from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
     from enthought.pyface.timer.api import Timer

@@ -74,7 +74,7 @@ def _BinaryOperatorVariable(operatorClass=None):
             if isinstance(self.var[1], Variable):
                 val1 = self.var[1].value
             else:
-                if isinstance(self.var[1], type('')):
+                if type(self.var[1]) is type(''):
                     self.var[1] = physicalField.PhysicalField(value=self.var[1])
                 val1 = self.var[1]
 
@@ -102,7 +102,7 @@ def _BinaryOperatorVariable(operatorClass=None):
             Allows binOps to be pickled
             """
             state =  self.__getstate__()
-            if 'mesh' in list(state.keys()):
+            if 'mesh' in state.keys():
                 args = (state['mesh'],)
             else:
                 args = ()

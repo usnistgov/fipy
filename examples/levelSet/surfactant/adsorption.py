@@ -98,8 +98,6 @@ Compare the analaytical and numerical results:
 """
 __docformat__ = 'restructuredtext'
 
-from six import print_
-
 from fipy import *
 
 # parameter values
@@ -175,7 +173,7 @@ if __name__ == "__main__":
         ## evaluate the analytical and numerical solution and plot
 
         theta = surfactantVar.interfaceVar[1]
-        print_("theta:",theta)
+        print "theta:",theta
 
         ## do a time step
         surfEqn.solve(surfactantVar, dt = dt)

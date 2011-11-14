@@ -75,7 +75,7 @@ class GistVectorViewer(_GistViewer):
                    or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError("Can only plot 2D vector data")
+            raise MeshDimensionError, "Can only plot 2D vector data"
         # this viewer can only display one variable
         return [vars[0]]
         

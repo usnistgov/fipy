@@ -669,7 +669,7 @@ class Variable(object):
                 if isinstance(v, PF):
                     v = self._value.value
                 if type(value) in (type(1), type(1.)):
-                    if isinstance(v, type(numerix.array(1))):
+                    if type(v) is type(numerix.array(1)):
                         if v.shape is not ():
 ##                        if len(v) > 1:
                             value = numerix.resize(value, v.shape).astype(v.dtype)
@@ -949,7 +949,7 @@ class Variable(object):
                     dim = (nk,nj,ni)
                     argDict['nk'] = nk
                 else:
-                    raise DimensionError('Impossible Dimensions')
+                    raise DimensionError, 'Impossible Dimensions'
 
         ## Following section makes sure that the result array has a
         ## valid typecode. If self._value is None then a typecode is

@@ -118,8 +118,8 @@ if __name__ == '__main__':
         var.updateOld()        
         eqn.solve(var, dt=timeStepDuration)
         if(not (step % 100)):
-            print((step / 100))
-    print(var)
+            print (step / 100)
+    print var
     theMask = array([[10, 1, 20, 2]])
     viewer.plot()
 ##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)

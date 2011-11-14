@@ -111,11 +111,11 @@ try:
                       
             cpu, rsz, vsz = monitor(p)
             
-            print(entry.revision.number, cpu, rsz, vsz)
+            print entry.revision.number, cpu, rsz, vsz
             
-        except Exception as e:
-            print(entry.revision.number, e)
-except Exception as e:
-    print(e)
+        except Exception, e:
+            print entry.revision.number, e
+except Exception, e:
+    print e
     
 shutil.rmtree(dir)

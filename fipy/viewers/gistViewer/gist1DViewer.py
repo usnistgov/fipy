@@ -84,7 +84,7 @@ class Gist1DViewer(_GistViewer):
             vars = [var for var in vars if var.mesh is vars[0].mesh]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError("Can only plot 1D data")
+            raise MeshDimensionError, "Can only plot 1D data"
         return vars
         
     def _getArrays(self):

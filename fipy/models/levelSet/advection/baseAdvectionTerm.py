@@ -45,7 +45,7 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
 
     def __init__(self, coeff = None):
         if self.__class__ is _BaseAdvectionTerm:
-            raise NotImplementedError("can't instantiate abstract base class")
+            raise NotImplementedError, "can't instantiate abstract base class"
                                                 
         _NonDiffusionTerm.__init__(self)
         self.geomCoeff = coeff

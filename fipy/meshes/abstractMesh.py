@@ -159,7 +159,7 @@ class AbstractMesh(object):
         if self.dim > 1:
             return self.cellCenters[1]
         else:
-            raise AttributeError('1D meshes do not have a "y" attribute.')
+            raise AttributeError, '1D meshes do not have a "y" attribute.'
 
     @property
     def z(self):
@@ -176,7 +176,7 @@ class AbstractMesh(object):
         if self.dim > 2:
             return self.cellCenters[2]
         else:
-            raise AttributeError('1D and 2D meshes do not have a "z" attribute.')
+            raise AttributeError, '1D and 2D meshes do not have a "z" attribute.'
 
     """scaled geometery properties
     
@@ -309,7 +309,7 @@ class AbstractMesh(object):
         otherNumVertices = otherc.vertexCoords.shape[-1]
         ## check dimensions
         if(selfc.vertexCoords.shape[0] != otherc.vertexCoords.shape[0]):
-            raise MeshAdditionError("Dimensions do not match")
+            raise MeshAdditionError, "Dimensions do not match"
             
         ## compute vertex correlates
 
@@ -512,7 +512,7 @@ class AbstractMesh(object):
     @property
     def _numberOfFacesPerCell(self):
         cellFaceIDs = self.cellFaceIDs
-        if isinstance(cellFaceIDs, type(MA.array(0))):
+        if type(cellFaceIDs) is type(MA.array(0)):
             ## bug in count returns float values when there is no mask
             return numerix.array(cellFaceIDs.count(axis=0), 'l')
         else:
@@ -958,7 +958,7 @@ class AbstractMesh(object):
         
         """
         if isinstance(other, AbstractMesh):
-            raise TypeError("'-' is unsupported for meshes, use '+'")
+            raise TypeError, "'-' is unsupported for meshes, use '+'"
         else:
             return self._translate(-numerix.array(other))
 
@@ -985,7 +985,7 @@ class AbstractMesh(object):
     def _VTKCellType(self):
         try:
             from tvtk.api import tvtk
-        except ImportError as e:
+        except ImportError, e:
             from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
                 
@@ -995,7 +995,7 @@ class AbstractMesh(object):
         """
         cvi = self._orderedCellVertexIDs.swapaxes(0,1)
         from fipy.tools import numerix
-        if isinstance(cvi, numerix.ma.masked_array):
+        if type(cvi) is numerix.ma.masked_array:
             counts = cvi.count(axis=1)[:,None]
             cells = numerix.ma.concatenate((counts,cvi),axis=1).compressed()
         else:
@@ -1004,7 +1004,7 @@ class AbstractMesh(object):
         
         try:
             from tvtk.api import tvtk
-        except ImportError as e:
+        except ImportError, e:
             from enthought.tvtk.api import tvtk
         num = counts.shape[0]
 
@@ -1030,7 +1030,7 @@ class AbstractMesh(object):
         """
         try:
             from tvtk.api import tvtk
-        except ImportError as e:
+        except ImportError, e:
             from enthought.tvtk.api import tvtk
         
         points = self.faceCenters

@@ -19,5 +19,5 @@ fipy_info = "FiPy: %d cells on processor %d of %d" % (mesh.numberOfCells,
                                                       parallel.procID,
                                                       parallel.Nproc)
                                                       
-print(" :: ".join((mpi4py_info, trilinos_info, fipy_info)))
+print " :: ".join((mpi4py_info, trilinos_info, fipy_info))
 

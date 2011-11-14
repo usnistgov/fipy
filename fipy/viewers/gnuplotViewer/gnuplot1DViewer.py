@@ -91,7 +91,7 @@ class Gnuplot1DViewer(_GnuplotViewer):
                                                 title=var.name,
                                                 with_='lines'),)
                               
-        self.g.plot(*tupleOfGnuplotData)
+        apply(self.g.plot, tupleOfGnuplotData)
     
 if __name__ == "__main__": 
     import fipy.tests.doctestPlus

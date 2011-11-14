@@ -73,8 +73,6 @@ The result can be tested with the following code:
 """
 __docformat__ = 'restructuredtext'
 
-from six import print_
-
 from fipy import *
 
 L = 1.
@@ -123,7 +121,7 @@ if __name__ == '__main__':
     distanceViewer.plot()
     surfactantViewer.plot()
 
-    print_('total surfactant before:', numerix.sum(surfactantVariable * mesh.cellVolumes))
+    print 'total surfactant before:', numerix.sum(surfactantVariable * mesh.cellVolumes)
     
     for step in range(steps):
         distanceVariable.updateOld()
@@ -134,7 +132,7 @@ if __name__ == '__main__':
     surfactantEquation.solve(surfactantVariable)
 
 
-    print_('total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes))
+    print 'total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes)
 
     areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
     answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
@@ -149,6 +147,6 @@ if __name__ == '__main__':
             
     error = numerix.sqrt(error / size)
     
-    print_('error:', error)
+    print 'error:', error
     
     raw_input('finished')

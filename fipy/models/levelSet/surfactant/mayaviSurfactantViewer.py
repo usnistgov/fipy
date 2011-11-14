@@ -147,7 +147,7 @@ class MayaviSurfactantViewer(_Viewer):
 
         from fipy.models.levelSet.surfactant.lines import _getOrderedLines
 
-        lines = _getOrderedLines(list(range(2 * len(IDs))), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
+        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 
@@ -190,10 +190,10 @@ class MayaviSurfactantViewer(_Viewer):
         ## making lists as pyvtk doesn't know what to do with numpy arrays
 
         coords = list(coords)
-        coords = [[float(coord[0]),float(coord[1]), float(coord[2])] for coord in coords]
+        coords = map(lambda coord: [float(coord[0]),float(coord[1]), float(coord[2])], coords)
 
         data = list(data)
-        data = [float(item) for item in data]
+        data = map(lambda item: float(item), data)
 
         return (pyvtk.UnstructuredGrid(points = coords,
                                        poly_line = lines),

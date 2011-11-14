@@ -40,8 +40,6 @@ import sys
 from pysparse import itsolvers
 from pysparse import superlu
 
-from six import print_
-
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.tools import numerix
 
@@ -92,7 +90,7 @@ class LinearLUSolver(PysparseSolver):
 
         if DEBUG:
             import sys
-            print_(L.matrix, file=sys.stderr)
+            print >> sys.stderr, L.matrix
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
