@@ -2,9 +2,9 @@
 
 __all__ = []
 
-import UserDict, copy
+import copy
 
-class _DictWithDefault(UserDict.UserDict):
+class _DictWithDefault(dict):
 
     """Dictionary with default values
 
