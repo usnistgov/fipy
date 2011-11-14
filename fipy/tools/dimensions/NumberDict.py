@@ -59,8 +59,14 @@ class _NumberDict(DictWithDefault._DictWithDefault):
             sum[key] = sum[key] - other[key]
         return sum
 
+    def __neg__(self):
+        neg = _NumberDict()
+        for key in list(self.keys()):
+            neg[key] = -self[key]
+        return neg
+
     def __rsub__(self, other):
-        return other-self
+        return -self + other
 
     def __mul__(self, other):
         new = _NumberDict()

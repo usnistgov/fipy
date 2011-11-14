@@ -16,15 +16,14 @@ class _DictWithDefault(dict):
     """
 
     def __init__(self, default):
-        self.data = {}
         self.default = default
 
     def __getitem__(self, key):
         try:
-            item = self.data[key]
+            item = dict.__getitem__(self, key)
         except KeyError:
             item = copy.copy(self.default)
-            self.data[key] = item
+            self[key] = item
         return item
 
     def __delitem__(self, key):
