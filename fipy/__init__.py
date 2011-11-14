@@ -74,7 +74,7 @@ if parallel.Nproc > 1:
         sys.stdout.flush()
         if parallel.procID == 0:
             sys.stdout.write(prompt)
-            sys.stdout.flush()
+            sys.stdout.flush() 
             return sys.stdin.readline()
         else:
             return ""
@@ -82,17 +82,20 @@ if parallel.Nproc > 1:
     
 __all__.extend(['raw_input', 'raw_input_original'])
 
-def test():
+def test(*args):
     from setuptools import setup
     from fipy.tools.testClass import _TestClass
     from setuptools.command.test import test as _test
-    tmp0 = _TestClass(_test)
-    setup(name='dummy', script_name = 'dummy.py', script_args = ['test', '--modules'], cmdclass={'test': tmp0})
-#    dummyCommand = setup(name='dummy', script_name = 'dummy.py', script_args = ['test'], cmdclass={'test': tmp0})
-    # tmp = tmp0(dummyCommand)
+    import tempfile
 
-    # tmp.initialize_options()
-    # tmp.modules = True
-    # tmp.finalize_options()
-    # tmp.run()
-    # # pass
+    tmpDir = tempfile.mkdtemp()
+
+    try:
+        setup(name='FiPy',
+              script_args = ['egg_info', '--egg-base=' + tmpDir,
+                             'test', '--modules'] + list(args),
+              cmdclass={'test': _TestClass(_test)})
+    except SystemExit, exitErr:
+        import shutil
+        shutil.rmtree(tmpDir)
+        raise exitErr
