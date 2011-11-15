@@ -889,9 +889,9 @@ class PhysicalField(object):
         hour/minute/second.  The original object will not be changed.
         
         >>> t = PhysicalField(314159., 's')
-        >>> numerix.allclose([element.allclose(value) for (element, value) in zip(t.inUnitsOf('d','h','min','s'),
-        ...                                                                       ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])], 
-        ...                  True)
+        >>> print numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d','h','min','s'),
+        ...                                                         ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])], 
+        ...                        True)
         1
         """
         units = map(_findUnit, units)

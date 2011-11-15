@@ -286,8 +286,8 @@ class Variable(object):
         their base SI elements.
         
             >>> e = Variable(value="2.7 Hartree*Nav")
-            >>> print e.inBaseUnits()
-            7088849.01085 kg*m**2/s**2/mol
+            >>> print e.inBaseUnits().allclose("7088849.01085 kg*m**2/s**2/mol")
+            1
         """
         value = self.value
         if isinstance(value, physicalField.PhysicalField):
@@ -303,9 +303,9 @@ class Variable(object):
         the unit of the object.  If one unit is specified, the return value
         is a single `Variable`.
         
-            >>> freeze = Variable('0 degC')
-            >>> print freeze.inUnitsOf('degF')
-            32.0 degF
+        >>> freeze = Variable('0 degC')
+        >>> print freeze.inUnitsOf('degF').allclose("32.0 degF")
+        1
         
         If several units are specified, the return value is a tuple of
         `Variable` instances with with one element per unit such that
@@ -314,9 +314,11 @@ class Variable(object):
         This is used to convert to irregular unit systems like
         hour/minute/second.  The original object will not be changed.
         
-            >>> t = Variable(value=314159., unit='s')
-            >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
-            ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
+        >>> t = Variable(value=314159., unit='s')
+        >>> print numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d','h','min','s'),
+        ...                                                         ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])], 
+        ...                        True)
+        1
         """
         value = self.value
         if isinstance(value, physicalField.PhysicalField):
