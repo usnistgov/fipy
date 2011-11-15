@@ -123,7 +123,6 @@ class TransientTerm(CellTerm):
         TransientTerm is defined.
 
         >>> from fipy import *
-        >>> from fipy.matrices.pysparseMatrix import _PysparseMatrix
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
         >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
