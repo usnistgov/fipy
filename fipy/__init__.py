@@ -64,20 +64,39 @@ __all__.extend(viewers.__all__)
 __all__.extend(models.__all__)
 
 # fipy needs to export raw_input whether or not parallel
-raw_input = raw_input
-raw_input_original = raw_input
 
-if parallel.Nproc > 1:
-    def mpi_raw_input(prompt=""):
-        import sys
-        parallel.Barrier()
-        sys.stdout.flush()
-        if parallel.procID == 0:
-            sys.stdout.write(prompt)
+import sys
+if sys.version_info >= (3, 0):
+    input = input
+    input_original = input
+
+    if parallel.Nproc > 1:
+        def mpi_input(prompt=""):
+            parallel.Barrier()
             sys.stdout.flush()
-            return sys.stdin.readline()
-        else:
-            return ""
-    raw_input = mpi_raw_input
-    
-__all__.extend(['raw_input', 'raw_input_original'])
+            if parallel.procID == 0:
+                sys.stdout.write(prompt)
+                sys.stdout.flush()
+                return sys.stdin.readline()
+            else:
+                return ""
+        input = mpi_input
+        
+    __all__.extend(['input', 'input_original'])
+else:
+    raw_input = raw_input
+    raw_input_original = raw_input
+
+    if parallel.Nproc > 1:
+        def mpi_raw_input(prompt=""):
+            parallel.Barrier()
+            sys.stdout.flush()
+            if parallel.procID == 0:
+                sys.stdout.write(prompt)
+                sys.stdout.flush()
+                return sys.stdin.readline()
+            else:
+                return ""
+        raw_input = mpi_raw_input
+        
+    __all__.extend(['raw_input', 'raw_input_original'])
