@@ -1474,32 +1474,55 @@ class PhysicalUnit:
 
     __str__ = __repr__
 
-    def __cmp__(self, other):
-        """
-        Determine if units are identical
-        
-            >>> a = PhysicalField("1. m")
-            >>> b = PhysicalField("3. ft")
-            >>> a.unit == b.unit
-            0
-            >>> a.unit == b.inBaseUnits().unit
-            1
-            
-        Units can only be compared with other units
-        
-            >>> a.unit == 3
-            Traceback (most recent call last):
-                ...
-            TypeError: PhysicalUnits can only be compared with other PhysicalUnits
-        """
-        if not isinstance(other,PhysicalUnit):
+    def _checkSame(self, other):
+        if not isinstance(other, PhysicalUnit):
             if other == 1:
                 return self.isDimensionless()
             else:
                 raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
         if not numerix.alltrue(self.powers == other.powers):
             raise TypeError, 'Incompatible units'
-        return cmp(self.factor, other.factor)
+
+    def __eq__(self, other):
+        """
+        Determine if units are identical
+        
+        >>> a = PhysicalField("1. m")
+        >>> b = PhysicalField("3. ft")
+        >>> a.unit == b.unit
+        0
+        >>> a.unit == b.inBaseUnits().unit
+        1
+            
+        Units can only be compared with other units
+        
+        >>> a.unit == 3
+        Traceback (most recent call last):
+            ...
+        TypeError: PhysicalUnits can only be compared with other PhysicalUnits
+        """
+        self._checkSame(other)
+        return self.factor == other.factor
+
+    def __lt__(self, other):
+        self._checkSame(other)
+        return self.factor < other.factor
+
+    def __le__(self, other):
+        self._checkSame(other)
+        return self.factor <= other.factor
+
+    def __ne__(self, other):
+        self._checkSame(other)
+        return self.factor != other.factor
+
+    def __gt__(self, other):
+        self._checkSame(other)
+        return self.factor > other.factor
+
+    def __ge__(self, other):
+        self._checkSame(other)
+        return self.factor >= other.factor
 
     def __mul__(self, other):
         """
