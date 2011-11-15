@@ -94,7 +94,7 @@ def _gmshVersion(communicator):
             
     verStr = communicator.bcast(verStr)
 
-    m = re.search(r'\d+.\d+', verStr)
+    m = re.search(r'\d+.\d+', str(verStr))
 
     if m:
         return float(m.group(0))
