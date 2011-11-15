@@ -95,7 +95,7 @@ recommended values from CODATA_. Other conversion factors
 """
 __docformat__ = 'restructuredtext'
 
-import re, string
+import re
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -190,7 +190,7 @@ class PhysicalField(object):
         elif unit is not None:
             unit = _findUnit(unit)
         elif type(value) is type(''):
-            s = string.strip(value)
+            s = value.strip()
             match = PhysicalField._number.match(s)
             if match is None:
                 value = 1
@@ -1892,7 +1892,7 @@ def _findUnit(unit):
 ##     print unit, type(unit)
     
     if type(unit) == type(''):
-        name = string.strip(unit)
+        name = unit.strip()
         if len(name) == 0 or unit == '1':
             unit = _unity
         else:
