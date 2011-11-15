@@ -374,6 +374,8 @@ class Term(object):
     def __eq__(self, other):
         return self - other
 
+    __hash__ = object.__hash__
+
     def __mul__(self, other):
         raise NotImplementedError
 

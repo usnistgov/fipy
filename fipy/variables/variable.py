@@ -1236,6 +1236,8 @@ class Variable(object):
         """
         return self._BinaryOperatorVariable(lambda a,b: a==b, other)
         
+    __hash__ = object.__hash__
+    
     def __ne__(self,other):
         """
         Test if a `Variable` is not equal to another quantity

@@ -785,6 +785,8 @@ class PhysicalField(object):
         other = self._inMyUnits(other)
         return self.value == other.value
         
+    __hash__ = object.__hash__
+        
     def __ne__(self,other):
         other = self._inMyUnits(other)
         return self.value != other.value
