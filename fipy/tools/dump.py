@@ -111,8 +111,13 @@ def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
     if communicator.Nproc > 1:
         data = communicator.bcast(data, root=0)
 
-    import StringIO
-    f = StringIO.StringIO(str(data))
+    if sys.version_info < (3,0):
+        import StringIO
+        f = StringIO.StringIO(data)
+    else:
+        import io
+        f = io.BytesIO(data)
+        
     unpickler = cPickle.Unpickler(f)
     
     if mesh_unmangle:
