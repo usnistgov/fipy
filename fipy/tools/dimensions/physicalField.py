@@ -581,8 +581,9 @@ class PhysicalField(object):
         
             >>> a = PhysicalField(4.,"m")
             >>> a.itemset(PhysicalField("6 ft"))
-            >>> print a
-            1.8288 m
+            >>> print numerix.allclose(a,
+            ...                        PhysicalField("1.8288 m"))
+            1
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
             >>> a.itemset(PhysicalField("6 ft"))
             Traceback (most recent call last):
@@ -878,8 +879,9 @@ class PhysicalField(object):
         is a single `PhysicalField`.
         
             >>> freeze = PhysicalField('0 degC')
-            >>> print freeze.inUnitsOf('degF')
-            32.0 degF
+            >>> print numerix.allclose(freeze.inUnitsOf('degF'),
+            ...                        PhysicalField("32.0 degF"))
+            1
         
         If several units are specified, the return value is a tuple of
 	`PhysicalField` instances with with one element per unit such that
@@ -983,8 +985,9 @@ class PhysicalField(object):
         Return the quantity with all units reduced to their base SI elements.
         
             >>> e = PhysicalField('2.7 Hartree*Nav')
-            >>> print e.inBaseUnits()
-            7088849.01085 kg*m**2/s**2/mol
+            >>> print numerix.allclose(e.inBaseUnits(),
+            ...                        PhysicalField("7088849.01085 kg*m**2/s**2/mol"))
+            1
         """
         if self.unit.factor != 1:
             new_value = self.value * self.unit.factor
@@ -1014,8 +1017,9 @@ class PhysicalField(object):
         Return the quantity with all units reduced to SI-compatible elements.
         
             >>> e = PhysicalField('2.7 Hartree*Nav')
-            >>> print e.inSIUnits()
-            7088849.01085 kg*m**2/s**2/mol
+            >>> print numerix.allclose(e.inSIUnits(),
+            ...                        PhysicalField("7088849.01085 kg*m**2/s**2/mol"))
+            1
         """
         if self.unit.factor != 1:
             return self.inBaseUnits()
@@ -1030,8 +1034,9 @@ class PhysicalField(object):
         """
         Return the inverse cosine of the `PhysicalField` in radians
         
-            >>> print PhysicalField(0).arccos()
-            1.57079632679 rad
+            >>> print numerix.allclose(PhysicalField(0).arccos(),
+            ...                        PhysicalField("1.57079632679 rad"))
+            1
         
         The input `PhysicalField` must be dimensionless
         
@@ -1046,8 +1051,9 @@ class PhysicalField(object):
         """
         Return the inverse hyperbolic cosine of the `PhysicalField`
         
-            >>> print PhysicalField(2).arccosh()
-            1.31695789692
+            >>> print numerix.allclose(PhysicalField(2).arccosh(),
+            ...                        1.31695789692)
+            1
         
         The input `PhysicalField` must be dimensionless
         
@@ -1062,8 +1068,9 @@ class PhysicalField(object):
         """
         Return the inverse sine of the `PhysicalField` in radians
         
-            >>> print PhysicalField(1).arcsin()
-            1.57079632679 rad
+            >>> print numerix.allclose(PhysicalField(1).arcsin(),
+            ...                        PhysicalField("1.57079632679 rad"))
+            1
         
         The input `PhysicalField` must be dimensionless
         
