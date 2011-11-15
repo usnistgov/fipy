@@ -34,8 +34,9 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.variables.variable import Variable
+import sys
 
+from fipy.variables.variable import Variable
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 
@@ -145,7 +146,10 @@ def _OperatorVariableClass(baseClass=object):
             if isinstance(self.op, numerix.ufunc):
                 return "%s(%s)" % (self.op.__name__, ", ".join([__var(i) for i in range(len(self.var))]))
             
-            bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
+            if sys.version_info < (3,0):
+                bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
+            else:
+                bytecodes = list(self.op.__code__.co_code)
                 
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
