@@ -624,12 +624,12 @@ class PhysicalField(object):
         For not very intelligible reasons, the `PhysicalField`\ness gets cast 
         away if there are no units. Probably not harmful, so not worth investigating
         
-           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0]))
-           <type 'numpy.ndarray'>
+           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0])) is type(numerix.array(1))
+           1
 
            >>> from scipy.special import gamma as Gamma
-           >>> print type(Gamma(PhysicalField([1.0, 2.0])))
-           <type 'numpy.ndarray'>
+           >>> print type(Gamma(PhysicalField([1.0, 2.0]))) is type(numerix.array(1))
+           1
         """
         result = arr
         
