@@ -193,6 +193,22 @@ Build the compressed distribution::
     $ rm MANIFEST
     $ python setup.py sdist
 
+Test the installed compressed distribution::
+
+    $ cpvirtualenv trunk test
+    $ mkdir tmp
+    $ cd tmp
+    $ cp ../dist/FiPy-${FIPY_VERSION}.tar.gz .
+    $ tar zxvf FiPy-${FIPY_VERSION}.tar.gz
+    $ cd FiPy-${FIPY_VERSION}
+    $ python setup.py install
+    $ cd ..
+    $ python -c "import fipy; fipy.test()"
+    $ deactivate
+    $ rmvirtualenv test
+    $ cd ..
+    $ \rm -rf tmp
+
 -------
 Windows
 -------

@@ -426,6 +426,10 @@ typing::
 at the command line.  Alternatively, you may choose not to formally install
 :term:`FiPy` and to simply work within the base directory instead.  
 
+After installation, you can test :term:`FiPy` by executing::
+
+    $ python -c "import fipy; fipy.test()"
+
 If you choose to install, Python_ will find your :term:`FiPy` modules 
 automatically. If you choose not to install, then you will need to ensure 
 that the :term:`FiPy` distribution directory is appended to your ``PYTHONPATH`` 
