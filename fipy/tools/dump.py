@@ -112,7 +112,7 @@ def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
         data = communicator.bcast(data, root=0)
 
     import StringIO
-    f = StringIO.StringIO(data)
+    f = StringIO.StringIO(str(data))
     unpickler = cPickle.Unpickler(f)
     
     if mesh_unmangle:
