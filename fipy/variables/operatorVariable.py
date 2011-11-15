@@ -281,8 +281,8 @@ def _testBinOp(self):
     Check that getTypeCode() works as expected.
 
         >>> a = Variable(1.) * Variable(1)
-        >>> a.getsctype()
-        <type 'numpy.float64'>
+        >>> print a.getsctype() == numerix.float64
+        1
 
     The following test is to correct an `--inline` bug that was
     being thrown by the Cahn-Hilliard example. The fix for this
