@@ -45,6 +45,14 @@ Even if you don't read manuals...
 What's new in version |release|?
 --------------------------------
 
+The significant changes since version 2.1.2 are:
+
+- Tests can now be run on a full install using `fipy.test()`.
+
+Tickets fixed in this release::
+
+    145 tests should be run with fipy.tests()
+
 The relatively small change in version number belies significant advances
 in :term:`FiPy` capabilities. This release did not receive a "full" version
 increment because it is completely (er... [#almost]_) compatible with older scripts.

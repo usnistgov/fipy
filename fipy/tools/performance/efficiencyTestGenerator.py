@@ -36,10 +36,7 @@
 
 __all__ = []
 
-import string
-import time
 import os
-import numpy
 from copy_script import Copy_script
 from setuptools import setup
 
