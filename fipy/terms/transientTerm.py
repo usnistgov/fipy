@@ -103,13 +103,13 @@ class TransientTerm(CellTerm):
     """
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-	return {
-	    'b vector':  0, 
-	    'new value': 1, 
-	    'old value': 1,
+        return {
+            'b vector':  0, 
+            'new value': 1, 
+            'old value': 1,
             'diagonal': 0
-	}
-	
+        }
+        
     def _calcGeomCoeff(self, var):
         self._checkCoeff(var)
         if var.rank != 0 and not isinstance(self.coeff, CellVariable):            
