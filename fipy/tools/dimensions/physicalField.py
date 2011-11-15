@@ -877,9 +877,9 @@ class PhysicalField(object):
         the unit of the object.  If one unit is specified, the return value
         is a single `PhysicalField`.
         
-            >>> freeze = PhysicalField('0 degC')
-            >>> print freeze.inUnitsOf('degF').allclose("32.0 degF")
-            1
+        >>> freeze = PhysicalField('0 degC')
+        >>> print freeze.inUnitsOf('degF').allclose("32.0 degF")
+        1
         
         If several units are specified, the return value is a tuple of
 	`PhysicalField` instances with with one element per unit such that
@@ -888,9 +888,11 @@ class PhysicalField(object):
         This is used to convert to irregular unit systems like
         hour/minute/second.  The original object will not be changed.
         
-            >>> t = PhysicalField(314159., 's')
-            >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
-            ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
+        >>> t = PhysicalField(314159., 's')
+        >>> numerix.allclose([element.allclose(value) for (element, value) in zip(t.inUnitsOf('d','h','min','s'),
+        ...                                                                       ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])], 
+        ...                  True)
+        1
         """
         units = map(_findUnit, units)
         if len(units) == 1:
