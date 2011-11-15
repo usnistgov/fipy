@@ -131,10 +131,9 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
         if not os.path.exists(name):
             # we must have been passed a Gmsh script
             (f, geoFile) = tempfile.mkstemp('.geo')
-            file = open(geoFile, 'w')
+            file = os.fdopen(f, 'w')
             file.writelines(name)
             file.close() 
-            os.close(f)
         else:
             # Gmsh isn't picky about file extensions, 
             # so we peek at the start of the file to deduce the type
@@ -183,6 +182,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                     gmshFlags += ["-bgm", bgmf]
 
                 (f, mshFile) = tempfile.mkstemp('.msh')
+                os.close(f)
                 
                 while True:
                     p = Popen(["gmsh", geoFile] + gmshFlags + ["-o", mshFile],
@@ -198,7 +198,6 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                         pass
                           
                 parprint("gmsh out: %s" % gmshOutput)
-                os.close(f)
             else:
                 mshFile = None
                 gmshOutput = ""
@@ -640,7 +639,8 @@ class MSHFile(GmshFile):
         Gets all data between $[title] and $End[title], writes
         it out to its own file.
         """
-        newF = tempfile.TemporaryFile()
+        newF, newPath = tempfile.mkstemp(text=True)
+        newF = os.fdopen(newF, 'w')
         self._seekForHeader(title)
         
         # extract the actual data within section
@@ -651,8 +651,8 @@ class MSHFile(GmshFile):
             else: break
 
         self.fileobj.seek(0) 
-        newF.seek(0) # restore file positions
-        return newF
+        newF.close()
+        return newPath
 
     def _seekForHeader(self, title):
         """
@@ -805,12 +805,19 @@ class MSHFile(GmshFile):
                 cellGlobalIDMap, ghostCellGlobalIDMap.
         """
         self.version, self.fileType, self.dataSize = self._getMetaData()
-        self.nodesFile = self._isolateData("Nodes")
-        self.elemsFile = self._isolateData("Elements")
+        nodesPath = self._isolateData("Nodes")
+        self.nodesFile = open(nodesPath, 'r')
+        elemsPath = self._isolateData("Elements")
+        self.elemsFile = open(elemsPath, 'r')
         try:
-            self.namesFile = self._isolateData("PhysicalNames")
+            namesPath = self._isolateData("PhysicalNames")
         except EOFError, e:
+            namesPath = None
+            
+        if namesPath is None:
             self.namesFile = None
+        else:
+            self.namesFile = open(namesPath, 'r')
             
         if self.dimensions is None:
             self.nodesFile.readline() # skip number of nodes
@@ -934,7 +941,15 @@ class MSHFile(GmshFile):
                 self.geometricalFaceMap[facesDict[face]] = faceEntitiesDict[face][1]
                 
         self.physicalNames = self._parseNamesFile()
-                                          
+                             
+        self.nodesFile.close()
+        os.remove(nodesPath)
+        self.elemsFile.close()
+        os.remove(elemsPath)
+        if namesPath is not None:
+            self.namesFile.close()
+            os.remove(namesPath)
+            
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF, 
                 cellsData.idmap, ghostsData.idmap)
@@ -1188,8 +1203,6 @@ class MSHFile(GmshFile):
                               physicalEntity=physicalEntity, 
                               geometricalEntity=geometricalEntity)
                               
-        self.elemsFile.close() # tempfile trashed
-
         return cellsData, ghostsData, facesData
 
 
@@ -1921,7 +1934,7 @@ class Gmsh3D(Mesh):
         Load a mesh consisting of a tetrahedron, prism, and pyramid
         
         >>> (f, mshFile) = tempfile.mkstemp('.msh')
-        >>> file = open(mshFile, 'w')
+        >>> file = os.fdopen(f, 'w')
 
         We need to do a little fancy footwork to account for multiple processes
         
@@ -1951,7 +1964,6 @@ class Gmsh3D(Mesh):
         ... $EndElements
         ... ''' % locals())
         >>> file.close() 
-        >>> os.close(f)
 
         >>> tetPriPyr = Gmsh3D(mshFile)
 
