@@ -641,7 +641,11 @@ class MSHFile(GmshFile):
         """
         newF, newPath = tempfile.mkstemp(text=True)
         newF = os.fdopen(newF, 'w')
-        self._seekForHeader(title)
+        try:
+            self._seekForHeader(title)
+        except Exception, e:
+            newF.close()
+            raise
         
         # extract the actual data within section
         while True:
