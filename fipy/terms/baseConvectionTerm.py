@@ -58,11 +58,11 @@ class _BaseConvectionTerm(FaceTerm):
             >>> fv = FaceVariable(mesh = m)
             >>> vcv = CellVariable(mesh=m, rank=1)
             >>> vfv = FaceVariable(mesh=m, rank=1)
-            >>> __ConvectionTerm(coeff = cv)
+            >>> __ConvectionTerm(coeff = cv) # doctest: IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
-            >>> __ConvectionTerm(coeff = fv)
+            >>> __ConvectionTerm(coeff = fv) # doctest: IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
@@ -73,7 +73,7 @@ class _BaseConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff = (1,))
             __ConvectionTerm(coeff=(1,))
             >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var=cv, solver=DummySolver())
-            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var=cv, solver=DummySolver())
+            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var=cv, solver=DummySolver()) # doctest: IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
