@@ -89,12 +89,13 @@ def _gmshVersion(communicator):
                 # this to fail sometimes. 
                 # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
                 pass
+        verStr = verStr.decode('ascii')
     else:
         verStr = None
             
     verStr = communicator.bcast(verStr)
 
-    m = re.search(r'\d+.\d+', str(verStr))
+    m = re.search(r'\d+.\d+', verStr)
 
     if m:
         return float(m.group(0))
@@ -196,6 +197,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                         # this to fail sometimes. 
                         # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
                         pass
+                        
+                gmshOutput = gmshOutput.decode('ascii')
                           
                 parprint("gmsh out: %s" % gmshOutput)
             else:
