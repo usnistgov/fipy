@@ -927,7 +927,7 @@ class AbstractMesh(object):
         but the different `Mesh` objects must, of course, have the same 
         dimensionality.
         
-        >>> InvalidMesh = threeDBaseMesh + baseMesh # +IGNORE_EXCEPTION_DETAIL
+        >>> InvalidMesh = threeDBaseMesh + baseMesh # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
         ...
         MeshAdditionError: Dimensions do not match

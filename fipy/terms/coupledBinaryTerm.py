@@ -167,19 +167,19 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         [v1, v0, v2]
         >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._vars
         [v1, v2, v0]
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars # +IGNORE_EXCEPTION_DETAIL
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last): 
             ... 
         SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars # +IGNORE_EXCEPTION_DETAIL
+        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last): 
             ... 
         SolutionVariableNumberError: Variable not in previously defined variables for this coupled equation.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars # +IGNORE_EXCEPTION_DETAIL
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last): 
             ... 
         SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2])._vars # +IGNORE_EXCEPTION_DETAIL
+        >>> print (eq2 & eq0 & eq1)([v1, v2])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last): 
             ... 
         SolutionVariableNumberError: Different number of solution variables and equations.
