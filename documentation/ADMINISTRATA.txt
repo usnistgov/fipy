@@ -54,6 +54,7 @@ Go to the branch::
    
 Check that it is up to date::
 
+    $ svn update
     $ svn diff
 
 Merge updated state of trunk to the branch::

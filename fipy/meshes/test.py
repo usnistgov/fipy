@@ -57,6 +57,7 @@ def _suite():
         'fipy.meshes.cylindricalUniformGrid2D',
         'fipy.meshes.cylindricalGrid1D',
         'fipy.meshes.cylindricalGrid2D',
+        'fipy.meshes.factoryMeshes',
         'fipy.meshes.abstractMesh'))
     
 if __name__ == '__main__':
