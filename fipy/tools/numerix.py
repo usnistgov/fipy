@@ -254,13 +254,13 @@ def sum(arr, axis=0):
         
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
-        return NUMERIX.issubclass_(arr.dtype.type, float)
+        return NUMERIX.issubclass_(arr.dtype.type, numpy.floating)
     else:
         return NUMERIX.issubclass_(arr.__class__, float)
 
 def isInt(arr):
     if isinstance(arr, NUMERIX.ndarray):
-        return NUMERIX.issubclass_(arr.dtype.type, int)
+        return NUMERIX.issubclass_(arr.dtype.type, numpy.integer)
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
     
