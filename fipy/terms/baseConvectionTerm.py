@@ -73,7 +73,7 @@ class _BaseConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff = (1,))
             __ConvectionTerm(coeff=(1,))
             >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var=cv, solver=DummySolver())
-            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var=cv, solver=DummySolver()) # doctest: IGNORE_EXCEPTION_DETAIL
+            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var=cv, solver=DummySolver()) # doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
