@@ -49,9 +49,12 @@ The significant changes since version 2.1.2 are:
 
 - Tests can now be run on a full install using `fipy.test()`.
 
+- Grid classes now take an `Lx` argument. 
+
 Tickets fixed in this release::
 
     145 tests should be run with fipy.tests()
+    101 Grids should take Lx, Ly, Lz arguments
 
 The relatively small change in version number belies significant advances
 in :term:`FiPy` capabilities. This release did not receive a "full" version
