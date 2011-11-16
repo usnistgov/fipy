@@ -804,35 +804,29 @@ class MSHFile(GmshFile):
         4. Build cellsToFaces
         
         Isolate relevant data into three files, store in 
-        `self.nodesFile` for $Nodes,
-        `self.elemsFile` for $Elements. 
+        `self.nodesPath` for $Nodes,
+        `self.elemsPath` for $Elements. 
         `self.namesFile` for $PhysicalNames. 
 
         Returns vertexCoords, facesToVertexID, cellsToFaceID, 
                 cellGlobalIDMap, ghostCellGlobalIDMap.
         """
         self.version, self.fileType, self.dataSize = self._getMetaData()
-        nodesPath = self._isolateData("Nodes")
-        self.nodesFile = open(nodesPath, 'r')
-        elemsPath = self._isolateData("Elements")
-        self.elemsFile = open(elemsPath, 'r')
+        self.nodesPath = self._isolateData("Nodes")
+        self.elemsPath = self._isolateData("Elements")
         try:
-            namesPath = self._isolateData("PhysicalNames")
+            self.namesPath = self._isolateData("PhysicalNames")
         except EOFError, e:
-            namesPath = None
-            
-        if namesPath is None:
-            self.namesFile = None
-        else:
-            self.namesFile = open(namesPath, 'r')
+            self.namesPath = None
             
         if self.dimensions is None:
-            self.nodesFile.readline() # skip number of nodes
+            nodesFile = open(self.nodesPath, 'r')
+            nodesFile.readline() # skip number of nodes
 
             # We assume we have a 2D file unless we find a node 
             # with a non-zero Z coordinate
             self.dimensions = 2
-            for node in self.nodesFile:
+            for node in nodesFile:
                 line   = node.split()
                 
                 newVert = [float(x) for x in line]
@@ -841,7 +835,7 @@ class MSHFile(GmshFile):
                     self.dimensions = 3
                     break
                     
-            self.nodesFile.seek(0)
+            nodesFile.close()
             
         self.coordDimensions = self.coordDimensions or self.dimensions
             
@@ -949,13 +943,10 @@ class MSHFile(GmshFile):
                 
         self.physicalNames = self._parseNamesFile()
                              
-        self.nodesFile.close()
-        os.remove(nodesPath)
-        self.elemsFile.close()
-        os.remove(elemsPath)
-        if namesPath is not None:
-            self.namesFile.close()
-            os.remove(namesPath)
+        os.remove(self.nodesPath)
+        os.remove(self.elemsPath)
+        if self.namesPath is not None:
+            os.remove(self.namesPath)
             
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF, 
@@ -1110,12 +1101,13 @@ class MSHFile(GmshFile):
         # establish map. This works because allVerts is a sorted set.
         vertGIDtoIdx[allVerts] = nx.arange(len(allVerts))
 
-        self.nodesFile.readline() # skip number of nodes
+        nodesFile = open(self.nodesPath, 'r')
+        nodesFile.readline() # skip number of nodes
 
         # now we walk through node file with a sorted unique list of vertices
         # in hand. When we encounter 0th element in `allVerts`, save it 
         # to `vertexCoords` then pop its ID off `allVerts`.
-        for node in self.nodesFile:
+        for node in nodesFile:
             line   = node.split()
             nodeID = int(line[0])
 
@@ -1126,6 +1118,8 @@ class MSHFile(GmshFile):
 
             if len(allVerts) == nodeCount: 
                 break
+                
+        nodesFile.close()
 
         # transpose for FiPy
         transCoords = vertexCoords.swapaxes(0,1)
@@ -1148,8 +1142,10 @@ class MSHFile(GmshFile):
         faceOffset = -1 # this will be subtracted from gmsh ID to obtain global ID
         pid = self.communicator.procID + 1
         
-        self.elemsFile.readline() # skip number of elements
-        for el in self.elemsFile:
+        elemsFile = open(self.elemsPath, 'r')
+
+        elemsFile.readline() # skip number of elements
+        for el in elemsFile:
             currLineInts = [int(x) for x in el.split()]
             elemType     = currLineInts[1]
 
@@ -1209,7 +1205,9 @@ class MSHFile(GmshFile):
                 facesData.add(currLine=currLineInts, elType=elemType, 
                               physicalEntity=physicalEntity, 
                               geometricalEntity=geometricalEntity)
-                              
+                             
+        elemsFile.close()
+        
         return cellsData, ghostsData, facesData
 
 
@@ -1220,9 +1218,11 @@ class MSHFile(GmshFile):
             2: dict(),
             3: dict()
         }
-        if self.namesFile is not None:
-            self.namesFile.readline() # skip number of elements
-            for nm in self.namesFile:
+        if self.namesPath is not None:
+            namesFile = open(self.namesPath, 'r')
+
+            namesFile.readline() # skip number of elements
+            for nm in namesFile:
                 nm = nm.split()
                 if self.version > 2.0:
                     dim = [int(nm.pop(0))]
@@ -1235,6 +1235,8 @@ class MSHFile(GmshFile):
                 name = " ".join(nm)[1:-1]
                 for d in dim:
                     physicalNames[d][name] = int(num)
+                    
+            namesFile.close()
                 
         return physicalNames
         
