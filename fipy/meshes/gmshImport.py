@@ -1949,7 +1949,7 @@ class Gmsh3D(Mesh):
         >>> numtags = 2 + 1 + len(partitions)
         >>> partitions = " ".join([str(i) for i in [parallel.Nproc] + partitions])
 
-        >>> file.write('''$MeshFormat
+        >>> output = file.write('''$MeshFormat
         ... 2.2 0 8
         ... $EndMeshFormat
         ... $Nodes
