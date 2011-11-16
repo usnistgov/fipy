@@ -485,7 +485,7 @@ class Term(object):
         >>> C = CellVariable(mesh=mesh, name="C") 
 
         >>> eq = DiffusionTerm(coeff=1.)
-        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
+        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last): 
         ... 
         SolutionVariableRequiredError: The solution variable needs to be specified.
@@ -518,7 +518,7 @@ class Term(object):
         True
         
         >>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1.)
-        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
+        >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last): 
         ... 
         SolutionVariableRequiredError: The solution variable needs to be specified.
@@ -592,7 +592,7 @@ class Term(object):
         >>> print parallel.procID > 0 or numerix.allequal(solver.RHSvector, [1, 0, -1])
         True
 
-        >>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10. 
+        >>> eq = TransientTerm(coeff=1.) == DiffusionTerm(coeff=1., var=B) + 10.  # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last): 
             ... 
         ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
@@ -616,23 +616,23 @@ class Term(object):
         >>> A = CellVariable(mesh=m, name='A')
         >>> B = CellVariable(mesh=m, name='B')
         >>> C = CellVariable(mesh=m, name='C')        
-        >>> DiffusionTerm().solve()
+        >>> DiffusionTerm().solve() # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableRequiredError: The solution variable needs to be specified.
         >>> DiffusionTerm().solve(A, solver=DummySolver())
         >>> DiffusionTerm(var=A).solve(A, solver=DummySolver())
-        >>> (DiffusionTerm(var=A) + DiffusionTerm())
+        >>> (DiffusionTerm(var=A) + DiffusionTerm()) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(solver=DummySolver())
         >>> (DiffusionTerm(var=A) + DiffusionTerm(var=B)).solve(A, solver=DummySolver())
-        >>> DiffusionTerm() & DiffusionTerm()
+        >>> DiffusionTerm() & DiffusionTerm() # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> DiffusionTerm(var=A) & DiffusionTerm()
+        >>> DiffusionTerm(var=A) & DiffusionTerm() # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         ExplicitVariableError: Terms with explicit Variables cannot mix with Terms with implicit Variables.
@@ -664,40 +664,40 @@ class Term(object):
         True
         >>> print eq.RHSvector.globalValue
         [ 0.  0.  0.  0.]
-        >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
+        >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
-        Exception: The solution variable should not be specified.
-        >>> solver = eq._prepareLinearSystem(var=C, solver=None, boundaryConditions=(), dt=1.)
+        SolutionVariableNumberError: The solution variable should not be specified.
+        >>> solver = eq._prepareLinearSystem(var=C, solver=None, boundaryConditions=(), dt=1.) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
-        Exception: The solution variable should not be specified.
+        SolutionVariableNumberError: The solution variable should not be specified.
         
-        >>> DiffusionTerm(var=A) & DiffusionTerm(var=A)
+        >>> DiffusionTerm(var=A) & DiffusionTerm(var=A) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> DiffusionTerm() & DiffusionTerm()
+        >>> DiffusionTerm() & DiffusionTerm() # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B)).solve(A)
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B)).solve(A) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
-        Exception: The solution variable should not be specified.
-        >>> DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=B)
+        SolutionVariableNumberError: The solution variable should not be specified.
+        >>> DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=B) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Different number of solution variables and equations.
         >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(solver=DummySolver())
-        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(A)
+        >>> (DiffusionTerm(var=A) & DiffusionTerm(var=B) & DiffusionTerm(var=C)).solve(A) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
-        Exception: The solution variable should not be specified.
-        >>> (DiffusionTerm(var=A) & (DiffusionTerm(var=B) + DiffusionTerm(var=C))).solve(A)
+        SolutionVariableNumberError: The solution variable should not be specified.
+        >>> (DiffusionTerm(var=A) & (DiffusionTerm(var=B) + DiffusionTerm(var=C))).solve(A) # +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
-        Exception: The solution variable should not be specified.
+        SolutionVariableNumberError: The solution variable should not be specified.
         >>> eq = (DiffusionTerm(coeff=1., var=A) + DiffusionTerm(coeff=2., var=B)) & (DiffusionTerm(coeff=2., var=B) + DiffusionTerm(coeff=3., var=C)) & (DiffusionTerm(coeff=3., var=C) + DiffusionTerm(coeff=1., var=A))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
