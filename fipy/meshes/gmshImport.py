@@ -128,6 +128,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
     # we've gotta compile a .msh file from either (i) a .geo file, 
     # or (ii) a gmsh script passed as a string.
     
+    fileIsTemporary = False
+    
     if mode.startswith('r'):
         if not os.path.exists(name):
             # we must have been passed a Gmsh script
@@ -184,6 +186,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
 
                 (f, mshFile) = tempfile.mkstemp('.msh')
                 os.close(f)
+                fileIsTemporary = True
                 
                 while True:
                     p = Popen(["gmsh", geoFile] + gmshFlags + ["-o", mshFile],
@@ -197,6 +200,12 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                         # this to fail sometimes. 
                         # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
                         pass
+                        
+                if background is not None:
+                    os.unlink(bgmf)
+                    
+                if not os.path.exists(name):
+                    os.unlink(geoFile)
                         
                 gmshOutput = gmshOutput.decode('ascii')
                           
@@ -218,7 +227,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                    coordDimensions=coordDimensions,
                    communicator=communicator, 
                    gmshOutput=gmshOutput,
-                   mode=mode)
+                   mode=mode,
+                   fileIsTemporary=fileIsTemporary)
     
 def openPOSFile(name, communicator=parallel, mode='w'):
     """Open a Gmsh POS post-processing file
@@ -231,10 +241,11 @@ def openPOSFile(name, communicator=parallel, mode='w'):
                    mode=mode)
     
 class GmshFile:
-    def __init__(self, filename, communicator, mode):
+    def __init__(self, filename, communicator, mode, fileIsTemporary=False):
         self.filename = filename
         self.communicator = communicator
         self.mode = mode
+        self.fileIsTemporary = fileIsTemporary
         
         self.formatWritten = False
         
@@ -282,7 +293,11 @@ class GmshFile:
         
     def close(self):
         self.fileobj.close()
-
+        
+    def __del__(self):
+        if self.fileIsTemporary:
+            os.unlink(self.filename)
+        
 class POSFile(GmshFile):
     def write(self, obj, time=0.0, timeindex=0):
         if not self.formatWritten:
@@ -605,7 +620,8 @@ class MSHFile(GmshFile):
                        coordDimensions=None,
                        communicator=parallel,
                        gmshOutput="",
-                       mode='r'):
+                       mode='r',
+                       fileIsTemporary=False):
         """
         :Parameters:
           - `filename`: a string indicating gmsh output file
@@ -617,6 +633,7 @@ class MSHFile(GmshFile):
             The file will be created if it doesn't exist when opened for writing; 
             it will be truncated when opened for writing.  
             Add a 'b' to the mode for binary files.
+          - `fileIsTemporary`: if `True`, `filename` should be cleaned up on deletion
         """
         self.dimensions = dimensions
         self.coordDimensions = coordDimensions
@@ -625,7 +642,7 @@ class MSHFile(GmshFile):
         self.mesh = None
         self.meshWritten = False
 
-        GmshFile.__init__(self, filename=filename, communicator=communicator, mode=mode)
+        GmshFile.__init__(self, filename=filename, communicator=communicator, mode=mode, fileIsTemporary=fileIsTemporary)
         
     def _getMetaData(self):
         """
@@ -642,12 +659,13 @@ class MSHFile(GmshFile):
         Gets all data between $[title] and $End[title], writes
         it out to its own file.
         """
-        newF, newPath = tempfile.mkstemp(text=True)
+        newF, newPath = tempfile.mkstemp(title, text=True)
         newF = os.fdopen(newF, 'w')
         try:
             self._seekForHeader(title)
         except Exception, e:
             newF.close()
+            os.unlink(newPath)
             raise
         
         # extract the actual data within section
@@ -819,134 +837,136 @@ class MSHFile(GmshFile):
         except EOFError, e:
             self.namesPath = None
             
-        if self.dimensions is None:
-            nodesFile = open(self.nodesPath, 'r')
-            nodesFile.readline() # skip number of nodes
+        try:
+            if self.dimensions is None:
+                nodesFile = open(self.nodesPath, 'r')
+                nodesFile.readline() # skip number of nodes
 
-            # We assume we have a 2D file unless we find a node 
-            # with a non-zero Z coordinate
-            self.dimensions = 2
-            for node in nodesFile:
-                line   = node.split()
-                
-                newVert = [float(x) for x in line]
-                
-                if newVert[2] != 0.0:
-                    self.dimensions = 3
-                    break
+                # We assume we have a 2D file unless we find a node 
+                # with a non-zero Z coordinate
+                self.dimensions = 2
+                for node in nodesFile:
+                    line   = node.split()
                     
-            nodesFile.close()
-            
-        self.coordDimensions = self.coordDimensions or self.dimensions
-            
-        # we need a conditional here so we don't pick up 2D shapes in 3D
-        if self.dimensions == 2: 
-            self.numVertsPerFace = {1: 2, # 2-node line
-                                    8: 2} # 3-node line
-            self.numFacesPerCell = { 2: 3, # 3-node triangle (3 faces)
-                                     9: 3, # 6-node triangle (we only read 1st 3)
-                                    20: 3, # 9-node triangle (we only read 1st 3) 
-                                    21: 3, # 10-node triangle (we only read 1st 3) 
-                                    22: 3, # 12-node triangle (we only read 1st 3) 
-                                    23: 3, # 15-node triangle (we only read 1st 3) 
-                                    24: 3, # 15-node triangle (we only read 1st 3) 
-                                    25: 3, # 21-node triangle (we only read 1st 3) 
-                                     3: 4, # 4-node quadrangle (4 faces)
-                                    10: 4, # 9-node quadrangle (we only read 1st 4)
-                                    16: 4} # 8-node quadrangle (we only read 1st 4)
-        elif self.dimensions == 3:
-            self.numVertsPerFace = { 2: 3, # 3-node triangle (3 vertices)
-                                     9: 3, # 6-node triangle (we only read 1st 3)
-                                    20: 3, # 9-node triangle (we only read 1st 3) 
-                                    21: 3, # 10-node triangle (we only read 1st 3) 
-                                    22: 3, # 12-node triangle (we only read 1st 3) 
-                                    23: 3, # 15-node triangle (we only read 1st 3) 
-                                    24: 3, # 15-node triangle (we only read 1st 3) 
-                                    25: 3, # 21-node triangle (we only read 1st 3) 
-                                     3: 4, # 4-node quadrangle (4 vertices)
-                                    10: 4, # 9-node quadrangle (we only read 1st 4)
-                                    16: 4} # 8-node quadrangle (we only read 1st 4)
-            self.numFacesPerCell = { 4: 4, # 4-node tetrahedron (4 faces)
-                                    11: 4, # 10-node tetrahedron (we only read 1st 4)
-                                    29: 4, # 20-node tetrahedron (we only read 1st 4)
-                                    30: 4, # 35-node tetrahedron (we only read 1st 4)
-                                    31: 4, # 56-node tetrahedron (we only read 1st 4)
-                                     5: 6, # 8-node hexahedron (6 faces)
-                                    12: 6, # 27-node tetrahedron (we only read 1st 6)
-                                    17: 6, # 20-node tetrahedron (we only read 1st 6)
-                                     6: 5, # 6-node prism (5 faces)
-                                    13: 5, # 18-node prism (we only read 1st 6)
-                                    18: 5, # 15-node prism (we only read 1st 6)
-                                     7: 5, # 5-node pyramid (5 faces)
-                                    14: 5, # 14-node pyramid (we only read 1st 5)
-                                    19: 5} # 13-node pyramid (we only read 1st 5)
-        else:
-            raise GmshException("Mesh has fewer than 2 or more than 3 dimensions")
-
-        parprint("Parsing elements.")
-        (cellsData, 
-         ghostsData, 
-         facesData) = self._parseElementFile()
-        
-        cellsToGmshVerts = cellsData.nodes + ghostsData.nodes
-        numCellsTotal    = len(cellsData.nodes) + len(ghostsData.nodes)
-        allShapeTypes    = cellsData.shapes + ghostsData.shapes
-        allShapeTypes    = nx.array(allShapeTypes)
-        allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
-        self.physicalCellMap = nx.array(cellsData.physicalEntities 
-                                        + ghostsData.physicalEntities)
-        self.geometricalCellMap = nx.array(cellsData.geometricalEntities 
-                                           + ghostsData.geometricalEntities)
-
-        if numCellsTotal < 1:
-            errStr = "Gmsh hasn't produced any cells! Check your Gmsh code."
-            errStr += "\n\nGmsh output:\n%s" % "".join(self.gmshOutput).rstrip()
-            raise GmshException(errStr)
-
-        parprint("Recovering coords.")
-        parprint("numcells %d" % numCellsTotal)
-        vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
-
-        # translate Gmsh IDs to `vertexCoord` indices
-        cellsToVertIDs = self._translateNodesToVertices(cellsToGmshVerts,
-                                                        vertIDtoIdx)
-
-        parprint("Building cells and faces.")
-        (facesToV, 
-         cellsToF,
-         facesDict) = self._deriveCellsAndFaces(cellsToVertIDs,
-                                                allShapeTypes,
-                                                numCellsTotal)
-            
-        # cell entities were easy to record on parsing
-        # but we don't use Gmsh faces, so we need to correlate the nodes 
-        # that make up the Gmsh faces with the vertex IDs of the FiPy faces
-        # so that we can check if any are named
-        faceEntitiesDict = dict()
-        
-        # translate Gmsh IDs to `vertexCoord` indices
-        facesToVertIDs = self._translateNodesToVertices(facesData.nodes,
-                                                        vertIDtoIdx)
-                                                    
-        for face, physicalEntity, geometricalEntity in zip(facesToVertIDs, 
-                                                           facesData.physicalEntities, 
-                                                           facesData.geometricalEntities):
-            faceEntitiesDict[' '.join([str(x) for x in sorted(face)])] = (physicalEntity, geometricalEntity)
-            
-        self.physicalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
-        self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
-        for face in facesDict.keys():
-            # not all faces are necessarily tagged
-            if face in faceEntitiesDict:
-                self.physicalFaceMap[facesDict[face]] = faceEntitiesDict[face][0]
-                self.geometricalFaceMap[facesDict[face]] = faceEntitiesDict[face][1]
+                    newVert = [float(x) for x in line]
+                    
+                    if newVert[2] != 0.0:
+                        self.dimensions = 3
+                        break
+                        
+                nodesFile.close()
                 
-        self.physicalNames = self._parseNamesFile()
-                             
-        os.remove(self.nodesPath)
-        os.remove(self.elemsPath)
-        if self.namesPath is not None:
-            os.remove(self.namesPath)
+            self.coordDimensions = self.coordDimensions or self.dimensions
+                
+            # we need a conditional here so we don't pick up 2D shapes in 3D
+            if self.dimensions == 2: 
+                self.numVertsPerFace = {1: 2, # 2-node line
+                                        8: 2} # 3-node line
+                self.numFacesPerCell = { 2: 3, # 3-node triangle (3 faces)
+                                         9: 3, # 6-node triangle (we only read 1st 3)
+                                        20: 3, # 9-node triangle (we only read 1st 3) 
+                                        21: 3, # 10-node triangle (we only read 1st 3) 
+                                        22: 3, # 12-node triangle (we only read 1st 3) 
+                                        23: 3, # 15-node triangle (we only read 1st 3) 
+                                        24: 3, # 15-node triangle (we only read 1st 3) 
+                                        25: 3, # 21-node triangle (we only read 1st 3) 
+                                         3: 4, # 4-node quadrangle (4 faces)
+                                        10: 4, # 9-node quadrangle (we only read 1st 4)
+                                        16: 4} # 8-node quadrangle (we only read 1st 4)
+            elif self.dimensions == 3:
+                self.numVertsPerFace = { 2: 3, # 3-node triangle (3 vertices)
+                                         9: 3, # 6-node triangle (we only read 1st 3)
+                                        20: 3, # 9-node triangle (we only read 1st 3) 
+                                        21: 3, # 10-node triangle (we only read 1st 3) 
+                                        22: 3, # 12-node triangle (we only read 1st 3) 
+                                        23: 3, # 15-node triangle (we only read 1st 3) 
+                                        24: 3, # 15-node triangle (we only read 1st 3) 
+                                        25: 3, # 21-node triangle (we only read 1st 3) 
+                                         3: 4, # 4-node quadrangle (4 vertices)
+                                        10: 4, # 9-node quadrangle (we only read 1st 4)
+                                        16: 4} # 8-node quadrangle (we only read 1st 4)
+                self.numFacesPerCell = { 4: 4, # 4-node tetrahedron (4 faces)
+                                        11: 4, # 10-node tetrahedron (we only read 1st 4)
+                                        29: 4, # 20-node tetrahedron (we only read 1st 4)
+                                        30: 4, # 35-node tetrahedron (we only read 1st 4)
+                                        31: 4, # 56-node tetrahedron (we only read 1st 4)
+                                         5: 6, # 8-node hexahedron (6 faces)
+                                        12: 6, # 27-node tetrahedron (we only read 1st 6)
+                                        17: 6, # 20-node tetrahedron (we only read 1st 6)
+                                         6: 5, # 6-node prism (5 faces)
+                                        13: 5, # 18-node prism (we only read 1st 6)
+                                        18: 5, # 15-node prism (we only read 1st 6)
+                                         7: 5, # 5-node pyramid (5 faces)
+                                        14: 5, # 14-node pyramid (we only read 1st 5)
+                                        19: 5} # 13-node pyramid (we only read 1st 5)
+            else:
+                raise GmshException("Mesh has fewer than 2 or more than 3 dimensions")
+
+            parprint("Parsing elements.")
+            (cellsData, 
+             ghostsData, 
+             facesData) = self._parseElementFile()
+            
+            cellsToGmshVerts = cellsData.nodes + ghostsData.nodes
+            numCellsTotal    = len(cellsData.nodes) + len(ghostsData.nodes)
+            allShapeTypes    = cellsData.shapes + ghostsData.shapes
+            allShapeTypes    = nx.array(allShapeTypes)
+            allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
+            self.physicalCellMap = nx.array(cellsData.physicalEntities 
+                                            + ghostsData.physicalEntities)
+            self.geometricalCellMap = nx.array(cellsData.geometricalEntities 
+                                               + ghostsData.geometricalEntities)
+
+            if numCellsTotal < 1:
+                errStr = "Gmsh hasn't produced any cells! Check your Gmsh code."
+                errStr += "\n\nGmsh output:\n%s" % "".join(self.gmshOutput).rstrip()
+                raise GmshException(errStr)
+
+            parprint("Recovering coords.")
+            parprint("numcells %d" % numCellsTotal)
+            vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
+
+            # translate Gmsh IDs to `vertexCoord` indices
+            cellsToVertIDs = self._translateNodesToVertices(cellsToGmshVerts,
+                                                            vertIDtoIdx)
+
+            parprint("Building cells and faces.")
+            (facesToV, 
+             cellsToF,
+             facesDict) = self._deriveCellsAndFaces(cellsToVertIDs,
+                                                    allShapeTypes,
+                                                    numCellsTotal)
+                
+            # cell entities were easy to record on parsing
+            # but we don't use Gmsh faces, so we need to correlate the nodes 
+            # that make up the Gmsh faces with the vertex IDs of the FiPy faces
+            # so that we can check if any are named
+            faceEntitiesDict = dict()
+            
+            # translate Gmsh IDs to `vertexCoord` indices
+            facesToVertIDs = self._translateNodesToVertices(facesData.nodes,
+                                                            vertIDtoIdx)
+                                                        
+            for face, physicalEntity, geometricalEntity in zip(facesToVertIDs, 
+                                                               facesData.physicalEntities, 
+                                                               facesData.geometricalEntities):
+                faceEntitiesDict[' '.join([str(x) for x in sorted(face)])] = (physicalEntity, geometricalEntity)
+                
+            self.physicalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
+            self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
+            for face in facesDict.keys():
+                # not all faces are necessarily tagged
+                if face in faceEntitiesDict:
+                    self.physicalFaceMap[facesDict[face]] = faceEntitiesDict[face][0]
+                    self.geometricalFaceMap[facesDict[face]] = faceEntitiesDict[face][1]
+                    
+            self.physicalNames = self._parseNamesFile()
+                      
+        finally:
+            os.unlink(self.nodesPath)
+            os.unlink(self.elemsPath)
+            if self.namesPath is not None:
+                os.unlink(self.namesPath)
             
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF, 
@@ -1491,6 +1511,8 @@ class Gmsh2D(Mesh2D):
          self.geometricalFaceMap,
          self.physicalFaces) = self.mshFile.makeMapVariables(mesh=self)
          
+        del self.mshFile
+        
         parprint("Exiting Gmsh2D")
 
     def __setstate__(self, dict):
@@ -1592,6 +1614,10 @@ class Gmsh2D(Mesh2D):
         """
         return nx.arange(len(self.cellGlobalIDs) 
                          + len(self.gCellGlobalIDs))
+                         
+    def __del__(self):
+        # never gets called (circular references?)
+        del self.mshFile
     
     def _test(self):
         """
@@ -1774,6 +1800,8 @@ class Gmsh3D(Mesh):
          self.geometricalFaceMap,
          self.physicalFaces) = self.mshFile.makeMapVariables(mesh=self)
         
+        del self.mshFile
+
     def __setstate__(self, dict):
         Mesh.__init__(self, **dict)
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
@@ -1975,6 +2003,8 @@ class Gmsh3D(Mesh):
         >>> file.close() 
 
         >>> tetPriPyr = Gmsh3D(mshFile)
+
+        >>> os.remove(mshFile)
 
         >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3])
         True
