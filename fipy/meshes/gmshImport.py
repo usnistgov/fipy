@@ -256,7 +256,7 @@ class GmshFile:
             self.fileobj = self.filename
             self.filename = self.fileobj.name
         else:
-            self.fileobj = open(name=self.filename, mode=mode)
+            self.fileobj = open(self.filename, mode=mode)
 
     def _getElementType(self, vertices, dimensions):
         if (vertices == 3 and dimensions == 2):
