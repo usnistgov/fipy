@@ -250,9 +250,9 @@ class GmshFile:
         self.formatWritten = False
         
         # open the .msh file
-        if (isinstance(self.filename, file) 
-            or (hasattr(self.filename, "file") 
-                and isinstance(self.filename.file, file))):
+        if (has_attr(self.filename, "name")
+            and has_attr(self.filename, "read")
+            and has_attr(self.filename, "write")):
             self.fileobj = self.filename
             self.filename = self.fileobj.name
         else:
@@ -1617,7 +1617,8 @@ class Gmsh2D(Mesh2D):
                          
     def __del__(self):
         # never gets called (circular references?)
-        del self.mshFile
+        if has_attr(self, "mshFile"):
+            del self.mshFile
     
     def _test(self):
         """
@@ -1901,7 +1902,12 @@ class Gmsh3D(Mesh):
         """
         return nx.arange(len(self.cellGlobalIDs) 
                          + len(self.gCellGlobalIDs))
-     
+
+    def __del__(self):
+        # never gets called (circular references?)
+        if has_attr(self, "mshFile"):
+            del self.mshFile
+
     def _test(self):
         """
         >>> prism = Gmsh3D('''
