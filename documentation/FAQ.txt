@@ -149,7 +149,7 @@ number of cases are interpreted below.
     anomalous results.
   
     >>> x, y = mesh.getCellCenters()
-    >>> DiffusionTerm([[[x**2, x * y], [-x * y, -y**2]]])
+    >>> DiffusionTerm(CellVariable(mesh=mesh, value=[[x**2, x * y], [-x * y, -y**2]])
 
     This represents an anisotropic diffusion coefficient that
     varies spatially so that the term has the form 
