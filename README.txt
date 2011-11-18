@@ -52,6 +52,8 @@ necessary.
 
 The significant changes since version 2.1 are:
 
+- Tests can now be run on a full install using `fipy.test()`.
+- Grid classes now take an `Lx` argument. 
 - The functions of the :mod:`~fipy.tools.numerix` module are no longer 
   included in the :mod:`fipy` namespace. See :mod:`examples.updating.update2_0to3_0` 
   for details.
@@ -254,20 +256,6 @@ to make to your own scripts are:
    :term:`FiPy` generally "does the right thing", but if you find that you 
    need to do something with the entire solution, you can call
    ``var.``:meth:`~fipy.variables.cellVariable.CellVariable.getGlobalValue`.
-
-.. [#almost] Only two examples from :term:`FiPy` 2.0 fail when run with :term:`FiPy` 2.1:
-
-    * :mod:`examples.phase.symmetry` fails because 
-      :class:`~fipy.meshes.numMesh.mesh.Mesh` no longer provides a
-      :meth:`~fipy.meshes.numMesh.mesh.Mesh.getCells` method. The mechanism
-      for enforcing symmetry in the updated example is both clearer and 
-      faster.
-
-    * :mod:`examples.levelSet.distanceFunction.circle` fails because of a 
-      change in the comparison of masked values.
-
-   Both of these are subtle issues unlikely to affect very many 
-   :term:`FiPy` users.
 
 .. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/

@@ -30,14 +30,14 @@ combination of the following terms,
    :label: num:gen
 
    \underbrace{
-   \frac{\partial (\rho \phi)}{\partial t}
+     \frac{\partial (\rho \phi)}{\partial t}
    }_{\text{transient}}
-   =
+   +
    \underbrace{
      \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
      \nabla \cdot \left( \vec{u} \phi \right)
-   }_{\text{convection}}
-   +
+   }_{\text{convection}}  
+   =
    \underbrace{
      \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
      \left[ \nabla \cdot \left( \Gamma_i \nabla \right) \right]^n \phi

@@ -73,7 +73,7 @@ if sys.version_info >= (3, 0):
     if parallel.Nproc > 1:
         def mpi_input(prompt=""):
             parallel.Barrier()
-            sys.stdout.flush()
+            sys.stdout.flush() 
             if parallel.procID == 0:
                 sys.stdout.write(prompt)
                 sys.stdout.flush()
@@ -100,3 +100,43 @@ else:
         raw_input = mpi_raw_input
         
     __all__.extend(['raw_input', 'raw_input_original'])
+
+def test(*args):
+    r"""
+    Test `Fipy`. Equivalent to
+    
+    $ python setup.py test --modules
+
+    Use
+
+    >>> import fipy
+    >>> fipy.test('--help')
+
+    for a full list of options. Options can be passed in the same way
+    as they are appended at the command line. For example, to test
+    `FiPy` with `Trilinos` and inlining switched on, use
+
+    >>> fipy.test('--trilinos', '--inline')
+
+    At the command line this would be
+
+    $ python setup.py test --modules --trilinos --inline
+
+    """
+
+    from setuptools import setup
+    from fipy.tools.testClass import _TestClass
+    from setuptools.command.test import test as _test
+    import tempfile
+
+    tmpDir = tempfile.mkdtemp()
+
+    try:
+        setup(name='FiPy',
+              script_args = ['egg_info', '--egg-base=' + tmpDir,
+                             'test', '--modules'] + list(args),
+              cmdclass={'test': _TestClass(_test)})
+    except SystemExit, exitErr:
+        import shutil
+        shutil.rmtree(tmpDir)
+        raise exitErr

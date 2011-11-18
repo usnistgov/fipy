@@ -15,12 +15,12 @@ governing equation that can be solved by :term:`FiPy` for the dependent
    \underbrace{
      \frac{\partial (\rho \phi)}{\partial t}
    }_{\text{transient}}
-   =
+   +
    \underbrace{
      \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
      \nabla \cdot \left( \vec{u} \phi \right)
    }_{\text{convection}}
-   +
+   =
    \underbrace{
      \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
      \left[ \nabla \cdot \left( \Gamma_i \nabla \right) \right]^n \phi
@@ -149,7 +149,7 @@ number of cases are interpreted below.
     anomalous results.
   
     >>> x, y = mesh.getCellCenters()
-    >>> DiffusionTerm([[[x**2, x * y], [-x * y, -y**2]]])
+    >>> DiffusionTerm(CellVariable(mesh=mesh, value=[[x**2, x * y], [-x * y, -y**2]])
 
     This represents an anisotropic diffusion coefficient that
     varies spatially so that the term has the form 
