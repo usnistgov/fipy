@@ -45,22 +45,17 @@ Even if you don't read manuals...
 What's new in version |release|?
 --------------------------------
 
-The relatively small change in version number belies significant advances
-in :term:`FiPy` capabilities. This release did not receive a "full" version
-increment because it is completely (er... [#almost]_) compatible with older scripts.
+The bump in major version number reflects more on the substantial increase
+in capabilities and ease of use than it does on a break in compatibility
+with FiPy 2.x. Few, if any, changes to your existing scripts should be
+necessary.
 
-The significant changes since version 2.0.2 are:
+The significant changes since version 2.1 are:
 
-- :term:`FiPy` can use :term:`Trilinos` for `solving in parallel`_.
-
-- We have switched from :term:`MayaVi` 1 to :term:`Mayavi` 2. This 
-  :class:`~fipy.viewers.viewer.Viewer` is an independent process that 
-  allows interaction with the display while a simulation is running.
-
-- Documentation has been switched to :term:`Sphinx`, allowing the entire manual to 
-  be available on the web and for our documentation to link to the
-  documentation for packages such as :mod:`numpy`, :mod:`scipy`,
-  :mod:`matplotlib`, and for :term:`Python` itself.
+- The functions of the :mod:`~fipy.tools.numerix` module are no longer 
+  included in the :mod:`fipy` namespace. See :mod:`examples.updating.update2_0to3_0` 
+  for details.
+- Support for Python 3. Please see :ref:`RunningUnderPython3` for details.
 
 Tickets fixed in this release::
 
@@ -77,11 +72,9 @@ Tickets fixed in this release::
 
 .. warning::
 
-   :term:`FiPy` 2 brought unavoidable syntax changes from :term:`FiPy` 1.
-   Please see :mod:`examples.updating.update1_0to2_0` for guidance on the
-   changes that you will need to make to your :term:`FiPy` 1.x scripts.
-   Few, if any, changes should be needed to migrate from :term:`FiPy` 2.0.x
-   to :term:`FiPy` 2.1.
+   :term:`FiPy` 3 brought unavoidable syntax changes from :term:`FiPy` 2.
+   Please see :mod:`examples.updating.update2_0to3_0` for guidance on the
+   changes that you will need to make to your :term:`FiPy` 2.x scripts.
 
 -------------------------
 Download and Installation
