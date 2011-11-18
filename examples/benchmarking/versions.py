@@ -39,7 +39,7 @@ import tempfile
 
 from fipy.tools.parser import parse
 
-from utils import monitor
+from examples.benchmarking.utils import monitor
 
 url = parse('--svnURL', action='store',
               type='string', default=None)

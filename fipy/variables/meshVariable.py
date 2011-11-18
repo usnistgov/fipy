@@ -114,7 +114,7 @@ class _MeshVariable(Variable):
                 
         self.elementshape = elementshape
         
-        if not locals().has_key("array"):
+        if not "array" in locals():
             if numerix._isPhysical(value):
                 dtype = numerix.obj2sctype(value.value)
             else:
@@ -191,10 +191,10 @@ class _MeshVariable(Variable):
             return self.name
         else:
             s = self.__class__.__name__ + '('
-            s += 'value=' + `self.globalValue`
+            s += 'value=' + repr(self.globalValue)
             s += ')'
             if len(self.name) == 0:
-                s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
+                s = s[:-1] + ', mesh=' + repr(self.mesh) + s[-1]
             return s
 
     @property

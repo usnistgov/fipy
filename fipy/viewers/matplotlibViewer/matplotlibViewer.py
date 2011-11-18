@@ -135,14 +135,14 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
         return Matplotlib1DViewer(vars=vars, title=title, axes=axes, **kwlimits)
     except MeshDimensionError:
         try:
-            from matplotlib2DGridViewer import Matplotlib2DGridViewer
+            from fipy.viewers.matplotlibViewer.matplotlib2DGridViewer import Matplotlib2DGridViewer
             return Matplotlib2DGridViewer(vars=vars, title=title, cmap=cmap, colorbar=colorbar, axes=axes, **kwlimits)
         except MeshDimensionError:
             try:
-                from matplotlib2DViewer import Matplotlib2DViewer
+                from fipy.viewers.matplotlibViewer.matplotlib2DViewer import Matplotlib2DViewer
                 return Matplotlib2DViewer(vars=vars, title=title, cmap=cmap, colorbar=colorbar, axes=axes, **kwlimits)
             except MeshDimensionError:
-                from matplotlibVectorViewer import MatplotlibVectorViewer
+                from fipy.viewers.matplotlibViewer.matplotlibVectorViewer import MatplotlibVectorViewer
                 return MatplotlibVectorViewer(vars=vars, title=title, axes=axes, **kwlimits)
 
 class _MatplotlibViewer(_Viewer):

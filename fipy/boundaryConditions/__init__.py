@@ -1,7 +1,7 @@
-from constraint import *
-from fixedFlux import *
-from fixedValue import *
-from nthOrderBoundaryCondition import *
+from fipy.boundaryConditions.constraint import *
+from fipy.boundaryConditions.fixedFlux import *
+from fipy.boundaryConditions.fixedValue import *
+from fipy.boundaryConditions.nthOrderBoundaryCondition import *
 
 __all__ = []
 __all__.extend(constraint.__all__)

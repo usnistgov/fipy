@@ -48,8 +48,8 @@ class SourceTerm(CellTerm):
     def __init__(self, coeff=0., var=None):
         if self.__class__ is SourceTerm:
             raise AbstractBaseClassError
-	CellTerm.__init__(self, coeff=coeff, var=var) 
-	
+        CellTerm.__init__(self, coeff=coeff, var=var) 
+        
     def _calcGeomCoeff(self, var):
         self._checkCoeff(var)
 

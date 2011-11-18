@@ -39,7 +39,7 @@ from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.solvers import DefaultAsymmetricSolver
 
-from convectionCoeff import _ConvectionCoeff
+from fipy.models.levelSet.surfactant.convectionCoeff import _ConvectionCoeff
 
 __all__ = ["SurfactantEquation"]
 

@@ -10,7 +10,7 @@
 
 __all__ = []
 
-import DictWithDefault
+from fipy.tools.dimensions import DictWithDefault
 
 class _NumberDict(DictWithDefault._DictWithDefault):
 
@@ -26,52 +26,60 @@ class _NumberDict(DictWithDefault._DictWithDefault):
     """
     
     def __init__(self):
-	DictWithDefault._DictWithDefault.__init__(self, 0)
+        DictWithDefault._DictWithDefault.__init__(self, 0)
 
     def __str__(self):
-	return str(self.data)
+        return str(self.data)
 
     def __repr__(self):
-	return repr(self.data)
+        return repr(self.data)
 
     def __coerce__(self, other):
-	if type(other) == type({}):
-	    new = _NumberDict()
-	    new.data = other
-	    other = new
-	return self, other
+        if type(other) == type({}):
+            new = _NumberDict()
+            new.data = other
+            other = new
+        return self, other
 
     def __add__(self, other):
-	sum = _NumberDict()
-	for key in self.keys():
-	    sum[key] = self[key]
-	for key in other.keys():
-	    sum[key] = sum[key] + other[key]
-	return sum
+        sum = _NumberDict()
+        for key in self.keys():
+            sum[key] = self[key]
+        for key in other.keys():
+            sum[key] = sum[key] + other[key]
+        return sum
 
     __radd__ = __add__
 
     def __sub__(self, other):
-	sum = _NumberDict()
-	for key in self.keys():
-	    sum[key] = self[key]
-	for key in other.keys():
-	    sum[key] = sum[key] - other[key]
-	return sum
+        sum = _NumberDict()
+        for key in self.keys():
+            sum[key] = self[key]
+        for key in other.keys():
+            sum[key] = sum[key] - other[key]
+        return sum
+
+    def __neg__(self):
+        neg = _NumberDict()
+        for key in list(self.keys()):
+            neg[key] = -self[key]
+        return neg
 
     def __rsub__(self, other):
-	return other-self
+        return -self + other
 
     def __mul__(self, other):
-	new = _NumberDict()
-	for key in self.keys():
-	    new[key] = other*self[key]
-	return new
+        new = _NumberDict()
+        for key in self.keys():
+            new[key] = other*self[key]
+        return new
 
     __rmul__ = __mul__
 
-    def __div__(self, other):
-	new = _NumberDict()
-	for key in self.keys():
-	    new[key] = self[key]/other
-	return new
+    def __floordiv__(self, other):
+        new = _NumberDict()
+        for key in self.keys():
+            new[key] = self[key]//other
+        return new
+
+    __div__ = __floordiv__

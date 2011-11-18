@@ -75,12 +75,12 @@ def _getComms():
     
 serial, parallel = _getComms()
 
-import dump
-import numerix
-import vector
+import fipy.tools.dump
+import fipy.tools.numerix
+import fipy.tools.vector
 from dimensions.physicalField import PhysicalField
-from numerix import *
-from vitals import Vitals
+from fipy.tools.numerix import *
+from fipy.tools.vitals import Vitals
 
 __all__ = ["serial",
            "parallel",
@@ -91,7 +91,7 @@ __all__ = ["serial",
            "Vitals"]
            
 import os
-if os.environ.has_key('FIPY_INCLUDE_NUMERIX_ALL'):
+if 'FIPY_INCLUDE_NUMERIX_ALL' in os.environ:
     import warnings
     class FiPyDeprecationWarning(DeprectationWarning):
         pass

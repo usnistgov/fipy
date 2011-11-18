@@ -145,7 +145,7 @@ class ModularVariable(CellVariable):
         Adjusted for a `ModularVariable`
         """
         if not hasattr(self, '_arithmeticFaceValue'):
-            from modCellToFaceVariable import _ModCellToFaceVariable
+            from fipy.variables.modCellToFaceVariable import _ModCellToFaceVariable
             self._arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
 
         return self._arithmeticFaceValue
@@ -157,7 +157,7 @@ class ModularVariable(CellVariable):
         gradient). Adjusted for a `ModularVariable`
         """
         if not hasattr(self, '_faceGrad'):
-            from modFaceGradVariable import _ModFaceGradVariable
+            from fipy.variables.modFaceGradVariable import _ModFaceGradVariable
             self._faceGrad = _ModFaceGradVariable(self, self._modIn)
 
         return self._faceGrad

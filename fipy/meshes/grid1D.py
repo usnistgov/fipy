@@ -42,8 +42,7 @@ from fipy.tools import parallel
 
 from fipy.meshes.builders import _NonuniformGrid1DBuilder
 from fipy.meshes.gridlike import _Gridlike1D
-
-from mesh1D import Mesh1D
+from fipy.meshes.mesh1D import Mesh1D
 
 __all__ = ["Grid1D"]
 

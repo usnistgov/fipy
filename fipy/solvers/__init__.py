@@ -1,16 +1,14 @@
 from fipy.tools.parser import _parseSolver
 from fipy.tools  import parallel as _parallel
 
-__all__ = []
-
-from solver import *
-__all__.extend(solver.__all__)
+from fipy.solvers.solver import *
+__all__ = list(solver.__all__)
 
 solver = _parseSolver()
 
 def _envSolver(solver):
     import os
-    if solver is None and os.environ.has_key('FIPY_SOLVERS'):
+    if solver is None and 'FIPY_SOLVERS' in os.environ:
         solver = os.environ['FIPY_SOLVERS'].lower()
     return solver
     

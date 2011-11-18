@@ -83,7 +83,7 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         
     def _getDerivative(self, order):
         newOrder = self.order - order
-        if not self.derivative.has_key(newOrder):
+        if newOrder not in self.derivative:
             if newOrder > 1:
                 self.derivative[newOrder] = NthOrderBoundaryCondition(self.faces, self.value, newOrder)
             elif newOrder == 1:

@@ -1,9 +1,9 @@
-from factoryMeshes import *
-from periodicGrid1D import *
-from periodicGrid2D import *
-from skewedGrid2D import *
-from tri2D import *
-from gmshImport import *
+from fipy.meshes.factoryMeshes import *
+from fipy.meshes.periodicGrid1D import *
+from fipy.meshes.periodicGrid2D import *
+from fipy.meshes.skewedGrid2D import *
+from fipy.meshes.tri2D import *
+from fipy.meshes.gmshImport import *
 
 __all__ = []
 __all__.extend(factoryMeshes.__all__)

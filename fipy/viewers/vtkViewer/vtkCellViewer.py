@@ -40,7 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 
-from vtkViewer import _VTKViewer
+from fipy.viewers.vtkViewer.vtkViewer import _VTKViewer
 
 __all__ = ["VTKCellViewer"]
 

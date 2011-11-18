@@ -36,9 +36,10 @@
  
 __docformat__ = 'restructuredtext'
 
-from gnuplotViewer import _GnuplotViewer
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
+
+from fipy.viewers.gnuplotViewer.gnuplotViewer import _GnuplotViewer
 
 __all__ = ["Gnuplot1DViewer"]
 

@@ -477,6 +477,38 @@ As you gain experience, you will want to see
 :ref:`FAQ-FlagsAndEnvironmentVariables` to learn about flags and 
 environment variable that affect :term:`FiPy`.
 
+.. _RunningUnderPython3:
+
+----------------------
+Running under Python 3
+----------------------
+
+It is possible to run :term:`FiPy` scripts under Python 3, but you must 
+convert FiPy's code before you can do so. From within the main 
+:term:`FiPy` directory::
+
+    $ 2to3 --write .
+    $ 2to3 --write --doctests_only .
+
+You can expect some harmless warnings and non-terminal errors from this conversion.
+
+The minimal prerequisites are:
+
+ * NumPy version 1.5 or greater
+ * SciPy version 0.9 or greater
+ * Matplotlib version 1.2 or greater (this hasn't been released yet, and 
+   we haven't been able to successfully test the 
+   :mod:`~.fipy.viewers.matplotlibViewer` classes with their development 
+   code.
+
+There are three known failures in FiPy's test suite under Python 3.
+
+ * `RuntimeError: Factor is exactly singular` in fipy/terms/unaryTerm.py. 
+   This is a SciPy solver failure not limited to Py3k.
+ * :class:`~fipy.viewers.vtkViewer.vtkCellViewer.VTKCellViewer` and 
+   :class:`~fipy.viewers.vtkViewer.vtkFaceViewer.VTKFaceViewer` due to lack of 
+   `enthought.tvtk.api` in Py3k.
+
 -----------------
 Optional Packages
 -----------------

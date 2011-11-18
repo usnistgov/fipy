@@ -61,7 +61,7 @@ class LinearLUSolver(PysparseSolver):
     
     """
     
-    def __init__(self, tolerance=1e-10, iterations=10
+    def __init__(self, tolerance=1e-10, iterations=10,
                        maxIterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
@@ -104,7 +104,7 @@ class LinearLUSolver(PysparseSolver):
             LU.solve(errorVector, xError)
             x[:] = x - xError
             
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))

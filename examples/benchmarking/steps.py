@@ -37,7 +37,7 @@ from subprocess import Popen, PIPE
         
 from fipy.tools.parser import parse
 
-from utils import monitor
+from examples.benchmarking.utils import monitor
 
 steps = parse('--numberOfSteps', action='store',
               type='int', default=20)

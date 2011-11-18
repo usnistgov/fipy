@@ -111,8 +111,8 @@ class _AbstractGridBuilder(object):
         Nproc = communicator.Nproc
 
         overlap = min(overlap, newNs[-1])
-        cellsPerNode = max(int(newNs[-1] / Nproc), overlap)
-        occupiedNodes = min(int(newNs[-1] / (cellsPerNode or 1)), Nproc) 
+        cellsPerNode = max(newNs[-1] // Nproc, overlap)
+        occupiedNodes = min(newNs[-1] // (cellsPerNode or 1), Nproc) 
 
         (firstOverlap,
          secOverlap,

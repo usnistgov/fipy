@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools.decorators import getsetDeprecated
 
-from matplotlibViewer import _MatplotlibViewer, _ColorBar
+from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer, _ColorBar
 
 __all__ = ["Matplotlib2DGridViewer"]
 

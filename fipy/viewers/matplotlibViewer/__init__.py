@@ -1,11 +1,11 @@
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import *
-from matplotlib1DViewer import *
-from matplotlib2DGridViewer import *
-from matplotlib2DGridContourViewer import *
-from matplotlib2DViewer import *
-from matplotlibVectorViewer import *
+from fipy.viewers.matplotlibViewer.matplotlibViewer import *
+from fipy.viewers.matplotlibViewer.matplotlib1DViewer import *
+from fipy.viewers.matplotlibViewer.matplotlib2DGridViewer import *
+from fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer import *
+from fipy.viewers.matplotlibViewer.matplotlib2DViewer import *
+from fipy.viewers.matplotlibViewer.matplotlibVectorViewer import *
 
 __all__ = ["MatplotlibViewer"]
 __all__.extend(matplotlib1DViewer.__all__)

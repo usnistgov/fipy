@@ -56,10 +56,10 @@ class Copy_script(Command):
 
     def finalize_options(self):
         if self.From == None:
-            raise "Please specify a '--From' input script file"
+            raise SyntaxError("Please specify a '--From' input script file")
          
         if self.To == None:
-            raise "Please specify a '--To' output script file"
+            raise SyntaxError("Please specify a '--To' output script file")
             
         if os.path.exists(os.path.expanduser(self.To)):
             ans = "junk"

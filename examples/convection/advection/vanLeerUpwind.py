@@ -51,8 +51,8 @@ periodic wave wraps around the mesh.
 ...     eq1.solve(var=var1, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
 ...     eq2.solve(var=var2, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
 
->>> print numerix.allclose(var1.globalValue[nx / 2:3 * nx / 4],
-...                        var2.globalValue[:nx / 4], atol=1e-6)
+>>> print numerix.allclose(var1.globalValue[nx // 2:3 * nx // 4],
+...                        var2.globalValue[:nx // 4], atol=1e-6)
 1
 
 Currently after 20 steps the wave has lost 23% of its height. Van Leer
@@ -77,10 +77,10 @@ steps = int(L /  4. / dt / velocity)
 
 mesh = Grid1D(dx = dx, nx = nx)
 
-periodicMesh = PeriodicGrid1D(dx = dx, nx = nx / 2)
+periodicMesh = PeriodicGrid1D(dx=dx, nx=nx // 2)
 
 startingArray = numerix.zeros(nx, 'd')
-startingArray[2 * nx / 10: 3 * nx / 10] = 1. 
+startingArray[2 * nx // 10: 3 * nx // 10] = 1. 
 
 var1 = CellVariable(
     name = "non-periodic",
@@ -90,7 +90,7 @@ var1 = CellVariable(
 var2 = CellVariable(
     name = "periodic",
     mesh = periodicMesh,
-    value = startingArray[:nx / 2])
+    value = startingArray[:nx // 2])
 
 eq1 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))
 eq2 = TransientTerm() - VanLeerConvectionTerm(coeff = (-velocity,))

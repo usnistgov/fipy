@@ -266,7 +266,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
     def __doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
         for boundaryCondition in higherOrderBCs:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)
-            if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            if 'FIPY_DISPLAY_MATRIX' in os.environ:
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
@@ -321,7 +321,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
                 normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
 
-                if len(var.shape) == 1 and (self.nthCoeff.shape) > 1:
+                if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
                     nthCoeffFaceGrad = var.faceGrad.dot(self.nthCoeff)
                     normalsNthCoeff =  normals.dot(self.nthCoeff)
                 else:

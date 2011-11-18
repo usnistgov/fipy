@@ -1,14 +1,14 @@
-from variable import *
-from cellVariable import *
-from faceVariable import *
-from scharfetterGummelFaceVariable import *
-from modularVariable import *
-from betaNoiseVariable import *
-from exponentialNoiseVariable import *
-from gammaNoiseVariable import *
-from gaussianNoiseVariable import *
-from uniformNoiseVariable import *
-from histogramVariable import *
+from fipy.variables.variable import *
+from fipy.variables.cellVariable import *
+from fipy.variables.faceVariable import *
+from fipy.variables.scharfetterGummelFaceVariable import *
+from fipy.variables.modularVariable import *
+from fipy.variables.betaNoiseVariable import *
+from fipy.variables.exponentialNoiseVariable import *
+from fipy.variables.gammaNoiseVariable import *
+from fipy.variables.gaussianNoiseVariable import *
+from fipy.variables.uniformNoiseVariable import *
+from fipy.variables.histogramVariable import *
 
 __all__ = []
 __all__.extend(variable.__all__)

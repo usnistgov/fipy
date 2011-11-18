@@ -107,8 +107,8 @@ def Grid3D(dx=1., dy=1., dz=1.,
         purposes.
     
     """
-    import uniformGrid3D
-    import grid3D
+    from fipy.meshes import uniformGrid3D
+    from fipy.meshes import grid3D
 
     if numerix.getShape(dx) == () \
       and numerix.getShape(dy) == () \
@@ -151,8 +151,8 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communic
 
     """
 
-    import uniformGrid2D
-    import grid2D
+    from fipy.meshes import uniformGrid2D
+    from fipy.meshes import grid2D
 
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
 
@@ -187,8 +187,8 @@ def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallel):
     """
 
 
-    import uniformGrid1D
-    import grid1D
+    from fipy.meshes import uniformGrid1D
+    from fipy.meshes import grid1D
     
     if numerix.getShape(dx) == ():
 
@@ -231,8 +231,8 @@ def CylindricalGrid2D(dr=None, dz=None,
     
     """
 
-    import cylindricalUniformGrid2D
-    import cylindricalGrid2D
+    from fipy.meshes import cylindricalUniformGrid2D
+    from fipy.meshes import cylindricalGrid2D
 
     if dr is not None:
         dx = dr
@@ -280,8 +280,8 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
     
     """
 
-    import cylindricalUniformGrid1D
-    import cylindricalGrid1D
+    from fipy.meshes import cylindricalUniformGrid1D
+    from fipy.meshes import cylindricalGrid1D
 
     if dr is not None:
         dx = dr

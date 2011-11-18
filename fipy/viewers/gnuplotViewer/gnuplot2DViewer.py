@@ -40,7 +40,7 @@ from fipy.meshes import Grid2D
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 
-from gnuplotViewer import _GnuplotViewer
+from fipy.viewers.gnuplotViewer.gnuplotViewer import _GnuplotViewer
 
 __all__ = ["Gnuplot2DViewer"]
 

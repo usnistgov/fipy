@@ -30,9 +30,9 @@
 
 __docformat__ = 'restructuredtext'
 
-from stepper import Stepper
-from pseudoRKQSStepper import PseudoRKQSStepper
-from pidStepper import PIDStepper
+from fipy.steppers.stepper import Stepper
+from fipy.steppers.pseudoRKQSStepper import PseudoRKQSStepper
+from fipy.steppers.pidStepper import PIDStepper
 
 __all__ = ["L1error", "L2error", "LINFerror", "sweepMonotonic"]
 

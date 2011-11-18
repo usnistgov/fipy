@@ -41,7 +41,7 @@ from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallel
 
-from grid1D import Grid1D
+from fipy.meshes.grid1D import Grid1D
 
 __all__ = ["CylindricalGrid1D"]
 

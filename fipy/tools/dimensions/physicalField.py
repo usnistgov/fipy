@@ -95,14 +95,14 @@ recommended values from CODATA_. Other conversion factors
 """
 __docformat__ = 'restructuredtext'
 
-import re, string
+import re
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.numerix import umath
 from fipy.tools.decorators import getsetDeprecated
 
-from NumberDict import _NumberDict
+from fipy.tools.dimensions.NumberDict import _NumberDict
 
 __all__ = ["PhysicalField", "PhysicalUnit"]
 
@@ -190,7 +190,7 @@ class PhysicalField(object):
         elif unit is not None:
             unit = _findUnit(unit)
         elif type(value) is type(''):
-            s = string.strip(value)
+            s = value.strip()
             match = PhysicalField._number.match(s)
             if match is None:
                 value = 1
@@ -284,7 +284,7 @@ class PhysicalField(object):
             return value
         else:
             return (self.__class__.__name__ + '(' + value + ',' + 
-                    `self.unit.name()` + ')')
+                    repr(self.unit.name()) + ')')
 
     def tostring(self, max_line_width=75, precision=8, suppress_small=False, separator=' '):
         """
@@ -394,7 +394,7 @@ class PhysicalField(object):
     __rmul__ = __mul__
     multiply = __mul__
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         Divide two physical quantities.  The unit of the result is the
         unit of the first operand divided by the unit of the second.
@@ -415,7 +415,7 @@ class PhysicalField(object):
         .. _Numeric: http://www.numpy.org
         """
         if _isVariable(other):
-            return other.__rdiv__(self)
+            return other.__rtruediv__(self)
         if type(other) is type(''):
             other = self.__class__(value = other)
         if not isinstance(other,PhysicalField):
@@ -429,11 +429,12 @@ class PhysicalField(object):
         else:
             return self.__class__(value = value, unit = unit)
 
-    divide = __div__
+    __div__ = __truediv__
+    divide = __truediv__
     
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         if _isVariable(other):
-            return other.__div__(self)
+            return other.__truediv__(self)
         if type(other) is type(''):
             other = PhysicalField(value = other)
         if not isinstance(other,PhysicalField):
@@ -447,6 +448,8 @@ class PhysicalField(object):
         else:
             return self.__class__(value = value, unit = unit)
 
+    __rdiv__ = __rtruediv__
+    
     def __mod__(self, other):
         """
         Return the remainder of dividing two physical quantities.  The unit of the result is the
@@ -578,8 +581,8 @@ class PhysicalField(object):
         
             >>> a = PhysicalField(4.,"m")
             >>> a.itemset(PhysicalField("6 ft"))
-            >>> print a
-            1.8288 m
+            >>> print a.allclose("1.8288 m")
+            1
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
             >>> a.itemset(PhysicalField("6 ft"))
             Traceback (most recent call last):
@@ -620,12 +623,12 @@ class PhysicalField(object):
         For not very intelligible reasons, the `PhysicalField`\ness gets cast 
         away if there are no units. Probably not harmful, so not worth investigating
         
-           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0]))
-           <type 'numpy.ndarray'>
+           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0])) is type(numerix.array(1))
+           1
 
            >>> from scipy.special import gamma as Gamma
-           >>> print type(Gamma(PhysicalField([1.0, 2.0])))
-           <type 'numpy.ndarray'>
+           >>> print type(Gamma(PhysicalField([1.0, 2.0]))) is type(numerix.array(1))
+           1
         """
         result = arr
         
@@ -706,7 +709,7 @@ class PhysicalField(object):
         As a special case, quantities with angular units are converted to
         base units (radians) and then assumed dimensionless.
         
-            >>> print round(float(PhysicalField("2. deg")), 6)
+            >>> print numerix.round_(float(PhysicalField("2. deg")), 6)
             0.034907
          
         If the quantity is not dimensionless, the conversion fails.
@@ -781,6 +784,8 @@ class PhysicalField(object):
     def __eq__(self,other):
         other = self._inMyUnits(other)
         return self.value == other.value
+        
+    __hash__ = object.__hash__
         
     def __ne__(self,other):
         other = self._inMyUnits(other)
@@ -872,9 +877,9 @@ class PhysicalField(object):
         the unit of the object.  If one unit is specified, the return value
         is a single `PhysicalField`.
         
-            >>> freeze = PhysicalField('0 degC')
-            >>> print freeze.inUnitsOf('degF')
-            32.0 degF
+        >>> freeze = PhysicalField('0 degC')
+        >>> print freeze.inUnitsOf('degF').allclose("32.0 degF")
+        1
         
         If several units are specified, the return value is a tuple of
 	`PhysicalField` instances with with one element per unit such that
@@ -883,9 +888,11 @@ class PhysicalField(object):
         This is used to convert to irregular unit systems like
         hour/minute/second.  The original object will not be changed.
         
-            >>> t = PhysicalField(314159., 's')
-            >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
-            ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
+        >>> t = PhysicalField(314159., 's')
+        >>> print numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d','h','min','s'),
+        ...                                                         ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])], 
+        ...                        True)
+        1
         """
         units = map(_findUnit, units)
         if len(units) == 1:
@@ -967,7 +974,7 @@ class PhysicalField(object):
         """
         Return the `PhysicalField` without units, after conversion to base SI units.
         
-            >>> print round(PhysicalField("1 inch").numericValue, 6)
+            >>> print numerix.round_(PhysicalField("1 inch").numericValue, 6)
             0.0254
         """
         return self.inSIUnits().value
@@ -978,8 +985,8 @@ class PhysicalField(object):
         Return the quantity with all units reduced to their base SI elements.
         
             >>> e = PhysicalField('2.7 Hartree*Nav')
-            >>> print e.inBaseUnits()
-            7088849.01085 kg*m**2/s**2/mol
+            >>> print e.inBaseUnits().allclose("7088849.01085 kg*m**2/s**2/mol")
+            1
         """
         if self.unit.factor != 1:
             new_value = self.value * self.unit.factor
@@ -1009,8 +1016,8 @@ class PhysicalField(object):
         Return the quantity with all units reduced to SI-compatible elements.
         
             >>> e = PhysicalField('2.7 Hartree*Nav')
-            >>> print e.inSIUnits()
-            7088849.01085 kg*m**2/s**2/mol
+            >>> print e.inSIUnits().allclose("7088849.01085 kg*m**2/s**2/mol")
+            1
         """
         if self.unit.factor != 1:
             return self.inBaseUnits()
@@ -1025,12 +1032,12 @@ class PhysicalField(object):
         """
         Return the inverse cosine of the `PhysicalField` in radians
         
-            >>> print PhysicalField(0).arccos()
-            1.57079632679 rad
+            >>> print PhysicalField(0).arccos().allclose("1.57079632679 rad")
+            1
         
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1 m").arccos(), 6)
+            >>> print numerix.round_(PhysicalField("1 m").arccos(), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1041,12 +1048,13 @@ class PhysicalField(object):
         """
         Return the inverse hyperbolic cosine of the `PhysicalField`
         
-            >>> print PhysicalField(2).arccosh()
-            1.31695789692
+            >>> print numerix.allclose(PhysicalField(2).arccosh(),
+            ...                        1.31695789692)
+            1
         
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1. m").arccosh(), 6)
+            >>> print numerix.round_(PhysicalField("1. m").arccosh(), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1057,12 +1065,12 @@ class PhysicalField(object):
         """
         Return the inverse sine of the `PhysicalField` in radians
         
-            >>> print PhysicalField(1).arcsin()
-            1.57079632679 rad
+            >>> print PhysicalField(1).arcsin().allclose("1.57079632679 rad")
+            1
         
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1 m").arcsin(), 6)
+            >>> print numerix.round_(PhysicalField("1 m").arcsin(), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1123,9 +1131,9 @@ class PhysicalField(object):
         """
         Return the cosine of the `PhysicalField`
         
-            >>> print round(PhysicalField(2*numerix.pi/6,"rad").cos(), 6)
+            >>> print numerix.round_(PhysicalField(2*numerix.pi/6,"rad").cos(), 6)
             0.5
-            >>> print round(PhysicalField(60.,"deg").cos(), 6)
+            >>> print numerix.round_(PhysicalField(60.,"deg").cos(), 6)
             0.5
         
         The units of the `PhysicalField` must be an angle
@@ -1157,9 +1165,9 @@ class PhysicalField(object):
         """
         Return the tangent of the `PhysicalField`
         
-            >>> round(PhysicalField(numerix.pi/4,"rad").tan(), 6)
+            >>> numerix.round_(PhysicalField(numerix.pi/4,"rad").tan(), 6)
             1.0
-            >>> round(PhysicalField(45,"deg").tan(), 6)
+            >>> numerix.round_(PhysicalField(45,"deg").tan(), 6)
             1.0
         
         The units of the `PhysicalField` must be an angle
@@ -1191,15 +1199,15 @@ class PhysicalField(object):
         """
         Return the arctangent of `self` divided by `other` in radians
         
-            >>> print round(PhysicalField(2.).arctan2(PhysicalField(5.)), 6)
+            >>> print numerix.round_(PhysicalField(2.).arctan2(PhysicalField(5.)), 6)
             0.380506
         
         The input `PhysicalField` objects must be in the same dimensions
         
-            >>> print round(PhysicalField(2.54, "cm").arctan2(PhysicalField(1., "inch")), 6)
+            >>> print numerix.round_(PhysicalField(2.54, "cm").arctan2(PhysicalField(1., "inch")), 6)
             0.785398
 
-            >>> print round(PhysicalField(2.).arctan2(PhysicalField("5. m")), 6)
+            >>> print numerix.round_(PhysicalField(2.).arctan2(PhysicalField("5. m")), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1211,12 +1219,12 @@ class PhysicalField(object):
         """
         Return the arctangent of the `PhysicalField` in radians
         
-            >>> print round(PhysicalField(1).arctan(), 6)
+            >>> print numerix.round_(PhysicalField(1).arctan(), 6)
             0.785398
         
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1 m").arctan(), 6)
+            >>> print numerix.round_(PhysicalField("1 m").arctan(), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1232,7 +1240,7 @@ class PhysicalField(object):
         
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1 m").arctanh(), 6)
+            >>> print numerix.round_(PhysicalField("1 m").arctanh(), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1244,12 +1252,12 @@ class PhysicalField(object):
         """
         Return the natural logarithm of the `PhysicalField`
         
-            >>> print round(PhysicalField(10).log(), 6)
+            >>> print numerix.round_(PhysicalField(10).log(), 6)
             2.302585
             
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1. m").log(), 6)
+            >>> print numerix.round_(PhysicalField("1. m").log(), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1260,12 +1268,12 @@ class PhysicalField(object):
         """
         Return the base-10 logarithm of the `PhysicalField`
         
-            >>> print round(PhysicalField(10.).log10(), 6)
+            >>> print numerix.round_(PhysicalField(10.).log10(), 6)
             1.0
             
         The input `PhysicalField` must be dimensionless
         
-            >>> print round(PhysicalField("1. m").log10(), 6)
+            >>> print numerix.round_(PhysicalField("1. m").log10(), 6)
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1468,32 +1476,55 @@ class PhysicalUnit:
 
     __str__ = __repr__
 
-    def __cmp__(self, other):
-        """
-        Determine if units are identical
-        
-            >>> a = PhysicalField("1. m")
-            >>> b = PhysicalField("3. ft")
-            >>> a.unit == b.unit
-            0
-            >>> a.unit == b.inBaseUnits().unit
-            1
-            
-        Units can only be compared with other units
-        
-            >>> a.unit == 3
-            Traceback (most recent call last):
-                ...
-            TypeError: PhysicalUnits can only be compared with other PhysicalUnits
-        """
-        if not isinstance(other,PhysicalUnit):
+    def _checkSame(self, other):
+        if not isinstance(other, PhysicalUnit):
             if other == 1:
                 return self.isDimensionless()
             else:
                 raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
         if not numerix.alltrue(self.powers == other.powers):
             raise TypeError, 'Incompatible units'
-        return cmp(self.factor, other.factor)
+
+    def __eq__(self, other):
+        """
+        Determine if units are identical
+        
+        >>> a = PhysicalField("1. m")
+        >>> b = PhysicalField("3. ft")
+        >>> a.unit == b.unit
+        0
+        >>> a.unit == b.inBaseUnits().unit
+        1
+            
+        Units can only be compared with other units
+        
+        >>> a.unit == 3
+        Traceback (most recent call last):
+            ...
+        TypeError: PhysicalUnits can only be compared with other PhysicalUnits
+        """
+        self._checkSame(other)
+        return self.factor == other.factor
+
+    def __lt__(self, other):
+        self._checkSame(other)
+        return self.factor < other.factor
+
+    def __le__(self, other):
+        self._checkSame(other)
+        return self.factor <= other.factor
+
+    def __ne__(self, other):
+        self._checkSame(other)
+        return self.factor != other.factor
+
+    def __gt__(self, other):
+        self._checkSame(other)
+        return self.factor > other.factor
+
+    def __ge__(self, other):
+        self._checkSame(other)
+        return self.factor >= other.factor
 
     def __mul__(self, other):
         """
@@ -1542,7 +1573,7 @@ class PhysicalUnit:
 
     __rmul__ = __mul__
     
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         Divide one unit by another
         
@@ -1585,7 +1616,9 @@ class PhysicalUnit:
             return PhysicalUnit(self.names+{str(other): -1},
                                 self.factor/other, self.powers)
 
-    def __rdiv__(self, other):
+    __div__ = __truediv__
+    
+    def __rtruediv__(self, other):
         """
         Divide something by a unit
         
@@ -1614,6 +1647,8 @@ class PhysicalUnit:
             return PhysicalUnit({str(other): 1}-self.names,
                                 other/self.factor,
                                 -self.powers)
+                                
+    __rdiv__ = __rtruediv__
 
     def __pow__(self, other):
         """
@@ -1661,11 +1696,11 @@ class PhysicalUnit:
         if abs(inv_exp-rounded) < 1.e-10:
             if numerix.logical_and.reduce(self.powers % rounded == 0):
                 f = pow(self.factor, other)
-                p = self.powers / rounded
+                p = self.powers // rounded
                 if reduce(lambda a, b: a and b,
                           map(lambda x, e=rounded: x%e == 0,
                               self.names.values())):
-                    names = self.names/rounded
+                    names = self.names // rounded
                 else:
                     names = _NumberDict()
                     if f != 1.:
@@ -1683,7 +1718,7 @@ class PhysicalUnit:
         
             >>> a = PhysicalField("1. mm")
             >>> b = PhysicalField("1. inch")
-            >>> print round(b.unit.conversionFactorTo(a.unit), 6)
+            >>> print numerix.round_(b.unit.conversionFactorTo(a.unit), 6)
             25.4
             
         Units must have the same fundamental SI units
@@ -1723,7 +1758,7 @@ class PhysicalUnit:
         
             >>> a = PhysicalField("1. K").unit
             >>> b = PhysicalField("1. degF").unit
-            >>> [str(round(element,6)) for element in b.conversionTupleTo(a)]
+            >>> [str(numerix.round_(element,6)) for element in b.conversionTupleTo(a)]
             ['0.555556', '459.67']
         """
         if not numerix.alltrue(self.powers == other.powers):
@@ -1885,7 +1920,7 @@ def _findUnit(unit):
 ##     print unit, type(unit)
     
     if type(unit) == type(''):
-        name = string.strip(unit)
+        name = unit.strip()
         if len(name) == 0 or unit == '1':
             unit = _unity
         else:
@@ -1918,17 +1953,17 @@ def _Scale(quantity, scaling):
     
     `quantity` can be a `PhysicalField`
     
-        >>> print round(_Scale(PhysicalField("1. inch"), PhysicalField("1. mm")), 6)
+        >>> print numerix.round_(_Scale(PhysicalField("1. inch"), PhysicalField("1. mm")), 6)
         25.4
         
     or a value-unit string convertable to a `PhysicalField`
     
-        >>> print round(_Scale("1. inch", PhysicalField("1. mm")), 6)
+        >>> print numerix.round_(_Scale("1. inch", PhysicalField("1. mm")), 6)
         25.4
         
     or a dimensionless number. A dimensionless number is left alone. 
            
-        >>> print round(_Scale(PhysicalField(2.), PhysicalField("1. mm")), 6)
+        >>> print numerix.round_(_Scale(PhysicalField(2.), PhysicalField("1. mm")), 6)
         2.0
         
     It is an error for the result to have dimensions.
@@ -1952,8 +1987,8 @@ def _Scale(quantity, scaling):
         dimensionless = quantity
                 
     if isinstance(dimensionless,PhysicalField) and not dimensionless.unit.isDimensionless():
-        raise TypeError, `quantity.inBaseUnits().unit` + ' and ' \
-        + `scaling.inBaseUnits().unit` \
+        raise TypeError, repr(quantity.inBaseUnits().unit) + ' and ' \
+        + repr(scaling.inBaseUnits().unit) \
         + ' are incompatible'
         
     return dimensionless
@@ -2005,7 +2040,7 @@ for unit in _base_units:
     _unit_table[unit[0]] = unit[1]
 
 def _addUnit(name, unit):
-    if _unit_table.has_key(name):
+    if name in _unit_table:
         raise KeyError, 'Unit ' + name + ' already defined'
     if type(unit) == type(''):
         unit = eval(unit, _unit_table)
@@ -2165,9 +2200,9 @@ def _getUnitStrings():
     def _getSortedUnitStrings(unitDict):
         strings = []
         keys = unitDict.keys()
-        keys.sort(lambda x,y: cmp(x.lower(), y.lower()))
+        keys.sort(key=str.lower)
         for key in keys:
-            if unitDict.has_key(key):
+            if key in unitDict:
                 unit = unitDict[key]
                 if isinstance(unit, PhysicalUnit):
                     tmp = PhysicalField(value = 1, unit = unit)
@@ -2179,7 +2214,7 @@ def _getUnitStrings():
         
     def _deleteFactors(unit):
         for prefix, factor in _prefixes:
-            if working_table.has_key(prefix + unit.name()):
+            if (prefix + unit.name()) in working_table:
                 del working_table[prefix + unit.name()]
         
     
@@ -2188,7 +2223,7 @@ def _getUnitStrings():
     units.append("\nBase SI units::\n")
     units.append("\t%s" % ", ".join(_base_names))
     for name in _base_names:
-        if working_table.has_key(name):
+        if name in working_table:
             del working_table[name]
     for name, unit in _base_units:
         _deleteFactors(unit)
@@ -2200,7 +2235,7 @@ def _getUnitStrings():
     units.append("\nUnits derived from SI (accepting SI prefixes)::\n")
     derived = {}
     for key in working_table.keys():
-        if working_table.has_key(key):
+        if key in working_table:
             unit = working_table[key]
             if isinstance(unit, PhysicalUnit) and unit.factor == 1:
                 derived[unit.name()] = unit
@@ -2211,12 +2246,12 @@ def _getUnitStrings():
     units.append("\nOther units that accept SI prefixes::\n")
     prefixed = {}
     for key in working_table.keys():
-        if working_table.has_key(key):
+        if key in working_table:
             unit = working_table[key]
             isPrefixed = 1
             if isinstance(unit, PhysicalUnit):
                 for prefix, factor in _prefixes:
-                    if not working_table.has_key(prefix + key):
+                    if (prefix + key) not in working_table:
                         isPrefixed = 0
                         break
                 if isPrefixed:

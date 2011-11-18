@@ -458,7 +458,7 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _concatenableMesh(self):
-        from mesh1D import Mesh1D
+        from fipy.meshes.mesh1D import Mesh1D
         return Mesh1D(vertexCoords = self.vertexCoords, 
                       faceVertexIDs = _Grid1DBuilder.createFaces(self.numberOfVertices), 
                       cellFaceIDs = _Grid1DBuilder.createCells(self.nx))

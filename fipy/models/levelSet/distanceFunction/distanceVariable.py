@@ -485,8 +485,8 @@ class DistanceVariable(CellVariable):
         >>> x, y = mesh.cellCenters
         >>> rad = numerix.sqrt((x - .5)**2 + (y - .5)**2) - r
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-        >>> print distanceVariable.cellInterfaceAreas.sum()
-        1.57984690073
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas.sum(), 1.57984690073)
+        1
         """        
         normals = numerix.array(MA.filled(self._cellInterfaceNormals, 0))
         areas = numerix.array(MA.filled(self.mesh._cellAreaProjections, 0))

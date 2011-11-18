@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from matplotlibViewer import _MatplotlibViewer, _ColorBar
+from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer, _ColorBar
 
 __all__ = ["Matplotlib2DViewer"]
 

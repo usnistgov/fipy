@@ -74,7 +74,7 @@ class _FaceGradContributions(FaceVariable):
 
     def __init__(self, var):
         FaceVariable.__init__(self, mesh=var.mesh, elementshape=(var.mesh.dim,) + var.shape[:-1])
-	self.var = self._requires(var)
+        self.var = self._requires(var)
 
     def _calcValue(self):
         faceValue = self.var.arithmeticFaceValue.numericValue

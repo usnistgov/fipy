@@ -286,8 +286,8 @@ class Variable(object):
         their base SI elements.
         
             >>> e = Variable(value="2.7 Hartree*Nav")
-            >>> print e.inBaseUnits()
-            7088849.01085 kg*m**2/s**2/mol
+            >>> print e.inBaseUnits().allclose("7088849.01085 kg*m**2/s**2/mol")
+            1
         """
         value = self.value
         if isinstance(value, physicalField.PhysicalField):
@@ -303,9 +303,9 @@ class Variable(object):
         the unit of the object.  If one unit is specified, the return value
         is a single `Variable`.
         
-            >>> freeze = Variable('0 degC')
-            >>> print freeze.inUnitsOf('degF')
-            32.0 degF
+        >>> freeze = Variable('0 degC')
+        >>> print freeze.inUnitsOf('degF').allclose("32.0 degF")
+        1
         
         If several units are specified, the return value is a tuple of
         `Variable` instances with with one element per unit such that
@@ -314,9 +314,11 @@ class Variable(object):
         This is used to convert to irregular unit systems like
         hour/minute/second.  The original object will not be changed.
         
-            >>> t = Variable(value=314159., unit='s')
-            >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
-            ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
+        >>> t = Variable(value=314159., unit='s')
+        >>> print numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d','h','min','s'),
+        ...                                                         ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])], 
+        ...                        True)
+        1
         """
         value = self.value
         if isinstance(value, physicalField.PhysicalField):
@@ -366,7 +368,7 @@ class Variable(object):
             return self.name
         else:
             s = self.__class__.__name__ + '('
-            s += 'value=' + `self.value`
+            s += 'value=' + repr(self.value)
             s += ')'
             return s
 
@@ -1140,12 +1142,16 @@ class Variable(object):
     def __rpow__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other)
             
-    def __div__(self, other):
+    def __truediv__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: a/b, other)
         
-    def __rdiv__(self, other):
+    __div__ = __truediv__
+    
+    def __rtruediv__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: b/a, other)
             
+    __rdiv__ = __rtruediv__
+    
     def __neg__(self):
         return self._UnaryOperatorVariable(lambda a: -a)
         
@@ -1232,6 +1238,8 @@ class Variable(object):
         """
         return self._BinaryOperatorVariable(lambda a,b: a==b, other)
         
+    __hash__ = object.__hash__
+    
     def __ne__(self,other):
         """
         Test if a `Variable` is not equal to another quantity
@@ -1495,7 +1503,7 @@ class Variable(object):
             setattr(self, opname, {})
             
         opdict = getattr(self, opname)
-        if not opdict.has_key(axis):
+        if axis not in opdict:
             if axis is None:
                 opShape = ()
             else:

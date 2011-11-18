@@ -841,96 +841,96 @@ class AbstractMesh(object):
         """
         Either translate a `Mesh` or concatenate two `Mesh` objects.
         
-            >>> from fipy.meshes import Grid2D
-            >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-            >>> print baseMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5]
-             [ 0.5  0.5  1.5  1.5]]
+        >>> from fipy.meshes import Grid2D
+        >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
+        >>> print baseMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5]
+         [ 0.5  0.5  1.5  1.5]]
              
         If a vector is added to a `Mesh`, a translated `Mesh` is returned
         
-            >>> translatedMesh = baseMesh + ((5,), (10,))
-            >>> print translatedMesh.cellCenters
-            [[  5.5   6.5   5.5   6.5]
-             [ 10.5  10.5  11.5  11.5]]
+        >>> translatedMesh = baseMesh + ((5,), (10,))
+        >>> print translatedMesh.cellCenters
+        [[  5.5   6.5   5.5   6.5]
+         [ 10.5  10.5  11.5  11.5]]
 
              
         If a `Mesh` is added to a `Mesh`, a concatenation of the two 
         `Mesh` objects is returned
         
-            >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
+        >>> print addedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
+         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
         
         The two `Mesh` objects need not be properly aligned in order to concatenate them
         but the resulting mesh may not have the intended connectivity
         
-            >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
+        >>> print addedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
+         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
-            >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
-             [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
+        >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
+        >>> print addedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
+         [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
 
         No provision is made to avoid or consolidate overlapping `Mesh` objects
         
-            >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
+        >>> print addedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
+         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
             
         Different `Mesh` classes can be concatenated
          
-            >>> from fipy.meshes import Tri2D
-            >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
-            >>> triMesh = triMesh + ((2,), (0,))
-            >>> triAddedMesh = baseMesh + triMesh
-            >>> cellCenters = [[0.5, 1.5, 0.5, 1.5, 2.83333333,  3.83333333,
-            ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
-            ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
-            ...                 0.5, 0.5, 0.16666667, 0.16666667]]
-            >>> print numerix.allclose(triAddedMesh.cellCenters,
-            ...                        cellCenters)
-            True
+        >>> from fipy.meshes import Tri2D
+        >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
+        >>> triMesh = triMesh + ((2,), (0,))
+        >>> triAddedMesh = baseMesh + triMesh
+        >>> cellCenters = [[0.5, 1.5, 0.5, 1.5, 2.83333333,  3.83333333,
+        ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+        ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
+        ...                 0.5, 0.5, 0.16666667, 0.16666667]]
+        >>> print numerix.allclose(triAddedMesh.cellCenters,
+        ...                        cellCenters)
+        True
 
         again, their faces need not align, but the mesh may not have 
         the desired connectivity
         
-            >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
-            >>> triMesh = triMesh + ((2,), (0,))
-            >>> triAddedMesh = baseMesh + triMesh
-            >>> cellCenters = [[ 0.5, 1.5, 0.5, 1.5, 2.83333333, 3.83333333,
-            ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
-            ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
-            ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
-            >>> print numerix.allclose(triAddedMesh.cellCenters,
-            ...                        cellCenters)
-            True
+        >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
+        >>> triMesh = triMesh + ((2,), (0,))
+        >>> triAddedMesh = baseMesh + triMesh
+        >>> cellCenters = [[ 0.5, 1.5, 0.5, 1.5, 2.83333333, 3.83333333,
+        ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+        ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
+        ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
+        >>> print numerix.allclose(triAddedMesh.cellCenters,
+        ...                        cellCenters)
+        True
 
         `Mesh` concatenation is not limited to 2D meshes
         
-            >>> from fipy.meshes import Grid3D
-            >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
-            ...                         nx = 2, ny = 2, nz = 2)
-            >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
-            ...                           nx = 1, ny = 1, nz = 1)
-            >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
-            >>> print threeDAddedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
-             [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
+        >>> from fipy.meshes import Grid3D
+        >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
+        ...                         nx = 2, ny = 2, nz = 2)
+        >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
+        ...                           nx = 1, ny = 1, nz = 1)
+        >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
+        >>> print threeDAddedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
+         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
+         [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
 
         but the different `Mesh` objects must, of course, have the same 
         dimensionality.
         
-            >>> InvalidMesh = threeDBaseMesh + baseMesh
-            Traceback (most recent call last):
-            ...
-            MeshAdditionError: Dimensions do not match
+        >>> InvalidMesh = threeDBaseMesh + baseMesh # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        MeshAdditionError: Dimensions do not match
         """  
         if isinstance(other, AbstractMesh):
             return self._concatenatedClass(**self._getAddedMeshValues(other=other))
@@ -962,7 +962,7 @@ class AbstractMesh(object):
         else:
             return self._translate(-numerix.array(other))
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         Tests.
         >>> from fipy import *
@@ -974,10 +974,10 @@ class AbstractMesh(object):
         NotImplementedError
         
         """
- 	return self.__mul__(1 / other)
-
-    __rdiv__ = __div__
-
+        return self.__mul__(1 / other)
+        
+    __div__ = __truediv__
+        
     def __repr__(self):
         return "%s()" % self.__class__.__name__
      

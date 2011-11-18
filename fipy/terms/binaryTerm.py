@@ -75,7 +75,7 @@ class _BinaryTerm(_BaseBinaryTerm):
 
             term._buildCache(tmpMatrix, tmpRHSvector)
 
-        if (os.environ.has_key('FIPY_DISPLAY_MATRIX')
+        if ('FIPY_DISPLAY_MATRIX' in os.environ
              and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
              self._viewer.title = "%s %s" % (var.name, repr(self))
              self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 

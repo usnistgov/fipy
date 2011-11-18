@@ -34,8 +34,9 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.variables.variable import Variable
+import sys
 
+from fipy.variables.variable import Variable
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 
@@ -145,7 +146,10 @@ def _OperatorVariableClass(baseClass=object):
             if isinstance(self.op, numerix.ufunc):
                 return "%s(%s)" % (self.op.__name__, ", ".join([__var(i) for i in range(len(self.var))]))
             
-            bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
+            if sys.version_info < (3,0):
+                bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
+            else:
+                bytecodes = list(self.op.__code__.co_code)
                 
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
@@ -196,12 +200,15 @@ def _OperatorVariableClass(baseClass=object):
                 elif opcode.opname[bytecode] == 'LOAD_DEREF':
                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                     stack.append(free[_popIndex()])
-                elif unop.has_key(bytecode):
+                elif bytecode in unop:
                     stack.append(unop[bytecode] + '(' + stack.pop() + ')')
-                elif binop.has_key(bytecode):
+                elif bytecode in binop:
                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
                 else:
-                    raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (`bytecode`, `[ord(byte) for byte in self.op.func_code.co_code]`,`"FIXME"`)
+                    raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (
+                       repr(bytecode), 
+                       repr([ord(byte) for byte in self.op.func_code.co_code]),
+                       "FIXME")
                 
         def __repr__(self):
             return self._getRepresentation()
@@ -274,8 +281,8 @@ def _testBinOp(self):
     Check that getTypeCode() works as expected.
 
         >>> a = Variable(1.) * Variable(1)
-        >>> a.getsctype()
-        <type 'numpy.float64'>
+        >>> print a.getsctype() == numerix.float64
+        1
 
     The following test is to correct an `--inline` bug that was
     being thrown by the Cahn-Hilliard example. The fix for this

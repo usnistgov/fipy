@@ -254,13 +254,13 @@ def sum(arr, axis=0):
         
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
-        return NUMERIX.issubclass_(arr.dtype.type, float)
+        return NUMERIX.issubclass_(arr.dtype.type, NUMERIX.floating)
     else:
         return NUMERIX.issubclass_(arr.__class__, float)
 
 def isInt(arr):
     if isinstance(arr, NUMERIX.ndarray):
-        return NUMERIX.issubclass_(arr.dtype.type, int)
+        return NUMERIX.issubclass_(arr.dtype.type, NUMERIX.integer)
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
     
@@ -369,8 +369,8 @@ def dot(a1, a2, axis=0):
     >>> print dot(v1, v1)
     [ 4 10]
     >>> v3 = array(((0,1),(2,3)))
-    >>> type(dot(v3, v3))
-    <type 'numpy.ndarray'>
+    >>> print type(dot(v3, v3)) is type(array(1))
+    1
     >>> print dot(v3, v3)
     [ 4 10]
     """
@@ -473,7 +473,7 @@ def nearest(data, points, max_mem=1e8):
     # though this is vastly less than the 4 GiB I had available)
     # see ticket:348
     
-    numChunks = int(round(D * N * data.itemsize * M / int(max_mem) + 0.5))
+    numChunks = int(round(D * N * data.itemsize * M / max_mem + 0.5))
 
     nearestIndices = empty((M,), dtype=int)
     for chunk in array_split(arange(points.shape[-1]), numChunks):
@@ -486,7 +486,7 @@ def nearest(data, points, max_mem=1e8):
         # (D, C) -> (D, 1, C)
         chunkOfPoints = chunkOfPoints[..., newaxis, :]
         # (D, 1, C) -> (D, N, C)
-        chunkOfPoints = repeat(chunkOfPoints, N, axis=1)
+        chunkOfPoints = NUMERIX.repeat(chunkOfPoints, N, axis=1)
         
 #         print "chunkOfPoints size: ", chunkOfPoints.shape, chunkOfPoints.size, chunkOfPoints.itemsize, chunkOfPoints.size * chunkOfPoints.itemsize
         
@@ -1140,7 +1140,7 @@ def _indexShape(index, arrayShape):
             indexShape += (1,)
         elif isinstance(element, slice):
             start, stop, stride = element.indices(arrayShape[arrayIndices[j]])
-            indexShape += ((stop - start) / stride,)
+            indexShape += ((stop - start) // stride,)
             j += 1
         else:
             raise IndexError, "invalid index"

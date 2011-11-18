@@ -85,7 +85,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         self.comm = matrix.Comm()
         if bandwidth is None:
             self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() -1 ) 
-                              / matrix.NumGlobalRows())
+                              // matrix.NumGlobalRows())
         else:
             self.bandwidth = bandwidth
 
@@ -558,7 +558,7 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
         if colMap is None:
            colMap = Epetra.Map(cols, range(0, cols), 0, comm)
 
-        matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, bandwidth*3/2)
+        matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, (bandwidth*3)//2)
 
         # Leave extra bandwidth, to handle multiple insertions into the
         # same spot. It's memory-inefficient, but it'll get cleaned up when

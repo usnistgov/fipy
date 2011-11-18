@@ -245,7 +245,7 @@ class CellVariable(_MeshVariable):
         """
 
         if not hasattr(self, 'volumeAverage'):
-            from cellVolumeAverageVariable import _CellVolumeAverageVariable
+            from fipy.variables.cellVolumeAverageVariable import _CellVolumeAverageVariable
             self.volumeAverage = _CellVolumeAverageVariable(self)
         
         return self.volumeAverage
@@ -274,7 +274,7 @@ class CellVariable(_MeshVariable):
             
         """
         if not hasattr(self, '_gaussGrad'):
-            from gaussCellGradVariable import _GaussCellGradVariable
+            from fipy.variables.gaussCellGradVariable import _GaussCellGradVariable
             self._gaussGrad = _GaussCellGradVariable(var = self, name = "%s_gauss_grad" % self.name)
         
         return self._gaussGrad
@@ -319,7 +319,7 @@ class CellVariable(_MeshVariable):
         """
 
         if not hasattr(self, '_leastSquaresGrad'):
-            from leastSquaresCellGradVariable import _LeastSquaresCellGradVariable
+            from fipy.variables.leastSquaresCellGradVariable import _LeastSquaresCellGradVariable
             self._leastSquaresGrad = _LeastSquaresCellGradVariable(var = self, 
                     name = "%s_least_squares_grad" % self.name)
         
@@ -366,7 +366,7 @@ class CellVariable(_MeshVariable):
         True
         """
         if not hasattr(self, '_arithmeticFaceValue'):
-            from arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
+            from fipy.variables.arithmeticCellToFaceVariable import _ArithmeticCellToFaceVariable
             self._arithmeticFaceValue = _ArithmeticCellToFaceVariable(self)
 
         return self._arithmeticFaceValue
@@ -402,7 +402,7 @@ class CellVariable(_MeshVariable):
         [-1  0  2]
         """
         if not hasattr(self, '_minmodFaceValue'):
-            from minmodCellToFaceVariable import _MinmodCellToFaceVariable
+            from fipy.variables.minmodCellToFaceVariable import _MinmodCellToFaceVariable
             self._minmodFaceValue = _MinmodCellToFaceVariable(self)
 
         return self._minmodFaceValue
@@ -447,7 +447,7 @@ class CellVariable(_MeshVariable):
         True
         """
         if not hasattr(self, '_harmonicFaceValue'):
-            from harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
+            from fipy.variables.harmonicCellToFaceVariable import _HarmonicCellToFaceVariable
             self._harmonicFaceValue = _HarmonicCellToFaceVariable(self)
 
         return self._harmonicFaceValue
@@ -463,7 +463,7 @@ class CellVariable(_MeshVariable):
         for the normal direction(second-order gradient).
         """
         if not hasattr(self, '_faceGrad'):
-            from faceGradVariable import _FaceGradVariable
+            from fipy.variables.faceGradVariable import _FaceGradVariable
             self._faceGrad = _FaceGradVariable(self)
 
         return self._faceGrad
