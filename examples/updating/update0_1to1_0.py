@@ -318,8 +318,8 @@ convert your existing scripts to :term:`FiPy` 1.0.
 __docformat__ = 'restructuredtext'
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

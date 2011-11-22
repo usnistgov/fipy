@@ -36,6 +36,7 @@
 import sys
 import time
 import doctest
+import inspect
 
 __all__ = ["execButNoTest", "register_skipper", "report_doctest_skips"]
 
@@ -180,4 +181,109 @@ class _LateImportDocTestSuite(_LateImportTestSuite):
     def _addDocTestModules(self, moduleNames=(), base='__main__'):
         for moduleName in moduleNames:
             self._addTestModule(moduleName=moduleName, base=base, testClass=_LateImportDocTestCase)
+
+def testmod(m=None, name=None, globs=None, verbose=None,
+            report=True, optionflags=0, extraglobs=None,
+            raise_on_error=False, exclude_empty=False):
+    """Test examples in the given module.  Return (#failures, #tests).
+    
+    Largely duplicated from :func:`doctest.testmod`, but using
+    :class:`_SelectiveDocTestParser`.
+
+    Test examples in docstrings in functions and classes reachable
+    from module m (or the current module if m is not supplied), starting
+    with m.__doc__.
+
+    Also test examples reachable from dict m.__test__ if it exists and is
+    not None.  m.__test__ maps names to functions, classes and strings;
+    function and class docstrings are tested even if the name is private;
+    strings are tested directly, as if they were docstrings.
+
+    Return (#failures, #tests).
+
+    See help(doctest) for an overview.
+
+    Optional keyword arg "name" gives the name of the module; by default
+    use m.__name__.
+
+    Optional keyword arg "globs" gives a dict to be used as the globals
+    when executing examples; by default, use m.__dict__.  A copy of this
+    dict is actually used for each docstring, so that each docstring's
+    examples start with a clean slate.
+
+    Optional keyword arg "extraglobs" gives a dictionary that should be
+    merged into the globals that are used to execute examples.  By
+    default, no extra globals are used.  This is new in 2.4.
+
+    Optional keyword arg "verbose" prints lots of stuff if true, prints
+    only failures if false; by default, it's true iff "-v" is in sys.argv.
+
+    Optional keyword arg "report" prints a summary at the end when true,
+    else prints nothing at the end.  In verbose mode, the summary is
+    detailed, else very brief (in fact, empty if all tests passed).
+
+    Optional keyword arg "optionflags" or's together module constants,
+    and defaults to 0.  This is new in 2.3.  Possible values (see the
+    docs for details):
+
+        DONT_ACCEPT_TRUE_FOR_1
+        DONT_ACCEPT_BLANKLINE
+        NORMALIZE_WHITESPACE
+        ELLIPSIS
+        SKIP
+        IGNORE_EXCEPTION_DETAIL
+        REPORT_UDIFF
+        REPORT_CDIFF
+        REPORT_NDIFF
+        REPORT_ONLY_FIRST_FAILURE
+        
+    as well as FiPy's flags
+    
+        GMSH
+        SCIPY
+        TVTK
+        SERIAL
+        PARALLEL
+        PROCESSOR_0
+        PROCESSOR_0_OF_2
+        PROCESSOR_1_OF_2
+        PROCESSOR_0_OF_3
+        PROCESSOR_1_OF_3
+        PROCESSOR_2_OF_3
+
+    Optional keyword arg "raise_on_error" raises an exception on the
+    first unexpected exception or failure. This allows failures to be
+    post-mortem debugged.
+    """
+    # If no module was given, then use __main__.
+    if m is None:
+        # DWA - m will still be None if this wasn't invoked from the command
+        # line, in which case the following TypeError is about as good an error
+        # as we should expect
+        m = sys.modules.get('__main__')
+
+    # Check that we were actually given a module.
+    if not inspect.ismodule(m):
+        raise TypeError("testmod: module required; %r" % (m,))
+
+    # If no name was given, then use the module's name.
+    if name is None:
+        name = m.__name__
+
+    # Find, parse, and run all tests in the given module.
+    finder = doctest.DocTestFinder(exclude_empty=exclude_empty,
+                                   parser=_SelectiveDocTestParser())
+
+    if raise_on_error:
+        runner = doctest.DebugRunner(verbose=verbose, optionflags=optionflags)
+    else:
+        runner = doctest.DocTestRunner(verbose=verbose, optionflags=optionflags)
+
+    for test in finder.find(m, name, globs=globs, extraglobs=extraglobs):
+        runner.run(test)
+
+    if report:
+        runner.summarize()
+
+    return doctest.TestResults(runner.failures, runner.tries)
 

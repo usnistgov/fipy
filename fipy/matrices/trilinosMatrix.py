@@ -1355,8 +1355,8 @@ class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
             del self.stencil
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 
