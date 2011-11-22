@@ -79,9 +79,6 @@ def execButNoTest(name='__main__'):
     for t in tests:
         exec t
     
-VTK = doctest.register_optionflag('VTK') 
-"""Flag indicating that a doctest example requires VTK""" 
-
 _doctestSkippers = list()
 
 def register_skipper(flag, test, why, skipWarning=True):
