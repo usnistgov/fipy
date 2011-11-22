@@ -984,7 +984,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         >>> GNOR = matrix._globalNonOverlappingRowIDs
         >>> LNOR = matrix._localNonOverlappingRowIDs
 
-        5 cells, 3 variables, 2 processor, serial
+        5 cells, 3 variables, serial
                        
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
@@ -1005,15 +1005,15 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
 
-        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]) # doctest: +PARALLEL
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
-        >>> print numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]) # doctest: +PARALLEL
+        >>> print numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
-        >>> print numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]) # doctest: +PARALLEL
+        >>> print numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
 
         
-        5 cells, 2 equations, 2 processors, serial
+        5 cells, 2 equations, serial
                        
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
@@ -1034,11 +1034,11 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     
         0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
         
-        >>> print numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) # doctest: +PARALLEL
+        >>> print numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
-        >>> print numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) # doctest: +PARALLEL
+        >>> print numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
-        >>> print numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) # doctest: +PARALLEL
+        >>> print numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
         
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7), numberOfVariables=3, numberOfEquations=2)
