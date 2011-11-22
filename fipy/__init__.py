@@ -125,7 +125,7 @@ def test(*args):
     """
 
     from setuptools import setup
-    from fipy.tools.testClass import _TestClass
+    from fipy.tests.testClass import _TestClass
     from setuptools.command.test import test as _test
     import tempfile
 
