@@ -814,20 +814,18 @@ class Mesh(AbstractMesh):
             >>> print b.cellCenters
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
             
-            >>> from fipy.tools import parallel
-            >>> if parallel.Nproc == 1:
-            ...     c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
-            >>> print (parallel.Nproc > 1 
-            ...        or numerix.allclose(c.cellCenters[0],
-            ...                            [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
-            ...                            12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]))
+            >>> c = UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10) # doctest: +SERIAL
+            >>> print numerix.allclose(c.cellCenters[0],
+            ...                        [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
+            ...                        12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
+            ... # doctest: +SERIAL
             True
 
         """
 
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

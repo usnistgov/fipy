@@ -47,43 +47,35 @@ __all__ = ["PeriodicGrid1D"]
 class PeriodicGrid1D(Grid1D):
     """
     
-        >>> from fipy.tools import parallel
-
     Creates a Periodic grid mesh.
         
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0], 
-        ...                            [3]))
+        >>> print numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0], 
+        ...                        [3]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh.faceCellIDs.filled(-999),
-        ...                            [[2, 0, 1, 2],
-        ...                             [0, 1, 2, -999]]))
+        >>> print numerix.allclose(mesh.faceCellIDs.filled(-999),
+        ...                        [[2, 0, 1, 2],
+        ...                         [0, 1, 2, -999]]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._cellDistances,
-        ...                            [ 2., 1.5, 2.5, 1.5]))
+        >>> print numerix.allclose(mesh._cellDistances,
+        ...                        [ 2., 1.5, 2.5, 1.5]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._cellToCellDistances,
-        ...                            [[ 2.,   1.5,  2.5],
-        ...                             [ 1.5,  2.5,  2. ]]))
+        >>> print numerix.allclose(mesh._cellToCellDistances,
+        ...                        [[ 2.,   1.5,  2.5],
+        ...                         [ 1.5,  2.5,  2. ]]) # doctest: +PROCESSOR_0
         True
         
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._faceNormals,
-        ...                            [[ 1.,  1.,  1.,  1.]]))
+        >>> print numerix.allclose(mesh._faceNormals,
+        ...                        [[ 1.,  1.,  1.,  1.]]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._cellVertexIDs,
-        ...                            [[1, 2, 2],
-        ...                             [0, 1, 0]]))
+        >>> print numerix.allclose(mesh._cellVertexIDs,
+        ...                        [[1, 2, 2],
+        ...                        [0, 1, 0]]) # doctest: +PROCESSOR_0
         True
     """
     def __init__(self, dx = 1., nx = None, overlap=2):
@@ -133,8 +125,8 @@ class PeriodicGrid1D(Grid1D):
         return newmesh
     
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

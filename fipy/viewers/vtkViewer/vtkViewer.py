@@ -42,6 +42,22 @@ __all__ = []
 
 from fipy.viewers.viewer import _Viewer
 from fipy.tools.decorators import getsetDeprecated
+from fipy.tests.doctestPlus import register_skipper
+
+def _checkForTVTK():
+    hasTVTK = True
+    try:
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
+    except Exception:
+        hasTVTK = False
+    return hasTVTK
+
+register_skipper(flag="TVTK",
+                 test=_checkForTVTK,
+                 why="the `tvtk` package cannot be imported")
 
 class _VTKViewer(_Viewer):
     """Renders `_MeshVariable` data in VTK format

@@ -34,34 +34,37 @@ class GapFillMesh(Mesh2D):
         ...                    cellSize = 0.1,
         ...                    desiredFineRegionHeight = 1.,
         ...                    desiredDomainHeight = domainHeight,
-        ...                    desiredDomainWidth = 1.)
+        ...                    desiredDomainWidth = 1.) # doctest: +GMSH
 
         >>> import fipy.tools.dump as dump
-        >>> (f, filename) = dump.write(mesh)
-        >>> mesh = dump.read(filename, f)
-        >>> mesh.numberOfCells - len(mesh.cellIDsAboveFineRegion)
+        >>> (f, filename) = dump.write(mesh) # doctest: +GMSH
+        >>> mesh = dump.read(filename, f) # doctest: +GMSH
+        >>> mesh.numberOfCells - len(mesh.cellIDsAboveFineRegion) # doctest: +GMSH
         90
 
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> var = CellVariable(mesh = mesh)
+        >>> var = CellVariable(mesh = mesh) # doctest: +GMSH
 
         >>> from fipy.terms.diffusionTerm import DiffusionTerm
         >>> eq = DiffusionTerm()
         
-        >>> var.constrain(0., mesh.facesBottom)
-        >>> var.constrain(domainHeight, mesh.facesTop)
+        >>> var.constrain(0., mesh.facesBottom) # doctest: +GMSH
+        >>> var.constrain(domainHeight, mesh.facesTop) # doctest: +GMSH
         
-        >>> eq.solve(var)
+        >>> eq.solve(var) # doctest: +GMSH
 
     Evaluate the result:
        
-        >>> centers = mesh.cellCenters[1].copy() ## the copy makes the array contiguous for inlining
-        >>> localErrors = (centers - var)**2 / centers**2
-        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells)
-        >>> argmax = numerix.argmax(localErrors)
-        >>> print numerix.sqrt(localErrors[argmax]) < 0.1
+        >>> centers = mesh.cellCenters[1].copy() # doctest: +GMSH 
+
+    .. note:: the copy makes the array contiguous for inlining
+    
+        >>> localErrors = (centers - var)**2 / centers**2 # doctest: +GMSH 
+        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells) # doctest: +GMSH 
+        >>> argmax = numerix.argmax(localErrors) # doctest: +GMSH 
+        >>> print numerix.sqrt(localErrors[argmax]) < 0.1 # doctest: +GMSH 
         1
-        >>> print globalError < 0.05
+        >>> print globalError < 0.05 # doctest: +GMSH 
         1
     """
     
@@ -196,34 +199,37 @@ class TrenchMesh(GapFillMesh):
         ...                   cellSize = cellSize,
         ...                   trenchDepth = trenchDepth,
         ...                   boundaryLayerDepth = boundaryLayerDepth,
-        ...                   aspectRatio = 1.)
+        ...                   aspectRatio = 1.) # doctest: +GMSH
 
         >>> import fipy.tools.dump as dump
-        >>> (f, filename) = dump.write(mesh)
-        >>> mesh = dump.read(filename, f)
-        >>> mesh.numberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0])        
+        >>> (f, filename) = dump.write(mesh) # doctest: +GMSH
+        >>> mesh = dump.read(filename, f) # doctest: +GMSH
+        >>> mesh.numberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0]) # doctest: +GMSH
         150
 
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> var = CellVariable(mesh = mesh, value = 0.)
+        >>> var = CellVariable(mesh = mesh, value = 0.) # doctest: +GMSH
 
         >>> from fipy.terms.diffusionTerm import DiffusionTerm
-        >>> eq = DiffusionTerm()
+        >>> eq = DiffusionTerm() # doctest: +GMSH
         
-        >>> var.constrain(0., mesh.facesBottom)
-        >>> var.constrain(domainHeight, mesh.facesTop)
+        >>> var.constrain(0., mesh.facesBottom) # doctest: +GMSH
+        >>> var.constrain(domainHeight, mesh.facesTop) # doctest: +GMSH
         
-        >>> eq.solve(var)
+        >>> eq.solve(var) # doctest: +GMSH
 
     Evaluate the result:
        
-        >>> centers = mesh.cellCenters[1].copy() ## ensure contiguous array for inlining
-        >>> localErrors = (centers - var)**2 / centers**2
-        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells)
-        >>> argmax = numerix.argmax(localErrors)
-        >>> print numerix.sqrt(localErrors[argmax]) < 0.051
+        >>> centers = mesh.cellCenters[1].copy() # doctest: +GMSH
+
+    .. note:: the copy makes the array contiguous for inlining
+
+        >>> localErrors = (centers - var)**2 / centers**2 # doctest: +GMSH
+        >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells) # doctest: +GMSH
+        >>> argmax = numerix.argmax(localErrors) # doctest: +GMSH
+        >>> print numerix.sqrt(localErrors[argmax]) < 0.051 # doctest: +GMSH
         1
-        >>> print globalError < 0.02
+        >>> print globalError < 0.02 # doctest: +GMSH
         1
     """
 
@@ -359,8 +365,8 @@ class TrenchMesh(GapFillMesh):
         GapFillMesh.__setstate__(self, dict)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

@@ -296,8 +296,8 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
         return cylindricalGrid1D.CylindricalGrid1D(dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=parallel)
 
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

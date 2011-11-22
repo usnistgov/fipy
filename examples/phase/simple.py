@@ -479,18 +479,18 @@ thickness
 ...     def tanhResiduals(p, y, x, t):
 ...         V, d = p
 ...         return y - 0.5 * (1 - numerix.tanh((x - V * t - L / 2.) / (2*d)))
-...     from scipy.optimize import leastsq
+...     from scipy.optimize import leastsq # doctest: +SCIPY
 ...     x =  mesh.cellCenters[0]
 ...     (V_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., delta], 
-...                                   args=(phase.globalValue, x.globalValue, elapsed))
+...                                   args=(phase.globalValue, x.globalValue, elapsed)) # doctest: +SCIPY
 ... except ImportError:
 ...     V_fit = d_fit = 0
 ...     print "The SciPy library is unavailable to fit the interface \
 ... thickness and velocity"
 
->>> print abs(1 - V_fit / velocity) < 4.1e-2
+>>> print abs(1 - V_fit / velocity) < 4.1e-2 # doctest: +SCIPY
 True
->>> print abs(1 - d_fit / delta) < 2e-2
+>>> print abs(1 - d_fit / delta) < 2e-2 # doctest: +SCIPY
 True
 
 >>> if __name__ == '__main__':

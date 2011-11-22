@@ -616,19 +616,19 @@ class PhysicalField(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
         
-           >>> from fipy.tools.dimensions.physicalField import PhysicalField
-           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0], unit="m"))
-           <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
+        >>> from fipy.tools.dimensions.physicalField import PhysicalField
+        >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0], unit="m"))
+        <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
 
         For not very intelligible reasons, the `PhysicalField`\ness gets cast 
         away if there are no units. Probably not harmful, so not worth investigating
         
-           >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0])) is type(numerix.array(1))
-           1
+        >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0])) is type(numerix.array(1))
+        1
 
-           >>> from scipy.special import gamma as Gamma
-           >>> print type(Gamma(PhysicalField([1.0, 2.0]))) is type(numerix.array(1))
-           1
+        >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
+        >>> print type(Gamma(PhysicalField([1.0, 2.0]))) is type(numerix.array(1)) # doctest: +SCIPY
+        1
         """
         result = arr
         
@@ -2268,8 +2268,8 @@ def _getUnitStrings():
 __doc__ += _getUnitStrings()
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
 ##     print _getUnitStrings()

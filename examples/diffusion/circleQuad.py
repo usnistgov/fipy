@@ -68,7 +68,7 @@ The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
 ...               Line Loop(10) = {6, 7, 8, 9};
 ...               Plane Surface(11) = {10};
 ...               Recombine Surface{11};
-...               ''' % locals())
+...               ''' % locals()) # doctest: +GMSH
 
 Using this mesh, we can construct a solution variable
 
@@ -77,7 +77,7 @@ Using this mesh, we can construct a solution variable
 
 >>> phi = CellVariable(name = "solution variable",
 ...                    mesh = mesh,
-...                    value = 0.)
+...                    value = 0.) # doctest: +GMSH
 
 We can now create a :class:`~fipy.viewers.viewer.Viewer` to see the mesh
 
@@ -106,8 +106,8 @@ We set up a transient diffusion equation
 The following line extracts the :math:`x` coordinate values on the exterior
 faces. These are used as the boundary condition fixed values.
 
->>> X, Y = mesh.faceCenters
->>> phi.constrain(X, mesh.exteriorFaces)
+>>> X, Y = mesh.faceCenters # doctest: +GMSH
+>>> phi.constrain(X, mesh.exteriorFaces) # doctest: +GMSH
 
 We first step through the transient problem
 
@@ -115,7 +115,7 @@ We first step through the transient problem
 >>> steps = 10
 >>> for step in range(steps):
 ...     eq.solve(var=phi,
-...              dt=timeStepDuration)
+...              dt=timeStepDuration) # doctest: +GMSH
 ...     if viewer is not None:
 ...         viewer.plot()
 
@@ -148,27 +148,28 @@ function, but it's a bit more complicated due to the varying boundary
 conditions and the different horizontal diffusion length at different
 vertical positions
 
->>> x, y = mesh.cellCenters
+>>> x, y = mesh.cellCenters # doctest: +GMSH
 >>> t = timeStepDuration * steps
 
 >>> phiAnalytical = CellVariable(name="analytical value",
-...                              mesh=mesh)
+...                              mesh=mesh) # doctest: +GMSH
 
 .. index:: 
     module: scipy
     single: sqrt; arcsin; cos
 
->>> x0 = radius * numerix.cos(numerix.arcsin(y))
+>>> x0 = radius * numerix.cos(numerix.arcsin(y)) # doctest: +GMSH
 >>> try:
-...     from scipy.special import erf ## This function can sometimes throw nans on OS X
-...                                   ## see http://projects.scipy.org/scipy/scipy/ticket/325
+...     from scipy.special import erf # doctest: +SCIPY
+...     ## This function can sometimes throw nans on OS X
+...     ## see http://projects.scipy.org/scipy/scipy/ticket/325
 ...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * numerix.sqrt(D * t))) 
-...                                  - erf((x0-x) / (2 * numerix.sqrt(D * t)))))
+...                                  - erf((x0-x) / (2 * numerix.sqrt(D * t))))) # doctest: +GMSH, +SCIPY
 ... except ImportError:
 ...     print "The SciPy library is not available to test the solution to \
 ... the transient diffusion equation"
 
->>> print phi.allclose(phiAnalytical, atol = 7e-2)
+>>> print phi.allclose(phiAnalytical, atol = 7e-2) # doctest: +GMSH, +SCIPY
 1
 
 >>> if __name__ == '__main__':
@@ -179,11 +180,11 @@ vertical positions
 As in the earlier examples, we can also directly solve the steady-state
 diffusion problem.
 
->>> DiffusionTerm(coeff=D).solve(var=phi)
+>>> DiffusionTerm(coeff=D).solve(var=phi) # doctest: +GMSH
                                                     
 The values at the elements should be equal to their `x` coordinate
 
->>> print phi.allclose(x, atol = 0.025)
+>>> print phi.allclose(x, atol = 0.025) # doctest: +GMSH
 1
 
 Display the results if run as a script.

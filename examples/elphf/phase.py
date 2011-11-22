@@ -84,7 +84,6 @@ We solve the problem on a 1D mesh
 We create the phase field
 
 >>> phase = CellVariable(mesh = mesh, name = 'xi')
->>> import scipy
 >>> phase.mobility = numerix.inf
 >>> phase.gradientEnergy = 0.025
     
