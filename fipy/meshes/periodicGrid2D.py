@@ -69,8 +69,7 @@ class _BasePeriodicGrid2D(Grid2D):
         ...                         [4, 5, 7, 8],
         ...                         [3, 4, 6, 7],
         ...                         [0, 1, 3, 4]]
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(m._orderedCellVertexIDs, orderedCellVertexIDs))
+        >>> print numerix.allclose(m._orderedCellVertexIDs, orderedCellVertexIDs)  # doctest: +PROCESSOR_0
 	True
         >>> print CellVariable(mesh=m, value=m.cellCenters[0])
         [-0.5  0.5 -0.5  0.5]
@@ -89,55 +88,47 @@ class PeriodicGrid2D(_BasePeriodicGrid2D):
     in the usual way.
 
         >>> from fipy import numerix
-        >>> from fipy.tools import parallel
 
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
         
-        >>> print (parallel.procID > 0 or 
-        ...        numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
-        ...                         [ 4,  5,  8, 11]))
+        >>> print numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
+        ...                        [ 4,  5,  8, 11])  # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 or 
-        ...        numerix.allclose(mesh.faceCellIDs.filled(-1),
-        ...                         [[2, 3, 0, 1, 2, 3, 1, 0, 1, 3, 2, 3],
-        ...                          [0, 1, 2, 3, -1, -1, 0, 1, -1, 2, 3, -1]]))
+        >>> print numerix.allclose(mesh.faceCellIDs.filled(-1),
+        ...                        [[2, 3, 0, 1, 2, 3, 1, 0, 1, 3, 2, 3],
+        ...                         [0, 1, 2, 3, -1, -1, 0, 1, -1, 2, 3, -1]]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 or 
-        ...        numerix.allclose(mesh._cellDistances,
-        ...                         [ 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 1., 1., 0.5, 1., 1., 0.5]))
+        >>> print numerix.allclose(mesh._cellDistances,
+        ...                        [ 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 1., 1., 0.5, 1., 1., 0.5]) # doctest: +PROCESSOR_0
         True
  
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh.cellFaceIDs,
-        ...                            [[0, 1, 2, 3],
-        ...                             [7, 6, 10, 9],
-        ...                             [2, 3, 0, 1],
-        ...                             [6, 7, 9, 10]]))
+        >>> print numerix.allclose(mesh.cellFaceIDs,
+        ...                        [[0, 1, 2, 3],
+        ...                         [7, 6, 10, 9],
+        ...                         [2, 3, 0, 1],
+        ...                         [6, 7, 9, 10]]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 or 
-        ...        numerix.allclose(mesh._cellToCellDistances,
-        ...                         [[ 0.5, 0.5, 0.5, 0.5],
-        ...                          [ 1., 1., 1., 1. ],
-        ...                          [ 0.5, 0.5, 0.5, 0.5],
-        ...                          [ 1., 1., 1., 1. ]]))
+        >>> print numerix.allclose(mesh._cellToCellDistances,
+        ...                        [[ 0.5, 0.5, 0.5, 0.5],
+        ...                         [ 1., 1., 1., 1. ],
+        ...                         [ 0.5, 0.5, 0.5, 0.5],
+        ...                         [ 1., 1., 1., 1. ]]) # doctest: +PROCESSOR_0
         True
 
         >>> normals = [[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
         ...            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]]
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._faceNormals, normals))
+        >>> print numerix.allclose(mesh._faceNormals, normals) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._cellVertexIDs,
-        ...                            [[4, 5, 7, 8],
-        ...                             [3, 4, 6, 7],
-        ...                             [1, 2, 4, 5],
-        ...                             [0, 1, 3, 4]]))
+        >>> print numerix.allclose(mesh._cellVertexIDs,
+        ...                        [[4, 5, 7, 8],
+        ...                         [3, 4, 6, 7],
+        ...                         [1, 2, 4, 5],
+        ...                         [0, 1, 3, 4]]) # doctest: +PROCESSOR_0
         True
     """
 

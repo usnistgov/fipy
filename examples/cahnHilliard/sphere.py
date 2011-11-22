@@ -66,15 +66,15 @@ declaration of ``mesh``.
 ...     
 ...     // create entire inner and outer shell
 ...     Surface Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
-... ''', order=2).extrude(extrudeFunc=lambda r: 1.1 * r)
->>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
+... ''', order=2).extrude(extrudeFunc=lambda r: 1.1 * r) # doctest: +GMSH
+>>> phi = CellVariable(name=r"$\phi$", mesh=mesh) # doctest: +GMSH
 
 We start the problem with random fluctuations about 
 :math:`\phi = 1/2`
 
 >>> phi.setValue(GaussianNoiseVariable(mesh=mesh,
 ...                                    mean=0.5,
-...                                    variance=0.01))
+...                                    variance=0.01)) # doctest: +GMSH
 
 :term:`FiPy` doesn't plot or output anything unless you tell it to: If
 :class:`~fipy.viewers.mayavViewer.mayaviClient.MayaviClient` is available, we
@@ -110,11 +110,11 @@ somewhat more accurate results by performing a linear interpolation from
 Some problems benefit from non-linear interpolations, such as harmonic or
 geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 
->>> PHI = phi.arithmeticFaceValue
+>>> PHI = phi.arithmeticFaceValue # doctest: +GMSH
 >>> D = a = epsilon = 1.
 >>> eq = (TransientTerm()
 ...       == DiffusionTerm(coeff=D * a**2 * (1 - 6 * PHI * (1 - PHI)))
-...       - DiffusionTerm(coeff=(D, epsilon**2)))
+...       - DiffusionTerm(coeff=(D, epsilon**2))) # doctest: +GMSH
 
 Because the evolution of a spinodal microstructure slows with time, we
 use exponentially increasing time steps to keep the simulation
@@ -131,7 +131,7 @@ evolution of their problem.
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt)
+...     eq.solve(phi, dt=dt) # doctest: +GMSH
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 

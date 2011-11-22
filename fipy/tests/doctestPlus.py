@@ -37,7 +37,7 @@ import sys
 import time
 import doctest
 
-__all__ = ["execButNoTest"]
+__all__ = ["execButNoTest", "register_skipper", "report_doctest_skips"]
 
 _DocTestTimes = []
 
@@ -78,10 +78,89 @@ def execButNoTest(name='__main__'):
 
     for t in tests:
         exec t
+    
+VTK = doctest.register_optionflag('VTK') 
+"""Flag indicating that a doctest example requires VTK""" 
+
+_doctestSkippers = list()
+
+def register_skipper(flag, test, why, skipWarning=True):
+    global _doctestSkippers
+    
+    skipper = _DoctestSkipper(flag=doctest.register_optionflag(flag),
+                              test=test,
+                              why=why,
+                              skipWarning=skipWarning)
+    _doctestSkippers.append(skipper)
+
+def report_doctest_skips():
+    global _doctestSkippers
+    
+    skips = list()
+    for skipper in _doctestSkippers:
+        if skipper.skipWarning and skipper.skipped:
+            skips.append("Skipped %d doctest examples because %s" 
+                         % (len(skipper.skipped), skipper.why))
+    if len(skips) > 0:
+        print >>sys.stderr, "!" * 79
+        print >>sys.stderr, "\n".join(skips)
+        print >>sys.stderr, "!" * 79
+    
+class _DoctestSkipper:
+    def __init__(self, flag, test, why, skipWarning):
+        self.flag = flag
+        self.why = why
+        self.test = test
+        self.skipWarning = skipWarning
+        self.skipped = list()
         
+    def skipTest(self):
+        if not hasattr(self, "hasFeature"):
+            self.hasFeature = self.test()
+        return not self.hasFeature
+        
+def _checkForSciPy():
+    hasSciPy = True
+    try:
+        import scipy
+    except Exception:
+        hasSciPy = False
+    return hasSciPy
+    
+register_skipper(flag="SCIPY",
+                 test=_checkForSciPy,
+                 why="the `scipy` package cannot be imported")
+
+class _SelectiveDocTestParser(doctest.DocTestParser):
+    """ 
+    Custom doctest parser that adds support for skipping test examples
+    """ 
+    def parse(self, string, name='<string>'): 
+        pieces = doctest.DocTestParser.parse(self, string, name) 
+        
+        return [piece for piece in pieces if not self._skipExample(piece)]
+        
+    def _skipExample(self, piece):
+        global _doctestSkippers
+        
+        skip = False
+        
+        if isinstance(piece, doctest.Example):
+            for skipper in _doctestSkippers:
+                if (piece.options.get(skipper.flag, False) and skipper.skipTest()):
+                    skip = True
+                    skipper.skipped.append(piece)
+                    break
+        
+        return skip
+
+    
 class _LateImportDocTestCase(_LateImportTestCase):
     def _getTestSuite(self, module):
-        return doctest.DocTestSuite(module, setUp=self._setUp, tearDown=self._tearDown)
+        return doctest.DocTestSuite(module, 
+                                    test_finder=doctest.DocTestFinder(parser=_SelectiveDocTestParser()),
+                                    setUp=self._setUp, tearDown=self._tearDown)
+        
         
     @staticmethod
     def _setUp(docTestObj):
