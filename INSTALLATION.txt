@@ -230,10 +230,7 @@ Viewers
 
 :term:`FiPy` will work perfectly well without them, but at least one of the
 following packages will be required to view the results of :term:`FiPy`
-calculations. :term:`FiPy` will select the first viewer that is available
-from the list below.  If more than one is installed, specify a viewer
-by setting the :envvar:`FIPY_VIEWER` environment variable to either
-"``gist``", "``gnuplot``" or "``matplotlib``".
+calculations.
 
 Matplotlib
 ----------
@@ -346,71 +343,7 @@ instructions of obtaining :term:`FiPy` with Subversion_.
 
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
 
-Manual
-======
 
-You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you 
-can `download the latest manual`_ from 
-<http://matforge.org/fipy/wiki/FiPyManual>. Alternatively,
-it may be possible to build a fresh copy by issuing the following
-command in the base directory::
-
-    $ python setup.py build_docs --pdf --html
-
-.. note::
-
-   This mechanism is intended primarily for the developers. At a minimum, 
-   you will need a development version of `Sphinx 1.0
-   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites.
-
-.. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
-
-------------
-Testing FiPy
-------------
-
-From the base directory, you can verify that :term:`FiPy` works properly by
-executing::
-
-    $ python setup.py test
-
-Depending on the packages you chose to install in `Optional Packages`_,
-be sure to set the appropriate environment variables.  You can expect a few
-errors if you did not install all of the recommended packages.
-
-.. note::
-
-   In order for Python_ to find the :term:`FiPy` modules, you will need to ensure
-   that the base directory is added to your :envvar:`PYTHONPATH` environment
-   variable, *e.g.*::
-
-       $ setenv PYTHONPATH .:${PYTHONPATH}
-
-   or::
-
-       $ export PYTHONPATH=.:${PYTHONPATH}
-
-If you chose to install the :mod:`scipy.weave` package, you should rerun the
-tests with::
-
-    $ python setup.py test --inline
-
-A few tests will fail the first time as a result of the messages
-output in the course of caching the compiled inline code, but a repeat
-test should have no failures (although see "``repairing catalog by
-removing key``" in the :ref:`FAQ`).
-
-If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests 
-on multiple processor cores with::
-
-    $ mpirun -np {# of processors} python setup.py test
-
-.. note::
-   
-   When running in parallel, there are two expected test failures in
-   :mod:`examples.elphf.diffusion.mesh1D` and in
-   :mod:`examples.diffusion.nthOrder.input4thOrder-line`. These failures are problems
-   with those particular tests, not with the parallel mechanism itself.
 
 ---------------
 Installing FiPy
@@ -426,88 +359,13 @@ typing::
 at the command line.  Alternatively, you may choose not to formally install
 :term:`FiPy` and to simply work within the base directory instead.  
 
-After installation, you can test :term:`FiPy` by executing::
-
-    $ python -c "import fipy; fipy.test()"
-
 If you choose to install, Python_ will find your :term:`FiPy` modules 
 automatically. If you choose not to install, then you will need to ensure 
 that the :term:`FiPy` distribution directory is appended to your ``PYTHONPATH`` 
 environment variable (either "``.``" if you are working within the :term:`FiPy` 
 directory, or "``~/path/to/fipy``" if you are working in your own directory).
 
-.. _sec:UsingFiPy:
-
-----------
-Using FiPy
-----------
-
-To see examples of problems that :term:`FiPy` is capable of solving, you can run
-any of the scripts in :mod:`examples`. 
-
-.. note::
-
-   We strongly recommend you proceed through :mod:`examples`, but at 
-   the very least work through :mod:`examples.diffusion.mesh1D` to understand 
-   the notation and basic concepts of :term:`FiPy`.
-
-We exlusively use either the unix
-command line or IPython_ to interact with :term:`FiPy`. The commands in
-:mod:`examples` are written with the assumption that they will be executed from
-the command line. For instance, from within the main :term:`FiPy` directory, you
-can type::
-
-    $ python examples/diffusion/mesh1D.py
-
-A viewer should appear and you should be prompted through a series of
-examples.
-
-.. note::
-
-   From within IPython_, you would type::
-
-       >>> run examples/diffusion/mesh1D.py
-
-In order to customize the examples, or to develop your own scripts, some
-knowledge of Python syntax is required.  We recommend you familiarize
-yourself with the excellent `Python tutorial`_ [PythonTutorial]_ 
-or with `Dive Into Python`_ [DiveIntoPython]_.
-
-As you gain experience, you will want to see
-:ref:`FAQ-FlagsAndEnvironmentVariables` to learn about flags and 
-environment variable that affect :term:`FiPy`.
-
-.. _RunningUnderPython3:
-
-----------------------
-Running under Python 3
-----------------------
-
-It is possible to run :term:`FiPy` scripts under Python 3, but you must 
-convert FiPy's code before you can do so. From within the main 
-:term:`FiPy` directory::
-
-    $ 2to3 --write .
-    $ 2to3 --write --doctests_only .
-
-You can expect some harmless warnings and non-terminal errors from this conversion.
-
-The minimal prerequisites are:
-
- * NumPy version 1.5 or greater
- * SciPy version 0.9 or greater
- * Matplotlib version 1.2 or greater (this hasn't been released yet, and 
-   we haven't been able to successfully test the 
-   :mod:`~.fipy.viewers.matplotlibViewer` classes with their development 
-   code.
-
-There are three known failures in FiPy's test suite under Python 3.
-
- * `RuntimeError: Factor is exactly singular` in fipy/terms/unaryTerm.py. 
-   This is a SciPy solver failure not limited to Py3k.
- * :class:`~fipy.viewers.vtkViewer.vtkCellViewer.VTKCellViewer` and 
-   :class:`~fipy.viewers.vtkViewer.vtkFaceViewer.VTKFaceViewer` due to lack of 
-   `enthought.tvtk.api` in Py3k.
+.. _OPTIONALPACKAGES:
 
 -----------------
 Optional Packages
@@ -635,46 +493,6 @@ in-depth documentation.
     :envvar:`DYLD_LIBRARY_PATH` (on Mac OS X) environment variable;
     this should be of the form :file:`${{INSTALL_DIR}}/lib``.
 
-:term:`Trilinos` solvers can be used to replace :term:`PySparse`
-solvers. If both :term:`PySparse` and :term:`Trilinos` are present,
-usage can be controlled by setting the :envvar:`FIPY_SOLVERS`
-environment variable to ``Trilinos`` or ``Pysparse``, or by passing a
-``--trilinos`` or ``--pysparse`` flag to the :term:`FiPy` script,
-overriding the environment. In the absence of these indicators,
-:term:`FiPy` will default to using :term:`PySparse` if it is
-present. Using the ``--trilinos`` flag instructs :term:`FiPy` to
-construct matrices using :term:`PySparse`, but solve them using
-:term:`Trilinos`. To avoid the :term:`PySparse` requirement, use the
-``--no-pysparse`` flag in place of the ``--trilinos`` flag. This will
-both construct matrices and solve them with
-:term:`Trilinos`. Unfortunately, :term:`Trilinos` tends to under
-perform when compared to :term:`PySparse` during matrix construction.
-
-.. note:: 
-
-    :term:`Trilinos` solvers frequently give intermediate output that :term:`FiPy` cannot
-    suppress. The most commonly encountered messages are:
-
-     ``Gen_Prolongator warning : Max eigen <= 0.0``:
-        which is not significant to :term:`FiPy`.
-
-     ``Aztec status AZ_loss: loss of precision``:
-        which indicates that there was some difficulty in solving the
-        problem to the requested tolerance due to precision limitations,
-        but usually does not prevent the solver from finding an adequate
-        solution.
-
-     ``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``:
-        which indicates that GMRES is having trouble with the problem, and
-        may indicate that trying a different solver or preconditioner may
-        give more accurate results if GMRES fails.
-
-     ``Aztec status AZ_breakdown: numerical breakdown``
-        which usually indicates serious problems solving the equation which
-        forced the solver to stop before reaching an adequate solution.
-        Different solvers, different preconditioners, or a less restrictive
-        tolerance may help.
-
 .. _MPI4PY:
 
 mpi4py
@@ -691,7 +509,6 @@ with::
 ------------------------------
 Platform-Specific Instructions
 ------------------------------
-.. _SURF2007: http://matforge.org/fipy/wiki/SURF2007#CompilingrunningTrilinosontheCTCMSlabmachines
 
 .. toctree::
    :maxdepth: 2
