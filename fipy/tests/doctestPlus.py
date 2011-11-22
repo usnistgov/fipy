@@ -38,7 +38,7 @@ import time
 import doctest
 import inspect
 
-__all__ = ["execButNoTest", "register_skipper", "report_doctest_skips"]
+__all__ = ["execButNoTest", "register_skipper", "report_skips", "testmod"]
 
 _DocTestTimes = []
 
@@ -83,6 +83,16 @@ def execButNoTest(name='__main__'):
 _doctestSkippers = list()
 
 def register_skipper(flag, test, why, skipWarning=True):
+    """Create a new doctest option flag for skipping tests
+    
+    :parameters:
+        `flag` - name of the option flag
+        `test` - function that returns `True` if the test should be run
+        `why` - explanation for why the test was skipped
+          (to be used in a string 
+           "Skipped %%(count)d doctest examples because %%(why)s")
+        `skipWarning` - report on tests skipped by this flag if `True` (default)
+    """
     global _doctestSkippers
     
     skipper = _DoctestSkipper(flag=doctest.register_optionflag(flag),
@@ -91,7 +101,9 @@ def register_skipper(flag, test, why, skipWarning=True):
                               skipWarning=skipWarning)
     _doctestSkippers.append(skipper)
 
-def report_doctest_skips():
+def report_skips():
+    """Print out how many doctest examples were skipped due to flags
+    """
     global _doctestSkippers
     
     skips = list()
@@ -284,6 +296,7 @@ def testmod(m=None, name=None, globs=None, verbose=None,
 
     if report:
         runner.summarize()
+        report_skips()
 
     return doctest.TestResults(runner.failures, runner.tries)
 

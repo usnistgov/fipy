@@ -197,8 +197,8 @@ def _TestClass(base):
                     )
             except SystemExit, exitErr:
                 # unittest.main(..., exit=...) not available until Python 2.7
-                from fipy.tests.doctestPlus import report_doctest_skips
-                report_doctest_skips()
+                from fipy.tests.doctestPlus import report_skips
+                report_skips()
                 if self.timetests is not None:
                     pass
                 else:
