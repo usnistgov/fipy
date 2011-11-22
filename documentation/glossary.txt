@@ -19,7 +19,7 @@ Glossary
 
    gnuplot
       A popular open-source plotting program.
-      See http://gnuplot.sorceforge.net/.
+      See http://www.gnuplot.info/
 
    Gmsh
       A free and Open Source 3D (and 2D!) finite element grid generator. It

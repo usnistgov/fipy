@@ -170,7 +170,7 @@ If necessary, you can download_ and install it for your platform
 NumPy
 -----
 
-http://sourceforge.net/projects/numpy/
+http://numpy.scipy.org
 
 Obtain and install the :term:`NumPy` package. :term:`FiPy` requires at least
 version 1.0 of NumPy_.
@@ -527,12 +527,32 @@ of C language inlining, via the :mod:`scipy.weave`. `SciPy download
 instructions`_ are available <http://www.scipy.org/Download>. We recommend
 version 0.5.2 or greater.
 
+:term:`SciPy` can also be used in place of :term:`PySparse` or
+:ref:`PYTRILINOS` as the linear solver suite. Set the
+:envvar:`FIPY_SOLVERS` environment variable to ``scipy`` or use the
+``--scipy`` command line flag. Furthermore, :term:`PyAmg` can be used
+for preconditioning when the :term:`Scipy` solvers are employed. In
+this case, set :envvar:`FIPY_SOLVERS` to ``pyamg`` or use the
+``--pyamg`` flag in place of ``--scipy``. The use of :ref:`PySparse`
+is still recommended as the primary solver suite for performance
+reasons.
+
 .. note:: 
 
    A handful of test cases use functions from the SciPy_ library and will
    throw errors if it is missing.
 
 .. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
+
+PyAmg
+=====
+
+http://code.google.com/p/pyamg/
+
+The :term:`PyAmg` preconditioners can be used when :term:`SciPy` is
+installed. Setting :envvar:`FIPY_SOLVERS` to ``pyamg`` or using the
+``--pyamg`` flag will automatically use the default :term:`PyAmg`
+preconditioners along with the default :term:`SciPy` solvers.
 
 Gmsh
 ====
@@ -573,35 +593,28 @@ solving on parallel nodes.
     can be difficult to set up. It is not necessary for most problems, and is
     **not** recommended in a basic install of :term:`FiPy`.
 
-:term:`Trilinos` is built using the standard :command:`configure`,
-:command:`make` and :command:`make install` method. The best approach that
+:term:`Trilinos` is built using :command:`cmake` along with
+:command:`make` and :command:`make install`. The best approach that
 we have found is as follows::
 
     $ cd trilinos-X.Y/
+    $ SOURCE_DIR=`pwd`
     $ mkdir BUILD_DIR    
     $ cd BUILD_DIR
-    $ ../configure CXXFLAGS="-O3" CFLAGS="-O3" FFLAGS="-O5 -funroll-all-loops \
-    > -malign-double" --enable-epetra --enable-aztecoo --enable-pytrilinos \
-    > --enable-ml --enable-ifpack --enable-amesos --with-gnumake --enable-galeri
-
-.. note::
-
-   Recif reports that to build on a 64-bit system, the ``configure`` step
-   needs to be::
-
-       $ ../configure CXXFLAGS="-O3 -fpic" CFLAGS="-O3 -fpic" \
-       > FFLAGS="-O5 -fpic -funroll-all-loops" \
-       > --enable-epetra --enable-aztecoo  --enable-pytrilinos \
-       > --enable-ml --enable-ifpack --enable-amesos --with-gnumake \
-       > --enable-galeri
-
-..
-
+    $ cmake \
+    >   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
+    >   -D Trilinos_ENABLE_PyTrilinos:BOOL=ON \
+    >   -D BUILD_SHARED_LIBS:BOOL=ON \
+    >   -D Trilinos_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=ON \
+    >   -D TPL_ENABLE_MPI:BOOL=ON \
+    >   -D Trilinos_ENABLE_TESTS:BOOL=ON \
+    >   -D DART_TESTING_TIMEOUT:STRING=600 \
+    >   ${SOURCE_DIR}
     $ make
     $ make install
 
 Depending on your platform, other options may be helpful or necessary;
-see ``../configure --help``, the :term:`Trilinos` user guide available from
+see the :term:`Trilinos` user guide available from
 http://trilinos.sandia.gov/documentation.html, or
 http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more
 in-depth documentation.
@@ -609,33 +622,33 @@ in-depth documentation.
 .. note:: 
  
     Trilinos can be installed in a non-standard location by adding the
-    :samp:`--prefix={$LOCAL_INSTALLATION_DIR}` flag to the configure step. If
-    :term:`Trilinos` is installed in a nonstandard location, the path to the
-    PyTrilinos site-packages directory should be added to the
-    :envvar:`PYTHONPATH` environment variable; this should be of the form
-    :file:`{$INSTALL_DIR}/lib/{$PYTHON_VERSION}/site-packages/`. Also, the path
-    to the :term:`Trilinos` lib directory should be added to the
-    :envvar:`LD_LIBRARY_PATH` (on Linux) or :envvar:`DYLD_LIBRARY_PATH` (on Mac OS
-    X) environment variable; this should be of the form
-    :file:`{$INSTALL_DIR}/lib``.
+    :samp:`-D CMAKE_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` and
+    :samp:`-D PyTrilinos_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` flags
+    to the configure step. If :term:`Trilinos` is installed in a
+    nonstandard location, the path to the :term:`PyTrilinos`
+    site-packages directory should be added to the
+    :envvar:`PYTHONPATH` environment variable; this should be of the
+    form
+    :file:`${{INSTALL_DIR}}/lib/${{PYTHON_VERSION}}/site-packages/`. Also,
+    the path to the :term:`Trilinos` lib directory should be added to
+    the :envvar:`LD_LIBRARY_PATH` (on Linux) or
+    :envvar:`DYLD_LIBRARY_PATH` (on Mac OS X) environment variable;
+    this should be of the form :file:`${{INSTALL_DIR}}/lib``.
 
-.. note::
-
-    If swig is in a non-standard place use the
-    :samp:`--with-swig={$PATH_TO_SWIG_EXECUTABLE}` flag with the configure
-    step.
-
-.. note::
-    
-    See SURF2007_ for further details on installing and running Trilinos as well
-    as installing on 64 bit machines.
-    
-:term:`Trilinos` solvers can be used to replace :term:`PySparse` solvers. If both
-:term:`PySparse` and :term:`Trilinos` are present, useage can be controlled by setting
-the :envvar:`FIPY_SOLVERS` environment variable to ``Trilinos`` or
-``Pysparse``, or by passing a ``--Trilinos`` or ``--Pysparse`` flag to
-the :term:`FiPy` script, overriding the environment. In the absence of these
-indicators, :term:`FiPy` will default to using :term:`PySparse` if it is present.
+:term:`Trilinos` solvers can be used to replace :term:`PySparse`
+solvers. If both :term:`PySparse` and :term:`Trilinos` are present,
+usage can be controlled by setting the :envvar:`FIPY_SOLVERS`
+environment variable to ``Trilinos`` or ``Pysparse``, or by passing a
+``--trilinos`` or ``--pysparse`` flag to the :term:`FiPy` script,
+overriding the environment. In the absence of these indicators,
+:term:`FiPy` will default to using :term:`PySparse` if it is
+present. Using the ``--trilinos`` flag instructs :term:`FiPy` to
+construct matrices using :term:`PySparse`, but solve them using
+:term:`Trilinos`. To avoid the :term:`PySparse` requirement, use the
+``--no-pysparse`` flag in place of the ``--trilinos`` flag. This will
+both construct matrices and solve them with
+:term:`Trilinos`. Unfortunately, :term:`Trilinos` tends to under
+perform when compared to :term:`PySparse` during matrix construction.
 
 .. note:: 
 
