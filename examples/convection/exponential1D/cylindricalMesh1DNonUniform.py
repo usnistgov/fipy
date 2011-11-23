@@ -112,7 +112,7 @@ or
 ...     from scipy.special import expi # doctest: +SCIPY
 ...     r = mesh.cellCenters[axis]
 ...     AA = numerix.exp(U / diffCoeff * (r1 - r))
-...     BB = (U * r0 / diffCoeff) - expi(U * r / diffCoeff) # doctest: +SCIPY
+...     BB = expi(U * r0 / diffCoeff) - expi(U * r / diffCoeff) # doctest: +SCIPY
 ...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff) # doctest: +SCIPY
 ...     analyticalArray = AA * BB / CC # doctest: +SCIPY
 ... except ImportError:
