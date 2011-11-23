@@ -39,13 +39,9 @@ Push the updated config back to the repository.
 
 Buildbot will automatically reconfigure when the push is received.
 
-If the Buildbot website is down after pushing, that probably means that your
-change introduced an error into the config file. To debug, ssh into the build
-machine and check the log files.
-
-    $ ssh obeirne@build.cmi.kent.edu
-    obeirne@buildbot-test$ cd /srv/buildbot/fipy-buildbot
-    obeirne@buildbot-test$ less twistd.log
+If the Buildbot website is down after pushing, that probably means that
+your change introduced an error into the config file. To debug, check the
+log files at http://build.cmi.kent.edu/fipy-buildbot.log.
 
 -------------------
 Adding a buildslave
@@ -57,8 +53,14 @@ adding a new element to the `c['slaves']` list like so:
 
     c['slaves'] = [
                    ..., # existing slaves
-                   BuildSlave('newSlaveName', 'newSlavePasswd'),
+                   FiPyBuildSlave('newSlaveName', 'newSlavePasswd', 
+                                  commands=[...]),
                   ]
+
+where `command` is a list of commands that the slave can (and should) 
+execute. This can usually be set to `default_commands`. In a few cases 
+(Py3k), only a few commands may be appropriate and the list should be 
+edited accordingly.
 
 Push `master.cfg` and make sure buildbot reconfigures successfully.
     
