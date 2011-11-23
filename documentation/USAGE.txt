@@ -1,9 +1,7 @@
 .. _USAGE:
 
-.. _sec:UsingFiPy:
-
 ==========
-Usage
+Using FiPy
 ==========
 
 To see examples of problems that :term:`FiPy` is capable of solving, you can run
@@ -42,18 +40,46 @@ As you gain experience, you will want to see
 environment variable that affect :term:`FiPy`.
 
 ----------------------------------
-Environment and Command Line Flags
+Environment and Using Command Line Flags
 ----------------------------------
+
+If you choose to install, Python_ will find your :term:`FiPy` modules 
+automatically. If you choose not to install, then you will need to ensure 
+that the :term:`FiPy` distribution directory is appended to your ``PYTHONPATH`` 
+environment variable (either "``.``" if you are working within the :term:`FiPy` 
+directory, or "``~/path/to/fipy``" if you are working in your own directory).
 
  :term:`FiPy` will select the first viewer that is available
 from the list below.  If more than one is installed, specify a viewer
 by setting the :envvar:`FIPY_VIEWER` environment variable to either
 "``gist``", "``gnuplot``" or "``matplotlib``".
 
+:term:`SciPy` can also be used in place of :term:`PySparse` or
+:ref:`PYTRILINOS` as the linear solver suite. Set the
+:envvar:`FIPY_SOLVERS` environment variable to ``scipy`` or use the
+``--scipy`` command line flag. Furthermore, :term:`PyAmg` can be used
+for preconditioning when the :term:`Scipy` solvers are employed. In
+this case, set :envvar:`FIPY_SOLVERS` to ``pyamg`` or use the
+``--pyamg`` flag in place of ``--scipy``. The use of :ref:`PySparse`
+is still recommended as the primary solver suite for performance
+reasons.
+
 ----------
 Virtualenv
 ----------
 
+.. _SOLVERS:
+
+--------------
+Linear Solvers
+--------------
+
+----------
+Efficiency
+----------
+
+Significantly improved performance has been achieved with the judicious use
+of C language inlining, via the :mod:`scipy.weave`. 
 
 ------------
 Testing FiPy
@@ -107,6 +133,16 @@ on multiple processor cores with::
    with those particular tests, not with the parallel mechanism itself.
 
 .. _PARALLEL:
+
+IPython
+=======
+
+http://ipython.scipy.org/
+
+This interactive Python shell is nicer to use than the default, and 
+integrates nicely with matplotlib_. Depending on platform, you may be able 
+to download a binary or build from source.
+
 
 -------------------
 Solving in Parallel
@@ -278,3 +314,79 @@ command in the base directory::
    <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites.
 
 .. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
+
+----------
+Privileges
+----------
+
+If you do not have administrative privileges on your computer, or if for
+any reason you don't want to tamper with your existing Python_
+installation, most packages (including :term:`FiPy`) will allow you to install to
+an alternate location.  Instead of installing these packages with
+``python setup.py install``,
+you would use
+:samp:`python setup.py install --home={dir}`,
+where :samp:`{dir}` is the desired installation directory (usually "``~``" to
+indicate your home directory).  You will then need to append
+:file:`{dir}/lib/python` to your :envvar:`PYTHONPATH` environment variable.  See the
+`Alternate Installation`_ section of the Python_ document "`Installing
+Python Modules`_" [InstallingPythonModules]_ for more information, such
+as circumstances in which you should use :option:`--prefix` instead of
+:option:`--home`.
+
+.. _Alternate Installation: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/alt-install-windows.html
+
+.. _Installing Python Modules: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/
+
+
+
+   :term:`FiPy` requires at least version 2.3 of Python_. :term:`FiPy` has not yet
+   been tested (and will almost certainly not work) with `Python 3.0`_.
+
+.. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
+.. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
+
+Operating System
+================
+
+:term:`FiPy` is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and 10.5 "Leopard",
+`Debian Linux`_ 4.0 "etch", `Ubuntu Linux`_ 10.10, and `Windows XP`_. We
+welcome reports of compatibility with other systems, particularly if any
+additional steps are necessary to install.
+
+.. note::
+
+   Simple instructions for `Mac OS X`_ users are in :ref:`MACOSX-INSTALLATION`.
+   Simple instructions for Windows_ users are in :ref:`WINDOWS-INSTALLATION`.
+
+The only elements of :term:`FiPy` that are likely to be platform-dependent
+are the viewers, but at least one viewer should work on each platform.
+All other aspects should function on any platform that has a recent
+Python_ installation.
+
+Many of the packages listed below have prebuilt installers for different
+platforms (particularly for Windows).  These installers can save considerable
+time and effort compared to configuring and building from source, although
+they frequently comprise somewhat older versions of the respective code.
+Whether building from source or using a prebuilt installer, please read and
+follow explicitly any instructions given in the respective packages'
+:file:`README` and :file:`INSTALLATION` files.
+
+.. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
+.. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
+.. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
+.. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
+.. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
+.. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
+.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
+.. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
+
+.. _ENVIRONMENT:
+
+------------------
+Custom Environment
+------------------
+
+---------
+Debugging
+---------
