@@ -3,7 +3,7 @@
 .. _sec:UsingFiPy:
 
 ==========
-FiPy Usage
+Usage
 ==========
 
 To see examples of problems that :term:`FiPy` is capable of solving, you can run
