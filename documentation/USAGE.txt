@@ -6,11 +6,11 @@ Using FiPy
 
 This document explains how to use :term:`FiPy` in a practical sense.
 To see the problems that :term:`FiPy` is capable of solving, you can
-run any of the scripts in :mod:`examples`.
+run any of the scripts in :part:`examples`.
 
 .. note::
 
-   We strongly recommend you proceed through :mod:`examples`, but at
+   We strongly recommend you proceed through :part:`examples`, but at
    the very least work through :mod:`examples.diffusion.mesh1D` to
    understand the notation and basic concepts of :term:`FiPy`.
 
@@ -39,6 +39,16 @@ As you gain experience, you will want to see
 :ref:`FAQ-FlagsAndEnvironmentVariables` to learn about flags and 
 environment variable that affect :term:`FiPy`.
 
+-------
+IPython
+-------
+
+http://ipython.scipy.org/
+
+This interactive Python shell is nicer to use than the default, and 
+integrates nicely with matplotlib_. Depending on platform, you may be able 
+to download a binary or build from source.
+
 .. _ENVIRONMENT:
 
 -----------------------
@@ -53,25 +63,53 @@ directories. The reasons for this include:
  * trying out a new package along with its dependencies without
    violating a working system,
 
- * or dealing with conflicting packages and dependencies.
+ * dealing with conflicting packages and dependencies,
+
+ * or not having admin privileges on system.
 
 The simplest way to use a :term:`Python` package without installing is
 to work in the base directory of the unpacked package and set the
 ``PYTHONPATH`` environment variable to "``.``". In order to work in an
 alternate directory ``PYTHONPATH`` must be set to
 "``~/path/to/package``". This method of working is adequate for one
-package, but quickly becomes unmanageable with multiple packages.  An
-alternate to setting ``PYTHONPATH`` is to employ one of the utilities
-that manage packages and their dependencies independently of the
-system package manager and the system directories. These utilities
+package, but quickly becomes unmanageable with multiple packages. In
+order to manage multiple paclages, it is better to choose a standard
+location other than the default installtion path. See the
+`Privileges`_ section for details on this approach.
+
+An alternative to setting ``PYTHONPATH`` is to employ one of the
+utilities that manage packages and their dependencies independently of
+the system package manager and the system directories. These utilities
 include Stow_, Virtualenv_ and zc.buildout_ amongst others. Here we'll
-describe the use of Virtualenv.
+describe the use of Virtualenv_, which we highly recommend.
 
 .. _Stow: http://savannah.gnu.org/projects/stow/
 .. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
 
+Privileges
+==========
+
+If you do not have administrative privileges on your computer, or if
+for any reason you don't want to tamper with your existing
+:term:`Python` installation, most packages (including :term:`FiPy`)
+will allow you to install to an alternate location.  Instead of
+installing these packages with ``python setup.py install``, you would
+use :samp:`python setup.py install --home={dir}`, where :samp:`{dir}`
+is the desired installation directory (usually "``~``" to indicate
+your home directory).  You will then need to append
+:file:`{dir}/lib/python` to your :envvar:`PYTHONPATH` environment
+variable.  See the `Alternate Installation`_ section of the
+:term:`Python` document "`Installing Python Modules`_"
+[InstallingPythonModules]_ for more information, such as circumstances
+in which you should use :option:`--prefix` instead of
+:option:`--home`.
+
+.. _Alternate Installation: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/alt-install-windows.html
+
+.. _Installing Python Modules: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/
+
 Virtualenv
-----------
+==========
 
 http://pypi.python.org/pypi/virtualenv
 
@@ -99,8 +137,8 @@ and establish a :term:`FiPy` working environment with::
 or establish a :term:`FiPy` development environment with::
 
     $ wget http://www.ctcms.nist.gov/fipy/download/FiPy-​version-​tar.​gz
-    $ tar zxvf FiPy-​version-​tar.​gz
-    $ cd FiPy-version
+    $ tar zxvf FiPy-​X.Y-​tar.​gz
+    $ cd FiPy-X.Y
     $ python setup.py develop
     $ cd ..
 
@@ -110,39 +148,6 @@ and test with::
 
 The :term:`FiPy` development environment allows the source code to be
 altered in place and used without issuing further setuptools commands.
-
------
-Stuff
------
-
- :term:`FiPy` will select the first viewer that is available
-from the list below.  If more than one is installed, specify a viewer
-by setting the :envvar:`FIPY_VIEWER` environment variable to either
-"``gist``", "``gnuplot``" or "``matplotlib``".
-
-:term:`SciPy` can also be used in place of :term:`PySparse` or
-:ref:`PYTRILINOS` as the linear solver suite. Set the
-:envvar:`FIPY_SOLVERS` environment variable to ``scipy`` or use the
-``--scipy`` command line flag. Furthermore, :term:`PyAmg` can be used
-for preconditioning when the :term:`Scipy` solvers are employed. In
-this case, set :envvar:`FIPY_SOLVERS` to ``pyamg`` or use the
-``--pyamg`` flag in place of ``--scipy``. The use of :ref:`PySparse`
-is still recommended as the primary solver suite for performance
-reasons.
-
-
-.. _SOLVERS:
-
---------------
-Linear Solvers
---------------
-
-----------
-Efficiency
-----------
-
-Significantly improved performance has been achieved with the judicious use
-of C language inlining, via the :mod:`scipy.weave`. 
 
 ------------
 Testing FiPy
@@ -196,16 +201,6 @@ on multiple processor cores with::
    with those particular tests, not with the parallel mechanism itself.
 
 .. _PARALLEL:
-
-IPython
-=======
-
-http://ipython.scipy.org/
-
-This interactive Python shell is nicer to use than the default, and 
-integrates nicely with matplotlib_. Depending on platform, you may be able 
-to download a binary or build from source.
-
 
 -------------------
 Solving in Parallel
@@ -364,8 +359,9 @@ There are three known failures in FiPy's test suite under Python 3.
    :class:`~fipy.viewers.vtkViewer.vtkFaceViewer.VTKFaceViewer` due to lack of 
    `enthought.tvtk.api` in Py3k.
 
+------
 Manual
-======
+------
 
 You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you 
 can `download the latest manual`_ from 
@@ -383,39 +379,9 @@ command in the base directory::
 
 .. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
 
-----------
-Privileges
-----------
-
-If you do not have administrative privileges on your computer, or if for
-any reason you don't want to tamper with your existing :term:`Python`
-installation, most packages (including :term:`FiPy`) will allow you to install to
-an alternate location.  Instead of installing these packages with
-``python setup.py install``,
-you would use
-:samp:`python setup.py install --home={dir}`,
-where :samp:`{dir}` is the desired installation directory (usually "``~``" to
-indicate your home directory).  You will then need to append
-:file:`{dir}/lib/python` to your :envvar:`PYTHONPATH` environment variable.  See the
-`Alternate Installation`_ section of the :term:`Python` document "`Installing
-Python Modules`_" [InstallingPythonModules]_ for more information, such
-as circumstances in which you should use :option:`--prefix` instead of
-:option:`--home`.
-
-.. _Alternate Installation: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/alt-install-windows.html
-
-.. _Installing Python Modules: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/
-
-
-
-   :term:`FiPy` requires at least version 2.3 of :term:`Python`. :term:`FiPy` has not yet
-   been tested (and will almost certainly not work) with `Python 3.0`_.
-
-.. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
-.. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
-
+----------------
 Operating System
-================
+----------------
 
 :term:`FiPy` is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and 10.5 "Leopard",
 `Debian Linux`_ 4.0 "etch", `Ubuntu Linux`_ 10.10, and `Windows XP`_. We
@@ -449,12 +415,24 @@ follow explicitly any instructions given in the respective packages'
 .. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
 .. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
 
+-----
+Stuff
+-----
 
+ :term:`FiPy` will select the first viewer that is available
+from the list below.  If more than one is installed, specify a viewer
+by setting the :envvar:`FIPY_VIEWER` environment variable to either
+"``gist``", "``gnuplot``" or "``matplotlib``".
 
-------------------
-Custom Environment
-------------------
+:term:`SciPy` can also be used in place of :term:`PySparse` or
+:ref:`PYTRILINOS` as the linear solver suite. Set the
+:envvar:`FIPY_SOLVERS` environment variable to ``scipy`` or use the
+``--scipy`` command line flag. Furthermore, :term:`PyAmg` can be used
+for preconditioning when the :term:`Scipy` solvers are employed. In
+this case, set :envvar:`FIPY_SOLVERS` to ``pyamg`` or use the
+``--pyamg`` flag in place of ``--scipy``. The use of :ref:`PySparse`
+is still recommended as the primary solver suite for performance
+reasons.
 
----------
-Debugging
----------
+Significantly improved performance has been achieved with the judicious use
+of C language inlining, via the :mod:`scipy.weave`. 
