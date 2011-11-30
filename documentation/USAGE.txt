@@ -4,20 +4,20 @@
 Using FiPy
 ==========
 
-To see examples of problems that :term:`FiPy` is capable of solving, you can run
-any of the scripts in :mod:`examples`. 
+This document explains how to use :term:`FiPy` in a practical sense.
+To see the problems that :term:`FiPy` is capable of solving, you can
+run any of the scripts in :mod:`examples`.
 
 .. note::
 
-   We strongly recommend you proceed through :mod:`examples`, but at 
-   the very least work through :mod:`examples.diffusion.mesh1D` to understand 
-   the notation and basic concepts of :term:`FiPy`.
+   We strongly recommend you proceed through :mod:`examples`, but at
+   the very least work through :mod:`examples.diffusion.mesh1D` to
+   understand the notation and basic concepts of :term:`FiPy`.
 
-We exlusively use either the unix
-command line or IPython_ to interact with :term:`FiPy`. The commands in
-:mod:`examples` are written with the assumption that they will be executed from
-the command line. For instance, from within the main :term:`FiPy` directory, you
-can type::
+We exclusively use either the unix command line or IPython_ to interact
+with :term:`FiPy`. The commands in :mod:`examples` are written with
+the assumption that they will be executed from the command line. For
+instance, from within the main :term:`FiPy` directory, you can type::
 
     $ python examples/diffusion/mesh1D.py
 
@@ -39,15 +39,81 @@ As you gain experience, you will want to see
 :ref:`FAQ-FlagsAndEnvironmentVariables` to learn about flags and 
 environment variable that affect :term:`FiPy`.
 
-----------------------------------
-Environment and Using Command Line Flags
-----------------------------------
+.. _ENVIRONMENT:
 
-If you choose to install, Python_ will find your :term:`FiPy` modules 
-automatically. If you choose not to install, then you will need to ensure 
-that the :term:`FiPy` distribution directory is appended to your ``PYTHONPATH`` 
-environment variable (either "``.``" if you are working within the :term:`FiPy` 
-directory, or "``~/path/to/fipy``" if you are working in your own directory).
+-----------------------
+Development Environment
+-----------------------
+
+It is often preferable to not formally install packages in the system
+directories. The reasons for this include:
+
+ * developing or altering the package source code,
+
+ * trying out a new package along with its dependencies without
+   violating a working system,
+
+ * or dealing with conflicting packages and dependencies.
+
+The simplest way to use a :term:`Python` package without installing is
+to work in the base directory of the unpacked package and set the
+``PYTHONPATH`` environment variable to "``.``". In order to work in an
+alternate directory ``PYTHONPATH`` must be set to
+"``~/path/to/package``". This method of working is adequate for one
+package, but quickly becomes unmanageable with multiple packages.  An
+alternate to setting ``PYTHONPATH`` is to employ one of the utilities
+that manage packages and their dependencies independently of the
+system package manager and the system directories. These utilities
+include Stow_, Virtualenv_ and zc.buildout_ amongst others. Here we'll
+describe the use of Virtualenv.
+
+.. _Stow: http://savannah.gnu.org/projects/stow/
+.. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
+
+Virtualenv
+----------
+
+http://pypi.python.org/pypi/virtualenv
+
+Virtualenv_ enables the installation of packages in multiple isolated
+environments. It organizes the installation of :term:`Python` packages
+especially well and also provides a handy location for installing none
+non-:term:`Python` packages. The best way to set up a ``fipy`` working
+environment is to follow the commands listed below or some
+variation. The commands were tested on a `Debian Linux`_ "squeeze"
+platform, but should be similar for other platforms.  Note that Admin
+privileges are required initially to install Virtualenv_::
+
+    $ sudo pip install virtualenv
+    $ sudo pip install virtualenvwrapper
+    $ source /usr/local/bin/virtualenvwrapper.sh
+    $ mkvirtualenv fipy
+    $ workon fipy
+    $ pip install numpy
+    $ pip install pysparse
+
+and establish a :term:`FiPy` working environment with::
+
+    $ pip install fipy
+
+or establish a :term:`FiPy` development environment with::
+
+    $ wget http://www.ctcms.nist.gov/fipy/download/FiPy-​version-​tar.​gz
+    $ tar zxvf FiPy-​version-​tar.​gz
+    $ cd FiPy-version
+    $ python setup.py develop
+    $ cd ..
+
+and test with::
+
+    $ python -c "import fipy; fipy.test()"
+
+The :term:`FiPy` development environment allows the source code to be
+altered in place and used without issuing further setuptools commands.
+
+-----
+Stuff
+-----
 
  :term:`FiPy` will select the first viewer that is available
 from the list below.  If more than one is installed, specify a viewer
@@ -64,9 +130,6 @@ this case, set :envvar:`FIPY_SOLVERS` to ``pyamg`` or use the
 is still recommended as the primary solver suite for performance
 reasons.
 
-----------
-Virtualenv
-----------
 
 .. _SOLVERS:
 
@@ -100,7 +163,7 @@ errors if you did not install all of the recommended packages.
 
 .. note::
 
-   In order for Python_ to find the :term:`FiPy` modules, you will need to ensure
+   In order for :term:`Python` to find the :term:`FiPy` modules, you will need to ensure
    that the base directory is added to your :envvar:`PYTHONPATH` environment
    variable, *e.g.*::
 
@@ -261,6 +324,11 @@ perform when compared to :term:`PySparse` during matrix construction.
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
 
+Setting :envvar:`FIPY_SOLVERS` to ``pyamg`` or using the
+``--pyamg`` flag will automatically use the default :term:`PyAmg`
+preconditioners along with the default :term:`SciPy` solvers.
+
+
 
 .. _sec:UsingFiPy:
 
@@ -320,7 +388,7 @@ Privileges
 ----------
 
 If you do not have administrative privileges on your computer, or if for
-any reason you don't want to tamper with your existing Python_
+any reason you don't want to tamper with your existing :term:`Python`
 installation, most packages (including :term:`FiPy`) will allow you to install to
 an alternate location.  Instead of installing these packages with
 ``python setup.py install``,
@@ -329,7 +397,7 @@ you would use
 where :samp:`{dir}` is the desired installation directory (usually "``~``" to
 indicate your home directory).  You will then need to append
 :file:`{dir}/lib/python` to your :envvar:`PYTHONPATH` environment variable.  See the
-`Alternate Installation`_ section of the Python_ document "`Installing
+`Alternate Installation`_ section of the :term:`Python` document "`Installing
 Python Modules`_" [InstallingPythonModules]_ for more information, such
 as circumstances in which you should use :option:`--prefix` instead of
 :option:`--home`.
@@ -340,7 +408,7 @@ as circumstances in which you should use :option:`--prefix` instead of
 
 
 
-   :term:`FiPy` requires at least version 2.3 of Python_. :term:`FiPy` has not yet
+   :term:`FiPy` requires at least version 2.3 of :term:`Python`. :term:`FiPy` has not yet
    been tested (and will almost certainly not work) with `Python 3.0`_.
 
 .. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
@@ -362,7 +430,7 @@ additional steps are necessary to install.
 The only elements of :term:`FiPy` that are likely to be platform-dependent
 are the viewers, but at least one viewer should work on each platform.
 All other aspects should function on any platform that has a recent
-Python_ installation.
+:term:`Python` installation.
 
 Many of the packages listed below have prebuilt installers for different
 platforms (particularly for Windows).  These installers can save considerable
@@ -381,7 +449,7 @@ follow explicitly any instructions given in the respective packages'
 .. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
 .. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
 
-.. _ENVIRONMENT:
+
 
 ------------------
 Custom Environment

@@ -6,8 +6,30 @@ Installation
 
 The :term:`FiPy` finite volume PDE solver relies on several
 third-party packages.  It is *best to obtain and install those first*
-(see the `External Link Warning`_), before attempting to install
-:term:`FiPy`.
+before attempting to install :term:`FiPy`. This document explains how
+to install :term:`FiPy` not how to use it. See the :ref:`USAGE`
+document for details on how to use :term:`FiPy` along with its various
+required packages.
+
+.. note::
+   
+   It may be useful to set up a :ref:`ENVIRONMENT` before beginning
+   the installation process.
+
+.. only:: html
+
+   .. note::
+
+      By selecting the links on this page, you will be leaving NIST
+      webspace. We have provided these links to other web sites because
+      they may have information that would be of interest to you. No
+      inferences should be drawn on account of other sites being
+      referenced, or not, from this page. There may be other web sites that
+      are more appropriate for your purpose. NIST does not necessarily
+      endorse the views expressed, or concur with the facts presented on
+      these sites. Further, NIST does not endorse any commercial products
+      that may be mentioned on these sites. Please address comments about
+      this page to fipy@nist.gov.
 
 .. note::
 
@@ -23,6 +45,27 @@ third-party packages.  It is *best to obtain and install those first*
    For each package, please follow any instructions given in its `README` or 
    `INSTALLATION` files.
 
+--------------------------
+Installing Python Packages
+--------------------------
+
+In general, it is best to use the following order of precedence when
+installing packages:
+
+ * Use the system package manager if possible.
+ * Use PyPI_ (the Python_ package index)::
+
+     $ pip install package
+ * Download manually, unpack and run::
+
+     $ python setup.py install
+
+.. _PyPI: http://pypi.python.org/pypi
+
+If for some reason you are not using these installation approaches,
+read the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document
+before beginning the installation process.
+
 --------------
 Obtaining FiPy
 --------------
@@ -30,7 +73,7 @@ Obtaining FiPy
 :term:`FiPy` is freely available for download via Subversion_ or as a
 compressed archive from
 <http://www.ctcms.nist.gov/fipy/download>. Please see
-:ref:`documentation:SVN` for instructions of obtaining :term:`FiPy`
+:ref:`documentation:SVN` for instructions for obtaining :term:`FiPy`
 with Subversion_.
 
 .. warning::
@@ -49,7 +92,7 @@ Installing FiPy
 Detailed prerequisites and links are given below and in 
 `platform-specific instructions`_, but for the courageous and the
 impatient, :term:`FiPy` can be up and running quickly by simply installing
-the following prerequiste paclages on your system:
+the following prerequisite packages on your system:
 
  * Python_
 
@@ -66,13 +109,18 @@ It is not necessary to formally install :term:`FiPy`, but if you wish
 to do so and you are confident that all of the requisite packages have
 been installed properly, you can install it by typing::
 
+    $ pip install fipy
+
+or by unpacking the archive and typing::
+  
     $ python setup.py install
 
 at the command line in the base :term:`FiPy` directory.
 Alternatively, you may choose not to formally install :term:`FiPy` and
 to simply work within the base directory instead. In this case or if
 you are making a non-standard install (without admin privileges), read
-the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document.
+the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document before
+beginning the installation process.
 
 .. _REQUIREDPACKAGES:
 
@@ -111,8 +159,8 @@ If necessary, you can download_ and install it for your platform
 .. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
 
-Python_ along with many of the complemantary paclages can be up and
-running quickly with one of the following Python_ distributions.
+Python_ along with many of :term:`FiPy`'s required and optional
+packages is available with one of the following Python_ distributions.
 
 Enthought Python Distribution
 -----------------------------
@@ -183,7 +231,7 @@ installers`_ are available.
 
 .. attention::
 
-   This Package is not a requirment if SciPy is installed.
+   This package is not a requirement if SciPy_ is installed.
 
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
@@ -205,7 +253,7 @@ greater.
 
 .. attention::
 
-   This Package is not a requirment if PySparse is installed.
+   This package is not a requirement if PySparse_ is installed.
 
 .. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
 
@@ -251,7 +299,7 @@ or 2D viewing.
 
 .. note::
    
-   `Mayavi 2`_ is packaged for Ubuntu and Debian linux. Using the packaged versions makes installion much easier.
+   `Mayavi 2`_ is packaged for Ubuntu and Debian linux. Using the packaged versions makes installation much easier.
 
 .. note::
 
@@ -266,9 +314,7 @@ PyAmg
 http://code.google.com/p/pyamg/
 
 The :term:`PyAmg` preconditioners can be used when :term:`SciPy` is
-installed. Setting :envvar:`FIPY_SOLVERS` to ``pyamg`` or using the
-``--pyamg`` flag will automatically use the default :term:`PyAmg`
-preconditioners along with the default :term:`SciPy` solvers.
+installed.
 
 Gmsh
 ====
@@ -360,6 +406,9 @@ with::
 Defunct Packages
 ----------------
 
+These packages receive little or no support, but are still compatible
+with :term:`FiPy`.
+
 Pygist
 ======
 
@@ -426,26 +475,6 @@ Platform-Specific Instructions
    WINDOWS-INSTALLATION
    UBUNTU-DEBIAN-INSTALLATION
    documentation/SVN
-
----------------------
-External Link Warning
----------------------
-
-.. only:: html
-
-   .. note::
-
-      By selecting the links on this page, you will be leaving NIST
-      webspace. We have provided these links to other web sites because
-      they may have information that would be of interest to you. No
-      inferences should be drawn on account of other sites being
-      referenced, or not, from this page. There may be other web sites that
-      are more appropriate for your purpose. NIST does not necessarily
-      endorse the views expressed, or concur with the facts presented on
-      these sites. Further, NIST does not endorse any commercial products
-      that may be mentioned on these sites. Please address comments about
-      this page to fipy@nist.gov.
-
 
 .. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
