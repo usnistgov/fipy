@@ -31,20 +31,6 @@ required packages.
       that may be mentioned on these sites. Please address comments about
       this page to fipy@nist.gov.
 
-.. note::
-
-   Most of the installation steps will involve a variant on the command::
-
-       $ python setup.py ...
-
-   In addition to the specific commands given here, further information
-   about each ``setup.py`` script is available by typing::
-
-       $ python setup.py --help
-
-   For each package, please follow any instructions given in its `README` or 
-   `INSTALLATION` files.
-
 --------------------------
 Installing Python Packages
 --------------------------
@@ -60,11 +46,33 @@ installing packages:
 
      $ python setup.py install
 
-.. _PyPI: http://pypi.python.org/pypi
+Further information about each ``setup.py`` script is available by typing::
 
-If for some reason you are not using these installation approaches,
+     $ python setup.py --help
+
+For more information on custom installs and development with :term:`FiPy`,
 read the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document
 before beginning the installation process.
+
+.. _PyPI:
+
+PyPI
+----
+
+http://pypi.python.org/pypi
+
+`PyPI`_ is a package manager for Python_ packages. To use PyPI_, the
+`Setuptools` package needs to be installed. Once this is available,
+PyPI_ can be installed with::
+
+     $ easy_install pip
+
+.. warning::
+
+   PyPI_ takes care of a packages Python_ dependencies. It does not deal
+   with non-Python_ dependencies.
+
+.. _Setuptools: http://pypi.python.org/pypi/setuptools
 
 --------------
 Obtaining FiPy
@@ -89,10 +97,10 @@ with Subversion_.
 Installing FiPy
 ---------------
 
-Detailed prerequisites and links are given below and in 
+Details of the `Required Packages`_ and links are given below and in
 `platform-specific instructions`_, but for the courageous and the
-impatient, :term:`FiPy` can be up and running quickly by simply installing
-the following prerequisite packages on your system:
+impatient, :term:`FiPy` can be up and running quickly by simply
+installing the following prerequisite packages on your system:
 
  * Python_
 
@@ -400,7 +408,9 @@ For :ref:`PARALLEL`, :term:`FiPy` needs ``mpi4py``, in addition
 to both :term:`Trilinos` and :term:`PySparse`. This should be obtainable 
 with::
 
-    $ easy_install mpi4py
+    $ pip install mpi4py
+
+assuming you have the standard MPI libraries on your system.
 
 ----------------
 Defunct Packages

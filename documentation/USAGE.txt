@@ -6,13 +6,13 @@ Using FiPy
 
 This document explains how to use :term:`FiPy` in a practical sense.
 To see the problems that :term:`FiPy` is capable of solving, you can
-run any of the scripts in :part:`examples`.
+run any of the scripts in the :ref:`part:examples`.
 
 .. note::
 
-   We strongly recommend you proceed through :part:`examples`, but at
-   the very least work through :mod:`examples.diffusion.mesh1D` to
-   understand the notation and basic concepts of :term:`FiPy`.
+   We strongly recommend you proceed through the :ref:`part:examples`,
+   but at the very least work through :mod:`examples.diffusion.mesh1D`
+   to understand the notation and basic concepts of :term:`FiPy`.
 
 We exclusively use either the unix command line or IPython_ to interact
 with :term:`FiPy`. The commands in :mod:`examples` are written with
@@ -36,7 +36,7 @@ yourself with the excellent `Python tutorial`_ [PythonTutorial]_
 or with `Dive Into Python`_ [DiveIntoPython]_.
 
 As you gain experience, you will want to see
-:ref:`FAQ-FlagsAndEnvironmentVariables` to learn about flags and 
+:ref:`FlagsAndEnvironmentVariables` to learn about flags and
 environment variable that affect :term:`FiPy`.
 
 -------
@@ -65,7 +65,7 @@ directories. The reasons for this include:
 
  * dealing with conflicting packages and dependencies,
 
- * or not having admin privileges on system.
+ * or not having admin privileges.
 
 The simplest way to use a :term:`Python` package without installing is
 to work in the base directory of the unpacked package and set the
@@ -115,90 +115,232 @@ http://pypi.python.org/pypi/virtualenv
 
 Virtualenv_ enables the installation of packages in multiple isolated
 environments. It organizes the installation of :term:`Python` packages
-especially well and also provides a handy location for installing none
-non-:term:`Python` packages. The best way to set up a ``fipy`` working
-environment is to follow the commands listed below or some
-variation. The commands were tested on a `Debian Linux`_ "squeeze"
-platform, but should be similar for other platforms.  Note that Admin
-privileges are required initially to install Virtualenv_::
+especially well and also provides a handy location for installing
+non-:term:`Python` packages. In addition Virtualenv_ works seamlessly
+with the :ref:`PyPI` package manager (``pip``).  To install
+Virtualenv_ use the system package manager or use :ref:`PyPI`::
 
-    $ sudo pip install virtualenv
-    $ sudo pip install virtualenvwrapper
-    $ source /usr/local/bin/virtualenvwrapper.sh
+    $ pip install virtualenv
+
+An important addition to Virtualenv_ is Virtualenvwrapper_. Install it
+with::
+
+    $ pip install virtualenvwrapper
+
+In general, the above commands require admin privileges, but once a
+virtual environment is created, admin privileges are no longer
+required. Virtualenvwrapper_ needs to be initialized with::
+
+    $ source virtualenvwrapper.sh
+
+Then a ``fipy`` working environment can be created::
+
     $ mkvirtualenv fipy
     $ workon fipy
-    $ pip install numpy
-    $ pip install pysparse
 
-and establish a :term:`FiPy` working environment with::
+If the :ref:`REQUIREDPACKAGES` have been met, :term:`Fipy` can be installed with::
 
     $ pip install fipy
 
-or establish a :term:`FiPy` development environment with::
+or establish a :term:`FiPy` development environment in an unpacked
+archive with::
 
-    $ wget http://www.ctcms.nist.gov/fipy/download/FiPy-​version-​tar.​gz
-    $ tar zxvf FiPy-​X.Y-​tar.​gz
-    $ cd FiPy-X.Y
     $ python setup.py develop
-    $ cd ..
-
-and test with::
-
-    $ python -c "import fipy; fipy.test()"
 
 The :term:`FiPy` development environment allows the source code to be
-altered in place and used without issuing further setuptools commands.
+altered in place and executed without issuing further installation
+commands.
+
+.. _Virtualenvwrapper: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.doughellmann.com/projects/virtualenvwrapper
 
 ------------
 Testing FiPy
 ------------
 
-After installation, you can test :term:`FiPy` by executing::
+For a general installation, :term:`FiPy` can be tested by running::
 
     $ python -c "import fipy; fipy.test()"
 
-From the base directory, you can verify that :term:`FiPy` works properly by
-executing::
+This command runs all the test cases under :term:`FiPy`'s modules, but
+doesn't incude any of the tests in :mod:`examples`. To test both
+:term:`FiPy`'s modules and :mod:`examples`, use::
 
     $ python setup.py test
 
-Depending on the packages you chose to install in :ref:`OPTIONALPACKAGES`
-be sure to set the appropriate environment variables.  You can expect a few
-errors if you did not install all of the recommended packages.
+in an unpacked :term:`FiPy` archive. :term:`FiPy` can be run with a
+number of different configurations depending on which solver suite is
+available and other factors. See the
+:ref:`FlagsAndEnvironmentVariables` section for more details.
 
-.. note::
+The :term:`FiPy` test suite is implemented so that tests that are
+highly dependent on the environment are blocked and do not show
+errors. Under most circumstances the test suite should not show any
+errors, but if it does these errors should be investigated or reported
+on the :ref:`tracking system`. Below are a number of common command
+line options for testing various :term:`FiPy` configurations.
+ 
+Inline Tests
+============
 
-   In order for :term:`Python` to find the :term:`FiPy` modules, you will need to ensure
-   that the base directory is added to your :envvar:`PYTHONPATH` environment
-   variable, *e.g.*::
-
-       $ setenv PYTHONPATH .:${PYTHONPATH}
-
-   or::
-
-       $ export PYTHONPATH=.:${PYTHONPATH}
-
-If you chose to install the :mod:`scipy.weave` package, you should rerun the
-tests with::
+If the :mod:`scipy.weave` package is installed, try running the tests
+using::
 
     $ python setup.py test --inline
+
+or::
+
+    $ python -c "import fipy; fipy.test('--inline')"
 
 A few tests will fail the first time as a result of the messages
 output in the course of caching the compiled inline code, but a repeat
 test should have no failures (although see "``repairing catalog by
 removing key``" in the :ref:`FAQ`).
 
+Parallel Tests
+==============
+
 If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests 
 on multiple processor cores with::
 
-    $ mpirun -np {# of processors} python setup.py test
+    $ mpirun -np {# of processors} python setup.py test --trilinos
 
-.. note::
-   
-   When running in parallel, there are two expected test failures in
-   :mod:`examples.elphf.diffusion.mesh1D` and in
-   :mod:`examples.diffusion.nthOrder.input4thOrder-line`. These failures are problems
-   with those particular tests, not with the parallel mechanism itself.
+or::
+ 
+    $ mpirun -np {# of processors} python -c "import fipy; fipy.test('--trilinos')"
+
+.. _FlagsAndEnvironmentVariables:
+
+--------------------------------------------
+Command-line Flags and Environment Variables
+--------------------------------------------
+
+:term:`FiPy` chooses a default run time configuration based on the
+available packages on the system. The `Command-line Flags`_ and
+`Environment Variables`_ sections below describe how to override
+:term:FiPy`s default behaviour.
+
+Solvers
+-------
+
+:term:`FiPy` works with either the :ref:`PYSPARSE`, :ref:`PYTRILINOS`,
+:ref:`SCIPY` or :ref:`PYAMG` solver suites. :term:`FiPy` chooses the
+solver suite based on system availability or based on the user
+supplied `Command-line Flags`_ or `Environment Variables`_. Suite
+specific solver classed can also be imported and instantiated::
+
+    >>> from fipy.solvers.scipy.linearLUSolver import LinearLUsolver 
+    >>> solver = LinearLUsolver()
+
+
+:term:`Trilinos` solvers can be used to
+replace :term:`PySparse` solvers. If both :term:`PySparse` and
+:term:`Trilinos` are present, usage can be controlled by setting the
+:envvar:`FIPY_SOLVERS` environment variable to ``Trilinos`` or
+``Pysparse``, or by passing a ``--trilinos`` or ``--pysparse`` flag to
+the :term:`FiPy` script, overriding the environment. In the absence of
+these indicators, :term:`FiPy` will default to using :term:`PySparse`
+if it is present. Using the ``--trilinos`` flag instructs :term:`FiPy`
+to construct matrices using :term:`PySparse`, but solve them using
+:term:`Trilinos`. To avoid the :term:`PySparse` requirement, use the
+``--no-pysparse`` flag in place of the ``--trilinos`` flag. This will
+both construct matrices and solve them with
+:term:`Trilinos`. Unfortunately, :term:`Trilinos` tends to under
+perform when compared to :term:`PySparse` during matrix construction.
+
+Command-line Flags
+------------------
+
+You can add any of the following flags after the name of a 
+script you call from the command line
+
+.. cmdoption:: --inline
+
+   Causes many mathematical operations to be performed in C, rather than
+   Python, for improved performance. Requires the :mod:`scipy.weave`
+   package.
+
+.. cmdoption:: --pysparse
+
+   Forces the use of the :term:`PySparse` solvers. This flag takes precedence
+   over the :envvar:`FIPY_SOLVERS` environment variable.
+
+.. cmdoption:: --trilinos
+ 
+   Forces the use of the :term:`Trilinos` solvers, but uses PySparse_
+   to construct the matrices. This flag takes precedence over the
+   :envvar:`FIPY_SOLVERS` environment variable.
+
+.. cmdoption:: --scipy
+
+   Forces the use of the Scipy solvers. This flag takes precedence
+   over the :envvar:`FIPY_SOLVERS` environment variable.
+
+.. cmdoption:: --pyamg
+
+   Forces the use of the PyAMG_ preconditioners in conjunction with
+   the Scipy_ solvers. This flag takes precedence over the
+   :envvar:`FIPY_SOLVERS` environment variable.
+
+.. cmdoption:: --no-pysparse
+
+   Forces the use of the PyTrilinos_ solvers without any use of
+   PySparse_. This flag takes precedence over the
+   :envvar:`FIPY_SOLVERS` environment variable.
+
+Environment Variables
+---------------------
+
+You can set any of the following environment variables in the manner
+appropriate for your shell. If you are not running in a shell (*e.g.*,
+you are invoking :term:`FiPy` scripts from within IPython or IDLE),
+you can set these variables via the :const:`os.environ` dictionary,
+but you must do so before importing anything from the :mod:`fipy`
+package.
+
+.. envvar:: FIPY_DISPLAY_MATRIX
+
+   .. currentmodule:: fipy.terms.term
+
+   If present, causes the graphical display of the solution matrix of each
+   equation at each call of :meth:`~Term.solve` or :meth:`~Term.sweep`. If set
+   to "``terms``," causes the display of the matrix for each
+   :class:`Term` that composes the equation. Requires the :term:`Matplotlib`
+   package.
+
+.. envvar:: FIPY_INLINE
+
+   If present, causes many mathematical operations to be performed in C,
+   rather than Python. Requires the :mod:`scipy.weave` package.
+
+.. envvar:: FIPY_INLINE_COMMENT
+
+   If present, causes the addition of a comment showing the Python context
+   that produced a particular piece of :mod:`scipy.weave` C code. Useful
+   for debugging.
+
+.. envvar:: FIPY_SOLVERS
+
+   Forces the use of the specified suite of linear solvers. Valid
+   (case-insensitive) choices are "``pysparse``", "``trilinos``",
+   "``no-pysparse``", "``scipy``" and "``pyamg``".
+    
+.. envvar:: FIPY_VERBOSE_SOLVER
+
+   If present, causes the linear solvers to print a variety of diagnostic
+   information.
+
+.. envvar:: FIPY_VIEWER
+
+   Forces the use of the specified viewer. Valid values are any
+   :samp:`{<viewer>}` from the
+   :samp:`fipy.viewers.{<viewer>}Viewer`
+   modules. The special value of ``dummy`` will allow the script
+   to run without displaying anything.
+
+.. envvar:: FIPY_INCLUDE_NUMERIX_ALL
+
+   If present, causes the inclusion of all funcions and variables of the
+   :mod:`~fipy.tools.numerix` module in the :mod:`fipy` namespace.
 
 .. _PARALLEL:
 
@@ -206,13 +348,12 @@ on multiple processor cores with::
 Solving in Parallel
 -------------------
 
-:term:`FiPy` can use :term:`Trilinos` to solve equations in parallel, as 
-long as they are defined on a "``Grid``" mesh 
-(:class:`~fipy.meshes.numMesh.grid1D.Grid1D`, 
-:class:`~fipy.meshes.numMesh.cylindricalGrid1D.CylindricalGrid1D`,
-:class:`~fipy.meshes.numMesh.grid2D.Grid2D`,
-:class:`~fipy.meshes.numMesh.cylindricalGrid2D.CylindricalGrid2D`, or
-:class:`~fipy.meshes.numMesh.grid3D.Grid3D`). 
+:term:`FiPy` can use :term:`Trilinos` to solve equations in
+parallel. Most mesh classes in :mod:`fipy.meshes` can solve in
+paralled. This includes all "``...Grid...``" and "``...Gmsh..``" class
+meshes. There only serial only meshes remaining are
+:class:`~fipy.meshes.tri2D.Tri2D` and
+:class:`~fipy.meshes.skewedGrid2D.SkewedGrid2D`.
 
 .. attention::
 
@@ -220,19 +361,20 @@ long as they are defined on a "``Grid``" mesh
 
 .. attention::
 
-   :term:`FiPy` requires `mpi4py <http://mpi4py.scipy.org/>`_ to work in parallel::
-
-       $ easy_install mpi4py
+   :term:`FiPy` requires :ref:`MPI4PY` to work in parallel. See the
+   :ref:`MPI4PY` installation guide.
 
 .. note::
 
-   A design wart presently *also* requires that :term:`PySparse` be
-   installed. We hope to alleviate this requirement in a future release.
+   Parallel efficiency is greatly improved by installing
+   :term:`PySparse` in addition to :term:`Trilinos`. If
+   :term:`PySparse` is not installed be sure to use the
+   ``--no-pysparse`` flag when running in parallel.
 
 * It should not generally be necessary to change anything in your script.
   Simply invoke::
 
-     $ mpirun -np {# of processors} python myScript.py
+     $ mpirun -np {# of processors} python myScript.py --trilinos
 
   instead of::
 
@@ -259,41 +401,11 @@ long as they are defined on a "``Grid``" mesh
      mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
      mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
 
-A complete list of the changes to FiPy's examples needed for parallel 
-can be found at
-
-  http://www.matforge.org/fipy/wiki/upgrade2_0examplesTo2_1
-
-Most of the changes were required to ensure that :term:`FiPy` provides the
-same literal output for both single and multiple processor solutions and
-are not relevant to most "real" scripts. The two changes you *might* wish
-to make to your own scripts are:
-
- * It is now preferable to use the 
-   :class:`~fipy.solvers.DefaultAssymetricSolver` instead of the 
-   :class:`~fipy.solvers.linearLUSolver.LinearLUSolver`. 
-
- * When solving in parallel, :term:`FiPy` essentially breaks the problem up 
-   into separate sub-domains and solves them (somewhat) independently. 
-   :term:`FiPy` generally "does the right thing", but if you find that you 
-   need to do something with the entire solution, you can call
-   ``var.``:meth:`~fipy.variables.cellVariable.CellVariable.getGlobalValue`.
-
-:term:`Trilinos` solvers can be used to replace :term:`PySparse`
-solvers. If both :term:`PySparse` and :term:`Trilinos` are present,
-usage can be controlled by setting the :envvar:`FIPY_SOLVERS`
-environment variable to ``Trilinos`` or ``Pysparse``, or by passing a
-``--trilinos`` or ``--pysparse`` flag to the :term:`FiPy` script,
-overriding the environment. In the absence of these indicators,
-:term:`FiPy` will default to using :term:`PySparse` if it is
-present. Using the ``--trilinos`` flag instructs :term:`FiPy` to
-construct matrices using :term:`PySparse`, but solve them using
-:term:`Trilinos`. To avoid the :term:`PySparse` requirement, use the
-``--no-pysparse`` flag in place of the ``--trilinos`` flag. This will
-both construct matrices and solve them with
-:term:`Trilinos`. Unfortunately, :term:`Trilinos` tends to under
-perform when compared to :term:`PySparse` during matrix construction.
-
+When solving in parallel, :term:`FiPy` essentially breaks the problem
+up into separate sub-domains and solves them (somewhat) independently.
+:term:`FiPy` generally "does the right thing", but if you find that
+you need to do something with the entire solution, you can call
+``var.``:meth:`~fipy.variables.cellVariable.CellVariable.getGlobalValue`.
 .. note:: 
 
     :term:`Trilinos` solvers frequently give intermediate output that :term:`FiPy` cannot
@@ -333,8 +445,8 @@ preconditioners along with the default :term:`SciPy` solvers.
 Running under Python 3     
 ----------------------
 
-It is possible to run :term:`FiPy` scripts under Python 3, but you must 
-convert FiPy's code before you can do so. From within the main 
+It is possible to run :term:`FiPy` scripts under Python 3, but you
+must convert FiPy's code before you can do so. From within the main
 :term:`FiPy` directory::
 
     $ 2to3 --write .
