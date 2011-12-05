@@ -6,18 +6,20 @@ Using FiPy
 
 This document explains how to use :term:`FiPy` in a practical sense.
 To see the problems that :term:`FiPy` is capable of solving, you can
-run any of the scripts in the :ref:`part:examples`.
+run any of the scripts in the :ref:`examples <part:examples>`.
 
 .. note::
 
-   We strongly recommend you proceed through the :ref:`part:examples`,
-   but at the very least work through :mod:`examples.diffusion.mesh1D`
-   to understand the notation and basic concepts of :term:`FiPy`.
+   We strongly recommend you proceed through the :ref:`examples
+   <part:examples>`, but at the very least work through
+   :mod:`examples.diffusion.mesh1D` to understand the notation and
+   basic concepts of :term:`FiPy`.
 
-We exclusively use either the unix command line or IPython_ to interact
-with :term:`FiPy`. The commands in :mod:`examples` are written with
-the assumption that they will be executed from the command line. For
-instance, from within the main :term:`FiPy` directory, you can type::
+We exclusively use either the unix command line or IPython_ to
+interact with :term:`FiPy`. The commands in the :ref:`examples
+<part:examples>` are written with the assumption that they will be
+executed from the command line. For instance, from within the main
+:term:`FiPy` directory, you can type::
 
     $ python examples/diffusion/mesh1D.py
 
@@ -35,7 +37,7 @@ knowledge of Python syntax is required.  We recommend you familiarize
 yourself with the excellent `Python tutorial`_ [PythonTutorial]_ 
 or with `Dive Into Python`_ [DiveIntoPython]_.
 
-As you gain experience, you will want to see
+As you gain experience, you may want to browse through
 :ref:`FlagsAndEnvironmentVariables` to learn about flags and
 environment variable that affect :term:`FiPy`.
 
@@ -45,9 +47,9 @@ IPython
 
 http://ipython.scipy.org/
 
-This interactive Python shell is nicer to use than the default, and 
-integrates nicely with matplotlib_. Depending on platform, you may be able 
-to download a binary or build from source.
+This interactive Python shell is nicer to use than the default, and
+integrates nicely with Matplotlib_. Depending on the platform, you may
+be able to download a binary or build from source.
 
 .. _ENVIRONMENT:
 
@@ -67,18 +69,19 @@ directories. The reasons for this include:
 
  * or not having admin privileges.
 
-The simplest way to use a :term:`Python` package without installing is
-to work in the base directory of the unpacked package and set the
+The simplest way to use a :term:`Python` package without installing it
+is to work in the base directory of the unpacked package and set the
 ``PYTHONPATH`` environment variable to "``.``". In order to work in an
-alternate directory ``PYTHONPATH`` must be set to
-"``~/path/to/package``". This method of working is adequate for one
-package, but quickly becomes unmanageable with multiple packages. In
-order to manage multiple paclages, it is better to choose a standard
-location other than the default installtion path. See the
-`Privileges`_ section for details on this approach.
+directory other than the package's base directory, the ``PYTHONPATH``
+environment variable must be set to "``~/path/to/package``". This
+method of working is adequate for one package, but quickly becomes
+unmanageable with multiple :term:`Python` packages. In order to manage
+multiple packages, it is better to choose a standard location other
+than the default installation path. See the `Privileges`_ section for
+details on this approach.
 
-An alternative to setting ``PYTHONPATH`` is to employ one of the
-utilities that manage packages and their dependencies independently of
+An alternative to setting the ``PYTHONPATH`` is to employ one of the
+utilities that manage package and their dependencies independently of
 the system package manager and the system directories. These utilities
 include Stow_, Virtualenv_ and zc.buildout_ amongst others. Here we'll
 describe the use of Virtualenv_, which we highly recommend.
@@ -92,7 +95,7 @@ Privileges
 If you do not have administrative privileges on your computer, or if
 for any reason you don't want to tamper with your existing
 :term:`Python` installation, most packages (including :term:`FiPy`)
-will allow you to install to an alternate location.  Instead of
+will allow you to install to an alternative location.  Instead of
 installing these packages with ``python setup.py install``, you would
 use :samp:`python setup.py install --home={dir}`, where :samp:`{dir}`
 is the desired installation directory (usually "``~``" to indicate
@@ -138,7 +141,8 @@ Then a ``fipy`` working environment can be created::
     $ mkvirtualenv fipy
     $ workon fipy
 
-If the :ref:`REQUIREDPACKAGES` have been met, :term:`Fipy` can be installed with::
+If the :ref:`REQUIREDPACKAGES` have been installed, :term:`Fipy` can
+be installed with::
 
     $ pip install fipy
 
@@ -161,23 +165,40 @@ For a general installation, :term:`FiPy` can be tested by running::
 
     $ python -c "import fipy; fipy.test()"
 
-This command runs all the test cases under :term:`FiPy`'s modules, but
-doesn't incude any of the tests in :mod:`examples`. To test both
-:term:`FiPy`'s modules and :mod:`examples`, use::
+This command runs all the test cases in :ref:`FiPy's modules
+<part:modules>`, but doesn't include any of the tests in :ref:`FiPy's
+examples <part:examples>`. To run the test cases in both :ref:`modules
+<part:modules>` and :ref:`examples <part:examples>`, use::
 
     $ python setup.py test
 
-in an unpacked :term:`FiPy` archive. :term:`FiPy` can be run with a
+in an unpacked :term:`FiPy` archive. The test suite can be run with a
 number of different configurations depending on which solver suite is
 available and other factors. See the
 :ref:`FlagsAndEnvironmentVariables` section for more details.
 
-The :term:`FiPy` test suite is implemented so that tests that are
-highly dependent on the environment are blocked and do not show
-errors. Under most circumstances the test suite should not show any
-errors, but if it does these errors should be investigated or reported
-on the :ref:`tracking system`. Below are a number of common command
-line options for testing various :term:`FiPy` configurations.
+The :term:`FiPy` test suite is implemented so that test execution is
+dependent on the environment. The test suite will show warnings when
+the environment is missing an optional package. For example, if
+:term:`Mayavi` and :term:`Gmsh` are not installed the warning would
+be::
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Skipped 131 doctest examples because `gmsh` cannot be found on the $PATH
+    Skipped 42 doctest examples because the `tvtk` package cannot be imported
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Although the test suite may show warnings, there should be no errors.
+Any errors should be investigated or reported on the `tracking
+system`_. Users can see if there are any known problems for the latest
+:term:`FiPy` distribution by checking `FiPy's automated test
+display`_.
+
+.. _FiPy's automated test display: http://build.cmi.kent.edu:8010/console
+.. _tracking system: http://matforge.org/fipy/newticket
+
+Below are a number of common command line options for testing various
+:term:`FiPy` configurations.
  
 Inline Tests
 ============
