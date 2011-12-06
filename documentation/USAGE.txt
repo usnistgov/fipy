@@ -37,6 +37,9 @@ knowledge of Python syntax is required.  We recommend you familiarize
 yourself with the excellent `Python tutorial`_ [PythonTutorial]_ 
 or with `Dive Into Python`_ [DiveIntoPython]_.
 
+.. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
+.. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
+
 As you gain experience, you may want to browse through
 :ref:`FlagsAndEnvironmentVariables` to learn about flags and
 environment variable that affect :term:`FiPy`.
@@ -179,7 +182,7 @@ available and other factors. See the
 
 The :term:`FiPy` test suite is implemented so that test execution is
 dependent on the environment. The test suite will show warnings when
-the environment is missing an optional package. For example, if
+the environment is missing :ref:`OPTIONALPACKAGES`. For example, if
 :term:`Mayavi` and :term:`Gmsh` are not installed the warning would
 be::
 
@@ -197,7 +200,7 @@ display`_.
 .. _FiPy's automated test display: http://build.cmi.kent.edu:8010/console
 .. _tracking system: http://matforge.org/fipy/newticket
 
-Below are a number of common command line options for testing various
+Below are a number of common `Command-line Flags`_ for testing various
 :term:`FiPy` configurations.
  
 Inline Tests
@@ -238,38 +241,49 @@ Command-line Flags and Environment Variables
 :term:`FiPy` chooses a default run time configuration based on the
 available packages on the system. The `Command-line Flags`_ and
 `Environment Variables`_ sections below describe how to override
-:term:FiPy`s default behaviour.
+:term:`FiPy`'s default behavior.
 
 Solvers
--------
+=======
 
-:term:`FiPy` works with either the :ref:`PYSPARSE`, :ref:`PYTRILINOS`,
-:ref:`SCIPY` or :ref:`PYAMG` solver suites. :term:`FiPy` chooses the
-solver suite based on system availability or based on the user
-supplied `Command-line Flags`_ or `Environment Variables`_. Suite
-specific solver classed can also be imported and instantiated::
+:term:`FiPy` works with either the :term:`PySparse`,
+:term:`Trilinos`, :term:`Scipy` or :term:`PyAMG` solver
+suites. :term:`FiPy` chooses the solver suite based on system
+availability or based on the user supplied `Command-line Flags`_ or
+`Environment Variables`_. For example, using ``--no-pysparse``::
 
-    >>> from fipy.solvers.scipy.linearLUSolver import LinearLUsolver 
-    >>> solver = LinearLUsolver()
+    $ python -c "from fipy import *; print DefaultSolver" --no-pysparse
+    <class 'fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver'>
+    
+uses a :term:`Trilinos` solver and setting :envvar:`FIPY_SOLVERS`
+to ``scipy``::
 
+    $ FIPY_SOLVERS=scipy
+    $ python -c "from fipy import *; print DefaultSolver"
+    <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
+    
+uses a :term:`Scipy` solver. Suite specific solver classes can also
+be imported and instantiated overriding any other directives. For
+example::
 
-:term:`Trilinos` solvers can be used to
-replace :term:`PySparse` solvers. If both :term:`PySparse` and
-:term:`Trilinos` are present, usage can be controlled by setting the
-:envvar:`FIPY_SOLVERS` environment variable to ``Trilinos`` or
-``Pysparse``, or by passing a ``--trilinos`` or ``--pysparse`` flag to
-the :term:`FiPy` script, overriding the environment. In the absence of
-these indicators, :term:`FiPy` will default to using :term:`PySparse`
-if it is present. Using the ``--trilinos`` flag instructs :term:`FiPy`
-to construct matrices using :term:`PySparse`, but solve them using
-:term:`Trilinos`. To avoid the :term:`PySparse` requirement, use the
-``--no-pysparse`` flag in place of the ``--trilinos`` flag. This will
-both construct matrices and solve them with
-:term:`Trilinos`. Unfortunately, :term:`Trilinos` tends to under
-perform when compared to :term:`PySparse` during matrix construction.
+    $ python -c "from fipy.solvers.scipy import DefaultSolver; \
+    print DefaultSolver" --no-pysparse
+    <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
+    
+uses a :term:`Scipy` solver regardless of the command line
+argument. In the absence of `Command-line Flags`_ or `Environment
+Variables`_, :term:`FiPy`'s order of precedence when choosing the
+solver suite for generic solvers is :term:`PySparse` followed by
+:term:`Trilinos`, :term:`PyAMG` and :term:`Scipy`.
+
+.. note::
+
+    From our experiences, :term:`PySparse` is the most efficient of
+    the solver suites available. :term:`Trilinos` is the most complete
+    in terms of its multitude of capabilities and choices.
 
 Command-line Flags
-------------------
+==================
 
 You can add any of the following flags after the name of a 
 script you call from the command line
@@ -298,22 +312,22 @@ script you call from the command line
 
 .. cmdoption:: --pyamg
 
-   Forces the use of the PyAMG_ preconditioners in conjunction with
-   the Scipy_ solvers. This flag takes precedence over the
+   Forces the use of the :term:`PyAMG` preconditioners in conjunction
+   with the :term:`Scipy` solvers. This flag takes precedence over the
    :envvar:`FIPY_SOLVERS` environment variable.
 
 .. cmdoption:: --no-pysparse
 
-   Forces the use of the PyTrilinos_ solvers without any use of
-   PySparse_. This flag takes precedence over the
+   Forces the use of the :term:`Trilinos` solvers without any use of
+   :term:`PySparse`. This flag takes precedence over the
    :envvar:`FIPY_SOLVERS` environment variable.
 
 Environment Variables
----------------------
+=====================
 
 You can set any of the following environment variables in the manner
 appropriate for your shell. If you are not running in a shell (*e.g.*,
-you are invoking :term:`FiPy` scripts from within IPython or IDLE),
+you are invoking :term:`FiPy` scripts from within IPython_ or IDLE),
 you can set these variables via the :const:`os.environ` dictionary,
 but you must do so before importing anything from the :mod:`fipy`
 package.
@@ -371,8 +385,8 @@ Solving in Parallel
 
 :term:`FiPy` can use :term:`Trilinos` to solve equations in
 parallel. Most mesh classes in :mod:`fipy.meshes` can solve in
-paralled. This includes all "``...Grid...``" and "``...Gmsh..``" class
-meshes. There only serial only meshes remaining are
+paralled. This includes all "``...Grid...``" and "``...Gmsh...``"
+class meshes. Currently, the only remaining serial-only meshes are
 :class:`~fipy.meshes.tri2D.Tri2D` and
 :class:`~fipy.meshes.skewedGrid2D.SkewedGrid2D`.
 
@@ -383,7 +397,7 @@ meshes. There only serial only meshes remaining are
 .. attention::
 
    :term:`FiPy` requires :ref:`MPI4PY` to work in parallel. See the
-   :ref:`MPI4PY` installation guide.
+   :ref:`MPI4PY` installation guide.
 
 .. note::
 
@@ -427,10 +441,12 @@ up into separate sub-domains and solves them (somewhat) independently.
 :term:`FiPy` generally "does the right thing", but if you find that
 you need to do something with the entire solution, you can call
 ``var.``:meth:`~fipy.variables.cellVariable.CellVariable.getGlobalValue`.
+
 .. note:: 
 
-    :term:`Trilinos` solvers frequently give intermediate output that :term:`FiPy` cannot
-    suppress. The most commonly encountered messages are:
+    :term:`Trilinos` solvers frequently give intermediate output that
+    :term:`FiPy` cannot suppress. The most commonly encountered
+    messages are::
 
      ``Gen_Prolongator warning : Max eigen <= 0.0``:
         which is not significant to :term:`FiPy`.
@@ -452,23 +468,15 @@ you need to do something with the entire solution, you can call
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
 
-Setting :envvar:`FIPY_SOLVERS` to ``pyamg`` or using the
-``--pyamg`` flag will automatically use the default :term:`PyAmg`
-preconditioners along with the default :term:`SciPy` solvers.
-
-
-
-.. _sec:UsingFiPy:
-
 .. _RunningUnderPython3:
 
 ----------------------
 Running under Python 3     
 ----------------------
 
-It is possible to run :term:`FiPy` scripts under Python 3, but you
-must convert FiPy's code before you can do so. From within the main
-:term:`FiPy` directory::
+It is possible to run :term:`FiPy` scripts under :term:`Python` 3, but
+you must convert :term:`FiPy`'s code before you can do so. From within
+the main :term:`FiPy` directory::
 
     $ 2to3 --write .
     $ 2to3 --write --doctests_only .
@@ -477,20 +485,22 @@ You can expect some harmless warnings and non-terminal errors from this conversi
 
 The minimal prerequisites are:
 
- * NumPy version 1.5 or greater
- * SciPy version 0.9 or greater
- * Matplotlib version 1.2 or greater (this hasn't been released yet, and 
-   we haven't been able to successfully test the 
-   :mod:`~.fipy.viewers.matplotlibViewer` classes with their development 
-   code.
+ * :term:`NumPy` version 1.5 or greater.
+ * :term:`SciPy` version 0.9 or greater.
+ * :term:`Matplotlib` version 1.2 or greater (this hasn't been
+   released yet, and we haven't been able to successfully test the
+   :mod:`~.fipy.viewers.matplotlibViewer` classes with their
+   development code.
 
-There are three known failures in FiPy's test suite under Python 3.
+There are three known failures in :term:`FiPy`'s test suite under
+:term:`Python` 3:
 
- * `RuntimeError: Factor is exactly singular` in fipy/terms/unaryTerm.py. 
-   This is a SciPy solver failure not limited to Py3k.
- * :class:`~fipy.viewers.vtkViewer.vtkCellViewer.VTKCellViewer` and 
-   :class:`~fipy.viewers.vtkViewer.vtkFaceViewer.VTKFaceViewer` due to lack of 
-   `enthought.tvtk.api` in Py3k.
+ * `RuntimeError: Factor is exactly singular` in
+   :file:`fipy.terms.unaryTerm.py`.  This is a :term:`SciPy` solver
+   failure not limited to Py3k,
+ * :class:`~fipy.viewers.vtkViewer.vtkCellViewer.VTKCellViewer` and
+ * :class:`~fipy.viewers.vtkViewer.vtkFaceViewer.VTKFaceViewer` due to
+   lack of :mod:`enthought.tvtk.api` in Py3k.
 
 ------
 Manual
@@ -512,60 +522,7 @@ command in the base directory::
 
 .. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
 
-----------------
-Operating System
-----------------
 
-:term:`FiPy` is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and 10.5 "Leopard",
-`Debian Linux`_ 4.0 "etch", `Ubuntu Linux`_ 10.10, and `Windows XP`_. We
-welcome reports of compatibility with other systems, particularly if any
-additional steps are necessary to install.
 
-.. note::
 
-   Simple instructions for `Mac OS X`_ users are in :ref:`MACOSX-INSTALLATION`.
-   Simple instructions for Windows_ users are in :ref:`WINDOWS-INSTALLATION`.
 
-The only elements of :term:`FiPy` that are likely to be platform-dependent
-are the viewers, but at least one viewer should work on each platform.
-All other aspects should function on any platform that has a recent
-:term:`Python` installation.
-
-Many of the packages listed below have prebuilt installers for different
-platforms (particularly for Windows).  These installers can save considerable
-time and effort compared to configuring and building from source, although
-they frequently comprise somewhat older versions of the respective code.
-Whether building from source or using a prebuilt installer, please read and
-follow explicitly any instructions given in the respective packages'
-:file:`README` and :file:`INSTALLATION` files.
-
-.. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
-.. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
-.. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
-.. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
-.. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
-.. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
-.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
-.. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
-
------
-Stuff
------
-
- :term:`FiPy` will select the first viewer that is available
-from the list below.  If more than one is installed, specify a viewer
-by setting the :envvar:`FIPY_VIEWER` environment variable to either
-"``gist``", "``gnuplot``" or "``matplotlib``".
-
-:term:`SciPy` can also be used in place of :term:`PySparse` or
-:ref:`PYTRILINOS` as the linear solver suite. Set the
-:envvar:`FIPY_SOLVERS` environment variable to ``scipy`` or use the
-``--scipy`` command line flag. Furthermore, :term:`PyAmg` can be used
-for preconditioning when the :term:`Scipy` solvers are employed. In
-this case, set :envvar:`FIPY_SOLVERS` to ``pyamg`` or use the
-``--pyamg`` flag in place of ``--scipy``. The use of :ref:`PySparse`
-is still recommended as the primary solver suite for performance
-reasons.
-
-Significantly improved performance has been achieved with the judicious use
-of C language inlining, via the :mod:`scipy.weave`. 

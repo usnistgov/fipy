@@ -57,7 +57,7 @@ before beginning the installation process.
 .. _PyPI:
 
 PyPI
-----
+====
 
 http://pypi.python.org/pypi
 
@@ -106,7 +106,7 @@ installing the following prerequisite packages on your system:
 
  * NumPy_ 
  
- * Either SciPy_ or PySparse_ (see the :ref:`SOLVERS` discussion)
+ * Either SciPy_ or PySparse_ (see the SOLVERS discussion)
 
  * Matplotlib_ (not strictly necessary just to run the tests)
 
@@ -129,6 +129,41 @@ to simply work within the base directory instead. In this case or if
 you are making a non-standard install (without admin privileges), read
 the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document before
 beginning the installation process.
+
+:term:`FiPy` is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and
+10.5 "Leopard", `Debian Linux`_, `Ubuntu Linux`_, and
+`Windows XP`_. We welcome reports of compatibility with other systems,
+particularly if any additional steps are necessary to install.
+
+.. note::
+
+   Simple instructions for `Mac OS X`_ users are in :ref:`MACOSX-INSTALLATION`.
+   Simple instructions for Windows_ users are in :ref:`WINDOWS-INSTALLATION`.
+
+
+The only elements of :term:`FiPy` that are likely to be
+platform-dependent are the viewers, but at least one viewer should
+work on each platform.  All other aspects should function on any
+platform that has a recent :term:`Python` installation.
+
+
+Many of the packages listed below have prebuilt installers for different
+platforms (particularly for Windows).  These installers can save considerable
+time and effort compared to configuring and building from source, although
+they frequently comprise somewhat older versions of the respective code.
+Whether building from source or using a prebuilt installer, please read and
+follow explicitly any instructions given in the respective packages'
+:file:`README` and :file:`INSTALLATION` files.
+
+.. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
+.. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
+.. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
+.. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
+.. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
+.. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
+.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
+.. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
+ 
 
 .. _REQUIREDPACKAGES:
 
@@ -156,13 +191,14 @@ systems, which you can check by opening a terminal and typing
     Type "help", "copyright", "credits" or "license" for more information.
     >>> 
 
-If necessary, you can download_ and install it for your platform 
+If necessary, you can download_ and install it for your platform
 <http://www.python.org/download>.
 
 .. note::
 
-   :term:`FiPy` requires at least version 2.5 of Python_. See `Running under Python 3` for 
-   instructions on how to run  :term:`FiPy` with python 3.
+   :term:`FiPy` requires at least version 2.5 of Python_. See `Running
+   under Python 3` for instructions on how to run :term:`FiPy` with
+   python 3.
 
 .. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
@@ -200,6 +236,8 @@ http://numpy.scipy.org
 
 Obtain and install the :term:`NumPy` package. :term:`FiPy` requires at least
 version 1.0 of NumPy_.
+
+.. _PYSPARSE:
 
 PySparse
 ========
@@ -244,6 +282,8 @@ installers`_ are available.
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
 .. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
+
+.. _SCIPY:
 
 SciPy
 =====
@@ -315,6 +355,7 @@ or 2D viewing.
 
 .. _Mayavi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
 
+.. _PYAMG:
 
 PyAmg
 =====
@@ -332,17 +373,18 @@ http://www.geuz.org/gmsh/
 :term:`Gmsh` allows the creation of irregular meshes.
 
 
-.. _PYTRILINOS:
-
-PyTrilinos
+.. _TRILINOS:
+    
+Trilinos
 ==========
 
 http://trilinos.sandia.gov
 
-:term:`Trilinos` provides solvers and preconditioners, and can be used instead of
-:term:`PySparse`. :term:`Trilinos` preconditioning allows for iterative solutions to some
-difficult problems that :term:`PySparse` cannot solve, and it enables
-solving on parallel nodes.
+:term:`Trilinos` provides solvers and preconditioners, and can be used
+instead of :term:`PySparse`. :term:`Trilinos` preconditioning allows
+for iterative solutions to some difficult problems that
+:term:`PySparse` cannot solve, and it enables solving on parallel
+nodes.
 
 .. attention::
 
@@ -486,8 +528,6 @@ Platform-Specific Instructions
    UBUNTU-DEBIAN-INSTALLATION
    documentation/SVN
 
-.. _Python tutorial: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/tut/tut.html
-.. _Dive Into Python: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://diveintopython.org
 .. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 
