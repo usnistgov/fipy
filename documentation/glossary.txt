@@ -26,6 +26,9 @@ Glossary
       also has a CAD engine and post-processor that :term:`FiPy` does not
       make use of. See http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.geuz.org/gmsh.
 
+   IPython
+      An improved :term:`Python` shell. See http://ipython.scipy.org/.
+
    Matplotlib
       :mod:`matplotlib` :term:`Python` package displays publication quality
       results. It displays both 1D X-Y type plots and 2D contour plots for

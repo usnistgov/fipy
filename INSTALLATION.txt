@@ -8,8 +8,7 @@ The :term:`FiPy` finite volume PDE solver relies on several
 third-party packages.  It is *best to obtain and install those first*
 before attempting to install :term:`FiPy`. This document explains how
 to install :term:`FiPy` not how to use it. See the :ref:`USAGE`
-document for details on how to use :term:`FiPy` along with its various
-required packages.
+document for details on how to use :term:`FiPy`.
 
 .. note::
    
@@ -39,7 +38,7 @@ In general, it is best to use the following order of precedence when
 installing packages:
 
  * Use the system package manager if possible.
- * Use PyPI_ (the Python_ package index)::
+ * Use PyPI_ (the :term:`Python` package index)::
 
      $ pip install package
  * Download manually, unpack and run::
@@ -70,9 +69,9 @@ PyPI
 
 http://pypi.python.org/pypi
 
-`PyPI`_ is a package manager for Python_ packages. To use PyPI_, the
-`Setuptools`_ package needs to be installed. Once this is available,
-PyPI_ can be installed with::
+`PyPI`_ is a package manager for :term:`Python` packages. To use
+PyPI_, the `Setuptools`_ package needs to be installed. Once this is
+available, PyPI_ can be installed with::
 
      $ easy_install pip
 
@@ -156,10 +155,10 @@ Python
 
 http://www.python.org/
 
-:term:`FiPy` is written in the :term:`Python` language and requires a Python_
-installation to run.  :term:`Python` comes pre-installed on many operating
-systems, which you can check by opening a terminal and typing
-``python``, *e.g.*::
+:term:`FiPy` is written in the :term:`Python` language and requires a
+:term:`Python` installation to run. :term:`Python` comes pre-installed
+on many operating systems, which you can check by opening a terminal
+and typing ``python``, *e.g.*::
 
     $ python
     Python 2.3 (#1, Sep 13 2003, 00:49:11) 
@@ -172,24 +171,26 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   :term:`FiPy` requires at least version 2.5 of Python_. See `Running
-   under Python 3` for instructions on how to run :term:`FiPy` with
-   python 3.
+   :term:`FiPy` requires at least version 2.5 of :term:`Python`. See
+   `Running under Python 3` for instructions on how to run
+   :term:`FiPy` with `Python 3.0`_.
 
 .. _Python 3.0:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/releases/3.0/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
 
-Python_ along with many of :term:`FiPy`'s required and optional
-packages is available with one of the following Python_ distributions.
+:term:`Python` along with many of :term:`FiPy`'s required and optional
+packages is available with one of the following :term:`Python`
+distributions.
 
 Enthought Python Distribution
 -----------------------------
 
 http://www.enthought.com/epd
 
-This installer provides a very large number of useful scientific packages
-for Python, including Python_, NumPy_, SciPy_, Matplotlib_, and IPython_.
-Installers are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
+This installer provides a very large number of useful scientific
+packages for :term:`Python`, including :term:`Python`, :term:`NumPy`,
+:term:`SciPy`, :term:`Matplotlib`, and :term:`IPython`.  Installers
+are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
 
 .. attention::
 
@@ -201,7 +202,7 @@ Python(x,y)
 
 http://www.pythonxy.com/
 
-Another comprehensive Python package installer for scientific
+Another comprehensive :term:`Python` package installer for scientific
 applications, presently only available for Windows_. See
 :ref:`WINDOWS-INSTALLATION` for more information.
 

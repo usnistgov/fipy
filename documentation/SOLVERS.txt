@@ -1,0 +1,165 @@
+.. _SOLVERS:
+
+=======
+Solvers
+=======
+
+.. attention::
+
+   This package is not a requirement if PySparse_ is installed.
+
+
+.. _PYSPARSE:
+
+--------
+PySparse
+--------
+
+http://pysparse.sourceforge.net
+
+:term:`FiPy` requires `Roman Geus`_' :term:`PySparse` package.
+
+You can `download the PySparse archive`_ or check it out via anonymous SVN
+download. From within the ``pysparse`` base directory, follow its included
+instructions for building :term:`PySparse` for your platform. `PySparse Windows
+installers`_ are available.
+
+.. note::
+
+   Windows users who choose to build from source should pay particular
+   attention to the instructions in the INSTALL file in the base
+   :term:`PySparse` directory.
+
+.. warning::
+
+   If pysparse is installed in a local directory a further path may
+   have to be added to the :envvar:`PYTHONPATH` environment variable. For
+   example, if::
+
+       $ python setup.py install --home=/some/directory/some/where
+
+   then both :file:`/some/directory/some/where` and
+   :file:`/some/directory/some/where/lib/python` are required to be added
+   to the :envvar:`PYTHONPATH`, e.g.::
+
+       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python
+
+.. warning::
+
+   :term:`FiPy` requires version 1.0 or higher of :term:`PySparse`.
+
+.. attention::
+
+   This package is not a requirement if SciPy_ is installed.
+
+.. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
+.. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
+.. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
+
+.. _SCIPY:
+
+-----
+SciPy
+-----
+
+http://www.scipy.org/
+
+`SciPy download instructions`_ are available
+<http://www.scipy.org/Download>. We recommend version 0.5.2 or
+greater.
+
+.. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
+
+.. _PYAMG:
+
+-----
+PyAmg
+-----
+
+http://code.google.com/p/pyamg/
+
+The :term:`PyAmg` preconditioners can be used when :term:`SciPy` is
+installed.
+
+.. _TRILINOS:
+
+--------
+Trilinos
+--------
+
+http://trilinos.sandia.gov
+
+:term:`Trilinos` provides solvers and preconditioners, and can be used
+instead of :term:`PySparse`. :term:`Trilinos` preconditioning allows
+for iterative solutions to some difficult problems that
+:term:`PySparse` cannot solve, and it enables solving on parallel
+nodes.
+
+.. attention::
+
+   In order to solve in parallel, both :term:`PySparse` and 
+   :term:`Trilinos` are required.
+
+.. attention:: 
+    
+   :term:`Trilinos` is a large software suite with its own set of prerequisites, and
+    can be difficult to set up. It is not necessary for most problems, and is
+    **not** recommended in a basic install of :term:`FiPy`.
+
+:term:`Trilinos` is built using :command:`cmake` along with
+:command:`make` and :command:`make install`. The best approach that
+we have found is as follows::
+
+    $ cd trilinos-X.Y/
+    $ SOURCE_DIR=`pwd`
+    $ mkdir BUILD_DIR    
+    $ cd BUILD_DIR
+    $ cmake \
+    >   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
+    >   -D Trilinos_ENABLE_PyTrilinos:BOOL=ON \
+    >   -D BUILD_SHARED_LIBS:BOOL=ON \
+    >   -D Trilinos_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=ON \
+    >   -D TPL_ENABLE_MPI:BOOL=ON \
+    >   -D Trilinos_ENABLE_TESTS:BOOL=ON \
+    >   -D DART_TESTING_TIMEOUT:STRING=600 \
+    >   ${SOURCE_DIR}
+    $ make
+    $ make install
+
+Depending on your platform, other options may be helpful or necessary;
+see the :term:`Trilinos` user guide available from
+http://trilinos.sandia.gov/documentation.html, or
+http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more
+in-depth documentation.
+
+.. note:: 
+ 
+    Trilinos can be installed in a non-standard location by adding the
+    :samp:`-D CMAKE_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` and
+    :samp:`-D PyTrilinos_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` flags
+    to the configure step. If :term:`Trilinos` is installed in a
+    nonstandard location, the path to the :term:`PyTrilinos`
+    site-packages directory should be added to the
+    :envvar:`PYTHONPATH` environment variable; this should be of the
+    form
+    :file:`${{INSTALL_DIR}}/lib/${{PYTHON_VERSION}}/site-packages/`. Also,
+    the path to the :term:`Trilinos` lib directory should be added to
+    the :envvar:`LD_LIBRARY_PATH` (on Linux) or
+    :envvar:`DYLD_LIBRARY_PATH` (on Mac OS X) environment variable;
+    this should be of the form :file:`${{INSTALL_DIR}}/lib``.
+
+.. _MPI4PY:
+
+mpi4py
+======
+
+http://mpi4py.scipy.org/
+
+For :ref:`PARALLEL`, :term:`FiPy` needs ``mpi4py``, in addition 
+to both :term:`Trilinos` and :term:`PySparse`. This should be obtainable 
+with::
+
+    $ pip install mpi4py
+
+assuming you have the standard MPI libraries on your system.
+

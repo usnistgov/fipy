@@ -1,0 +1,108 @@
+.. _VIEWERS:
+
+=======
+Viewers
+=======
+
+.. _MATPLOTLIB:
+
+----------
+Matplotlib
+----------
+
+http://matplotlib.sourceforge.net
+
+:term:`Matplotlib` is a Python_ package that displays publication quality
+results. It displays both 1D X-Y type plots and 2D contour plots for
+structured data. It does not display unstructured 2D data or 3D data.
+It works on all common platforms and produces publication quality hard
+copies. Version 0.72.1 or higher is required. `Matplotlib installers
+for specific platforms`_ are available 
+<http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474>.
+
+.. note::
+
+   :term:`Matplotlib` is noticeably slower than :term:`Pygist` or Gnuplot.py_, but
+   has superior image rendering and plotting functionality.
+
+.. _Matplotlib installers for specific platforms: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
+
+Mayavi
+======
+
+http://code.enthought.com/projects/mayavi/
+
+The `Mayavi 2`_ Data Visualizer is a free, easy to use scientific data
+visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
+viewer available for 3D data. Other viewers are probably better for 1D
+or 2D viewing. 
+
+.. note::
+   
+   `Mayavi 2`_ is packaged for Ubuntu and Debian linux. Using the packaged versions makes installation much easier.
+
+.. note::
+
+   MayaVi 1 is no longer supported.
+
+.. _Mayavi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
+
+
+These packages receive little or no support, but are still compatible
+with :term:`FiPy`.
+
+Pygist ======
+
+http://hifweb.lbl.gov/public/software/gist/
+
+The :term:`Pygist` package can be used to display simulation results. It
+displays both 1D X-Y type plots and 2D contour plots for both
+structured and unstructured data. It does not display 3D
+data. Although stated as working on Windows, it does not seem to do a
+good job of rendering on this platform. :term:`Pygist` works fine on other
+common platforms. :term:`Pygist` no longer seems to be under development, but
+is still recommended as a fast light weight alternative to
+:term:`Matplotlib`.
+
+.. attention::
+
+   :term:`Pygist` requires the old Numeric module to be installed.
+
+.. warning:: 
+
+   The facility to produce hard copies in :term:`Pygist` does not work very well and
+   may crash the :term:`FiPy` run. "``.eps``" and "``.cgm``" export seem to work.
+
+.. note::
+
+   If you experience difficulty building the native :term:`Pygist` viewer on
+   `Mac OS X`_, you may wish to build the package with the :option:`--x11`
+   option described in its documentation.
+
+.. note::
+
+   :term:`Pygist` can have problems finding color pallets, such as "``heat.gp``" and 
+   "``work.gs``", when installed locally. You may need to set the 
+   :envvar:`GISTPATH` environment variable to point to the directory containing 
+   these files (you may find it as "``g/``" within the directory you 
+   specified for :option:`--home`). 
+
+.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
+
+
+Gnuplot-py
+==========
+
+http://gnuplot-py.sourceforge.net
+
+Gnuplot.py_ is a Python_ package that interfaces to :term:`gnuplot`, the
+popular open-source plotting program. It displays both 1D X-Y type
+plots and 2D contour plots for structured data but not for
+unstructured data or 3D data. It works on all common platforms and
+produces hard copies, however, it sometimes breaks on Windows. As a
+general remark, the viewing quality using either :term:`Pygist` or
+:term:`Matplotlib` is preferable.
+
+.. _Gnuplot.py:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot-py.sourceforge.net
+
+
