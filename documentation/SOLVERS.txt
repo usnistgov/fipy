@@ -4,6 +4,15 @@
 Solvers
 =======
 
+:term:`FiPy` requires either PySparse_, SciPy_ or Trilinos_ to be
+installed.  From our experiences, :term:`PySparse` is the most
+efficient of the three. :term:`Trilinos` is the most complete in terms
+of its multitude of capabilities and choices and it allows
+:term:`FiPy` to run in parallel. Although slower than PySparse_ and
+less capable than Trilinos_, :term:`SciPy` is a very popular package,
+widely available and easy to install. :term:`SciPy` mat be the best
+choice when first setting up a :term:`FiPy` installation.
+
 .. attention::
 
    This package is not a requirement if PySparse_ is installed.
