@@ -44,16 +44,6 @@ As you gain experience, you may want to browse through
 :ref:`FlagsAndEnvironmentVariables` to learn about flags and
 environment variable that affect :term:`FiPy`.
 
--------
-IPython
--------
-
-http://ipython.scipy.org/
-
-This interactive Python shell is nicer to use than the default, and
-integrates nicely with Matplotlib_. Depending on the platform, you may
-be able to download a binary or build from source.
-
 .. _ENVIRONMENT:
 
 -----------------------
@@ -159,6 +149,16 @@ altered in place and executed without issuing further installation
 commands.
 
 .. _Virtualenvwrapper: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.doughellmann.com/projects/virtualenvwrapper
+
+IPython
+=======
+
+http://ipython.scipy.org/
+
+This interactive Python shell is nicer to use than the default, and
+integrates nicely with Matplotlib_. Depending on the platform, you may
+be able to download a binary or build from source.
+
 
 ------------
 Testing FiPy

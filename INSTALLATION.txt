@@ -54,6 +54,15 @@ For more information on custom installs and development with :term:`FiPy`,
 read the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document
 before beginning the installation process.
 
+Many of the packages listed below have prebuilt installers for
+different platforms (particularly for Windows).  These installers can
+save considerable time and effort compared to configuring and building
+from source, although they frequently comprise somewhat older versions
+of the respective code.  Whether building from source or using a
+prebuilt installer, please read and follow explicitly any instructions
+given in the respective packages' :file:`README` and
+:file:`INSTALLATION` files.
+
 .. _PyPI:
 
 PyPI
@@ -62,17 +71,17 @@ PyPI
 http://pypi.python.org/pypi
 
 `PyPI`_ is a package manager for Python_ packages. To use PyPI_, the
-`Setuptools` package needs to be installed. Once this is available,
+`Setuptools`_ package needs to be installed. Once this is available,
 PyPI_ can be installed with::
 
      $ easy_install pip
 
 .. warning::
 
-   PyPI_ takes care of a packages Python_ dependencies. It does not deal
-   with non-Python_ dependencies.
+   PyPI_ takes care of dependencies that are themselves :term:`Python`
+   packages. It does not deal with non-:term:`Python` dependencies.
 
-.. _Setuptools: http://pypi.python.org/pypi/setuptools
+.. _Setuptools: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi/setuptools
 
 --------------
 Obtaining FiPy
@@ -81,7 +90,7 @@ Obtaining FiPy
 :term:`FiPy` is freely available for download via Subversion_ or as a
 compressed archive from
 <http://www.ctcms.nist.gov/fipy/download>. Please see
-:ref:`documentation:SVN` for instructions for obtaining :term:`FiPy`
+:ref:`documentation:SVN` for instructions on obtaining :term:`FiPy`
 with Subversion_.
 
 .. warning::
@@ -106,12 +115,13 @@ installing the following prerequisite packages on your system:
 
  * NumPy_ 
  
- * Either SciPy_ or PySparse_ (see the SOLVERS discussion)
+ * A solver from the list of :ref:`SOLVERS` (see the :ref:`SOLVERS` discussion)
 
- * Matplotlib_ (not strictly necessary just to run the tests)
-
-Other packages add greatly to :term:`FiPy`'s capabilities, but are not
-necessary for an initial installation or to simply run the test suite.
+ * A viewer from the list of :ref:`VIEWERS` (not strictly necessary just to run the tests)
+ 
+Other :ref:`OPTIONALPACKAGES` add greatly to :term:`FiPy`'s
+capabilities, but are not necessary for an initial installation or to
+simply run the test suite.
 
 It is not necessary to formally install :term:`FiPy`, but if you wish
 to do so and you are confident that all of the requisite packages have
@@ -130,50 +140,16 @@ you are making a non-standard install (without admin privileges), read
 the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document before
 beginning the installation process.
 
-:term:`FiPy` is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and
-10.5 "Leopard", `Debian Linux`_, `Ubuntu Linux`_, and
-`Windows XP`_. We welcome reports of compatibility with other systems,
-particularly if any additional steps are necessary to install.
-
-.. note::
-
-   Simple instructions for `Mac OS X`_ users are in :ref:`MACOSX-INSTALLATION`.
-   Simple instructions for Windows_ users are in :ref:`WINDOWS-INSTALLATION`.
-
-
-The only elements of :term:`FiPy` that are likely to be
-platform-dependent are the viewers, but at least one viewer should
-work on each platform.  All other aspects should function on any
-platform that has a recent :term:`Python` installation.
-
-
-Many of the packages listed below have prebuilt installers for different
-platforms (particularly for Windows).  These installers can save considerable
-time and effort compared to configuring and building from source, although
-they frequently comprise somewhat older versions of the respective code.
-Whether building from source or using a prebuilt installer, please read and
-follow explicitly any instructions given in the respective packages'
-:file:`README` and :file:`INSTALLATION` files.
-
-.. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
-.. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
-.. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
-.. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
-.. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
-.. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
-.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
-.. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
- 
-
 .. _REQUIREDPACKAGES:
 
 -----------------
 Required Packages
 -----------------
 
-.. warning::
+.. warning:
 
-   :term:`FiPy` will not run if the following items are not installed
+    :term:`FiPy` will not run if the following items are not
+    installed.
 
 Python
 ======
@@ -225,105 +201,29 @@ Python(x,y)
 
 http://www.pythonxy.com/
 
-Another comprehensive Python package installer for scientific applications,
-presently only available for Windows_. See :ref:`WINDOWS-INSTALLATION` for
-more information.
+Another comprehensive Python package installer for scientific
+applications, presently only available for Windows_. See
+:ref:`WINDOWS-INSTALLATION` for more information.
 
 NumPy
 =====
 
 http://numpy.scipy.org
 
-Obtain and install the :term:`NumPy` package. :term:`FiPy` requires at least
-version 1.0 of NumPy_.
+Obtain and install the :term:`NumPy` package. :term:`FiPy` requires at
+least version 1.0 of NumPy_.
 
-.. _PYSPARSE:
+Solver
+======
 
-PySparse
-========
+:term:`FiPy` requires one of either :ref:`PYSPARSE`, :ref:`SCIPY` or
+:ref:`TRILINOS`. See the :ref:`SOLVERS` section for further details.
 
-http://pysparse.sourceforge.net
+Viewer
+======
 
-:term:`FiPy` requires `Roman Geus`_' :term:`PySparse` package.
-
-You can `download the PySparse archive`_ or check it out via anonymous SVN
-download. From within the ``pysparse`` base directory, follow its included
-instructions for building :term:`PySparse` for your platform. `PySparse Windows
-installers`_ are available.
-
-.. note::
-
-   Windows users who choose to build from source should pay particular
-   attention to the instructions in the INSTALL file in the base
-   :term:`PySparse` directory.
-
-.. warning::
-
-   If pysparse is installed in a local directory a further path may
-   have to be added to the :envvar:`PYTHONPATH` environment variable. For
-   example, if::
-
-       $ python setup.py install --home=/some/directory/some/where
-
-   then both :file:`/some/directory/some/where` and
-   :file:`/some/directory/some/where/lib/python` are required to be added
-   to the :envvar:`PYTHONPATH`, e.g.::
-
-       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python
-
-.. warning::
-
-   :term:`FiPy` requires version 1.0 or higher of :term:`PySparse`.
-
-.. attention::
-
-   This package is not a requirement if SciPy_ is installed.
-
-.. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
-.. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
-.. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
-
-.. _SCIPY:
-
-SciPy
-=====
-
-http://www.scipy.org/
-
-`SciPy download instructions`_ are available
-<http://www.scipy.org/Download>. We recommend version 0.5.2 or
-greater.
-
-.. note:: 
-
-   A handful of test cases use functions from the SciPy_ library and will
-   throw errors if it is missing.
-
-.. attention::
-
-   This package is not a requirement if PySparse_ is installed.
-
-.. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
-
-Matplotlib
-==========
-
-http://matplotlib.sourceforge.net
-
-:term:`Matplotlib` is a Python_ package that displays publication quality
-results. It displays both 1D X-Y type plots and 2D contour plots for
-structured data. It does not display unstructured 2D data or 3D data.
-It works on all common platforms and produces publication quality hard
-copies. Version 0.72.1 or higher is required. `Matplotlib installers
-for specific platforms`_ are available 
-<http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474>.
-
-.. note::
-
-   :term:`Matplotlib` is noticeably slower than :term:`Pygist` or Gnuplot.py_, but
-   has superior image rendering and plotting functionality.
-
-.. _Matplotlib installers for specific platforms: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
+:term:`FiPy` requires a viewer to see the results of simulations. See
+the :ref:`VIEWERS` section for further details.
 
 .. _OPTIONALPACKAGES:
 
@@ -331,39 +231,10 @@ for specific platforms`_ are available
 Optional Packages
 -----------------
 
-.. note::
+.. note:
 
-   The following packages are not required to run :term:`FiPy`, but they can be helpful.
-
-Mayavi
-======
-
-http://code.enthought.com/projects/mayavi/
-
-The `Mayavi 2`_ Data Visualizer is a free, easy to use scientific data
-visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
-viewer available for 3D data. Other viewers are probably better for 1D
-or 2D viewing. 
-
-.. note::
-   
-   `Mayavi 2`_ is packaged for Ubuntu and Debian linux. Using the packaged versions makes installation much easier.
-
-.. note::
-
-   MayaVi 1 is no longer supported.
-
-.. _Mayavi 2: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
-
-.. _PYAMG:
-
-PyAmg
-=====
-
-http://code.google.com/p/pyamg/
-
-The :term:`PyAmg` preconditioners can be used when :term:`SciPy` is
-installed.
+    The following packages are not required to run :term:`FiPy`, but they can
+    be helpful.
 
 Gmsh
 ====
@@ -372,153 +243,41 @@ http://www.geuz.org/gmsh/
 
 :term:`Gmsh` allows the creation of irregular meshes.
 
+SciPy
+=====
 
-.. _TRILINOS:
-    
-Trilinos
-==========
+http://www.scipy.org/
 
-http://trilinos.sandia.gov
+Significantly improved performance has been achieved with the
+judicious use of C language inlining (see the
+:ref:`FlagsAndEnvironmentVariables` section for more details), via the
+:mod:`scipy.weave` module.
 
-:term:`Trilinos` provides solvers and preconditioners, and can be used
-instead of :term:`PySparse`. :term:`Trilinos` preconditioning allows
-for iterative solutions to some difficult problems that
-:term:`PySparse` cannot solve, and it enables solving on parallel
-nodes.
+.. note:
 
-.. attention::
+    A handful of test cases use functions from the :term:`SciPy`
+    library and will throw errors if it is missing.
 
-   In order to solve in parallel, both :term:`PySparse` and 
-   :term:`Trilinos` are required.
-
-.. attention:: 
-    
-   :term:`Trilinos` is a large software suite with its own set of prerequisites, and
-    can be difficult to set up. It is not necessary for most problems, and is
-    **not** recommended in a basic install of :term:`FiPy`.
-
-:term:`Trilinos` is built using :command:`cmake` along with
-:command:`make` and :command:`make install`. The best approach that
-we have found is as follows::
-
-    $ cd trilinos-X.Y/
-    $ SOURCE_DIR=`pwd`
-    $ mkdir BUILD_DIR    
-    $ cd BUILD_DIR
-    $ cmake \
-    >   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
-    >   -D Trilinos_ENABLE_PyTrilinos:BOOL=ON \
-    >   -D BUILD_SHARED_LIBS:BOOL=ON \
-    >   -D Trilinos_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=ON \
-    >   -D TPL_ENABLE_MPI:BOOL=ON \
-    >   -D Trilinos_ENABLE_TESTS:BOOL=ON \
-    >   -D DART_TESTING_TIMEOUT:STRING=600 \
-    >   ${SOURCE_DIR}
-    $ make
-    $ make install
-
-Depending on your platform, other options may be helpful or necessary;
-see the :term:`Trilinos` user guide available from
-http://trilinos.sandia.gov/documentation.html, or
-http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more
-in-depth documentation.
-
-.. note:: 
- 
-    Trilinos can be installed in a non-standard location by adding the
-    :samp:`-D CMAKE_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` and
-    :samp:`-D PyTrilinos_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` flags
-    to the configure step. If :term:`Trilinos` is installed in a
-    nonstandard location, the path to the :term:`PyTrilinos`
-    site-packages directory should be added to the
-    :envvar:`PYTHONPATH` environment variable; this should be of the
-    form
-    :file:`${{INSTALL_DIR}}/lib/${{PYTHON_VERSION}}/site-packages/`. Also,
-    the path to the :term:`Trilinos` lib directory should be added to
-    the :envvar:`LD_LIBRARY_PATH` (on Linux) or
-    :envvar:`DYLD_LIBRARY_PATH` (on Mac OS X) environment variable;
-    this should be of the form :file:`${{INSTALL_DIR}}/lib``.
-
-.. _MPI4PY:
-
-mpi4py
-======
-
-http://mpi4py.scipy.org/
-
-For :ref:`PARALLEL`, :term:`FiPy` needs ``mpi4py``, in addition 
-to both :term:`Trilinos` and :term:`PySparse`. This should be obtainable 
-with::
-
-    $ pip install mpi4py
-
-assuming you have the standard MPI libraries on your system.
-
-----------------
-Defunct Packages
-----------------
-
-These packages receive little or no support, but are still compatible
-with :term:`FiPy`.
-
-Pygist
-======
-
-http://hifweb.lbl.gov/public/software/gist/
-
-The :term:`Pygist` package can be used to display simulation results. It
-displays both 1D X-Y type plots and 2D contour plots for both
-structured and unstructured data. It does not display 3D
-data. Although stated as working on Windows, it does not seem to do a
-good job of rendering on this platform. :term:`Pygist` works fine on other
-common platforms. :term:`Pygist` no longer seems to be under development, but
-is still recommended as a fast light weight alternative to
-:term:`Matplotlib`.
-
-.. attention::
-
-   :term:`Pygist` requires the old Numeric module to be installed.
-
-.. warning:: 
-
-   The facility to produce hard copies in :term:`Pygist` does not work very well and
-   may crash the :term:`FiPy` run. "``.eps``" and "``.cgm``" export seem to work.
-
-.. note::
-
-   If you experience difficulty building the native :term:`Pygist` viewer on
-   `Mac OS X`_, you may wish to build the package with the :option:`--x11`
-   option described in its documentation.
-
-.. note::
-
-   :term:`Pygist` can have problems finding color pallets, such as "``heat.gp``" and 
-   "``work.gs``", when installed locally. You may need to set the 
-   :envvar:`GISTPATH` environment variable to point to the directory containing 
-   these files (you may find it as "``g/``" within the directory you 
-   specified for :option:`--home`). 
-
-.. _Pygist: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://hifweb.lbl.gov/public/software/gist/
-
-
-Gnuplot-py
-==========
-
-http://gnuplot-py.sourceforge.net
-
-Gnuplot.py_ is a Python_ package that interfaces to :term:`gnuplot`, the
-popular open-source plotting program. It displays both 1D X-Y type
-plots and 2D contour plots for structured data but not for
-unstructured data or 3D data. It works on all common platforms and
-produces hard copies, however, it sometimes breaks on Windows. As a
-general remark, the viewing quality using either :term:`Pygist` or
-:term:`Matplotlib` is preferable.
-
-.. _Gnuplot.py:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gnuplot-py.sourceforge.net
+.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
+.. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
 
 ------------------------------
 Platform-Specific Instructions
 ------------------------------
+
+:term:`FiPy` is `tested regularly`_ on `Mac OS X`_ 10.4 "Tiger" and
+10.5 "Leopard", `Debian Linux`_, `Ubuntu Linux`_, and `Windows
+XP`_. We welcome reports of compatibility with other systems,
+particularly if any additional steps are necessary to install (see
+`Miscellaneous Build Recipes`_ for user contributed installation
+tips).
+
+The only elements of :term:`FiPy` that are likely to be
+platform-dependent are the :ref:`VIEWERS` but at least one viewer
+should work on each platform.  All other aspects should function on
+any platform that has a recent :term:`Python` installation.
+
+The following links provide platform specific instructions:
 
 .. toctree::
    :maxdepth: 2
@@ -528,6 +287,27 @@ Platform-Specific Instructions
    UBUNTU-DEBIAN-INSTALLATION
    documentation/SVN
 
-.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
-.. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
+.. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
+.. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
+.. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
+.. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
+.. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
+.. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
+.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
+.. _Windows 2000: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows2000/
 
+Miscellaneous Build Recipes
+===========================
+
+We often post miscellaneous installation instructions on the
+:term:`FiPy` blog_ and wiki_ pages. The most useful of these include:
+
+ * 
+   
+.. note::
+
+    Please feel free to contribute your own build recipes on the wiki_
+    if they are significantly different.
+
+.. _wiki: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy
+.. _blog: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/blog
