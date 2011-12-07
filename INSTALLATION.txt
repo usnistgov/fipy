@@ -303,12 +303,17 @@ Miscellaneous Build Recipes
 We often post miscellaneous installation instructions on the
 :term:`FiPy` blog_ and wiki_ pages. The most useful of these include:
 
- * 
-   
+ * `Installing FiPy on Mac OS X using Homebrew`_
+ * `Building a 64-bit scientific python environment for FiPy from source`_
+ * `Installing FiPy with PyPI`_
+
 .. note::
 
     Please feel free to contribute your own build recipes on the wiki_
     if they are significantly different.
 
+.. _Installing FiPy on Mac OS C using Homebrew: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/HomeBrew
+.. _Building a 64-bit scientific python environment for FiPy from source: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/SnowLeopard
+.. _Installing FiPy with PyPI: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/wiki/InstallFiPy/PipInstallsPython
 .. _wiki: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy
 .. _blog: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/blog
