@@ -347,15 +347,6 @@ for saving an image file. Also, you can supply an optional keyword
 which will save a file named :file:`myimage.ext` in your current working
 directory. The type of image is determined by the file extension
 ":file:`.ext`". Different viewers have different capabilities:
-
-:term:`Pygist`
-  accepts ":file:`.eps`" (`Encapsulated PostScript
-  <http://en.wikipedia.org/wiki/Encapsulated_PostScript>`_) and
-  ":file:`.cgm`" (`Computer Graphics Metafile
-  <http://xml.coverpages.org/cgm.html>`_).
-  
-:term:`gnuplot`
-  accepts ":file:`.eps`."
   
 :term:`Matplotlib`
   accepts ":file:`.eps`," ":file:`.jpg`" (`Joint Photographic Experts

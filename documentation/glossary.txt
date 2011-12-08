@@ -14,13 +14,6 @@ Glossary
       The eponymous software package. 
       See http://www.ctcms.nist.gov/fipy.
 
-   gist
-      Another name for :term:`Pygist`.
-
-   gnuplot
-      A popular open-source plotting program.
-      See http://www.gnuplot.info/
-
    Gmsh
       A free and Open Source 3D (and 2D!) finite element grid generator. It
       also has a CAD engine and post-processor that :term:`FiPy` does not
@@ -59,16 +52,6 @@ Glossary
 
    PyAMG
       A suite of python-based preconditoners. See :ref:`PyAMG`.
-
-   Pygist
-      The :term:`Pygist` package can be used to display simulation results. It
-      displays both 1D X-Y type plots and 2D contour plots for both
-      structured and unstructured data. It does not display 3D
-      data. Although stated as working on Windows, it does not seem to do a
-      good job of rendering on this platform. :term:`Pygist` works fine on other
-      common platforms. :term:`Pygist` no longer seems to be under development, but
-      is still recommended as a fast light weight alternative to
-      :term:`Matplotlib`.
 
    Pyrex
       A mechanism for mixing C and Python code.

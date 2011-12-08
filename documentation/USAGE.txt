@@ -156,9 +156,8 @@ IPython
 http://ipython.scipy.org/
 
 This interactive Python shell is nicer to use than the default, and
-integrates nicely with Matplotlib_. Depending on the platform, you may
-be able to download a binary or build from source.
-
+integrates nicely with :ref:`MATPLOTLIB`. Depending on the platform,
+you may be able to download a binary or build from source.
 
 ------------
 Testing FiPy
