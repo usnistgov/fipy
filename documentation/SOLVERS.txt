@@ -9,12 +9,18 @@ Solvers
 From our experiences, :term:`FiPy` runs most efficiently in serial
 when :term:`PySparse` is the linear solver. :term:`Trilinos` is the
 most complete of the three solvers due to its numerous preconditioning
-and solver capabilities and it also allows :term:`FiPy` to run in
-parallel. Although less efficient than :term:`PySparse` and less
-capable than :term:`Trilinos`, :term:`SciPy` is a very popular
-package, widely available and easy to install. For this reason,
-:term:`SciPy` may be the best linear solver choice when first
+and solver capabilities and it also allows :term:`FiPy` to :ref:`run
+in parallel <PARALLEL>`. Although less efficient than :term:`PySparse`
+and less capable than :term:`Trilinos`, :term:`SciPy` is a very
+popular package, widely available and easy to install. For this
+reason, :term:`SciPy` may be the best linear solver choice when first
 installing and testing :term:`FiPy`.
+
+.. attention::
+
+    See the :ref:`SOLVERCOMMANDLINEOPTIONS` section in the
+    :ref:`USAGE` document for details of how to configure
+    :term:`FiPy`'s choice of solver.
 
 .. _PYSPARSE:
 

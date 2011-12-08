@@ -243,14 +243,17 @@ available packages on the system. The `Command-line Flags`_ and
 `Environment Variables`_ sections below describe how to override
 :term:`FiPy`'s default behavior.
 
+.. _SOLVERCOMMANDLINEOPTIONS:
+
 Solvers
 =======
 
-:term:`FiPy` works with either the :term:`PySparse`,
-:term:`Trilinos`, :term:`Scipy` or :term:`PyAMG` solver
-suites. :term:`FiPy` chooses the solver suite based on system
-availability or based on the user supplied `Command-line Flags`_ or
-`Environment Variables`_. For example, using ``--no-pysparse``::
+:term:`FiPy` works with either the :term:`PySparse`, :term:`Trilinos`,
+:term:`Scipy` or :term:`PyAMG` solver suites (see the :ref:`solver
+installation guide <SOLVERS>` for more details). :term:`FiPy` chooses
+the solver suite based on system availability or based on the user
+supplied `Command-line Flags`_ or `Environment Variables`_. For
+example, using ``--no-pysparse``::
 
     $ python -c "from fipy import *; print DefaultSolver" --no-pysparse
     <class 'fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver'>
@@ -275,12 +278,6 @@ argument. In the absence of `Command-line Flags`_ or `Environment
 Variables`_, :term:`FiPy`'s order of precedence when choosing the
 solver suite for generic solvers is :term:`PySparse` followed by
 :term:`Trilinos`, :term:`PyAMG` and :term:`Scipy`.
-
-.. note::
-
-    From our experiences, :term:`PySparse` is the most efficient of
-    the solver suites available. :term:`Trilinos` is the most complete
-    in terms of its multitude of capabilities and choices.
 
 Command-line Flags
 ==================
