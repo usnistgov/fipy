@@ -4,19 +4,17 @@
 Solvers
 =======
 
-:term:`FiPy` requires either PySparse_, SciPy_ or Trilinos_ to be
-installed.  From our experiences, :term:`PySparse` is the most
-efficient of the three. :term:`Trilinos` is the most complete in terms
-of its multitude of capabilities and choices and it allows
-:term:`FiPy` to run in parallel. Although slower than PySparse_ and
-less capable than Trilinos_, :term:`SciPy` is a very popular package,
-widely available and easy to install. :term:`SciPy` mat be the best
-choice when first setting up a :term:`FiPy` installation.
-
-.. attention::
-
-   This package is not a requirement if PySparse_ is installed.
-
+:term:`FiPy` requires either :term:`PySparse`, :term:`SciPy` or
+:term:`Trilinos` to be installed in order to solve linear systems.
+From our experiences, :term:`FiPy` runs most efficiently in serial
+when :term:`PySparse` is the linear solver. :term:`Trilinos` is the
+most complete of the three solvers due to its numerous preconditioning
+and solver capabilities and it also allows :term:`FiPy` to run in
+parallel. Although less efficient than :term:`PySparse` and less
+capable than :term:`Trilinos`, :term:`SciPy` is a very popular
+package, widely available and easy to install. For this reason,
+:term:`SciPy` may be the best linear solver choice when first
+installing and testing :term:`FiPy`.
 
 .. _PYSPARSE:
 
@@ -26,12 +24,13 @@ PySparse
 
 http://pysparse.sourceforge.net
 
-:term:`FiPy` requires `Roman Geus`_' :term:`PySparse` package.
+You can `download the PySparse archive`_ or check it out via
+`anonymous SVN download`_. From within the ``pysparse`` base
+directory, follow its included instructions for building
+:term:`PySparse` for your platform. `PySparse Windows installers`_ are
+available.
 
-You can `download the PySparse archive`_ or check it out via anonymous SVN
-download. From within the ``pysparse`` base directory, follow its included
-instructions for building :term:`PySparse` for your platform. `PySparse Windows
-installers`_ are available.
+.. _anonymous SVN download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/scm/?type=svn&group_id=101403
 
 .. note::
 
@@ -41,25 +40,21 @@ installers`_ are available.
 
 .. warning::
 
-   If pysparse is installed in a local directory a further path may
-   have to be added to the :envvar:`PYTHONPATH` environment variable. For
-   example, if::
+   If :term:`PySparse` is installed in a local directory a further
+   path may have to be added to the :envvar:`PYTHONPATH` environment
+   variable. For example, if::
 
        $ python setup.py install --home=/some/directory/some/where
 
    then both :file:`/some/directory/some/where` and
-   :file:`/some/directory/some/where/lib/python` are required to be added
-   to the :envvar:`PYTHONPATH`, e.g.::
+   :file:`/some/directory/some/where/lib/python` are required to be
+   added to the :envvar:`PYTHONPATH`, e.g.::
 
-       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lib/python
+       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lbi/python
 
 .. warning::
 
    :term:`FiPy` requires version 1.0 or higher of :term:`PySparse`.
-
-.. attention::
-
-   This package is not a requirement if SciPy_ is installed.
 
 .. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
 .. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
@@ -74,8 +69,8 @@ SciPy
 http://www.scipy.org/
 
 `SciPy download instructions`_ are available
-<http://www.scipy.org/Download>. We recommend version 0.5.2 or
-greater.
+<http://www.scipy.org/Download>. :term:`SciPy` provides a basic set of
+Krylov solvers, but no preconditoners.
 
 .. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
 
@@ -87,8 +82,8 @@ PyAmg
 
 http://code.google.com/p/pyamg/
 
-The :term:`PyAmg` preconditioners can be used when :term:`SciPy` is
-installed.
+The :term:`PyAmg` package provides preconditioners that can be used in
+conjunction with the :term:`SciPy` solvers.
 
 .. _TRILINOS:
 
@@ -98,22 +93,24 @@ Trilinos
 
 http://trilinos.sandia.gov
 
-:term:`Trilinos` provides solvers and preconditioners, and can be used
-instead of :term:`PySparse`. :term:`Trilinos` preconditioning allows
-for iterative solutions to some difficult problems that
-:term:`PySparse` cannot solve, and it enables solving on parallel
-nodes.
+:term:`Trilinos` provides a more complete set of solvers and
+preconditioners than either :term:`PySparse` or
+:term:`SciPy`. :term:`Trilinos` preconditioning allows for iterative
+solutions to some difficult problems that :term:`PySparse` and
+:term:`SciPy` cannot solve, and it enables parallel execution of
+:term:`FiPy` (see :ref:`PARALLEL` for more details).
 
 .. attention::
 
-   In order to solve in parallel, both :term:`PySparse` and 
-   :term:`Trilinos` are required.
+   :term:`FiPy` runs more efficiently when :term:`PySparse` is
+   installed alongside :term:`Trilinos`.
 
 .. attention:: 
     
-   :term:`Trilinos` is a large software suite with its own set of prerequisites, and
-    can be difficult to set up. It is not necessary for most problems, and is
-    **not** recommended in a basic install of :term:`FiPy`.
+   :term:`Trilinos` is a large software suite with its own set of
+   prerequisites, and can be difficult to set up. It is not necessary
+   for most problems, and is **not** recommended for a basic install
+   of :term:`FiPy`.
 
 :term:`Trilinos` is built using :command:`cmake` along with
 :command:`make` and :command:`make install`. The best approach that
@@ -147,7 +144,7 @@ in-depth documentation.
     :samp:`-D CMAKE_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` and
     :samp:`-D PyTrilinos_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` flags
     to the configure step. If :term:`Trilinos` is installed in a
-    nonstandard location, the path to the :term:`PyTrilinos`
+    non-standard location, the path to the :term:`PyTrilinos`
     site-packages directory should be added to the
     :envvar:`PYTHONPATH` environment variable; this should be of the
     form
@@ -164,9 +161,8 @@ mpi4py
 
 http://mpi4py.scipy.org/
 
-For :ref:`PARALLEL`, :term:`FiPy` needs ``mpi4py``, in addition 
-to both :term:`Trilinos` and :term:`PySparse`. This should be obtainable 
-with::
+For :ref:`PARALLEL`, :term:`FiPy` requires ``mpi4py``, in addition to
+:term:`Trilinos`. This should be obtainable with::
 
     $ pip install mpi4py
 
