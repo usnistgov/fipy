@@ -34,9 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
 import os
-import inspect
 
 from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix

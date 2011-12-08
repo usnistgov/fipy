@@ -38,9 +38,10 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.viewers.gistViewer.gistViewer import _GistViewer
-
+from fipy.tools.decorators import deprecateGist
 __all__ = ["Gist2DViewer"]
 
+@deprecateGist
 class Gist2DViewer(_GistViewer):
     """Displays a contour plot of a 2D `CellVariable` object.
     """
