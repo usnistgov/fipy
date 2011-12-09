@@ -19,11 +19,10 @@ Matplotlib
 
 http://matplotlib.sourceforge.net
 
-:term:`Matplotlib` is a Python_ package that displays publication
-quality results. It displays both 1D X-Y type plots and 2D contour
-plots for structured data. It does not display unstructured 2D data or
-3D data.  It works on all common platforms and produces publication
-quality hard copies. Version 0.72.1 or higher is required. `Matplotlib
+:term:`Matplotlib` is a :term:`Python` package that displays
+publication quality results. It displays both 1D X-Y type plots and 2D
+contour plots for both structured and unstructured data,b but does not
+display 3D data. It works on all common platforms. `Matplotlib
 installers for specific platforms`_ are available
 <http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474>.
 
@@ -36,9 +35,9 @@ Mayavi
 http://code.enthought.com/projects/mayavi/
 
 The `Mayavi 2`_ Data Visualizer is a free, easy to use scientific data
-visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
-viewer available for 3D data. Other viewers are probably better for 1D
-or 2D viewing. 
+visualizer.  It displays 1D, 2D and 3D data. It is the only
+:term:`FiPy` viewer available for 3D data. :term:`Matplotlib` is
+probably a better choice for 1D or 2D viewing.
 
 .. note::
    
