@@ -127,41 +127,41 @@ the FAQ, :ref:`FAQ-higherOrderDiffusion`). This
 notation, although succinct can sometimes be confusing so a
 number of cases are interpreted below.
 
-    >>> DiffusionTerm([[5, 1]])
+>>> DiffusionTerm([[5, 1]])
 
-    This represents the same term as the case examined above.
-    The vector notation is just a short-hand representation
-    for the diagonal of the tensor. Off-diagonals are assumed
-    to be zero.
+This represents the same term as the case examined above.
+The vector notation is just a short-hand representation
+for the diagonal of the tensor. Off-diagonals are assumed
+to be zero.
 
-    >>> DiffusionTerm([5, 1])
+>>> DiffusionTerm([5, 1])
 
-    This simply represents a fourth order isotropic diffusion
-    term of the form :math:`5 \left( \partial_x^2 + \partial_y^2
-    \right)^2`.
+This simply represents a fourth order isotropic diffusion
+term of the form :math:`5 \left( \partial_x^2 + \partial_y^2
+\right)^2`.
 
-    >>> DiffusionTerm([[1, 0], [0, 1]])
+>>> DiffusionTerm([[1, 0], [0, 1]])
 
-    Nominally, this should represent a fourth order diffusion
-    term of the form :math:`\partial_x^2 \partial_y^2`, but :term:`FiPy`
-    does not currently support anisotropy for higher order
-    diffusion terms so this may well throw an error or give
-    anomalous results.
-  
-    >>> x, y = mesh.getCellCenters()
-    >>> DiffusionTerm(CellVariable(mesh=mesh, value=[[x**2, x * y], [-x * y, -y**2]])
+Nominally, this should represent a fourth order diffusion
+term of the form :math:`\partial_x^2 \partial_y^2`, but :term:`FiPy`
+does not currently support anisotropy for higher order
+diffusion terms so this may well throw an error or give
+anomalous results.
 
-    This represents an anisotropic diffusion coefficient that
-    varies spatially so that the term has the form 
-    :math:`\partial_x (x^2 \partial_x + x y \partial_y)
-    + \partial_y (-x y \partial_x - y^2 \partial_y)
-    \equiv x \partial_x - y \partial_y + x^2 \partial_x^2 - y^2
-    \partial_y^2`.
+>>> x, y = mesh.getCellCenters()
+>>> DiffusionTerm(CellVariable(mesh=mesh, value=[[x**2, x * y], [-x * y, -y**2]])
 
-    Generally, anisotropy is not conveniently aligned along the coordinate
-    axes; in these cases, it is necessary to apply a rotation matrix in
-    order to calculate the correct tensor values, see
-    :mod:`examples.diffusion.anisotropy` for details.
+This represents an anisotropic diffusion coefficient that
+varies spatially so that the term has the form 
+:math:`\partial_x (x^2 \partial_x + x y \partial_y)
++ \partial_y (-x y \partial_x - y^2 \partial_y)
+\equiv x \partial_x - y \partial_y + x^2 \partial_x^2 - y^2
+\partial_y^2`.
+
+Generally, anisotropy is not conveniently aligned along the coordinate
+axes; in these cases, it is necessary to apply a rotation matrix in
+order to calculate the correct tensor values, see
+:mod:`examples.diffusion.anisotropy` for details.
 
 What if the term isn't one of those?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -698,8 +698,7 @@ What does this error message mean?
   was expecting a :class:`~fipy.variables.faceVariable.FaceVariable`
   (or vice versa).
 
-``MA.MA.MAError: Cannot automatically convert masked array to Numeric
-  because data is masked in one or more locations.``
+``MA.MA.MAError: Cannot automatically convert masked array to Numeric because data is masked in one or more locations.``
   This not-so-helpful error message could mean a number of things, but
   the most likely explanation is that the solution has become unstable
   and is diverging to :math:`\pm\infty`. This can be caused by taking
@@ -760,13 +759,13 @@ that there is some problem with the MPI environment. For example::
    [my.machine.com:69813] WARNING: There were 4 Windows created but not freed.
 
 indicates :ref:`MPI4PY` is properly communicating with MPI and is
-running in parallel, but that :term:`TRILINOS` is not, and is running
+running in parallel, but that :term:`Trilinos` is not, and is running
 three separate serial environments. As a result, :term:`FiPy` is
 limited to three separate serial operations, too. In this instance,
-the problem is that although :term:`TRILINOS` was compiled with MPI
+the problem is that although :term:`Trilinos` was compiled with MPI
 enabled, it was compiled against a different MPI library than is
 currently available (and which :ref:`MPI4PY` was compiled
-against). The solution is to rebuild :term:`TRILINOS` against the
+against). The solution is to rebuild :term:`Trilinos` against the
 active MPI libraries.
 
 Why don't my scripts work anymore?
