@@ -484,17 +484,17 @@ and we'll have much better luck if we also supply the Jacobian
 .. index:: SciPy
 
 >>> try:
-...     from scipy.optimize import fsolve
+...     from scipy.optimize import fsolve # doctest: +SCIPY
 ...     CsRoot, ClRoot = fsolve(func=equilibrium, x0=[0.5, 0.5], 
-...                             fprime=equilibriumJacobian)
+...                             fprime=equilibriumJacobian) # doctest: +SCIPY
 ... except ImportError:
 ...     ClRoot = CsRoot = 0
 ...     print "The SciPy library is not available to calculate the solidus and \
 ... liquidus concentrations"
 
->>> print Cl.allclose(ClRoot)
+>>> print Cl.allclose(ClRoot) # doctest: +SCIPY
 1
->>> print Cs.allclose(CsRoot)
+>>> print Cs.allclose(CsRoot) # doctest: +SCIPY
 1
 
 We plot the result against the sharp interface solution

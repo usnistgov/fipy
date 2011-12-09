@@ -37,7 +37,7 @@
 __all__ = []
 
 import os
-from copy_script import Copy_script
+from fipy.tools.copy_script import Copy_script
 from setuptools import setup
 
 def run(cases, elements): 

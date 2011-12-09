@@ -256,14 +256,13 @@ class _MeshVariable(Variable):
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx=2, ny=3)
         >>> var = CellVariable(mesh=mesh)
-        >>> from fipy.tools import parallel
-        >>> print parallel.procID > 0 or numerix.allequal(var.shape, (6,))
+        >>> print numerix.allequal(var.shape, (6,)) # doctest: +PROCESSOR_0
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.arithmeticFaceValue.shape, (17,))
+        >>> print numerix.allequal(var.arithmeticFaceValue.shape, (17,)) # doctest: +PROCESSOR_0
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.grad.shape, (2, 6))
+        >>> print numerix.allequal(var.grad.shape, (2, 6)) # doctest: +PROCESSOR_0
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.faceGrad.shape, (2, 17))
+        >>> print numerix.allequal(var.faceGrad.shape, (2, 17)) # doctest: +PROCESSOR_0
         True
         """
         return (Variable._getShape(self)
@@ -715,8 +714,8 @@ def _testDot(self):
     pass
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

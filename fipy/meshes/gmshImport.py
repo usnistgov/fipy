@@ -50,6 +50,7 @@ from fipy.tools import numerix as nx
 from fipy.tools import parallel
 from fipy.tools import serial
 from fipy.tools.decorators import getsetDeprecated
+from fipy.tests.doctestPlus import register_skipper
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
 
@@ -60,6 +61,18 @@ __all__ = ["openMSHFile", "openPOSFile",
 
 DEBUG = False
 
+def _checkForGmsh():
+    hasGmsh = True
+    try:
+        version = _gmshVersion(communicator=parallel)
+        hasGmsh = version >= 2.0
+    except Exception:
+        hasGmsh = False
+    return hasGmsh
+
+register_skipper(flag="GMSH",
+                 test=_checkForGmsh,
+                 why="`gmsh` cannot be found on the $PATH")
 
 def parprint(str):
     if DEBUG:
@@ -1297,32 +1310,32 @@ class MSHFile(GmshFile):
         
         >>> from fipy.meshes.grid2D import Grid2D
         >>> g = Grid2D(nx = 10, ny = 10)
-        >>> f = openMSHFile(name=os.path.join(dir, "g.msh"), mode='w')
-        >>> f.write(g)
-        >>> f.close()
+        >>> f = openMSHFile(name=os.path.join(dir, "g.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(g) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
 
         >>> from fipy.meshes.uniformGrid2D import UniformGrid2D
         >>> ug = UniformGrid2D(nx = 10, ny = 10)
-        >>> f = openMSHFile(name=os.path.join(dir, "ug.msh"), mode='w')
-        >>> f.write(ug)
-        >>> f.close()
+        >>> f = openMSHFile(name=os.path.join(dir, "ug.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(ug) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
 
         >>> from fipy.meshes import Tri2D
         >>> t = Tri2D(nx = 10, ny = 10)
-        >>> f = openMSHFile(name=os.path.join(dir, "t.msh"), mode='w')
-        >>> f.write(t)
-        >>> f.close()
+        >>> f = openMSHFile(name=os.path.join(dir, "t.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(t) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
 
         >>> concat = ug + (t + ([10], [0]))
-        >>> f = openMSHFile(name=os.path.join(dir, "concat.msh"), mode='w')
-        >>> f.write(concat)
-        >>> f.close()
+        >>> f = openMSHFile(name=os.path.join(dir, "concat.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(concat) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
 
         >>> from fipy.meshes import Grid3D
         >>> g3d = Grid3D(nx=10, ny=10, nz=30)
-        >>> f = openMSHFile(name=os.path.join(dir, "g3d.msh"), mode='w')
-        >>> f.write(g3d)
-        >>> f.close()
+        >>> f = openMSHFile(name=os.path.join(dir, "g3d.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(g3d) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
 
         >>> import shutil
         >>> shutil.rmtree(dir)
@@ -1444,7 +1457,7 @@ class Gmsh2D(Mesh2D):
     ... // construct the Mesh.
     ... 
     ... Physical Line("NW") = {5};
-    ... ''' % locals())
+    ... ''' % locals()) # doctest: +GMSH
 
     It can be easier to specify certain domains and boundaries within Gmsh 
     than it is to define the same domains and boundaries with FiPy expressions.
@@ -1452,22 +1465,22 @@ class Gmsh2D(Mesh2D):
     Here we compare obtaining the same Cells and Faces using FiPy's 
     parametric descriptions and Gmsh's labels.
     
-    >>> x, y = squaredCircle.cellCenters
+    >>> x, y = squaredCircle.cellCenters # doctest: +GMSH
 
     >>> middle = ((x**2 + y**2 <= radius**2) 
     ...           & ~((x > -side/2) & (x < side/2)
-    ...               & (y > -side/2) & (y < side/2)))
+    ...               & (y > -side/2) & (y < side/2))) # doctest: +GMSH
 
-    >>> print (middle == squaredCircle.physicalCells["Middle"]).all()
+    >>> print (middle == squaredCircle.physicalCells["Middle"]).all() # doctest: +GMSH
     True
     
-    >>> X, Y = squaredCircle.faceCenters
+    >>> X, Y = squaredCircle.faceCenters # doctest: +GMSH
 
     >>> NW = ((X**2 + Y**2 > (1.99*radius)**2) 
     ...       & (X**2 + Y**2 < (2.01*radius)**2)
-    ...       & (X <= 0) & (Y >= 0))
+    ...       & (X <= 0) & (Y >= 0)) # doctest: +GMSH
 
-    >>> print (NW == squaredCircle.physicalFaces["NW"]).all()
+    >>> print (NW == squaredCircle.physicalFaces["NW"]).all() # doctest: +GMSH
     True
     """
     
@@ -1639,9 +1652,9 @@ class Gmsh2D(Mesh2D):
         ... Circle(9) = {5, 1, 2}; 
         ... Line Loop(10) = {6, 7, 8, 9}; 
         ... Plane Surface(11) = {10}; 
-        ... ''')
+        ... ''') # doctest: +GMSH
 
-        >>> print circ.cellVolumes[0] > 0
+        >>> print circ.cellVolumes[0] > 0 # doctest: +GMSH
         True
 
         Now we'll test Gmsh2D again, but on a rectangle.
@@ -1659,9 +1672,9 @@ class Gmsh2D(Mesh2D):
         ... Line(9) = {5, 2};
         ... Line Loop(10) = {6, 7, 8, 9};
         ... Plane Surface(11) = {10};
-        ... ''')
+        ... ''') # doctest: +GMSH
 
-        >>> print rect.cellVolumes[0] > 0
+        >>> print rect.cellVolumes[0] > 0 # doctest: +GMSH
         True
 
         Testing multiple shape types within a mesh;
@@ -1681,25 +1694,26 @@ class Gmsh2D(Mesh2D):
         ... Line Loop(10) = {6, 7, 8, 9};
         ... Plane Surface(11) = {10};
         ... Recombine Surface{11};
-        ... ''')
+        ... ''') # doctest: +GMSH
 
-        >>> print circle.cellVolumes[0] > 0
+        >>> print circle.cellVolumes[0] > 0 # doctest: +GMSH
         True
         
         >>> from fipy.tools import dump
-        >>> from fipy import parallel
-        >>> f, tmpfile = dump.write(circle)
-        >>> pickle_circle = dump.read(tmpfile, f)
+        >>> f, tmpfile = dump.write(circle) # doctest: +GMSH
+        >>> pickle_circle = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print parallel.Nproc > 1 or (pickle_circle.cellVolumes == circle.cellVolumes).all()
+        >>> print (pickle_circle.cellVolumes == circle.cellVolumes).all() 
+        ... # doctest: +GMSH, +SERIAL
         True
         
-        >>> print parallel.Nproc > 1 or (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
+        >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all() 
+        ... # doctest: +GMSH, +SERIAL
         True
 
         >>> cmd = "Point(1) = {0, 0, 0, 0.05};"
 
-        >>> Gmsh2D(cmd) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> Gmsh2D(cmd) #doctest: +IGNORE_EXCEPTION_DETAIL, +GMSH
         Traceback (most recent call last):
             ...
         GmshException: Gmsh hasn't produced any cells! Check your Gmsh code.
@@ -1751,20 +1765,21 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         ... // create entire inner and outer shell
         ... Surface
         ... Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
-        ... ''').extrude(extrudeFunc=lambda r: 1.1 * r)
+        ... ''').extrude(extrudeFunc=lambda r: 1.1 * r) # doctest: +GMSH
 
-        >>> print sphere.cellVolumes[0] > 0
+        >>> print sphere.cellVolumes[0] > 0 # doctest: +GMSH
         True
 
         >>> from fipy.tools import dump
-        >>> from fipy import parallel
-        >>> f, tmpfile = dump.write(sphere)
-        >>> pickle_sphere = dump.read(tmpfile, f)
+        >>> f, tmpfile = dump.write(sphere) # doctest: +GMSH
+        >>> pickle_sphere = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print parallel.Nproc > 1 or (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
+        >>> print (pickle_sphere.cellVolumes == sphere.cellVolumes).all() 
+        ... # doctest: +GMSH, +SERIAL
         True
         
-        >>> print parallel.Nproc > 1 or (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
+        >>> print (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all() 
+        ... # doctest: +GMSH, +SERIAL
         True
         """
         pass
@@ -1958,20 +1973,21 @@ class Gmsh3D(Mesh):
         ... Surface Loop(33) = {27, 28, 29, 30, 31, 32};
         ...
         ... Volume(34) = {33};
-        ... ''')
+        ... ''') # doctest: +GMSH
 
-        >>> print prism.cellVolumes[0] > 0
+        >>> print prism.cellVolumes[0] > 0 # doctest: +GMSH
         True
         
         >>> from fipy.tools import dump
-        >>> from fipy import parallel
-        >>> f, tmpfile = dump.write(prism)
-        >>> pickle_prism = dump.read(tmpfile, f)
+        >>> f, tmpfile = dump.write(prism) # doctest: +GMSH
+        >>> pickle_prism = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print parallel.Nproc > 1 or (pickle_prism.cellVolumes == prism.cellVolumes).all()
+        >>> print (pickle_prism.cellVolumes == prism.cellVolumes).all() 
+        ... # doctest: +GMSH, +SERIAL
         True
         
-        >>> print parallel.Nproc > 1 or (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
+        >>> print (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all() 
+        ... # doctest: +GMSH, +SERIAL
         True
         
         Load a mesh consisting of a tetrahedron, prism, and pyramid
@@ -2008,11 +2024,11 @@ class Gmsh3D(Mesh):
         ... ''' % locals())
         >>> file.close() 
 
-        >>> tetPriPyr = Gmsh3D(mshFile)
+        >>> tetPriPyr = Gmsh3D(mshFile) # doctest: +GMSH
 
         >>> os.remove(mshFile)
 
-        >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3])
+        >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3]) # doctest: +GMSH
         True
         """
 
@@ -2068,22 +2084,22 @@ class GmshGrid2D(Gmsh2D):
 
         >>> from fipy import *
 
-        >>> yogmsh = GmshGrid2D(dx=5, dy=5, nx=5, ny=5, communicator=serial)
+        >>> yogmsh = GmshGrid2D(dx=5, dy=5, nx=5, ny=5, communicator=serial) # doctest: +GMSH
 
         >>> yogrid = Grid2D(dx=5, dy=5, nx=5, ny=5, communicator=serial)
 
-        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
+        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas) # doctest: +GMSH
         True
 
-        >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size
+        >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size # doctest: +GMSH
         True
 
-        >>> mesh = GmshGrid2D(nx=2, ny=2)
+        >>> mesh = GmshGrid2D(nx=2, ny=2) # doctest: +GMSH
 
-        >>> mesh.numberOfCells == 4
+        >>> mesh.numberOfCells == 4 # doctest: +GMSH
         True
 
-        >>> len(mesh.faceCenters[0]) == 12
+        >>> len(mesh.faceCenters[0]) == 12 # doctest: +GMSH
         True
         """
 
@@ -2148,34 +2164,34 @@ class GmshGrid3D(Gmsh3D):
         >>> from fipy.tools import numerix as nx
 
         >>> yogmsh = GmshGrid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
-        ...                     communicator=serial)
+        ...                     communicator=serial) # doctest: +GMSH
 
         >>> yogrid = Grid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
         ...                 communicator=serial)
 
-        >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size
+        >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size # doctest: +GMSH
         True
 
-        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
+        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas) # doctest: +GMSH
         True
 
-        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas)
+        >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas) # doctest: +GMSH
         True
 
-        >>> mesh = GmshGrid3D(nx=2, ny=2, nz=2)
+        >>> mesh = GmshGrid3D(nx=2, ny=2, nz=2) # doctest: +GMSH
 
         >>> ccs = [[ 0.5,  0.5,  0.5,  0.5,  1.5,  1.5,  1.5,  1.5],
         ...    [ 0.5,  0.5,  1.5,  1.5,  0.5,  0.5,  1.5,  1.5],
         ...    [ 0.5,  1.5,  0.5,  1.5,  0.5,  1.5,  0.5,  1.5]]
 
-        >>> len(mesh.cellCenters.value[0]) == 8
+        >>> len(mesh.cellCenters.value[0]) == 8 # doctest: +GMSH
         True
 
         >>> faceAreas = [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,
         ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,
         ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]
 
-        >>> nx.allclose(mesh._faceAreas, faceAreas)
+        >>> nx.allclose(mesh._faceAreas, faceAreas) # doctest: +GMSH
         True
 
         >>> cellAreas = [[ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
@@ -2185,7 +2201,7 @@ class GmshGrid3D(Gmsh3D):
         ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
         ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]]
 
-        >>> nx.allclose(mesh._cellAreas, cellAreas)
+        >>> nx.allclose(mesh._cellAreas, cellAreas) # doctest: +GMSH
         True
         """
  
@@ -2209,8 +2225,8 @@ class GmshImporter3D(Gmsh3D):
         Gmsh3D.__init__(self, arg)
     
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

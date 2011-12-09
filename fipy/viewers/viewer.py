@@ -211,39 +211,44 @@ class _Viewer(object):
               
         
     def _test1D(**kwargs):
-        return """
+        s = """
             >>> from fipy import *
             >>> mesh = Grid1D(nx=100)
             >>> x, = mesh.cellCenters
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = %(viewer)s(vars=(numerix.sin(k * xVar), numerix.cos(k * xVar / numerix.pi)), 
+            >>> viewer = VIEWERSUBSTITUTION(vars=(numerix.sin(k * xVar), numerix.cos(k * xVar / numerix.pi)), 
             ...                 limits={'xmin': 10, 'xmax': 90}, 
             ...                 datamin=-0.9, datamax=2.0,
-            ...                 title="%(viewer)s test")
+            ...                 title="VIEWERSUBSTITUTION test")
             >>> for kval in numerix.arange(0,0.3,0.03):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-        """ % kwargs
+        """ 
+        s = s.replace("VIEWERSUBSTITUTION", kwargs["viewer"])
+        return s
     _test1D = staticmethod(_test1D)
 
     def _test2Dbase(**kwargs):
-        return """
+        s = """
             >>> from fipy import *
-            >>> mesh = %(mesh)s
+            >>> mesh = MESHSUBSTITUTION
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = %(viewer)s(vars=numerix.sin(k * xyVar), 
+            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar), 
             ...                 limits={'ymin': 0.1, 'ymax': 0.9}, 
             ...                 datamin=-0.9, datamax=2.0,
-            ...                 title="%(viewer)s test")
+            ...                 title="VIEWERSUBSTITUTION test")
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-        """ % kwargs
+        """ 
+        s = s.replace("VIEWERSUBSTITUTION", kwargs["viewer"])
+        s = s.replace("MESHSUBSTITUTION", kwargs["mesh"])
+        return s
     _test2Dbase = staticmethod(_test2Dbase)
 
     def _test2D(**kwargs):
@@ -259,26 +264,30 @@ class _Viewer(object):
     _test2Dirregular = staticmethod(_test2Dirregular)
 
     def _test2DvectorBase(**kwargs):
-        return """
+        s = """
             >>> from fipy import *
-            >>> mesh = %(mesh)s
+            >>> mesh = MESHSUBSTITUTION
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=1.)
-            >>> viewer = %(viewer)s(vars=numerix.sin(k * xyVar).grad, 
-            ...                 title="%(viewer)s test")
+            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar).grad, 
+            ...                 title="VIEWERSUBSTITUTION test")
             >>> for kval in numerix.arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
 
-            >>> viewer = %(viewer)s(vars=numerix.sin(k * xyVar).faceGrad, 
-            ...                 title="%(viewer)s test")
+            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar).faceGrad, 
+            ...                 title="VIEWERSUBSTITUTION test")
             >>> for kval in numerix.arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-        """ % kwargs
+        """
+        s = s.replace("VIEWERSUBSTITUTION", kwargs["viewer"])
+        s = s.replace("MESHSUBSTITUTION", kwargs["mesh"])
+        return s
+
     _test2DvectorBase = staticmethod(_test2DvectorBase)
 
     def _test2Dvector(**kwargs):
@@ -295,19 +304,22 @@ class _Viewer(object):
 
     
     def _test3D(**kwargs):
-        return """
+        s = """
             >>> from fipy import *
             >>> mesh = Grid3D(nx=50, ny=100, nz=10, dx=0.1, dy=0.01, dz=0.1)
             >>> x, y, z = mesh.cellCenters
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = %(viewer)s(vars=numerix.sin(k * xyzVar), 
+            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyzVar), 
             ...                     limits={'ymin': 0.1, 'ymax': 0.9}, 
             ...                     datamin=-0.9, datamax=2.0,
-            ...                     title="%(viewer)s test")
+            ...                     title="VIEWERSUBSTITUTION test")
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-        """ % kwargs
+        """
+        s = s.replace("VIEWERSUBSTITUTION", kwargs["viewer"])
+        return s
+
     _test3D = staticmethod(_test3D)

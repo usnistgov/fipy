@@ -134,13 +134,12 @@ class Variable(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
         
-           >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))
-           <class 'fipy.variables.binaryOperatorVariable.binOp'>
+        >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))
+        <class 'fipy.variables.binaryOperatorVariable.binOp'>
 
-           >>> from scipy.special import gamma as Gamma
-           >>> print type(Gamma(Variable([1.0, 2.0])))
-           <class 'fipy.variables.unaryOperatorVariable.unOp'>
-
+        >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
+        >>> print type(Gamma(Variable([1.0, 2.0]))) # doctest: +SCIPY
+        <class 'fipy.variables.unaryOperatorVariable.unOp'>
         """
         result = arr
         
@@ -1785,8 +1784,8 @@ class Variable(object):
         
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

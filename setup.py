@@ -38,7 +38,7 @@ import os
 from distutils.core import Command
 from fipy.tools.performance.efficiency_test import Efficiency_test
 from fipy.tools.copy_script import Copy_script
-from fipy.tools.testClass import _TestClass
+from fipy.tests.testClass import _TestClass
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup

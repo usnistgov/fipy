@@ -94,9 +94,9 @@ The result is tested against the expected profile:
 >>> x = mesh.cellCenters[0]
 >>> t = timeStepDuration * steps
 >>> epsi = x / numerix.sqrt(t * diffusionCoeff)
->>> from scipy.special import erf
->>> analyticalArray = erf(epsi/2)
->>> print var.allclose(analyticalArray, atol = 2e-3)
+>>> from scipy.special import erf # doctest: +SCIPY
+>>> analyticalArray = erf(epsi/2) # doctest: +SCIPY
+>>> print var.allclose(analyticalArray, atol = 2e-3) # doctest: +SCIPY
 1
     
 If the problem is run interactively, we can view the result:

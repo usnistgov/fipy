@@ -201,19 +201,18 @@ class AbstractMesh(object):
            >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
-           >>> from fipy.tools import parallel
-           >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
-           ...                                                     [7, 8, 10, 11],
-           ...                                                     [2, 3, 4, 5],
-           ...                                                     [6, 7, 9, 10]]).flatten().all()
+           >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
+           ...                             [7, 8, 10, 11],
+           ...                             [2, 3, 4, 5],
+           ...                             [6, 7, 9, 10]]).flatten().all() # doctest: +PROCESSOR_0
            True
 
            >>> mesh._connectFaces(numerix.nonzero(mesh.facesLeft), numerix.nonzero(mesh.facesRight))
 
-           >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
-           ...                                                     [7, 6, 10, 9],
-           ...                                                     [2, 3, 4, 5],
-           ...                                                     [6, 7, 9, 10]]).flatten().all()
+           >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
+           ...                             [7, 6, 10, 9],
+           ...                             [2, 3, 4, 5],
+           ...                             [6, 7, 9, 10]]).flatten().all() # doctest: +PROCESSOR_0
            True
 
         """
@@ -697,13 +696,12 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((21, 25), 
-            ...                              numerix.nonzero(mesh.facesLeft)[0])
+            >>> print numerix.allequal((21, 25), 
+            ...                        numerix.nonzero(mesh.facesLeft)[0]) # doctest: +PROCESSOR_0
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print parallel.procID > 0 or numerix.allequal((9, 13), 
-            ...                              numerix.nonzero(mesh.facesLeft)[0])
+            >>> print numerix.allequal((9, 13), 
+            ...                        numerix.nonzero(mesh.facesLeft)[0]) # doctest: +PROCESSOR_0
             True
 
         """
@@ -719,13 +717,12 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((24, 28), 
-            ...                              numerix.nonzero(mesh.facesRight)[0])
+            >>> print numerix.allequal((24, 28), 
+            ...                        numerix.nonzero(mesh.facesRight)[0]) # doctest: +PROCESSOR_0
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)    
-            >>> print parallel.procID > 0 or numerix.allequal((12, 16), 
-            ...                                               numerix.nonzero(mesh.facesRight)[0])
+            >>> print numerix.allequal((12, 16), 
+            ...                        numerix.nonzero(mesh.facesRight)[0]) # doctest: +PROCESSOR_0
             True
             
         """
@@ -741,13 +738,12 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((12, 13, 14), 
-            ...                              numerix.nonzero(mesh.facesBottom)[0])
+            >>> print numerix.allequal((12, 13, 14), 
+            ...                        numerix.nonzero(mesh.facesBottom)[0]) # doctest: +PROCESSOR_0
             1
             >>> x, y, z = mesh.faceCenters
-            >>> print parallel.procID > 0 or numerix.allequal((12, 13), 
-            ...                              numerix.nonzero(mesh.facesBottom & (x < 1))[0])
+            >>> print numerix.allequal((12, 13), 
+            ...                        numerix.nonzero(mesh.facesBottom & (x < 1))[0]) # doctest: +PROCESSOR_0
             1
             
         """
@@ -765,13 +761,12 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((18, 19, 20), 
-            ...                              numerix.nonzero(mesh.facesTop)[0])
+            >>> print numerix.allequal((18, 19, 20), 
+            ...                        numerix.nonzero(mesh.facesTop)[0]) # doctest: +PROCESSOR_0
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8), 
-            ...                              numerix.nonzero(mesh.facesTop)[0])
+            >>> print numerix.allequal((6, 7, 8), 
+            ...                        numerix.nonzero(mesh.facesTop)[0]) # doctest: +PROCESSOR_0
             True
             
         """
@@ -789,9 +784,8 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8, 9, 10, 11), 
-            ...                              numerix.nonzero(mesh.facesBack)[0])
+            >>> print numerix.allequal((6, 7, 8, 9, 10, 11), 
+            ...                        numerix.nonzero(mesh.facesBack)[0]) # doctest: +PROCESSOR_0
             True
 
         """
@@ -807,9 +801,8 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((0, 1, 2, 3, 4, 5), 
-            ...                              numerix.nonzero(mesh.facesFront)[0])
+            >>> print numerix.allequal((0, 1, 2, 3, 4, 5), 
+            ...                        numerix.nonzero(mesh.facesFront)[0]) # doctest: +PROCESSOR_0
             True
 
         """
@@ -1360,8 +1353,8 @@ def _madmax(x):
         return max(x)
 
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

@@ -57,40 +57,39 @@ class SurfactantVariable(CellVariable):
 
         A simple 1D test:
 
-           >>> from fipy.meshes import Grid1D
-           >>> mesh = Grid1D(dx = 1., nx = 4)
-           >>> from fipy.models.levelSet.distanceFunction.distanceVariable \\
-           ...     import DistanceVariable
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-1.5, -0.5, 0.5, 941.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, 
-           ...                                         distanceVar = distanceVariable)
-           >>> print numerix.allclose(surfactantVariable, (0, 0., 1., 0))
-           1
+        >>> from fipy.meshes import Grid1D
+        >>> mesh = Grid1D(dx = 1., nx = 4)
+        >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+        >>> distanceVariable = DistanceVariable(mesh = mesh, 
+        ...                                     value = (-1.5, -0.5, 0.5, 941.5))
+        >>> surfactantVariable = SurfactantVariable(value = 1, 
+        ...                                         distanceVar = distanceVariable)
+        >>> print numerix.allclose(surfactantVariable, (0, 0., 1., 0))
+        1
 
         A 2D test case:
 
-           >>> from fipy.meshes import Grid2D
-           >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
-           >>> distanceVariable = DistanceVariable(mesh = mesh,
-           ...                                     value = (1.5, 0.5, 1.5,
-           ...                                              0.5,-0.5, 0.5,
-           ...                                              1.5, 0.5, 1.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, 
-           ...                                         distanceVar = distanceVariable)
-           >>> print numerix.allclose(surfactantVariable, (0, 1, 0, 1, 0, 1, 0, 1, 0))
-           1
+        >>> from fipy.meshes import Grid2D
+        >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
+        >>> distanceVariable = DistanceVariable(mesh = mesh,
+        ...                                     value = (1.5, 0.5, 1.5,
+        ...                                              0.5,-0.5, 0.5,
+        ...                                              1.5, 0.5, 1.5))
+        >>> surfactantVariable = SurfactantVariable(value = 1, 
+        ...                                         distanceVar = distanceVariable)
+        >>> print numerix.allclose(surfactantVariable, (0, 1, 0, 1, 0, 1, 0, 1, 0))
+        1
 
         Another 2D test case:
 
-           >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
-           ...                                     value = (-0.5, 0.5, 0.5, 1.5))
-           >>> surfactantVariable = SurfactantVariable(value = 1, 
-           ...                                         distanceVar = distanceVariable)
-           >>> print numerix.allclose(surfactantVariable, 
-           ...                  (0, numerix.sqrt(2), numerix.sqrt(2), 0))
-           1
+        >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
+        >>> distanceVariable = DistanceVariable(mesh = mesh, 
+        ...                                     value = (-0.5, 0.5, 0.5, 1.5))
+        >>> surfactantVariable = SurfactantVariable(value = 1, 
+        ...                                         distanceVar = distanceVariable)
+        >>> print numerix.allclose(surfactantVariable, 
+        ...                  (0, numerix.sqrt(2), numerix.sqrt(2), 0))
+        1
 
         :Parameters:
           - `value`: The initial value.
@@ -156,8 +155,8 @@ class _InterfaceSurfactantVariable(CellVariable):
         return numerix.array(self.surfactantVar) * self.mesh.cellVolumes / areas
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

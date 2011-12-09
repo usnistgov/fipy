@@ -165,8 +165,8 @@ the result is tested against the expected profile:
 >>> t = timeStepDuration * steps
 
 >>> try:
-...     from scipy.special import erf
-...     phiAnalytical.setValue(1 - erf(x / (2 * numerix.sqrt(D * t))))
+...     from scipy.special import erf # doctest: +SCIPY
+...     phiAnalytical.setValue(1 - erf(x / (2 * numerix.sqrt(D * t)))) # doctest: +SCIPY
 ... except ImportError:
 ...     print "The SciPy library is not available to test the solution to \
 ... the transient diffusion equation"
@@ -179,7 +179,7 @@ We then solve the equation by repeatedly looping in time:
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> print phi.allclose(phiAnalytical, atol = 7e-4)
+>>> print phi.allclose(phiAnalytical, atol = 7e-4) # doctest: +SCIPY
 1
 
 >>> if __name__ == '__main__':
@@ -222,7 +222,7 @@ and rerun with much larger time steps
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> print phi.allclose(phiAnalytical, atol = 2e-2)
+>>> print phi.allclose(phiAnalytical, atol = 2e-2) # doctest: +SCIPY
 1
 
 >>> if __name__ == '__main__':
@@ -265,7 +265,7 @@ of the fully implicit scheme to drive down the error
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 
->>> print phi.allclose(phiAnalytical, atol = 3e-3)
+>>> print phi.allclose(phiAnalytical, atol = 3e-3) # doctest: +SCIPY
 1
 
 >>> if __name__ == '__main__':

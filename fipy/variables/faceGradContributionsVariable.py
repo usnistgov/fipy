@@ -81,8 +81,8 @@ class _FaceGradContributions(FaceVariable):
         return self.mesh._areaProjections[(slice(0,None,None),) + (numerix.newaxis,) * (len(faceValue.shape) - 1) + (slice(0,None,None),)] * faceValue[numerix.newaxis]
     
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

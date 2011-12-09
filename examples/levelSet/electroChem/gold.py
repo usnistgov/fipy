@@ -49,7 +49,7 @@ the ``numberOfSteps`` argument as follows,
 
 .. index:: runGold
 
->>> runGold(numberOfSteps=10, displayViewers=False)
+>>> runGold(numberOfSteps=10, displayViewers=False) # doctest: +GMSH
 1
     
 Change the ``displayViewers`` argument to ``True`` if you wish to see the

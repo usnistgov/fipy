@@ -130,8 +130,7 @@ class _CoupledCellVariable(object):
         >>> v1 = CellVariable(mesh=mesh, value=[2, 3])
         >>> v2 = CellVariable(mesh=mesh, value=[4, 5])
         >>> v = _CoupledCellVariable(vars=(v1, v2))
-        >>> from fipy.tools import parallel
-        >>> print parallel.procID > 0 or numerix.allequal([2,3,4,5], numerix.array(v))
+        >>> print numerix.allequal([2,3,4,5], numerix.array(v)) # doctest: +PROCESSOR_0
         True
         >>> v[:] = (6,7,8,9)
         >>> print v1
@@ -162,8 +161,8 @@ class _CoupledCellVariable(object):
         return self.value.ravel()
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 
