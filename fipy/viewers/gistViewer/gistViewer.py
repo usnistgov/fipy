@@ -38,10 +38,6 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-import os
-
-from fipy.tools import numerix
-
 from fipy.viewers.viewer import _Viewer
 
 class _GistViewer(_Viewer):

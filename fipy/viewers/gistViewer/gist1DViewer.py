@@ -38,9 +38,10 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.viewers.gistViewer.gistViewer import _GistViewer
-
+from fipy.tools.decorators import deprecateGist
 __all__ = ["Gist1DViewer"]
 
+@deprecateGist
 class Gist1DViewer(_GistViewer):
     """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
     """

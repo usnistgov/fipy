@@ -39,7 +39,8 @@ Overview
 Even if you don't read manuals...
 ---------------------------------
 
-...please read :ref:`INSTALLATION` and the :ref:`FAQ`. 
+...please read the :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`
+documents.
 
 --------------------------------
 What's new in version |release|?
@@ -92,16 +93,17 @@ they have been modified.
 Support
 -------
 
-You can communicate with the :term:`FiPy` developers and with other users via our
-`mailing list`_ and we welcome you to use the `tracking
-system`_ for bugs, support requests, feature requests and
-patch submissions <http://matforge.org/fipy/report>. We welcome collaborative efforts on this project.
+You can communicate with the :term:`FiPy` developers and with other
+users via our `mailing list`_ and we welcome you to use the `tracking
+system`_ for bugs, support requests, feature requests and patch
+submissions <http://matforge.org/fipy/report>. We welcome
+collaborative efforts on this project.
 
-:term:`FiPy` is a member of MatForge_, a project of the `Materials Digital Library
-Pathway`_. This National Science Foundation funded service provides
-management of our public source code repository, our bug tracking system, and
-a "wiki" space for public contributions of code snippets, discussions, and
-tutorials.
+:term:`FiPy` is a member of MatForge_, a project of the `Materials
+Digital Library Pathway`_. This National Science Foundation funded
+service provides management of our public source code repository, our
+bug tracking system, and a "wiki" space for public contributions of
+code snippets, discussions, and tutorials.
 
 .. toctree::
 
@@ -177,85 +179,6 @@ or a
 .. warning::
 
    to indicate something that could cause serious problems.
-
-.. _PARALLEL:
-
--------------------
-Solving in Parallel
--------------------
-
-:term:`FiPy` can use :term:`Trilinos` to solve equations in parallel, as 
-long as they are defined on a "``Grid``" mesh 
-(:class:`~fipy.meshes.numMesh.grid1D.Grid1D`, 
-:class:`~fipy.meshes.numMesh.cylindricalGrid1D.CylindricalGrid1D`,
-:class:`~fipy.meshes.numMesh.grid2D.Grid2D`,
-:class:`~fipy.meshes.numMesh.cylindricalGrid2D.CylindricalGrid2D`, or
-:class:`~fipy.meshes.numMesh.grid3D.Grid3D`). 
-
-.. attention::
-
-   :term:`Trilinos` *must* be compiled with MPI support.
-
-.. attention::
-
-   :term:`FiPy` requires `mpi4py <http://mpi4py.scipy.org/>`_ to work in parallel::
-
-       $ easy_install mpi4py
-
-.. note::
-
-   A design wart presently *also* requires that :term:`PySparse` be
-   installed. We hope to alleviate this requirement in a future release.
-
-* It should not generally be necessary to change anything in your script.
-  Simply invoke::
-
-     $ mpirun -np {# of processors} python myScript.py
-
-  instead of::
-
-     $ python myScript.py
-
-* To confirm that :term:`FiPy` and :term:`Trilinos` are properly 
-  configured to solve in parallel, you can execute
-
-  .. code-block:: python
-
-     from fipy import parallel, Grid1D
-     mesh = Grid1D(nx=10)
-     print "%d cells on processor %d of %d" \
-       % (mesh.getNumberOfCells(), parallel.procID, parallel.Nproc)
-
-  (available as :file:`examples/parallel.py`) to check that :term:`FiPy` is
-  distributing a mesh across processes as expected. E.g.::
-
-     $ mpirun -np 3 python examples/parallel.py
-
-  should print out::
-
-     mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 3 :: FiPy: 5 cells on processor 0 of 3
-     mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
-     mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
-
-A complete list of the changes to FiPy's examples needed for parallel 
-can be found at
-
-  http://www.matforge.org/fipy/wiki/upgrade2_0examplesTo2_1
-
-Most of the changes were required to ensure that :term:`FiPy` provides the
-same literal output for both single and multiple processor solutions and
-are not relevant to most "real" scripts. The two changes you *might* wish
-to make to your own scripts are:
-
- * It is now preferable to use the 
-   :class:`~fipy.solvers.DefaultAssymetricSolver` instead of the 
-   :class:`~fipy.solvers.linearLUSolver.LinearLUSolver`. 
-
- * When solving in parallel, :term:`FiPy` essentially breaks the problem up 
-   into separate sub-domains and solves them (somewhat) independently. 
-   :term:`FiPy` generally "does the right thing", but if you find that you 
-   need to do something with the entire solution, you can call
-   ``var.``:meth:`~fipy.variables.cellVariable.CellVariable.getGlobalValue`.
 
 .. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/
