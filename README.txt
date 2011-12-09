@@ -39,7 +39,8 @@ Overview
 Even if you don't read manuals...
 ---------------------------------
 
-...please read :ref:`INSTALLATION` and the :ref:`FAQ`. 
+...please read the :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`
+documents.
 
 --------------------------------
 What's new in version |release|?
@@ -92,16 +93,17 @@ they have been modified.
 Support
 -------
 
-You can communicate with the :term:`FiPy` developers and with other users via our
-`mailing list`_ and we welcome you to use the `tracking
-system`_ for bugs, support requests, feature requests and
-patch submissions <http://matforge.org/fipy/report>. We welcome collaborative efforts on this project.
+You can communicate with the :term:`FiPy` developers and with other
+users via our `mailing list`_ and we welcome you to use the `tracking
+system`_ for bugs, support requests, feature requests and patch
+submissions <http://matforge.org/fipy/report>. We welcome
+collaborative efforts on this project.
 
-:term:`FiPy` is a member of MatForge_, a project of the `Materials Digital Library
-Pathway`_. This National Science Foundation funded service provides
-management of our public source code repository, our bug tracking system, and
-a "wiki" space for public contributions of code snippets, discussions, and
-tutorials.
+:term:`FiPy` is a member of MatForge_, a project of the `Materials
+Digital Library Pathway`_. This National Science Foundation funded
+service provides management of our public source code repository, our
+bug tracking system, and a "wiki" space for public contributions of
+code snippets, discussions, and tutorials.
 
 .. toctree::
 

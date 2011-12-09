@@ -693,16 +693,18 @@ What does this error message mean?
 ----------------------------------
 
 ``ValueError: frames are not aligned``
-   This error most likely means that you have provided a
-   :class:`~fipy.variables.cellVariable.CellVariable` when :term:`FiPy` was
-   expecting a :class:`~fipy.variables.faceVariable.FaceVariable` (or vice
-   versa).
+  This error most likely means that you have provided a
+  :class:`~fipy.variables.cellVariable.CellVariable` when :term:`FiPy`
+  was expecting a :class:`~fipy.variables.faceVariable.FaceVariable`
+  (or vice versa).
 
-``MA.MA.MAError: Cannot automatically convert masked array to Numeric because data is masked in one o more locations.``
+``MA.MA.MAError: Cannot automatically convert masked array to Numeric
+  because data is masked in one or more locations.``
   This not-so-helpful error message could mean a number of things, but
   the most likely explanation is that the solution has become unstable
-  and is diverging to :math:`\pm\infty`. This can be caused by taking too large
-  a timestep or by using explicit terms instead of implicit ones.
+  and is diverging to :math:`\pm\infty`. This can be caused by taking
+  too large a timestep or by using explicit terms instead of implicit
+  ones.
       
 ``repairing catalog by removing key``
   This message (not really an error, but may cause test failures) can

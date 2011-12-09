@@ -21,7 +21,7 @@ http://matplotlib.sourceforge.net
 
 :term:`Matplotlib` is a :term:`Python` package that displays
 publication quality results. It displays both 1D X-Y type plots and 2D
-contour plots for both structured and unstructured data,b but does not
+contour plots for both structured and unstructured data, but does not
 display 3D data. It works on all common platforms. `Matplotlib
 installers for specific platforms`_ are available
 <http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474>.
