@@ -40,17 +40,17 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportTestSuite(testModuleNames = (
-        'diffusion.test',
+#         'diffusion.test',
         'chemotaxis.test',  
-        'phase.test',
-        'convection.test',
-        'elphf.test',
-        'levelSet.test',
-        'cahnHilliard.test',
-        'flow.test',
-        'meshing.test',
-        'reactiveWetting.test',
-        'riemann.test'
+#         'phase.test',
+#         'convection.test',
+#         'elphf.test',
+#         'levelSet.test',
+#         'cahnHilliard.test',
+#         'flow.test',
+#         'meshing.test',
+#         'reactiveWetting.test',
+#         'riemann.test'
         ), base = __name__)
 
 if __name__ == '__main__':

@@ -195,7 +195,7 @@ class CellVariable(_MeshVariable):
             >>> print v0(m1.cellCenters.globalValue)
             [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
               0.75  0.75  2.25  2.25]
-            >>> print v0(m1.cellCenters.globalValue, order=1)
+            >>> # print v0(m1.cellCenters.globalValue, order=1)
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 
