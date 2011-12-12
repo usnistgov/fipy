@@ -1,7 +1,10 @@
 import sys
 
-from enthought.mayavi import mlab
-
+try: 
+    from mayavi import mlab 
+except ImportError, e: 
+    from enthought.mayavi import mlab
+        
 from fipy.viewers.mayaviViewer.mayaviDaemon import MayaviDaemon
 
 class SphereDaemon(MayaviDaemon):
