@@ -87,10 +87,10 @@ class ConvectionTerm(FaceTerm):
             >>> vfv2 = FaceVariable(mesh=m2, rank=1)
             >>> __ConvectionTerm(coeff=vcv2)
             __ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
-                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
             >>> __ConvectionTerm(coeff=vfv2)
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
-                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
             >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2)
             >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2)
 
