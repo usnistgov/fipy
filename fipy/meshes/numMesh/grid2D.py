@@ -143,9 +143,13 @@ class Grid2D(Mesh2D):
         return local_nx, local_ny, overlap, offset
 
     def __repr__(self):
-        return "%s(dx=%s, dy=%s, nx=%d, ny=%d)" \
-            % (self.__class__.__name__, str(self.args["dx"]), str(self.args["dy"]), 
-               self.args["nx"], self.args["ny"])
+        dnstr = []
+        for d, n in [("dx", "nx"), ("dy", "ny")]:
+            dnstr.append(d + "=" + str(self.args[d]))
+            if self.args[n] is not None:
+                dnstr.append(n + "=" + str(self.args[n]))
+
+        return "%s(%s)" % (self.__class__.__name__, ", ".join(dnstr))
             
     def _createVertices(self):
         x = self._calcVertexCoordinates(self.dx, self.nx)
