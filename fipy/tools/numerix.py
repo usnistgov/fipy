@@ -400,22 +400,12 @@ if inline.doInline:
         Usually used with v1==v2 to return magnitude of v1.
         """
         unit1 = unit2 = 1
-        
-        def dimensionlessUnmasked(a):
-            unit = 1
-            mask = False
-            if _isPhysical(a):
-                unit = a.inBaseUnits().getUnit()
-                a = a.numericValue
-            if MA.isMaskedArray(a):
-                mask = a.mask
-                a = a.filled(fill_value=1)
-                
-            return (a, unit, mask)
-            
-        a1, unit1, mask1 = dimensionlessUnmasked(a1)
-        a2, unit2, mask2 = dimensionlessUnmasked(a2)
-        
+        if _isPhysical(a1):
+            unit1 = a1.inBaseUnits().getUnit()
+            a1 = a1.numericValue
+        if _isPhysical(a2):
+            unit2 = a2.inBaseUnits().getUnit()
+            a2 = a2.numericValue
         NJ, ni = NUMERIX.shape(a1)
         result1 = NUMERIX.zeros((ni,),'d')
 
@@ -430,9 +420,6 @@ if inline.doInline:
             result1[i] = sqrt(result1[i]);        
         """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
         
-        if NUMERIX.any(mask1) or NUMERIX.any(mask2):
-            result1 = MA.array(result1, mask=NUMERIX.logical_or(mask1, mask2))
-
         if unit1 != 1 or unit2 != 1:
             from fipy.tools.dimensions.physicalField import PhysicalField
             result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)

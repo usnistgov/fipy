@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
     x, y = mesh.cellCenters
 
-    RVar[:] = L / numerix.sqrt((x - L / 2)**2 + (y - 2 * L)**2)
+    RVar[:] = L / sqrt((x - L / 2)**2 + (y - 2 * L)**2)
     
     for i in range(100):
         for var, eqn in eqs:

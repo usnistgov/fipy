@@ -40,9 +40,6 @@ number of cells set to `nx = 10`.
 
 A simple analytical answer can be used to test the result:
    >>> DiffusionTerm(coeff = diffCoeff).solve(var)
-   >>> if __name__ == "__main__":
-   ...     viewer = Viewer(vars = var)
-   ...     viewer.plot()
    >>> x = mesh.cellCenters[0]
    >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = numerix.where(x < L / 4., x, values)
@@ -82,6 +79,7 @@ var.faceGrad.constrain([[1.], [0.]], mesh.facesRight)
 var.constrain(valueLeft, mesh.facesLeft)
 
 if __name__ == '__main__':
-    import fipy.tests.doctestPlus
-    exec(fipy.tests.doctestPlus._getScript())
+    DiffusionTerm(coeff = diffCoeff).solve(var)
+    viewer = Viewer(vars = var)
+    viewer.plot()
     raw_input('finished')
