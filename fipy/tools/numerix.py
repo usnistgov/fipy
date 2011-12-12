@@ -1381,7 +1381,7 @@ def _indexShape(index, arrayShape):
     objects, or the Ellipsis (``...``) object"
     
         >>> _indexShape(index=NUMERIX.index_exp[...,2,"text"], 
-        ...             arrayShape=(10,20,30,40,50))
+        ...             arrayShape=(10,20,30,40,50))            #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         ValueError: setting an array element with a sequence.

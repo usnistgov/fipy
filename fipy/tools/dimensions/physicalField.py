@@ -749,7 +749,7 @@ class PhysicalField(object):
         
         And so must array dimensions
         
-            >>> print a > PhysicalField(((3.,13.,4.),(17.,6.,2.)),"ft")
+            >>> print a > PhysicalField(((3.,13.,4.),(17.,6.,2.)),"ft") #doctest: +IGNORE_EXCEPTION_DETAIL 
             Traceback (most recent call last):
                 ...
             ValueError: shape mismatch: objects cannot be broadcast to a single shape

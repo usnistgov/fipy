@@ -567,7 +567,7 @@ class Variable(object):
             >>> print b
             [3 4 5]
 
-            >>> a.setValue((4,5,6), where=(1, 0))
+            >>> a.setValue((4,5,6), where=(1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ....
             ValueError: shape mismatch: objects cannot be broadcast to a single shape

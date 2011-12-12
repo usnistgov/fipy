@@ -187,7 +187,7 @@ class Mesh:
         
         but the vector must have the same dimensionality as the `Mesh`
         
-            >>> dilatedMesh = baseMesh * ((3,), (2,), (1,))
+            >>> dilatedMesh = baseMesh * ((3,), (2,), (1,)) #doctest: +IGNORE_EXCEPTION_DETAIL 
             Traceback (most recent call last):
             ...
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
