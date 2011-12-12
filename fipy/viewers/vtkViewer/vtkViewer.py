@@ -107,7 +107,10 @@ class _VTKViewer(_Viewer):
             if not (numerix.array(value.shape) == 0).any():
                 data.get_array(name).to_array()[:] = value
 
-        from enthought.tvtk.misc import write_data
+        try: 
+            from tvtk.misc import write_data 
+        except ImportError, e: 
+            from enthought.tvtk.misc import write_data        
         write_data(self.dataset, filename)
         
     def _getSuitableVars(self,vars):

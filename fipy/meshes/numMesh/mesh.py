@@ -1002,7 +1002,10 @@ class Mesh(_CommonMesh):
         """
 
     def _getVTKCellType(self):
-        from enthought.tvtk.api import tvtk
+        try: 
+            from tvtk.api import tvtk 
+        except ImportError, e: 
+            from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
                 
     def getVTKCellDataSet(self):
@@ -1017,7 +1020,10 @@ class Mesh(_CommonMesh):
             counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
             cells = numerix.concatenate((counts,cvi),axis=1).flatten()
         
-        from enthought.tvtk.api import tvtk
+        try: 
+            from tvtk.api import tvtk 
+        except ImportError, e: 
+            from enthought.tvtk.api import tvtk
         num = counts.shape[0]
 
         cps_type = self._getVTKCellType()
@@ -1039,7 +1045,10 @@ class Mesh(_CommonMesh):
     def getVTKFaceDataSet(self):
         """Returns a TVTK `DataSet` representing the face centers of this mesh
         """
-        from enthought.tvtk.api import tvtk
+        try: 
+            from tvtk.api import tvtk 
+        except ImportError, e: 
+            from enthought.tvtk.api import tvtk
         
         points = self.getFaceCenters()
         points = self._toVTK3D(points)
