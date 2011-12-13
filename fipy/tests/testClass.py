@@ -156,9 +156,9 @@ def _TestClass(base):
 
             ## Gmsh version
             try:
-                from fipy.meshes.gmshImport import _gmshVersion
-                gmshversion = _gmshVersion()
-                if gmshversion == 0:
+                from fipy.meshes.gmshImport import gmshVersion
+                gmshversion = gmshVersion()
+                if gmshversion is None:
                     print 'gmsh is not installed'
                 else:
                     print 'gmsh version',gmshversion
