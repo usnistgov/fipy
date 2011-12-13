@@ -82,7 +82,7 @@ def parprint(str):
 class GmshException(Exception):
     pass
     
-def _gmshVersion(communicator):
+def _gmshVersion(communicator=parallel):
     """Determine the version of Gmsh.
     
     We can't trust the generated msh file for the correct version number, so

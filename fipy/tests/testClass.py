@@ -148,11 +148,22 @@ def _TestClass(base):
                     from enthought.mayavi.__version__ import __version__ as mayaviversion
                     print 'enthought.mayavi version', mayaviversion
                 except ImportError, e:
-                    print pkg,'is not installed'       
+                    print 'enthought.mayavi is not installed'       
                 except Exception, e:
-                    print pkg, 'version check failed:', e
+                    print 'enthought.mayavi version check failed:', e
             except Exception, e:
-                print pkg, 'version check failed:', e
+                print 'mayavi version check failed:', e
+
+            ## Gmsh version
+            try:
+                from fipy.meshes.gmshImport import _gmshVersion
+                gmshversion = _gmshVersion()
+                if gmshversion == 0:
+                    print 'gmsh is not installed'
+                else:
+                    print 'gmsh version',gmshversion
+            except Exception, e:
+                print 'gmsh version check failed:', e
 
         def run_tests(self):
             import sys
