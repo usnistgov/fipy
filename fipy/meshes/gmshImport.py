@@ -150,10 +150,15 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
     if mode.startswith('r'):
         if not os.path.exists(name):
             # we must have been passed a Gmsh script
-            (f, geoFile) = tempfile.mkstemp('.geo')
-            file = os.fdopen(f, 'w')
-            file.writelines(name)
-            file.close() 
+            if communicator.procID == 0:
+                (f, geoFile) = tempfile.mkstemp('.geo')
+                file = os.fdopen(f, 'w')
+                file.writelines(name)
+                file.close() 
+            else:
+                geoFile = None
+            communicator.Barrier()
+            geoFile = communicator.bcast(geoFile)
         else:
             # Gmsh isn't picky about file extensions, 
             # so we peek at the start of the file to deduce the type
