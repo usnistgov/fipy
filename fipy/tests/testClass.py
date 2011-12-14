@@ -123,7 +123,7 @@ def _TestClass(base):
 
         def printPackageInfo(self):
             
-            for pkg in ['fipy', 'numpy', 'pysparse', 'PyTrilinos', 'scipy', 'matplotlib', 'gist', 'mpi4py']:
+            for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'gist', 'mpi4py']:
                 
                 try:
                     mod = __import__(pkg)
@@ -138,6 +138,15 @@ def _TestClass(base):
                     
                 except Exception, e:
                     print pkg, 'version check failed:', e
+
+            ## PyTrilinos
+            try:
+                import PyTrilinos
+                print PyTrilinos.version()
+            except ImportError, e:
+                print pkg,'is not installed'
+            except Exception, e:
+                print pkg, 'version check failed:', e
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
             try:
