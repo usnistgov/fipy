@@ -184,7 +184,6 @@ examples/diffusion/mesh1D.py
 examples/diffusion/mesh20x20-coupled.py
 examples/diffusion/mesh20x20.py
 examples/diffusion/test.py
-examples/diffusion/tmp.py
 examples/diffusion/variable.py
 examples/diffusion/explicit/__init__.py
 examples/diffusion/explicit/mesh1D.py

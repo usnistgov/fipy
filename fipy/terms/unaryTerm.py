@@ -38,7 +38,6 @@ __all__ = []
 
 from fipy.tools import numerix
 from fipy.terms.term import Term
-from fipy.terms import SolutionVariableRequiredError
 
 class _UnaryTerm(Term):
 
@@ -84,8 +83,8 @@ class _UnaryTerm(Term):
         >>> m = Grid1D(nx=2)
         >>> v0 = CellVariable(mesh=m)
         >>> v1 = CellVariable(mesh=m)
-        >>> (TransientTerm(var=v0) - DiffusionTerm(var=v0)).solve(var=v1, dt=1.)
-        >>> DiffusionTerm(var=v0).solve(var=v1, dt=1.0)
+        >>> (TransientTerm(var=v0) - DiffusionTerm(var=v0)).solve(var=v1, dt=1., solver=DummySolver())
+        >>> DiffusionTerm(var=v0).solve(var=v1, dt=1.0, solver=DummySolver())
         
         """
 
