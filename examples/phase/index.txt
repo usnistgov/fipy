@@ -4,6 +4,7 @@ Phase Field Examples
 
 .. autosummary::
    :toctree: generated
+   :template: example.rst
 
    examples.phase.simple
    examples.phase.binary
