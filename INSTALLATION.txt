@@ -41,6 +41,7 @@ installing packages:
  * Use PyPI_ (the :term:`Python` package index)::
 
      $ pip install package
+
  * Download manually, unpack and run::
 
      $ python setup.py install

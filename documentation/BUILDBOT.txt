@@ -13,25 +13,25 @@ Modifying the configuration
 ---------------------------
 
 The buildbot configuration file is hosted in a Git repository. To clone the
-repository, 
+repository::
 
     $ git clone ssh://buildbot@build.cmi.kent.edu/fipy-buildbot.git
 
-This should create a directory called `fipy-buildbot`.
+This should create a directory called `fipy-buildbot`::
 
     $ cd fipy-buildbot/
     $ ls
     buildbot.tac  master.cfg  public_html/
 
-Edit `master.cfg` as needed.
+Edit `master.cfg` as needed::
 
     $ $EDITOR master.cfg
 
-If possible, check the configuration locally.
+If possible, check the configuration locally::
 
     $ buildbot checkconfig
 
-Push the updated config back to the repository.
+Push the updated config back to the repository::
 
     $ git add master.cfg
     $ git commit -m 'fixed flux capacitor'
@@ -90,7 +90,7 @@ this is ("quick", "full", "docs", etc.). `buildFactory` should be a
 :class:`~buildbot.process.factory.BuildFactory` instance that defines the
 :class:`~buildbot.process.buildsteps.BuildStep`\s to take.
 
-Push `master.cfg` and make sure buildbot reconfigures successfully.
+Push `master.cfg` and make sure buildbot reconfigures successfully::
     
     $ git add master.cfg
     $ git commit -m "added buildslave 'newSlaveName'"
@@ -101,33 +101,33 @@ forwarding ports on the buildslave's router. The buildslave will receive
 commands over this port from the master to begin a build and will relay results
 to the master over the same port.
 
-Ensure that `buildslave` is installed on the slave.
+Ensure that `buildslave` is installed on the slave::
 
     slave$ buildslave --version
 
-If not, get it.
+If not, get it::
 
     slave$ easy_install buildbot-slave
 
 Then, set up the buildslave with all of FiPy's dependencies.
 
-Ask `buildslave` to create the slave.
+Ask `buildslave` to create the slave::
 
     slave$ buildslave create-slave [newDir] build.cmi.kent.edu:9989 \
                                    [slaveName] [slavePasswd]
                                    
-Modify admin and host information.
+Modify admin and host information::
 
     slave$ uname -a > newDir/info/host
     slave$ $EDITOR newDir/info/admin
     slave$ $EDITOR newDir/info/host
 
-Start the slave.
+Start the slave::
 
     slave$ cd newDir
     slave$ buildslave start
 
-Add buildslave command to the crontab
+Add buildslave command to the crontab::
 
     slave$ crontab -e
     # m  h dom mon dow command

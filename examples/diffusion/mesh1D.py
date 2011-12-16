@@ -35,7 +35,7 @@
 r"""
 To run this example from the base :term:`FiPy` directory, type::
     
-    $ examples/diffusion/mesh1D.py
+    $ python examples/diffusion/mesh1D.py
     
 at the command line. Different stages of the example should be displayed,
 along with prompting messages in the terminal.

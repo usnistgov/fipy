@@ -14,7 +14,7 @@ These examples can be used in at least four ways:
 - Each example can be invoked individually to demonstrate an 
   application of :term:`FiPy`::
 
-    $ examples/something/input.py
+    $ python examples/something/input.py
 
 - Each example can be invoked such that when it has finished running, you
   will be left in an interactive Python_ shell::

@@ -269,7 +269,7 @@ be imported and instantiated overriding any other directives. For
 example::
 
     $ python -c "from fipy.solvers.scipy import DefaultSolver; \
-    print DefaultSolver" --no-pysparse
+    >   print DefaultSolver" --no-pysparse
     <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
     
 uses a :term:`Scipy` solver regardless of the command line

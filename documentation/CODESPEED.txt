@@ -19,13 +19,13 @@ downloads button on the right side to get the latest stable
 version. Below that on the page is the readme document which does a
 pretty good job at letting you know how to get started. Once
 the package is downloaded, you'll need to cd into the speedcenter/
-directory and do three commands:
+directory and do three commands::
 
     $ python manage.py syncdb
 
 In this command they'll prompt you to make a superuser.  Take this
 opportunity because I don't think you'll get another one (at least, I
-couldn't find one after typing no).
+couldn't find one after typing no)::
 
     $ python manage.py migrate
 
@@ -33,7 +33,7 @@ After this step, you'll have created your database where the data will
 be stored data.db.
 
 Once this is setup you'll be ready to run the codespeed server.  For
-testing, it's just the localhost 8000:
+testing, it's just the localhost 8000::
 
     $ python manage.py runserver 8000
 
