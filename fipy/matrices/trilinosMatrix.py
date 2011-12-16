@@ -478,7 +478,11 @@ class _TrilinosMatrixBase(_SparseMatrix):
         from scipy.io import mmio
         from fipy.tools import parallel
         
-        (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        if parallel.procID == 0:
+            (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        else:
+            mtxName = None
+
         mtxName = parallel.bcast(mtxName)
 
         self.exportMmf(mtxName)

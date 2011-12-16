@@ -123,7 +123,7 @@ def _TestClass(base):
 
         def printPackageInfo(self):
             
-            for pkg in ['fipy', 'numpy', 'pysparse', 'PyTrilinos', 'scipy', 'matplotlib', 'gist', 'mpi4py']:
+            for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'gist', 'mpi4py']:
                 
                 try:
                     mod = __import__(pkg)
@@ -139,6 +139,15 @@ def _TestClass(base):
                 except Exception, e:
                     print pkg, 'version check failed:', e
 
+            ## PyTrilinos
+            try:
+                import PyTrilinos
+                print PyTrilinos.version()
+            except ImportError, e:
+                print pkg,'is not installed'
+            except Exception, e:
+                print pkg, 'version check failed:', e
+
             ## Mayavi uses a non-standard approach for storing its version nummber.
             try:
                 from mayavi.__version__ import __version__ as mayaviversion
@@ -148,11 +157,22 @@ def _TestClass(base):
                     from enthought.mayavi.__version__ import __version__ as mayaviversion
                     print 'enthought.mayavi version', mayaviversion
                 except ImportError, e:
-                    print pkg,'is not installed'       
+                    print 'enthought.mayavi is not installed'       
                 except Exception, e:
-                    print pkg, 'version check failed:', e
+                    print 'enthought.mayavi version check failed:', e
             except Exception, e:
-                print pkg, 'version check failed:', e
+                print 'mayavi version check failed:', e
+
+            ## Gmsh version
+            try:
+                from fipy.meshes.gmshImport import gmshVersion
+                gmshversion = gmshVersion()
+                if gmshversion is None:
+                    print 'gmsh is not installed'
+                else:
+                    print 'gmsh version',gmshversion
+            except Exception, e:
+                print 'gmsh version check failed:', e
 
         def run_tests(self):
             import sys

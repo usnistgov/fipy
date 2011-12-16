@@ -4,6 +4,7 @@ Cahn Hilliard Examples
 
 .. autosummary::
    :toctree: generated
+   :template: example.rst
 
    examples.cahnHilliard.mesh2D
    examples.cahnHilliard.sphere

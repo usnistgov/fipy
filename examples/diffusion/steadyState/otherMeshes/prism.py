@@ -40,41 +40,35 @@ being that it uses a triangular mesh loaded in using the Gmsh.
 
 The result is again tested in the same way:
 
-    >>> DiffusionTerm().solve(var)
+    >>> from fipy import *
+
+    >>> valueLeft = 0.
+    >>> valueRight = 1.
+
+    >>> mesh = GmshGrid3D(dx=1, dy=1, dz=1, nx=20, ny=1, nz=1) # doctest: +GMSH 
+
+    >>> var = CellVariable(name = "solution variable",
+    ...                    mesh = mesh,
+    ...                    value = valueLeft) # doctest: +GMSH 
+
+    >>> exteriorFaces = mesh.exteriorFaces # doctest: +GMSH 
+    >>> xFace = mesh.faceCenters[0] # doctest: +GMSH 
+
+    >>> var.constrain(valueLeft, exteriorFaces & (xFace ** 2 < 0.000000000000001)) # doctest: +GMSH 
+    >>> var.constrain(valueRight, exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001)) # doctest: +GMSH 
+
+
+    >>> DiffusionTerm().solve(var) # doctest: +GMSH 
     >>> Lx = 20
-    >>> x = mesh.cellCenters[0]
-    >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> print var.allclose(analyticalArray, atol = 0.027)
+    >>> x = mesh.cellCenters[0] # doctest: +GMSH 
+    >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx # doctest: +GMSH 
+    >>> print var.allclose(analyticalArray, atol = 0.027) # doctest: +GMSH 
     1
+
 """
 
-import sys
-
-from fipy import *
-
-valueLeft = 0.
-valueRight = 1.
-
-import os.path
-
-mesh = GmshGrid3D(dx=1, dy=1, dz=1, nx=20, ny=1, nz=1)
-
-var = CellVariable(name = "solution variable",
-                   mesh = mesh,
-                   value = valueLeft)
-
-exteriorFaces = mesh.exteriorFaces
-xFace = mesh.faceCenters[0]
-
-var.constrain(valueLeft, exteriorFaces & (xFace ** 2 < 0.000000000000001))
-var.constrain(valueRight, exteriorFaces & ((xFace - 20) ** 2 < 0.000000000000001))
+__docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
-    DiffusionTerm().solve(var)
-    varArray = array(var)
-    x = mesh.cellCenters[0]
-    analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
-    errorArray = varArray - analyticalArray
-    errorVar = CellVariable(name = "absolute error",
-                   mesh = mesh,
-                   value = abs(errorArray))
+    import fipy.tests.doctestPlus
+    exec(fipy.tests.doctestPlus._getScript())

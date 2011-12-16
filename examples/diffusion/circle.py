@@ -184,7 +184,7 @@ diffusion problem.
                                                     
 The values at the elements should be equal to their `x` coordinate
 
->>> print phi.allclose(x, atol = 0.02) # doctest: +GMSH
+>>> print phi.allclose(x, atol = 0.03) # doctest: +GMSH
 1
 
 Display the results if run as a script.

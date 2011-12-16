@@ -196,11 +196,11 @@ Above would work good on a staggered grid, however, on a colocated grid as :term
 uses, the term :term:`velocity.divergence` will cause oscillations in the
 pressure solution as velocity is a face variable. 
 We can apply the Rhie-Chow correction terms for this. In this an intermediate 
-velocity term :math:`u^\Diamond` is considered which does not contain the pressure corrections:
+velocity term :math:`u^\diamond` is considered which does not contain the pressure corrections:
 
 .. math::
     
-   \vec{u}^{\Diamond}_P = \vec{u}^{\ast}_P + \frac{V_P}{a_P} (\nabla p^{\ast})_P 
+   \vec{u}^{\diamond}_P = \vec{u}^{\ast}_P + \frac{V_P}{a_P} (\nabla p^{\ast})_P 
    = \sum_f \frac{a_A}{a_P} \vec{u}^{\ast}_A 
 
 This velocity is interpolated at the edges, after which the pressure correction
@@ -208,7 +208,7 @@ term is added again, but now considered at the edge:
 
 .. math::
     
-  \vec{u}_f = \frac{1}{2}(\vec{u}^{\Diamond}_L + \vec{u}^{\Diamond}_R)) 
+  \vec{u}_f = \frac{1}{2}(\vec{u}^{\diamond}_L + \vec{u}^{\diamond}_R)) 
   - \left(\frac{V}{a_P}\right)_{\mathrm{avg\ L,R}} (\nabla p^{\ast}_f) 
 
 where :math:`\left(\frac{V}{a_P}\right)_{\mathrm{avg\ L,R}}`  is assumed a good approximation at the edge. Here L

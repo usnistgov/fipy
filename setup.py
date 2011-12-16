@@ -99,7 +99,6 @@ class build_docs(Command):
             outdir = os.path.join('documentation', '_build', 'latex')
             
             from docutils.core import publish_file
-            from docutils.writers.latex2e import Writer as LaTeXWriter
 
             for xtra in ("LICENSE", "DISCLAIMER"):
                 publish_file(source_path="%s.txt" % xtra,

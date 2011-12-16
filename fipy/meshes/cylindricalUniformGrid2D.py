@@ -306,7 +306,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> from fipy import *
             >>> mesh = CylindricalUniformGrid2D(nx=3., ny=3., dx=1., dy=1.)
             >>> var = CellVariable(mesh=mesh)
-            >>> DiffusionTerm().solve(var)
+            >>> DiffusionTerm().solve(var, solver=DummySolver())
 
         """
 

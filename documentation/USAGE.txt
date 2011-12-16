@@ -393,7 +393,7 @@ class meshes. Currently, the only remaining serial-only meshes are
 .. attention::
 
    :term:`FiPy` requires :ref:`MPI4PY` to work in parallel. See the
-   :ref:`MPI4PY` installation guide.
+   :ref:`MPI4PY` installation guide.
 
 .. note::
 

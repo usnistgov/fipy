@@ -67,18 +67,22 @@ class _Gridlike(object):
     @staticmethod
     def _isOrthogonal(grid):
         return True
+
+    @staticmethod
+    def repr_(grid, dns):
+        dnstr = []
+        for d, n in dns:
+            dnstr.append(d + "=" + str(grid.args[d]))
+            if grid.args[n] is not None:
+                dnstr.append(n + "=" + str(grid.args[n]))
+
+        return "%s(%s)" % (grid.__class__.__name__, ", ".join(dnstr))
                                
 class _Gridlike1D(_Gridlike):
 
     @staticmethod
     def __repr__(grid):
-        if grid.args["nx"] is None:
-            return "%s(dx=%s)" % (grid.__class__.__name__, 
-                                  str(grid.args["dx"]))
-        else:
-            return "%s(dx=%s, nx=%d)" % (grid.__class__.__name__, 
-                                         str(grid.args["dx"]), 
-                                         grid.args["nx"])
+        return _Gridlike.repr_(grid, [("dx", "nx")])
 
     _concatenatedClass = Mesh1D
                                                             
@@ -227,9 +231,7 @@ class _Gridlike2D(_Gridlike):
 
     @staticmethod
     def __repr__(grid):
-        return "%s(dx=%s, dy=%s, nx=%s, ny=%s)" \
-            % (grid.__class__.__name__, str(grid.args["dx"]), str(grid.args["dy"]), 
-               str(grid.args["nx"]), str(grid.args["ny"]))
+        return _Gridlike.repr_(grid, [("dx", "nx"), ("dy", "ny")])
              
     _concatenatedClass = Mesh2D
      
@@ -319,10 +321,7 @@ class _Gridlike3D(_Gridlike):
  
     @staticmethod
     def __repr__(grid):
-        return "%s(dx=%s, dy=%s, dz=%s, nx=%d, ny=%d, nz=%d)" \
-            % (grid.__class__.__name__, 
-               str(grid.args["dx"]), str(grid.args["dy"]), str(grid.args["dz"]), 
-               grid.args["nx"], grid.args["ny"], grid.args["nz"])
+        return _Gridlike.repr_(grid, [("dx", "nx"), ("dy", "ny"), ("dz", "nz")])
  
     _concatenatedClass = Mesh
      

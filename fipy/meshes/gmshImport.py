@@ -82,35 +82,39 @@ def parprint(str):
 class GmshException(Exception):
     pass
     
-def _gmshVersion(communicator):
+def gmshVersion(communicator=parallel):
     """Determine the version of Gmsh.
     
     We can't trust the generated msh file for the correct version number, so
     we have to retrieve it from the gmsh binary.
     """
-    import re
-
     if communicator.procID == 0:
         while True:
-            p = Popen(["gmsh", "--version"], stderr=PIPE)
-            
+            try:
+                p = Popen(["gmsh", "--version"], stderr=PIPE)
+            except OSError, e:
+                verStr = None
+                break
+
             try:
                 out, verStr = p.communicate()
+                verStr = verStr.decode('ascii').strip('\n')
                 break
             except IOError:
                 # some weird conflict with things like PyQT can cause 
                 # this to fail sometimes. 
                 # See http://thread.gmane.org/gmane.comp.python.enthought.devel/29362
                 pass
-        verStr = verStr.decode('ascii')
     else:
         verStr = None
-            
-    verStr = communicator.bcast(verStr)
 
-    m = re.search(r'\d+.\d+', verStr)
+    return communicator.bcast(verStr)
 
-    if m:
+def _gmshVersion(communicator):
+    import re
+    version = gmshVersion(communicator)
+    if version:
+        m = re.search(r'\d+.\d+', version)
         return float(m.group(0))
     else:
         return 0
@@ -146,10 +150,15 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
     if mode.startswith('r'):
         if not os.path.exists(name):
             # we must have been passed a Gmsh script
-            (f, geoFile) = tempfile.mkstemp('.geo')
-            file = os.fdopen(f, 'w')
-            file.writelines(name)
-            file.close() 
+            if communicator.procID == 0:
+                (f, geoFile) = tempfile.mkstemp('.geo')
+                file = os.fdopen(f, 'w')
+                file.writelines(name)
+                file.close() 
+            else:
+                geoFile = None
+            communicator.Barrier()
+            geoFile = communicator.bcast(geoFile)
         else:
             # Gmsh isn't picky about file extensions, 
             # so we peek at the start of the file to deduce the type
