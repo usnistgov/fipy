@@ -57,7 +57,9 @@ Glossary
       See http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.pip-installer.org.
 
    PyAMG
-      A suite of python-based preconditoners. See :ref:`PyAMG`.
+      A suite of python-based preconditoners. See 
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.google.com/p/pyamg/
+      and :ref:`PYAMG`.
 
    PyPI
       The Python Package Index is a repository of software for the
@@ -80,7 +82,8 @@ Glossary
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/.
      
    PyTrilinos
-      :term:`Python` wrapper for :term:`Trilinos`.
+      :term:`Python` wrapper for :term:`Trilinos`. See 
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov/packages/pytrilinos/.
 
    PyxViewer
       A now defunct python viewer.

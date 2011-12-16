@@ -14,13 +14,16 @@ in parallel <PARALLEL>`. Although less efficient than :term:`PySparse`
 and less capable than :term:`Trilinos`, :term:`SciPy` is a very
 popular package, widely available and easy to install. For this
 reason, :term:`SciPy` may be the best linear solver choice when first
-installing and testing :term:`FiPy`.
+installing and testing :term:`FiPy` (and it is the only viable solver 
+under `Python 3.x`_).
 
 .. attention::
 
-    See the :ref:`SOLVERCOMMANDLINEOPTIONS` section in the
-    :ref:`USAGE` document for details of how to configure
+    See :ref:`SOLVERCOMMANDLINEOPTIONS` in
+    :ref:`USAGE` for details of how to configure
     :term:`FiPy`'s choice of solver.
+
+.. _Python 3.x:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/py3k/
 
 .. _PYSPARSE:
 
@@ -30,41 +33,15 @@ PySparse
 
 http://pysparse.sourceforge.net
 
-You can `download the PySparse archive`_ or check it out via
-`anonymous SVN download`_. From within the ``pysparse`` base
-directory, follow its included instructions for building
-:term:`PySparse` for your platform. `PySparse Windows installers`_ are
-available.
-
-.. _anonymous SVN download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/scm/?type=svn&group_id=101403
-
-.. note::
-
-   Windows users who choose to build from source should pay particular
-   attention to the instructions in the INSTALL file in the base
-   :term:`PySparse` directory.
-
-.. warning::
-
-   If :term:`PySparse` is installed in a local directory a further
-   path may have to be added to the :envvar:`PYTHONPATH` environment
-   variable. For example, if::
-
-       $ python setup.py install --home=/some/directory/some/where
-
-   then both :file:`/some/directory/some/where` and
-   :file:`/some/directory/some/where/lib/python` are required to be
-   added to the :envvar:`PYTHONPATH`, e.g.::
-
-       $ set PYTHONPATH=/some/directory/some/where:/some/directory/some/where/lbi/python
+:term:`PySparse` is a fast serial sparse matrix library for :term:`Python`.
+It provides several sparse matrix storage formats and conversion methods.
+It also implements a number of iterative solvers, preconditioners, and
+interfaces to efficient factorization packages. The only requirement to
+install and use Pysparse is :term:`NumPy`.
 
 .. warning::
 
    :term:`FiPy` requires version 1.0 or higher of :term:`PySparse`.
-
-.. _Roman Geus: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://people.web.psi.ch/geus/
-.. _download the PySparse archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
-.. _PySparse Windows installers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=101403
 
 .. _SCIPY:
 
@@ -74,22 +51,19 @@ SciPy
 
 http://www.scipy.org/
 
-`SciPy download instructions`_ are available
-<http://www.scipy.org/Download>. :term:`SciPy` provides a basic set of
-Krylov solvers, but no preconditoners.
-
-.. _SciPy download instructions:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/Download
+The :mod:`scipy.sparse` module provides a basic set of serial Krylov
+solvers, but no preconditoners.
 
 .. _PYAMG:
 
 -----
-PyAmg
+PyAMG
 -----
 
 http://code.google.com/p/pyamg/
 
-The :term:`PyAmg` package provides preconditioners that can be used in
-conjunction with the :term:`SciPy` solvers.
+The :term:`PyAMG` package provides adaptive multigrid preconditioners that
+can be used in conjunction with the :term:`SciPy` solvers.
 
 .. _TRILINOS:
 
@@ -108,6 +82,11 @@ solutions to some difficult problems that :term:`PySparse` and
 
 .. attention::
 
+   Be sure to build or install the :term:`PyTrilinos` interface to
+   :term:`Trilinos`.
+
+.. attention::
+
    :term:`FiPy` runs more efficiently when :term:`PySparse` is
    installed alongside :term:`Trilinos`.
 
@@ -118,9 +97,10 @@ solutions to some difficult problems that :term:`PySparse` and
    for most problems, and is **not** recommended for a basic install
    of :term:`FiPy`.
 
-:term:`Trilinos` is built using :command:`cmake` along with
-:command:`make` and :command:`make install`. The best approach that
-we have found is as follows::
+:term:`Trilinos` requires `cmake <http://www.cmake.org/>`_, :term:`NumPy`,
+and `swig <http://www.swig.org/>`_. The following are the minimal steps to 
+build and install :term:`Trilinos` (with :term:`PyTrilinos`) for 
+:term:`FiPy`::
 
     $ cd trilinos-X.Y/
     $ SOURCE_DIR=`pwd`
@@ -151,11 +131,10 @@ in-depth documentation.
     :samp:`-D PyTrilinos_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` flags
     to the configure step. If :term:`Trilinos` is installed in a
     non-standard location, the path to the :term:`PyTrilinos`
-    site-packages directory should be added to the
-    :envvar:`PYTHONPATH` environment variable; this should be of the
-    form
+    site-packages directory should be added to the :envvar:`PYTHONPATH` 
+    environment variable; this should be of the form
     :file:`${{INSTALL_DIR}}/lib/${{PYTHON_VERSION}}/site-packages/`. Also,
-    the path to the :term:`Trilinos` lib directory should be added to
+    the path to the :term:`Trilinos` ``lib`` directory should be added to
     the :envvar:`LD_LIBRARY_PATH` (on Linux) or
     :envvar:`DYLD_LIBRARY_PATH` (on Mac OS X) environment variable;
     this should be of the form :file:`${{INSTALL_DIR}}/lib``.
@@ -168,9 +147,5 @@ mpi4py
 http://mpi4py.scipy.org/
 
 For :ref:`PARALLEL`, :term:`FiPy` requires ``mpi4py``, in addition to
-:term:`Trilinos`. This should be obtainable with::
-
-    $ pip install mpi4py
-
-assuming you have the standard MPI libraries on your system.
+:term:`Trilinos`.
 
