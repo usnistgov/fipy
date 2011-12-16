@@ -174,6 +174,8 @@ If necessary, you can download_ and install it for your platform
 :term:`Python` along with many of :term:`FiPy`'s required and optional
 packages is available with one of the following distributions.
 
+.. _EPD:
+
 Enthought Python Distribution
 -----------------------------
 
@@ -189,6 +191,8 @@ are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
 
    :term:`PySparse` and :term:`FiPy` are not presently included in EPD, so you will need
    to separately install them manually.
+
+.. _PYTHONXY:
 
 Python(x,y)
 -----------

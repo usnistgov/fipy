@@ -35,7 +35,9 @@ Glossary
       The :mod:`mayavi` Data Visualizer is a free, easy to use scientific data
       visualizer.  It displays 1D, 2D and 3D data. It is the only :term:`FiPy`
       viewer available for 3D data. Other viewers are probably better for 1D
-      or 2D viewing. See :ref:`Mayavi`.
+      or 2D viewing. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://code.enthought.com/projects/mayavi
+      and :ref:`MAYAVI`.
 
    MayaVi
       The predecessor to :term:`Mayavi`. Yes, it's confusing.
