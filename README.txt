@@ -39,8 +39,8 @@ Overview
 Even if you don't read manuals...
 ---------------------------------
 
-...please read the :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`
-documents.
+...please read :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`, as well 
+as :mod:`examples.diffusion.mesh1D`.
 
 --------------------------------
 What's new in version |release|?
