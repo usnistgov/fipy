@@ -36,7 +36,7 @@
 
 """
 
-The functions provided in ths module replace the `Numeric` module.
+The functions provided in ths module replace and augment the `NumPy` module.
 The functions work with `Variables`, arrays or numbers. For example,
 create a `Variable`.
 
@@ -62,8 +62,13 @@ Take the tangent of an array.
    >>> print tan(array((0,0,0)))
    [ 0.  0.  0.]
    
-Eventually, this module will be the only place in the code where `Numeric` (or
-`numarray` (or `scipy_core`)) is explicitly imported.
+
+.. attention::
+    
+   This module should be the only place in the code where :mod:`numpy` is
+   explicitly imported and you should always import this module and not
+   :mod:`numpy` in your own code. The documentation for :mod:`numpy` remains
+   canonical for all functions and classes not explicityly documented here.
 """
 
 __docformat__ = 'restructuredtext'

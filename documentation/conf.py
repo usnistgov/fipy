@@ -332,3 +332,18 @@ intersphinx_mapping = {'http://docs.python.org/': None,
                        'http://docs.scipy.org/doc/numpy/': None,
                        'http://docs.scipy.org/doc/scipy/reference/': None,
                        'http://matplotlib.sourceforge.net/': None}
+
+def skip_numpy_not_numerix(app, what, name, obj, skip, options):
+    import types
+    if ((type(obj) in [types.FunctionType, 
+                       types.BuiltinFunctionType,
+                       types.ClassType, 
+                       types.TypeType]) 
+        and not obj.__module__.startswith("fipy")):
+            skip = True
+    elif not skip:
+        print what, name, type(obj), obj
+    return skip
+    
+def setup(app):
+    app.connect('autodoc-skip-member', skip_numpy_not_numerix)
