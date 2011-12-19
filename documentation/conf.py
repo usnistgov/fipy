@@ -341,8 +341,6 @@ def skip_numpy_not_numerix(app, what, name, obj, skip, options):
                        types.TypeType]) 
         and not obj.__module__.startswith("fipy")):
             skip = True
-    elif not skip:
-        print what, name, type(obj), obj
     return skip
     
 def setup(app):
