@@ -61,10 +61,6 @@ installing packages:
 
      $ python setup.py --help
 
-For more information on custom installs and development with :term:`FiPy`,
-read the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document
-before beginning the installation process.
-
 Many of the packages listed below have prebuilt installers for
 different platforms (particularly for Windows).  These installers can
 save considerable time and effort compared to configuring and building
@@ -91,6 +87,7 @@ with Subversion_.
    to :term:`FiPy` become available (upgrades via Subversion_ will handle
    this issue automatically).
 
+.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
 
 ---------------
@@ -125,12 +122,19 @@ or by unpacking the archive and typing::
   
     $ python setup.py install
 
-at the command line in the base :term:`FiPy` directory.
+at the command line in the base :term:`FiPy` directory. You can also install 
+:term:`FiPy` in "development mode" by typing::
+
+    $ python setup.py develop
+
+which allows the source code to be altered in place and executed without
+issuing further installation commands.
+
 Alternatively, you may choose not to formally install :term:`FiPy` and
-to simply work within the base directory instead. In this case or if
-you are making a non-standard install (without admin privileges), read
-the :ref:`ENVIRONMENT` section of the :ref:`USAGE` document before
-beginning the installation process.
+to simply work within the base directory instead. In this case or if you
+are making a non-standard install (without admin privileges), read about
+setting up your :ref:`ENVIRONMENT` before beginning the installation
+process.
 
 .. _REQUIREDPACKAGES:
 
@@ -140,8 +144,7 @@ Required Packages
 
 .. warning:
 
-    :term:`FiPy` will not run if the following items are not
-    installed.
+   :term:`FiPy` will not run if the following items are not installed.
 
 Python
 ======
@@ -185,7 +188,8 @@ This installer provides a very large number of useful scientific
 packages for :term:`Python`, including :term:`NumPy`,
 :term:`SciPy`, :term:`Matplotlib`, :term:`Mayavi`, and :term:`IPython`, as 
 well as a :term:`Python` interpreter.  Installers
-are available for Windows_, `Mac OS X`_ and `RedHat Linux`_.
+are available for Windows_, `Mac OS X`_ and `RedHat Linux`_, Solaris_, 
+`Ubuntu Linux`_, and `OpenSuSE Linux`_.
 
 .. attention::
 
@@ -201,6 +205,11 @@ http://www.pythonxy.com/
 
 Another comprehensive :term:`Python` package installer for scientific
 applications, presently only available for Windows_.
+
+.. attention::
+
+   :term:`PySparse` and :term:`FiPy` are not presently included in
+   python(x,y), so you will need to separately install them manually.
 
 NumPy
 =====
@@ -226,7 +235,7 @@ Gmsh
 
 http://www.geuz.org/gmsh/
 
-:term:`Gmsh` allows the creation of irregular meshes.
+:term:`Gmsh` is an application that allows the creation of irregular meshes.
 
 SciPy
 =====
@@ -244,9 +253,6 @@ details), via the :mod:`scipy.weave` module.
     A handful of test cases use functions from the :term:`SciPy`
     library and will throw errors if it is missing.
 
-.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
-.. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
-
 ------------------------------
 Platform-Specific Instructions
 ------------------------------
@@ -262,12 +268,52 @@ platform-dependent are the :ref:`VIEWERS` but at least one viewer
 should work on each platform.  All other aspects should function on
 any platform that has a recent :term:`Python` installation.
 
-.. toctree::
-   :maxdepth: 2
+Mac OS X Installation
+=====================
 
-   MACOSX-INSTALLATION
-   WINDOWS-INSTALLATION
-   documentation/SVN
+There is no official package manager for `Mac OS X`_, but there are 
+several third-party package managers that provide many, but not all of 
+:term:`FiPy`'s :ref:`REQUIREDPACKAGES` and :ref:`OPTIONALPACKAGES`. 
+Options include
+
+ Fink_
+   is based on the Debian package management system. It installs all of its
+   dependencies into :file:`/sw`.
+ MacPorts_
+   is a package manager originally part of OpenDarwin. It installs all of 
+   its dependencies into :file:`/opt`.
+ Homebrew_
+   is a recent, lightweight package manager based on Ruby scripts. It
+   installs all of its dependencies into :file:`/usr/local` (although it
+   can be directed not to).
+
+In addition, there is an :ref:`EPD` installer for `Mac OS X`_.
+
+.. attention::
+
+   :term:`PySparse` and :term:`FiPy` are not presently included in any of
+   these package managers or installers, so you will need to separately
+   install them manually.
+
+We presently find that the combination of Homebrew_ and :term:`pip` is a 
+pretty straightforward way to get most of :term:`FiPy`'s prerequesites. 
+See the `Miscellaneous Build Recipes`_ for up-to-date directions.
+
+.. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.finkproject.org/
+.. _MacPorts: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.macports.org/
+.. _Homebrew: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mxcl.github.com/homebrew/
+
+Windows Installation
+====================
+
+There is no official package manager for Windows_, but the :ref:`EPD` 
+and :ref:`PYTHONXY` installers provide most of :term:`FiPy`'s 
+prerequisites.
+
+.. attention::
+
+   :term:`PySparse` and :term:`FiPy` are not presently included in EPD or
+   python(x,y), so you will need to separately install them manually.
 
 Ubuntu/Debian Installation
 ==========================
@@ -284,7 +330,9 @@ to install. The `.deb` includes dependencies for all of the
 .. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
 .. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
 .. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
+.. _OpenSUSE Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.opensuse.org/
 .. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
+.. _Solaris: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://oracle.com/solaris
 .. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
 .. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
 
@@ -308,3 +356,81 @@ We often post miscellaneous installation instructions on the
 .. _Installing FiPy with pip: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/wiki/InstallFiPy/PipInstallsPython
 .. _wiki: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy
 .. _blog: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/blog
+
+.. _ENVIRONMENT:
+
+-----------------------
+Development Environment
+-----------------------
+
+It is often preferable to not formally install packages in the system
+directories. The reasons for this include:
+
+ * developing or altering the package source code,
+
+ * trying out a new package along with its dependencies without
+   violating a working system,
+
+ * dealing with conflicting packages and dependencies,
+
+ * or not having admin privileges.
+
+The simplest way to use a :term:`Python` package without installing it
+is to work in the base directory of the unpacked package and set 
+the :envvar:`PYTHONPATH` environment variable to "``.``". In order to work in an
+directory other than the package's base directory, the :envvar:`PYTHONPATH`
+environment variable must be set to ":file:`~/path/to/package`". This
+method of working is adequate for one package, but quickly becomes
+unmanageable with multiple :term:`Python` packages. In order to manage
+multiple packages, it is better to choose a standard location other
+than the default installation path. 
+
+If you do not have administrative privileges on your computer, or if
+for any reason you don't want to tamper with your existing
+:term:`Python` installation, most packages (including :term:`FiPy`)
+will allow you to install to an alternative location.  Instead of
+installing these packages with ``python setup.py install``, you would
+use :samp:`python setup.py install --home={dir}`, where :samp:`{dir}`
+is the desired installation directory (usually "``~``" to indicate
+your home directory).  You will then need to append
+:file:`{dir}/lib/python` to your :envvar:`PYTHONPATH` environment
+variable.  See the `Alternate Installation`_ section of the
+:term:`Python` document "`Installing Python Modules`_"
+[InstallingPythonModules]_ for more information, such as circumstances
+in which you should use :option:`--prefix` instead of
+:option:`--home`.
+
+.. _Alternate Installation: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/alt-install-windows.html
+
+.. _Installing Python Modules: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/
+
+An alternative to setting the :envvar:`PYTHONPATH` is to employ one of the
+utilities that manage packages and their dependencies independently of
+the system package manager and the system directories. These utilities
+include Stow_, Virtualenv_ and zc.buildout_, amongst others. Here we'll
+describe the use of Virtualenv_, which we highly recommend.
+
+.. _Stow: http://savannah.gnu.org/projects/stow/
+.. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
+
+Virtualenv
+==========
+
+http://pypi.python.org/pypi/virtualenv
+
+Virtualenv_ enables the installation of packages in multiple isolated
+environments. It organizes the installation of :term:`Python` packages
+especially well and also provides a handy location for installing
+non-:term:`Python` packages. In addition Virtualenv_ works seamlessly
+with the :ref:`PyPI` package manager (:term:`pip`).
+
+The utility of Virtualenv_ is significantly augmented with Virtualenvwrapper_. 
+
+In general, the initial installation of Virtualenv_ and Virtualenvwrapper_
+requires admin privileges, but thereafter, creating new virtual
+environments and installing packages into them does not require admin
+privileges.
+
+.. _Virtualenvwrapper: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.doughellmann.com/projects/virtualenvwrapper
+
+.. include:: documentation/SVN.txt

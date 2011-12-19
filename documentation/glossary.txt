@@ -20,7 +20,8 @@ Glossary
       make use of. See http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.geuz.org/gmsh.
 
    IPython
-      An improved :term:`Python` shell. See http://ipython.scipy.org/.
+      An improved :term:`Python` shell that integrates nicely with
+      :ref:`MATPLOTLIB`. See http://ipython.scipy.org/.
 
    Matplotlib
       :mod:`matplotlib` :term:`Python` package displays publication quality
