@@ -730,48 +730,12 @@ for more details.
 How can I tell if I'm running in parallel?
 ------------------------------------------
 
-The easiest way to tell is to run one of the examples, e.g.,::
-
-   $ mpirun -np 2 examples/diffusion/mesh1D.py
-   
-You should see two viewers open with half the simulation running in one of 
-them and half in the other. If this does not look right (e.g., you get two viewers, both 
-showing the entire simultion), or if you just want to be sure, you can run 
-a diagnostic script::
-
-   $ mpirun -np 3 examples/parallel.py
-   
-and you should see::
-
-   mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 3 :: FiPy: 5 cells on processor 0 of 3
-   mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
-   mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
-
-If there is a problem with your parallel environment, it should be clear
-that there is either a problem importing one of the required packages or
-that there is some problem with the MPI environment. For example::
-
-   mpi4py: processor 2 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
-   [my.machine.com:69815] WARNING: There were 4 Windows created but not freed.
-   mpi4py: processor 1 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
-   [my.machine.com:69814] WARNING: There were 4 Windows created but not freed.
-   mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
-   [my.machine.com:69813] WARNING: There were 4 Windows created but not freed.
-
-indicates :ref:`MPI4PY` is properly communicating with MPI and is
-running in parallel, but that :term:`Trilinos` is not, and is running
-three separate serial environments. As a result, :term:`FiPy` is
-limited to three separate serial operations, too. In this instance,
-the problem is that although :term:`Trilinos` was compiled with MPI
-enabled, it was compiled against a different MPI library than is
-currently available (and which :ref:`MPI4PY` was compiled
-against). The solution is to rebuild :term:`Trilinos` against the
-active MPI libraries.
+See :ref:`PARALLEL`.
 
 Why don't my scripts work anymore?
 ----------------------------------
 
-:term:`FiPy` has experienced two major API changes. The steps 
+:term:`FiPy` has experienced three major API changes. The steps 
 necessary to upgrade older scripts are discussed in 
 :ref:`chap:UpdateFiPy`.
 

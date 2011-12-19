@@ -231,35 +231,53 @@ class meshes. Currently, the only remaining serial-only meshes are
    :term:`PySparse` is not installed be sure to use the
    ``--no-pysparse`` flag when running in parallel.
 
-* It should not generally be necessary to change anything in your script.
-  Simply invoke::
+It should not generally be necessary to change anything in your script.
+Simply invoke::
 
-     $ mpirun -np {# of processors} python myScript.py --trilinos
+    $ mpirun -np {# of processors} python myScript.py --trilinos
 
-  instead of::
+instead of::
 
-     $ python myScript.py
+    $ python myScript.py
 
-* To confirm that :term:`FiPy` and :term:`Trilinos` are properly 
-  configured to solve in parallel, you can execute
+To confirm that :term:`FiPy` and :term:`Trilinos` are properly configured
+to solve in parallel, the easiest way to tell is to run one of the
+examples, e.g.,::
 
-  .. code-block:: python
+    $ mpirun -np 2 examples/diffusion/mesh1D.py
+   
+You should see two viewers open with half the simulation running in one of
+them and half in the other. If this does not look right (e.g., you get two
+viewers, both showing the entire simultion), or if you just want to be
+sure, you can run a diagnostic script::
 
-     from fipy import parallel, Grid1D
-     mesh = Grid1D(nx=10)
-     print "%d cells on processor %d of %d" \
-       % (mesh.getNumberOfCells(), parallel.procID, parallel.Nproc)
+    $ mpirun -np 3 python examples/parallel.py
 
-  (available as :file:`examples/parallel.py`) to check that :term:`FiPy` is
-  distributing a mesh across processes as expected. E.g.::
+which should print out::
 
-     $ mpirun -np 3 python examples/parallel.py
+    mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 3 :: FiPy: 5 cells on processor 0 of 3
+    mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
+    mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
 
-  should print out::
+If there is a problem with your parallel environment, it should be clear
+that there is either a problem importing one of the required packages or
+that there is some problem with the MPI environment. For example::
 
-     mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 3 :: FiPy: 5 cells on processor 0 of 3
-     mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
-     mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
+    mpi4py: processor 2 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
+    [my.machine.com:69815] WARNING: There were 4 Windows created but not freed.
+    mpi4py: processor 1 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
+    [my.machine.com:69814] WARNING: There were 4 Windows created but not freed.
+    mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
+    [my.machine.com:69813] WARNING: There were 4 Windows created but not freed.
+
+indicates :ref:`MPI4PY` is properly communicating with MPI and is running
+in parallel, but that :ref:`TRILINOS` is not, and is running three separate
+serial environments. As a result, :term:`FiPy` is limited to three separate
+serial operations, too. In this instance, the problem is that although
+:ref:`TRILINOS` was compiled with MPI enabled, it was compiled against a
+different MPI library than is currently available (and which :ref:`MPI4PY`
+was compiled against). The solution is to rebuild :ref:`TRILINOS` against
+the active MPI libraries.
 
 When solving in parallel, :term:`FiPy` essentially breaks the problem
 up into separate sub-domains and solves them (somewhat) independently.
