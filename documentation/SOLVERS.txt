@@ -17,11 +17,33 @@ reason, :term:`SciPy` may be the best linear solver choice when first
 installing and testing :term:`FiPy` (and it is the only viable solver 
 under `Python 3.x`_).
 
-.. attention::
+:term:`FiPy` chooses the solver suite based on system availability or based
+on the user supplied :ref:`FlagsAndEnvironmentVariables`. For example,
+passing ``--no-pysparse``::
 
-    See :ref:`SOLVERCOMMANDLINEOPTIONS` in
-    :ref:`USAGE` for details of how to configure
-    :term:`FiPy`'s choice of solver.
+    $ python -c "from fipy import *; print DefaultSolver" --no-pysparse
+    <class 'fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver'>
+    
+uses a :ref:`TRILINOS` solver. Setting :envvar:`FIPY_SOLVERS`
+to ``scipy``::
+
+    $ FIPY_SOLVERS=scipy
+    $ python -c "from fipy import *; print DefaultSolver"
+    <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
+    
+uses a :ref:`SCIPY` solver. Suite-specific solver classes can also
+be imported and instantiated overriding any other directives. For
+example::
+
+    $ python -c "from fipy.solvers.scipy import DefaultSolver; \
+    >   print DefaultSolver" --no-pysparse
+    <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
+    
+uses a :ref:`SCIPY` solver regardless of the command line
+argument. In the absence of :ref:`FlagsAndEnvironmentVariables`, 
+:term:`FiPy`'s order of precedence when choosing the
+solver suite for generic solvers is :ref:`PYSPARSE` followed by
+:ref:`TRILINOS`, :ref:`PYAMG` and :ref:`SCIPY`.
 
 .. _Python 3.x:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/py3k/
 
@@ -135,9 +157,9 @@ in-depth documentation.
     environment variable; this should be of the form
     :file:`${{INSTALL_DIR}}/lib/${{PYTHON_VERSION}}/site-packages/`. Also,
     the path to the :term:`Trilinos` ``lib`` directory should be added to
-    the :envvar:`LD_LIBRARY_PATH` (on Linux) or
-    :envvar:`DYLD_LIBRARY_PATH` (on Mac OS X) environment variable;
-    this should be of the form :file:`${{INSTALL_DIR}}/lib``.
+    the :envvar:`LD_LIBRARY_PATH` (on Linux) or :envvar:`DYLD_LIBRARY_PATH`
+    (on Mac OS X) environment variable; this should be of the form
+    :file:`${{INSTALL_DIR}}/lib``.
 
 .. _MPI4PY:
 

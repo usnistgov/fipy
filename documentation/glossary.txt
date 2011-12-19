@@ -83,6 +83,13 @@ Glossary
       The programming language that :term:`FiPy` (and your scripts) are
       written in. See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/.
+
+   Python 3
+      The (likely) future of the :term:`Python` programming language.
+      Third-party packages are slowly being adapted, but many that
+      :term:`FiPy` uses are not yet available. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/py3k/
+      and :pep:`3000`.
      
    PyTrilinos
       :term:`Python` wrapper for :term:`Trilinos`. See 
