@@ -113,7 +113,8 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/flow/index.txt',
                         'examples/reactiveWetting/index.txt',
                         'examples/updating/index.txt']
-
+                        
+autodoc_member_order = 'alphabetical'
                         
 input_bib_path = 'refs.bib'
 
