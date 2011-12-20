@@ -370,12 +370,31 @@ class Variable(object):
             return s
 
     def _getCIndexString(self, shape):
+        r"""
+        Test for inline issue. (1, ni) shapes were not handled correctly.
+
+        >>> from fipy import *
+        >>> mesh = Tri2D(dx=1., dy=1., nx=1, ny=1)
+        >>> diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
+        >>> normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
+        >>> normalsNthCoeff = diffCoeff[numerix.newaxis] * normals 
+
+        First variable value access does not provoke inlining.
+
+        >>> value = normalsNthCoeff.value
+        >>> print (normalsNthCoeff == value).all()
+        True
+
+        """
+
         dimensions = len(shape)
         if dimensions == 1:
             return '[i]'
         elif dimensions == 2:
             if shape[-1] == 1:
                 return '[j]'
+            elif shape[0] == 1:
+                return '[i]'
             else:
                 return '[i + j * ni]'
         elif dimensions == 3:
