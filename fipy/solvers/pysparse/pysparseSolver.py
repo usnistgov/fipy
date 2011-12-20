@@ -36,12 +36,7 @@
 __docformat__ = 'restructuredtext'
 
 import os
-
-from pysparse import precon
-
-from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
-from fipy.tools import numerix
 
 __all__ = ["PysparseSolver"]
 
