@@ -83,8 +83,8 @@ current density is governed by
    }{ R T }} - \exp{ \frac{ \left( 1 - \alpha_j \right) F \eta}{ R T
    }} \right) \right]
 
-where $j$ represents $S$ for suppressor, $A$
-for accelerator, $L$ for leveler and $V$ for vacant. This model
+where :math:`j` represents :math:`S` for suppressor, :math:`A`
+for accelerator, :math:`L` for leveler and :math:`V` for vacant. This model
 assumes a linear interpolation between the three cases of complete
 coverage for each additive or vacant substrate. The governing
 equations for the surfactants are given by, 
@@ -101,18 +101,17 @@ equations for the surfactants are given by,
    \\
    \theta_S &= 1 - \theta_A - \theta_L 
    \\
-   \theta_V = 0.
+   \theta_V &= 0.
      
-It has been found experimentally that $i_L = i_S$.
+It has been found experimentally that :math:`i_L = i_S`.
 
-If the surface reaches full coverage, the equations do not
-naturally prevent the coverage rising above full coverage due to
-the curvature terms. Thus, when $\theta_L + \theta_A = 1$ then the
-equation for accelerator becomes $\dot{ \theta_A } = -\dot{
-\theta_L }$ and when $\theta_L = 1$, the equation for leveler
-becomes $\dot{\theta_{L}} = - k_L^- v \theta_L.$
+If the surface reaches full coverage, the equations do not naturally prevent the
+coverage rising above full coverage due to the curvature terms. Thus, when
+:math:`\theta_L + \theta_A = 1` then the equation for accelerator becomes
+:math:`\dot{ \theta_A } = -\dot{\theta_L }` and when :math:`\theta_L = 1`, the
+equation for leveler becomes :math:`\dot{\theta_{L}} = - k_L^- v \theta_L.`
 
-The parameters $k_A^+,$ $k_A^-$ and $q$ are both functions of $\eta$
+The parameters :math:`k_A^+`, :math:`k_A^-` and :math:`q` are both functions of :math:`\eta`
 given by, 
 
 .. math:: 
@@ -123,7 +122,7 @@ given by,
    \right) \right)}} + \exp{\left(B_b \left(\eta + V_d \right)
    \right)}
    \\
-   q &= m * \eta + b.
+   q &= m \eta + b.
 
 The following table shows the symbols used in the governing equations
 and their corresponding arguments for the :func:`runLeveler` function.
