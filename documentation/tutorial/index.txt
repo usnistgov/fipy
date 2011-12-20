@@ -12,6 +12,7 @@ their own chapters; rather, their contents will be described in the chapter
 for their containing package.
 
 .. toctree::
+   :maxdepth: 4
 
-   generated/subpackage
+   package/generated/subpackage
 

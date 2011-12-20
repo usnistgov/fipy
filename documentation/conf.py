@@ -18,6 +18,7 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.append(os.path.abspath('sphinxext'))
 sys.path.append(os.path.abspath('sphinxext/bibtex'))
+sys.path.append(os.path.abspath('tutorial'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -126,6 +127,10 @@ bib2rst.convert_only_cited('..', input_bib_path, source_suffix, 'bibtex/bibstuff
 saved_argv = sys.argv
 
 sys.argv = ["build_docs", "--dest-dir=../fipy/generated", "../fipy"]
+import generate_modules
+generate_modules.main()
+
+sys.argv = ["build_docs", "--dest-dir=tutorial/package/generated", "tutorial/package"]
 import generate_modules
 generate_modules.main()
 
@@ -340,9 +345,13 @@ def skip_numpy_not_numerix(app, what, name, obj, skip, options):
                        types.BuiltinFunctionType,
                        types.ClassType, 
                        types.TypeType]) 
-        and not obj.__module__.startswith("fipy")):
+        and not (obj.__module__.startswith("fipy")
+                 or obj.__module__.startswith("package"))):
             skip = True
     return skip
     
 def setup(app):
     app.connect('autodoc-skip-member', skip_numpy_not_numerix)
+
+    
+    

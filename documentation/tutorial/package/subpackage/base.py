@@ -46,7 +46,7 @@ in which case you refer to it by its full name of :mod:`package.subpackage.base`
     
     from package.subpackage import base
     
-in which case you can refer simply to :mod:`~package.base`.
+in which case you can refer simply to :mod:`~package.subpackage.base`.
 """
 __docformat__ = 'restructuredtext'
 
@@ -64,8 +64,6 @@ class Base:
         
         from fipy import Object
         
-    but it is still experimental and does not work for all of the objects
-    in FiPy.
 
     :term:`Python` is an object-oriented language and the FiPy framework
     is composed of objects or classes.  Knowledge of object-oriented
