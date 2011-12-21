@@ -308,7 +308,7 @@ Instead, rather than instantiating a particular :class:`~fipy.viewers.viewer.Vie
 still do, if you desire), a generic "factory" method will return a :class:`~fipy.viewers.viewer.Viewer`
 appropriate for the supplied `Variable` object(s):
     
-.. index:: viewers
+.. index:: fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     import fipy.viewers

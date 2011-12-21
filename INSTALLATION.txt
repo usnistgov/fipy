@@ -422,7 +422,7 @@ Virtualenv_ enables the installation of packages in multiple isolated
 environments. It organizes the installation of :term:`Python` packages
 especially well and also provides a handy location for installing
 non-:term:`Python` packages. In addition Virtualenv_ works seamlessly
-with the :ref:`PyPI` package manager (:term:`pip`).
+with the :term:`PyPI` package manager (:term:`pip`).
 
 The utility of Virtualenv_ is significantly augmented with Virtualenvwrapper_. 
 

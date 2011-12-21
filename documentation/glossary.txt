@@ -56,7 +56,7 @@ Glossary
 
    pip
       "pip installs python" is a tool for installing and managing Python
-      packages, such as those found in the :ref:`Python Package Index <PyPI>`).
+      packages, such as those found in :term:`PyPI`.
       See http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.pip-installer.org.
 
    PyAMG
