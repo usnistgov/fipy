@@ -6,7 +6,7 @@ __all__ = []
 # ed williams' colorbar stuff
 from fipy.tools.numerix import *
 #from scipy_base.fastumath import *
-from arrayfns import *
+from numpy.oldnumeric.arrayfns import *
 from gist import *
 from gist.slice3 import *
 

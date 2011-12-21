@@ -50,7 +50,7 @@ class MayaviClient(_Viewer):
     """
     The `MayaviClient` uses the Mayavi_ python plotting package.
 
-    .. Mayavi: http://code.enthought.com/projects/mayavi
+    .. _Mayavi: http://code.enthought.com/projects/mayavi
 
     """
     __doc__ += _Viewer._test1D(viewer="MayaviClient")

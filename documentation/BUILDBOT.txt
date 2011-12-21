@@ -49,8 +49,7 @@ Adding a buildslave
 
 Choose a name and a password for the new buildslave. Modify `master.cfg` as per
 the instructions above (on any machine) to recognize the new buildslave by
-adding a new element to the `c['slaves']` list like so:
-
+adding a new element to the `c['slaves']` list like so::
 
     newslave = BuildSlave('newSlaveName', 'newSlavePasswd')
 
@@ -61,7 +60,7 @@ adding a new element to the `c['slaves']` list like so:
 
 Now, define one or more builders on this slave. In most cases, you will
 want to define `quick` and `full` builders with default tests, which can be
-done with just:
+done with just::
 
     c['builders'].extend(make_builders(name="SlaveType",
                                        slaves=[newslave]))
@@ -71,14 +70,14 @@ OS, rather than the slave's name.
 
 If you need to customize the tests (perhaps because the slave is missing 
 some prerequisites for the standard tests), define customized versions of 
-:class:`QuickFactory` and :class:`FullFactory` and then call:
+:class:`QuickFactory` and :class:`FullFactory` and then call::
 
     c['builders'].extend(make_builders(name="SlaveType",
                                        slaves=[newslave],
                                        quick_factory_class=MyQuickFactory,
                                        full_factory_class=MyFullFactory))
 
-A single, arbitrary builder can be defined by:
+A single, arbitrary builder can be defined by::
 
     c['builders'].append(make_builder(name="SlaveType",
                                       slaves=[newslave],
@@ -154,7 +153,7 @@ I used [http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/HomeBrew Homebrew]
 and [http://matforge.org/fipy/wiki/InstallFiPy/PipInstallsPython pip] to
 set up my test `virtualenv`\s and then I basically followed
 http://trac.buildbot.net/wiki/UsingLaunchd, with the modifications (see
-Py3k_):
+Py3k_)::
 
     <dict>
       <key>PATH</key>
@@ -165,7 +164,7 @@ Py3k_):
       <string>/Users/fipy/.virtualenvs/buildbot/lib</string>
       </dict>
 
-and:
+and::
 
     <key>UserName</key>
     <string>fipy</string>
@@ -179,7 +178,7 @@ Adding a branch
 ---------------
 
 Modify `master.cfg` to include the name of the branch in the `branches` list at
-the top of the file like so:
+the top of the file like so::
 
     branches = [
                 'trunk',

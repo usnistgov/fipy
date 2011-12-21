@@ -85,13 +85,17 @@ _doctestSkippers = list()
 def register_skipper(flag, test, why, skipWarning=True):
     """Create a new doctest option flag for skipping tests
     
-    :parameters:
-        `flag` - name of the option flag
-        `test` - function that returns `True` if the test should be run
-        `why` - explanation for why the test was skipped
-          (to be used in a string 
-           "Skipped %%(count)d doctest examples because %%(why)s")
-        `skipWarning` - report on tests skipped by this flag if `True` (default)
+    Parameters
+    ----------
+    flag : str
+      Name of the option flag
+    test : function
+      A function which should return `True` if the test should be run
+    why : str
+      Explanation for why the test was skipped (to be used in a string
+      "``Skipped %%(count)d doctest examples because %%(why)s``")
+    skipWarning : bool
+      Whether or not to report on tests skipped by this flag (default `True`)
     """
     global _doctestSkippers
     

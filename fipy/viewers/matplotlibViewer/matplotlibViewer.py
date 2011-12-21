@@ -66,7 +66,7 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
       axes
         if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         
-    It is possible to view different `Variable`s against different Matplotlib_ `Axes
+    It is possible to view different `Variable`s against different Matplotlib_ `Axes`
     
     >>> from matplotlib import pylab
     >>> from fipy import *

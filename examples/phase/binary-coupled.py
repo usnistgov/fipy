@@ -505,7 +505,7 @@ We plot the result against the sharp interface solution
 >>> sharp.setValue(Cl, where=x >= L * fraction)
 
 .. index::
-   :module: viewers
+   module: viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=(phase, C, sharp), 

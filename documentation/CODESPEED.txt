@@ -67,7 +67,7 @@ as given in datetime.today().
 Continuing on uploading data, the makers of the program tried to make
 Codespeed user friendly, but there are some things that need to be
 done that won't happen automatically.  Here is an example dictionary
-for uploading data:
+for uploading data::
 
      data = { 
      	  'commitid': '14', 

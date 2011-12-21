@@ -433,4 +433,6 @@ privileges.
 
 .. _Virtualenvwrapper: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.doughellmann.com/projects/virtualenvwrapper
 
+.. _documentation:SVN:
+
 .. include:: documentation/SVN.txt

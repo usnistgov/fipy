@@ -1,5 +1,3 @@
-.. _documentation:SVN:
-
 ---------
 SVN usage
 ---------
@@ -85,7 +83,5 @@ canonical manual is the `online Subversion Red Bean book`_
 [SubversionRedBean]_.
 
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
-
-.. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://fink.sourceforge.net
 
 .. _MatForge: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy

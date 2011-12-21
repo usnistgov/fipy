@@ -265,7 +265,7 @@ What if I only want the saved file, with no display on screen?
 
 To our knowledge, this is only supported by :term:`Matplotlib`, as is explained
 in the
-`Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup>`_. 
+`Matplotlib FAQ on image backends <http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup>`_. 
 Basically, you need to tell :term:`Matplotlib` to use an "image
 backend," such as "``Agg``" or "``Cairo``." Backends are discussed at
 http://matplotlib.sourceforge.net/backends.html.
@@ -277,7 +277,7 @@ How do I make a movie?
 individual frames (see the previous question) and then stitch them together
 into a movie, using one of a variety of different free, shareware, or
 commercial software packages. The guidance in the
-`Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ 
+`Matplotlib FAQ on movies <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ 
 should be adaptable to other :class:`~viewer.Viewer`\s.
 
 Why doesn't the :class:`~viewer.Viewer` look the way I want?
