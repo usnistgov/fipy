@@ -41,7 +41,7 @@ Is there a way to model an anisotropic diffusion process or more generally to re
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Terms of the form :math:`\partial_i \Gamma_{ij}\partial_j \phi` can be
-posed in :term:`FiPy` by using a :keyword:`list`, :keyword:`tuple`, rank 1
+posed in :term:`FiPy` by using a list, tuple rank 1
 or rank 2 :class:`~fipy.variables.faceVariable.FaceVariable` to represent a
 vector or tensor diffusion coefficient. For example, if we wished to
 represent a diffusion term with an anisotropy ratio of 5 aligned along the
@@ -50,8 +50,8 @@ x-coordinate axis, we could write the term as,
 >>> DiffusionTerm([[[5, 0], [0, 1]]])
 
 which represents :math:`5 \partial_x^2 + \partial_y^2`.  Notice that
-the tensor, written in the form of a :keyword:`list`, is contained within
-a :keyword:`list`. This is because the first index of the list refers to
+the tensor, written in the form of a list, is contained within
+a list. This is because the first index of the list refers to
 the order of the term not the first index of the tensor (see
 :ref:`discret-higherOrderDiffusion`). This notation, although succinct can
 sometimes be confusing so a number of cases are interpreted below.
@@ -239,7 +239,7 @@ How do I save a plot image?
 
 Some of the viewers have a button or other mechanism in the user interface
 for saving an image file. Also, you can supply an optional keyword
-:keyword:`filename` when you tell the viewer to
+``filename`` when you tell the viewer to
 :meth:`~Viewer.plot`, *e.g.*
 
 >>> viewer.plot(filename="myimage.ext")
@@ -328,8 +328,8 @@ iterations
 
   .. note::
 
-     The older :class:`~fipy.solvers.solver.Solver` :keyword:`steps=` keyword is now deprecated
-     in favor of :keyword:`iterations=` to make the role clearer.
+     The older :class:`~fipy.solvers.solver.Solver` ``steps=`` keyword is now deprecated
+     in favor of ``iterations=`` to make the role clearer.
 
   Solver iterations are changed from their defaults in
   :mod:`examples.flow.stokesCavity` and
