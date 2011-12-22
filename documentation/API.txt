@@ -10,6 +10,7 @@
 
    tutorial/index
    ../fipy/generated/boundaryConditions
+   ../fipy/generated/matrices
    ../fipy/generated/meshes
    ../fipy/generated/models
    ../fipy/generated/solvers

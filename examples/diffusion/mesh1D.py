@@ -74,7 +74,7 @@ We'll let
 for now. 
 
 The set of boundary conditions are given to the equation as a Python
-:keyword:`tuple` or :keyword:`list` (the distinction is not generally important to :term:`FiPy`).
+tuple or list (the distinction is not generally important to :term:`FiPy`).
 The boundary conditions 
 
 .. math::

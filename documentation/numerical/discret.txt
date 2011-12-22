@@ -145,8 +145,8 @@ where :samp:`{<SpecificConvectionTerm>}` can be any of
 The differences between these convection schemes are described
 in Section :ref:`sec:NumericalSchemes`. The velocity coefficient 
 ``u`` must be a rank-1 :class:`~fipy.variables.faceVariable.FaceVariable`, or a 
-constant vector in the form of a :term:`Python` :keyword:`list` or 
-:keyword:`tuple`, *e.g.* ``((1,), (2,))`` for a vector in 2D.
+constant vector in the form of a :term:`Python` list or 
+tuple, *e.g.* ``((1,), (2,))`` for a vector in 2D.
 
 Diffusion Term :math:`\nabla \cdot \left( \Gamma_1 \nabla \phi \right)`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

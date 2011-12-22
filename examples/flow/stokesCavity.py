@@ -193,10 +193,12 @@ pressure correction equation can be written as,
 >>> pressureCorrectionEq = DiffusionTerm(coeff=coeff) - velocity.divergence
 
 Above would work good on a staggered grid, however, on a colocated grid as :term:`FiPy`
-uses, the term :term:`velocity.divergence` will cause oscillations in the
-pressure solution as velocity is a face variable. 
-We can apply the Rhie-Chow correction terms for this. In this an intermediate 
-velocity term :math:`u^\diamond` is considered which does not contain the pressure corrections:
+uses, the term 
+``velocity``.\ :attr:`~fipy.variables.faceVariable.FaceVariable.divergence` will
+cause oscillations in the pressure solution as velocity is a face variable. We
+can apply the Rhie-Chow correction terms for this. In this an intermediate
+velocity term :math:`u^\diamond` is considered which does not contain the
+pressure corrections:
 
 .. math::
     

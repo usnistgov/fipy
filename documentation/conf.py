@@ -79,10 +79,15 @@ unused_docs = ['documentation/RESOURCES',
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['_build', 
-                 'FiPy.egg-info', 
-                 'documentation/_build', 
-                 'documentation/sphinxext']
+exclude_patterns = ['fipy/generated/modules.txt',
+                    'fipy/generated/__init__.txt',
+                    '_build', 
+                    'FiPy.egg-info', 
+                    'documentation/_build', 
+                    'documentation/tutorial/package/generated/modules.txt',
+                    'documentation/sphinxext',
+                    'documentation/sphinxext/bibtex/bibstuff/examples/*.txt',
+                    '**/.svn']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None

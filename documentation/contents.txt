@@ -20,3 +20,11 @@ FiPy Contents
    manual
    refs.bib_cited
 
+.. toctree::
+   :hidden:
+
+   CODESPEED
+   BUILDBOT
+   GUIDELINES
+   SVN
+

@@ -105,6 +105,8 @@ def convert_only_cited(input_rst_directory, input_bib_path,
                      citations_only=True)
     
     output = open(output_bib_file,'w')
+    output.write("References\n")
+    output.write("="*len("References") + "\n")
     output.write(result)        
     output.close()
             
