@@ -639,6 +639,9 @@ Most of the :term:`FiPy` examples will be a
 mixture of plain scripts and doctest documentation/tests.
 
 .. :term:`FiPy` replace:: `FiPy`
+
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 
 __docformat__ = 'restructuredtext'

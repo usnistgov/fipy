@@ -17,7 +17,6 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.append(os.path.abspath('sphinxext'))
-sys.path.append(os.path.abspath('sphinxext/bibtex'))
 sys.path.append(os.path.abspath('tutorial'))
 
 # -- General configuration -----------------------------------------------------
@@ -32,7 +31,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.pngmath', 
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
-              'numpydoc']
+              'numpydoc',
+              'bibstuff.sphinxext.bibref']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -123,13 +123,6 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         
 autodoc_member_order = 'alphabetical'
                         
-input_bib_path = 'refs.bib'
-
-import bib2rst
-
-# bib2rst.convert_all_bib('manual', '../contrib/ext/bibtex/bibstuff')
-bib2rst.convert_only_cited('..', input_bib_path, source_suffix, 'bibtex/bibstuff')
-
 saved_argv = sys.argv
 
 sys.argv = ["build_docs", "--dest-dir=../fipy/generated", "../fipy"]
@@ -331,7 +324,7 @@ latex_use_parts = True
 latex_additional_files = ['figures/nistident_flright_vec.pdf']
 
 # Documents to append as an appendix to all manuals.
-latex_appendices = ['documentation/refs.bib_cited']
+# latex_appendices = ['documentation/refs.bib_cited']
 
 # If false, no module index is generated.
 #latex_use_modindex = True

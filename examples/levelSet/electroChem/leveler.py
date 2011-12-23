@@ -204,6 +204,8 @@ can be obtained by running this example.
    :align: center
    :alt: resulting image
     
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 __docformat__ = 'restructuredtext'
 

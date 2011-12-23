@@ -85,7 +85,7 @@ class build_docs(Command):
     def run (self):
         import sphinx
         
-        sphinx_args = ['-c', 'documentation/', '.']
+        sphinx_args = ['-P', '-n', '-c', 'documentation/', '.']
         
         if self.cathartic:
             sphinx_args = ['-a', '-E'] + sphinx_args

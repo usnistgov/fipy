@@ -69,11 +69,11 @@ The CITATION_TEMPLATE provides default reference formatting (may also be used by
 	- allow different initial line and subsequent line indenting
 """
 
-#here we simply use the default citation template in default_templates.py
-CITATION_TEMPLATE = default_templates.DEFAULT_CITATION_TEMPLATE.copy()
-
+# here we simply use the default citation template
+CITATION_TEMPLATE = shared.CitationManager.default_citation_template
 
 class CitationManager(shared.CitationManager):
+
 	################### CITEREF FORMATTING #########################
 	#we set the 'format_inline_cite' method equal to the below 'format_inline_cite' function
 	def format_inline_cite(self, cite_key_list):
@@ -97,7 +97,7 @@ class CitationManager(shared.CitationManager):
 	#sort_key for sorting list of references
 	# (choice of field_list is a formatting decision)
 	def sortkey(self,bibentry):
-		return make_sort_key(bibentry,['Author','Year'])
+		return self.make_sort_key(bibentry,['Author','Year'])
 
 def format_inline_cite(entry_list, citation_manager):
 	"""Return string, formatted in-text citation (allows *multiple* citations).
@@ -131,28 +131,3 @@ def format_inline_cite(entry_list, citation_manager):
 			#formatted_list.append('%d'%entry.citation_rank)
 	style_logger.debug("Exiting format_inline_cite.")
 	return '(' + CITEREF_TEMPLATE['citeref_sep'].join(formatted_list)+')'
-
-#KEEP! currently used by bibstyle!
-#TODO: ? enhance and put in 'shared' ??
-def make_sort_key(bibentry, field_list):
-	"""create a string for sorting.
-	Function returns tuple: (sort_string, bibentry key)
-
-	:note: this is essentially what was Bibstyle's makeSortKey method
-	"""
-	style_logger.debug("Entering make_sort_key.")
-	result = []
-	for field in field_list:
-		# some special cases
-		if field.lower() in [ 'author','editor','names']:
-			result.append(' '.join(bibentry.get_names().get_last_names()).lower())
-		elif field.lower() == "year":
-			result.append(bibentry['year'])
-		else :
-			w = bibentry[field]
-			if w :
-				result.append(w)
-	style_logger.debug("Exiting make_sort_key.")
-	return result
-
-

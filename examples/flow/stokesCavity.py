@@ -328,6 +328,8 @@ Test values in the last cell.
 >>> print numerix.allclose(yVelocity.globalValue[...,-1], -0.150290488304)
 1
 
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 __docformat__ = 'restructuredtext'
 

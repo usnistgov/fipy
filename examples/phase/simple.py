@@ -499,6 +499,9 @@ True
 .. image:: simple/dimensional.*
    :width: 90%
    :align: center
+   
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 __docformat__ = 'restructuredtext'
 

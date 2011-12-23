@@ -152,6 +152,8 @@ resemble the image below.
    :align: center
    :alt: resulting image
 
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 __docformat__ = 'restructuredtext'
 

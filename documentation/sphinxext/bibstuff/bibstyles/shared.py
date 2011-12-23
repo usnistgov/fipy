@@ -20,9 +20,14 @@ __version__ = "1.3"
 import logging, re
 #import dependencies
 import simpleparse
+# We need to import this specifically because simpleparse does not import it by
+# default
+import simpleparse.dispatchprocessor
 #create globals
 shared_logger = logging.getLogger('bibstuff_logger')
 ################################################################################
+
+from .default_templates import DEFAULT_CITATION_TEMPLATE
 
 #allow for a single citation reference to have keys for multiple citations
 #ordinarily, you do not override this
@@ -332,10 +337,14 @@ class CitationManager(object):
 	"""
 	:TODO: possibly useful for bibsearch.py
 	"""
+	default_citation_template = DEFAULT_CITATION_TEMPLATE.copy()
+
 	def __init__(self, biblist, citekeys=None, citation_template=None, sortkey=None):
 		self.biblist = biblist
 		#:alert: set_citekeys -> self._entries created!
 		self.set_citekeys(citekeys)
+		if citation_template is None:
+			citation_template = self.default_citation_template
 		self.citation_template = citation_template
 		self.entry_formatter = EntryFormatter(citation_template)
 		if sortkey: #TODO: ?? remove this possibility ??
@@ -407,6 +416,27 @@ class CitationManager(object):
 		else: # found the citekey in the cite-key list
 			rank = 1 + self._citekeys.index(entry.citekey)
 		return rank
+
+	def make_sort_key(self, bibentry, field_list):
+		"""create a string for sorting.
+		Function returns tuple: (sort_string, bibentry key)
+
+		:note: this is essentially what was Bibstyle's makeSortKey method
+		"""
+		shared_logger.debug("Entering make_sort_key.")
+		result = []
+		for field in field_list:
+			# some special cases
+			if field.lower() in [ 'author','editor','names']:
+				result.append(' '.join(bibentry.get_names().get_last_names()).lower())
+			elif field.lower() == "year":
+				result.append(bibentry['year'])
+			else :
+				w = bibentry[field]
+				if w :
+					result.append(w)
+		shared_logger.debug("Exiting make_sort_key.")
+		return result
 
 	def sortkey(self, entry):
 		"""

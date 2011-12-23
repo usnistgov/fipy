@@ -424,6 +424,9 @@ their equilibrium values in each phase
 ...     equilibrium &= numerix.allclose(Cj.faceValue[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
 >>> print equilibrium
 True
+
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 __docformat__ = 'restructuredtext'
 

@@ -616,7 +616,8 @@ expected values.
    examine different temperatures in this example, so we declare :math:`T` 
    as a :class:`~fipy.variables.variable.Variable`
 
-
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 
 __docformat__ = 'restructuredtext'
