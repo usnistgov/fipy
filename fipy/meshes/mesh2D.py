@@ -90,11 +90,8 @@ class Mesh2D(Mesh):
         return faceNormals * orientation
 
     def _calcFaceTangents(self):
-        tmp = numerix.array((-self._faceNormals[1], self._faceNormals[0]))
         # copy required to get internal memory ordering correct for inlining.
-        tmp = tmp.copy()
-        mag = numerix.sqrtDot(tmp, tmp)
-        faceTangents1 = tmp / mag
+        faceTangents1 = numerix.array((-self._faceNormals[1], self._faceNormals[0])).copy()
         faceTangents2 = numerix.zeros(faceTangents1.shape, 'd')
         return faceTangents1, faceTangents2
 
