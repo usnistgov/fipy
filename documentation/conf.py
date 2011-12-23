@@ -81,7 +81,8 @@ unused_docs = ['documentation/RESOURCES',
 # for source files.
 exclude_patterns = ['fipy/generated/modules.txt',
                     'fipy/generated/__init__.txt',
-                    '_build', 
+                    'build', 
+                    'dist',
                     'FiPy.egg-info', 
                     'documentation/_build', 
                     'documentation/tutorial/package/generated/modules.txt',
@@ -136,7 +137,6 @@ import generate_modules
 generate_modules.main()
 
 sys.argv = ["build_docs", "--dest-dir=tutorial/package/generated", "tutorial/package"]
-import generate_modules
 generate_modules.main()
 
 sys.argv = saved_argv
