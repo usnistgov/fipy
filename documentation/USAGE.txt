@@ -352,7 +352,7 @@ command in the base directory::
 .. note::
 
    This mechanism is intended primarily for the developers. At a minimum, 
-   you will need a development version of `Sphinx 1.0
+   you will need at least version 1.1.2 of `Sphinx
    <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites.
 
 .. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual

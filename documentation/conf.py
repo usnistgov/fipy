@@ -123,17 +123,6 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         
 autodoc_member_order = 'alphabetical'
                         
-saved_argv = sys.argv
-
-sys.argv = ["build_docs", "--dest-dir=../fipy/generated", "../fipy"]
-import generate_modules
-generate_modules.main()
-
-sys.argv = ["build_docs", "--dest-dir=tutorial/package/generated", "tutorial/package"]
-generate_modules.main()
-
-sys.argv = saved_argv
-
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
