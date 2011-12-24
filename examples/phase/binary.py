@@ -522,8 +522,8 @@ and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolv
 
 .. .. index:: DefaultAsymmetricSolver, solve, sweep
 
-We now use the ":meth:`~fipy.terms.Term.sweep`" method instead of ":meth:`~fipy.terms.Term.solve`" because we
-require the residual.
+We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
+":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
 >>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
 

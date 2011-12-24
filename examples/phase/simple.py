@@ -273,8 +273,11 @@ relaxation approach, but in only 8 sweeps (note that because there is no
 transient term, these sweeps are not time steps, but rather repeated
 iterations at the same time step to reach a converged solution).
 
-.. note:: We use :meth:`solve` instead of :meth:`sweep` because we don't care about
-   the residual. Either function would work, but :meth:`solve` is a bit faster.
+.. note:: 
+    
+   We use :meth:`~fipy.terms.term.Term.solve` instead of
+   :meth:`~fipy.terms.term.Term.sweep` because we don't care about the residual.
+   Either function would work, but :meth:`~fipy.terms.term.Term.solve` is a bit faster.
    
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
@@ -422,8 +425,8 @@ form of the source term shown above
 
 In order to separate the effect of forming the phase field interface
 from the kinetics of moving it, we first equilibrate at the melting
-point. We now use the :meth:`sweep` method instead of :meth:`solve` because we
-require the residual.
+point. We now use the :meth:`~fipy.terms.term.Term.sweep` method instead of
+:meth:`~fipy.terms.term.Term.solve` because we require the residual.
     
 .. index:: sweep
 
@@ -445,7 +448,8 @@ more than one grid point per time step,
 we thus set the timestep according to the grid spacing :math:`\Delta x`,
 the linear kinetic coefficient :math:`\beta`, and the undercooling
 :math:`\abs{T_m - T}`
-Again we use the :meth:`sweep` method as a replacement for :meth:`solve`.
+Again we use the :meth:`~fipy.terms.term.Term.sweep` method as a replacement for
+:meth:`~fipy.terms.term.Term.solve`.
 
 >>> velocity = beta * abs(Tm - T()) # cm / s
 >>> timeStep = .1 * dx / velocity # s
@@ -460,7 +464,7 @@ Again we use the :meth:`sweep` method as a replacement for :meth:`solve`.
 ...         viewer2.plot()
 
 A hyperbolic tangent is not an exact steady-state solution given the
-quintic polynomial we chose for the :func:`p` function, but it gives a
+quintic polynomial we chose for the :math:`p` function, but it gives a
 reasonable approximation.
     
 >>> print phase.allclose(analyticalArray, rtol = 5, atol = 2e-3)

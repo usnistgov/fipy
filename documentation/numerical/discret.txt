@@ -4,7 +4,7 @@ Finite Volume Method
 To use the FVM, the solution domain must first be divided into
 non-overlapping polyhedral elements or cells.  A solution domain
 divided in such a way is generally known as a mesh (as we will see, a
-:class:`~fipy.meshes.common.mesh.Mesh` is also a :term:`FiPy` object).  A mesh consists of vertices,
+:class:`~fipy.meshes.mesh.Mesh` is also a :term:`FiPy` object).  A mesh consists of vertices,
 faces and cells (see Figure :ref:`fig:meshcartoon`).  In the FVM the
 variables of interest are averaged over control volumes (CVs).  The
 CVs are either defined by the cells or are centered on the vertices.
@@ -193,9 +193,9 @@ or
 :class:`~explicitDiffusionTerm.ExplicitDiffusionTerm` is provided primarily for
 illustrative purposes, although :mod:`examples.diffusion.mesh1D` 
 demonstrates its use in Crank-Nicolson time stepping.
-:class:`~diffusionTerm.ImplicitDiffusionTerm` is almost always
+:class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` is almost always
 preferred (:class:`~diffusionTerm.DiffusionTerm` is a synonym for
-:class:`~diffusionTerm.ImplicitDiffusionTerm` to reinforce this
+:class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` to reinforce this
 preference). One can also create an explicit diffusion term with
 
 >>> (Gamma1 * phi.faceGrad).divergence

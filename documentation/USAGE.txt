@@ -153,7 +153,7 @@ Environment Variables
 You can set any of the following environment variables in the manner
 appropriate for your shell. If you are not running in a shell (*e.g.*,
 you are invoking :term:`FiPy` scripts from within :term:`IPython` or IDLE),
-you can set these variables via the :func:`os.environ` dictionary,
+you can set these variables via the :data:`os.environ` dictionary,
 but you must do so before importing anything from the :mod:`fipy`
 package.
 

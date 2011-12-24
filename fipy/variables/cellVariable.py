@@ -157,7 +157,7 @@ class CellVariable(_MeshVariable):
         """Concatenate and return values from all processors
         
         When running on a single processor, the result is identical to
-        :meth:`~fipy.variables.variable.Variable.getValue`.
+        :attr:`~fipy.variables.variable.Variable.value`.
         """
         return self._getGlobalValue(self.mesh._localNonOverlappingCellIDs, 
                                     self.mesh._globalNonOverlappingCellIDs)

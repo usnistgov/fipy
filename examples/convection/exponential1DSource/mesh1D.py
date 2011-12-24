@@ -34,7 +34,7 @@
 
 r"""
 
-Like :mod:`examples.diffusion.convection.exponential1D.mesh1D`
+Like :mod:`examples.convection.exponential1D.mesh1D`
 this example solves a steady-state convection-diffusion equation, but adds a constant source, 
 :math:`S_0 = 1`, such that
 

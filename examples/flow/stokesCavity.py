@@ -252,13 +252,17 @@ Set up the viewers,
 ...     viewer = Viewer(vars=(pressure, xVelocity, yVelocity, velocity),
 ...                xmin=0., xmax=1., ymin=0., ymax=1., colorbar=True)
 
-Below, we iterate for a set number of sweeps. We use the :meth:`sweep`
-method instead of :meth:`solve` because we require the residual for
-output.  We also use the :meth:`cacheMatrix`, :meth:`getMatrix`,
-:meth:`cacheRHSvector` and :meth:`getRHSvector` because both the matrix and
-RHS vector are required by the SIMPLE algorithm. Additionally, the
-:meth:`sweep` method is passed an ``underRelaxation`` factor to relax the
-solution. This argument cannot be passed to :meth:`solve`.
+Below, we iterate for a set number of sweeps. We use the
+:meth:`~fipy.terms.term.Term.sweep` method instead of
+:meth:`~fipy.terms.term.Term.solve` because we require the residual for output.
+We also use the :meth:`~fipy.terms.term.Term.cacheMatrix`,
+:meth:`~fipy.terms.term.Term.getMatrix`,
+:meth:`~fipy.terms.term.Term.cacheRHSvector` and
+:meth:`~fipy.terms.term.Term.getRHSvector` because both the matrix and RHS
+vector are required by the SIMPLE algorithm. Additionally, the
+:meth:`~fipy.terms.term.Term.sweep` method is passed an ``underRelaxation``
+factor to relax the solution. This argument cannot be passed to
+:meth:`~fipy.terms.term.Term.solve`.
 
 .. index:: sweep, cacheMatrix, getMatrix, cacheRHSvector, getRHSvector
    

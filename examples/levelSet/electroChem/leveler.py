@@ -125,7 +125,8 @@ given by,
    q &= m \eta + b.
 
 The following table shows the symbols used in the governing equations
-and their corresponding arguments for the :func:`runLeveler` function.
+and their corresponding arguments for the
+:func:`~examples.levelSet.electroChem.leveler.runLeveler` function.
 
 .. math::
     

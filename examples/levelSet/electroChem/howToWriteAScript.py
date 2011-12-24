@@ -326,7 +326,7 @@ The following boundary condition applies at :math:`\phi = 0`,
     
    D \hat{n} \cdot \nabla c = \frac{v}{\Omega}.
    
-The :class:`~fipy.models.levelSet.electroChem.metalIonDiffusionEquation.MetalIonDiffusionEquation` is set up with the following commands.
+The metal ion diffusion equation is set up with the following commands.
 
 .. index:: buildMetalIonDiffusionEquation
 
@@ -340,7 +340,7 @@ The :class:`~fipy.models.levelSet.electroChem.metalIonDiffusionEquation.MetalIon
 
 >>> metalVar.constrain(bulkMetalConcentration, mesh.facesTop)
 
-The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.SurfactantBulkDiffusionEquation` solves the bulk diffusion of a
+The surfactant bulk diffusion equation solves the bulk diffusion of a
 species with a source term for the jump from the bulk to an interface.
 The governing equation is given by,
 
@@ -368,7 +368,7 @@ at :math:`\phi = 0` is given by,
     
    D \hat{n} \cdot \nabla c = -k c (1 - \theta).
    
-The :class:`~fipy.models.levelSet.surfactant.surfactantBulkDiffusionEquation.SurfactantBulkDiffusionEquation` is set up with the following commands.
+The surfactant bulk diffusion equation is set up with the following commands.
 
 .. index:: buildSurfactantBulkDiffusionEquation
 

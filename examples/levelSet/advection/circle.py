@@ -81,8 +81,7 @@ Initialise the `distanceVariable` to be a circular distance function.
 >>> initialArray = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
 >>> var.setValue(initialArray)
 
-The :class:`~fipy.models.levelSet.advection.advectionEquation.AdvectionEquation`
-is constructed.
+The advection equation is constructed.
    
 >>> advEqn = buildAdvectionEquation(
 ...     advectionCoeff=velocity)
@@ -110,10 +109,8 @@ The result can be tested with the following commands.
 >>> numerix.allclose(answer, solution, atol=4.7e-3)
 1
 
-If the
-:class:`~fipy.models.levelSet.advection.advectionEquation.AdvectionEquation` is
-built with the
-:class:`~fipy.models.levelSet.advection.higherOrderAdvectionTerm._HigherOrderAdvectionTerm`
+If the advection equation is built with the
+:func:`~fipy.models.levelSet.advection.higherOrderAdvectionTerm.buildHigherOrderAdvectionEquation`
 the result is more accurate,
 
 >>> var.setValue(initialArray)
