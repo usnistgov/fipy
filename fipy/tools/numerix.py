@@ -401,20 +401,20 @@ if inline.doInline:
         """
         unit1 = unit2 = 1
 
- 	def dimensionlessUnmasked(a): 
- 	    unit = 1 
- 	    mask = False 
- 	    if _isPhysical(a): 
- 	        unit = a.inBaseUnits().getUnit() 
- 	        a = a.numericValue 
- 	    if MA.isMaskedArray(a): 
- 	        mask = a.mask 
- 	        a = a.filled(fill_value=1) 
- 	         
- 	    return (a, unit, mask) 
- 	     
- 	a1, unit1, mask1 = dimensionlessUnmasked(a1) 
- 	a2, unit2, mask2 = dimensionlessUnmasked(a2) 
+        def dimensionlessUnmasked(a): 
+            unit = 1 
+            mask = False 
+            if _isPhysical(a): 
+                unit = a.inBaseUnits().getUnit() 
+                a = a.numericValue 
+            if MA.isMaskedArray(a): 
+                mask = a.mask 
+                a = a.filled(fill_value=1) 
+                 
+            return (a, unit, mask) 
+             
+        a1, unit1, mask1 = dimensionlessUnmasked(a1) 
+        a2, unit2, mask2 = dimensionlessUnmasked(a2) 
 
         NJ, ni = NUMERIX.shape(a1)
         result1 = NUMERIX.zeros((ni,),'d')
