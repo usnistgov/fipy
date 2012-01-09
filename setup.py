@@ -235,7 +235,7 @@ def svn_version():
     r = re.compile('Revision: ([0-9]+)')
     svnver = ""
 
-    out = out.decode()
+    out = str(out.decode())
 
     for line in out.split('\n'):
         m = r.match(line.strip())
