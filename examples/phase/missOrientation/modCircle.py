@@ -78,18 +78,24 @@ The solution is allowed to evolve for ``steps = 100`` time steps.
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
 modeling. The following code opens the file :file:`modCircle.gz` extracts the
-data and compares it with the `theta` variable.
+data and compares it with the ``phase`` variable.
 
 >>> import os
->>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> print phase.allclose(testData)
 1
+
 """
 __docformat__ = 'restructuredtext'
 
+
 from fipy import *
 
-steps = 100
+if __name__ == '__main__':
+    steps = 100
+else:
+    steps = 10
+    
 timeStepDuration = 0.02
 L = 1.5
 nx = 100
@@ -107,9 +113,9 @@ mesh = Grid2D(dx, dy, nx, ny)
 
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
-theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * pi / 3.)
+theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
 x, y = mesh.cellCenters
-theta.setValue(-2. * pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
+theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.old.grad.mag

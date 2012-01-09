@@ -37,7 +37,10 @@
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import ML
+
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
+
+__all__ = ["MultilevelSolverSmootherPreconditioner"]
 
 class MultilevelSolverSmootherPreconditioner(Preconditioner):
     """

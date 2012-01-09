@@ -35,11 +35,13 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
-from fipy.tools import numerix
+from fipy.tools import numerix, parallel
 from fipy.tools.decorators import getsetDeprecated
 
 # Current inadequacies of the matrix class:
@@ -83,7 +85,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         self.comm = matrix.Comm()
         if bandwidth is None:
             self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() -1 ) 
-                              / matrix.NumGlobalRows())
+                              // matrix.NumGlobalRows())
         else:
             self.bandwidth = bandwidth
 
@@ -223,33 +225,31 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix.
 
-            >>> from fipy.tools import parallel
-           
-            >>> L1 = _TrilinosMatrix(rows=3, cols=3)
-            >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
-            >>> L2 = _TrilinosIdentityMatrix(size=3)
-            >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
-            
-            >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
-            ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
-            ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
+        >>> L1 = _TrilinosMatrix(rows=3, cols=3)
+        >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
+        >>> L2 = _TrilinosIdentityMatrix(size=3)
+        >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
+        
+        >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
+        ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
+        ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
 
-            >>> L = (L1 * L2).numpyArray
+        >>> L = (L1 * L2).numpyArray
 
-            >>> print parallel.Nproc > 1 or numerix.allclose(tmp, L)
-            True
+        >>> print numerix.allclose(tmp, L) # doctest: +SERIAL
+        True
             
         or a sparse matrix by a vector
 
-            >>> tmp = numerix.array((29., 6.28318531, 2.5))       
-            >>> print parallel.Nproc > 1 or numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
-            True
+        >>> tmp = numerix.array((29., 6.28318531, 2.5))       
+        >>> print numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp) # doctest: +SERIAL
+        True
             
         or a vector by a sparse matrix
 
-            >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
-            >>> print parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
-            True
+        >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
+        >>> print numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp)  # doctest: +SERIAL
+        True
 
             
         """
@@ -286,7 +286,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
                 raise TypeError
            
     def __rmul__(self, other):
-        if type(numerix.ones(1)) == type(other):
+        if type(numerix.ones(1, 'l')) == type(other):
             self.fillComplete()
 
             y = Epetra.Vector(self.rangeMap, other)
@@ -344,7 +344,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
             if self.matrix.NumGlobalNonzeros() == 0:
                 self.matrix.InsertGlobalValues(id1, id2, vector)
             else:
-                self.matrix.InsertGlobalValues(id1, id2, numerix.zeros(len(vector)))
+                self.matrix.InsertGlobalValues(id1, id2, numerix.zeros(len(vector), 'l'))
                 self.fillComplete()
                 if self.matrix.ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings
@@ -478,7 +478,11 @@ class _TrilinosMatrixBase(_SparseMatrix):
         from scipy.io import mmio
         from fipy.tools import parallel
         
-        (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        if parallel.procID == 0:
+            (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        else:
+            mtxName = None
+
         mtxName = parallel.bcast(mtxName)
 
         self.exportMmf(mtxName)
@@ -556,7 +560,7 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
         if colMap is None:
            colMap = Epetra.Map(cols, range(0, cols), 0, comm)
 
-        matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, bandwidth*3/2)
+        matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, (bandwidth*3)//2)
 
         # Leave extra bandwidth, to handle multiple insertions into the
         # same spot. It's memory-inefficient, but it'll get cleaned up when
@@ -732,8 +736,6 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         """
         Multiply a sparse matrix by another sparse matrix.
 
-            >>> from fipy.tools import parallel
-           
             >>> L1 = _TrilinosMatrix(rows=3, cols=3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L2 = _TrilinosIdentityMatrix(size=3)
@@ -751,13 +753,13 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         or a sparse matrix by a vector
 
             >>> tmp = numerix.array((29., 6.28318531, 2.5))       
-            >>> print parallel.Nproc > 1 or numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
+            >>> print numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp) # doctest: +SERIAL
             True
             
         or a vector by a sparse matrix
 
             >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
-            >>> parallel.Nproc > 1 or numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) 
+            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) # doctest: +SERIAL
             True
 
         Should be able to multiply an overlapping value obtained from a
@@ -850,11 +852,11 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
 
-        >>> print parallel.Nproc != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])  # doctest: +SERIAL
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        >>> print numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]) # doctest: +SERIAL
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        >>> print numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]) # doctest: +SERIAL
         True
 
         
@@ -879,11 +881,11 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     
         0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
         
-        >>> print parallel.Nproc != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> print numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) # doctest: +SERIAL
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> print numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) # doctest: +SERIAL
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> print numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) # doctest: +SERIAL
         True
 
 
@@ -917,19 +919,19 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
               2  3  4        7  8  9       12 13 14   _localNonOverlappingColIDs:1
               
               
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
-        True
-        
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 5, 6, 10, 11])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]) # doctest: +PROCESSOR_1_OF_2
         True
         
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])
+        >>> print numerix.allequal(GNOC, [0, 1, 5, 6, 10, 11]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        >>> print numerix.allequal(GNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14]) # doctest: +PROCESSOR_1_OF_2
+        True
+        
+        >>> print numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9]) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14]) # doctest: +PROCESSOR_1_OF_2
         True
 
 
@@ -963,19 +965,19 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
               2  3  4        7  8  9   _localNonOverlappingRowIDs:1
 
 
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOR, [0, 1, 2, 3, 5, 6, 7, 8])
+        >>> print numerix.allequal(GOR, [0, 1, 2, 3, 5, 6, 7, 8]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> print numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) # doctest: +PROCESSOR_1_OF_2
         True
 
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOR, [0, 1, 5, 6])
+        >>> print numerix.allequal(GNOR, [0, 1, 5, 6]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOR, [2, 3, 4, 7, 8, 9])
+        >>> print numerix.allequal(GNOR, [2, 3, 4, 7, 8, 9]) # doctest: +PROCESSOR_1_OF_2
         True
         
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOR, [0, 1, 4, 5])
+        >>> print numerix.allequal(LNOR, [0, 1, 4, 5]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOR, [2, 3, 4, 7, 8, 9])
+        >>> print numerix.allequal(LNOR, [2, 3, 4, 7, 8, 9]) # doctest: +PROCESSOR_1_OF_2
         True
         
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serial), numberOfVariables=3, numberOfEquations=2)
@@ -986,7 +988,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         >>> GNOR = matrix._globalNonOverlappingRowIDs
         >>> LNOR = matrix._localNonOverlappingRowIDs
 
-        5 cells, 3 variables, 2 processor, serial
+        5 cells, 3 variables, serial
                        
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
@@ -1007,15 +1009,15 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
 
-        >>> print parallel.Nproc != 2 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
-        >>> print parallel.Nproc != 2 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        >>> print numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
-        >>> print parallel.Nproc != 2 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        >>> print numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         True
 
         
-        5 cells, 2 equations, 2 processors, serial
+        5 cells, 2 equations, serial
                        
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
@@ -1036,11 +1038,11 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     
         0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
         
-        >>> print parallel.Nproc != 2 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> print numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
-        >>> print parallel.Nproc != 2 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> print numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
-        >>> print parallel.Nproc != 2 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> print numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         True
         
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7), numberOfVariables=3, numberOfEquations=2)
@@ -1072,14 +1074,14 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localNonOverlappingColIDs:0
         
-        >>> print parallel.Nproc != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-        ...                                                     11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        ...                              11, 12, 13, 14, 15, 16, 17, 18, 19, 20]) # doctest: +SERIAL
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
-        ...                                                      11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        >>> print numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+        ...                               11, 12, 13, 14, 15, 16, 17, 18, 19, 20]) # doctest: +SERIAL
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
-        ...                                                      11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+        >>> print numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+        ...                               11, 12, 13, 14, 15, 16, 17, 18, 19, 20]) # doctest: +SERIAL
         True
 
  
@@ -1104,11 +1106,11 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                     
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localNonOverlappingRowIDs:0
                  
-        >>> print parallel.Nproc != 1 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        >>> print numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]) # doctest: +SERIAL
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        >>> print numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]) # doctest: +SERIAL
         True
-        >>> print parallel.Nproc != 1 or numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+        >>> print numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]) # doctest: +SERIAL
         True
 
                  
@@ -1141,19 +1143,19 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         0  1  2              5  6  7             10 11 12               _localNonOverlappingColIDs:0
                  2  3  4  5           8  9 10 11          14 15 16 17   _localNonOverlappingColIDs:1
         
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18])
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOC, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20])
-        True
-        
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 2, 7, 8, 9, 14, 15, 16])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOC, [3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20])
+        >>> print numerix.allequal(GOC, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20]) # doctest: +PROCESSOR_1_OF_2
         True
         
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 2, 5, 6, 7, 10, 11, 12])
+        >>> print numerix.allequal(GNOC, [0, 1, 2, 7, 8, 9, 14, 15, 16]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 4, 5, 8, 9, 10, 11, 14, 15, 16, 17])
+        >>> print numerix.allequal(GNOC, [3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20]) # doctest: +PROCESSOR_1_OF_2
+        True
+        
+        >>> print numerix.allequal(LNOC, [0, 1, 2, 5, 6, 7, 10, 11, 12]) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print numerix.allequal(LNOC, [2, 3, 4, 5, 8, 9, 10, 11, 14, 15, 16, 17]) # doctest: +PROCESSOR_1_OF_2
         True
       
         7 cells, 2 equations, 2 processors
@@ -1185,19 +1187,19 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         0  1  2              5  6  7               _localNonOverlappingRowIDs:0
                  2  3  4  5           8  9 10 11   _localNonOverlappingRowIDs:1
  
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GOR, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11])
+        >>> print numerix.allequal(GOR, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GOR, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13])
-        True
-        
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(GNOR, [0, 1, 2, 7, 8, 9])
-        True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(GNOR, [3, 4, 5, 6, 10, 11, 12, 13])
+        >>> print numerix.allequal(GOR, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13]) # doctest: +PROCESSOR_1_OF_2
         True
         
-        >>> print parallel.Nproc != 2 or parallel.procID != 0 or numerix.allequal(LNOR, [0, 1, 2, 5, 6, 7])
+        >>> print numerix.allequal(GNOR, [0, 1, 2, 7, 8, 9]) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print parallel.Nproc != 2 or parallel.procID != 1 or numerix.allequal(LNOR, [2, 3, 4, 5, 8, 9, 10, 11])
+        >>> print numerix.allequal(GNOR, [3, 4, 5, 6, 10, 11, 12, 13]) # doctest: +PROCESSOR_1_OF_2
+        True
+        
+        >>> print numerix.allequal(LNOR, [0, 1, 2, 5, 6, 7]) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print numerix.allequal(LNOR, [2, 3, 4, 5, 8, 9, 10, 11]) # doctest: +PROCESSOR_1_OF_2
         True
 
         
@@ -1238,25 +1240,25 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
               2  3                 8  9                14 15            _localNonOverlappingColIDs:1
                     2  3  4              7  8  9             12 13 14   _localNonOverlappingColIDs:2
         
-        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(GOC, [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17])
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17]) # doctest: +PROCESSOR_0_OF_3
         True
-        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19])
+        >>> print numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19]) # doctest: +PROCESSOR_1_OF_3
         True
-        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(GOC, [2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20])
-        True
-        
-        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(GNOC, [0, 1, 7, 8, 14, 15])
-        True
-        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(GNOC, [2, 3, 9, 10, 16, 17])
-        True
-        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(GNOC, [4, 5, 6, 11, 12, 13, 18, 19, 20])
+        >>> print numerix.allequal(GOC, [2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20]) # doctest: +PROCESSOR_2_OF_3
         True
         
-        >>> print parallel.Nproc != 3 or parallel.procID != 0 or numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])
+        >>> print numerix.allequal(GNOC, [0, 1, 7, 8, 14, 15]) # doctest: +PROCESSOR_0_OF_3
         True
-        >>> print parallel.Nproc != 3 or parallel.procID != 1 or numerix.allequal(LNOC, [2, 3, 8, 9, 14, 15])
+        >>> print numerix.allequal(GNOC, [2, 3, 9, 10, 16, 17]) # doctest: +PROCESSOR_1_OF_3
         True
-        >>> print parallel.Nproc != 3 or parallel.procID != 2 or numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])
+        >>> print numerix.allequal(GNOC, [4, 5, 6, 11, 12, 13, 18, 19, 20]) # doctest: +PROCESSOR_2_OF_3
+        True
+        
+        >>> print numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9]) # doctest: +PROCESSOR_0_OF_3
+        True
+        >>> print numerix.allequal(LNOC, [2, 3, 8, 9, 14, 15]) # doctest: +PROCESSOR_1_OF_3
+        True
+        >>> print numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14]) # doctest: +PROCESSOR_2_OF_3
         True
 
                     
@@ -1316,7 +1318,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrix):
         """
         _TrilinosMatrix.__init__(self, rows=size, cols=size, bandwidth=1)
         ids = numerix.arange(size)
-        self.addAt(numerix.ones(size), ids, ids)
+        self.addAt(numerix.ones(size, 'l'), ids, ids)
         
 class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
     def __init__(self, mesh):
@@ -1333,7 +1335,7 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
         _TrilinosMeshMatrix.__init__(self, mesh=mesh, bandwidth=1)
         size = mesh.numberOfCells
         ids = numerix.arange(size)
-        self.addAt(numerix.ones(size), ids, ids)
+        self.addAt(numerix.ones(size, 'l'), ids, ids)
 
 class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
 
@@ -1357,8 +1359,8 @@ class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
             del self.stencil
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

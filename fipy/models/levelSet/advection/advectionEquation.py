@@ -35,7 +35,10 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.transientTerm import TransientTerm
-from advectionTerm import _AdvectionTerm
+
+from fipy.models.levelSet.advection.advectionTerm import _AdvectionTerm
+
+__all__ = ["buildAdvectionEquation"]
 
 def buildAdvectionEquation(advectionCoeff=None,
                            advectionTerm=None):

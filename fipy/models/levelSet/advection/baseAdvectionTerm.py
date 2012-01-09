@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
@@ -69,8 +71,8 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
             differences = self._getDifferences(adjacentValues, cellValues, oldArray, cellToCellIDs, mesh)
             differences = MA.filled(differences, 0)
 
-            minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
-            maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells)))**2, axis=0))
+            minsq = numerix.sqrt(numerix.sum(numerix.minimum(differences, numerix.zeros((NCellFaces, NCells), 'l'))**2, axis=0))
+            maxsq = numerix.sqrt(numerix.sum(numerix.maximum(differences, numerix.zeros((NCellFaces, NCells), 'l'))**2, axis=0))
 
             coeff = numerix.array(self._getGeomCoeff(var))
 
@@ -103,8 +105,8 @@ class _BaseAdvectionTerm(_NonDiffusionTerm):
             return solver or DefaultAsymmetricSolver(*args, **kwargs)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

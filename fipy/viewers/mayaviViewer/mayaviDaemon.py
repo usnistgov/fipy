@@ -70,13 +70,21 @@ import signal
 import sys
 
 # Enthought library imports
-from enthought.mayavi.plugins.app import Mayavi
-from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
-from enthought.pyface.timer.api import Timer
-from enthought.mayavi import mlab
+try:
+    from mayavi.plugins.app import Mayavi
+    from mayavi.sources.vtk_file_reader import VTKFileReader
+    from pyface.timer.api import Timer
+    from mayavi import mlab
+except ImportError, e:
+    from enthought.mayavi.plugins.app import Mayavi
+    from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
+    from enthought.pyface.timer.api import Timer
+    from enthought.mayavi import mlab
 
 # FiPy library imports
 from fipy.tools.numerix import array, concatenate, where, zeros
+
+__all__ = ["MayaviDaemon"]
 
 ######################################################################
 class MayaviDaemon(Mayavi):
@@ -156,7 +164,7 @@ class MayaviDaemon(Mayavi):
         
         mlab.clf()
 
-        bounds = zeros((0, 6))
+        bounds = zeros((0, 6), 'l')
         
         self.cellsource = self.setup_source(self.cellfname)
         if self.cellsource is not None:

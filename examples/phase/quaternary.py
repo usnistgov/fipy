@@ -184,7 +184,8 @@ and a liquid phase rich in the two substitutional species.
 .. index:: log
 
 >>> for Cj in interstitials + substitutionals + [solvent]:
-...     Cj.standardPotential = R * T * (log(Cj.L/rhoL) - log(Cj.S/rhoS))
+...     Cj.standardPotential = R * T * (numerix.log(Cj.L/rhoL) 
+...                                     - numerix.log(Cj.S/rhoS))
 
 >>> for Cj in interstitials:
 ...     Cj.diffusivity = 1.
@@ -311,7 +312,7 @@ The canonical form of the substitutional diffusion equations is
     }_{\text{diffusion}} \\
     & \qquad + \underbrace{
         D_{j}\nabla\cdot 
-        \frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
+        \frac{C_j}{1 - \sum_{\substack{k=M+1\\ k \neq j}}^{N-1} C_k}
         \left\{
            \overbrace{ 
                 \frac{C_N}{R T}
@@ -319,11 +320,11 @@ The canonical form of the substitutional diffusion equations is
                     \left(\mu_j^{\circ SL} - \mu_N^{\circ SL}\right) \nabla p(\phi)
                     + \frac{W_j - W_N}{2} \nabla g(\phi) 
                 \right] 
-                \vphantom{\sum_{\substack{i=M+1\\ i \neq j}}^{N} \nabla C_i}
+                \vphantom{\sum_{\substack{i=M+1\\ i \neq j}}^{N-1} \nabla C_i}
            }^{\text{phase transformation}}
            +
            \overbrace{
-               \sum_{\substack{i=M+1\\ i \neq j}}^{N} \nabla C_i
+               \sum_{\substack{i=M+1\\ i \neq j}}^{N-1} \nabla C_i
            }^{\text{counter diffusion}}
         \right\}
     }_{\text{convection}}
@@ -406,12 +407,12 @@ and again iterate to equilibrium
 
 We can confirm that the far-field phases have remained separated
 
-.. index:: take, allclose
+.. index:: allclose
 
 >>> X = mesh.faceCenters[0]
->>> print allclose(phase.faceValue[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
+>>> print numerix.allclose(phase.faceValue[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
 True
->>> print allclose(phase.faceValue[X==L], 0.0, rtol = 1e-5, atol = 1e-5)
+>>> print numerix.allclose(phase.faceValue[X==L], 0.0, rtol = 1e-5, atol = 1e-5)
 True
     
 and that the concentration fields have appropriately segregated into 
@@ -419,8 +420,8 @@ their equilibrium values in each phase
 
 >>> equilibrium = True
 >>> for Cj in interstitials + substitutionals:
-...     equilibrium &= allclose(Cj.faceValue[X==0], Cj.S, rtol = 3e-3, atol = 3e-3).value
-...     equilibrium &= allclose(Cj.faceValue[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
+...     equilibrium &= numerix.allclose(Cj.faceValue[X==0], Cj.S, rtol = 3e-3, atol = 3e-3).value
+...     equilibrium &= numerix.allclose(Cj.faceValue[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
 >>> print equilibrium
 True
 """

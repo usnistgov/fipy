@@ -33,6 +33,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
@@ -74,7 +78,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
     def _verifyVar(self, var):
         if var is not None:
-            raise Exception, 'The solution variable should not be specified.'
+            raise SolutionVariableNumberError('The solution variable should not be specified.')
 
         if len(self._vars) != len(self._uncoupledTerms):
             raise SolutionVariableNumberError
@@ -85,7 +89,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     def _buildExplcitIfOther(self):
         return False
 
-    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
+    def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
@@ -124,7 +128,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
             RHSvectors += [CellVariable(value=termRHSvector, mesh=var.mesh)]
             matrix += termMatrix
             
-	return (var, matrix, _CoupledCellVariable(RHSvectors))
+        return (var, matrix, _CoupledCellVariable(RHSvectors))
 
     def __repr__(self):
         return '(' + repr(self.term) + ' & ' + repr(self.other) + ')'
@@ -163,22 +167,22 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         [v1, v0, v2]
         >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._vars
         [v1, v2, v0]
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars
-  	Traceback (most recent call last): 
- 	    ... 
- 	SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars
-  	Traceback (most recent call last): 
- 	    ... 
- 	Exception: Variable not in previously defined variables for this coupled equation.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars
- 	Traceback (most recent call last): 
- 	    ... 
- 	SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2])._vars
- 	Traceback (most recent call last): 
- 	    ... 
- 	SolutionVariableNumberError: Different number of solution variables and equations.
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last): 
+            ... 
+        SolutionVariableNumberError: Different number of solution variables and equations.
+        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last): 
+            ... 
+        SolutionVariableNumberError: Variable not in previously defined variables for this coupled equation.
+        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last): 
+            ... 
+        SolutionVariableNumberError: Different number of solution variables and equations.
+        >>> print (eq2 & eq0 & eq1)([v1, v2])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last): 
+            ... 
+        SolutionVariableNumberError: Different number of solution variables and equations.
 
         """
     
@@ -214,7 +218,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
 
         for var in _vars:
             if var not in set(self._vars):
-                raise Exception, 'Variable not in previously defined variables for this coupled equation.'
+                raise SolutionVariableNumberError('Variable not in previously defined variables for this coupled equation.')
 
         self._internalVars = _vars
         return self
@@ -230,7 +234,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -250,7 +254,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -279,7 +283,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
-        >>> (eq0 & eq1).solve()
+        >>> (eq0 & eq1).solve(dt=1.)
         >>> print numerix.allequal(eq0.matrix.numpyArray,
         ...                        [[ 2, -1,  0,  2, -2,  0],
         ...                         [-1,  3, -1, -2,  4, -2],
@@ -316,8 +320,8 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         """
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

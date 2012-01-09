@@ -42,6 +42,8 @@ from PyTrilinos import AztecOO
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
+__all__ = ["TrilinosAztecOOSolver"]
+
 class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
@@ -49,12 +51,11 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
       
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=JacobiPreconditioner()):
+    def __init__(self, tolerance=1e-10, iterations=1000, precon=JacobiPreconditioner()):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
           - `precon`: Preconditioner object to use. 
 
         """
@@ -62,7 +63,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             raise NotImplementedError, "can't instantiate abstract base class"
             
         TrilinosSolver.__init__(self, tolerance=tolerance,
-                                iterations=iterations, steps=steps, precon=None)
+                                iterations=iterations, precon=None)
         self.preconditioner = precon
 
     def _solve_(self, L, x, b):
@@ -85,7 +86,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             if hasattr(self.preconditioner, 'Prec'):
                 del self.preconditioner.Prec
 
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             status = Solver.GetAztecStatus()
 
             from fipy.tools.debug import PRINT        

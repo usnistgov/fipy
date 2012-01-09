@@ -34,7 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
+__all__ = []
 
 from fipy.terms.faceTerm import FaceTerm
 from fipy.variables.meshVariable import _MeshVariable
@@ -42,14 +42,13 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import VectorCoeffError
-
 from fipy.tools import numerix
 
 class _BaseConvectionTerm(FaceTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, coeff=1.0, diffusionTerm=None, var=None):
+    def __init__(self, coeff=1.0, var=None):
         """
         Create a `_BaseConvectionTerm` object.
         
@@ -59,11 +58,11 @@ class _BaseConvectionTerm(FaceTerm):
             >>> fv = FaceVariable(mesh = m)
             >>> vcv = CellVariable(mesh=m, rank=1)
             >>> vfv = FaceVariable(mesh=m, rank=1)
-            >>> __ConvectionTerm(coeff = cv)
+            >>> __ConvectionTerm(coeff = cv) # doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
-            >>> __ConvectionTerm(coeff = fv)
+            >>> __ConvectionTerm(coeff = fv) # doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
@@ -74,7 +73,7 @@ class _BaseConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff = (1,))
             __ConvectionTerm(coeff=(1,))
             >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var=cv, solver=DummySolver())
-            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var=cv, solver=DummySolver())
+            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var=cv, solver=DummySolver()) # doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
@@ -84,25 +83,20 @@ class _BaseConvectionTerm(FaceTerm):
             >>> vfv2 = FaceVariable(mesh=m2, rank=1)
             >>> __ConvectionTerm(coeff=vcv2)
             __ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
-                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
             >>> __ConvectionTerm(coeff=vfv2)
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
-                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, dy=1.0, nx=2, ny=1)))
+                   [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
             >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2, solver=DummySolver())
             >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2, solver=DummySolver())
 
         
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
-          - `diffusionTerm` : **deprecated**. The Peclet number is calculated automatically.
         """
         if self.__class__ is _BaseConvectionTerm:
             raise AbstractBaseClassError
             
-        if diffusionTerm is not None:
-            import warnings
-            warnings.warn("The Peclet number is calculated automatically. diffusionTerm will be ignored.", DeprecationWarning, stacklevel=2)
-
         self.stencil = None
         
         if isinstance(coeff, _MeshVariable) and coeff.rank < 1:
@@ -152,7 +146,7 @@ class _BaseConvectionTerm(FaceTerm):
 
         return self.stencil
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         
         var, L, b = super(_BaseConvectionTerm, self)._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
@@ -164,7 +158,7 @@ class _BaseConvectionTerm(FaceTerm):
 
             weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
-            if weight.has_key('implicit'):
+            if 'implicit' in weight:
                 alpha = weight['implicit']['cell 1 diag']
             else:
                 alpha = 0.0
@@ -187,8 +181,8 @@ class __ConvectionTerm(_BaseConvectionTerm):
     pass 
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

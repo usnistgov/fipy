@@ -28,7 +28,7 @@ Overview
    [BoettingerReview:2002]_ [ChenReview:2002]_ [McFaddenReview:2002]_ treatments of
    polycrystalline, dendritic, and electrochemical phase transformations as
    well as a level set treatment of the electrodeposition process
-   [NIST:damascene:2001]_.
+   [NIST:damascene:2001]_. 
 
 .. only:: latex
   
@@ -39,28 +39,26 @@ Overview
 Even if you don't read manuals...
 ---------------------------------
 
-...please read :ref:`INSTALLATION` and the :ref:`FAQ`. 
+...please read the :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`
+documents.
 
 --------------------------------
 What's new in version |release|?
 --------------------------------
 
-The relatively small change in version number belies significant advances
-in :term:`FiPy` capabilities. This release did not receive a "full" version
-increment because it is completely (er... [#almost]_) compatible with older scripts.
+The bump in major version number reflects more on the substantial increase
+in capabilities and ease of use than it does on a break in compatibility
+with FiPy 2.x. Few, if any, changes to your existing scripts should be
+necessary.
 
-The significant changes since version 2.0.2 are:
+The significant changes since version 2.1 are:
 
-- :term:`FiPy` can use :term:`Trilinos` for `solving in parallel`_.
-
-- We have switched from :term:`MayaVi` 1 to :term:`Mayavi` 2. This 
-  :class:`~fipy.viewers.viewer.Viewer` is an independent process that 
-  allows interaction with the display while a simulation is running.
-
-- Documentation has been switched to :term:`Sphinx`, allowing the entire manual to 
-  be available on the web and for our documentation to link to the
-  documentation for packages such as :mod:`numpy`, :mod:`scipy`,
-  :mod:`matplotlib`, and for :term:`Python` itself.
+- Tests can now be run on a full install using `fipy.test()`.
+- Grid classes now take an `Lx` argument. 
+- The functions of the :mod:`~fipy.tools.numerix` module are no longer 
+  included in the :mod:`fipy` namespace. See :mod:`examples.updating.update2_0to3_0` 
+  for details.
+- Support for Python 3. Please see :ref:`RunningUnderPython3` for details.
 
 Tickets fixed in this release::
 
@@ -77,11 +75,9 @@ Tickets fixed in this release::
 
 .. warning::
 
-   :term:`FiPy` 2 brought unavoidable syntax changes from :term:`FiPy` 1.
-   Please see :mod:`examples.updating.update1_0to2_0` for guidance on the
-   changes that you will need to make to your :term:`FiPy` 1.x scripts.
-   Few, if any, changes should be needed to migrate from :term:`FiPy` 2.0.x
-   to :term:`FiPy` 2.1.
+   :term:`FiPy` 3 brought unavoidable syntax changes from :term:`FiPy` 2.
+   Please see :mod:`examples.updating.update2_0to3_0` for guidance on the
+   changes that you will need to make to your :term:`FiPy` 2.x scripts.
 
 -------------------------
 Download and Installation
@@ -97,16 +93,17 @@ they have been modified.
 Support
 -------
 
-You can communicate with the :term:`FiPy` developers and with other users via our
-`mailing list`_ and we welcome you to use the `tracking
-system`_ for bugs, support requests, feature requests and
-patch submissions <http://matforge.org/fipy/report>. We welcome collaborative efforts on this project.
+You can communicate with the :term:`FiPy` developers and with other
+users via our `mailing list`_ and we welcome you to use the `tracking
+system`_ for bugs, support requests, feature requests and patch
+submissions <http://matforge.org/fipy/report>. We welcome
+collaborative efforts on this project.
 
-:term:`FiPy` is a member of MatForge_, a project of the `Materials Digital Library
-Pathway`_. This National Science Foundation funded service provides
-management of our public source code repository, our bug tracking system, and
-a "wiki" space for public contributions of code snippets, discussions, and
-tutorials.
+:term:`FiPy` is a member of MatForge_, a project of the `Materials
+Digital Library Pathway`_. This National Science Foundation funded
+service provides management of our public source code repository, our
+bug tracking system, and a "wiki" space for public contributions of
+code snippets, discussions, and tutorials.
 
 .. toctree::
 
@@ -182,99 +179,6 @@ or a
 .. warning::
 
    to indicate something that could cause serious problems.
-
-.. _PARALLEL:
-
--------------------
-Solving in Parallel
--------------------
-
-:term:`FiPy` can use :term:`Trilinos` to solve equations in parallel, as 
-long as they are defined on a "``Grid``" mesh 
-(:class:`~fipy.meshes.numMesh.grid1D.Grid1D`, 
-:class:`~fipy.meshes.numMesh.cylindricalGrid1D.CylindricalGrid1D`,
-:class:`~fipy.meshes.numMesh.grid2D.Grid2D`,
-:class:`~fipy.meshes.numMesh.cylindricalGrid2D.CylindricalGrid2D`, or
-:class:`~fipy.meshes.numMesh.grid3D.Grid3D`). 
-
-.. attention::
-
-   :term:`Trilinos` *must* be compiled with MPI support.
-
-.. attention::
-
-   :term:`FiPy` requires `mpi4py <http://mpi4py.scipy.org/>`_ to work in parallel::
-
-       $ easy_install mpi4py
-
-.. note::
-
-   A design wart presently *also* requires that :term:`PySparse` be
-   installed. We hope to alleviate this requirement in a future release.
-
-* It should not generally be necessary to change anything in your script.
-  Simply invoke::
-
-     $ mpirun -np {# of processors} python myScript.py
-
-  instead of::
-
-     $ python myScript.py
-
-* To confirm that :term:`FiPy` and :term:`Trilinos` are properly 
-  configured to solve in parallel, you can execute
-
-  .. code-block:: python
-
-     from fipy import parallel, Grid1D
-     mesh = Grid1D(nx=10)
-     print "%d cells on processor %d of %d" \
-       % (mesh.getNumberOfCells(), parallel.procID, parallel.Nproc)
-
-  (available as :file:`examples/parallel.py`) to check that :term:`FiPy` is
-  distributing a mesh across processes as expected. E.g.::
-
-     $ mpirun -np 3 python examples/parallel.py
-
-  should print out::
-
-     mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 3 :: FiPy: 5 cells on processor 0 of 3
-     mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
-     mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
-
-A complete list of the changes to FiPy's examples needed for parallel 
-can be found at
-
-  http://www.matforge.org/fipy/wiki/upgrade2_0examplesTo2_1
-
-Most of the changes were required to ensure that :term:`FiPy` provides the
-same literal output for both single and multiple processor solutions and
-are not relevant to most "real" scripts. The two changes you *might* wish
-to make to your own scripts are:
-
- * It is now preferable to use the 
-   :class:`~fipy.solvers.DefaultAssymetricSolver` instead of the 
-   :class:`~fipy.solvers.linearLUSolver.LinearLUSolver`. 
-
- * When solving in parallel, :term:`FiPy` essentially breaks the problem up 
-   into separate sub-domains and solves them (somewhat) independently. 
-   :term:`FiPy` generally "does the right thing", but if you find that you 
-   need to do something with the entire solution, you can call
-   ``var.``:meth:`~fipy.variables.cellVariable.CellVariable.getGlobalValue`.
-
-.. [#almost] Only two examples from :term:`FiPy` 2.0 fail when run with :term:`FiPy` 2.1:
-
-    * :mod:`examples.phase.symmetry` fails because 
-      :class:`~fipy.meshes.numMesh.mesh.Mesh` no longer provides a
-      :meth:`~fipy.meshes.numMesh.mesh.Mesh.getCells` method. The mechanism
-      for enforcing symmetry in the updated example is both clearer and 
-      faster.
-
-    * :mod:`examples.levelSet.distanceFunction.circle` fails because of a 
-      change in the comparison of masked values.
-
-   Both of these are subtle issues unlikely to affect very many 
-   :term:`FiPy` users.
 
 .. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/

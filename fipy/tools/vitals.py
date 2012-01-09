@@ -6,6 +6,8 @@ from xml.dom.minidom import Document
 
 import fipy
 
+__all__ = ["Vitals"]
+
 class Vitals(Document):
     """Returns XML formatted information about current FiPy environment
     """
@@ -34,7 +36,10 @@ class Vitals(Document):
         pyth = self.createElement("python")
         
         implementation = self.createElement("implementation")
-        implementation.appendChild(self.createTextNode(platform.python_implementation()))
+        if hasattr(platform, "python_implementation"):
+            implementation.appendChild(self.createTextNode(platform.python_implementation()))
+        else:
+            implementation.appendChild(self.createTextNode("unknown"))
         pyth.appendChild(implementation)
 
         pversion = self.createElement("version")

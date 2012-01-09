@@ -66,19 +66,19 @@ demonstrates how to create the required mesh.
     ...     
     ...     // create entire inner and outer shell
     ...     Surface Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
-    ... ''').extrude(extrudeFunc=lambda r: 1.1 * r)
+    ... ''').extrude(extrudeFunc=lambda r: 1.1 * r) # doctest: +GMSH
 
-    >>> x, y, z = mesh.cellCenters
+    >>> x, y, z = mesh.cellCenters # doctest: +GMSH
 
-    >>> var = CellVariable(mesh=mesh, value=x * y * z, name="x*y*z")
+    >>> var = CellVariable(mesh=mesh, value=x * y * z, name="x*y*z") # doctest: +GMSH
 
     >>> if __name__ == '__main__':
     ...     viewer = MayaviClient(vars=var)
     ...     viewer.plot()
 
-   >>> max(numerix.sqrt(x**2 + y**2 + z**2)) < 5.3
+   >>> max(numerix.sqrt(x**2 + y**2 + z**2)) < 5.3 # doctest: +GMSH
    True
-   >>> min(numerix.sqrt(x**2 + y**2 + z**2)) > 5.2
+   >>> min(numerix.sqrt(x**2 + y**2 + z**2)) > 5.2 # doctest: +GMSH
    True
    
 """

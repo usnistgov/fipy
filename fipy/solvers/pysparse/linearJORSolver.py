@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.matrices.pysparseMatrix import _PysparseMatrix
 
+__all__ = ["LinearJORSolver"]
+
 class LinearJORSolver(PysparseSolver):
     """
     
@@ -45,21 +47,18 @@ class LinearJORSolver(PysparseSolver):
     non-symmetric coefficient matrix.
 
     """
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, 
-                       relaxation = 1.0):
+    def __init__(self, tolerance=1e-10, iterations=1000, relaxation=1.0):
         """
         The `Solver` class should not be invoked directly.
 
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
           - `relaxation`: The relaxation.
           
         """
         super(LinearJORSolver, self).__init__(tolerance=tolerance, 
-                                              iterations=iterations, 
-                                              steps=steps)
+                                              iterations=iterations)
         self.relaxation = relaxation
         
     def _solve_(self, L, x, b):

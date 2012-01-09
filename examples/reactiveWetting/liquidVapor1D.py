@@ -297,16 +297,16 @@ max(velocity)``.
 >>> timestep = 0
 >>> relaxation = 0.5
 >>> if __name__ == '__main__':
-...     totalSteps = 1e+10
+...     totalSteps = 1e10
 ... else:
-...     totalSteps = 150
+...     totalSteps = 10
 
 In the following time stepping scheme a time step is recalculated if the residual
 increases between sweeps or the required tolerance is not attained within 20
 sweeps. The major quirk in this scheme is the requirement of updating the
 ``matrixDiagonal`` using the entire coupled matrix. This could be achieved more
 elegantly by calling ``cacheMatrix()`` only on the necessary part of the
-equation. This currently doesn't work properly in :term:`FiPy``.
+equation. This currently doesn't work properly in :term:`FiPy`.
 
 >>> while timestep < totalSteps:
 ... 

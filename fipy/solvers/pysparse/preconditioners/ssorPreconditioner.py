@@ -33,8 +33,11 @@
  # ###################################################################
  ##
 
-from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
 from pysparse import precon
+
+from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
+
+__all__ = ["SsorPreconditioner"]
 
 class SsorPreconditioner(Preconditioner):
     """

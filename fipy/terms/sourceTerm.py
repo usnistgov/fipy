@@ -39,6 +39,8 @@ from fipy.terms import AbstractBaseClassError
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
+__all__ = ["SourceTerm"]
+
 class SourceTerm(CellTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -46,8 +48,8 @@ class SourceTerm(CellTerm):
     def __init__(self, coeff=0., var=None):
         if self.__class__ is SourceTerm:
             raise AbstractBaseClassError
-	CellTerm.__init__(self, coeff=coeff, var=var) 
-	
+        CellTerm.__init__(self, coeff=coeff, var=var) 
+        
     def _calcGeomCoeff(self, var):
         self._checkCoeff(var)
 
@@ -55,3 +57,6 @@ class SourceTerm(CellTerm):
             return self.coeff[...,numerix.newaxis] * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)
         else:
             return self.coeff * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)
+
+    def _checkDt(self, dt):
+        return 1.

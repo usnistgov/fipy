@@ -98,7 +98,7 @@ and the solute
 >>> substitutionals = [
 ...     ComponentVariable(mesh = mesh, name = 'C1',
 ...                       diffusivity = 1., barrier = 0.,
-...                       standardPotential = log(.3/.7) - log(.7/.3))]
+...                       standardPotential = numerix.log(.3/.7) - numerix.log(.7/.3))]
 >>> interstitials = []
 
 >>> for component in substitutionals:
@@ -110,7 +110,7 @@ in the solute and a liquid phase rich in the solvent.
 .. warning: Addition and subtraction cause ``solvent`` to lose some crucial 
    information so we only append it after the fact.
 
->>> solvent.standardPotential = log(.7/.3)
+>>> solvent.standardPotential = numerix.log(.7/.3)
 >>> solvent.barrier = 1.
 
 We create the phase equation as in :mod:`examples.elphf.phase.input1D`
@@ -223,13 +223,13 @@ iterating to equilibrium
 
 we confirm that the far-field phases have remained separated
 
->>> allclose(phase(((0.,L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+>>> numerix.allclose(phase(((0.,L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
 1
     
 and that the solute concentration field has appropriately segregated into 
 solute-rich and solute-poor phases.
 
->>> print allclose(substitutionals[0](((0.,L),)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
+>>> print numerix.allclose(substitutionals[0](((0.,L),)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
 1
 
 The same system of equations can model a quaternary substitutional system as 
@@ -243,17 +243,17 @@ and make three new solute species
 >>> substitutionals = [
 ...     ComponentVariable(mesh = mesh, name = 'C1',
 ...                       diffusivity = 1., barrier = 0.,
-...                       standardPotential = log(.3/.4) - log(.1/.2)),
+...                       standardPotential = numerix.log(.3/.4) - numerix.log(.1/.2)),
 ...     ComponentVariable(mesh = mesh, name = 'C2',
 ...                       diffusivity = 1., barrier = 0.,
-...                       standardPotential = log(.4/.3) - log(.1/.2)),
+...                       standardPotential = numerix.log(.4/.3) - numerix.log(.1/.2)),
 ...     ComponentVariable(mesh = mesh, name = 'C3',
 ...                       diffusivity = 1., barrier = 0.,
-...                       standardPotential = log(.2/.1) - log(.1/.2))]
+...                       standardPotential = numerix.log(.2/.1) - numerix.log(.1/.2))]
 
 >>> for component in substitutionals:
 ...     solvent -= component
->>> solvent.standardPotential = log(.1/.2)
+>>> solvent.standardPotential = numerix.log(.1/.2)
 >>> solvent.barrier = 1.
 
 These thermodynamic parameters are chosen to give a solid phase rich in the
@@ -303,17 +303,17 @@ and again iterate to equilibrium
 
 We confirm that the far-field phases have remained separated
 
->>> allclose(phase(((0., L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+>>> numerix.allclose(phase(((0., L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
 1
     
 and that the concentration fields have appropriately segregated into 
 their respective phases
 
->>> allclose(substitutionals[0](((0., L),)), (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+>>> numerix.allclose(substitutionals[0](((0., L),)), (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
 1
->>> allclose(substitutionals[1](((0., L),)), (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+>>> numerix.allclose(substitutionals[1](((0., L),)), (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
 1
->>> allclose(substitutionals[2](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+>>> numerix.allclose(substitutionals[2](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
 1
 
 Finally, we can represent a system that contains both substitutional and 
@@ -326,22 +326,22 @@ and two new solute species
 >>> substitutionals = [
 ...     ComponentVariable(mesh = mesh, name = 'C2',
 ...                       diffusivity = 1., barrier = 0.,
-...                       standardPotential = log(.4/.3) - log(.4/.6)),
+...                       standardPotential = numerix.log(.4/.3) - numerix.log(.4/.6)),
 ...     ComponentVariable(mesh = mesh, name = 'C3',
 ...                       diffusivity = 1., barrier = 0.,
-...                       standardPotential = log(.2/.1) - log(.4/.6))]
+...                       standardPotential = numerix.log(.2/.1) - numerix.log(.4/.6))]
     
 and one interstitial
 
 >>> interstitials = [
 ...     ComponentVariable(mesh = mesh, name = 'C1',
 ...                       diffusivity = 1., barrier = 0.,
-...                       standardPotential = log(.3/.4) - log(1.3/1.4))]
+...                       standardPotential = numerix.log(.3/.4) - numerix.log(1.3/1.4))]
 
 
 >>> for component in substitutionals:
 ...     solvent -= component
->>> solvent.standardPotential = log(.4/.6) - log(1.3/1.4)
+>>> solvent.standardPotential = numerix.log(.4/.6) - numerix.log(1.3/1.4)
 >>> solvent.barrier = 1.
 
 These thermodynamic parameters are chosen to give a solid phase rich in interstitials
@@ -393,17 +393,17 @@ and again iterate to equilibrium
 
 We once more confirm that the far-field phases have remained separated
 
->>> allclose(phase(((0., L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+>>> numerix.allclose(phase(((0., L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
 1
     
 and that the concentration fields have appropriately segregated into 
 their respective phases
 
->>> allclose(interstitials[0](((0., L),)), (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
+>>> numerix.allclose(interstitials[0](((0., L),)), (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
 1
->>> allclose(substitutionals[0](((0., L),)), (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
+>>> numerix.allclose(substitutionals[0](((0., L),)), (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
 1
->>> allclose(substitutionals[1](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
+>>> numerix.allclose(substitutionals[1](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
 1
 """
 __docformat__ = 'restructuredtext'

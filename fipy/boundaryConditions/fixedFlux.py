@@ -41,6 +41,8 @@ from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.tools import vector
 
+__all__ = ["FixedFlux"]
+
 class FixedFlux(BoundaryCondition):
     r"""
 
@@ -105,8 +107,8 @@ class FixedFlux(BoundaryCondition):
         """
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test()

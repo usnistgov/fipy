@@ -1,30 +1,30 @@
-import os
-from fipy.tools.parser import parseSolver
-from fipy.tools  import parallel
+from fipy.tools.parser import _parseSolver
+from fipy.tools  import parallel as _parallel
 
-from solver import SolverConvergenceWarning, \
-     PreconditionerWarning, \
-     ScalarQuantityOutOfRangeWarning, \
-     StagnatedSolverWarning, \
-     MatrixIllConditionedWarning, \
-     PreconditionerNotPositiveDefiniteWarning, \
-     IllConditionedPreconditionerWarning, \
-     MaximumIterationWarning
+from fipy.solvers.solver import *
+__all__ = list(solver.__all__)
 
-solver = parseSolver()
+solver = _parseSolver()
 
-if solver is None and os.environ.has_key('FIPY_SOLVERS'):
-    solver = os.environ['FIPY_SOLVERS'].lower()
+def _envSolver(solver):
+    import os
+    if solver is None and 'FIPY_SOLVERS' in os.environ:
+        solver = os.environ['FIPY_SOLVERS'].lower()
+    return solver
+    
+solver = _envSolver(solver)
 
 if solver == "pysparse":
-    if parallel.Nproc > 1:
+    if _parallel.Nproc > 1:
         raise  Exception('pysparse solvers do not run in parallel')
     from fipy.solvers.pysparse import *
+    __all__.extend(pysparse.__all__)
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
     _MeshMatrix =  _PysparseMeshMatrix
 
 elif solver == "trilinos":
     from fipy.solvers.trilinos import *
+    __all__.extend(trilinos.__all__)
 
     try:
         from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
@@ -34,21 +34,24 @@ elif solver == "trilinos":
         _MeshMatrix =  _TrilinosMeshMatrix
 
 elif solver == "scipy":
-    if parallel.Nproc > 1:
+    if _parallel.Nproc > 1:
         raise  Exception('scipy solvers do not run in parallel')
     from fipy.solvers.scipy import *
+    __all__.extend(scipy.__all__)
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
     
 elif solver == "pyamg":
-    if parallel.Nproc > 1:
+    if _parallel.Nproc > 1:
         raise  Exception('pyamg solvers do not run in parallel')
     from fipy.solvers.pyAMG import *
+    __all__.extend(pyAMG.__all__)
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
     
 elif solver == "no-pysparse":
     from fipy.solvers.trilinos import *
+    __all__.extend(trilinos.__all__)
     from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
     _MeshMatrix =  _TrilinosMeshMatrix 
 
@@ -59,15 +62,17 @@ elif solver is None:
     
    
     try:
-        if parallel.Nproc > 1:
+        if _parallel.Nproc > 1:
             raise  Exception('pysparse solvers do not run in parallel')
         from fipy.solvers.pysparse import *
+        __all__.extend(pysparse.__all__)
         solver = "pysparse"
         from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
         _MeshMatrix =  _PysparseMeshMatrix
     except:
         try:
             from fipy.solvers.trilinos import *
+            __all__.extend(trilinos.__all__)
             solver = "trilinos"
             try:
                 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
@@ -78,17 +83,19 @@ elif solver is None:
                 _MeshMatrix =  _TrilinosMeshMatrix
         except:
             try:
-                if parallel.Nproc > 1:
+                if _parallel.Nproc > 1:
                     raise  Exception('pyamg solvers do not run in parallel')
                 from fipy.solvers.pyAMG import *
+                __all__.extend(pyAMG.__all__)
                 solver = "pyamg"
                 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
                 _MeshMatrix = _ScipyMeshMatrix
             except:
                 try:
-                    if parallel.Nproc > 1:
+                    if _parallel.Nproc > 1:
                         raise  Exception('scipy solvers do not run in parallel')
                     from fipy.solvers.scipy import *
+                    __all__.extend(scipy.__all__)
                     solver = "scipy"
                     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
                     _MeshMatrix = _ScipyMeshMatrix

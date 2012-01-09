@@ -36,11 +36,15 @@
  
 __docformat__ = 'restructuredtext'
 
+from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 
-from gnuplotViewer import _GnuplotViewer
-from fipy.variables.faceVariable import FaceVariable
+from fipy.viewers.gnuplotViewer.gnuplotViewer import _GnuplotViewer
+from fipy.tools.decorators import deprecateGnuplot
 
+__all__ = ["Gnuplot1DViewer"]
+
+@deprecateGnuplot
 class Gnuplot1DViewer(_GnuplotViewer):
     """Displays a y vs. x plot of one or more 1D `CellVariable` objects.
 

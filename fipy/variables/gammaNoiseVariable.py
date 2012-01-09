@@ -35,8 +35,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
-
 from fipy.variables.noiseVariable import NoiseVariable
+
+__all__ = ["GammaNoiseVariable"]
 
 class GammaNoiseVariable(NoiseVariable):
     r"""
@@ -49,6 +50,11 @@ class GammaNoiseVariable(NoiseVariable):
        
     with a shape parameter :math:`\alpha`, a rate parameter :math:`\beta`, and 
     :math:`\Gamma(z) = \int_0^\infty t^{z - 1}e^{-t}\,dt`.
+
+    Seed the random module for the sake of deterministic test results.
+
+    >>> from fipy import numerix
+    >>> numerix.random.seed(1)
 
     We generate noise on a uniform cartesian mesh
            
@@ -66,23 +72,23 @@ class GammaNoiseVariable(NoiseVariable):
     and compare to a Gaussian distribution
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> gammadist = CellVariable(mesh = histogram.mesh)
-    >>> x = histogram.mesh.cellCenters[0]
-    
+    >>> x = CellVariable(mesh=histogram.mesh, value=histogram.mesh.cellCenters[0])
+    >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
+    >>> from fipy.tools.numerix import exp
+    >>> gammadist = (x**(alpha - 1) * (beta**alpha * exp(-beta * x)) / Gamma(alpha)) # doctest: +SCIPY    
+
     >>> if __name__ == '__main__':
     ...     from fipy import Viewer
     ...     viewer = Viewer(vars=noise, datamin=0, datamax=30)
     ...     histoplot = Viewer(vars=(histogram, gammadist), 
     ...                        datamin=0, datamax=1)
     
-    >>> from fipy.tools.numerix import arange, exp
-    >>> from scipy.special import gamma as Gamma
+    >>> from fipy.tools.numerix import arange
     
     >>> for shape in arange(1,8,1):
     ...     alpha.value = shape
     ...     for rate in arange(0.5,2.5,0.5):
     ...         beta.value = rate
-    ...         gammadist.value = (x**(alpha - 1) * (beta**alpha * exp(-beta * x)) / Gamma(alpha))
     ...         if __name__ == '__main__':
     ...             import sys
     ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
@@ -118,8 +124,8 @@ class GammaNoiseVariable(NoiseVariable):
                             size=[self.mesh.globalNumberOfCells])
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

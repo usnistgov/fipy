@@ -39,10 +39,11 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.tools import numerix
- 
 from fipy.viewers.viewer import _Viewer
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
+
+__all__ = ["TSVViewer"]
 
 class TSVViewer(_Viewer):
     """
@@ -218,8 +219,8 @@ class TSVViewer(_Viewer):
             f.close()
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

@@ -37,8 +37,9 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
-
 from fipy.variables.cellVariable import CellVariable
+
+__all__ = ["DistanceVariable"]
 
 class DistanceVariable(CellVariable):
     r"""
@@ -278,8 +279,8 @@ class DistanceVariable(CellVariable):
                 ns = self.cellNormals[..., indices[0], numerix.arange(indices.shape[1])]
                 nt = self.cellNormals[..., indices[1], numerix.arange(indices.shape[1])]
             else:
-                ns = MA.zeros(self.cellNormals.shape[:-1] + (0,))
-                nt = MA.zeros(self.cellNormals.shape[:-1] + (0,))
+                ns = MA.zeros(self.cellNormals.shape[:-1] + (0,), 'l')
+                nt = MA.zeros(self.cellNormals.shape[:-1] + (0,), 'l')
 
             signedDistance = MA.where(MA.getmask(s),
                                       self._value,
@@ -484,8 +485,8 @@ class DistanceVariable(CellVariable):
         >>> x, y = mesh.cellCenters
         >>> rad = numerix.sqrt((x - .5)**2 + (y - .5)**2) - r
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-        >>> print distanceVariable.cellInterfaceAreas.sum()
-        1.57984690073
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas.sum(), 1.57984690073)
+        1
         """        
         normals = numerix.array(MA.filled(self._cellInterfaceNormals, 0))
         areas = numerix.array(MA.filled(self.mesh._cellAreaProjections, 0))
@@ -682,8 +683,8 @@ class DistanceVariable(CellVariable):
         return faceGrad / faceGradMag 
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test()         

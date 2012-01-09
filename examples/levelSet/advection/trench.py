@@ -75,14 +75,14 @@ This example creates a trench with the following zero level set:
 The trench is then advected with a unit velocity. The following test can be made
 for the initial position of the interface:
 
->>> r1 =  -sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
->>> r2 =  sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
->>> d = zeros((len(x),3), 'd')
->>> d[:,0] = where(x >= Lx / 2, y - Ly / 5, r1)
->>> d[:,1] = where(x <= Lx / 2, y - 3 * Ly / 5, r2)
->>> d[:,2] = where(logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
->>> argmins = argmin(absolute(d), axis = 1)
->>> answer = take(d.ravel(), arange(len(argmins))*3 + argmins)
+>>> r1 =  -numerix.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
+>>> r2 =  numerix.sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
+>>> d = numerix.zeros((len(x),3), 'd')
+>>> d[:,0] = numerix.where(x >= Lx / 2, y - Ly / 5, r1)
+>>> d[:,1] = numerix.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
+>>> d[:,2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
+>>> argmins = numerix.argmin(numerix.absolute(d), axis = 1)
+>>> answer = numerix.take(d.ravel(), numerix.arange(len(argmins))*3 + argmins)
 >>> print var.allclose(answer, atol = 1e-1)
 1
 
@@ -101,8 +101,8 @@ Advect the interface and check the position.
 
 >>> distanceMoved = timeStepDuration * steps * velocity
 >>> answer = answer - distanceMoved
->>> answer = where(answer < 0., 0., answer)
->>> var.setValue(where(var < 0., 0., var))
+>>> answer = numerix.where(answer < 0., 0., answer)
+>>> var.setValue(numerix.where(var < 0., 0., var))
 >>> print var.allclose(answer, atol = 1e-1)
 1
 

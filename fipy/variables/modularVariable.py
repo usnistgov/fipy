@@ -39,6 +39,8 @@ __docformat__ = 'restructuredtext'
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools.decorators import getsetDeprecated
 
+__all__ = ["ModularVariable"]
+
 class ModularVariable(CellVariable):
     r"""
     The `ModularVariable` defines a variable that exisits on the circle between
@@ -143,7 +145,7 @@ class ModularVariable(CellVariable):
         Adjusted for a `ModularVariable`
         """
         if not hasattr(self, '_arithmeticFaceValue'):
-            from modCellToFaceVariable import _ModCellToFaceVariable
+            from fipy.variables.modCellToFaceVariable import _ModCellToFaceVariable
             self._arithmeticFaceValue = _ModCellToFaceVariable(self, self._modIn)
 
         return self._arithmeticFaceValue
@@ -155,7 +157,7 @@ class ModularVariable(CellVariable):
         gradient). Adjusted for a `ModularVariable`
         """
         if not hasattr(self, '_faceGrad'):
-            from modFaceGradVariable import _ModFaceGradVariable
+            from fipy.variables.modFaceGradVariable import _ModFaceGradVariable
             self._faceGrad = _ModFaceGradVariable(self, self._modIn)
 
         return self._faceGrad
@@ -206,8 +208,8 @@ class ModularVariable(CellVariable):
 
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

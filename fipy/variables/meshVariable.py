@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
@@ -112,7 +114,7 @@ class _MeshVariable(Variable):
                 
         self.elementshape = elementshape
         
-        if not locals().has_key("array"):
+        if not "array" in locals():
             if numerix._isPhysical(value):
                 dtype = numerix.obj2sctype(value.value)
             else:
@@ -189,10 +191,10 @@ class _MeshVariable(Variable):
             return self.name
         else:
             s = self.__class__.__name__ + '('
-            s += 'value=' + `self.globalValue`
+            s += 'value=' + repr(self.globalValue)
             s += ')'
             if len(self.name) == 0:
-                s = s[:-1] + ', mesh=' + `self.mesh` + s[-1]
+                s = s[:-1] + ', mesh=' + repr(self.mesh) + s[-1]
             return s
 
     @property
@@ -229,8 +231,8 @@ class _MeshVariable(Variable):
         
         """
         if not hasattr(self, '_constraintMask'):
-            from fipy.variables.constraintMask import ConstraintMask
-            self._constraintMask = ConstraintMask(self)
+            from fipy.variables.constraintMask import _ConstraintMask
+            self._constraintMask = _ConstraintMask(self)
         return self._constraintMask
 
     def constrain(self, value, where=None):
@@ -254,14 +256,13 @@ class _MeshVariable(Variable):
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx=2, ny=3)
         >>> var = CellVariable(mesh=mesh)
-        >>> from fipy.tools import parallel
-        >>> print parallel.procID > 0 or numerix.allequal(var.shape, (6,))
+        >>> print numerix.allequal(var.shape, (6,)) # doctest: +PROCESSOR_0
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.arithmeticFaceValue.shape, (17,))
+        >>> print numerix.allequal(var.arithmeticFaceValue.shape, (17,)) # doctest: +PROCESSOR_0
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.grad.shape, (2, 6))
+        >>> print numerix.allequal(var.grad.shape, (2, 6)) # doctest: +PROCESSOR_0
         True
-        >>> print parallel.procID > 0 or numerix.allequal(var.faceGrad.shape, (2, 17))
+        >>> print numerix.allequal(var.faceGrad.shape, (2, 17)) # doctest: +PROCESSOR_0
         True
         """
         return (Variable._getShape(self)
@@ -411,7 +412,7 @@ class _MeshVariable(Variable):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def maxParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
-                                             fn=a.max, fnParallel=self.mesh.communicator.epetra_comm.MaxAll)
+                                             fn=a.max, fnParallel=self.mesh.communicator.MaxAll)
                 
             return self._axisOperator(opname="maxVar", 
                                       op=maxParallel, 
@@ -512,12 +513,14 @@ class _MeshVariable(Variable):
         >>> A = numerix.arange(5)
         >>> B = Variable(1.)
         >>> import warnings
+        >>> savedFilters = list(warnings.filters)
+        >>> warnings.resetwarnings()
         >>> warnings.simplefilter("error", UserWarning, append=True)
         >>> C = CellVariable(mesh=mesh) * (A * B)
         Traceback (most recent call last):
           ...
         UserWarning: The expression `(multiply([0 1 2 3 4], Variable(value=array(1.0))))` has been cast to a constant `CellVariable`
-        >>> junk = warnings.filters.pop()
+        >>> warnings.filters = savedFilters
         """
         otherShape = numerix.getShape(other)
         if (not isinstance(other, _MeshVariable) 
@@ -638,27 +641,27 @@ def _testDot(self):
     >>> s2 = CellVariable(mesh=mesh, value=3)
 
     >>> v1 = CellVariable(mesh=mesh, rank=1, 
-    ...                   value=array([2,3])[..., newaxis])
+    ...                   value=numerix.array([2,3])[..., numerix.newaxis])
     >>> v2 = CellVariable(mesh=mesh, rank=1, 
-    ...                   value=array([3,4])[..., newaxis])
+    ...                   value=numerix.array([3,4])[..., numerix.newaxis])
     
     >>> t21 = CellVariable(mesh=mesh, rank=2, 
-    ...                    value=array([[2, 3],
-    ...                                 [4, 5]])[..., newaxis])
+    ...                    value=numerix.array([[2, 3],
+    ...                                         [4, 5]])[..., numerix.newaxis])
     >>> t22 = CellVariable(mesh=mesh, rank=2, 
-    ...                    value=array([[3, 4],
-    ...                                 [5, 6]])[..., newaxis])
+    ...                    value=numerix.array([[3, 4],
+    ...                                         [5, 6]])[..., numerix.newaxis])
 
     >>> t31 = CellVariable(mesh=mesh, rank=3, 
-    ...                    value=array([[[3, 4],
-    ...                                  [5, 6]],
-    ...                                 [[5, 6],
-    ...                                  [7, 8]]])[..., newaxis])
+    ...                    value=numerix.array([[[3, 4],
+    ...                                         [5, 6]],
+    ...                                        [[5, 6],
+    ...                                         [7, 8]]])[..., numerix.newaxis])
     >>> t32 = CellVariable(mesh=mesh, rank=3, 
-    ...                    value=array([[[2, 3],
-    ...                                  [4, 5]],
-    ...                                 [[4, 5],
-    ...                                  [6, 7]]])[..., newaxis])
+    ...                    value=numerix.array([[[2, 3],
+    ...                                         [4, 5]],
+    ...                                        [[4, 5],
+    ...                                         [6, 7]]])[..., numerix.newaxis])
 
     >>> def P(a):
     ...     a = a.globalValue
@@ -711,8 +714,8 @@ def _testDot(self):
     pass
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

@@ -43,6 +43,8 @@ from fipy.tools import inline
 from fipy.variables.faceVariable import FaceVariable
 from fipy.terms import VectorCoeffError
 
+__all__ = ["FaceTerm"]
+
 class FaceTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -82,7 +84,7 @@ class FaceTerm(_NonDiffusionTerm):
         for boundaryCondition in boundaryConditions:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
             
-            if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            if 'FIPY_DISPLAY_MATRIX' in os.environ:
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
@@ -159,7 +161,7 @@ class FaceTerm(_NonDiffusionTerm):
             vector.putAdd(b, id1, -(cell1diag * oldArrayId1 + cell1offdiag * oldArrayId2))
             vector.putAdd(b, id2, -(cell2diag * oldArrayId2 + cell2offdiag * oldArrayId1))
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """Implicit portion considers
         """
         mesh = var.mesh
@@ -174,10 +176,10 @@ class FaceTerm(_NonDiffusionTerm):
 
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
-        if weight.has_key('implicit'):
+        if 'implicit' in weight:
             self._implicitBuildMatrix_(SparseMatrix, L, id1, id2, b, weight['implicit'], var, boundaryConditions, interiorFaces, dt)
 
-        if weight.has_key('explicit'):
+        if 'explicit' in weight:
             self._explicitBuildMatrix_(SparseMatrix, var.old, id1, id2, b, weight['explicit'], var, boundaryConditions, interiorFaces, dt)
 
         return (var, L, b)

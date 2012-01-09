@@ -37,9 +37,10 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
 from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
+
+__all__ = ["HybridConvectionTerm"]
 
 class _HybridConvectionTermAlpha(FaceVariable):
     def __init__(self, P):

@@ -37,7 +37,10 @@
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import AztecOO
+
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
+
+__all__ = ["DomDecompPreconditioner"]
 
 class DomDecompPreconditioner(Preconditioner):
     """

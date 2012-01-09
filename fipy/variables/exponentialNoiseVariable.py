@@ -35,8 +35,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
-
 from fipy.variables.noiseVariable import NoiseVariable
+
+__all__ = ["ExponentialNoiseVariable"]
 
 class ExponentialNoiseVariable(NoiseVariable):
     r"""
@@ -48,6 +49,11 @@ class ExponentialNoiseVariable(NoiseVariable):
        \mu^{-1} e^{-\frac{x}{\mu}}
        
     with a mean parameter :math:`\mu`.
+
+    Seed the random module for the sake of deterministic test results.
+
+    >>> from fipy import numerix
+    >>> numerix.random.seed(1)
 
     We generate noise on a uniform cartesian mesh
            
@@ -110,8 +116,8 @@ class ExponentialNoiseVariable(NoiseVariable):
                                   size = [self.mesh.globalNumberOfCells])
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

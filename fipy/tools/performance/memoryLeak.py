@@ -34,59 +34,38 @@
 """
 
 This python script is ripped from
-http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/286222/index_txt
+http://www.nightmare.com/medusa/memory-leaks.html
+
+It outputs the top 100 number of outstanding references for each
+object.
 
 """
 
+__all__ = []
 
-import os
+import sys
+import types
 
-_proc_status = '/proc/%d/status' % os.getpid()
+def _get_refcounts(theClass = None):
+    d = {}
+    sys.modules
+    # collect all classes
+    for m in sys.modules.values():
+        for sym in dir(m):
+            o = getattr (m, sym)
+            if type(o) is types.ClassType:
+                if theClass is not None and o is not theClass:
+                    continue
+                d[o] = sys.getrefcount (o)
+    # sort by refcount
+    pairs = map (lambda x: (x[1],x[0]), d.items())
+    pairs.sort()
+    pairs.reverse()
+    return pairs
 
-_scale = {'kB': 1024.0, 'mB': 1024.0*1024.0,
-          'KB': 1024.0, 'MB': 1024.0*1024.0}
+def _print_top_N(n = 100, theClass = None):
+    for n, c in _get_refcounts(theClass)[:n]:
+        print '%10d %s' % (n, c.__name__)
 
-def _VmB(VmKey, pid = None):
-    '''Private.
-    '''
-    global _proc_status, _scale
-    if pid is not None:
-        _proc_status = '/proc/%d/status' % pid
-
-     # get pseudo file  /proc/<pid>/status
-    try:
-        t = open(_proc_status)
-        v = t.read()
-        t.close()
-    except:
-        return 0.0  # non-Linux?
-     # get VmKey line e.g. 'VmRSS:  9999  kB\n ...'
-    i = v.index(VmKey)
-    v = v[i:].split(None, 3)  # whitespace
-    if len(v) < 3:
-        return 0.0  # invalid format?
-     # convert Vm value to bytes
-    return float(v[1]) * _scale[v[2]]
-
-
-def _memory(since=0.0, pid = None):
-    '''Return memory usage in bytes.
-    '''
-    return _VmB('VmSize:', pid) - since
-
-
-def _resident(since=0.0):
-    '''Return resident memory usage in bytes.
-    '''
-    return _VmB('VmRSS:') - since
-
-
-def _stacksize(since=0.0):
-    '''Return stack size in bytes.
-    '''
-    return _VmB('VmStk:') - since
-
-def _peak(since=0.0):
-    '''Return stack size in bytes.
-    '''
-    return _VmB('VmPeak:') - since
+if __name__ == '__main__':
+    print_top_N()

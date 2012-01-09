@@ -43,6 +43,8 @@ import gzip
 
 from fipy.tools import parallel
 
+__all__ = ["write", "read"]
+
 # TODO: add test to show that round trip pickle of mesh doesn't work properly
 # FIXME: pickle fails to work properly on numpy 1.1 (run gapFillMesh.py)
 def write(data, filename = None, extension = '', communicator=parallel):
@@ -109,8 +111,13 @@ def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
     if communicator.Nproc > 1:
         data = communicator.bcast(data, root=0)
 
-    import StringIO
-    f = StringIO.StringIO(data)
+    if sys.version_info < (3,0):
+        import StringIO
+        f = StringIO.StringIO(data)
+    else:
+        import io
+        f = io.BytesIO(data)
+        
     unpickler = cPickle.Unpickler(f)
     
     if mesh_unmangle:
@@ -125,8 +132,8 @@ def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
             if isinstance(klass, types.ClassType) and issubclass(klass, meshes.mesh.Mesh):
                 class UnmangledMesh(klass):
                     def __setstate__(self, dict):
-                        if (dict.has_key('cellFaceIDs') 
-                            and dict.has_key('faceVertexIDs')):
+                        if ('cellFaceIDs' in dict 
+                            and 'faceVertexIDs' in dict):
                                 
                             dict = dict.copy()
                             for key in ('cellFaceIDs', 'faceVertexIDs'):
@@ -144,8 +151,8 @@ def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
     return unpickler.load()
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test()     

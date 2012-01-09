@@ -34,6 +34,8 @@
 """Test implementation of the mesh
 """
 
+__all__ = []
+
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 
@@ -54,7 +56,9 @@ def _suite():
         'fipy.meshes.cylindricalUniformGrid1D',
         'fipy.meshes.cylindricalUniformGrid2D',
         'fipy.meshes.cylindricalGrid1D',
-        'fipy.meshes.cylindricalGrid2D'))
+        'fipy.meshes.cylindricalGrid2D',
+        'fipy.meshes.factoryMeshes',
+        'fipy.meshes.abstractMesh'))
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')

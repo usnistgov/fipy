@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import numerix
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.terms import TermMultiplyError
@@ -60,10 +62,21 @@ class _NonDiffusionTerm(_UnaryTerm):
             >>> 2. * __NonDiffusionTerm(coeff=0.5)
             __NonDiffusionTerm(coeff=1.0)
             
+        Test for ticket:291.
+
+            >>> from fipy import PowerLawConvectionTerm
+            >>> PowerLawConvectionTerm(coeff=[[1], [0]]) * 1.0
+            PowerLawConvectionTerm(coeff=array([[ 1.],
+                   [ 0.]]))
+
         """
 
         if isinstance(other, (int, float)):
-            return self.__class__(coeff=other * self.coeff, var=self.var)
+            if isinstance(self.coeff, (list, tuple)):
+                coeff = numerix.array(self.coeff)
+            else:
+                coeff = self.coeff
+            return self.__class__(coeff=other * coeff, var=self.var)
         else:
             raise TermMultiplyError
             
@@ -155,8 +168,8 @@ class __NonDiffusionTerm(_NonDiffusionTerm):
     pass 
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

@@ -37,6 +37,8 @@ from pyamg import solve
 import os
 from fipy.tools import numerix
 
+__all__ = ["LinearGeneralSolver"]
+
 class LinearGeneralSolver(_ScipySolver):
     """
     The `LinearGeneralSolver` is an interface to the generic pyAMG,
@@ -45,7 +47,7 @@ class LinearGeneralSolver(_ScipySolver):
     """
 
     def _solve_(self, L, x, b):
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             verbosity = True
         else:
             verbosity = False

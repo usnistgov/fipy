@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "commWrapper.py"
+ #  FILE: "serialCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,64 +34,20 @@
  # ###################################################################
  ##
 
-class CommWrapper(object):
-    """MPI Communicator wrapper
-    
-    Encapsulates capabilities needed for Epetra. Some capabilities are not parallel.
-    
-    """
-    
-    def __init__(self, Epetra=None):
-        self.epetra_comm = Epetra.PyComm()
-        
+from fipy.tools.comms.commWrapper import CommWrapper
+
+__all__ = ["SerialCommWrapper"]
+
+class SerialCommWrapper(CommWrapper):
     @property
     def procID(self):
-        return self.epetra_comm.MyPID()
-        
+        return 0
+       
     @property
     def Nproc(self):
-        return self.epetra_comm.NumProc()
-        
-    def Barrier(self):
-        self.epetra_comm.Barrier()
-
-    def all(self, a, axis=None):
-        return a.all(axis=axis)
-
-    def any(self, a, axis=None):
-        return a.any(axis=axis)
-
-    def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
-        return numerix.allclose(a, b, rtol=rtol, atol=atol)
-     
-    def allequal(self, a, b):
-        return numerix.allequal(a, b)
-     
-    def bcast(self, obj=None, root=0):
-        return obj
-     
-    def allgather(self, sendobj=None, recvobj=None):
-        if recvobj is not None:
-            recvobj[:] = sendobj
-        else:
-            recvobj = sendobj
-         
-        return recvobj
-                    
-    def sumAll(self, a):
-        return self.epetra_comm.SumAll(a)
-
-    def sum(self, a, axis=None):
-        return self.epetra_comm.SumAll(a.sum(axis=axis))
-        
-    def __getstate__(self):
-        return {'dummy': 0}
-        
-    def __setstate__(self, dict):
-        from PyTrilinos import Epetra
-        self.__init__(Epetra=Epetra)
-        
+        return 1
+       
     def Norm2(self, vec):
-        return vec.Norm2()
-
+        from fipy.tools import numerix
+        return numerix.L2norm(vec)
 

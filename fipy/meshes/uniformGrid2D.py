@@ -38,18 +38,18 @@
 """
 __docformat__ = 'restructuredtext'
 
-from grid2D import Grid2D
-from fipy.meshes.builders import Grid2DBuilder
+from fipy.meshes.builders import _Grid2DBuilder
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import parallel
 
-from fipy.meshes.builders import UniformGrid2DBuilder
-from fipy.meshes.gridlike import Gridlike2D
+from fipy.meshes.builders import _UniformGrid2DBuilder
+from fipy.meshes.gridlike import _Gridlike2D
 from fipy.meshes.uniformGrid import UniformGrid
+
+__all__ = ["UniformGrid2D"]
 
 class UniformGrid2D(UniformGrid):
     """
@@ -59,7 +59,7 @@ class UniformGrid2D(UniformGrid):
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
                        overlap=2, communicator=parallel):
 
-        builder = UniformGrid2DBuilder()
+        builder = _UniformGrid2DBuilder()
 
         self.args = {
             'dx': dx, 
@@ -97,20 +97,20 @@ class UniformGrid2D(UniformGrid):
         self.communicator = communicator
          
     def __getstate__(self):
-        return Gridlike2D.__getstate__(self)
+        return _Gridlike2D.__getstate__(self)
 
     def __setstate__(self, dict):
-        return Gridlike2D.__setstate__(self, dict)
+        return _Gridlike2D.__setstate__(self, dict)
 
     def __repr__(self):
-        return Gridlike2D.__repr__(self)
+        return _Gridlike2D.__repr__(self)
 
     def _isOrthogonal(self):
-        return Gridlike2D._isOrthogonal(self)
+        return _Gridlike2D._isOrthogonal(self)
 
     @property
     def _concatenatedClass(self):
-        return Gridlike2D._concatenatedClass
+        return _Gridlike2D._concatenatedClass
 
     """
     Topology set and calc
@@ -154,7 +154,7 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _cellToFaceOrientations(self):
-        cellFaceOrientations = numerix.ones((4, self.numberOfCells))
+        cellFaceOrientations = numerix.ones((4, self.numberOfCells), 'l')
         if self.numberOfCells > 0:
             cellFaceOrientations[0, self.nx:] = -1
             cellFaceOrientations[3, :] = -1
@@ -164,8 +164,8 @@ class UniformGrid2D(UniformGrid):
     if inline.doInline:
         @property
         def _adjacentCellIDs(self):
-            faceCellIDs0 =  numerix.zeros(self.numberOfFaces)
-            faceCellIDs1 =  numerix.zeros(self.numberOfFaces)
+            faceCellIDs0 =  numerix.zeros(self.numberOfFaces, 'l')
+            faceCellIDs1 =  numerix.zeros(self.numberOfFaces, 'l')
 
             inline._runInline("""
                 int ID = j * ni + i;
@@ -206,7 +206,7 @@ class UniformGrid2D(UniformGrid):
     else:
         @property
         def _adjacentCellIDs(self):
-            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2))
+            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2), 'l')
             indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
             
             Hids[...,1] = indices[1] + indices[0] * self.nx
@@ -217,7 +217,7 @@ class UniformGrid2D(UniformGrid):
                 Hids[0,...,1] = Hids[0,...,0]
                 Hids[-1,...,1] = Hids[-1,...,0]
           
-            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2))
+            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2), 'l')
             indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
             Vids[...,1] = indices[1] + indices[0] * self.nx
             Vids[...,0] = Vids[...,1] - 1
@@ -275,7 +275,7 @@ class UniformGrid2D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._globalNonOverlappingCellIDs(self)
+        return _Gridlike2D._globalNonOverlappingCellIDs(self)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -294,7 +294,7 @@ class UniformGrid2D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._globalOverlappingCellIDs(self)
+        return _Gridlike2D._globalOverlappingCellIDs(self)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -313,7 +313,7 @@ class UniformGrid2D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._localNonOverlappingCellIDs(self)
+        return _Gridlike2D._localNonOverlappingCellIDs(self)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -332,7 +332,7 @@ class UniformGrid2D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike2D._localOverlappingCellIDs(self)
+        return _Gridlike2D._localOverlappingCellIDs(self)
 
     """
     Geometry set and calc
@@ -548,7 +548,7 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _concatenableMesh(self):
-        from grid2D import Grid2D
+        from fipy.meshes.grid2D import Grid2D
         args = self.args.copy()
         origin = args['origin']
         from fipy.tools import serial
@@ -558,10 +558,10 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _cellFaceIDs(self):
-        return Grid2DBuilder.createCells(self.nx, self.ny,
-                                         self.numberOfFaces,
-                                         self.numberOfHorizontalFaces,
-                                         self.numberOfVerticalColumns)
+        return _Grid2DBuilder.createCells(self.nx, self.ny,
+                                          self.numberOfFaces,
+                                          self.numberOfHorizontalFaces,
+                                          self.numberOfVerticalColumns)
         
     @property
     def _maxFacesPerCell(self):
@@ -569,17 +569,17 @@ class UniformGrid2D(UniformGrid):
         
     @property
     def vertexCoords(self):
-        return Grid2DBuilder.createVertices(self.nx, self.ny,
-                                            self.dx, self.dy,
-                                            self.numberOfVertices,
-                                            self.numberOfVerticalColumns) \
+        return _Grid2DBuilder.createVertices(self.nx, self.ny,
+                                             self.dx, self.dy,
+                                             self.numberOfVertices,
+                                             self.numberOfVerticalColumns) \
                  + self.origin
 
     if inline.doInline:
         @property
         def faceCellIDs(self):
-            faceCellIDs = numerix.zeros((2, self.numberOfFaces))
-            mask = numerix.zeros((2, self.numberOfFaces))
+            faceCellIDs = numerix.zeros((2, self.numberOfFaces), 'l')
+            mask = numerix.zeros((2, self.numberOfFaces), 'l')
             
             inline._runInline("""
                 int ID = j * ni + i; 
@@ -621,7 +621,7 @@ class UniformGrid2D(UniformGrid):
     else:
         @property
         def faceCellIDs(self):
-            Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
+            Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'l')
             indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
             Hids[1] = indices[0] + indices[1] * self.nx
             Hids[0] = Hids[1] - self.nx
@@ -630,7 +630,7 @@ class UniformGrid2D(UniformGrid):
                 Hids[1,...,0] = -1
                 Hids[1,...,-1] = -1
 
-            Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny))
+            Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'l')
             indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
             Vids[1] = indices[0] + indices[1] * self.nx
             Vids[0] = Vids[1] - 1
@@ -644,7 +644,7 @@ class UniformGrid2D(UniformGrid):
         
     @property
     def _cellVertexIDs(self):
-        ids = numerix.zeros((4, self.nx, self.ny))
+        ids = numerix.zeros((4, self.nx, self.ny), 'l')
         indices = numerix.indices((self.nx, self.ny))
         ids[1] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns
         ids[0] = ids[1] + 1
@@ -655,12 +655,12 @@ class UniformGrid2D(UniformGrid):
     
     @property
     def faceVertexIDs(self):
-        Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows))
+        Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'l')
         indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
         Hids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
         Hids[1] = Hids[0] + 1
 
-        Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny))
+        Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'l')
         indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
         Vids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
         Vids[1] = Vids[0] + self.numberOfVerticalColumns
@@ -672,7 +672,7 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _orderedCellVertexIDs(self):
-        ids = numerix.zeros((4, self.nx, self.ny))
+        ids = numerix.zeros((4, self.nx, self.ny), 'l')
         indices = numerix.indices((self.nx, self.ny))
         ids[2] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns
         ids[1] = ids[2] + 1
@@ -733,67 +733,66 @@ class UniformGrid2D(UniformGrid):
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array(((dx,), (dy,)))
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal(vertices,
-            ...                                               mesh.vertexCoords)
+            >>> print numerix.allequal(vertices,
+            ...                        mesh.vertexCoords) # doctest: +PROCESSOR_0
             True
         
             >>> faces = numerix.array([[0, 1, 2, 4, 5, 6, 8, 9,10, 0, 1, 2, 3, 
             ...                         4, 5, 6, 7],
             ...                        [1, 2, 3, 5, 6, 7, 9,10,11, 4, 5, 6, 7,
             ...                         8, 9, 10, 11]])
-            >>> print parallel.procID > 0 or numerix.allequal(faces,
-            ...                                               mesh.faceVertexIDs)
+            >>> print numerix.allequal(faces,
+            ...                        mesh.faceVertexIDs) # doctest: +PROCESSOR_0
             True
 
             >>> cells = numerix.array(((0, 1, 2, 3, 4, 5),
             ...                        (10, 11, 12, 14, 15, 16),
             ...                        (3, 4, 5, 6, 7, 8),
             ...                        (9, 10, 11, 13, 14, 15)))
-            >>> print parallel.procID > 0 or numerix.allequal(cells,
-            ...                                               mesh.cellFaceIDs)
+            >>> print numerix.allequal(cells,
+            ...                        mesh.cellFaceIDs) # doctest: +PROCESSOR_0
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> print parallel.procID > 0 or numerix.allequal(externalFaces, 
-            ...                                               numerix.nonzero(mesh.exteriorFaces))
+            >>> print numerix.allequal(externalFaces, 
+            ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
             True
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> print parallel.procID > 0 or numerix.allequal(internalFaces, 
-            ...                                               numerix.nonzero(mesh.interiorFaces))
+            >>> print numerix.allequal(internalFaces, 
+            ...                        numerix.nonzero(mesh.interiorFaces)) # doctest: +PROCESSOR_0
             True
 
             >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0, 1, 2, 3, 3, 4, 5),
             ...                                 (-1, -1, -1, 3, 4, 5, -1, -1, -1, -1, 1, 2, -1, -1, 4, 5, -1)), -1)
-            >>> print parallel.procID > 0 or numerix.allequal(faceCellIds, mesh.faceCellIDs)
+            >>> print numerix.allequal(faceCellIds, mesh.faceCellIDs) # doctest: +PROCESSOR_0
             True
             
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
-            >>> print parallel.procID > 0 or numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> print parallel.procID > 0 or numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0.)))
-            >>> print parallel.procID > 0 or numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1, -1, -1,  1, -1, -1)))
-            >>> print parallel.procID > 0 or numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations)
+            >>> print numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations) # doctest: +PROCESSOR_0
             True
                                              
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
-            >>> print parallel.procID > 0 or numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2.),
@@ -803,7 +802,7 @@ class UniformGrid2D(UniformGrid):
                                               
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2.),
             ...                                         (-1, -1, -1, dy / 2., dy / 2., dy / 2., -1, -1, -1, -1, dx / 2., dx / 2., -1, -1, dx / 2., dx / 2., -1)), -1)
-            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
                                               
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
@@ -813,38 +812,38 @@ class UniformGrid2D(UniformGrid):
             ...                                dx / 2.,
             ...                                dx / 2., dx, dx,
             ...                                dx / 2.))
-            >>> print parallel.procID > 0 or numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
             
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> print parallel.procID > 0 or numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> print parallel.procID > 0 or numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., -1., 0., 0., 0., 0., 0., 0., 0., 0.),
             ...                            (0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.)))
-            >>> print parallel.procID > 0 or numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> tangents2 = numerix.zeros((2, 17), 'd')
-            >>> print parallel.procID > 0 or numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellToCellIDs = MA.masked_values(((-1, -1, -1, 0, 1, 2),
             ...                                   (1, 2, -1, 4, 5, -1),
             ...                                   (3, 4, 5, -1, -1, -1),
             ...                                   (-1, 0, 1, -1, 3, 4)), -1)
-            >>> print parallel.procID > 0 or numerix.allequal(cellToCellIDs, mesh._cellToCellIDs)
+            >>> print numerix.allequal(cellToCellIDs, mesh._cellToCellIDs) # doctest: +PROCESSOR_0
             True
 
             >>> cellToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2.,      dy,      dy,      dy),
             ...                                         (     dx,      dx, dx / 2.,      dx,      dx, dx / 2.),
             ...                                         (     dy,      dy,      dy, dy / 2., dy / 2., dy / 2.),
             ...                                         (dx / 2.,      dx,      dx, dx / 2.,      dx,      dx)), -1)
-            >>> print parallel.procID > 0 or numerix.allclose(cellToCellDistances, mesh._cellToCellDistances, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellToCellDistances, mesh._cellToCellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellNormals = numerix.array(((( 0,  0,  0,  0,  0,  0),
@@ -855,7 +854,7 @@ class UniformGrid2D(UniformGrid):
             ...                               ( 0,  0,  0,  0,  0,  0),
             ...                               ( 1,  1,  1,  1,  1,  1),
             ...                               ( 0,  0,  0,  0,  0,  0))))
-            >>> print parallel.procID > 0 or numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellAreaProjections = numerix.array((((  0,  0,  0,  0,  0,  0),
@@ -866,7 +865,7 @@ class UniformGrid2D(UniformGrid):
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       ( dx, dx, dx, dx, dx, dx),
             ...                                       (  0,  0,  0,  0,  0,  0))))
-            >>> print parallel.procID > 0 or numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10)
+            >>> print numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellVertexIDs = MA.masked_array(((5, 6, 7, 9, 10, 11),
@@ -874,7 +873,7 @@ class UniformGrid2D(UniformGrid):
             ...                                  (1, 2, 3, 5, 6, 7),
             ...                                  (0, 1, 2, 4, 5, 6)), -1000)
 
-            >>> print parallel.procID > 0 or numerix.allclose(mesh._cellVertexIDs, cellVertexIDs)
+            >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
             True
 
             >>> from fipy.tools import dump            
@@ -886,34 +885,34 @@ class UniformGrid2D(UniformGrid):
             
             >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],
             ...                  [ 1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11]]
-            >>> print parallel.procID > 0 or numerix.allequal(mesh.faceVertexIDs, faceVertexIDs)
+            >>> print numerix.allequal(mesh.faceVertexIDs, faceVertexIDs) # doctest: +PROCESSOR_0
             True
 
             >>> mesh = UniformGrid2D(nx=3)
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._adjacentCellIDs[0],
-            ...                                               [0, 1, 2, 0, 1, 2, 0, 0, 1, 2])
+            >>> print numerix.allequal(mesh._adjacentCellIDs[0],
+            ...                        [0, 1, 2, 0, 1, 2, 0, 0, 1, 2]) # doctest: +PROCESSOR_0
             True
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._adjacentCellIDs[1],
-            ...                                               [0, 1, 2, 0, 1, 2, 0, 1, 2, 2])
+            >>> print numerix.allequal(mesh._adjacentCellIDs[1],
+            ...                        [0, 1, 2, 0, 1, 2, 0, 1, 2, 2]) # doctest: +PROCESSOR_0
             True
             
             >>> faceCellIDs = [[0, 1, 2, 0, 1, 2, 0, 0, 1, 2],
             ...                [-1, -1, -1, -1, -1, -1, -1, 1, 2, -1]]
-            >>> print parallel.procID > 0 or numerix.allequal(mesh.faceCellIDs.filled(-1),
-            ...                                               faceCellIDs)
+            >>> print numerix.allequal(mesh.faceCellIDs.filled(-1),
+            ...                        faceCellIDs) # doctest: +PROCESSOR_0
             True
 
             >>> mesh = UniformGrid2D(ny=3)
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._adjacentCellIDs[0],
-            ...                                               [0, 0, 1, 2, 0, 0, 1, 1, 2, 2])
+            >>> print numerix.allequal(mesh._adjacentCellIDs[0],
+            ...                        [0, 0, 1, 2, 0, 0, 1, 1, 2, 2]) # doctest: +PROCESSOR_0
             True
-            >>> print parallel.procID > 0 or numerix.allequal(mesh._adjacentCellIDs[1],
-            ...                                               [0, 1, 2, 2, 0, 0, 1, 1, 2, 2])
+            >>> print numerix.allequal(mesh._adjacentCellIDs[1],
+            ...                        [0, 1, 2, 2, 0, 0, 1, 1, 2, 2]) # doctest: +PROCESSOR_0
             True
             >>> faceCellIDs = [[0, 0, 1, 2, 0, 0, 1, 1, 2, 2],
             ...                [-1, 1, 2, -1, -1, -1, -1, -1, -1, -1]]
-            >>> print parallel.procID > 0 or numerix.allequal(mesh.faceCellIDs.filled(-1),
-            ...                                               faceCellIDs)
+            >>> print numerix.allequal(mesh.faceCellIDs.filled(-1),
+            ...                        faceCellIDs) # doctest: +PROCESSOR_0
             True
 
         Following test added to change nx, ny argment to integer when its a float to prevent
@@ -927,8 +926,8 @@ class UniformGrid2D(UniformGrid):
         """
 
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

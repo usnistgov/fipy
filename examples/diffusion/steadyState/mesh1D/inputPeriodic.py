@@ -66,7 +66,7 @@ A `TransientTerm` is used to provide some fixed point, otherwise the
 solver has no fixed value and can become unstable.
     
 >>> eq = TransientTerm(coeff=1e-8) - DiffusionTerm()
->>> eq.solve(var=var)
+>>> eq.solve(var=var, dt=1.)
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()

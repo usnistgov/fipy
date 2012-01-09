@@ -35,9 +35,13 @@
 __docformat__ = 'restructuredtext'
 
 import os
+
 from scipy.sparse.linalg import splu
+
 from fipy.solvers.scipy.scipySolver import _ScipySolver
 from fipy.tools import numerix
+
+__all__ = ["LinearLUSolver"]
 
 class LinearLUSolver(_ScipySolver):
     """
@@ -70,7 +74,7 @@ class LinearLUSolver(_ScipySolver):
             xError = LU.solve(errorVector)
             x[:] = x - xError
             
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))

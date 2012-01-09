@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.tools.numerix import random
 from fipy.variables.noiseVariable import NoiseVariable
 
+__all__ = ["UniformNoiseVariable"]
+
 class UniformNoiseVariable(NoiseVariable):
     r"""
     Represents a uniform distribution of random numbers.
@@ -87,8 +89,8 @@ class UniformNoiseVariable(NoiseVariable):
                               size=[self.mesh.globalNumberOfCells])
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

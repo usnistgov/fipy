@@ -38,6 +38,8 @@ from fipy.terms.cellTerm import CellTerm
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
+__all__ = ["TransientTerm"]
+
 class TransientTerm(CellTerm):
     r"""
     The `TransientTerm` represents
@@ -101,13 +103,13 @@ class TransientTerm(CellTerm):
     """
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-	return {
-	    'b vector':  0, 
-	    'new value': 1, 
-	    'old value': 1,
+        return {
+            'b vector':  0, 
+            'new value': 1, 
+            'old value': 1,
             'diagonal': 0
-	}
-	
+        }
+        
     def _calcGeomCoeff(self, var):
         self._checkCoeff(var)
         if var.rank != 0 and not isinstance(self.coeff, CellVariable):            
@@ -121,14 +123,13 @@ class TransientTerm(CellTerm):
         TransientTerm is defined.
 
         >>> from fipy import *
-        >>> from fipy.matrices.pysparseMatrix import _PysparseMatrix
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
         >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
         >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
         [ 1.]
         >>> eq.cacheMatrix()
-        >>> eq.solve(var)
+        >>> eq.solve(var, dt=1.)
         >>> print eq.matrix.numpyArray
         [[ 1.]]
         
@@ -136,7 +137,7 @@ class TransientTerm(CellTerm):
         >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
         [-1.]
         >>> eq.cacheMatrix()
-        >>> eq.solve(var)
+        >>> eq.solve(var, dt=1.)
         >>> print eq.matrix.numpyArray
         [[-2.]]
 
@@ -150,6 +151,13 @@ class TransientTerm(CellTerm):
     def _transientVars(self):
         return self._vars
 
+    def _checkDt(self, dt):
+        if dt is None:
+            raise TypeError, "`dt` must be specified."
+        if numerix.getShape(dt) != ():
+            raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
+        return float(dt)
+
     def _test(self):
         """
         >>> from fipy import *
@@ -158,7 +166,7 @@ class TransientTerm(CellTerm):
         >>> eq = TransientTerm()
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(v)
+        >>> eq.solve(v, dt=1.)
         >>> print eq.matrix.numpyArray.shape
         (12, 12)
         >>> print len(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
@@ -174,7 +182,7 @@ class TransientTerm(CellTerm):
         >>> eq = TransientTerm(coeff)
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(v)
+        >>> eq.solve(v, dt=1.)
         >>> print eq.matrix.numpyArray
         [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
          [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
@@ -195,7 +203,7 @@ class TransientTerm(CellTerm):
         >>> eq = TransientTerm(((1., 2.), (3. , 4.)))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
-        >>> eq.solve(v)
+        >>> eq.solve(v, dt=1.)
         >>> print eq.matrix.numpyArray
         [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
          [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
@@ -216,8 +224,8 @@ class TransientTerm(CellTerm):
         pass
             
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

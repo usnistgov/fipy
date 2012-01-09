@@ -1,5 +1,9 @@
+__docformat__ = 'restructuredtext'
+
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools.numerix import exp, take, where
+
+__all__ = ["ScharfetterGummelFaceVariable"]
 
 class ScharfetterGummelFaceVariable(_CellToFaceVariable):
     def __init__(self, var, boundaryConditions=()):

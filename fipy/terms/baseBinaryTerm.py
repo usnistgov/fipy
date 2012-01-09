@@ -33,6 +33,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 import os
 
 from fipy.terms.term import Term
@@ -60,7 +64,7 @@ class _BaseBinaryTerm(Term):
                 else:
                     raise ExplicitVariableError
 
-	Term.__init__(self, var=self._vars[0])
+        Term.__init__(self, var=self._vars[0])
     
     def _addNone(self, arg0, arg1):
         if arg0 is None and arg1 is None:
@@ -109,8 +113,8 @@ class __NonDiffusionTerm(_NonDiffusionTerm):
     pass 
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

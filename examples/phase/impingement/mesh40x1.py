@@ -173,7 +173,7 @@ discretization of ``theta`` on the circle.
 >>> phaseModSq = phaseMod * phaseMod
 >>> expo = epsilon * beta * theta.grad.mag
 >>> expo = (expo < 100.) * (expo - 100.) + 100.
->>> pFunc = 1. + exp(-expo) * (mu / epsilon - 1.)
+>>> pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
 
 >>> phaseFace = phase.arithmeticFaceValue
 >>> phaseSq = phaseFace * phaseFace
@@ -230,7 +230,7 @@ extracts the data and compares it with the ``theta`` variable.
 .. index:: loadtxt
 
 >>> import os
->>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz')
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> testData = CellVariable(mesh=mesh, value=testData)
 >>> print theta.allclose(testData)
 1

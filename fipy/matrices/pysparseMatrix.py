@@ -34,9 +34,10 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from pysparse import spmatrix
 from fipy.tools import numerix
-
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
 
@@ -161,7 +162,7 @@ class _PysparseMatrixBase(_SparseMatrix):
             shape = numerix.shape(other)
             if shape == ():
                 L = spmatrix.ll_mat(N, N, N)
-                L.put(other * numerix.ones(N))
+                L.put(other * numerix.ones(N, 'l'))
                 return _PysparseMatrixBase(matrix=spmatrix.matrixmultiply(self.matrix, L))
             elif shape == (N,):
                 y = numerix.empty((self.matrix.shape[0],))
@@ -171,7 +172,7 @@ class _PysparseMatrixBase(_SparseMatrix):
                 raise TypeError
             
     def __rmul__(self, other):
-        if type(numerix.ones(1)) == type(other):
+        if type(numerix.ones(1, 'l')) == type(other):
             y = other.copy()
             self.matrix.matvec_transp(other, y)
             return y
@@ -437,8 +438,8 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
         _PysparseIdentityMatrix.__init__(self, size=mesh.numberOfCells)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

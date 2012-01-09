@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
 from fipy.solvers import DefaultAsymmetricSolver
 
@@ -52,8 +54,8 @@ class _AsymmetricConvectionTerm(_BaseConvectionTerm):
         return solver or DefaultAsymmetricSolver(*args, **kwargs)
     
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

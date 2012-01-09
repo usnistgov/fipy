@@ -34,15 +34,15 @@
 
 __docformat__ = 'restructuredtext'
 
-import sys
 import os
-import inspect
 
 from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
 from fipy.tools import inline
 from fipy.tools.decorators import getsetDeprecated, mathMethodDeprecated
+
+__all__ = ["Variable"]
 
 class Variable(object):
     """
@@ -87,7 +87,7 @@ class Variable(object):
             Variable(value=array(3))
             >>> Variable(value=3, unit="m")
             Variable(value=PhysicalField(3,'m'))
-            >>> Variable(value=3, unit="m", array=numerix.zeros((3,2)))
+            >>> Variable(value=3, unit="m", array=numerix.zeros((3,2), 'l'))
             Variable(value=PhysicalField(array([[3, 3],
                    [3, 3],
                    [3, 3]]),'m'))
@@ -134,13 +134,12 @@ class Variable(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
         
-           >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))
-           <class 'fipy.variables.binaryOperatorVariable.binOp'>
+        >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))
+        <class 'fipy.variables.binaryOperatorVariable.binOp'>
 
-           >>> from scipy.special import gamma as Gamma
-           >>> print type(Gamma(Variable([1.0, 2.0])))
-           <class 'fipy.variables.unaryOperatorVariable.unOp'>
-
+        >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
+        >>> print type(Gamma(Variable([1.0, 2.0]))) # doctest: +SCIPY
+        <class 'fipy.variables.unaryOperatorVariable.unOp'>
         """
         result = arr
         
@@ -284,8 +283,8 @@ class Variable(object):
         their base SI elements.
         
             >>> e = Variable(value="2.7 Hartree*Nav")
-            >>> print e.inBaseUnits()
-            7088849.01085 kg*m**2/s**2/mol
+            >>> print e.inBaseUnits().allclose("7088849.01085 kg*m**2/s**2/mol")
+            1
         """
         value = self.value
         if isinstance(value, physicalField.PhysicalField):
@@ -301,9 +300,9 @@ class Variable(object):
         the unit of the object.  If one unit is specified, the return value
         is a single `Variable`.
         
-            >>> freeze = Variable('0 degC')
-            >>> print freeze.inUnitsOf('degF')
-            32.0 degF
+        >>> freeze = Variable('0 degC')
+        >>> print freeze.inUnitsOf('degF').allclose("32.0 degF")
+        1
         
         If several units are specified, the return value is a tuple of
         `Variable` instances with with one element per unit such that
@@ -312,9 +311,11 @@ class Variable(object):
         This is used to convert to irregular unit systems like
         hour/minute/second.  The original object will not be changed.
         
-            >>> t = Variable(value=314159., unit='s')
-            >>> [str(element) for element in t.inUnitsOf('d','h','min','s')]
-            ['3.0 d', '15.0 h', '15.0 min', '59.0 s']
+        >>> t = Variable(value=314159., unit='s')
+        >>> print numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d','h','min','s'),
+        ...                                                         ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])], 
+        ...                        True)
+        1
         """
         value = self.value
         if isinstance(value, physicalField.PhysicalField):
@@ -364,17 +365,36 @@ class Variable(object):
             return self.name
         else:
             s = self.__class__.__name__ + '('
-            s += 'value=' + `self.value`
+            s += 'value=' + repr(self.value)
             s += ')'
             return s
 
     def _getCIndexString(self, shape):
+        r"""
+        Test for inline issue. (1, ni) shapes were not handled correctly.
+
+        >>> from fipy import *
+        >>> mesh = Tri2D(dx=1., dy=1., nx=1, ny=1)
+        >>> diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
+        >>> normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
+        >>> normalsNthCoeff = diffCoeff[numerix.newaxis] * normals 
+
+        First variable value access does not provoke inlining.
+
+        >>> value = normalsNthCoeff.value
+        >>> print (normalsNthCoeff == value).all()
+        True
+
+        """
+
         dimensions = len(shape)
         if dimensions == 1:
             return '[i]'
         elif dimensions == 2:
             if shape[-1] == 1:
                 return '[j]'
+            elif shape[0] == 1:
+                return '[i]'
             else:
                 return '[i + j * ni]'
         elif dimensions == 3:
@@ -416,7 +436,7 @@ class Variable(object):
          >>> from fipy import *
          >>> m = Grid1D(nx=3)
          >>> x = m.cellCenters[0]
-         >>> tmp = m.cellCenters[0] * array(((0.,), (1.,)))[1]
+         >>> tmp = m.cellCenters[0] * numerix.array(((0.,), (1.,)))[1]
          >>> print numerix.allclose(tmp, x)
          True
          >>> print numerix.allclose(tmp, x)
@@ -816,7 +836,11 @@ class Variable(object):
             self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)
         
         return self.typecode
-    
+        
+    @property
+    def itemsize(self):
+        return self.value.itemsize
+        
     def _calcValue(self):
         return self._value
 
@@ -1134,12 +1158,16 @@ class Variable(object):
     def __rpow__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other)
             
-    def __div__(self, other):
+    def __truediv__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: a/b, other)
         
-    def __rdiv__(self, other):
+    __div__ = __truediv__
+    
+    def __rtruediv__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: b/a, other)
             
+    __rdiv__ = __rtruediv__
+    
     def __neg__(self):
         return self._UnaryOperatorVariable(lambda a: -a)
         
@@ -1226,6 +1254,8 @@ class Variable(object):
         """
         return self._BinaryOperatorVariable(lambda a,b: a==b, other)
         
+    __hash__ = object.__hash__
+    
     def __ne__(self,other):
         """
         Test if a `Variable` is not equal to another quantity
@@ -1481,15 +1511,6 @@ class Variable(object):
     def ravel(self):
         return self.value.ravel()
         
-    def transpose(self):
-        """
-        .. attention: This routine is deprecated. 
-           It is not longer needed.
-        """
-        import warnings
-        warnings.warn("transpose() is no longer needed", DeprecationWarning, stacklevel=2)
-        return self
-
     def _axisClass(self, axis):
         return self._OperatorVariableClass()
 
@@ -1498,7 +1519,7 @@ class Variable(object):
             setattr(self, opname, {})
             
         opdict = getattr(self, opname)
-        if not opdict.has_key(axis):
+        if axis not in opdict:
             if axis is None:
                 opShape = ()
             else:
@@ -1567,7 +1588,7 @@ class Variable(object):
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
-           >>> print var.allclose(numerix.zeros(10000))
+           >>> print var.allclose(numerix.zeros(10000, 'l'))
            False
            
         """
@@ -1782,8 +1803,8 @@ class Variable(object):
         
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

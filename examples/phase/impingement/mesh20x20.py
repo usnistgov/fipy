@@ -53,7 +53,7 @@ with different initial conditions and a 2D mesh:
 >>> from fipy import *
 
 >>> steps = numberOfSteps
->>> N = int(sqrt(numberOfElements))
+>>> N = int(numerix.sqrt(numberOfElements))
 >>> L = 2.5 * N / 100.
 >>> dL = L / N
 >>> mesh = Grid2D(dx=dL, dy=dL, nx=N, ny=N)
@@ -105,7 +105,7 @@ randomly oriented liquid phase
 >>> theta = ModularVariable(
 ...     name='theta',
 ...     mesh=mesh,
-...     value=-pi + 0.0001,
+...     value=-numerix.pi + 0.0001,
 ...     hasOld=1
 ...     )
 
@@ -113,10 +113,10 @@ Four different solid circular domains are created at each corner of
 the domain with appropriate orientations
 
 >>> x, y = mesh.cellCenters
->>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
-...                          (L, 0., -2. * pi / 3.), 
-...                          (0., L, -2. * pi / 3. + 0.3), 
-...                          (L, L,  2. * pi / 3.)):
+>>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.), 
+...                          (L, 0., -2. * numerix.pi / 3.), 
+...                          (0., L, -2. * numerix.pi / 3. + 0.3), 
+...                          (L, L,  2. * numerix.pi / 3.)):
 ...     segment = (x - a)**2 + (y - b)**2 < (L / 2.)**2
 ...     phase.setValue(1., where=segment)
 ...     theta.setValue(thetaValue, where=segment)
@@ -156,7 +156,7 @@ evaluation of the face gradient without the modular operators.
 ...     phaseModSq = phaseMod * phaseMod
 ...     expo = epsilon * beta * theta.grad.mag
 ...     expo = (expo < 100.) * (expo - 100.) + 100.
-...     pFunc = 1. + exp(-expo) * (mu / epsilon - 1.)
+...     pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
 ...
 ...     phaseFace = phase.arithmeticFaceValue
 ...     phaseSq = phaseFace * phaseFace
@@ -185,9 +185,9 @@ by the phase
 
 >>> if __name__ == '__main__':
 ...     phaseViewer = Viewer(vars=phase, datamin=0., datamax=1.)
-...     thetaProd = -pi + phase * (theta + pi)
+...     thetaProd = -numerix.pi + phase * (theta + numerix.pi)
 ...     thetaProductViewer = Viewer(vars=thetaProd,
-...                                 datamin=-pi, datamax=pi)
+...                                 datamin=-numerix.pi, datamax=numerix.pi)
 ...     phaseViewer.plot()
 ...     thetaProductViewer.plot()
 
@@ -199,7 +199,7 @@ data and compares it with the `theta` variable.
 .. index:: loadtxt
 
 >>> import os
->>> testData = loadtxt(os.path.splitext(__file__)[0] + '.gz').flat
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz').flat
 
 We step the solution in time, plotting as we go if running interactively,
 
@@ -220,19 +220,19 @@ The following code shows how to restart a simulation from some saved
 data. First, reset the variables to their original values.
 
 >>> phase.setValue(0)
->>> theta.setValue(-pi + 0.0001)
+>>> theta.setValue(-numerix.pi + 0.0001)
 >>> x, y = mesh.cellCenters
->>> for a, b, thetaValue in ((0., 0.,  2. * pi / 3.), 
-...                          (L, 0., -2. * pi / 3.), 
-...                          (0., L, -2. * pi / 3. + 0.3), 
-...                          (L, L,  2. * pi / 3.)):
+>>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.), 
+...                          (L, 0., -2. * numerix.pi / 3.), 
+...                          (0., L, -2. * numerix.pi / 3. + 0.3), 
+...                          (L, L,  2. * numerix.pi / 3.)):
 ...     segment = (x - a)**2 + (y - b)**2 < (L / 2.)**2
 ...     phase.setValue(1., where=segment)
 ...     theta.setValue(thetaValue, where=segment)
 
 Step through half the time steps.
 
->>> for i in range(steps / 2):
+>>> for i in range(steps // 2):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 ...     phaseEq.solve(phase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
@@ -260,7 +260,7 @@ and then recall them to test the data pickling mechanism
 
 and finish the iterations,
 
->>> for i in range(steps / 2):
+>>> for i in range(steps // 2):
 ...     newTheta.updateOld()
 ...     newThetaEq.solve(newTheta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 ...     newPhaseEq.solve(newPhase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))

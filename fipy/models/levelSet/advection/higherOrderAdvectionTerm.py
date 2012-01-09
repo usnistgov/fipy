@@ -34,11 +34,12 @@
  
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
-from baseAdvectionTerm import _BaseAdvectionTerm
-from fipy.tools import numerix
+from fipy.models.levelSet.advection.baseAdvectionTerm import _BaseAdvectionTerm
 
 class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
     r"""
@@ -89,7 +90,6 @@ class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
 
     >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
-    >>> from fipy.tools import parallel
     >>> SparseMatrix = LinearPCGSolver()._matrixClass
     >>> mesh = Grid1D(dx = 1., nx = 3) 
    
@@ -98,21 +98,21 @@ class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
     >>> from fipy.variables.cellVariable import CellVariable
     >>> coeff = CellVariable(mesh = mesh, value = numerix.zeros(3, 'd'))
     >>> v, L, b = _HigherOrderAdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix)
-    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
+    >>> print numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10) # doctest: +PROCESSOR_0
     True
    
     Less trivial test:
 
     >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3))
     >>> v, L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
-    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
+    >>> print numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     Even less trivial
 
     >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3)) 
     >>> v, L, b = _HigherOrderAdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix)
-    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
+    >>> print numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     Another trivial test case (more trivial than a trivial test case
@@ -121,7 +121,7 @@ class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
     >>> vel = numerix.array((-1, 2, -3))
     >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1))) 
     >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-    >>> print parallel.procID > 0 or numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
+    >>> print numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     Somewhat less trivial test case:
@@ -132,7 +132,7 @@ class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
     >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3 , 1, 6, 7)))
     >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
-    >>> print parallel.procID > 0 or numerix.allclose(b, answer, atol = 1e-10)
+    >>> print numerix.allclose(b, answer, atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     For the above test cases the `_HigherOrderAdvectionTerm` gives the
@@ -239,8 +239,8 @@ class __BaseAdvectionTerm(_BaseAdvectionTerm):
     pass
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

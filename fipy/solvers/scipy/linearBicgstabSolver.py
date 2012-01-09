@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
 from scipy.sparse.linalg import bicgstab
 
+__all__ = ["LinearBicgstabSolver"]
+
 class LinearBicgstabSolver(_ScipyKrylovSolver):
     """
     The `LinearBicgstabSolver` is an interface to the Bicgstab solver in
@@ -48,7 +50,6 @@ class LinearBicgstabSolver(_ScipyKrylovSolver):
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
           - `precon`: Preconditioner to use.
         """
         

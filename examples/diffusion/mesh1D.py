@@ -165,8 +165,8 @@ the result is tested against the expected profile:
 >>> t = timeStepDuration * steps
 
 >>> try:
-...     from scipy.special import erf
-...     phiAnalytical.setValue(1 - erf(x / (2 * sqrt(D * t))))
+...     from scipy.special import erf # doctest: +SCIPY
+...     phiAnalytical.setValue(1 - erf(x / (2 * numerix.sqrt(D * t)))) # doctest: +SCIPY
 ... except ImportError:
 ...     print "The SciPy library is not available to test the solution to \
 ... the transient diffusion equation"
@@ -179,7 +179,7 @@ We then solve the equation by repeatedly looping in time:
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> print phi.allclose(phiAnalytical, atol = 7e-4)
+>>> print phi.allclose(phiAnalytical, atol = 7e-4) # doctest: +SCIPY
 1
 
 >>> if __name__ == '__main__':
@@ -215,14 +215,14 @@ reset the problem
 and rerun with much larger time steps
 
 >>> timeStepDuration *= 10
->>> steps /= 10
+>>> steps //= 10
 >>> for step in range(steps):
 ...     eqI.solve(var=phi,
 ...               dt=timeStepDuration)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> print phi.allclose(phiAnalytical, atol = 2e-2)
+>>> print phi.allclose(phiAnalytical, atol = 2e-2) # doctest: +SCIPY
 1
 
 >>> if __name__ == '__main__':
@@ -265,7 +265,7 @@ of the fully implicit scheme to drive down the error
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 
->>> print phi.allclose(phiAnalytical, atol = 3e-3)
+>>> print phi.allclose(phiAnalytical, atol = 3e-3) # doctest: +SCIPY
 1
 
 >>> if __name__ == '__main__':
@@ -327,7 +327,7 @@ we will need to declare time :math:`t` as a :class:`~fipy.variables.variable.Var
 and then declare our boundary condition as a function of this :class:`~fipy.variables.variable.Variable`
 
 >>> del phi.faceConstraints
->>> valueLeft = 0.5 * (1 + sin(time))
+>>> valueLeft = 0.5 * (1 + numerix.sin(time))
 >>> phi.constrain(valueLeft, mesh.facesLeft)
 >>> phi.constrain(0., mesh.facesRight)
 
@@ -514,7 +514,7 @@ can be solved in steady-state, with
    \phi(x) = 1 - \sqrt{\frac{x}{L}}
 
 >>> x = mesh.cellCenters[0]
->>> phiAnalytical.setValue(1. - sqrt(x/L))
+>>> phiAnalytical.setValue(1. - numerix.sqrt(x/L))
 
 We create a viewer to compare the different numbers of sweeps with the
 analytical solution from before.

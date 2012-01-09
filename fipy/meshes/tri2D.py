@@ -42,6 +42,8 @@ from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools.decorators import getsetDeprecated
 
+__all__ = ["Tri2D"]
+
 class Tri2D(Mesh2D):
     """
     This class creates a mesh made out of triangles.  It does this by
@@ -315,7 +317,7 @@ class Tri2D(Mesh2D):
             >>> numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10)
             1
 
-            >>> tangents2 = numerix.zeros((2, 41))
+            >>> tangents2 = numerix.zeros((2, 41), 'l')
             >>> numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10)
             1
 
@@ -382,8 +384,8 @@ class Tri2D(Mesh2D):
 ## test test test
         
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

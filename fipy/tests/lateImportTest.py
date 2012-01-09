@@ -31,6 +31,10 @@
  # ###################################################################
  ##
 
+__docformat__ = 'restructuredtext'
+
+__all__ = []
+
 import unittest
  
 class _LateImportTestCase(unittest.TestCase):

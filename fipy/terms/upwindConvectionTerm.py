@@ -39,6 +39,8 @@ from fipy.terms.baseUpwindConvectionTerm import _BaseUpwindConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.solvers import DefaultAsymmetricSolver
 
+__all__ = ["UpwindConvectionTerm"]
+
 class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
@@ -114,8 +116,8 @@ class UpwindConvectionTerm(_BaseUpwindConvectionTerm):
         pass
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

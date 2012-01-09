@@ -51,7 +51,6 @@ from fipy.tools.decorators import getsetDeprecated
 
 from fipy.meshes.mesh import Mesh
 
-
 def _orderVertices(vertexCoords, vertices):
     coordinates = numerix.take(vertexCoords, vertices)
     centroid = numerix.add.reduce(coordinates) / coordinates.shape[0]
@@ -63,6 +62,8 @@ def _orderVertices(vertexCoords, vertices):
                + numerix.where(coordinates[:, 0] < 0, numerix.pi, 0) 
     sortorder = numerix.argsort(angles)
     return numerix.take(vertices, sortorder)
+
+__all__ = ["Mesh2D"]
 
 class Mesh2D(Mesh):
     
@@ -89,11 +90,8 @@ class Mesh2D(Mesh):
         return faceNormals * orientation
 
     def _calcFaceTangents(self):
-        tmp = numerix.array((-self._faceNormals[1], self._faceNormals[0]))
         # copy required to get internal memory ordering correct for inlining.
-        tmp = tmp.copy()
-        mag = numerix.sqrtDot(tmp, tmp)
-        faceTangents1 = tmp / mag
+        faceTangents1 = numerix.array((-self._faceNormals[1], self._faceNormals[0])).copy()
         faceTangents2 = numerix.zeros(faceTangents1.shape, 'd')
         return faceTangents1, faceTangents2
 
@@ -136,7 +134,7 @@ class Mesh2D(Mesh):
     @property
     def _nonOrthogonality(self):
         
-        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],))
+        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],), 'l')
         numerix.put(exteriorFaceArray, numerix.nonzero(self.exteriorFaces), 1)
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0) 
         # what we put in for the "fill" doesn't matter because only exterior 
@@ -215,7 +213,7 @@ class Mesh2D(Mesh):
 
         ## set up the initial data arrays
         new_shape = (max(NFacPerCell, 4), (1 + layers)*NCells + layers*NFac)
-        faces = numerix.MA.masked_values(-numerix.ones(new_shape), value = -1)
+        faces = numerix.MA.masked_values(-numerix.ones(new_shape, 'l'), value = -1)
         orderedVertices = mesh._orderedCellVertexIDs
         faces[:NFacPerCell, :NCells] = orderedVertices
         vertices = oldVertices
@@ -270,7 +268,10 @@ class Mesh2D(Mesh):
 
     @property
     def _VTKCellType(self):
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         return tvtk.Polygon().cell_type
         
     def _test(self):
@@ -488,8 +489,8 @@ class Mesh2D(Mesh):
         """
 
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

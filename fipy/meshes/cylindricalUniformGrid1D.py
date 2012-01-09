@@ -41,6 +41,8 @@ from fipy.meshes.uniformGrid1D import UniformGrid1D
 from fipy.tools import numerix
 from fipy.tools import parallel
 
+__all__ = ["CylindricalUniformGrid1D"]
+
 class CylindricalUniformGrid1D(UniformGrid1D):
     """
     Creates a 1D cylindrical grid mesh.
@@ -96,8 +98,8 @@ class CylindricalUniformGrid1D(UniformGrid1D):
         """
 
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

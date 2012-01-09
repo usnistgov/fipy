@@ -36,6 +36,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
 
+__all__ = ["ExplicitDiffusionTerm"]
+
 class ExplicitDiffusionTerm(_BaseDiffusionTerm):
     r"""
     The discretization for the `ExplicitDiffusionTerm` is given by
@@ -51,7 +53,7 @@ class ExplicitDiffusionTerm(_BaseDiffusionTerm):
 
     """
     
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions = (), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         if hasattr(var, 'old'):
             varOld = var.old
         else:

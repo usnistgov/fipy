@@ -1,9 +1,11 @@
 __docformat__ = 'restructuredtext'
 
-from vtkCellViewer import VTKCellViewer
-from vtkFaceViewer import VTKFaceViewer
+from fipy.viewers.vtkViewer.vtkCellViewer import VTKCellViewer
+from fipy.viewers.vtkViewer.vtkFaceViewer import VTKFaceViewer
 
-__all__ = ["VTKViewer", "VTKCellViewer", "VTKFaceViewer"]
+__all__ = ["VTKFaceViewer"]
+__all__.extend(vtkCellViewer.__all__)
+__all__.extend(vtkFaceViewer.__all__)
 
 def VTKViewer(vars, title=None, limits={}, **kwlimits):
     """Generic function for creating a `MatplotlibViewer`. 

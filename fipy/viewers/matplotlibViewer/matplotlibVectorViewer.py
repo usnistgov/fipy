@@ -37,9 +37,12 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from matplotlibViewer import _MatplotlibViewer
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
+
+from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+
+__all__ = ["MatplotlibVectorViewer"]
 
 class MatplotlibVectorViewer(_MatplotlibViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
@@ -52,7 +55,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
     __doc__ += _MatplotlibViewer._test2Dvector(viewer="MatplotlibVectorViewer")
     __doc__ += """
     
-            >>> for sparsity in arange(5000, 0, -500):
+            >>> for sparsity in numerix.arange(5000, 0, -500):
             ...     viewer.quiver(sparsity=sparsity)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
@@ -97,32 +100,38 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
 
         if isinstance(var, FaceVariable):
             N = mesh.numberOfFaces 
-            W = mesh._faceAreas
-            W = (W / min(W))**0.05
             X, Y = mesh.faceCenters
+
         elif isinstance(var, CellVariable):
             N = mesh.numberOfCells 
-            W = mesh.cellVolumes
             X, Y = mesh.cellCenters
-
+            
         if sparsity is not None and N > sparsity:
-            self.indices = numerix.random.rand(N) * W
-            self.indices = self.indices.argsort()[-sparsity:]
+            XYrand = numerix.random.random((2, sparsity))
+            XYrand = numerix.array([[min(X)], 
+                                    [min(Y)]]) + XYrand * numerix.array([[max(X) - min(X)],
+                                                                         [max(Y) - min(Y)]])
+            self.indices = numerix.nearest(numerix.array([X, Y]), XYrand)
         else:
             self.indices = numerix.arange(N)
 
         X = numerix.take(X, self.indices)
         Y = numerix.take(Y, self.indices)
         
-        U = V = numerix.ones(X.shape)
+        U = V = numerix.ones(X.shape, 'l')
+        
+        if hasattr(self, "_quiver"):
+            self._quiver.remove()
         
         self._quiver = self.axes.quiver(X, Y, U, V, scale=scale, pivot='middle')
 
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
+        from fipy.meshes.uniformGrid2D import UniformGrid2D
 
         vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
-                if (isinstance(var.mesh, Mesh2D) \
+                if ((isinstance(var.mesh, Mesh2D) 
+                     or isinstance(var.mesh, UniformGrid2D))\
                     and (isinstance(var, FaceVariable) \
                          or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:

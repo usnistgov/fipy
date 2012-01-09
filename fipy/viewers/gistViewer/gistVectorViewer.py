@@ -37,12 +37,13 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.gistViewer.gistViewer import _GistViewer
-
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
-
 from fipy.tools import numerix
+from fipy.tools.decorators import deprecateGist
+__all__ = ["GistVectorViewer"]
 
+@deprecateGist
 class GistVectorViewer(_GistViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using gist.

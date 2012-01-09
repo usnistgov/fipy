@@ -41,6 +41,7 @@ from scipy.io import mmio
 
 from fipy.tools import numerix
 
+__all__ = ["MatplotlibSparseMatrixViewer"]
 
 class SignedLogFormatter(ticker.LogFormatter):
     """Format signed values for log axis
@@ -187,7 +188,7 @@ class SignedLogLocator(ticker.LogLocator):
         vmax = numerix.ceil(scale*vmax)/scale
 
         return nonsingular(vmin, vmax)
-                         
+                   
 class MatplotlibSparseMatrixViewer:
     def __init__(self, title="Sparsity"):
         self.title = title
@@ -233,12 +234,12 @@ class MatplotlibSparseMatrixViewer:
 
         b = RHSvector
         if numerix.shape(b) == ():
-            b = numerix.zeros((N,))
+            b = numerix.zeros((N,), 'l')
 
         if len(z) == 0:
-            y = numerix.zeros((1,))
-            x = numerix.zeros((1,))
-            z = numerix.zeros((1,))
+            y = numerix.zeros((1,), 'l')
+            x = numerix.zeros((1,), 'l')
+            z = numerix.zeros((1,), 'l')
 
         def signed_to_logs(v):
             return (numerix.where(v > 0, numerix.log10(v), numerix.nan),
@@ -335,7 +336,7 @@ class MatplotlibSparseMatrixViewer:
         L_ax.add_collection(scatterRectangles(x=x, y=y, z=z, 
                                               norm=norm, cmap=cmap))
 
-        b_ax.add_collection(scatterRectangles(x=numerix.zeros((N,)), y=numerix.arange(N), z=b, 
+        b_ax.add_collection(scatterRectangles(x=numerix.zeros((N,), 'l'), y=numerix.arange(N), z=b, 
                                               norm=norm, cmap=cmap))
 
         ColorbarBase(ax=c_ax, cmap=cmap, norm=norm, orientation='vertical',

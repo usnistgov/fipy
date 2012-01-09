@@ -39,7 +39,9 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
-from metalIonSourceVariable import _MetalIonSourceVariable
+from fipy.models.levelSet.electroChem.metalIonSourceVariable import _MetalIonSourceVariable
+
+__all__ = ["buildMetalIonDiffusionEquation"]
 
 def buildMetalIonDiffusionEquation(ionVar = None,
                                    distanceVar = None,
@@ -150,8 +152,8 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     return eq + ImplicitSourceTerm(coeff)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

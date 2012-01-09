@@ -7,6 +7,9 @@ Introduction
 
    ../README
    ../INSTALLATION
+   SOLVERS
+   VIEWERS
+   USAGE
    numerical/index
    design
    FAQ

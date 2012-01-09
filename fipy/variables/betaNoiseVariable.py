@@ -37,8 +37,9 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
-
 from fipy.variables.noiseVariable import NoiseVariable
+
+__all__ = ["BetaNoiseVariable"]
 
 class BetaNoiseVariable(NoiseVariable):
     r"""
@@ -51,6 +52,11 @@ class BetaNoiseVariable(NoiseVariable):
        
     with a shape parameter :math:`\alpha`, a rate parameter :math:`\beta`, and 
     :math:`\Gamma(z) = \int_0^\infty t^{z - 1}e^{-t}\,dt`.
+
+    Seed the random module for the sake of deterministic test results.
+
+    >>> from fipy import numerix
+    >>> numerix.random.seed(1)
 
     We generate noise on a uniform cartesian mesh
            
@@ -69,7 +75,10 @@ class BetaNoiseVariable(NoiseVariable):
     
     >>> from fipy.variables.cellVariable import CellVariable
     >>> betadist = CellVariable(mesh = histogram.mesh)
-    >>> x = histogram.mesh.cellCenters[0]
+    >>> x = CellVariable(mesh=histogram.mesh, value=histogram.mesh.cellCenters[0])
+    >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
+    >>> betadist = ((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) 
+    ...             * x**(alpha - 1) * (1 - x)**(beta - 1)) # doctest: +SCIPY
     
     >>> if __name__ == '__main__':
     ...     from fipy import Viewer
@@ -77,15 +86,12 @@ class BetaNoiseVariable(NoiseVariable):
     ...     histoplot = Viewer(vars=(histogram, betadist), 
     ...                        datamin=0, datamax=1.5)
     
-    >>> from fipy.tools.numerix import arange, exp
-    >>> from scipy.special import gamma as Gamma
+    >>> from fipy.tools.numerix import arange
     
     >>> for a in arange(0.5,5,0.5):
     ...     alpha.value = a
     ...     for b in arange(0.5,5,0.5):
     ...         beta.value = b
-    ...         betadist.setValue((Gamma(alpha + beta) / (Gamma(alpha) * Gamma(beta))) 
-    ...                           * x**(alpha - 1) * (1 - x)**(beta - 1))
     ...         if __name__ == '__main__':
     ...             import sys
     ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
@@ -121,8 +127,8 @@ class BetaNoiseVariable(NoiseVariable):
                            size = [self.mesh.globalNumberOfCells])
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

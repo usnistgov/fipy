@@ -34,10 +34,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
-from fipy.tools import numerix
+from fipy.terms.diffusionTermNoCorrection import DiffusionTermNoCorrection
+from fipy.terms.diffusionTermCorrection import DiffusionTermCorrection
 
-class DiffusionTerm(_BaseDiffusionTerm):
+__all__ = ["DiffusionTerm", "DiffusionTermCorrection", "DiffusionTermNoCorrection"]
+class DiffusionTerm(DiffusionTermNoCorrection):
     r"""
     
     This term represents a higher order diffusion term. The order of the term is determined
@@ -65,36 +66,31 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
     """
 
-    def _getNormals(self, mesh):
-        return mesh._faceCellToCellNormals
-
-    def _treatMeshAsOrthogonal(self, mesh):        
-        return mesh._isOrthogonal()
-
     def _test(self):
         r"""
         Test, 2nd order, 1 dimension, fixed flux of zero both ends.
 
         >>> from fipy.meshes import Grid1D
-        >>> from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix as SparseMatrix
-        >>> from fipy.tools import parallel
+        >>> from fipy.solvers import _MeshMatrix
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> procID = parallel.procID
+        >>> from fipy.tools import numerix
         >>> mesh = Grid1D(dx = 1., nx = 2)
         >>> term = DiffusionTerm(coeff = (1,))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
-        >>> print numerix.allclose(M.numpyArray, 
+        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> A = M.numpyArray
+        >>> print numerix.allclose(A,
         ...                        (( 1., -1.), 
-        ...                         (-1.,  1.))) or procID != 0
+        ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
-        >>> print numerix.allclose(L.numpyArray, 
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
+        >>> A = L.numpyArray
+        >>> print numerix.allclose(A,
         ...                        ((-1.,  1.), 
-        ...                         ( 1., -1.))) or procID != 0
+        ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
-        >>> print numerix.allclose(b, (0., 0.)) or procID != 0
+        >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
         True
 
         The coefficient must be a `FaceVariable`, a `CellVariable` (which will
@@ -103,48 +99,53 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> from fipy.variables.faceVariable import FaceVariable
         >>> term = DiffusionTerm(coeff=FaceVariable(mesh=mesh, value=1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
-        >>> print numerix.allclose(M.numpyArray, 
-        ...                        (( 1., -1.), 
-        ...                         (-1.,  1.))) or procID != 0
+        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> A = M.numpyArray
+        >>> print numerix.allclose(A, (( 1., -1.), 
+        ...                            (-1.,  1.))) # doctest: +PROCESSOR_0
         True
-        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
-        >>> print numerix.allclose(L.numpyArray, 
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
+        >>> A = L.numpyArray
+        >>> print numerix.allclose(A,
         ...                        ((-1.,  1.), 
-        ...                         ( 1., -1.))) or procID != 0
+        ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
-        >>> print numerix.allclose(b, (0., 0.)) or procID != 0
+        >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
         True
 
         >>> term = DiffusionTerm(coeff=CellVariable(mesh=mesh, value=1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
-        >>> print numerix.allclose(M.numpyArray, 
+        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> A = M.numpyArray
+        >>> print numerix.allclose(A,
         ...                        (( 1., -1.), 
-        ...                         (-1.,  1.))) or procID != 0
+        ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
-        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
-        >>> print numerix.allclose(L.numpyArray, 
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
+        >>> A = L.numpyArray
+        >>> print numerix.allclose(A,
         ...                        ((-1.,  1.), 
-        ...                         ( 1., -1.))) or procID != 0
+        ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
-        >>> print numerix.allclose(b, (0., 0.)) or procID != 0
+        >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
         True
 
         >>> from fipy.variables.variable import Variable
         >>> term = DiffusionTerm(coeff = Variable(value = 1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
-        >>> print numerix.allclose(M.numpyArray, 
+        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> A = M.numpyArray
+        >>> print numerix.allclose(A,
         ...                        (( 1., -1.), 
-        ...                         (-1.,  1.))) or procID != 0
+        ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
-        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=SparseMatrix)
-        >>> print numerix.allclose(L.numpyArray, 
+        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
+        >>> A = L.numpyArray
+        >>> print numerix.allclose(A,
         ...                        ((-1.,  1.), 
-        ...                         ( 1., -1.))) or procID != 0
+        ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
-        >>> print numerix.allclose(b, (0., 0.)) or procID != 0
+        >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
         True
                    
         >>> term = DiffusionTerm(coeff = ((1,2),))
@@ -159,18 +160,20 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> var.constrain(4., mesh.facesRight)
         >>> term = DiffusionTerm(coeff = (1.,))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
-        >>> print numerix.allclose(M.numpyArray, 
+        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> A = M.numpyArray
+        >>> print numerix.allclose(A,
         ...                        (( 1., -1.), 
-        ...                         (-1.,  1.))) or procID != 0
+        ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
         >>> v,L,b = term._buildMatrix(var=var, 
-        ...                         SparseMatrix=SparseMatrix)
-        >>> print numerix.allclose(L.numpyArray, 
+        ...                         SparseMatrix=_MeshMatrix)
+        >>> A = L.numpyArray
+        >>> print numerix.allclose(A,
         ...                        ((-1.,  1.), 
-        ...                         ( 1., -3.))) or procID != 0
+        ...                         ( 1., -3.))) # doctest: +PROCESSOR_0
         True
-        >>> print numerix.allclose(b, (-3., -8.)) or procID != 0
+        >>> print numerix.allclose(b, (-3., -8.)) # doctest: +PROCESSOR_0
         True
            
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvatures 0,
@@ -185,19 +188,21 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.facesRight, 0., 2)
         >>> term = DiffusionTerm(coeff = (1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
-        >>> print numerix.allclose(M.numpyArray, 
+        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> A = M.numpyArray
+        >>> print numerix.allclose(A, 
         ...                        (( 1., -1.), 
-        ...                         (-1.,  1.))) or procID != 0
+        ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
 
-        >>> v,L,b = term._buildMatrix(var=var, SparseMatrix=SparseMatrix,
+        >>> v,L,b = term._buildMatrix(var=var, SparseMatrix=_MeshMatrix,
         ...                         boundaryConditions=(bcLeft2, bcRight2))
-        >>> print numerix.allclose(L.numpyArray, 
+        >>> A = L.numpyArray
+        >>> print numerix.allclose(A,
         ...                        (( 4., -6.), 
-        ...                         (-4., 10.))) or procID != 0
+        ...                         (-4., 10.))) # doctest: +PROCESSOR_0
         True
-        >>> print numerix.allclose(b, (1., 21.)) or procID != 0
+        >>> print numerix.allclose(b, (1., 21.)) # doctest: +PROCESSOR_0
         True
         
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvature 2,
@@ -212,21 +217,22 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
         >>> term = DiffusionTerm(coeff = (-1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
-        >>> print numerix.allclose(M.numpyArray, 
+        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> A = M.numpyArray
+        >>> print numerix.allclose(A,
         ...                        ((-1.,  1.), 
-        ...                         ( 1., -1.))) or procID != 0
+        ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
 
         >>> v,L,b = term._buildMatrix(var=var,
-        ...                         SparseMatrix=SparseMatrix,
+        ...                         SparseMatrix=_MeshMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
-        
-        >>> print numerix.allclose(L.numpyArray, 
+        >>> A = L.numpyArray
+        >>> print numerix.allclose(A,
         ...                        ((-4.,  6.), 
-        ...                         ( 2., -4.))) or procID != 0
+        ...                         ( 2., -4.))) # doctest: +PROCESSOR_0
         True
-        >>> print numerix.allclose(b, (3., -4.)) or procID != 0
+        >>> print numerix.allclose(b, (3., -4.)) # doctest: +PROCESSOR_0
         True
 
 
@@ -243,21 +249,22 @@ class DiffusionTerm(_BaseDiffusionTerm):
         
         >>> term = DiffusionTerm(coeff = (1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(SparseMatrix, CellVariable(mesh=mesh), coeff[0])
-        >>> print numerix.allclose(M.numpyArray, 
+        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> A = M.numpyArray
+        >>> print numerix.allclose(A,
         ...                        (( 2., -2.), 
-        ...                         (-2.,  2.))) or procID != 0
+        ...                         (-2.,  2.))) # doctest: +PROCESSOR_0
         True
 
         >>> v,L,b = term._buildMatrix(var=var, 
-        ...                         SparseMatrix=SparseMatrix,
+        ...                         SparseMatrix=_MeshMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
-
-        >>> print numerix.allclose(L.numpyArray, 
+        >>> A = L.numpyArray
+        >>> print numerix.allclose(A,
         ...                        (( 80., -32.),
-        ...                         (-32.,  16.))) or procID != 0
+        ...                         (-32.,  16.))) # doctest: +PROCESSOR_0
         True
-        >>> print numerix.allclose(b, (-8., 4.)) or procID != 0
+        >>> print numerix.allclose(b, (-8., 4.)) # doctest: +PROCESSOR_0
         True
 
         The following tests are to check that DiffusionTerm can take any of the four
@@ -265,27 +272,23 @@ class DiffusionTerm(_BaseDiffusionTerm):
 
         >>> from fipy.meshes.tri2D import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
-        >>> term = DiffusionTerm(CellVariable(value = 1, mesh = mesh))
+        >>> term = DiffusionTermCorrection(CellVariable(value = 1, mesh = mesh))
         >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
         >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
         >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
-        >>> term = DiffusionTerm(CellVariable(value=(0.5, 1), mesh=mesh, rank=1))
         >>> term = DiffusionTerm(CellVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
         >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
-        >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
         >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
         >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0]
         [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
         >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
-        >>> term = DiffusionTerm(FaceVariable(value=(0.5, 1), mesh=mesh, rank=1))
-        >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
+        >>> term = DiffusionTermCorrection(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
         >>> val = (60., 60., 0.3, 0.3, 0.22277228, 0.22277228, 0.22277228, 0.22277228)
         >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh))[0], val)
         1
-        >>> term = DiffusionTerm(((0.5, 1),))
         >>> term = DiffusionTerm((((0.5,), (1,)),))
         >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh))[0], val)
         Traceback (most recent call last):
@@ -352,7 +355,7 @@ class DiffusionTerm(_BaseDiffusionTerm):
         >>> q = CellVariable(mesh=m, elementshape=(3,))
         >>> vectorEq2 = TransientTerm(1e-20) == DiffusionTerm(([[1, 2, 3], [4, 5, 6], [7, 8, 9]],))
         >>> vectorEq2.cacheMatrix()
-        >>> vectorEq2.solve(q, solver=DummySolver())
+        >>> vectorEq2.solve(q, solver=DummySolver(), dt=1.)
 
         Test the previous three vector examples against coupled.
         
@@ -375,11 +378,14 @@ class DiffusionTerm(_BaseDiffusionTerm):
         """
         pass            
 
-from fipy.terms.diffusionTermNoCorrection import DiffusionTermNoCorrection 
+
         
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()
+
+
+

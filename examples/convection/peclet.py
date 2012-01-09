@@ -66,14 +66,14 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...     eq = (TransientTerm(1e-4) 
 ...           == DiffusionTerm(coeff=diffCoeff)
 ...           + PowerLawConvectionTerm(coeff=convCoeff))
-...     eq.solve(var=var)
+...     eq.solve(var=var, dt=1.)
 ...     x = mesh.cellCenters[0]
 ...     arg0 = -convCoeff * x / diffCoeff
-...     arg0 = where(arg0 < -200, -200, arg0)
+...     arg0 = numerix.where(arg0 < -200, -200, arg0)
 ...     arg1 = -convCoeff * L / diffCoeff
 ...     arg1 = (arg1 >= -200) * (arg1 + 200) - 200  
-...     CC = 1. - exp(arg0)
-...     DD = 1. - exp(arg1)
+...     CC = 1. - numerix.exp(arg0)
+...     DD = 1. - numerix.exp(arg1)
 ...     analyticalArray = CC / DD
 ...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).value)
 ...     if __name__ == '__main__':

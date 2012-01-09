@@ -39,7 +39,7 @@ from fipy import numerix
         
 from fipy.tools.parser import parse
 
-from utils import monitor
+from examples.benchmarking.utils import monitor
 
 steps = parse('--numberOfSteps', action='store',
               type='int', default=20)

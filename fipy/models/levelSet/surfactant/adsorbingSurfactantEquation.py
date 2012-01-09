@@ -36,11 +36,12 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
 from fipy.variables.cellVariable import CellVariable
-from surfactantEquation import SurfactantEquation
+from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
+
+__all__ = ["AdsorbingSurfactantEquation"]
 
 class _AdsorptionCoeff(CellVariable):
     def __init__(self, distanceVar, bulkVar, rateConstant):
@@ -51,6 +52,7 @@ class _AdsorptionCoeff(CellVariable):
         self.rateConstant = rateConstant
         self.dt = 0
 
+        
     def _calcValue(self):
         return numerix.array(self.dt * self.bulkVar
                              * self.rateConstant * self._multiplier())
@@ -170,7 +172,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> theta1 = 0.
     >>> c0 = 1.
     >>> c1 = 1.
-    >>> totalSteps = 100
+    >>> totalSteps = 10
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
     >>> distanceVar = DistanceVariable(mesh = mesh, 
     ...                                value = dx * (numerix.arange(5) - 1.5),
@@ -235,6 +237,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> eqn0.solve(var0, dt = dt)
     >>> answer = CellVariable(mesh=mesh, value=var0.interfaceVar)
     >>> answer[x==1.25] = 0.
+    
     >>> print var0.interfaceVar.allclose(answer)
     True
 
@@ -310,7 +313,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
           - `otherBulkVar`: The value of the `otherVar` in the bulk.
           - `otherRateConstant`: The adsorption rate of the `otherVar`.
           - `consumptionCoeff`: The rate that the `surfactantVar` is consumed during deposition.
-
+                             
         """
 
           
@@ -345,7 +348,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         if consumptionCoeff is not None:
             self.eq += ImplicitSourceTerm(consumptionCoeff)
 
-    def solve(self, var, boundaryConditions=(), solver=None, dt = 1.):
+    def solve(self, var, boundaryConditions=(), solver=None, dt=None):
         """
         Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
         	
@@ -369,7 +372,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             
         SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
 
-    def sweep(self, var, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+    def sweep(self, var, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `AdsorbingSurfactantEquation`'s linear
         system once. This method also recalculates and returns the
@@ -391,8 +394,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         return SurfactantEquation.sweep(self, var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, underRelaxation=underRelaxation, residualFn=residualFn)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

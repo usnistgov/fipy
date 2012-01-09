@@ -1,42 +1,45 @@
 __docformat__ = 'restructuredtext'
 
-import os
-import sys
-import string
-import glob
-import imp
+__all__ = []
 
 try:
-    from gistViewer import *
+    from fipy.viewers.gistViewer import *
+    __all__.extend(gistViewer.__all__)
 except:
     pass
 
 try:
-    from gnuplotViewer import *
+    from fipy.viewers.gnuplotViewer import *
+    __all__.extend(gnuplotViewer.__all__)
 except:
     pass
 
 try:
-    from matplotlibViewer import *
+    from fipy.viewers.matplotlibViewer import *
+    __all__.extend(matplotlibViewer.__all__)
 except:
     pass
 
 try:
-    from mayaviViewer import *
+    from fipy.viewers.mayaviViewer import *
+    __all__.extend(mayaviViewer.__all__)
 except:
     pass
 
-from multiViewer import MultiViewer
-from tsvViewer import TSVViewer
-from vtkViewer import VTKViewer
+from fipy.viewers.multiViewer import *
+from fipy.viewers.tsvViewer import *
+from fipy.viewers.vtkViewer import *
 
+__all__.extend(multiViewer.__all__)
+__all__.extend(tsvViewer.__all__)
+__all__.extend(vtkViewer.__all__)
 
 # what about vector variables?
 
 class MeshDimensionError(IndexError):
     pass
     
-from viewer import _Viewer
+from fipy.viewers.viewer import _Viewer
 class DummyViewer(_Viewer):
     def plot(self, filename=None):
         pass
@@ -79,12 +82,13 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         (default) value of `None` will autoscale.
       
     """
-    
+    import os
+
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
     vars = list(vars)
     
-    if FIPY_VIEWER is None and os.environ.has_key('FIPY_VIEWER'):
+    if FIPY_VIEWER is None and 'FIPY_VIEWER' in os.environ:
         FIPY_VIEWER = os.environ['FIPY_VIEWER']
 
     if FIPY_VIEWER == "dummy":
@@ -120,7 +124,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         if FIPY_VIEWER is not None:
             raise ImportError, "`%s` viewer not found" % FIPY_VIEWER
         else:
-            raise ImportError, "No viewers found"
+            raise ImportError, "No viewers found. Run `python setup.py egg_info` or similar."
     
     if len(vars) > 0:
         raise ImportError, "Failed to import a viewer: %s" % str(errors)
@@ -130,10 +134,4 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     else:
         return viewers[0]
         
-def make(*args, **kwargs):
-    """
-    A deprecated synonym for `Viewer`
-    """
-    import warnings
-    warnings.warn("'Viewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
-    return Viewer(*args, **kwargs)
+__all__.extend(["MeshDimensionError", "DummyViewer", "Viewer"])

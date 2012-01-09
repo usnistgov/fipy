@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import os
 
 from fipy.terms.unaryTerm import _UnaryTerm
@@ -264,7 +266,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
     def __doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
         for boundaryCondition in higherOrderBCs:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)
-            if os.environ.has_key('FIPY_DISPLAY_MATRIX'):
+            if 'FIPY_DISPLAY_MATRIX' in os.environ:
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
@@ -273,7 +275,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
         return coefficientMatrix, boundaryB
 
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
         Test to ensure that a changing coefficient influences the boundary conditions.
 
@@ -319,7 +321,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
                 normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
 
-                if len(var.shape) == 1 and (self.nthCoeff.shape) > 1:
+                if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
                     nthCoeffFaceGrad = var.faceGrad.dot(self.nthCoeff)
                     normalsNthCoeff =  normals.dot(self.nthCoeff)
                 else:
@@ -350,7 +352,7 @@ class _BaseDiffusionTerm(_UnaryTerm):
             
         return (var, L, b)
         
-    def __higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt = 1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def __higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.mesh
         
         N = mesh.numberOfCells
@@ -459,8 +461,8 @@ class _BaseDiffusionTerm(_UnaryTerm):
         return self._vars
          
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

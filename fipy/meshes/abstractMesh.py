@@ -35,11 +35,14 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import serial
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
- 
+from fipy.tools.dimensions.physicalField import PhysicalField
+
 class MeshAdditionError(Exception):
     pass
  
@@ -90,7 +93,6 @@ class AbstractMesh(object):
      
     def _getPointToCellDistances(self, point):
         tmp = self.cellCenters - PhysicalField(point)
-        from fipy.tools import numerix
         return numerix.sqrtDot(tmp, tmp)
 
     def getNearestCell(self, point):
@@ -131,6 +133,50 @@ class AbstractMesh(object):
         from fipy.variables.cellVariable import CellVariable
         return CellVariable(mesh=self, value=self._scaledCellCenters,
                             rank=1)
+    
+    @property
+    def x(self):
+        """
+        Equivant to using ``cellCenters[0]``.        
+        >>> from fipy import *
+        >>> print Grid1D(nx=2).x
+        [ 0.5  1.5]
+        """
+        return self.cellCenters[0]
+    
+    @property
+    def y(self):
+        """
+        Equivant to using ``cellCenters[1]``.        
+        >>> from fipy import *
+        >>> print Grid2D(nx=2, ny=2).y
+        [ 0.5  0.5  1.5  1.5]
+        >>> print Grid1D(nx=2).y
+        Traceback (most recent call last):
+          ...
+        AttributeError: 1D meshes do not have a "y" attribute.
+        """
+        if self.dim > 1:
+            return self.cellCenters[1]
+        else:
+            raise AttributeError, '1D meshes do not have a "y" attribute.'
+
+    @property
+    def z(self):
+        """
+        Equivant to using ``cellCenters[2]``.        
+        >>> from fipy import *
+        >>> print Grid3D(nx=2, ny=2, nz=2).z
+        [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]
+        >>> print Grid2D(nx=2, ny=2).z
+        Traceback (most recent call last):
+          ...
+        AttributeError: 1D and 2D meshes do not have a "z" attribute.
+        """
+        if self.dim > 2:
+            return self.cellCenters[2]
+        else:
+            raise AttributeError, '1D and 2D meshes do not have a "z" attribute.'
 
     """scaled geometery properties
     
@@ -155,19 +201,18 @@ class AbstractMesh(object):
            >>> from fipy.meshes.grid2D import Grid2D
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
-           >>> from fipy.tools import parallel
-           >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
-           ...                                                     [7, 8, 10, 11],
-           ...                                                     [2, 3, 4, 5],
-           ...                                                     [6, 7, 9, 10]]).flatten().all()
+           >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
+           ...                             [7, 8, 10, 11],
+           ...                             [2, 3, 4, 5],
+           ...                             [6, 7, 9, 10]]).flatten().all() # doctest: +PROCESSOR_0
            True
 
            >>> mesh._connectFaces(numerix.nonzero(mesh.facesLeft), numerix.nonzero(mesh.facesRight))
 
-           >>> print parallel.procID != 0 or (mesh.cellFaceIDs == [[0, 1, 2, 3],
-           ...                                                     [7, 6, 10, 9],
-           ...                                                     [2, 3, 4, 5],
-           ...                                                     [6, 7, 9, 10]]).flatten().all()
+           >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
+           ...                             [7, 6, 10, 9],
+           ...                             [2, 3, 4, 5],
+           ...                             [6, 7, 9, 10]]).flatten().all() # doctest: +PROCESSOR_0
            True
 
         """
@@ -178,6 +223,7 @@ class AbstractMesh(object):
         faces = FaceVariable(mesh=self, value=False)
         faces[faces0] = True
         faces[faces1] = True
+
         assert (faces | self.exteriorFaces == self.exteriorFaces).all()
 
         ## following assert checks number of faces are equal, normals are opposite and areas are the same
@@ -254,14 +300,14 @@ class AbstractMesh(object):
         """
         
         selfc = self._concatenableMesh
-        other = other._concatenableMesh
+        otherc = other._concatenableMesh
 
         selfNumFaces = selfc.faceVertexIDs.shape[-1]
         selfNumVertices = selfc.vertexCoords.shape[-1]
-        otherNumFaces = other.faceVertexIDs.shape[-1]
-        otherNumVertices = other.vertexCoords.shape[-1]
+        otherNumFaces = otherc.faceVertexIDs.shape[-1]
+        otherNumVertices = otherc.vertexCoords.shape[-1]
         ## check dimensions
-        if(selfc.vertexCoords.shape[0] != other.vertexCoords.shape[0]):
+        if(selfc.vertexCoords.shape[0] != otherc.vertexCoords.shape[0]):
             raise MeshAdditionError, "Dimensions do not match"
             
         ## compute vertex correlates
@@ -275,12 +321,12 @@ class AbstractMesh(object):
 
         from fipy.tools.debug import PRINT
         from fipy.tools.debug import PRINT
-        PRINT("otherExt", other.exteriorFaces.value)
+        PRINT("otherExt", otherc.exteriorFaces.value)
         raw_input()
         PRINT("selfExt", selfc.exteriorFaces.value)
 
         PRINT("self filled", selfc.faceVertexIDs.filled())
-        PRINT("othe filled", other.faceVertexIDs.filled())
+        PRINT("othe filled", otherc.faceVertexIDs.filled())
         raw_input()
 
         PRINT("selfc.faceVertexIDs.filled()\n",selfc.faceVertexIDs.filled())
@@ -291,35 +337,26 @@ class AbstractMesh(object):
         PRINT("extfaces mesh", selfc.exteriorFaces.mesh)
         """
 
+        ## only try to match along the operation manifold
+        if hasattr(self, "opManifold"):
+            self_faces = self.opManifold(selfc)
+        else:
+            self_faces = selfc.exteriorFaces.value
+        if hasattr(other, "opManifold"):
+            other_faces = other.opManifold(otherc)
+        else:
+            other_faces = otherc.exteriorFaces.value
+            
         ## only try to match exterior (X) vertices
         self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[...,
-            selfc.exteriorFaces.value].flatten())
-        other_Xvertices = numerix.unique(other.faceVertexIDs.filled()[...,
-            other.exteriorFaces.value].flatten())
-
-        """
-        from fipy.tools.debug import PRINT
-        PRINT("self_Xvertices", self_Xvertices)
-        PRINT("other_Xvertices", other_Xvertices)
-        raw_input()
-        """
+            self_faces].flatten())
+        other_Xvertices = numerix.unique(otherc.faceVertexIDs.filled()[...,
+            other_faces].flatten())
 
         self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
-        other_XvertexCoords = other.vertexCoords[..., other_Xvertices]
+        other_XvertexCoords = otherc.vertexCoords[..., other_Xvertices]
         
-        # lifted from Mesh._getNearestCellID()
-        other_vertexCoordMap = numerix.resize(other_XvertexCoords, 
-                                              (self_XvertexCoords.shape[-1], 
-                                               other_XvertexCoords.shape[0], 
-                                               other_XvertexCoords.shape[-1])).swapaxes(0,1)
-        tmp = self_XvertexCoords[..., numerix.newaxis] - other_vertexCoordMap
-
-        """
-        import sys
-        print >> sys.stderr, "tmp", tmp
-        """
-                
-        closest = numerix.argmin(numerix.dot(tmp, tmp), axis=0)
+        closest = numerix.nearest(self_XvertexCoords, other_XvertexCoords)
         
         # just because they're closest, doesn't mean they're close
         tmp = self_XvertexCoords[..., closest] - other_XvertexCoords
@@ -327,13 +364,13 @@ class AbstractMesh(object):
         # only want vertex pairs that are 100x closer than the smallest 
         # cell-to-cell distance
         close = distance < resolution * min(selfc._cellToCellDistances.min(), 
-                                            other._cellToCellDistances.min())
+                                            otherc._cellToCellDistances.min())
         vertexCorrelates = numerix.array((self_Xvertices[closest[close]],
                                           other_Xvertices[close]))
         
         # warn if meshes don't touch, but allow it
         if (selfc._numberOfVertices > 0 
-            and other._numberOfVertices > 0 
+            and otherc._numberOfVertices > 0 
             and vertexCorrelates.shape[-1] == 0):
             import warnings
             warnings.warn("Vertices are not aligned", UserWarning, stacklevel=4)
@@ -342,19 +379,19 @@ class AbstractMesh(object):
 
         # ensure that both sets of faceVertexIDs have the same maximum number of (masked) elements
         self_faceVertexIDs = selfc.faceVertexIDs
-        other_faceVertexIDs = other.faceVertexIDs
+        other_faceVertexIDs = otherc.faceVertexIDs
 
         diff = self_faceVertexIDs.shape[0] - other_faceVertexIDs.shape[0]
         if diff > 0:
             other_faceVertexIDs = numerix.append(other_faceVertexIDs, 
                                                  -1 * numerix.ones((diff,) 
-                                                                   + other_faceVertexIDs.shape[1:]),
+                                                                   + other_faceVertexIDs.shape[1:], 'l'),
                                                  axis=0)
             other_faceVertexIDs = MA.masked_values(other_faceVertexIDs, -1)
         elif diff < 0:
             self_faceVertexIDs = numerix.append(self_faceVertexIDs, 
                                                 -1 * numerix.ones((-diff,) 
-                                                                  + self_faceVertexIDs.shape[1:]),
+                                                                  + self_faceVertexIDs.shape[1:], 'l'),
                                                 axis=0)
             self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
 
@@ -411,7 +448,7 @@ class AbstractMesh(object):
 
         # warn if meshes don't touch, but allow it
         if (selfc.numberOfFaces > 0 
-            and other.numberOfFaces > 0 
+            and otherc.numberOfFaces > 0 
             and faceCorrelates.shape[-1] == 0):
             import warnings
             warnings.warn("Faces are not aligned", UserWarning, stacklevel=4)
@@ -423,29 +460,29 @@ class AbstractMesh(object):
         face_map[facesToAdd] = numerix.arange(otherNumFaces - len(faceCorrelates[1])) + selfNumFaces
         face_map[faceCorrelates[1]] = faceCorrelates[0]
         
-        other_faceVertexIDs = vertex_map[other.faceVertexIDs[..., facesToAdd]]
+        other_faceVertexIDs = vertex_map[otherc.faceVertexIDs[..., facesToAdd]]
         
         # ensure that both sets of cellFaceIDs have the same maximum number of (masked) elements
         self_cellFaceIDs = selfc.cellFaceIDs
-        other_cellFaceIDs = face_map[other.cellFaceIDs]
+        other_cellFaceIDs = face_map[otherc.cellFaceIDs]
         diff = self_cellFaceIDs.shape[0] - other_cellFaceIDs.shape[0]
         if diff > 0:
             other_cellFaceIDs = numerix.append(other_cellFaceIDs, 
                                                -1 * numerix.ones((diff,) 
-                                                                 + other_cellFaceIDs.shape[1:]),
+                                                                 + other_cellFaceIDs.shape[1:], 'l'),
                                                axis=0)
             other_cellFaceIDs = MA.masked_values(other_cellFaceIDs, -1)
         elif diff < 0:
             self_cellFaceIDs = numerix.append(self_cellFaceIDs, 
                                               -1 * numerix.ones((-diff,) 
-                                                                + self_cellFaceIDs.shape[1:]),
+                                                                + self_cellFaceIDs.shape[1:], 'l'),
                                               axis=0)
             self_cellFaceIDs = MA.masked_values(self_cellFaceIDs, -1)
 
         # concatenate everything and return
         return {
             'vertexCoords': numerix.concatenate((selfc.vertexCoords, 
-                                                 other.vertexCoords[..., verticesToAdd]), axis=1), 
+                                                 otherc.vertexCoords[..., verticesToAdd]), axis=1), 
             'faceVertexIDs': numerix.concatenate((self_faceVertexIDs, 
                                                   other_faceVertexIDs), axis=1), 
             'cellFaceIDs': MA.concatenate((self_cellFaceIDs, 
@@ -659,13 +696,12 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((21, 25), 
-            ...                              numerix.nonzero(mesh.facesLeft)[0])
+            >>> print numerix.allequal((21, 25), 
+            ...                        numerix.nonzero(mesh.facesLeft)[0]) # doctest: +PROCESSOR_0
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print parallel.procID > 0 or numerix.allequal((9, 13), 
-            ...                              numerix.nonzero(mesh.facesLeft)[0])
+            >>> print numerix.allequal((9, 13), 
+            ...                        numerix.nonzero(mesh.facesLeft)[0]) # doctest: +PROCESSOR_0
             True
 
         """
@@ -681,13 +717,12 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((24, 28), 
-            ...                              numerix.nonzero(mesh.facesRight)[0])
+            >>> print numerix.allequal((24, 28), 
+            ...                        numerix.nonzero(mesh.facesRight)[0]) # doctest: +PROCESSOR_0
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)    
-            >>> print parallel.procID > 0 or numerix.allequal((12, 16), 
-            ...                                               numerix.nonzero(mesh.facesRight)[0])
+            >>> print numerix.allequal((12, 16), 
+            ...                        numerix.nonzero(mesh.facesRight)[0]) # doctest: +PROCESSOR_0
             True
             
         """
@@ -703,13 +738,12 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((12, 13, 14), 
-            ...                              numerix.nonzero(mesh.facesBottom)[0])
+            >>> print numerix.allequal((12, 13, 14), 
+            ...                        numerix.nonzero(mesh.facesBottom)[0]) # doctest: +PROCESSOR_0
             1
             >>> x, y, z = mesh.faceCenters
-            >>> print parallel.procID > 0 or numerix.allequal((12, 13), 
-            ...                              numerix.nonzero(mesh.facesBottom & (x < 1))[0])
+            >>> print numerix.allequal((12, 13), 
+            ...                        numerix.nonzero(mesh.facesBottom & (x < 1))[0]) # doctest: +PROCESSOR_0
             1
             
         """
@@ -727,13 +761,12 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((18, 19, 20), 
-            ...                              numerix.nonzero(mesh.facesTop)[0])
+            >>> print numerix.allequal((18, 19, 20), 
+            ...                        numerix.nonzero(mesh.facesTop)[0]) # doctest: +PROCESSOR_0
             True
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)        
-            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8), 
-            ...                              numerix.nonzero(mesh.facesTop)[0])
+            >>> print numerix.allequal((6, 7, 8), 
+            ...                        numerix.nonzero(mesh.facesTop)[0]) # doctest: +PROCESSOR_0
             True
             
         """
@@ -751,9 +784,8 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((6, 7, 8, 9, 10, 11), 
-            ...                              numerix.nonzero(mesh.facesBack)[0])
+            >>> print numerix.allequal((6, 7, 8, 9, 10, 11), 
+            ...                        numerix.nonzero(mesh.facesBack)[0]) # doctest: +PROCESSOR_0
             True
 
         """
@@ -769,9 +801,8 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> from fipy.tools import parallel
-            >>> print parallel.procID > 0 or numerix.allequal((0, 1, 2, 3, 4, 5), 
-            ...                              numerix.nonzero(mesh.facesFront)[0])
+            >>> print numerix.allequal((0, 1, 2, 3, 4, 5), 
+            ...                        numerix.nonzero(mesh.facesFront)[0]) # doctest: +PROCESSOR_0
             True
 
         """
@@ -803,99 +834,98 @@ class AbstractMesh(object):
         """
         Either translate a `Mesh` or concatenate two `Mesh` objects.
         
-            >>> from fipy.meshes import Grid2D
-            >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-            >>> print baseMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5]
-             [ 0.5  0.5  1.5  1.5]]
+        >>> from fipy.meshes import Grid2D
+        >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
+        >>> print baseMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5]
+         [ 0.5  0.5  1.5  1.5]]
              
         If a vector is added to a `Mesh`, a translated `Mesh` is returned
         
-            >>> translatedMesh = baseMesh + ((5,), (10,))
-            >>> print translatedMesh.cellCenters
-            [[  5.5   6.5   5.5   6.5]
-             [ 10.5  10.5  11.5  11.5]]
+        >>> translatedMesh = baseMesh + ((5,), (10,))
+        >>> print translatedMesh.cellCenters
+        [[  5.5   6.5   5.5   6.5]
+         [ 10.5  10.5  11.5  11.5]]
 
              
         If a `Mesh` is added to a `Mesh`, a concatenation of the two 
         `Mesh` objects is returned
         
-            >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
+        >>> print addedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
+         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
         
         The two `Mesh` objects need not be properly aligned in order to concatenate them
         but the resulting mesh may not have the intended connectivity
         
-            >>> from fipy.meshes.nonuniformMesh import MeshAdditionError
-            >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,))) 
+        >>> print addedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
+         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
-            >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
-             [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
+        >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
+        >>> print addedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
+         [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
 
         No provision is made to avoid or consolidate overlapping `Mesh` objects
         
-            >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
-            >>> print addedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
+        >>> print addedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
+         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
             
         Different `Mesh` classes can be concatenated
          
-            >>> from fipy.meshes import Tri2D
-            >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
-            >>> triMesh = triMesh + ((2,), (0,))
-            >>> triAddedMesh = baseMesh + triMesh
-            >>> cellCenters = [[0.5, 1.5, 0.5, 1.5, 2.83333333,  3.83333333,
-            ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
-            ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
-            ...                 0.5, 0.5, 0.16666667, 0.16666667]]
-            >>> print numerix.allclose(triAddedMesh.cellCenters,
-            ...                        cellCenters)
-            True
+        >>> from fipy.meshes import Tri2D
+        >>> triMesh = Tri2D(dx = 1.0, dy = 1.0, nx = 2, ny = 1)
+        >>> triMesh = triMesh + ((2,), (0,))
+        >>> triAddedMesh = baseMesh + triMesh
+        >>> cellCenters = [[0.5, 1.5, 0.5, 1.5, 2.83333333,  3.83333333,
+        ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+        ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333, 
+        ...                 0.5, 0.5, 0.16666667, 0.16666667]]
+        >>> print numerix.allclose(triAddedMesh.cellCenters,
+        ...                        cellCenters)
+        True
 
         again, their faces need not align, but the mesh may not have 
         the desired connectivity
         
-            >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
-            >>> triMesh = triMesh + ((2,), (0,))
-            >>> triAddedMesh = baseMesh + triMesh
-            >>> cellCenters = [[ 0.5, 1.5, 0.5, 1.5, 2.83333333, 3.83333333,
-            ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
-            ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
-            ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
-            >>> print numerix.allclose(triAddedMesh.cellCenters,
-            ...                        cellCenters)
-            True
+        >>> triMesh = Tri2D(dx = 1.0, dy = 2.0, nx = 2, ny = 1)
+        >>> triMesh = triMesh + ((2,), (0,))
+        >>> triAddedMesh = baseMesh + triMesh
+        >>> cellCenters = [[ 0.5, 1.5, 0.5, 1.5, 2.83333333, 3.83333333,
+        ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
+        ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
+        ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
+        >>> print numerix.allclose(triAddedMesh.cellCenters,
+        ...                        cellCenters)
+        True
 
         `Mesh` concatenation is not limited to 2D meshes
         
-            >>> from fipy.meshes import Grid3D
-            >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
-            ...                         nx = 2, ny = 2, nz = 2)
-            >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
-            ...                           nx = 1, ny = 1, nz = 1)
-            >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
-            >>> print threeDAddedMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
-             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
-             [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
+        >>> from fipy.meshes import Grid3D
+        >>> threeDBaseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
+        ...                         nx = 2, ny = 2, nz = 2)
+        >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, 
+        ...                           nx = 1, ny = 1, nz = 1)
+        >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
+        >>> print threeDAddedMesh.cellCenters
+        [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
+         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
+         [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
 
         but the different `Mesh` objects must, of course, have the same 
         dimensionality.
         
-            >>> InvalidMesh = threeDBaseMesh + baseMesh
-            Traceback (most recent call last):
-            ...
-            MeshAdditionError: Dimensions do not match
+        >>> InvalidMesh = threeDBaseMesh + baseMesh # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        MeshAdditionError: Dimensions do not match
         """  
-        if(isinstance(other, AbstractMesh)):
+        if isinstance(other, AbstractMesh):
             return self._concatenatedClass(**self._getAddedMeshValues(other=other))
         else:
             return self._translate(other)
@@ -906,13 +936,50 @@ class AbstractMesh(object):
         raise NotImplementedError
 
     __rmul__ = __mul__
-     
+
+    def __sub__(self, other):
+        """
+        Tests.
+        >>> from fipy import *
+        >>> m = Grid1D()
+        >>> print (m - ((1,))).cellCenters
+        [[-0.5]]
+        >>> ((1,)) - m
+        Traceback (most recent call last):
+        ...
+        TypeError: unsupported operand type(s) for -: 'tuple' and 'UniformGrid1D'
+        
+        """
+        if isinstance(other, AbstractMesh):
+            raise TypeError, "'-' is unsupported for meshes, use '+'"
+        else:
+            return self._translate(-numerix.array(other))
+
+    def __truediv__(self, other):
+        """
+        Tests.
+        >>> from fipy import *
+        >>> print (Grid1D(nx=1) / 2.).cellCenters
+        [[ 0.25]]
+        >>> AbstractMesh(None, None, None) / 2.
+        Traceback (most recent call last):
+        ...
+        NotImplementedError
+        
+        """
+        return self.__mul__(1 / other)
+        
+    __div__ = __truediv__
+        
     def __repr__(self):
         return "%s()" % self.__class__.__name__
      
     @property
     def _VTKCellType(self):
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
                 
     @property
@@ -928,7 +995,10 @@ class AbstractMesh(object):
             counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
             cells = numerix.concatenate((counts,cvi),axis=1).flatten()
         
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         num = counts.shape[0]
 
         cps_type = self._VTKCellType
@@ -951,7 +1021,10 @@ class AbstractMesh(object):
     def VTKFaceDataSet(self):
         """Returns a TVTK `DataSet` representing the face centers of this mesh
         """
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         
         points = self.faceCenters
         points = self._toVTK3D(points)
@@ -983,7 +1056,7 @@ class AbstractMesh(object):
         else:
             arr = numerix.concatenate((arr, 
                                        numerix.zeros((3 - self.dim,) 
-                                                     + arr.shape[1:])))
+                                                     + arr.shape[1:], 'l')))
             return arr.swapaxes(-2, -1)
                                                                           
     """
@@ -1263,6 +1336,9 @@ class AbstractMesh(object):
             return self.shape
         else:
             return None
+
+    def _makePeriodic(self):
+        raise NotImplementedError
      
 def _madmin(x):
     if len(x) == 0:
@@ -1275,4 +1351,10 @@ def _madmax(x):
         return 0
     else:
         return max(x)
-      
+
+def _test():
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
+
+if __name__ == "__main__":
+    _test()

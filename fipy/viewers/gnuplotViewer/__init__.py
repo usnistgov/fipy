@@ -1,9 +1,11 @@
 __docformat__ = 'restructuredtext'
 
-from gnuplot1DViewer import Gnuplot1DViewer
-from gnuplot2DViewer import Gnuplot2DViewer
+from fipy.viewers.gnuplotViewer.gnuplot1DViewer import *
+from fipy.viewers.gnuplotViewer.gnuplot2DViewer import *
 
-__all__ = ["GnuplotViewer", "Gnuplot1DViewer", "Gnuplot2DViewer"]
+__all__ = ["GnuplotViewer"]
+__all__.extend(gnuplot1DViewer.__all__)
+__all__.extend(gnuplot2DViewer.__all__)
 
 def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
     """Generic function for creating a `GnuplotViewer`. 
@@ -42,11 +44,3 @@ def GnuplotViewer(vars, title=None, limits={}, **kwlimits):
         return Gnuplot2DViewer(vars=vars, title=title, **kwlimits)
     else:
         raise IndexError, "Gnuplot can only plot 1D and 2D data"
-
-def make(*args, **kwargs):
-    """
-    A deprecated synonym for `GnuplotViewer`
-    """
-    import warnings
-    warnings.warn("'GnuplotViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
-    return GnuplotViewer(*args, **kwargs)

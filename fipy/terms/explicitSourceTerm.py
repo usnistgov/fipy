@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.terms.sourceTerm import SourceTerm
 
 class _ExplicitSourceTerm(SourceTerm):
@@ -49,15 +51,15 @@ class _ExplicitSourceTerm(SourceTerm):
     does not contribute to the solution matrix.
 
     """
-	
+        
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
-	return {
-	    'b vector': -1, 
-	    'new value': 0, 
-	    'old value': 0, 
-	    'diagonal' : 0
-	}
-	
+        return {
+            'b vector': -1, 
+            'new value': 0, 
+            'old value': 0, 
+            'diagonal' : 0
+        }
+        
     def __repr__(self):
         return repr(self.coeff)
 

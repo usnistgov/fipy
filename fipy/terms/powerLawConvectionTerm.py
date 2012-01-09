@@ -40,6 +40,8 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
 from fipy.tools import numerix
 
+__all__ = ["PowerLawConvectionTerm"]
+
 class _PowerLawConvectionTermAlpha(FaceVariable):
     """
 
@@ -111,7 +113,6 @@ class _PowerLawConvectionTermAlpha(FaceVariable):
 
             return PhysicalField(value = alpha)
 
-
 class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     r"""
     The discretization for this :class:`~fipy.terms.term.Term` is given by
@@ -129,8 +130,8 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
         return _PowerLawConvectionTermAlpha(P)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

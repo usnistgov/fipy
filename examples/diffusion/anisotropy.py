@@ -84,13 +84,14 @@ mass.
 
 Import a mesh previously created using :term:`Gmsh`.
 
->>> mesh = Gmsh2D(os.path.splitext(__file__)[0] + '.msh', communicator=serial)
+>>> import os
+>>> mesh = Gmsh2D(os.path.splitext(__file__)[0] + '.msh', communicator=serial) # doctest: +GMSH
 
 Set the center most cell to have a value.
 
->>> var = CellVariable(mesh=mesh, hasOld=1)
->>> x, y = mesh.cellCenters
->>> var[numerix.argmin(x**2 + y**2)] = 1.
+>>> var = CellVariable(mesh=mesh, hasOld=1) # doctest: +GMSH
+>>> x, y = mesh.cellCenters # doctest: +GMSH
+>>> var[numerix.argmin(x**2 + y**2)] = 1. # doctest: +GMSH
 
 Choose an orientation for the anisotropy.
 
@@ -103,21 +104,21 @@ Choose an orientation for the anisotropy.
 
 Make the equation, viewer and solve.
 
->>> eqn = TransientTerm() == DiffusionTerm((gamma,))
+>>> eqn = TransientTerm() == DiffusionTermCorrection((gamma,))
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(var, datamin=0.0, datamax=0.001)
 
->>> mass = float(var.cellVolumeAverage * numerix.sum(mesh.cellVolumes))
+>>> mass = float(var.cellVolumeAverage * numerix.sum(mesh.cellVolumes)) # doctest: +GMSH
 >>> time = 0
 >>> dt=0.00025 
 
->>> for i in range(40):
-...     var.updateOld()
+>>> for i in range(20):
+...     var.updateOld() # doctest: +GMSH
 ...     res = 1.
 ...     
 ...     while res > 1e-2:
-...         res = eqn.sweep(var, dt=dt)
+...         res = eqn.sweep(var, dt=dt) # doctest: +GMSH
 ...  
 ...     if __name__ == '__main__':
 ...         viewer.plot()
@@ -125,9 +126,9 @@ Make the equation, viewer and solve.
 
 Compare with the analytical solution (within 5% accuracy).
 
->>> X, Y = numerix.dot(mesh.cellCenters, CellVariable(mesh=mesh, rank=2, value=rotationMatrix))
->>> solution = mass * numerix.exp(-(X**2 / gamma_prime[0][0] + Y**2 / gamma_prime[1][1]) / (4 * time)) / (4 * numerix.pi * time * numerix.sqrt(gamma_prime[0][0] * gamma_prime[1][1]))
->>> print max(abs((var - solution) / max(solution))) < 0.05
+>>> X, Y = numerix.dot(mesh.cellCenters, CellVariable(mesh=mesh, rank=2, value=rotationMatrix)) # doctest: +GMSH
+>>> solution = mass * numerix.exp(-(X**2 / gamma_prime[0][0] + Y**2 / gamma_prime[1][1]) / (4 * time)) / (4 * numerix.pi * time * numerix.sqrt(gamma_prime[0][0] * gamma_prime[1][1])) # doctest: +GMSH
+>>> print max(abs((var - solution) / max(solution))) < 0.08 # doctest: +GMSH
 True
 
 """

@@ -32,6 +32,8 @@
  # ###################################################################
  ##
 
+__all__ = []
+
 class _Vertex:
     def __init__(self, ID, x, y):
         self.ID = ID
@@ -86,7 +88,7 @@ class _Line:
         if seedVertex.getUp() is not None or \
            seedVertex.getDown() is not None or \
            seedVertex.getInLine():
-            raise 'bad seedVertex'
+            raise ValueError('bad seedVertex')
 
         setVs = []
 
@@ -196,8 +198,8 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
     return listOfVertexLists
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

@@ -45,6 +45,8 @@ from fipy.tools import numerix
 
 DEBUG = False
 
+__all__ = ["LinearLUSolver"]
+
 class LinearLUSolver(PysparseSolver):
     """
     
@@ -59,7 +61,7 @@ class LinearLUSolver(PysparseSolver):
     
     """
     
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None,
+    def __init__(self, tolerance=1e-10, iterations=10,
                        maxIterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
@@ -67,7 +69,6 @@ class LinearLUSolver(PysparseSolver):
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The number of LU decompositions to perform.
-          - `steps`: A deprecated name for `iterations`.
             For large systems a number of iterations is generally required.
           - `precon`: not used but maintains a common interface.
           
@@ -76,8 +77,7 @@ class LinearLUSolver(PysparseSolver):
         iterations = min(iterations, maxIterations)
         
         super(LinearLUSolver, self).__init__(tolerance = tolerance, 
-                                             iterations = iterations, 
-                                             steps = steps)
+                                             iterations = iterations)
 
     def _solve_(self, L, x, b):
         diag = L.takeDiagonal()
@@ -104,7 +104,7 @@ class LinearLUSolver(PysparseSolver):
             LU.solve(errorVector, xError)
             x[:] = x - xError
             
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))

@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.variables.cellVariable import CellVariable
 
+__all__ = ["ResidualTerm"]
+
 class ResidualTerm(_ExplicitSourceTerm):
     r"""
 
@@ -55,7 +57,7 @@ class ResidualTerm(_ExplicitSourceTerm):
     def _getGeomCoeff(self, var):
         return self.coeff
         
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         vec = self.equation.justResidualVector(var=None, 
                                                boundaryConditions=boundaryConditions,
                                                dt=dt)

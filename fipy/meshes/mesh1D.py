@@ -48,6 +48,8 @@ from fipy.tools.numerix import MA
 
 from fipy.meshes.mesh import Mesh
 
+__all__ = ["Mesh1D"]
+
 class Mesh1D(Mesh):
     
     def _calcScaleArea(self):
@@ -91,6 +93,9 @@ class Mesh1D(Mesh):
         
     @property
     def _VTKCellType(self):
-        from enthought.tvtk.api import tvtk
+        try:
+            from tvtk.api import tvtk
+        except ImportError, e:
+            from enthought.tvtk.api import tvtk
         return tvtk.Line().cell_type
 

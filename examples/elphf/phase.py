@@ -84,8 +84,7 @@ We solve the problem on a 1D mesh
 We create the phase field
 
 >>> phase = CellVariable(mesh = mesh, name = 'xi')
->>> import scipy
->>> phase.mobility = inf
+>>> phase.mobility = numerix.inf
 >>> phase.gradientEnergy = 0.025
     
 Although we are not interested in them for this problem, we create one field to 
@@ -154,7 +153,7 @@ Even though we are solving the steady-state problem (:math:`M_\phi = \infty`) we
 still must sweep the solution several times to equilibrate
 
 >>> for step in range(10):
-...     phase.equation.solve(var = phase)
+...     phase.equation.solve(var = phase, dt=1.)
 
 Since we have only a single component :math:`n`, with :math:`\Delta\mu_n^\circ =
 0`, and the electrostatic potential is uniform, Eq. :eq:`elphf:phase` reduces to
@@ -178,8 +177,8 @@ We verify that the correct equilibrium solution is attained
 
 >>> x = mesh.cellCenters[0]
 
->>> d = sqrt(phase.gradientEnergy / (2 * solvent.barrier))
->>> analyticalArray = (1. - tanh((x - L/2.)/(2 * d))) / 2.
+>>> d = numerix.sqrt(phase.gradientEnergy / (2 * solvent.barrier))
+>>> analyticalArray = (1. - numerix.tanh((x - L/2.)/(2 * d))) / 2.
 
 >>> phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4).value
 1

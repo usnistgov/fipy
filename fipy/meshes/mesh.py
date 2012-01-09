@@ -46,9 +46,11 @@ from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import serial
 
+__all__ = ["MeshAdditionError", "Mesh"]
+
 class MeshAdditionError(Exception):
     pass
-    
+
 class Mesh(AbstractMesh):
     """Generic mesh class using numerix to do the calculations
 
@@ -106,14 +108,16 @@ class Mesh(AbstractMesh):
            
     def _calcInteriorAndExteriorCellIDs(self):
         try:
-            import sets
-            exteriorCellIDs = sets.Set(self.faceCellIDs[0, self._exteriorFaces.value])
-            interiorCellIDs = list(sets.Set(range(self.numberOfCells)) - self._exteriorCellIDs)
+            import sys
+            if sys.version_info < (2, 6):
+                from sets import Set as set
+            exteriorCellIDs = set(self.faceCellIDs[0, self._exteriorFaces.value])
+            interiorCellIDs = list(set(range(self.numberOfCells)) - self._exteriorCellIDs)
             exteriorCellIDs = list(self._exteriorCellIDs)
         except:
             exteriorCellIDs = self.faceCellIDs[0, self._exteriorFaces.value]
-            tmp = numerix.zeros(self.numberOfCells)
-            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs)))
+            tmp = numerix.zeros(self.numberOfCells, 'l')
+            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs), 'l'))
             exteriorCellIDs = numerix.nonzero(tmp)            
             interiorCellIDs = numerix.nonzero(numerix.logical_not(tmp))
         return interiorCellIDs, exteriorCellIDs
@@ -193,7 +197,7 @@ class Mesh(AbstractMesh):
         faceVertexCoords = numerix.take(self.vertexCoords, maskedFaceVertexIDs, axis=1)
 
         if MA.getmask(self.faceVertexIDs) is False:
-            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords))
+            faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords), 'l')
         else:
             faceVertexCoordsMask = \
               numerix.repeat(MA.getmaskarray(self.faceVertexIDs)[numerix.newaxis,...], 
@@ -459,6 +463,7 @@ class Mesh(AbstractMesh):
 ##         MA.put(secondRow, cellFaceIDsFlat, array)
         firstRow = faceCellIDs[0]
         secondRow = faceCellIDs[1]
+
         numerix.put(firstRow, self.cellFaceIDs[::-1,::-1], array[::-1,::-1])
         numerix.put(secondRow, self.cellFaceIDs, array)
         
@@ -809,20 +814,18 @@ class Mesh(AbstractMesh):
             >>> print b.cellCenters
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
             
-            >>> from fipy.tools import parallel
-            >>> if parallel.Nproc == 1:
-            ...     c =  UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10)
-            >>> print (parallel.Nproc > 1 
-            ...        or numerix.allclose(c.cellCenters[0],
-            ...                            [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
-            ...                            12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]))
+            >>> c = UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10) # doctest: +SERIAL
+            >>> print numerix.allclose(c.cellCenters[0],
+            ...                        [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
+            ...                        12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
+            ... # doctest: +SERIAL
             True
 
         """
 
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

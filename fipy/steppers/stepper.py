@@ -32,6 +32,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = ["Stepper"]
+
 class Stepper:
     def __init__(self, vardata=()):
         self.vardata = vardata
@@ -55,7 +57,7 @@ class Stepper:
     def _lowerBound(self, dt):
         dt = max(dt, self.dtMin)
         if self.elapsed + dt == self.elapsed:
-            raise "step size underflow: %g + %g == %g" % (self.elapsed, dt, self.elapsed)
+            raise FloatingPointError("step size underflow: %g + %g == %g" % (self.elapsed, dt, self.elapsed))
             
         return dt
         

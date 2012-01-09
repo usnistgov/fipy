@@ -164,7 +164,7 @@ which now has the analytical solution
 
 We verify that the correct equilibrium is attained
     
->>> analyticalArray = where(x < L/2, -x, ((x-1)**2)/2 - x)
+>>> analyticalArray = numerix.where(x < L/2, -x, ((x-1)**2)/2 - x)
 
 >>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).value
 1
@@ -204,7 +204,7 @@ which has the analytical solution
 
 We again verify that the correct equilibrium is attained
     
->>> analyticalArray = where(x < 1, (x**2)/2 - x, -0.5)
+>>> analyticalArray = numerix.where(x < 1, (x**2)/2 - x, -0.5)
 
 >>> potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5).value
 1

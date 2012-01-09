@@ -37,59 +37,55 @@ Peridoic 1D Mesh
 """
 __docformat__ = 'restructuredtext'
 
-from grid1D import Grid1D
+from fipy.meshes.grid1D import Grid1D
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
-from fipy.meshes.builders import PeriodicGrid1DBuilder
+from fipy.meshes.builders import _PeriodicGrid1DBuilder
+
+__all__ = ["PeriodicGrid1D"]
 
 class PeriodicGrid1D(Grid1D):
     """
     
-        >>> from fipy import numerix
-        >>> from fipy.tools import parallel
-
     Creates a Periodic grid mesh.
         
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0], 
-        ...                            [3]))
+        >>> print numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0], 
+        ...                        [3]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh.faceCellIDs.filled(-999),
-        ...                            [[2, 0, 1, 2],
-        ...                             [0, 1, 2, -999]]))
+        >>> print numerix.allclose(mesh.faceCellIDs.filled(-999),
+        ...                        [[2, 0, 1, 2],
+        ...                         [0, 1, 2, -999]]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._cellDistances,
-        ...                            [ 2., 1.5, 2.5, 1.5]))
+        >>> print numerix.allclose(mesh._cellDistances,
+        ...                        [ 2., 1.5, 2.5, 1.5]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._cellToCellDistances,
-        ...                            [[ 2.,   1.5,  2.5],
-        ...                             [ 1.5,  2.5,  2. ]]))
+        >>> print numerix.allclose(mesh._cellToCellDistances,
+        ...                        [[ 2.,   1.5,  2.5],
+        ...                         [ 1.5,  2.5,  2. ]]) # doctest: +PROCESSOR_0
         True
         
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._faceNormals,
-        ...                            [[ 1.,  1.,  1.,  1.]]))
+        >>> print numerix.allclose(mesh._faceNormals,
+        ...                        [[ 1.,  1.,  1.,  1.]]) # doctest: +PROCESSOR_0
         True
 
-        >>> print (parallel.procID > 0 
-        ...        or numerix.allclose(mesh._cellVertexIDs,
-        ...                            [[1, 2, 2],
-        ...                             [0, 1, 0]]))
+        >>> print numerix.allclose(mesh._cellVertexIDs,
+        ...                        [[1, 2, 2],
+        ...                        [0, 1, 0]]) # doctest: +PROCESSOR_0
         True
     """
-    def __init__(self, dx = 1., nx = None):
-        Grid1D.__init__(self, dx = dx, nx = nx,
-                        BuilderClass=PeriodicGrid1DBuilder)
-        from fipy.tools import numerix
+    def __init__(self, dx = 1., nx = None, overlap=2):
 
+        Grid1D.__init__(self, dx = dx, nx = nx, overlap=overlap,
+                        _BuilderClass=_PeriodicGrid1DBuilder)
+        self.nonPeriodicCellFaceIDs = numerix.array(super(Grid1D, self).cellFaceIDs)
+        self._makePeriodic()
+
+    def _makePeriodic(self):
         if self.occupiedNodes == 1:
             self._connectFaces(numerix.nonzero(self.facesLeft),
                                numerix.nonzero(self.facesRight))
@@ -109,10 +105,28 @@ class PeriodicGrid1D(Grid1D):
         fipy.meshes.mesh and not in any geometry (since a `CellVariable` requires
         a reference to a mesh)."""
         return super(PeriodicGrid1D, self).cellCenters \
-                % numerix.sum(self.globalNumberOfCells * self.args['dx']) 
+                % numerix.sum(self.globalNumberOfCells * self.args['dx'])
+
+    def _translate(self, vector):
+        """
+        Test for ticket:298.
+
+        >>> from fipy import *
+        >>> m = PeriodicGrid1D(nx=2) + [[-1]]
+        >>> print CellVariable(mesh=m, value=m.cellCenters[0])
+        [-0.5  0.5]
+        
+        """
+        newCoords = self.vertexCoords + vector
+        newmesh = self.__class__(**self.args)
+        from fipy.meshes.mesh1D import Mesh1D
+        Mesh1D.__init__(newmesh, newCoords, numerix.array(self.faceVertexIDs), self.nonPeriodicCellFaceIDs, communicator=self.communicator)
+        newmesh._makePeriodic()
+        return newmesh
+    
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

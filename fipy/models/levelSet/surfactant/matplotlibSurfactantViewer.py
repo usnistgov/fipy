@@ -5,8 +5,7 @@
  #  FiPy - Python-based finite volume PDE solver
  # 
  #  FILE: "mayaviSurfactantViewer.py"
- #                                    created: 7/29/04 {10:39:23 AM} 
- #                                last update: 7/3/08 {5:38:27 PM}
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
@@ -44,6 +43,9 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+from fipy.viewers import MeshDimensionError
+
+__all__ = ["MatplotlibSurfactantViewer"]
 
 class MatplotlibSurfactantViewer(_MatplotlibViewer):
     
@@ -134,7 +136,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
             self._initialCondition = None
 
         if distanceVar.mesh.dim != 2:
-            raise 'The MatplotlibSurfactantViewer only works for 2D meshes.'
+            raise MeshDimensionError('The MatplotlibSurfactantViewer only works for 2D meshes.')
 
     def _plot(self):
         mesh = self.distanceVar.mesh

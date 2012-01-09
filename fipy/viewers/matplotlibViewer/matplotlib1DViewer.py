@@ -36,8 +36,11 @@
  
 __docformat__ = 'restructuredtext'
 
-from matplotlibViewer import _MatplotlibViewer
 from fipy.tools.decorators import getsetDeprecated
+
+from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+
+__all__ = ["Matplotlib1DViewer"]
 
 class Matplotlib1DViewer(_MatplotlibViewer):
     """

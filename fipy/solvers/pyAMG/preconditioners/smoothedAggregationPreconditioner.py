@@ -35,6 +35,8 @@
  
 from pyamg import smoothed_aggregation_solver
 
+__all__ = ["SmoothedAggregationPreconditioner"]
+
 class SmoothedAggregationPreconditioner():
     def __init__(self):
         pass

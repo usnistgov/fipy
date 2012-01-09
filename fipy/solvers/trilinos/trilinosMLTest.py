@@ -35,8 +35,6 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 from PyTrilinos import Amesos
@@ -44,7 +42,10 @@ from PyTrilinos import AztecOO
 from PyTrilinos import ML
 from PyTrilinos import IFPACK
 
+from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import numerix
+
+__all__ = ["TrilinosMLTest"]
 
 class TrilinosMLTest(TrilinosSolver):
 
@@ -53,12 +54,11 @@ class TrilinosMLTest(TrilinosSolver):
     information about what ML preconditioner settings will work best.
     """
     
-    def __init__(self, tolerance=1e-10, iterations=5, steps=None, MLOptions={}, testUnsupported = False):
+    def __init__(self, tolerance=1e-10, iterations=5, MLOptions={}, testUnsupported = False):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterations to perform per test.
-          - `steps`: A deprecated name for `iterations`.
           - `MLOptions`: Options to pass to ML. A dictionary of {option:value} pairs. This will be passed to ML.SetParameterList. 
           - `testUnsupported`: test smoothers that are not currently implemented in preconditioner objects.
 
@@ -69,16 +69,16 @@ class TrilinosMLTest(TrilinosSolver):
          """
                 
         TrilinosSolver.__init__(self, tolerance=tolerance, 
-                                iterations=iterations, steps=steps)
+                                iterations=iterations)
 
         self.MLOptions = MLOptions
-        if not self.MLOptions.has_key("output"):
+        if "output" not in self.MLOptions:
             self.MLOptions["output"] = 0
             
-        if not self.MLOptions.has_key("test: max iters"):
+        if "test: max iters" not in self.MLOptions:
             self.MLOptions["test: max iters"] = iterations
         
-        if not self.MLOptions.has_key("test: tolerance"):
+        if "test: tolerance" not in self.MLOptions:
             self.MLOptions["test: tolerance"] = tolerance
 
         
@@ -86,7 +86,7 @@ class TrilinosMLTest(TrilinosSolver):
 
         if not testUnsupported:
             for smoother in unsupportedSmoothers:
-                if not self.MLOptions.has_key("test: " + smoother):
+                if ("test: " + smoother) not in self.MLOptions:
                     self.MLOptions["test: " + smoother] = False
             
         

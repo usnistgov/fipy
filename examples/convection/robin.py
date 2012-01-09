@@ -84,21 +84,29 @@ where
 
 >>> x = mesh.cellCenters[0]
 >>> CAnalytical = CellVariable(mesh=mesh)
->>> CAnalytical.setValue(2 * P * exp(P * x / 2) * ((P + A) * exp(A / 2 * (1 - x))
-...             - (P - A) * exp(-A / 2 *(1 - x)))/
-...             ((P + A)**2*exp(A / 2)- (P - A)**2 * exp(-A / 2)))
+>>> CAnalytical.setValue(2 * P * numerix.exp(P * x / 2) * ((P + A) * numerix.exp(A / 2 * (1 - x))
+...             - (P - A) * numerix.exp(-A / 2 *(1 - x)))/
+...             ((P + A)**2*numerix.exp(A / 2)- (P - A)**2 * numerix.exp(-A / 2)))
 
 >>> if __name__ == '__main__':
 ...     C.name = 'C'
 ...     viewer = Viewer(vars=(C, CAnalytical))
 
+>>> if __name__ == '__main__':
+...     restol = 1e-5
+...     anstol = 1e-3
+... else:
+...     restol = 0.5
+...     anstol = 0.15
+ 
 >>> res = 1e+10
->>> while res > 1e-5:
+
+>>> while res > restol:
 ...     res = eq.sweep(var=C)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> print C.allclose(CAnalytical, rtol=1.e-3, atol=1.e-3)
+>>> print C.allclose(CAnalytical, rtol=anstol, atol=anstol)
 True
 
 """

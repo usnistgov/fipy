@@ -41,11 +41,15 @@ from fipy.tools import numerix
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.variables.faceVariable import FaceVariable
 
+__all__ = ["RoeConvectionTerm"]
+
 def MClimiter(theta):
     """
     Monotonized center limiter.
     """
     return numerix.maximum(0, numerix.minimum((1 + theta) / 2, numerix.minimum(2, 2 * theta)))
+
+
 
 class _FirstOrderRoeVariable(FaceVariable):
     def __init__(self, var, coeff):

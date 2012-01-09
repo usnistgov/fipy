@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.sourceTerm import SourceTerm
 from fipy.tools import numerix
 
+__all__ = ["ImplicitSourceTerm"]
+
 class ImplicitSourceTerm(SourceTerm):
     r"""
 
@@ -58,11 +60,11 @@ class ImplicitSourceTerm(SourceTerm):
             >>> m = Grid1D(nx=1)
             >>> v = CellVariable(mesh=m, value=1.)
             >>> eq = TransientTerm() == ImplicitSourceTerm(v)
-            >>> eq.solve(v)
+            >>> eq.solve(v, dt=1.)
             >>> print v
             [ 2.]
             >>> v.setValue(-1.)
-            >>> eq.solve(v)
+            >>> eq.solve(v, dt=1.)
             >>> print v
             [-0.5]
             
@@ -88,8 +90,8 @@ class ImplicitSourceTerm(SourceTerm):
                 'new value' : numerix.zeros(var.shape, 'd')}
     
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

@@ -1,3 +1,5 @@
+__all__ = ["PRINT"]
+
 def PRINT(label, arg="", stall=True):
     import sys
     from fipy import parallel

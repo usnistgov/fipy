@@ -105,16 +105,17 @@ and test the solution against the analytical result
 
 >>> axis = 0
 >>> try:
-...     from scipy.special import expi
+...     from scipy.special import expi # doctest: +SCIPY
 ...     r = mesh.cellCenters[axis]
 ...     U = convCoeff[0][0]
-...     AA = exp(U / diffCoeff * (r1 - r))
-...     BB = expi(U * r0 / diffCoeff) - expi(U * r / diffCoeff)
-...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff)
-...     analyticalArray = AA * BB / CC
+...     AA = numerix.exp(U / diffCoeff * (r1 - r))
+...     BB = expi(U * r0 / diffCoeff) - expi(U * r / diffCoeff) # doctest: +SCIPY
+...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff) # doctest: +SCIPY
+...     analyticalArray = AA * BB / CC # doctest: +SCIPY
 ... except ImportError:
 ...     print "The SciPy library is unavailable. It is required for testing purposes."
->>> print var.allclose(analyticalArray, atol=1e-3)
+
+>>> print var.allclose(analyticalArray, atol=1e-3) # doctest: +SCIPY
 1
    
 If the problem is run interactively, we can view the result:
@@ -123,7 +124,7 @@ If the problem is run interactively, we can view the result:
    module: viewers
 
 >>> if __name__ == '__main__':
-...     viewer = viewers.make(vars=var)
+...     viewer = Viewer(vars=var)
 ...     viewer.plot()
 """
 __docformat__ = 'restructuredtext'

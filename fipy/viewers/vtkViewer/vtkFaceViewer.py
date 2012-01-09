@@ -41,7 +41,9 @@ __docformat__ = 'restructuredtext'
 from fipy.variables.faceVariable import FaceVariable
 from fipy.viewers.viewer import _Viewer
 
-from vtkViewer import _VTKViewer
+from fipy.viewers.vtkViewer.vtkViewer import _VTKViewer
+
+__all__ = ["VTKFaceViewer"]
 
 class VTKFaceViewer(_VTKViewer):
     """Renders `_MeshVariable` data in VTK format
@@ -64,7 +66,11 @@ class VTKFaceViewer(_VTKViewer):
         >>> f, fname = mkstemp(".vtk")
         >>> os.close(f)
 
-        >>> from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
+        >>> try:
+        ...     from tvtk.api import tvtk
+        ... except ImportError, e:
+        ...     from enthought.tvtk.api import tvtk
+        ... # doctest: +TVTK
 
         >>> from fipy import *
         >>> from fipy.viewers.vtkViewer import VTKFaceViewer
@@ -79,8 +85,27 @@ class VTKFaceViewer(_VTKViewer):
         >>> v4.name = "v1.harmonicFaceValue"
         >>> v5 = v1.arithmeticFaceValue
         >>> v5.name = "v1.arithmeticFaceValue"
-        >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
-        >>> VTKFileReader().initialize(fname)
+        >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname) # doctest: +TVTK
+        >>> r = tvtk.DataSetReader() # doctest: +TVTK
+        >>> r.file_name = fname # doctest: +TVTK
+        >>> r.update() # doctest: +TVTK
+        >>> p = r.output.point_data # doctest: +TVTK
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1)[0], 
+        ...                  v3.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
+        ...                  v4.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.get_array("v1.arithmeticFaceValue").to_array(),
+        ...                  v5.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.scalars.to_array(), 
+        ...                  v5.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
+        True
+        >>> r.get_scalars_name_in_file(0) == v5.name  # doctest: +TVTK, +PROCESSOR_0
+        True
 
         >>> m = Grid2D(nx=1, ny=2)
         >>> x, y = m.cellCenters
@@ -92,8 +117,27 @@ class VTKFaceViewer(_VTKViewer):
         >>> v4.name = "v1.harmonicFaceValue"
         >>> v5 = v1.arithmeticFaceValue
         >>> v5.name = "v1.arithmeticFaceValue"
-        >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
-        >>> VTKFileReader().initialize(fname)
+        >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname) # doctest: +TVTK
+        >>> r = tvtk.DataSetReader() # doctest: +TVTK
+        >>> r.file_name = fname # doctest: +TVTK
+        >>> r.update() # doctest: +TVTK
+        >>> p = r.output.point_data # doctest: +TVTK
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1)[0:2],
+        ...                  v3.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
+        ...                  v4.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.get_array("v1.arithmeticFaceValue").to_array(),
+        ...                  v5.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.scalars.to_array(), 
+        ...                  v5.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
+        True
+        >>> r.get_scalars_name_in_file(0) == v5.name  # doctest: +TVTK, +PROCESSOR_0
+        True
 
         >>> m = (Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
         ...      + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1))
@@ -107,8 +151,27 @@ class VTKFaceViewer(_VTKViewer):
         >>> v4.name = "v1.harmonicFaceValue"
         >>> v5 = v1.arithmeticFaceValue
         >>> v5.name = "v1.arithmeticFaceValue"
-        >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
-        >>> VTKFileReader().initialize(fname)
+        >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname) # doctest: +TVTK
+        >>> r = tvtk.DataSetReader() # doctest: +TVTK
+        >>> r.file_name = fname # doctest: +TVTK
+        >>> r.update() # doctest: +TVTK
+        >>> p = r.output.point_data # doctest: +TVTK
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1)[0:2],
+        ...                  v3.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
+        ...                  v4.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.get_array("v1.arithmeticFaceValue").to_array(),
+        ...                  v5.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.scalars.to_array(), 
+        ...                  v5.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
+        True
+        >>> r.get_scalars_name_in_file(0) == v5.name  # doctest: +TVTK, +PROCESSOR_0
+        True
 
         >>> m = Grid3D(nx=2, ny=1, nz=1)
         >>> x, y, z = m.cellCenters
@@ -120,13 +183,34 @@ class VTKFaceViewer(_VTKViewer):
         >>> v4.name = "v1.harmonicFaceValue"
         >>> v5 = v1.arithmeticFaceValue
         >>> v5.name = "v1.arithmeticFaceValue"
-        >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname)
-        >>> VTKFileReader().initialize(fname)
+        >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname) # doctest: +TVTK
+        >>> r = tvtk.DataSetReader() # doctest: +TVTK
+        >>> r.file_name = fname # doctest: +TVTK
+        >>> r.update() # doctest: +TVTK
+        >>> p = r.output.point_data # doctest: +TVTK
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1),
+        ...                  v3.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
+        ...                  v4.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.get_array("v1.arithmeticFaceValue").to_array(),
+        ...                  v5.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> numerix.allclose(p.scalars.to_array(), 
+        ...                  v5.value) # doctest: +TVTK, +SERIAL
+        True
+        >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
+        True
+        >>> r.get_scalars_name_in_file(0) == v5.name  # doctest: +TVTK, +PROCESSOR_0
+        True
 
         >>> os.remove(fname)
         """
 
-
-if __name__ == "__main__": 
+def _test():
     import fipy.tests.doctestPlus
-    fipy.tests.doctestPlus.execButNoTest()
+    return fipy.tests.doctestPlus.testmod()
+
+if __name__ == "__main__":
+    _test()

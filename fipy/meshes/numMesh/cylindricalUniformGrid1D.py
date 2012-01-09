@@ -1,7 +1,7 @@
 
-from deprecatedWarning import depWarn
+from fipy.meshes.numMesh.deprecatedWarning import numMeshDeprecated
 from fipy.meshes.cylindricalUniformGrid1D import *
 
-depWarn()
+numMeshDeprecated()
 
 

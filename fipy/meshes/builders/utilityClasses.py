@@ -36,10 +36,12 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
 
-class UniformOrigin(object):
+class _UniformOrigin(object):
     """
     Used to calculate the origin for uniform grids in a
     dimensionally-independent way.
@@ -57,7 +59,7 @@ class UniformOrigin(object):
 
         return newOrigin
 
-class DOffsets(object):
+class _DOffsets(object):
     """
     For use by non-uniform grid builders.
     """
@@ -96,7 +98,7 @@ class DOffsets(object):
 
         return offsetList, newDs
 
-class AbstractNumPts(object):
+class _AbstractNumPts(object):
     """
     Interface definition for NumPtsCalculators.
     """
@@ -105,7 +107,7 @@ class AbstractNumPts(object):
     def calcNs(ns, ds):
         raise NotImplementedError
  
-class NonuniformNumPts(AbstractNumPts):
+class _NonuniformNumPts(_AbstractNumPts):
     """
     For use by non-uniform grid builders.
     """
@@ -116,7 +118,7 @@ class NonuniformNumPts(AbstractNumPts):
         newNs = []
 
         for a, d, n in zip(axis, ds, ns):
-            newNs.append(NonuniformNumPts._calcNumPts(d=d, n=n, axis=a))
+            newNs.append(_NonuniformNumPts._calcNumPts(d=d, n=n, axis=a))
 
         return newNs
 
@@ -146,7 +148,7 @@ class NonuniformNumPts(AbstractNumPts):
                 
         return n
 
-class UniformNumPts(AbstractNumPts):
+class _UniformNumPts(_AbstractNumPts):
     """
     For use by uniform grid builders.
     """

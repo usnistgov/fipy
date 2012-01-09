@@ -36,22 +36,23 @@
 
 __docformat__ = 'restructuredtext'
  
-from abstractGridBuilder import AbstractGridBuilder
+__all__ = []
 
+from fipy.meshes.builders.abstractGridBuilder import _AbstractGridBuilder
 from fipy.tools import inline  
 from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.meshes.builders.utilityClasses import (UniformNumPts,
-                                                 DOffsets,
-                                                 UniformOrigin,
-                                                 NonuniformNumPts)
+from fipy.meshes.builders.utilityClasses import (_UniformNumPts,
+                                                 _DOffsets,
+                                                 _UniformOrigin,
+                                                 _NonuniformNumPts)
 
-class Grid2DBuilder(AbstractGridBuilder):
+class _Grid2DBuilder(_AbstractGridBuilder):
 
     def buildGridData(self, *args, **kwargs):
         # call super for side-effects
-        super(Grid2DBuilder, self).buildGridData(*args, **kwargs)
+        super(_Grid2DBuilder, self).buildGridData(*args, **kwargs)
 
         self.numberOfVerticalColumns = self.spatialDict["numVerticalCols"]
         self.numberOfHorizontalRows = self.spatialDict["numHorizontalRows"]
@@ -106,10 +107,10 @@ class Grid2DBuilder(AbstractGridBuilder):
      
     @staticmethod
     def createVertices(nx, ny, dx, dy, numVerts, numVertCols):
-        x = AbstractGridBuilder.calcVertexCoordinates(dx, nx)
+        x = _AbstractGridBuilder.calcVertexCoordinates(dx, nx)
         x = numerix.resize(x, (numVerts,))
             
-        y = AbstractGridBuilder.calcVertexCoordinates(dy, ny)
+        y = _AbstractGridBuilder.calcVertexCoordinates(dy, ny)
         y = numerix.repeat(y, numVertCols)
         
         return numerix.array((x, y))
@@ -160,7 +161,7 @@ class Grid2DBuilder(AbstractGridBuilder):
             cells = (f1, f2, f3, f4) going anticlock wise.
             f1 etc. refer to the faces
             """ 
-            cellFaceIDs = numerix.zeros((4, nx * ny))
+            cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
             
             inline._runInline("""
                 int ID = j * ni + i;
@@ -184,7 +185,7 @@ class Grid2DBuilder(AbstractGridBuilder):
             cells = (f1, f2, f3, f4) going anticlock wise.
             f1 etc. refer to the faces
             """ 
-            cellFaceIDs = numerix.zeros((4, nx * ny))
+            cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
             faceIDs = numerix.arange(numFaces)
             if numFaces > 0:
                 cellFaceIDs[0,:] = faceIDs[:numHorizFaces - nx]
@@ -200,58 +201,58 @@ class Grid2DBuilder(AbstractGridBuilder):
     def _packOffset(self, arg):
         return (0, arg)
 
-class NonuniformGrid2DBuilder(Grid2DBuilder):
+class _NonuniformGrid2DBuilder(_Grid2DBuilder):
 
     def __init__(self):
-        self.NumPtsCalcClass = NonuniformNumPts
+        self.NumPtsCalcClass = _NonuniformNumPts
 
-        super(NonuniformGrid2DBuilder, self).__init__()
+        super(_NonuniformGrid2DBuilder, self).__init__()
 
     def buildGridData(self, *args, **kwargs):
         # call super for side-effects
-        super(NonuniformGrid2DBuilder, self).buildGridData(*args, **kwargs)
+        super(_NonuniformGrid2DBuilder, self).buildGridData(*args, **kwargs)
 
         (self.offsets, 
-         self.ds) = DOffsets.calcDOffsets(self.ds, self.ns, self.offset)
+         self.ds) = _DOffsets.calcDOffsets(self.ds, self.ns, self.offset)
 
-        self.vertices = Grid2DBuilder.createVertices(self.ns[0], self.ns[1],
+        self.vertices = _Grid2DBuilder.createVertices(self.ns[0], self.ns[1],
                                         self.ds[0], self.ds[1],
                                         self.numberOfVertices, 
                                         self.numberOfVerticalColumns) \
                           + ((self.offsets[0],), (self.offsets[1],)) 
 
         (self.faces,
-         self.numberOfHorizontalFaces) = Grid2DBuilder.createFaces(self.ns[0],
+         self.numberOfHorizontalFaces) = _Grid2DBuilder.createFaces(self.ns[0],
                                           self.numberOfVertices,
                                           self.numberOfVerticalColumns)
         self.numberOfFaces = len(self.faces[0])
-        self.cells = Grid2DBuilder.createCells(self.ns[0], self.ns[1],
+        self.cells = _Grid2DBuilder.createCells(self.ns[0], self.ns[1],
                                                self.numberOfFaces,
                                                self.numberOfHorizontalFaces,
                                                self.numberOfVerticalColumns)
 
     @property
     def _specificGridData(self):
-        return super(NonuniformGrid2DBuilder, self)._specificGridData \
+        return super(_NonuniformGrid2DBuilder, self)._specificGridData \
                  + [self.vertices,
                     self.faces,
                     self.cells,
                     self.offsets]
 
-class UniformGrid2DBuilder(Grid2DBuilder):
+class _UniformGrid2DBuilder(_Grid2DBuilder):
 
     def __init__(self):
-        self.NumPtsCalcClass = UniformNumPts
+        self.NumPtsCalcClass = _UniformNumPts
 
-        super(UniformGrid2DBuilder, self).__init__()
+        super(_UniformGrid2DBuilder, self).__init__()
 
     def buildGridData(self, ds, ns, overlap, communicator, origin):
         # call super for side-effects
-        super(UniformGrid2DBuilder, self).buildGridData(ds, ns, overlap,
+        super(_UniformGrid2DBuilder, self).buildGridData(ds, ns, overlap,
                                                         communicator)
         
-        self.origin = UniformOrigin.calcOrigin(origin, 
-                                               self.offset, self.ds, self.scale)
+        self.origin = _UniformOrigin.calcOrigin(origin, 
+                                                self.offset, self.ds, self.scale)
            
         self.numberOfHorizontalFaces = self.ns[0] * self.numberOfHorizontalRows
         self.numberOfVerticalFaces = self.numberOfVerticalColumns * self.ns[1]
@@ -260,7 +261,7 @@ class UniformGrid2DBuilder(Grid2DBuilder):
 
     @property
     def _specificGridData(self):
-        return super(UniformGrid2DBuilder, self)._specificGridData \
+        return super(_UniformGrid2DBuilder, self)._specificGridData \
                 + [self.numberOfVerticalFaces,
                    self.origin]
                                  

@@ -34,6 +34,8 @@
  # ###################################################################
  ##
  
+__all__ = []
+
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools import numerix
 
@@ -72,15 +74,15 @@ class _FaceGradContributions(FaceVariable):
 
     def __init__(self, var):
         FaceVariable.__init__(self, mesh=var.mesh, elementshape=(var.mesh.dim,) + var.shape[:-1])
-	self.var = self._requires(var)
+        self.var = self._requires(var)
 
     def _calcValue(self):
         faceValue = self.var.arithmeticFaceValue.numericValue
         return self.mesh._areaProjections[(slice(0,None,None),) + (numerix.newaxis,) * (len(faceValue.shape) - 1) + (slice(0,None,None),)] * faceValue[numerix.newaxis]
     
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

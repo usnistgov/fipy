@@ -37,6 +37,8 @@ __docformat__ = 'restructuredtext'
 import optparse
 import sys, os
 
+__all__ = ["parse"]
+
 def parse(larg, action = None, type = None, default = None):
     """
     This is a wrapper function for the python `optparse` module.
@@ -70,7 +72,7 @@ def parse(larg, action = None, type = None, default = None):
 
     return options.dest
 
-def parseSolver():
+def _parseSolver():
     args = [s.lower() for s in sys.argv[1:]]
     # any command-line specified solver takes precedence over environment variables
     if '--no-pysparse' in args:
@@ -83,7 +85,7 @@ def parseSolver():
         return 'pyamg'             
     elif '--scipy' in args:
         return 'scipy'
-    elif os.environ.has_key('FIPY_SOLVERS'):
+    elif 'FIPY_SOLVERS' in os.environ:
         return os.environ['FIPY_SOLVERS'].lower()
     else:
         return None

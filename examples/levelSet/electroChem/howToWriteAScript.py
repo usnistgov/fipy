@@ -119,7 +119,7 @@ Build the mesh:
 >>> numberOfElements = parse('--numberOfElements', action='store',
 ...     type='int', default=-1)
 >>> numberOfSteps = parse('--numberOfSteps', action='store',
-...     type='int', default=5)
+...     type='int', default=2)
 
 .. index:: sqrt, exp
 
@@ -245,7 +245,7 @@ The commands needed to build this equation are,
 >>> tmp = currentDensity1 \
 ...       * catalystVar.interfaceVar
 >>> exchangeCurrentDensity = currentDensity0 + tmp
->>> expo = exp(expoConstant * overpotential)
+>>> expo = numerix.exp(expoConstant * overpotential)
 >>> currentDensity = expo * exchangeCurrentDensity * metalVar \
 ...                  / bulkMetalConcentration
 >>> depositionRateVariable = currentDensity * molarVolume \
@@ -442,7 +442,7 @@ to tell if something has changed or been broken.
 >>> filepath = os.path.join(os.path.split(__file__)[0], 
 ...                         "simpleTrenchSystem.gz")
 
->>> print catalystVar.allclose(loadtxt(filepath), rtol=1e-4)
+>>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4)
 1
 
 >>> if __name__ == '__main__':

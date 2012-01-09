@@ -39,10 +39,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.tools import numerix
+
+__all__ = ["VanLeerConvectionTerm"]
 
 class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 

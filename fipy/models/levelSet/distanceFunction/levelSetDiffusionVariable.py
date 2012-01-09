@@ -34,6 +34,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools import inline
 from fipy.tools import numerix
@@ -108,8 +110,8 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
                                  self.diffusionCoeff)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

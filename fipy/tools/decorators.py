@@ -71,6 +71,8 @@ import re
 import sys
 import warnings
 
+__all__ = ["getsetDeprecated", "mathMethodDeprecated"]
+
 # Stolen from `numpy.lib.utils`
 if sys.version_info < (2, 4):
     # Can't set __name__ in 2.3
@@ -126,8 +128,6 @@ class _Deprecate(object):
         new_name = self.new_name
         message = self.message
 
-        import warnings
-        
         old_name = self.old_name_from_func(func=func)
         new_name = self.new_name_old_name(old_name=old_name)
         
@@ -159,6 +159,46 @@ class _Deprecate(object):
         else:
             newfunc.__dict__.update(d)
         return newfunc
+
+def deprecate(*args, **kwargs):
+    """Issues a generic `DeprecationWarning`.
+
+    This function may also be used as a decorator.
+
+    Parameters
+    ----------
+    func : function
+        The function to be deprecated.
+    old_name : str, optional
+        The name of the function to be deprecated. Default is None, in which
+        case the name of `func` is used.
+    new_name : str, optional
+        The new name for the function. Default is None, in which case
+        the deprecation message is that `old_name` is deprecated. If given,
+        the deprecation message is that `old_name` is deprecated and `new_name`
+        should be used instead.
+    message : str, optional
+        Additional explanation of the deprecation.  Displayed in the docstring
+        after the warning.
+
+    Returns
+    -------
+    old_func : function
+        The deprecated function.
+    """
+    if args:
+        fn = args[0]
+        args = args[1:]
+
+        return _Deprecate(*args, **kwargs)(fn)
+    else:
+        return _Deprecate(*args, **kwargs)
+
+def deprecateGist(*args, **kwargs):
+    return deprecate(*args, message="Support for Pygist <http://hifweb.lbl.gov/public/software/gist/> will be discontinued.",  **kwargs)
+
+def deprecateGnuplot(*args, **kwargs):
+    return deprecate(*args, message="Support for Gnuplot.py <http://gnuplot-py.sourceforge.net/> will be discontinued.",  **kwargs)
 
 class _GetSetDeprecated(_Deprecate):
     def __init__(self, old_name=None, new_name=None, message=None):
@@ -251,8 +291,8 @@ def mathMethodDeprecated(*args, **kwargs):
         return _MathMethodDeprecated(*args, **kwargs)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

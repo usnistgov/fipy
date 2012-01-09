@@ -1,10 +1,14 @@
 __docformat__ = 'restructuredtext'
 
-from gist1DViewer import Gist1DViewer
-from gist2DViewer import Gist2DViewer
-from gistVectorViewer import GistVectorViewer
 
-__all__ = ["GistViewer", "Gist1DViewer", "Gist2DViewer", "GistVectorViewer"]
+from fipy.viewers.gistViewer.gist1DViewer import *
+from fipy.viewers.gistViewer.gist2DViewer import *
+from fipy.viewers.gistViewer.gistVectorViewer import *
+
+__all__ = ["GistViewer"]
+__all__.extend(gist1DViewer.__all__)
+__all__.extend(gist2DViewer.__all__)
+__all__.extend(gistVectorViewer.__all__)
 
 def GistViewer(vars, title=None, limits={}, **kwlimits):
     r"""Generic function for creating a `GistViewer`. 
@@ -39,11 +43,3 @@ def GistViewer(vars, title=None, limits={}, **kwlimits):
             return Gist2DViewer(vars=vars, title=title, **kwlimits)
         except MeshDimensionError:
             return GistVectorViewer(vars=vars, title=title, **kwlimits)
-            
-def make(*args, **kwargs):
-    """
-    A deprecated synonym for `GistViewer`
-    """
-    import warnings
-    warnings.warn("'GistViewer' should be used instead of 'make'", DeprecationWarning, stacklevel=2)
-    return GistViewer(*args, **kwargs)

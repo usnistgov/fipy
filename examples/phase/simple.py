@@ -146,7 +146,7 @@ or
 .. index:: tanh, sqrt
 
 >>> x = mesh.cellCenters[0]
->>> analyticalArray = 0.5*(1 - tanh((x - L/2)/(2*sqrt(kappa/W))))
+>>> analyticalArray = 0.5*(1 - numerix.tanh((x - L/2)/(2*numerix.sqrt(kappa/W))))
 
 We treat the diffusion term
 :math:`\kappa_\phi \nabla^2\phi`
@@ -212,7 +212,7 @@ transient term from Equation :eq:`eq-phase:simple`
 >>> phase.setValue(0., where=x > L/2)
 
 >>> for i in range(13):
-...     eq.solve(var = phase)
+...     eq.solve(var = phase, dt=1.)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
@@ -227,13 +227,12 @@ After 13 time steps, the solution has converged to the analytical solution
    :width: 50%
    :align: center
 
-.. note:: The solution is only found accurate to
-   :math:`\approx 4.3\times 10^{-5}`
-   because the infinite-domain analytical solution 
-   :eq:`eq-phase:simple:analytical`
+.. note:: The solution is only found accurate 
+   to :math:`\approx 4.3\times 10^{-5}`
+   because the infinite-domain analytical 
+   solution :eq:`eq-phase:simple:analytical`
    is not an exact representation for the solution in a finite domain of
-   length
-   :math:`L`.
+   length :math:`L`.
 
 Setting fixed-value boundary conditions of 1 and 0 would still require the
 relaxation method with the fully explicit source.
@@ -396,9 +395,14 @@ We take :math:`\delta \approx \Delta x`.
 >>> W = 6 * sigma / delta # J / cm**3
 >>> Mphi = Tm * beta / (6. * Lv * delta) # cm**3 / (J s)
 
+>>> if __name__ == '__main__':
+...     displacement = L * 0.1
+... else:
+...     displacement = L * 0.025
+
 >>> analyticalArray = CellVariable(name="tanh", mesh=mesh,
-...                                value=0.5 * (1 - tanh((x - (L / 2. + L / 10.)) 
-...                                                      / (2 * delta))))
+...                                value=0.5 * (1 - numerix.tanh((x - (L / 2. + displacement)) 
+...                                                              / (2 * delta))))
 
 and make a new viewer
 
@@ -446,7 +450,7 @@ Again we use the :meth:`sweep` method as a replacement for :meth:`solve`.
 >>> velocity = beta * abs(Tm - T()) # cm / s
 >>> timeStep = .1 * dx / velocity # s
 >>> elapsed = 0
->>> while elapsed < 0.1 * L / velocity:
+>>> while elapsed < displacement / velocity:
 ...     phase.updateOld()
 ...     res = 1e+10
 ...     while res > 1e-5:
@@ -474,19 +478,19 @@ thickness
 >>> try:
 ...     def tanhResiduals(p, y, x, t):
 ...         V, d = p
-...         return y - 0.5 * (1 - tanh((x - V * t - L / 2.) / (2*d)))
-...     from scipy.optimize import leastsq
+...         return y - 0.5 * (1 - numerix.tanh((x - V * t - L / 2.) / (2*d)))
+...     from scipy.optimize import leastsq # doctest: +SCIPY
 ...     x =  mesh.cellCenters[0]
 ...     (V_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., delta], 
-...                                   args=(phase.globalValue, x.globalValue, elapsed))
+...                                   args=(phase.globalValue, x.globalValue, elapsed)) # doctest: +SCIPY
 ... except ImportError:
 ...     V_fit = d_fit = 0
 ...     print "The SciPy library is unavailable to fit the interface \
 ... thickness and velocity"
 
->>> print abs(1 - V_fit / velocity) < 3.3e-2
+>>> print abs(1 - V_fit / velocity) < 4.1e-2 # doctest: +SCIPY
 True
->>> print abs(1 - d_fit / delta) < 2e-2
+>>> print abs(1 - d_fit / delta) < 2e-2 # doctest: +SCIPY
 True
 
 >>> if __name__ == '__main__':

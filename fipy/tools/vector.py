@@ -37,6 +37,8 @@
 
 from fipy.tools import inline, numerix
 
+__all__ = ["putAdd", "prune"]
+
 # Factored out for fipy.models.levelSet.surfactant.convectionCoeff._ConvectionCoeff
 # for some reason
 def _putAdd(vector, ids, additionVector, mask=False):
@@ -107,8 +109,8 @@ def prune(array, shift, start=0, axis=0):
     return numerix.take(array, takeArray, axis=axis)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__":
     _test() 

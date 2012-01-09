@@ -36,7 +36,10 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import os
+
 from fipy.solvers.scipy.scipySolver import _ScipySolver
 
 class _ScipyKrylovSolver(_ScipySolver):
@@ -58,7 +61,7 @@ class _ScipyKrylovSolver(_ScipySolver):
                                 maxiter=self.iterations,
                                 M=M)
 
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             if info < 0:
                 PRINT('failure', self._warningList[info].__class__.__name__)
 

@@ -5,21 +5,22 @@ Glossary
 
 .. glossary::
 
+   Buildbot
+      The BuildBot is a system to automate the compile/test cycle
+      required by most software projects to validate code changes.
+      See http://trac.buildbot.net/.
+
    FiPy
       The eponymous software package. 
       See http://www.ctcms.nist.gov/fipy.
-
-   gist
-      Another name for :term:`Pygist`.
-
-   gnuplot
-      A popular open-source plotting program.
-      See http://gnuplot.sorceforge.net/.
 
    Gmsh
       A free and Open Source 3D (and 2D!) finite element grid generator. It
       also has a CAD engine and post-processor that :term:`FiPy` does not
       make use of. See http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.geuz.org/gmsh.
+
+   IPython
+      An improved :term:`Python` shell. See http://ipython.scipy.org/.
 
    Matplotlib
       :mod:`matplotlib` :term:`Python` package displays publication quality
@@ -49,40 +50,41 @@ Glossary
       facilities. See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy.
 
-   Pygist
-      The :term:`Pygist` package can be used to display simulation results. It
-      displays both 1D X-Y type plots and 2D contour plots for both
-      structured and unstructured data. It does not display 3D
-      data. Although stated as working on Windows, it does not seem to do a
-      good job of rendering on this platform. :term:`Pygist` works fine on other
-      common platforms. :term:`Pygist` no longer seems to be under development, but
-      is still recommended as a fast light weight alternative to
-      :term:`Matplotlib`.
+   PyAMG
+      A suite of python-based preconditoners. See :ref:`PyAMG`.
 
    Pyrex
       A mechanism for mixing C and Python code.
       See http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/.
 
    PySparse
-      The :mod:`pysparse` :term:`Python` package provides sparse matrix
-      storage, solvers, and linear algebra routines. See
-      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net.
+      The :mod:`pysparse` :term:`Python` package provides sparse
+      matrix storage, solvers, and linear algebra routines. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pysparse.sourceforge.net
+      and :ref:`PYSPARSE`.
 
    Python
       The programming language that :term:`FiPy` (and your scripts) are
       written in. See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/.
+     
+   PyTrilinos
+      :term:`Python` wrapper for :term:`Trilinos`.
+
+   PyxViewer
+      A now defunct python viewer.
 
    ScientificPython
       A collection of useful utilities for scientists. See 
       http://dirac.cnrs-orleans.fr/plone/software/scientificpython.
 
    SciPy
-      The :mod:`scipy` :term:`Python` pacakge provides a wide range of
-      scientific and mathematical operations. :term:`FiPy` can use
-      :mod:`scipy.weave` for enhanced performance with C language inlinine.
-      See
+      The :mod:`scipy` package provides a wide range of scientific and
+      mathematical operations. :term:`FiPy` can use :mod:`scipy.weave`
+      for enhanced performance with C language inlining and
+      :term:`Scipy`'s solver suite for linear solutions. See
       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/.
+      and :ref:`SCIPY`.
 
    Sphinx
       The tools used to generate the :term:`FiPy` documentation.
@@ -92,8 +94,8 @@ Glossary
    Trilinos
       This package proives sparse matrix storage, solvers, and
       preconditioners, and can be used instead of :term:`PySparse`.
-      :term:`Trilinos` preconditioning allows for iterative solutions to
-      some difficult problems that :term:`PySparse` cannot solve. See
-      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov.
-
-
+      :term:`Trilinos` preconditioning allows for iterative solutions
+      to some difficult problems that :term:`PySparse` cannot
+      solve. See
+      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
+      and :ref:`TRILINOS`.

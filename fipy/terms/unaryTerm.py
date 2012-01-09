@@ -34,9 +34,10 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import numerix
 from fipy.terms.term import Term
-from fipy.terms import SolutionVariableRequiredError
 
 class _UnaryTerm(Term):
 
@@ -71,10 +72,19 @@ class _UnaryTerm(Term):
     def _buildExplcitIfOther(self):
         return False
 
-    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=1.0, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
+    def _buildAndAddMatrices(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
+
+        Test for ticket:343.
+
+        >>> from fipy import *
+        >>> m = Grid1D(nx=2)
+        >>> v0 = CellVariable(mesh=m)
+        >>> v1 = CellVariable(mesh=m)
+        >>> (TransientTerm(var=v0) - DiffusionTerm(var=v0)).solve(var=v1, dt=1., solver=DummySolver())
+        >>> DiffusionTerm(var=v0).solve(var=v1, dt=1.0, solver=DummySolver())
         
         """
 
@@ -94,7 +104,7 @@ class _UnaryTerm(Term):
                                                        diffusionGeomCoeff=diffusionGeomCoeff)
             return var, SparseMatrix(mesh=var.mesh), RHSvector - matrix * self.var.value
         else:
-            return var, SparseMatrix(mesh=var.mesh), 0
+            return var, SparseMatrix(mesh=var.mesh), numerix.zeros(len(var.ravel()),'d')
 
     def _reshapeIDs(self, var, ids):
         shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
@@ -126,7 +136,7 @@ class _UnaryTerm(Term):
         >>> v0 = CellVariable(mesh=m, value=1.)
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) & DiffusionTerm(coeff=4., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass)
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var.globalValue
         [ 1.  1.  1.  0.  0.  0.]
         >>> print RHSvector.globalValue
@@ -146,7 +156,7 @@ class _UnaryTerm(Term):
         >>> eq0 = DiffusionTerm(coeff=1., var=v0)
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -175,7 +185,7 @@ class _UnaryTerm(Term):
         >>> eq1 = TransientTerm(var=v1)
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
-        >>> (eq0 & eq1).solve()
+        >>> (eq0 & eq1).solve(dt=1.)
         >>> print numerix.allequal(eq0.matrix.numpyArray,
         ...                        [[ 2, -1,  0,  2, -2,  0],
         ...                         [-1,  3, -1, -2,  4, -2],
@@ -197,8 +207,8 @@ class __UnaryTerm(_UnaryTerm):
     pass 
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

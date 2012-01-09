@@ -34,8 +34,11 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
 from scipy.sparse.linalg import cg
+
+from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
+
+__all__ = ["LinearPCGSolver"]
 
 class LinearPCGSolver(_ScipyKrylovSolver):
     """
@@ -43,16 +46,15 @@ class LinearPCGSolver(_ScipyKrylovSolver):
     with no preconditioning by default.
     """
     
-    def __init__(self, tolerance=1e-15, iterations=2000, steps=None, precon=None):
+    def __init__(self, tolerance=1e-15, iterations=2000, precon=None):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
           - `precon`: Preconditioner to use.
         """
         
-        super(LinearPCGSolver, self).__init__(tolerance=tolerance, iterations=iterations, steps=steps, precon=precon)
+        super(LinearPCGSolver, self).__init__(tolerance=tolerance, iterations=iterations, precon=precon)
         self.solveFnc = cg
 
     def _canSolveAssymetric(self):

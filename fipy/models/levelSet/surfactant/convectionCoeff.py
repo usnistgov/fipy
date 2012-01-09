@@ -35,6 +35,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
@@ -142,8 +144,8 @@ class _ConvectionCoeff(FaceVariable):
         return -value / self.mesh._faceAreas
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

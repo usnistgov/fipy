@@ -34,10 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
-from baseAdvectionTerm import _BaseAdvectionTerm
+from fipy.models.levelSet.advection.baseAdvectionTerm import _BaseAdvectionTerm
 
 class _AdvectionTerm(_BaseAdvectionTerm):
     r"""
@@ -66,7 +68,6 @@ class _AdvectionTerm(_BaseAdvectionTerm):
 
     >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
-    >>> from fipy.tools import parallel
     >>> SparseMatrix = LinearLUSolver()._matrixClass
     >>> mesh = Grid1D(dx = 1., nx = 3) 
     >>> from fipy.variables.cellVariable import CellVariable
@@ -75,21 +76,21 @@ class _AdvectionTerm(_BaseAdvectionTerm):
 
     >>> var = CellVariable(value = numerix.zeros(3, 'd'), mesh = mesh)
     >>> v, L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
-    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10)
+    >>> print numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10) # doctest: +PROCESSOR_0
     True
    
     Less trivial test:
 
     >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
     >>> v, L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
-    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10)
+    >>> print numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     Even less trivial
 
     >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
     >>> v, L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
-    >>> print parallel.procID > 0 or numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10)
+    >>> print numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     Another trivial test case (more trivial than a trivial test case
@@ -98,7 +99,7 @@ class _AdvectionTerm(_BaseAdvectionTerm):
     >>> vel = numerix.array((-1, 2, -3))
     >>> var = CellVariable(value = numerix.array((4,6,1)), mesh = mesh)
     >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
-    >>> print parallel.procID > 0 or numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10)
+    >>> print numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     Somewhat less trivial test case:
@@ -109,14 +110,14 @@ class _AdvectionTerm(_BaseAdvectionTerm):
     >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
     >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
     >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
-    >>> print parallel.procID > 0 or numerix.allclose(b, answer, atol = 1e-10)
+    >>> print numerix.allclose(b, answer, atol = 1e-10) # doctest: +PROCESSOR_0
     True
     """
     pass
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

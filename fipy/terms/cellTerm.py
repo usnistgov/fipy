@@ -42,6 +42,8 @@ from fipy.matrices.sparseMatrix import _SparseMatrix
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
+__all__ = ["CellTerm"]
+
 class CellTerm(_NonDiffusionTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -121,6 +123,8 @@ class CellTerm(_NonDiffusionTerm):
         N = len(oldArray)
         updatePyArray = numerix.zeros((N),'d')
 
+        dt = self._checkDt(dt)
+
         inline._runInline("""
             b[i] += oldArray[i] * oldCoeff[i] / dt;
             b[i] += bCoeff[i];
@@ -145,12 +149,14 @@ class CellTerm(_NonDiffusionTerm):
         L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0,1).ravel())
         L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
             
-    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=1., transientGeomCoeff=None, diffusionGeomCoeff=None):
+    def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         b = numerix.zeros(var.shape,'d').ravel()
         L = SparseMatrix(mesh=var.mesh)
         
         coeffVectors = self._getCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+        dt = self._checkDt(dt)
 
         if inline.doInline and var.rank == 0:                    
             self._buildMatrixInline_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
@@ -206,8 +212,8 @@ class __CellTerm(CellTerm):
     
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

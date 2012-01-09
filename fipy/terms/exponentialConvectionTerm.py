@@ -37,9 +37,10 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-
 from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
+
+__all__ = ["ExponentialConvectionTerm"]
 
 class _ExponentialConvectionTermAlpha(FaceVariable):
     def __init__(self, P):
@@ -89,8 +90,8 @@ class ExponentialConvectionTerm(_AsymmetricConvectionTerm):
         return _ExponentialConvectionTermAlpha(P)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

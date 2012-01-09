@@ -42,6 +42,8 @@ from PyTrilinos import Amesos
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 
+__all__ = ["LinearLUSolver"]
+
 class LinearLUSolver(TrilinosSolver):
 
     """
@@ -49,19 +51,18 @@ class LinearLUSolver(TrilinosSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10, steps=None, precon=None, maxIterations=10):
+    def __init__(self, tolerance=1e-10, iterations=10, precon=None, maxIterations=10):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
 
         """
 
         iterations = min(iterations, maxIterations)
         
         TrilinosSolver.__init__(self, tolerance=tolerance, 
-                                iterations=iterations, steps=steps, precon=None)
+                                iterations=iterations, precon=None)
 
         if precon is not None:
             import warnings
@@ -98,7 +99,7 @@ class LinearLUSolver(TrilinosSolver):
 
              x[:] = x - xError
              
-        if os.environ.has_key('FIPY_VERBOSE_SOLVER'):
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iteration + 1, self.iterations))
             PRINT('residual:', errorVector.Norm2())

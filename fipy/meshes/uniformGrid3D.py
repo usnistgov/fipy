@@ -35,16 +35,17 @@
 
 from fipy.tools.numerix import MA
 
-from fipy.meshes.builders import Grid3DBuilder
+from fipy.meshes.builders import _Grid3DBuilder
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools.decorators import getsetDeprecated
-
 from fipy.tools import parallel
 
-from fipy.meshes.builders import UniformGrid3DBuilder
-from fipy.meshes.gridlike import Gridlike3D
+from fipy.meshes.builders import _UniformGrid3DBuilder
+from fipy.meshes.gridlike import _Gridlike3D
 from fipy.meshes.uniformGrid import UniformGrid
+
+__all__ = ["UniformGrid3D"]
 
 class UniformGrid3D(UniformGrid):
     """
@@ -67,7 +68,7 @@ class UniformGrid3D(UniformGrid):
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, 
                  origin = [[0], [0], [0]], overlap=2, communicator=parallel):
 
-        builder = UniformGrid3DBuilder()
+        builder = _UniformGrid3DBuilder()
 
         self.args = {
             'dx': dx, 
@@ -109,20 +110,20 @@ class UniformGrid3D(UniformGrid):
         self.communicator = communicator
               
     def __getstate__(self):
-        return Gridlike3D.__getstate__(self)
+        return _Gridlike3D.__getstate__(self)
 
     def __setstate__(self, dict):
-        return Gridlike3D.__setstate__(self, dict)
+        return _Gridlike3D.__setstate__(self, dict)
 
     def __repr__(self):
-        return Gridlike3D.__repr__(self)
+        return _Gridlike3D.__repr__(self)
 
     def _isOrthogonal(self):
-        return Gridlike3D._isOrthogonal(self)
+        return _Gridlike3D._isOrthogonal(self)
 
     @property
     def _concatenatedClass(self):
-        return Gridlike3D._concatenatedClass
+        return _Gridlike3D._concatenatedClass
 
     """
     Topology set and calc
@@ -223,7 +224,7 @@ class UniformGrid3D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike3D._globalNonOverlappingCellIDs(self)
+        return _Gridlike3D._globalNonOverlappingCellIDs(self)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -242,7 +243,7 @@ class UniformGrid3D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike3D._globalOverlappingCellIDs(self)
+        return _Gridlike3D._globalOverlappingCellIDs(self)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -261,7 +262,7 @@ class UniformGrid3D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike3D._localNonOverlappingCellIDs(self)
+        return _Gridlike3D._localNonOverlappingCellIDs(self)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -280,7 +281,7 @@ class UniformGrid3D(UniformGrid):
         
         .. note:: Trivial except for parallel meshes
         """
-        return Gridlike3D._localOverlappingCellIDs(self)
+        return _Gridlike3D._localOverlappingCellIDs(self)
 
     """
     Geometry set and calc
@@ -294,15 +295,15 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _faceNormals(self):
-        XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'l')
         XYnor[0,      ...] =  1
         XYnor[0,  ...,  0] = -1
 
-        XZnor = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZnor = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'l')
         XZnor[1,      ...] =  1
         XZnor[1,...,0,...] = -1
 
-        YZnor = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZnor = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZnor[2,      ...] =  1
         YZnor[2, 0,   ...] = -1
         
@@ -372,13 +373,13 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _faceTangents1(self):
-        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'l')
         XYtan[2,      ...] =  1
         
-        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'l')
         XZtan[2,      ...] =  1
         
-        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZtan[1,      ...] =  1
         
         return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
@@ -387,13 +388,13 @@ class UniformGrid3D(UniformGrid):
         
     @property
     def _faceTangents2(self):
-        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1))
+        XYtan = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'l')
         XYtan[1,      ...] =  1
         
-        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz))
+        XZtan = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'l')
         XZtan[0,      ...] =  1
         
-        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz))
+        YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZtan[0,      ...] =  1
         
         return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)), 
@@ -509,12 +510,12 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _cellFaceIDs(self):
-        return MA.array(Grid3DBuilder.createCells(self.nx,
-                                                  self.ny,
-                                                  self.nz,
-                                                  self.numberOfXYFaces,
-                                                  self.numberOfXZFaces,
-                                                  self.numberOfYZFaces))
+        return MA.array(_Grid3DBuilder.createCells(self.nx,
+                                                   self.ny,
+                                                   self.nz,
+                                                   self.numberOfXYFaces,
+                                                   self.numberOfXZFaces,
+                                                   self.numberOfYZFaces))
 
     @getsetDeprecated
     def _getXYFaceIDs(self):
@@ -551,11 +552,11 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def vertexCoords(self):
-        return Grid3DBuilder.createVertices(self.dx, self.dy, self.dz,
-                                            self.nx, self.ny, self.nz,
-                                            self.numberOfVertices,     
-                                            self.numberOfHorizontalRows,
-                                            self.numberOfVerticalColumns) \
+        return _Grid3DBuilder.createVertices(self.dx, self.dy, self.dz,
+                                             self.nx, self.ny, self.nz,
+                                             self.numberOfVertices,     
+                                             self.numberOfHorizontalRows,
+                                             self.numberOfVerticalColumns) \
                 + self.origin
 
     @property
@@ -592,7 +593,7 @@ class UniformGrid3D(UniformGrid):
      
     @property
     def _cellVertexIDs(self):
-        ids = numerix.zeros((8, self.nx, self.ny, self.nz))
+        ids = numerix.zeros((8, self.nx, self.ny, self.nz), 'l')
         indices = numerix.indices((self.nx, self.ny, self.nz))
         ids[1] = indices[0] + (indices[1] + (indices[2] + 1) * (self.ny + 1) + 1) * (self.nx + 1)
         ids[0] = ids[1] + 1
@@ -607,7 +608,7 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def faceVertexIDs(self):
-       return Grid3DBuilder.createFaces(self.nx, self.ny, self.nz)[1]
+       return _Grid3DBuilder.createFaces(self.nx, self.ny, self.nz)[1]
 
     @property
     def _orderedCellVertexIDs(self):
@@ -898,8 +899,8 @@ class UniformGrid3D(UniformGrid):
         """
 
 def _test():
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()

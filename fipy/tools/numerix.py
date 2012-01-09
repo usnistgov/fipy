@@ -72,7 +72,6 @@ import numpy as NUMERIX
 from numpy.core import umath
 from numpy import newaxis as NewAxis
 from numpy import *
-from numpy import oldnumeric
 try:
     from numpy.core import ma as MA
     numpy_version = 'old'
@@ -83,10 +82,15 @@ except ImportError:
 
 from fipy.tools import inline
 
-def zeros(a, dtype='l'):
-    return NUMERIX.zeros(a, dtype)
-def ones(a, dtype='l'):
-    return NUMERIX.ones(a, dtype)    
+# we want NumPy's __all__, with adjustments
+import sys
+__all__ = list(sys.modules['numpy'].__dict__.setdefault('__all__', []))
+__all__.extend(["NUMERIX", "NewAxis", "MA", "numpy_version"])
+__all__.extend(["zeros", "ones", "getUnit", "put", "reshape", "getShape",
+                "rank", "sum", "isFloat", "isInt", "tostring", "dot", 
+                "sqrtDot", "nearest", "allequal", "allclose", "all",
+                "isclose", "take", "indices", "empty", "loadtxt", 
+                "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"])
 
 def _isPhysical(arr):
     """
@@ -248,16 +252,15 @@ def sum(arr, axis=0):
                 axis = 0
             return NUMERIX.tensordot(NUMERIX.ones(arr.shape[axis], 'l'), arr, (0, axis))
         
-        
 def isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
-        return NUMERIX.issubclass_(arr.dtype.type, float)
+        return NUMERIX.issubclass_(arr.dtype.type, NUMERIX.floating)
     else:
         return NUMERIX.issubclass_(arr.__class__, float)
 
 def isInt(arr):
     if isinstance(arr, NUMERIX.ndarray):
-        return NUMERIX.issubclass_(arr.dtype.type, int)
+        return NUMERIX.issubclass_(arr.dtype.type, NUMERIX.integer)
     else:
         return NUMERIX.issubclass_(arr.__class__, int)
     
@@ -366,8 +369,8 @@ def dot(a1, a2, axis=0):
     >>> print dot(v1, v1)
     [ 4 10]
     >>> v3 = array(((0,1),(2,3)))
-    >>> type(dot(v3, v3))
-    <type 'numpy.ndarray'>
+    >>> print type(dot(v3, v3)) is type(array(1))
+    1
     >>> print dot(v3, v3)
     [ 4 10]
     """
@@ -397,26 +400,38 @@ if inline.doInline:
         Usually used with v1==v2 to return magnitude of v1.
         """
         unit1 = unit2 = 1
-        if _isPhysical(a1):
-            unit1 = a1.inBaseUnits().getUnit()
-            a1 = a1.numericValue
-        if _isPhysical(a2):
-            unit2 = a2.inBaseUnits().getUnit()
-            a2 = a2.numericValue
+
+        def dimensionlessUnmasked(a): 
+            unit = 1 
+            mask = False 
+            if _isPhysical(a): 
+                unit = a.inBaseUnits().getUnit() 
+                a = a.numericValue 
+            if MA.isMaskedArray(a): 
+                mask = a.mask 
+                a = a.filled(fill_value=1) 
+                 
+            return (a, unit, mask) 
+             
+        a1, unit1, mask1 = dimensionlessUnmasked(a1) 
+        a2, unit2, mask2 = dimensionlessUnmasked(a2) 
+
         NJ, ni = NUMERIX.shape(a1)
         result1 = NUMERIX.zeros((ni,),'d')
-
+ 
         inline._runInline("""
             int j;
             result1[i] = 0.;
             for (j = 0; j < NJ; j++)
             {
-                // result1[i] += a1[i * NJ + j] * a2[i * NJ + j];
                 result1[i] += a1[i + j * ni] * a2[i + j * ni];
             }
             result1[i] = sqrt(result1[i]);        
         """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
-        
+ 
+        if NUMERIX.any(mask1) or NUMERIX.any(mask2): 
+            result1 = MA.array(result1, mask=NUMERIX.logical_or(mask1, mask2)) 
+       
         if unit1 != 1 or unit2 != 1:
             from fipy.tools.dimensions.physicalField import PhysicalField
             result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
@@ -431,8 +446,8 @@ else:
         """
         ## We can't use Numeric.dot on an array of vectors
         return sqrt(dot(a1, a2))
-        
-def nearest(data, points):
+
+def nearest(data, points, max_mem=1e8):
     """find the indices of `data` that are closest to `points`
     
     >>> from fipy import *
@@ -440,21 +455,65 @@ def nearest(data, points):
     >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
     >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue)
     [4 5 7 8]
+    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100)
+    [4 5 7 8]
+    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000)
+    [4 5 7 8]
     """
-    N = data.shape[-1]
+    data = asanyarray(data)
+    points = asanyarray(points)
     
+    D = data.shape[0]
+    N = data.shape[-1]
+    M = points.shape[-1]
+
     if N == 0:
         return arange(0)
         
-    points = resize(points, (N, len(points), len(points[0]))).swapaxes(0,1)
+    # given (D, N) data and (D, M) points, 
+    # break points into (D, C) chunks of points
+    # calculatate the full factorial (D, N, C) distances between them
+    # and then reduce to the indices of the C closest values of data 
+    # then assemble chunks C into total M closest indices
+        
+    # (D, N) -> (D, N, 1)
     data = data[..., newaxis]
     
-    try:
-        tmp = data - points
-    except TypeError:
-        tmp = data - PhysicalField(points)
+    # there appears to be no benefit to taking chunks that use more 
+    # than about 100 MiB for D x N x C, and there is a substantial penalty 
+    # for going much above that (presumably due to swapping, even 
+    # though this is vastly less than the 4 GiB I had available)
+    # see ticket:348
+    
+    numChunks = int(round(D * N * data.itemsize * M / max_mem + 0.5))
 
-    return argmin(dot(tmp, tmp, axis=0), axis=0)
+    nearestIndices = empty((M,), dtype=int)
+    for chunk in array_split(arange(points.shape[-1]), numChunks):
+        # last chunk can be empty, but numpy (1.5.0.dev8716, anyway)
+        # returns array([], dtype=float64), which can't be used for indexing
+        chunk = chunk.astype(int)
+        
+        # (D, M) -> (D, C)
+        chunkOfPoints = points[..., chunk]
+        # (D, C) -> (D, 1, C)
+        chunkOfPoints = chunkOfPoints[..., newaxis, :]
+        # (D, 1, C) -> (D, N, C)
+        chunkOfPoints = NUMERIX.repeat(chunkOfPoints, N, axis=1)
+        
+#         print "chunkOfPoints size: ", chunkOfPoints.shape, chunkOfPoints.size, chunkOfPoints.itemsize, chunkOfPoints.size * chunkOfPoints.itemsize
+        
+        try:
+            tmp = data - chunkOfPoints
+        except TypeError:
+            tmp = data - PhysicalField(chunkOfPoints)
+
+        # (D, N, C) -> (N, C)
+        tmp = dot(tmp, tmp, axis=0)
+        
+        # (N, C) -> C
+        nearestIndices[chunk] = argmin(tmp, axis=0)
+        
+    return nearestIndices 
 
 def allequal(first, second):
     """
@@ -509,6 +568,18 @@ def all(a, axis=None, out=None):
     else:
         return MA.all(a=a, axis=axis, out=out)
 
+def isclose(first, second, rtol=1.e-5, atol=1.e-8):
+    r"""
+    Returns which elements of `first` and `second` are equal, subect to the given
+    relative and absolute tolerances, such that::
+        
+        |first - second| < atol + rtol * |second|
+        
+    This means essentially that both elements are small compared to ``atol`` or
+    their difference divided by ``second``'s value is small compared to ``rtol``.
+    """
+    return abs(first - second) < atol + rtol * abs(second)
+    
 def take(a, indices, axis=0, fill_value=None):
     """
     Selects the elements of `a` corresponding to `indices`.
@@ -924,7 +995,7 @@ def _indexShape(index, arrayShape):
     objects, or the Ellipsis (``...``) object"
     
         >>> _indexShape(index=NUMERIX.index_exp[...,2,"text"], 
-        ...             arrayShape=(10,20,30,40,50)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        ...             arrayShape=(10,20,30,40,50))            #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         ValueError: setting an array element with a sequence.
@@ -1081,7 +1152,7 @@ def _indexShape(index, arrayShape):
             indexShape += (1,)
         elif isinstance(element, slice):
             start, stop, stride = element.indices(arrayShape[arrayIndices[j]])
-            indexShape += ((stop - start) / stride,)
+            indexShape += ((stop - start) // stride,)
             j += 1
         else:
             raise IndexError, "invalid index"
@@ -1195,8 +1266,8 @@ if not hasattr(NUMERIX, "in1d"):
 
     
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__":
     _test() 

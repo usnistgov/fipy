@@ -35,6 +35,8 @@
 
 __docformat__ = 'restructuredtext'
 
+__all__ = []
+
 import scipy.sparse as sp
 from fipy.tools import numerix
 
@@ -173,7 +175,7 @@ class _ScipyMatrixBase(_SparseMatrix):
                 raise TypeError
             
     def __rmul__(self, other):
-        if type(numerix.ones(1)) == type(other):
+        if type(numerix.ones(1, 'l')) == type(other):
             y = self.matrix.transpose() * other.copy()
             return y
         else:
@@ -422,8 +424,8 @@ class _ScipyIdentityMeshMatrix(_ScipyIdentityMatrix):
         _ScipyIdentityMatrix.__init__(self, size=mesh.numberOfCells)
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test()   

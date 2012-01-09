@@ -51,6 +51,11 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 
+__all__ = ["SolverConvergenceWarning", "MaximumIterationWarning", 
+           "PreconditionerWarning", "IllConditionedPreconditionerWarning", 
+           "PreconditionerNotPositiveDefiniteWarning", "MatrixIllConditionedWarning",
+           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning"]
+
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):
         self.solver = solver
@@ -78,7 +83,7 @@ class PreconditionerNotPositiveDefiniteWarning(PreconditionerWarning):
 class MatrixIllConditionedWarning(SolverConvergenceWarning):
     def __str__(self):
         return "The matrix appears to be very ill-conditioned. Relative error: %g" % (self.relres)
-    
+  
 class StagnatedSolverWarning(SolverConvergenceWarning):
     def __str__(self):
         return "The solver stagnated. Iterations: %g. Relative error: %g" % (self.iter, self.relres)
@@ -94,14 +99,13 @@ class Solver(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=1000, steps=None, precon=None):
+    def __init__(self, tolerance=1e-10, iterations=1000, precon=None):
         """
         Create a `Solver` object.
 
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `steps`: A deprecated name for `iterations`.
           - `precon`: Preconditioner to use. This parameter is only available for Trilinos solvers. 
 
         """
@@ -109,12 +113,7 @@ class Solver(object):
             raise NotImplementedError, "can't instantiate abstract base class"
             
         self.tolerance = tolerance
-        if steps is not None:
-            import warnings
-            warnings.warn("'iterations' should be used instead of 'steps'", DeprecationWarning, stacklevel=2)
-            self.iterations = steps
-        else:
-            self.iterations = iterations
+        self.iterations = iterations
 
         self.preconditioner = precon
 	

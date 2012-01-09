@@ -36,10 +36,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.numerix import random
-
+from fipy.tools.numerix import random, sqrt
 from fipy.variables.noiseVariable import NoiseVariable
-from fipy.tools.numerix import sqrt
+
+__all__ = ["GaussianNoiseVariable"]
 
 class GaussianNoiseVariable(NoiseVariable):
     r"""
@@ -80,6 +80,11 @@ class GaussianNoiseVariable(NoiseVariable):
 
     >>> mean = 0.
     >>> variance = 4.
+
+    Seed the random module for the sake of deterministic test results.
+
+    >>> from fipy import numerix
+    >>> numerix.random.seed(3)
 
     We generate noise on a non-uniform cartesian mesh with cell dimensions of
     :math:`x^2` and :math:`y^3`.
@@ -156,8 +161,8 @@ class GaussianNoiseVariable(NoiseVariable):
             return None
 
 def _test(): 
-    import doctest
-    return doctest.testmod()
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
     _test() 

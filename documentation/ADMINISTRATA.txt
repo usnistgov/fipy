@@ -54,6 +54,7 @@ Go to the branch::
    
 Check that it is up to date::
 
+    $ svn update
     $ svn diff
 
 Merge updated state of trunk to the branch::
@@ -94,7 +95,7 @@ When completely done with the branch::
 
     $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk" \
         ${FIPYROOT}/branches/${BRANCH}
-    
+
 --------
 Versions
 --------
@@ -153,6 +154,15 @@ Again, merge n.m.q+1 changes back to main trunk::
     $ svn merge -r${PRN}:${LRN} $FIPYROOT/branches/$BRANCH
     $ svn ci -m "merged version n.m.q+1, log:branches/${BRANCH}@${PRN}:${LRN} to source:trunk@${LRN}"
 
+--------------------------
+Miscellaneous svn commands
+--------------------------
+
+Revising svn log comments.
+
+    $ REV=...
+    $ svn propedit --revprop -r ${REV} svn:log
+
 ================
 Making a Release
 ================
@@ -161,24 +171,19 @@ Making a Release
 Source
 ------
 
+Change the version number in :file:`setup.py`
+
 Check items in the tickets_.
+
+Check out a clean copy of the desired release::
+
+    $ svn co $FIPYROOT/trunk CLEAN
+    $ cd CLEAN
 
 .. attention::
 
-   If Bitten_ doesn't show all green boxes for this release, make sure
-   to add appropriate notes in :file:`README.txt` or
-   :file:`INSTALLATION.txt`!
-
-Make branch for the release.
-
-    $ FIPY_VERSION=X_Y_Z	
-    $ svn copy $FIPYROOT/trunk  $FIPYROOT/branches/version-${FIPY_VERSION}
-    $ cd version-${FIPY_VERSION}
-
-Change `release` to `True` in setup.py.
-  
-    $ svn ci -m "Changed release to True"
-    $ svn copy $FIPYROOT/branches/version-${VERSION} $FIPYROOT/tags/version-${VERSION} 
+   If Bitten_ doesn't show all green boxes for this release, make sure to
+   add appropriate notes in :file:`README.txt` or :file:`INSTALLATION.txt`!
 
 Build the documentation and the web pages::
 
@@ -188,6 +193,22 @@ Build the compressed distribution::
 
     $ rm MANIFEST
     $ python setup.py sdist
+
+Test the installed compressed distribution::
+
+    $ cpvirtualenv trunk test
+    $ mkdir tmp
+    $ cd tmp
+    $ cp ../dist/FiPy-${FIPY_VERSION}.tar.gz .
+    $ tar zxvf FiPy-${FIPY_VERSION}.tar.gz
+    $ cd FiPy-${FIPY_VERSION}
+    $ python setup.py install
+    $ cd ..
+    $ python -c "import fipy; fipy.test()"
+    $ deactivate
+    $ rmvirtualenv test
+    $ cd ..
+    $ \rm -rf tmp
 
 -------
 Windows
@@ -201,7 +222,7 @@ Build a windows executable installer::
 Combine the windows installer and examples into one archive::
 
     $ rm MANIFEST
-    $ FIPY_VERSION=X_Y_Z
+    $ FIPY_VERSION=XXX
     $ ln dist/FiPy-${FIPY_VERSION}.win32.exe .
     $ cp MANIFEST.in MANIFEST.in.bkup
     $ cp MANIFEST-WINDOWS.in MANIFEST.in
@@ -229,7 +250,9 @@ Tag the repository as appropriate (see `SVN practices`_ above).
 Upload the build products and documentation from :file:`dist/` to MatForge and 
 the web site to CTCMS ::
 
-    $ python setup.py upload_products --pdf --html --tarball --winzip
+    $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
+    $ export FIPY_WWWACTIVATE=updatewww
+    $ python setup.py upload --pdf --html --tarball --winzip
 
 .. note::
 
@@ -251,26 +274,12 @@ Make an announcement to `fipy@nist.gov`_
 Build (``python setup.py bdist --formats=wininst``) a Windows `PyVTK`_
 executable and upload to download page.
 
-Upload to pypi by checking out a clean copy (CLEAN_PYPI) and running
-
-    $ svn co $FIPYROOT/tags/version-${FIPY_VERSION} CLEAN_PYPI
-    $ cd CLEAN_PYPI
-    $ python setup.py sdist register
-    $ python setup.py sdist upload
-
 .. _tickets: http://matforge.org/fipy/report
 .. _Bitten: http://matforge.org/fipy/build
 .. _fipy@nist.gov: mailto:fipy@nist.gov
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
 .. _stdeb: http://github.com/astraw/stdeb
 .. _debhelper: http://kitenet.net/~joey/code/debhelper/
-
-------------------------
-Bump the version numbers
-------------------------
-
-Bump the version number in setup.py on trunk to X_(Y + 1) and on the
-version-X_Y branch to X_Y_(Z + 1) and commit.
 
 ==========================================
 Making a Windows Distribution for Pysparse
