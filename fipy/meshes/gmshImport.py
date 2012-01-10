@@ -1637,11 +1637,6 @@ class Gmsh2D(Mesh2D):
         return nx.arange(len(self.cellGlobalIDs) 
                          + len(self.gCellGlobalIDs))
                          
-    def __del__(self):
-        # never gets called (circular references?)
-        if hasattr(self, "mshFile"):
-            del self.mshFile
-    
     def _test(self):
         """
         First, we'll test Gmsh2D on a small circle with triangular
@@ -1926,11 +1921,6 @@ class Gmsh3D(Mesh):
         """
         return nx.arange(len(self.cellGlobalIDs) 
                          + len(self.gCellGlobalIDs))
-
-    def __del__(self):
-        # never gets called (circular references?)
-        if hasattr(self, "mshFile"):
-            del self.mshFile
 
     def _test(self):
         """
