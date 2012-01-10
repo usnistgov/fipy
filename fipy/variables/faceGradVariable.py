@@ -90,6 +90,10 @@ class _FaceGradVariable(FaceVariable):
 
         val = self._array.copy()
 
+        faceNormals = self.mesh._orientedFaceNormals
+        if numerix.MA.isMaskedArray(faceNormals):
+            faceNormals = faceNormals.filled()
+
         inline._runIterateElementInline("""
             int j;
             double t1grad1, t1grad2, t2grad1, t2grad2, N, N2;
@@ -117,7 +121,7 @@ class _FaceGradVariable(FaceVariable):
         """,tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.grad.numericValue,
-            normals = self.mesh._orientedFaceNormals,
+            normals = faceNormals,
             id1 = id1,
             id2 = id2,
             dAP = numerix.array(self.mesh._cellDistances),
