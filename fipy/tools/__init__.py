@@ -48,7 +48,7 @@ try:
         if '10.0.4' in PyTrilinos.version():
             try:
                 from mpi4py import MPI
-            except:
+            except ImportError:
                 raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos on a Debian platform with Trilinos version 10.0.4 due to a Trilinos bug (see <http://matforge.org/fipy/ticket/420>). Try installing using 'easy_install mpi4py'.")
 
     from fipy.tools.commWrapper import CommWrapper
