@@ -69,7 +69,7 @@ much is augmented for :term:`FiPy`\'s needs.)
 >>> if __name__ == "__main__":
 ...     nx = ny = 1000
 ... else:
-...     nx = ny = 10
+...     nx = ny = 20
 >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
 >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 
@@ -119,14 +119,20 @@ evolution of their problem.
 >>> if __name__ == "__main__":
 ...     duration = 1000.
 ... else:
-...     duration = 1e-2
+...     duration = 1000.
+
 >>> while elapsed < duration:
 ...     dt = min(100, exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt)
+...     eq.solve(phi, dt=dt, solver=DefaultSolver(precon=None))
 ...     if __name__ == "__main__":
 ...         viewer.plot()
+...     elif (max(phi.getGlobalValue()) > 0.7) and (min(phi.getGlobalValue()) < 0.3) and elapsed > 10.:
+...         break
+
+>>> print (max(phi.getGlobalValue()) > 0.7) and (min(phi.getGlobalValue()) < 0.3)
+True
 
 .. image:: mesh2D.*
    :width: 90%

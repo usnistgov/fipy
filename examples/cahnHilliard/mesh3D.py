@@ -97,7 +97,7 @@ evolution of their problem.
 ...     dt = min(100, exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt)
+...     eq.solve(phi, dt=dt, solver=DefaultSolver(precon=None))
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
