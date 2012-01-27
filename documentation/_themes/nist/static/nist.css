@@ -133,7 +133,7 @@ h2 {
     margin: 1.3em 0 0.2em 0;
     font-weight: normal;
     padding: 0;
-    color: gray;
+    color: 666666;
     background-color: white;
 }
 
@@ -282,7 +282,13 @@ div.warning p.admonition-title {
     color: white;
     border-bottom: 1px solid #86989B;
     font-weight: bold;
-    background-color: #AFC1C4;
+    background-color: #406060;
+}
+
+div.admonition p.admonition-title a,
+div.warning p.admonition-title a {
+    color: white;
+    text-decoration: underline;
 }
 
 div.warning {
