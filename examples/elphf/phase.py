@@ -196,6 +196,7 @@ If we are running interactively, we plot the error
 .. image:: phase/error.*
    :scale: 50
    :align: center
+   :alt: error in solution to steady-state phase field equation
 """
 __docformat__ = 'restructuredtext'
 

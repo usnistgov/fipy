@@ -220,6 +220,7 @@ iterating to equilibrium
 .. image:: phaseDiffusion/binary.*
    :scale: 50
    :align: center
+   :alt: phase and two concentration fields in equilibrium
 
 we confirm that the far-field phases have remained separated
 
@@ -300,6 +301,7 @@ and again iterate to equilibrium
 .. image:: phaseDiffusion/quaternary.*
    :scale: 50
    :align: center
+   :alt: phase and four concentration fields in equilibrium
 
 We confirm that the far-field phases have remained separated
 
@@ -390,6 +392,7 @@ and again iterate to equilibrium
 .. image:: phaseDiffusion/ternaryAndElectrons.*
    :scale: 50
    :align: center
+   :alt: phase and four concentration fields (one like electrons) in equilibrium
 
 We once more confirm that the far-field phases have remained separated
 

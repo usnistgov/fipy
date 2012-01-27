@@ -138,6 +138,7 @@ evolution of their problem.
 .. image:: sphere.*
    :width: 90%
    :align: center
+   :alt: Cahn-Hilliard phase separation on the surface of a sphere with a rendering of the mesh
 
 """
 __docformat__ = 'restructuredtext'
