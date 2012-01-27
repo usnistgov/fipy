@@ -150,7 +150,7 @@ resemble the image below.
 .. image:: electroChem/inputSimpleTrenchSystem.*
    :width: 90%
    :align: center
-   :alt: resulting image
+   :alt: catalyst coverage as a function of time during superfill
 
 """
 __docformat__ = 'restructuredtext'

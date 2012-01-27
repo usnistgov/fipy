@@ -73,12 +73,14 @@ Results for 20x20 mesh:
 .. image:: fipy/meshes/numMesh/orthoerrorgraph.*
    :height: 100px
    :width: 200px
+   :alt: error due to non-orthogonality of a 20x20 mesh 
 
 Results for 10x10 mesh:
 
 .. image:: fipy/meshes/numMesh/orthoerrorcoarsegraph.*
     :height: 100px
     :width: 200px
+    :alt: error due to non-orthogonality of a 10x10 mesh 
 
 It is clear from the graphs that finer meshes decrease the error due
 to non-orthogonality, and that even with a reasonably coarse mesh the

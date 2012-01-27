@@ -119,6 +119,7 @@ If we are running interactively, we'll want a viewer to see the results
 .. image:: simple/step.*
    :width: 50%
    :align: center
+   :alt: step-function initial condition
 
 We choose the parameter values,
 
@@ -192,6 +193,7 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
 .. image:: simple/explicit.*
    :width: 50%
    :align: center
+   :alt: steady-state phase field zero everwhere
 
 On inspection, we can see that this occurs because, for our step-function initial condition, 
 :math:`m_\phi = 0` everwhere,
@@ -226,6 +228,7 @@ After 13 time steps, the solution has converged to the analytical solution
 .. image:: simple/relaxation.*
    :width: 50%
    :align: center
+   :alt: steady-state equilibrium phase field after relaxation
 
 .. note:: The solution is only found accurate 
    to :math:`\approx 4.3\times 10^{-5}`
@@ -494,6 +497,8 @@ True
 .. image:: simple/dimensional.*
    :width: 90%
    :align: center
+   :alt: phase field when solved with physical parameters
+
 """
 __docformat__ = 'restructuredtext'
 

@@ -123,12 +123,14 @@ class GaussianNoiseVariable(NoiseVariable):
     .. image:: fipy/variables/gaussian.*
       :scale: 25
       :align: center
+      :alt: random values with a gaussian distribution
 
     but that the root-volume-weighted histogram is Gaussian.
 
     .. image:: fipy/variables/gauss-histogram.*
       :scale: 25
       :align: center
+      :alt: histogram of random values with a gaussian distribution
 
     """
     def __init__(self, mesh, name = '', mean = 0., variance = 1., hasOld = 0):

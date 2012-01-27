@@ -403,6 +403,7 @@ and again iterate to equilibrium
 .. image:: quaternary.*
    :width: 90%
    :align: center
+   :alt: phase and four composition fields in equilibrium
 
 .. .. index:: take, allclose
 

@@ -125,6 +125,7 @@ If the problem is run interactively, we can view the result:
 .. image:: input4thOrder1D.*
    :width: 90%
    :align: center
+   :alt: solution to biharmonic equation
 
 """
 __docformat__ = 'restructuredtext'
