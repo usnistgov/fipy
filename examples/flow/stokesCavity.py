@@ -316,6 +316,7 @@ solution. This argument cannot be passed to :meth:`solve`.
 .. image:: cavity.*
    :width: 90%
    :align: center
+   :alt: flow field for moving lid problem
 
 Test values in the last cell.
 

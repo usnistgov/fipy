@@ -137,6 +137,7 @@ True
 .. image:: mesh2D.*
    :width: 90%
    :align: center
+   :alt: evolution of Cahn-Hilliard phase separation at t = 30, 100 and 1000
 
 """
 __docformat__ = 'restructuredtext'

@@ -404,6 +404,7 @@ and again iterate to equilibrium
 .. image:: quaternary.*
    :width: 90%
    :align: center
+   :alt: phase and four composition fields in equilibrium
 
 We can confirm that the far-field phases have remained separated
 

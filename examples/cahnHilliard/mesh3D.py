@@ -104,6 +104,7 @@ evolution of their problem.
 .. image:: mesh3D.*
    :width: 90%
    :align: center
+   :alt: snapshot of Cahn-Hilliard phase separation in 3D with cutaway
 """
 __docformat__ = 'restructuredtext'
 

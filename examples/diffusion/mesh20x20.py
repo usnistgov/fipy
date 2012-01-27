@@ -99,6 +99,7 @@ and solve the equation by repeatedly looping in time:
 .. image:: mesh20x20transient.*
    :width: 90%
    :align: center
+   :alt: solution to diffusion problem on a 2D domain with some Dirichlet boundaries
 
 We can test the value of the bottom-right corner cell.
 
@@ -119,6 +120,7 @@ We can also solve the steady-state problem directly
 .. image:: mesh20x20steadyState.*
    :width: 90%
    :align: center
+   :alt: stead-state solution to diffusion problem on a 2D domain with some Dirichlet boundaries
 
 and test the value of the bottom-right corner cell.
 

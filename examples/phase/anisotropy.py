@@ -223,6 +223,7 @@ and iterate the solution in time, plotting as we go,
 .. image:: anisotropy.*
    :width: 90%
    :align: center
+   :alt: phase field and undercooling during solidification of a 6-fold "snowflake" anisotropic seed
 
 The non-uniform temperature results from the release of latent 
 heat at the solidifying interface. The dendrite arms grow fastest 
