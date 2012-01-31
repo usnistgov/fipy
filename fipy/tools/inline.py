@@ -4,7 +4,7 @@ import inspect
 import os
 import sys
 
-if '--inline' in sys.argv[1:]:
+if '--inline' in [s.lower() for s in sys.argv[1:]]:
     doInline = True
 else:
     doInline = 'FIPY_INLINE' in os.environ

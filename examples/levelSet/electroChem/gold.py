@@ -96,6 +96,8 @@ resemble the image below.
    :align: center
    :alt: catalyst coverage as a function of time during gold superfill
 
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 __docformat__ = 'restructuredtext'
 

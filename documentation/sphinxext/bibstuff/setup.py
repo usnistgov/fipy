@@ -11,6 +11,6 @@ setup(name="bibstuff",
       author_email="point@pricklysoft.org",
       url = "http://www.pricklysoft.org/software/bibstuff.html",
       license = "MIT",
-      packages = ["bibstyles"],
+      packages = ["bibstyles",'sphinxext'],
       py_modules=["bibfile","bibgrammar", "bibname", "ebnf_sp"],
       scripts=["add2bib.py", "bib4txt.py", "bibsearch.py", "biblabel.py", "jabbrev.py", "reflist.py"] )

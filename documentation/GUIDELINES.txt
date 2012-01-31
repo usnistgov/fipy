@@ -3,7 +3,7 @@ Development Guidelines
 ======================
 
 The following are the practices that have evolved over the course of 
-FiPy's development. Stray from them at your peril.
+:term:`FiPy`'s development. Stray from them at your peril.
 
 ----------------------
 Object Oriented Design
@@ -52,13 +52,13 @@ anybody willing to do the work of changing the existing code.
 Testing
 -------
 
-FiPy uses :mod:`doctest` pervasively. We have not seen a case where 
+:term:`FiPy` uses :mod:`doctest` pervasively. We have not seen a case where 
 :mod:`unittest` would simplify things. As a heavily numerical code, care 
 must be taken in checking floating-point values.
 
-Tests should not fail as a result of a missing optional install. FiPy 
+Tests should not fail as a result of a missing optional install. :term:`FiPy` 
 defines the following :mod:`doctest` directives to specify what conditions 
-are needed to run the test::
+are needed to run the test:
 
   ``GMSH``
     The :program:`gmsh` executable, version 2.0 or greater, must on the
@@ -68,13 +68,13 @@ are needed to run the test::
     The :mod:`scipy` package must be importable.
 
   ``TVTK``
-    The :mod:`tvtk` (or :mod:`enthough.tvtk`) package must be importable.
+    The :mod:`tvtk` (or :mod:`enthought.tvtk`) package must be importable.
 
   ``SERIAL``
-    FiPy must be running on a single processor.
+    :term:`FiPy` must be running on a single processor.
 
   ``PARALLEL``
-    FiPy must be running on more than one processor.
+    :term:`FiPy` must be running on more than one processor.
 
   ``PROCESSOR_0``
     Whether serial or parallel, the test will only be run on 

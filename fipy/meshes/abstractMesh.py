@@ -35,7 +35,7 @@
 
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["AbstractMesh"]
 
 from fipy.tools import serial
 from fipy.tools import numerix
@@ -137,7 +137,8 @@ class AbstractMesh(object):
     @property
     def x(self):
         """
-        Equivant to using ``cellCenters[0]``.        
+        Equivalent to using :attr:`cellCenters`\ ``[0]``. 
+        
         >>> from fipy import *
         >>> print Grid1D(nx=2).x
         [ 0.5  1.5]
@@ -147,7 +148,8 @@ class AbstractMesh(object):
     @property
     def y(self):
         """
-        Equivant to using ``cellCenters[1]``.        
+        Equivalent to using :attr:`cellCenters`\ ``[1]``.  
+        
         >>> from fipy import *
         >>> print Grid2D(nx=2, ny=2).y
         [ 0.5  0.5  1.5  1.5]
@@ -164,7 +166,8 @@ class AbstractMesh(object):
     @property
     def z(self):
         """
-        Equivant to using ``cellCenters[2]``.        
+        Equivalent to using :attr:`cellCenters`\ ``[2]``.   
+        
         >>> from fipy import *
         >>> print Grid3D(nx=2, ny=2, nz=2).z
         [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]
@@ -1282,7 +1285,6 @@ class AbstractMesh(object):
     
     @getsetDeprecated(new_name="vertexCoords")
     def getVertexCoords(self):
-        """TODO: replace this with a warning."""
         if hasattr(self, 'vertexCoords'):
             return self.vertexCoords
         else:
@@ -1292,7 +1294,6 @@ class AbstractMesh(object):
     def getExteriorFaces(self):
         """
         Return only the faces that have one neighboring cell.
-        TODO: replace with a warning.
         """
         return self.exteriorFaces
             
@@ -1300,7 +1301,6 @@ class AbstractMesh(object):
     def getInteriorFaces(self):
         """
         Return only the faces that have two neighboring cells.
-        TODO: replace with a warning.
         """
         return self.interiorFaces
     

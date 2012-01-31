@@ -51,8 +51,8 @@ def _parallelImport():
             except ImportError:
                 raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos on a Debian platform with Trilinos version 10.0.4 due to a Trilinos bug (see <http://matforge.org/fipy/ticket/420>). Try installing using 'easy_install mpi4py'.")
 
-    from fipy.tools.comms.commWrapper import CommWrapper
-    parallel = CommWrapper(Epetra=Epetra)
+    from fipy.tools.comms.commWrapper import ParallelCommWrapper
+    parallel = ParallelCommWrapper(Epetra=Epetra)
 
     if parallel.Nproc > 1:
 

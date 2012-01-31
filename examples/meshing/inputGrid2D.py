@@ -36,7 +36,7 @@ r"""
 
 To run this example from the base FiPy directory, type::
     
-    $ examples/meshing/inputGrid2D.py --numberOfElements=X
+    $ python examples/meshing/inputGrid2D.py --numberOfElements=X
 
 This example demonstrates how to build a 1D mesh and obtain basic mesh
 information. The command line argument, X, controls the number of

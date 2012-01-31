@@ -17,7 +17,7 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.append(os.path.abspath('sphinxext'))
-sys.path.append(os.path.abspath('sphinxext/bibtex'))
+sys.path.append(os.path.abspath('tutorial'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -31,7 +31,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.pngmath', 
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
-              'numpydoc']
+              'numpydoc',
+              'bibstuff.sphinxext.bibref']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -47,7 +48,7 @@ master_doc = 'documentation/contents'
 
 # General information about the project.
 project = u'FiPy'
-copyright = u'2004-2010, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
+copyright = u'2004-2012, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -78,10 +79,16 @@ unused_docs = ['documentation/RESOURCES',
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['_build', 
-                 'FiPy.egg-info', 
-                 'documentation/_build', 
-                 'documentation/sphinxext']
+exclude_patterns = ['fipy/generated/modules.txt',
+                    'fipy/generated/__init__.txt',
+                    'build', 
+                    'dist',
+                    'FiPy.egg-info', 
+                    'documentation/_build', 
+                    'documentation/tutorial/package/generated/modules.txt',
+                    'documentation/sphinxext',
+                    'documentation/sphinxext/bibtex/bibstuff/examples/*.txt',
+                    '**/.svn']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -113,23 +120,9 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/flow/index.txt',
                         'examples/reactiveWetting/index.txt',
                         'examples/updating/index.txt']
-
                         
-input_bib_path = 'refs.bib'
-
-import bib2rst
-
-# bib2rst.convert_all_bib('manual', '../contrib/ext/bibtex/bibstuff')
-bib2rst.convert_only_cited('..', input_bib_path, source_suffix, 'bibtex/bibstuff')
-
-saved_argv = sys.argv
-
-sys.argv = ["build_docs", "--dest-dir=../fipy/generated", "../fipy"]
-import generate_modules
-generate_modules.main()
-
-sys.argv = saved_argv
-
+autodoc_member_order = 'alphabetical'
+                        
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
@@ -320,7 +313,7 @@ latex_use_parts = True
 latex_additional_files = ['figures/nistident_flright_vec.pdf']
 
 # Documents to append as an appendix to all manuals.
-latex_appendices = ['documentation/refs.bib_cited']
+# latex_appendices = ['documentation/refs.bib_cited']
 
 # If false, no module index is generated.
 #latex_use_modindex = True
@@ -328,7 +321,29 @@ latex_appendices = ['documentation/refs.bib_cited']
 pngmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
-intersphinx_mapping = {'http://docs.python.org/': None,
-                       'http://docs.scipy.org/doc/numpy/': None,
-                       'http://docs.scipy.org/doc/scipy/reference/': None,
-                       'http://matplotlib.sourceforge.net/': None}
+intersphinx_mapping = {
+    'python': ('http://docs.python.org/', None),
+    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
+    'matplotlib': ('http://matplotlib.sourceforge.net/', None)}
+# intersphinx_mapping = {'http://docs.python.org/': None,
+#                        'http://docs.scipy.org/doc/numpy/': None,
+#                        'http://docs.scipy.org/doc/scipy/reference/': None,
+#                        'http://matplotlib.sourceforge.net/': None}
+
+def skip_numpy_not_numerix(app, what, name, obj, skip, options):
+    import types
+    if ((type(obj) in [types.FunctionType, 
+                       types.BuiltinFunctionType,
+                       types.ClassType, 
+                       types.TypeType]) 
+        and not (obj.__module__.startswith("fipy")
+                 or obj.__module__.startswith("package"))):
+            skip = True
+    return skip
+    
+def setup(app):
+    app.connect('autodoc-skip-member', skip_numpy_not_numerix)
+
+    
+    

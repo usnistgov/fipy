@@ -497,7 +497,7 @@ We plot the result against the sharp interface solution
 >>> sharp.setValue(Cl, where=x >= L * fraction)
 
 .. index::
-   :module: viewers
+   module: fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=(phase, C, sharp), 
@@ -520,10 +520,10 @@ equations) as a test for how long to sweep. Because of the
 and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver`. Therefore, we use a
 :class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
 
-.. index:: DefaultAsymmetricSolver, solve, sweep
+.. .. index:: DefaultAsymmetricSolver, solve, sweep
 
-We now use the ":meth:`~fipy.terms.Term.sweep`" method instead of ":meth:`~fipy.terms.Term.solve`" because we
-require the residual.
+We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
+":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
 >>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
 
@@ -618,7 +618,8 @@ expected values.
    examine different temperatures in this example, so we declare :math:`T` 
    as a :class:`~fipy.variables.variable.Variable`
 
-
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 
 __docformat__ = 'restructuredtext'

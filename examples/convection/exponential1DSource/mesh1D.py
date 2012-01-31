@@ -34,7 +34,7 @@
 
 r"""
 
-Like :mod:`examples.diffusion.convection.exponential1D.mesh1D`
+Like :mod:`examples.convection.exponential1D.mesh1D`
 this example solves a steady-state convection-diffusion equation, but adds a constant source, 
 :math:`S_0 = 1`, such that
 
@@ -85,7 +85,7 @@ We define the convection-diffusion equation with source
 ...       + ExponentialConvectionTerm(coeff=convCoeff)
 ...       + sourceCoeff)
     
-.. index:: DefaultAsymmetricSolver
+.. .. index:: DefaultAsymmetricSolver
     
 >>> eq.solve(var=var, 
 ...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))
@@ -114,7 +114,7 @@ or
 If the problem is run interactively, we can view the result:
 
 .. index:: 
-   module: viewers
+   module: fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var)

@@ -34,12 +34,12 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.baseDiffusionTerm import _BaseDiffusionTerm
+from fipy.terms.abstractDiffusionTerm import _AbstractDiffusionTerm
 from fipy.tools import numerix
 
 __all__ = ["DiffusionTermCorrection"]
 
-class DiffusionTermCorrection(_BaseDiffusionTerm):
+class DiffusionTermCorrection(_AbstractDiffusionTerm):
 
     def _getNormals(self, mesh):
         return mesh._faceCellToCellNormals

@@ -29,7 +29,8 @@ __version__ = "0.5"
 __needs__ = '2.4'
 
 # import everything from a useful style
-from default import *
+from . import default
+from . import shared
 
 #####################################################################
 ############  Override the style choices  ###########################
@@ -38,6 +39,7 @@ from default import *
 
 ######## ADJUST CITATION TEMPLATE FOR NEW STYLE  ###########
 ######## note: see help for bibstyles.shared.NameFormatter for name details
+CITATION_TEMPLATE = default.CITATION_TEMPLATE.copy()
 CITATION_TEMPLATE.update(dict(
 indent_left=0,
 name_first = 'f{. }. |v |l|, j',
@@ -50,7 +52,7 @@ name_name_sep = (', ',' and '),
 # (This is necessary if you want to change any of the global formatting functions,
 #  and usually you change 'format_inline_cite')
 class CitationManager(shared.CitationManager):
-
+	default_citation_template = CITATION_TEMPLATE
 	################### CITEREF FORMATTING #########################
 	def format_inline_cite(self, cite_key_list):
 		entry_list = self.find_entries(cite_key_list,discard=False)

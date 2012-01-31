@@ -103,7 +103,7 @@ else:
 
 def test(*args):
     r"""
-    Test `Fipy`. Equivalent to
+    Test `Fipy`. Equivalent to::
     
     $ python setup.py test --modules
 
@@ -118,7 +118,7 @@ def test(*args):
 
     >>> fipy.test('--trilinos', '--inline')
 
-    At the command line this would be
+    At the command line this would be::
 
     $ python setup.py test --modules --trilinos --inline
 

@@ -38,8 +38,8 @@ __version__ = "0.7"
 __needs__ = '2.4'
 
 # import everything from a useful style
-from default import *
-
+from . import default
+from . import shared
 #####################################################################
 ############  Override the style choices  ###########################
 #####################################################################
@@ -47,6 +47,7 @@ from default import *
 
 ######## ADJUST CITATION TEMPLATE FOR NEW STYLE  ###########
 ######## note: see help for bibstyles.shared.NameFormatter for name details
+CITATION_TEMPLATE = default.CITATION_TEMPLATE.copy()
 CITATION_TEMPLATE.update(dict(
 indent_left=3,
 name_first = 'V |L |f',
@@ -67,6 +68,7 @@ techreport  = '(%(year)s) "%(title)s". %(institution)s %(type)s %(number)s. %(ur
 # (This is necessary if you want to change any of the global formatting functions,
 #  and usually you change 'format_inline_cite')
 class CitationManager(shared.CitationManager):
+	default_citation_manager = CITATION_TEMPLATE
 	def format_inline_cite(self, cite_key_list):
 		pass
 	################### CITATION FORMATTING ########################
@@ -76,5 +78,5 @@ class CitationManager(shared.CitationManager):
 	#sort_key for sorting list of references
 	# (choice of field_list is a formatting decision)
 	def sortkey(self,bibentry):
-		return make_sort_key(bibentry,['Author','Year'])
+		return self.make_sort_key(bibentry,['Author','Year'])
 

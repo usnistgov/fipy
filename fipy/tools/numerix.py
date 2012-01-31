@@ -34,9 +34,16 @@
  # ###################################################################
  ##
 
-"""
+"""Replacement module for NumPy
 
-The functions provided in ths module replace the `Numeric` module.
+.. attention::
+    
+   This module should be the only place in the code where :mod:`numpy` is
+   explicitly imported and you should always import this module and not
+   :mod:`numpy` in your own code. The documentation for :mod:`numpy` remains
+   canonical for all functions and classes not explicitly documented here.
+
+The functions provided in ths module replace and augment the `NumPy` module.
 The functions work with `Variables`, arrays or numbers. For example,
 create a `Variable`.
 
@@ -62,8 +69,6 @@ Take the tangent of an array.
    >>> print tan(array((0,0,0)))
    [ 0.  0.  0.]
    
-Eventually, this module will be the only place in the code where `Numeric` (or
-`numarray` (or `scipy_core`)) is explicitly imported.
 """
 
 __docformat__ = 'restructuredtext'
@@ -86,11 +91,12 @@ from fipy.tools import inline
 import sys
 __all__ = list(sys.modules['numpy'].__dict__.setdefault('__all__', []))
 __all__.extend(["NUMERIX", "NewAxis", "MA", "numpy_version"])
-__all__.extend(["zeros", "ones", "getUnit", "put", "reshape", "getShape",
-                "rank", "sum", "isFloat", "isInt", "tostring", "dot", 
-                "sqrtDot", "nearest", "allequal", "allclose", "all",
-                "isclose", "take", "indices", "empty", "loadtxt", 
-                "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"])
+__all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
+                       "rank", "sum", "isFloat", "isInt", "tostring", "dot", 
+                       "sqrtDot", "nearest", "allequal", "allclose", "all",
+                       "isclose", "take", "indices", "empty", "loadtxt", 
+                       "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"],
+                      cmp=lambda x,y: cmp(x.lower(), y.lower())))
 
 def _isPhysical(arr):
     """

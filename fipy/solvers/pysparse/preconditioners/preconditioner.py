@@ -39,8 +39,7 @@ class Preconditioner:
     """
     Base preconditioner class
 
-    .. attention :: This class is abstract. Always
-    create one of its subclasses.
+    .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
     def __init__(self):

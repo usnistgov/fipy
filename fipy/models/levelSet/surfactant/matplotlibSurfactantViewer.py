@@ -42,12 +42,12 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 from fipy.viewers import MeshDimensionError
 
 __all__ = ["MatplotlibSurfactantViewer"]
 
-class MatplotlibSurfactantViewer(_MatplotlibViewer):
+class MatplotlibSurfactantViewer(AbstractMatplotlibViewer):
     
     """
     The `MatplotlibSurfactantViewer` creates a viewer with the Matplotlib_ python
@@ -121,7 +121,7 @@ class MatplotlibSurfactantViewer(_MatplotlibViewer):
         """
 
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=[], title=title, **kwlimits)
+        AbstractMatplotlibViewer.__init__(self, vars=[], title=title, **kwlimits)
         
         self.distanceVar = distanceVar
         if surfactantVar is None:

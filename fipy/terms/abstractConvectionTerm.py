@@ -44,13 +44,13 @@ from fipy.terms import AbstractBaseClassError
 from fipy.terms import VectorCoeffError
 from fipy.tools import numerix
 
-class _BaseConvectionTerm(FaceTerm):
+class _AbstractConvectionTerm(FaceTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.0, var=None):
         """
-        Create a `_BaseConvectionTerm` object.
+        Create a `_AbstractConvectionTerm` object.
         
             >>> from fipy import *
             >>> m = Grid1D(nx = 2)
@@ -94,7 +94,7 @@ class _BaseConvectionTerm(FaceTerm):
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
         """
-        if self.__class__ is _BaseConvectionTerm:
+        if self.__class__ is _AbstractConvectionTerm:
             raise AbstractBaseClassError
             
         self.stencil = None
@@ -183,7 +183,7 @@ class _BaseConvectionTerm(FaceTerm):
 
         return (var, L, b)
 
-class __ConvectionTerm(_BaseConvectionTerm): 
+class __ConvectionTerm(_AbstractConvectionTerm): 
     """
     Dummy subclass for tests
     """

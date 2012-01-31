@@ -4,7 +4,7 @@ Finite Volume Method
 To use the FVM, the solution domain must first be divided into
 non-overlapping polyhedral elements or cells.  A solution domain
 divided in such a way is generally known as a mesh (as we will see, a
-:class:`~fipy.meshes.common.mesh.Mesh` is also a :term:`FiPy` object).  A mesh consists of vertices,
+:class:`~fipy.meshes.mesh.Mesh` is also a :term:`FiPy` object).  A mesh consists of vertices,
 faces and cells (see Figure :ref:`fig:meshcartoon`).  In the FVM the
 variables of interest are averaged over control volumes (CVs).  The
 CVs are either defined by the cells or are centered on the vertices.
@@ -78,8 +78,8 @@ approximations for fluxes across the boundary of each CV.  In this
 section, each term in Equation :eq:`num:gen` will be examined
 separately.
 
-Transient Term
-~~~~~~~~~~~~~~
+Transient Term :math:`\partial (\rho \phi) / \partial t`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For the transient term, the discretization of the integral :math:`\int_V` over the volume of a CV is given by
 
@@ -95,8 +95,12 @@ centered on a point :math:`P` and the superscript ":math:`\text{old}`"
 represents the previous time-step value.  The value :math:`V_P` is the
 volume of the CV and :math:`\Delta t` is the time step size.
 
-Convection Term
-~~~~~~~~~~~~~~~
+This term is represented in :term:`FiPy` as
+
+>>> TransientTerm(coeff=rho)
+
+Convection Term :math:`\nabla \cdot \left( \vec{u} \phi \right)`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The discretization for the convection term is given by
 
@@ -122,10 +126,30 @@ such that
    \phi_f=\alpha_f \phi_P +(1-\alpha_f)\phi_A.
 
 The weighting factor :math:`\alpha_f` is determined by the convection
-scheme, described later in this chapter.
+scheme, described in :ref:`sec:NumericalSchemes`.
 
-Diffusion Term
-~~~~~~~~~~~~~~
+This term is represented in :term:`FiPy` as
+
+.. currentmodule:: fipy.terms
+
+>>> <SpecificConvectionTerm>(coeff=u)
+    
+where :samp:`{<SpecificConvectionTerm>}` can be any of 
+:class:`~centralDiffConvectionTerm.CentralDifferenceConvectionTerm`,
+:class:`~exponentialConvectionTerm.ExponentialConvectionTerm`, 
+:class:`~hybridConvectionTerm.HybridConvectionTerm`, 
+:class:`~powerLawConvectionTerm.PowerLawConvectionTerm`,
+:class:`~upwindConvectionTerm.UpwindConvectionTerm`, 
+:class:`~explicitUpwindConvectionTerm.ExplicitUpwindConvectionTerm`, or 
+:class:`~vanLeerConvectionTerm.VanLeerConvectionTerm`.
+The differences between these convection schemes are described
+in Section :ref:`sec:NumericalSchemes`. The velocity coefficient 
+``u`` must be a rank-1 :class:`~fipy.variables.faceVariable.FaceVariable`, or a 
+constant vector in the form of a :term:`Python` list or 
+tuple, *e.g.* ``((1,), (2,))`` for a vector in 2D.
+
+Diffusion Term :math:`\nabla \cdot \left( \Gamma_1 \nabla \phi \right)`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The discretization for the diffusion term is given by
 
@@ -152,10 +176,51 @@ becomes increasingly inaccurate as the non-orthogonality increases.
 Correction terms have been derived to improve this error but are not
 currently included in :term:`FiPy` [croftphd]_.
 
+This term is represented in :term:`FiPy` as
+
+.. currentmodule:: fipy.terms
+
+>>> DiffusionTerm(coeff=Gamma1)
+
+which is synonymous with
+
+>>> ImplicitDiffusionTerm(coeff=Gamma1)
+    
+or 
+
+>>> ExplicitDiffusionTerm(coeff=Gamma1)
+    
+:class:`~explicitDiffusionTerm.ExplicitDiffusionTerm` is provided primarily for
+illustrative purposes, although :mod:`examples.diffusion.mesh1D` 
+demonstrates its use in Crank-Nicolson time stepping.
+:class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` is almost always
+preferred (:class:`~diffusionTerm.DiffusionTerm` is a synonym for
+:class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` to reinforce this
+preference). One can also create an explicit diffusion term with
+
+>>> (Gamma1 * phi.faceGrad).divergence
+
+.. _discret-higherOrderDiffusion:
+
+Higher order diffusion
+''''''''''''''''''''''
+
+Higher order diffusion expressions, such as :math:`\nabla^4 \phi` or 
+:math:`\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(  
+\Gamma_2 \nabla \phi\right) \right) \right)` for  Cahn-Hilliard are 
+represented as
+ 
+>>> DiffusionTerm(coeff=(Gamma1, Gamma2))
+
+The number of elements supplied for ``coeff`` determines the
+order of the term.
+
 Source Term
 ~~~~~~~~~~~
 
-The discretization for the source term is given by, 
+Any term that cannot be written in one of the previous forms is considered
+a source :math:`S_{\phi}`. The discretization for the source term is given
+by,
 
 .. math::
    :label: num:sou
@@ -173,6 +238,29 @@ manner so Equation :eq:`num:sou` becomes
 where :math:`S_0` is the source which is independent of :math:`\phi` and
 :math:`S_1` is the coeficient of the source which is linearly dependent
 on :math:`\phi`.
+
+A source term is represented in :term:`FiPy` essentially as it appears in 
+mathematical form, *e.g.*, :math:`3\kappa^2 + b \sin
+\theta` would be written
+
+>>> 3 * kappa**2 + b * numrix.sin(theta)
+
+.. note::
+
+   Functions like :func:`~numpy.sin` can be obtained from the
+   :mod:`fipy.tools.numerix` module.
+
+   .. warning::
+
+      Generally, things will not work as expected if the equivalent
+      function is used from the :term:`NumPy` or :term:`SciPy` library.
+
+If, however, the source depends on the variable that is being solved for,
+it can be advantageous to linearize the source and cast part of it as an
+implicit source term, *e.g.*, :math:`3\kappa^2 + \phi \sin \theta`
+might be written as
+
+>>> 3 * kappa**2 + ImplicitSourceTerm(coeff=sin(theta))
 
 .. _section:linear-equations:
 

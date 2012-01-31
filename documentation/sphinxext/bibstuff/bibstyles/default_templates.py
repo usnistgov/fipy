@@ -46,6 +46,8 @@ import re
 
 
 #default post processing of citations
+# remove newlines (may be returned by bib parser)
+_crs = re.compile(r"\s*$\s*", re.MULTILINE)
 # remove accents and braces
 _aigu = re.compile(r"\\'")
 _specialchars = re.compile(r'{\\([a-zA-Z])}')
@@ -54,6 +56,7 @@ _ldquote = re.compile(r'``')
 
 def default_post_processor(citations_as_string):
 	result = citations_as_string
+	result = _crs.sub(' ', result)
 	result = _aigu.sub('', result)
 	result = _specialchars.sub(r'\1', result)
 	result = _deletechars.sub('', result)

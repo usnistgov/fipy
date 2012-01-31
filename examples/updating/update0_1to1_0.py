@@ -270,15 +270,18 @@ suitable):
 ...          boundaryConditions = boundaryConditions)
 
 .. note:: 
-   In version 0.1, the :class:`~fipy.terms.equation.Equation` object had to be told about the
-   :class:`~fipy.variables.variable.Variable`, :class:`~fipy.solvers.solver.Solver`, and :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` objects
-   when it was created (and it, in turn, passed much of this information to the
-   :class:`~fipy.terms.term.Term` objects in order to create them). In version 1.0, the
-   :class:`~fipy.terms.term.Term` objects (and the equation assembled from them) are abstract.
-   The :class:`~fipy.variables.variable.Variable`, :class:`~fipy.solvers.solver.Solver`, and :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition`
-   objects are only needed by the :meth:`solve` method (and, in fact, the same
-   equation could be used to solve different variables, with different solvers,
-   subject to different boundary conditions, if desired).
+   In version 0.1, the :class:`~fipy.terms.equation.Equation` object had to be
+   told about the :class:`~fipy.variables.variable.Variable`, :class:`~fipy.solvers.solver.Solver`, 
+   and :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` objects
+   when it was created (and it, in turn, passed much of this information to 
+   the :class:`~fipy.terms.term.Term` objects in order to create them). In version
+   1.0, the :class:`~fipy.terms.term.Term` objects (and the equation assembled
+   from them) are abstract. 
+   The :class:`~fipy.variables.variable.Variable`, :class:`~fipy.solvers.solver.Solver`, 
+   and :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` objects
+   are only needed by the :meth:`solve` method (and, in fact, the same equation
+   could be used to solve different variables, with different solvers, subject
+   to different boundary conditions, if desired).
 
 The analytical solution is unchanged, and we can test as before
 
@@ -305,7 +308,7 @@ Instead, rather than instantiating a particular :class:`~fipy.viewers.viewer.Vie
 still do, if you desire), a generic "factory" method will return a :class:`~fipy.viewers.viewer.Viewer`
 appropriate for the supplied `Variable` object(s):
     
-.. index:: viewers
+.. index:: fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     import fipy.viewers

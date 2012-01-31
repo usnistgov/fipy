@@ -42,21 +42,21 @@ import subprocess
 import tempfile
 import time
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import AbstractViewer
 
 __all__ = ["MayaviClient"]
 
-class MayaviClient(_Viewer):
+class MayaviClient(AbstractViewer):
     """
     The `MayaviClient` uses the Mayavi_ python plotting package.
 
-    .. Mayavi: http://code.enthought.com/projects/mayavi
+    .. _Mayavi: http://code.enthought.com/projects/mayavi
 
     """
-    __doc__ += _Viewer._test1D(viewer="MayaviClient")
-    __doc__ += _Viewer._test2D(viewer="MayaviClient")
-    __doc__ += _Viewer._test2Dirregular(viewer="MayaviClient")
-    __doc__ += _Viewer._test3D(viewer="MayaviClient")
+    __doc__ += AbstractViewer._test1D(viewer="MayaviClient")
+    __doc__ += AbstractViewer._test2D(viewer="MayaviClient")
+    __doc__ += AbstractViewer._test2Dirregular(viewer="MayaviClient")
+    __doc__ += AbstractViewer._test3D(viewer="MayaviClient")
     
     def __init__(self, vars, title=None, daemon_file=None, fps=1.0, **kwlimits):
         """
@@ -101,7 +101,7 @@ class MayaviClient(_Viewer):
             self.vtkFaceViewer = None
             face_vars = []
 
-        _Viewer.__init__(self, vars=cell_vars + face_vars, title=title, **kwlimits)
+        AbstractViewer.__init__(self, vars=cell_vars + face_vars, title=title, **kwlimits)
         
         self.plot()
 
@@ -157,7 +157,7 @@ class MayaviClient(_Viewer):
         :Returns:
           the value of the limit or `None`
         """
-        lim = _Viewer._getLimit(self, key, default=None)
+        lim = AbstractViewer._getLimit(self, key, default=None)
         if lim is not None:
             return ["--%s" % key, str(lim)]
         else:

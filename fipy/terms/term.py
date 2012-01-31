@@ -424,9 +424,6 @@ class Term(object):
     def _getTransientGeomCoeff(self, var):
         return None
 
-    def _treatMeshAsOrthogonal(self, mesh):
-        raise NotImplementedError
-
     def _getNormals(self, mesh):
         raise NotImplementedError
 

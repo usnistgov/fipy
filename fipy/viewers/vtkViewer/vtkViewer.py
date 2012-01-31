@@ -38,9 +38,9 @@
 
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["VTKViewer"]
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import AbstractViewer
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tests.doctestPlus import register_skipper
 
@@ -59,7 +59,7 @@ register_skipper(flag="TVTK",
                  test=_checkForTVTK,
                  why="the `tvtk` package cannot be imported")
 
-class _VTKViewer(_Viewer):
+class VTKViewer(AbstractViewer):
     """Renders `_MeshVariable` data in VTK format
     """
     def __init__(self, vars, title=None, limits={}, **kwlimits):
@@ -77,7 +77,7 @@ class _VTKViewer(_Viewer):
             a (default) value of `None` will autoscale.
         """
         kwlimits.update(limits)
-        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
+        AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
 
         mesh = self.vars[0].mesh
         

@@ -38,11 +38,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["Matplotlib2DGridContourViewer"]
 
-class Matplotlib2DGridContourViewer(_MatplotlibViewer):
+class Matplotlib2DGridContourViewer(AbstractMatplotlibViewer):
     """Displays a contour plot of a 2D `CellVariable` object.    
 
     The `Matplotlib2DGridContourViewer` plots a 2D `CellVariable` using Matplotlib_.
@@ -50,7 +50,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
+    __doc__ += AbstractMatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
 
 
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
@@ -74,9 +74,9 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, 
-                                   cmap=cmap, colorbar=colorbar, axes=axes, 
-                                   **kwlimits)
+        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, 
+                                      cmap=cmap, colorbar=colorbar, axes=axes, 
+                                      **kwlimits)
         
         self._plot()
         
@@ -84,7 +84,7 @@ class Matplotlib2DGridContourViewer(_MatplotlibViewer):
         from fipy.meshes.grid2D import Grid2D
         from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) \
           if ((isinstance(var.mesh, Grid2D) 
                or isinstance(var.mesh, UniformGrid2D))
               and isinstance(var, CellVariable))]
