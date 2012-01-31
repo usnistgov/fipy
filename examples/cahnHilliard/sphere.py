@@ -77,9 +77,9 @@ We start the problem with random fluctuations about
 ...                                    variance=0.01)) # doctest: +GMSH
 
 :term:`FiPy` doesn't plot or output anything unless you tell it to: If
-:class:`~fipy.viewers.mayavViewer.mayaviClient.MayaviClient` is available, we
+:class:`~fipy.viewers.mayaviViewer.mayaviClient.MayaviClient` is available, we
 can customize the view with a sublcass of
-:class:`~fipy.viewers.mayavViewer.mayaviDaemon.MayaviDaemon`.
+:class:`~fipy.viewers.mayaviViewer.mayaviDaemon.MayaviDaemon`.
 
 >>> if __name__ == "__main__":
 ...     try:

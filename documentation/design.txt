@@ -305,9 +305,9 @@ objects as necessary to modify the
 from :class:`~fipy.terms.term.Term` objects can apply a unique
 :class:`~fipy.solvers.solver.Solver` to invert its
 :class:`~fipy.matrices.sparseMatrix._SparseMatrix` in the most expedient and
-stable fashion. At any point during the solution, a :class:`~fipy.viewers.viewer._Viewer` can be
-invoked to display the values of the solved
-:class:`~fipy.variables.variable.Variable` objects.
+stable fashion. At any point during the solution, a :class:`Viewer
+<fipy.viewers.viewer.AbstractViewer>` can be invoked to display the values of
+the solved :class:`~fipy.variables.variable.Variable` objects.
 
 At this point, it will be useful to examine some of the example
 problems in :ref:`part:Examples`.  More classes are introduced in

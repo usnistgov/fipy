@@ -54,7 +54,7 @@ from fipy.tools.decorators import getsetDeprecated
 __all__ = ["SolverConvergenceWarning", "MaximumIterationWarning", 
            "PreconditionerWarning", "IllConditionedPreconditionerWarning", 
            "PreconditionerNotPositiveDefiniteWarning", "MatrixIllConditionedWarning",
-           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning"]
+           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning", "Solver"]
 
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):

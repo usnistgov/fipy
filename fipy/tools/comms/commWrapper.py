@@ -50,6 +50,9 @@ class CommWrapper(object):
     def __init__(self, Epetra=None):
         self.epetra_comm = Epetra.PyComm()
         
+    def __repr__(self):
+        return "%s()" % self.__class__.__name__
+
     @property
     def procID(self):
         return self.epetra_comm.MyPID()

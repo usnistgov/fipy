@@ -240,7 +240,7 @@ How do I save a plot image?
 Some of the viewers have a button or other mechanism in the user interface
 for saving an image file. Also, you can supply an optional keyword
 ``filename`` when you tell the viewer to
-:meth:`~viewer._Viewer.plot`, *e.g.*
+:meth:`~viewer.AbstractViewer.plot`, *e.g.*
 
 >>> viewer.plot(filename="myimage.ext")
 
@@ -255,10 +255,12 @@ directory. The type of image is determined by the file extension
       
   .. attention::
 
-     Actually, :term:`Matplotlib` supports different extensions, depending on
-     the chosen `backend
+     Actually, :term:`Matplotlib` supports different extensions, depending
+     on the chosen `backend
      <http://matplotlib.sourceforge.net/backends.html>`_, but our
-     :class:`~matplotlibViewer.matplotlibViewer.MatplotlibViewer` classes don't properly support this yet.
+     :class:`MatplotlibViewer
+     <matplotlibViewer.matplotlibViewer.AbstractMatplotlibViewer>` classes
+     don't properly support this yet.
 
 What if I only want the saved file, with no display on screen?
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -278,10 +280,10 @@ individual frames (see the previous question) and then stitch them together
 into a movie, using one of a variety of different free, shareware, or
 commercial software packages. The guidance in the
 `Matplotlib FAQ on movies <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ 
-should be adaptable to other :class:`~viewer._Viewer`\s.
+should be adaptable to other :class:`Viewer <viewer.AbstractViewer>`\s.
 
-Why doesn't the :class:`~viewer._Viewer` look the way I want?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Why doesn't the :class:`Viewer <viewer.AbstractViewer>` look the way I want?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :term:`FiPy`'s viewers are utilitarian. They're designed to let you see
 *something* with a minimum of effort. Because different plotting
@@ -289,13 +291,14 @@ packages have different capabilities and some are easier to install on some
 platforms than on others, we have tried to support a range of :term:`Python`
 plotters with a minimal common set of features. Many of these packages are
 capable of much more, however. Often, you can invoke the 
-:class:`~viewer._Viewer` you
+:class:`Viewer <viewer.AbstractViewer>` you
 want, and then issue supplemental commands for the underlying plotting
 package. The better option is to make a "subclass" of the :term:`FiPy`
-:class:`~viewer._Viewer` that comes closest to producing the image you want. You can
+:class:`Viewer <viewer.AbstractViewer>` that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting :term:`FiPy` do
 most of the heavy lifting. See :mod:`examples.phase.anisotropy` for an
-example of creating a custom :term:`Matplotlib` :class:`~viewer._Viewer` class.
+example of creating a custom :term:`Matplotlib` :class:`Viewer 
+<viewer.AbstractViewer>` class.
 
 .. _FAQ-IterationsTimestepsSweeps:
 

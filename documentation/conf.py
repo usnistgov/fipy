@@ -48,7 +48,7 @@ master_doc = 'documentation/contents'
 
 # General information about the project.
 project = u'FiPy'
-copyright = u'2004-2010, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
+copyright = u'2004-2012, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -321,10 +321,15 @@ latex_additional_files = ['figures/nistident_flright_vec.pdf']
 pngmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
-intersphinx_mapping = {'http://docs.python.org/': None,
-                       'http://docs.scipy.org/doc/numpy/': None,
-                       'http://docs.scipy.org/doc/scipy/reference/': None,
-                       'http://matplotlib.sourceforge.net/': None}
+intersphinx_mapping = {
+    'python': ('http://docs.python.org/', None),
+    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
+    'matplotlib': ('http://matplotlib.sourceforge.net/', None)}
+# intersphinx_mapping = {'http://docs.python.org/': None,
+#                        'http://docs.scipy.org/doc/numpy/': None,
+#                        'http://docs.scipy.org/doc/scipy/reference/': None,
+#                        'http://matplotlib.sourceforge.net/': None}
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types

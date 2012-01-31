@@ -78,7 +78,7 @@ Using this mesh, we can construct a solution variable
 ...                    mesh = mesh,
 ...                    value = 0.) # doctest: +GMSH
 
-We can now create a :class:`~fipy.viewers.viewer._Viewer` to see the mesh
+We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see the mesh
 
 >>> viewer = None
 >>> if __name__ == '__main__':
