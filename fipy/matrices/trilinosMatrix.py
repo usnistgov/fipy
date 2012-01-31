@@ -62,8 +62,8 @@ from fipy.tools.decorators import getsetDeprecated
 # the warnings that guard for those, and all tests pass. Because of the way
 # FiPy constructs its matrices, I do not anticipate any of these occurring. 
 
-class _TrilinosMatrixBase(_SparseMatrix):
-    """_TrilinosMatrix class wrapper for a PyTrilinos Epetra.CrsMatrix.
+class _TrilinosMatrix(_SparseMatrix):
+    """class wrapper for a PyTrilinos Epetra.CrsMatrix.
     
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
@@ -101,7 +101,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
     def copy(self):
         self.fillComplete()
 
-        return _TrilinosMatrixBase(matrix=Epetra.CrsMatrix(self.matrix))
+        return _TrilinosMatrix(matrix=Epetra.CrsMatrix(self.matrix))
             
         
     def __getitem__(self, index):
@@ -189,7 +189,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         Add two sparse matrices. The nonempty spots of one of them must be a 
         subset of the nonempty spots of the other one.
         
-            >>> L = _TrilinosMatrix(rows=3, cols=3)
+            >>> L = _TrilinosMatrixFromShape(rows=3, cols=3)
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt([0,0,0], [0,1,2], [0,1,2])
             >>> print L + _TrilinosIdentityMatrix(size=3)
@@ -225,7 +225,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix.
 
-        >>> L1 = _TrilinosMatrix(rows=3, cols=3)
+        >>> L1 = _TrilinosMatrixFromShape(rows=3, cols=3)
         >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
         >>> L2 = _TrilinosIdentityMatrix(size=3)
         >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
@@ -255,7 +255,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         N = self.matrix.NumMyCols()
 
-        if isinstance(other, _TrilinosMatrixBase):
+        if isinstance(other, _TrilinosMatrix):
             if isinstance(other.matrix, Epetra.RowMatrix):
                 self.fillComplete()
                 other.fillComplete()
@@ -307,7 +307,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
         
-            >>> L = _TrilinosMatrix(rows=3, cols=3)
+            >>> L = _TrilinosMatrixFromShape(rows=3, cols=3)
             >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> print L
                 ---    10.000000   3.000000  
@@ -369,7 +369,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
         
-            >>> L = _TrilinosMatrix(rows=3, cols=3)
+            >>> L = _TrilinosMatrixFromShape(rows=3, cols=3)
             >>> L.putDiagonal((3.,10.,numerix.pi))
             >>> print L
              3.000000      ---        ---    
@@ -414,7 +414,7 @@ class _TrilinosMatrixBase(_SparseMatrix):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
         
-            >>> L = _TrilinosMatrix(rows=3, cols=3)
+            >>> L = _TrilinosMatrixFromShape(rows=3, cols=3)
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt((1.73,2.2,8.4,3.9,1.23), (1,2,0,0,1), (2,2,0,0,2))
             >>> print L
@@ -529,10 +529,10 @@ class _TrilinosMatrixBase(_SparseMatrix):
         self.fillComplete()
         self.matrix.OptimizeStorage()
 
-class _TrilinosMatrix(_TrilinosMatrixBase):
+class _TrilinosMatrixFromShape(_TrilinosMatrix):
     def __init__(self, rows, cols, bandwidth=1, sizeHint=None, 
                  rowMap=None, colMap=None, domainMap=None):
-        """Creates a `_TrilinosMatrix`.
+        """Instantiants and wraps an Epetra.CrsMatrix
 
         :Parameters:
           - `rows`: The number of matrix rows
@@ -567,16 +567,16 @@ class _TrilinosMatrix(_TrilinosMatrixBase):
         # FillComplete is called, and according to the Trilinos devs the
         # performance boost will be worth it.
         
-        _TrilinosMatrixBase.__init__(self, 
+        _TrilinosMatrix.__init__(self, 
                                      matrix=matrix, 
                                      rowMap=rowMap, 
                                      colMap=colMap, 
                                      domainMap=domainMap, 
                                      bandwidth=bandwidth)
 
-class _TrilinosMeshMatrix(_TrilinosMatrix):
+class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
     def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1, numberOfEquations=1):
-        """Creates a `_TrilinosMatrix` associated with a `Mesh`
+        """Creates a `_TrilinosMatrixFromShape` associated with a `Mesh`
 
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
@@ -594,7 +594,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         colMap = Epetra.Map(-1, list(self._globalOverlappingColIDs), 0, comm)
         domainMap = Epetra.Map(-1, list(self._globalNonOverlappingColIDs), 0, comm)
 
-        _TrilinosMatrix.__init__(self, 
+        _TrilinosMatrixFromShape.__init__(self, 
                                  rows=self.numberOfEquations * self.mesh.globalNumberOfCells, 
                                  cols=self.numberOfVariables * self.mesh.globalNumberOfCells, 
                                  bandwidth=bandwidth, 
@@ -664,7 +664,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
 
     def copy(self):
-        tmp = _TrilinosMatrix.copy(self)
+        tmp = _TrilinosMatrixFromShape.copy(self)
         copy = self.__class__(mesh=self.mesh, bandwidth=self.bandwidth)
         copy.matrix = tmp._matrix
         return copy
@@ -711,18 +711,18 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
                                                numberOfEquations=self.numberOfEquations).matrix
         return super(_TrilinosMeshMatrix, self).matrix
 
-    matrix = property(_getMatrixProperty, _TrilinosMatrix._setMatrix)
+    matrix = property(_getMatrixProperty, _TrilinosMatrixFromShape._setMatrix)
         
     def put(self, vector, id1, id2):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
-        _TrilinosMatrix.put(self, vector=vector, id1=id1, id2=id2)
+        _TrilinosMatrixFromShape.put(self, vector=vector, id1=id1, id2=id2)
 
     def addAt(self, vector, id1, id2):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
-        _TrilinosMatrix.addAt(self, vector=vector, id1=id1, id2=id2)
+        _TrilinosMatrixFromShape.addAt(self, vector=vector, id1=id1, id2=id2)
         
     def takeDiagonal(self):
-        nonoverlapping_result = _TrilinosMatrix.takeDiagonal(self)
+        nonoverlapping_result = _TrilinosMatrixFromShape.takeDiagonal(self)
         
         overlapping_result = Epetra.Vector(self.colMap)
         overlapping_result.Import(nonoverlapping_result, 
@@ -736,7 +736,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         """
         Multiply a sparse matrix by another sparse matrix.
 
-            >>> L1 = _TrilinosMatrix(rows=3, cols=3)
+            >>> L1 = _TrilinosMatrixFromShape(rows=3, cols=3)
             >>> L1.addAt((3,10,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L2 = _TrilinosIdentityMatrix(size=3)
             >>> L2.addAt((4.38,12357.2,1.1), (2,1,0), (1,0,2))
@@ -778,8 +778,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
 
         N = self.matrix.NumMyCols()
 
-        if isinstance(other, _TrilinosMatrixBase):
-            return _TrilinosMatrix.__mul__(self, other=other)
+        if isinstance(other, _TrilinosMatrix):
+            return _TrilinosMatrixFromShape.__mul__(self, other=other)
         else:
             shape = numerix.shape(other)
 
@@ -1303,7 +1303,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrix):
         pass
 
 
-class _TrilinosIdentityMatrix(_TrilinosMatrix):
+class _TrilinosIdentityMatrix(_TrilinosMatrixFromShape):
     """
     Represents a sparse identity matrix for Trilinos.
     """
@@ -1316,7 +1316,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _TrilinosMatrix.__init__(self, rows=size, cols=size, bandwidth=1)
+        _TrilinosMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=1)
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size, 'l'), ids, ids)
         
