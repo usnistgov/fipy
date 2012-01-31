@@ -43,7 +43,7 @@ from fipy.terms.term import Term
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.terms import ExplicitVariableError
 
-class _BaseBinaryTerm(Term):
+class _AbstractBinaryTerm(Term):
     def __init__(self, term, other):
 
         if not isinstance(other, Term):

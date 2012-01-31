@@ -39,12 +39,12 @@ __all__ = []
 
 import os
 
-from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
+from fipy.terms.baseBinaryTerm import _AbstractBinaryTerm
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.terms import SolutionVariableRequiredError
 
-class _BinaryTerm(_BaseBinaryTerm):
+class _BinaryTerm(_AbstractBinaryTerm):
 
     @property
     def _buildExplcitIfOther(self):
