@@ -140,11 +140,13 @@ A 2D version of the 1D example.
 >>> dt = 1e-14
 >>> timestep = 0
 >>> relaxation = 0.5
+>>> sweeps = 0
 >>> if __name__ == '__main__':
 ...     totalSteps = 1e+10
+...     totalSweeps = 1e+10
 ... else:
 ...     totalSteps = 1
->>> totalSweeps = 0
+...     totalSweeps = 1
 
 >>> while timestep < totalSteps:
 ... 
@@ -158,8 +160,8 @@ A 2D version of the 1D example.
 ...     velocityY.updateOld()
 ...     matrixDiagonal.updateOld()
 ...
-...     while residual > tolerance  and ((__name__ == '__main__') or (totalSweeps < 1)):
-...         totalSweeps += 1
+...     while residual > tolerance  and sweeps < totalSweeps:
+...         sweeps += 1
 ...         densityPrevious[:] = density
 ...         velocityXPrevious[:] = velocityX
 ...         velocityYPrevious[:] = velocityY

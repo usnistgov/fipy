@@ -592,7 +592,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         comm = mesh.communicator.epetra_comm
         rowMap = Epetra.Map(-1, list(self._globalNonOverlappingRowIDs), 0, comm)
         colMap = Epetra.Map(-1, list(self._globalOverlappingColIDs), 0, comm)
-        domainMap = Epetra.Map(-1, list(self._globalNonOverlappingColIDs), 0, comm)
+        domainMap = rowMap
 
         _TrilinosMatrixFromShape.__init__(self, 
                                  rows=self.numberOfEquations * self.mesh.globalNumberOfCells, 

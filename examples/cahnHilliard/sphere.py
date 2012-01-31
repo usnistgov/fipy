@@ -131,13 +131,14 @@ evolution of their problem.
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt) # doctest: +GMSH
+...     eq.solve(phi, dt=dt, solver=DefaultSolver(precon=None)) # doctest: +GMSH
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
 .. image:: sphere.*
    :width: 90%
    :align: center
+   :alt: Cahn-Hilliard phase separation on the surface of a sphere with a rendering of the mesh
 
 """
 __docformat__ = 'restructuredtext'

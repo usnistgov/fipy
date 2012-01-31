@@ -96,10 +96,12 @@ class ExponentialNoiseVariable(NoiseVariable):
     .. image:: fipy/variables/exp.*
       :scale: 25
       :align: center
-
+      :alt: random values with an exponential distribution
+      
     .. image:: fipy/variables/exp-histogram.*
       :scale: 25
       :align: center
+      :alt: histogram of random values with an exponential distribution
 
     """
     def __init__(self, mesh, mean=0.0, name = '', hasOld = 0):

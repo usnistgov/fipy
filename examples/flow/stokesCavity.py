@@ -322,6 +322,7 @@ factor to relax the solution. This argument cannot be passed to
 .. image:: cavity.*
    :width: 90%
    :align: center
+   :alt: flow field for moving lid problem
 
 Test values in the last cell.
 

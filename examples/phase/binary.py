@@ -541,6 +541,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 .. image:: binary/stationary.*
    :width: 90%
    :align: center
+   :alt: phase and composition fields in equilibrium, compared with phase diagram concentrations
 
 We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
@@ -598,6 +599,7 @@ diffusion and of phase transformation compete with each other).
 .. image:: binary/moving.*
    :width: 90%
    :align: center
+   :alt: phase and composition fields in during solidification, compared with final phase diagram concentrations
 
 We see that the composition on either side of the interface approach the
 sharp-interface solidus and liquidus, but it will take a great many more

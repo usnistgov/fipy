@@ -198,12 +198,12 @@ can be obtained by running this example.
 .. image:: electroChem/accelerator.*
    :width: 90%
    :align: center
-   :alt: resulting image
+   :alt: accelerator coverage as a function of time during superfill
 
 .. image:: electroChem/leveler.*
    :width: 90%
    :align: center
-   :alt: resulting image
+   :alt: leveler coverage as a function of time during superfill
     
 .. .. bibmissing:: /documentation/refs.bib
     :sort:

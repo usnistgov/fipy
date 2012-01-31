@@ -188,6 +188,7 @@ We then solve the equation by repeatedly looping in time:
 .. image:: mesh1Dexplicit.*
    :width: 90%
    :align: center
+   :alt: solution to diffusion problem evolved by explicit time steps
 
 -----
 
@@ -231,6 +232,7 @@ and rerun with much larger time steps
 .. image:: mesh1Dimplicit.*
    :width: 90%
    :align: center
+   :alt: solution to diffusion problem evolved by implicit time steps
 
 Note that although much larger *stable* timesteps can be taken with this
 implicit version (there is, in fact, no limit to how large an implicit
@@ -305,6 +307,7 @@ of :math:`10^{-10}`.
 .. image:: mesh1DsteadyState.*
    :width: 90%
    :align: center
+   :alt: steady-state solution to diffusion problem
        
 ------
 
@@ -349,6 +352,7 @@ condition will automatically update,
 .. image:: mesh1DtimedBC.*
    :width: 90%
    :align: center
+   :alt: solution to diffusion problem with a time-dependent Dirichlet boundary condition
 
 ------
 
@@ -441,6 +445,7 @@ And finally, we can plot the result
 .. image:: mesh1Dnon-uniform.*
    :width: 90%
    :align: center
+   :alt: steady-state solution to diffusion problem with a non-uniform diffusivity
 
 ------
 
@@ -591,6 +596,7 @@ can just solve for it directly
 .. image:: mesh1Dvariable.*
    :width: 90%
    :align: center
+   :alt: solution to a diffusion problem a non-linear diffusivity
 
 ------
 

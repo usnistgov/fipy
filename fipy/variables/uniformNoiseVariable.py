@@ -68,10 +68,12 @@ class UniformNoiseVariable(NoiseVariable):
     .. image:: fipy/variables/uniform.*
        :scale: 25
        :align: center
+       :alt: random values with a uniform distribution
 
     .. image:: fipy/variables/uni-histogram.*
        :scale: 25
        :align: center
+       :alt: histogram of random values with a uniform distribution
     """
     def __init__(self, mesh, name = '', minimum = 0., maximum = 1., hasOld = 0):
         """

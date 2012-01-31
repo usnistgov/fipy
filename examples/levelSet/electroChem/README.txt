@@ -28,7 +28,7 @@ formation above the filled trenches is evident.
 .. image:: experimentalSuperfill.*
    :scale: 50
    :align: center
-   :alt: experimental superfill
+   :alt: cross-sectional scanning electron micrographs of experimental superfill
 
 The CEAC Mechanism
 ------------------
@@ -74,7 +74,7 @@ of high surfactant concentration have an increased deposition rate.
 .. image:: superfillImage.*
    :scale: 50
    :align: left
-   :alt: FiPy superfill
+   :alt: FiPy simulation contours of superfill
 
 .. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
 
