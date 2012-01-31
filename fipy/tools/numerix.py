@@ -96,7 +96,7 @@ __all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
                        "sqrtDot", "nearest", "allequal", "allclose", "all",
                        "isclose", "take", "indices", "empty", "loadtxt", 
                        "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"],
-                      cmp=lambda x,y: cmp(x.lower(), y.lower())))
+                      key=str.lower))
 
 def _isPhysical(arr):
     """
