@@ -39,8 +39,8 @@ __all__.extend(vtkViewer.__all__)
 class MeshDimensionError(IndexError):
     pass
     
-from fipy.viewers.viewer import _Viewer
-class DummyViewer(_Viewer):
+from fipy.viewers.viewer import AbstractViewer
+class DummyViewer(AbstractViewer):
     def plot(self, filename=None):
         pass
 

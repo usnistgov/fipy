@@ -38,11 +38,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools.decorators import getsetDeprecated
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["Matplotlib1DViewer"]
 
-class Matplotlib1DViewer(_MatplotlibViewer):
+class Matplotlib1DViewer(AbstractMatplotlibViewer):
     """
     Displays a y vs.  x plot of one or more 1D `CellVariable` objects using
     Matplotlib_.
@@ -50,7 +50,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += _MatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
+    __doc__ += AbstractMatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
     
     def __init__(self, vars, title=None, xlog=False, ylog=False, limits={}, legend='upper left', axes=None, **kwlimits):
         """
@@ -76,7 +76,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
+        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
     
         import pylab
         
@@ -130,7 +130,7 @@ class Matplotlib1DViewer(_MatplotlibViewer):
         return [[array(var.mesh.cellCenters[0]), array(var)] for var in self.vars]
             
     def _getSuitableVars(self, vars):
-        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) if var.mesh.dim == 1]
+        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) if var.mesh.dim == 1]
 
         if len(vars) > 1:
             vars = [var for var in vars if var.mesh is vars[0].mesh]

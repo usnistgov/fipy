@@ -36,18 +36,18 @@
 
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["AbstractViewer"]
 
 import sys
 
 from fipy.tools.decorators import getsetDeprecated
 
-class _Viewer(object):
+class AbstractViewer(object):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, vars, title=None, **kwlimits):
-        """Create a `_Viewer` object.
+        """Create a `AbstractViewer` object.
         
         :Parameters:
           vars
@@ -60,7 +60,7 @@ class _Viewer(object):
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
         """
-        if self.__class__ is _Viewer:
+        if self.__class__ is AbstractViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
             
         self.vars = self._getSuitableVars(vars)
@@ -77,6 +77,11 @@ class _Viewer(object):
 
     @getsetDeprecated
     def getVars(self):
+        """Get the Variables
+        
+        .. deprecated::
+           Use :attr:`fipy.viewers.viewer.AbstractViewer.vars` instead
+        """
         return self.vars
         
     def _getSuitableVars(self, vars):
@@ -170,9 +175,9 @@ class _Viewer(object):
     def _serial_doctest_raw_input(prompt):
         """Replacement for `raw_input()` that works in doctests
         """
-        _Viewer._saved_stdout.write("\n")
-        _Viewer._saved_stdout.write(prompt)
-        _Viewer._saved_stdout.flush()
+        AbstractViewer._saved_stdout.write("\n")
+        AbstractViewer._saved_stdout.write(prompt)
+        AbstractViewer._saved_stdout.flush()
         return sys.stdin.readline()
 
     @staticmethod
@@ -184,14 +189,14 @@ class _Viewer(object):
         try:
             from fipy.tools import parallel
             parallel.Barrier()
-            _Viewer._saved_stdout.flush()
+            AbstractViewer._saved_stdout.flush()
             if parallel.procID == 0:
-                txt = _Viewer._serial_doctest_raw_input(prompt)
+                txt = AbstractViewer._serial_doctest_raw_input(prompt)
             else:
                 txt = ""
             parallel.Barrier()
         except ImportError:
-            txt = _Viewer._serial_doctest_raw_input(prompt)
+            txt = AbstractViewer._serial_doctest_raw_input(prompt)
         return txt
 
 
@@ -252,13 +257,13 @@ class _Viewer(object):
     _test2Dbase = staticmethod(_test2Dbase)
 
     def _test2D(**kwargs):
-        return _Viewer._test2Dbase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
-                                   **kwargs)
+        return AbstractViewer._test2Dbase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+                                      **kwargs)
     _test2D = staticmethod(_test2D)
 
     def _test2Dirregular(**kwargs):
         """"""
-        return _Viewer._test2Dbase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+        return AbstractViewer._test2Dbase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
             ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2Dirregular = staticmethod(_test2Dirregular)
@@ -291,13 +296,13 @@ class _Viewer(object):
     _test2DvectorBase = staticmethod(_test2DvectorBase)
 
     def _test2Dvector(**kwargs):
-        return _Viewer._test2DvectorBase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
-                                        **kwargs)
+        return AbstractViewer._test2DvectorBase(mesh="Grid2D(nx=50, ny=100, dx=0.1, dy=0.01)",
+                                            **kwargs)
     _test2Dvector = staticmethod(_test2Dvector)
 
     def _test2DvectorIrregular(**kwargs):
         """"""
-        return _Viewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
+        return AbstractViewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
             ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2DvectorIrregular = staticmethod(_test2DvectorIrregular)

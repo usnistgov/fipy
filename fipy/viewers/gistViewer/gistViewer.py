@@ -38,9 +38,9 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import AbstractViewer
 
-class _GistViewer(_Viewer):
+class _GistViewer(AbstractViewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
@@ -67,7 +67,7 @@ class _GistViewer(_Viewer):
         if self.__class__ is _GistViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
     
-        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
+        AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         self.mesh = self.vars[0].mesh
 
@@ -79,7 +79,7 @@ class _GistViewer(_Viewer):
         gist.window(self.id, wait = 1, dpi = dpi, display = '')
 
     def _getLimit(self, keys, default='e'):
-        return _Viewer._getLimit(self, keys=keys, default=default)
+        return AbstractViewer._getLimit(self, keys=keys, default=default)
         
     def plot(self, filename=None):
         import gist

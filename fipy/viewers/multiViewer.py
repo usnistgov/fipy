@@ -30,12 +30,12 @@
  # ###################################################################
  ##
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import AbstractViewer
 from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["MultiViewer"]
 
-class MultiViewer(_Viewer):
+class MultiViewer(AbstractViewer):
     """
     Treat a collection of different viewers (such for different 2D plots 
     or 1D plots with different axes) as a single viewer that will `plot()` 
