@@ -421,6 +421,14 @@ class _MeshVariable(Variable):
             return Variable.max(self, axis=axis)
                                   
     def min(self, axis=None):
+        """
+        >>> from fipy import Grid2D, CellVariable
+        >>> mesh = Grid2D(nx=5, ny=5)
+        >>> x, y = mesh.cellCenters
+        >>> v = CellVariable(mesh=mesh, value=x*y)
+        >>> print v.min()
+        0.25
+        """
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def minParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
