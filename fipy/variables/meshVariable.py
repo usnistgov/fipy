@@ -405,7 +405,7 @@ class _MeshVariable(Variable):
                 nodeVal[:] = default
         else:
             nodeVal = fn(axis=axis)
-        
+
         return fnParallel(nodeVal)
 
     def max(self, axis=None):
@@ -432,7 +432,7 @@ class _MeshVariable(Variable):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def minParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
-                                             fn=a.min, fnParallel=self.mesh.communicator.epetra_comm.MinAll)
+                                             fn=a.min, fnParallel=self.mesh.communicator.MinAll)
                 
             return self._axisOperator(opname="minVar", 
                                       op=minParallel, 
