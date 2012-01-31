@@ -39,7 +39,7 @@ __all__ = []
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
-from fipy.models.levelSet.advection.baseAdvectionTerm import _AdvectionTerm
+from fipy.models.levelSet.advection.advectionTerm import _AdvectionTerm
 
 class _HigherOrderAdvectionTerm(_AdvectionTerm):
     r"""
@@ -154,7 +154,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> mesh = Grid1D(dx = 1., nx = 5)
     >>> vel = 1.
     >>> coeff = CellVariable(mesh = mesh, value = mesh.cellCenters[0]**2)
-    >>> v, L, b = __BaseAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = __AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
        
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
@@ -183,7 +183,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> x, y = mesh.cellCenters
     >>> r = numerix.sqrt(x**2 + y**2)
     >>> coeff = CellVariable(mesh = mesh, value = r)
-    >>> v, L, b = __BaseAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
+    >>> v, L, b = __AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> error = CellVariable(mesh=mesh, value=b + 1)
     >>> ans = CellVariable(mesh=mesh, value=b + 1)
     >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.123105625618
