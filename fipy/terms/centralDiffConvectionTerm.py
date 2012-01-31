@@ -36,7 +36,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.baseConvectionTerm import _AbstractConvectionTerm
+from fipy.terms.abstractConvectionTerm import _AbstractConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.solvers import DefaultAsymmetricSolver
 
