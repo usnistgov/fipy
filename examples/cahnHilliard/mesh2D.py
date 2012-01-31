@@ -125,7 +125,7 @@ evolution of their problem.
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt, solver=DefaultSolver(precon=None))
+...     eq.solve(phi, dt=dt, solver=LinearLUSolver())
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 ...     elif (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3) and elapsed > 10.:
