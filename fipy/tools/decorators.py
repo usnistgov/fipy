@@ -100,13 +100,15 @@ class _Deprecate(object):
 
     """
     def __init__(self, old_name=None, new_name=None, message=None, 
-                 old_string="`%s` is deprecated",
-                 new_string="use `%s` instead"):
+                 old_string=":func:`%s` is deprecated",
+                 new_string="use :func:`%s` instead",
+                 version="UNKNOWN"):
         self.old_name = old_name
         self.new_name = new_name
         self.old_string = old_string
         self.new_string = new_string
         self.message = message
+        self.version = version
 
     def old_name_from_func(self, func):
         old_name = self.old_name
@@ -132,26 +134,35 @@ class _Deprecate(object):
         new_name = self.new_name_old_name(old_name=old_name)
         
         if new_name is None:
-            depdoc = (self.old_string + "!") % old_name
+            depwarn = (self.old_string + "!") % old_name
+            depdoc = ""
         else:
-            depdoc = (self.old_string + ", " + self.new_string + "!") % \
-                     (old_name, new_name)
+            depwarn = (self.old_string + ", " + self.new_string + "!") % \
+                       (old_name, new_name)
+            depdoc = self.new_string % new_name
 
         if message is not None:
+            depwarn += "\n" + message
             depdoc += "\n" + message
 
         def newfunc(*args,**kwds):
-            """`arrayrange` is deprecated, use `arange` instead!"""
-            warnings.warn(depdoc, DeprecationWarning, stacklevel=2)
+            """:func:`arrayrange` is deprecated, use :func:`arange` instead!"""
+            warnings.warn(depwarn, DeprecationWarning, stacklevel=2)
             return func(*args, **kwds)
 
         newfunc = _set_function_name(newfunc, old_name)
+        
+        depdoc = (["", "", ".. deprecated:: %s" % self.version] 
+                  + ["   " + s for s in depdoc.split('\n')] 
+                  + ["", ""])
         doc = func.__doc__
         if doc is None:
             doc = depdoc
         else:
-            doc = '\n\n'.join([depdoc, doc])
-        newfunc.__doc__ = doc
+            from textwrap import dedent
+            doc = dedent(doc).split('\n')
+            doc[1:1] = depdoc
+        newfunc.__doc__ =  '\n'.join(doc)
         try:
             d = func.__dict__
         except AttributeError:
@@ -194,17 +205,22 @@ def deprecate(*args, **kwargs):
     else:
         return _Deprecate(*args, **kwargs)
 
-def deprecateGist(*args, **kwargs):
-    return deprecate(*args, message="Support for Pygist <http://hifweb.lbl.gov/public/software/gist/> will be discontinued.",  **kwargs)
+def deprecateGist(version="3.0", *args, **kwargs):
+    return deprecate(*args, 
+                     message="Support for Pygist <http://hifweb.lbl.gov/public/software/gist/> will be discontinued.",  
+                     version=version, **kwargs)
 
-def deprecateGnuplot(*args, **kwargs):
-    return deprecate(*args, message="Support for Gnuplot.py <http://gnuplot-py.sourceforge.net/> will be discontinued.",  **kwargs)
+def deprecateGnuplot(version="3.0", *args, **kwargs):
+    return deprecate(*args, 
+                     message="Support for Gnuplot.py <http://gnuplot-py.sourceforge.net/> will be discontinued.",  
+                     version=version, **kwargs)
 
 class _GetSetDeprecated(_Deprecate):
-    def __init__(self, old_name=None, new_name=None, message=None):
+    def __init__(self, old_name=None, new_name=None, message=None, version="3.0"):
         _Deprecate.__init__(self, old_name=old_name, new_name=new_name, message=message,
-                            old_string="`%s()` is deprecated",
-                            new_string="use the `%s` property instead")
+                            old_string=":func:`%s` is deprecated",
+                            new_string="use the :attr:`%s` property instead",
+                            version=version)
     
     def new_name_old_name(self, old_name):
         new_name = self.new_name
@@ -249,10 +265,13 @@ def getsetDeprecated(*args, **kwargs):
         return _GetSetDeprecated(*args, **kwargs)
         
 class _MathMethodDeprecated(_Deprecate):
+    def __init__(self, version="3.0", *args, **kwargs):
+         _Deprecate.__init__(self, *args, version=version, **kwargs)
+
     def new_name_old_name(self, old_name):
         new_name = self.new_name
         if new_name is None:
-            new_name = "numerix.%s" % old_name
+            new_name = "numerix.%s() <numpy.%s>" % (old_name, old_name)
         return new_name
 
 def mathMethodDeprecated(*args, **kwargs):
