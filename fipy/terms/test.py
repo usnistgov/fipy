@@ -52,7 +52,7 @@ def _suite():
             'upwindConvectionTerm',
             'implicitSourceTerm',
             'coupledBinaryTerm',
-            'baseBinaryTerm',
+            'abstractBinaryTerm',
             'unaryTerm',
             'nonDiffusionTerm',
             'asymmetricConvectionTerm',

@@ -37,7 +37,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.terms.baseBinaryTerm import _AbstractBinaryTerm
+from fipy.terms.abstractBinaryTerm import _AbstractBinaryTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
