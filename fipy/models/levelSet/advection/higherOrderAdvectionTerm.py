@@ -166,7 +166,8 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     The higher order term is spot on.
 
     >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-    >>> print numerix.allclose(b[1:-1], -2 * mesh.cellCenters[0][1:-1])
+    >>> print numerix.allclose(CellVariable(mesh=mesh,
+    ... value=b).globalValue[1:-1], -2 * mesh.cellCenters.globalValue[0][1:-1])
     True
 
     The `_HigherOrderAdvectionTerm` will also resolve a circular field with
