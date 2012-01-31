@@ -36,7 +36,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.terms.baseConvectionTerm import _BaseConvectionTerm
+from fipy.terms.baseConvectionTerm import _AbstractConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import inline
@@ -71,7 +71,7 @@ class _BaseUpwindConvectionTermAlpha(FaceVariable):
             alpha = numerix.where(P > 0., 1., 0.)
             return PhysicalField(value=alpha)
 
-class _BaseUpwindConvectionTerm(_BaseConvectionTerm):
+class _BaseUpwindConvectionTerm(_AbstractConvectionTerm):
     def _alpha(self, P):
         return _BaseUpwindConvectionTermAlpha(P)
 
