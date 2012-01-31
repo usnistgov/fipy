@@ -39,9 +39,9 @@ __all__ = []
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
-from fipy.models.levelSet.advection.baseAdvectionTerm import _BaseAdvectionTerm
+from fipy.models.levelSet.advection.baseAdvectionTerm import _AdvectionTerm
 
-class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
+class _HigherOrderAdvectionTerm(_AdvectionTerm):
     r"""
 
     The `_HigherOrderAdvectionTerm` object constructs the `b` vector contribution for
@@ -58,7 +58,7 @@ class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
        \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding as in the standard
-    `_BaseAdvectionTerm`. The higher order terms are incorperated as follows.
+    `_AdvectionTerm`. The higher order terms are incorperated as follows.
     The formula used here is given by:
 
     .. math::
@@ -136,7 +136,7 @@ class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
     True
 
     For the above test cases the `_HigherOrderAdvectionTerm` gives the
-    same result as the `_BaseAdvectionTerm`. The following test imposes a quadratic
+    same result as the `_AdvectionTerm`. The following test imposes a quadratic
     field. The higher order term can resolve this field correctly.
 
     .. math::
@@ -230,9 +230,9 @@ class _HigherOrderAdvectionTerm(_BaseAdvectionTerm):
                                          adjacentLaplacian,
                                          cellLaplacian))
         
-        return _BaseAdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
+        return _AdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
 
-class __BaseAdvectionTerm(_BaseAdvectionTerm):
+class __AdvectionTerm(_AdvectionTerm):
     """
     Dummy subclass for tests
     """
