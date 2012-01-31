@@ -41,11 +41,14 @@ import os
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
 from fipy.terms import TermMultiplyError
+from fipy.terms import AbstractBaseClassError
 from fipy.variables.faceVariable import FaceVariable
 
-class _BaseDiffusionTerm(_UnaryTerm):
+class _AbstractDiffusionTerm(_UnaryTerm):
 
     def __init__(self, coeff = (1.,), var=None):
+        if self.__class__ is _AbstractDiffusionTerm:
+            raise AbstractBaseClassError
         
         if type(coeff) not in (type(()), type([])):
             coeff = [coeff]
@@ -459,7 +462,10 @@ class _BaseDiffusionTerm(_UnaryTerm):
     @property
     def _diffusionVars(self):
         return self._vars
-         
+        
+    def _treatMeshAsOrthogonal(self, mesh):
+        raise NotImplementedError
+
 def _test(): 
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
