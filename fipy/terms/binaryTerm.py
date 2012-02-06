@@ -40,9 +40,6 @@ __all__ = []
 import os
 
 from fipy.terms.abstractBinaryTerm import _AbstractBinaryTerm
-from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
-from fipy.variables.coupledCellVariable import _CoupledCellVariable
-from fipy.terms import SolutionVariableRequiredError
 
 class _BinaryTerm(_AbstractBinaryTerm):
 
