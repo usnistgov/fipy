@@ -1175,13 +1175,20 @@ def _broadcastShapes(shape1, shape2):
     necessary, and return their (padded) shapes and the broadcast shape. If the
     shapes cannot broadcast, return a broadcastshape of `None`.
     """
+
     if len(shape1) > len(shape2):
         shape2 = (1,) * (len(shape1) - len(shape2)) + shape2
     elif len(shape1) < len(shape2):
         shape1 = (1,) * (len(shape2) - len(shape1)) + shape1
     
+    def maxzero(s, o):
+        if s == 0 or o == 0:
+            return 0
+        else:
+            return max(s,o)
+
     if logical_and.reduce([(s == o or s == 1 or o == 1) for s,o in zip(shape1, shape2)]):
-        broadcastshape = tuple([max(s,o) for s,o in zip(shape1, shape2)])
+        broadcastshape = tuple([maxzero(s,o) for s,o in zip(shape1, shape2)])
     else:
         broadcastshape = None
 
