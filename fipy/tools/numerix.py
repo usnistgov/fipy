@@ -1174,6 +1174,14 @@ def _broadcastShapes(shape1, shape2):
     Determine if `shape1` and `shape2` can broadcast to each other, padding if
     necessary, and return their (padded) shapes and the broadcast shape. If the
     shapes cannot broadcast, return a broadcastshape of `None`.
+
+    Broadcasting zero lenght arrays must also be accounted for.
+
+    >>> _broadcastShapes((1,), (0,))[2]
+    (0,)
+    >>> _broadcastShapes((2, 0,), (1,))[2]
+    (2, 0)
+    
     """
 
     if len(shape1) > len(shape2):

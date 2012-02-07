@@ -264,6 +264,15 @@ class _MeshVariable(Variable):
         True
         >>> print numerix.allequal(var.faceGrad.shape, (2, 17)) # doctest: +PROCESSOR_0
         True
+
+        Have to account for zero length arrays
+
+        >>> from fipy import Grid1D
+        >>> m = Grid1D(nx=0)
+        >>> v = CellVariable(mesh=m, elementshape=(2,))
+        >>> (v * 1).shape
+        (2, 0)
+        
         """
         return (Variable._getShape(self)
                 or (self.elementshape + self._getShapeFromMesh(self.mesh)) 
