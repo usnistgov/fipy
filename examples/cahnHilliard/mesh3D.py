@@ -97,13 +97,14 @@ evolution of their problem.
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt)
+...     eq.solve(phi, dt=dt, solver=DefaultSolver(precon=None))
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
 .. image:: mesh3D.*
    :width: 90%
    :align: center
+   :alt: snapshot of Cahn-Hilliard phase separation in 3D with cutaway
 """
 __docformat__ = 'restructuredtext'
 

@@ -8,7 +8,7 @@ __all__.extend(vtkCellViewer.__all__)
 __all__.extend(vtkFaceViewer.__all__)
 
 def VTKViewer(vars, title=None, limits={}, **kwlimits):
-    """Generic function for creating a `MatplotlibViewer`. 
+    """Generic function for creating a `VTKViewer`. 
     
     The `VTKViewer` factory will search the module tree and return an
     instance of the first `VTKViewer` it finds of the correct dimension

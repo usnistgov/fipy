@@ -35,26 +35,25 @@
 r"""
 
 This example demonstrates how to solve diffusion with an anisotropic
-coefficient.  We wish to solve the following problem.
+coefficient.  We wish to solve the problem
 
-.. math:
+.. math::
 
    \frac{\partial \phi}{\partial t} = \partial_j \Gamma_{ij} \partial_i \phi
     
 on a circular domain centred at :math:`(0, 0)`. We can choose an anisotropy ratio of 5
 such that
     
-.. math:
+.. math::
     
    \Gamma' = \begin{pmatrix} 
        0.2 & 0 \\ 
          0 & 1 
    \end{pmatrix}
     
-A new matrix is
-    formed by rotating :math:`\Gamma'` such that 
+A new matrix is formed by rotating :math:`\Gamma'` such that 
     
-.. math:
+.. math::
     
    R = \begin{pmatrix}
         \cos\theta & \sin\theta \\ 
@@ -63,21 +62,21 @@ A new matrix is
     
 and 
     
-.. math:
+.. math::
     
    \Gamma = R \Gamma' R^T
 
 In the case of a point source at :math:`(0, 0)` a reference
-    solution is given by, 
+solution is given by, 
     
-.. math:
+.. math::
     
    \phi \left( X, Y, t \right) = Q \frac{
     \exp \left( -\frac{1}{4 t} \left( \frac{ X^2 }{ \Gamma'_{00}} +
     \frac{ Y^2 }{ \Gamma'_{11}} \right) \right) }{ 4 \pi t
     \sqrt{\Gamma'_{00} \Gamma'_{11}} } 
     
-where :math:` \left(X, Y \right)^T = R \left(x, y \right)^T ` and :math:`Q` is the initial
+where :math:`\left(X, Y \right)^T = R \left(x, y \right)^T` and :math:`Q` is the initial
 mass.
 
 >>> from fipy import *

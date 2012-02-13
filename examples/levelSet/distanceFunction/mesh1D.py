@@ -76,7 +76,7 @@ as a distance function from the zero level set.
    
 >>> var.calcDistanceFunction()
    
-The problem can then be solved by executing the :meth:`~fipy.terms.term.solve`
+The problem can then be solved by executing the :meth:`~fipy.terms.term.Term.solve`
 method of the equation.
 
 >>> if __name__ == '__main__':

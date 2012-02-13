@@ -41,13 +41,13 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import AbstractViewer
 from fipy.viewers import MeshDimensionError
 from fipy.tools import numerix
 
 __all__ = ["MayaviSurfactantViewer"]
 
-class MayaviSurfactantViewer(_Viewer):
+class MayaviSurfactantViewer(AbstractViewer):
     
     """
     The `MayaviSurfactantViewer` creates a viewer with the Mayavi_ python
@@ -111,7 +111,7 @@ class MayaviSurfactantViewer(_Viewer):
         """
 
         kwlimits.update(limits)
-        _Viewer.__init__(self, vars=[], title=title, **kwlimits)
+        AbstractViewer.__init__(self, vars=[], title=title, **kwlimits)
         import mayavi
         self._viewer = mayavi.mayavi()
         self.distanceVar = distanceVar

@@ -50,7 +50,7 @@ def _suite():
         'flow.test',
         'meshing.test',
         'reactiveWetting.test',
-        'riemann.test'
+        'riemann.test',
         ), base = __name__)
 
 if __name__ == '__main__':

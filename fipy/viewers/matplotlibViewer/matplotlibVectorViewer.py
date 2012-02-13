@@ -40,11 +40,11 @@ from fipy.tools import numerix
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["MatplotlibVectorViewer"]
 
-class MatplotlibVectorViewer(_MatplotlibViewer):
+class MatplotlibVectorViewer(AbstractMatplotlibViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using Matplotlib_
 
@@ -52,7 +52,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
 
     """
     
-    __doc__ += _MatplotlibViewer._test2Dvector(viewer="MatplotlibVectorViewer")
+    __doc__ += AbstractMatplotlibViewer._test2Dvector(viewer="MatplotlibVectorViewer")
     __doc__ += """
     
             >>> for sparsity in numerix.arange(5000, 0, -500):
@@ -61,7 +61,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
             >>> viewer._promptForOpinion()
         
     """
-    __doc__ += _MatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
+    __doc__ += AbstractMatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
 
     def __init__(self, vars, title=None, scale=None, sparsity=None, log=False, limits={}, axes=None, **kwlimits):
         """Creates a `Matplotlib2DViewer`.
@@ -87,7 +87,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
+        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
 
         self.quiver(sparsity=sparsity, scale=scale)
         self.log = log
@@ -129,7 +129,7 @@ class MatplotlibVectorViewer(_MatplotlibViewer):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.meshes.uniformGrid2D import UniformGrid2D
 
-        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) \
                 if ((isinstance(var.mesh, Mesh2D) 
                      or isinstance(var.mesh, UniformGrid2D))\
                     and (isinstance(var, FaceVariable) \

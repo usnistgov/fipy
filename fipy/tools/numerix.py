@@ -34,9 +34,16 @@
  # ###################################################################
  ##
 
-"""
+"""Replacement module for NumPy
 
-The functions provided in ths module replace the `Numeric` module.
+.. attention::
+    
+   This module should be the only place in the code where :mod:`numpy` is
+   explicitly imported and you should always import this module and not
+   :mod:`numpy` in your own code. The documentation for :mod:`numpy` remains
+   canonical for all functions and classes not explicitly documented here.
+
+The functions provided in ths module replace and augment the `NumPy` module.
 The functions work with `Variables`, arrays or numbers. For example,
 create a `Variable`.
 
@@ -62,8 +69,6 @@ Take the tangent of an array.
    >>> print tan(array((0,0,0)))
    [ 0.  0.  0.]
    
-Eventually, this module will be the only place in the code where `Numeric` (or
-`numarray` (or `scipy_core`)) is explicitly imported.
 """
 
 __docformat__ = 'restructuredtext'
@@ -86,11 +91,12 @@ from fipy.tools import inline
 import sys
 __all__ = list(sys.modules['numpy'].__dict__.setdefault('__all__', []))
 __all__.extend(["NUMERIX", "NewAxis", "MA", "numpy_version"])
-__all__.extend(["zeros", "ones", "getUnit", "put", "reshape", "getShape",
-                "rank", "sum", "isFloat", "isInt", "tostring", "dot", 
-                "sqrtDot", "nearest", "allequal", "allclose", "all",
-                "isclose", "take", "indices", "empty", "loadtxt", 
-                "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"])
+__all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
+                       "rank", "sum", "isFloat", "isInt", "tostring", "dot", 
+                       "sqrtDot", "nearest", "allequal", "allclose", "all",
+                       "isclose", "take", "indices", "empty", "loadtxt", 
+                       "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"],
+                      key=str.lower))
 
 def _isPhysical(arr):
     """
@@ -410,7 +416,8 @@ if inline.doInline:
             if MA.isMaskedArray(a): 
                 mask = a.mask 
                 a = a.filled(fill_value=1) 
-                 
+            if not a.flags['C_CONTIGUOUS']:
+                a = a.copy('C')
             return (a, unit, mask) 
              
         a1, unit1, mask1 = dimensionlessUnmasked(a1) 
@@ -428,14 +435,14 @@ if inline.doInline:
             }
             result1[i] = sqrt(result1[i]);        
         """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
- 
+        
         if NUMERIX.any(mask1) or NUMERIX.any(mask2): 
             result1 = MA.array(result1, mask=NUMERIX.logical_or(mask1, mask2)) 
        
         if unit1 != 1 or unit2 != 1:
             from fipy.tools.dimensions.physicalField import PhysicalField
             result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
-            
+
         return result1
 else:
     def sqrtDot(a1, a2):
@@ -1167,14 +1174,29 @@ def _broadcastShapes(shape1, shape2):
     Determine if `shape1` and `shape2` can broadcast to each other, padding if
     necessary, and return their (padded) shapes and the broadcast shape. If the
     shapes cannot broadcast, return a broadcastshape of `None`.
+
+    Broadcasting zero lenght arrays must also be accounted for.
+
+    >>> _broadcastShapes((1,), (0,))[2]
+    (0,)
+    >>> _broadcastShapes((2, 0,), (1,))[2]
+    (2, 0)
+    
     """
+
     if len(shape1) > len(shape2):
         shape2 = (1,) * (len(shape1) - len(shape2)) + shape2
     elif len(shape1) < len(shape2):
         shape1 = (1,) * (len(shape2) - len(shape1)) + shape1
     
+    def maxzero(s, o):
+        if s == 0 or o == 0:
+            return 0
+        else:
+            return max(s,o)
+
     if logical_and.reduce([(s == o or s == 1 or o == 1) for s,o in zip(shape1, shape2)]):
-        broadcastshape = tuple([max(s,o) for s,o in zip(shape1, shape2)])
+        broadcastshape = tuple([maxzero(s,o) for s,o in zip(shape1, shape2)])
     else:
         broadcastshape = None
 

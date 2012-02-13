@@ -134,8 +134,6 @@ __docformat__ = 'restructuredtext'
 ##from fipy.tools.profiler.profiler import calibrate_profiler
 
 if __name__ == '__main__':
-    import numpy
-    print numpy.__file__
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 

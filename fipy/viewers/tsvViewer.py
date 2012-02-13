@@ -39,13 +39,13 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from fipy.tools import numerix
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import AbstractViewer
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
 __all__ = ["TSVViewer"]
 
-class TSVViewer(_Viewer):
+class TSVViewer(AbstractViewer):
     """
     "Views" one or more variables in tab-separated-value format.
         
@@ -89,7 +89,7 @@ class TSVViewer(_Viewer):
             a (default) value of `None` will autoscale.
         """
         kwlimits.update(limits)
-        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
+        AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
         
         mesh = self.vars[0].mesh
         

@@ -44,13 +44,13 @@ from fipy.terms import AbstractBaseClassError
 from fipy.terms import VectorCoeffError
 from fipy.tools import numerix
 
-class _BaseConvectionTerm(FaceTerm):
+class _AbstractConvectionTerm(FaceTerm):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, coeff=1.0, var=None):
         """
-        Create a `_BaseConvectionTerm` object.
+        Create a `_AbstractConvectionTerm` object.
         
             >>> from fipy import *
             >>> m = Grid1D(nx = 2)
@@ -94,7 +94,7 @@ class _BaseConvectionTerm(FaceTerm):
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
         """
-        if self.__class__ is _BaseConvectionTerm:
+        if self.__class__ is _AbstractConvectionTerm:
             raise AbstractBaseClassError
             
         self.stencil = None
@@ -105,7 +105,7 @@ class _BaseConvectionTerm(FaceTerm):
         if isinstance(coeff, CellVariable):
             coeff = coeff.arithmeticFaceValue
 
-        super(_BaseConvectionTerm, self).__init__(coeff=coeff, var=var)
+        FaceTerm.__init__(self, coeff=coeff, var=var)
         
     def _calcGeomCoeff(self, var):
         mesh = var.mesh
@@ -146,9 +146,18 @@ class _BaseConvectionTerm(FaceTerm):
 
         return self.stencil
 
+    def _checkVar(self, var):
+        FaceTerm._checkVar(self, var)
+        
+        if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1) \
+        and numerix.getShape(self.coeff) != (var.mesh.dim,):
+            raise VectorCoeffError
+
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         
-        var, L, b = super(_BaseConvectionTerm, self)._buildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+        var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
+
+##        if var.rank != 1:
 
         mesh = var.mesh
 
@@ -174,7 +183,7 @@ class _BaseConvectionTerm(FaceTerm):
 
         return (var, L, b)
 
-class __ConvectionTerm(_BaseConvectionTerm): 
+class __ConvectionTerm(_AbstractConvectionTerm): 
     """
     Dummy subclass for tests
     """

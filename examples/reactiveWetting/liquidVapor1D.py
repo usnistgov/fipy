@@ -364,6 +364,8 @@ equation. This currently doesn't work properly in :term:`FiPy`.
 >>> print freeEnergy < 1.5e9
 True
 
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 
 __docformat__ = 'restructuredtext'

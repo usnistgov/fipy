@@ -104,10 +104,12 @@ class BetaNoiseVariable(NoiseVariable):
     .. image:: fipy/variables/beta.*
       :scale: 25
       :align: center
+      :alt: random values with a beta distribution
 
     .. image:: fipy/variables/beta-histogram.*
       :scale: 25
       :align: center
+      :alt: histogram of random values with a beta distribution
 
     """
     def __init__(self, mesh, alpha, beta, name = '', hasOld = 0):

@@ -18,5 +18,12 @@ FiPy Contents
    VKML
    ../DISCLAIMER
    manual
-   refs.bib_cited
+
+.. toctree::
+   :hidden:
+
+   CODESPEED
+   BUILDBOT
+   GUIDELINES
+   SVN
 

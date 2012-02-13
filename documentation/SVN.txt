@@ -1,5 +1,3 @@
-.. _documentation:SVN:
-
 ---------
 SVN usage
 ---------
@@ -23,21 +21,6 @@ repository. This is provided on many operating systems (try executing
 build Subversion, as well as links to various pre-built binaries for
 different platforms, can be obtained from http://subversion.tigris.org.
 
-Mac OS X client
----------------
-
-You can obtain a binary installer of ``svn`` from 
-
-    http://www.codingmonkeys.de/mbo/
-
-Alternatively, if you are using Fink_, then you can execute the command::
-
-    $ sudo apt-get install svn-client
-    
-If you prefer a GUI, after you install ``svn``, you can obtain svnX from
-
-    http://www.lachoseinteractive.net/en/community/subversion/svnx
-
 SVN tags
 ========
 
@@ -50,16 +33,16 @@ need to decide on your own risk tolerance when deciding which stage of
 development to track.
 
 A fresh copy of :term:`FiPy` that is designated by a
-particular ``<tag>`` can be obtained with::
+particular ``<label>`` can be obtained with::
 
-   $ svn checkout http://matforge.org/svn/fipy/<tag>
+   $ svn checkout http://matforge.org/svn/fipy/<label>
 
 An existing SVN checkout of FiPy can be shifted to a different state of
 development by issuing the command::
 
-   $ svn switch http://matforge.org/svn/fipy/<tag> .
+   $ svn switch http://matforge.org/svn/fipy/<label> .
 
-in the base directory of the working copy. The main tags (``<tag>``)
+in the base directory of the working copy. The main tags (``<label>``)
 for FiPy are:
 
 ``tags/version-x_y``
@@ -85,22 +68,12 @@ Any other tags will not generally be of interest to most users.
 
 .. note::
 
-   We formerly provided ``tags/STABLE`` and ``tags/CURRENT``. Our
-   experience has been that these tags serve little purpose. They were
-   invariably set to point at the same revision and that was frequently far
-   out of date from what we were using for our own research. Rather than
-   trying to make these tags relevant, we think it's preferable to direct
-   users to track either ``trunk`` or some specific ``version-x_y``. An
-   existing working copy can be switched with, e.g.,::
-
-      $ svn switch http://matforge.org/svn/fipy/trunk
-
    For some time now, we have done all significant development work on
    branches, only merged back to ``trunk`` when the tests pass
    successfully. Although we cannot guarantee that ``trunk`` will never be
    broken, you can always check our build status page 
 
-       http://matforge.org/fipy/build
+       http://build.cmi.kent.edu:8010
 
    to find the most recent revision that it is running acceptably.
 
@@ -110,7 +83,5 @@ canonical manual is the `online Subversion Red Bean book`_
 [SubversionRedBean]_.
 
 .. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
-
-.. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://fink.sourceforge.net
 
 .. _MatForge: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy

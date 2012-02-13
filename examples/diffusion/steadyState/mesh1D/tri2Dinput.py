@@ -36,16 +36,14 @@ r"""
 
 To run this example from the base fipy directory type::
     
-    $ examples/diffusion/steadyState/mesh1D/tri2Dinput.py
+    $ python examples/diffusion/steadyState/mesh1D/tri2Dinput.py
     
 at the command line. A contour plot should appear and the word `finished`
 in the terminal.
 
-This example is similar to the example found in::
-    
-    $ examples/diffusion/steadyState/mesh1D/input.py
-    
-However, the `mesh` is a `Tri2D` object rather than a `Grid2D` object.
+This example is similar to the example found in
+:mod:`examples.diffusion.steadyState.mesh1D.input`, however, the `mesh` is a
+`Tri2D` object rather than a `Grid2D` object.
 
 Here, one time step is executed to implicitly find the steady state
 solution.

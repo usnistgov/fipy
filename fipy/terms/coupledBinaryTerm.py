@@ -37,14 +37,14 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.terms.baseBinaryTerm import _BaseBinaryTerm
+from fipy.terms.abstractBinaryTerm import _AbstractBinaryTerm
 from fipy.variables.coupledCellVariable import _CoupledCellVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.terms import SolutionVariableNumberError
 from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
                 
-class _CoupledBinaryTerm(_BaseBinaryTerm):
+class _CoupledBinaryTerm(_AbstractBinaryTerm):
     """
     Test to ensure that _getTransientGeomCoeff and _getDiffusionGeomCoeff return sensible results for coupled equations.
 
@@ -68,7 +68,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
     
     """
     def __init__(self, term, other):
-        _BaseBinaryTerm.__init__(self, term, other)
+        _AbstractBinaryTerm.__init__(self, term, other)
         if len(self._vars) < len(self._uncoupledTerms):
             raise SolutionVariableNumberError
 
@@ -83,7 +83,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         if len(self._vars) != len(self._uncoupledTerms):
             raise SolutionVariableNumberError
 
-        return _BaseBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
+        return _AbstractBinaryTerm._verifyVar(self, _CoupledCellVariable(self._vars))
 
     @property
     def _buildExplcitIfOther(self):
@@ -187,7 +187,7 @@ class _CoupledBinaryTerm(_BaseBinaryTerm):
         """
     
         ## set() is used to force comparison by reference rather than value
-        unorderedVars = _BaseBinaryTerm._calcVars(self)
+        unorderedVars = _AbstractBinaryTerm._calcVars(self)
         uncoupledTerms = self._uncoupledTerms
         
         if len(unorderedVars) == len(uncoupledTerms):

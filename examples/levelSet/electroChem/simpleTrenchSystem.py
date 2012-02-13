@@ -67,7 +67,8 @@ catalyst coverage is not 0, then it can be reset,
 The following image shows a schematic of a trench geometry along with
 the governing equations for modeling electrodeposition with the CEAC
 mechanism. All of the given equations are implemented in the
-:func:`runSimpleTrenchSystem` function. As stated above, all the parameters
+:func:`examples.levelSet.electroChem.simpleTrenchSystem.runSimpleTrenchSystem`
+function. As stated above, all the parameters
 in the equations can be changed with function arguments.
 
 .. image:: electroChem/schematicOfEquations.*
@@ -76,7 +77,8 @@ in the equations can be changed with function arguments.
    :alt: schematic of superfill equations
 
 The following table shows the symbols used in the governing equations
-and their corresponding arguments to the :func:`runSimpleTrenchSystem`
+and their corresponding arguments to the
+:func:`~examples.levelSet.electroChem.simpleTrenchSystem.runSimpleTrenchSystem`
 function. The boundary layer depth is intentionally small in this
 example in order not to complicate the mesh. Further examples will
 simulate more realistic boundary layer depths but will also have more
@@ -150,8 +152,10 @@ resemble the image below.
 .. image:: electroChem/inputSimpleTrenchSystem.*
    :width: 90%
    :align: center
-   :alt: resulting image
+   :alt: catalyst coverage as a function of time during superfill
 
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 __docformat__ = 'restructuredtext'
 

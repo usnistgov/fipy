@@ -38,11 +38,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["Matplotlib2DContourViewer"]
 
-class Matplotlib2DContourViewer(_MatplotlibViewer):
+class Matplotlib2DContourViewer(AbstractMatplotlibViewer):
     """Displays a contour plot of a 2D `CellVariable` object.    
 
     The `Matplotlib2DContourViewer` plots a 2D `CellVariable` using Matplotlib_.
@@ -50,7 +50,7 @@ class Matplotlib2DContourViewer(_MatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DContourViewer")
+    __doc__ += AbstractMatplotlibViewer._test2D(viewer="Matplotlib2DContourViewer")
 
 
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, number=10, levels=None, **kwlimits):
@@ -81,9 +81,9 @@ class Matplotlib2DContourViewer(_MatplotlibViewer):
             
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, 
-                                   cmap=cmap, colorbar=colorbar, axes=axes, 
-                                   **kwlimits)
+        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, 
+                                      cmap=cmap, colorbar=colorbar, axes=axes, 
+                                      **kwlimits)
         self.number = number
         self.levels = levels
         
@@ -92,7 +92,7 @@ class Matplotlib2DContourViewer(_MatplotlibViewer):
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) \
           if ((isinstance(var.mesh, Mesh2D) and isinstance(var, CellVariable))
               and var.rank == 0)]
         if len(vars) == 0:

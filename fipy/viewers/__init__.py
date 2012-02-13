@@ -39,8 +39,8 @@ __all__.extend(vtkViewer.__all__)
 class MeshDimensionError(IndexError):
     pass
     
-from fipy.viewers.viewer import _Viewer
-class DummyViewer(_Viewer):
+from fipy.viewers.viewer import AbstractViewer
+class DummyViewer(AbstractViewer):
     def plot(self, filename=None):
         pass
 
@@ -98,6 +98,12 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
 
     attempts = []
     viewers = []
+    
+    emptyvars = [var for var in vars if var.mesh.numberOfCells == 0]
+    vars = [var for var in vars if var.mesh.numberOfCells > 0]
+    
+    if len(emptyvars):
+        viewers.append(DummyViewer(vars=emptyvars))
     
     import pkg_resources
     for ep in pkg_resources.iter_entry_points(group='fipy.viewers', 

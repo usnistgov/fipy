@@ -38,9 +38,9 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.viewers.viewer import _Viewer
+from fipy.viewers.viewer import AbstractViewer
 
-class _GnuplotViewer(_Viewer):
+class _GnuplotViewer(AbstractViewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
 
@@ -79,13 +79,13 @@ class _GnuplotViewer(_Viewer):
         if self.__class__ is _GnuplotViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
     
-        _Viewer.__init__(self, vars=vars, title=title, **kwlimits)
+        AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
         import Gnuplot
         self.g = Gnuplot.Gnuplot()
         self.g('set title "' + self.title + '"')
 
     def _getLimit(self, key, default=''):
-        return str(_Viewer._getLimit(self, key, default=default))
+        return str(AbstractViewer._getLimit(self, key, default=default))
 
     def plot(self, filename = None):
         pairs = (('x', 'x'), ('y', 'y'), ('z', 'z'), ('cb', 'data'))

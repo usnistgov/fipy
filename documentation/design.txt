@@ -224,12 +224,12 @@ Implementation
 The :term:`Python` classes that make up :term:`FiPy` are described in detail in
 :ref:`part:modules`, but we give a brief overview here. :term:`FiPy` is
 based around three fundamental :term:`Python` classes:
-:class:`~fipy.meshes.numMesh.mesh.Mesh`,
+:class:`~fipy.meshes.mesh.Mesh`,
 :class:`~fipy.variables.variable.Variable`, and
 :class:`~fipy.terms.term.Term`. Using the terminology of
 :ref:`chap:Numerics`:
 
-A :class:`~fipy.meshes.numMesh.mesh.Mesh` object 
+A :class:`~fipy.meshes.mesh.Mesh` object 
   represents the domain of interest.
   :term:`FiPy` contains many different specific mesh classes to describe
   different geometries.
@@ -239,12 +239,11 @@ A :class:`~fipy.variables.variable.Variable` object
   evolution. A particular type of
   :class:`~fipy.variables.variable.Variable`, called a
   :class:`~fipy.variables.cellVariable.CellVariable`, represents
-  :math:`\phi` at the centers of the
-  :class:`~fipy.meshes.numMesh.cell.Cell`\s of the
-  :class:`~fipy.meshes.numMesh.mesh.Mesh`. A
+  :math:`\phi` at the centers of the cells of the
+  :class:`~fipy.meshes.mesh.Mesh`. A
   :class:`~fipy.variables.cellVariable.CellVariable` describes the values
   of the field :math:`\phi`, but it is not concerned with their geometry;
-  that role is taken by the :class:`~fipy.meshes.numMesh.mesh.Mesh`.
+  that role is taken by the :class:`~fipy.meshes.mesh.Mesh`.
 
   An important property of :class:`~fipy.variables.variable.Variable` objects is that they can
   describe dependency relationships, such that:    
@@ -272,16 +271,16 @@ A :class:`~fipy.terms.term.Term` object
   represents any of the terms in
   Equation :eq:`eqn:num:gen` or any linear combination of such
   terms.  Early in the development of :term:`FiPy`, a distinction was
-  made between :class:`~fipy.terms.equation.Equation` objects, which represented all of
+  made between ``Equation`` objects, which represented all of
   Equation :eq:`eqn:num:gen`, and :class:`~fipy.terms.term.Term` objects, which
   represented the individual terms in that equation.  The
-  :class:`~fipy.terms.equation.Equation` object has since been eliminated as redundant.
+  ``Equation`` object has since been eliminated as redundant.
   :class:`~fipy.terms.term.Term` objects can be single entities such as a
   :class:`~fipy.terms.diffusionTerm.DiffusionTerm` or a linear combination of other
   :class:`~fipy.terms.term.Term` objects that build up to form an expression such as
   Equation :eq:`eqn:num:gen`.
     
-Beyond these three fundamental classes of :class:`~fipy.meshes.numMesh.mesh.Mesh`, 
+Beyond these three fundamental classes of :class:`~fipy.meshes.mesh.Mesh`, 
 :class:`~fipy.variables.variable.Variable`, and :class:`~fipy.terms.term.Term`, :term:`FiPy` is composed of a
 number of related classes. 
 
@@ -292,27 +291,23 @@ number of related classes.
    
    Primary object relationships in `FiPy`.
 
-A :class:`~fipy.meshes.numMesh.mesh.Mesh` object is composed of
-:class:`~fipy.meshes.numMesh.cell.Cell` objects. Each
-:class:`~fipy.meshes.numMesh.cell.Cell` is defined by its bounding
-:class:`~fipy.meshes.numMesh.face.Face` objects and each
-:class:`~fipy.meshes.numMesh.face.Face` is defined by its bounding
-:class:`~fipy.meshes.numMesh.vertex.Vertex` objects. A
-:class:`~fipy.terms.term.Term` object encapsulates the contributions to the
-:class:`~fipy.tools.sparseMatrix._SparseMatrix` that defines the solution
-of an equation.
-:class:`~fipy.baundaryConditions.boundaryCondition.BoundaryCondition`
+A :class:`~fipy.meshes.mesh.Mesh` object is composed of cells. Each cell is
+defined by its bounding faces and each face is defined by its bounding
+vertices. A :class:`~fipy.terms.term.Term` object encapsulates the
+contributions to the :class:`~fipy.matrices.sparseMatrix._SparseMatrix` that
+defines the solution of an equation.
+:class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition`
 objects are used to describe the conditions on the boundaries of the
-:class:`~fipy.meshes.numMesh.mesh.Mesh`, and each
+:class:`~fipy.meshes.mesh.Mesh`, and each
 :class:`~fipy.terms.term.Term` interprets the :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition`
 objects as necessary to modify the
-:class:`~fipy.tools.sparseMatrix._SparseMatrix`. An equation constructed
+:class:`~fipy.matrices.sparseMatrix._SparseMatrix`. An equation constructed
 from :class:`~fipy.terms.term.Term` objects can apply a unique
 :class:`~fipy.solvers.solver.Solver` to invert its
-:class:`~fipy.tools.sparseMatrix._SparseMatrix` in the most expedient and
-stable fashion. At any point during the solution, a :class:`~fipy.viewers.viewer.Viewer` can be
-invoked to display the values of the solved
-:class:`~fipy.variables.variable.Variable` objects.
+:class:`~fipy.matrices.sparseMatrix._SparseMatrix` in the most expedient and
+stable fashion. At any point during the solution, a :class:`Viewer
+<fipy.viewers.viewer.AbstractViewer>` can be invoked to display the values of
+the solved :class:`~fipy.variables.variable.Variable` objects.
 
 At this point, it will be useful to examine some of the example
 problems in :ref:`part:Examples`.  More classes are introduced in

@@ -35,7 +35,7 @@
 r"""
 To run this example from the base :term:`FiPy` directory, type::
     
-    $ examples/diffusion/mesh1D.py
+    $ python examples/diffusion/mesh1D.py
     
 at the command line. Different stages of the example should be displayed,
 along with prompting messages in the terminal.
@@ -74,7 +74,7 @@ We'll let
 for now. 
 
 The set of boundary conditions are given to the equation as a Python
-:keyword:`tuple` or :keyword:`list` (the distinction is not generally important to :term:`FiPy`).
+tuple or list (the distinction is not generally important to :term:`FiPy`).
 The boundary conditions 
 
 .. math::
@@ -98,9 +98,9 @@ and a set of faces over which they apply.
    conditions.
 
 For example, here the exterior faces on the left of the domain are extracted by
-``mesh``:meth:`~fipy.meshes.common.mesh.Mesh.getFacesLeft``. The boundary
+``mesh``.\ :attr:`~fipy.meshes.abstractMesh.AbstractMesh.facesLeft`. The boundary
 conditions is applied using
-``phi``:meth:`~fipy.variables.variable.Variable.constrain`` with tthese faces and
+``phi``\. :meth:`~fipy.variables.variable.Variable.constrain` with tthese faces and
 a value (``valueLeft``).
 
 >>> phi.constrain(valueRight, mesh.facesRight)
@@ -142,7 +142,7 @@ this example is being run automatically as a test. We accomplish this by
 having Python check if this script is the "``__main__``" script, which will
 only be true if we explicitly launched it and not if it has been imported
 by another script such as the automatic tester. The factory function
-:func:`Viewer` returns a suitable viewer depending on available
+:func:`~fipy.viewers.Viewer` returns a suitable viewer depending on available
 viewers and the dimension of the mesh.
 
 .. index::
@@ -188,6 +188,7 @@ We then solve the equation by repeatedly looping in time:
 .. image:: mesh1Dexplicit.*
    :width: 90%
    :align: center
+   :alt: solution to diffusion problem evolved by explicit time steps
 
 -----
 
@@ -231,6 +232,7 @@ and rerun with much larger time steps
 .. image:: mesh1Dimplicit.*
    :width: 90%
    :align: center
+   :alt: solution to diffusion problem evolved by implicit time steps
 
 Note that although much larger *stable* timesteps can be taken with this
 implicit version (there is, in fact, no limit to how large an implicit
@@ -305,6 +307,7 @@ of :math:`10^{-10}`.
 .. image:: mesh1DsteadyState.*
    :width: 90%
    :align: center
+   :alt: steady-state solution to diffusion problem
        
 ------
 
@@ -349,6 +352,7 @@ condition will automatically update,
 .. image:: mesh1DtimedBC.*
    :width: 90%
    :align: center
+   :alt: solution to diffusion problem with a time-dependent Dirichlet boundary condition
 
 ------
 
@@ -378,8 +382,8 @@ number of cells in the mesh :math:`N_i` satisfies :math:`N_i = 4 i + 2`,
 where :math:`i` is an integer. The mesh we've been using thus far is
 satisfactory, with :math:`N_i = 50` and :math:`i = 12`.
    
-Because :term:`FiPy` considers diffusion to be a flux from one :class:`~fipy.meshes.cell.Cell` to the next,
-through the intervening :class:`~fipy.meshes.face.Face`, we must define the non-uniform diffusion
+Because :term:`FiPy` considers diffusion to be a flux from one cell to the next,
+through the intervening face, we must define the non-uniform diffusion
 coefficient on the mesh faces
 
 .. index:: FaceVariable
@@ -441,6 +445,7 @@ And finally, we can plot the result
 .. image:: mesh1Dnon-uniform.*
    :width: 90%
    :align: center
+   :alt: steady-state solution to diffusion problem with a non-uniform diffusivity
 
 ------
 
@@ -527,10 +532,12 @@ analytical solution from before.
 As described above, an inner "sweep" loop is generally required for
 the solution of non-linear or multiple equation sets. Often a
 conditional is required to exit this "sweep" loop given some
-convergence criteria. Instead of using the :meth:`solve` method equation,
-when sweeping, it is often useful to call :meth:`sweep` instead. The
-:meth:`sweep` method behaves the same way as :meth:`solve`, but returns the
-residual that can then be used as part of the exit condition.
+convergence criteria. Instead of using the :meth:`~fipy.terms.term.Term.solve`
+method equation, when sweeping, it is often useful to call
+:meth:`~fipy.terms.term.Term.sweep` instead. The
+:meth:`~fipy.terms.term.Term.sweep` method behaves the same way as
+:meth:`~fipy.terms.term.Term.solve`, but returns the residual that can then be
+used as part of the exit condition.
 
 We now repeatedly run the problem with increasing numbers of
 sweeps.
@@ -589,6 +596,7 @@ can just solve for it directly
 .. image:: mesh1Dvariable.*
    :width: 90%
    :align: center
+   :alt: solution to a diffusion problem a non-linear diffusivity
 
 ------
 
@@ -639,6 +647,9 @@ Most of the :term:`FiPy` examples will be a
 mixture of plain scripts and doctest documentation/tests.
 
 .. :term:`FiPy` replace:: `FiPy`
+
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 
 __docformat__ = 'restructuredtext'

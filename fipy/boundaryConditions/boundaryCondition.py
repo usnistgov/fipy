@@ -50,24 +50,8 @@ class BoundaryCondition(object):
     def __init__(self,faces,value):
         """
         :Parameters:
-            - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
+            - `faces`: A `list` or `tuple` of exterior `Face` objects to which this condition applies.
             - `value`: The value to impose.
-            
-        The `BoundaryCondition` class should raise an error when
-        invoked with internal faces. Don't use the `BoundaryCondition`
-        class in this manner. This is merely a test.
-
-        >>> from fipy.meshes import Grid1D
-        >>> mesh = Grid1D(nx = 2)
-        >>> from fipy.tools import parallel
-        >>> if parallel.procID == 0:
-        ...     bc = __BoundaryCondition(mesh.interiorFaces, 0)
-        ... else:
-        ...     raise IndexError("Face list has interior faces")
-        Traceback (most recent call last):
-            ...
-        IndexError: Face list has interior faces
-
         """
         if self.__class__ is BoundaryCondition:
             raise NotImplementedError, "can't instantiate abstract base class"
@@ -115,6 +99,25 @@ class BoundaryCondition(object):
 
     def _resetBoundaryConditionApplied(self):
         self.boundaryConditionApplied = False
+        
+    def _test(self):
+        """
+        The `BoundaryCondition` class should raise an error when
+        invoked with internal faces. Don't use the `BoundaryCondition`
+        class in this manner. This is merely a test.
+
+        >>> from fipy.meshes import Grid1D
+        >>> mesh = Grid1D(nx = 2)
+        >>> from fipy.tools import parallel
+        >>> if parallel.procID == 0:
+        ...     bc = __BoundaryCondition(mesh.interiorFaces, 0)
+        ... else:
+        ...     raise IndexError("Face list has interior faces")
+        Traceback (most recent call last):
+            ...
+        IndexError: Face list has interior faces
+        """
+        pass
 
 class __BoundaryCondition(BoundaryCondition): 
     """

@@ -38,18 +38,18 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools.decorators import getsetDeprecated
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import _MatplotlibViewer, _ColorBar
+from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer, _ColorBar
 
 __all__ = ["Matplotlib2DGridViewer"]
 
-class Matplotlib2DGridViewer(_MatplotlibViewer):
+class Matplotlib2DGridViewer(AbstractMatplotlibViewer):
     """
     Displays an image plot of a 2D `CellVariable` object using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += _MatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
+    __doc__ += AbstractMatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
 
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
         """
@@ -73,9 +73,9 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)
-        _MatplotlibViewer.__init__(self, vars=vars, title=title, 
-                                   cmap=cmap, colorbar=colorbar, axes=axes, 
-                                   **kwlimits)
+        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, 
+                                      cmap=cmap, colorbar=colorbar, axes=axes, 
+                                      **kwlimits)
 
         self.image = self.axes.imshow(self._data,
                                       extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
@@ -87,7 +87,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
             self.axes.set_title(self.vars[0].name)
 
     def _getLimit(self, key, default=None):
-        limit = _MatplotlibViewer._getLimit(self, key, default=default)
+        limit = AbstractMatplotlibViewer._getLimit(self, key, default=default)
         if limit is None:
             X, Y = self.vars[0].mesh.faceCenters
             if 'xmin' in key:
@@ -103,7 +103,7 @@ class Matplotlib2DGridViewer(_MatplotlibViewer):
     def _getSuitableVars(self, vars):
         from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in _MatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) \
           if (isinstance(var.mesh, UniformGrid2D) and isinstance(var, CellVariable)
               and var.rank == 0)]
         if len(vars) == 0:

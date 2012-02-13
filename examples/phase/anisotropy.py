@@ -162,7 +162,7 @@ and quench the entire simulation domain below the melting point
 
 In a real solidification process, dendritic branching is induced by small thermal
 fluctuations along an otherwise smooth surface, but the granularity of the
-:class:`~fipy.meshes.common.mesh.Mesh` is enough "noise" in this case, so we don't need to explicitly
+:class:`~fipy.meshes.mesh.Mesh` is enough "noise" in this case, so we don't need to explicitly
 introduce randomness, the way we did in the Cahn-Hilliard problem.  
 
 FiPy's viewers are utilitarian, striving to let the user see *something*,
@@ -223,6 +223,7 @@ and iterate the solution in time, plotting as we go,
 .. image:: anisotropy.*
    :width: 90%
    :align: center
+   :alt: phase field and undercooling during solidification of a 6-fold "snowflake" anisotropic seed
 
 The non-uniform temperature results from the release of latent 
 heat at the solidifying interface. The dendrite arms grow fastest 

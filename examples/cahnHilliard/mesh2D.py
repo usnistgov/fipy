@@ -69,7 +69,7 @@ much is augmented for :term:`FiPy`\'s needs.)
 >>> if __name__ == "__main__":
 ...     nx = ny = 1000
 ... else:
-...     nx = ny = 10
+...     nx = ny = 20
 >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
 >>> phi = CellVariable(name=r"$\phi$", mesh=mesh)
 
@@ -97,9 +97,9 @@ so that each :class:`~fipy.terms.term.Term` is of a single, even order:
 
 :term:`FiPy` would automatically interpolate
 ``D * a**2 * (1 - 6 * phi * (1 - phi))``
-onto the :class:`~fipy.meshes.face.Face`\s, where the diffusive flux is calculated, but we obtain
+onto the faces, where the diffusive flux is calculated, but we obtain
 somewhat more accurate results by performing a linear interpolation from
-``phi`` at :class:`~fipy.meshes.cell.Cell` centers to ``PHI`` at :class:`~fipy.meshes.face.Face` centers.
+``phi`` at cell centers to ``PHI`` at face centers.
 Some problems benefit from non-linear interpolations, such as harmonic or
 geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 
@@ -119,18 +119,25 @@ evolution of their problem.
 >>> if __name__ == "__main__":
 ...     duration = 1000.
 ... else:
-...     duration = 1e-2
+...     duration = 1000.
+
 >>> while elapsed < duration:
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt)
+...     eq.solve(phi, dt=dt, solver=LinearLUSolver())
 ...     if __name__ == "__main__":
 ...         viewer.plot()
+...     elif (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3) and elapsed > 10.:
+...         break
+
+>>> print (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3)
+True
 
 .. image:: mesh2D.*
    :width: 90%
    :align: center
+   :alt: evolution of Cahn-Hilliard phase separation at t = 30, 100 and 1000
 
 """
 __docformat__ = 'restructuredtext'

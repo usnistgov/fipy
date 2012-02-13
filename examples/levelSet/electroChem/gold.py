@@ -94,8 +94,10 @@ resemble the image below.
 .. image:: electroChem/inputGold.*
    :width: 90%
    :align: center
-   :alt: resulting image
+   :alt: catalyst coverage as a function of time during gold superfill
 
+.. .. bibmissing:: /documentation/refs.bib
+    :sort:
 """
 __docformat__ = 'restructuredtext'
 

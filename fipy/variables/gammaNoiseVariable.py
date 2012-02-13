@@ -101,10 +101,12 @@ class GammaNoiseVariable(NoiseVariable):
     .. image:: fipy/variables/gamma.*
       :scale: 25
       :align: center
+      :alt: random values with a gamma distribution
 
     .. image:: fipy/variables/gamma-histogram.*
       :scale: 25
       :align: center
+      :alt: histogram of random values with a gamma distribution
 
     """
     def __init__(self, mesh, shape, rate, name = '', hasOld = 0):

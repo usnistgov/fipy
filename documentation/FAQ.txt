@@ -31,90 +31,20 @@ governing equation that can be solved by :term:`FiPy` for the dependent
      S_{\phi}
    }_{\text{source}}
    
+and the individual terms are discussed in :ref:`section:discretization`.
+
 A physical problem can involve many different coupled
 governing equations, one for each variable.  Numerous specific
-examples are presented in Part :ref:`part:Examples`, but let us
-examine this general expression term-by-term:
-
-How do I represent a transient term :math:`\partial (\rho \phi) / \partial t`?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
->>> TransientTerm(coeff = rho)
-    
-.. note::      
-
-   We have specified neither the variable :math:`\phi` nor the time
-   step.  Both are handled when we actually solve the equation.
-
-How do I represent a convection term :math:`\nabla \cdot \left( \vec{u} \phi \right)`?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. currentmodule:: fipy.terms
-
->>> <SpecificConvectionTerm>(coeff = u, 
-...                          diffusionTerm = diffTerm)
-    
-where :samp:`{<SpecificConvectionTerm>}` can be any of 
-:class:`~centralDiffConvectionTerm.CentralDifferenceConvectionTerm`,
-:class:`~exponentialConvectionTerm.ExponentialConvectionTerm`, 
-:class:`~hybridConvectionTerm.HybridConvectionTerm`, 
-:class:`~powerLawConvectionTerm.PowerLawConvectionTerm`,
-:class:`~upwindConvectionTerm.UpwindConvectionTerm`, 
-:class:`~explicitUpwindConvectionTerm.ExplicitUpwindConvectionTerm`, or 
-:class:`~vanLeerConvectionTerm.VanLeerConvectionTerm`.
-The differences between these convection schemes are described
-in Section :ref:`sec:NumericalSchemes`. The velocity coefficient 
-``u`` must be a rank-1 :class:`~fipy.variables.faceVariable.FaceVariable`, or a 
-constant vector in the form of a Python list or tuple, 
-*e.g.* ``((1,), (2,))`` for a vector in 2D.
-
-.. note::
-
-   As discussed in :ref:`sec:NumericalSchemes`, the
-   convection schemes need to calculate a Peclet number,
-   and therefore need to know about any diffusion term
-   used in the problem.  It is hoped that this dependency
-   can be automated in the future.
-
-How do I represent a diffusion term :math:`\nabla \cdot \left( \Gamma_1 \nabla \phi \right)`?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. currentmodule:: fipy.terms
-
-Either
-
->>> ImplicitDiffusionTerm(coeff = Gamma1)
-    
-or 
-
->>> ExplicitDiffusionTerm(coeff = Gamma1)
-    
-:class:`~explicitDiffusionTerm.ExplicitDiffusionTerm` is provided only for
-illustrative purposes.  :class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` is
-almost always preferred (:class:`~diffusionTerm.DiffusionTerm` is a synonym for
-:class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` to reinforce this
-preference). One can also create an explicit diffusion term with
-
->>> (Gamma1 * phi.getFaceGrad()).getDivergence()
-
-.. _FAQ-higherOrderDiffusion:
-
-How do I represent a term :math:`\nabla^4 \phi` or :math:`\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(  \Gamma_2 \nabla \phi\right) \right) \right)` such as for  Cahn-Hilliard? 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
->>> ImplicitDiffusionTerm(coeff = (Gamma1, Gamma2))
-
-The number of elements supplied for ``coeff`` determines the
-order of the term.
+examples are presented in Part :ref:`part:Examples`.
 
 Is there a way to model an anisotropic diffusion process or more generally to represent the diffusion coefficient as a tensor so that the diffusion term takes the form :math:`\partial_i \Gamma_{ij}\partial_j \phi`?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Terms of the form :math:`\partial_i \Gamma_{ij}\partial_j \phi` can
-be posed in :term:`FiPy` by using a list, tuple, rank 1 or rank 2
-:class:`~fipy.variables.faceVariable.FaceVariable` to represent a vector or tensor diffusion
-coefficient.  For example, if we wished to represent a
-diffusion term with an anisotropy ratio of 5 aligned along the
+Terms of the form :math:`\partial_i \Gamma_{ij}\partial_j \phi` can be
+posed in :term:`FiPy` by using a list, tuple rank 1
+or rank 2 :class:`~fipy.variables.faceVariable.FaceVariable` to represent a
+vector or tensor diffusion coefficient. For example, if we wished to
+represent a diffusion term with an anisotropy ratio of 5 aligned along the
 x-coordinate axis, we could write the term as,
 
 >>> DiffusionTerm([[[5, 0], [0, 1]]])
@@ -123,9 +53,8 @@ which represents :math:`5 \partial_x^2 + \partial_y^2`.  Notice that
 the tensor, written in the form of a list, is contained within
 a list. This is because the first index of the list refers to
 the order of the term not the first index of the tensor (see
-the FAQ, :ref:`FAQ-higherOrderDiffusion`). This
-notation, although succinct can sometimes be confusing so a
-number of cases are interpreted below.
+:ref:`discret-higherOrderDiffusion`). This notation, although succinct can
+sometimes be confusing so a number of cases are interpreted below.
 
 >>> DiffusionTerm([[5, 1]])
 
@@ -148,8 +77,9 @@ does not currently support anisotropy for higher order
 diffusion terms so this may well throw an error or give
 anomalous results.
 
->>> x, y = mesh.getCellCenters()
->>> DiffusionTerm(CellVariable(mesh=mesh, value=[[x**2, x * y], [-x * y, -y**2]])
+>>> x, y = mesh.cellCenters
+>>> DiffusionTerm(CellVariable(mesh=mesh, 
+...                            value=[[x**2, x * y], [-x * y, -y**2]])
 
 This represents an anisotropic diffusion coefficient that
 varies spatially so that the term has the form 
@@ -163,34 +93,6 @@ axes; in these cases, it is necessary to apply a rotation matrix in
 order to calculate the correct tensor values, see
 :mod:`examples.diffusion.anisotropy` for details.
 
-What if the term isn't one of those?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Any term that cannot be written in one of the previous
-forms is considered a source :math:`S_{\phi}`. An explicit
-source is written in Python essentially as it appears in
-mathematical form, *e.g.*, :math:`3\kappa^2 + b \sin
-\theta` would be written
-
->>> 3 * kappa**2 + b * sin(theta)
-    
-.. note::
-
-   Functions like :func:`sin` can be obtained from the
-   :mod:`fipy.tools.numerix` module.
-
-   .. warning::
-
-      Generally, things will not work as expected if the equivalent
-      function is used from the :term:`NumPy` or :term:`SciPy` library.
-    
-If, however, the source depends on the variable that is being solved for,
-it can be advantageous to linearize the source and cast part of it as an
-implicit source term, *e.g.*, :math:`3\kappa^2 + \phi \sin \theta`
-might be written as
-
->>> 3 * kappa**2 + ImplicitSourceTerm(coeff=sin(theta))
-    
 How do I represent a `...` term that *doesn't* involve the dependent variable?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -214,18 +116,18 @@ then the first term is a :class:`~fipy.terms.transientTerm.TransientTerm` and th
 :class:`~fipy.terms.diffusionTerm.DiffusionTerm`, but the third term is simply an explicit source,
 which is written in Python as
 
->>> (D2 * xi.getFaceGrad()).getDivergence()
+>>> (D2 * xi.faceGrad).divergence
 
 .. currentmodule:: fipy.variables.cellVariable
 
-Higher order diffusive sources can be obtained by simply nesting the calls
-to :meth:`~CellVariable.getFaceGrad` and 
-:meth:`~fipy.variables.faceVariable.FaceVariable.getDivergence`.
+Higher order diffusive sources can be obtained by simply nesting the
+references to :attr:`~CellVariable.faceGrad` and
+:attr:`~fipy.variables.faceVariable.FaceVariable.divergence`.
 
 .. note::
 
-   We use :meth:`~CellVariable.getFaceGrad`, rather than
-   :meth:`~CellVariable.getGrad`, in order to obtain a second-order spatial
+   We use :attr:`~CellVariable.faceGrad`, rather than
+   :attr:`~CellVariable.grad`, in order to obtain a second-order spatial
    discretization of the diffusion term in :math:`\xi`, consistent with the
    matrix that is formed by
    :class:`~fipy.terms.diffusionTerm.DiffusionTerm` for :math:`\phi`.
@@ -245,11 +147,11 @@ The convection of an independent field :math:`\xi` as in
 
 can be rendered as
 
->>> (u * xi.getArithmeticFaceValue()).getDivergence()
+>>> (u * xi.arithmeticFaceValue).divergence
 
 when :math:`\vec{u}` is a rank-1 :class:`~fipy.variables.faceVariable.FaceVariable` (preferred) or as
 
->>> (u * xi).getDivergence()
+>>> (u * xi).divergence
 
 if :math:`\vec{u}` is a rank-1 :class:`~fipy.variables.cellVariable.CellVariable`.
 
@@ -266,7 +168,7 @@ The time-rate-of change of an independent variable :math:`\xi`, such as in
 does not have an abstract form in :term:`FiPy` and should be discretized
 directly, in the manner of Equation :eq:`num:tra`, as
 
->>> TransientTerm(coeff = rho1) == rho2 * (xi - xi.getOld()) / timeStep
+>>> TransientTerm(coeff=rho1) == rho2 * (xi - xi.old) / timeStep
 
 This technique is used in :mod:`examples.phase.anisotropy`.
     
@@ -288,10 +190,8 @@ For :term:`FiPy`'s purposes, however, this term represents the convection of
 :math:`\phi`, with a velocity :math:`D_2\nabla\xi`, due to the counter-diffusion of
 :math:`\xi`, so
 
->>> diffTerm = DiffusionTerm(coeff = D1)
->>> convTerm = <Specific>ConvectionTerm(coeff = D2 * xi.getFaceGrad(), 
-...                                     diffusionTerm = diffTerm)
->>> eq = TransientTerm() == diffTerm + convTerm
+>>> eq = TransientTerm() == (DiffusionTerm(coeff=D1) 
+...                          + <Specific>ConvectionTerm(coeff=D2 * xi.faceGrad))
 
 What if the coefficient of a term depends on the variable that I'm solving for?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -301,7 +201,7 @@ A non-linear coefficient, such as the diffusion coefficient in
 \phi) \nabla\phi]` is not a problem for :term:`FiPy`. Simply write it as it
 appears:
 
->>> diffTerm = DiffusionTerm(coeff = Gamma0 * phi * (1 - phi))
+>>> diffTerm = DiffusionTerm(coeff=Gamma0 * phi * (1 - phi))
 
 .. note::
 
@@ -320,7 +220,7 @@ How do I export data?
 The way to save your calculations depends on how you plan to make use of
 the data. If you want to save it for "restart" (so that you can continue
 or redirect a calculation from some intermediate stage), then you'll want
-to "pickle" the :term:`Python` data with the :mod:`dump` module. This is
+to "pickle" the :term:`Python` data with the :mod:`~fipy.tools.dump` module. This is
 illustrated in :mod:`examples.phase.anisotropy`,
 :mod:`examples.phase.impingement.mesh40x1`,
 :mod:`examples.phase.impingement.mesh20x20`, and
@@ -339,8 +239,8 @@ How do I save a plot image?
 
 Some of the viewers have a button or other mechanism in the user interface
 for saving an image file. Also, you can supply an optional keyword
-:keyword:`filename` when you tell the viewer to
-:meth:`~Viewer.plot`, *e.g.*
+``filename`` when you tell the viewer to
+:meth:`~viewer.AbstractViewer.plot`, *e.g.*
 
 >>> viewer.plot(filename="myimage.ext")
 
@@ -355,17 +255,19 @@ directory. The type of image is determined by the file extension
       
   .. attention::
 
-     Actually, :term:`Matplotlib` supports different extensions, depending on
-     the chosen `backend
+     Actually, :term:`Matplotlib` supports different extensions, depending
+     on the chosen `backend
      <http://matplotlib.sourceforge.net/backends.html>`_, but our
-     :class:`~matplotlibViewer.matplotlibViewer.MatplotlibViewer` classes don't properly support this yet.
+     :class:`MatplotlibViewer
+     <matplotlibViewer.matplotlibViewer.AbstractMatplotlibViewer>` classes
+     don't properly support this yet.
 
 What if I only want the saved file, with no display on screen?
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 To our knowledge, this is only supported by :term:`Matplotlib`, as is explained
 in the
-`Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup>`_. 
+`Matplotlib FAQ on image backends <http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup>`_. 
 Basically, you need to tell :term:`Matplotlib` to use an "image
 backend," such as "``Agg``" or "``Cairo``." Backends are discussed at
 http://matplotlib.sourceforge.net/backends.html.
@@ -377,24 +279,26 @@ How do I make a movie?
 individual frames (see the previous question) and then stitch them together
 into a movie, using one of a variety of different free, shareware, or
 commercial software packages. The guidance in the
-`Matplotlib FAQ <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ 
-should be adaptable to other :class:`~viewer.Viewer`\s.
+`Matplotlib FAQ on movies <http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie>`_ 
+should be adaptable to other :class:`Viewer <viewer.AbstractViewer>`\s.
 
-Why doesn't the :class:`~viewer.Viewer` look the way I want?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Why doesn't the :class:`Viewer <viewer.AbstractViewer>` look the way I want?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :term:`FiPy`'s viewers are utilitarian. They're designed to let you see
 *something* with a minimum of effort. Because different plotting
 packages have different capabilities and some are easier to install on some
 platforms than on others, we have tried to support a range of :term:`Python`
 plotters with a minimal common set of features. Many of these packages are
-capable of much more, however. Often, you can invoke the :class:`~viewer.Viewer` you
+capable of much more, however. Often, you can invoke the 
+:class:`Viewer <viewer.AbstractViewer>` you
 want, and then issue supplemental commands for the underlying plotting
 package. The better option is to make a "subclass" of the :term:`FiPy`
-:class:`~viewer.Viewer` that comes closest to producing the image you want. You can
+:class:`Viewer <viewer.AbstractViewer>` that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting :term:`FiPy` do
 most of the heavy lifting. See :mod:`examples.phase.anisotropy` for an
-example of creating a custom :term:`Matplotlib` :class:`~viewer.Viewer` class.
+example of creating a custom :term:`Matplotlib` :class:`Viewer 
+<viewer.AbstractViewer>` class.
 
 .. _FAQ-IterationsTimestepsSweeps:
 
@@ -428,12 +332,12 @@ iterations
 
   .. note::
 
-     The older :class:`~fipy.solvers.solver.Solver` :keyword:`steps=` keyword is now deprecated
-     in favor of :keyword:`iterations=` to make the role clearer.
+     The older :class:`~fipy.solvers.solver.Solver` ``steps=`` keyword is now deprecated
+     in favor of ``iterations=`` to make the role clearer.
 
   Solver iterations are changed from their defaults in
   :mod:`examples.flow.stokesCavity` and
-  :mod:`examples.update0-1to1-0`.
+  :mod:`examples.updating.update0_1to1_0`.
 
 sweeps
   This middle layer of repetition is important
@@ -462,7 +366,7 @@ sweeps
   *current* timestep). This is done by first modifying the
   way the variable is created:
 
-  >>> myVar = CellVariable(..., hasOld=1)
+  >>> myVar = CellVariable(..., hasOld=True)
 
   and then by explicitly moving the current value of the 
   variable into the "old" value only when we want to:
@@ -551,23 +455,20 @@ Finally, we can (and often do) combine all three layers of repetition:
 Why the distinction between :class:`~fipy.variables.cellVariable.CellVariable` and :class:`~fipy.variables.faceVariable.FaceVariable` coefficients?  
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-:term:`FiPy` solves field variables on the 
-:class:`~fipy.meshes.numMesh.cell.Cell` centers. Transient and
-source terms describe the change in the value of a field at the
-:class:`~fipy.meshes.numMesh.cellCell` center, and so they take a 
-:class:`~fipy.variables.cellVariable.CellVariable` coefficient.
-Diffusion and convection terms involve fluxes *between* 
-:class:`~fipy.meshes.numMesh.cell.Cell`
-centers, and are calculated on the :class:`~fipy.meshes.numMesh.face.Face` 
-between two :class:`~fipy.meshes.numMesh.cell.Cell`\s,
-and so they take a :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable` coefficient.
+:term:`FiPy` solves field variables on the cell centers. Transient and
+source terms describe the change in the value of a field at the cell
+center, and so they take a
+:class:`~fipy.variables.cellVariable.CellVariable` coefficient. Diffusion
+and convection terms involve fluxes *between* cell centers, and are
+calculated on the face between two cells, and so they take a
+:class:`~fipy.variables.faceVariable.FaceVariable` coefficient.
     
 .. note::
-    
-   If you supply a :class:`~fipy.meshes.numMesh.cellVariable.CellVariable`
-   ``var`` when a :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable`
+
+   If you supply a :class:`~fipy.variables.cellVariable.CellVariable`
+   ``var`` when a :class:`~fipy.variables.faceVariable.FaceVariable`
    is expected, :term:`FiPy` will automatically substitute
-   ``var.``:meth:`~fipy.variables.cellVariable.CellVariable.getArithmeticFaceValue`.
+   ``var.``:attr:`~fipy.variables.cellVariable.CellVariable.arithmeticFaceValue`.
    This can have undesirable consequences, however. For one thing, the
    arithmetic face average of a non-linear function is not the same as the
    same non-linear function of the average argument, *e.g.*, for
@@ -593,47 +494,56 @@ and so they take a :class:`~fipy.meshes.numMesh.faceVariable.FaceVariable` coeff
 How do I represent boundary conditions?
 ---------------------------------------
 
+.. currentmodule:: fipy.variables.cellVariable
+
 How do I represent a fixed value (Dirichlet) boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :meth:`~fipy.variable.cellVariable.CellVariable.constrain` method. For
+Use the :meth:`~CellVariable.constrain` method. For
 example, to fix `var` to have a value of `2` along the upper surface of a domain,
 use
 
->>> var.constrain(2., where=mesh.getFacesTop())
+>>> var.constrain(2., where=mesh.facesTop)
 
-.. note:: The old equivalent :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary condition is now deprecated.
+.. note:: 
+
+   The old equivalent
+   :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary
+   condition is now deprecated.
 
 How do I apply a (Neumann) fixed gradient boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :meth:`~fipy.variable.cellVariable.CellVariable.constrainFaceGrad`
+Use the :attr:`~.CellVariable.faceGrad`.\ :meth:`~fipy.variables.variable.Variable.constrain`
 method. For example, to fix `var` to have a gradient of `(0,2)` along the upper
 surface of a 2D domain, use
 
->>> var.constrainFaceGrad(((0,),(2,)), where=mesh.getFacesTop())
+>>> var.faceGrad.constrain(((0,),(2,)), where=mesh.facesTop)
 
 How do I apply a fixed flux boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Generally this can be implemented with a judicious use of
-:meth:`~fipy.variables.cellVariable.CellVariable.constrainFaceGrad`. Failing
-that, an exterior flux term can be added to the equation. Firstly, set the terms'
-coefficients to be zero on the exterior faces,
+:attr:`~.CellVariable.faceGrad`.\ :meth:`~fipy.variables.variable.Variable.constrain`.
+Failing that, an exterior flux term can be added to the equation. Firstly,
+set the terms' coefficients to be zero on the exterior faces,
 
->>> diffCoeff.constrain(0., mesh.getExteriorFaces())
->>> convCoeff.constrain(0., mesh.getExteriorFaces())
+>>> diffCoeff.constrain(0., mesh.exteriorFaces)
+>>> convCoeff.constrain(0., mesh.exteriorFaces)
 
 then create an equation with an extra term to account for the exterior flux,
 
->>> eqn = TransientTerm() + ConvectionTerm(convCoeff) == \
-...     DiffusionCoeff(diffCoeff) + \
-...     (mesh.getExteriorFaces() * exteriorFlux).getDivergence()
+>>> eqn = (TransientTerm() + ConvectionTerm(convCoeff) 
+...        == DiffusionCoeff(diffCoeff)
+...        + (mesh.exteriorFaces * exteriorFlux).divergence)
 
 where `exteriorFlux` is a rank 1
 :class:`~fipy.variables.faceVariable.FaceVariable`.
 
-.. note:: The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` boundary condition is now deprecated.
+.. note:: 
+
+   The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux`
+   boundary condition is now deprecated.
 
 How do I apply an outlet or inlet boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -659,10 +569,10 @@ boundary conditions,
 where :math:`\vec{F}` represents the flux. The boundary conditions in :term:`FiPy` can
 be written with the following code,
 
->>> x, y = mesh.getFaceCenters()
+>>> x, y = mesh.faceCenters
 >>> mask =  ((x < 0.5) | (y < 0.5))
->>> var.constrainFaceGrad(0, where=mesh.getExteriorFaces() & mask)
->>> var.constrain(x * y, where=mesh.getExteriorFaces() & ~mask)
+>>> var.faceGrad.constrain(0, where=mesh.exteriorFaces & mask)
+>>> var.constrain(x * y, where=mesh.exteriorFaces & ~mask)
 
 then
 
@@ -730,48 +640,12 @@ for more details.
 How can I tell if I'm running in parallel?
 ------------------------------------------
 
-The easiest way to tell is to run one of the examples, e.g.,::
-
-   $ mpirun -np 2 examples/diffusion/mesh1D.py
-   
-You should see two viewers open with half the simulation running in one of 
-them and half in the other. If this does not look right (e.g., you get two viewers, both 
-showing the entire simultion), or if you just want to be sure, you can run 
-a diagnostic script::
-
-   $ mpirun -np 3 examples/parallel.py
-   
-and you should see::
-
-   mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 3 :: FiPy: 5 cells on processor 0 of 3
-   mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
-   mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
-
-If there is a problem with your parallel environment, it should be clear
-that there is either a problem importing one of the required packages or
-that there is some problem with the MPI environment. For example::
-
-   mpi4py: processor 2 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
-   [my.machine.com:69815] WARNING: There were 4 Windows created but not freed.
-   mpi4py: processor 1 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
-   [my.machine.com:69814] WARNING: There were 4 Windows created but not freed.
-   mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
-   [my.machine.com:69813] WARNING: There were 4 Windows created but not freed.
-
-indicates :ref:`MPI4PY` is properly communicating with MPI and is
-running in parallel, but that :term:`Trilinos` is not, and is running
-three separate serial environments. As a result, :term:`FiPy` is
-limited to three separate serial operations, too. In this instance,
-the problem is that although :term:`Trilinos` was compiled with MPI
-enabled, it was compiled against a different MPI library than is
-currently available (and which :ref:`MPI4PY` was compiled
-against). The solution is to rebuild :term:`Trilinos` against the
-active MPI libraries.
+See :ref:`PARALLEL`.
 
 Why don't my scripts work anymore?
 ----------------------------------
 
-:term:`FiPy` has experienced two major API changes. The steps 
+:term:`FiPy` has experienced three major API changes. The steps 
 necessary to upgrade older scripts are discussed in 
 :ref:`chap:UpdateFiPy`.
 

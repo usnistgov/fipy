@@ -42,7 +42,7 @@ class Constraint(object):
     def __init__(self, value, where=None):
         """Object to hold a `Variable` to `value` at `where`
         
-        see :method:`Variable.constrain`
+        see :meth:`~fipy.variables.variable.Variable.constrain`
         """
         self.value = value
         self.where = where

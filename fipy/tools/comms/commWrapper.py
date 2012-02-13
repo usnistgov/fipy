@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-__all__ = ["CommWrapper"]
+__all__ = ["CommWrapper", "ParallelCommWrapper"]
 
 class CommWrapper(object):
     """MPI Communicator wrapper
@@ -50,6 +50,9 @@ class CommWrapper(object):
     def __init__(self, Epetra=None):
         self.epetra_comm = Epetra.PyComm()
         
+    def __repr__(self):
+        return "%s()" % self.__class__.__name__
+
     @property
     def procID(self):
         return self.epetra_comm.MyPID()
@@ -102,3 +105,10 @@ class CommWrapper(object):
 
     def MaxAll(self, vec):
         return self.epetra_comm.MaxAll(numerix.array(vec))
+        
+    def MinAll(self, vec):
+        return self.epetra_comm.MinAll(numerix.array(vec))
+
+class ParallelCommWrapper(CommWrapper):
+    """MPI Communicator wrapper for parallel processes"""
+    pass

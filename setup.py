@@ -84,11 +84,19 @@ class build_docs(Command):
 
     def run (self):
         import sphinx
+        from sphinx import apidoc
         
-        sphinx_args = ['-c', 'documentation/', '.']
+        sphinx_args = ['-P', '-n', '-c', 'documentation/', '.']
+        apidoc_args = []
         
         if self.cathartic:
             sphinx_args = ['-a', '-E'] + sphinx_args
+            apidoc_args = ['--force'] + apidoc_args
+            
+        apidoc.main(['sphinx-apidoc', '--output-dir=fipy/generated', '--suffix=txt'] 
+                    + apidoc_args + ['fipy'])
+        apidoc.main(['sphinx-apidoc', '--output-dir=documentation/tutorial/package/generated', '--suffix=txt'] 
+                    + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
             sphinx.main(['sphinx-build', '-b', 'html'] + sphinx_args + ['documentation/_build/html/'])
@@ -253,7 +261,7 @@ def getVersion(version, release=False):
     return version
 
 dist = setup(	name = "FiPy",
-        version = getVersion(version='2.2', release=False), 
+        version = getVersion(version='3.0', release=False), 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
