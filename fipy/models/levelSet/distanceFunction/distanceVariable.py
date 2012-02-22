@@ -65,7 +65,7 @@ class DistanceVariable(CellVariable):
     >>> from fipy.tools import serial
     >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serial)
     >>> from distanceVariable import DistanceVariable
-    >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+    >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
     >>> var.calcDistanceFunction()
     >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
     >>> print var.allclose(answer)
@@ -75,7 +75,7 @@ class DistanceVariable(CellVariable):
 
     >>> dx = 1e-10
     >>> mesh = Grid1D(dx = dx, nx = 8, communicator=serial)
-    >>> var = DistanceVariable(mesh = mesh, value = (-1, -1, -1, -1, 1, 1, 1, 1))
+    >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
     >>> var.calcDistanceFunction()
     >>> answer = numerix.arange(8) * dx - 3.5 * dx
     >>> print var.allclose(answer)
@@ -87,7 +87,7 @@ class DistanceVariable(CellVariable):
     >>> dy = 2.
     >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
-    >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1, -1, 1))
+    >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1., -1., 1.))
 
     >>> var.calcDistanceFunction()
     >>> vbl = -dx * dy / numerix.sqrt(dx**2 + dy**2) / 2.
@@ -116,7 +116,7 @@ class DistanceVariable(CellVariable):
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
-    >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1, 1))
+    >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1.))
     >>> var.calcDistanceFunction()
     >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
     >>> tmp = 1 / numerix.sqrt(2)
@@ -126,13 +126,13 @@ class DistanceVariable(CellVariable):
     >>> print extensionVar.allclose((1.25, .5, 2, 1.25))
     1
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
-    >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, 1,
-    ...                                               1, 1, 1,
-    ...                                               1, 1, 1))
-    >>> var.calcDistanceFunction()
-    >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, -1,
-    ...                                                    2, -1, -1,
-    ...                                                   -1, -1, -1))
+    >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1.,
+    ...                                               1., 1., 1.,
+    ...                                               1., 1., 1.))
+    >>> var.calcDistanceFunction(order=1)
+    >>> extensionVar = CellVariable(mesh = mesh, value = (-1., .5, -1.,
+    ...                                                    2., -1., -1.,
+    ...                                                   -1., -1., -1.))
 
     >>> v1 = 0.5 + tmp
     >>> v2 = 1.5
@@ -152,7 +152,7 @@ class DistanceVariable(CellVariable):
     fact the two closest cells could have opposite normals.
 
     >>> mesh = Grid1D(dx = 1., nx = 3)
-    >>> var = DistanceVariable(mesh = mesh, value = (-1, 1, -1))
+    >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., -1.))
     >>> var.calcDistanceFunction()
     >>> print var.allclose((-0.5, 0.5, -0.5))
     1
@@ -231,7 +231,7 @@ class DistanceVariable(CellVariable):
         extensionVariable[:] = numericExtensionVariable
         self._value = self.tmpValue
 
-    def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False):
+    def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False, order=2):
         """
         Calculates the `distanceVariable` as a distance function.
 
@@ -242,9 +242,24 @@ class DistanceVariable(CellVariable):
             zero in isolated cells.
 
         """
-        self._calcDistanceFunction(narrowBandWidth = narrowBandWidth, deleteIslands = deleteIslands)
+        if hasattr(self.mesh, 'nx'):
+            self._calcDistanceFunctionLsmlib(narrowBandWidth = narrowBandWidth, deleteIslands = deleteIslands, order=order)
+        else:
+            self._calcDistanceFunction(narrowBandWidth = narrowBandWidth, deleteIslands = deleteIslands)
         self._markFresh()
     
+    def _calcDistanceFunctionLsmlib(self, extensionVariable = None, narrowBandWidth = None, deleteIslands = False, order=2):
+        from fipy.tools.lsmlib.pylsmlib import computeDistanceFunction2d
+
+        if hasattr(self.mesh, 'ny'):
+            ny = self.mesh.ny
+            dy = self.mesh.dy
+        else:
+            ny = 1
+            dy = 1.
+            
+        self._value = computeDistanceFunction2d(self._value, nx=self.mesh.nx,  ny=ny, dx=self.mesh.dx, dy=dy, order=order)
+
     def _calcDistanceFunction(self, extensionVariable = None, narrowBandWidth = None, deleteIslands = False):
 
         if narrowBandWidth == None:
@@ -312,8 +327,6 @@ class DistanceVariable(CellVariable):
         if extensionVariable is None:
             extensionVariable = numerix.zeros(self.mesh.numberOfCells, 'd')
             flag = False
-            
-        ext = numerix.zeros(self.mesh.numberOfCells, 'd')
 
         positiveInterfaceFlag = numerix.where(self._value > 0, interfaceFlag, 0)
         negativeInterfaceIDs = numerix.nonzero(numerix.where(self._value < 0, interfaceFlag, 0))[0]

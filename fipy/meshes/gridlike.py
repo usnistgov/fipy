@@ -37,11 +37,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.tools import serial
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
-from fipy.tools.numerix import MA
-
 from fipy.meshes.mesh1D import Mesh1D
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.mesh import Mesh
