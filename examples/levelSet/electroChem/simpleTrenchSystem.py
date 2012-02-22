@@ -219,7 +219,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     x, y = mesh.cellCenters
     distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
-    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10, order=1)
 
     catalystVar = SurfactantVariable(
         name = "catalyst variable",
@@ -303,7 +303,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
             viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
-            distanceVar.calcDistanceFunction()
+            distanceVar.calcDistanceFunction(order=1)
             
         extensionVelocityVariable.setValue(depositionRateVariable())
 

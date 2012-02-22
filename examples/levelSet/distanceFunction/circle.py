@@ -67,13 +67,13 @@ Construct a `distanceVariable` object.
 
 >>> var = DistanceVariable(name='level set variable',
 ...                        mesh=mesh,
-...                        value=-1,
+...                        value=-1.,
 ...                        hasOld=1)
 
 >>> x, y = mesh.cellCenters
 >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
 
->>> var.calcDistanceFunction()
+>>> var.calcDistanceFunction(order=1)
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=-5., datamax=5.)

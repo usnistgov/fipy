@@ -65,7 +65,7 @@ Construct a `distanceVariable` object.
 
 >>> var = DistanceVariable(name='level set variable',
 ...                        mesh=mesh,
-...                        value=-1,
+...                        value=-1.,
 ...                        hasOld=1)
 >>> x = mesh.cellCenters[0]
 >>> var.setValue(1, where=x > dx * nx / 2)

@@ -179,7 +179,7 @@ region will be negative.
 ...                                 | ((y > bottomHeight) 
 ...                                    & (x < xCells * cellSize - sideWidth)))
 
->>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10)
+>>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10, order=1)
 
 The ``distanceVariable`` has now been created to mark the interface. Some other
 variables need to be created that govern the concentrations of various species.
@@ -420,7 +420,7 @@ is calculated with the CFL number and the maximum extension velocity.
 ...         viewer.plot()
 ...
 ...     if step % levelSetUpdateFrequency == 0:
-...         distanceVar.calcDistanceFunction()
+...         distanceVar.calcDistanceFunction(order=1)
 ...
 ...     extensionVelocityVariable.setValue(depositionRateVariable())
 ...

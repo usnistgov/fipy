@@ -87,14 +87,14 @@ mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny)
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = -1,
+    value = -1.,
     hasOld = 1
     )
 
 x, y = mesh.cellCenters
 var.setValue(1, where=((Lx / 3. < x) & (x < 2. * Lx / 3.)) & ((Ly / 3. < y) & (y < 2. * Ly / 3)))
 
-var.calcDistanceFunction()
+var.calcDistanceFunction(order=1)
 
 if __name__ == '__main__':
     viewer = Viewer(vars=var, maxval=-5., minval=5.)
