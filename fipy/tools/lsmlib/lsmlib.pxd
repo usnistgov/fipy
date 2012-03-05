@@ -15,6 +15,7 @@ cdef extern int computeExtensionFields2d(
      double *_phi,
      double *mask,
      double **source_fields,
+     double *extension_mask,
      int num_ext_fields,
      int spatial_derivative_order,
      int *grid_dims,

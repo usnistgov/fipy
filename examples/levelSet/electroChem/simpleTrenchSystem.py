@@ -309,7 +309,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
         distanceVar.updateOld()
 
-        distanceVar.extendVariable(extensionVelocityVariable)
+        distanceVar.extendVariable(extensionVelocityVariable, order=1)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
         advectionEquation.solve(distanceVar, dt = dt)

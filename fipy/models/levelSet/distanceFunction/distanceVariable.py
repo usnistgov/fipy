@@ -122,7 +122,7 @@ class DistanceVariable(CellVariable):
     >>> tmp = 1 / numerix.sqrt(2)
     >>> print var.allclose((-tmp / 2, 0.5, 0.5, 0.5 + tmp))
     1
-    >>> var.extendVariable(extensionVar)
+    >>> var.extendVariable(extensionVar, order=1)
     >>> print extensionVar.allclose((1.25, .5, 2, 1.25))
     1
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
@@ -142,7 +142,7 @@ class DistanceVariable(CellVariable):
     ...                      tmp1, 1.5, tmp1, tmp2))
     1
     >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
-    >>> var.extendVariable(extensionVar)
+    >>> var.extendVariable(extensionVar, order=1)
     >>> print extensionVar.allclose(answer, rtol = 1e-4)
     1
 
@@ -211,7 +211,7 @@ class DistanceVariable(CellVariable):
     def _calcValue(self):
         return self._value
         
-    def extendVariable(self, extensionVariable, deleteIslands = False):
+    def extendVariable(self, extensionVariable, deleteIslands = False, order=2):
         """
         
         Takes a `cellVariable` and extends the variable from the zero
@@ -227,7 +227,22 @@ class DistanceVariable(CellVariable):
         
         self.tmpValue = self._value.copy()
         numericExtensionVariable = numerix.array(extensionVariable)
-        self._calcDistanceFunction(numericExtensionVariable, deleteIslands = deleteIslands)
+
+        if hasattr(self.mesh, 'nx'):
+            if hasattr(self.mesh, 'ny'):
+                ny = self.mesh.ny
+                dy = self.mesh.dy
+            else:
+                ny = 1
+                dy = 1.
+
+            from fipy.tools.lsmlib.pylsmlib import computeExtensionFields2d
+            shape = numericExtensionVariable.shape
+            extension_mask = (self._value > 0) - 0.5
+            self._value, numericExtensionVariable = computeExtensionFields2d(self._value, numericExtensionVariable.reshape((1, shape[0])), extension_mask=extension_mask, nx=self.mesh.nx,  ny=ny, dx=self.mesh.dx, dy=dy, order=order)
+        else:
+            self._calcDistanceFunction(numericExtensionVariable, deleteIslands = deleteIslands)
+
         extensionVariable[:] = numericExtensionVariable
         self._value = self.tmpValue
 
