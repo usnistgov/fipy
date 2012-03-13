@@ -179,7 +179,7 @@ region will be negative.
 ...                                 | ((y > bottomHeight) 
 ...                                    & (x < xCells * cellSize - sideWidth)))
 
->>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10, order=1)
+>>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10, order=1) #doctest: +LSMLIB
 
 The ``distanceVariable`` has now been created to mark the interface. Some other
 variables need to be created that govern the concentrations of various species.
@@ -430,7 +430,7 @@ is calculated with the CFL number and the maximum extension velocity.
 ...     advectionEquation.solve(distanceVar, dt=dt)
 ...     surfactantEquation.solve(catalystVar, dt=dt)
 ...     metalEquation.solve(var=metalVar, dt=dt)
-...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt, solver=GeneralSolver())
+...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt, solver=GeneralSolver()) #doctest: +LSMLIB
    
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
@@ -442,7 +442,7 @@ to tell if something has changed or been broken.
 >>> filepath = os.path.join(os.path.split(__file__)[0], 
 ...                         "simpleTrenchSystem.gz")
 
->>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4)
+>>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4) #doctest: +LSMLIB
 1
 
 >>> if __name__ == '__main__':

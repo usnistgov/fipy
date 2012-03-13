@@ -49,6 +49,8 @@ given by:
 
 Do the tests:
 
+>>> var.calcDistanceFunction(order=1) #doctest: +LSMLIB
+
 >>> def evalCell(phix, phiy, dx, dy):
 ...     aa = dy**2 + dx**2
 ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
@@ -66,7 +68,7 @@ Do the tests:
 ...     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
 ...     v1           , val     , -dy / 2.        , val     , v1           ,
 ...     v3           , v2      , -3. * dy / 2.   , v2      , v3           ))
->>> print var.allclose(arr)
+>>> print var.allclose(arr) #doctest: +LSMLIB
 1
 
 """
@@ -94,9 +96,8 @@ var = DistanceVariable(
 x, y = mesh.cellCenters
 var.setValue(1, where=((Lx / 3. < x) & (x < 2. * Lx / 3.)) & ((Ly / 3. < y) & (y < 2. * Ly / 3)))
 
-var.calcDistanceFunction(order=1)
-
 if __name__ == '__main__':
+    var.calcDistanceFunction(order=1)
     viewer = Viewer(vars=var, maxval=-5., minval=5.)
     viewer.plot()
     raw_input('finished')

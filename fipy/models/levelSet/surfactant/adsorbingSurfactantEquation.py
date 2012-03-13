@@ -254,7 +254,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)
     >>> disVar[y < dy] = -1
     >>> disVar[x < dx] = -1
-    >>> disVar.calcDistanceFunction()
+    >>> disVar.calcDistanceFunction() #doctest: +LSMLIB
 
     >>> levVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
     >>> accVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
@@ -287,7 +287,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     disVar.updateOld()
     ...     advEq.solve(disVar, dt = dt)
     ...     levEq.solve(levVar, dt = dt)
-    ...     accEq.solve(accVar, dt = dt)
+    ...     accEq.solve(accVar, dt = dt) #doctest: +LSMLIB
 
     >>> print (accVar >= -1e-10).all()
     True

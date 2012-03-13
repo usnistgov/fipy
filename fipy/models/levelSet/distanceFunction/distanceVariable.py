@@ -38,8 +38,21 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
 from fipy.variables.cellVariable import CellVariable
+from fipy.tests.doctestPlus import register_skipper
 
 __all__ = ["DistanceVariable"]
+
+def _checkForLSMLIB():
+    hasLSMLIB = True
+    try:
+        import fipy.tools.lsmlib.pylsmlib 
+    except Exception:    
+        hasLSMLIB = False
+    return hasLSMLIB
+
+register_skipper(flag="LSMLIB",
+                 test=_checkForLSMLIB,
+                 why="`lsmlib` cannot be found on the $PATH")
 
 class DistanceVariable(CellVariable):
     r"""
@@ -66,9 +79,9 @@ class DistanceVariable(CellVariable):
     >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serial)
     >>> from distanceVariable import DistanceVariable
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
-    >>> var.calcDistanceFunction()
+    >>> var.calcDistanceFunction() #doctest: +LSMLIB
     >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
-    >>> print var.allclose(answer)
+    >>> print var.allclose(answer) #doctest: +LSMLIB
     1
 
     A 1D test case with very small dimensions.
@@ -76,9 +89,9 @@ class DistanceVariable(CellVariable):
     >>> dx = 1e-10
     >>> mesh = Grid1D(dx = dx, nx = 8, communicator=serial)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
-    >>> var.calcDistanceFunction()
+    >>> var.calcDistanceFunction() #doctest: +LSMLIB
     >>> answer = numerix.arange(8) * dx - 3.5 * dx
-    >>> print var.allclose(answer)
+    >>> print var.allclose(answer) #doctest: +LSMLIB
     1
 
     A 2D test case to test `_calcTrialValue` for a pathological case.
@@ -89,7 +102,7 @@ class DistanceVariable(CellVariable):
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1., -1., 1.))
 
-    >>> var.calcDistanceFunction()
+    >>> var.calcDistanceFunction() #doctest: +LSMLIB
     >>> vbl = -dx * dy / numerix.sqrt(dx**2 + dy**2) / 2.
     >>> vbr = dx / 2
     >>> vml = dy / 2.
@@ -100,7 +113,7 @@ class DistanceVariable(CellVariable):
     >>> sqrt = numerix.sqrt(max(sqrt, 0))
     >>> vmr = (top + sqrt) / dsq
     >>> answer = (vbl, vbr, vml, vmr, vbl, vbr)
-    >>> print var.allclose(answer)
+    >>> print var.allclose(answer) #doctest: +LSMLIB
     1
 
     The `extendVariable` method solves the following equation for a given
@@ -117,19 +130,19 @@ class DistanceVariable(CellVariable):
     >>> from fipy.variables.cellVariable import CellVariable
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1.))
-    >>> var.calcDistanceFunction()
+    >>> var.calcDistanceFunction() #doctest: +LSMLIB
     >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
     >>> tmp = 1 / numerix.sqrt(2)
-    >>> print var.allclose((-tmp / 2, 0.5, 0.5, 0.5 + tmp))
+    >>> print var.allclose((-tmp / 2, 0.5, 0.5, 0.5 + tmp)) #doctest: +LSMLIB
     1
-    >>> var.extendVariable(extensionVar, order=1)
-    >>> print extensionVar.allclose((1.25, .5, 2, 1.25))
+    >>> var.extendVariable(extensionVar, order=1) #doctest: +LSMLIB
+    >>> print extensionVar.allclose((1.25, .5, 2, 1.25)) #doctest: +LSMLIB
     1
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1.,
     ...                                               1., 1., 1.,
     ...                                               1., 1., 1.))
-    >>> var.calcDistanceFunction(order=1)
+    >>> var.calcDistanceFunction(order=1) #doctest: +LSMLIB
     >>> extensionVar = CellVariable(mesh = mesh, value = (-1., .5, -1.,
     ...                                                    2., -1., -1.,
     ...                                                   -1., -1., -1.))
@@ -139,11 +152,11 @@ class DistanceVariable(CellVariable):
     >>> tmp1 = (v1 + v2) / 2 + numerix.sqrt(2. - (v1 - v2)**2) / 2
     >>> tmp2 = tmp1 + 1 / numerix.sqrt(2)
     >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, 
-    ...                      tmp1, 1.5, tmp1, tmp2))
+    ...                      tmp1, 1.5, tmp1, tmp2)) #doctest: +LSMLIB
     1
     >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
-    >>> var.extendVariable(extensionVar, order=1)
-    >>> print extensionVar.allclose(answer, rtol = 1e-4)
+    >>> var.extendVariable(extensionVar, order=1) #doctest: +LSMLIB
+    >>> print extensionVar.allclose(answer, rtol = 1e-4) #doctest: +LSMLIB
     1
 
     Test case for a bug that occurs when initializing the distance
@@ -153,8 +166,8 @@ class DistanceVariable(CellVariable):
 
     >>> mesh = Grid1D(dx = 1., nx = 3)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., -1.))
-    >>> var.calcDistanceFunction()
-    >>> print var.allclose((-0.5, 0.5, -0.5))
+    >>> var.calcDistanceFunction() #doctest: +LSMLIB
+    >>> print var.allclose((-0.5, 0.5, -0.5)) #doctest: +LSMLIB
     1
 
     For future reference, the minimum distance for the interface cells can

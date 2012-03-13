@@ -39,13 +39,13 @@ The example checks for global conservation of surfactant.
 
 Advect the interface and check the position.
 
-   >>> distanceVariable.calcDistanceFunction()
+   >>> distanceVariable.calcDistanceFunction() #doctest: +LSMLIB
    >>> initialSurfactant = numerix.sum(surfactantVariable)
    >>> for step in range(steps):
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable)
-   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable))
+   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration) #doctest: +LSMLIB
+   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable)) #doctest: +LSMLIB
    1
  
 

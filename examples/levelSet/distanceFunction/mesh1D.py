@@ -74,7 +74,7 @@ Once the initial positive and negative regions have been initialized
 the `calcDistanceFunction()` method can be used to recalculate `var`
 as a distance function from the zero level set.
    
->>> var.calcDistanceFunction()
+>>> var.calcDistanceFunction() #doctest: +LSMLIB
    
 The problem can then be solved by executing the :meth:`~fipy.terms.term.Term.solve`
 method of the equation.
@@ -85,7 +85,7 @@ method of the equation.
 
 The result can be tested with the following commands.
 
->>> print numerix.allclose(var, x - dx * nx / 2)
+>>> print numerix.allclose(var, x - dx * nx / 2) #doctest: +LSMLIB
 1
 
 """
