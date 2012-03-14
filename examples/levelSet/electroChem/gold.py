@@ -123,7 +123,6 @@ def runGold(faradaysConstant=9.6e4,
     
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 20
-    cellsBelowTrench = 10
     
     mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,

@@ -270,23 +270,31 @@ class DistanceVariable(CellVariable):
             zero in isolated cells.
 
         """
-        if hasattr(self.mesh, 'nx'):
-            self._calcDistanceFunctionLsmlib(narrowBandWidth = narrowBandWidth, deleteIslands = deleteIslands, order=order)
-        else:
-            self._calcDistanceFunction(narrowBandWidth = narrowBandWidth, deleteIslands = deleteIslands)
-        self._markFresh()
-    
-    def _calcDistanceFunctionLsmlib(self, extensionVariable = None, narrowBandWidth = None, deleteIslands = False, order=2):
         from fipy.tools.lsmlib.pylsmlib import computeDistanceFunction2d
 
-        if hasattr(self.mesh, 'ny'):
-            ny = self.mesh.ny
-            dy = self.mesh.dy
+        if hasattr(self.mesh, 'nz'):
+            raise Exception, "3D meshes not yet implemented"
+
+        elif hasattr(self.mesh, 'ny'):
+            self._value = computeDistanceFunction2d(self._value, nx=self.mesh.nx,  ny=self.mesh.ny, dx=self.mesh.dx, dy=self.mesh.dy, order=order)
+
+        elif hasattr(self.mesh, 'nx'):
+            self._value = computeDistanceFunction2d(self._value, nx=self.mesh.nx,  ny=1, dx=self.mesh.dx, dy=1, order=order)
+
+        elif hasattr(self.mesh, 'fineMesh'):
+            fineMesh = self.mesh.fineMesh
+            self._value[:fineMesh.numberOfCells] = \
+                computeDistanceFunction2d(self._value[:fineMesh.numberOfCells],
+                                          nx=fineMesh.nx,
+                                          ny=fineMesh.ny,
+                                          dx=fineMesh.dx,
+                                          dy=fineMesh.dy,
+                                          order=order)
+
         else:
-            ny = 1
-            dy = 1.
-            
-        self._value = computeDistanceFunction2d(self._value, nx=self.mesh.nx,  ny=ny, dx=self.mesh.dx, dy=dy, order=order)
+            raise Exception, "Mesh can not be used for solving the FMM."
+   
+        self._markFresh()
 
     def _calcDistanceFunction(self, extensionVariable = None, narrowBandWidth = None, deleteIslands = False):
 
