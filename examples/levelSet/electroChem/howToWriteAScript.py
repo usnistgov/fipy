@@ -163,7 +163,6 @@ Create an initial variable,
 ...    name='distance variable',
 ...    mesh= mesh,
 ...    value=-1.,
-...    narrowBandWidth=narrowBandWidth,
 ...    hasOld=1)
 
 The electrolyte region will be the positive region of the domain while the metal
@@ -179,7 +178,7 @@ region will be negative.
 ...                                 | ((y > bottomHeight) 
 ...                                    & (x < xCells * cellSize - sideWidth)))
 
->>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10, order=1) #doctest: +LSMLIB
+>>> distanceVar.calcDistanceFunction(order=1) #doctest: +LSMLIB
 
 The ``distanceVariable`` has now been created to mark the interface. Some other
 variables need to be created that govern the concentrations of various species.

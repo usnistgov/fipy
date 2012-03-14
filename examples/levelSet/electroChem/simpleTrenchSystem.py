@@ -208,7 +208,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         name = 'distance variable',
         mesh = mesh,
         value = -1.,
-        narrowBandWidth = narrowBandWidth,
         hasOld = 1)
 
     bottomHeight = cellsBelowTrench * cellSize
@@ -219,7 +218,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     x, y = mesh.cellCenters
     distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
-    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10, order=1)
+    distanceVar.calcDistanceFunction(order=1)
 
     catalystVar = SurfactantVariable(
         name = "catalyst variable",

@@ -62,15 +62,9 @@ class DistanceVariable(CellVariable):
         
        \abs{\nabla \phi} = 1
 
-    using the fast marching method with an initial condition defined by
-    the zero level set.
-
-    Currently the solution is first order, This suffices for initial
-    conditions with straight edges (e.g. trenches in
-    electrodeposition). The method should work for unstructured 2D grids
-    but testing on unstructured grids is untested thus far. This is a 2D
-    implementation as it stands. Extending to 3D should be relatively
-    simple.
+    using the fast marching method with an initial condition defined
+    by the zero level set.  The solution can either be first or second
+    order.
 
     Here we will define a few test cases. Firstly a 1D test case
 
@@ -124,8 +118,7 @@ class DistanceVariable(CellVariable):
        \nabla u \cdot \nabla \phi = 0
 
     using the fast marching method with an initial condition defined at
-    the zero level set. Essentially the equation solves a fake distance
-    function to march out the velocity from the interface.
+    the zero level set.
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
@@ -170,29 +163,8 @@ class DistanceVariable(CellVariable):
     >>> print var.allclose((-0.5, 0.5, -0.5)) #doctest: +LSMLIB
     1
 
-    For future reference, the minimum distance for the interface cells can
-    be calculated with the following functions. The trial cell values will
-    also be calculated with these functions. In essence it is not
-    difficult to calculate the level set distance function on an
-    unstructured 3D grid. However a lot of testing will be required. The
-    minimum distance functions will take the following form.
-
-    .. math::
-
-       X_{\text{min}} = \frac{\left| \vec{s} \times \vec{t} \right|} {\left|
-       \vec{s} - \vec{t} \right|}
-
-    and in 3D,
-
-    .. math::
-        
-       X_{\text{min}} = \frac{1}{3!} \left| \vec{s} \cdot \left( \vec{t} \times
-       \vec{u} \right) \right|
-
-    where the vectors :math:`\vec{s}`, :math:`\vec{t}` and :math:`\vec{u}` represent the
-    vectors from the cell of interest to the neighboring cell.
     """
-    def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 0, narrowBandWidth = 1e+10):
+    def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 0):
         """
         Creates a `distanceVariable` object.
 
@@ -202,25 +174,11 @@ class DistanceVariable(CellVariable):
 	  - `value`: The initial value.
 	  - `unit`: the physical units of the variable
           - `hasOld`: Whether the variable maintains an old value.
-          - `narrowBandWidth`: The width of the region about the zero level set
-            within which the distance function is evaluated.
 
         """
         CellVariable.__init__(self, mesh, name = name, value = value, unit = unit, hasOld = hasOld)
         self._markStale()
-        self.narrowBandWidth = narrowBandWidth
 
-        self.cellToCellDistances = MA.filled(self.mesh._cellToCellDistances, 0)
-        self.cellNormals = MA.filled(self.mesh._cellNormals, 0)      
-        self.cellAreas = MA.filled(self.mesh._cellAreas, 0)
-##         self.cellToCellDistances = numerix.array(MA.array(self.mesh._cellToCellDistances).filled(0))
-##         self.cellNormals = numerix.array(MA.array(self.mesh._cellNormals).filled(0))       
-##         self.cellAreas = numerix.array(MA.array(self.mesh._cellAreas).filled(0))
-        self.cellToCellIDs = numerix.array(self.mesh._cellToCellIDsFilled)
-        self.adjacentCellIDs = self.mesh._adjacentCellIDs
-        self.exteriorFaces = self.mesh.exteriorFaces
-        self.cellFaceIDs = self.mesh.cellFaceIDs
-        
     def _calcValue(self):
         return self._value
         
@@ -398,13 +356,12 @@ class DistanceVariable(CellVariable):
            
         """
 
-        N = self.mesh.numberOfCells
-        M = self.mesh._maxFacesPerCell
         dim = self.mesh.dim
 
         valueOverFaces = numerix.repeat(self._cellValueOverFaces[numerix.newaxis, ...], dim, axis=0)
-        if self.cellFaceIDs.shape[-1] > 0:
-            interfaceNormals = self._interfaceNormals[...,self.cellFaceIDs]
+        cellFaceIDs = self.mesh.cellFaceIDs
+        if cellFaceIDs.shape[-1] > 0:
+            interfaceNormals = self._interfaceNormals[...,cellFaceIDs]
         else:
             interfaceNormals = 0
         from fipy.tools.numerix import MA
@@ -459,7 +416,7 @@ class DistanceVariable(CellVariable):
            True
            
         """
-        adjacentCellIDs = self.adjacentCellIDs
+        adjacentCellIDs = self.mesh._adjacentCellIDs
         val0 = numerix.take(numerix.array(self._value), adjacentCellIDs[0])
         val1 = numerix.take(numerix.array(self._value), adjacentCellIDs[1])
         
@@ -485,7 +442,7 @@ class DistanceVariable(CellVariable):
         True
 
         """
-        flag = MA.filled(numerix.take(self._interfaceFlag, self.cellFaceIDs), 0)
+        flag = MA.filled(numerix.take(self._interfaceFlag, self.mesh.cellFaceIDs), 0)
 
         flag = numerix.sum(flag, axis=0)
         
@@ -551,8 +508,9 @@ class DistanceVariable(CellVariable):
         faceGrad = numerix.array(faceGrad)
 
         ## set faceGrad zero on exteriorFaces
-        if len(self.exteriorFaces.value) > 0:
-            faceGrad[..., self.exteriorFaces.value] = 0.
+        exteriorFaces = self.mesh.exteriorFaces
+        if len(exteriorFaces.value) > 0:
+            faceGrad[..., exteriorFaces.value] = 0.
         
         return faceGrad / faceGradMag 
 

@@ -139,11 +139,10 @@ def runGold(faradaysConstant=9.6e4,
     distanceVar = DistanceVariable(
        name = 'distance variable',
        mesh = mesh,
-       value = -1.,
-       narrowBandWidth = narrowBandWidth)
+       value = -1.)
 
     distanceVar.setValue(1., where=mesh.electrolyteMask)
-    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+    distanceVar.calcDistanceFunction()
 
     catalystVar = SurfactantVariable(
         name = "catalyst variable",

@@ -238,7 +238,6 @@ def runLeveler(kLeveler=0.018,
     bulkAcceleratorConcentration = 50.0e-3
     initialLevelerCoverage = 0.
     cflNumber = 0.2
-    numberOfCellsInNarrowBand = 20
     cellsBelowTrench = 10
     trenchDepth = 0.4e-6
     trenchSpacing = 0.6e-6
@@ -268,16 +267,14 @@ def runLeveler(kLeveler=0.018,
                       overBumpRadius = 0.,
                       overBumpWidth = 0.)
 
-    narrowBandWidth = numberOfCellsInNarrowBand * cellSize
     distanceVar = DistanceVariable(
         name = 'distance variable',
         mesh = mesh,
-        value = -1.,
-        narrowBandWidth = narrowBandWidth)
+        value = -1.)
 
     distanceVar.setValue(1., where=mesh.electrolyteMask)
     
-    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+    distanceVar.calcDistanceFunction()
     levelerVar = SurfactantVariable(
         name = "leveler variable",
         value = initialLevelerCoverage,
@@ -383,6 +380,7 @@ def runLeveler(kLeveler=0.018,
                  (bulkAcceleratorEquation, bulkAcceleratorVar, (), GeneralSolver()),
                  (bulkLevelerEquation, bulkLevelerVar, (), GeneralSolver()))
 
+    narrowBandWidth = 20 * cellSize
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 
     totalTime = 0.0
