@@ -238,26 +238,36 @@ class DistanceVariable(CellVariable):
 
         """
         
-        self.tmpValue = self._value.copy()
-        numericExtensionVariable = numerix.array(extensionVariable)
+        from fipy.tools.lsmlib.pylsmlib import computeExtensionFields2d
 
-        if hasattr(self.mesh, 'nx'):
-            if hasattr(self.mesh, 'ny'):
-                ny = self.mesh.ny
-                dy = self.mesh.dy
-            else:
-                ny = 1
-                dy = 1.
+        extensionValue = extensionVariable.value.reshape((1, self.mesh.numberOfCells))
+        extension_mask = (self._value > 0) - 0.5
 
-            from fipy.tools.lsmlib.pylsmlib import computeExtensionFields2d
-            shape = numericExtensionVariable.shape
-            extension_mask = (self._value > 0) - 0.5
-            self._value, numericExtensionVariable = computeExtensionFields2d(self._value, numericExtensionVariable.reshape((1, shape[0])), extension_mask=extension_mask, nx=self.mesh.nx,  ny=ny, dx=self.mesh.dx, dy=dy, order=order)
+        if hasattr(self.mesh, 'nz'):
+            raise Exception, "3D meshes not yet implemented"
+
+        elif hasattr(self.mesh, 'ny'):
+            tmp, extensionValue = computeExtensionFields2d(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=self.mesh.ny, dx=self.mesh.dx, dy=self.mesh.dy, order=order)
+
+        elif hasattr(self.mesh, 'nx'):
+            tmp, extensionValue = computeExtensionFields2d(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=1, dx=self.mesh.dx, dy=1., order=order)
+
+        elif hasattr(self.mesh, 'fineMesh'):
+            fineMesh = self.mesh.fineMesh
+            tmp, tmpExtensionValue = computeExtensionFields2d(self._value,
+                                                              extensionValue[:,:fineMesh.numberOfCells],
+                                                              extension_mask=extension_mask[:fineMesh.numberOfCells],
+                                                              nx=fineMesh.nx,
+                                                              ny=fineMesh.ny,
+                                                              dx=fineMesh.dx,
+                                                              dy=fineMesh.dy,
+                                                              order=order)
+            extensionValue[:,:fineMesh.numberOfCells] = tmpExtensionValue
+
         else:
-            self._calcDistanceFunction(numericExtensionVariable, deleteIslands = deleteIslands)
+            raise Exception, "Mesh can not be used for solving the FMM."
 
-        extensionVariable[:] = numericExtensionVariable
-        self._value = self.tmpValue
+        extensionVariable[:] = extensionValue
 
     def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False, order=2):
         """
@@ -295,190 +305,6 @@ class DistanceVariable(CellVariable):
             raise Exception, "Mesh can not be used for solving the FMM."
    
         self._markFresh()
-
-    def _calcDistanceFunction(self, extensionVariable = None, narrowBandWidth = None, deleteIslands = False):
-
-        if narrowBandWidth == None:
-            narrowBandWidth = self.narrowBandWidth
-
-        ## calculate interface values
-
-        cellToCellIDs = self.mesh._cellToCellIDs
-
-        if deleteIslands:
-            adjVals = numerix.take(self._value, cellToCellIDs)
-            adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self._value) > 0)
-            masksum = numerix.sum(numerix.logical_not(MA.getmask(adjInterfaceValues)), 0)
-            tmp = MA.logical_and(masksum == 4, self._value > 0)
-            self._value = MA.where(tmp, -1, self._value)
-
-        adjVals = numerix.take(self._value, cellToCellIDs)
-        adjInterfaceValues = MA.masked_array(adjVals, mask = (adjVals * self._value) > 0)
-        dAP = self.mesh._cellToCellDistances
-        distances = abs(self._value * dAP / (self._value - adjInterfaceValues))
-        indices = MA.argsort(distances, 0)
-        sign = (self._value > 0) * 2 - 1
-
-        s = distances[indices[0], numerix.arange(indices.shape[1])]
-
-        if self.mesh.dim == 2:
-
-            t = distances[indices[1], numerix.arange(indices.shape[1])]
-            u = distances[indices[2], numerix.arange(indices.shape[1])]
-
-            if indices.shape[1] > 0:
-                ns = self.cellNormals[..., indices[0], numerix.arange(indices.shape[1])]
-                nt = self.cellNormals[..., indices[1], numerix.arange(indices.shape[1])]
-            else:
-                ns = MA.zeros(self.cellNormals.shape[:-1] + (0,), 'l')
-                nt = MA.zeros(self.cellNormals.shape[:-1] + (0,), 'l')
-
-            signedDistance = MA.where(MA.getmask(s),
-                                      self._value,
-                                      MA.where(MA.getmask(t),
-                                               sign * s,
-                                               MA.where(abs(numerix.dot(ns,nt)) < 0.9,
-                                                        sign * s * t / MA.sqrt(s**2 + t**2),
-                                                        MA.where(MA.getmask(u),
-                                                                 sign * s,
-                                                                 sign * s * u / MA.sqrt(s**2 + u**2)
-                                                                 )
-                                                        )
-                                               )
-                                      )
-        else:
-            signedDistance = MA.where(MA.getmask(s),
-                                      self._value,
-                                      sign * s)
-            
-
-        self._value = signedDistance
-
-        ## calculate interface flag
-        masksum = numerix.sum(numerix.logical_not(MA.getmask(distances)), 0)
-        interfaceFlag = (masksum > 0).astype('l')
-
-        ## spread the extensionVariable to the whole interface
-        flag = True
-        if extensionVariable is None:
-            extensionVariable = numerix.zeros(self.mesh.numberOfCells, 'd')
-            flag = False
-
-        positiveInterfaceFlag = numerix.where(self._value > 0, interfaceFlag, 0)
-        negativeInterfaceIDs = numerix.nonzero(numerix.where(self._value < 0, interfaceFlag, 0))[0]
-
-        for id in negativeInterfaceIDs:
-            tmp, extensionVariable[...,id] = self._calcTrialValue(id, positiveInterfaceFlag, extensionVariable)
-
-        if flag:
-            self._value = self.tmpValue.copy()
-
-        ## evaluate the trialIDs
-        adjInterfaceFlag = numerix.take(interfaceFlag, cellToCellIDs)
-        hasAdjInterface = (numerix.sum(MA.filled(adjInterfaceFlag, 0), 0) > 0).astype('l')
-
-        trialFlag = numerix.logical_and(numerix.logical_not(interfaceFlag), hasAdjInterface).astype('l')
-
-        trialIDs = list(numerix.nonzero(trialFlag)[0])
-        evaluatedFlag = interfaceFlag
-
-
-        for id in trialIDs:
-            self._value[...,id], extensionVariable[id] = self._calcTrialValue(id, evaluatedFlag, extensionVariable)
-
-        while len(trialIDs):
-
-            id = trialIDs[numerix.argmin(abs(numerix.take(self._value, trialIDs)))]
-
-            if abs(self._value[...,id]) > narrowBandWidth / 2:
-                break
-
-            trialIDs.remove(id)
-            evaluatedFlag[...,id] = 1
-
-
-            for adjID in MA.filled(cellToCellIDs[...,id], -1):
-                if adjID != -1:
-                    if not evaluatedFlag[...,adjID]:
-                        self._value[...,adjID], extensionVariable[...,adjID] = self._calcTrialValue(adjID, evaluatedFlag, extensionVariable)
-                        if adjID not in trialIDs:
-                            trialIDs.append(adjID)
-
-        self._value = numerix.array(self._value)
-
-    def _calcTrialValue(self, id, evaluatedFlag, extensionVariable):
-        adjIDs = self.cellToCellIDs[...,id]
-        adjEvaluatedFlag = numerix.take(evaluatedFlag, adjIDs)
-        adjValues = numerix.take(self._value, adjIDs)
-        adjValues = numerix.where(adjEvaluatedFlag, adjValues, 1e+10)
-        try:
-            indices = numerix.argsort(abs(adjValues))
-        except TypeError:
-            # numpy 1.1 raises a TypeError when using argsort function
-            indices = abs(adjValues).argsort()
-        sign = (self._value[id] > 0) * 2 - 1
-        d0 = self.cellToCellDistances[indices[0], id]
-        v0 = self._value[..., adjIDs[indices[0]]]
-        e0 = extensionVariable[..., adjIDs[indices[0]]]
-
-        N = numerix.sum(adjEvaluatedFlag)
-
-        index0 = indices[0]
-        index1 = indices[1]
-        index2 = indices[self.mesh.dim]
-        
-        if N > 1:
-            n0 = self.cellNormals[..., index0, id]
-            n1 = self.cellNormals[..., index1, id]
-
-            if self.mesh.dim == 2:
-                cross = (n0[0] * n1[1] - n0[1] * n1[0])
-            else:
-                cross = 0.0
-                
-            if abs(cross) < 0.1:
-                if N == 2:
-                    N = 1
-                elif N == 3:
-                    index1 = index2
-
-        if N == 0:
-            raise Exception 
-        elif N == 1:
-            return v0 + sign * d0, e0
-        else:
-            d1 = self.cellToCellDistances[index1, id]
-            n0 = self.cellNormals[..., index0, id]
-            n1 = self.cellNormals[..., index1, id]
-            v1 = self._value[..., adjIDs[index1]]
-            
-            crossProd = d0 * d1 * (n0[0] * n1[1] - n0[1] * n1[0])
-            dotProd = d0 * d1 * numerix.dot(n0, n1)
-            dsq = d0**2 + d1**2 - 2 * dotProd
-            
-            top = -v0 * (dotProd - d1**2) - v1 * (dotProd - d0**2)
-            sqrt = crossProd**2 *(dsq - (v0 - v1)**2)
-            sqrt = numerix.sqrt(max(sqrt, 0))
-
-
-
-            dis = (top + sign * sqrt) / dsq
-
-            ## extension variable
-
-            e1 = extensionVariable[..., adjIDs[index1]]
-            a0 = self.cellAreas[index0, id]
-            a1 = self.cellAreas[index1, id]
-
-            if self._value[id] > 0:
-                phi = max(dis, 0)
-            else:
-                phi = min(dis, 0)
-
-            n0grad = a0 * abs(v0 - phi) / d0
-            n1grad = a1 * abs(v1 - phi) / d1
-            
-            return dis, (e0 * n0grad + e1 * n1grad) / (n0grad + n1grad)
 
     @getsetDeprecated
     def getCellInterfaceAreas(self):
@@ -725,7 +551,6 @@ class DistanceVariable(CellVariable):
         faceGrad = numerix.array(faceGrad)
 
         ## set faceGrad zero on exteriorFaces
-        exteriorFaces = self.exteriorFaces.value
         if len(self.exteriorFaces.value) > 0:
             faceGrad[..., self.exteriorFaces.value] = 0.
         
