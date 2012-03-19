@@ -68,5 +68,5 @@ class ExplicitDiffusionTerm(_AbstractDiffusionTerm):
         return mesh._faceCellToCellNormals
 
     def _treatMeshAsOrthogonal(self, mesh):        
-        return mesh._isOrthogonal()
+        return mesh._isOrthogonal
 

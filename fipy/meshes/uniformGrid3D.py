@@ -33,17 +33,16 @@
  # ########################################################################
  ##
 
-from fipy.tools.numerix import MA
-
-from fipy.meshes.builders import _Grid3DBuilder
 from fipy.tools import numerix
-from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tools import parallel
 
-from fipy.meshes.builders import _UniformGrid3DBuilder
-from fipy.meshes.gridlike import _Gridlike3D
 from fipy.meshes.uniformGrid import UniformGrid
+from fipy.meshes.builders import _UniformGrid3DBuilder
+from fipy.meshes.builders import _Grid3DBuilder
+from fipy.meshes.representations.gridRepresentation import _Grid3DRepresentation
+from fipy.meshes.topologies.gridTopology import _Grid3DTopology
 
 __all__ = ["UniformGrid3D"]
 
@@ -66,7 +65,13 @@ class UniformGrid3D(UniformGrid):
     Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
     """
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, 
-                 origin = [[0], [0], [0]], overlap=2, communicator=parallel):
+                 origin = [[0], [0], [0]], overlap=2, communicator=parallel,
+                 _RepresentationClass=_Grid3DRepresentation,
+                 _TopologyClass=_Grid3DTopology):
+
+        super(UniformGrid3D, self).__init__(communicator=communicator,
+                                            _RepresentationClass=_RepresentationClass,
+                                            _TopologyClass=_TopologyClass)
 
         builder = _UniformGrid3DBuilder()
 
@@ -107,24 +112,6 @@ class UniformGrid3D(UniformGrid):
          self.numberOfLayers,
          self.origin) = builder.gridData
         
-        self.communicator = communicator
-              
-    def __getstate__(self):
-        return _Gridlike3D.__getstate__(self)
-
-    def __setstate__(self, dict):
-        return _Gridlike3D.__setstate__(self, dict)
-
-    def __repr__(self):
-        return _Gridlike3D.__repr__(self)
-
-    def _isOrthogonal(self):
-        return _Gridlike3D._isOrthogonal(self)
-
-    @property
-    def _concatenatedClass(self):
-        return _Gridlike3D._concatenatedClass
-
     """
     Topology set and calc
     """
@@ -207,82 +194,6 @@ class UniformGrid3D(UniformGrid):
         cellToCellIDs = self._cellToCellIDs
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)     
                                                                                                 
-    @property
-    def _globalNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
-
-        E.g., would return [0, 1, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return _Gridlike3D._globalNonOverlappingCellIDs(self)
-
-    @property
-    def _globalOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return _Gridlike3D._globalOverlappingCellIDs(self)
-
-    @property
-    def _localNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 4 | 5 |
-        ------------------
-        | 0 | 1 || 1 | 2 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return _Gridlike3D._localNonOverlappingCellIDs(self)
-
-    @property
-    def _localOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 5 |   |
-        ------------------
-        | 0 | 1 || 2 |   |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return _Gridlike3D._localOverlappingCellIDs(self)
-
     """
     Geometry set and calc
     """

@@ -43,6 +43,9 @@ from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 
+from fipy.meshes.representations.abstractRepresentation import _AbstractRepresentation
+from fipy.meshes.topologies.abstractTopology import _AbstractTopology
+
 class MeshAdditionError(Exception):
     pass
  
@@ -51,8 +54,10 @@ class AbstractMesh(object):
     A class encapsulating all commonalities among meshes in FiPy.
     """
 
-    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial): 
-        pass
+    def __init__(self, communicator, _RepresentationClass=_AbstractRepresentation, _TopologyClass=_AbstractTopology): 
+        self.communicator = communicator
+        self.representation = _RepresentationClass(mesh=self)
+        self.topology = _TopologyClass(mesh=self)
 
     def _setTopology(self):
         raise NotImplementedError
@@ -60,17 +65,6 @@ class AbstractMesh(object):
     def _setGeometry(self):
         raise NotImplementedError
 
-    def exportToGmsh(self, filename):
-        """
-        Export this mesh to Gmsh's .msh format.
-
-        :Parameters:
-          - `filename`: A string indicating the path to which the mesh will be
-            output. Hopefully, this ends with '.msh'.
-        """
-        from fipy.meshes.gmshExport import GmshExporter
-        GmshExporter(self, filename).export()
-         
     """
     Scale business
     """
@@ -116,9 +110,10 @@ class AbstractMesh(object):
 
     exteriorFaces           = property(lambda s: s._exteriorFaces,
                                       _setExteriorFaces)
-    
+
+    @property
     def _isOrthogonal(self):
-        raise NotImplementedError
+        return self.topology._isOrthogonal
 
     """Geometry properties"""
 
@@ -548,7 +543,7 @@ class AbstractMesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.numberOfCells)
+        return self.topology._globalNonOverlappingCellIDs
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -567,7 +562,7 @@ class AbstractMesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.numberOfCells)
+        return self.topology._globalOverlappingCellIDs
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -586,7 +581,7 @@ class AbstractMesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.numberOfCells)
+        return self.topology._localNonOverlappingCellIDs
 
     @property
     def _localOverlappingCellIDs(self):
@@ -605,7 +600,7 @@ class AbstractMesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.numberOfCells)
+        return self.topology._localOverlappingCellIDs
 
     @property
     def _globalNonOverlappingFaceIDs(self):
@@ -626,7 +621,7 @@ class AbstractMesh(object):
                 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.numberOfFaces)
+        return self.topology._globalNonOverlappingFaceIDs
 
     @property
     def _globalOverlappingFaceIDs(self):
@@ -647,7 +642,7 @@ class AbstractMesh(object):
                 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.numberOfFaces)
+        return self.topology._globalOverlappingFaceIDs
 
     @property
     def _localNonOverlappingFaceIDs(self):
@@ -668,7 +663,7 @@ class AbstractMesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.numberOfFaces)
+        return self.topology._localNonOverlappingFaceIDs
 
     @property
     def _localOverlappingFaceIDs(self):
@@ -689,7 +684,7 @@ class AbstractMesh(object):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.numberOfFaces)
+        return self.topology._localOverlappingFaceIDs
 
     @property
     def facesLeft(self):
@@ -832,6 +827,10 @@ class AbstractMesh(object):
     """
     Special methods
     """
+    
+    @property
+    def _concatenatedClass(self):
+        return self.topology._concatenatedClass
 
     def __add__(self, other):
         """
@@ -939,7 +938,7 @@ class AbstractMesh(object):
         raise NotImplementedError
 
     __rmul__ = __mul__
-
+    
     def __sub__(self, other):
         """
         Tests.
@@ -964,7 +963,7 @@ class AbstractMesh(object):
         >>> from fipy import *
         >>> print (Grid1D(nx=1) / 2.).cellCenters
         [[ 0.25]]
-        >>> AbstractMesh(None, None, None) / 2.
+        >>> AbstractMesh(communicator=None) / 2.
         Traceback (most recent call last):
         ...
         NotImplementedError
@@ -973,10 +972,16 @@ class AbstractMesh(object):
         return self.__mul__(1 / other)
         
     __div__ = __truediv__
+    
+    def __getstate__(self):
+        return self.representation.getstate()
+
+    def __setstate__(self, state):
+        return state["_RepresentationClass"].setstate(self, state)
         
     def __repr__(self):
-        return "%s()" % self.__class__.__name__
-     
+        return self.representation.repr()
+
     @property
     def _VTKCellType(self):
         try:
@@ -1061,7 +1066,56 @@ class AbstractMesh(object):
                                        numerix.zeros((3 - self.dim,) 
                                                      + arr.shape[1:], 'l')))
             return arr.swapaxes(-2, -1)
-                                                                          
+              
+    def _makePeriodic(self):
+        raise NotImplementedError
+
+    @property
+    def _maxFacesPerCell(self):
+        return self.cellFaceIDs.shape[0]
+
+    @property
+    def _facesPerCell(self):
+        if numerix.MA.is_masked(self.cellFaceIDs):
+            facesPerCell = (~nx.MA.getmask(self.cellFaceIDs)).sum(axis=0)
+        else:
+            facesPerCell = numerix.empty((self.numberOfCells,), dtype=int)
+            facesPerCell[:] = self._maxFacesPerCell
+        return facesPerCell
+
+    @property
+    def _cellFaceVertices(self):
+        return numerix.take(self.faceVertexIDs, self.cellFaceIDs, axis=1)
+        
+    @property
+    def _unsortedNodesPerFace(self):
+        cellFaceVertices = self._cellFaceVertices
+        if numerix.MA.is_masked(cellFaceVertices):
+            nodesPerFace = (~cellFaceVertices.mask).sum(axis=0)
+        else:
+            nodesPerFace = numerix.empty(cellFaceVertices.shape[1:], dtype=int)
+            nodesPerFace[:] = self.faceVertexIDs.shape[0]
+            
+        return nodesPerFace
+        
+    @property
+    def _nodesPerFace(self):
+        return numerix.sort(self._unsortedNodesPerFace, axis=0)[::-1]
+        
+    @property
+    def _faceOrder(self):
+        # note: argsort does not work as documented:
+        #   Array of indices that sort a along the specified axis. In other words, a[index_array] yields a sorted a.
+        # No, it's not.
+        # We need both the sorted values and the sort order.
+        return numerix.argsort(self._unsortedNodesPerFace, axis=0)[::-1]
+        
+    @property
+    def _cellTopology(self):
+        """return a map of the topology of each cell"""
+        return self.topology._cellTopology
+        
+
     """
     Deprecated getters/setters
     """
@@ -1337,9 +1391,6 @@ class AbstractMesh(object):
         else:
             return None
 
-    def _makePeriodic(self):
-        raise NotImplementedError
-     
 def _madmin(x):
     if len(x) == 0:
         return 0

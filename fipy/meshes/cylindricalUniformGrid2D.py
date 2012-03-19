@@ -49,10 +49,11 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     appropriate for axial symmetry.
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
-                 overlap=2, communicator=parallel):
+                 overlap=2, communicator=parallel, *args, **kwargs):
         super(CylindricalUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny, 
-                               origin=origin, overlap=overlap, 
-                               communicator=communicator)
+                                                       origin=origin, overlap=overlap, 
+                                                       communicator=communicator, 
+                                                       *args, **kwargs)
 
     def _translate(self, vector):
         return CylindricalUniformGrid2D(dx = self.args['dx'], nx = self.args['nx'], 

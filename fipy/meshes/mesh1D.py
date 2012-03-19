@@ -45,13 +45,19 @@
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
+from fipy.tools import serial
 
 from fipy.meshes.mesh import Mesh
+from fipy.meshes.representations.meshRepresentation import _MeshRepresentation
+from fipy.meshes.topologies.meshTopology import _Mesh1DTopology
 
 __all__ = ["Mesh1D"]
 
 class Mesh1D(Mesh):
-    
+    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial, _RepresentationClass=_MeshRepresentation, _TopologyClass=_Mesh1DTopology):
+        super(Mesh1D, self).__init__(vertexCoords=vertexCoords, faceVertexIDs=faceVertexIDs, cellFaceIDs=cellFaceIDs, communicator=communicator, 
+                                     _RepresentationClass=_RepresentationClass, _TopologyClass=_TopologyClass)
+
     def _calcScaleArea(self):
         return 1.
 
@@ -84,13 +90,6 @@ class Mesh1D(Mesh):
         newmesh = Mesh1D(newCoords, numerix.array(self.faceVertexIDs), numerix.array(self.cellFaceIDs))
         return newmesh
 
-    @property
-    def _concatenatedClass(self):
-        return Mesh1D
-
-    def _isOrthogonal(self):
-        return True
-        
     @property
     def _VTKCellType(self):
         try:

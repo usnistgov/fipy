@@ -40,6 +40,8 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.abstractMesh import AbstractMesh
+from fipy.meshes.representations.meshRepresentation import _MeshRepresentation
+from fipy.meshes.topologies.meshTopology import _MeshTopology
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
@@ -59,13 +61,16 @@ class Mesh(AbstractMesh):
         This is built for a non-mixed element mesh.
     """
 
-    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial):
+    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial, _RepresentationClass=_MeshRepresentation, _TopologyClass=_MeshTopology):
+        super(Mesh, self).__init__(communicator=communicator,
+                                   _RepresentationClass=_RepresentationClass,
+                                   _TopologyClass=_TopologyClass)
+
         """faceVertexIds and cellFacesIds must be padded with minus ones."""
-         
+                                   
         self.vertexCoords = vertexCoords
         self.faceVertexIDs = MA.masked_values(faceVertexIDs, -1)
         self.cellFaceIDs = MA.masked_values(cellFaceIDs, -1)
-        self.communicator = communicator
 
         self.dim = self.vertexCoords.shape[0]
 
@@ -144,9 +149,6 @@ class Mesh(AbstractMesh):
         cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
         return MA.where(MA.getmaskarray(self._cellToCellIDs), cellIDs, 
                         self._cellToCellIDs)
-
-    def _isOrthogonal(self):
-        return False          
 
     """
     Geometry set and calc
@@ -377,10 +379,6 @@ class Mesh(AbstractMesh):
     def _calcFaceAspectRatios(self):
         return self._scaledFaceAreas / self._cellDistances
     
-    @property
-    def _concatenatedClass(self):
-        return Mesh
-
     def __mul__(self, factor):
         """
         Dilate a `Mesh` by `factor`.
@@ -567,21 +565,7 @@ class Mesh(AbstractMesh):
            
         """
         return numerix.nearest(data=self.cellCenters.globalValue, points=points)
-        
 
-    """pickling"""
-
-    def __getstate__(self):
-        dict = {
-            'vertexCoords' : self.vertexCoords *  self.scale['length'],            
-            'faceVertexIDs' : self.faceVertexIDs,
-            'cellFaceIDs' : self.cellFaceIDs }
-        return dict
-
-    def __setstate__(self, dict):
-        Mesh.__init__(self, **dict)
-##        self.__init__(dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
-     
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

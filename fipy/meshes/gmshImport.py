@@ -51,8 +51,10 @@ from fipy.tools import parallel
 from fipy.tools import serial
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tests.doctestPlus import register_skipper
+
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
+from fipy.meshes.topologies.meshTopology import _MeshTopology
 
 __all__ = ["openMSHFile", "openPOSFile", 
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D", 
@@ -1376,6 +1378,88 @@ class _ElementData(object):
         self.physicalEntities.append(physicalEntity)
         self.geometricalEntities.append(geometricalEntity)
 
+class _GmshTopology(_MeshTopology):
+    
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        return nx.array(self.mesh.cellGlobalIDs)
+
+    @property
+    def _globalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        return nx.array(self.mesh.cellGlobalIDs + self.mesh.gCellGlobalIDs)
+
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(len(self.mesh.cellGlobalIDs))
+
+    @property
+    def _localOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(len(self.mesh.cellGlobalIDs) 
+                         + len(self.mesh.gCellGlobalIDs))
+                         
+
+    
+                   
 class Gmsh2D(Mesh2D):
     """Construct a 2D Mesh using Gmsh
     
@@ -1524,7 +1608,8 @@ class Gmsh2D(Mesh2D):
         Mesh2D.__init__(self, vertexCoords=verts,
                               faceVertexIDs=faces,
                               cellFaceIDs=cells,
-                              communicator=communicator)
+                              communicator=communicator,
+                              _TopologyClass=_GmshTopology)
                    
         (self.physicalCellMap,
          self.geometricalCellMap,
@@ -1537,106 +1622,13 @@ class Gmsh2D(Mesh2D):
         
         parprint("Exiting Gmsh2D")
 
-    def __setstate__(self, dict):
-        Mesh2D.__init__(self, **dict)
+    def __setstate__(self, state):
+        super(Gmsh2D, self).__setstate__(state)
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
         self.communicator = serial
         self.mshFile = None
     
-    @getsetDeprecated
-    def _getGlobalNonOverlappingCellIDs(self):
-        return self._globalNonOverlappingCellIDs
-
-    @property
-    def _globalNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
-
-        E.g., would return [0, 1, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """ 
-        return nx.array(self.cellGlobalIDs)
-
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
-
-    @property
-    def _globalOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """ 
-        return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingCellIDs(self):
-        return self._localNonOverlappingCellIDs
-
-    @property
-    def _localNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 4 | 5 |
-        ------------------
-        | 0 | 1 || 1 | 2 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return nx.arange(len(self.cellGlobalIDs))
-
-    @getsetDeprecated
-    def _getLocalOverlappingCellIDs(self):
-        return self._localOverlappingCellIDs
-
-    @property
-    def _localOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 5 |   |
-        ------------------
-        | 0 | 1 || 2 |   |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return nx.arange(len(self.cellGlobalIDs) 
-                         + len(self.gCellGlobalIDs))
-                         
     def _test(self):
         """
         First, we'll test Gmsh2D on a small circle with triangular
@@ -1808,7 +1800,8 @@ class Gmsh3D(Mesh):
         Mesh.__init__(self, vertexCoords=verts,
                             faceVertexIDs=faces,
                             cellFaceIDs=cells,
-                            communicator=communicator)
+                            communicator=communicator,
+                            _TopologyClass=_GmshTopology)
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
@@ -1822,105 +1815,12 @@ class Gmsh3D(Mesh):
         
         del self.mshFile
 
-    def __setstate__(self, dict):
-        Mesh.__init__(self, **dict)
+    def __setstate__(self, state):
+        super(Gmsh3D, self).__setstate__(state)
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
         self.communicator = serial
         self.mshFile = None
-
-    @getsetDeprecated
-    def _getGlobalNonOverlappingCellIDs(self):
-        return self._globalNonOverlappingCellIDs
-
-    @property
-    def _globalNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
-
-        E.g., would return [0, 1, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """ 
-        return nx.array(self.cellGlobalIDs)
-
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
-
-    @property
-    def _globalOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """ 
-        return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingCellIDs(self):
-        return self._localNonOverlappingCellIDs
-
-    @property
-    def _localNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 4 | 5 |
-        ------------------
-        | 0 | 1 || 1 | 2 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return nx.arange(len(self.cellGlobalIDs))
-
-    @getsetDeprecated
-    def _getLocalOverlappingCellIDs(self):
-        return self._localOverlappingCellIDs
-
-    @property
-    def _localOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 5 |   |
-        ------------------
-        | 0 | 1 || 2 |   |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return nx.arange(len(self.cellGlobalIDs) 
-                         + len(self.gCellGlobalIDs))
 
     def _test(self):
         """

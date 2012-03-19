@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "abstractMesh.py"
+ #  FILE: "gridTopology.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -37,60 +37,29 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-from fipy.tools import serial
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
-from fipy.tools.numerix import MA
 
 from fipy.meshes.mesh1D import Mesh1D
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.mesh import Mesh
- 
-class _Gridlike(object):
 
-    @staticmethod
-    def __getstate__(grid):
-        """
-        Used internally to collect the necessary information to ``pickle`` the 
-        `Grid2D` to persistent storage.
-        """
-        return grid.args
+from fipy.meshes.topologies.abstractTopology import _AbstractTopology
 
-    @staticmethod
-    def __setstate__(grid, dict):
-        """
-        Used internally to create a new `Grid2D` from ``pickled`` 
-        persistent storage.
-        """
-        grid.__init__(**dict)
+class _GridTopology(_AbstractTopology):
 
-    @staticmethod
-    def _isOrthogonal(grid):
+    @property
+    def _isOrthogonal(self):
         return True
 
-    @staticmethod
-    def repr_(grid, dns):
-        dnstr = []
-        for d, n in dns:
-            dnstr.append(d + "=" + str(grid.args[d]))
-            if grid.args[n] is not None:
-                dnstr.append(n + "=" + str(grid.args[n]))
-
-        return "%s(%s)" % (grid.__class__.__name__, ", ".join(dnstr))
-                               
-class _Gridlike1D(_Gridlike):
-
-    @staticmethod
-    def __repr__(grid):
-        return _Gridlike.repr_(grid, [("dx", "nx")])
+class _Grid1DTopology(_GridTopology):
 
     _concatenatedClass = Mesh1D
                                                             
-    @staticmethod
-    def _globalNonOverlappingCellIDs(grid):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """Return the IDs of the local mesh in the context of the global parallel mesh. 
+        
+        Does not include the IDs of boundary cells.
 
         E.g., would return [0, 1] for mesh A
 
@@ -102,14 +71,14 @@ class _Gridlike1D(_Gridlike):
         .. note:: Trivial except for parallel meshes
         """
 
-        return numerix.arange(grid.offset + grid.overlap['left'], 
-                              grid.offset + grid.nx - grid.overlap['right'])
+        return numerix.arange(self.mesh.offset + self.mesh.overlap['left'], 
+                              self.mesh.offset + self.mesh.nx - self.mesh.overlap['right'])
 
-    @staticmethod
-    def _globalOverlappingCellIDs(grid):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
+    @property
+    def _globalOverlappingCellIDs(self):
+        """Return the IDs of the local mesh in the context of the global parallel mesh. 
+        
+        Includes the IDs of boundary cells.
         
         E.g., would return [0, 1, 2] for mesh A
 
@@ -120,12 +89,12 @@ class _Gridlike1D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(grid.offset, grid.offset + grid.nx)
+        return numerix.arange(self.mesh.offset, self.mesh.offset + self.mesh.nx)
 
-    @staticmethod
-    def _localNonOverlappingCellIDs(grid):
-        """
-        Return the IDs of the local mesh in isolation. 
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """Return the IDs of the local mesh in isolation. 
+        
         Does not include the IDs of boundary cells.
         
         E.g., would return [0, 1] for mesh A
@@ -137,13 +106,13 @@ class _Gridlike1D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(grid.overlap['left'], 
-                              grid.nx - grid.overlap['right'])
+        return numerix.arange(self.mesh.overlap['left'], 
+                              self.mesh.nx - self.mesh.overlap['right'])
 
-    @staticmethod
-    def _localOverlappingCellIDs(grid):
-        """
-        Return the IDs of the local mesh in isolation. 
+    @property
+    def _localOverlappingCellIDs(self):
+        """Return the IDs of the local mesh in isolation. 
+        
         Includes the IDs of boundary cells.
         
         E.g., would return [0, 1, 2] for mesh A
@@ -155,13 +124,13 @@ class _Gridlike1D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(0, grid.nx)
+        return numerix.arange(0, self.mesh.nx)
 
-    @staticmethod
-    def _globalNonOverlappingFaceIDs(grid):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
+    @property
+    def _globalNonOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in the context of the global parallel mesh. 
+        
+        Does not include the IDs of faces of boundary cells.
 
         E.g., would return [0, 1, 2] for mesh A
 
@@ -172,14 +141,14 @@ class _Gridlike1D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(grid.offset + grid.overlap['left'], 
-                              grid.offset + grid.numberOfFaces - grid.overlap['right'])
+        return numerix.arange(self.mesh.offset + self.mesh.overlap['left'], 
+                              self.mesh.offset + self.mesh.numberOfFaces - self.mesh.overlap['right'])
 
-    @staticmethod
-    def _globalOverlappingFaceIDs(grid):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
+    @property
+    def _globalOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in the context of the global parallel mesh. 
+        
+        Includes the IDs of faces of boundary cells.
         
         E.g., would return [0, 1, 2, 3] for mesh A
 
@@ -190,13 +159,13 @@ class _Gridlike1D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(grid.offset, grid.offset + grid.numberOfFaces)
+        return numerix.arange(self.mesh.offset, self.mesh.offset + self.mesh.numberOfFaces)
 
-    @staticmethod
-    def _localNonOverlappingFaceIDs(grid):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
+    @property
+    def _localNonOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in isolation. 
+        
+        Does not include the IDs of faces of boundary cells.
         
         E.g., would return [0, 1, 2] for mesh A
 
@@ -207,14 +176,14 @@ class _Gridlike1D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(grid.overlap['left'], 
-                              grid.numberOfFaces - grid.overlap['right'])
+        return numerix.arange(self.mesh.overlap['left'], 
+                              self.mesh.numberOfFaces - self.mesh.overlap['right'])
 
-    @staticmethod
-    def _localOverlappingFaceIDs(grid):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
+    @property
+    def _localOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in isolation. 
+        
+        Includes the IDs of faces of boundary cells.
         
         E.g., would return [0, 1, 2, 3] for mesh A
 
@@ -225,21 +194,25 @@ class _Gridlike1D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(0, grid.numberOfFaces)
+        return numerix.arange(0, self.mesh.numberOfFaces)
      
-class _Gridlike2D(_Gridlike):
+    @property
+    def _cellTopology(self):
+        """return a map of the topology of each cell of grid"""
+        cellTopology = numerix.empty((self.mesh.numberOfCells,), dtype=numerix.ubyte)
+        cellTopology[:] = self._elementTopology["line"]
+        
+        return cellTopology
 
-    @staticmethod
-    def __repr__(grid):
-        return _Gridlike.repr_(grid, [("dx", "nx"), ("dy", "ny")])
-             
+class _Grid2DTopology(_GridTopology):
+
     _concatenatedClass = Mesh2D
      
-    @staticmethod
-    def _globalNonOverlappingCellIDs(grid):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """Return the IDs of the local mesh in the context of the global parallel mesh. 
+        
+        Does not include the IDs of boundary cells.
 
         E.g., would return [0, 1] for mesh A
 
@@ -253,14 +226,14 @@ class _Gridlike2D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange((grid.offset[1] + grid.overlap['bottom']) * grid.nx, 
-                              (grid.offset[1] + grid.ny - grid.overlap['top']) * grid.nx)
+        return numerix.arange((self.mesh.offset[1] + self.mesh.overlap['bottom']) * self.mesh.nx, 
+                              (self.mesh.offset[1] + self.mesh.ny - self.mesh.overlap['top']) * self.mesh.nx)
 
-    @staticmethod
-    def _globalOverlappingCellIDs(grid):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
+    @property
+    def _globalOverlappingCellIDs(self):
+        """Return the IDs of the local mesh in the context of the global parallel mesh. 
+        
+        Includes the IDs of boundary cells.
         
         E.g., would return [0, 1, 2, 3] for mesh A
 
@@ -274,12 +247,12 @@ class _Gridlike2D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(grid.offset[1] * grid.nx, (grid.offset[1] + grid.ny) * grid.nx)
+        return numerix.arange(self.mesh.offset[1] * self.mesh.nx, (self.mesh.offset[1] + self.mesh.ny) * self.mesh.nx)
 
-    @staticmethod
-    def _localNonOverlappingCellIDs(grid):
-        """
-        Return the IDs of the local mesh in isolation. 
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """Return the IDs of the local mesh in isolation. 
+        
         Does not include the IDs of boundary cells.
         
         E.g., would return [0, 1] for mesh A
@@ -294,13 +267,13 @@ class _Gridlike2D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(grid.overlap['bottom'] * grid.nx, 
-                              (grid.ny - grid.overlap['top']) * grid.nx)
+        return numerix.arange(self.mesh.overlap['bottom'] * self.mesh.nx, 
+                              (self.mesh.ny - self.mesh.overlap['top']) * self.mesh.nx)
 
-    @staticmethod
-    def _localOverlappingCellIDs(grid):
-        """
-        Return the IDs of the local mesh in isolation. 
+    @property
+    def _localOverlappingCellIDs(self):
+        """Return the IDs of the local mesh in isolation. 
+        
         Includes the IDs of boundary cells.
         
         E.g., would return [0, 1, 2, 3] for mesh A
@@ -315,29 +288,34 @@ class _Gridlike2D(_Gridlike):
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(0, grid.ny * grid.nx)
+        return numerix.arange(0, self.mesh.ny * self.mesh.nx)
+        
+    @property
+    def _cellTopology(self):
+        """return a map of the topology of each cell of grid"""
+        cellTopology = numerix.empty((self.mesh.numberOfCells,), dtype=numerix.ubyte)
+        cellTopology[:] = self.mesh._elementTopology["pixel"]
+        
+        return cellTopology
 
-class _Gridlike3D(_Gridlike):
- 
-    @staticmethod
-    def __repr__(grid):
-        return _Gridlike.repr_(grid, [("dx", "nx"), ("dy", "ny"), ("dz", "nz")])
+
+class _Grid3DTopology(_GridTopology):
  
     _concatenatedClass = Mesh
      
-    @staticmethod
-    def _globalNonOverlappingCellIDs(grid):
+    @property
+    def _globalNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Does not include the IDs of boundary cells.
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange((grid.offset[2] + grid.overlap['front']) * grid.nx * grid.ny, 
-                              (grid.offset[2] + grid.nz - grid.overlap['back']) * grid.nx * grid.ny)
+        return numerix.arange((self.mesh.offset[2] + self.mesh.overlap['front']) * self.mesh.nx * self.mesh.ny, 
+                              (self.mesh.offset[2] + self.mesh.nz - self.mesh.overlap['back']) * self.mesh.nx * self.mesh.ny)
 
-    @staticmethod
-    def _globalOverlappingCellIDs(grid):
+    @property
+    def _globalOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in the context of the
         global parallel mesh. Includes the IDs of boundary cells.
@@ -345,27 +323,40 @@ class _Gridlike3D(_Gridlike):
         .. note:: Trivial except for parallel meshes
         """
         
-        return numerix.arange(grid.offset[2] * grid.nx * grid.ny, 
-                              (grid.offset[2] + grid.nz) * grid.nx * grid.ny)
+        return numerix.arange(self.mesh.offset[2] * self.mesh.nx * self.mesh.ny, 
+                              (self.mesh.offset[2] + self.mesh.nz) * self.mesh.nx * self.mesh.ny)
 
-    @staticmethod
-    def _localNonOverlappingCellIDs(grid):
+    @property
+    def _localNonOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Does not include the IDs of boundary cells.
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(grid.overlap['front'] * grid.nx * grid.ny, 
-                              (grid.nz - grid.overlap['back']) * grid.nx * grid.ny)
+        return numerix.arange(self.mesh.overlap['front'] * self.mesh.nx * self.mesh.ny, 
+                              (self.mesh.nz - self.mesh.overlap['back']) * self.mesh.nx * self.mesh.ny)
 
-    @staticmethod
-    def _localOverlappingCellIDs(grid):
+    @property
+    def _localOverlappingCellIDs(self):
         """
         Return the IDs of the local mesh in isolation. 
         Includes the IDs of boundary cells.
         
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(0, grid.ny * grid.nx * grid.nz)
+        return numerix.arange(0, self.mesh.ny * self.mesh.nx * self.mesh.nz)
      
+    @property
+    def _cellTopology(self):
+        """return a map of the topology of each cell of grid"""
+        cellTopology = numerix.empty((self.mesh.numberOfCells,), dtype=numerix.ubyte)
+        cellTopology[:] = self._elementTopology["voxel"]
+        
+        return cellTopology
+
+class _PeriodicGrid1DTopology(_Grid1DTopology):
+    
+    @property
+    def _globalOverlappingCellIDs(self):
+        return super(_PeriodicGrid1DTopology, self)._globalOverlappingCellIDs % self.mesh.args['nx']
