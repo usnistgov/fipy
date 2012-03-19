@@ -69,7 +69,7 @@ q.constrain(0, [X == -10, X == -1])
 
 Ax = CellVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
 
-eqn = TransientTerm() + RoeConvectionTerm(Ax) == 0
+eqn = TransientTerm() + SecondOrderRoeConvectionTerm(Ax) == 0
 
 if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer

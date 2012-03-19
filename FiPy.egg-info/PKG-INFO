@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: FiPy
-Version: 3.0-dev5153
+Version: 3.0-dev5160
 Summary: A finite volume PDE solver in Python
 Home-page: http://www.ctcms.nist.gov/fipy/
 Author: Jonathan Guyer, Daniel Wheeler, & Jim Warren

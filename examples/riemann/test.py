@@ -36,6 +36,7 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
                                        'acoustics',
+                                       'rotation',  
                                    ), 
                                    base = __name__)
     
