@@ -120,6 +120,7 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/cahnHilliard/index.txt',
                         'examples/flow/index.txt',
                         'examples/reactiveWetting/index.txt',
+                        'examples/riemann/index.txt',
                         'examples/updating/index.txt']
                         
 autodoc_member_order = 'alphabetical'

@@ -143,7 +143,8 @@ class AbstractMesh(object):
         >>> print Grid1D(nx=2).x
         [ 0.5  1.5]
         """
-        return self.cellCenters[0]
+        
+        return tuple(self.cellCenters)[0]
     
     @property
     def y(self):
@@ -159,7 +160,7 @@ class AbstractMesh(object):
         AttributeError: 1D meshes do not have a "y" attribute.
         """
         if self.dim > 1:
-            return self.cellCenters[1]
+            return tuple(self.cellCenters)[1]
         else:
             raise AttributeError, '1D meshes do not have a "y" attribute.'
 
@@ -177,7 +178,7 @@ class AbstractMesh(object):
         AttributeError: 1D and 2D meshes do not have a "z" attribute.
         """
         if self.dim > 2:
-            return self.cellCenters[2]
+            return tuple(self.cellCenters)[2]
         else:
             raise AttributeError, '1D and 2D meshes do not have a "z" attribute.'
 

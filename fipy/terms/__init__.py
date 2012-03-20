@@ -39,6 +39,7 @@ from fipy.terms.hybridConvectionTerm import *
 from fipy.terms.powerLawConvectionTerm import *
 from fipy.terms.upwindConvectionTerm import *
 from fipy.terms.vanLeerConvectionTerm import *
+from fipy.terms.firstOrderRoeConvectionTerm import *
 from fipy.terms.roeConvectionTerm import *
 ConvectionTerm = PowerLawConvectionTerm
 
@@ -67,3 +68,4 @@ __all__.extend(powerLawConvectionTerm.__all__)
 __all__.extend(upwindConvectionTerm.__all__)
 __all__.extend(vanLeerConvectionTerm.__all__)
 __all__.extend(roeConvectionTerm.__all__)
+__all__.extend(firstOrderRoeConvectionTerm.__all__)

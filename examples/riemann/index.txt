@@ -6,6 +6,8 @@ Riemann Examples
    :toctree: generated
    :template: example.rst
 
+   examples.riemann.acoustics
    examples.riemann.rotation
+
 
 
