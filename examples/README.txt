@@ -67,6 +67,7 @@ please `contact us`_.
    cahnHilliard/index
    flow/index
    reactiveWetting/index
+   riemann/index
    updating/index
 
 
