@@ -84,6 +84,9 @@ def parprint(str):
 class GmshException(Exception):
     pass
     
+class MeshExportError(GmshException):
+    pass
+    
 def gmshVersion(communicator=parallel):
     """Determine the version of Gmsh.
     
@@ -426,32 +429,21 @@ class POSFile(GmshFile):
 
         vertexCoords = var.mesh.vertexCoords
         cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
-        faceOrder = nx.argsort(var.mesh._nodesPerFace, axis=0)[::-1]
+        faceOrder = nx.argsort(var.mesh._unsortedNodesPerFace, axis=0)[::-1]
+        faceOrientations = nx.take(var.mesh._rightHandOrientation, var.mesh.cellFaceIDs, axis=0)
 
-        for i in (cellTopology == t["triangle"]).nonzero()[0]:
-            triangle = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeTriangle(vertexCoords=vertexCoords, triangle=triangle, value=value[..., i])
-                                
-        for i in (cellTopology == t["quadrangle"]).nonzero()[0]:
-            quadrangle = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeQuadrangle(vertexCoords=vertexCoords, quadrangle=quadrangle, value=value[..., i])
-
-        for i in (cellTopology == t["tetrahedron"]).nonzero()[0]:
-            tetrahedron = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeTetrahedron(vertexCoords=vertexCoords, tetrahedron=tetrahedron, value=value[..., i])
-
-        for i in (cellTopology == t["hexahedron"]).nonzero()[0]:
-            hexahedron = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeHexahedron(vertexCoords=vertexCoords, hexahedron=hexahedron, value=value[..., i])
-
-        for  i in (cellTopology == t["prism"]).nonzero()[0]:
-            prism = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writePrism(vertexCoords=vertexCoords, prism=prism, value=value[..., i])
-
-        for i in (cellTopology == t["pyramid"]).nonzero()[0]:
-            pyramid = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writePyramid(vertexCoords=vertexCoords, pyramid=pyramid, value=value[..., i])
-
+        for shape, writeShape in (("triangle", self._writeTriangle),
+                                  ("quadrangle", self._writeQuadrangle),
+                                  ("tetrahedron", self._writeTetrahedron),
+                                  ("hexahedron", self._writeHexahedron),
+                                  ("prism", self._writePrism),
+                                  ("pyramid", self._writePyramid)):
+            for i in (cellTopology == t[shape]).nonzero()[0]:
+                writeShape(vertexCoords=vertexCoords, 
+                           cell=cellFaceVertices[..., faceOrder[..., i], i], 
+                           orientations=faceOrientations[faceOrder[..., i], i], 
+                           value=value[..., i])
+                                    
         self.fileobj.write("$EndView\n")
         
         
@@ -470,18 +462,18 @@ class POSFile(GmshFile):
     #           comp1-node2-time2 comp2-node2-time2 comp3-node2-time2
     #           comp1-node3-time2 comp2-node3-time2 comp3-node3-time2
     
-    def _writeTriangle(self, vertexCoords, triangle, value):
+    def _writeTriangle(self, vertexCoords, cell, orientations, value):
         # triangle is defined by one face and the remaining point 
         # from either of the other faces
-        nodes = triangle[..., 0]
-        nodes = nx.concatenate((nodes, triangle[~nx.in1d(triangle[..., 1], nodes), 1]))
+        nodes = cell[..., 0]
+        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
                         
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-    def _writeQuadrangle(self, vertexCoords, quadrangle, value):
+    def _writeQuadrangle(self, vertexCoords, cell, orientations, value):
         # quadrangle is defined by one face and the opposite face
-        face0 = quadrangle[..., 0]
-        for face1 in quadrangle[..., 1:].swapaxes(0, 1):
+        face0 = cell[..., 0]
+        for face1 in cell[..., 1:].swapaxes(0, 1):
             if not nx.in1d(face1, face0).any():
                 break
                 
@@ -505,65 +497,47 @@ class POSFile(GmshFile):
          
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
         
-    def _writeTetrahedron(self, vertexCoords, tetrahedron, value):
+    def _writeTetrahedron(self, vertexCoords, cell, orientations, value):
         # tetrahedron is defined by one face and the remaining point 
         # from any of the other faces
-        nodes = tetrahedron[..., 0]
-        nodes = nx.concatenate((nodes, tetrahedron[~nx.in1d(tetrahedron[..., 1], nodes), 1]))
+        nodes = cell[..., 0][::orientations[0]]
+        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
                 
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-    def _reorientFace(self, vertexCoords, face0, face1):
-        # need to ensure face1 is oriented same way as face0
-        cross01 = nx.cross((vertexCoords[..., face0[1]] 
-                            - vertexCoords[..., face0[0]]),
-                           (vertexCoords[..., face0[2]] 
-                            - vertexCoords[..., face0[0]]))
-                    
-        cross10 = nx.cross((vertexCoords[..., face1[1]] 
-                            - vertexCoords[..., face1[0]]),
-                           (vertexCoords[..., face1[2]] 
-                            - vertexCoords[..., face1[0]]))
-                            
-        if nx.dot(cross01, cross10) < 0:
-            face1 = face1[::-1]
-            
-        return face1
-
-    def _writeHexahedron(self, vertexCoords, hexahedron, value):
+    def _writeHexahedron(self, vertexCoords, cell, orientations, value):
         # hexahedron is defined by one face and the opposite face
-        face0 = hexahedron[..., 0]
-        for face1 in hexahedron[..., 1:].swapaxes(0, 1):
+        face0 = cell[..., 0][::orientations[0]]
+        for i, face1 in enumerate(cell[..., 1:].swapaxes(0, 1)):
             if not nx.any([node in face1 for node in face0]):
+                face1 = face1[::orientations[i+1]]
                 break
-
-        face1 = self._reorientFace(vertexCoords=vertexCoords, face0=face0, face1=face1)
 
         nodes = nx.concatenate((face0, face1))
 
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-    def _writePrism(self, mesh, prism, value):
+    def _writePrism(self, vertexCoords, cell, orientations, value):
         # prism is defined by the two three-sided faces 
-        face0 = pyramid[..., 3]
-        face1 = pyramid[..., 4]
+        face0 = cell[..., 3][::orientations[3]]
+        face1 = cell[..., 4][::orientations[4]]
         
-        face1 = self._reorientFace(mesh=mesh, face0=face0, face1=face1)
-
         nodes = nx.concatenate((face0, face1))
 
-        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
 
-    def _writePyramid(self, mesh, pyramid, value):
+    def _writePyramid(self, vertexCoords, cell, orientations, value):
         # pyramid is defined by four-sided face and the remaining point 
         # from any of the other faces
-        nodes = pyramid[..., 0]
-        nodes = nx.concatenate((nodes, pyramid[~nx.in1d(pyramid[..., 1], nodes), 1]))
+        nodes = cell[..., 0][::orientations[0]]
+        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
                        
-        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
         
     def _writeNodesAndValues(self, vertexCoords, nodes, value):
+        # strip out masked values
+        nodes = nodes[nodes != -1]
         numNodes = len(nodes)
         data = []
         dim = vertexCoords.shape[0]
@@ -673,8 +647,6 @@ class MSHFile(GmshFile):
         `facesToVertices` and `cellsToFaces`.
         """
 
-        def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
-
         allShapes  = nx.unique(shapeTypes).tolist()
         maxFaces   = max([self.numFacesPerCell[x] for x in allShapes])
 
@@ -743,7 +715,7 @@ class MSHFile(GmshFile):
                
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
-        return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces), facesDict
+        return facesToVertices.swapaxes(0,1)[::-1], cellsToFaces.swapaxes(0,1), facesDict
 
     def _translateNodesToVertices(self, entitiesNodes, vertexMap):
         """Translates entitiesNodes from Gmsh node IDs to `vertexCoords` indices.
@@ -1031,7 +1003,7 @@ class MSHFile(GmshFile):
                                          nx.float64]:
                     continue
                 for vertexNum in faceVertexIDs[..., faceNum]:
-                    if vertexNum not in vertexList:
+                    if vertexNum not in vertexList and vertexNum is not nx.MA.masked:
                         vertexList.append(vertexNum)
                         
             if dimensions == 2:
@@ -1878,6 +1850,22 @@ class Gmsh3D(Mesh):
 
         >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3]) # doctest: +GMSH
         True
+        
+        Write tetrahedron, prism, and pyramid volumes out as a POS file
+        
+        >>> from fipy import CellVariable
+        >>> vol = CellVariable(mesh=tetPriPyr, value=tetPriPyr.cellVolumes, name="volume") # doctest: +GMSH
+        
+        >>> print tetPriPyr._cellTopology
+
+        >>> (f, posFile) = tempfile.mkstemp('.pos')
+        >>> file = openPOSFile(posFile, mode='w') # doctest: +GMSH
+        >>> file.write(vol) # doctest: +GMSH
+        >>> file.close() # doctest: +GMSH
+
+        >>> print posFile
+
+        >>> # os.remove(posFile)
         """
 
 class GmshGrid2D(Gmsh2D):
