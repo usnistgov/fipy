@@ -121,7 +121,7 @@ class DistanceVariable(CellVariable):
     the zero level set.
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2, communicator=serial)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1.))
     >>> var.calcDistanceFunction() #doctest: +LSMLIB
     >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
@@ -131,7 +131,7 @@ class DistanceVariable(CellVariable):
     >>> var.extendVariable(extensionVar, order=1) #doctest: +LSMLIB
     >>> print extensionVar.allclose((1.25, .5, 2, 1.25)) #doctest: +LSMLIB
     1
-    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3, communicator=serial)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1.,
     ...                                               1., 1., 1.,
     ...                                               1., 1., 1.))
