@@ -59,16 +59,17 @@ class _MeshTopology(_AbstractTopology):
         nodesPerFace = self.mesh._nodesPerFace
         
         def faceCountsMatch(targetCounts):
-            if len(targetCounts) > nodesPerFace.shape[1]:
+            if len(targetCounts) > nodesPerFace.shape[0]:
                 # pad nodesPerFace with zeros
-                paddedNodesPerFace = numerix.zeros((nodesPerFace.shape[0], len(targetCounts)), dtype=int)
-                paddedNodesPerFace[:, :nodesPerFace.shape[1]] = nodesPerFace
+                paddedNodesPerFace = numerix.zeros((len(targetCounts), nodesPerFace.shape[1]), dtype=int)
+                paddedNodesPerFace[:nodesPerFace.shape[0], :] = nodesPerFace
                 
-                paddedTargetCounts = targetCounts
+                paddedTargetCounts = numerix.array(targetCounts)[..., numerix.newaxis]
             else:
                 # pad target face node count with zeros
-                paddedTargetCounts = targetCounts + [0] * (self.mesh._maxFacesPerCell - len(targetCounts))
-                paddedTargetCounts = numerix.array(paddedTargetCounts)[..., numerix.newaxis]
+                paddedTargetCounts = numerix.concatenate((targetCounts,
+                                                          [0] * (self.mesh._maxFacesPerCell - len(targetCounts))))
+                paddedTargetCounts = paddedTargetCounts[..., numerix.newaxis]
                 
                 paddedNodesPerFace = nodesPerFace
                 

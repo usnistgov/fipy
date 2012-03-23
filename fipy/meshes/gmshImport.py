@@ -372,83 +372,30 @@ class POSFile(GmshFile):
         nb_scalar_pyramids2 = nb_vector_pyramids2 = nb_tensor_pyramids2 = 0
         nb_text2d = nb_text2d_chars = nb_text3d = nb_text3d_chars = 0
         
-        maxFacesPerCell = var.mesh.cellFaceIDs.shape[0]
-        if nx.MA.is_masked(var.mesh.cellFaceIDs):
-            facesPerCell = (~nx.MA.getmask(var.mesh.cellFaceIDs)).sum(axis=0)
-        else:
-            facesPerCell = nx.empty((var.mesh.numberOfCells,), dtype=int)
-            facesPerCell[:] = maxFacesPerCell
-            
-        cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
-        # argsort does not work as documented:
-        #   Array of indices that sort a along the specified axis. In other words, a[index_array] yields a sorted a.
-        # No, it's not.
-        # We need both the sorted values and the sort order.
-        if nx.MA.is_masked(cellFaceVertices):
-            nodesPerFace = (~cellFaceVertices.mask).sum(axis=0)
-        else:
-            nodesPerFace = nx.empty(cellFaceVertices.shape[1:], dtype=int)
-            nodesPerFace[:] = var.mesh.faceVertexIDs.shape[0]
-        faceOrder = nx.argsort(nodesPerFace, axis=0)[::-1]
-        nodesPerFace = nx.sort(nodesPerFace, axis=0)[::-1]
+        cellTopology = var.mesh._cellTopology
+        t = var.mesh.topology._elementTopology
         
-        if dimensions == 2:
-            triangles = (facesPerCell == 3)
-            quadrangles = (facesPerCell == 4)
-            tetrahedra = nx.array([False])
-            hexahedra = nx.array([False])
-            prisms = nx.array([False])
-            pyramids = nx.array([False])
-            if var.rank == 0:
-                nb_scalar_triangles = triangles.sum()
-                nb_scalar_quadrangles = quadrangles.sum()
-            elif var.rank == 1:
-                nb_vector_triangles = triangles.sum()
-                nb_vector_quadrangles = quadrangles.sum()
-            elif var.rank == 2:
-                nb_tensor_triangles = triangles.sum()
-                nb_tensor_quadrangles = quadrangles.sum()
-            else:
-                raise ValueError("rank must be 0, 1, or 2")
-        elif dimensions == 3:
-            def faceNodeCount(counts):
-                counts = counts + [0] * (maxFacesPerCell - len(counts))
-                return nx.array(counts)[..., nx.newaxis]
-                
-            triangles = nx.array([False])
-            quadrangles = nx.array([False])
-            tetrahedra = ((facesPerCell == 4) 
-                          & (nodesPerFace == faceNodeCount([3, 3, 3, 3])).any(axis=0))
-            hexahedra = ((facesPerCell == 6) 
-                         & (nodesPerFace == faceNodeCount([4, 4, 4, 4, 4, 4])).any(axis=0))
-            prisms = ((facesPerCell == 5) 
-                      & (nodesPerFace == faceNodeCount([4, 4, 4, 3, 3])).any(axis=0))
-            pyramids = ((facesPerCell == 5) 
-                        & (nodesPerFace == faceNodeCount([4, 3, 3, 3, 3])).any(axis=0))
-        else:
-            raise ValueError("dimensions must be 2 or 3")
-            
         if var.rank == 0:
-            nb_scalar_triangles = triangles.sum()
-            nb_scalar_quadrangles = quadrangles.sum()
-            nb_scalar_tetrahedra = tetrahedra.sum()
-            nb_scalar_hexahedra = hexahedra.sum()
-            nb_scalar_prisms = prisms.sum()
-            nb_scalar_pyramids = pyramids.sum()
+            nb_scalar_triangles = (cellTopology == t["triangle"]).sum()
+            nb_scalar_quadrangles = (cellTopology == t["quadrangle"]).sum()
+            nb_scalar_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
+            nb_scalar_hexahedra = (cellTopology == t["hexahedron"]).sum()
+            nb_scalar_prisms = (cellTopology == t["prism"]).sum()
+            nb_scalar_pyramids = (cellTopology == t["pyramid"]).sum()
         elif var.rank == 1:
-            nb_vector_triangles = triangles.sum()
-            nb_vector_quadrangles = quadrangles.sum()
-            nb_vector_tetrahedra = tetrahedra.sum()
-            nb_vector_hexahedra = hexahedra.sum()
-            nb_vector_prisms = prisms.sum()
-            nb_vector_pyramids = pyramids.sum()
+            nb_vector_triangles = (cellTopology == t["triangle"]).sum()
+            nb_vector_quadrangles = (cellTopology == t["quadrangle"]).sum()
+            nb_vector_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
+            nb_vector_hexahedra = (cellTopology == t["hexahedron"]).sum()
+            nb_vector_prisms = (cellTopology == t["prism"]).sum()
+            nb_vector_pyramids = (cellTopology == t["pyramid"]).sum()
         elif var.rank == 2:
-            nb_tensor_triangles = triangles.sum()
-            nb_tensor_quadrangles = quadrangles.sum()
-            nb_tensor_tetrahedra = tetrahedra.sum()
-            nb_tensor_hexahedra = hexahedra.sum()
-            nb_tensor_prisms = prisms.sum()
-            nb_tensor_pyramids = pyramids.sum()
+            nb_tensor_triangles = (cellTopology == t["triangle"]).sum()
+            nb_tensor_quadrangles = (cellTopology == t["quadrangle"]).sum()
+            nb_tensor_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
+            nb_tensor_hexahedra = (cellTopology == t["hexahedron"]).sum()
+            nb_tensor_prisms = (cellTopology == t["prism"]).sum()
+            nb_tensor_pyramids = (cellTopology == t["pyramid"]).sum()
         else:
             raise ValueError("rank must be 0, 1, or 2")
 
@@ -478,28 +425,30 @@ class POSFile(GmshFile):
         value = var.value
 
         vertexCoords = var.mesh.vertexCoords
-        
-        for i in triangles.nonzero()[0]:
+        cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
+        faceOrder = nx.argsort(var.mesh._nodesPerFace, axis=0)[::-1]
+
+        for i in (cellTopology == t["triangle"]).nonzero()[0]:
             triangle = cellFaceVertices[..., faceOrder[..., i], i]
             self._writeTriangle(vertexCoords=vertexCoords, triangle=triangle, value=value[..., i])
                                 
-        for i in quadrangles.nonzero()[0]:
+        for i in (cellTopology == t["quadrangle"]).nonzero()[0]:
             quadrangle = cellFaceVertices[..., faceOrder[..., i], i]
             self._writeQuadrangle(vertexCoords=vertexCoords, quadrangle=quadrangle, value=value[..., i])
 
-        for i in tetrahedra.nonzero()[0]:
+        for i in (cellTopology == t["tetrahedron"]).nonzero()[0]:
             tetrahedron = cellFaceVertices[..., faceOrder[..., i], i]
             self._writeTetrahedron(vertexCoords=vertexCoords, tetrahedron=tetrahedron, value=value[..., i])
 
-        for i in hexahedra.nonzero()[0]:
+        for i in (cellTopology == t["hexahedron"]).nonzero()[0]:
             hexahedron = cellFaceVertices[..., faceOrder[..., i], i]
             self._writeHexahedron(vertexCoords=vertexCoords, hexahedron=hexahedron, value=value[..., i])
 
-        for  i in prisms.nonzero()[0]:
+        for  i in (cellTopology == t["prism"]).nonzero()[0]:
             prism = cellFaceVertices[..., faceOrder[..., i], i]
             self._writePrism(vertexCoords=vertexCoords, prism=prism, value=value[..., i])
 
-        for i in pyramids.nonzero()[0]:
+        for i in (cellTopology == t["pyramid"]).nonzero()[0]:
             pyramid = cellFaceVertices[..., faceOrder[..., i], i]
             self._writePyramid(vertexCoords=vertexCoords, pyramid=pyramid, value=value[..., i])
 
