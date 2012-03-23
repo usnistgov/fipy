@@ -42,7 +42,6 @@ def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
             'metalIonSourceVariable',
             'metalIonDiffusionEquation',
-            'gapFillMesh',
         ), base = __name__)
     
 if __name__ == '__main__':

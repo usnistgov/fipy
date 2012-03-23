@@ -102,6 +102,7 @@ resemble the image below.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from gapFillMesh import TrenchMesh
 
 def runGold(faradaysConstant=9.6e4,
             consumptionRateConstant=2.6e+6,

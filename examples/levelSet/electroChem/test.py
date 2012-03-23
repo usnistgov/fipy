@@ -41,6 +41,7 @@ def _suite():
             'simpleTrenchSystem',
             'gold',
             'leveler',
+            'gapFillMesh',
         ), base = __name__)
     
 if __name__ == '__main__':

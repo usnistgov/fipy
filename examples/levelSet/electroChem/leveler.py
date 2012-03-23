@@ -211,6 +211,7 @@ can be obtained by running this example.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from gapFillMesh import TrenchMesh
 
 def runLeveler(kLeveler=0.018, 
                bulkLevelerConcentration=0.02, 
