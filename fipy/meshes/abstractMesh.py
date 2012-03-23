@@ -1077,7 +1077,7 @@ class AbstractMesh(object):
     @property
     def _facesPerCell(self):
         if numerix.MA.is_masked(self.cellFaceIDs):
-            facesPerCell = (~nx.MA.getmask(self.cellFaceIDs)).sum(axis=0)
+            facesPerCell = (~numerix.MA.getmask(self.cellFaceIDs)).sum(axis=0)
         else:
             facesPerCell = numerix.empty((self.numberOfCells,), dtype=int)
             facesPerCell[:] = self._maxFacesPerCell

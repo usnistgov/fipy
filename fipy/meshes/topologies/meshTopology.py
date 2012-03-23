@@ -74,7 +74,7 @@ class _MeshTopology(_AbstractTopology):
                 paddedNodesPerFace = nodesPerFace
                 
             return ((facesPerCell == len(targetCounts))
-                    & (paddedNodesPerFace == paddedTargetCounts).any(axis=0))
+                    & (paddedNodesPerFace == paddedTargetCounts).all(axis=0))
 
         cellTopology = numerix.empty((self.mesh.numberOfCells,), dtype=numerix.ubyte)
         

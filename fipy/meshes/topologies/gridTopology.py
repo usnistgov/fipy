@@ -294,7 +294,7 @@ class _Grid2DTopology(_GridTopology):
     def _cellTopology(self):
         """return a map of the topology of each cell of grid"""
         cellTopology = numerix.empty((self.mesh.numberOfCells,), dtype=numerix.ubyte)
-        cellTopology[:] = self.mesh._elementTopology["pixel"]
+        cellTopology[:] = self._elementTopology["pixel"]
         
         return cellTopology
 
