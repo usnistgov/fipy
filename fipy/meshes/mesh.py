@@ -208,7 +208,22 @@ class Mesh(AbstractMesh):
         faceVertexCoords = MA.array(data=faceVertexCoords, mask=faceVertexCoordsMask)
 
         return MA.filled(MA.average(faceVertexCoords, axis=1))
-     
+
+    @property
+    def _rightHandOrientation(self):
+        faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
+        faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
+        t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
+        t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
+        norm = numerix.cross(t1, t2, axis=0)
+        ## reordering norm's internal memory for inlining
+        norm = norm.copy()
+        norm = norm / numerix.sqrtDot(norm, norm)
+        
+        faceNormals = -norm
+        
+        return 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
+        
     def _calcFaceNormals(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
