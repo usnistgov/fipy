@@ -40,7 +40,6 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'metalIonSourceVariable',
             'metalIonDiffusionEquation',
         ), base = __name__)
     

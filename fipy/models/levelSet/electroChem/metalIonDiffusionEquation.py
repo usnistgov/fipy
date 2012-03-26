@@ -39,7 +39,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
-from fipy.models.levelSet.electroChem.metalIonSourceVariable import _MetalIonSourceVariable
 
 __all__ = ["buildMetalIonDiffusionEquation"]
 
@@ -129,6 +128,24 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> print ionVar.allclose(answer)
     1
 
+    Testing the interface source term
+
+    >>> from fipy.meshes import Grid2D
+    >>> from fipy import numerix
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+    >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
+    >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
+    >>> depositionRate = CellVariable(mesh=mesh, value=(1, 1, 1, 1))
+    >>> source = depositionRate * distance.cellInterfaceAreas / mesh.cellVolumes / ionVar
+    >>> sqrt = numerix.sqrt(2)
+    >>> ans = CellVariable(mesh=mesh, value=(0, 1 / sqrt, 1 / sqrt, 0))
+    >>> print numerix.allclose(source, ans)
+    True
+    >>> distance[:] = (-1.5, -0.5, -0.5, 0.5)
+    >>> print numerix.allclose(source, (0, 0, 0, sqrt))
+    True
+
     :Parameters:
       - `ionVar`: The metal ion concentration variable.
       - `distanceVar`: A `DistanceVariable` object.
@@ -144,10 +161,8 @@ def buildMetalIonDiffusionEquation(ionVar = None,
                                          transientCoeff = transientCoeff,
                                          diffusionCoeff = diffusionCoeff)
     
-    coeff = _MetalIonSourceVariable(ionVar = ionVar,
-                                    distanceVar = distanceVar,
-                                    depositionRate = depositionRate,
-                                    metalIonMolarVolume = metalIonMolarVolume)
+    mesh = distanceVar.mesh
+    coeff = depositionRate * distanceVar.cellInterfaceAreas / (mesh.cellVolumes * metalIonMolarVolume) / ionVar
 
     return eq + ImplicitSourceTerm(coeff)
 
