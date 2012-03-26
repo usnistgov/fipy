@@ -39,11 +39,7 @@ import fipy.tests.testProgram
 
 def _suite():
     theSuite = _LateImportDocTestSuite(
-        testModuleNames = (
-            'electroChem.test',
-        ),
         docTestModuleNames = (
-            'advection.advectionTerm',
             'advection.higherOrderAdvectionTerm',
             'distanceFunction.distanceVariable',
             'surfactant.surfactantVariable',

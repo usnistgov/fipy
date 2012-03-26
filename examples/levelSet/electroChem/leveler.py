@@ -212,6 +212,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy import *
 from gapFillMesh import TrenchMesh
+from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runLeveler(kLeveler=0.018, 
                bulkLevelerConcentration=0.02, 

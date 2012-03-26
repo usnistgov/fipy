@@ -138,6 +138,8 @@ Build the mesh:
 .. index:: Grid2D
 
 >>> from fipy import *
+>>> from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+
 >>> from fipy import serial
 >>> mesh = Grid2D(dx=cellSize,
 ...               dy=cellSize,
@@ -326,8 +328,6 @@ The following boundary condition applies at :math:`\phi = 0`,
    D \hat{n} \cdot \nabla c = \frac{v}{\Omega}.
    
 The metal ion diffusion equation is set up with the following commands.
-
-.. index:: buildMetalIonDiffusionEquation
 
 >>> metalEquation = buildMetalIonDiffusionEquation(
 ...     ionVar=metalVar,

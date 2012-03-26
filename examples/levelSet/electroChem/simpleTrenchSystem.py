@@ -160,6 +160,7 @@ resemble the image below.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                           gasConstant=8.314,

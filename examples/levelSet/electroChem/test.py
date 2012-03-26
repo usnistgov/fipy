@@ -42,6 +42,7 @@ def _suite():
             'gold',
             'leveler',
             'gapFillMesh',
+            'metalIonDiffusionEquation',
         ), base = __name__)
     
 if __name__ == '__main__':

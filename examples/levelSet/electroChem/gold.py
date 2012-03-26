@@ -103,6 +103,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy import *
 from gapFillMesh import TrenchMesh
+from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runGold(faradaysConstant=9.6e4,
             consumptionRateConstant=2.6e+6,

@@ -40,8 +40,6 @@ __docformat__ = 'restructuredtext'
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
 
-__all__ = ["buildMetalIonDiffusionEquation"]
-
 def buildMetalIonDiffusionEquation(ionVar = None,
                                    distanceVar = None,
                                    depositionRate = 1,
