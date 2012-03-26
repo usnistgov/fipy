@@ -58,6 +58,7 @@ def _suite():
             'asymmetricConvectionTerm',
             'binaryTerm',
             'advectionTerm',
+            'higherOrderAdvectionTerm',
             ), base = __name__)
 
 if __name__ == '__main__':

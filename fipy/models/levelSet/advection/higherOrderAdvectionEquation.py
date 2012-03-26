@@ -34,7 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.models.levelSet.advection.higherOrderAdvectionTerm import _HigherOrderAdvectionTerm
+from fipy.terms.higherOrderAdvectionTerm import _HigherOrderAdvectionTerm
 from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
 
 __all__ = ["buildHigherOrderAdvectionEquation"]

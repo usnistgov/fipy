@@ -40,7 +40,6 @@ import fipy.tests.testProgram
 def _suite():
     theSuite = _LateImportDocTestSuite(
         docTestModuleNames = (
-            'advection.higherOrderAdvectionTerm',
             'distanceFunction.distanceVariable',
             'surfactant.surfactantVariable',
             'distanceFunction.levelSetDiffusionVariable',
