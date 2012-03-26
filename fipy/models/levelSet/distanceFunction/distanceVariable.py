@@ -320,11 +320,9 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
         >>> print numerix.allclose(distanceVariable.cellInterfaceAreas.sum(), 1.57984690073)
         1
-        """        
-        normals = numerix.array(MA.filled(self._cellInterfaceNormals, 0))
-        areas = numerix.array(MA.filled(self.mesh._cellAreaProjections, 0))
-        return CellVariable(mesh=self.mesh, 
-                            value=numerix.sum(abs(numerix.dot(normals, areas)), axis=0))
+        """   
+        from fipy.models.levelSet.distanceFunction.interfaceAreaVariable import _InterfaceAreaVariable
+        return _InterfaceAreaVariable(self)
 
     @getsetDeprecated
     def _getCellInterfaceNormals(self):

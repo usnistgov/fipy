@@ -49,7 +49,7 @@ class _AdsorptionCoeff(CellVariable):
         self.rateConstant = rateConstant
 
     def _calcValue(self):
-        return self.rateConstant * self.distanceVar.cellInterfaceAreas / self.mesh.cellVolumes
+        return self.rateConstant * numerix.array(self.distanceVar.cellInterfaceAreas) / self.mesh.cellVolumes
 
 class _ScAdsorptionCoeff(_AdsorptionCoeff):
     def __init__(self, bulkVar = None, surfactantVar = None, rateConstant = None, distanceVar = None):
