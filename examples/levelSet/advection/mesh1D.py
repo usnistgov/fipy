@@ -80,7 +80,7 @@ Construct a `distanceVariable` object.
    
 The `advectionEquation` is constructed.
 
->>> advEqn = buildAdvectionEquation(advectionCoeff=velocity)
+>>> advEqn = TransientTerm() + AdvectionTerm(velocity)
 
 The problem can then be solved by executing a serious of time steps.
 

@@ -83,8 +83,7 @@ Initialise the `distanceVariable` to be a circular distance function.
 
 The advection equation is constructed.
    
->>> advEqn = buildAdvectionEquation(
-...     advectionCoeff=velocity)
+>>> advEqn = TransientTerm() + AdvectionTerm(velocity)
 
 The problem can then be solved by executing a serious of time steps.
 

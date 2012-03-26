@@ -39,9 +39,9 @@ __all__ = []
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
-from fipy.terms.advectionTerm import _AdvectionTerm
+from fipy.terms.advectionTerm import AdvectionTerm
 
-class _HigherOrderAdvectionTerm(_AdvectionTerm):
+class _HigherOrderAdvectionTerm(AdvectionTerm):
     r"""
 
     The `_HigherOrderAdvectionTerm` object constructs the `b` vector contribution for
@@ -231,9 +231,9 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
                                          adjacentLaplacian,
                                          cellLaplacian))
         
-        return _AdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
+        return AdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
 
-class __AdvectionTerm(_AdvectionTerm):
+class __AdvectionTerm(AdvectionTerm):
     """
     Dummy subclass for tests
     """

@@ -35,7 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.higherOrderAdvectionTerm import _HigherOrderAdvectionTerm
-from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+from fipy.terms.transientTerm import TransientTerm
 
 __all__ = ["buildHigherOrderAdvectionEquation"]
 
@@ -54,4 +54,4 @@ def buildHigherOrderAdvectionEquation(advectionCoeff = None):
       - `advectionCoeff`: The `coeff` to pass to the `_HigherOrderAdvectionTerm`
 
     """
-    return buildAdvectionEquation(advectionCoeff = advectionCoeff, advectionTerm = _HigherOrderAdvectionTerm)
+    return TransientTerm(1.) + _HigherOrderAdvectionTerm(advectionCoeff)

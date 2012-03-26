@@ -70,7 +70,7 @@ This example creates a trench with the following zero level set:
 
 >>> var.calcDistanceFunction() #doctest: +LSMLIB
 
->>> advEqn = buildAdvectionEquation(velocity)
+>>> advEqn = TransientTerm() + AdvectionTerm(velocity)
 
 The trench is then advected with a unit velocity. The following test can be made
 for the initial position of the interface:
