@@ -34,7 +34,7 @@
  
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["_HigherOrderAdvectionTerm"]
 
 from fipy.tools.numerix import MA
 from fipy.tools import numerix

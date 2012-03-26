@@ -92,9 +92,7 @@ surfactantVariable = SurfactantVariable(
 surfactantEquation = SurfactantEquation(
     distanceVar = distanceVariable)
 
-
-advectionEquation = buildHigherOrderAdvectionEquation(
-    advectionCoeff = velocity)
+advectionEquation = TransientTerm() + _HigherOrderAdvectionTerm(velocity)
 
 if __name__ == '__main__':
     distanceViewer = Viewer(vars=distanceVariable, 

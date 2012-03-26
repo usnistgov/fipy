@@ -261,8 +261,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         bulkVar = bulkCatalystVar,
         rateConstant = rateConstant0 + rateConstant3 * overpotential**3)
 
-    advectionEquation = buildHigherOrderAdvectionEquation(
-        advectionCoeff = extensionVelocityVariable)
+    advectionEquation = TransientTerm() + _HigherOrderAdvectionTerm(extensionVelocityVariable)
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,

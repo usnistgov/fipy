@@ -274,9 +274,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     >>> extVar = CellVariable(mesh = mesh, value = accVar.interfaceVar)
 
-    >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-    ...     import buildHigherOrderAdvectionEquation
-    >>> advEq = buildHigherOrderAdvectionEquation(advectionCoeff = extVar)
+    >>> from fipy import TransientTerm, _HigherOrderAdvectionTerm
+    >>> advEq = TransientTerm() + _HigherOrderAdvectionTerm(extVar)
 
     >>> dt = 0.1
 

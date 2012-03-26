@@ -109,12 +109,11 @@ The result can be tested with the following commands.
 1
 
 If the advection equation is built with the
-:func:`~fipy.models.levelSet.advection.higherOrderAdvectionTerm.buildHigherOrderAdvectionEquation`
+:func:`~fipy.terms.higherOrderAdvectionTerm._HigherOrderAdvectionEquation`
 the result is more accurate,
 
 >>> var.setValue(initialArray)
->>> advEqn = buildHigherOrderAdvectionEquation(
-...     advectionCoeff = velocity)
+>>> advEqn = TransientTerm() + _HigherOrderAdvectionTerm(velocity)
 >>> for step in range(steps):
 ...     var.updateOld()
 ...     advEqn.solve(var, dt=timeStepDuration)

@@ -174,8 +174,7 @@ def runGold(faradaysConstant=9.6e4,
         rateConstant = 0,
         consumptionCoeff = consumptionRateConstant * extensionVelocityVariable)
 
-    advectionEquation = buildHigherOrderAdvectionEquation(
-        advectionCoeff = extensionVelocityVariable)
+    advectionEquation = TransientTerm() + _HigherOrderAdvectionTerm(extensionVelocityVariable)
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,

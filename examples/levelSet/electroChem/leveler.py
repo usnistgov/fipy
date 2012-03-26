@@ -344,8 +344,7 @@ def runLeveler(kLeveler=0.018,
         otherRateConstant = kLeveler,
         consumptionCoeff = accConsumptionCoeff)
 
-    advectionEquation = buildHigherOrderAdvectionEquation(
-        advectionCoeff = extensionVelocityVariable)
+    advectionEquation = TransientTerm() + _HigherOrderAdvectionTerm(extensionVelocityVariable)
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
