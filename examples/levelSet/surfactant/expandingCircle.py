@@ -123,7 +123,7 @@ velocity = CellVariable(
     value = 1.,
     )
 
-advectionEquation = TransientTerm() + _HigherOrderAdvectionTerm(velocity)
+advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 
 surfactantEquation = SurfactantEquation(
     distanceVar = distanceVariable)

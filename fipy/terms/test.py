@@ -57,8 +57,8 @@ def _suite():
             'nonDiffusionTerm',
             'asymmetricConvectionTerm',
             'binaryTerm',
+            'firstOrderAdvectionTerm',
             'advectionTerm',
-            'higherOrderAdvectionTerm',
             ), base = __name__)
 
 if __name__ == '__main__':

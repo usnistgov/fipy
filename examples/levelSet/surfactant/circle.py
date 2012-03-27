@@ -107,7 +107,7 @@ surfactantVariable = SurfactantVariable(
     distanceVar = distanceVariable
     )
 
-advectionEquation = TransientTerm() + _HigherOrderAdvectionTerm(velocity)
+advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 
 surfactantEquation = SurfactantEquation(
     distanceVar = distanceVariable)

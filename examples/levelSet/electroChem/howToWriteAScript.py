@@ -300,9 +300,9 @@ The variable :math:`\phi` is advected by the
    
 and is set up with the following commands:
     
-.. index:: _HigherOrderAdvectionTerm
+.. index:: AdvectionTerm
 
->>> advectionEquation = TransientTerm() + _HigherOrderAdvectionTerm(extensionVelocityVariable)
+>>> advectionEquation = TransientTerm() + AdvectionTerm(extensionVelocityVariable)
 
 The diffusion of metal ions from the far field to the interface is
 governed by,

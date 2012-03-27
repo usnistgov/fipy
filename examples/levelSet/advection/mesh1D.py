@@ -47,7 +47,7 @@ The variable is then advected with,
 
    \frac{ \partial \phi } { \partial t} + \vec{u} \cdot \nabla \phi = 0
 
-The scheme used in the `AdvectionTerm` preserves the `var` as a distance function.
+The scheme used in the `FirstOrderAdvectionTerm` preserves the `var` as a distance function.
 
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
@@ -80,7 +80,7 @@ Construct a `distanceVariable` object.
    
 The `advectionEquation` is constructed.
 
->>> advEqn = TransientTerm() + AdvectionTerm(velocity)
+>>> advEqn = TransientTerm() + FirstOrderAdvectionTerm(velocity)
 
 The problem can then be solved by executing a serious of time steps.
 
