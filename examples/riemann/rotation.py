@@ -51,16 +51,16 @@ with
 
    \vec{u} = \left(2 y, -2 x \right)
 
->>> import fipy
->>> from fipy import numerix
+>>> from fipy import Grid2D, CellVariable, FaceVariable, TransientTerm, Viewer
+>>> from fipy import numerix, RoeConvectionTerm, FirstOrderRoeConvectionTerm
 
 >>> N = 80
 >>> L = 2.
 >>> origin = [[-1], [-1]]
 
->>> mesh = fipy.Grid2D(nx=N, ny=N, Lx=L, Ly=L) + origin
+>>> mesh = Grid2D(nx=N, ny=N, Lx=L, Ly=L) + origin
 
->>> var = fipy.CellVariable(mesh=mesh, hasOld=True)
+>>> var = CellVariable(mesh=mesh, hasOld=True)
 
 Set the initial conditions (see image below).
 
@@ -76,7 +76,7 @@ Set the initial conditions (see image below).
 
 Set the velocity field in the manner used in Clawpack_ for comparison purposes.
 
->>> vel = fipy.FaceVariable(mesh=mesh, rank=1)
+>>> vel = FaceVariable(mesh=mesh, rank=1)
 >>> def psi(x, y):
 ...     return x**2 + y**2
 >>> X, Y = mesh.faceCenters
@@ -87,10 +87,10 @@ Initially use only a first order
 (:class:`fipy.terms.firstOrderRoeConvectionTerm.FirstOrderRoeConvectionTerm`)
 scheme to compare with Clawpack_.
 
->>> eqn = fipy.TransientTerm() + fipy.FirstOrderRoeConvectionTerm(vel)
+>>> eqn = TransientTerm() + FirstOrderRoeConvectionTerm(vel)
 
 >>> if __name__ == '__main__':
-...     viewer = fipy.Viewer(var)
+...     viewer = Viewer(var)
 ...     viewer.plot()
 ...     raw_input("Solid-body rotation initial conditions. Press <return> to proceed...")
 
@@ -128,7 +128,7 @@ to compare with Clawpack_.
 Reinitialize the field.
 
 >>> initialize(var)
->>> eqn = fipy.TransientTerm() + fipy.RoeConvectionTerm(vel)
+>>> eqn = TransientTerm() + RoeConvectionTerm(vel)
 
 Do 50 time steps.
 
